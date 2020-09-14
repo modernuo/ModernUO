@@ -35,7 +35,9 @@ namespace Server.Items
         {
             if (m_TurnedOn && IsLockedDown && (!m.Hidden || m.AccessLevel == AccessLevel.Player) &&
                 Utility.InRange(m.Location, Location, 2) && !Utility.InRange(oldLocation, Location, 2))
+            {
                 Effects.PlaySound(Location, Map, Sounds.RandomElement());
+            }
 
             base.OnMovement(m, oldLocation);
         }
@@ -45,9 +47,13 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_TurnedOn)
+            {
                 list.Add(502695); // turned on
+            }
             else
+            {
                 list.Add(502696); // turned off
+            }
         }
 
         public bool IsOwner(Mobile mob) => BaseHouse.FindHouseAt(this)?.IsOwner(mob) == true;
@@ -55,9 +61,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (IsOwner(from))
-                from.SendGump(new OnOffGump(this));
+            {
+                @from.SendGump(new OnOffGump(this));
+            }
             else
-                from.SendLocalizedMessage(502691); // You must be the owner to use this.
+            {
+                @from.SendLocalizedMessage(502691); // You must be the owner to use this.
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -112,7 +122,9 @@ namespace Server.Items
                     m_Chimes.TurnedOn = newValue;
 
                     if (newValue && !m_Chimes.IsLockedDown)
-                        from.SendLocalizedMessage(502693); // Remember, this only works when locked down.
+                    {
+                        @from.SendLocalizedMessage(502693); // Remember, this only works when locked down.
+                    }
                 }
                 else
                 {

@@ -29,9 +29,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (IsChildOf(from.Backpack))
-                from.SendGump(new HousePlacementCategoryGump(from));
+            {
+                @from.SendGump(new HousePlacementCategoryGump(@from));
+            }
             else
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            {
+                @from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -48,7 +52,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 0.0)
+            {
                 Weight = 3.0;
+            }
         }
     }
 
@@ -90,7 +96,9 @@ namespace Server.Items
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (!m_From.CheckAlive() || m_From.Backpack?.FindItemByType<HousePlacementTool>() == null)
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {
@@ -198,16 +206,22 @@ namespace Server.Items
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (!m_From.CheckAlive() || m_From.Backpack?.FindItemByType<HousePlacementTool>() == null)
+            {
                 return;
+            }
 
             var index = info.ButtonID - 1;
 
             if (index >= 0 && index < m_Entries.Length)
             {
                 if (m_From.AccessLevel < AccessLevel.GameMaster && BaseHouse.HasAccountHouse(m_From))
+                {
                     m_From.SendLocalizedMessage(501271); // You already own a house, you may not place another!
+                }
                 else
+                {
                     m_From.Target = new NewHousePlacementTarget(m_Entries, m_Entries[index]);
+                }
             }
             else
             {
@@ -237,41 +251,59 @@ namespace Server.Items
         protected override void OnTarget(Mobile from, object o)
         {
             if (!from.CheckAlive() || from.Backpack?.FindItemByType<HousePlacementTool>() == null)
+            {
                 return;
+            }
 
             if (o is IPoint3D ip)
             {
                 if (ip is Item item)
+                {
                     ip = item.GetWorldTop();
+                }
 
                 var p = new Point3D(ip);
 
                 var reg = Region.Find(new Point3D(p), from.Map);
 
                 if (from.AccessLevel >= AccessLevel.GameMaster || reg.AllowHousing(from, p))
-                    m_Placed = m_Entry.OnPlacement(from, p);
+                {
+                    m_Placed = m_Entry.OnPlacement(@from, p);
+                }
                 else if (reg.IsPartOf<TempNoHousingRegion>())
-                    from.SendLocalizedMessage(
+                {
+                    @from.SendLocalizedMessage(
                         501270
                     ); // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+                }
                 else if (reg.IsPartOf<TreasureRegion>() || reg.IsPartOf<HouseRegion>())
-                    from.SendLocalizedMessage(
+                {
+                    @from.SendLocalizedMessage(
                         1043287
                     ); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
+                }
                 else if (reg.IsPartOf<HouseRaffleRegion>())
-                    from.SendLocalizedMessage(1150493); // You must have a deed for this plot of land in order to build here.
+                {
+                    @from.SendLocalizedMessage(1150493); // You must have a deed for this plot of land in order to build here.
+                }
                 else
-                    from.SendLocalizedMessage(501265); // Housing can not be created in this area.
+                {
+                    @from.SendLocalizedMessage(501265); // Housing can not be created in this area.
+                }
             }
         }
 
         protected override void OnTargetFinish(Mobile from)
         {
             if (!from.CheckAlive() || from.Backpack?.FindItemByType<HousePlacementTool>() == null)
+            {
                 return;
+            }
 
             if (!m_Placed)
-                from.SendGump(new HousePlacementListGump(from, m_Entries));
+            {
+                @from.SendGump(new HousePlacementListGump(@from, m_Entries));
+            }
         }
     }
 
@@ -1927,11 +1959,17 @@ namespace Server.Items
                 object[] args;
 
                 if (Type == typeof(HouseFoundation))
-                    args = new object[] { from, MultiID, m_Storage, m_Lockdowns };
+                {
+                    args = new object[] { @from, MultiID, m_Storage, m_Lockdowns };
+                }
                 else if (Type == typeof(SmallOldHouse) || Type == typeof(SmallShop) || Type == typeof(TwoStoryHouse))
-                    args = new object[] { from, MultiID };
+                {
+                    args = new object[] { @from, MultiID };
+                }
                 else
-                    args = new object[] { from };
+                {
+                    args = new object[] { @from };
+                }
 
                 return ActivatorUtil.CreateInstance(Type, args) as BaseHouse;
             }
@@ -1946,7 +1984,9 @@ namespace Server.Items
         public void PlacementWarning_Callback(Mobile from, bool okay, PreviewHouse prevHouse)
         {
             if (!from.CheckAlive() || from.Backpack?.FindItemByType<HousePlacementTool>() == null)
+            {
                 return;
+            }
 
             if (!okay)
             {
@@ -1984,7 +2024,9 @@ namespace Server.Items
                             var house = ConstructHouse(from);
 
                             if (house == null)
+                            {
                                 return;
+                            }
 
                             house.Price = Cost;
 
@@ -2022,9 +2064,13 @@ namespace Server.Items
                                 object o = toMove[i];
 
                                 if (o is Mobile mobile)
+                                {
                                     mobile.Location = house.BanLocation;
+                                }
                                 else if (o is Item item)
+                                {
                                     item.Location = house.BanLocation;
+                                }
                             }
                         }
 
@@ -2071,7 +2117,9 @@ namespace Server.Items
         public bool OnPlacement(Mobile from, Point3D p)
         {
             if (!from.CheckAlive() || from.Backpack?.FindItemByType<HousePlacementTool>() == null)
+            {
                 return false;
+            }
 
             var center = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
             var res = HousePlacement.Check(from, MultiID, center, out var toMove);
@@ -2112,9 +2160,13 @@ namespace Server.Items
                                 object o = toMove[i];
 
                                 if (o is Mobile mobile)
+                                {
                                     mobile.Location = banLoc;
+                                }
                                 else if (o is Item item)
+                                {
                                     item.Location = banLoc;
+                                }
                             }
 
                             prev.MoveToWorld(center, from.Map);
@@ -2193,13 +2245,19 @@ namespace Server.Items
             m_Table.TryGetValue(house.GetType(), out var obj);
 
             if (obj is HousePlacementEntry entry)
+            {
                 return entry;
+            }
 
             if (obj is List<HousePlacementEntry> list)
+            {
                 return list.FirstOrDefault(e => e.MultiID == house.ItemID);
+            }
 
             if (obj is Dictionary<int, HousePlacementEntry> table)
+            {
                 return table[house.ItemID];
+            }
 
             return null;
         }
@@ -2227,7 +2285,9 @@ namespace Server.Items
                         var table = new Dictionary<int, HousePlacementEntry>();
 
                         foreach (var t in list)
+                        {
                             table[t.MultiID] = t;
+                        }
 
                         table[e.MultiID] = e;
 

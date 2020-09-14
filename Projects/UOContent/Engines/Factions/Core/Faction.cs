@@ -102,7 +102,9 @@ namespace Server.Factions
             var members = Members;
 
             for (var i = 0; i < members.Count; ++i)
+            {
                 members[i].Mobile.SendMessage(hue, text);
+            }
         }
 
         public void Broadcast(int number)
@@ -110,7 +112,9 @@ namespace Server.Factions
             var members = Members;
 
             for (var i = 0; i < members.Count; ++i)
+            {
                 members[i].Mobile.SendLocalizedMessage(number);
+            }
         }
 
         public void Broadcast(string format, params object[] args)
@@ -132,7 +136,9 @@ namespace Server.Factions
         public void EndBroadcast(Mobile from, string text)
         {
             if (from.AccessLevel == AccessLevel.Player)
+            {
                 State.RegisterBroadcast();
+            }
 
             Broadcast(Definition.HueBroadcast, "{0} [Commander] {1} : {2}", from.Name, Definition.FriendlyName, text);
         }
@@ -140,26 +146,42 @@ namespace Server.Factions
         public static void HandleAtrophy()
         {
             foreach (var f in Factions)
+            {
                 if (!f.State.IsAtrophyReady)
+                {
                     return;
+                }
+            }
 
             var activePlayers = new List<PlayerState>();
 
             foreach (var f in Factions)
+            {
                 foreach (var ps in f.Members)
+                {
                     if (ps.KillPoints > 0 && ps.IsActive)
+                    {
                         activePlayers.Add(ps);
+                    }
+                }
+            }
 
             var distrib = 0;
 
             foreach (var f in Factions)
+            {
                 distrib += f.State.CheckAtrophy();
+            }
 
             if (activePlayers.Count == 0)
+            {
                 return;
+            }
 
             for (var i = 0; i < distrib; ++i)
+            {
                 activePlayers.RandomElement().KillPoints++;
+            }
         }
 
         public static void DistributePoints(int distrib)
@@ -167,13 +189,23 @@ namespace Server.Factions
             var activePlayers = new List<PlayerState>();
 
             foreach (var f in Factions)
+            {
                 foreach (var ps in f.Members)
+                {
                     if (ps.KillPoints > 0 && ps.IsActive)
+                    {
                         activePlayers.Add(ps);
+                    }
+                }
+            }
 
             if (activePlayers.Count > 0)
+            {
                 for (var i = 0; i < distrib; ++i)
+                {
                     activePlayers.RandomElement().KillPoints++;
+                }
+            }
         }
 
         public void BeginHonorLeadership(Mobile from)
@@ -190,7 +222,9 @@ namespace Server.Factions
                 var recvState = PlayerState.Find(recv);
 
                 if (giveState == null)
+                {
                     return;
+                }
 
                 if (recvState == null || recvState.Faction != giveState.Faction)
                 {
@@ -236,7 +270,9 @@ namespace Server.Factions
             var items = type.IsSubclassOf(typeof(Item));
 
             if (!(items || mobs))
+            {
                 return false;
+            }
 
             var eable = mob.Map.GetObjectsInRange(mob.Location, range, items, mobs);
             var isInstance = eable.Any(type.IsInstanceOfType);
@@ -256,7 +292,9 @@ namespace Server.Factions
         public void RemovePlayerState(PlayerState pl)
         {
             if (pl == null || !Members.Contains(pl))
+            {
                 return;
+            }
 
             var killPoints = pl.KillPoints;
 
@@ -278,7 +316,9 @@ namespace Server.Factions
 
             var pm = (PlayerMobile)pl.Mobile;
             if (pm == null)
+            {
                 return;
+            }
 
             var mob = pl.Mobile;
             if (pm.FactionPlayerState == pl)
@@ -289,24 +329,34 @@ namespace Server.Factions
                 mob.Delta(MobileDelta.Noto);
 
                 if (Election.IsCandidate(mob))
+                {
                     Election.RemoveCandidate(mob);
+                }
 
                 if (pl.Finance != null)
+                {
                     pl.Finance.Finance = null;
+                }
 
                 if (pl.Sheriff != null)
+                {
                     pl.Sheriff.Sheriff = null;
+                }
 
                 Election.RemoveVoter(mob);
 
                 if (Commander == mob)
+                {
                     Commander = null;
+                }
 
                 pm.ValidateEquipment();
             }
 
             if (killPoints > 0)
+            {
                 DistributePoints(killPoints);
+            }
         }
 
         public void RemoveMember(Mobile mob)
@@ -314,7 +364,9 @@ namespace Server.Factions
             var pl = PlayerState.Find(mob);
 
             if (pl == null || !Members.Contains(pl))
+            {
                 return;
+            }
 
             var killPoints = pl.KillPoints;
 
@@ -339,30 +391,44 @@ namespace Server.Factions
             Members.Remove(pl);
 
             if (mob is PlayerMobile mobile)
+            {
                 mobile.FactionPlayerState = null;
+            }
 
             mob.InvalidateProperties();
             mob.Delta(MobileDelta.Noto);
 
             if (Election.IsCandidate(mob))
+            {
                 Election.RemoveCandidate(mob);
+            }
 
             Election.RemoveVoter(mob);
 
             if (pl.Finance != null)
+            {
                 pl.Finance.Finance = null;
+            }
 
             if (pl.Sheriff != null)
+            {
                 pl.Sheriff.Sheriff = null;
+            }
 
             if (Commander == mob)
+            {
                 Commander = null;
+            }
 
             if (mob is PlayerMobile playerMobile)
+            {
                 playerMobile.ValidateEquipment();
+            }
 
             if (killPoints > 0)
+            {
                 DistributePoints(killPoints);
+            }
         }
 
         public void JoinGuilded(PlayerMobile mob, Guild guild)
@@ -400,13 +466,17 @@ namespace Server.Factions
         private bool AlreadyHasCharInFaction(Mobile mob)
         {
             if (mob.Account is Account acct)
+            {
                 for (var i = 0; i < acct.Length; ++i)
                 {
                     var c = acct[i];
 
                     if (Find(c) != null)
+                    {
                         return true;
+                    }
                 }
+            }
 
             return false;
         }
@@ -414,7 +484,9 @@ namespace Server.Factions
         public static bool IsFactionBanned(Mobile mob)
         {
             if (!(mob.Account is Account acct))
+            {
                 return false;
+            }
 
             return acct.GetTag("FactionBanned") != null;
         }
@@ -422,7 +494,9 @@ namespace Server.Factions
         public void OnJoinAccepted(Mobile mob)
         {
             if (!(mob is PlayerMobile pm))
+            {
                 return; // sanity
+            }
 
             var pl = PlayerState.Find(pm);
 
@@ -485,7 +559,9 @@ namespace Server.Factions
                     for (var i = 0; i < members.Count; ++i)
                     {
                         if (!(members[i] is PlayerMobile member))
+                        {
                             continue;
+                        }
 
                         JoinGuilded(member, guild);
                     }
@@ -506,7 +582,9 @@ namespace Server.Factions
         public bool IsCommander(Mobile mob)
         {
             if (mob == null)
+            {
                 return false;
+            }
 
             return mob.AccessLevel >= AccessLevel.GameMaster || mob == Commander;
         }
@@ -518,10 +596,14 @@ namespace Server.Factions
             var pl = PlayerState.Find(mob);
 
             if (pl?.IsLeaving != true)
+            {
                 return false;
+            }
 
             if (pl.Leaving + LeavePeriod >= DateTime.UtcNow)
+            {
                 return false;
+            }
 
             mob.SendLocalizedMessage(1005163); // You have now quit your faction
 
@@ -551,7 +633,9 @@ namespace Server.Factions
             var monoliths = BaseMonolith.Monoliths;
 
             for (var i = 0; i < monoliths.Count; ++i)
+            {
                 monoliths[i].Sigil = null;
+            }
 
             var towns = Town.Towns;
 
@@ -591,9 +675,13 @@ namespace Server.Factions
                     var fi = list[j];
 
                     if (fi.Expiration == DateTime.MinValue)
+                    {
                         fi.Item.Delete();
+                    }
                     else
+                    {
                         fi.Detach();
+                    }
                 }
             }
         }
@@ -603,7 +691,9 @@ namespace Server.Factions
             var monoliths = BaseMonolith.Monoliths;
 
             for (var i = 0; i < monoliths.Count; ++i)
+            {
                 monoliths[i].Sigil = null;
+            }
 
             var towns = Town.Towns;
 
@@ -639,7 +729,9 @@ namespace Server.Factions
                 var playerStateList = new List<PlayerState>(f.Members);
 
                 for (var j = 0; j < playerStateList.Count; ++j)
+                {
                     f.RemoveMember(playerStateList[j].Mobile);
+                }
 
                 var factionItemList = new List<FactionItem>(f.State.FactionItems);
 
@@ -648,15 +740,21 @@ namespace Server.Factions
                     var fi = factionItemList[j];
 
                     if (fi.Expiration == DateTime.MinValue)
+                    {
                         fi.Item.Delete();
+                    }
                     else
+                    {
                         fi.Detach();
+                    }
                 }
 
                 var factionTrapList = new List<BaseFactionTrap>(f.Traps);
 
                 for (var j = 0; j < factionTrapList.Count; ++j)
+                {
                     factionTrapList[j].Delete();
+                }
             }
         }
 
@@ -665,8 +763,12 @@ namespace Server.Factions
             var items = new List<Item>();
 
             foreach (var item in World.Items.Values)
+            {
                 if (item is IFactionItem && !(item is HoodedShroudOfShadows))
+                {
                     items.Add(item);
+                }
+            }
 
             var hues = new int[Factions.Count * 2];
 
@@ -684,16 +786,20 @@ namespace Server.Factions
                 var fci = (IFactionItem)item;
 
                 if (fci.FactionItemState != null || item.LootType != LootType.Blessed)
+                {
                     continue;
+                }
 
                 var isHued = false;
 
                 for (var j = 0; j < hues.Length; ++j)
+                {
                     if (item.Hue == hues[j])
                     {
                         isHued = true;
                         break;
                     }
+                }
 
                 if (isHued)
                 {
@@ -747,10 +853,14 @@ namespace Server.Factions
                 var faction = stone.Faction;
 
                 if (faction != null)
-                    from.SendGump(new ElectionManagementGump(faction.Election));
+                {
+                    @from.SendGump(new ElectionManagementGump(faction.Election));
+                }
                 // from.SendGump( new Gumps.PropertiesGump( from, faction.Election ) );
                 else
-                    from.SendMessage("That stone has no faction assigned.");
+                {
+                    @from.SendMessage("That stone has no faction assigned.");
+                }
             }
             else
             {
@@ -817,7 +927,9 @@ namespace Server.Factions
                 if (sigil.LastMonolith?.Sigil == null)
                 {
                     if (sigil.LastStolen + Sigil.ReturnPeriod < DateTime.UtcNow)
+                    {
                         sigil.ReturnHome();
+                    }
                 }
                 else
                 {
@@ -848,7 +960,9 @@ namespace Server.Factions
         public int AwardSilver(Mobile mob, int silver)
         {
             if (silver <= 0)
+            {
                 return 0;
+            }
 
             var tithed = silver * Tithe / 100;
 
@@ -857,7 +971,9 @@ namespace Server.Factions
             silver = silver - tithed;
 
             if (silver > 0)
+            {
                 mob.AddToBackpack(new Silver(silver));
+            }
 
             return silver;
         }
@@ -872,7 +988,9 @@ namespace Server.Factions
                 var faction = factions[i];
 
                 if (smallest == null || faction.Members.Count < smallest.Members.Count)
+                {
                     smallest = faction;
+                }
             }
 
             return smallest;
@@ -887,7 +1005,9 @@ namespace Server.Factions
                 var faction = factions[i];
 
                 if (faction.Members.Count > StabilityActivation)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -896,15 +1016,21 @@ namespace Server.Factions
         public bool CanHandleInflux(int influx)
         {
             if (!StabilityActive())
+            {
                 return true;
+            }
 
             var smallest = FindSmallestFaction();
 
             if (smallest == null)
+            {
                 return true; // sanity
+            }
 
             if ((Members.Count + influx) * 100 / StabilityFactor > smallest.Members.Count)
+            {
                 return false;
+            }
 
             return true;
         }
@@ -946,7 +1072,9 @@ namespace Server.Factions
                 );
 
             if (killerState == null)
+            {
                 return;
+            }
 
             if (victim is BaseCreature bc)
             {
@@ -957,10 +1085,12 @@ namespace Server.Factions
                     var silver = killerState.Faction.AwardSilver(killer, bc.FactionSilverWorth);
 
                     if (silver > 0)
+                    {
                         killer?.SendLocalizedMessage(
                             1042748,
                             silver.ToString("N0")
                         ); // Thou hast earned ~1_AMOUNT~ silver for vanquishing the vile creature.
+                    }
                 }
 
                 if (bc.Map == Facet && bc.GetEthicAllegiance(killer) == BaseCreature.Allegiance.Enemy)
@@ -980,13 +1110,19 @@ namespace Server.Factions
             var victimState = PlayerState.Find(victim);
 
             if (victimState == null)
+            {
                 return;
+            }
 
             if (victim.Region.IsPartOf<SafeZone>())
+            {
                 return;
+            }
 
             if (killer == victim || killerState.Faction != victimState.Faction)
+            {
                 ApplySkillLoss(victim);
+            }
 
             if (killerState.Faction != victimState.Faction)
             {
@@ -1002,7 +1138,9 @@ namespace Server.Factions
                         var powerTransfer = Math.Max(1, victimEPL.Power / 5);
 
                         if (powerTransfer > 100 - killerEPL.Power)
+                        {
                             powerTransfer = 100 - killerEPL.Power;
+                        }
 
                         if (powerTransfer > 0)
                         {
@@ -1020,7 +1158,9 @@ namespace Server.Factions
                     var award = Math.Max(victimState.KillPoints / 10, 1);
 
                     if (award > 40)
+                    {
                         award = 40;
+                    }
 
                     if (victimState.CanGiveSilverTo(killer))
                     {
@@ -1031,15 +1171,19 @@ namespace Server.Factions
                             victimState.IsActive = true;
 
                             if (Utility.Random(3) < 1)
+                            {
                                 killerState.IsActive = true;
+                            }
 
                             var silver = killerState.Faction.AwardSilver(killer, award * 40);
 
                             if (silver > 0)
+                            {
                                 killer?.SendLocalizedMessage(
                                     1042736,
                                     $"{silver:N0} silver\t{victim.Name}"
                                 ); // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
+                            }
                         }
 
                         victimState.KillPoints -= award;
@@ -1066,7 +1210,9 @@ namespace Server.Factions
                             var powerTransfer = Math.Max(1, victimEPL.Power / 5);
 
                             if (powerTransfer > 100 - killerEPL.Power)
+                            {
                                 powerTransfer = 100 - killerEPL.Power;
+                            }
 
                             if (powerTransfer > 0)
                             {
@@ -1115,18 +1261,31 @@ namespace Server.Factions
             var pl = PlayerState.Find(mob);
 
             if (pl != null)
+            {
                 return pl.Faction;
+            }
 
             if (inherit && mob is BaseCreature bc)
             {
                 if (bc.Controlled)
+                {
                     return Find(bc.ControlMaster);
+                }
+
                 if (bc.Summoned)
+                {
                     return Find(bc.SummonMaster);
+                }
+
                 if (creatureAllegiances && bc is BaseFactionGuard guard)
+                {
                     return guard.Faction;
+                }
+
                 if (creatureAllegiances)
+                {
                     return bc.FactionAllegiance;
+                }
             }
 
             return null;
@@ -1141,7 +1300,9 @@ namespace Server.Factions
                 var faction = factions[i];
 
                 if (Insensitive.Equals(faction.Definition.FriendlyName, name))
+                {
                     return faction;
+                }
             }
 
             return null;
@@ -1152,7 +1313,9 @@ namespace Server.Factions
         public static void ApplySkillLoss(Mobile mob)
         {
             if (InSkillLoss(mob))
+            {
                 return;
+            }
 
             var context = new SkillLossContext();
             m_SkillLoss[mob] = context;
@@ -1181,14 +1344,18 @@ namespace Server.Factions
         public static bool ClearSkillLoss(Mobile mob)
         {
             if (!m_SkillLoss.TryGetValue(mob, out var context))
+            {
                 return false;
+            }
 
             m_SkillLoss.Remove(mob);
 
             var mods = context.m_Mods;
 
             for (var i = 0; i < mods.Count; ++i)
+            {
                 mob.RemoveSkillMod(mods[i]);
+            }
 
             context.m_Timer.Stop();
 

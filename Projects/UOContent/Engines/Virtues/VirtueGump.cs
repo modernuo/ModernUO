@@ -70,7 +70,9 @@ namespace Server
         private static void EventSink_VirtueItemRequest(Mobile beholder, Mobile beheld, int gumpID)
         {
             if (beholder != beheld)
+            {
                 return;
+            }
 
             beholder.CloseGump<VirtueGump>();
 
@@ -81,9 +83,13 @@ namespace Server
             }
 
             if (m_Callbacks.TryGetValue(gumpID, out var callback))
+            {
                 callback(beholder);
+            }
             else
+            {
                 beholder.SendLocalizedMessage(1052066); // That virtue is not active yet.
+            }
         }
 
         private static void EventSink_VirtueMacroRequest(Mobile beholder, int virtue)
@@ -115,28 +121,44 @@ namespace Server
         private int GetHueFor(int index)
         {
             if (m_Beheld.Virtues.GetValue(index) == 0)
+            {
                 return 2402;
+            }
 
             var value = m_Beheld.Virtues.GetValue(index);
 
             if (value < 4000)
+            {
                 return 2402;
+            }
 
             if (value >= 30000)
+            {
                 value = 20000; // Sanity
+            }
 
             int vl;
 
             if (value < 10000)
+            {
                 vl = 0;
+            }
             else if (value >= 20000 && index == 5)
+            {
                 vl = 2;
+            }
             else if (value >= 21000 && index != 1)
+            {
                 vl = 2;
+            }
             else if (value >= 22000 && index == 1)
+            {
                 vl = 2;
+            }
             else
+            {
                 vl = 1;
+            }
 
             return m_Table[index * 3 + vl];
         }
@@ -144,7 +166,9 @@ namespace Server
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (info.ButtonID == 1 && m_Beholder == m_Beheld)
+            {
                 m_Beholder.SendGump(new VirtueStatusGump(m_Beholder));
+            }
         }
 
         private class InternalEntry : GumpImage

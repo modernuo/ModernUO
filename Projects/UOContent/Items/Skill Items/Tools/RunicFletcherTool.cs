@@ -31,7 +31,9 @@ namespace Server.Items
                 var index = CraftResources.GetIndex(Resource);
 
                 if (index >= 1 && index <= 6)
+                {
                     return 1072627 + index;
+                }
 
                 return 1044559; // Fletcher's Tools
             }

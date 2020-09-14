@@ -93,7 +93,9 @@ namespace Server.Misc
             var map = from.Map;
 
             if (map == null)
+            {
                 return false;
+            }
 
             var surface = map.GetTopSurface(from.Location);
 
@@ -118,22 +120,34 @@ namespace Server.Misc
         public static void EventSink_Login(Mobile from)
         {
             if (!IsStranded(from))
+            {
                 return;
+            }
 
             var map = from.Map;
 
             Point2D[] list;
 
             if (map == Map.Felucca)
+            {
                 list = m_Felucca;
+            }
             else if (map == Map.Trammel)
+            {
                 list = m_Trammel;
+            }
             else if (map == Map.Ilshenar)
+            {
                 list = m_Ilshenar;
+            }
             else if (map == Map.Tokuno)
+            {
                 list = m_Tokuno;
+            }
             else
+            {
                 return;
+            }
 
             var p = Point2D.Zero;
             var pdist = double.MaxValue;
@@ -157,20 +171,28 @@ namespace Server.Misc
             canFit = map.CanSpawnMobile(x, y, z);
 
             for (var i = 1; !canFit && i <= 40; i += 2)
+            {
                 for (var xo = -1; !canFit && xo <= 1; ++xo)
+                {
                     for (var yo = -1; !canFit && yo <= 1; ++yo)
                     {
                         if (xo == 0 && yo == 0)
+                        {
                             continue;
+                        }
 
                         x = p.X + xo * i;
                         y = p.Y + yo * i;
                         z = map.GetAverageZ(x, y);
                         canFit = map.CanSpawnMobile(x, y, z);
                     }
+                }
+            }
 
             if (canFit)
-                from.Location = new Point3D(x, y, z);
+            {
+                @from.Location = new Point3D(x, y, z);
+            }
         }
     }
 }

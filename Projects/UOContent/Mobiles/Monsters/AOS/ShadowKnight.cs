@@ -78,7 +78,9 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             if (!Summoned && !NoKillAwards && DemonKnight.CheckArtifactChance(this))
+            {
                 DemonKnight.DistributeArtifact(this);
+            }
         }
 
         public override int GetIdleSound() => 0x2CE;
@@ -94,7 +96,9 @@ namespace Server.Mobiles
             base.OnCombatantChange();
 
             if (Hidden && Combatant != null)
+            {
                 Combatant = null;
+            }
         }
 
         public virtual void SendTrackingSound()
@@ -121,6 +125,7 @@ namespace Server.Mobiles
                 var map = Map;
 
                 if (map != null)
+                {
                     for (var i = 0; i < 10; ++i)
                     {
                         var x = X + Utility.RandomMinMax(5, 10) * (Utility.RandomBool() ? 1 : -1);
@@ -128,13 +133,17 @@ namespace Server.Mobiles
                         var z = Z;
 
                         if (!map.CanFit(x, y, z, 16, false, false))
+                        {
                             continue;
+                        }
 
                         var from = Location;
                         var to = new Point3D(x, y, z);
 
                         if (!InLOS(to))
+                        {
                             continue;
+                        }
 
                         Location = to;
                         ProcessDelta();
@@ -142,7 +151,7 @@ namespace Server.Mobiles
                         Combatant = null;
 
                         Effects.SendLocationParticles(
-                            EffectItem.Create(from, map, EffectItem.DefaultDuration),
+                            EffectItem.Create(@from, map, EffectItem.DefaultDuration),
                             0x3728,
                             10,
                             10,
@@ -169,6 +178,7 @@ namespace Server.Mobiles
 
                         break;
                     }
+                }
             }
 
             base.OnThink();
@@ -186,7 +196,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (BaseSoundID == 357)
+            {
                 BaseSoundID = -1;
+            }
         }
     }
 }

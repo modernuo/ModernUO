@@ -39,7 +39,9 @@ namespace Server.Mobiles
             MinTameSkill = 11.1;
 
             if (Core.AOS && Utility.Random(1000) == 0) // 0.1% chance to have mad cows
+            {
                 FightMode = FightMode.Closest;
+            }
         }
 
         public Cow(Serial serial) : base(serial)
@@ -67,11 +69,17 @@ namespace Server.Mobiles
             var random = Utility.Random(100);
 
             if (random < 5)
+            {
                 Tip();
+            }
             else if (random < 20)
+            {
                 PlaySound(120);
+            }
             else if (random < 40)
+            {
                 PlaySound(121);
+            }
         }
 
         public void Tip()
@@ -83,9 +91,15 @@ namespace Server.Mobiles
         public bool TryMilk(Mobile from)
         {
             if (!from.InLOS(this) || !from.InRange(Location, 2))
-                from.SendLocalizedMessage(1080400); // You can not milk the cow from this location.
+            {
+                @from.SendLocalizedMessage(1080400); // You can not milk the cow from this location.
+            }
+
             if (Controlled && ControlMaster != from)
-                from.SendLocalizedMessage(1071182); // The cow nimbly escapes your attempts to milk it.
+            {
+                @from.SendLocalizedMessage(1071182); // The cow nimbly escapes your attempts to milk it.
+            }
+
             if (Milk == 0 && MilkedOn + TimeSpan.FromDays(1) > DateTime.UtcNow)
             {
                 from.SendLocalizedMessage(1080198); // This cow can not be milked now. Please wait for some time.
@@ -93,7 +107,9 @@ namespace Server.Mobiles
             else
             {
                 if (Milk == 0)
+                {
                     Milk = 4;
+                }
 
                 MilkedOn = DateTime.UtcNow;
                 Milk--;

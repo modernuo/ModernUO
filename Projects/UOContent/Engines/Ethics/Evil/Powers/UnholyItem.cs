@@ -51,7 +51,9 @@ namespace Server.Ethics.Evil
             if (canImbue)
             {
                 if (!CheckInvoke(from))
+                {
                     return;
+                }
 
                 item.Hue = Ethic.Evil.Definition.PrimaryHue;
                 item.SavedFlags |= 0x200;

@@ -144,9 +144,13 @@ namespace Server.Items
             writer.Write(m_Logs);
 
             if (m_Timer != null)
+            {
                 writer.Write(m_Timer.Next);
+            }
             else
+            {
                 writer.Write(DateTime.UtcNow + TimeSpan.FromDays(1));
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -161,7 +165,9 @@ namespace Server.Items
             var next = reader.ReadDateTime();
 
             if (next < DateTime.UtcNow)
+            {
                 next = DateTime.UtcNow;
+            }
 
             m_Timer = Timer.DelayCall(next - DateTime.UtcNow, TimeSpan.FromDays(1), GiveLogs);
         }
@@ -238,7 +244,9 @@ namespace Server.Items
             };
 
             if (!Deleted)
-                base.OnDoubleClick(from);
+            {
+                base.OnDoubleClick(@from);
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -246,13 +254,17 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076223); // 7th Year Veteran Reward
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {

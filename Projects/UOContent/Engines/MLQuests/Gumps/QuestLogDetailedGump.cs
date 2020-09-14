@@ -33,7 +33,9 @@ namespace Server.Engines.MLQuests.Gumps
             AddDescription(quest);
 
             if (instance.Failed)                                    // only displayed on the first page
+            {
                 AddHtmlLocalized(160, 80, 250, 16, 500039, 0x3C00); // Failed!
+            }
 
             BuildPage();
             AddObjectivesProgress(instance);
@@ -45,7 +47,9 @@ namespace Server.Engines.MLQuests.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_Instance.Removed)
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {

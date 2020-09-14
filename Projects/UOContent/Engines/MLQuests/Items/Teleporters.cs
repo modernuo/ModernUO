@@ -46,17 +46,26 @@ namespace Server.Engines.MLQuests.Items
         public override bool CanTeleport(Mobile m)
         {
             if (!base.CanTeleport(m))
+            {
                 return false;
+            }
 
             if (m_QuestType == null)
+            {
                 return true;
+            }
+
             if (!(m is PlayerMobile pm))
+            {
                 return false;
+            }
 
             var context = MLQuestSystem.GetContext(pm);
 
             if (context?.IsDoingQuest(m_QuestType) == true || context?.HasDoneQuest(m_QuestType) == true)
+            {
                 return true;
+            }
 
             TextDefinition.SendMessageTo(m, Message);
             return false;
@@ -67,7 +76,9 @@ namespace Server.Engines.MLQuests.Items
             base.GetProperties(list);
 
             if (m_QuestType != null)
+            {
                 list.Add($"Required quest: {m_QuestType.Name}");
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -89,7 +100,9 @@ namespace Server.Engines.MLQuests.Items
             var typeName = reader.ReadString();
 
             if (typeName != null)
+            {
                 m_QuestType = AssemblyHandler.FindFirstTypeForName(typeName);
+            }
 
             Message = TextDefinition.Deserialize(reader);
         }
@@ -142,10 +155,14 @@ namespace Server.Engines.MLQuests.Items
         public override bool CanTeleport(Mobile m)
         {
             if (!base.CanTeleport(m))
+            {
                 return false;
+            }
 
             if (m_TicketType == null)
+            {
                 return true;
+            }
 
             var pack = m.Backpack;
             var ticket = pack?.FindItemByType(m_TicketType, false) ??
@@ -167,7 +184,9 @@ namespace Server.Engines.MLQuests.Items
             base.GetProperties(list);
 
             if (m_TicketType != null)
+            {
                 list.Add($"Required ticket: {m_TicketType.Name}");
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -189,7 +208,9 @@ namespace Server.Engines.MLQuests.Items
             var typeName = reader.ReadString();
 
             if (typeName != null)
+            {
                 m_TicketType = AssemblyHandler.FindFirstTypeForName(typeName);
+            }
 
             Message = TextDefinition.Deserialize(reader);
         }

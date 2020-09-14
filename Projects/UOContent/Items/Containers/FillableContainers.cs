@@ -44,13 +44,19 @@ namespace Server.Items
             set
             {
                 if (m_Content == value)
+                {
                     return;
+                }
 
                 m_Content = value;
 
                 for (var i = Items.Count - 1; i >= 0; --i)
+                {
                     if (i < Items.Count)
+                    {
                         Items[i].Delete();
+                    }
+                }
 
                 Respawn();
             }
@@ -71,12 +77,16 @@ namespace Server.Items
         public virtual void AcquireContent()
         {
             if (m_Content != null)
+            {
                 return;
+            }
 
             m_Content = FillableContent.Acquire(GetWorldLocation(), Map);
 
             if (m_Content != null)
+            {
                 Respawn();
+            }
         }
 
         public override void OnItemRemoved(Item item)
@@ -99,7 +109,10 @@ namespace Server.Items
         {
             var count = 0;
 
-            foreach (var item in Items) count += item.Amount;
+            foreach (var item in Items)
+            {
+                count += item.Amount;
+            }
 
             return count;
         }
@@ -136,7 +149,9 @@ namespace Server.Items
             }
 
             if (m_Content == null || Deleted)
+            {
                 return;
+            }
 
             GenerateContent();
 
@@ -154,9 +169,13 @@ namespace Server.Items
             if (IsTrappable && (m_Content.Level > 1 || Utility.Random(5) < 4))
             {
                 if (m_Content.Level > Utility.Random(5))
+                {
                     TrapType = TrapType.PoisonTrap;
+                }
                 else
+                {
                     TrapType = TrapType.ExplosionTrap;
+                }
 
                 TrapPower = m_Content.Level * Utility.RandomMinMax(10, 30);
                 TrapLevel = m_Content.Level;
@@ -176,7 +195,9 @@ namespace Server.Items
             var itemsCount = GetItemsCount();
 
             if (itemsCount > SpawnThreshold)
+            {
                 return 0;
+            }
 
             var maxSpawnCount = (1 + SpawnThreshold - itemsCount) * 2;
 
@@ -186,7 +207,9 @@ namespace Server.Items
         public virtual void GenerateContent()
         {
             if (m_Content == null || Deleted)
+            {
                 return;
+            }
 
             var toSpawn = GetSpawnCount();
 
@@ -195,7 +218,9 @@ namespace Server.Items
                 var item = m_Content.Construct();
 
                 if (item == null)
+                {
                     continue;
+                }
 
                 var list = Items;
 
@@ -204,11 +229,15 @@ namespace Server.Items
                     var subItem = list[j];
 
                     if (!(subItem is Container) && subItem.StackWith(null, item, false))
+                    {
                         break;
+                    }
                 }
 
                 if (!item.Deleted)
+                {
                     DropItem(item);
+                }
             }
         }
 
@@ -285,12 +314,16 @@ namespace Server.Items
         public override void AcquireContent()
         {
             if (m_Content != null)
+            {
                 return;
+            }
 
             m_Content = FillableContent.Library;
 
             if (m_Content != null)
+            {
                 Respawn();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -307,7 +340,9 @@ namespace Server.Items
             var version = reader.ReadEncodedInt();
 
             if (version == 0 && m_Content == null)
+            {
                 Timer.DelayCall(AcquireContent);
+            }
         }
     }
 
@@ -423,7 +458,9 @@ namespace Server.Items
             var version = reader.ReadEncodedInt();
 
             if (version == 0 && Weight == 3)
+            {
                 Weight = -1;
+            }
         }
     }
 
@@ -456,7 +493,9 @@ namespace Server.Items
             var version = reader.ReadEncodedInt();
 
             if (version == 0 && Weight == 25)
+            {
                 Weight = -1;
+            }
         }
     }
 
@@ -488,7 +527,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 25)
+            {
                 Weight = -1;
+            }
         }
     }
 
@@ -520,7 +561,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 25)
+            {
                 Weight = -1;
+            }
         }
     }
 
@@ -552,7 +595,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 2)
+            {
                 Weight = -1;
+            }
         }
     }
 
@@ -588,7 +633,9 @@ namespace Server.Items
             m_Types = new Type[count];
 
             for (var i = 0; i < m_Types.Length; ++i)
+            {
                 m_Types[i] = types[offset + i];
+            }
         }
 
         public Type[] Types => m_Types;
@@ -599,16 +646,22 @@ namespace Server.Items
             var item = Loot.Construct(m_Types);
 
             if (item is Key key)
+            {
                 key.ItemID = Utility.RandomList(
                     (int)KeyType.Copper,
                     (int)KeyType.Gold,
                     (int)KeyType.Iron,
                     (int)KeyType.Rusty
                 );
+            }
             else if (item is Arrow || item is Bolt)
+            {
                 item.Amount = Utility.RandomMinMax(2, 6);
+            }
             else if (item is Bandage || item is Lockpick)
+            {
                 item.Amount = Utility.RandomMinMax(1, 3);
+            }
 
             return item;
         }
@@ -1481,7 +1534,9 @@ namespace Server.Items
             m_Entries = entries;
 
             for (var i = 0; i < entries.Length; ++i)
+            {
                 m_Weight += entries[i].Weight;
+            }
         }
 
         public int Level { get; }
@@ -1499,7 +1554,9 @@ namespace Server.Items
                 var entry = m_Entries[i];
 
                 if (index < entry.Weight)
+                {
                     return entry.Construct();
+                }
 
                 index -= entry.Weight;
             }
@@ -1512,7 +1569,9 @@ namespace Server.Items
             var v = (int)type;
 
             if (v >= 0 && v < m_ContentTypes.Length)
+            {
                 return m_ContentTypes[v];
+            }
 
             return null;
         }
@@ -1520,7 +1579,9 @@ namespace Server.Items
         public static FillableContentType Lookup(FillableContent content)
         {
             if (content == null)
+            {
                 return FillableContentType.None;
+            }
 
             return (FillableContentType)Array.IndexOf(m_ContentTypes, content);
         }
@@ -1528,7 +1589,9 @@ namespace Server.Items
         public static FillableContent Acquire(Point3D loc, Map map)
         {
             if (map == null || map == Map.Internal)
+            {
                 return null;
+            }
 
             if (m_AcquireTable == null)
             {
@@ -1539,7 +1602,9 @@ namespace Server.Items
                     var fill = m_ContentTypes[i];
 
                     for (var j = 0; j < fill.Vendors.Length; ++j)
+                    {
                         m_AcquireTable[fill.Vendors[j]] = fill;
+                    }
                 }
             }
 
@@ -1550,7 +1615,9 @@ namespace Server.Items
             {
                 if (nearest != null && mob.GetDistanceToSqrt(loc) > nearest.GetDistanceToSqrt(loc) &&
                     !(nearest is Cobbler && mob is Provisioner))
+                {
                     continue;
+                }
 
                 if (m_AcquireTable.TryGetValue(mob.GetType(), out var check))
                 {

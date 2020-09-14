@@ -41,7 +41,9 @@ namespace Server.Misc
         private static Item MakeNewbie(Item item)
         {
             if (!Core.AOS)
+            {
                 item.LootType = LootType.Newbied;
+            }
 
             return item;
         }
@@ -70,7 +72,9 @@ namespace Server.Misc
             // The new AOS bankboxes don't have powerscrolls, they are automatically 'applied':
 
             for (var i = 0; i < PowerScroll.Skills.Count; ++i)
+            {
                 m.Skills[PowerScroll.Skills[i]].Cap = 120.0;
+            }
 
             m.StatCap = 250;
 
@@ -233,7 +237,9 @@ namespace Server.Misc
             PlaceItemIn(cont, 140, 150, new BagOfAllReagents(500));
 
             for (var i = 0; i < 9; ++i)
+            {
                 PlaceItemIn(cont, 45 + i * 10, 75, new RecallRune());
+            }
 
             PlaceItemIn(cont, 141, 74, new FireHorn());
 
@@ -350,7 +356,9 @@ namespace Server.Misc
             PlaceItemIn(cont, 93, 66, new PixieSwatter());
 
             for (var i = 0; i < 10; i++)
+            {
                 PlaceItemIn(cont, 117, 128, new MessageInABottle(Utility.RandomBool() ? Map.Trammel : Map.Felucca, 4));
+            }
 
             PlaceItemIn(bank, 18, 124, cont);
 
@@ -397,11 +405,13 @@ namespace Server.Misc
                 PlaceItemIn(cont, 49, 45, new Yumi());
 
                 for (var i = 0; i < cont.Items.Count; i++)
+                {
                     if (cont.Items[i] is BaseRanged bow)
                     {
                         bow.Attributes.WeaponSpeed = 35;
                         bow.Attributes.WeaponDamage = 35;
                     }
+                }
 
                 PlaceItemIn(bank, 108, 135, cont);
             }
@@ -429,7 +439,9 @@ namespace Server.Misc
             var bag = new Bag();
 
             for (var i = 0; i < 5; ++i)
+            {
                 bag.DropItem(new Moonstone(MoonstoneType.Felucca));
+            }
 
             // Felucca moonstones
             bank.DropItem(bag);
@@ -437,7 +449,9 @@ namespace Server.Misc
             bag = new Bag();
 
             for (var i = 0; i < 5; ++i)
+            {
                 bag.DropItem(new Moonstone(MoonstoneType.Trammel));
+            }
 
             // Trammel moonstones
             bank.DropItem(bag);
@@ -512,7 +526,9 @@ namespace Server.Misc
 
             // 5 blank recall runes
             for (var i = 0; i < 5; ++i)
+            {
                 bank.DropItem(MakeNewbie(new RecallRune()));
+            }
 
             AddPowerScrolls(bank);
         }
@@ -522,7 +538,9 @@ namespace Server.Misc
             var bag = new Bag();
 
             for (var i = 0; i < PowerScroll.Skills.Count; ++i)
+            {
                 bag.DropItem(new PowerScroll(PowerScroll.Skills[i], 120.0));
+            }
 
             bag.DropItem(new StatCapScroll(250));
 
@@ -534,8 +552,11 @@ namespace Server.Misc
             var hue = Utility.ClipDyedHue(shirtHue & 0x3FFF);
 
             if (m.Race == Race.Elf)
+            {
                 EquipItem(new ElvenShirt(hue), true);
+            }
             else
+            {
                 switch (Utility.Random(3))
                 {
                     case 0:
@@ -548,6 +569,7 @@ namespace Server.Misc
                         EquipItem(new Doublet(hue), true);
                         break;
                 }
+            }
         }
 
         private static void AddPants(Mobile m, int pantsHue)
@@ -561,6 +583,7 @@ namespace Server.Misc
             else
             {
                 if (m.Female)
+                {
                     switch (Utility.Random(2))
                     {
                         case 0:
@@ -570,7 +593,9 @@ namespace Server.Misc
                             EquipItem(new Kilt(hue), true);
                             break;
                     }
+                }
                 else
+                {
                     switch (Utility.Random(2))
                     {
                         case 0:
@@ -580,25 +605,36 @@ namespace Server.Misc
                             EquipItem(new ShortPants(hue), true);
                             break;
                     }
+                }
             }
         }
 
         private static void AddShoes(Mobile m)
         {
             if (m.Race == Race.Elf)
+            {
                 EquipItem(new ElvenBoots(), true);
+            }
             else
+            {
                 EquipItem(new Shoes(Utility.RandomYellowHue()), true);
+            }
         }
 
         private static Mobile CreateMobile(Account a)
         {
             if (a.Count >= a.Limit)
+            {
                 return null;
+            }
 
             for (var i = 0; i < a.Length; ++i)
+            {
                 if (a[i] == null)
+                {
                     return a[i] = new PlayerMobile();
+                }
+            }
 
             return null;
         }
@@ -606,12 +642,16 @@ namespace Server.Misc
         private static void EventSink_CharacterCreated(CharacterCreatedEventArgs args)
         {
             if (!VerifyProfession(args.Profession))
+            {
                 args.Profession = 0;
+            }
 
             var state = args.State;
 
             if (state == null)
+            {
                 return;
+            }
 
             var newChar = CreateMobile(args.Account as Account);
 
@@ -630,9 +670,13 @@ namespace Server.Misc
             // newChar.Body = newChar.Female ? 0x191 : 0x190;
 
             if (Core.Expansion >= args.Race.RequiredExpansion)
+            {
                 newChar.Race = args.Race; // Sets body
+            }
             else
+            {
                 newChar.Race = Race.DefaultRace;
+            }
 
             // newChar.Hue = Utility.ClipSkinHue( args.Hue & 0x3FFF ) | 0x8000;
             newChar.Hue = newChar.Race.ClipSkinHue(args.Hue & 0x3FFF) | 0x8000;
@@ -646,7 +690,9 @@ namespace Server.Misc
                 pm.Profession = args.Profession;
 
                 if (pm.AccessLevel == AccessLevel.Player && ((Account)pm.Account).Young)
+                {
                     young = pm.Young = true;
+                }
             }
 
             SetName(newChar, args.Name);
@@ -678,7 +724,9 @@ namespace Server.Misc
             }
 
             if (TestCenter.Enabled)
+            {
                 FillBankbox(newChar);
+            }
 
             if (young)
             {
@@ -701,20 +749,34 @@ namespace Server.Misc
         public static bool VerifyProfession(int profession)
         {
             if (profession < 0)
+            {
                 return false;
+            }
+
             if (profession < 4)
+            {
                 return true;
+            }
+
             if (Core.AOS && profession < 6)
+            {
                 return true;
+            }
+
             if (Core.SE && profession < 8)
+            {
                 return true;
+            }
 
             return false;
         }
 
         private static CityInfo GetStartLocation(CharacterCreatedEventArgs args, bool isYoung)
         {
-            if (Core.ML) return m_NewHavenInfo; // We don't get the client Version until AFTER Character creation
+            if (Core.ML)
+            {
+                return m_NewHavenInfo; // We don't get the client Version until AFTER Character creation
+            }
 
             var useHaven = isYoung;
 
@@ -726,7 +788,9 @@ namespace Server.Misc
                 case 4: // Necro
                     {
                         if ((flags & ClientFlags.Malas) != 0)
+                        {
                             return new CityInfo("Umbra", "Mardoth's Tower", 2114, 1301, -50, Map.Malas);
+                        }
 
                         useHaven = true;
 
@@ -749,7 +813,9 @@ namespace Server.Misc
                 case 6: // Samurai
                     {
                         if ((flags & ClientFlags.Tokuno) != 0)
+                        {
                             return new CityInfo("Samurai DE", "Haoti's Grounds", 368, 780, -1, Map.Malas);
+                        }
 
                         useHaven = true;
 
@@ -768,7 +834,9 @@ namespace Server.Misc
                 case 7: // Ninja
                     {
                         if ((flags & ClientFlags.Tokuno) != 0)
+                        {
                             return new CityInfo("Ninja DE", "Enimo's Residence", 414, 823, -1, Map.Malas);
+                        }
 
                         useHaven = true;
 
@@ -786,7 +854,9 @@ namespace Server.Misc
             }
 
             if (useHaven)
+            {
                 return m_NewHavenInfo;
+            }
 
             return args.City;
         }
@@ -800,18 +870,26 @@ namespace Server.Misc
             var vInt = intel - 10;
 
             if (vStr < 0)
+            {
                 vStr = 0;
+            }
 
             if (vDex < 0)
+            {
                 vDex = 0;
+            }
 
             if (vInt < 0)
+            {
                 vInt = 0;
+            }
 
             var total = vStr + vDex + vInt;
 
             if (total == 0 || total == vMax)
+            {
                 return;
+            }
 
             var scalar = vMax / (double)total;
 
@@ -854,7 +932,9 @@ namespace Server.Misc
             name = name.Trim();
 
             if (!NameVerification.Validate(name, 2, 16, true, false, true, 1, NameVerification.SpaceDashPeriodQuote))
+            {
                 name = "Generic Player";
+            }
 
             m.Name = name;
         }
@@ -866,13 +946,19 @@ namespace Server.Misc
             for (var i = 0; i < skills.Length; ++i)
             {
                 if (skills[i].Value < 0 || skills[i].Value > 50)
+                {
                     return false;
+                }
 
                 total += skills[i].Value;
 
                 for (var j = i + 1; j < skills.Length; ++j)
+                {
                     if (skills[j].Value > 0 && skills[j].Name == skills[i].Name)
+                    {
                         return false;
+                    }
+                }
             }
 
             return total == 100 || total == 120;
@@ -968,7 +1054,9 @@ namespace Server.Misc
                 default:
                     {
                         if (!ValidSkills(skills))
+                        {
                             return;
+                        }
 
                         break;
                     }
@@ -982,9 +1070,14 @@ namespace Server.Misc
                 case 1: // Warrior
                     {
                         if (elf)
+                        {
                             EquipItem(new LeafChest());
+                        }
                         else
+                        {
                             EquipItem(new LeatherChest());
+                        }
+
                         break;
                     }
                 case 4: // Necromancer
@@ -992,8 +1085,12 @@ namespace Server.Misc
                         Container regs = new BagOfNecroReagents();
 
                         if (!Core.AOS)
+                        {
                             foreach (var item in regs.Items)
+                            {
                                 item.LootType = LootType.Newbied;
+                            }
+                        }
 
                         PackItem(regs);
 
@@ -1083,9 +1180,13 @@ namespace Server.Misc
                         EquipItem(new Bokuto());
 
                         if (elf)
+                        {
                             EquipItem(new RavenHelm());
+                        }
                         else
+                        {
                             EquipItem(new LeatherJingasa());
+                        }
 
                         PackItem(new Scissors());
                         PackItem(new Bandage(50));
@@ -1109,9 +1210,13 @@ namespace Server.Misc
                         EquipItem(new NinjaTabi(0x2C3));
 
                         if (elf)
+                        {
                             EquipItem(new AssassinSpike());
+                        }
                         else
+                        {
                             EquipItem(new Tekagi());
+                        }
 
                         PackItem(new SmokeBomb());
 
@@ -1136,7 +1241,9 @@ namespace Server.Misc
                         skill.BaseFixedPoint = snv.Value * 10;
 
                         if (addSkillItems)
+                        {
                             AddSkillItems(snv.Name, m);
+                        }
                     }
                 }
             }
@@ -1145,30 +1252,44 @@ namespace Server.Misc
         private static void EquipItem(Item item, bool mustEquip = false)
         {
             if (!Core.AOS)
+            {
                 item.LootType = LootType.Newbied;
+            }
 
             if (m_Mobile?.EquipItem(item) == true)
+            {
                 return;
+            }
 
             var pack = m_Mobile?.Backpack;
 
             if (!mustEquip && pack != null)
+            {
                 pack.DropItem(item);
+            }
             else
+            {
                 item.Delete();
+            }
         }
 
         private static void PackItem(Item item)
         {
             if (!Core.AOS)
+            {
                 item.LootType = LootType.Newbied;
+            }
 
             var pack = m_Mobile.Backpack;
 
             if (pack != null)
+            {
                 pack.DropItem(item);
+            }
             else
+            {
                 item.Delete();
+            }
         }
 
         private static void PackInstrument()
@@ -1298,9 +1419,13 @@ namespace Server.Misc
                         if (elf)
                         {
                             if (m.Female)
+                            {
                                 EquipItem(new FemaleElvenRobe(hue));
+                            }
                             else
+                            {
                                 EquipItem(new MaleElvenRobe(hue));
+                            }
                         }
                         else
                         {
@@ -1318,9 +1443,13 @@ namespace Server.Misc
                         if (elf)
                         {
                             if (m.Female)
+                            {
                                 EquipItem(new FemaleElvenRobe(hue));
+                            }
                             else
+                            {
                                 EquipItem(new MaleElvenRobe(hue));
+                            }
                         }
                         else
                         {
@@ -1338,9 +1467,13 @@ namespace Server.Misc
                             EquipItem(new WildStaff());
 
                             if (m.Female)
+                            {
                                 EquipItem(new FemaleElvenRobe(hue));
+                            }
                             else
+                            {
                                 EquipItem(new MaleElvenRobe(hue));
+                            }
                         }
                         else
                         {
@@ -1355,15 +1488,20 @@ namespace Server.Misc
                         PackItem(new Arrow(25));
 
                         if (elf)
+                        {
                             EquipItem(new ElvenCompositeLongbow());
+                        }
                         else
+                        {
                             EquipItem(new Bow());
+                        }
 
                         break;
                     }
                 case SkillName.ArmsLore:
                     {
                         if (elf)
+                        {
                             switch (Utility.Random(3))
                             {
                                 case 0:
@@ -1376,7 +1514,9 @@ namespace Server.Misc
                                     EquipItem(new DiamondMace());
                                     break;
                             }
+                        }
                         else
+                        {
                             switch (Utility.Random(3))
                             {
                                 case 0:
@@ -1389,15 +1529,21 @@ namespace Server.Misc
                                     EquipItem(new Club());
                                     break;
                             }
+                        }
 
                         break;
                     }
                 case SkillName.Begging:
                     {
                         if (elf)
+                        {
                             EquipItem(new WildStaff());
+                        }
                         else
+                        {
                             EquipItem(new GnarledStaff());
+                        }
+
                         break;
                     }
                 case SkillName.Blacksmith:
@@ -1458,7 +1604,9 @@ namespace Server.Misc
                 case SkillName.Chivalry:
                     {
                         if (Core.ML)
+                        {
                             PackItem(new BookOfChivalry());
+                        }
 
                         break;
                     }
@@ -1475,9 +1623,13 @@ namespace Server.Misc
                 case SkillName.Fencing:
                     {
                         if (elf)
+                        {
                             EquipItem(new Leafblade());
+                        }
                         else
+                        {
                             EquipItem(new Kryss());
+                        }
 
                         break;
                     }
@@ -1509,9 +1661,13 @@ namespace Server.Misc
                 case SkillName.Herding:
                     {
                         if (elf)
+                        {
                             EquipItem(new WildStaff());
+                        }
                         else
+                        {
                             EquipItem(new ShepherdsCrook());
+                        }
 
                         break;
                     }
@@ -1529,9 +1685,14 @@ namespace Server.Misc
                 case SkillName.ItemID:
                     {
                         if (elf)
+                        {
                             EquipItem(new WildStaff());
+                        }
                         else
+                        {
                             EquipItem(new GnarledStaff());
+                        }
+
                         break;
                     }
                 case SkillName.Lockpicking:
@@ -1547,9 +1708,13 @@ namespace Server.Misc
                 case SkillName.Macing:
                     {
                         if (elf)
+                        {
                             EquipItem(new DiamondMace());
+                        }
                         else
+                        {
                             EquipItem(new Club());
+                        }
 
                         break;
                     }
@@ -1558,8 +1723,12 @@ namespace Server.Misc
                         var regs = new BagOfReagents(30);
 
                         if (!Core.AOS)
+                        {
                             foreach (var item in regs.Items)
+                            {
                                 item.LootType = LootType.Newbied;
+                            }
+                        }
 
                         PackItem(regs);
 
@@ -1580,9 +1749,13 @@ namespace Server.Misc
                             EquipItem(new Circlet());
 
                             if (m.Female)
+                            {
                                 EquipItem(new FemaleElvenRobe(Utility.RandomBlueHue()));
+                            }
                             else
+                            {
                                 EquipItem(new MaleElvenRobe(Utility.RandomBlueHue()));
+                            }
                         }
                         else
                         {
@@ -1661,18 +1834,26 @@ namespace Server.Misc
                 case SkillName.Swords:
                     {
                         if (elf)
+                        {
                             EquipItem(new RuneBlade());
+                        }
                         else
+                        {
                             EquipItem(new Katana());
+                        }
 
                         break;
                     }
                 case SkillName.Tactics:
                     {
                         if (elf)
+                        {
                             EquipItem(new RuneBlade());
+                        }
                         else
+                        {
                             EquipItem(new Katana());
+                        }
 
                         break;
                     }
@@ -1691,9 +1872,13 @@ namespace Server.Misc
                         var hue = Utility.RandomYellowHue();
 
                         if (elf)
+                        {
                             EquipItem(new ElvenBoots(hue));
+                        }
                         else
+                        {
                             EquipItem(new Boots(hue));
+                        }
 
                         EquipItem(new SkinningKnife());
                         break;
@@ -1707,9 +1892,13 @@ namespace Server.Misc
                 case SkillName.Wrestling:
                     {
                         if (elf)
+                        {
                             EquipItem(new LeafGloves());
+                        }
                         else
+                        {
                             EquipItem(new LeatherGloves());
+                        }
 
                         break;
                     }

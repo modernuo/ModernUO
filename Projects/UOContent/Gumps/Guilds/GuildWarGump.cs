@@ -34,14 +34,18 @@ namespace Server.Gumps
             var enemies = guild.Enemies;
 
             if (enemies.Count == 0)
+            {
                 AddHtmlLocalized(20, 65, 400, 20, 1013033); // No current wars
+            }
             else
+            {
                 for (var i = 0; i < enemies.Count; ++i)
                 {
                     var g = enemies[i];
 
                     AddHtml(20, 65 + i * 20, 300, 20, g.Name);
                 }
+            }
 
             AddPage(2);
 
@@ -56,14 +60,18 @@ namespace Server.Gumps
             var declared = guild.WarDeclarations;
 
             if (declared.Count == 0)
+            {
                 AddHtmlLocalized(20, 65, 400, 20, 1018012); // No current invitations received for war.
+            }
             else
+            {
                 for (var i = 0; i < declared.Count; ++i)
                 {
                     var g = declared[i];
 
                     AddHtml(20, 65 + i * 20, 300, 20, g.Name);
                 }
+            }
 
             AddPage(3);
 
@@ -75,20 +83,26 @@ namespace Server.Gumps
             var invites = guild.WarInvitations;
 
             if (invites.Count == 0)
+            {
                 AddHtmlLocalized(20, 65, 400, 20, 1013055); // No current war declarations
+            }
             else
+            {
                 for (var i = 0; i < invites.Count; ++i)
                 {
                     var g = invites[i];
 
                     AddHtml(20, 65 + i * 20, 300, 20, g.Name);
                 }
+            }
         }
 
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (GuildGump.BadMember(m_Mobile, m_Guild))
+            {
                 return;
+            }
 
             if (info.ButtonID == 1)
             {

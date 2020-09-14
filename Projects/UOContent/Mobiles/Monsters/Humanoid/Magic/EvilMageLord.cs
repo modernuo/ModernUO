@@ -42,9 +42,13 @@ namespace Server.Mobiles
             VirtualArmor = 16;
             PackReg(23);
             if (Utility.RandomBool())
+            {
                 PackItem(new Shoes());
+            }
             else
+            {
                 PackItem(new Sandals());
+            }
         }
 
         public EvilMageLord(Serial serial) : base(serial)

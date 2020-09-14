@@ -24,12 +24,16 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
             if (!(attacker.Weapon is BaseWeapon weapon))
+            {
                 return;
+            }
 
             var p = weapon.Poison;
 
@@ -42,13 +46,18 @@ namespace Server.Items
             }
 
             if (!CheckMana(attacker, true))
+            {
                 return;
+            }
 
             --weapon.PoisonCharges;
 
             // Infectious strike special move now uses poisoning skill to help determine potency
             var maxLevel = Math.Max(attacker.Skills.Poisoning.Fixed / 200, 0);
-            if (p.Level > maxLevel) p = Poison.GetPoison(maxLevel);
+            if (p.Level > maxLevel)
+            {
+                p = Poison.GetPoison(maxLevel);
+            }
 
             if (attacker.Skills.Poisoning.Value / 100.0 > Utility.RandomDouble())
             {

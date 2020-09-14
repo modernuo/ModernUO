@@ -29,6 +29,7 @@ namespace Server.Items
         public override bool OnMoveOver(Mobile m)
         {
             if (m is PlayerMobile && m.Alive && m.AccessLevel == AccessLevel.Player)
+            {
                 switch (Utility.Random(3))
                 {
                     case 0:
@@ -41,6 +42,7 @@ namespace Server.Items
                         RunSequence(m, 1095162, true);
                         break; // You lose your footing and ungracefully splatter on the ground.
                 }
+            }
 
             return base.OnMoveOver(m);
         }
@@ -61,12 +63,16 @@ namespace Server.Items
             if (message == 1095162)
             {
                 if (m.Mounted)
+                {
                     m.Mount.Rider = null;
+                }
 
                 var p = new Point3D(Location);
 
                 if (SpellHelper.FindValidSpawnLocation(Map, ref p, true))
+                {
                     Timer.DelayCall(TimeSpan.FromSeconds(0), m.MoveToWorld, p, m.Map);
+                }
 
                 action = 21 + Utility.Random(2);
                 sound = m.Female ? 0x317 : 0x426;
@@ -78,13 +84,17 @@ namespace Server.Items
             }
 
             if (action > 0)
+            {
                 Timer.DelayCall(TimeSpan.FromSeconds(0.4), BeginFall_Callback, m, action, sound);
+            }
         }
 
         private static void BeginFall_Callback(Mobile m, int action, int sound)
         {
             if (!m.Mounted)
+            {
                 m.Animate(action, 1, 1, false, true, 0);
+            }
 
             m.PlaySound(sound);
         }

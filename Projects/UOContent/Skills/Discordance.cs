@@ -35,7 +35,9 @@ namespace Server.SkillHandlers
         public static bool GetEffect(Mobile targ, ref int effect)
         {
             if (!m_Table.TryGetValue(targ, out var info))
+            {
                 return false;
+            }
 
             effect = info.m_Effect;
             return true;
@@ -59,7 +61,9 @@ namespace Server.SkillHandlers
                 var maxRange = BaseInstrument.GetBardRange(from, SkillName.Discordance);
 
                 if (from.Map != targ.Map || range > maxRange)
+                {
                     ends = true;
+                }
             }
 
             if (ends && info.m_Ending && info.m_EndTime < DateTime.UtcNow)
@@ -115,11 +119,17 @@ namespace Server.SkillHandlers
                     var mod = m_Mods[i];
 
                     if (mod is ResistanceMod resistanceMod)
+                    {
                         m_Creature.AddResistanceMod(resistanceMod);
+                    }
                     else if (mod is StatMod statMod)
+                    {
                         m_Creature.AddStatMod(statMod);
+                    }
                     else if (mod is SkillMod skillMod)
+                    {
                         m_Creature.AddSkillMod(skillMod);
+                    }
                 }
             }
 
@@ -130,11 +140,17 @@ namespace Server.SkillHandlers
                     var mod = m_Mods[i];
 
                     if (mod is ResistanceMod resistanceMod)
+                    {
                         m_Creature.RemoveResistanceMod(resistanceMod);
+                    }
                     else if (mod is StatMod statMod)
+                    {
                         m_Creature.RemoveStatMod(statMod.Name);
+                    }
                     else if (mod is SkillMod skillMod)
+                    {
                         m_Creature.RemoveSkillMod(skillMod);
+                    }
                 }
             }
         }
@@ -179,7 +195,9 @@ namespace Server.SkillHandlers
                         var music = from.Skills.Musicianship.Value;
 
                         if (music > 100.0)
+                        {
                             diff -= (music - 100.0) * 0.5;
+                        }
 
                         if (!BaseInstrument.CheckMusicianship(from))
                         {
@@ -202,12 +220,18 @@ namespace Server.SkillHandlers
                                 var discord = from.Skills.Discordance.Value;
 
                                 if (discord > 100.0)
+                                {
                                     effect = -20 + (int)((discord - 100.0) / -2.5);
+                                }
                                 else
+                                {
                                     effect = (int)(discord / -5.0);
+                                }
 
                                 if (Core.SE && BaseInstrument.GetBaseDifficulty(targ) >= 160.0)
+                                {
                                     effect /= 2;
+                                }
 
                                 scalar = effect * 0.01;
 
@@ -218,8 +242,12 @@ namespace Server.SkillHandlers
                                 mods.Add(new ResistanceMod(ResistanceType.Energy, effect));
 
                                 for (var i = 0; i < targ.Skills.Length; ++i)
+                                {
                                     if (targ.Skills[i].Value > 0)
+                                    {
                                         mods.Add(new DefaultSkillMod((SkillName)i, true, targ.Skills[i].Value * scalar));
+                                    }
+                                }
                             }
                             else
                             {
@@ -252,8 +280,12 @@ namespace Server.SkillHandlers
                                 );
 
                                 for (var i = 0; i < targ.Skills.Length; ++i)
+                                {
                                     if (targ.Skills[i].Value > 0)
+                                    {
                                         mods.Add(new DefaultSkillMod((SkillName)i, true, targ.Skills[i].Value * scalar));
+                                    }
+                                }
                             }
 
                             var info = new DiscordanceInfo(from, targ, Math.Abs(effect), mods);

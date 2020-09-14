@@ -21,7 +21,10 @@ namespace Server
 
         public override bool Use(Mobile user)
         {
-            if (!Movable) return false;
+            if (!Movable)
+            {
+                return false;
+            }
 
             user.BeginTarget(
                 12,
@@ -29,7 +32,10 @@ namespace Server
                 TargetFlags.None,
                 (from, obj, stormsEye) =>
                 {
-                    if (!stormsEye.Movable || stormsEye.Deleted || !(obj is IPoint3D pt)) return;
+                    if (!stormsEye.Movable || stormsEye.Deleted || !(obj is IPoint3D pt))
+                    {
+                        return;
+                    }
 
                     SpellHelper.GetSurfaceTop(ref pt);
 
@@ -37,7 +43,9 @@ namespace Server
                     var facet = from.Map;
 
                     if (facet?.CanFit(pt.X, pt.Y, pt.Z, 16, false, false) != true)
+                    {
                         return;
+                    }
 
                     stormsEye.Movable = false;
 
@@ -95,9 +103,13 @@ namespace Server
                 var damage = mob.Hits * 6 / 10;
 
                 if (!mob.Player && damage < 10)
+                {
                     damage = 10;
+                }
                 else if (damage > 75)
+                {
                     damage = 75;
+                }
 
                 Effects.SendMovingEffect(
                     new Entity(Serial.Zero, new Point3D(origin, origin.Z + 4), facet),

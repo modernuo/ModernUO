@@ -41,7 +41,9 @@ namespace Server.Items
         public bool ValidatePlacement(Mobile from, Point3D loc)
         {
             if (from.AccessLevel >= AccessLevel.GameMaster)
+            {
                 return true;
+            }
 
             if (!from.InRange(GetWorldLocation(), 1))
             {
@@ -60,7 +62,9 @@ namespace Server.Items
             var map = from.Map;
 
             if (map == null)
+            {
                 return false;
+            }
 
             var house = BaseHouse.FindHouseAt(loc, map, 20);
 
@@ -87,7 +91,9 @@ namespace Server.Items
         public void Placement_OnTarget(Mobile from, object targeted, HolidayTreeType type)
         {
             if (!(targeted is IPoint3D p))
+            {
                 return;
+            }
 
             var loc = new Point3D(p);
 
@@ -96,11 +102,15 @@ namespace Server.Items
                  * A side affect is that you can only place on floors (due to the CanFit call).
                  * That functionality may be desired. And so, it's included in this script.
                  */
+            {
                 loc.Z -= TileData.ItemTable[target.ItemID]
                     .CalcHeight;
+            }
 
             if (ValidatePlacement(from, loc))
-                EndPlace(from, type, loc);
+            {
+                EndPlace(@from, type, loc);
+            }
         }
 
         public void EndPlace(Mobile from, HolidayTreeType type, Point3D loc)
@@ -142,7 +152,9 @@ namespace Server.Items
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_Deed.Deleted)
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {

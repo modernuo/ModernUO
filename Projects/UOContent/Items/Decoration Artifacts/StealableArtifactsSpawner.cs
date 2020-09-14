@@ -20,7 +20,9 @@ namespace Server.Items
             m_Table = new Dictionary<Item, StealableInstance>(Entries.Length);
 
             for (var i = 0; i < Entries.Length; i++)
+            {
                 m_Artifacts[i] = new StealableInstance(Entries[i]);
+            }
 
             m_RespawnTimer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMinutes(15.0), CheckRespawn);
         }
@@ -144,7 +146,9 @@ namespace Server.Items
                     m_TypesOfEntries = new Type[Entries.Length];
 
                     for (var i = 0; i < Entries.Length; i++)
+                    {
                         m_TypesOfEntries[i] = Entries[i].Type;
+                    }
                 }
 
                 return m_TypesOfEntries;
@@ -158,7 +162,9 @@ namespace Server.Items
         private static int GetLampPostHue()
         {
             if (Utility.RandomDouble() < 0.9)
+            {
                 return 0;
+            }
 
             return Utility.RandomList(0x455, 0x47E, 0x482, 0x486, 0x48F, 0x4F2, 0x58C, 0x66C);
         }
@@ -176,9 +182,13 @@ namespace Server.Items
             var from = args.Mobile;
 
             if (Create())
-                from.SendMessage("Stealable artifacts spawner generated.");
+            {
+                @from.SendMessage("Stealable artifacts spawner generated.");
+            }
             else
-                from.SendMessage("Stealable artifacts spawner already present.");
+            {
+                @from.SendMessage("Stealable artifacts spawner already present.");
+            }
         }
 
         [Usage("RemoveStealArties")]
@@ -188,15 +198,21 @@ namespace Server.Items
             var from = args.Mobile;
 
             if (Remove())
-                from.SendMessage("Stealable artifacts spawner removed.");
+            {
+                @from.SendMessage("Stealable artifacts spawner removed.");
+            }
             else
-                from.SendMessage("Stealable artifacts spawner not present.");
+            {
+                @from.SendMessage("Stealable artifacts spawner not present.");
+            }
         }
 
         public static bool Create()
         {
             if (Instance?.Deleted == false)
+            {
                 return false;
+            }
 
             Instance = new StealableArtifactsSpawner();
             return true;
@@ -205,7 +221,9 @@ namespace Server.Items
         public static bool Remove()
         {
             if (Instance == null)
+            {
                 return false;
+            }
 
             Instance.Delete();
             Instance = null;
@@ -215,7 +233,9 @@ namespace Server.Items
         public static StealableInstance GetStealableInstance(Item item)
         {
             if (Instance == null)
+            {
                 return null;
+            }
 
             Instance.m_Table.TryGetValue(item, out var value);
             return value;
@@ -231,7 +251,10 @@ namespace Server.Items
                 m_RespawnTimer = null;
             }
 
-            foreach (var si in m_Artifacts) si.Item?.Delete();
+            foreach (var si in m_Artifacts)
+            {
+                si.Item?.Delete();
+            }
 
             Instance = null;
         }
@@ -239,7 +262,9 @@ namespace Server.Items
         public void CheckRespawn()
         {
             foreach (var si in m_Artifacts)
+            {
                 si.CheckRespawn();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -281,11 +306,16 @@ namespace Server.Items
                     m_Artifacts[i] = si;
 
                     if (si.Item != null)
+                    {
                         m_Table[si.Item] = si;
+                    }
                 }
             }
 
-            for (var i = length; i < Entries.Length; i++) m_Artifacts[i] = new StealableInstance(Entries[i]);
+            for (var i = length; i < Entries.Length; i++)
+            {
+                m_Artifacts[i] = new StealableInstance(Entries[i]);
+            }
 
             m_RespawnTimer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMinutes(15.0), CheckRespawn);
         }
@@ -319,7 +349,9 @@ namespace Server.Items
                 var item = (Item)ActivatorUtil.CreateInstance(Type);
 
                 if (Hue > 0)
+                {
                     item.Hue = Hue;
+                }
 
                 item.Movable = false;
                 item.MoveToWorld(Location, Map);
@@ -359,10 +391,14 @@ namespace Server.Items
                     if (Instance != null)
                     {
                         if (m_Item != null)
+                        {
                             Instance.m_Table.Remove(m_Item);
+                        }
 
                         if (value != null)
+                        {
                             Instance.m_Table[value] = this;
+                        }
                     }
 
                     m_Item = value;
@@ -374,10 +410,14 @@ namespace Server.Items
             public void CheckRespawn()
             {
                 if (Item != null && (Item.Deleted || Item.Movable || Item.Parent != null))
+                {
                     Item = null;
+                }
 
                 if (Item == null && DateTime.UtcNow >= NextRespawn)
+                {
                     Item = Entry.CreateInstance();
+                }
             }
         }
     }

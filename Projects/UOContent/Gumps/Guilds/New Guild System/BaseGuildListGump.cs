@@ -42,8 +42,12 @@ namespace Server.Guilds
             {
                 m_List = new List<T>();
                 for (var i = 0; i < list.Count; i++)
+                {
                     if (!IsFiltered(list[i], m_Filter))
+                    {
                         m_List.Add(list[i]);
+                    }
+                }
             }
             else
             {
@@ -76,25 +80,41 @@ namespace Server.Guilds
             }
 
             if (m_StartNumber <= 0)
+            {
                 AddButton(65, 80, 0x15E3, 0x15E7, 0, GumpButtonType.Page);
+            }
             else
+            {
                 AddButton(65, 80, 0x15E3, 0x15E7, 6); // Back
+            }
 
             if (m_StartNumber + itemsPerPage > m_List.Count)
+            {
                 AddButton(95, 80, 0x15E1, 0x15E5, 0, GumpButtonType.Page);
+            }
             else
+            {
                 AddButton(95, 80, 0x15E1, 0x15E5, 7); // Forward
+            }
 
             var itemNumber = 0;
 
             if (m_Ascending)
+            {
                 for (var i = m_StartNumber; i < m_StartNumber + itemsPerPage && i < m_List.Count; i++)
+                {
                     DrawEntry(m_List[i], i, itemNumber++);
+                }
+            }
             else // descending, go from bottom of list to the top
+            {
                 for (var i = m_List.Count - 1 - m_StartNumber;
                     i >= 0 && i >= m_List.Count - itemsPerPage - m_StartNumber;
                     i--)
+                {
                     DrawEntry(m_List[i], i, itemNumber++);
+                }
+            }
 
             DrawEndingEntry(itemNumber);
         }
@@ -128,9 +148,13 @@ namespace Server.Guilds
             }
 
             if (HasRelationship(o))
+            {
                 AddButton(40, 143 + itemNumber * 28, 0x8AF, 0x8AF, 200 + index); // Info Button
+            }
             else
+            {
                 AddButton(40, 143 + itemNumber * 28, 0x4B9, 0x4BA, 200 + index); // Info Button
+            }
         }
 
         protected abstract TextDefinition[] GetValuesFor(T o, int aryLength);
@@ -141,7 +165,9 @@ namespace Server.Guilds
             base.OnResponse(sender, info);
 
             if (!(sender.Mobile is PlayerMobile pm) || !IsMember(pm, guild))
+            {
                 return;
+            }
 
             var id = info.ButtonID;
 
@@ -174,7 +200,9 @@ namespace Server.Guilds
                 var comparer = m_Fields[id - 100].Comparer;
 
                 if (m_Comparer.GetType() == comparer.GetType())
+                {
                     m_Ascending = !m_Ascending;
+                }
 
                 pm.SendGump(GetResentGump(player, guild, comparer, m_Ascending, m_Filter, 0));
             }

@@ -24,9 +24,14 @@ namespace Server.Engines.Doom
         public override void OnDoubleClick(Mobile m)
         {
             if (!m.InRange(GetWorldLocation(), 3))
+            {
                 return;
+            }
+
             if (m_Controller.Enabled)
+            {
                 return;
+            }
 
             if (m_Wanderer?.Alive != true)
             {
@@ -45,7 +50,9 @@ namespace Server.Engines.Doom
         public override void OnAfterDelete()
         {
             if (m_Controller?.Deleted == false)
+            {
                 m_Controller.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -81,7 +88,9 @@ namespace Server.Engines.Doom
         public override void OnAfterDelete()
         {
             if (m_Controller?.Deleted == false)
+            {
                 m_Controller.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -135,7 +144,9 @@ namespace Server.Engines.Doom
         public override void OnAfterDelete()
         {
             if (m_Controller?.Deleted == false)
+            {
                 m_Controller.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

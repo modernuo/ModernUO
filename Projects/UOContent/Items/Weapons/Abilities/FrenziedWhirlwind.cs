@@ -32,14 +32,18 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker)) // Mana check after check that there are targets
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
             var map = attacker.Map;
 
             if (!(map != null && attacker.Weapon is BaseWeapon weapon))
+            {
                 return;
+            }
 
             var targets = attacker.GetMobilesInRange(1)
                 .Where(
@@ -52,7 +56,9 @@ namespace Server.Items
                 .ToList();
 
             if (targets.Count == 0 || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             attacker.FixedEffect(0x3728, 10, 15);
             attacker.PlaySound(0x2A1);
@@ -125,7 +131,9 @@ namespace Server.Items
                 m_DamageToDo += DamagePerTick;
 
                 if (m_DamageRemaining <= 0 && m_DamageToDo < 1)
+                {
                     m_DamageToDo = 1.0; // Confirm this 'round up' at the end
+                }
 
                 var damage = (int)m_DamageToDo;
 

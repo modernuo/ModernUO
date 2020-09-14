@@ -79,15 +79,22 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (BaseSoundID <= 0)
+            {
                 BaseSoundID = 0xA8;
+            }
 
             if (version < 1)
+            {
                 for (var i = 0; i < Skills.Length; ++i)
                 {
                     Skills[i].Cap = Math.Max(100.0, Skills[i].Cap * 0.9);
 
-                    if (Skills[i].Base > Skills[i].Cap) Skills[i].Base = Skills[i].Cap;
+                    if (Skills[i].Base > Skills[i].Cap)
+                    {
+                        Skills[i].Base = Skills[i].Cap;
+                    }
                 }
+            }
         }
     }
 }

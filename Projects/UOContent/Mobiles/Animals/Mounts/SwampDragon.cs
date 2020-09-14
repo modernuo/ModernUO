@@ -130,7 +130,9 @@ namespace Server.Mobiles
                 m_BardingResource = value;
 
                 if (m_HasBarding)
+                {
                     Hue = CraftResources.GetHue(value);
+                }
 
                 InvalidateProperties();
             }
@@ -165,7 +167,9 @@ namespace Server.Mobiles
             base.GetProperties(list);
 
             if (m_HasBarding && m_BardingExceptional && m_BardingCrafter != null)
+            {
                 list.Add(1060853, m_BardingCrafter.Name); // armor exceptionally crafted by ~1_val~
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -201,10 +205,14 @@ namespace Server.Mobiles
             }
 
             if (Hue == 0 && !m_HasBarding)
+            {
                 Hue = 0x851;
+            }
 
             if (BaseSoundID == -1)
+            {
                 BaseSoundID = 0x16A;
+            }
         }
     }
 }

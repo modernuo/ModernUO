@@ -28,7 +28,9 @@ namespace Server.Spells.Chivalry
             var mana = ScaleMana(RequiredMana);
 
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (Caster.TithingPoints < RequiredTithing)
             {
@@ -57,7 +59,9 @@ namespace Server.Spells.Chivalry
             var requiredTithing = RequiredTithing;
 
             if (AosAttributes.GetValue(Caster, AosAttribute.LowerRegCost) > Utility.Random(100))
+            {
                 requiredTithing = 0;
+            }
 
             var mana = ScaleMana(RequiredMana);
 
@@ -83,7 +87,9 @@ namespace Server.Spells.Chivalry
             Caster.TithingPoints -= requiredTithing;
 
             if (!base.CheckFizzle())
+            {
                 return false;
+            }
 
             Caster.Mana -= mana;
 
@@ -111,7 +117,9 @@ namespace Server.Spells.Chivalry
             base.OnDisturb(type, message);
 
             if (message)
+            {
                 Caster.PlaySound(0x1D6);
+            }
         }
 
         public override void OnBeginCast()
@@ -139,7 +147,9 @@ namespace Server.Spells.Chivalry
         public static int ComputePowerValue(Mobile from, int div)
         {
             if (from == null)
+            {
                 return 0;
+            }
 
             var v = (int)Math.Sqrt(from.Karma + 20000 + from.Skills.Chivalry.Fixed * 10);
 

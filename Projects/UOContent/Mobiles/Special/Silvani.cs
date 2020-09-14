@@ -61,7 +61,9 @@ namespace Server.Mobiles
             var map = Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             var newPixies = Utility.RandomMinMax(3, 6);
 
@@ -77,7 +79,9 @@ namespace Server.Mobiles
         public override void AlterDamageScalarFrom(Mobile caster, ref double scalar)
         {
             if (Utility.RandomDouble() <= 0.1)
+            {
                 SpawnPixies(caster);
+            }
         }
 
         public override void OnGaveMeleeAttack(Mobile defender)
@@ -94,7 +98,9 @@ namespace Server.Mobiles
             base.OnGotMeleeAttack(attacker);
 
             if (Utility.RandomDouble() <= 0.1)
+            {
                 SpawnPixies(attacker);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

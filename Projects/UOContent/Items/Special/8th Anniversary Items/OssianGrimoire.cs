@@ -33,7 +33,9 @@
             var version = reader.ReadEncodedInt();
 
             if (version == 0)
+            {
                 Attributes.IncreasedKarmaLoss = 5;
+            }
         }
     }
 }

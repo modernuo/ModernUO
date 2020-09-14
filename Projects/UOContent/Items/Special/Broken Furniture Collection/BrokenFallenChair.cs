@@ -27,7 +27,9 @@ namespace Server.Items
             var version = reader.ReadEncodedInt();
 
             if (version < 1 && ItemID == 0xC17)
+            {
                 ItemID = 0xC19;
+            }
         }
     }
 

@@ -46,7 +46,9 @@ namespace Server.Accounting.Security
                 );
 
             if (CurrentAlgorithm < PasswordProtectionAlgorithm.SHA2)
+            {
                 throw new Exception($"Security: {CurrentAlgorithm} is obsolete and not secure. Do not use it.");
+            }
         }
 
         public static IPasswordProtection GetPasswordProtection(PasswordProtectionAlgorithm algorithm)

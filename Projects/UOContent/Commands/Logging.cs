@@ -17,12 +17,16 @@ namespace Server.Commands
             EventSink.Command += EventSink_Command;
 
             if (!Directory.Exists("Logs"))
+            {
                 Directory.CreateDirectory("Logs");
+            }
 
             var directory = "Logs/Commands";
 
             if (!Directory.Exists(directory))
+            {
                 Directory.CreateDirectory(directory);
+            }
 
             try
             {
@@ -45,12 +49,17 @@ namespace Server.Commands
             if (o is Mobile m)
             {
                 if (m.Account == null)
+                {
                     return $"{m} (no account)";
+                }
 
                 return $"{m} ('{m.Account.Username}')";
             }
 
-            if (o is Item item) return $"0x{item.Serial.Value:X} ({item.GetType().Name})";
+            if (o is Item item)
+            {
+                return $"0x{item.Serial.Value:X} ({item.GetType().Name})";
+            }
 
             return o;
         }
@@ -58,7 +67,9 @@ namespace Server.Commands
         public static void WriteLine(Mobile from, string format, params object[] args)
         {
             if (!Enabled)
+            {
                 return;
+            }
 
             WriteLine(from, string.Format(format, args));
         }
@@ -66,7 +77,9 @@ namespace Server.Commands
         public static void WriteLine(Mobile from, string text)
         {
             if (!Enabled)
+            {
                 return;
+            }
 
             try
             {
@@ -95,28 +108,38 @@ namespace Server.Commands
             path = Path.Combine(path, toAppend);
 
             if (!Directory.Exists(path))
+            {
                 Directory.CreateDirectory(path);
+            }
         }
 
         public static string Safe(string ip)
         {
             if (ip == null)
+            {
                 return "null";
+            }
 
             ip = ip.Trim().IsNullOrDefault("empty");
 
             var isSafe = true;
 
             for (var i = 0; isSafe && i < m_NotSafe.Length; ++i)
+            {
                 isSafe = ip.IndexOf(m_NotSafe[i]) == -1;
+            }
 
             if (isSafe)
+            {
                 return ip;
+            }
 
             var sb = new StringBuilder(ip);
 
             for (var i = 0; i < m_NotSafe.Length; ++i)
+            {
                 sb.Replace(m_NotSafe[i], '_');
+            }
 
             return sb.ToString();
         }

@@ -99,7 +99,9 @@ namespace Server.Misc
                         m_GreaterArtifacts[i] = new Type[ToTRedeemGump.NormalRewards[i].Length];
 
                         for (var j = 0; j < m_GreaterArtifacts[i].Length; j++)
+                        {
                             m_GreaterArtifacts[i][j] = ToTRedeemGump.NormalRewards[i][j].Type;
+                        }
                     }
                 }
 
@@ -112,11 +114,15 @@ namespace Server.Misc
             var r = m.Region;
 
             if (r.IsPartOf<HouseRegion>() || BaseBoat.FindBoatAt(m, m.Map) != null)
+            {
                 return false;
+            }
             // TODO: a CanReach of something check as opposed to above?
 
             if (r.IsPartOf("Yomotsu Mines") || r.IsPartOf("Fan Dancer's Dojo"))
+            {
                 return true;
+            }
 
             return m.Map == Map.Tokuno;
         }
@@ -125,10 +131,14 @@ namespace Server.Misc
         {
             if (DropEra == TreasuresOfTokunoEra.None || !(killer is PlayerMobile pm) || !(victim is BaseCreature bc) ||
                 !CheckLocation(bc) || !CheckLocation(pm) || !killer.InRange(victim, 18))
+            {
                 return;
+            }
 
             if (bc.Controlled || bc.Owners.Count > 0 || bc.Fame <= 0)
+            {
                 return;
+            }
 
             // 25000 for 1/100 chance, 10 hyrus
             // 1500, 1/1000 chance, 20 lizard men for that chance.
@@ -268,26 +278,34 @@ namespace Server.Mobiles
                         pm.CloseGump<ToTTurnInGump>(); // Sanity
 
                         if (!pm.HasGump<ToTRedeemGump>())
+                        {
                             pm.SendGump(new ToTRedeemGump(this, false));
+                        }
                     }
                     else
                     {
                         if (pm.ToTItemsTurnedIn == 0)
+                        {
                             SayTo(
                                 pm,
                                 1071013
                             ); // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
+                        }
                         else
+                        {
                             SayTo(
                                 pm,
                                 1070981,
                                 $"{pm.ToTItemsTurnedIn}\t{TreasuresOfTokuno.ItemsPerReward}"
                             ); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
+                        }
 
                         var buttons = ToTTurnInGump.FindRedeemableItems(pm);
 
                         if (buttons.Count > 0 && !pm.HasGump<ToTTurnInGump>())
+                        {
                             pm.SendGump(new ToTTurnInGump(this, buttons));
+                        }
                     }
                 }
 
@@ -336,7 +354,9 @@ namespace Server.Gumps
         {
             var pack = m.Backpack;
             if (pack == null)
+            {
                 return new List<ItemTileButtonInfo>();
+            }
 
             var buttons = new List<ItemTileButtonInfo>();
 
@@ -346,13 +366,19 @@ namespace Server.Gumps
             {
                 var item = items[i];
                 if (item is ChestOfHeirlooms heirlooms && !heirlooms.Locked)
+                {
                     continue;
+                }
 
                 if (item is ChestOfHeirlooms ofHeirlooms && ofHeirlooms.TrapLevel != 10)
+                {
                     continue;
+                }
 
                 if (item is PigmentsOfTokuno tokuno && tokuno.Type != PigmentType.None)
+                {
                     continue;
+                }
 
                 buttons.Add(new ItemTileButtonInfo(item));
             }
@@ -367,7 +393,9 @@ namespace Server.Gumps
             var item = ((ItemTileButtonInfo)buttonInfo).Item;
 
             if (!(pm != null && item.IsChildOf(pm.Backpack) && pm.InRange(m_Collector.Location, 7)))
+            {
                 return;
+            }
 
             item.Delete();
 
@@ -381,7 +409,9 @@ namespace Server.Gumps
                 pm.CloseGump<ToTTurnInGump>(); // Sanity
 
                 if (!pm.HasGump<ToTRedeemGump>())
+                {
                     pm.SendGump(new ToTRedeemGump(m_Collector, false));
+                }
             }
             else
             {
@@ -396,29 +426,39 @@ namespace Server.Gumps
                 pm.CloseGump<ToTTurnInGump>(); // Sanity
 
                 if (buttons.Count > 0)
+                {
                     pm.SendGump(new ToTTurnInGump(m_Collector, buttons));
+                }
             }
         }
 
         public override void HandleCancel(NetState sender)
         {
             if (!(sender.Mobile is PlayerMobile pm) || !pm.InRange(m_Collector.Location, 7))
+            {
                 return;
+            }
 
             if (pm.ToTItemsTurnedIn == 0)
+            {
                 m_Collector.SayTo(
                     pm,
                     1071013
                 ); // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
+            }
             else if (pm.ToTItemsTurnedIn < TreasuresOfTokuno.ItemsPerReward
             ) // This case should ALWAYS be true with this gump, jsut a sanity check
+            {
                 m_Collector.SayTo(
                     pm,
                     1070981,
                     $"{pm.ToTItemsTurnedIn}\t{TreasuresOfTokuno.ItemsPerReward}"
                 ); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
+            }
             else
+            {
                 m_Collector.SayTo(pm, 1070982); // When you wish to choose your reward, you have but to approach me again.
+            }
         }
     }
 
@@ -528,7 +568,9 @@ namespace Server.Gumps
         {
             if (!(sender.Mobile is PlayerMobile pm) || !pm.InRange(m_Collector.Location, 7) ||
                 !(pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward))
+            {
                 return;
+            }
 
             Item item = null;
 
@@ -561,7 +603,9 @@ namespace Server.Gumps
             }
 
             if (item == null)
+            {
                 return; // Sanity
+            }
 
             if (pm.AddToBackpack(item))
             {
@@ -585,22 +629,30 @@ namespace Server.Gumps
         public override void HandleCancel(NetState sender)
         {
             if (!(sender.Mobile is PlayerMobile pm) || !pm.InRange(m_Collector.Location, 7))
+            {
                 return;
+            }
 
             if (pm.ToTItemsTurnedIn == 0)
+            {
                 m_Collector.SayTo(
                     pm,
                     1071013
                 ); // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
+            }
             else if (pm.ToTItemsTurnedIn < TreasuresOfTokuno.ItemsPerReward
             ) // This and above case should ALWAYS be FALSE with this gump, jsut a sanity check
+            {
                 m_Collector.SayTo(
                     pm,
                     1070981,
                     $"{pm.ToTItemsTurnedIn}\t{TreasuresOfTokuno.ItemsPerReward}"
                 ); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
+            }
             else
+            {
                 m_Collector.SayTo(pm, 1070982); // When you wish to choose your reward, you have but to approach me again.
+            }
         }
 
         public class TypeTileButtonInfo : ImageTileButtonInfo

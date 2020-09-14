@@ -131,50 +131,70 @@ namespace Server.Items
             var closestMoongate = Point3D.Zero;
             var moongateDistance = double.MaxValue;
             if (moongates != null)
+            {
                 foreach (var entry in moongates.Entries)
                 {
-                    var dist = from.GetDistanceToSqrt(entry.Location);
+                    var dist = @from.GetDistanceToSqrt(entry.Location);
                     if (moongateDistance > dist)
                     {
                         closestMoongate = entry.Location;
                         moongateDistance = dist;
                     }
                 }
+            }
 
             var closestBank = Point2D.Zero;
             var bankDistance = double.MaxValue;
             if (banks != null)
+            {
                 foreach (var p in banks)
                 {
-                    var dist = from.GetDistanceToSqrt(p);
+                    var dist = @from.GetDistanceToSqrt(p);
                     if (bankDistance > dist)
                     {
                         closestBank = p;
                         bankDistance = dist;
                     }
                 }
+            }
 
             int moonMsg;
             if (moongateDistance == double.MaxValue)
+            {
                 moonMsg = 1048021; // The sextant fails to find a Moongate nearby.
+            }
             else if (moongateDistance > m_LongDistance)
-                moonMsg = 1046449 + (int)from.GetDirectionTo(closestMoongate); // A moongate is * from here
+            {
+                moonMsg = 1046449 + (int)@from.GetDirectionTo(closestMoongate); // A moongate is * from here
+            }
             else if (moongateDistance > m_ShortDistance)
-                moonMsg = 1048010 + (int)from.GetDirectionTo(closestMoongate); // There is a Moongate * of here.
+            {
+                moonMsg = 1048010 + (int)@from.GetDirectionTo(closestMoongate); // There is a Moongate * of here.
+            }
             else
+            {
                 moonMsg = 1048018; // You are next to a Moongate at the moment.
+            }
 
             from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, 0x482, 3, moonMsg, "", ""));
 
             int bankMsg;
             if (bankDistance == double.MaxValue)
+            {
                 bankMsg = 1048020; // The sextant fails to find a Bank nearby.
+            }
             else if (bankDistance > m_LongDistance)
-                bankMsg = 1046462 + (int)from.GetDirectionTo(closestBank); // A town is * from here
+            {
+                bankMsg = 1046462 + (int)@from.GetDirectionTo(closestBank); // A town is * from here
+            }
             else if (bankDistance > m_ShortDistance)
-                bankMsg = 1048002 + (int)from.GetDirectionTo(closestBank); // There is a city Bank * of here.
+            {
+                bankMsg = 1048002 + (int)@from.GetDirectionTo(closestBank); // There is a city Bank * of here.
+            }
             else
+            {
                 bankMsg = 1048019; // You are next to a Bank at the moment.
+            }
 
             from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, 0x5AA, 3, bankMsg, "", ""));
         }

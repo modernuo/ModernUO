@@ -36,19 +36,25 @@ namespace Server.Commands.Generic
             house = null;
 
             if (item == null || item is BaseMulti || item is HouseSign || staticsOnly && !(item is Static))
+            {
                 return DesignInsertResult.InvalidItem;
+            }
 
             house = BaseHouse.FindHouseAt(item) as HouseFoundation;
 
             if (house == null)
+            {
                 return DesignInsertResult.NotInHouse;
+            }
 
             var x = item.X - house.X;
             var y = item.Y - house.Y;
             var z = item.Z - house.Z;
 
             if (!TryInsertIntoState(house.CurrentState, item.ItemID, x, y, z))
+            {
                 return DesignInsertResult.OutsideHouseBounds;
+            }
 
             TryInsertIntoState(house.DesignState, item.ItemID, x, y, z);
             item.Delete();
@@ -61,7 +67,9 @@ namespace Server.Commands.Generic
             var mcl = state.Components;
 
             if (x < mcl.Min.X || y < mcl.Min.Y || x > mcl.Max.X || y > mcl.Max.Y)
+            {
                 return false;
+            }
 
             mcl.Add(itemID, x, y, z);
             state.OnRevised();
@@ -112,7 +120,9 @@ namespace Server.Commands.Generic
                                 AddResponse("The item has been inserted into the house design.");
 
                                 if (!foundations.Contains(house))
+                                {
                                     foundations.Add(house);
+                                }
 
                                 break;
                             }
@@ -131,7 +141,9 @@ namespace Server.Commands.Generic
                 }
 
                 foreach (var house in foundations)
+                {
                     house.Delta(ItemDelta.Update);
+                }
             }
             else
             {
@@ -160,7 +172,9 @@ namespace Server.Commands.Generic
                     from.SendMessage("Your changes have been committed. Updating...");
 
                     foreach (var house in m_Foundations)
+                    {
                         house.Delta(ItemDelta.Update);
+                    }
                 }
             }
 
@@ -173,14 +187,20 @@ namespace Server.Commands.Generic
                     case DesignInsertResult.Valid:
                         {
                             if (m_Foundations.Count == 0)
-                                from.SendMessage(
+                            {
+                                @from.SendMessage(
                                     "The item has been inserted into the house design. Press ESC when you are finished."
                                 );
+                            }
                             else
-                                from.SendMessage("The item has been inserted into the house design.");
+                            {
+                                @from.SendMessage("The item has been inserted into the house design.");
+                            }
 
                             if (!m_Foundations.Contains(house))
+                            {
                                 m_Foundations.Add(house);
+                            }
 
                             break;
                         }

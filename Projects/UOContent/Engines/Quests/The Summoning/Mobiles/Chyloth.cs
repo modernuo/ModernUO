@@ -52,7 +52,9 @@ namespace Server.Engines.Quests.Doom
         public virtual void BeginGiveWarning()
         {
             if (Deleted || AngryAt == null)
+            {
                 return;
+            }
 
             Timer.DelayCall(TimeSpan.FromSeconds(4.0), EndGiveWarning);
         }
@@ -60,7 +62,9 @@ namespace Server.Engines.Quests.Doom
         public virtual void EndGiveWarning()
         {
             if (Deleted || AngryAt == null)
+            {
                 return;
+            }
 
             PublicOverheadMessage(
                 MessageType.Regular,
@@ -76,7 +80,9 @@ namespace Server.Engines.Quests.Doom
         public virtual void BeginSummonDragon()
         {
             if (Deleted || AngryAt == null)
+            {
                 return;
+            }
 
             Timer.DelayCall(TimeSpan.FromSeconds(30.0), EndSummonDragon);
         }
@@ -89,7 +95,9 @@ namespace Server.Engines.Quests.Doom
         public virtual void EndRemove()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             var loc = Location;
             var map = Map;
@@ -112,15 +120,21 @@ namespace Server.Engines.Quests.Doom
         public virtual void EndSummonDragon()
         {
             if (Deleted || AngryAt == null)
+            {
                 return;
+            }
 
             var map = AngryAt.Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             if (!AngryAt.Region.IsPartOf("Doom"))
+            {
                 return;
+            }
 
             PublicOverheadMessage(MessageType.Regular, 0x3B2, 1050015); // Feel the wrath of my legions!!!
             PublicOverheadMessage(MessageType.Regular, 0x3B2, false, "MUHAHAHAHA HAHAH HAHA"); // A wee bit crazy, aren't we?
@@ -154,12 +168,16 @@ namespace Server.Engines.Quests.Doom
             }
 
             if (!foundLoc)
+            {
                 dragon.MoveToWorld(AngryAt.Location, map);
+            }
 
             dragon.Combatant = AngryAt;
 
             if (Bell != null)
+            {
                 Bell.Dragon = dragon;
+            }
         }
 
         public static void TeleportToFerry(Mobile from)
@@ -208,7 +226,9 @@ namespace Server.Engines.Quests.Doom
                     if (member != from && member.Map == Map.Malas && member.Region.IsPartOf("Doom"))
                     {
                         if (AngryAt == member)
+                        {
                             AngryAt = null;
+                        }
 
                         member.CloseGump<ChylothPartyGump>();
                         member.SendGump(new ChylothPartyGump(from, member));
@@ -216,7 +236,9 @@ namespace Server.Engines.Quests.Doom
                 }
 
                 if (AngryAt == from)
+                {
                     AngryAt = null;
+                }
 
                 TeleportToFerry(from);
 

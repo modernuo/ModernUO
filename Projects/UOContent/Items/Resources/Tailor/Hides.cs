@@ -34,7 +34,9 @@ namespace Server.Items
             get
             {
                 if (m_Resource >= CraftResource.SpinedLeather && m_Resource <= CraftResource.BarbedLeather)
+                {
                     return 1049687 + (m_Resource - CraftResource.SpinedLeather);
+                }
 
                 return 1047023;
             }
@@ -78,9 +80,13 @@ namespace Server.Items
         public override void AddNameProperty(ObjectPropertyList list)
         {
             if (Amount > 1)
+            {
                 list.Add(1050039, "{0}\t#{1}", Amount, 1024216); // ~1_NUMBER~ ~2_ITEMNAME~
+            }
             else
+            {
                 list.Add(1024216); // pile of hides
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -92,9 +98,13 @@ namespace Server.Items
                 var num = CraftResources.GetLocalizationNumber(m_Resource);
 
                 if (num > 0)
+                {
                     list.Add(num);
+                }
                 else
+                {
                     list.Add(CraftResources.GetName(m_Resource));
+                }
             }
         }
     }
@@ -113,7 +123,10 @@ namespace Server.Items
 
         public bool Scissor(Mobile from, Scissors scissors)
         {
-            if (Deleted || !from.CanSee(this)) return false;
+            if (Deleted || !from.CanSee(this))
+            {
+                return false;
+            }
 
             if (Core.AOS && !IsChildOf(from.Backpack))
             {
@@ -155,7 +168,10 @@ namespace Server.Items
 
         public bool Scissor(Mobile from, Scissors scissors)
         {
-            if (Deleted || !from.CanSee(this)) return false;
+            if (Deleted || !from.CanSee(this))
+            {
+                return false;
+            }
 
             if (Core.AOS && !IsChildOf(from.Backpack))
             {
@@ -197,7 +213,10 @@ namespace Server.Items
 
         public bool Scissor(Mobile from, Scissors scissors)
         {
-            if (Deleted || !from.CanSee(this)) return false;
+            if (Deleted || !from.CanSee(this))
+            {
+                return false;
+            }
 
             if (Core.AOS && !IsChildOf(from.Backpack))
             {
@@ -239,7 +258,10 @@ namespace Server.Items
 
         public bool Scissor(Mobile from, Scissors scissors)
         {
-            if (Deleted || !from.CanSee(this)) return false;
+            if (Deleted || !from.CanSee(this))
+            {
+                return false;
+            }
 
             if (Core.AOS && !IsChildOf(from.Backpack))
             {

@@ -67,7 +67,11 @@ namespace Server.Items
             {
                 case 0:
                     {
-                        if (Commodity != null) Hue = 0x592;
+                        if (Commodity != null)
+                        {
+                            Hue = 0x592;
+                        }
+
                         break;
                     }
             }
@@ -107,10 +111,14 @@ namespace Server.Items
                 string args;
 
                 if (Commodity.Name == null)
+                {
                     args =
                         $"#{(Commodity is ICommodity commodity ? commodity.DescriptionNumber : Commodity.LabelNumber)}\t{Commodity.Amount}";
+                }
                 else
+                {
                     args = $"{Commodity.Name}\t{Commodity.Amount}";
+                }
 
                 LabelTo(from, 1060658, args); // ~1_val~: ~2_val~
             }
@@ -154,9 +162,13 @@ namespace Server.Items
                 else
                 {
                     if (Core.ML)
+                    {
                         number = 1080526; // That must be in your bank box or commodity deed box to use it.
+                    }
                     else
+                    {
                         number = 1047024; // To claim the resources ....
+                    }
                 }
             }
             else if (cox?.IsSecure == false)
@@ -166,9 +178,13 @@ namespace Server.Items
             else if ((box == null || !IsChildOf(box)) && cox == null)
             {
                 if (Core.ML)
+                {
                     number = 1080526; // That must be in your bank box or commodity deed box to use it.
+                }
                 else
+                {
                     number = 1047026; // That must be in your bank box to use it.
+                }
             }
             else
             {
@@ -189,7 +205,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Deed.Deleted)
+                {
                     return;
+                }
 
                 int number;
 

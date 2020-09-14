@@ -38,9 +38,13 @@ namespace Server.Mobiles
             VirtualArmor = 28;
 
             if (Utility.RandomDouble() < 0.25)
+            {
                 PackItem(new Board(10));
+            }
             else
+            {
                 PackItem(new Log(10));
+            }
 
             PackReg(3);
             PackItem(new Seed());
@@ -79,7 +83,9 @@ namespace Server.Mobiles
             var map = Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             var spawned = new Bogling { Team = Team };
 
@@ -95,7 +101,9 @@ namespace Server.Mobiles
             foreach (var bogling in eable)
             {
                 if (Hits >= HitsMax)
+                {
                     break;
+                }
 
                 if (sound)
                 {
@@ -117,7 +125,9 @@ namespace Server.Mobiles
             if (Hits > HitsMax / 4)
             {
                 if (Utility.RandomDouble() <= 0.25)
+                {
                     SpawnBogling(attacker);
+                }
             }
             else if (Utility.RandomDouble() <= 0.25)
             {

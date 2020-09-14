@@ -88,7 +88,9 @@ namespace Server.Engines.ConPVP
                 case 0:
                     {
                         if (version < 3)
+                        {
                             SuddenDeathRounds = 3;
+                        }
 
                         m_ParticipantsPerMatch = reader.ReadEncodedInt();
                         m_PlayersPerParticipant = reader.ReadEncodedInt();
@@ -193,8 +195,12 @@ namespace Server.Engines.ConPVP
         public bool HasParticipant(Mobile mob)
         {
             for (var i = 0; i < Participants.Count; ++i)
+            {
                 if (Participants[i].Players.Contains(mob))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -223,10 +229,14 @@ namespace Server.Engines.ConPVP
         public void HandleTie(Arena arena, TourneyMatch match, List<TourneyParticipant> remaining)
         {
             if (remaining.Count == 1)
+            {
                 HandleWon(arena, match, remaining[0]);
+            }
 
             if (remaining.Count < 2)
+            {
                 return;
+            }
 
             var sb = new StringBuilder();
 
@@ -247,7 +257,9 @@ namespace Server.Engines.ConPVP
                 if (remaining.Contains(part))
                 {
                     if (hasAppended)
+                    {
                         sb.Append(", ");
+                    }
 
                     sb.Append(part.NameList);
                     hasAppended = true;
@@ -265,7 +277,9 @@ namespace Server.Engines.ConPVP
             var tieType = TieType;
 
             if (tieType == TieType.FullElimination && remaining.Count >= Undefeated.Count)
+            {
                 tieType = TieType.FullAdvancement;
+            }
 
             switch (tieType)
             {
@@ -277,7 +291,9 @@ namespace Server.Engines.ConPVP
                 case TieType.FullElimination:
                     {
                         for (var j = 0; j < remaining.Count; ++j)
+                        {
                             Undefeated.Remove(remaining[j]);
+                        }
 
                         sb.AppendFormat("In accordance with the rules, {0} parties are eliminated.", whole);
                         break;
@@ -287,15 +303,21 @@ namespace Server.Engines.ConPVP
                         var advanced = remaining.RandomElement();
 
                         for (var i = 0; i < remaining.Count; ++i)
+                        {
                             if (remaining[i] != advanced)
+                            {
                                 Undefeated.Remove(remaining[i]);
+                            }
+                        }
 
                         if (advanced != null)
+                        {
                             sb.AppendFormat(
                                 "In accordance with the rules, {0} {1} advanced.",
                                 advanced.NameList,
                                 advanced.Players.Count == 1 ? "is" : "are"
                             );
+                        }
 
                         break;
                     }
@@ -308,19 +330,27 @@ namespace Server.Engines.ConPVP
                             var part = remaining[i];
 
                             if (advanced == null || part.TotalLadderXP > advanced.TotalLadderXP)
+                            {
                                 advanced = part;
+                            }
                         }
 
                         for (var i = 0; i < remaining.Count; ++i)
+                        {
                             if (remaining[i] != advanced)
+                            {
                                 Undefeated.Remove(remaining[i]);
+                            }
+                        }
 
                         if (advanced != null)
+                        {
                             sb.AppendFormat(
                                 "In accordance with the rules, {0} {1} advanced.",
                                 advanced.NameList,
                                 advanced.Players.Count == 1 ? "is" : "are"
                             );
+                        }
 
                         break;
                     }
@@ -333,19 +363,27 @@ namespace Server.Engines.ConPVP
                             var part = remaining[i];
 
                             if (advanced == null || part.TotalLadderXP < advanced.TotalLadderXP)
+                            {
                                 advanced = part;
+                            }
                         }
 
                         for (var i = 0; i < remaining.Count; ++i)
+                        {
                             if (remaining[i] != advanced)
+                            {
                                 Undefeated.Remove(remaining[i]);
+                            }
+                        }
 
                         if (advanced != null)
+                        {
                             sb.AppendFormat(
                                 "In accordance with the rules, {0} {1} advanced.",
                                 advanced.NameList,
                                 advanced.Players.Count == 1 ? "is" : "are"
                             );
+                        }
 
                         break;
                     }
@@ -359,25 +397,37 @@ namespace Server.Engines.ConPVP
             var part = player.Participant;
 
             if (!part.Eliminated)
+            {
                 return;
+            }
 
             if (TourneyType == TourneyType.FreeForAll)
             {
                 var rem = 0;
 
                 for (var i = 0; i < part.Context.Participants.Count; ++i)
+                {
                     if (part.Context.Participants[i]?.Eliminated == false)
+                    {
                         ++rem;
+                    }
+                }
 
                 var tp = part.TourneyPart;
 
                 if (tp == null)
+                {
                     return;
+                }
 
                 if (rem == 1)
+                {
                     GiveAwards(tp.Players, TrophyRank.Silver, ComputeCashAward() / 2);
+                }
                 else if (rem == 2)
+                {
                     GiveAwards(tp.Players, TrophyRank.Bronze, ComputeCashAward() / 4);
+                }
             }
         }
 
@@ -389,16 +439,22 @@ namespace Server.Engines.ConPVP
             sb.Append(winner.NameList);
 
             if (winner.Players.Count > 1)
+            {
                 sb.Append(" have bested ");
+            }
             else
+            {
                 sb.Append(" has bested ");
+            }
 
             if (match.Participants.Count > 2)
+            {
                 sb.AppendFormat(
                     "{0} other {1}: ",
                     match.Participants.Count - 1,
                     winner.Players.Count == 1 ? "players" : "teams"
                 );
+            }
 
             var hasAppended = false;
 
@@ -407,12 +463,16 @@ namespace Server.Engines.ConPVP
                 var part = match.Participants[j];
 
                 if (part == winner)
+                {
                     continue;
+                }
 
                 Undefeated.Remove(part);
 
                 if (hasAppended)
+                {
                     sb.Append(", ");
+                }
 
                 sb.Append(part.NameList);
                 hasAppended = true;
@@ -421,7 +481,9 @@ namespace Server.Engines.ConPVP
             sb.Append(".");
 
             if (TourneyType == TourneyType.Standard)
+            {
                 Alert(arena, sb.ToString());
+            }
         }
 
         private int ComputeCashAward() => Participants.Count * m_PlayersPerParticipant * 2500;
@@ -433,30 +495,40 @@ namespace Server.Engines.ConPVP
                 case TourneyType.FreeForAll:
                     {
                         if (Pyramid.Levels.Count < 1)
+                        {
                             break;
+                        }
 
                         var top = Pyramid.Levels[^1];
 
                         if (top.FreeAdvance != null || top.Matches.Count != 1)
+                        {
                             break;
+                        }
 
                         var match = top.Matches[0];
                         var winner = match.Winner;
 
                         if (winner != null)
+                        {
                             GiveAwards(winner.Players, TrophyRank.Gold, ComputeCashAward());
+                        }
 
                         break;
                     }
                 case TourneyType.Standard:
                     {
                         if (Pyramid.Levels.Count < 2)
+                        {
                             break;
+                        }
 
                         var top = Pyramid.Levels[^1];
 
                         if (top.FreeAdvance != null || top.Matches.Count != 1)
+                        {
                             break;
+                        }
 
                         var cash = ComputeCashAward();
 
@@ -468,15 +540,21 @@ namespace Server.Engines.ConPVP
                             var part = match.Participants[i];
 
                             if (part == winner)
+                            {
                                 GiveAwards(part.Players, TrophyRank.Gold, cash);
+                            }
                             else
+                            {
                                 GiveAwards(part.Players, TrophyRank.Silver, cash / 2);
+                            }
                         }
 
                         var next = Pyramid.Levels[^2];
 
                         if (next.Matches.Count > 2)
+                        {
                             break;
+                        }
 
                         for (var i = 0; i < next.Matches.Count; ++i)
                         {
@@ -488,7 +566,9 @@ namespace Server.Engines.ConPVP
                                 var part = match.Participants[j];
 
                                 if (part != winner)
+                                {
                                     GiveAwards(part.Players, TrophyRank.Bronze, cash / 4);
+                                }
                             }
                         }
 
@@ -500,10 +580,14 @@ namespace Server.Engines.ConPVP
         private void GiveAwards(List<Mobile> players, TrophyRank rank, int cash)
         {
             if (players.Count == 0)
+            {
                 return;
+            }
 
             if (players.Count > 1)
+            {
                 cash /= players.Count - 1;
+            }
 
             cash += 500;
             cash /= 1000;
@@ -535,14 +619,18 @@ namespace Server.Engines.ConPVP
                 for (var i = 0; i < m_ParticipantsPerMatch; ++i)
                 {
                     if (sb.Length > 0)
+                    {
                         sb.Append('v');
+                    }
 
                     sb.Append(m_PlayersPerParticipant);
                 }
             }
 
             if (EventController != null)
+            {
                 sb.Append(' ').Append(EventController.Title);
+            }
 
             sb.Append(" Champion");
 
@@ -553,19 +641,25 @@ namespace Server.Engines.ConPVP
                 var mob = players[i];
 
                 if (mob?.Deleted != false)
+                {
                     continue;
+                }
 
                 Item item = new Trophy(title, rank);
 
                 if (!mob.PlaceInBackpack(item))
+                {
                     mob.BankBox.DropItem(item);
+                }
 
                 if (cash > 0)
                 {
                     item = new BankCheck(cash);
 
                     if (!mob.PlaceInBackpack(item))
+                    {
                         mob.BankBox.DropItem(item);
+                    }
 
                     mob.SendMessage(
                         "You have been awarded a {0} trophy and {1:N0}gp for your participation in this tournament.",
@@ -611,7 +705,9 @@ namespace Server.Engines.ConPVP
                         if (bad)
                         {
                             for (var j = 0; j < part.Players.Count; ++j)
+                            {
                                 part.Players[j].SendMessage("You have been disqualified from the tournament.");
+                            }
 
                             Participants.RemoveAt(i);
                         }
@@ -629,7 +725,9 @@ namespace Server.Engines.ConPVP
                         var level = Pyramid.Levels[0];
 
                         if (level.FreeAdvance != null)
+                        {
                             Undefeated.Add(level.FreeAdvance);
+                        }
 
                         for (var i = 0; i < level.Matches.Count; ++i)
                         {
@@ -772,6 +870,7 @@ namespace Server.Engines.ConPVP
                             stillGoing = true;
 
                             if (!match.InProgress)
+                            {
                                 for (var j = 0; j < Arenas.Count; ++j)
                                 {
                                     var arena = Arenas[j];
@@ -782,6 +881,7 @@ namespace Server.Engines.ConPVP
                                         break;
                                     }
                                 }
+                            }
                         }
                     }
 
@@ -805,10 +905,14 @@ namespace Server.Engines.ConPVP
                             }
 
                             if (!bad)
+                            {
                                 continue;
+                            }
 
                             for (var j = 0; j < part.Players.Count; ++j)
+                            {
                                 part.Players[j].SendMessage("You have been disqualified from the tournament.");
+                            }
 
                             Undefeated.RemoveAt(i);
 
@@ -910,7 +1014,9 @@ namespace Server.Engines.ConPVP
                         }
 
                         if (Undefeated.Count > 1)
+                        {
                             Pyramid.AddLevel(m_ParticipantsPerMatch, Undefeated, GroupType, TourneyType);
+                        }
                     }
                 }
             }
@@ -919,12 +1025,15 @@ namespace Server.Engines.ConPVP
         public void Alert(params string[] alerts)
         {
             for (var i = 0; i < Arenas.Count; ++i)
+            {
                 Alert(Arenas[i], alerts);
+            }
         }
 
         public void Alert(Arena arena, params string[] alerts)
         {
             if (arena?.Announcer != null)
+            {
                 for (var j = 0; j < alerts.Length; ++j)
                 {
                     var alert = alerts[j];
@@ -933,6 +1042,7 @@ namespace Server.Engines.ConPVP
                         () => arena.Announcer.PublicOverheadMessage(MessageType.Regular, 0x35, false, alert)
                     );
                 }
+            }
         }
     }
 }

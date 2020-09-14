@@ -35,7 +35,9 @@ namespace Server.Spells.Necromancy
         public override void DoEffect(Mobile m)
         {
             if (m is PlayerMobile mobile)
+            {
                 mobile.IgnoreMobiles = true;
+            }
 
             m.PlaySound(0x17F);
             m.FixedParticles(0x374A, 1, 15, 9902, 1108, 4, EffectLayer.Waist);
@@ -44,7 +46,9 @@ namespace Server.Spells.Necromancy
         public override void RemoveEffect(Mobile m)
         {
             if (m is PlayerMobile mobile && mobile.AccessLevel == AccessLevel.Player)
+            {
                 mobile.IgnoreMobiles = false;
+            }
         }
     }
 }

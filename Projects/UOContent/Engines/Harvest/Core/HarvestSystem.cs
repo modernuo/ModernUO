@@ -18,7 +18,9 @@ namespace Server.Engines.Harvest
             var wornOut = tool?.Deleted != false || (tool as IUsesRemaining)?.UsesRemaining <= 0;
 
             if (wornOut)
-                from.SendLocalizedMessage(1044038); // You have worn out your tool!
+            {
+                @from.SendLocalizedMessage(1044038); // You have worn out your tool!
+            }
 
             return !wornOut;
         }
@@ -33,7 +35,9 @@ namespace Server.Engines.Harvest
             var inRange = from.Map == map && from.InRange(loc, def.MaxRange);
 
             if (!inRange)
-                def.SendMessageTo(from, timed ? def.TimedOutOfRangeMessage : def.OutOfRangeMessage);
+            {
+                def.SendMessageTo(@from, timed ? def.TimedOutOfRangeMessage : def.OutOfRangeMessage);
+            }
 
             return inRange;
         }
@@ -44,7 +48,9 @@ namespace Server.Engines.Harvest
             var available = bank?.Current >= def.ConsumedPerHarvest;
 
             if (!available)
-                def.SendMessageTo(from, timed ? def.DoubleHarvestMessage : def.NoResourcesMessage);
+            {
+                def.SendMessageTo(@from, timed ? def.DoubleHarvestMessage : def.NoResourcesMessage);
+            }
 
             return available;
         }
@@ -66,7 +72,9 @@ namespace Server.Engines.Harvest
         public virtual bool BeginHarvesting(Mobile from, Item tool)
         {
             if (!CheckHarvest(from, tool))
+            {
                 return false;
+            }
 
             from.Target = new HarvestTarget(tool, this);
             return true;
@@ -77,7 +85,9 @@ namespace Server.Engines.Harvest
             from.EndAction(locked);
 
             if (!CheckHarvest(from, tool))
+            {
                 return;
+            }
 
             if (!GetHarvestDetails(from, tool, toHarvest, out var tileID, out var map, out var loc))
             {
@@ -92,27 +102,43 @@ namespace Server.Engines.Harvest
             }
 
             if (!CheckRange(from, tool, def, map, loc, true))
+            {
                 return;
+            }
+
             if (!CheckResources(from, tool, def, map, loc, true))
+            {
                 return;
+            }
+
             if (!CheckHarvest(from, tool, def, toHarvest))
+            {
                 return;
+            }
 
             if (SpecialHarvest(from, tool, def, map, loc))
+            {
                 return;
+            }
 
             var bank = def.GetBank(map, loc.X, loc.Y);
 
             if (bank == null)
+            {
                 return;
+            }
 
             var vein = bank.Vein;
 
             if (vein != null)
-                vein = MutateVein(from, tool, def, bank, toHarvest, vein);
+            {
+                vein = MutateVein(@from, tool, def, bank, toHarvest, vein);
+            }
 
             if (vein == null)
+            {
                 return;
+            }
 
             var primary = vein.PrimaryResource;
             var fallback = vein.FallbackResource;
@@ -128,7 +154,9 @@ namespace Server.Engines.Harvest
                 type = GetResourceType(from, tool, def, map, loc, resource);
 
                 if (type != null)
-                    type = MutateType(type, from, tool, def, map, loc, resource);
+                {
+                    type = MutateType(type, @from, tool, def, map, loc, resource);
+                }
 
                 if (type != null)
                 {
@@ -154,13 +182,21 @@ namespace Server.Engines.Harvest
 
                             if (eligableForRacialBonus && inFelucca && bank.Current >= feluccaRacialAmount &&
                                 Utility.RandomDouble() < 0.1)
+                            {
                                 item.Amount = feluccaRacialAmount;
+                            }
                             else if (inFelucca && bank.Current >= feluccaAmount)
+                            {
                                 item.Amount = feluccaAmount;
+                            }
                             else if (eligableForRacialBonus && bank.Current >= racialAmount && Utility.RandomDouble() < 0.1)
+                            {
                                 item.Amount = racialAmount;
+                            }
                             else
+                            {
                                 item.Amount = amount;
+                            }
                         }
 
                         bank.Consume(item.Amount, from);
@@ -183,9 +219,13 @@ namespace Server.Engines.Harvest
 
                             if (Give(from, bonusItem, true)
                             ) // Bonuses always allow placing at feet, even if pack is full irregrdless of def
-                                bonus.SendSuccessTo(from);
+                            {
+                                bonus.SendSuccessTo(@from);
+                            }
                             else
+                            {
                                 item.Delete();
+                            }
                         }
 
                         if (tool is IUsesRemaining toolWithUses)
@@ -193,7 +233,9 @@ namespace Server.Engines.Harvest
                             toolWithUses.ShowUsesRemaining = true;
 
                             if (toolWithUses.UsesRemaining > 0)
+                            {
                                 --toolWithUses.UsesRemaining;
+                            }
 
                             if (toolWithUses.UsesRemaining < 1)
                             {
@@ -206,7 +248,9 @@ namespace Server.Engines.Harvest
             }
 
             if (type == null)
-                def.SendMessageTo(from, def.FailMessage);
+            {
+                def.SendMessageTo(@from, def.FailMessage);
+            }
 
             OnHarvestFinished(from, tool, def, vein, bank, resource, toHarvest);
         }
@@ -251,18 +295,26 @@ namespace Server.Engines.Harvest
         public virtual bool Give(Mobile m, Item item, bool placeAtFeet)
         {
             if (m.PlaceInBackpack(item))
+            {
                 return true;
+            }
 
             if (!placeAtFeet)
+            {
                 return false;
+            }
 
             var map = m.Map;
 
             if (map == null)
+            {
                 return false;
+            }
 
             if (m.GetItemsInRange(0).Any(t => t.StackWith(m, item, false)))
+            {
                 return true;
+            }
 
             item.MoveToWorld(m.Location, map);
             return true;
@@ -287,12 +339,16 @@ namespace Server.Engines.Harvest
             var racialBonus = def.RaceBonus && from.Race == Race.Elf;
 
             if (vein.ChanceToFallback > Utility.RandomDouble() + (racialBonus ? .20 : 0))
+            {
                 return fallback;
+            }
 
             var skillValue = from.Skills[def.Skill].Value;
 
             if (fallback != null && (skillValue < primary.ReqSkill || skillValue < primary.MinSkill))
+            {
                 return fallback;
+            }
 
             return primary;
         }
@@ -357,7 +413,9 @@ namespace Server.Engines.Harvest
             from.Direction = from.GetDirectionTo(loc);
 
             if (!from.Mounted)
-                from.Animate(def.EffectActions.RandomElement(), 5, 1, true, false, 0);
+            {
+                @from.Animate(def.EffectActions.RandomElement(), 5, 1, true, false, 0);
+            }
         }
 
         public virtual HarvestDefinition GetDefinition() => Definitions.First();
@@ -368,7 +426,9 @@ namespace Server.Engines.Harvest
         public virtual void StartHarvesting(Mobile from, Item tool, object toHarvest)
         {
             if (!CheckHarvest(from, tool))
+            {
                 return;
+            }
 
             if (!GetHarvestDetails(from, tool, toHarvest, out var tileID, out var map, out var loc))
             {
@@ -385,11 +445,19 @@ namespace Server.Engines.Harvest
             }
 
             if (!CheckRange(from, tool, def, map, loc, false))
+            {
                 return;
+            }
+
             if (!CheckResources(from, tool, def, map, loc, false))
+            {
                 return;
+            }
+
             if (!CheckHarvest(from, tool, def, toHarvest))
+            {
                 return;
+            }
 
             var toLock = GetLock(from, tool, def, toHarvest);
 

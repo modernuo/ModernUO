@@ -17,7 +17,9 @@ namespace Server.Engines.MLQuests.Objectives
                 var itemid = LabelToItemID(name.Number);
 
                 if (itemid <= 0 || itemid > 0x4000)
+                {
                     Console.WriteLine("Warning: cliloc {0} is likely giving the wrong item ID", name.Number);
+                }
             }
         }
 
@@ -36,7 +38,10 @@ namespace Server.Engines.MLQuests.Objectives
         public static int LabelToItemID(int label)
         {
             if (label < 1078872)
+            {
                 return label - 1020000;
+            }
+
             return label - 1078872;
         }
 
@@ -62,9 +67,13 @@ namespace Server.Engines.MLQuests.Objectives
             else
             {
                 if (Name.Number > 0)
+                {
                     g.AddHtmlLocalized(98, y, 312, 32, Name.Number, 0x15F90);
+                }
                 else if (Name.String != null)
+                {
                     g.AddLabel(98, y, 0x481, Name.String);
+                }
             }
 
             y += 32;
@@ -97,7 +106,9 @@ namespace Server.Engines.MLQuests.Objectives
             var pack = Instance.Player.Backpack;
 
             if (pack == null)
+            {
                 return 0;
+            }
 
             var items = pack.FindItemsByType(Objective.AcceptedType, false); // Note: subclasses are included
             return items.Where(item => item.QuestItem && Objective.CheckItem(item)).Sum(item => item.Amount);
@@ -113,15 +124,21 @@ namespace Server.Engines.MLQuests.Objectives
             var pack = pm.Backpack;
 
             if (pack == null)
+            {
                 return;
+            }
 
             var checkType = Objective.AcceptedType;
             var items = pack.FindItemsByType(checkType, false);
 
             foreach (var item in items)
+            {
                 if (item.QuestItem && !MLQuestSystem.CanMarkQuestItem(pm, item, checkType)
                 ) // does another quest still need this item? (OSI just unmarks everything)
+                {
                     item.QuestItem = false;
+                }
+            }
         }
 
         // Should only be called after IsComplete() is checked to be true
@@ -130,7 +147,9 @@ namespace Server.Engines.MLQuests.Objectives
             var pack = Instance.Player.Backpack;
 
             if (pack == null)
+            {
                 return;
+            }
 
             // TODO: OSI also counts the item in the cursor?
 
@@ -138,10 +157,13 @@ namespace Server.Engines.MLQuests.Objectives
             var left = Objective.DesiredAmount;
 
             foreach (var item in items)
+            {
                 if (item.QuestItem && Objective.CheckItem(item))
                 {
                     if (left == 0)
+                    {
                         return;
+                    }
 
                     if (item.Amount > left)
                     {
@@ -154,6 +176,7 @@ namespace Server.Engines.MLQuests.Objectives
                         left -= item.Amount;
                     }
                 }
+            }
         }
 
         public override void OnAfterClaimReward()

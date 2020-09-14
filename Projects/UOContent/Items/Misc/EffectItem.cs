@@ -30,13 +30,19 @@ namespace Server.Items
                 m_Free.RemoveAt(i);
 
                 if (!free.Deleted && free.Map == Map.Internal)
+                {
                     item = free;
+                }
             }
 
             if (item == null)
+            {
                 item = new EffectItem();
+            }
             else
+            {
                 item.ItemID = 1;
+            }
 
             item.MoveToWorld(p, map);
             item.BeginFree(duration);

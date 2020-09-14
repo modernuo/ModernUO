@@ -54,7 +54,9 @@ namespace Server.Mobiles
                     m_MountedID = value;
 
                     if (m_Rider != null)
+                    {
                         ItemID = value;
+                    }
                 }
             }
         }
@@ -70,7 +72,9 @@ namespace Server.Mobiles
                     m_RegularID = value;
 
                     if (m_Rider == null)
+                    {
                         ItemID = value;
+                    }
                 }
             }
         }
@@ -100,7 +104,9 @@ namespace Server.Mobiles
                     else
                     {
                         if (m_Rider != null)
+                        {
                             Dismount(m_Rider);
+                        }
 
                         Dismount(value);
 
@@ -134,19 +140,25 @@ namespace Server.Mobiles
             }
 
             if (Core.ML && IsRewardItem)
+            {
                 list.Add(RewardSystem.GetRewardYearLabel(this, new object[] { })); // X Year Veteran Reward
+            }
         }
 
         public void RemoveFollowers()
         {
             if (m_Rider != null)
+            {
                 m_Rider.Followers -= Math.Min(m_Rider.Followers, FollowerSlots);
+            }
         }
 
         public void AddFollowers()
         {
             if (m_Rider != null)
+            {
                 m_Rider.Followers += FollowerSlots;
+            }
         }
 
         public virtual bool Validate(Mobile from)
@@ -158,7 +170,9 @@ namespace Server.Mobiles
             }
 
             if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this) || !BaseMount.CheckMountAllowed(from))
+            {
                 return false;
+            }
 
             if (from.Mounted)
             {
@@ -190,7 +204,9 @@ namespace Server.Mobiles
         public override void OnDoubleClick(Mobile from)
         {
             if (Validate(from))
-                new EtherealSpell(this, from).Cast();
+            {
+                new EtherealSpell(this, @from).Cast();
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -243,7 +259,9 @@ namespace Server.Mobiles
                         m_Rider = reader.ReadMobile();
 
                         if (m_MountedID == 0x3EA2)
+                        {
                             m_MountedID = 0x3EAA;
+                        }
 
                         break;
                     }
@@ -252,7 +270,9 @@ namespace Server.Mobiles
             AddFollowers();
 
             if (version < 3 && Weight == 0)
+            {
                 Weight = -1;
+            }
         }
 
         public override DeathMoveResult OnParentDeath(Mobile parent)
@@ -267,7 +287,9 @@ namespace Server.Mobiles
             var mount = m.Mount;
 
             if (mount != null)
+            {
                 mount.Rider = null;
+            }
         }
 
         public void UnmountMe()
@@ -279,7 +301,9 @@ namespace Server.Mobiles
             Movable = true;
 
             if (Hue == EtherealHue)
+            {
                 Hue = 0;
+            }
 
             if (bp != null)
             {
@@ -307,7 +331,9 @@ namespace Server.Mobiles
             Movable = false;
 
             if (Hue == 0)
+            {
                 Hue = EtherealHue;
+            }
 
             ProcessDelta();
             m_Rider.ProcessDelta();
@@ -364,7 +390,9 @@ namespace Server.Mobiles
             public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable)
             {
                 if (type == DisturbType.EquipRequest || type == DisturbType.UseRequest /* || type == DisturbType.Hurt*/)
+                {
                     return false;
+                }
 
                 return true;
             }
@@ -372,21 +400,27 @@ namespace Server.Mobiles
             public override void DoHurtFizzle()
             {
                 if (!m_Stop)
+                {
                     base.DoHurtFizzle();
+                }
             }
 
             public override void DoFizzle()
             {
                 if (!m_Stop)
+                {
                     base.DoFizzle();
+                }
             }
 
             public override void OnDisturb(DisturbType type, bool message)
             {
                 if (message && !m_Stop)
+                {
                     Caster.SendLocalizedMessage(
                         1049455
                     ); // You have been disrupted while attempting to summon your ethereal mount!
+                }
 
                 // m_Mount.UnmountMe();
             }
@@ -394,7 +428,9 @@ namespace Server.Mobiles
             public override void OnCast()
             {
                 if (!m_Mount.Deleted && m_Mount.Rider == null && m_Mount.Validate(m_Rider))
+                {
                     m_Mount.Rider = m_Rider;
+                }
 
                 FinishSequence();
             }
@@ -430,10 +466,14 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Name == "an ethereal horse")
+            {
                 Name = null;
+            }
 
             if (ItemID == 0x2124)
+            {
                 ItemID = 0x20DD;
+            }
         }
     }
 
@@ -466,7 +506,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Name == "an ethereal llama")
+            {
                 Name = null;
+            }
         }
     }
 
@@ -499,7 +541,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Name == "an ethereal ostard")
+            {
                 Name = null;
+            }
         }
     }
 
@@ -532,7 +576,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Name == "an ethereal ridgeback")
+            {
                 Name = null;
+            }
         }
     }
 
@@ -565,7 +611,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Name == "an ethereal unicorn")
+            {
                 Name = null;
+            }
         }
     }
 
@@ -598,7 +646,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Name == "an ethereal beetle")
+            {
                 Name = null;
+            }
         }
     }
 
@@ -631,7 +681,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Name == "an ethereal kirin")
+            {
                 Name = null;
+            }
         }
     }
 
@@ -664,7 +716,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Name == "an ethereal swamp dragon")
+            {
                 Name = null;
+            }
         }
     }
 
@@ -819,7 +873,10 @@ namespace Server.Mobiles
 
             var version = reader.ReadInt();
 
-            if (version <= 1 && Hue != 0) Hue = 0;
+            if (version <= 1 && Hue != 0)
+            {
+                Hue = 0;
+            }
         }
     }
 }

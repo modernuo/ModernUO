@@ -63,8 +63,12 @@ namespace Server.Mobiles
             base.GetContextMenuEntries(from, list);
 
             for (var i = 0; i < list.Count; ++i)
+            {
                 if (list[i] is PaperdollEntry)
+                {
                     list.RemoveAt(i--);
+                }
+            }
         }
 
         public override int GetIdleSound() => 0x107;
@@ -80,7 +84,10 @@ namespace Server.Mobiles
             {
                 var qs = player.Quest;
 
-                if (qs is UzeraanTurmoilQuest && qs.IsObjectiveInProgress(typeof(FindSchmendrickObjective))) return false;
+                if (qs is UzeraanTurmoilQuest && qs.IsObjectiveInProgress(typeof(FindSchmendrickObjective)))
+                {
+                    return false;
+                }
             }
 
             return base.IsEnemy(m);

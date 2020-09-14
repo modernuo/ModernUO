@@ -38,13 +38,18 @@ namespace Server.Items
             Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x376A, 9, 32, 5022);
             Effects.PlaySound(Location, Map, 0x1F5);
 
-            if (TrapOnOpen) ExecuteTrap(from);
+            if (TrapOnOpen)
+            {
+                ExecuteTrap(@from);
+            }
         }
 
         private void SendMessageTo(Mobile to, int number, int hue)
         {
             if (Deleted || !to.CanSee(this))
+            {
                 return;
+            }
 
             to.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, hue, 3, number, "", ""));
         }
@@ -52,7 +57,9 @@ namespace Server.Items
         private void SendMessageTo(Mobile to, string text, int hue)
         {
             if (Deleted || !to.CanSee(this))
+            {
                 return;
+            }
 
             to.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, hue, 3, "ENU", "", text));
         }
@@ -81,9 +88,13 @@ namespace Server.Items
                                 int damage;
 
                                 if (TrapLevel > 0)
+                                {
                                     damage = Utility.RandomMinMax(10, 30) * TrapLevel;
+                                }
                                 else
+                                {
                                     damage = TrapPower;
+                                }
 
                                 AOS.Damage(from, damage, 0, 100, 0, 0, 0);
 
@@ -99,7 +110,9 @@ namespace Server.Items
                     case TrapType.MagicTrap:
                         {
                             if (from.InRange(loc, 1))
-                                from.Damage(TrapPower);
+                            {
+                                @from.Damage(TrapPower);
+                            }
                             // AOS.Damage( from, m_TrapPower, 0, 100, 0, 0, 0 );
 
                             Effects.PlaySound(loc, Map, 0x307);
@@ -123,9 +136,13 @@ namespace Server.Items
                                 int damage;
 
                                 if (TrapLevel > 0)
+                                {
                                     damage = Utility.RandomMinMax(5, 15) * TrapLevel;
+                                }
                                 else
+                                {
                                     damage = TrapPower;
+                                }
 
                                 AOS.Damage(from, damage, 100, 0, 0, 0, 0);
 
@@ -180,7 +197,9 @@ namespace Server.Items
         public override void Open(Mobile from)
         {
             if (!TrapOnOpen || !ExecuteTrap(from))
-                base.Open(from);
+            {
+                base.Open(@from);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

@@ -48,7 +48,9 @@ namespace Server.Items
         public bool Validate()
         {
             if (!(RootParent is Mobile mobile) || mobile.AccessLevel >= AccessLevel)
+            {
                 return true;
+            }
 
             Delete();
             return false;
@@ -57,13 +59,17 @@ namespace Server.Items
         public override void OnSingleClick(Mobile from)
         {
             if (Validate())
-                base.OnSingleClick(from);
+            {
+                base.OnSingleClick(@from);
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (Validate())
-                base.OnDoubleClick(from);
+            {
+                base.OnDoubleClick(@from);
+            }
         }
 
         public override bool VerifyMove(Mobile from) => from.AccessLevel >= AccessLevel;
@@ -71,7 +77,9 @@ namespace Server.Items
         public override bool OnEquip(Mobile from)
         {
             if (from.AccessLevel < AccessLevel)
-                from.SendMessage("You may not wear this.");
+            {
+                @from.SendMessage("You may not wear this.");
+            }
 
             return from.AccessLevel >= AccessLevel;
         }

@@ -24,7 +24,9 @@ namespace Server.Items
             get
             {
                 if (ItemID < 0x1582)
+                {
                     return (ItemID & 0x1) == 0;
+                }
 
                 return ItemID <= 0x1585;
             }
@@ -62,7 +64,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Core.ML && m_IsRewardItem)
+            {
                 list.Add(1076220); // 4th Year Veteran Reward
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -141,13 +145,17 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076220); // 4th Year Veteran Reward
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {
@@ -224,9 +232,13 @@ namespace Server.Items
                         AddButton(60 + j * 60, 50, 0x845, 0x846, itemID);
 
                         if (itemID < 0x1582)
+                        {
                             itemID += 2;
+                        }
                         else
+                        {
                             itemID += 1;
+                        }
                     }
 
                     switch (i)
@@ -246,7 +258,9 @@ namespace Server.Items
                 if (m_Shield?.Deleted != false || info.ButtonID < Start || info.ButtonID > End ||
                     ((info.ButtonID & 0x1) != 0 || info.ButtonID >= 0x1582) &&
                     (info.ButtonID < 0x1582 || info.ButtonID > 0x1585))
+                {
                     return;
+                }
 
                 sender.Mobile.SendLocalizedMessage(1049780); // Where would you like to place this decoration?
                 sender.Mobile.Target = new InternalTarget(m_Shield, info.ButtonID);
@@ -267,7 +281,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Shield?.Deleted != false)
+                {
                     return;
+                }
 
                 if (!m_Shield.IsChildOf(from.Backpack))
                 {
@@ -287,7 +303,9 @@ namespace Server.Items
                 var map = from.Map;
 
                 if (p == null || map == null)
+                {
                     return;
+                }
 
                 var p3d = new Point3D(p);
                 var id = TileData.ItemTable[m_ItemID & TileData.MaxItemValue];
@@ -363,14 +381,21 @@ namespace Server.Items
                 public override void OnResponse(NetState sender, RelayInfo info)
                 {
                     if (m_Shield?.Deleted != false || m_House == null)
+                    {
                         return;
+                    }
 
                     DecorativeShield shield = null;
 
                     if (info.ButtonID == (int)Buttons.East)
+                    {
                         shield = new DecorativeShield(GetWestItemID(m_ItemID));
+                    }
+
                     if (info.ButtonID == (int)Buttons.South)
+                    {
                         shield = new DecorativeShield(m_ItemID);
+                    }
 
                     if (shield != null)
                     {

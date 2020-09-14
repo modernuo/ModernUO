@@ -106,10 +106,11 @@ namespace Server.Engines.Quests.Haven
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
             if (from is PlayerMobile player)
+            {
                 if (player.Quest is UzeraanTurmoilQuest qs && dropped is Apple &&
-                    UzeraanTurmoilQuest.HasLostFertileDirt(from))
+                    UzeraanTurmoilQuest.HasLostFertileDirt(@from))
                 {
-                    FocusTo(from);
+                    FocusTo(@from);
 
                     Item fertileDirt = new QuestFertileDirt();
 
@@ -126,6 +127,7 @@ namespace Server.Engines.Quests.Haven
                     qs.AddConversation(new DryadAppleConversation());
                     return dropped.Deleted;
                 }
+            }
 
             return base.OnDragDrop(from, dropped);
         }

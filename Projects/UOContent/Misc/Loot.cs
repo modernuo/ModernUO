@@ -335,9 +335,15 @@ namespace Server
         public static BaseWand RandomWand()
         {
             if (Core.ML)
+            {
                 return Construct(NewWandTypes) as BaseWand;
+            }
+
             if (Core.AOS)
+            {
                 return Construct(WandTypes, NewWandTypes) as BaseWand;
+            }
+
             return Construct(OldWandTypes, WandTypes, NewWandTypes) as BaseWand;
         }
 
@@ -346,13 +352,19 @@ namespace Server
         public static BaseClothing RandomClothing(bool inTokuno, bool isMondain)
         {
             if (Core.ML && isMondain)
+            {
                 return Construct(MLClothingTypes, AosClothingTypes, ClothingTypes) as BaseClothing;
+            }
 
             if (Core.SE && inTokuno)
+            {
                 return Construct(SEClothingTypes, AosClothingTypes, ClothingTypes) as BaseClothing;
+            }
 
             if (Core.AOS)
+            {
                 return Construct(AosClothingTypes, ClothingTypes) as BaseClothing;
+            }
 
             return Construct(ClothingTypes) as BaseClothing;
         }
@@ -362,13 +374,19 @@ namespace Server
         public static BaseWeapon RandomRangedWeapon(bool inTokuno, bool isMondain)
         {
             if (Core.ML && isMondain)
+            {
                 return Construct(MLRangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes) as BaseWeapon;
+            }
 
             if (Core.SE && inTokuno)
+            {
                 return Construct(SERangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes) as BaseWeapon;
+            }
 
             if (Core.AOS)
+            {
                 return Construct(AosRangedWeaponTypes, RangedWeaponTypes) as BaseWeapon;
+            }
 
             return Construct(RangedWeaponTypes) as BaseWeapon;
         }
@@ -378,13 +396,19 @@ namespace Server
         public static BaseWeapon RandomWeapon(bool inTokuno, bool isMondain)
         {
             if (Core.ML && isMondain)
+            {
                 return Construct(MLWeaponTypes, AosWeaponTypes, WeaponTypes) as BaseWeapon;
+            }
 
             if (Core.SE && inTokuno)
+            {
                 return Construct(SEWeaponTypes, AosWeaponTypes, WeaponTypes) as BaseWeapon;
+            }
 
             if (Core.AOS)
+            {
                 return Construct(AosWeaponTypes, WeaponTypes) as BaseWeapon;
+            }
 
             return Construct(WeaponTypes) as BaseWeapon;
         }
@@ -394,13 +418,19 @@ namespace Server
         public static Item RandomWeaponOrJewelry(bool inTokuno, bool isMondain)
         {
             if (Core.ML && isMondain)
+            {
                 return Construct(MLWeaponTypes, AosWeaponTypes, WeaponTypes, JewelryTypes);
+            }
 
             if (Core.SE && inTokuno)
+            {
                 return Construct(SEWeaponTypes, AosWeaponTypes, WeaponTypes, JewelryTypes);
+            }
 
             if (Core.AOS)
+            {
                 return Construct(AosWeaponTypes, WeaponTypes, JewelryTypes);
+            }
 
             return Construct(WeaponTypes, JewelryTypes);
         }
@@ -412,10 +442,14 @@ namespace Server
         public static BaseArmor RandomArmor(bool inTokuno, bool isMondain)
         {
             if (Core.ML && isMondain)
+            {
                 return Construct(MLArmorTypes, ArmorTypes) as BaseArmor;
+            }
 
             if (Core.SE && inTokuno)
+            {
                 return Construct(SEArmorTypes, ArmorTypes) as BaseArmor;
+            }
 
             return Construct(ArmorTypes) as BaseArmor;
         }
@@ -425,10 +459,14 @@ namespace Server
         public static BaseHat RandomHat(bool inTokuno)
         {
             if (Core.SE && inTokuno)
+            {
                 return Construct(SEHatTypes, AosHatTypes, HatTypes) as BaseHat;
+            }
 
             if (Core.AOS)
+            {
                 return Construct(AosHatTypes, HatTypes) as BaseHat;
+            }
 
             return Construct(HatTypes) as BaseHat;
         }
@@ -438,13 +476,19 @@ namespace Server
         public static Item RandomArmorOrHat(bool inTokuno, bool isMondain)
         {
             if (Core.ML && isMondain)
+            {
                 return Construct(MLArmorTypes, ArmorTypes, AosHatTypes, HatTypes);
+            }
 
             if (Core.SE && inTokuno)
+            {
                 return Construct(SEArmorTypes, ArmorTypes, SEHatTypes, AosHatTypes, HatTypes);
+            }
 
             if (Core.AOS)
+            {
                 return Construct(ArmorTypes, AosHatTypes, HatTypes);
+            }
 
             return Construct(ArmorTypes, HatTypes);
         }
@@ -452,7 +496,9 @@ namespace Server
         public static BaseShield RandomShield()
         {
             if (Core.AOS)
+            {
                 return Construct(AosShieldTypes, ShieldTypes) as BaseShield;
+            }
 
             return Construct(ShieldTypes) as BaseShield;
         }
@@ -462,13 +508,19 @@ namespace Server
         public static BaseArmor RandomArmorOrShield(bool inTokuno, bool isMondain)
         {
             if (Core.ML && isMondain)
+            {
                 return Construct(MLArmorTypes, ArmorTypes, AosShieldTypes, ShieldTypes) as BaseArmor;
+            }
 
             if (Core.SE && inTokuno)
+            {
                 return Construct(SEArmorTypes, ArmorTypes, AosShieldTypes, ShieldTypes) as BaseArmor;
+            }
 
             if (Core.AOS)
+            {
                 return Construct(ArmorTypes, AosShieldTypes, ShieldTypes) as BaseArmor;
+            }
 
             return Construct(ArmorTypes, ShieldTypes) as BaseArmor;
         }
@@ -478,9 +530,12 @@ namespace Server
         public static Item RandomArmorOrShieldOrJewelry(bool inTokuno, bool isMondain)
         {
             if (Core.ML && isMondain)
+            {
                 return Construct(MLArmorTypes, ArmorTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes, JewelryTypes);
+            }
 
             if (Core.SE && inTokuno)
+            {
                 return Construct(
                     SEArmorTypes,
                     ArmorTypes,
@@ -491,9 +546,12 @@ namespace Server
                     ShieldTypes,
                     JewelryTypes
                 );
+            }
 
             if (Core.AOS)
+            {
                 return Construct(ArmorTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes, JewelryTypes);
+            }
 
             return Construct(ArmorTypes, HatTypes, ShieldTypes, JewelryTypes);
         }
@@ -503,6 +561,7 @@ namespace Server
         public static Item RandomArmorOrShieldOrWeapon(bool inTokuno, bool isMondain)
         {
             if (Core.ML && isMondain)
+            {
                 return Construct(
                     MLWeaponTypes,
                     AosWeaponTypes,
@@ -517,8 +576,10 @@ namespace Server
                     AosShieldTypes,
                     ShieldTypes
                 );
+            }
 
             if (Core.SE && inTokuno)
+            {
                 return Construct(
                     SEWeaponTypes,
                     AosWeaponTypes,
@@ -534,8 +595,10 @@ namespace Server
                     AosShieldTypes,
                     ShieldTypes
                 );
+            }
 
             if (Core.AOS)
+            {
                 return Construct(
                     AosWeaponTypes,
                     WeaponTypes,
@@ -547,6 +610,7 @@ namespace Server
                     AosShieldTypes,
                     ShieldTypes
                 );
+            }
 
             return Construct(WeaponTypes, RangedWeaponTypes, ArmorTypes, HatTypes, ShieldTypes);
         }
@@ -556,6 +620,7 @@ namespace Server
         public static Item RandomArmorOrShieldOrWeaponOrJewelry(bool inTokuno, bool isMondain)
         {
             if (Core.ML && isMondain)
+            {
                 return Construct(
                     MLWeaponTypes,
                     AosWeaponTypes,
@@ -571,8 +636,10 @@ namespace Server
                     ShieldTypes,
                     JewelryTypes
                 );
+            }
 
             if (Core.SE && inTokuno)
+            {
                 return Construct(
                     SEWeaponTypes,
                     AosWeaponTypes,
@@ -589,8 +656,10 @@ namespace Server
                     ShieldTypes,
                     JewelryTypes
                 );
+            }
 
             if (Core.AOS)
+            {
                 return Construct(
                     AosWeaponTypes,
                     WeaponTypes,
@@ -603,6 +672,7 @@ namespace Server
                     ShieldTypes,
                     JewelryTypes
                 );
+            }
 
             return Construct(WeaponTypes, RangedWeaponTypes, ArmorTypes, HatTypes, ShieldTypes, JewelryTypes);
         }
@@ -628,7 +698,9 @@ namespace Server
         public static BaseInstrument RandomInstrument()
         {
             if (Core.SE)
+            {
                 return Construct(InstrumentTypes, SEInstrumentTypes) as BaseInstrument;
+            }
 
             return Construct(InstrumentTypes) as BaseInstrument;
         }
@@ -678,9 +750,13 @@ namespace Server
                 talisman.MaxCharges = Utility.RandomMinMax(10, 50);
 
                 if (talisman.Summoner.IsItem)
+                {
                     talisman.MaxChargeTime = 60;
+                }
                 else
+                {
                     talisman.MaxChargeTime = 1800;
+                }
             }
 
             talisman.Blessed = BaseTalisman.GetRandomBlessed();
@@ -697,7 +773,10 @@ namespace Server
 
         public static Item Construct(Type type)
         {
-            if (type == null) return null;
+            if (type == null)
+            {
+                return null;
+            }
 
             try
             {
@@ -714,7 +793,9 @@ namespace Server
         public static Item Construct(Type[] types, int index)
         {
             if (index >= 0 && index < types.Length)
+            {
                 return Construct(types[index]);
+            }
 
             return null;
         }
@@ -724,7 +805,9 @@ namespace Server
             var totalLength = 0;
 
             for (var i = 0; i < types.Length; ++i)
+            {
                 totalLength += types[i].Length;
+            }
 
             if (totalLength > 0)
             {
@@ -733,7 +816,9 @@ namespace Server
                 for (var i = 0; i < types.Length; ++i)
                 {
                     if (index >= 0 && index < types[i].Length)
+                    {
                         return Construct(types[i][index]);
+                    }
 
                     index -= types[i].Length;
                 }

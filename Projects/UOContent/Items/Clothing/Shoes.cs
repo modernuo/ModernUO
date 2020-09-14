@@ -13,7 +13,9 @@ namespace Server.Items
         public override bool Scissor(Mobile from, Scissors scissors)
         {
             if (DefaultResource == CraftResource.None)
-                return base.Scissor(from, scissors);
+            {
+                return base.Scissor(@from, scissors);
+            }
 
             from.SendLocalizedMessage(502440); // Scissors can not be used on that to produce anything.
             return false;
@@ -176,7 +178,9 @@ namespace Server.Items
                             m_MaxArcaneCharges = reader.ReadInt();
 
                             if (Hue == 2118)
+                            {
                                 Hue = ArcaneGem.DefaultArcaneHue;
+                            }
                         }
 
                         break;
@@ -189,18 +193,26 @@ namespace Server.Items
             base.OnSingleClick(from);
 
             if (IsArcane)
-                LabelTo(from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
+            {
+                LabelTo(@from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
+            }
         }
 
         public void Update()
         {
             if (IsArcane)
+            {
                 ItemID = 0x26AF;
+            }
             else if (ItemID == 0x26AF)
+            {
                 ItemID = 0x1711;
+            }
 
             if (IsArcane && CurArcaneCharges == 0)
+            {
                 Hue = 0;
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -208,15 +220,21 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (IsArcane)
+            {
                 list.Add(1061837, "{0}\t{1}", m_CurArcaneCharges, m_MaxArcaneCharges); // arcane charges: ~1_val~ / ~2_val~
+            }
         }
 
         public void Flip()
         {
             if (ItemID == 0x1711)
+            {
                 ItemID = 0x1712;
+            }
             else if (ItemID == 0x1712)
+            {
                 ItemID = 0x1711;
+            }
         }
     }
 

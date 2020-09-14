@@ -36,7 +36,9 @@ namespace Server.Engines.Craft
         public override double GetChanceAtMin(CraftItem item)
         {
             if (item.NameNumber == 1044258 || item.NameNumber == 1046445) // potion keg and faction trap removal kit
-                return 0.5;                                               // 50%
+            {
+                return 0.5; // 50%
+            }
 
             return 0.0; // 0%
         }
@@ -44,13 +46,21 @@ namespace Server.Engines.Craft
         public override int CanCraft(Mobile from, BaseTool tool, Type itemType)
         {
             if (tool?.Deleted != false || tool.UsesRemaining < 0)
+            {
                 return 1044038; // You have worn out your tool!
+            }
+
             if (!BaseTool.CheckAccessible(tool, from))
+            {
                 return 1044263; // The tool must be on your person to use.
+            }
+
             if (itemType != null &&
                 (itemType.IsSubclassOf(typeof(BaseFactionTrapDeed)) || itemType == typeof(FactionTrapRemovalKit)) &&
                 Faction.Find(from) == null)
+            {
                 return 1044573; // You have to be in a faction to do that.
+            }
 
             return 0;
         }
@@ -58,14 +68,18 @@ namespace Server.Engines.Craft
         public override bool RetainsColorFrom(CraftItem item, Type type)
         {
             if (!type.IsSubclassOf(typeof(BaseIngot)))
+            {
                 return false;
+            }
 
             type = item.ItemType;
 
             var contains = false;
 
             for (var i = 0; !contains && i < m_TinkerColorables.Length; ++i)
+            {
                 contains = m_TinkerColorables[i] == type;
+            }
 
             return contains;
         }
@@ -82,28 +96,44 @@ namespace Server.Engines.Craft
         )
         {
             if (toolBroken)
-                from.SendLocalizedMessage(1044038); // You have worn out your tool
+            {
+                @from.SendLocalizedMessage(1044038); // You have worn out your tool
+            }
 
             if (failed)
             {
                 if (lostMaterial)
+                {
                     return 1044043; // You failed to create the item, and some of your materials are lost.
+                }
+
                 return 1044157;     // You failed to create the item, but no materials were lost.
             }
 
             if (quality == 0)
+            {
                 return 502785; // You were barely able to make this item.  It's quality is below average.
+            }
+
             if (makersMark && quality == 2)
+            {
                 return 1044156; // You create an exceptional quality item and affix your maker's mark.
+            }
+
             if (quality == 2)
+            {
                 return 1044155; // You create an exceptional quality item.
+            }
+
             return 1044154;     // You create the item.
         }
 
         public override bool ConsumeOnFailure(Mobile from, Type resourceType, CraftItem craftItem)
         {
             if (resourceType == typeof(Silver))
+            {
                 return false;
+            }
 
             return base.ConsumeOnFailure(from, resourceType, craftItem);
         }
@@ -567,17 +597,34 @@ namespace Server.Engines.Craft
         private int Verify(LockableContainer container)
         {
             if (container == null || container.KeyValue == 0)
+            {
                 return 1005638; // You can only trap lockable chests.
+            }
+
             if (From.Map != container.Map || !From.InRange(container.GetWorldLocation(), 2))
+            {
                 return 500446; // That is too far away.
+            }
+
             if (!container.Movable)
+            {
                 return 502944; // You cannot trap this item because it is locked down.
+            }
+
             if (!container.IsAccessibleTo(From))
+            {
                 return 502946; // That belongs to someone else.
+            }
+
             if (container.Locked)
+            {
                 return 502943; // You can only trap an unlocked object.
+            }
+
             if (container.TrapType != TrapType.None)
+            {
                 return 502945; // You can only place one trap on an object at a time.
+            }
 
             return 0;
         }
@@ -588,7 +635,10 @@ namespace Server.Engines.Craft
 
             message = Verify(container);
 
-            if (message > 0) return false;
+            if (message > 0)
+            {
+                return false;
+            }
 
             Container = container;
             return true;
@@ -628,6 +678,7 @@ namespace Server.Engines.Craft
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_TrapCraft.Acquire(targeted, out var message))
+                {
                     m_TrapCraft.CraftItem.CompleteCraft(
                         m_TrapCraft.Quality,
                         false,
@@ -637,14 +688,19 @@ namespace Server.Engines.Craft
                         m_TrapCraft.Tool,
                         m_TrapCraft
                     );
+                }
                 else
+                {
                     Failure(message);
+                }
             }
 
             protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
             {
                 if (cancelType == TargetCancelType.Canceled)
+                {
                     Failure(0);
+                }
             }
 
             private void Failure(int message)
@@ -653,9 +709,13 @@ namespace Server.Engines.Craft
                 var tool = m_TrapCraft.Tool;
 
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
-                    from.SendGump(new CraftGump(from, m_TrapCraft.CraftSystem, tool, message));
+                {
+                    @from.SendGump(new CraftGump(@from, m_TrapCraft.CraftSystem, tool, message));
+                }
                 else if (message > 0)
-                    from.SendLocalizedMessage(message);
+                {
+                    @from.SendLocalizedMessage(message);
+                }
             }
         }
     }

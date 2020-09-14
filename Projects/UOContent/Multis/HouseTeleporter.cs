@@ -43,7 +43,9 @@ namespace Server.Items
                 if (CheckAccess(m))
                 {
                     if (!m.Hidden || m.AccessLevel == AccessLevel.Player)
+                    {
                         new EffectTimer(Location, Map, 2023, 0x1F0, TimeSpan.FromSeconds(0.4)).Start();
+                    }
 
                     new DelayTimer(this, m).Start();
                 }
@@ -91,7 +93,9 @@ namespace Server.Items
                         Target = reader.ReadItem();
 
                         if (version < 1)
+                        {
                             Level = SecureLevel.Anyone;
+                        }
 
                         break;
                     }
@@ -125,7 +129,9 @@ namespace Server.Items
                 );
 
                 if (m_SoundID != -1)
+                {
                     Effects.PlaySound(m_Location, m_Map, m_SoundID);
+                }
             }
         }
 
@@ -145,12 +151,16 @@ namespace Server.Items
                 var target = m_Teleporter.Target;
 
                 if (target?.Deleted != false)
+                {
                     return;
+                }
 
                 var m = m_Mobile;
 
                 if (m.Location != m_Teleporter.Location || m.Map != m_Teleporter.Map)
+                {
                     return;
+                }
 
                 var p = target.GetWorldTop();
                 var map = target.Map;
@@ -160,7 +170,9 @@ namespace Server.Items
                 m.MoveToWorld(p, map);
 
                 if (m.Hidden && m.AccessLevel != AccessLevel.Player)
+                {
                     return;
+                }
 
                 Effects.PlaySound(target.Location, target.Map, 0x1FE);
 

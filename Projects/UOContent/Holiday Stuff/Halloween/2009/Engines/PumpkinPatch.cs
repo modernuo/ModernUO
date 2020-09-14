@@ -26,7 +26,9 @@ namespace Server.Engines.Events
             var now = DateTime.UtcNow;
 
             if (now >= HolidaySettings.StartHalloween && now <= HolidaySettings.FinishHalloween)
+            {
                 m_Timer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(30), 0, PumpkinPatchSpawnerCallback);
+            }
         }
 
         protected static void PumpkinPatchSpawnerCallback()
@@ -45,7 +47,9 @@ namespace Server.Engines.Events
                 var pumpkins = map.GetItemsInBounds(rect).OfType<HalloweenPumpkin>().Count();
 
                 if (spawncount > pumpkins)
+                {
                     new HalloweenPumpkin().MoveToWorld(RandomPointIn(rect, map), map);
+                }
             }
         }
 

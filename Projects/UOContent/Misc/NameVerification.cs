@@ -110,9 +110,13 @@ namespace Server.Misc
         public static void ValidateName_OnCommand(CommandEventArgs e)
         {
             if (Validate(e.ArgString, 2, 16, true, false, true, 1, SpaceDashPeriodQuote))
+            {
                 e.Mobile.SendMessage(0x59, "That name is considered valid.");
+            }
             else
+            {
                 e.Mobile.SendMessage(0x22, "That name is considered invalid.");
+            }
         }
 
         public static bool Validate(
@@ -138,7 +142,9 @@ namespace Server.Misc
         )
         {
             if (name == null || name.Length < minLength || name.Length > maxLength)
+            {
                 return false;
+            }
 
             var exceptCount = 0;
 
@@ -146,6 +152,7 @@ namespace Server.Misc
 
             if (!allowLetters || !allowDigits ||
                 exceptions.Length > 0 && (noExceptionsAtStart || maxExceptions < int.MaxValue))
+            {
                 for (var i = 0; i < name.Length; ++i)
                 {
                     var c = name[i];
@@ -153,14 +160,18 @@ namespace Server.Misc
                     if (c >= 'a' && c <= 'z')
                     {
                         if (!allowLetters)
+                        {
                             return false;
+                        }
 
                         exceptCount = 0;
                     }
                     else if (c >= '0' && c <= '9')
                     {
                         if (!allowDigits)
+                        {
                             return false;
+                        }
 
                         exceptCount = 0;
                     }
@@ -169,44 +180,67 @@ namespace Server.Misc
                         var except = false;
 
                         for (var j = 0; !except && j < exceptions.Length; ++j)
+                        {
                             if (c == exceptions[j])
+                            {
                                 except = true;
+                            }
+                        }
 
                         if (!except || i == 0 && noExceptionsAtStart)
+                        {
                             return false;
+                        }
 
                         if (exceptCount++ == maxExceptions)
+                        {
                             return false;
+                        }
                     }
                 }
+            }
 
             for (var i = 0; i < disallowed.Length; ++i)
             {
                 var indexOf = name.IndexOf(disallowed[i]);
 
                 if (indexOf == -1)
+                {
                     continue;
+                }
 
                 var badPrefix = indexOf == 0;
 
                 for (var j = 0; !badPrefix && j < exceptions.Length; ++j)
+                {
                     badPrefix = name[indexOf - 1] == exceptions[j];
+                }
 
                 if (!badPrefix)
+                {
                     continue;
+                }
 
                 var badSuffix = indexOf + disallowed[i].Length >= name.Length;
 
                 for (var j = 0; !badSuffix && j < exceptions.Length; ++j)
+                {
                     badSuffix = name[indexOf + disallowed[i].Length] == exceptions[j];
+                }
 
                 if (badSuffix)
+                {
                     return false;
+                }
             }
 
             for (var i = 0; i < startDisallowed.Length; ++i)
+            {
                 if (name.StartsWith(startDisallowed[i]))
+                {
                     return false;
+                }
+            }
 
             return true;
         }

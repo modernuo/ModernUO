@@ -67,7 +67,9 @@ namespace Server.Items
         public override void OnTrigger(Mobile from)
         {
             if (Poison == null || !from.Player || !from.Alive || from.AccessLevel > AccessLevel.Player)
+            {
                 return;
+            }
 
             Effects.SendLocationEffect(Location, Map, GetBaseID(Type) - 2, 16, 3, GetEffectHue(), 0);
             Effects.PlaySound(Location, Map, 0x231);

@@ -68,10 +68,15 @@ namespace Server.Mobiles
         public override bool Think()
         {
             if (m_Mobile.Deleted)
+            {
                 return false;
+            }
 
             if (ProcessTarget())
+            {
                 return true;
+            }
+
             return base.Think();
         }
 
@@ -116,25 +121,37 @@ namespace Server.Mobiles
         {
             // If I'm poisoned, always attempt to cure.
             if (m_Mobile.Poisoned)
+            {
                 return new CureSpell(m_Mobile);
+            }
 
             // Summoned creatures never heal themselves.
             if (m_Mobile.Summoned)
+            {
                 return null;
+            }
 
             if (m_Mobile.Controlled)
+            {
                 if (Core.TickCount - m_NextHealTime < 0)
+                {
                     return null;
+                }
+            }
 
             if (!SmartAI)
             {
                 if (ScaleBySkill(HealChance, SkillName.Magery) < Utility.RandomDouble())
+                {
                     return null;
+                }
             }
             else
             {
                 if (Utility.Random(0, 4 + (m_Mobile.Hits == 0 ? m_Mobile.HitsMax : m_Mobile.HitsMax / m_Mobile.Hits)) < 3)
+                {
                     return null;
+                }
             }
 
             Spell spell = null;
@@ -142,9 +159,13 @@ namespace Server.Mobiles
             if (m_Mobile.Hits < m_Mobile.HitsMax - 50)
             {
                 if (UseNecromancy())
+                {
                     m_Mobile.UseSkill(SkillName.SpiritSpeak);
+                }
                 else
+                {
                     spell = new GreaterHealSpell(m_Mobile);
+                }
             }
             else if (m_Mobile.Hits < m_Mobile.HitsMax - 10)
             {
@@ -154,9 +175,13 @@ namespace Server.Mobiles
             double delay;
 
             if (m_Mobile.Int >= 500)
+            {
                 delay = Utility.RandomMinMax(7, 10);
+            }
             else
+            {
                 delay = Math.Sqrt(600 - m_Mobile.Int);
+            }
 
             m_NextHealTime = Core.TickCount + (int)TimeSpan.FromSeconds(delay).TotalMilliseconds;
 
@@ -168,7 +193,9 @@ namespace Server.Mobiles
             if (!SmartAI)
             {
                 if (!MoveTo(m, true, m_Mobile.RangeFight))
+                {
                     OnFailedMove();
+                }
 
                 return;
             }
@@ -176,16 +203,22 @@ namespace Server.Mobiles
             if (m.Paralyzed || m.Frozen)
             {
                 if (m_Mobile.InRange(m, 1))
+                {
                     RunFrom(m);
+                }
                 else if (!m_Mobile.InRange(m, m_Mobile.RangeFight > 2 ? m_Mobile.RangeFight : 2) && !MoveTo(m, true, 1))
+                {
                     OnFailedMove();
+                }
             }
             else
             {
                 if (!m_Mobile.InRange(m, m_Mobile.RangeFight))
                 {
                     if (!MoveTo(m, true, 1))
+                    {
                         OnFailedMove();
+                    }
                 }
                 else if (m_Mobile.InRange(m, m_Mobile.RangeFight - 1))
                 {
@@ -228,22 +261,28 @@ namespace Server.Mobiles
         {
             if (m_Mobile.Spell?.IsCasting == true || m_Mobile.Paralyzed || m_Mobile.Frozen ||
                 m_Mobile.DisallowAllMoves)
+            {
                 return;
+            }
 
             m_Mobile.Direction = d | Direction.Running;
 
             if (!DoMove(m_Mobile.Direction, true))
+            {
                 OnFailedMove();
+            }
         }
 
         public virtual bool UseNecromancy()
         {
             if (IsNecromancer)
+            {
                 return Utility.Random(
                            m_Mobile.Skills.Magery.BaseFixedPoint +
                            m_Mobile.Skills.Necromancy.BaseFixedPoint
                        ) >=
                        m_Mobile.Skills.Magery.BaseFixedPoint;
+            }
 
             return false;
         }
@@ -322,7 +361,9 @@ namespace Server.Mobiles
         public virtual Spell GetRandomCurseSpellMage()
         {
             if (m_Mobile.Skills.Magery.Value >= 40.0 && Utility.Random(4) == 0)
+            {
                 return new CurseSpell(m_Mobile);
+            }
 
             return Utility.Random(3) switch
             {
@@ -335,7 +376,9 @@ namespace Server.Mobiles
         public virtual Spell GetRandomManaDrainSpell()
         {
             if (m_Mobile.Skills.Magery.Value >= 80.0 && Utility.RandomBool())
+            {
                 return new ManaVampireSpell(m_Mobile);
+            }
 
             return new ManaDrainSpell(m_Mobile);
         }
@@ -345,7 +388,9 @@ namespace Server.Mobiles
             if (!SmartAI)
             {
                 if (ScaleBySkill(DispelChance, SkillName.Magery) > Utility.RandomDouble())
+                {
                     return new DispelSpell(m_Mobile);
+                }
 
                 return ChooseSpell(toDispel);
             }
@@ -355,11 +400,17 @@ namespace Server.Mobiles
             if (spell == null)
             {
                 if (!m_Mobile.DisallowAllMoves && Utility.Random((int)m_Mobile.GetDistanceToSqrt(toDispel)) == 0)
+                {
                     spell = new TeleportSpell(m_Mobile);
+                }
                 else if (Utility.Random(3) == 0 && !m_Mobile.InRange(toDispel, 3) && !toDispel.Paralyzed && !toDispel.Frozen)
+                {
                     spell = new ParalyzeSpell(m_Mobile);
+                }
                 else
+                {
                     spell = new DispelSpell(m_Mobile);
+                }
             }
 
             return spell;
@@ -374,7 +425,9 @@ namespace Server.Mobiles
                 spell = CheckCastHealingSpell();
 
                 if (spell != null)
+                {
                     return spell;
+                }
 
                 if (IsNecromancer)
                 {
@@ -383,7 +436,9 @@ namespace Server.Mobiles
                         (c.Player ? 18 : 30);
 
                     if (psDamage > c.Hits)
+                    {
                         return new PainSpikeSpell(m_Mobile);
+                    }
                 }
 
                 switch (Utility.Random(16))
@@ -392,7 +447,9 @@ namespace Server.Mobiles
                     case 1: // Poison them
                         {
                             if (c.Poisoned)
+                            {
                                 goto default;
+                            }
 
                             m_Mobile.DebugSay("Attempting to poison");
 
@@ -417,7 +474,9 @@ namespace Server.Mobiles
                     case 5: // Paralyze them
                         {
                             if (c.Paralyzed || m_Mobile.Skills.Magery.Value <= 50.0)
+                            {
                                 goto default;
+                            }
 
                             m_Mobile.DebugSay("Attempting to paralyze");
 
@@ -434,7 +493,9 @@ namespace Server.Mobiles
                     case 7: // Invis ourselves
                         {
                             if (Utility.RandomBool())
+                            {
                                 goto default;
+                            }
 
                             m_Mobile.DebugSay("Attempting to invis myself");
 
@@ -456,14 +517,18 @@ namespace Server.Mobiles
             spell = CheckCastHealingSpell();
 
             if (spell != null)
+            {
                 return spell;
+            }
 
             switch (Utility.Random(3))
             {
                 case 0: // Poison them
                     {
                         if (c.Poisoned)
+                        {
                             goto case 1;
+                        }
 
                         spell = new PoisonSpell(m_Mobile);
                         break;
@@ -527,9 +592,13 @@ namespace Server.Mobiles
             else if (m_Combo == 2)
             {
                 if (!c.Poisoned)
+                {
                     spell = new PoisonSpell(m_Mobile);
+                }
                 else if (IsNecromancer)
+                {
                     spell = new StrangleSpell(m_Mobile);
+                }
 
                 ++m_Combo; // Move to next spell
             }
@@ -541,9 +610,13 @@ namespace Server.Mobiles
                     case 0:
                         {
                             if (c.Int < c.Dex)
+                            {
                                 spell = new FeeblemindSpell(m_Mobile);
+                            }
                             else
+                            {
                                 spell = new ClumsySpell(m_Mobile);
+                            }
 
                             ++m_Combo; // Move to next spell
 
@@ -580,7 +653,10 @@ namespace Server.Mobiles
 
         private TimeSpan GetDelay(Spell spell)
         {
-            if (SmartAI || spell is DispelSpell) return TimeSpan.FromSeconds(m_Mobile.ActiveSpeed);
+            if (SmartAI || spell is DispelSpell)
+            {
+                return TimeSpan.FromSeconds(m_Mobile.ActiveSpeed);
+            }
 
             var del = ScaleBySkill(3.0, SkillName.Magery);
             var min = 6.0 - del * 0.75;
@@ -632,7 +708,9 @@ namespace Server.Mobiles
 
             if (!Core.AOS && SmartAI && !m_Mobile.StunReady && m_Mobile.Skills.Wrestling.Value >= 80.0 &&
                 m_Mobile.Skills.Anatomy.Value >= 80.0)
+            {
                 EventSink.InvokeStunRequest(m_Mobile);
+            }
 
             if (!m_Mobile.InRange(c, m_Mobile.RangePerception))
             {
@@ -660,6 +738,7 @@ namespace Server.Mobiles
             }
 
             if (!m_Mobile.Controlled && !m_Mobile.Summoned && m_Mobile.CanFlee)
+            {
                 if (m_Mobile.Hits < m_Mobile.HitsMax * 20 / 100)
                 {
                     // We are low on health, should we flee?
@@ -687,6 +766,7 @@ namespace Server.Mobiles
                         return true;
                     }
                 }
+            }
 
             if (m_Mobile.Spell == null && Core.TickCount - m_NextCastTime >= 0 && m_Mobile.InRange(c, Core.ML ? 10 : 12))
             {
@@ -727,9 +807,13 @@ namespace Server.Mobiles
                 if (SmartAI && toDispel != null)
                 {
                     if (m_Mobile.InRange(toDispel, 10))
+                    {
                         RunFrom(toDispel);
+                    }
                     else if (!m_Mobile.InRange(toDispel, Core.ML ? 10 : 12))
+                    {
                         RunTo(toDispel);
+                    }
                 }
                 else
                 {
@@ -769,7 +853,9 @@ namespace Server.Mobiles
                     Spell spell = new RevealSpell(m_Mobile);
 
                     if (spell.Cast())
+                    {
                         m_LastTarget = null; // only do it once
+                    }
 
                     m_NextCastTime = Core.TickCount + (int)GetDelay(spell).TotalMilliseconds;
                 }
@@ -816,7 +902,9 @@ namespace Server.Mobiles
                 m_Mobile.FocusMob = null;
 
                 if (m_Mobile.Poisoned && Utility.Random(0, 5) == 0)
+                {
                     new CureSpell(m_Mobile).Cast();
+                }
             }
             else
             {
@@ -832,7 +920,9 @@ namespace Server.Mobiles
         public Mobile FindDispelTarget(bool activeOnly)
         {
             if (m_Mobile.Deleted || m_Mobile.Int < 95 || CanDispel(m_Mobile) || m_Mobile.AutoDispel)
+            {
                 return null;
+            }
 
             if (activeOnly)
             {
@@ -851,7 +941,9 @@ namespace Server.Mobiles
                     activePrio = m_Mobile.GetDistanceToSqrt(comb);
 
                     if (activePrio <= 2)
+                    {
                         return active;
+                    }
                 }
 
                 for (var i = 0; i < aggressed.Count; ++i)
@@ -869,7 +961,9 @@ namespace Server.Mobiles
                             activePrio = prio;
 
                             if (activePrio <= 2)
+                            {
                                 return active;
+                            }
                         }
                     }
                 }
@@ -889,7 +983,9 @@ namespace Server.Mobiles
                             activePrio = prio;
 
                             if (activePrio <= 2)
+                            {
                                 return active;
+                            }
                         }
                     }
                 }
@@ -913,6 +1009,7 @@ namespace Server.Mobiles
                 }
 
                 foreach (var m in m_Mobile.GetMobilesInRange(Core.ML ? 10 : 12))
+                {
                     if (m != m_Mobile && CanDispel(m))
                     {
                         var prio = m_Mobile.GetDistanceToSqrt(m);
@@ -929,6 +1026,7 @@ namespace Server.Mobiles
                             actPrio = prio;
                         }
                     }
+                }
 
                 return active ?? inactive;
             }
@@ -945,7 +1043,9 @@ namespace Server.Mobiles
             var targ = m_Mobile.Target;
 
             if (targ == null)
+            {
                 return false;
+            }
 
             var spellTarg = targ as ISpellTarget;
 
@@ -967,9 +1067,13 @@ namespace Server.Mobiles
                 toTarget = FindDispelTarget(false);
 
                 if (!SmartAI && toTarget != null)
+                {
                     RunTo(toTarget);
+                }
                 else if (toTarget != null && m_Mobile.InRange(toTarget, 10))
+                {
                     RunFrom(toTarget);
+                }
             }
             else if (SmartAI && (isParalyze || isTeleport))
             {
@@ -980,7 +1084,9 @@ namespace Server.Mobiles
                     toTarget = m_Mobile.Combatant;
 
                     if (toTarget != null)
+                    {
                         RunTo(toTarget);
+                    }
                 }
                 else if (m_Mobile.InRange(toTarget, 10))
                 {
@@ -997,15 +1103,22 @@ namespace Server.Mobiles
                 toTarget = m_Mobile.Combatant;
 
                 if (toTarget != null)
+                {
                     RunTo(toTarget);
+                }
             }
 
             if ((targ.Flags & TargetFlags.Harmful) != 0 && toTarget != null)
             {
                 if ((targ.Range == -1 || m_Mobile.InRange(toTarget, targ.Range)) && m_Mobile.CanSee(toTarget) &&
                     m_Mobile.InLOS(toTarget))
+                {
                     targ.Invoke(m_Mobile, toTarget);
-                else if (isDispel) targ.Cancel(m_Mobile, TargetCancelType.Canceled);
+                }
+                else if (isDispel)
+                {
+                    targ.Cancel(m_Mobile, TargetCancelType.Canceled);
+                }
             }
             else if ((targ.Flags & TargetFlags.Beneficial) != 0)
             {

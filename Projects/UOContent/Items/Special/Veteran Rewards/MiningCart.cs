@@ -138,8 +138,11 @@ namespace Server.Items
              */
 
             if (!from.InRange(GetWorldLocation(), 2) || !from.InLOS(this) || !(from.Z - Z > -3 && from.Z - Z < 3))
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            {
+                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            }
             else if (house?.HasSecureAccess(from, SecureLevel.Friends) == true)
+            {
                 switch (CartType)
                 {
                     case MiningCartType.OreSouth:
@@ -164,10 +167,10 @@ namespace Server.Items
                             // ReSharper disable once PossibleNullReferenceException
                             ingots.Amount = amount;
 
-                            if (!from.PlaceInBackpack(ingots))
+                            if (!@from.PlaceInBackpack(ingots))
                             {
                                 ingots.Delete();
-                                from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
+                                @from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
                             }
                             else
                             {
@@ -177,7 +180,7 @@ namespace Server.Items
                         }
                         else
                         {
-                            from.SendLocalizedMessage(1094725); // There are no more resources available at this time.
+                            @from.SendLocalizedMessage(1094725); // There are no more resources available at this time.
                         }
 
                         break;
@@ -203,16 +206,16 @@ namespace Server.Items
                                 11 => new Turquoise(),
                                 12 => new EcruCitrine(),
                                 13 => new FireRuby(),
-                                _ => new BlueDiamond() // 14
+                                _  => new BlueDiamond() // 14
                             };
 
                             var amount = Math.Min(5, Gems);
                             gems.Amount = amount;
 
-                            if (!from.PlaceInBackpack(gems))
+                            if (!@from.PlaceInBackpack(gems))
                             {
                                 gems.Delete();
-                                from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
+                                @from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
                             }
                             else
                             {
@@ -222,13 +225,16 @@ namespace Server.Items
                         }
                         else
                         {
-                            from.SendLocalizedMessage(1094725); // There are no more resources available at this time.
+                            @from.SendLocalizedMessage(1094725); // There are no more resources available at this time.
                         }
 
                         break;
                 }
+            }
             else
-                from.SendLocalizedMessage(1061637); // You are not allowed to access this.
+            {
+                @from.SendLocalizedMessage(1061637); // You are not allowed to access this.
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -244,9 +250,13 @@ namespace Server.Items
             writer.Write(Ore);
 
             if (m_Timer != null)
+            {
                 writer.Write(m_Timer.Next);
+            }
             else
+            {
                 writer.Write(DateTime.UtcNow + TimeSpan.FromDays(1));
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -268,7 +278,9 @@ namespace Server.Items
                     var next = reader.ReadDateTime();
 
                     if (next < DateTime.UtcNow)
+                    {
                         next = DateTime.UtcNow;
+                    }
 
                     m_Timer = Timer.DelayCall(next - DateTime.UtcNow, TimeSpan.FromDays(1), GiveResources);
                     break;
@@ -334,7 +346,9 @@ namespace Server.Items
             m_CartType = (MiningCartType)choice;
 
             if (!Deleted)
-                base.OnDoubleClick(from);
+            {
+                base.OnDoubleClick(@from);
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -342,13 +356,17 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1080457); // 10th Year Veteran Reward
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {

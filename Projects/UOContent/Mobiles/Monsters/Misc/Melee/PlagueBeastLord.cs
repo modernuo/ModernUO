@@ -60,9 +60,15 @@ namespace Server.Mobiles
                 var pack = Backpack;
 
                 if (pack != null)
+                {
                     for (var i = 0; i < pack.Items.Count; i++)
+                    {
                         if (pack.Items[i] is PlagueBeastBlood blood && !blood.Patched)
+                        {
                             return true;
+                        }
+                    }
+                }
 
                 return false;
             }
@@ -79,7 +85,9 @@ namespace Server.Mobiles
                 m_Timer ??= new DecayTimer(this);
 
                 if (!m_Timer.Running)
+                {
                     m_Timer.Start();
+                }
 
                 m_Timer.StartDissolving();
 
@@ -92,13 +100,15 @@ namespace Server.Mobiles
                     var m = state.Mobile;
 
                     if (m?.Player == true && m != from)
+                    {
                         PrivateOverheadMessage(
                             MessageType.Regular,
                             0x3B2,
                             1071919,
-                            from.Name,
+                            @from.Name,
                             m.NetState
                         ); // * ~1_VAL~ slices through the plague beast's amorphous tissue *
+                    }
                 }
 
                 from.LocalOverheadMessage(
@@ -113,11 +123,13 @@ namespace Server.Mobiles
         public virtual bool Scissor(Mobile from, Scissors scissors)
         {
             if (IsAccessibleTo(from))
+            {
                 scissors.PublicOverheadMessage(
                     MessageType.Regular,
                     0x3B2,
                     1071918
                 ); // You can't cut through the plague beast's amorphous skin with scissors!
+            }
 
             return false;
         }
@@ -127,21 +139,27 @@ namespace Server.Mobiles
             if (IsAccessibleTo(from))
             {
                 if (OpenedBy != null && Backpack != null)
-                    Backpack.DisplayTo(from);
+                {
+                    Backpack.DisplayTo(@from);
+                }
                 else
+                {
                     PrivateOverheadMessage(
                         MessageType.Regular,
                         0x3B2,
                         1071917,
-                        from.NetState
+                        @from.NetState
                     ); // * You attempt to tear open the amorphous flesh, but it resists *
+                }
             }
         }
 
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
             if (IsAccessibleTo(from) && (dropped is PlagueBeastInnard || dropped is PlagueBeastGland))
-                return base.OnDragDrop(from, dropped);
+            {
+                return base.OnDragDrop(@from, dropped);
+            }
 
             return false;
         }
@@ -151,18 +169,24 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             for (var i = c.Items.Count - 1; i >= 0; i--)
+            {
                 c.Items[i].Delete();
+            }
         }
 
         public override void OnDelete()
         {
             if (OpenedBy?.Holding is PlagueBeastInnard)
+            {
                 OpenedBy.Holding.Delete();
+            }
 
             if (Backpack != null)
             {
                 for (var i = Backpack.Items.Count - 1; i >= 0; i--)
+                {
                     Backpack.Items[i].Delete();
+                }
 
                 Backpack.Delete();
             }
@@ -175,7 +199,9 @@ namespace Server.Mobiles
             base.OnMovement(m, oldLocation);
 
             if (Backpack != null && IsAccessibleTo(m) && m.InRange(oldLocation, 3) && !m.InRange(this, 3))
+            {
                 Backpack.SendRemovePacket();
+            }
         }
 
         public override bool CheckNonlocalLift(Mobile from, Item item) => true;
@@ -220,19 +246,27 @@ namespace Server.Mobiles
         public virtual bool IsAccessibleTo(Mobile check)
         {
             if (check.AccessLevel >= AccessLevel.GameMaster)
+            {
                 return true;
+            }
 
             if (!InRange(check, 2))
+            {
                 PrivateOverheadMessage(MessageType.Label, 0x3B2, 500446, check.NetState); // That is too far away.
+            }
             else if (OpenedBy != null && OpenedBy != check)
+            {
                 PrivateOverheadMessage(
                     MessageType.Label,
                     0x3B2,
                     500365,
                     check.NetState
                 ); // That is being used by someone else
+            }
             else if (Frozen)
+            {
                 return true;
+            }
 
             return false;
         }
@@ -244,7 +278,9 @@ namespace Server.Mobiles
             Blessed = false;
 
             if (OpenedBy == null)
+            {
                 Hue = 0;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -285,7 +321,9 @@ namespace Server.Mobiles
             }
 
             if (FightMode == FightMode.None)
+            {
                 Frozen = true;
+            }
         }
 
         private class DecayTimer : Timer
@@ -317,11 +355,13 @@ namespace Server.Mobiles
                 if (Count + 15 == Deadline)
                 {
                     if (m_Lord.OpenedBy != null)
+                    {
                         m_Lord.PublicOverheadMessage(
                             MessageType.Regular,
                             0x3B2,
                             1071921
                         ); // * The plague beast begins to bubble and dissolve! *
+                    }
 
                     m_Lord.PlaySound(0x103);
                 }
@@ -338,7 +378,9 @@ namespace Server.Mobiles
                     m_Lord.Unfreeze();
 
                     if (m_Lord.OpenedBy != null)
+                    {
                         m_Lord.Kill();
+                    }
 
                     Stop();
                 }

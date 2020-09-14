@@ -23,7 +23,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             base.OnDoubleClick(from);
         }
@@ -33,7 +35,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Core.ML && IsRewardItem)
+            {
                 list.Add(1076217); // 1st Year Veteran Reward
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -61,7 +65,9 @@ namespace Server.Items
             }
 
             if (LootType == LootType.Regular)
+            {
                 LootType = LootType.Blessed;
+            }
         }
     }
 }

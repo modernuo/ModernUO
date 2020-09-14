@@ -47,7 +47,9 @@ namespace Server.Accounting
             var filePath = Path.Combine("Saves/Accounts", "accounts.xml");
 
             if (!File.Exists(filePath))
+            {
                 return;
+            }
 
             var doc = new XmlDocument();
             doc.Load(filePath);
@@ -55,6 +57,7 @@ namespace Server.Accounting
             var root = doc["accounts"];
 
             foreach (XmlElement account in root.GetElementsByTagName("account"))
+            {
                 try
                 {
                     new Account(account);
@@ -63,12 +66,15 @@ namespace Server.Accounting
                 {
                     Console.WriteLine("Warning: Account instance load failed");
                 }
+            }
         }
 
         public static void Save(bool message)
         {
             if (!Directory.Exists("Saves/Accounts"))
+            {
                 Directory.CreateDirectory("Saves/Accounts");
+            }
 
             var filePath = Path.Combine("Saves/Accounts", "accounts.xml");
 
@@ -82,7 +88,9 @@ namespace Server.Accounting
             xml.WriteAttributeString("count", m_Accounts.Count.ToString());
 
             foreach (Account a in GetAccounts())
+            {
                 a.Save(xml);
+            }
 
             xml.WriteEndElement();
 

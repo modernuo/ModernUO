@@ -26,10 +26,15 @@ namespace Server.Items
         public bool CouldFit(IPoint3D p, Map map)
         {
             if (!map.CanFit(p.X, p.Y, p.Z, ItemData.Height))
+            {
                 return false;
+            }
 
             if (ItemID == 0x232C)
+            {
                 return BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map); // North wall
+            }
+
             return BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map);     // West wall
         }
 
@@ -38,7 +43,9 @@ namespace Server.Items
         public virtual bool Dye(Mobile from, DyeTub sender)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             var house = BaseHouse.FindHouseAt(this);
 
@@ -76,7 +83,9 @@ namespace Server.Items
         private void FixMovingCrate()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (Movable || IsLockedDown)
             {
@@ -138,7 +147,9 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_Addon.Deleted)
+                {
                     return;
+                }
 
                 if (info.ButtonID == 1)
                 {
@@ -217,7 +228,9 @@ namespace Server.Items
         public void Placement_OnTarget(Mobile from, object targeted)
         {
             if (!(targeted is IPoint3D p))
+            {
                 return;
+            }
 
             var loc = new Point3D(p);
 
@@ -229,9 +242,13 @@ namespace Server.Items
                 var westWall = BaseAddon.IsWall(loc.X - 1, loc.Y, loc.Z, from.Map);
 
                 if (northWall && westWall)
-                    from.SendGump(new WreathDeedGump(from, loc, this));
+                {
+                    @from.SendGump(new WreathDeedGump(@from, loc, this));
+                }
                 else
-                    PlaceAddon(from, loc, northWall, westWall);
+                {
+                    PlaceAddon(@from, loc, northWall, westWall);
+                }
             }
             else
             {
@@ -242,7 +259,9 @@ namespace Server.Items
         private void PlaceAddon(Mobile from, Point3D loc, bool northWall, bool westWall)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             var house = BaseHouse.FindHouseAt(loc, from.Map, 16);
 
@@ -255,11 +274,17 @@ namespace Server.Items
             var itemID = 0;
 
             if (northWall)
+            {
                 itemID = 0x232C;
+            }
             else if (westWall)
+            {
                 itemID = 0x232D;
+            }
             else
-                from.SendLocalizedMessage(1062840); // The decoration must be placed next to a wall.
+            {
+                @from.SendLocalizedMessage(1062840); // The decoration must be placed next to a wall.
+            }
 
             if (itemID > 0)
             {
@@ -298,7 +323,9 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_Deed.Deleted)
+                {
                     return;
+                }
 
                 switch (info.ButtonID)
                 {

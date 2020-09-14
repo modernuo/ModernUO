@@ -32,9 +32,13 @@ namespace Server.Mobiles
             base.InitOutfit();
 
             if (Utility.RandomBool())
+            {
                 AddItem(new Kryss());
+            }
             else
+            {
                 AddItem(new Dagger());
+            }
         }
 
         public override bool CheckCustomReqs(PlayerMobile pm)
@@ -68,7 +72,9 @@ namespace Server.Mobiles
         public override bool HandlesOnSpeech(Mobile from)
         {
             if (from.InRange(Location, 2))
+            {
                 return true;
+            }
 
             return base.HandlesOnSpeech(from);
         }
@@ -80,9 +86,13 @@ namespace Server.Mobiles
             if (!e.Handled && from is PlayerMobile pm && pm.InRange(Location, 2) && e.HasKeyword(0x1F)) // *disguise*
             {
                 if (pm.NpcGuild == NpcGuild.ThievesGuild)
+                {
                     SayTo(pm, 501839); // That particular item costs 700 gold pieces.
+                }
                 else
+                {
                     SayTo(pm, 501838); // I don't know what you're talking about.
+                }
 
                 e.Handled = true;
             }
@@ -93,6 +103,7 @@ namespace Server.Mobiles
         public override bool OnGoldGiven(Mobile from, Gold dropped)
         {
             if (from is PlayerMobile pm && dropped.Amount == 700)
+            {
                 if (pm.NpcGuild == NpcGuild.ThievesGuild)
                 {
                     pm.AddToBackpack(new DisguiseKit());
@@ -100,6 +111,7 @@ namespace Server.Mobiles
                     dropped.Delete();
                     return true;
                 }
+            }
 
             return base.OnGoldGiven(from, dropped);
         }

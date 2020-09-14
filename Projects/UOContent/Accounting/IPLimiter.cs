@@ -27,7 +27,9 @@ namespace Server.Misc
         public static bool Verify(IPAddress ourAddress)
         {
             if (!Enabled || IsExempt(ourAddress))
+            {
                 return true;
+            }
 
             var netStates = TcpServer.Instances;
 
@@ -42,7 +44,9 @@ namespace Server.Misc
                     ++count;
 
                     if (count >= MaxAddresses)
+                    {
                         return false;
+                    }
                 }
             }
 

@@ -60,7 +60,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Item.Deleted)
+                {
                     return;
+                }
 
                 /*if (targeted is Item && !((Item)targeted).IsStandardLoot())
                 {
@@ -84,13 +86,19 @@ namespace Server.Items
                 else if (targeted is Item item && !item.Movable)
                 {
                     if (item is IScissorable obj && (obj is PlagueBeastInnard || obj is PlagueBeastMutationCore))
-                        if (CanScissor(from, obj) && obj.Scissor(from, m_Item))
-                            from.PlaySound(0x248);
+                    {
+                        if (CanScissor(@from, obj) && obj.Scissor(@from, m_Item))
+                        {
+                            @from.PlaySound(0x248);
+                        }
+                    }
                 }
                 else if (targeted is IScissorable obj)
                 {
                     if (CanScissor(from, obj) && obj.Scissor(from, m_Item))
-                        from.PlaySound(0x248);
+                    {
+                        @from.PlaySound(0x248);
+                    }
                 }
                 else
                 {
@@ -103,7 +111,9 @@ namespace Server.Items
                 if (targeted is IScissorable obj && (obj is PlagueBeastInnard || obj is PlagueBeastMutationCore))
                 {
                     if (CanScissor(from, obj) && obj.Scissor(from, m_Item))
-                        from.PlaySound(0x248);
+                    {
+                        @from.PlaySound(0x248);
+                    }
                 }
                 else
                 {

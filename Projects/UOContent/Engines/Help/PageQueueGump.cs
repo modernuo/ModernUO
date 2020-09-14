@@ -63,9 +63,13 @@ namespace Server.Engines.Help
 
                 if (e.Sender.Deleted || e.Sender.NetState == null)
                     // e.AddResponse(e.Sender, "[Logout]");
+                {
                     PageQueue.Remove(e);
+                }
                 else
+                {
                     ++i;
+                }
             }
 
             m_List = list.ToArray();
@@ -171,7 +175,9 @@ namespace Server.Engines.Help
             var path = Path.Combine(Core.BaseDirectory, "Data/pageresponse.cfg");
 
             if (!File.Exists(path))
+            {
                 return new List<PredefinedResponse>();
+            }
 
             var list = new List<PredefinedResponse>();
 
@@ -183,12 +189,16 @@ namespace Server.Engines.Help
                 while ((line = ip.ReadLine()?.Trim()) != null)
                 {
                     if (line.Length == 0 || line.StartsWith("#"))
+                    {
                         continue;
+                    }
 
                     var split = line.Split('\t');
 
                     if (split.Length == 2)
+                    {
                         list.Add(new PredefinedResponse(split[0], split[1]));
+                    }
                 }
             }
             catch (Exception e)
@@ -253,14 +263,22 @@ namespace Server.Engines.Help
                         AddButton(370, 44 + i % 5 * 80 + 24, 0xFA5, 0xFA7, 2 + i * 3);
 
                         if (i > 0)
+                        {
                             AddButton(377, 44 + i % 5 * 80 + 2, 0x15E0, 0x15E4, 3 + i * 3);
+                        }
                         else
+                        {
                             AddImage(377, 44 + i % 5 * 80 + 2, 0x25E4);
+                        }
 
                         if (i < list.Count - 1)
+                        {
                             AddButton(377, 44 + i % 5 * 80 + 70 - 2 - 16, 0x15E2, 0x15E6, 4 + i * 3);
+                        }
                         else
+                        {
                             AddImage(377, 44 + i % 5 * 80 + 70 - 2 - 16, 0x25E8);
+                        }
                     }
                 }
 
@@ -313,7 +331,9 @@ namespace Server.Engines.Help
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_From.AccessLevel < AccessLevel.Administrator)
+            {
                 return;
+            }
 
             if (m_Response == null)
             {
@@ -397,7 +417,9 @@ namespace Server.Engines.Help
                             var te = info.GetTextEntry(0);
 
                             if (te != null)
+                            {
                                 m_Response.Title = te.Text;
+                            }
 
                             PredefinedResponse.Save();
                             m_From.SendGump(new PredefGump(m_From, m_Response));
@@ -409,7 +431,9 @@ namespace Server.Engines.Help
                             var te = info.GetTextEntry(1);
 
                             if (te != null)
+                            {
                                 m_Response.Message = te.Text;
+                            }
 
                             PredefinedResponse.Save();
                             m_From.SendGump(new PredefGump(m_From, m_Response));
@@ -745,7 +769,9 @@ namespace Server.Engines.Help
 
                         if (text != null)
                             // m_Entry.AddResponse(state.Mobile, "[Response] " + text.Text);
+                        {
                             m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, state.Mobile.Name, text.Text));
+                        }
                         // m_Entry.Sender.SendMessage( 0x482, "{0} tells you:", state.Mobile.Name );
                         // m_Entry.Sender.SendMessage( 0x482, text.Text );
 
@@ -765,7 +791,9 @@ namespace Server.Engines.Help
                         Resend(state);
 
                         if (m_Entry.SpeechLog != null)
+                        {
                             state.Mobile.SendGump(new SpeechLogGump(m_Entry.Sender, m_Entry.SpeechLog));
+                        }
 
                         break;
                     }
@@ -776,6 +804,7 @@ namespace Server.Engines.Help
 
                         if (index >= 0 && index < preresp.Count)
                             // m_Entry.AddResponse(state.Mobile, "[PreDef] " + preresp[index].Title);
+                        {
                             m_Entry.Sender.SendGump(
                                 new MessageSentGump(
                                     m_Entry.Sender,
@@ -783,6 +812,7 @@ namespace Server.Engines.Help
                                     preresp[index].Message
                                 )
                             );
+                        }
 
                         Resend(state);
 

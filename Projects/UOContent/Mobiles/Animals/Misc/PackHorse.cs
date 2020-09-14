@@ -81,7 +81,9 @@ namespace Server.Mobiles
         public override bool OnBeforeDeath()
         {
             if (!base.OnBeforeDeath())
+            {
                 return false;
+            }
 
             PackAnimal.CombineBackpacks(this);
 
@@ -93,7 +95,9 @@ namespace Server.Mobiles
         public override bool IsSnoop(Mobile from)
         {
             if (PackAnimal.CheckAccess(this, from))
+            {
                 return false;
+            }
 
             return base.IsSnoop(from);
         }
@@ -101,7 +105,9 @@ namespace Server.Mobiles
         public override bool OnDragDrop(Mobile from, Item item)
         {
             if (CheckFeed(from, item))
+            {
                 return true;
+            }
 
             if (PackAnimal.CheckAccess(this, from))
             {
@@ -140,7 +146,9 @@ namespace Server.Mobiles
             m_From = from;
 
             if (animal.IsDeadPet)
+            {
                 Enabled = false;
+            }
         }
 
         public override void OnClick()
@@ -154,17 +162,23 @@ namespace Server.Mobiles
         public static void GetContextMenuEntries(BaseCreature animal, Mobile from, List<ContextMenuEntry> list)
         {
             if (CheckAccess(animal, from))
-                list.Add(new PackAnimalBackpackEntry(animal, from));
+            {
+                list.Add(new PackAnimalBackpackEntry(animal, @from));
+            }
         }
 
         public static bool CheckAccess(BaseCreature animal, Mobile from)
         {
             if (from == animal || from.AccessLevel >= AccessLevel.GameMaster)
+            {
                 return true;
+            }
 
             if (from.Alive && animal.Controlled && !animal.IsDeadPet &&
                 (from == animal.ControlMaster || from == animal.SummonMaster || animal.IsPetFriend(from)))
+            {
                 return true;
+            }
 
             return false;
         }
@@ -172,10 +186,14 @@ namespace Server.Mobiles
         public static void CombineBackpacks(BaseCreature animal)
         {
             if (Core.AOS)
+            {
                 return;
+            }
 
             if (animal.IsBonded || animal.IsDeadPet)
+            {
                 return;
+            }
 
             var pack = animal.Backpack;
 
@@ -186,7 +204,9 @@ namespace Server.Mobiles
                 for (var i = pack.Items.Count - 1; i >= 0; --i)
                 {
                     if (i >= pack.Items.Count)
+                    {
                         continue;
+                    }
 
                     newPack.DropItem(pack.Items[i]);
                 }
@@ -198,12 +218,16 @@ namespace Server.Mobiles
         public static void TryPackOpen(BaseCreature animal, Mobile from)
         {
             if (animal.IsDeadPet)
+            {
                 return;
+            }
 
             var item = animal.Backpack;
 
             if (item != null)
-                from.Use(item);
+            {
+                @from.Use(item);
+            }
         }
     }
 }

@@ -64,11 +64,17 @@ namespace Server.Items
                 var toDamage = new List<Mobile>();
 
                 foreach (var m in GetMobilesInRange(0))
+                {
                     if (m.Alive && !m.IsDeadBondedPet && (!(m is BaseCreature bc) || bc.Controlled || bc.Summoned))
+                    {
                         toDamage.Add(m);
+                    }
+                }
 
                 for (var i = 0; i < toDamage.Count; i++)
+                {
                     Damage(toDamage[i]);
+                }
             }
         }
 

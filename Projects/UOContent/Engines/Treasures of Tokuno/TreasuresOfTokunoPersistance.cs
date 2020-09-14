@@ -7,9 +7,13 @@ namespace Server.Misc
             Movable = false;
 
             if (Instance?.Deleted != false)
+            {
                 Instance = this;
+            }
             else
+            {
                 base.Delete();
+            }
         }
 
         public TreasuresOfTokunoPersistance(Serial serial) : base(serial) => Instance = this;
@@ -21,7 +25,9 @@ namespace Server.Misc
         public static void Initialize()
         {
             if (Instance == null)
+            {
                 new TreasuresOfTokunoPersistance();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

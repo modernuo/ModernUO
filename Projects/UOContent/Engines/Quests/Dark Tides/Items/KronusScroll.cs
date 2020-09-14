@@ -28,7 +28,9 @@ namespace Server.Engines.Quests.Necro
         public override void OnDoubleClick(Mobile from)
         {
             if (!IsChildOf(from))
+            {
                 return;
+            }
 
             if (from is PlayerMobile pm)
             {
@@ -59,7 +61,9 @@ namespace Server.Engines.Quests.Necro
                             QuestObjective obj = qs.FindObjective<UseCallingScrollObjective>();
 
                             if (obj?.Completed == false)
+                            {
                                 obj.Complete();
+                            }
 
                             Delete();
                             new CallingTimer(pm).Start();
@@ -121,7 +125,9 @@ namespace Server.Engines.Quests.Necro
                 }
 
                 if (!m_Player.Mounted)
+                {
                     m_Player.Animate(Utility.RandomBool() ? 16 : 17, 7, 1, true, false, 0);
+                }
 
                 if (m_Step == 4)
                 {

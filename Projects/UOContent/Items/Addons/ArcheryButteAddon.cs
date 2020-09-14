@@ -47,9 +47,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if ((Arrows > 0 || Bolts > 0) && from.InRange(GetWorldLocation(), 1))
-                Gather(from);
+            {
+                Gather(@from);
+            }
             else
-                Fire(from);
+            {
+                Fire(@from);
+            }
         }
 
         public void Gather(Mobile from)
@@ -57,10 +61,14 @@ namespace Server.Items
             from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500592); // You gather the arrows and bolts.
 
             if (Arrows > 0)
-                from.AddToBackpack(new Arrow(Arrows));
+            {
+                @from.AddToBackpack(new Arrow(Arrows));
+            }
 
             if (Bolts > 0)
-                from.AddToBackpack(new Bolt(Bolts));
+            {
+                @from.AddToBackpack(new Bolt(Bolts));
+            }
 
             Arrows = 0;
             Bolts = 0;
@@ -71,10 +79,14 @@ namespace Server.Items
         private ScoreEntry GetEntryFor(Mobile from)
         {
             if (m_Entries == null)
+            {
                 m_Entries = new Dictionary<Mobile, ScoreEntry>();
+            }
 
             if (!m_Entries.TryGetValue(from, out var e))
-                m_Entries[from] = e = new ScoreEntry();
+            {
+                m_Entries[@from] = e = new ScoreEntry();
+            }
 
             return e;
         }
@@ -88,7 +100,9 @@ namespace Server.Items
             }
 
             if (DateTime.UtcNow < LastUse + UseDelay)
+            {
                 return;
+            }
 
             var worldLoc = GetWorldLocation();
 
@@ -138,19 +152,25 @@ namespace Server.Items
             if (pack?.ConsumeTotal(ammoType) != true)
             {
                 if (isArrow)
-                    from.LocalOverheadMessage(
+                {
+                    @from.LocalOverheadMessage(
                         MessageType.Regular,
                         0x3B2,
                         500594
                     ); // You do not have any arrows with which to practice.
+                }
                 else if (isBolt)
-                    from.LocalOverheadMessage(
+                {
+                    @from.LocalOverheadMessage(
                         MessageType.Regular,
                         0x3B2,
                         500595
                     ); // You do not have any crossbow bolts with which to practice.
+                }
                 else
-                    SendLocalizedMessageTo(from, 500593); // You must practice with ranged weapons on this.
+                {
+                    SendLocalizedMessageTo(@from, 500593); // You must practice with ranged weapons on this.
+                }
 
                 return;
             }
@@ -172,9 +192,13 @@ namespace Server.Items
                 se.Record(0);
 
                 if (se.Count == 1)
+                {
                     PublicOverheadMessage(MessageType.Regular, 0x3B2, 1062719, se.Total.ToString());
+                }
                 else
+                {
                     PublicOverheadMessage(MessageType.Regular, 0x3B2, 1042683, $"{se.Total}\t{se.Count}");
+                }
 
                 return;
             }
@@ -226,17 +250,25 @@ namespace Server.Items
                 PublicOverheadMessage(MessageType.Regular, 0x3B2, 1010035 + area, from.Name);
 
                 if (isArrow)
+                {
                     ++Arrows;
+                }
                 else if (isBolt)
+                {
                     ++Bolts;
+                }
             }
 
             se.Record(split ? splitScore : score);
 
             if (se.Count == 1)
+            {
                 PublicOverheadMessage(MessageType.Regular, 0x3B2, 1062719, se.Total.ToString());
+            }
             else
+            {
                 PublicOverheadMessage(MessageType.Regular, 0x3B2, 1042683, $"{se.Total}\t{se.Count}");
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

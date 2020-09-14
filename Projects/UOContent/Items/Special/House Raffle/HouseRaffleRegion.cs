@@ -16,18 +16,26 @@ namespace Server.Regions
         public override bool AllowHousing(Mobile from, Point3D p)
         {
             if (m_Stone == null)
+            {
                 return false;
+            }
 
             if (m_Stone.IsExpired)
+            {
                 return true;
+            }
 
             if (m_Stone.Deed == null)
+            {
                 return false;
+            }
 
             var pack = from.Backpack;
 
             if (pack != null && ContainsDeed(pack))
+            {
                 return true;
+            }
 
             var bank = from.FindBankNoCreate();
 

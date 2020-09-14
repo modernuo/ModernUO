@@ -26,7 +26,9 @@ namespace Server.Engines.BulkOrders
             var entries = useMaterials ? SmallBulkEntry.TailorLeather : SmallBulkEntry.TailorCloth;
 
             if (entries.Length <= 0)
+            {
                 return;
+            }
 
             var hue = 0x483;
             var amountMax = Utility.RandomList(10, 15, 20);
@@ -74,24 +76,35 @@ namespace Server.Engines.BulkOrders
 
             // Ugly, but the easiest leather BOD is Leather Cap which requires at least 6.2 skill.
             if (useMaterials && theirSkill >= 6.2)
+            {
                 entries = SmallBulkEntry.TailorLeather;
+            }
             else
+            {
                 entries = SmallBulkEntry.TailorCloth;
+            }
 
             if (entries.Length > 0)
             {
                 int amountMax;
 
                 if (theirSkill >= 70.1)
+                {
                     amountMax = Utility.RandomList(10, 15, 20, 20);
+                }
                 else if (theirSkill >= 50.1)
+                {
                     amountMax = Utility.RandomList(10, 15, 15, 20);
+                }
                 else
+                {
                     amountMax = Utility.RandomList(10, 10, 15, 20);
+                }
 
                 var material = BulkMaterialType.None;
 
                 if (useMaterials && theirSkill >= 70.1)
+                {
                     for (var i = 0; i < 20; ++i)
                     {
                         var check = GetRandomMaterial(BulkMaterialType.Spined, m_TailoringMaterialChances);
@@ -116,11 +129,14 @@ namespace Server.Engines.BulkOrders
                             break;
                         }
                     }
+                }
 
                 var excChance = 0.0;
 
                 if (theirSkill >= 70.1)
+                {
                     excChance = (theirSkill + 80.0) / 200.0;
+                }
 
                 var reqExceptional = excChance > Utility.RandomDouble();
 
@@ -140,10 +156,14 @@ namespace Server.Engines.BulkOrders
                         if (allRequiredSkills && chance >= 0.0)
                         {
                             if (reqExceptional)
+                            {
                                 chance = item.GetExceptionalChance(system, chance, m);
+                            }
 
                             if (chance > 0.0)
+                            {
                                 validEntries.Add(entries[i]);
+                            }
                         }
                     }
                 }

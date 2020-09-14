@@ -140,7 +140,9 @@ namespace Server.Multis
             var table = new int[length];
 
             for (var i = 0; i < table.Length; ++i)
+            {
                 table[i] = -1;
+            }
 
             return table;
         }
@@ -162,7 +164,9 @@ namespace Server.Multis
             var tileCIDs = new int[tileColumns.Length];
 
             for (var i = 0; i < tileColumns.Length; ++i)
+            {
                 tileCIDs[i] = ss.GetColumnID(tileColumns[i]);
+            }
 
             var featureCID = ss.GetColumnID("FeatureMask");
 
@@ -177,7 +181,9 @@ namespace Server.Multis
                     var itemID = record.GetInt32(tileCIDs[j]);
 
                     if (itemID <= 0 || itemID >= table.Length)
+                    {
                         continue;
+                    }
 
                     table[itemID] = fid;
                 }
@@ -198,7 +204,9 @@ namespace Server.Multis
             m_Columns = new ColumnInfo[types.Length];
 
             for (var i = 0; i < m_Columns.Length; ++i)
+            {
                 m_Columns[i] = new ColumnInfo(i, types[i], names[i]);
+            }
 
             var records = new List<DataRecord>();
 
@@ -238,8 +246,12 @@ namespace Server.Multis
         public int GetColumnID(string name)
         {
             for (var i = 0; i < m_Columns.Length; ++i)
+            {
                 if (m_Columns[i].m_Name == name)
+                {
                     return i;
+                }
+            }
 
             return -1;
         }
@@ -249,8 +261,12 @@ namespace Server.Multis
             string line;
 
             while ((line = ip.ReadLine()) != null)
+            {
                 if (line.Length > 0)
+                {
                     return line.Split('\t');
+                }
+            }
 
             return null;
         }

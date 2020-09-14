@@ -9,9 +9,13 @@ namespace Server.Items
         public Torch() : base(0xF6B)
         {
             if (Burnout)
+            {
                 Duration = TimeSpan.FromMinutes(30);
+            }
             else
+            {
                 Duration = TimeSpan.Zero;
+            }
 
             Burning = false;
             Light = LightType.Circle300;
@@ -33,7 +37,9 @@ namespace Server.Items
             base.OnAdded(parent);
 
             if (parent is Mobile mobile && Burning)
+            {
                 MeerMage.StopEffect(mobile, true);
+            }
         }
 
         public override void Ignite()
@@ -41,7 +47,9 @@ namespace Server.Items
             base.Ignite();
 
             if (Parent is Mobile mobile && Burning)
+            {
                 MeerMage.StopEffect(mobile, true);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -56,7 +64,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 2.0)
+            {
                 Weight = 1.0;
+            }
         }
     }
 }

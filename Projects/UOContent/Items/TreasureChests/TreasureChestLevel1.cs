@@ -46,19 +46,27 @@ namespace Server.Items
 
             // Weapon
             if (Utility.RandomBool())
+            {
                 DropItem(Loot.RandomWeapon());
+            }
 
             // Armour
             if (Utility.RandomBool())
+            {
                 DropItem(Loot.RandomArmorOrShield());
+            }
 
             // Clothing
             if (Utility.RandomBool())
+            {
                 DropItem(Loot.RandomClothing());
+            }
 
             // Jewelry
             if (Utility.RandomBool())
+            {
                 DropItem(Loot.RandomJewelry());
+            }
         }
 
         public TreasureChestLevel1(Serial serial)

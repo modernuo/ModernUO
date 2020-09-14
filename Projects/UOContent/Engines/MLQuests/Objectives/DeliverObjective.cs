@@ -22,7 +22,9 @@ namespace Server.Engines.MLQuests.Objectives
                 var itemid = CollectObjective.LabelToItemID(name.Number);
 
                 if (itemid <= 0 || itemid > 0x4000)
+                {
                     Console.WriteLine("Warning: cliloc {0} is likely giving the wrong item ID", name.Number);
+                }
             }
         }
 
@@ -39,14 +41,18 @@ namespace Server.Engines.MLQuests.Objectives
         public virtual void SpawnDelivery(Container pack)
         {
             if (!SpawnsDelivery || pack == null)
+            {
                 return;
+            }
 
             var delivery = new List<Item>();
 
             for (var i = 0; i < Amount; ++i)
             {
                 if (!(ActivatorUtil.CreateInstance(Delivery) is Item item))
+                {
                     continue;
+                }
 
                 delivery.Add(item);
 
@@ -58,7 +64,9 @@ namespace Server.Engines.MLQuests.Objectives
             }
 
             foreach (var item in delivery)
+            {
                 pack.DropItem(item); // Confirmed: on OSI items are added even if your pack is full
+            }
         }
 
         public override void WriteToGump(Gump g, ref int y)
@@ -135,7 +143,9 @@ namespace Server.Engines.MLQuests.Objectives
             var pack = Instance.Player.Backpack;
 
             if (pack == null)
+            {
                 return 0;
+            }
 
             var items = pack.FindItemsByType(Objective.Delivery, false); // Note: subclasses are included
             return items.Sum(item => item.Amount);
@@ -164,7 +174,9 @@ namespace Server.Engines.MLQuests.Objectives
             var pack = Instance.Player.Backpack;
 
             if (pack == null)
+            {
                 return;
+            }
 
             var items = pack.FindItemsByType(Objective.Delivery, false);
             var left = Objective.Amount;
@@ -172,7 +184,9 @@ namespace Server.Engines.MLQuests.Objectives
             foreach (var item in items)
             {
                 if (left == 0)
+                {
                     break;
+                }
 
                 if (item.Amount > left)
                 {

@@ -88,7 +88,9 @@ namespace Server.Factions
             var idx = (int)title - 1;
 
             if (idx >= 0 && idx < Info.Length)
+            {
                 return Info[idx];
+            }
 
             return null;
         }
@@ -96,8 +98,12 @@ namespace Server.Factions
         public static bool HasMerchantQualifications(Mobile mob)
         {
             for (var i = 0; i < Info.Length; ++i)
+            {
                 if (IsQualified(mob, Info[i]))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -107,7 +113,9 @@ namespace Server.Factions
         public static bool IsQualified(Mobile mob, MerchantTitleInfo info)
         {
             if (mob == null || info == null)
+            {
                 return false;
+            }
 
             return mob.Skills[info.Skill].Value >= info.Requirement;
         }

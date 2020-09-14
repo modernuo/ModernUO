@@ -54,12 +54,14 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomBool())
+            {
                 if (!Kappa.IsBeingDrained(defender) && Mana > 14)
                 {
                     defender.SendLocalizedMessage(1070848); // You feel your life force being stolen away.
                     Kappa.BeginLifeDrain(defender, this);
                     Mana -= 15;
                 }
+            }
         }
 
         public override void GenerateLoot()

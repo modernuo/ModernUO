@@ -82,9 +82,13 @@ namespace Server.Items
             set
             {
                 if (value < 3)
+                {
                     value = 3;
+                }
                 else if (value > 6)
+                {
                     value = 6;
+                }
 
                 if (m_SideLength != value)
                 {
@@ -117,16 +121,24 @@ namespace Server.Items
                 var count = 0;
 
                 if (current.X > 0 && !visited[current.X - 1, current.Y])
+                {
                     choices[count++] = PathDirection.Left;
+                }
 
                 if (current.Y > 0 && !visited[current.X, current.Y - 1])
+                {
                     choices[count++] = PathDirection.Up;
+                }
 
                 if (current.X < SideLength - 1 && !visited[current.X + 1, current.Y])
+                {
                     choices[count++] = PathDirection.Right;
+                }
 
                 if (current.Y < SideLength - 1 && !visited[current.X, current.Y + 1])
+                {
                     choices[count++] = PathDirection.Down;
+                }
 
                 if (count > 0)
                 {
@@ -143,7 +155,9 @@ namespace Server.Items
                     stack[stackSize++] = current;
 
                     if (current.X == SideLength - 1 && current.Y == SideLength - 1)
+                    {
                         break;
+                    }
 
                     visited[current.X, current.Y] = true;
                 }
@@ -155,7 +169,10 @@ namespace Server.Items
 
             Path = new Node[stackSize];
 
-            for (var i = 0; i < stackSize; i++) Path[i] = stack[i];
+            for (var i = 0; i < stackSize; i++)
+            {
+                Path[i] = stack[i];
+            }
 
             if (m_User != null)
             {
@@ -175,7 +192,9 @@ namespace Server.Items
             if (m_User != null)
             {
                 if (m_User == from)
+                {
                     return;
+                }
 
                 if (m_User.Deleted || m_User.Map != Map || !m_User.InRange(this, 3)
                     || m_User.NetState == null || DateTime.UtcNow - m_LastUse >= m_UseTimeout)
@@ -216,7 +235,9 @@ namespace Server.Items
             AOS.Damage(to, to, 60, 0, 0, 0, 0, 100);
 
             if (!to.Alive)
+            {
                 return;
+            }
 
             if (!m_DamageTable.Contains(to))
             {
@@ -240,7 +261,10 @@ namespace Server.Items
 
             from.SendMessage("You scrounge some gems from the wreckage.");
 
-            for (var i = 0; i < SideLength; i++) from.AddToBackpack(new ArcaneGem());
+            for (var i = 0; i < SideLength; i++)
+            {
+                @from.AddToBackpack(new ArcaneGem());
+            }
 
             from.AddToBackpack(new Diamond(SideLength));
 
@@ -280,7 +304,10 @@ namespace Server.Items
             m_SideLength = reader.ReadEncodedInt();
 
             Path = new Node[reader.ReadEncodedInt()];
-            for (var i = 0; i < Path.Length; i++) Path[i] = new Node(reader.ReadEncodedInt(), reader.ReadEncodedInt());
+            for (var i = 0; i < Path.Length; i++)
+            {
+                Path[i] = new Node(reader.ReadEncodedInt(), reader.ReadEncodedInt());
+            }
         }
 
         public struct Node
@@ -351,12 +378,20 @@ namespace Server.Items
                 AddBackground(100, 125, 10 + 40 * sideLength, 10 + 40 * sideLength, 0x1400);
 
                 for (var i = 0; i < sideLength; i++)
+                {
                     for (var j = 0; j < sideLength - 1; j++)
+                    {
                         AddImage(120 + 40 * i, 162 + 40 * j, 0x13F9);
+                    }
+                }
 
                 for (var i = 0; i < sideLength - 1; i++)
+                {
                     for (var j = 0; j < sideLength; j++)
+                    {
                         AddImage(138 + 40 * i, 147 + 40 * j, 0x13FD);
+                    }
+                }
 
                 var path = panel.Path;
 
@@ -372,8 +407,12 @@ namespace Server.Items
                 hues[lastNode.X, lastNode.Y] = NodeHue.Red;
 
                 for (var i = 0; i < sideLength; i++)
+                {
                     for (var j = 0; j < sideLength; j++)
+                    {
                         AddNode(110 + 40 * i, 135 + 40 * j, hues[i, j]);
+                    }
+                }
 
                 var curNode = path[step];
                 AddImage(118 + 40 * curNode.X, 143 + 40 * curNode.Y, 0x13A8);
@@ -425,7 +464,9 @@ namespace Server.Items
                     var lockpicking = m_From.Skills.Lockpicking.Value;
 
                     if (lockpicking < 65.0)
+                    {
                         return;
+                    }
 
                     m_From.PlaySound(0x241);
 
@@ -533,7 +574,10 @@ namespace Server.Items
 
                 AOS.Damage(m_To, m_To, 20, 0, 0, 0, 0, 100);
 
-                if (++m_Step >= 3 || !m_To.Alive) End();
+                if (++m_Step >= 3 || !m_To.Alive)
+                {
+                    End();
+                }
             }
 
             private void End()

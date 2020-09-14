@@ -88,9 +88,13 @@ namespace Server.Items
         public virtual void Activate(AddonComponent c, Mobile from)
         {
             if (c.ItemID == 0x125E || c.ItemID == 0x1269 || c.ItemID == 0x1260)
+            {
                 c.ItemID = 0x1269;
+            }
             else
+            {
                 c.ItemID = 0x1247;
+            }
 
             // blood
             var amount = Utility.RandomMinMax(3, 7);
@@ -106,7 +110,9 @@ namespace Server.Items
                     z = c.Map.GetAverageZ(x, y);
 
                     if (!c.Map.CanFit(x, y, z, 1, false, false))
+                    {
                         continue;
+                    }
                 }
 
                 var blood = new Blood(Utility.RandomMinMax(0x122C, 0x122F));
@@ -114,9 +120,13 @@ namespace Server.Items
             }
 
             if (from.Female)
-                from.PlaySound(Utility.RandomMinMax(0x150, 0x153));
+            {
+                @from.PlaySound(Utility.RandomMinMax(0x150, 0x153));
+            }
             else
-                from.PlaySound(Utility.RandomMinMax(0x15A, 0x15D));
+            {
+                @from.PlaySound(Utility.RandomMinMax(0x15A, 0x15D));
+            }
 
             from.LocalOverheadMessage(
                 MessageType.Regular,
@@ -131,13 +141,21 @@ namespace Server.Items
         private void Deactivate(AddonComponent c)
         {
             if (c.ItemID == 0x1269)
+            {
                 c.ItemID = 0x1260;
+            }
             else if (c.ItemID == 0x1260)
+            {
                 c.ItemID = 0x125E;
+            }
             else if (c.ItemID == 0x1247)
+            {
                 c.ItemID = 0x1246;
+            }
             else if (c.ItemID == 0x1246)
+            {
                 c.ItemID = 0x1230;
+            }
         }
     }
 

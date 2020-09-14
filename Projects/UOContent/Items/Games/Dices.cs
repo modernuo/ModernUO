@@ -22,7 +22,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (!from.InRange(GetWorldLocation(), 2))
+            {
                 return;
+            }
 
             Roll(from);
         }

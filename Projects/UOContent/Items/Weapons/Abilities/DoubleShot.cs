@@ -36,7 +36,10 @@ namespace Server.Items
             if (base.Validate(from))
             {
                 if (from.Mounted)
+                {
                     return true;
+                }
+
                 from.SendLocalizedMessage(1070770); // You can only execute this attack while mounted!
                 ClearCurrentAbility(from);
             }
@@ -47,7 +50,9 @@ namespace Server.Items
         public void Use(Mobile attacker, Mobile defender)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true) || attacker.Weapon == null) // sanity
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 

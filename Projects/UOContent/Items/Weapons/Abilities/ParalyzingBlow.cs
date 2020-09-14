@@ -53,7 +53,9 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
@@ -83,7 +85,9 @@ namespace Server.Items
         public static void BeginImmunity(Mobile m, TimeSpan duration)
         {
             if (m_Table.TryGetValue(m, out var timer))
+            {
                 timer?.Stop();
+            }
 
             m_Table[m] = timer = new InternalTimer(m, duration);
             timer.Start();

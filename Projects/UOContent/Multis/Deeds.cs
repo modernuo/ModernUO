@@ -14,26 +14,38 @@ namespace Server.Multis.Deeds
             if (o is IPoint3D ip)
             {
                 if (ip is Item item)
+                {
                     ip = item.GetWorldTop();
+                }
 
                 var p = new Point3D(ip);
 
                 var reg = Region.Find(new Point3D(p), from.Map);
 
                 if (from.AccessLevel >= AccessLevel.GameMaster || reg.AllowHousing(from, p))
-                    m_Deed.OnPlacement(from, p);
+                {
+                    m_Deed.OnPlacement(@from, p);
+                }
                 else if (reg.IsPartOf<TempNoHousingRegion>())
-                    from.SendLocalizedMessage(
+                {
+                    @from.SendLocalizedMessage(
                         501270
                     ); // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+                }
                 else if (reg.IsPartOf<TreasureRegion>() || reg.IsPartOf<HouseRegion>())
-                    from.SendLocalizedMessage(
+                {
+                    @from.SendLocalizedMessage(
                         1043287
                     ); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
+                }
                 else if (reg.IsPartOf<HouseRaffleRegion>())
-                    from.SendLocalizedMessage(1150493); // You must have a deed for this plot of land in order to build here.
+                {
+                    @from.SendLocalizedMessage(1150493); // You must have a deed for this plot of land in order to build here.
+                }
                 else
-                    from.SendLocalizedMessage(501265); // Housing can not be created in this area.
+                {
+                    @from.SendLocalizedMessage(501265); // Housing can not be created in this area.
+                }
             }
         }
     }
@@ -95,7 +107,9 @@ namespace Server.Multis.Deeds
             }
 
             if (Weight == 0.0)
+            {
                 Weight = 1.0;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -124,7 +138,9 @@ namespace Server.Multis.Deeds
         public void OnPlacement(Mobile from, Point3D p)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (!IsChildOf(from.Backpack))
             {
@@ -152,9 +168,13 @@ namespace Server.Multis.Deeds
                                 object o = toMove[i];
 
                                 if (o is Mobile mobile)
+                                {
                                     mobile.Location = house.BanLocation;
+                                }
                                 else if (o is Item item)
+                                {
                                     item.Location = house.BanLocation;
+                                }
                             }
 
                             break;

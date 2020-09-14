@@ -94,7 +94,9 @@ namespace Server.Commands.Generic
                         );
 
                     if (!couldCompare)
+                    {
                         throw new InvalidOperationException("Property is not comparable.");
+                    }
 
                     emitter.StoreLocal(v);
                 }
@@ -225,7 +227,9 @@ namespace Server.Commands.Generic
                     }
 
                     if (i > 0)
+                    {
                         emitter.Xor();
+                    }
                 }
 
                 emitter.Return();

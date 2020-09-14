@@ -16,7 +16,9 @@ namespace Server.Engines.Events
             var now = DateTime.UtcNow;
 
             if (DateTime.UtcNow >= HolidaySettings.StartHalloween && DateTime.UtcNow <= HolidaySettings.FinishHalloween)
+            {
                 EventSink.Speech += EventSink_Speech;
+            }
         }
 
         private static void EventSink_Speech(SpeechEventArgs e)
@@ -32,22 +34,28 @@ namespace Server.Engines.Events
         public static void Bleeding(Mobile m_From)
         {
             if (CheckMobile(m_From))
+            {
                 if (m_From.Location != Point3D.Zero)
                 {
                     var amount = Utility.RandomMinMax(3, 7);
 
                     for (var i = 0; i < amount; i++)
+                    {
                         new Blood(Utility.RandomMinMax(0x122C, 0x122F)).MoveToWorld(
                             RandomPointOneAway(m_From.X, m_From.Y, m_From.Z, m_From.Map),
                             m_From.Map
                         );
+                    }
                 }
+            }
         }
 
         public static void RemoveHueMod(Mobile target)
         {
             if (target?.Deleted == false)
+            {
                 target.SolidHueOverride = -1;
+            }
         }
 
         public static void SolidHueMobile(Mobile target)
@@ -69,20 +77,32 @@ namespace Server.Engines.Events
                 Mobile twin = new NaughtyTwin(m_From);
 
                 if (twin.Deleted)
+                {
                     return;
+                }
 
                 foreach (var item in m_From.Items)
+                {
                     if (item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank)
+                    {
                         m_Items.Add(item);
+                    }
+                }
 
                 if (m_Items.Count > 0)
                 {
                     for (var i = 0; i < m_Items.Count; i++) /* dupe exploits start out like this ... */
+                    {
                         twin.AddItem(Mobile.LiftItemDupe(m_Items[i], 1));
+                    }
 
                     foreach (var item in twin.Items) /* ... and end like this */
+                    {
                         if (item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank)
+                        {
                             item.Movable = false;
+                        }
+                    }
                 }
 
                 twin.Hue = m_From.Hue;
@@ -99,7 +119,10 @@ namespace Server.Engines.Events
 
         public static void DeleteTwin(Mobile m_Twin)
         {
-            if (CheckMobile(m_Twin)) m_Twin.Delete();
+            if (CheckMobile(m_Twin))
+            {
+                m_Twin.Delete();
+            }
         }
 
         public static Point3D RandomPointOneAway(int x, int y, int z, Map map)
@@ -124,7 +147,9 @@ namespace Server.Engines.Events
             protected override void OnTarget(Mobile from, object targ)
             {
                 if (targ == null || !CheckMobile(from))
+                {
                     return;
+                }
 
                 if (!(targ is Mobile))
                 {
@@ -153,7 +178,9 @@ namespace Server.Engines.Events
                     begged.NextTrickOrTreat = now + TimeSpan.FromMinutes(Utility.RandomMinMax(5, 10));
 
                     if (from.Backpack?.Deleted != false)
+                    {
                         return;
+                    }
 
                     if (Utility.RandomDouble() > .10)
                     {
@@ -186,11 +213,17 @@ namespace Server.Engines.Events
                         var action = Utility.Random(4);
 
                         if (action == 0)
-                            Timer.DelayCall(OneSecond, OneSecond, 10, Bleeding, from);
+                        {
+                            Timer.DelayCall(OneSecond, OneSecond, 10, Bleeding, @from);
+                        }
                         else if (action == 1)
-                            Timer.DelayCall(TimeSpan.FromSeconds(2), SolidHueMobile, from);
+                        {
+                            Timer.DelayCall(TimeSpan.FromSeconds(2), SolidHueMobile, @from);
+                        }
                         else
-                            Timer.DelayCall(TimeSpan.FromSeconds(2), MakeTwin, from);
+                        {
+                            Timer.DelayCall(TimeSpan.FromSeconds(2), MakeTwin, @from);
+                        }
                     }
                 }
             }
@@ -261,7 +294,9 @@ namespace Server.Engines.Events
         public override void OnThink()
         {
             if (m_From?.Deleted != false)
+            {
                 Delete();
+            }
         }
 
         public static Item FindCandyTypes(Mobile target)
@@ -270,7 +305,9 @@ namespace Server.Engines.Events
                 { typeof(WrappedCandy), typeof(Lollipops), typeof(NougatSwirl), typeof(Taffy), typeof(JellyBeans) };
 
             if (TrickOrTreat.CheckMobile(target))
+            {
                 return target.Backpack.FindItemByType(types);
+            }
 
             return null;
         }
@@ -286,7 +323,9 @@ namespace Server.Engines.Events
                     target.SendLocalizedMessage(1113967); /* Your naughty twin steals some of your candy. */
 
                     if (item?.Deleted == false)
+                    {
                         item.Delete();
+                    }
                 }
                 else
                 {

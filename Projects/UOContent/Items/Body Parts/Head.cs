@@ -38,7 +38,9 @@ namespace Server.Items
             get
             {
                 if (PlayerName == null)
+                {
                     return base.DefaultName;
+                }
 
                 return HeadType switch
                 {
@@ -78,7 +80,9 @@ namespace Server.Items
                     if (format != null)
                     {
                         if (format.StartsWith("the head of "))
+                        {
                             format = format.Substring("the head of ".Length);
+                        }
 
                         if (format.EndsWith(", taken in a duel"))
                         {

@@ -57,9 +57,14 @@ namespace Server.Engines.Craft
                     var maxSkill = difficulty + 25;
 
                     if (value < minSkill)
+                    {
                         return false; // Too difficult
+                    }
+
                     if (value >= maxSkill)
+                    {
                         return true; // No challenge
+                    }
 
                     var chance = (value - minSkill) / (maxSkill - minSkill);
 
@@ -71,7 +76,10 @@ namespace Server.Engines.Craft
 
             private bool CheckDeed(Mobile from)
             {
-                if (m_Deed != null) return m_Deed.Check(from);
+                if (m_Deed != null)
+                {
+                    return m_Deed.Check(@from);
+                }
 
                 return true;
             }
@@ -81,11 +89,13 @@ namespace Server.Engines.Craft
                 // Clothing repairable but not craftable
 
                 if (m_CraftSystem is DefTailoring)
+                {
                     return clothing is BearMask
                            || clothing is DeerMask
                            || clothing is TheMostKnowledgePerson
                            || clothing is TheRobeOfBritanniaAri
                            || clothing is EmbroideredOakLeafCloak;
+                }
 
                 return false;
             }
@@ -95,21 +105,26 @@ namespace Server.Engines.Craft
                 // Weapons repairable but not craftable
 
                 if (m_CraftSystem is DefTinkering)
+                {
                     return weapon is Cleaver
                            || weapon is Hatchet
                            || weapon is Pickaxe
                            || weapon is ButcherKnife
                            || weapon is SkinningKnife;
+                }
 
                 if (m_CraftSystem is DefCarpentry)
+                {
                     return weapon is Club
                            || weapon is BlackStaff
                            || weapon is MagicWand
 
                            // TODO: Make these items craftable
                            || weapon is WildStaff;
+                }
 
                 if (m_CraftSystem is DefBlacksmithy)
+                {
                     return weapon is Pitchfork
 
                            // TODO: Make these items craftable
@@ -122,11 +137,14 @@ namespace Server.Engines.Craft
                            || weapon is ElvenMachete
                            || weapon is OrnateAxe
                            || weapon is DiamondMace;
+                }
 
                 // TODO: Make these items craftable
                 if (m_CraftSystem is DefBowFletching)
+                {
                     return weapon is ElvenCompositeLongbow
                            || weapon is MagicalShortbow;
+                }
 
                 return false;
             }
@@ -137,6 +155,7 @@ namespace Server.Engines.Craft
 
                 // TODO: Make these items craftable
                 if (m_CraftSystem is DefTailoring)
+                {
                     return armor is LeafTonlet
                            || armor is LeafArms
                            || armor is LeafChest
@@ -148,8 +167,10 @@ namespace Server.Engines.Craft
                            || armor is HideGorget
                            || armor is HidePants
                            || armor is HidePauldrons;
+                }
 
                 if (m_CraftSystem is DefCarpentry)
+                {
                     return armor is WingedHelm
                            || armor is RavenHelm
                            || armor is VultureHelm
@@ -158,10 +179,14 @@ namespace Server.Engines.Craft
                            || armor is WoodlandGloves
                            || armor is WoodlandGorget
                            || armor is WoodlandLegs;
+                }
+
                 if (m_CraftSystem is DefBlacksmithy)
+                {
                     return armor is Circlet
                            || armor is RoyalCirclet
                            || armor is GemmedCirclet;
+                }
 
                 return false;
             }
@@ -171,7 +196,9 @@ namespace Server.Engines.Craft
                 int number;
 
                 if (!CheckDeed(from))
+                {
                     return;
+                }
 
                 var usingDeed = m_Deed != null;
                 var toDelete = false;
@@ -210,12 +237,16 @@ namespace Server.Engines.Craft
                         else
                         {
                             if (damage > (int)(skillValue * 0.3))
+                            {
                                 damage = (int)(skillValue * 0.3);
+                            }
 
                             damage += 30;
 
                             if (!from.CheckSkill(SkillName.Tinkering, 0.0, 100.0))
+                            {
                                 damage /= 2;
+                            }
 
                             var pack = from.Backpack;
 
@@ -259,11 +290,17 @@ namespace Server.Engines.Craft
                         var skillLevel = usingDeed ? m_Deed.SkillLevel : from.Skills[skill].Base;
 
                         if (skillLevel >= 90.0)
+                        {
                             toWeaken = 1;
+                        }
                         else if (skillLevel >= 70.0)
+                        {
                             toWeaken = 2;
+                        }
                         else
+                        {
                             toWeaken = 3;
+                        }
                     }
 
                     if (m_CraftSystem.CraftItems.SearchForSubclass(weapon.GetType()) == null && !IsSpecialWeapon(weapon))
@@ -327,11 +364,17 @@ namespace Server.Engines.Craft
                         var skillLevel = usingDeed ? m_Deed.SkillLevel : from.Skills[skill].Base;
 
                         if (skillLevel >= 90.0)
+                        {
                             toWeaken = 1;
+                        }
                         else if (skillLevel >= 70.0)
+                        {
                             toWeaken = 2;
+                        }
                         else
+                        {
                             toWeaken = 3;
+                        }
                     }
 
                     if (m_CraftSystem.CraftItems.SearchForSubclass(armor.GetType()) == null && !IsSpecialArmor(armor))
@@ -391,11 +434,17 @@ namespace Server.Engines.Craft
                         var skillLevel = usingDeed ? m_Deed.SkillLevel : from.Skills[skill].Base;
 
                         if (skillLevel >= 90.0)
+                        {
                             toWeaken = 1;
+                        }
                         else if (skillLevel >= 70.0)
+                        {
                             toWeaken = 2;
+                        }
                         else
+                        {
                             toWeaken = 3;
+                        }
                     }
 
                     if (m_CraftSystem.CraftItems.SearchForSubclass(clothing.GetType()) == null &&
@@ -484,7 +533,9 @@ namespace Server.Engines.Craft
                     from.SendLocalizedMessage(number);
 
                     if (toDelete)
+                    {
                         m_Deed.Delete();
+                    }
                 }
             }
         }

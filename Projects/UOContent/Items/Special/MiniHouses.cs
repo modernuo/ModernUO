@@ -47,9 +47,15 @@ namespace Server.Items
             var num = 0;
 
             for (var y = 0; y < size; ++y)
+            {
                 for (var x = 0; x < size; ++x)
+                {
                     if (info.Graphics[num] != 0x1) // Veteran Rewards Mod
+                    {
                         AddComponent(new AddonComponent(info.Graphics[num++]), size - x - 1, size - y - 1, 0);
+                    }
+                }
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -141,7 +147,9 @@ namespace Server.Items
             }
 
             if (Weight == 0.0)
+            {
                 Weight = 1.0;
+            }
         }
     }
 
@@ -223,7 +231,9 @@ namespace Server.Items
             Graphics = new int[count];
 
             for (var i = 0; i < count; ++i)
+            {
                 Graphics[i] = start + i;
+            }
 
             LabelNumber = labelNumber;
         }
@@ -243,7 +253,9 @@ namespace Server.Items
             var v = (int)type;
 
             if (v < 0 || v >= m_Info.Length)
+            {
                 v = 0;
+            }
 
             return m_Info[v];
         }

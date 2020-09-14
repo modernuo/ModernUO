@@ -26,6 +26,7 @@ namespace Server.Engines.Quests.Collector
                 var qs = player.Quest;
 
                 if (qs is CollectorQuest)
+                {
                     if (qs.IsObjectiveInProgress(typeof(CaptureImagesObjective)))
                     {
                         player.SendAsciiMessage(0x59, "Target the creature whose image you wish to create.");
@@ -33,6 +34,7 @@ namespace Server.Engines.Quests.Collector
 
                         return;
                     }
+                }
             }
 
             from.SendLocalizedMessage(1010085); // You cannot use this.
@@ -65,19 +67,25 @@ namespace Server.Engines.Quests.Collector
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Paints.Deleted || !m_Paints.IsChildOf(from.Backpack))
+                {
                     return;
+                }
 
                 if (from is PlayerMobile player)
                 {
                     var qs = player.Quest;
 
                     if (!(qs is CollectorQuest))
+                    {
                         return;
+                    }
 
                     var obj = qs.FindObjective<CaptureImagesObjective>();
 
                     if (obj?.Completed != false)
+                    {
                         return;
+                    }
 
                     if (targeted is Mobile)
                     {

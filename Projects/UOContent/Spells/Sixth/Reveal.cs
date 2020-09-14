@@ -45,7 +45,9 @@ namespace Server.Spells.Sixth
                             (m.X != p.X || m.Y != p.Y || !m.Hidden || m.AccessLevel != AccessLevel.Player &&
                              Caster.AccessLevel <= m.AccessLevel ||
                              !CheckDifficulty(Caster, m)))
+                        {
                             continue;
+                        }
 
                         m.RevealingAction();
 
@@ -70,7 +72,9 @@ namespace Server.Spells.Sixth
         {
             // Reveal always reveals vs. invisibility spell
             if (!Core.AOS || InvisibilitySpell.HasTimer(m))
+            {
                 return true;
+            }
 
             var magery = from.Skills.Magery.Fixed;
             var detectHidden = from.Skills.DetectHidden.Fixed;
@@ -81,9 +85,13 @@ namespace Server.Spells.Sixth
 
             int chance;
             if (divisor > 0)
+            {
                 chance = 50 * (magery + detectHidden) / divisor;
+            }
             else
+            {
                 chance = 100;
+            }
 
             return chance > Utility.Random(100);
         }

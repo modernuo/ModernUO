@@ -49,31 +49,45 @@ namespace Server.Items
         public override void AddNameProperty(ObjectPropertyList list)
         {
             if (m_Boat?.ShipName != null)
+            {
                 list.Add(1042884, m_Boat.ShipName); // the tiller man of the ~1_SHIP_NAME~
+            }
             else
+            {
                 base.AddNameProperty(list);
+            }
         }
 
         public override void OnSingleClick(Mobile from)
         {
             if (m_Boat?.ShipName != null)
-                LabelTo(from, 1042884, m_Boat.ShipName); // the tiller man of the ~1_SHIP_NAME~
+            {
+                LabelTo(@from, 1042884, m_Boat.ShipName); // the tiller man of the ~1_SHIP_NAME~
+            }
             else
-                base.OnSingleClick(from);
+            {
+                base.OnSingleClick(@from);
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (m_Boat?.Contains(from) == true)
-                m_Boat.BeginRename(from);
+            {
+                m_Boat.BeginRename(@from);
+            }
             else
-                m_Boat?.BeginDryDock(from);
+            {
+                m_Boat?.BeginDryDock(@from);
+            }
         }
 
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
             if (dropped is MapItem item && m_Boat?.CanCommand(from) == true && m_Boat.Contains(from))
+            {
                 m_Boat.AssociateMap(item);
+            }
 
             return false;
         }
@@ -105,7 +119,9 @@ namespace Server.Items
                         m_Boat = reader.ReadItem() as BaseBoat;
 
                         if (m_Boat == null)
+                        {
                             Delete();
+                        }
 
                         break;
                     }

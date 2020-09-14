@@ -63,9 +63,13 @@ namespace Server.Items
                     m_HitPoints = value;
 
                     if (m_HitPoints < 0)
+                    {
                         Delete();
+                    }
                     else if (m_HitPoints > MaxHitPoints)
+                    {
                         m_HitPoints = MaxHitPoints;
+                    }
 
                     InvalidateProperties();
                 }
@@ -117,7 +121,9 @@ namespace Server.Items
             get
             {
                 if (m_GemType == GemType.None)
+                {
                     return base.LabelNumber;
+                }
 
                 return BaseGemTypeNumber + (int)m_GemType - 1;
             }
@@ -137,30 +143,50 @@ namespace Server.Items
             var context = craftSystem.GetContext(from);
 
             if (context?.DoNotColor == true)
+            {
                 Hue = 0;
+            }
 
             if (craftItem.Resources.Count > 1)
             {
                 resourceType = craftItem.Resources[1].ItemType;
 
                 if (resourceType == typeof(StarSapphire))
+                {
                     GemType = GemType.StarSapphire;
+                }
                 else if (resourceType == typeof(Emerald))
+                {
                     GemType = GemType.Emerald;
+                }
                 else if (resourceType == typeof(Sapphire))
+                {
                     GemType = GemType.Sapphire;
+                }
                 else if (resourceType == typeof(Ruby))
+                {
                     GemType = GemType.Ruby;
+                }
                 else if (resourceType == typeof(Citrine))
+                {
                     GemType = GemType.Citrine;
+                }
                 else if (resourceType == typeof(Amethyst))
+                {
                     GemType = GemType.Amethyst;
+                }
                 else if (resourceType == typeof(Tourmaline))
+                {
                     GemType = GemType.Tourmaline;
+                }
                 else if (resourceType == typeof(Amber))
+                {
                     GemType = GemType.Amber;
+                }
                 else if (resourceType == typeof(Diamond))
+                {
                     GemType = GemType.Diamond;
+                }
             }
 
             return 1;
@@ -169,7 +195,9 @@ namespace Server.Items
         public override void OnAfterDuped(Item newItem)
         {
             if (!(newItem is BaseJewel jewel))
+            {
                 return;
+            }
 
             jewel.Attributes = new AosAttributes(newItem, Attributes);
             jewel.Resistances = new AosElementAttributes(newItem, Resistances);
@@ -191,13 +219,19 @@ namespace Server.Items
                     var modName = Serial.ToString();
 
                     if (strBonus != 0)
-                        from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    {
+                        @from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    }
 
                     if (dexBonus != 0)
-                        from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    {
+                        @from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    }
 
                     if (intBonus != 0)
-                        from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    {
+                        @from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    }
                 }
 
                 from.CheckStatTimers();
@@ -229,84 +263,136 @@ namespace Server.Items
             int prop;
 
             if ((prop = ArtifactRarity) > 0)
+            {
                 list.Add(1061078, prop.ToString()); // artifact rarity ~1_val~
+            }
 
             if ((prop = Attributes.WeaponDamage) != 0)
+            {
                 list.Add(1060401, prop.ToString()); // damage increase ~1_val~%
+            }
 
             if ((prop = Attributes.DefendChance) != 0)
+            {
                 list.Add(1060408, prop.ToString()); // defense chance increase ~1_val~%
+            }
 
             if ((prop = Attributes.BonusDex) != 0)
+            {
                 list.Add(1060409, prop.ToString()); // dexterity bonus ~1_val~
+            }
 
             if ((prop = Attributes.EnhancePotions) != 0)
+            {
                 list.Add(1060411, prop.ToString()); // enhance potions ~1_val~%
+            }
 
             if ((prop = Attributes.CastRecovery) != 0)
+            {
                 list.Add(1060412, prop.ToString()); // faster cast recovery ~1_val~
+            }
 
             if ((prop = Attributes.CastSpeed) != 0)
+            {
                 list.Add(1060413, prop.ToString()); // faster casting ~1_val~
+            }
 
             if ((prop = Attributes.AttackChance) != 0)
+            {
                 list.Add(1060415, prop.ToString()); // hit chance increase ~1_val~%
+            }
 
             if ((prop = Attributes.BonusHits) != 0)
+            {
                 list.Add(1060431, prop.ToString()); // hit point increase ~1_val~
+            }
 
             if ((prop = Attributes.BonusInt) != 0)
+            {
                 list.Add(1060432, prop.ToString()); // intelligence bonus ~1_val~
+            }
 
             if ((prop = Attributes.LowerManaCost) != 0)
+            {
                 list.Add(1060433, prop.ToString()); // lower mana cost ~1_val~%
+            }
 
             if ((prop = Attributes.LowerRegCost) != 0)
+            {
                 list.Add(1060434, prop.ToString()); // lower reagent cost ~1_val~%
+            }
 
             if ((prop = Attributes.Luck) != 0)
+            {
                 list.Add(1060436, prop.ToString()); // luck ~1_val~
+            }
 
             if ((prop = Attributes.BonusMana) != 0)
+            {
                 list.Add(1060439, prop.ToString()); // mana increase ~1_val~
+            }
 
             if ((prop = Attributes.RegenMana) != 0)
+            {
                 list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
+            }
 
             if (Attributes.NightSight != 0)
+            {
                 list.Add(1060441); // night sight
+            }
 
             if ((prop = Attributes.ReflectPhysical) != 0)
+            {
                 list.Add(1060442, prop.ToString()); // reflect physical damage ~1_val~%
+            }
 
             if ((prop = Attributes.RegenStam) != 0)
+            {
                 list.Add(1060443, prop.ToString()); // stamina regeneration ~1_val~
+            }
 
             if ((prop = Attributes.RegenHits) != 0)
+            {
                 list.Add(1060444, prop.ToString()); // hit point regeneration ~1_val~
+            }
 
             if (Attributes.SpellChanneling != 0)
+            {
                 list.Add(1060482); // spell channeling
+            }
 
             if ((prop = Attributes.SpellDamage) != 0)
+            {
                 list.Add(1060483, prop.ToString()); // spell damage increase ~1_val~%
+            }
 
             if ((prop = Attributes.BonusStam) != 0)
+            {
                 list.Add(1060484, prop.ToString()); // stamina increase ~1_val~
+            }
 
             if ((prop = Attributes.BonusStr) != 0)
+            {
                 list.Add(1060485, prop.ToString()); // strength bonus ~1_val~
+            }
 
             if ((prop = Attributes.WeaponSpeed) != 0)
+            {
                 list.Add(1060486, prop.ToString()); // swing speed increase ~1_val~%
+            }
 
             if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
+            {
                 list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
+            }
 
             AddResistanceProperties(list);
 
             if (m_HitPoints >= 0 && m_MaxHitPoints > 0)
+            {
                 list.Add(1060639, "{0}\t{1}", m_HitPoints, m_MaxHitPoints); // durability ~1_val~ / ~2_val~
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -357,7 +443,9 @@ namespace Server.Items
                         var m = Parent as Mobile;
 
                         if (Core.AOS && m != null)
+                        {
                             SkillBonuses.AddTo(m);
+                        }
 
                         var strBonus = Attributes.BonusStr;
                         var dexBonus = Attributes.BonusDex;
@@ -368,13 +456,19 @@ namespace Server.Items
                             var modName = Serial.ToString();
 
                             if (strBonus != 0)
+                            {
                                 m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                            }
 
                             if (dexBonus != 0)
+                            {
                                 m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                            }
 
                             if (intBonus != 0)
+                            {
                                 m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                            }
                         }
 
                         m?.CheckStatTimers();

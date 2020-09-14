@@ -15,20 +15,28 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
             var map = attacker.Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             if (!(attacker.Weapon is BaseWeapon weapon))
+            {
                 return;
+            }
 
             if (!CheckMana(attacker, true))
+            {
                 return;
+            }
 
             attacker.FixedEffect(0x3728, 10, 15);
             attacker.PlaySound(0x2A1);
@@ -44,13 +52,17 @@ namespace Server.Items
                 .ToList();
 
             if (targets.Count <= 0)
+            {
                 return;
+            }
 
             var bushido = attacker.Skills.Bushido.Value;
             var damageBonus = 1.0 + Math.Pow(targets.Count * bushido / 60, 2) / 100;
 
             if (damageBonus > 2.0)
+            {
                 damageBonus = 2.0;
+            }
 
             attacker.RevealingAction();
 

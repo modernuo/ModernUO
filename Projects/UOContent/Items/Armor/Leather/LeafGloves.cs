@@ -93,7 +93,9 @@ namespace Server.Items
                             m_MaxArcaneCharges = reader.ReadInt();
 
                             if (Hue == 2118)
+                            {
                                 Hue = ArcaneGem.DefaultArcaneHue;
+                            }
                         }
 
                         break;
@@ -104,12 +106,18 @@ namespace Server.Items
         public void Update()
         {
             if (IsArcane)
+            {
                 ItemID = 0x26B0; // TODO: Check
+            }
             else if (ItemID == 0x26B0)
+            {
                 ItemID = 0x2FC6;
+            }
 
             if (IsArcane && CurArcaneCharges == 0)
+            {
                 Hue = 0;
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -117,7 +125,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (IsArcane)
+            {
                 list.Add(1061837, "{0}\t{1}", m_CurArcaneCharges, m_MaxArcaneCharges); // arcane charges: ~1_val~ / ~2_val~
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -125,15 +135,21 @@ namespace Server.Items
             base.OnSingleClick(from);
 
             if (IsArcane)
-                LabelTo(from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
+            {
+                LabelTo(@from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
+            }
         }
 
         public void Flip()
         {
             if (ItemID == 0x2FC6)
+            {
                 ItemID = 0x317C;
+            }
             else if (ItemID == 0x317C)
+            {
                 ItemID = 0x2FC6;
+            }
         }
     }
 }

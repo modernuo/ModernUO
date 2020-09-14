@@ -56,8 +56,12 @@ namespace Server.Items
                     base.Hue = value;
 
                     if (!Deleted && ShareHue && Components != null)
+                    {
                         foreach (var c in Components)
+                        {
                             c.Hue = value;
+                        }
+                    }
                 }
             }
         }
@@ -98,13 +102,17 @@ namespace Server.Items
                 var hue = 0;
 
                 if (RetainDeedHue)
+                {
                     for (var i = 0; hue == 0 && i < Components.Count; ++i)
                     {
                         var c = Components[i];
 
                         if (c.Hue != 0)
+                        {
                             hue = c.Hue;
+                        }
                     }
+                }
 
                 Delete();
 
@@ -115,7 +123,9 @@ namespace Server.Items
                 if (deed != null)
                 {
                     if (RetainDeedHue)
+                    {
                         deed.Hue = hue;
+                    }
 
                     from.AddToBackpack(deed);
                 }
@@ -125,7 +135,9 @@ namespace Server.Items
         public void AddComponent(AddonComponent c, int x, int y, int z)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             Components.Add(c);
 
@@ -137,23 +149,32 @@ namespace Server.Items
         public virtual AddonFitResult CouldFit(IPoint3D p, Map map, Mobile from, ref BaseHouse house)
         {
             if (Deleted)
+            {
                 return AddonFitResult.Blocked;
+            }
 
             foreach (var c in Components)
             {
                 var p3D = new Point3D(p.X + c.Offset.X, p.Y + c.Offset.Y, p.Z + c.Offset.Z);
 
                 if (!map.CanFit(p3D.X, p3D.Y, p3D.Z, c.ItemData.Height, false, true, c.Z == 0))
+                {
                     return AddonFitResult.Blocked;
+                }
+
                 if (!CheckHouse(from, p3D, map, c.ItemData.Height, ref house))
+                {
                     return AddonFitResult.NotInHouse;
+                }
 
                 if (c.NeedsWall)
                 {
                     var wall = c.WallPosition;
 
                     if (!IsWall(p3D.X + wall.X, p3D.Y + wall.Y, p3D.Z + wall.Z, map))
+                    {
                         return AddonFitResult.NoWall;
+                    }
                 }
             }
 
@@ -174,7 +195,9 @@ namespace Server.Items
                     if (Utility.InRange(doorLoc, addonLoc, 1) &&
                         (addonLoc.Z == doorLoc.Z ||
                          addonLoc.Z + addonHeight > doorLoc.Z && doorLoc.Z + doorHeight > addonLoc.Z))
+                    {
                         return AddonFitResult.DoorTooClose;
+                    }
                 }
             }
 
@@ -187,7 +210,9 @@ namespace Server.Items
         public static bool IsWall(int x, int y, int z, Map map)
         {
             if (map == null)
+            {
                 return false;
+            }
 
             var tiles = map.Tiles.GetStaticTiles(x, y, true);
 
@@ -197,7 +222,9 @@ namespace Server.Items
                 var id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
                 if ((id.Flags & TileFlag.Wall) != 0 && z + 16 > t.Z && t.Z + t.Height > z)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -214,19 +241,27 @@ namespace Server.Items
         public override void OnLocationChange(Point3D oldLoc)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             foreach (var c in Components)
+            {
                 c.Location = new Point3D(X + c.Offset.X, Y + c.Offset.Y, Z + c.Offset.Z);
+            }
         }
 
         public override void OnMapChange()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             foreach (var c in Components)
+            {
                 c.Map = Map;
+            }
         }
 
         public override void OnAfterDelete()
@@ -234,7 +269,9 @@ namespace Server.Items
             base.OnAfterDelete();
 
             foreach (var c in Components)
+            {
                 c.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -263,7 +300,9 @@ namespace Server.Items
             }
 
             if (version < 1 && Weight == 0)
+            {
                 Weight = -1;
+            }
         }
     }
 }

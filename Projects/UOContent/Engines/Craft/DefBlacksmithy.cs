@@ -44,7 +44,9 @@ namespace Server.Engines.Craft
             var map = from.Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             var eable = map.GetItemsInRange(from.Location, range);
 
@@ -60,22 +62,27 @@ namespace Server.Engines.Craft
                 if (isAnvil || isForge)
                 {
                     if (from.Z + 16 < item.Z || item.Z + 16 < from.Z || !from.InLOS(item))
+                    {
                         continue;
+                    }
 
                     anvil = anvil || isAnvil;
                     forge = forge || isForge;
 
                     if (anvil && forge)
+                    {
                         break;
+                    }
                 }
             }
 
             eable.Free();
 
             for (var x = -range; (!anvil || !forge) && x <= range; ++x)
+            {
                 for (var y = -range; (!anvil || !forge) && y <= range; ++y)
                 {
-                    var tiles = map.Tiles.GetStaticTiles(from.X + x, from.Y + y, true);
+                    var tiles = map.Tiles.GetStaticTiles(@from.X + x, @from.Y + y, true);
 
                     for (var i = 0; (!anvil || !forge) && i < tiles.Length; ++i)
                     {
@@ -86,30 +93,43 @@ namespace Server.Engines.Craft
 
                         if (isAnvil || isForge)
                         {
-                            if (from.Z + 16 < tiles[i].Z || tiles[i].Z + 16 < from.Z ||
-                                !from.InLOS(new Point3D(from.X + x, from.Y + y, tiles[i].Z + tiles[i].Height / 2 + 1)))
+                            if (@from.Z + 16 < tiles[i].Z || tiles[i].Z + 16 < @from.Z ||
+                                !@from.InLOS(new Point3D(@from.X + x, @from.Y + y, tiles[i].Z + tiles[i].Height / 2 + 1)))
+                            {
                                 continue;
+                            }
 
                             anvil = anvil || isAnvil;
                             forge = forge || isForge;
                         }
                     }
                 }
+            }
         }
 
         public override int CanCraft(Mobile from, BaseTool tool, Type itemType)
         {
             if (tool?.Deleted != false || tool.UsesRemaining < 0)
+            {
                 return 1044038; // You have worn out your tool!
+            }
+
             if (!BaseTool.CheckTool(tool, from))
+            {
                 return 1048146; // If you have a tool equipped, you must use that tool.
+            }
+
             if (!BaseTool.CheckAccessible(tool, from))
+            {
                 return 1044263; // The tool must be on your person to use.
+            }
 
             CheckAnvilAndForge(from, 2, out var anvil, out var forge);
 
             if (anvil && forge)
+            {
                 return 0;
+            }
 
             return 1044267; // You must be near an anvil and a forge to smith items.
         }
@@ -130,21 +150,35 @@ namespace Server.Engines.Craft
         )
         {
             if (toolBroken)
-                from.SendLocalizedMessage(1044038); // You have worn out your tool
+            {
+                @from.SendLocalizedMessage(1044038); // You have worn out your tool
+            }
 
             if (failed)
             {
                 if (lostMaterial)
+                {
                     return 1044043; // You failed to create the item, and some of your materials are lost.
+                }
+
                 return 1044157;     // You failed to create the item, but no materials were lost.
             }
 
             if (quality == 0)
+            {
                 return 502785; // You were barely able to make this item.  It's quality is below average.
+            }
+
             if (makersMark && quality == 2)
+            {
                 return 1044156; // You create an exceptional quality item and affix your maker's mark.
+            }
+
             if (quality == 2)
+            {
                 return 1044155; // You create an exceptional quality item.
+            }
+
             return 1044154;     // You create the item.
         }
 
@@ -187,7 +221,9 @@ namespace Server.Engines.Craft
             AddCraft(typeof(FemalePlateChest), 1011078, 1046430, 44.1, 94.1, typeof(IronIngot), 1044036, 20, 1044037);
 
             if (Core.AOS) // exact pre-aos functionality unknown
+            {
                 AddCraft(typeof(DragonBardingDeed), 1011078, 1053012, 72.5, 122.5, typeof(IronIngot), 1044036, 750, 1044037);
+            }
 
             if (Core.SE)
             {
@@ -409,12 +445,16 @@ namespace Server.Engines.Craft
             }
 
             if (Core.AOS)
+            {
                 AddCraft(typeof(BoneHarvester), 1011081, 1029915, 33.0, 83.0, typeof(IronIngot), 1044036, 10, 1044037);
+            }
 
             AddCraft(typeof(Broadsword), 1011081, 1023934, 35.4, 85.4, typeof(IronIngot), 1044036, 10, 1044037);
 
             if (Core.AOS)
+            {
                 AddCraft(typeof(CrescentBlade), 1011081, 1029921, 45.0, 95.0, typeof(IronIngot), 1044036, 14, 1044037);
+            }
 
             AddCraft(typeof(Cutlass), 1011081, 1025185, 24.3, 74.3, typeof(IronIngot), 1044036, 8, 1044037);
             AddCraft(typeof(Dagger), 1011081, 1023921, -0.4, 49.6, typeof(IronIngot), 1044036, 3, 1044037);
@@ -1114,23 +1154,33 @@ namespace Server.Engines.Craft
             AddCraft(typeof(Bardiche), 1011083, 1023917, 31.7, 81.7, typeof(IronIngot), 1044036, 18, 1044037);
 
             if (Core.AOS)
+            {
                 AddCraft(typeof(BladedStaff), 1011083, 1029917, 40.0, 90.0, typeof(IronIngot), 1044036, 12, 1044037);
+            }
 
             if (Core.AOS)
+            {
                 AddCraft(typeof(DoubleBladedStaff), 1011083, 1029919, 45.0, 95.0, typeof(IronIngot), 1044036, 16, 1044037);
+            }
 
             AddCraft(typeof(Halberd), 1011083, 1025183, 39.1, 89.1, typeof(IronIngot), 1044036, 20, 1044037);
 
             if (Core.AOS)
+            {
                 AddCraft(typeof(Lance), 1011083, 1029920, 48.0, 98.0, typeof(IronIngot), 1044036, 20, 1044037);
+            }
 
             if (Core.AOS)
+            {
                 AddCraft(typeof(Pike), 1011083, 1029918, 47.0, 97.0, typeof(IronIngot), 1044036, 12, 1044037);
+            }
 
             AddCraft(typeof(ShortSpear), 1011083, 1025123, 45.3, 95.3, typeof(IronIngot), 1044036, 6, 1044037);
 
             if (Core.AOS)
+            {
                 AddCraft(typeof(Scythe), 1011083, 1029914, 39.0, 89.0, typeof(IronIngot), 1044036, 14, 1044037);
+            }
 
             AddCraft(typeof(Spear), 1011083, 1023938, 49.0, 99.0, typeof(IronIngot), 1044036, 12, 1044037);
             AddCraft(typeof(WarFork), 1011083, 1025125, 42.9, 92.9, typeof(IronIngot), 1044036, 12, 1044037);
@@ -1143,7 +1193,9 @@ namespace Server.Engines.Craft
             AddCraft(typeof(Maul), 1011084, 1025179, 19.4, 69.4, typeof(IronIngot), 1044036, 10, 1044037);
 
             if (Core.AOS)
+            {
                 AddCraft(typeof(Scepter), 1011084, 1029916, 21.4, 71.4, typeof(IronIngot), 1044036, 10, 1044037);
+            }
 
             AddCraft(typeof(WarMace), 1011084, 1025127, 28.0, 78.0, typeof(IronIngot), 1044036, 14, 1044037);
             AddCraft(typeof(WarHammer), 1011084, 1025177, 34.2, 84.2, typeof(IronIngot), 1044036, 16, 1044037);

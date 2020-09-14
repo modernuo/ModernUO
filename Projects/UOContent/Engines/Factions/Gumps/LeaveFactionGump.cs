@@ -20,6 +20,7 @@ namespace Server.Factions
             AddBackground(10, 10, 250, 100, 3000);
 
             if (from.Guild is Guild guild && guild.Leader == from)
+            {
                 AddHtmlLocalized(
                     20,
                     15,
@@ -29,8 +30,11 @@ namespace Server.Factions
                     true,
                     true
                 ); // Are you sure you want your entire guild to leave this faction?
+            }
             else
+            {
                 AddHtmlLocalized(20, 15, 230, 60, 1018063, true, true); // Are you sure you want to leave this faction?
+            }
 
             AddHtmlLocalized(55, 80, 75, 20, 1011011); // CONTINUE
             AddButton(20, 80, 4005, 4007, 1);
@@ -54,12 +58,16 @@ namespace Server.Factions
                                 pl.Leaving = DateTime.UtcNow;
 
                                 if (TimeSpan.FromDays(3.0) == Faction.LeavePeriod)
+                                {
                                     m_From.SendLocalizedMessage(1005065); // You will be removed from the faction in 3 days
+                                }
                                 else
+                                {
                                     m_From.SendMessage(
                                         "You will be removed from the faction in {0} days.",
                                         Faction.LeavePeriod.TotalDays
                                     );
+                                }
                             }
                         }
                         else if (guild.Leader != m_From)
@@ -82,12 +90,16 @@ namespace Server.Factions
                                     pl.Leaving = DateTime.UtcNow;
 
                                     if (TimeSpan.FromDays(3.0) == Faction.LeavePeriod)
+                                    {
                                         mob.SendLocalizedMessage(1005060); // Your guild will quit the faction in 3 days
+                                    }
                                     else
+                                    {
                                         mob.SendMessage(
                                             "Your guild will quit the faction in {0} days.",
                                             Faction.LeavePeriod.TotalDays
                                         );
+                                    }
                                 }
                             }
                         }

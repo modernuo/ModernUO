@@ -29,7 +29,10 @@ namespace Server.Items
             get
             {
                 if (m_Owner != null)
+                {
                     return $"{m_Owner}'s St. Valentine Bear";
+                }
+
                 return "St. Valentine Bear";
             }
         }
@@ -88,9 +91,13 @@ namespace Server.Items
         public override void AddNameProperty(ObjectPropertyList list)
         {
             if (m_Owner != null)
+            {
                 list.Add(1150295, m_Owner); // ~1_NAME~'s St. Valentine Bear
+            }
             else
+            {
                 list.Add(1150294); // St. Valentine Bear
+            }
 
             AddLine(list, 1150301, m_Line1); // [ ~1_LINE0~ ]
             AddLine(list, 1150302, m_Line2); // [ ~1_LINE1~ ]
@@ -100,7 +107,9 @@ namespace Server.Items
         private static void AddLine(ObjectPropertyList list, int cliloc, string line)
         {
             if (line != null)
+            {
                 list.Add(cliloc, line);
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -115,13 +124,17 @@ namespace Server.Items
         private void ShowLine(Mobile from, int cliloc, string line)
         {
             if (line != null)
-                LabelTo(from, cliloc, line);
+            {
+                LabelTo(@from, cliloc, line);
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (!CupidsArrow.CheckSeason(from) || !CanSign)
+            {
                 return;
+            }
 
             if (!IsChildOf(from.Backpack))
             {
@@ -198,7 +211,9 @@ namespace Server.Items
                 var from = sender.Mobile;
 
                 if (m_Bear.Deleted || !m_Bear.IsChildOf(from.Backpack) || !m_Bear.CanSign || info.ButtonID != 1)
+                {
                     return;
+                }
 
                 var line1 = GetLine(info, 0);
                 var line2 = GetLine(info, 1);
@@ -221,7 +236,9 @@ namespace Server.Items
                 }
 
                 if (!m_Bear.IsSigned)
+                {
                     m_Bear.EditLimit = DateTime.UtcNow + TimeSpan.FromMinutes(10);
+                }
 
                 m_Bear.Line1 = Utility.FixHtml(line1);
                 m_Bear.Line2 = Utility.FixHtml(line2);

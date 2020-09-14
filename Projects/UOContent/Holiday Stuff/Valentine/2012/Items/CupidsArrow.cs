@@ -50,13 +50,17 @@ namespace Server.Items
             base.AddNameProperty(list);
 
             if (IsSigned)
+            {
                 list.Add(1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
+            }
         }
 
         public static bool CheckSeason(Mobile from)
         {
             if (DateTime.UtcNow.Month == 2)
+            {
                 return true;
+            }
 
             from.SendLocalizedMessage(1152318); // You may not use this item out of season.
             return false;
@@ -67,13 +71,17 @@ namespace Server.Items
             base.OnSingleClick(from);
 
             if (IsSigned)
-                LabelTo(from, 1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
+            {
+                LabelTo(@from, 1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (IsSigned || !CheckSeason(from))
+            {
                 return;
+            }
 
             if (!IsChildOf(from.Backpack))
             {
@@ -88,7 +96,9 @@ namespace Server.Items
         private void OnTarget(Mobile from, object targeted)
         {
             if (IsSigned || !IsChildOf(from.Backpack))
+            {
                 return;
+            }
 
             if (targeted is Mobile m)
             {

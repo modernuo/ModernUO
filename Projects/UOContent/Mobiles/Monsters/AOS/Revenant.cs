@@ -102,6 +102,7 @@ namespace Server.Mobiles
                 var to = m_Target.Location;
 
                 if (toMap != null)
+                {
                     for (var i = 0; i < 5; ++i)
                     {
                         var loc = new Point3D(to.X - 4 + Utility.Random(9), to.Y - 4 + Utility.Random(9), to.Z);
@@ -120,6 +121,7 @@ namespace Server.Mobiles
                             break;
                         }
                     }
+                }
 
                 Map = toMap;
                 Location = to;
@@ -153,7 +155,9 @@ namespace Server.Mobiles
             FocusMob = m_Target;
 
             if (AIObject != null)
+            {
                 AIObject.Action = ActionType.Combat;
+            }
 
             base.OnThink();
         }

@@ -58,9 +58,13 @@ namespace Server.Engines.ConPVP
             string fmt;
 
             if (p.Contains(challenger))
+            {
                 fmt = "You have been asked to join sides with {0} in a duel. Do you accept?";
+            }
             else
+            {
                 fmt = "You have been challenged to a duel from {0}. Do you accept?";
+            }
 
             AddHtml(22 - 1, 50, 294, 40, Color(string.Format(fmt, challenger.Name), BlackColor32));
             AddHtml(22 + 1, 50, 294, 40, Color(string.Format(fmt, challenger.Name), BlackColor32));
@@ -104,7 +108,9 @@ namespace Server.Engines.ConPVP
         public void AutoReject()
         {
             if (!m_Active)
+            {
                 return;
+            }
 
             m_Active = false;
 
@@ -117,7 +123,9 @@ namespace Server.Engines.ConPVP
         public static void BeginIgnore(Mobile source, Mobile toIgnore)
         {
             if (!m_IgnoreLists.TryGetValue(source, out var list))
+            {
                 m_IgnoreLists[source] = list = new List<IgnoreEntry>();
+            }
 
             for (var i = 0; i < list.Count; ++i)
             {
@@ -130,7 +138,9 @@ namespace Server.Engines.ConPVP
                 }
 
                 if (ie.Expired)
+                {
                     list.RemoveAt(i--);
+                }
             }
 
             list.Add(new IgnoreEntry(toIgnore));
@@ -139,16 +149,22 @@ namespace Server.Engines.ConPVP
         public static bool IsIgnored(Mobile source, Mobile check)
         {
             if (!m_IgnoreLists.TryGetValue(source, out var list))
+            {
                 return false;
+            }
 
             for (var i = 0; i < list.Count; ++i)
             {
                 var ie = list[i];
 
                 if (ie.Expired)
+                {
                     list.RemoveAt(i--);
+                }
                 else if (ie.Ignored == check)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -157,24 +173,34 @@ namespace Server.Engines.ConPVP
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID != 1 || !m_Active || !m_Context.Registered)
+            {
                 return;
+            }
 
             m_Active = false;
 
             if (!m_Context.Participants.Contains(m_Participant))
+            {
                 return;
+            }
 
             if (info.IsSwitched(1))
             {
                 if (!(m_Challenged is PlayerMobile pm))
+                {
                     return;
+                }
 
                 if (pm.DuelContext != null)
                 {
                     if (pm.DuelContext.Initiator == pm)
+                    {
                         pm.SendMessage(0x22, "You have already started a duel.");
+                    }
                     else
+                    {
                         pm.SendMessage(0x22, "You have already been challenged in a duel.");
+                    }
 
                     m_Challenger.SendMessage("{0} cannot fight because they are already assigned to another duel.", pm.Name);
                 }
@@ -206,12 +232,14 @@ namespace Server.Engines.ConPVP
                     else
                     {
                         for (var i = 0; i < m_Participant.Players.Length; ++i)
+                        {
                             if (m_Participant.Players[i] == null)
                             {
                                 added = true;
                                 m_Participant.Players[i] = new DuelPlayer(m_Challenged, m_Participant);
                                 break;
                             }
+                        }
                     }
 
                     if (added)
@@ -222,6 +250,7 @@ namespace Server.Engines.ConPVP
                         var ns = m_Challenger.NetState;
 
                         if (ns != null)
+                        {
                             foreach (var g in ns.Gumps)
                             {
                                 if (g is ParticipantGump pg && pg.Participant == m_Participant)
@@ -236,6 +265,7 @@ namespace Server.Engines.ConPVP
                                     break;
                                 }
                             }
+                        }
                     }
                     else
                     {
@@ -254,7 +284,9 @@ namespace Server.Engines.ConPVP
             else
             {
                 if (info.IsSwitched(3))
+                {
                     BeginIgnore(m_Challenged, m_Challenger);
+                }
 
                 m_Challenger.SendMessage("{0} does not wish to fight.", m_Challenged.Name);
                 m_Challenged.SendMessage(

@@ -27,14 +27,18 @@ namespace Server
         public static void CheckAtrophy(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return;
+            }
 
             try
             {
                 if (pm.LastValorLoss + LossDelay < DateTime.UtcNow)
                 {
                     if (VirtueHelper.Atrophy(from, VirtueName.Valor, LossAmount))
-                        from.SendLocalizedMessage(1054040); // You have lost some Valor.
+                    {
+                        @from.SendLocalizedMessage(1054040); // You have lost some Valor.
+                    }
 
                     pm.LastValorLoss = DateTime.UtcNow;
                 }
@@ -65,7 +69,9 @@ namespace Server
                 if (idol.Spawn.Active)
                 {
                     if (idol.Spawn.Champion != null) // TODO: Message?
+                    {
                         return;
+                    }
 
                     int needed, consumed;
                     switch (idol.Spawn.GetSubLevel())

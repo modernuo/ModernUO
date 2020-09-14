@@ -40,7 +40,9 @@ namespace Server.Mobiles
             VirtualArmor = 22;
 
             if (Utility.RandomDouble() < 0.1)
+            {
                 PackItem(new ArcaneGem());
+            }
         }
 
         public JukaWarrior(Serial serial) : base(serial)
@@ -74,7 +76,9 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() > 0.2)
+            {
                 return;
+            }
 
             switch (Utility.Random(3))
             {

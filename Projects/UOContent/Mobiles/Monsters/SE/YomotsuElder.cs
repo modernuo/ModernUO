@@ -60,7 +60,9 @@ namespace Server.Mobiles
             );
 
             if (Utility.RandomDouble() < .25)
+            {
                 PackItem(Seed.RandomBonsaiSeed());
+            }
         }
 
         public YomotsuElder(Serial serial) : base(serial)

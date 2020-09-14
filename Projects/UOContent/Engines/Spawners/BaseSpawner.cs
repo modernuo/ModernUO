@@ -63,7 +63,9 @@ namespace Server.Engines.Spawners
         {
             InitSpawn(amount, minDelay, maxDelay, team, homeRange);
             for (var i = 0; i < spawnedNames.Length; i++)
+            {
                 AddEntry(spawnedNames[i], 100, amount, false);
+            }
         }
 
         public BaseSpawner(DynamicJson json, JsonSerializerOptions options) : base(0x1f13)
@@ -81,7 +83,9 @@ namespace Server.Engines.Spawners
             json.GetProperty("entries", options, out List<SpawnerEntry> entries);
 
             foreach (var entry in entries)
+            {
                 AddEntry(entry.SpawnedName, entry.SpawnedProbability, entry.SpawnedMaxCount, false);
+            }
         }
 
         public BaseSpawner(Serial serial) : base(serial)
@@ -106,7 +110,9 @@ namespace Server.Engines.Spawners
                 m_Count = value;
 
                 if (m_Timer != null && (!IsFull && !m_Timer.Running || IsFull && m_Timer.Running))
+                {
                     DoTimer();
+                }
 
                 InvalidateProperties();
             }
@@ -122,9 +128,13 @@ namespace Server.Engines.Spawners
             set
             {
                 if (value)
+                {
                     Start();
+                }
                 else
+                {
                     Stop();
+                }
 
                 InvalidateProperties();
             }
@@ -229,7 +239,9 @@ namespace Server.Engines.Spawners
             }
 
             if (m_Running && !IsFull && m_Timer?.Running == false)
+            {
                 DoTimer();
+            }
         }
 
         public virtual void Respawn()
@@ -237,7 +249,9 @@ namespace Server.Engines.Spawners
             RemoveSpawns();
 
             for (var i = 0; i < m_Count; i++)
+            {
                 Spawn();
+            }
 
             DoTimer(); // Turn off the timer!
         }
@@ -247,13 +261,17 @@ namespace Server.Engines.Spawners
         public override void OnAfterDuped(Item newItem)
         {
             if (newItem is BaseSpawner newSpawner)
+            {
                 for (var i = 0; i < Entries.Count; i++)
+                {
                     newSpawner.AddEntry(
                         Entries[i].SpawnedName,
                         Entries[i].SpawnedProbability,
                         Entries[i].SpawnedMaxCount,
                         false
                     );
+                }
+            }
         }
 
         public SpawnerEntry AddEntry(string creaturename, int probability = 100, int amount = 1, bool dotimer = true)
@@ -261,7 +279,9 @@ namespace Server.Engines.Spawners
             var entry = new SpawnerEntry(creaturename, probability, amount);
             Entries.Add(entry);
             if (dotimer)
+            {
                 DoTimer(TimeSpan.FromSeconds(1));
+            }
 
             return entry;
         }
@@ -286,7 +306,9 @@ namespace Server.Engines.Spawners
         public override void OnDoubleClick(Mobile from)
         {
             if (from.AccessLevel >= AccessLevel.Developer)
-                from.SendGump(new SpawnerGump(this));
+            {
+                @from.SendGump(new SpawnerGump(this));
+            }
         }
 
         public virtual void GetSpawnerProperties(ObjectPropertyList list)
@@ -312,7 +334,9 @@ namespace Server.Engines.Spawners
                 GetSpawnerProperties(list);
 
                 for (var i = 0; i < 6 && i < Entries.Count; ++i)
+                {
                     list.Add(1060658 + i, "\t{0}\t{1}", Entries[i].SpawnedName, CountSpawns(Entries[i]));
+                }
             }
             else
             {
@@ -325,19 +349,25 @@ namespace Server.Engines.Spawners
             base.OnSingleClick(from);
 
             if (m_Running)
-                LabelTo(from, "[Running]");
+            {
+                LabelTo(@from, "[Running]");
+            }
             else
-                LabelTo(from, "[Off]");
+            {
+                LabelTo(@from, "[Off]");
+            }
         }
 
         public void Start()
         {
             if (!m_Running)
+            {
                 if (Entries.Count > 0)
                 {
                     m_Running = true;
                     DoTimer();
                 }
+            }
         }
 
         public void Stop()
@@ -354,21 +384,27 @@ namespace Server.Engines.Spawners
             Entries ??= new List<SpawnerEntry>();
 
             for (var i = 0; i < Entries.Count; ++i)
+            {
                 Entries[i].Defrag(this);
+            }
         }
 
         public virtual bool OnDefragSpawn(ISpawnable spawned, bool remove)
         {
             if (!remove) // Override could have set it to true already
+            {
                 remove = spawned.Deleted || spawned.Spawner == null || spawned switch
                 {
                     Item item => item.RootParent is Mobile || item.IsLockedDown || item.IsSecure,
                     Mobile m  => m is BaseCreature c && (c.Controlled || c.IsStabled),
                     _         => true
                 };
+            }
 
             if (remove)
+            {
                 Spawned.Remove(spawned);
+            }
 
             return remove;
         }
@@ -380,7 +416,9 @@ namespace Server.Engines.Spawners
                 Defrag();
 
                 if (Spawned.Count > 0)
+                {
                     return;
+                }
 
                 Respawn();
             }
@@ -397,12 +435,16 @@ namespace Server.Engines.Spawners
             Defrag();
 
             if (Entries.Count <= 0 || IsFull)
+            {
                 return;
+            }
 
             var probsum = Entries.Where(t => !t.IsFull).Sum(t => t.SpawnedProbability);
 
             if (probsum <= 0)
+            {
                 return;
+            }
 
             var rand = Utility.RandomMinMax(1, probsum);
 
@@ -410,7 +452,9 @@ namespace Server.Engines.Spawners
             {
                 var entry = Entries[i];
                 if (entry.IsFull)
+                {
                     continue;
+                }
 
                 if (rand <= entry.SpawnedProbability)
                 {
@@ -467,15 +511,25 @@ namespace Server.Engines.Spawners
                     var propName = props[i, 0];
 
                     for (var j = 0; thisProp == null && j < allProps.Length; ++j)
+                    {
                         if (Insensitive.Equals(propName, allProps[j].Name))
+                        {
                             thisProp = allProps[j];
+                        }
+                    }
 
                     if (thisProp == null)
+                    {
                         return null;
+                    }
+
                     var attr = Properties.GetCPA(thisProp);
 
                     if (attr == null || attr.WriteLevel > AccessLevel.Developer || !thisProp.CanWrite || attr.ReadOnly)
+                    {
                         return null;
+                    }
+
                     realProps[i] = thisProp;
                 }
             }
@@ -486,7 +540,10 @@ namespace Server.Engines.Spawners
         public bool Spawn(int index, out EntryFlags flags)
         {
             if (index >= 0 && index < Entries.Count)
+            {
                 return Spawn(Entries[index], out flags);
+            }
+
             flags = EntryFlags.InvalidEntry;
             return false;
         }
@@ -497,7 +554,9 @@ namespace Server.Engines.Spawners
             flags = EntryFlags.None;
 
             if (map == null || map == Map.Internal || Parent != null)
+            {
                 return false;
+            }
 
             // Defrag taken care of in Spawn(), beforehand
             // Count check taken care of in Spawn(), beforehand
@@ -561,6 +620,7 @@ namespace Server.Engines.Spawners
                     }
 
                     for (var i = 0; i < realProps.Length; i++)
+                    {
                         if (realProps[i] != null)
                         {
                             object toSet = null;
@@ -584,6 +644,7 @@ namespace Server.Engines.Spawners
                                 return false;
                             }
                         }
+                    }
 
                     if (o is Mobile m)
                     {
@@ -605,7 +666,9 @@ namespace Server.Engines.Spawners
                             c.CurrentWayPoint = WayPoint;
 
                             if (m_Team > 0)
+                            {
                                 c.Team = m_Team;
+                            }
 
                             c.Home = Location;
                             c.HomeMap = Map;
@@ -656,7 +719,9 @@ namespace Server.Engines.Spawners
         public void DoTimer()
         {
             if (!m_Running)
+            {
                 return;
+            }
 
             var minSeconds = (int)m_MinDelay.TotalSeconds;
             var maxSeconds = (int)m_MaxDelay.TotalSeconds;
@@ -668,7 +733,9 @@ namespace Server.Engines.Spawners
         public virtual void DoTimer(TimeSpan delay)
         {
             if (!m_Running)
+            {
                 return;
+            }
 
             End = DateTime.UtcNow + delay;
 
@@ -676,7 +743,9 @@ namespace Server.Engines.Spawners
 
             m_Timer = new InternalTimer(this, delay);
             if (!IsFull)
+            {
                 m_Timer.Start();
+            }
         }
 
         public int CountSpawns(SpawnerEntry entry)
@@ -700,7 +769,9 @@ namespace Server.Engines.Spawners
             Entries.Remove(entry);
 
             if (m_Running && !IsFull && m_Timer?.Running == false)
+            {
                 DoTimer();
+            }
 
             InvalidateProperties();
         }
@@ -708,7 +779,9 @@ namespace Server.Engines.Spawners
         public void RemoveSpawn(int index) // Entry
         {
             if (index >= 0 && index < Entries.Count)
+            {
                 RemoveSpawn(Entries[index]);
+            }
         }
 
         public void RemoveSpawn(SpawnerEntry entry)
@@ -749,7 +822,9 @@ namespace Server.Engines.Spawners
             }
 
             if (m_Running && !IsFull && m_Timer?.Running == false)
+            {
                 DoTimer();
+            }
 
             InvalidateProperties();
         }
@@ -758,7 +833,10 @@ namespace Server.Engines.Spawners
         {
             Defrag();
 
-            foreach (var e in Spawned.Keys) e?.MoveToWorld(Location, Map);
+            foreach (var e in Spawned.Keys)
+            {
+                e?.MoveToWorld(Location, Map);
+            }
         }
 
         public override void OnDelete()
@@ -780,7 +858,9 @@ namespace Server.Engines.Spawners
             writer.Write(Entries.Count);
 
             for (var i = 0; i < Entries.Count; ++i)
+            {
                 Entries[i].Serialize(writer);
+            }
 
             writer.Write(m_WalkingRange);
 
@@ -796,7 +876,9 @@ namespace Server.Engines.Spawners
             writer.Write(m_Running);
 
             if (m_Running)
+            {
                 writer.WriteDeltaTime(End);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -808,7 +890,9 @@ namespace Server.Engines.Spawners
             Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
 
             if (version < 7)
+            {
                 Entries = new List<SpawnerEntry>();
+            }
 
             switch (version)
             {
@@ -824,7 +908,9 @@ namespace Server.Engines.Spawners
                         Entries = new List<SpawnerEntry>(size);
 
                         for (var i = 0; i < size; ++i)
+                        {
                             Entries.Add(new SpawnerEntry(this, reader));
+                        }
 
                         goto case 4; // Skip the other crap
                     }
@@ -835,10 +921,16 @@ namespace Server.Engines.Spawners
                         var addentries = Entries.Count == 0;
 
                         for (var i = 0; i < size; ++i)
+                        {
                             if (addentries)
+                            {
                                 Entries.Add(new SpawnerEntry(string.Empty, 100, reader.ReadInt()));
+                            }
                             else
+                            {
                                 Entries[i].SpawnedMaxCount = reader.ReadInt();
+                            }
+                        }
 
                         goto case 5;
                     }
@@ -849,10 +941,16 @@ namespace Server.Engines.Spawners
                         var addentries = Entries.Count == 0;
 
                         for (var i = 0; i < size; ++i)
+                        {
                             if (addentries)
+                            {
                                 Entries.Add(new SpawnerEntry(string.Empty, reader.ReadInt(), 1));
+                            }
                             else
+                            {
                                 Entries[i].SpawnedProbability = reader.ReadInt();
+                            }
+                        }
 
                         goto case 4;
                     }
@@ -889,7 +987,9 @@ namespace Server.Engines.Spawners
                         var ts = TimeSpan.Zero;
 
                         if (m_Running)
+                        {
                             ts = reader.ReadDeltaTime() - DateTime.UtcNow;
+                        }
 
                         if (version < 7)
                         {
@@ -902,9 +1002,13 @@ namespace Server.Engines.Spawners
                                 var typeName = reader.ReadString();
 
                                 if (addentries)
+                                {
                                     Entries.Add(new SpawnerEntry(typeName, 100, 1));
+                                }
                                 else
+                                {
                                     Entries[i].SpawnedName = typeName;
+                                }
 
                                 if (AssemblyHandler.FindFirstTypeForName(typeName) == null)
                                 {
@@ -917,21 +1021,27 @@ namespace Server.Engines.Spawners
                             var count = reader.ReadInt();
 
                             for (var i = 0; i < count; ++i)
+                            {
                                 if (reader.ReadEntity() is ISpawnable e)
                                 {
                                     if (e is BaseCreature creature)
+                                    {
                                         creature.RemoveIfUntamed = true;
+                                    }
 
                                     e.Spawner = this;
 
                                     for (var j = 0; j < Entries.Count; j++)
+                                    {
                                         if (AssemblyHandler.FindFirstTypeForName(Entries[j].SpawnedName) == e.GetType())
                                         {
                                             Entries[j].Spawned.Add(e);
                                             Spawned.Add(e, Entries[j]);
                                             break;
                                         }
+                                    }
                                 }
+                            }
                         }
 
                         DoTimer(ts);
@@ -941,7 +1051,9 @@ namespace Server.Engines.Spawners
             }
 
             if (version < 4)
+            {
                 m_WalkingRange = m_HomeRange;
+            }
         }
 
         private class InternalTimer : Timer
@@ -951,9 +1063,13 @@ namespace Server.Engines.Spawners
             public InternalTimer(BaseSpawner spawner, TimeSpan delay) : base(delay)
             {
                 if (spawner.IsFull)
+                {
                     Priority = TimerPriority.FiveSeconds;
+                }
                 else
+                {
                     Priority = TimerPriority.OneSecond;
+                }
 
                 m_Spawner = spawner;
             }
@@ -961,8 +1077,12 @@ namespace Server.Engines.Spawners
             protected override void OnTick()
             {
                 if (m_Spawner != null)
+                {
                     if (!m_Spawner.Deleted)
+                    {
                         m_Spawner.OnTick();
+                    }
+                }
             }
         }
 
@@ -993,6 +1113,7 @@ namespace Server.Engines.Spawners
                     op.WriteLine();
 
                     foreach (var e in m_List)
+                    {
                         op.WriteLine(
                             "{0}\t{1}\t{2}\t{3}\t{4}",
                             e.m_Point.X,
@@ -1001,6 +1122,7 @@ namespace Server.Engines.Spawners
                             e.m_Map,
                             e.m_Name
                         );
+                    }
 
                     op.WriteLine();
                     op.WriteLine();

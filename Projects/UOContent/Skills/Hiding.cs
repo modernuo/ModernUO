@@ -23,7 +23,10 @@ namespace Server.SkillHandlers
                 return TimeSpan.FromSeconds(1.0);
             }
 
-            if (Core.ML && m.Target != null) Target.Cancel(m);
+            if (Core.ML && m.Target != null)
+            {
+                Target.Cancel(m);
+            }
 
             var bonus = 0.0;
 
@@ -41,7 +44,9 @@ namespace Server.SkillHandlers
                           BaseHouse.FindHouseAt(new Point3D(m.X, m.Y + 1, 127), m.Map, 16);
 
                 if (house != null)
+                {
                     bonus = 50.0;
+                }
             }
 
             // int range = 18 - (int)(m.Skills.Hiding.Value / 10);
@@ -57,8 +62,12 @@ namespace Server.SkillHandlers
             if (ok)
             {
                 if (!CombatOverride)
+                {
                     if (m.GetMobilesInRange(range).Any(check => check.InLOS(m) && check.Combatant == m))
+                    {
                         badCombat = true;
+                    }
+                }
 
                 ok = !badCombat && m.CheckSkill(SkillName.Hiding, 0.0 - bonus, 100.0 - bonus);
             }

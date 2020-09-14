@@ -133,15 +133,21 @@ namespace Server.Mobiles
             var item = Loot.Construct(Artifacts);
 
             if (item == null)
+            {
                 return;
+            }
 
             // TODO: Confirm messages
             if (m.AddToBackpack(item))
+            {
                 m.SendMessage("As a reward for slaying the mighty leviathan, an artifact has been placed in your backpack.");
+            }
             else
+            {
                 m.SendMessage(
                     "As your backpack is full, your reward for destroying the legendary leviathan has been placed at your feet."
                 );
+            }
         }
 
         public override void OnKilledBy(Mobile mob)
@@ -153,7 +159,9 @@ namespace Server.Mobiles
                 GiveArtifactTo(mob);
 
                 if (mob == Fisher)
+                {
                     Fisher = null;
+                }
             }
         }
 
@@ -162,7 +170,9 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             if (Fisher != null && Utility.Random(100) < 25)
+            {
                 GiveArtifactTo(Fisher);
+            }
 
             Fisher = null;
         }

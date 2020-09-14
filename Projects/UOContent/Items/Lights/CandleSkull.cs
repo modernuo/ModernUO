@@ -8,9 +8,13 @@ namespace Server.Items
         public CandleSkull() : base(0x1853)
         {
             if (Burnout)
+            {
                 Duration = TimeSpan.FromMinutes(25);
+            }
             else
+            {
                 Duration = TimeSpan.Zero;
+            }
 
             Burning = false;
             Light = LightType.Circle150;
@@ -26,7 +30,9 @@ namespace Server.Items
             get
             {
                 if (ItemID == 0x1583 || ItemID == 0x1854)
+                {
                     return 0x1854;
+                }
 
                 return 0x1858;
             }
@@ -37,7 +43,9 @@ namespace Server.Items
             get
             {
                 if (ItemID == 0x1853 || ItemID == 0x1584)
+                {
                     return 0x1853;
+                }
 
                 return 0x1857;
             }

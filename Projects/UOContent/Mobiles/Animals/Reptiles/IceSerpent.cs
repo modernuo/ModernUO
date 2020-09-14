@@ -54,7 +54,9 @@ namespace Server.Mobiles
             );
 
             if (Utility.RandomDouble() < 0.025)
+            {
                 PackItem(new GlacialStaff());
+            }
         }
 
         public IceSerpent(Serial serial) : base(serial)
@@ -89,7 +91,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (BaseSoundID == -1)
+            {
                 BaseSoundID = 219;
+            }
         }
     }
 }

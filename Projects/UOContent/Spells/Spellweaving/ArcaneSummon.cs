@@ -16,7 +16,9 @@ namespace Server.Spells.Spellweaving
         public override bool CheckCast()
         {
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (Caster.Followers + 1 > Caster.FollowersMax)
             {

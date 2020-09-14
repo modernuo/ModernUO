@@ -49,10 +49,14 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 1.0)
+            {
                 Weight = 3.0;
+            }
 
             if (ArmorAttributes.SelfRepair == 0)
+            {
                 ArmorAttributes.SelfRepair = 1;
+            }
         }
     }
 }

@@ -29,7 +29,9 @@ namespace Server.SkillHandlers
             m.RevealingAction();
 
             if (!DisableMessage)
+            {
                 m.SendLocalizedMessage(502789); // Tame which animal?
+            }
 
             return TimeSpan.FromHours(6.0);
         }
@@ -46,13 +48,19 @@ namespace Server.SkillHandlers
         public static void ScaleStats(BaseCreature bc, double scalar)
         {
             if (bc.RawStr > 0)
+            {
                 bc.RawStr = (int)Math.Max(1, bc.RawStr * scalar);
+            }
 
             if (bc.RawDex > 0)
+            {
                 bc.RawDex = (int)Math.Max(1, bc.RawDex * scalar);
+            }
 
             if (bc.RawInt > 0)
+            {
                 bc.RawInt = (int)Math.Max(1, bc.RawInt * scalar);
+            }
 
             if (bc.HitsMaxSeed > 0)
             {
@@ -80,7 +88,10 @@ namespace Server.SkillHandlers
 
                 bc.Skills[i].Cap = Math.Max(100.0, bc.Skills[i].Cap * capScalar);
 
-                if (bc.Skills[i].Base > bc.Skills[i].Cap) bc.Skills[i].Cap = bc.Skills[i].Base;
+                if (bc.Skills[i].Base > bc.Skills[i].Cap)
+                {
+                    bc.Skills[i].Cap = bc.Skills[i].Base;
+                }
             }
         }
 
@@ -95,7 +106,9 @@ namespace Server.SkillHandlers
             protected override void OnTargetFinish(Mobile from)
             {
                 if (m_SetSkillTime)
-                    from.NextSkillTime = Core.TickCount;
+                {
+                    @from.NextSkillTime = Core.TickCount;
+                }
             }
 
             protected override void OnTarget(Mobile from, object targeted)
@@ -250,9 +263,13 @@ namespace Server.SkillHandlers
                     creature.Direction = creature.GetDirectionTo(from);
 
                     if (creature.BardPacified && Utility.RandomDouble() > .24)
+                    {
                         Timer.DelayCall(TimeSpan.FromSeconds(2.0), Pacify, creature);
+                    }
                     else
+                    {
                         creature.BardEndTime = DateTime.UtcNow;
+                    }
 
                     creature.BardPacified = false;
 
@@ -261,7 +278,9 @@ namespace Server.SkillHandlers
                     if (from is PlayerMobile pm &&
                         !(pm.HonorActive ||
                           TransformationSpellHelper.UnderTransformation(pm, typeof(EtherealVoyageSpell))))
+                    {
                         creature.Combatant = pm;
+                    }
                 }
                 else
                 {
@@ -427,10 +446,14 @@ namespace Server.SkillHandlers
                         }
 
                         if (!alreadyOwned) // Passively check animal lore for gain
+                        {
                             m_Tamer.CheckTargetSkill(SkillName.AnimalLore, m_Creature, 0.0, 120.0);
+                        }
 
                         if (m_Creature.Paralyzed)
+                        {
                             m_Paralyzed = true;
+                        }
                     }
                     else
                     {
@@ -439,15 +462,21 @@ namespace Server.SkillHandlers
                         m_BeingTamed.Remove(m_Creature);
 
                         if (m_Creature.Paralyzed)
+                        {
                             m_Paralyzed = true;
+                        }
 
                         if (!alreadyOwned) // Passively check animal lore for gain
+                        {
                             m_Tamer.CheckTargetSkill(SkillName.AnimalLore, m_Creature, 0.0, 120.0);
+                        }
 
                         var minSkill = m_Creature.MinTameSkill + m_Creature.Owners.Count * 6.0;
 
                         if (minSkill > -24.9 && CheckMastery(m_Tamer, m_Creature))
+                        {
                             minSkill = -24.9; // 50% at 0.0?
+                        }
 
                         minSkill += 24.9;
 
@@ -476,7 +505,9 @@ namespace Server.SkillHandlers
                                 }
 
                                 if (m_Creature.StatLossAfterTame)
+                                {
                                     ScaleStats(m_Creature, 0.50);
+                                }
                             }
 
                             if (alreadyOwned)

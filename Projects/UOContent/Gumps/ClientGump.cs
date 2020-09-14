@@ -15,7 +15,9 @@ namespace Server.Gumps
         public ClientGump(Mobile from, NetState state, string initialText = "") : base(30, 20)
         {
             if (state == null)
+            {
                 return;
+            }
 
             m_State = state;
 
@@ -136,7 +138,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (m_State == null)
+            {
                 return;
+            }
 
             var focus = m_State.Mobile;
             var from = state.Mobile;

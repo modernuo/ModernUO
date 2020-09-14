@@ -35,7 +35,9 @@ namespace Server.Spells.Ninjitsu
         public static void AddClone(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             m_CloneCount[m] = 1 + (m_CloneCount.TryGetValue(m, out var count) ? count : 0);
         }
@@ -43,12 +45,18 @@ namespace Server.Spells.Ninjitsu
         public static void RemoveClone(Mobile m)
         {
             if (m == null || !m_CloneCount.TryGetValue(m, out var count))
+            {
                 return;
+            }
 
             if (count <= 1)
+            {
                 m_CloneCount.Remove(m);
+            }
             else
+            {
                 m_CloneCount[m]--;
+            }
         }
 
         public override bool CheckCast()
@@ -147,7 +155,10 @@ namespace Server.Mobiles
                 Skills[i].Cap = caster.Skills[i].Cap;
             }
 
-            for (var i = 0; i < caster.Items.Count; i++) AddItem(CloneItem(caster.Items[i]));
+            for (var i = 0; i < caster.Items.Count; i++)
+            {
+                AddItem(CloneItem(caster.Items[i]));
+            }
 
             Warmode = true;
 

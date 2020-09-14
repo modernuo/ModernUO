@@ -53,7 +53,9 @@ namespace Server.Items
             writer.Write(m_Decays);
 
             if (m_Decays)
+            {
                 writer.WriteDeltaTime(m_DecayTime);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)

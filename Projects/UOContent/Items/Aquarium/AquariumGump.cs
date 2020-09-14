@@ -21,10 +21,14 @@ namespace Server.Items
             AddImage(0, 0, 0x2C96);
 
             if (m_Aquarium.Items.Count == 0)
+            {
                 return;
+            }
 
             for (var i = 1; i <= m_Aquarium.Items.Count; i++)
+            {
                 DisplayPage(i, edit);
+            }
         }
 
         public void DisplayPage(int page, bool edit)
@@ -35,13 +39,19 @@ namespace Server.Items
 
             // item name
             if (item.LabelNumber != 0)
+            {
                 AddHtmlLocalized(20, 217, 250, 20, item.LabelNumber, 0xFFFFFF); // Name
+            }
 
             // item details
             if (item is BaseFish fish)
+            {
                 AddHtmlLocalized(20, 239, 315, 20, fish.GetDescription(), 0xFFFFFF);
+            }
             else
+            {
                 AddHtmlLocalized(20, 239, 315, 20, 1073634, 0xFFFFFF); // An aquarium decoration
+            }
 
             // item image
             AddItem(150, 80, item.ItemID, item.Hue);
@@ -75,15 +85,21 @@ namespace Server.Items
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_Aquarium?.Deleted != false)
+            {
                 return;
+            }
 
             var edit = m_Aquarium.HasAccess(sender.Mobile);
 
             if (info.ButtonID > 0 && info.ButtonID <= m_Aquarium.Items.Count && edit)
+            {
                 m_Aquarium.RemoveItem(sender.Mobile, info.ButtonID - 1);
+            }
 
             if (info.ButtonID > 0)
+            {
                 sender.Mobile.SendGump(new AquariumGump(m_Aquarium, edit));
+            }
         }
     }
 }

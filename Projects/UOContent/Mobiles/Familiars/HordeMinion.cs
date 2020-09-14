@@ -63,14 +63,18 @@ namespace Server.Mobiles
             base.OnThink();
 
             if (DateTime.UtcNow < m_NextPickup)
+            {
                 return;
+            }
 
             m_NextPickup = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(5, 10));
 
             var pack = Backpack;
 
             if (pack == null)
+            {
                 return;
+            }
 
             var eable = GetItemsInRange(2).Where(item => item.Movable && item.Stackable);
 
@@ -79,36 +83,48 @@ namespace Server.Mobiles
             foreach (var item in eable)
             {
                 if (!pack.CheckHold(this, item, false, true))
+                {
                     return;
+                }
 
                 NextActionTime = Core.TickCount;
 
                 Lift(item, item.Amount, out var rejected, out var _);
 
                 if (rejected)
+                {
                     continue;
+                }
 
                 Drop(this, Point3D.Zero);
 
                 if (++pickedUp == 3)
+                {
                     break;
+                }
             }
         }
 
         private void ConfirmRelease_Callback(Mobile from, bool okay)
         {
             if (okay)
-                EndRelease(from);
+            {
+                EndRelease(@from);
+            }
         }
 
         public override void BeginRelease(Mobile from)
         {
             if (Backpack?.Items.Count > 0)
-                from.SendGump(
-                    new WarningGump(1060635, 30720, 1061672, 32512, 420, 280, okay => ConfirmRelease_Callback(from, okay))
+            {
+                @from.SendGump(
+                    new WarningGump(1060635, 30720, 1061672, 32512, 420, 280, okay => ConfirmRelease_Callback(@from, okay))
                 );
+            }
             else
-                EndRelease(from);
+            {
+                EndRelease(@from);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -128,7 +144,9 @@ namespace Server.Mobiles
         public override bool OnBeforeDeath()
         {
             if (!base.OnBeforeDeath())
+            {
                 return false;
+            }
 
             PackAnimal.CombineBackpacks(this);
 
@@ -140,7 +158,9 @@ namespace Server.Mobiles
         public override bool IsSnoop(Mobile from)
         {
             if (PackAnimal.CheckAccess(this, from))
+            {
                 return false;
+            }
 
             return base.IsSnoop(from);
         }
@@ -148,7 +168,9 @@ namespace Server.Mobiles
         public override bool OnDragDrop(Mobile from, Item item)
         {
             if (CheckFeed(from, item))
+            {
                 return true;
+            }
 
             if (PackAnimal.CheckAccess(this, from))
             {

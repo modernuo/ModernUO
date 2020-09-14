@@ -64,30 +64,43 @@ namespace Server.Items
         private static void FinishThrow(Mobile from, Mobile to)
         {
             if (Core.AOS)
+            {
                 new Bola().MoveToWorld(to.Location, to.Map);
+            }
 
             if (to is ChaosDragoon || to is ChaosDragoonElite)
-                from.SendLocalizedMessage(1042047); // You fail to knock the rider from its mount.
+            {
+                @from.SendLocalizedMessage(1042047); // You fail to knock the rider from its mount.
+            }
 
             var mt = to.Mount;
             if (mt != null && !(to is ChaosDragoon || to is ChaosDragoonElite))
+            {
                 mt.Rider = null;
+            }
 
             if (to is PlayerMobile mobile)
             {
                 if (AnimalForm.UnderTransformation(mobile))
-                    mobile.SendLocalizedMessage(1114066, from.Name);           // ~1_NAME~ knocked you out of animal form!
-                else if (mobile.Mounted) mobile.SendLocalizedMessage(1040023); // You have been knocked off of your mount!
+                {
+                    mobile.SendLocalizedMessage(1114066, @from.Name); // ~1_NAME~ knocked you out of animal form!
+                }
+                else if (mobile.Mounted)
+                {
+                    mobile.SendLocalizedMessage(1040023); // You have been knocked off of your mount!
+                }
 
                 mobile.SetMountBlock(BlockMountType.Dazed, TimeSpan.FromSeconds(Core.ML ? 10 : 3), true);
             }
 
             if (Core.AOS) /* only failsafe, attacker should already be dismounted */
-                (from as PlayerMobile)?.SetMountBlock(
+            {
+                (@from as PlayerMobile)?.SetMountBlock(
                     BlockMountType.BolaRecovery,
                     TimeSpan.FromSeconds(Core.ML ? 10 : 3),
                     true
                 );
+            }
 
             to.Damage(1);
 
@@ -159,7 +172,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object obj)
             {
                 if (m_Bola.Deleted)
+                {
                     return;
+                }
 
                 if (obj is Mobile to)
                 {

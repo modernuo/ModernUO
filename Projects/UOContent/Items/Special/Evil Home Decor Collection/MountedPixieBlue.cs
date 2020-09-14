@@ -18,9 +18,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (Utility.InRange(Location, from.Location, 2))
+            {
                 Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x55C, 0x55E));
+            }
             else
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            {
+                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

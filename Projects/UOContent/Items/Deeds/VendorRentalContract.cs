@@ -37,7 +37,9 @@ namespace Server.Items
             set
             {
                 if (value != null)
+                {
                     m_Duration = value;
+                }
             }
         }
 
@@ -75,7 +77,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Offeree != null)
+            {
                 list.Add(1062368, Offeree.Name); // Being Offered To ~1_NAME~
+            }
         }
 
         public bool IsLandlord(Mobile m)
@@ -85,7 +89,9 @@ namespace Server.Items
                 var house = BaseHouse.FindHouseAt(this);
 
                 if (house != null && house.DecayType != DecayType.Condemned)
+                {
                     return house.IsOwner(m);
+                }
             }
 
             return false;
@@ -94,25 +100,33 @@ namespace Server.Items
         public bool IsUsableBy(Mobile from, bool byLandlord, bool byBackpack, bool noOfferee, bool sendMessage)
         {
             if (Deleted || !from.CheckAlive(sendMessage))
+            {
                 return false;
+            }
 
             if (noOfferee && Offeree != null)
             {
                 if (sendMessage)
-                    from.SendLocalizedMessage(1062343); // That item is currently in use.
+                {
+                    @from.SendLocalizedMessage(1062343); // That item is currently in use.
+                }
 
                 return false;
             }
 
             if (byBackpack && IsChildOf(from.Backpack))
+            {
                 return true;
+            }
 
             if (byLandlord && IsLandlord(from))
             {
                 if (from.Map != Map || !from.InRange(this, 5))
                 {
                     if (sendMessage)
-                        from.SendLocalizedMessage(501853); // Target is too far away.
+                    {
+                        @from.SendLocalizedMessage(501853); // Target is too far away.
+                    }
 
                     return false;
                 }
@@ -191,7 +205,10 @@ namespace Server.Items
         {
             base.GetContextMenuEntries(from, list);
 
-            if (IsUsableBy(from, true, true, true, false)) list.Add(new ContractOptionEntry(this));
+            if (IsUsableBy(from, true, true, true, false))
+            {
+                list.Add(new ContractOptionEntry(this));
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -214,9 +231,13 @@ namespace Server.Items
 
             var durationID = reader.ReadEncodedInt();
             if (durationID < VendorRentalDuration.Instances.Length)
+            {
                 m_Duration = VendorRentalDuration.Instances[durationID];
+            }
             else
+            {
                 m_Duration = VendorRentalDuration.Instances[0];
+            }
 
             Price = reader.ReadInt();
             LandlordRenew = reader.ReadBool();
@@ -249,10 +270,14 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (!m_Contract.IsUsableBy(from, false, true, true, true))
+                {
                     return;
+                }
 
                 if (!(targeted is IPoint3D location))
+                {
                     return;
+                }
 
                 var pLocation = new Point3D(location);
                 var map = from.Map;
@@ -309,7 +334,10 @@ namespace Server.Items
                     {
                         m_Contract.MoveToWorld(pLocation, map);
 
-                        if (!house.LockDown(from, m_Contract)) from.AddToBackpack(m_Contract);
+                        if (!house.LockDown(from, m_Contract))
+                        {
+                            @from.AddToBackpack(m_Contract);
+                        }
                     }
                 }
             }

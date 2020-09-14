@@ -23,9 +23,13 @@ namespace Server.Items
             var size = 25 + (int)(skillValue * 6.6);
 
             if (size < 200)
+            {
                 size = 200;
+            }
             else if (size > 400)
+            {
                 size = 400;
+            }
 
             SetDisplay(1344 - x20, 1600 - x20, 1472 + x20, 1728 + x20, size, size);
         }

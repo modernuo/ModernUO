@@ -115,7 +115,9 @@ namespace Server.Engines.Quests.Ninja
                                 var cont = GetNewContainer();
 
                                 for (var i = 0; i < 10; i++)
+                                {
                                     cont.DropItem(new LesserHealPotion());
+                                }
 
                                 cont.DropItem(new LeatherNinjaHood());
                                 cont.DropItem(new LeatherNinjaJacket());
@@ -147,7 +149,9 @@ namespace Server.Engines.Quests.Ninja
                                         Item katana = null;
 
                                         if (player.Backpack != null)
+                                        {
                                             katana = player.Backpack.FindItemByType<EminosKatana>();
+                                        }
 
                                         if (katana != null)
                                         {
@@ -156,14 +160,20 @@ namespace Server.Engines.Quests.Ninja
                                             var walk = qs.FindObjective<HallwayWalkObjective>();
 
                                             if (walk != null)
+                                            {
                                                 stolenTreasure = walk.StolenTreasure;
+                                            }
 
                                             var kama = new Kama();
 
                                             if (stolenTreasure)
+                                            {
                                                 BaseRunicTool.ApplyAttributesTo(kama, 1, 10, 20);
+                                            }
                                             else
+                                            {
                                                 BaseRunicTool.ApplyAttributesTo(kama, 1, 10, 30);
+                                            }
 
                                             if (player.PlaceInBackpack(kama))
                                             {
@@ -171,9 +181,13 @@ namespace Server.Engines.Quests.Ninja
                                                 obj.Complete();
 
                                                 if (stolenTreasure)
+                                                {
                                                     qs.AddConversation(new EarnLessGiftsConversation());
+                                                }
                                                 else
+                                                {
                                                     qs.AddConversation(new EarnGiftsConversation());
+                                                }
                                             }
                                             else
                                             {

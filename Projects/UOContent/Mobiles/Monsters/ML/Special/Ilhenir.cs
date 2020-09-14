@@ -98,6 +98,7 @@ namespace Server.Mobiles
         public virtual void PackResources(int amount)
         {
             for (var i = 0; i < amount; i++)
+            {
                 PackItem(
                     Utility.Random(6) switch
                     {
@@ -109,12 +110,15 @@ namespace Server.Mobiles
                         _ => new Muculent() // 5
                     }
                 );
+            }
         }
 
         public virtual void PackItems(Item item, int amount)
         {
             for (var i = 0; i < amount; i++)
+            {
                 PackItem(item);
+            }
         }
 
         public virtual void PackTalismans(int amount)
@@ -122,7 +126,9 @@ namespace Server.Mobiles
             var count = Utility.Random(amount);
 
             for (var i = 0; i < count; i++)
+            {
                 PackItem(new RandomTalisman());
+            }
         }
 
         public override void GenerateLoot()
@@ -143,10 +149,14 @@ namespace Server.Mobiles
                   c.DropItem( new ParrotItem() ); */
 
                 if (Utility.RandomDouble() < 0.05)
+                {
                     c.DropItem(new GrizzledMareStatuette());
+                }
 
                 if (Utility.RandomDouble() < 0.025)
+                {
                     c.DropItem(new CrimsonCincture());
+                }
 
                 // TODO: Armor sets
                 /*if (Utility.RandomDouble() < 0.05)
@@ -168,13 +178,17 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() < 0.25)
+            {
                 CacophonicAttack(defender);
+            }
         }
 
         public override void OnDamage(int amount, Mobile from, bool willKill)
         {
             if (Utility.RandomDouble() < 0.1)
+            {
                 DropOoze();
+            }
 
             base.OnDamage(amount, from, willKill);
         }
@@ -239,7 +253,9 @@ namespace Server.Mobiles
                     p = GetSpawnPosition(2);
 
                     if (!Map.GetItemsInRange(p, 0).OfType<StainedOoze>().Any())
+                    {
                         break;
+                    }
                 }
 
                 ooze.MoveToWorld(p, Map);
@@ -248,9 +264,13 @@ namespace Server.Mobiles
             if (Combatant != null)
             {
                 if (corrosive)
+                {
                     Combatant.SendLocalizedMessage(1072071); // A corrosive gas seeps out of your enemy's skin!
+                }
                 else
+                {
                     Combatant.SendLocalizedMessage(1072072); // A poisonous gas seeps out of your enemy's skin!
+                }
             }
         }
 
@@ -261,7 +281,9 @@ namespace Server.Mobiles
         public virtual Point3D GetSpawnPosition(Point3D from, Map map, int range)
         {
             if (map == null)
-                return from;
+            {
+                return @from;
+            }
 
             var loc = new Point3D(RandomPoint(X), RandomPoint(Y), Z);
 
@@ -313,7 +335,9 @@ namespace Server.Mobiles
                 if (m is BaseCreature bc)
                 {
                     if (!bc.Controlled && !bc.Summoned)
+                    {
                         continue;
+                    }
                 }
                 else if (!m.Player)
                 {
@@ -321,18 +345,26 @@ namespace Server.Mobiles
                 }
 
                 if (m.Alive && !m.IsDeadBondedPet && m.CanBeDamaged())
+                {
                     toDamage.Add(m);
+                }
             }
 
             for (var i = 0; i < toDamage.Count; ++i)
+            {
                 Damage(toDamage[i]);
+            }
 
             ++m_Ticks;
 
             if (m_Ticks >= 35)
+            {
                 Delete();
+            }
             else if (m_Ticks == 30)
+            {
                 ItemID = 0x122B;
+            }
         }
 
         public void Damage(Mobile m)
@@ -343,11 +375,13 @@ namespace Server.Mobiles
                 var damaged = false;
 
                 for (var i = 0; i < items.Count; ++i)
+                {
                     if (items[i] is IDurability wearable && wearable.HitPoints >= 10 && Utility.RandomDouble() < 0.25)
                     {
                         wearable.HitPoints -= wearable.HitPoints == 10 ? Utility.Random(1, 5) : 10;
                         damaged = true;
                     }
+                }
 
                 if (damaged)
                 {

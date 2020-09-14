@@ -27,16 +27,24 @@ namespace Server.Spells.Bushido
         public override bool CheckCast()
         {
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (Caster.FindItemOnLayer(Layer.TwoHanded) is BaseShield)
+            {
                 return true;
+            }
 
             if (Caster.FindItemOnLayer(Layer.OneHanded) is BaseWeapon)
+            {
                 return true;
+            }
 
             if (Caster.FindItemOnLayer(Layer.TwoHanded) is BaseWeapon)
+            {
                 return true;
+            }
 
             Caster.SendLocalizedMessage(1062944); // You must have a weapon or a shield equipped to use this ability!
             return false;

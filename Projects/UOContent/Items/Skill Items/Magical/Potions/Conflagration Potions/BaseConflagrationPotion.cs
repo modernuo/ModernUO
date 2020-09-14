@@ -41,12 +41,16 @@ namespace Server.Items
             }
 
             if (from.Target is ThrowTarget targ && targ.Potion == this)
+            {
                 return;
+            }
 
             from.RevealingAction();
 
             if (!m_Users.Contains(from))
-                m_Users.Add(from);
+            {
+                m_Users.Add(@from);
+            }
 
             from.Target = new ThrowTarget(this);
         }
@@ -68,26 +72,36 @@ namespace Server.Items
         public virtual void Explode(Mobile from, Point3D loc, Map map)
         {
             if (Deleted || map == null)
+            {
                 return;
+            }
 
             Consume();
 
             // Check if any other players are using this potion
             for (var i = 0; i < m_Users.Count; i++)
+            {
                 if (m_Users[i].Target is ThrowTarget targ && targ.Potion == this)
-                    Target.Cancel(from);
+                {
+                    Target.Cancel(@from);
+                }
+            }
 
             // Effects
             Effects.PlaySound(loc, map, 0x20C);
 
             for (var i = -2; i <= 2; i++)
+            {
                 for (var j = -2; j <= 2; j++)
                 {
                     var p = new Point3D(loc.X + i, loc.Y + j, loc.Z);
 
-                    if (map.CanFit(p, 12, true, false) && from.InLOS(p))
-                        new InternalItem(from, p, map, MinDamage, MaxDamage);
+                    if (map.CanFit(p, 12, true, false) && @from.InLOS(p))
+                    {
+                        new InternalItem(@from, p, map, MinDamage, MaxDamage);
+                    }
                 }
+            }
         }
 
         public static void AddDelay(Mobile m)
@@ -100,7 +114,9 @@ namespace Server.Items
         public static int GetDelay(Mobile m)
         {
             if (m_Delay.TryGetValue(m, out var timer) && timer.Next > DateTime.UtcNow)
+            {
                 return (int)(timer.Next - DateTime.UtcNow).TotalSeconds;
+            }
 
             return 0;
         }
@@ -122,10 +138,14 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (Potion.Deleted || Potion.Map == Map.Internal)
+                {
                     return;
+                }
 
                 if (!(targeted is IPoint3D p) || from.Map == null)
+                {
                     return;
+                }
 
                 // Add delay
                 AddDelay(from);
@@ -137,9 +157,13 @@ namespace Server.Items
                 IEntity to;
 
                 if (p is Mobile mobile)
+                {
                     to = mobile;
+                }
                 else
-                    to = new Entity(Serial.Zero, new Point3D(p), from.Map);
+                {
+                    to = new Entity(Serial.Zero, new Point3D(p), @from.Map);
+                }
 
                 Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue);
                 Timer.DelayCall(TimeSpan.FromSeconds(1.5), Potion.Explode, from, new Point3D(p), from.Map);
@@ -196,7 +220,9 @@ namespace Server.Items
                 m_MaxDamage = max;
 
                 if (From == null)
+                {
                     return;
+                }
 
                 var alchemySkill = From.Skills.Alchemy.Fixed;
                 var alchemyBonus = alchemySkill / 125 + alchemySkill / 250;
@@ -262,7 +288,9 @@ namespace Server.Items
                 protected override void OnTick()
                 {
                     if (m_Item.Deleted)
+                    {
                         return;
+                    }
 
                     if (DateTime.UtcNow > m_End)
                     {
@@ -274,17 +302,21 @@ namespace Server.Items
                     var from = m_Item.From;
 
                     if (m_Item.Map == null || from == null)
+                    {
                         return;
+                    }
 
                     foreach (var m in m_Item.GetMobilesInRange(0))
-                        if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != from) &&
-                            SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false))
+                    {
+                        if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != @from) &&
+                            SpellHelper.ValidIndirectTarget(@from, m) && @from.CanBeHarmful(m, false))
                         {
-                            from.DoHarmful(m);
+                            @from.DoHarmful(m);
 
-                            AOS.Damage(m, from, m_Item.GetDamage(), 0, 100, 0, 0, 0);
+                            AOS.Damage(m, @from, m_Item.GetDamage(), 0, 100, 0, 0, 0);
                             m.PlaySound(0x208);
                         }
+                    }
                 }
             }
         }

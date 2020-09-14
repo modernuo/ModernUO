@@ -32,7 +32,9 @@ namespace Server.Mobiles
             AddItem(new LongPants(GetRandomHue()));
 
             if (Utility.RandomBool())
+            {
                 AddItem(new Cloak(Utility.RandomBrightHue()));
+            }
 
             AddItem(
                 Utility.RandomBool()

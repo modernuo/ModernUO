@@ -20,7 +20,9 @@ namespace Server.Items
         public virtual bool Dye(Mobile from, DyeTub sender)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             Hue = sender.DyedHue;
             return true;
@@ -31,8 +33,11 @@ namespace Server.Items
             base.OnDoubleClick(from);
 
             if (Addon != null)
-                if (from.InRange(Location, 1))
+            {
+                if (@from.InRange(Location, 1))
+                {
                     foreach (var c in Addon.Components)
+                    {
                         if (c is CurtainsComponent curtain)
                         {
                             var temp = curtain.ItemID;
@@ -41,8 +46,11 @@ namespace Server.Items
                         }
                         else
                         {
-                            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                            @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
                         }
+                    }
+                }
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -183,7 +191,9 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_Deed?.Deleted != false || info.ButtonID == 0)
+                {
                     return;
+                }
 
                 m_Deed.m_East = info.ButtonID != 1;
                 m_Deed.SendTarget(sender.Mobile);

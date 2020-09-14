@@ -23,9 +23,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (Utility.InRange(Location, from.Location, 2))
+            {
                 Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x567, 0x568));
+            }
             else
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            {
+                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            }
         }
 
         public override void OnAfterDelete()
@@ -54,13 +58,21 @@ namespace Server.Items
         private void ChangeDirection()
         {
             if (ItemID == 0x2A65)
+            {
                 ItemID += 1;
+            }
             else if (ItemID == 0x2A66)
+            {
                 ItemID -= 1;
+            }
             else if (ItemID == 0x2A67)
+            {
                 ItemID += 1;
+            }
             else if (ItemID == 0x2A68)
+            {
                 ItemID -= 1;
+            }
         }
     }
 

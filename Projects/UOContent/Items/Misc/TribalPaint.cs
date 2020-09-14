@@ -58,7 +58,9 @@ namespace Server.Items
                     from.HueMod = 0;
 
                     if (from is PlayerMobile mobile)
+                    {
                         mobile.SavagePaintExpiration = TimeSpan.FromDays(7.0);
+                    }
 
                     from.SendLocalizedMessage(
                         1042537

@@ -69,17 +69,23 @@ namespace Server.Multis
                         m_ShipName = reader.ReadString();
 
                         if (version == 0)
+                        {
                             reader.ReadUInt();
+                        }
 
                         break;
                     }
             }
 
             if (LootType == LootType.Newbied)
+            {
                 LootType = LootType.Blessed;
+            }
 
             if (Weight == 0.0)
+            {
                 Weight = 1.0;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -99,22 +105,33 @@ namespace Server.Multis
         public override void AddNameProperty(ObjectPropertyList list)
         {
             if (m_ShipName != null)
+            {
                 list.Add(m_ShipName);
+            }
             else
+            {
                 base.AddNameProperty(list);
+            }
         }
 
         public override void OnSingleClick(Mobile from)
         {
             if (m_ShipName != null)
-                LabelTo(from, m_ShipName);
+            {
+                LabelTo(@from, m_ShipName);
+            }
             else
-                base.OnSingleClick(from);
+            {
+                base.OnSingleClick(@from);
+            }
         }
 
         public void OnPlacement(Mobile from, Point3D p)
         {
-            if (Deleted) return;
+            if (Deleted)
+            {
+                return;
+            }
 
             if (!IsChildOf(from.Backpack))
             {
@@ -125,12 +142,16 @@ namespace Server.Multis
                 var map = from.Map;
 
                 if (map == null)
+                {
                     return;
+                }
 
                 var boat = Boat;
 
                 if (boat == null)
+                {
                     return;
+                }
 
                 p = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
 
@@ -146,10 +167,14 @@ namespace Server.Multis
                     var keyValue = boat.CreateKeys(from);
 
                     if (boat.PPlank != null)
+                    {
                         boat.PPlank.KeyValue = keyValue;
+                    }
 
                     if (boat.SPlank != null)
+                    {
                         boat.SPlank.KeyValue = keyValue;
+                    }
 
                     boat.MoveToWorld(p, map);
                 }
@@ -172,18 +197,26 @@ namespace Server.Multis
                 if (o is IPoint3D ip)
                 {
                     if (ip is Item item)
+                    {
                         ip = item.GetWorldTop();
+                    }
 
                     var p = new Point3D(ip);
 
                     var region = Region.Find(p, from.Map);
 
                     if (region.IsPartOf<DungeonRegion>())
-                        from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
+                    {
+                        @from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
+                    }
                     else if (region.IsPartOf<HouseRegion>() || region.IsPartOf<ChampionSpawnRegion>())
-                        from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
+                    {
+                        @from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
+                    }
                     else
-                        m_Model.OnPlacement(from, p);
+                    {
+                        m_Model.OnPlacement(@from, p);
+                    }
                 }
             }
         }

@@ -63,7 +63,9 @@ namespace Server.Mobiles
                 if (m == this || !CanBeHarmful(m) ||
                     !(m.Player || m is BaseCreature creature &&
                         (creature.Controlled || creature.Summoned || creature.Team != Team)))
+                {
                     continue;
+                }
 
                 DoHarmful(m);
 
@@ -86,7 +88,9 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() <= 0.1)
+            {
                 DrainLife();
+            }
         }
 
         public override void OnGotMeleeAttack(Mobile attacker)
@@ -94,7 +98,9 @@ namespace Server.Mobiles
             base.OnGotMeleeAttack(attacker);
 
             if (Utility.RandomDouble() <= 0.1)
+            {
                 DrainLife();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

@@ -16,13 +16,17 @@ namespace Server.ContextMenus
             m_From = from;
 
             if (!enabled)
+            {
                 Flags |= CMEFlags.Disabled;
+            }
         }
 
         public override void OnClick()
         {
             if (!m_From.CheckAlive())
+            {
                 return;
+            }
 
             m_Mobile.Teach(m_Skill, m_From, 0, false);
         }

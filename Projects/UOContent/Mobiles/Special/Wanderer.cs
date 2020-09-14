@@ -54,7 +54,10 @@ namespace Server.Mobiles
 
             protected override void OnTick()
             {
-                if ((m_Count++ & 0x3) == 0) m_Owner.Direction = (Direction)(Utility.Random(8) | 0x80);
+                if ((m_Count++ & 0x3) == 0)
+                {
+                    m_Owner.Direction = (Direction)(Utility.Random(8) | 0x80);
+                }
 
                 m_Owner.Move(m_Owner.Direction);
             }

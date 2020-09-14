@@ -111,13 +111,19 @@ namespace Server.Engines.Quests.Haven
         public static bool HasLostScrollOfPower(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return false;
+            }
 
             var qs = pm.Quest;
 
             if (qs is UzeraanTurmoilQuest)
+            {
                 if (qs.IsObjectiveInProgress(typeof(ReturnScrollOfPowerObjective)))
-                    return from.Backpack?.FindItemByType<SchmendrickScrollOfPower>() == null;
+                {
+                    return @from.Backpack?.FindItemByType<SchmendrickScrollOfPower>() == null;
+                }
+            }
 
             return false;
         }
@@ -125,13 +131,19 @@ namespace Server.Engines.Quests.Haven
         public static bool HasLostFertileDirt(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return false;
+            }
 
             var qs = pm.Quest;
 
             if (qs is UzeraanTurmoilQuest)
+            {
                 if (qs.IsObjectiveInProgress(typeof(ReturnFertileDirtObjective)))
-                    return from.Backpack?.FindItemByType<QuestFertileDirt>() == null;
+                {
+                    return @from.Backpack?.FindItemByType<QuestFertileDirt>() == null;
+                }
+            }
 
             return false;
         }
@@ -139,13 +151,19 @@ namespace Server.Engines.Quests.Haven
         public static bool HasLostDaemonBlood(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return false;
+            }
 
             var qs = pm.Quest;
 
             if (qs is UzeraanTurmoilQuest)
+            {
                 if (qs.IsObjectiveInProgress(typeof(ReturnDaemonBloodObjective)))
-                    return from.Backpack?.FindItemByType<QuestDaemonBlood>() == null;
+                {
+                    return @from.Backpack?.FindItemByType<QuestDaemonBlood>() == null;
+                }
+            }
 
             return false;
         }
@@ -153,13 +171,19 @@ namespace Server.Engines.Quests.Haven
         public static bool HasLostDaemonBone(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return false;
+            }
 
             var qs = pm.Quest;
 
             if (qs is UzeraanTurmoilQuest)
+            {
                 if (qs.IsObjectiveInProgress(typeof(ReturnDaemonBoneObjective)))
-                    return from.Backpack?.FindItemByType<QuestDaemonBone>() == null;
+                {
+                    return @from.Backpack?.FindItemByType<QuestDaemonBone>() == null;
+                }
+            }
 
             return false;
         }

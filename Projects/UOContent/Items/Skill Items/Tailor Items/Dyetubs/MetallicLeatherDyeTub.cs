@@ -21,7 +21,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Core.ML && IsRewardItem)
+            {
                 list.Add(1076221); // 5th Year Veteran Reward
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

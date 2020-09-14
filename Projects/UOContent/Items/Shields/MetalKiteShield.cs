@@ -25,7 +25,9 @@ namespace Server.Items
         public bool Dye(Mobile from, DyeTub sender)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             Hue = sender.DyedHue;
 
@@ -39,7 +41,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 5.0)
+            {
                 Weight = 7.0;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

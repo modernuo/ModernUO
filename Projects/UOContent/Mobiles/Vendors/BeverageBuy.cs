@@ -26,11 +26,17 @@ namespace Server.Mobiles
             m_Content = content;
 
             if (type == typeof(Pitcher))
+            {
                 Name = (1048128 + (int)content).ToString();
+            }
             else if (type == typeof(BeverageBottle))
+            {
                 Name = (1042959 + (int)content).ToString();
+            }
             else if (type == typeof(Jug))
+            {
                 Name = (1042965 + (int)content).ToString();
+            }
         }
 
         public override bool CanCacheDisplay => false;

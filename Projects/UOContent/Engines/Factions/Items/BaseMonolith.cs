@@ -28,15 +28,21 @@ namespace Server.Factions
             set
             {
                 if (m_Sigil == value)
+                {
                     return;
+                }
 
                 m_Sigil = value;
 
                 if (m_Sigil?.LastMonolith != null && m_Sigil.LastMonolith != this && m_Sigil.LastMonolith.Sigil == m_Sigil)
+                {
                     m_Sigil.LastMonolith.Sigil = null;
+                }
 
                 if (m_Sigil != null)
+                {
                     m_Sigil.LastMonolith = this;
+                }
 
                 UpdateSigil();
             }
@@ -81,7 +87,9 @@ namespace Server.Factions
         public virtual void UpdateSigil()
         {
             if (m_Sigil?.Deleted != false)
+            {
                 return;
+            }
 
             m_Sigil.MoveToWorld(new Point3D(X, Y, Z + 18), Map);
         }

@@ -27,7 +27,9 @@ namespace Server.Misc
         private static void EventSink_Login(Mobile m)
         {
             if (!(m.Account is Account acct))
+            {
                 return;
+            }
 
             var now = DateTime.UtcNow;
 
@@ -36,13 +38,19 @@ namespace Server.Misc
                 var giver = m_Givers[i];
 
                 if (now < giver.Start || now >= giver.Finish)
+                {
                     continue; // not in the correct time frame
+                }
 
                 if (acct.Created > giver.Start - giver.MinimumAge)
+                {
                     continue; // newly created account
+                }
 
                 if (acct.LastLogin >= giver.Start)
+                {
                     continue; // already got one
+                }
 
                 giver.DelayGiveGift(TimeSpan.FromSeconds(5.0), m);
             }
@@ -67,7 +75,9 @@ namespace Server.Misc
         public virtual GiftResult GiveGift(Mobile mob, Item item)
         {
             if (mob.PlaceInBackpack(item) && !WeightOverloading.IsOverloaded(mob))
+            {
                 return GiftResult.Backpack;
+            }
 
             mob.BankBox.DropItem(item);
             return GiftResult.BankBox;

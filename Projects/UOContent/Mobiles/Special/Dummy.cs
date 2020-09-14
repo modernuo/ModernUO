@@ -72,7 +72,9 @@ namespace Server.Mobiles
         public override bool HandlesOnSpeech(Mobile from)
         {
             if (from.AccessLevel >= AccessLevel.GameMaster)
+            {
                 return true;
+            }
 
             return base.HandlesOnSpeech(from);
         }
@@ -82,12 +84,14 @@ namespace Server.Mobiles
             base.OnSpeech(e);
 
             if (e.Mobile.AccessLevel >= AccessLevel.GameMaster)
+            {
                 if (e.Speech == "kill")
                 {
                     m_Timer.Stop();
                     m_Timer.Delay = TimeSpan.FromSeconds(Utility.Random(1, 5));
                     m_Timer.Start();
                 }
+            }
         }
 
         public override void OnTeamChange()
@@ -98,34 +102,46 @@ namespace Server.Mobiles
             var item = FindItemOnLayer(Layer.OuterTorso);
 
             if (item != null)
+            {
                 item.Hue = jHue;
+            }
 
             item = FindItemOnLayer(Layer.Helm);
 
             if (item != null)
+            {
                 item.Hue = iHue;
+            }
 
             item = FindItemOnLayer(Layer.Gloves);
 
             if (item != null)
+            {
                 item.Hue = iHue;
+            }
 
             item = FindItemOnLayer(Layer.Shoes);
 
             if (item != null)
+            {
                 item.Hue = iHue;
+            }
 
             HairHue = iHue;
 
             item = FindItemOnLayer(Layer.MiddleTorso);
 
             if (item != null)
+            {
                 item.Hue = iHue;
+            }
 
             item = FindItemOnLayer(Layer.OuterLegs);
 
             if (item != null)
+            {
                 item.Hue = iHue;
+            }
         }
 
         private class AutokillTimer : Timer

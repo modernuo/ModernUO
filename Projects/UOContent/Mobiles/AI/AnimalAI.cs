@@ -29,7 +29,9 @@ namespace Server.Mobiles
             else if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
             {
                 if (m_Mobile.Debug)
+                {
                     m_Mobile.DebugSay("I have detected {0}, attacking", m_Mobile.FocusMob.Name);
+                }
 
                 m_Mobile.Combatant = m_Mobile.FocusMob;
                 Action = ActionType.Combat;
@@ -64,7 +66,9 @@ namespace Server.Mobiles
                 if (m_Mobile.GetDistanceToSqrt(combatant) > m_Mobile.RangePerception + 1)
                 {
                     if (m_Mobile.Debug)
+                    {
                         m_Mobile.DebugSay("I cannot find {0}", combatant.Name);
+                    }
 
                     Action = ActionType.Wander;
 
@@ -72,7 +76,9 @@ namespace Server.Mobiles
                 }
 
                 if (m_Mobile.Debug)
+                {
                     m_Mobile.DebugSay("I should be closer to {0}", combatant.Name);
+                }
             }
 
             if (!m_Mobile.Controlled && !m_Mobile.Summoned && m_Mobile.CanFlee)

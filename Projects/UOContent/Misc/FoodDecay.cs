@@ -30,13 +30,17 @@ namespace Server.Misc
         public static void HungerDecay(Mobile m)
         {
             if (m?.Hunger >= 1)
+            {
                 m.Hunger -= 1;
+            }
         }
 
         public static void ThirstDecay(Mobile m)
         {
             if (m?.Thirst >= 1)
+            {
                 m.Thirst -= 1;
+            }
         }
     }
 }

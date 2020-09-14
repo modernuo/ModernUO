@@ -59,7 +59,9 @@ namespace Server.Mobiles
             }
 
             if (Utility.RandomDouble() < .5)
+            {
                 PackItem(Seed.RandomBonsaiSeed());
+            }
 
             Tamable = true;
             MinTameSkill = 41.1;
@@ -112,10 +114,14 @@ namespace Server.Mobiles
 
             if (combatant?.Deleted != false || combatant.Map != Map || !InRange(combatant, 12) ||
                 !CanBeHarmful(combatant) || !InLOS(combatant))
+            {
                 return;
+            }
 
             if (Utility.Random(10) == 0)
+            {
                 PoisonAttack(combatant);
+            }
 
             base.OnDamage(amount, from, willKill);
         }

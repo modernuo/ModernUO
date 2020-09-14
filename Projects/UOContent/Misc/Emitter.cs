@@ -65,7 +65,9 @@ namespace Server
         public LocalBuilder AcquireTemp(Type localType)
         {
             if (!m_Temps.TryGetValue(localType, out var list))
+            {
                 m_Temps[localType] = list = new Queue<LocalBuilder>();
+            }
 
             return list.Count > 0 ? list.Dequeue() : CreateLocal(localType);
         }
@@ -73,10 +75,14 @@ namespace Server
         public void ReleaseTemp(LocalBuilder local)
         {
             if (local.LocalType == null)
+            {
                 return;
+            }
 
             if (!m_Temps.TryGetValue(local.LocalType, out var list))
+            {
                 m_Temps[local.LocalType] = list = new Queue<LocalBuilder>();
+            }
 
             list.Enqueue(local);
         }
@@ -115,18 +121,26 @@ namespace Server
         public void Pop(Type expected)
         {
             if (expected == null)
+            {
                 throw new InvalidOperationException("Expected type cannot be null.");
+            }
 
             var onStack = m_Stack.Pop();
 
             if (expected == typeof(bool))
+            {
                 expected = typeof(int);
+            }
 
             if (onStack == typeof(bool))
+            {
                 onStack = typeof(int);
+            }
 
             if (!expected.IsAssignableFrom(onStack))
+            {
                 throw new InvalidOperationException("Unexpected stack state.");
+            }
         }
 
         public void Push(Type type)
@@ -137,7 +151,9 @@ namespace Server
         public void Return()
         {
             if (m_Stack.Count != (Method.ReturnType == typeof(void) ? 0 : 1))
+            {
                 throw new InvalidOperationException("Stack return mismatch.");
+            }
 
             Generator.Emit(OpCodes.Ret);
         }
@@ -159,9 +175,13 @@ namespace Server
             Push(typeof(string));
 
             if (value != null)
+            {
                 Generator.Emit(OpCodes.Ldstr, value);
+            }
             else
+            {
                 Generator.Emit(OpCodes.Ldnull);
+            }
         }
 
         public void Load(Enum value)
@@ -207,9 +227,13 @@ namespace Server
             Push(typeof(bool));
 
             if (value)
+            {
                 Generator.Emit(OpCodes.Ldc_I4_1);
+            }
             else
+            {
                 Generator.Emit(OpCodes.Ldc_I4_0);
+            }
         }
 
         public void Load(int value)
@@ -260,9 +284,13 @@ namespace Server
 
                 default:
                     if (value >= sbyte.MinValue && value <= sbyte.MaxValue)
+                    {
                         Generator.Emit(OpCodes.Ldc_I4_S, (sbyte)value);
+                    }
                     else
+                    {
                         Generator.Emit(OpCodes.Ldc_I4, value);
+                    }
 
                     break;
             }
@@ -303,9 +331,13 @@ namespace Server
 
                 default:
                     if (index >= byte.MinValue && index <= byte.MinValue)
+                    {
                         Generator.Emit(OpCodes.Ldloc_S, (byte)index);
+                    }
                     else
+                    {
                         Generator.Emit(OpCodes.Ldloc, (short)index);
+                    }
 
                     break;
             }
@@ -321,9 +353,13 @@ namespace Server
         public void LoadArgument(int index)
         {
             if (index > 0)
+            {
                 Push(m_ArgumentTypes[index - 1]);
+            }
             else
+            {
                 Push(Type);
+            }
 
             switch (index)
             {
@@ -345,9 +381,13 @@ namespace Server
 
                 default:
                     if (index >= byte.MinValue && index <= byte.MaxValue)
+                    {
                         Generator.Emit(OpCodes.Ldarg_S, (byte)index);
+                    }
                     else
+                    {
                         Generator.Emit(OpCodes.Ldarg, (short)index);
+                    }
 
                     break;
             }
@@ -403,7 +443,9 @@ namespace Server
         public void Chain(Property prop)
         {
             for (var i = 0; i < prop.Chain.Length; ++i)
+            {
                 Call(prop.Chain[i].GetGetMethod());
+            }
         }
 
         public void Call(MethodInfo method)
@@ -413,7 +455,9 @@ namespace Server
             var call = m_Calls.Peek();
 
             if (call.parms.Length > 0)
+            {
                 throw new InvalidOperationException("Method requires parameters.");
+            }
 
             FinishCall();
         }
@@ -465,12 +509,16 @@ namespace Server
                     ifaces = active.FindInterfaces((type, obj) => type == typeof(IComparable), null);
 
                     if (ifaces.Length > 0)
+                    {
                         compareTo = ifaces[0].GetMethod("CompareTo", new[] { active });
+                    }
                 }
             }
 
             if (compareTo == null)
+            {
                 return false;
+            }
 
             if (!active.IsValueType)
             {
@@ -559,7 +607,9 @@ namespace Server
                         FinishCall();
 
                         if (sign == -1)
+                        {
                             Neg();
+                        }
                     }
                 }
 
@@ -579,7 +629,9 @@ namespace Server
                 FinishCall();
 
                 if (sign == -1)
+                {
                     Neg();
+                }
             }
 
             return true;
@@ -607,21 +659,33 @@ namespace Server
             var call = m_Calls.Pop();
 
             if ((call.type.IsValueType || call.type.IsByRef) && call.method.DeclaringType != call.type)
+            {
                 Generator.Emit(OpCodes.Constrained, call.type);
+            }
 
             if (call.method.DeclaringType?.IsValueType == true || call.method.IsStatic)
+            {
                 Generator.Emit(OpCodes.Call, call.method);
+            }
             else
+            {
                 Generator.Emit(OpCodes.Callvirt, call.method);
+            }
 
             for (var i = call.parms.Length - 1; i >= 0; --i)
+            {
                 Pop(call.parms[i].ParameterType);
+            }
 
             if ((call.method.CallingConvention & CallingConventions.HasThis) != 0)
+            {
                 Pop(call.method.DeclaringType);
+            }
 
             if (call.method.ReturnType != typeof(void))
+            {
                 Push(call.method.ReturnType);
+            }
         }
 
         public void ArgumentPushed()
@@ -633,10 +697,14 @@ namespace Server
             var argumentType = m_Stack.Peek();
 
             if (!parm.ParameterType.IsAssignableFrom(argumentType))
+            {
                 throw new InvalidOperationException("Parameter type mismatch.");
+            }
 
             if (argumentType.IsValueType && !parm.ParameterType.IsValueType)
+            {
                 Generator.Emit(OpCodes.Box, argumentType);
+            }
         }
 
         private class CallInfo

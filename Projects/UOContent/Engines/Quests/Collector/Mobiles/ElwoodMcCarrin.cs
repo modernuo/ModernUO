@@ -118,9 +118,13 @@ namespace Server.Engines.Quests.Collector
                                     obj.Complete();
 
                                     if (GiveReward(player))
+                                    {
                                         qs.AddConversation(new EndConversation());
+                                    }
                                     else
+                                    {
                                         qs.AddConversation(new FullEndConversation(true));
+                                    }
                                 }
                                 else
                                 {
@@ -149,9 +153,13 @@ namespace Server.Engines.Quests.Collector
                 QuestSystem newQuest = new CollectorQuest(player);
 
                 if (qs == null && QuestSystem.CanOfferQuest(player, typeof(CollectorQuest)))
+                {
                     newQuest.SendOffer();
+                }
                 else
+                {
                     newQuest.AddConversation(new DontOfferConversation());
+                }
             }
         }
 
@@ -187,9 +195,13 @@ namespace Server.Engines.Quests.Collector
                     item = Loot.RandomArmorOrShieldOrJewelry();
 
                     if (item is BaseArmor armor)
+                    {
                         BaseRunicTool.ApplyAttributesTo(armor, 2, 20, 30);
+                    }
                     else if (item is BaseJewel jewel)
+                    {
                         BaseRunicTool.ApplyAttributesTo(jewel, 2, 20, 30);
+                    }
                 }
                 else
                 {
@@ -205,7 +217,10 @@ namespace Server.Engines.Quests.Collector
 
             bag.DropItem(new Obsidian());
 
-            if (to.PlaceInBackpack(bag)) return true;
+            if (to.PlaceInBackpack(bag))
+            {
+                return true;
+            }
 
             bag.Delete();
             return false;

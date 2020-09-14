@@ -39,14 +39,18 @@ namespace Server.Engines.Chat
             string accountChatName = null;
 
             if (acct != null)
+            {
                 accountChatName = acct.GetTag("ChatName");
+            }
 
             accountChatName = accountChatName?.Trim();
 
             if (!string.IsNullOrEmpty(accountChatName))
             {
                 if (chatName.Length > 0 && chatName != accountChatName)
-                    from.SendMessage("You cannot change chat nickname once it has been set.");
+                {
+                    @from.SendMessage("You cannot change chat nickname once it has been set.");
+                }
             }
             else
             {
@@ -99,7 +103,9 @@ namespace Server.Engines.Chat
             var user = ChatUser.GetChatUser(name);
 
             if (user == null)
-                from.SendMessage(32, name); // There is no player named '%1'.
+            {
+                @from.SendMessage(32, name); // There is no player named '%1'.
+            }
 
             return user;
         }
@@ -107,7 +113,9 @@ namespace Server.Engines.Chat
         public static void ChatAction(NetState state, PacketReader pvSrc)
         {
             if (!Enabled)
+            {
                 return;
+            }
 
             try
             {
@@ -115,7 +123,9 @@ namespace Server.Engines.Chat
                 var user = ChatUser.GetChatUser(from);
 
                 if (user == null)
+                {
                     return;
+                }
 
                 var lang = pvSrc.ReadStringSafe(4);
                 int actionID = pvSrc.ReadInt16();
@@ -131,11 +141,17 @@ namespace Server.Engines.Chat
                         /* You must be in a conference to do this.
                          * To join a conference, select one from the Conference menu.
                          */
+                    {
                         user.SendMessage(31);
+                    }
                     else if (handler.RequireModerator && !user.IsModerator)
+                    {
                         user.SendMessage(29); // You must have operator status to do this.
+                    }
                     else
+                    {
                         handler.Callback(user, channel, param);
+                    }
                 }
                 else
                 {

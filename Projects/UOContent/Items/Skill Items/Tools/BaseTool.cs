@@ -69,7 +69,9 @@ namespace Server.Items
             Quality = (ToolQuality)quality;
 
             if (makersMark)
-                Crafter = from;
+            {
+                Crafter = @from;
+            }
 
             return quality;
         }
@@ -105,7 +107,9 @@ namespace Server.Items
         public int GetUsesScalar()
         {
             if (m_Quality == ToolQuality.Exceptional)
+            {
                 return 200;
+            }
 
             return 100;
         }
@@ -119,7 +123,9 @@ namespace Server.Items
             // list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 
             if (m_Quality == ToolQuality.Exceptional)
+            {
                 list.Add(1060636); // exceptional
+            }
 
             list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
         }
@@ -136,7 +142,9 @@ namespace Server.Items
             var check = m.FindItemOnLayer(Layer.OneHanded);
 
             if (check is BaseTool && check != tool && !(check is AncientSmithyHammer))
+            {
                 return false;
+            }
 
             check = m.FindItemOnLayer(Layer.TwoHanded);
 
@@ -160,9 +168,13 @@ namespace Server.Items
 
                 // Blacksmithing shows the gump regardless of proximity of an anvil and forge after SE
                 if (num > 0 && (num != 1044267 || !Core.SE))
-                    from.SendLocalizedMessage(num);
+                {
+                    @from.SendLocalizedMessage(num);
+                }
                 else
-                    from.SendGump(new CraftGump(from, system, this, null));
+                {
+                    @from.SendGump(new CraftGump(@from, system, this, null));
+                }
             }
             else
             {

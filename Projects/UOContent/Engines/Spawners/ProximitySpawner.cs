@@ -89,7 +89,9 @@ namespace Server.Engines.Spawners
         public override void DoTimer(TimeSpan delay)
         {
             if (!Running)
+            {
                 return;
+            }
 
             End = DateTime.UtcNow + delay;
         }
@@ -104,7 +106,9 @@ namespace Server.Engines.Spawners
         public virtual bool ValidTrigger(Mobile m)
         {
             if (m is BaseCreature bc && (bc.IsDeadBondedPet || !(bc.Controlled || bc.Summoned)))
+            {
                 return false;
+            }
 
             return m.AccessLevel == AccessLevel.Player && (m.Player || m.Alive && !m.Hidden && m.CanBeDamaged());
         }
@@ -112,7 +116,9 @@ namespace Server.Engines.Spawners
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
             if (!Running)
+            {
                 return;
+            }
 
             if (IsEmpty && End <= DateTime.UtcNow && m.InRange(GetWorldLocation(), TriggerRange) &&
                 m.Location != oldLocation && ValidTrigger(m))
@@ -123,9 +129,15 @@ namespace Server.Engines.Spawners
                 Spawn();
 
                 if (InstantFlag)
+                {
                     foreach (var spawned in Spawned.Keys)
+                    {
                         if (spawned is Mobile mobile)
+                        {
                             mobile.Combatant = m;
+                        }
+                    }
+                }
             }
         }
 

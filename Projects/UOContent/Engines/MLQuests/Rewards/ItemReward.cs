@@ -59,7 +59,9 @@ namespace Server.Engines.MLQuests.Rewards
             catch (Exception e)
             {
                 if (MLQuestSystem.Debug)
+                {
                     Console.WriteLine("WARNING: ItemReward.CreateItem failed for {0}: {1}", m_Type, e);
+                }
             }
 
             return spawnedItem;
@@ -70,12 +72,16 @@ namespace Server.Engines.MLQuests.Rewards
             var reward = CreateItem();
 
             if (reward == null)
+            {
                 return;
+            }
 
             if (reward.Stackable)
             {
                 if (m_Amount > 1)
+                {
                     reward.Amount = m_Amount;
+                }
 
                 rewards.Add(reward);
             }
@@ -90,7 +96,9 @@ namespace Server.Engines.MLQuests.Rewards
                         reward = CreateItem();
 
                         if (reward == null)
+                        {
                             return;
+                        }
                     }
                 }
             }

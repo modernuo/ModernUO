@@ -8,7 +8,9 @@ namespace Server.Mobiles
             Title = "the healer";
 
             if (!Core.AOS)
+            {
                 NameHue = 0x35;
+            }
 
             SetSkill(SkillName.Forensics, 80.0, 100.0);
             SetSkill(SkillName.SpiritSpeak, 80.0, 100.0);
@@ -27,7 +29,9 @@ namespace Server.Mobiles
         public override bool CheckTeach(SkillName skill, Mobile from)
         {
             if (!base.CheckTeach(skill, from))
+            {
                 return false;
+            }
 
             return skill == SkillName.Forensics
                    || skill == SkillName.Healing
@@ -55,7 +59,9 @@ namespace Server.Mobiles
             }
 
             if (m.Karma < 0)
+            {
                 Say(501224); // Thou hast strayed from the path of virtue, but thou still deservest a second chance.
+            }
 
             return true;
         }
@@ -74,7 +80,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Core.AOS && NameHue == 0x35)
+            {
                 NameHue = -1;
+            }
         }
     }
 }

@@ -136,7 +136,10 @@ namespace Server.Engines.Quests.Necro
         {
             get
             {
-                if (m_FromMardoth) return 1062058;
+                if (m_FromMardoth)
+                {
+                    return 1062058;
+                }
 
                 /* You have arrived at the well, but no longer have the scroll
                    * of calling.  Use Mardoth's teleporter to return to the

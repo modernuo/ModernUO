@@ -58,7 +58,9 @@ namespace Server.Items
             }
 
             if (Name == "a young player ticket")
+            {
                 Name = null;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -162,7 +164,9 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_Ticket.Deleted)
+                {
                     return;
+                }
 
                 var number = 0;
 
@@ -206,7 +210,9 @@ namespace Server.Items
                     m_From.AddToBackpack(item);
 
                     if (item2 != null)
+                    {
                         m_From.AddToBackpack(item2);
+                    }
                 }
             }
         }

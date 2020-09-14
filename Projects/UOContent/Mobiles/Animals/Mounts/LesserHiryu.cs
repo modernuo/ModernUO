@@ -45,7 +45,9 @@ namespace Server.Mobiles
             MinTameSkill = 98.7;
 
             if (Utility.RandomDouble() < .33)
+            {
                 PackItem(Seed.RandomBonsaiSeed());
+            }
         }
 
         public LesserHiryu(Serial serial)
@@ -82,15 +84,29 @@ namespace Server.Mobiles
              * */
 
             if (rand <= 0)
+            {
                 return 0x8258;
+            }
+
             if (rand <= 1)
+            {
                 return 0x88AB;
+            }
+
             if (rand <= 6)
+            {
                 return 0x87D4;
+            }
+
             if (rand <= 16)
+            {
                 return 0x8163;
+            }
+
             if (rand <= 26)
+            {
                 return 0x8295;
+            }
 
             return 0;
         }
@@ -98,7 +114,10 @@ namespace Server.Mobiles
         public override bool OverrideBondingReqs()
         {
             if (ControlMaster.Skills.Bushido.Base >= 90.0)
+            {
                 return true;
+            }
+
             return false;
         }
 
@@ -122,16 +141,24 @@ namespace Server.Mobiles
         {
             var tamingChance = base.GetControlChance(m, useBaseSkill);
 
-            if (tamingChance >= 0.95) return tamingChance;
+            if (tamingChance >= 0.95)
+            {
+                return tamingChance;
+            }
 
             var skill = useBaseSkill ? m.Skills.Bushido.Base : m.Skills.Bushido.Value;
 
-            if (skill < 90.0) return tamingChance;
+            if (skill < 90.0)
+            {
+                return tamingChance;
+            }
 
             var bushidoChance = (skill - 30.0) / 100;
 
             if (m.Skills.Bushido.Base >= 120)
+            {
                 bushidoChance += 0.05;
+            }
 
             return bushidoChance > tamingChance ? bushidoChance : tamingChance;
         }
@@ -141,7 +168,9 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() >= 0.1)
+            {
                 return;
+            }
 
             /* Grasping Claw
                * Start cliloc: 1070836
@@ -186,15 +215,22 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (version <= 1)
+            {
                 Timer.DelayCall(Fix, version);
+            }
 
             if (version < 2)
+            {
                 for (var i = 0; i < Skills.Length; ++i)
                 {
                     Skills[i].Cap = Math.Max(100.0, Skills[i].Cap * 0.9);
 
-                    if (Skills[i].Base > Skills[i].Cap) Skills[i].Base = Skills[i].Cap;
+                    if (Skills[i].Base > Skills[i].Cap)
+                    {
+                        Skills[i].Base = Skills[i].Cap;
+                    }
                 }
+            }
         }
 
         private void Fix(int version)
@@ -203,7 +239,11 @@ namespace Server.Mobiles
             {
                 case 1:
                     {
-                        if (InternalItem != null) InternalItem.Hue = Hue;
+                        if (InternalItem != null)
+                        {
+                            InternalItem.Hue = Hue;
+                        }
+
                         goto case 0;
                     }
                 case 0:

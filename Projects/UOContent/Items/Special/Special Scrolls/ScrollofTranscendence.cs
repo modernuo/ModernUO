@@ -38,27 +38,39 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Value == 1)
+            {
                 list.Add(1076759, "{0}\t{1}.0 Skill Points", GetName(), Value);
+            }
             else
+            {
                 list.Add(1076759, "{0}\t{1} Skill Points", GetName(), Value);
+            }
         }
 
         public override bool CanUse(Mobile from)
         {
             if (!(base.CanUse(from) && from is PlayerMobile pm))
+            {
                 return false;
+            }
 
             var context = MLQuestSystem.GetContext(pm);
 
             if (context != null)
+            {
                 foreach (var instance in context.QuestInstances)
+                {
                     foreach (var objective in instance.Objectives)
+                    {
                         if (!objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance &&
                             objectiveInstance.Handles(Skill))
                         {
-                            from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
+                            @from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
                             return false;
                         }
+                    }
+                }
+            }
 
             if (pm.AcceleratedStart > DateTime.UtcNow)
             {
@@ -72,7 +84,9 @@ namespace Server.Items
         public override void Use(Mobile from)
         {
             if (!CanUse(from))
+            {
                 return;
+            }
 
             var tskill = from.Skills[Skill].Base; // value of skill without item bonuses etc
             var tcap = from.Skills[Skill].Cap;    // maximum value permitted
@@ -81,7 +95,9 @@ namespace Server.Items
             var newValue = Value;
 
             if (tskill + newValue > tcap)
+            {
                 newValue = tcap - tskill;
+            }
 
             if (tskill < tcap && from.Skills[Skill].Lock == SkillLock.Up)
             {
@@ -91,12 +107,14 @@ namespace Server.Items
 
                     for (var i = 0; i < ns; i++)
                         // skill must point down and its value must be enough
-                        if (from.Skills[i].Lock == SkillLock.Down && from.Skills[i].Base >= newValue)
+                    {
+                        if (@from.Skills[i].Lock == SkillLock.Down && @from.Skills[i].Base >= newValue)
                         {
-                            from.Skills[i].Base -= newValue;
+                            @from.Skills[i].Base -= newValue;
                             canGain = true;
                             break;
                         }
+                    }
                 }
                 else
                 {
@@ -146,7 +164,9 @@ namespace Server.Items
             Insured = false;
 
             if (Hue == 0x7E)
+            {
                 Hue = 0x490;
+            }
         }
     }
 }

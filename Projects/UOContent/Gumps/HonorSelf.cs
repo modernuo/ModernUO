@@ -18,7 +18,10 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState sender, RelayInfo info)
         {
-            if (info.ButtonID == 1) HonorVirtue.ActivateEmbrace(m_from);
+            if (info.ButtonID == 1)
+            {
+                HonorVirtue.ActivateEmbrace(m_from);
+            }
         }
     }
 }

@@ -19,9 +19,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (IsChildOf(from.Backpack))
-                from.SendGump(new ConfirmBreakCrystalGump(this));
+            {
+                @from.SendGump(new ConfirmBreakCrystalGump(this));
+            }
             else
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            {
+                @from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

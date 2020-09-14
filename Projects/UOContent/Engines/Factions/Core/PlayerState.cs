@@ -208,11 +208,17 @@ namespace Server.Factions
                     int percent;
 
                     if (Owner.Count == 1)
+                    {
                         percent = 1000;
+                    }
                     else if (m_RankIndex == -1)
+                    {
                         percent = 0;
+                    }
                     else
+                    {
                         percent = (Faction.ZeroRankOffset - m_RankIndex) * 1000 / Faction.ZeroRankOffset;
+                    }
 
                     for (var i = 0; i < ranks.Length; i++)
                     {
@@ -250,9 +256,13 @@ namespace Server.Factions
                 var sge = SilverGiven[i];
 
                 if (sge.IsExpired)
+                {
                     SilverGiven.RemoveAt(i--);
+                }
                 else if (sge.GivenTo == mob)
+                {
                     return false;
+                }
             }
 
             return true;
@@ -273,7 +283,9 @@ namespace Server.Factions
         public void Attach()
         {
             if (Mobile is PlayerMobile mobile)
+            {
                 mobile.FactionPlayerState = this;
+            }
         }
 
         public void Serialize(IGenericWriter writer)

@@ -21,9 +21,13 @@ namespace Server.Engines.Quests.Ninja
             AddItem(new NinjaTabi());
 
             if (Utility.RandomBool())
+            {
                 AddItem(new Kama());
+            }
             else
+            {
                 AddItem(new Tessen());
+            }
 
             SetSkill(SkillName.Swords, 50.0);
             SetSkill(SkillName.Tactics, 50.0);

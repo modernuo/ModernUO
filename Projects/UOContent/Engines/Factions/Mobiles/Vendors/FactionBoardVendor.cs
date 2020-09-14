@@ -55,7 +55,9 @@ namespace Server.Factions
             public InternalBuyInfo()
             {
                 for (var i = 0; i < 5; ++i)
+                {
                     Add(new GenericBuyInfo(typeof(Board), 3, 20, 0x1BD7, 0));
+                }
             }
         }
 

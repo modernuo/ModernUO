@@ -30,7 +30,9 @@ namespace Server.Spells.Chivalry
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (CheckBSequence(m))
             {
@@ -45,13 +47,21 @@ namespace Server.Spells.Chivalry
                 int chance;
 
                 if (Caster.Karma < -5000)
+                {
                     chance = 0;
+                }
                 else if (Caster.Karma < 0)
+                {
                     chance = (int)Math.Sqrt(20000 + Caster.Karma) - 122;
+                }
                 else if (Caster.Karma < 5625)
+                {
                     chance = (int)Math.Sqrt(Caster.Karma) + 25;
+                }
                 else
+                {
                     chance = 100;
+                }
 
                 if (chance > Utility.Random(100))
                 {
@@ -80,15 +90,21 @@ namespace Server.Spells.Chivalry
 
                     var mod = m.GetStatMod("[Magic] Str Offset");
                     if (mod?.Offset < 0)
+                    {
                         m.RemoveStatMod("[Magic] Str Offset");
+                    }
 
                     mod = m.GetStatMod("[Magic] Dex Offset");
                     if (mod?.Offset < 0)
+                    {
                         m.RemoveStatMod("[Magic] Dex Offset");
+                    }
 
                     mod = m.GetStatMod("[Magic] Int Offset");
                     if (mod?.Offset < 0)
+                    {
                         m.RemoveStatMod("[Magic] Int Offset");
+                    }
 
                     m.Paralyzed = false;
 
@@ -97,7 +113,11 @@ namespace Server.Spells.Chivalry
                     CorpseSkinSpell.RemoveCurse(m);
                     CurseSpell.RemoveEffect(m);
                     MortalStrike.EndWound(m);
-                    if (Core.ML) BloodOathSpell.RemoveCurse(m);
+                    if (Core.ML)
+                    {
+                        BloodOathSpell.RemoveCurse(m);
+                    }
+
                     MindRotSpell.ClearMindRotScalar(m);
 
                     BuffInfo.RemoveBuff(m, BuffIcon.Clumsy);

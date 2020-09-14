@@ -117,7 +117,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_Label != null && m_Label > 0)
+            {
                 TextDefinition.AddTo(list, m_Label);
+            }
 
             list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
         }
@@ -139,7 +141,9 @@ namespace Server.Items
         {
             if (Deleted || UsesRemaining <= 0 || !from.InRange(GetWorldLocation(), 3) ||
                 !IsAccessibleTo(from))
+            {
                 return;
+            }
 
             if (!(targeted is Item i))
             {
@@ -187,7 +191,9 @@ namespace Server.Items
                 i.Hue = Hue;
 
                 if (--UsesRemaining <= 0)
+                {
                     Delete();
+                }
 
                 from.PlaySound(0x23E); // As per OSI TC1
             }
@@ -196,24 +202,36 @@ namespace Server.Items
         public static bool IsValidItem(Item i)
         {
             if (i is BasePigmentsOfTokuno)
+            {
                 return false;
+            }
 
             var t = i.GetType();
 
             var resource = CraftResource.None;
 
             if (i is BaseWeapon weapon)
+            {
                 resource = weapon.Resource;
+            }
             else if (i is BaseArmor armor)
+            {
                 resource = armor.Resource;
+            }
             else if (i is BaseClothing clothing)
+            {
                 resource = clothing.Resource;
+            }
 
             if (!CraftResources.IsStandard(resource))
+            {
                 return true;
+            }
 
             if (i is ITokunoDyable)
+            {
                 return true;
+            }
 
             return IsInTypeList(t, TreasuresOfTokuno.LesserArtifactsTotal)
                    || IsInTypeList(t, TreasuresOfTokuno.GreaterArtifacts)
@@ -232,8 +250,12 @@ namespace Server.Items
         private static bool IsInTypeList(Type t, Type[] list)
         {
             for (var i = 0; i < list.Length; i++)
+            {
                 if (list[i] == t)
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -265,11 +287,17 @@ namespace Server.Items
                         InheritsItem = true;
 
                         if (this is LesserPigmentsOfTokuno)
+                        {
                             ((LesserPigmentsOfTokuno)this).Type = (LesserPigmentType)reader.ReadEncodedInt();
+                        }
                         else if (this is PigmentsOfTokuno)
+                        {
                             ((PigmentsOfTokuno)this).Type = (PigmentType)reader.ReadEncodedInt();
+                        }
                         else if (this is MetalPigmentsOfTokuno)
+                        {
                             reader.ReadEncodedInt();
+                        }
 
                         m_UsesRemaining = reader.ReadEncodedInt();
 

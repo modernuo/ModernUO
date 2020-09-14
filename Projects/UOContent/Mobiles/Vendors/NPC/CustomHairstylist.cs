@@ -189,8 +189,12 @@ namespace Server.Mobiles
             var canAfford = 0;
 
             for (var i = 0; i < sellList.Length; ++i)
+            {
                 if (balance >= sellList[i].Price && (!sellList[i].FacialHair || !isFemale))
+                {
                     ++canAfford;
+                }
+            }
 
             AddPage(0);
 
@@ -201,15 +205,21 @@ namespace Server.Mobiles
             var index = 0;
 
             for (var i = 0; i < sellList.Length; ++i)
+            {
                 if (balance >= sellList[i].Price && (!sellList[i].FacialHair || !isFemale))
                 {
                     if (sellList[i].TitleString != null)
+                    {
                         AddHtml(140, 75 + index * 25, 300, 20, sellList[i].TitleString);
+                    }
                     else
+                    {
                         AddHtmlLocalized(140, 75 + index * 25, 300, 20, sellList[i].Title);
+                    }
 
                     AddButton(100, 75 + index++ * 25, 4005, 4007, 1 + i);
                 }
+            }
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)
@@ -225,22 +235,35 @@ namespace Server.Mobiles
                 var isFemale = m_From.Female || m_From.Body.IsFemale;
 
                 if (buyInfo.FacialHair && isFemale)
+                {
                     m_Vendor.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1010639, m_From.NetState);
+                }
                 else if (balance >= buyInfo.Price)
+                {
                     try
                     {
                         var origArgs = buyInfo.GumpArgs;
                         var args = new object[origArgs.Length];
 
                         for (var i = 0; i < args.Length; ++i)
+                        {
                             if (origArgs[i] == CustomHairstylist.Price)
+                            {
                                 args[i] = m_SellList[index].Price;
+                            }
                             else if (origArgs[i] == CustomHairstylist.From)
+                            {
                                 args[i] = m_From;
+                            }
                             else if (origArgs[i] == CustomHairstylist.Vendor)
+                            {
                                 args[i] = m_Vendor;
+                            }
                             else
+                            {
                                 args[i] = origArgs[i];
+                            }
+                        }
 
                         var g = ActivatorUtil.CreateInstance(buyInfo.GumpType, args) as Gump;
 
@@ -250,8 +273,11 @@ namespace Server.Mobiles
                     {
                         // ignored
                     }
+                }
                 else
+                {
                     m_Vendor.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1042293, m_From.NetState);
+                }
             }
         }
     }
@@ -299,7 +325,9 @@ namespace Server.Mobiles
             Hues = new int[count];
 
             for (var i = 0; i < count; ++i)
+            {
                 Hues[i] = start + i;
+            }
         }
 
         public string Name { get; }
@@ -378,6 +406,7 @@ namespace Server.Mobiles
                     var offset = switches[0] / m_Entries.Length;
 
                     if (index >= 0 && index < m_Entries.Length)
+                    {
                         if (offset >= 0 && offset < m_Entries[index].Hues.Length)
                         {
                             if (m_Hair && m_From.HairItemID > 0 || m_FacialHair && m_From.FacialHairItemID > 0)
@@ -396,10 +425,14 @@ namespace Server.Mobiles
                                 var hue = m_Entries[index].Hues[offset];
 
                                 if (m_Hair)
+                                {
                                     m_From.HairHue = hue;
+                                }
 
                                 if (m_FacialHair)
+                                {
                                     m_From.FacialHairHue = hue;
+                                }
                             }
                             else
                             {
@@ -411,6 +444,7 @@ namespace Server.Mobiles
                                 ); // You have no hair to dye and you cannot use this.
                             }
                         }
+                    }
                 }
                 else
                 {
@@ -515,9 +549,13 @@ namespace Server.Mobiles
             ); // Cancel
 
             if (!facialHair)
+            {
                 AddHtmlLocalized(50, 15, 350, 20, 1018353); // <center>New Hairstyle</center>
+            }
             else
+            {
                 AddHtmlLocalized(55, 15, 200, 20, 1018354); // <center>New Beard</center>
+            }
 
             for (var i = 0; i < entries.Length; ++i)
             {
@@ -550,7 +588,9 @@ namespace Server.Mobiles
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_FacialHair && (m_From.Female || m_From.Body.IsFemale))
+            {
                 return;
+            }
 
             if (m_From.Race == Race.Elf)
             {
@@ -578,14 +618,20 @@ namespace Server.Mobiles
                         if (entry.ItemID == 0)
                         {
                             if (m_FacialHair ? facialHairID == 0 : hairID == 0)
+                            {
                                 return;
+                            }
 
                             if (Banker.Withdraw(m_From, m_Price))
                             {
                                 if (m_FacialHair)
+                                {
                                     m_From.FacialHairItemID = 0;
+                                }
                                 else
+                                {
                                     m_From.HairItemID = 0;
+                                }
                             }
                             else
                             {
@@ -602,20 +648,28 @@ namespace Server.Mobiles
                             if (m_FacialHair)
                             {
                                 if (facialHairID > 0 && facialHairID == entry.ItemID)
+                                {
                                     return;
+                                }
                             }
                             else
                             {
                                 if (hairID > 0 && hairID == entry.ItemID)
+                                {
                                     return;
+                                }
                             }
 
                             if (Banker.Withdraw(m_From, m_Price))
                             {
                                 if (m_FacialHair)
+                                {
                                     m_From.FacialHairItemID = entry.ItemID;
+                                }
                                 else
+                                {
                                     m_From.HairItemID = entry.ItemID;
+                                }
                             }
                             else
                             {

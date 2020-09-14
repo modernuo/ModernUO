@@ -40,7 +40,9 @@ namespace Server.Items
                 ); // * You remove the plague mutation core from the plague beast, causing it to dissolve into a pile of goo *
 
                 if (owner != null)
+                {
                     Timer.DelayCall(TimeSpan.FromSeconds(1), KillParent, owner);
+                }
 
                 return true;
             }

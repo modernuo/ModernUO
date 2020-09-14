@@ -62,7 +62,9 @@ namespace Server.SkillHandlers
                 pageDst.Lines = new string[length];
 
                 for (var j = 0; j < length; j++)
+                {
                     pageDst.Lines[j] = pageSrc.Lines[j];
+                }
             }
         }
 
@@ -99,9 +101,11 @@ namespace Server.SkillHandlers
             protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
             {
                 if (cancelType == TargetCancelType.Timeout)
-                    from.SendLocalizedMessage(
+                {
+                    @from.SendLocalizedMessage(
                         501619
                     ); // You have waited too long to make your inscribe selection, your inscription attempt has timed out.
+                }
             }
         }
 
@@ -114,7 +118,9 @@ namespace Server.SkillHandlers
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_BookSrc.Deleted)
+                {
                     return;
+                }
 
                 if (!(targeted is BaseBook bookDst))
                 {
@@ -155,9 +161,11 @@ namespace Server.SkillHandlers
             protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
             {
                 if (cancelType == TargetCancelType.Timeout)
-                    from.SendLocalizedMessage(
+                {
+                    @from.SendLocalizedMessage(
                         501619
                     ); // You have waited too long to make your inscribe selection, your inscription attempt has timed out.
+                }
             }
 
             protected override void OnTargetFinish(Mobile from)

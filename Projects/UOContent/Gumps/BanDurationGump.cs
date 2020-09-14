@@ -69,7 +69,9 @@ namespace Server.Gumps
             var from = sender.Mobile;
 
             if (from.AccessLevel < AccessLevel.Administrator)
+            {
                 return;
+            }
 
             var d = info.GetTextEntry(0);
             var h = info.GetTextEntry(1);
@@ -104,6 +106,7 @@ namespace Server.Gumps
                 case 2: // From D:H:M:S
                     {
                         if (d != null && h != null && m != null && s != null)
+                        {
                             try
                             {
                                 duration = new TimeSpan(
@@ -120,6 +123,7 @@ namespace Server.Gumps
                             {
                                 // ignored
                             }
+                        }
 
                         duration = TimeSpan.Zero;
                         shouldSet = false;
@@ -129,6 +133,7 @@ namespace Server.Gumps
                 case 3: // From D
                     {
                         if (d != null)
+                        {
                             try
                             {
                                 duration = TimeSpan.FromDays(Utility.ToDouble(d.Text));
@@ -140,6 +145,7 @@ namespace Server.Gumps
                             {
                                 // ignored
                             }
+                        }
 
                         duration = TimeSpan.Zero;
                         shouldSet = false;
@@ -149,6 +155,7 @@ namespace Server.Gumps
                 case 4: // From H
                     {
                         if (h != null)
+                        {
                             try
                             {
                                 duration = TimeSpan.FromHours(Utility.ToDouble(h.Text));
@@ -160,6 +167,7 @@ namespace Server.Gumps
                             {
                                 // ignored
                             }
+                        }
 
                         duration = TimeSpan.Zero;
                         shouldSet = false;
@@ -169,6 +177,7 @@ namespace Server.Gumps
                 case 5: // From M
                     {
                         if (m != null)
+                        {
                             try
                             {
                                 duration = TimeSpan.FromMinutes(Utility.ToDouble(m.Text));
@@ -180,6 +189,7 @@ namespace Server.Gumps
                             {
                                 // ignored
                             }
+                        }
 
                         duration = TimeSpan.Zero;
                         shouldSet = false;
@@ -189,6 +199,7 @@ namespace Server.Gumps
                 case 6: // From S
                     {
                         if (s != null)
+                        {
                             try
                             {
                                 duration = TimeSpan.FromSeconds(Utility.ToDouble(s.Text));
@@ -200,6 +211,7 @@ namespace Server.Gumps
                             {
                                 // ignored
                             }
+                        }
 
                         duration = TimeSpan.Zero;
                         shouldSet = false;
@@ -220,18 +232,24 @@ namespace Server.Gumps
                     a.SetBanTags(from, DateTime.UtcNow, duration);
 
                     if (comment != null)
+                    {
                         a.Comments.Add(
                             new AccountComment(
-                                from.RawName,
+                                @from.RawName,
                                 $"Duration: {(duration == TimeSpan.MaxValue ? "Infinite" : duration.ToString())}, Comment: {comment}"
                             )
                         );
+                    }
                 }
 
                 if (duration == TimeSpan.MaxValue)
-                    from.SendMessage("Ban Duration: Infinite");
+                {
+                    @from.SendMessage("Ban Duration: Infinite");
+                }
                 else
-                    from.SendMessage("Ban Duration: {0}", duration);
+                {
+                    @from.SendMessage("Ban Duration: {0}", duration);
+                }
             }
             else
             {

@@ -46,7 +46,9 @@ namespace Server.Engines.Quests.Necro
                             ); // You rummage through the scrolls until you find the Scroll of Calling.  You quickly put it in your pack.
 
                             if (obj?.Completed == false)
+                            {
                                 obj.Complete();
+                            }
                         }
                         else
                         {

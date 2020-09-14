@@ -87,13 +87,19 @@ namespace Server.Items
         public static bool Slays(TalismanSlayerName name, Mobile m)
         {
             if (m == null || !m_Table.TryGetValue(name, out var types) || types == null)
+            {
                 return false;
+            }
 
             var type = m.GetType();
 
             for (var i = 0; i < types.Length; i++)
+            {
                 if (types[i].IsAssignableFrom(type))
+                {
                     return true;
+                }
+            }
 
             return false;
         }

@@ -83,32 +83,48 @@ namespace Server.Items
         public static Point3D ReverseLookup(Map map, int xLong, int yLat, int xMins, int yMins, bool xEast, bool ySouth)
         {
             if (map == null || map == Map.Internal)
+            {
                 return Point3D.Zero;
+            }
 
             if (!ComputeMapDetails(map, 0, 0, out var xCenter, out var yCenter, out var xWidth, out var yHeight))
+            {
                 return Point3D.Zero;
+            }
 
             var absLong = xLong + (double)xMins / 60;
             var absLat = yLat + (double)yMins / 60;
 
             if (!xEast)
+            {
                 absLong = 360.0 - absLong;
+            }
 
             if (!ySouth)
+            {
                 absLat = 360.0 - absLat;
+            }
 
             var x = xCenter + (int)(absLong * xWidth / 360);
             var y = yCenter + (int)(absLat * yHeight / 360);
 
             if (x < 0)
+            {
                 x += xWidth;
+            }
             else if (x >= xWidth)
+            {
                 x -= xWidth;
+            }
 
             if (y < 0)
+            {
                 y += yHeight;
+            }
             else if (y >= yHeight)
+            {
                 y -= yHeight;
+            }
 
             var z = map.GetAverageZ(x, y);
 
@@ -121,29 +137,41 @@ namespace Server.Items
         )
         {
             if (map == null || map == Map.Internal)
+            {
                 return false;
+            }
 
             int x = p.X, y = p.Y;
 
             if (!ComputeMapDetails(map, x, y, out var xCenter, out var yCenter, out var xWidth, out var yHeight))
+            {
                 return false;
+            }
 
             var absLong = (double)((x - xCenter) * 360) / xWidth;
             var absLat = (double)((y - yCenter) * 360) / yHeight;
 
             if (absLong > 180.0)
+            {
                 absLong = -180.0 + absLong % 180.0;
+            }
 
             if (absLat > 180.0)
+            {
                 absLat = -180.0 + absLat % 180.0;
+            }
 
             bool east = absLong >= 0, south = absLat >= 0;
 
             if (absLong < 0.0)
+            {
                 absLong = -absLong;
+            }
 
             if (absLat < 0.0)
+            {
                 absLat = -absLat;
+            }
 
             xLong = (int)absLong;
             yLat = (int)absLat;

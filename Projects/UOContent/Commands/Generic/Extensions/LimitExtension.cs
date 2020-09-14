@@ -21,13 +21,17 @@ namespace Server.Commands.Generic
             Limit = Utility.ToInt32(arguments[offset]);
 
             if (Limit < 0)
+            {
                 throw new Exception("Limit cannot be less than zero.");
+            }
         }
 
         public override void Filter(List<object> list)
         {
             if (list.Count > Limit)
+            {
                 list.RemoveRange(Limit, list.Count - Limit);
+            }
         }
     }
 }

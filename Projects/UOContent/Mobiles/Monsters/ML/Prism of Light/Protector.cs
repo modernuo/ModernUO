@@ -68,7 +68,9 @@ namespace Server.Mobiles
         public override void GenerateLoot(bool spawning)
         {
             if (spawning)
+            {
                 return; // No loot/backpack on spawn
+            }
 
             base.GenerateLoot(true);
             base.GenerateLoot(false);

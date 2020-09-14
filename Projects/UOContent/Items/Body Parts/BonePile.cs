@@ -17,7 +17,9 @@ namespace Server.Items
         public bool Scissor(Mobile from, Scissors scissors)
         {
             if (Deleted || !from.CanSee(this))
+            {
                 return false;
+            }
 
             ScissorHelper(from, new Bone(), Utility.RandomMinMax(10, 15));
 

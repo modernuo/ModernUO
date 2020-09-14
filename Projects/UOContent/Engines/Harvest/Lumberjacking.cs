@@ -125,7 +125,9 @@ namespace Server.Engines.Harvest
         public override bool CheckHarvest(Mobile from, Item tool)
         {
             if (!base.CheckHarvest(from, tool))
+            {
                 return false;
+            }
 
             if (tool.Parent != from)
             {
@@ -139,7 +141,9 @@ namespace Server.Engines.Harvest
         public override bool CheckHarvest(Mobile from, Item tool, HarvestDefinition def, object toHarvest)
         {
             if (!base.CheckHarvest(from, tool, def, toHarvest))
+            {
                 return false;
+            }
 
             if (tool.Parent != from)
             {
@@ -153,18 +157,26 @@ namespace Server.Engines.Harvest
         public override void OnBadHarvestTarget(Mobile from, Item tool, object toHarvest)
         {
             if (toHarvest is Mobile mobile)
+            {
                 mobile.PrivateOverheadMessage(
                     MessageType.Regular,
                     0x3B2,
                     500450,
-                    from.NetState
+                    @from.NetState
                 ); // You can only skin dead creatures.
+            }
             else if (toHarvest is Item item)
-                item.LabelTo(from, 500464); // Use this on corpses to carve away meat and hide
+            {
+                item.LabelTo(@from, 500464); // Use this on corpses to carve away meat and hide
+            }
             else if (toHarvest is StaticTarget || toHarvest is LandTarget)
-                from.SendLocalizedMessage(500489); // You can't use an axe on that.
+            {
+                @from.SendLocalizedMessage(500489); // You can't use an axe on that.
+            }
             else
-                from.SendLocalizedMessage(1005213); // You can't do that
+            {
+                @from.SendLocalizedMessage(1005213); // You can't do that
+            }
         }
 
         public override void OnHarvestStarted(Mobile from, Item tool, HarvestDefinition def, object toHarvest)
@@ -172,7 +184,9 @@ namespace Server.Engines.Harvest
             base.OnHarvestStarted(from, tool, def, toHarvest);
 
             if (Core.ML)
-                from.RevealingAction();
+            {
+                @from.RevealingAction();
+            }
         }
 
         public static void Initialize()

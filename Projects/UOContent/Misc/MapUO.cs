@@ -10,10 +10,14 @@ namespace Server.Misc
         public static void Initialize()
         {
             if (Settings.PartyTrack)
+            {
                 ProtocolExtensions.Register(0x00, true, OnPartyTrack);
+            }
 
             if (Settings.GuildTrack)
+            {
                 ProtocolExtensions.Register(0x01, true, OnGuildTrack);
+            }
         }
 
         private static void OnPartyTrack(NetState state, PacketReader pvSrc)
@@ -26,7 +30,9 @@ namespace Server.Misc
                 var packet = new Packets.PartyTrack(from, party);
 
                 if (packet.Stream.Length > 8)
+                {
                     state.Send(packet);
+                }
             }
         }
 
@@ -41,7 +47,9 @@ namespace Server.Misc
                 var packet = new Packets.GuildTrack(from, guild, locations);
 
                 if (packet.Stream.Length > (locations ? 9 : 5))
+                {
                     state.Send(packet);
+                }
             }
             else
             {
@@ -67,12 +75,16 @@ namespace Server.Misc
                         var pmi = party.Members[i];
 
                         if (pmi == null || pmi.Mobile == from)
+                        {
                             continue;
+                        }
 
                         var mob = pmi.Mobile;
 
                         if (Utility.InUpdateRange(from, mob) && from.CanSee(mob))
+                        {
                             continue;
+                        }
 
                         Stream.Write(mob.Serial);
                         Stream.Write((short)mob.X);
@@ -104,10 +116,14 @@ namespace Server.Misc
                         var mob = guild.Members[i];
 
                         if (mob == null || mob == from || mob.NetState == null)
+                        {
                             continue;
+                        }
 
                         if (locations && Utility.InUpdateRange(from, mob) && from.CanSee(mob))
+                        {
                             continue;
+                        }
 
                         Stream.Write(mob.Serial);
 
@@ -118,9 +134,13 @@ namespace Server.Misc
                             Stream.Write((byte)(mob.Map?.MapID ?? 0));
 
                             if (Settings.GuildHitsPercent && mob.Alive)
+                            {
                                 Stream.Write((byte)(mob.Hits / Math.Max(mob.HitsMax, 1.0) * 100));
+                            }
                             else
+                            {
                                 Stream.Write((byte)0);
+                            }
                         }
                     }
 

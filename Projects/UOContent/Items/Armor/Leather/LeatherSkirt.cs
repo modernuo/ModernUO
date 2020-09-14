@@ -37,7 +37,9 @@ namespace Server.Items
             writer.Write(0);
 
             if (Weight == 3.0)
+            {
                 Weight = 1.0;
+            }
         }
 
         public override void Deserialize(IGenericReader reader)

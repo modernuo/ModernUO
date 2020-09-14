@@ -32,10 +32,15 @@ namespace Server.Engines.Quests.Haven
             get
             {
                 if (System.From.Profession == 1) // warrior
+                {
                     return 1049088;
+                }
 
                 if (System.From.Profession == 2) // magician
+                {
                     return 1049386;
+                }
+
                 /* <I>Uzeraan nods at you with approval and begins to speak...</I><BR><BR>
                            *
                            * Now that you are ready, let me give you your first task.<BR><BR>
@@ -84,7 +89,9 @@ namespace Server.Engines.Quests.Haven
             get
             {
                 if (System.From.Profession == 2) // magician
+                {
                     return 1049387;
+                }
 
                 /* <I>You give your report to Uzeraan and after a while,
                    * he begins to speak...</I><BR><BR>
@@ -136,7 +143,9 @@ namespace Server.Engines.Quests.Haven
             get
             {
                 if (System.From.Profession == 5) // paladin
+                {
                     return 1060749;
+                }
 
                 /* <I>Schmendrick barely pays you any attention as you approach him.  His
                    * mind seems to be occupied with something else.  You explain to him that
@@ -209,7 +218,9 @@ namespace Server.Engines.Quests.Haven
             get
             {
                 if (System.From.Profession == 2) // magician
+                {
                     return 1049388;
+                }
 
                 /* <I>Uzeraan takes the dirt from you and smiles...<BR><BR></I>
                    *
@@ -261,6 +272,7 @@ namespace Server.Engines.Quests.Haven
             get
             {
                 if (System.From.Profession == 2) // magician
+                {
                     return "<I>You hand Uzeraan the Vial of Blood, which he hastily accepts...</I><BR>"
                            + "<BR>"
                            + "Excellent work!  Only one reagent remains and the spell is complete!  The final "
@@ -277,6 +289,7 @@ namespace Server.Engines.Quests.Haven
                            + "battle.  The scrolls should help you make short work of the undead.<BR>"
                            + "<BR>"
                            + "Return here when you have found a <I>Daemon Bone</I>.";
+                }
 
                 /* <I>You hand Uzeraan the Vial of Blood, which he hastily accepts...</I><BR><BR>
                    *
@@ -304,7 +317,10 @@ namespace Server.Engines.Quests.Haven
             get
             {
                 if (System.From.Profession == 5) // paladin
+                {
                     return m_InfoPaladin;
+                }
+
                 return m_Info;
             }
         }
@@ -356,7 +372,10 @@ namespace Server.Engines.Quests.Haven
         {
             get
             {
-                if (m_FromUzeraan) return 1049377;
+                if (m_FromUzeraan)
+                {
+                    return 1049377;
+                }
 
                 /* You've lost the scroll?  Argh!  I will have to try and re-construct
                    * the scroll from memory.  Bring me a blank scroll, which you can
@@ -402,7 +421,10 @@ namespace Server.Engines.Quests.Haven
         {
             get
             {
-                if (m_FromUzeraan) return 1049374;
+                if (m_FromUzeraan)
+                {
+                    return 1049374;
+                }
 
                 /* You've lost the dirt I gave you?<BR><BR>
                    *

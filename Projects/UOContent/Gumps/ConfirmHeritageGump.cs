@@ -31,7 +31,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_Token?.Deleted != false)
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {

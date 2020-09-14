@@ -62,7 +62,9 @@ namespace Server.Mobiles
             );
 
             if (Utility.RandomDouble() < 0.2)
+            {
                 PackItem(new BolaBall());
+            }
         }
 
         public Orc(Serial serial) : base(serial)
@@ -86,7 +88,9 @@ namespace Server.Mobiles
         public override bool IsEnemy(Mobile m)
         {
             if (m.Player && m.FindItemOnLayer(Layer.Helm) is OrcishKinMask)
+            {
                 return false;
+            }
 
             return base.IsEnemy(m);
         }

@@ -59,13 +59,17 @@ namespace Server.Mobiles
         public override void OnHarmfulSpell(Mobile from)
         {
             if (!Controlled && ControlMaster == null)
+            {
                 CurrentSpeed = BoostedSpeed;
+            }
         }
 
         public override void OnCombatantChange()
         {
             if (Combatant == null && !Controlled && ControlMaster == null)
+            {
                 CurrentSpeed = PassiveSpeed;
+            }
         }
 
         public override bool OverrideBondingReqs() => true;
@@ -96,7 +100,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (version == 0)
+            {
                 Hue = 0x489;
+            }
         }
     }
 }

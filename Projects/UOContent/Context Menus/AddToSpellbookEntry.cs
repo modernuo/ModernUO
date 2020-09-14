@@ -13,7 +13,9 @@ namespace Server.ContextMenus
         public override void OnClick()
         {
             if (Owner.From.CheckAlive() && Owner.Target is SpellScroll scroll)
+            {
                 Owner.From.Target = new InternalTarget(scroll);
+            }
         }
 
         private class InternalTarget : Target
@@ -25,8 +27,9 @@ namespace Server.ContextMenus
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (targeted is Spellbook book)
-                    if (from.CheckAlive() && !m_Scroll.Deleted && m_Scroll.Movable && m_Scroll.Amount >= 1 &&
-                        m_Scroll.CheckItemUse(from))
+                {
+                    if (@from.CheckAlive() && !m_Scroll.Deleted && m_Scroll.Movable && m_Scroll.Amount >= 1 &&
+                        m_Scroll.CheckItemUse(@from))
                     {
                         var type = Spellbook.GetTypeForSpell(m_Scroll.SpellID);
 
@@ -35,7 +38,7 @@ namespace Server.ContextMenus
                         }
                         else if (book.HasSpell(m_Scroll.SpellID))
                         {
-                            from.SendLocalizedMessage(500179); // That spell is already present in that spellbook.
+                            @from.SendLocalizedMessage(500179); // That spell is already present in that spellbook.
                         }
                         else
                         {
@@ -47,10 +50,11 @@ namespace Server.ContextMenus
 
                                 m_Scroll.Consume();
 
-                                from.Send(new PlaySound(0x249, book.GetWorldLocation()));
+                                @from.Send(new PlaySound(0x249, book.GetWorldLocation()));
                             }
                         }
                     }
+                }
             }
         }
     }

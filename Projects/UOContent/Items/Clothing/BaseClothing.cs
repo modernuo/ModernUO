@@ -151,7 +151,9 @@ namespace Server.Items
             Quality = (ClothingQuality)quality;
 
             if (makersMark)
-                Crafter = from;
+            {
+                Crafter = @from;
+            }
 
             if (DefaultResource != CraftResource.None)
             {
@@ -169,7 +171,9 @@ namespace Server.Items
             var context = craftSystem.GetContext(from);
 
             if (context?.DoNotColor == true)
+            {
                 Hue = 0;
+            }
 
             return quality;
         }
@@ -177,9 +181,14 @@ namespace Server.Items
         public virtual bool Dye(Mobile from, DyeTub sender)
         {
             if (Deleted)
+            {
                 return false;
+            }
+
             if (RootParent is Mobile && from != RootParent)
+            {
                 return false;
+            }
 
             Hue = sender.DyedHue;
 
@@ -194,7 +203,9 @@ namespace Server.Items
                 m_FactionState = value;
 
                 if (m_FactionState == null)
+                {
                     Hue = 0;
+                }
 
                 LootType = m_FactionState == null ? LootType.Regular : LootType.Blessed;
             }
@@ -219,6 +230,7 @@ namespace Server.Items
             var item = system.CraftItems.SearchFor(GetType());
 
             if (item?.Resources.Count == 1 && item.Resources[0].Amount >= 2)
+            {
                 try
                 {
                     var info = CraftResources.GetInfo(m_Resource);
@@ -227,7 +239,7 @@ namespace Server.Items
 
                     var res = (Item)ActivatorUtil.CreateInstance(resourceType);
 
-                    ScissorHelper(from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
+                    ScissorHelper(@from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
 
                     res.LootType = LootType.Regular;
 
@@ -237,6 +249,7 @@ namespace Server.Items
                 {
                     // ignored
                 }
+            }
 
             from.SendLocalizedMessage(502440); // Scissors can not be used on that to produce anything.
             return false;
@@ -266,9 +279,13 @@ namespace Server.Items
                     m_HitPoints = value;
 
                     if (m_HitPoints < 0)
+                    {
                         Delete();
+                    }
                     else if (m_HitPoints > MaxHitPoints)
+                    {
                         m_HitPoints = MaxHitPoints;
+                    }
 
                     InvalidateProperties();
                 }
@@ -296,9 +313,13 @@ namespace Server.Items
                     int wear;
 
                     if (weapon.Type == WeaponType.Bashing)
+                    {
                         wear = absorbed / 2;
+                    }
                     else
+                    {
                         wear = Utility.Random(2);
+                    }
 
                     if (wear > 0 && m_MaxHitPoints > 0)
                     {
@@ -363,16 +384,22 @@ namespace Server.Items
         public override bool CanEquip(Mobile from)
         {
             if (!Ethic.CheckEquip(from, this))
+            {
                 return false;
+            }
 
             if (from.AccessLevel < AccessLevel.GameMaster)
             {
                 if (RequiredRace != null && from.Race != RequiredRace)
                 {
                     if (RequiredRace == Race.Elf)
-                        from.SendLocalizedMessage(1072203); // Only Elves may use this.
+                    {
+                        @from.SendLocalizedMessage(1072203); // Only Elves may use this.
+                    }
                     else
-                        from.SendMessage("Only {0} may use this.", RequiredRace.PluralName);
+                    {
+                        @from.SendMessage("Only {0} may use this.", RequiredRace.PluralName);
+                    }
 
                     return false;
                 }
@@ -380,9 +407,13 @@ namespace Server.Items
                 if (!AllowMaleWearer && !from.Female)
                 {
                     if (AllowFemaleWearer)
-                        from.SendLocalizedMessage(1010388); // Only females can wear this.
+                    {
+                        @from.SendLocalizedMessage(1010388); // Only females can wear this.
+                    }
                     else
-                        from.SendMessage("You may not wear this.");
+                    {
+                        @from.SendMessage("You may not wear this.");
+                    }
 
                     return false;
                 }
@@ -390,9 +421,13 @@ namespace Server.Items
                 if (!AllowFemaleWearer && from.Female)
                 {
                     if (AllowMaleWearer)
-                        from.SendLocalizedMessage(1063343); // Only males can wear this.
+                    {
+                        @from.SendLocalizedMessage(1063343); // Only males can wear this.
+                    }
                     else
-                        from.SendMessage("You may not wear this.");
+                    {
+                        @from.SendMessage("You may not wear this.");
+                    }
 
                     return false;
                 }
@@ -431,25 +466,35 @@ namespace Server.Items
         public virtual void AddStatBonuses(Mobile parent)
         {
             if (parent == null)
+            {
                 return;
+            }
 
             var strBonus = ComputeStatBonus(StatType.Str);
             var dexBonus = ComputeStatBonus(StatType.Dex);
             var intBonus = ComputeStatBonus(StatType.Int);
 
             if (strBonus == 0 && dexBonus == 0 && intBonus == 0)
+            {
                 return;
+            }
 
             var modName = Serial.ToString();
 
             if (strBonus != 0)
+            {
                 parent.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+            }
 
             if (dexBonus != 0)
+            {
                 parent.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+            }
 
             if (intBonus != 0)
+            {
                 parent.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+            }
         }
 
         public static void ValidateMobile(Mobile m)
@@ -457,7 +502,9 @@ namespace Server.Items
             for (var i = m.Items.Count - 1; i >= 0; --i)
             {
                 if (i >= m.Items.Count)
+                {
                     continue;
+                }
 
                 var item = m.Items[i];
 
@@ -466,27 +513,39 @@ namespace Server.Items
                     if (clothing.RequiredRace != null && m.Race != clothing.RequiredRace)
                     {
                         if (clothing.RequiredRace == Race.Elf)
+                        {
                             m.SendLocalizedMessage(1072203); // Only Elves may use this.
+                        }
                         else
+                        {
                             m.SendMessage("Only {0} may use this.", clothing.RequiredRace.PluralName);
+                        }
 
                         m.AddToBackpack(clothing);
                     }
                     else if (!clothing.AllowMaleWearer && !m.Female && m.AccessLevel < AccessLevel.GameMaster)
                     {
                         if (clothing.AllowFemaleWearer)
+                        {
                             m.SendLocalizedMessage(1010388); // Only females can wear this.
+                        }
                         else
+                        {
                             m.SendMessage("You may not wear this.");
+                        }
 
                         m.AddToBackpack(clothing);
                     }
                     else if (!clothing.AllowFemaleWearer && m.Female && m.AccessLevel < AccessLevel.GameMaster)
                     {
                         if (clothing.AllowMaleWearer)
+                        {
                             m.SendLocalizedMessage(1063343); // Only males can wear this.
+                        }
                         else
+                        {
                             m.SendMessage("You may not wear this.");
+                        }
 
                         m.AddToBackpack(clothing);
                     }
@@ -497,7 +556,9 @@ namespace Server.Items
         public int GetLowerStatReq()
         {
             if (!Core.AOS)
+            {
                 return 0;
+            }
 
             return ClothingAttributes.LowerStatReq;
         }
@@ -507,7 +568,9 @@ namespace Server.Items
             if (parent is Mobile mob)
             {
                 if (Core.AOS)
+                {
                     SkillBonuses.AddTo(mob);
+                }
 
                 AddStatBonuses(mob);
                 mob.CheckStatTimers();
@@ -521,7 +584,9 @@ namespace Server.Items
             if (parent is Mobile mob)
             {
                 if (Core.AOS)
+                {
                     SkillBonuses.Remove();
+                }
 
                 var modName = Serial.ToString();
 
@@ -538,7 +603,9 @@ namespace Server.Items
         public override void OnAfterDuped(Item newItem)
         {
             if (!(newItem is BaseClothing clothing))
+            {
                 return;
+            }
 
             clothing.Attributes = new AosAttributes(newItem, Attributes);
             clothing.Resistances = new AosElementAttributes(newItem, Resistances);
@@ -552,7 +619,9 @@ namespace Server.Items
         public override bool CheckPropertyConflict(Mobile m)
         {
             if (base.CheckPropertyConflict(m))
+            {
                 return true;
+            }
 
             return Layer switch
             {
@@ -589,11 +658,17 @@ namespace Server.Items
             };
 
             if (oreType != 0)
+            {
                 list.Add(1053099, "#{0}\t{1}", oreType, GetNameString()); // ~1_oretype~ ~2_armortype~
+            }
             else if (Name == null)
+            {
                 list.Add(LabelNumber);
+            }
             else
+            {
                 list.Add(Name);
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -601,115 +676,185 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_Crafter != null)
+            {
                 list.Add(1050043, m_Crafter.Name); // crafted by ~1_NAME~
+            }
 
             if (m_FactionState != null)
+            {
                 list.Add(1041350); // faction item
+            }
 
             if (m_Quality == ClothingQuality.Exceptional)
+            {
                 list.Add(1060636); // exceptional
+            }
 
             if (RequiredRace == Race.Elf)
+            {
                 list.Add(1075086); // Elves Only
+            }
 
             SkillBonuses?.GetProperties(list);
 
             int prop;
 
             if ((prop = ArtifactRarity) > 0)
+            {
                 list.Add(1061078, prop.ToString()); // artifact rarity ~1_val~
+            }
 
             if ((prop = Attributes.WeaponDamage) != 0)
+            {
                 list.Add(1060401, prop.ToString()); // damage increase ~1_val~%
+            }
 
             if ((prop = Attributes.DefendChance) != 0)
+            {
                 list.Add(1060408, prop.ToString()); // defense chance increase ~1_val~%
+            }
 
             if ((prop = Attributes.BonusDex) != 0)
+            {
                 list.Add(1060409, prop.ToString()); // dexterity bonus ~1_val~
+            }
 
             if ((prop = Attributes.EnhancePotions) != 0)
+            {
                 list.Add(1060411, prop.ToString()); // enhance potions ~1_val~%
+            }
 
             if ((prop = Attributes.CastRecovery) != 0)
+            {
                 list.Add(1060412, prop.ToString()); // faster cast recovery ~1_val~
+            }
 
             if ((prop = Attributes.CastSpeed) != 0)
+            {
                 list.Add(1060413, prop.ToString()); // faster casting ~1_val~
+            }
 
             if ((prop = Attributes.AttackChance) != 0)
+            {
                 list.Add(1060415, prop.ToString()); // hit chance increase ~1_val~%
+            }
 
             if ((prop = Attributes.BonusHits) != 0)
+            {
                 list.Add(1060431, prop.ToString()); // hit point increase ~1_val~
+            }
 
             if ((prop = Attributes.BonusInt) != 0)
+            {
                 list.Add(1060432, prop.ToString()); // intelligence bonus ~1_val~
+            }
 
             if ((prop = Attributes.LowerManaCost) != 0)
+            {
                 list.Add(1060433, prop.ToString()); // lower mana cost ~1_val~%
+            }
 
             if ((prop = Attributes.LowerRegCost) != 0)
+            {
                 list.Add(1060434, prop.ToString()); // lower reagent cost ~1_val~%
+            }
 
             if ((prop = ClothingAttributes.LowerStatReq) != 0)
+            {
                 list.Add(1060435, prop.ToString()); // lower requirements ~1_val~%
+            }
 
             if ((prop = Attributes.Luck) != 0)
+            {
                 list.Add(1060436, prop.ToString()); // luck ~1_val~
+            }
 
             if ((prop = ClothingAttributes.MageArmor) != 0)
+            {
                 list.Add(1060437); // mage armor
+            }
 
             if ((prop = Attributes.BonusMana) != 0)
+            {
                 list.Add(1060439, prop.ToString()); // mana increase ~1_val~
+            }
 
             if ((prop = Attributes.RegenMana) != 0)
+            {
                 list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
+            }
 
             if ((prop = Attributes.NightSight) != 0)
+            {
                 list.Add(1060441); // night sight
+            }
 
             if ((prop = Attributes.ReflectPhysical) != 0)
+            {
                 list.Add(1060442, prop.ToString()); // reflect physical damage ~1_val~%
+            }
 
             if ((prop = Attributes.RegenStam) != 0)
+            {
                 list.Add(1060443, prop.ToString()); // stamina regeneration ~1_val~
+            }
 
             if ((prop = Attributes.RegenHits) != 0)
+            {
                 list.Add(1060444, prop.ToString()); // hit point regeneration ~1_val~
+            }
 
             if ((prop = ClothingAttributes.SelfRepair) != 0)
+            {
                 list.Add(1060450, prop.ToString()); // self repair ~1_val~
+            }
 
             if ((prop = Attributes.SpellChanneling) != 0)
+            {
                 list.Add(1060482); // spell channeling
+            }
 
             if ((prop = Attributes.SpellDamage) != 0)
+            {
                 list.Add(1060483, prop.ToString()); // spell damage increase ~1_val~%
+            }
 
             if ((prop = Attributes.BonusStam) != 0)
+            {
                 list.Add(1060484, prop.ToString()); // stamina increase ~1_val~
+            }
 
             if ((prop = Attributes.BonusStr) != 0)
+            {
                 list.Add(1060485, prop.ToString()); // strength bonus ~1_val~
+            }
 
             if ((prop = Attributes.WeaponSpeed) != 0)
+            {
                 list.Add(1060486, prop.ToString()); // swing speed increase ~1_val~%
+            }
 
             if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
+            {
                 list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
+            }
 
             AddResistanceProperties(list);
 
             if ((prop = ClothingAttributes.DurabilityBonus) > 0)
+            {
                 list.Add(1060410, prop.ToString()); // durability ~1_val~%
+            }
 
             if ((prop = ComputeStatReq(StatType.Str)) > 0)
+            {
                 list.Add(1061170, prop.ToString()); // strength requirement ~1_val~
+            }
 
             if (m_HitPoints >= 0 && m_MaxHitPoints > 0)
+            {
                 list.Add(1060639, "{0}\t{1}", m_HitPoints, m_MaxHitPoints); // durability ~1_val~ / ~2_val~
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -731,7 +876,9 @@ namespace Server.Items
             }
 
             if (attrs.Count == 0 && Crafter == null && Name != null)
+            {
                 return;
+            }
 
             var eqInfo = new EquipmentInfo(number, m_Crafter, false, attrs.ToArray());
 
@@ -743,21 +890,30 @@ namespace Server.Items
             if (DisplayLootType)
             {
                 if (LootType == LootType.Blessed)
+                {
                     attrs.Add(new EquipInfoAttribute(1038021)); // blessed
+                }
                 else if (LootType == LootType.Cursed)
+                {
                     attrs.Add(new EquipInfoAttribute(1049643)); // cursed
+                }
             }
 
             if (m_FactionState != null)
+            {
                 attrs.Add(new EquipInfoAttribute(1041350)); // faction item
+            }
 
             if (m_Quality == ClothingQuality.Exceptional)
+            {
                 attrs.Add(new EquipInfoAttribute(1018305 - (int)m_Quality));
+            }
         }
 
         public void DistributeBonuses(int amount)
         {
             for (var i = 0; i < amount; ++i)
+            {
                 switch (Utility.Random(5))
                 {
                     case 0:
@@ -776,6 +932,7 @@ namespace Server.Items
                         ++Resistances.Energy;
                         break;
                 }
+            }
 
             InvalidateProperties();
         }
@@ -783,7 +940,9 @@ namespace Server.Items
         private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
         {
             if (setIf)
+            {
                 flags |= toSet;
+            }
         }
 
         private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
@@ -811,34 +970,54 @@ namespace Server.Items
             writer.WriteEncodedInt((int)flags);
 
             if (GetSaveFlag(flags, SaveFlag.Resource))
+            {
                 writer.WriteEncodedInt((int)m_Resource);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Attributes))
+            {
                 Attributes.Serialize(writer);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.ClothingAttributes))
+            {
                 ClothingAttributes.Serialize(writer);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
+            {
                 SkillBonuses.Serialize(writer);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Resistances))
+            {
                 Resistances.Serialize(writer);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.MaxHitPoints))
+            {
                 writer.WriteEncodedInt(m_MaxHitPoints);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.HitPoints))
+            {
                 writer.WriteEncodedInt(m_HitPoints);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Crafter))
+            {
                 writer.Write(m_Crafter);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Quality))
+            {
                 writer.WriteEncodedInt((int)m_Quality);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.StrReq))
+            {
                 writer.WriteEncodedInt(m_StrReq);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -854,51 +1033,87 @@ namespace Server.Items
                         var flags = (SaveFlag)reader.ReadEncodedInt();
 
                         if (GetSaveFlag(flags, SaveFlag.Resource))
+                        {
                             m_Resource = (CraftResource)reader.ReadEncodedInt();
+                        }
                         else
+                        {
                             m_Resource = DefaultResource;
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.Attributes))
+                        {
                             Attributes = new AosAttributes(this, reader);
+                        }
                         else
+                        {
                             Attributes = new AosAttributes(this);
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.ClothingAttributes))
+                        {
                             ClothingAttributes = new AosArmorAttributes(this, reader);
+                        }
                         else
+                        {
                             ClothingAttributes = new AosArmorAttributes(this);
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
+                        {
                             SkillBonuses = new AosSkillBonuses(this, reader);
+                        }
                         else
+                        {
                             SkillBonuses = new AosSkillBonuses(this);
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.Resistances))
+                        {
                             Resistances = new AosElementAttributes(this, reader);
+                        }
                         else
+                        {
                             Resistances = new AosElementAttributes(this);
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.MaxHitPoints))
+                        {
                             m_MaxHitPoints = reader.ReadEncodedInt();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.HitPoints))
+                        {
                             m_HitPoints = reader.ReadEncodedInt();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.Crafter))
+                        {
                             m_Crafter = reader.ReadMobile();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.Quality))
+                        {
                             m_Quality = (ClothingQuality)reader.ReadEncodedInt();
+                        }
                         else
+                        {
                             m_Quality = ClothingQuality.Regular;
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.StrReq))
+                        {
                             m_StrReq = reader.ReadEncodedInt();
+                        }
                         else
+                        {
                             m_StrReq = -1;
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.PlayerConstructed))
+                        {
                             PlayerConstructed = true;
+                        }
 
                         break;
                     }
@@ -937,7 +1152,9 @@ namespace Server.Items
             }
 
             if (version < 2)
+            {
                 PlayerConstructed = true; // we don't know, so, assume it's crafted
+            }
 
             if (version < 3)
             {
@@ -948,15 +1165,21 @@ namespace Server.Items
             }
 
             if (version < 4)
+            {
                 m_Resource = DefaultResource;
+            }
 
             if (m_MaxHitPoints == 0 && m_HitPoints == 0)
+            {
                 m_HitPoints = m_MaxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
+            }
 
             if (Parent is Mobile parent)
             {
                 if (Core.AOS)
+                {
                     SkillBonuses.AddTo(parent);
+                }
 
                 AddStatBonuses(parent);
                 parent.CheckStatTimers();

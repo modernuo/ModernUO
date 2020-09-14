@@ -34,7 +34,9 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, secondCont.Serial);
             expectedData.Write(ref pos, hasName);
             if (hasName)
+            {
                 expectedData.WriteAsciiFixed(ref pos, name, 30);
+            }
 
             AssertThat.Equal(data, expectedData);
         }

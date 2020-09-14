@@ -27,25 +27,33 @@ namespace Server.Items
         public override void CheckGate(Mobile m, int range)
         {
             if (m.Kills >= 5)
+            {
                 return;
+            }
 
             var casterParty = Party.Get(m_Caster);
             var userParty = Party.Get(m);
 
             if (m == m_Caster || casterParty != null && userParty == casterParty)
+            {
                 base.CheckGate(m, range);
+            }
         }
 
         public override void UseGate(Mobile m)
         {
             if (m.Kills >= 5)
+            {
                 return;
+            }
 
             var casterParty = Party.Get(m_Caster);
             var userParty = Party.Get(m);
 
             if (m == m_Caster || casterParty != null && userParty == casterParty)
+            {
                 base.UseGate(m);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

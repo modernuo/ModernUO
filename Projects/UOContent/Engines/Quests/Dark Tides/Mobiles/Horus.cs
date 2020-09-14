@@ -62,7 +62,9 @@ namespace Server.Engines.Quests.Necro
                 QuestObjective obj = qs.FindObjective<FindCrystalCaveObjective>();
 
                 if (obj?.Completed == false)
+                {
                     obj.Complete();
+                }
             }
         }
 
@@ -94,7 +96,10 @@ namespace Server.Engines.Quests.Necro
 
                             BaseJewel jewel = new GoldBracelet();
                             if (Core.AOS)
+                            {
                                 BaseRunicTool.ApplyAttributesTo(jewel, 3, 20, 40);
+                            }
+
                             cont.DropItem(jewel);
 
                             if (!pm.PlaceInBackpack(cont))
@@ -119,7 +124,8 @@ namespace Server.Engines.Quests.Necro
             base.GetContextMenuEntries(from, list);
 
             if (from.Alive)
-                if (from is PlayerMobile pm)
+            {
+                if (@from is PlayerMobile pm)
                 {
                     var qs = pm.Quest;
 
@@ -131,6 +137,7 @@ namespace Server.Engines.Quests.Necro
                         list.Add(new SpeakPasswordEntry(this, pm, enabled));
                     }
                 }
+            }
         }
 
         public virtual void OnPasswordSpoken(PlayerMobile from)
@@ -176,13 +183,17 @@ namespace Server.Engines.Quests.Necro
                 m_From = from;
 
                 if (!enabled)
+                {
                     Flags |= CMEFlags.Disabled;
+                }
             }
 
             public override void OnClick()
             {
                 if (m_From.Alive)
+                {
                     m_Horus.OnPasswordSpoken(m_From);
+                }
             }
         }
     }

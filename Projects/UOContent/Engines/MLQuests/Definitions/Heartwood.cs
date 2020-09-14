@@ -2320,9 +2320,13 @@ namespace Server.Engines.MLQuests.Definitions
             AddItem(new Cloak(Utility.RandomBrightHue()));
 
             if (Utility.RandomBool())
+            {
                 AddItem(new Kilt(0x387));
+            }
             else
+            {
                 AddItem(new Skirt(0x387));
+            }
         }
 
         public Alejaha(Serial serial)
@@ -2443,9 +2447,13 @@ namespace Server.Engines.MLQuests.Definitions
             AddItem(new RoyalCirclet());
 
             if (Utility.RandomBool())
+            {
                 AddItem(new Boots(Utility.RandomYellowHue()));
+            }
             else
+            {
                 AddItem(new ThighBoots(Utility.RandomYellowHue()));
+            }
         }
 
         public Ciala(Serial serial)

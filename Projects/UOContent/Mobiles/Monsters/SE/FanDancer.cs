@@ -44,12 +44,16 @@ namespace Server.Mobiles
             Karma = -9000;
 
             if (Utility.RandomDouble() < .33)
+            {
                 PackItem(Seed.RandomBonsaiSeed());
+            }
 
             AddItem(new Tessen());
 
             if (Utility.RandomDouble() <= 0.02)
+            {
                 PackItem(new OrigamiPaper());
+            }
         }
 
         public FanDancer(Serial serial) : base(serial)

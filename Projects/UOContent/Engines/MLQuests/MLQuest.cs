@@ -90,8 +90,12 @@ namespace Server.Engines.MLQuests
         public bool HasObjective<T>() where T : BaseObjective
         {
             foreach (var obj in Objectives)
+            {
                 if (obj is T)
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -99,7 +103,9 @@ namespace Server.Engines.MLQuests
         public virtual void Generate()
         {
             if (MLQuestSystem.Debug)
+            {
                 Console.WriteLine("INFO: Generating quest: {0}", GetType());
+            }
         }
 
         public MLQuestInstance CreateInstance(IQuestGiver quester, PlayerMobile pm) =>
@@ -111,14 +117,18 @@ namespace Server.Engines.MLQuests
         public virtual bool CanOffer(IQuestGiver quester, PlayerMobile pm, MLQuestContext context, bool message)
         {
             if (!Activated || quester.Deleted)
+            {
                 return false;
+            }
 
             if (context != null)
             {
                 if (context.IsFull)
                 {
                     if (message)
+                    {
                         MLQuestSystem.Tell(quester, pm, 1080107); // I'm sorry, I have nothing for you at this time.
+                    }
 
                     return false;
                 }
@@ -132,7 +142,9 @@ namespace Server.Engines.MLQuests
                         if (checkQuest.OneTimeOnly)
                         {
                             if (message)
+                            {
                                 MLQuestSystem.Tell(quester, pm, 1075454); // I cannot offer you the quest again.
+                            }
 
                             return false;
                         }
@@ -140,26 +152,34 @@ namespace Server.Engines.MLQuests
                         if (nextAvailable > DateTime.UtcNow)
                         {
                             if (message)
+                            {
                                 MLQuestSystem.Tell(
                                     quester,
                                     pm,
                                     1075575
                                 ); // I'm sorry, but I don't have anything else for you right now. Could you check back with me in a few minutes?
+                            }
 
                             return false;
                         }
                     }
 
                     if (checkQuest.NextQuest == null)
+                    {
                         break;
+                    }
 
                     checkQuest = MLQuestSystem.FindQuest(checkQuest.NextQuest);
                 }
             }
 
             foreach (var obj in Objectives)
+            {
                 if (!obj.CanOffer(quester, pm, message))
+                {
                     return false;
+                }
+            }
 
             return true;
         }
@@ -172,7 +192,9 @@ namespace Server.Engines.MLQuests
         public virtual void OnAccept(IQuestGiver quester, PlayerMobile pm)
         {
             if (!CanOffer(quester, pm, true))
+            {
                 return;
+            }
 
             var instance = CreateInstance(quester, pm);
 
@@ -182,7 +204,9 @@ namespace Server.Engines.MLQuests
             OnAccepted(instance);
 
             foreach (var obj in instance.Objectives)
+            {
                 obj.OnQuestAccepted();
+            }
         }
 
         public virtual void OnAccepted(MLQuestInstance instance)
@@ -229,7 +253,9 @@ namespace Server.Engines.MLQuests
             var oldVersion = reader.ReadInt();
 
             if (quest == null)
+            {
                 return; // not saved or no longer exists
+            }
 
             quest.Refresh(oldVersion);
             quest.Deserialized = true;
@@ -246,7 +272,9 @@ namespace Server.Engines.MLQuests
             var toDelete = map.GetItemsInRange(loc, 0).Where(item => item is Spawner && item.Name == name);
 
             foreach (var item in toDelete)
+            {
                 item.Delete();
+            }
 
             s.Name = name;
             s.MoveToWorld(loc, map);
@@ -258,7 +286,9 @@ namespace Server.Engines.MLQuests
             var toDelete = map.GetItemsInRange(loc, 0).Where(item => item.ItemID == deco.ItemID && item.Z == loc.Z);
 
             foreach (var item in toDelete)
+            {
                 item.Delete();
+            }
 
             deco.MoveToWorld(loc, map);
         }

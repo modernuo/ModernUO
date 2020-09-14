@@ -31,7 +31,9 @@ namespace Server.Spells.Necromancy
 
             if (Core.ML
             ) // Pub 36: "Added a new property called Increased Karma Loss which grants higher karma loss for casting necromancy spells."
+            {
                 karma += AOS.Scale(karma, AosAttributes.GetValue(Caster, AosAttribute.IncreasedKarmaLoss));
+            }
 
             return karma;
         }

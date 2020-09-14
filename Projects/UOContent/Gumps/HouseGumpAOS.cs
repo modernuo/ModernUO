@@ -89,7 +89,9 @@ namespace Server.Gumps
             var isFriend = isCoOwner || house.IsFriend(from);
 
             if (isCombatRestricted)
+            {
                 isFriend = isCoOwner = isOwner = false;
+            }
 
             AddPage(0);
 
@@ -132,7 +134,9 @@ namespace Server.Gumps
             }
 
             if (!isFriend)
+            {
                 return;
+            }
 
             if (house.Public)
             {
@@ -456,7 +460,10 @@ namespace Server.Gumps
                         if (_HouseSigns.Count == 0)
                         {
                             // Add standard signs
-                            for (var i = 0; i < 54; ++i) _HouseSigns.Add(2980 + i * 2);
+                            for (var i = 0; i < 54; ++i)
+                            {
+                                _HouseSigns.Add(2980 + i * 2);
+                            }
 
                             // Add library and beekeeper signs ( ML )
                             _HouseSigns.Add(2966);
@@ -579,7 +586,9 @@ namespace Server.Gumps
         public void AddButtonLabeled(int x, int y, int buttonID, int number, bool enabled = true)
         {
             if (enabled)
+            {
                 AddButton(x, y, 4005, 4007, buttonID);
+            }
 
             AddHtmlLocalized(x + 35, y, 240, 20, number, enabled ? LabelColor : DisabledColor);
         }
@@ -587,7 +596,9 @@ namespace Server.Gumps
         public void AddList(List<Mobile> list, int button, bool accountOf, bool leadingStar, Mobile from)
         {
             if (list == null)
+            {
                 return;
+            }
 
             m_List = new List<Mobile>(list);
 
@@ -603,12 +614,16 @@ namespace Server.Gumps
                 if (page != lastPage)
                 {
                     if (lastPage != 0)
+                    {
                         AddButton(40, 360, 4005, 4007, 0, GumpButtonType.Page, page);
+                    }
 
                     AddPage(page);
 
                     if (lastPage != 0)
+                    {
                         AddButton(10, 360, 4014, 4016, 0, GumpButtonType.Page, lastPage);
+                    }
 
                     lastPage = page;
                 }
@@ -623,7 +638,9 @@ namespace Server.Gumps
                     name = vendor.ShopName;
 
                     if (vendor.IsOwner(from))
+                    {
                         labelHue = HighlightedLabelHue;
+                    }
                 }
                 else if (m != null)
                 {
@@ -635,16 +652,24 @@ namespace Server.Gumps
                 }
 
                 if ((name = name.Trim()).Length <= 0)
+                {
                     continue;
+                }
 
                 if (button != -1)
+                {
                     AddButton(10 + xoffset, 150 + yoffset, 4005, 4007, GetButtonID(button, i));
+                }
 
                 if (accountOf && m.Player && m.Account != null)
+                {
                     name = $"Account of {name}";
+                }
 
                 if (leadingStar)
+                {
                     name = $"* {name}";
+                }
 
                 AddLabel(button > 0 ? 45 + xoffset : 10 + xoffset, 150 + yoffset, labelHue, name);
                 ++index;
@@ -656,19 +681,25 @@ namespace Server.Gumps
         public static void PublicPrivateNotice_Callback(Mobile from, BaseHouse house)
         {
             if (!house.Deleted)
-                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, house));
+            {
+                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, @from, house));
+            }
         }
 
         public static void CustomizeNotice_Callback(Mobile from, BaseHouse house)
         {
             if (!house.Deleted)
-                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Customize, from, house));
+            {
+                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Customize, @from, house));
+            }
         }
 
         public static void ClearCoOwners_Callback(Mobile from, bool okay, BaseHouse house)
         {
             if (house.Deleted)
+            {
                 return;
+            }
 
             if (okay && house.IsOwner(from))
             {
@@ -683,7 +714,9 @@ namespace Server.Gumps
         public static void ClearFriends_Callback(Mobile from, bool okay, BaseHouse house)
         {
             if (house.Deleted)
+            {
                 return;
+            }
 
             if (okay && house.IsCoOwner(from))
             {
@@ -698,7 +731,9 @@ namespace Server.Gumps
         public static void ClearBans_Callback(Mobile from, bool okay, BaseHouse house)
         {
             if (house.Deleted)
+            {
                 return;
+            }
 
             if (okay && house.IsFriend(from))
             {
@@ -713,7 +748,9 @@ namespace Server.Gumps
         public static void ClearAccess_Callback(Mobile from, bool okay, BaseHouse house)
         {
             if (house.Deleted)
+            {
                 return;
+            }
 
             if (okay && house.IsFriend(from))
             {
@@ -741,14 +778,18 @@ namespace Server.Gumps
         public static void ConvertHouse_Callback(Mobile from, bool okay, BaseHouse house)
         {
             if (house.Deleted)
+            {
                 return;
+            }
 
             if (okay && house.IsOwner(from) && !house.HasRentedVendors)
             {
                 var e = house.ConvertEntry;
 
                 if (e == null)
+                {
                     return;
+                }
 
                 var cost = e.Cost - house.Price;
 
@@ -772,12 +813,16 @@ namespace Server.Gumps
                 else if (cost < 0)
                 {
                     if (Banker.Deposit(from, -cost))
-                        from.SendLocalizedMessage(
+                    {
+                        @from.SendLocalizedMessage(
                             1060397,
                             (-cost).ToString()
                         ); // ~1_AMOUNT~ gold has been deposited into your bank box.
+                    }
                     else
+                    {
                         return;
+                    }
                 }
 
                 var newHouse = e.ConstructHouse(from);
@@ -799,16 +844,25 @@ namespace Server.Gumps
                     newHouse.VendorInventories.AddRange(house.VendorInventories);
                     house.VendorInventories.Clear();
 
-                    foreach (var inventory in newHouse.VendorInventories) inventory.House = newHouse;
+                    foreach (var inventory in newHouse.VendorInventories)
+                    {
+                        inventory.House = newHouse;
+                    }
 
                     newHouse.InternalizedVendors.AddRange(house.InternalizedVendors);
                     house.InternalizedVendors.Clear();
 
                     foreach (var mobile in newHouse.InternalizedVendors)
+                    {
                         if (mobile is PlayerVendor vendor)
+                        {
                             vendor.House = newHouse;
+                        }
                         else if (mobile is PlayerBarkeeper barkeeper)
+                        {
                             barkeeper.House = newHouse;
+                        }
+                    }
 
                     if (house.MovingCrate != null)
                     {
@@ -830,9 +884,15 @@ namespace Server.Gumps
                     );
                     house.Delete();
 
-                    foreach (var item in items) item.Location = newHouse.BanLocation;
+                    foreach (var item in items)
+                    {
+                        item.Location = newHouse.BanLocation;
+                    }
 
-                    foreach (var mobile in mobiles) mobile.Location = newHouse.BanLocation;
+                    foreach (var mobile in mobiles)
+                    {
+                        mobile.Location = newHouse.BanLocation;
+                    }
 
                     /* You have successfully replaced your original house with a new house.
                      * The value of the replaced house has been deposited into your bank box.
@@ -854,7 +914,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_House.Deleted)
+            {
                 return;
+            }
 
             var from = sender.Mobile;
 
@@ -865,15 +927,21 @@ namespace Server.Gumps
             var isFriend = isCoOwner || m_House.IsFriend(from);
 
             if (isCombatRestricted)
+            {
                 isCoOwner = isFriend = false;
+            }
 
             if (!from.CheckAlive())
+            {
                 return;
+            }
 
             Item sign = m_House.Sign;
 
             if (sign == null || from.Map != sign.Map || !from.InRange(sign.GetWorldLocation(), 18))
+            {
                 return;
+            }
 
             var foundation = m_House as HouseFoundation;
             var isCustomizable = foundation != null;
@@ -881,7 +949,9 @@ namespace Server.Gumps
             var val = info.ButtonID - 1;
 
             if (val < 0)
+            {
                 return;
+            }
 
             var type = val % 15;
             var index = val / 15;
@@ -893,23 +963,33 @@ namespace Server.Gumps
                     var vendor = (PlayerVendor)m_List[index];
 
                     if (!vendor.CanInteractWith(from, false))
+                    {
                         return;
+                    }
 
                     if (from.Map != sign.Map || !from.InRange(sign, 5))
-                        from.SendLocalizedMessage(
+                    {
+                        @from.SendLocalizedMessage(
                             1062429
                         ); // You must be within five paces of the house sign to use this option.
+                    }
                     else if (vendor.IsOwner(from))
-                        vendor.SendOwnerGump(from);
+                    {
+                        vendor.SendOwnerGump(@from);
+                    }
                     else
-                        vendor.OpenBackpack(from);
+                    {
+                        vendor.OpenBackpack(@from);
+                    }
                 }
 
                 return;
             }
 
             if (!isFriend)
+            {
                 return;
+            }
 
             switch (type)
             {
@@ -930,7 +1010,9 @@ namespace Server.Gumps
                             case 1: // Lift Ban
                                 {
                                     if (m_House.Public)
-                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveBan, from, m_House));
+                                    {
+                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveBan, @from, m_House));
+                                    }
 
                                     break;
                                 }
@@ -949,7 +1031,9 @@ namespace Server.Gumps
                             case 3: // Revoke Access
                                 {
                                     if (!m_House.Public)
-                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveAccess, from, m_House));
+                                    {
+                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveAccess, @from, m_House));
+                                    }
 
                                     break;
                                 }
@@ -991,7 +1075,9 @@ namespace Server.Gumps
                             case 0: // View Co-Owner List
                                 {
                                     if (isCoOwner)
-                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ListCoOwner, from, m_House));
+                                    {
+                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ListCoOwner, @from, m_House));
+                                    }
 
                                     break;
                                 }
@@ -1010,14 +1096,17 @@ namespace Server.Gumps
                             case 2: // Remove a Co-Owner
                                 {
                                     if (isOwner)
-                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveCoOwner, from, m_House));
+                                    {
+                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveCoOwner, @from, m_House));
+                                    }
 
                                     break;
                                 }
                             case 3: // Clear Co-Owner List
                                 {
                                     if (isOwner)
-                                        from.SendGump(
+                                    {
+                                        @from.SendGump(
                                             new WarningGump(
                                                 1060635,
                                                 30720,
@@ -1025,9 +1114,10 @@ namespace Server.Gumps
                                                 32512,
                                                 420,
                                                 280,
-                                                okay => ClearCoOwners_Callback(from, okay, m_House)
+                                                okay => ClearCoOwners_Callback(@from, okay, m_House)
                                             )
                                         );
+                                    }
 
                                     break;
                                 }
@@ -1052,14 +1142,17 @@ namespace Server.Gumps
                             case 6: // Remove a Friend
                                 {
                                     if (isCoOwner)
-                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveFriend, from, m_House));
+                                    {
+                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveFriend, @from, m_House));
+                                    }
 
                                     break;
                                 }
                             case 7: // Clear Friend List
                                 {
                                     if (isCoOwner)
-                                        from.SendGump(
+                                    {
+                                        @from.SendGump(
                                             new WarningGump(
                                                 1060635,
                                                 30720,
@@ -1067,9 +1160,10 @@ namespace Server.Gumps
                                                 32512,
                                                 420,
                                                 280,
-                                                okay => ClearFriends_Callback(from, okay, m_House)
+                                                okay => ClearFriends_Callback(@from, okay, m_House)
                                             )
                                         );
+                                    }
 
                                     break;
                                 }
@@ -1180,7 +1274,9 @@ namespace Server.Gumps
                                             var m = list[i];
 
                                             if (!m_House.HasAccess(m) && m_House.IsInside(m))
+                                            {
                                                 m.Location = m_House.BanLocation;
+                                            }
                                         }
                                     }
 
@@ -1196,7 +1292,8 @@ namespace Server.Gumps
                                         m_House.RemoveLocks();
 
                                         if (BaseHouse.NewVendorSystem)
-                                            from.SendGump(
+                                        {
+                                            @from.SendGump(
                                                 new NoticeGump(
                                                     1060637,
                                                     30720,
@@ -1204,11 +1301,13 @@ namespace Server.Gumps
                                                     32512,
                                                     320,
                                                     180,
-                                                    () => PublicPrivateNotice_Callback(from, m_House)
+                                                    () => PublicPrivateNotice_Callback(@from, m_House)
                                                 )
                                             );
+                                        }
                                         else
-                                            from.SendGump(
+                                        {
+                                            @from.SendGump(
                                                 new NoticeGump(
                                                     1060637,
                                                     30720,
@@ -1216,9 +1315,10 @@ namespace Server.Gumps
                                                     0xF8C000,
                                                     320,
                                                     180,
-                                                    () => PublicPrivateNotice_Callback(from, m_House)
+                                                    () => PublicPrivateNotice_Callback(@from, m_House)
                                                 )
                                             );
+                                        }
 
                                         var r = m_House.Region;
                                         var list = r.GetMobiles();
@@ -1228,7 +1328,9 @@ namespace Server.Gumps
                                             var m = list[i];
 
                                             if (m_House.IsBanned(m) && m_House.IsInside(m))
+                                            {
                                                 m.Location = m_House.BanLocation;
+                                            }
                                         }
                                     }
 
@@ -1266,7 +1368,8 @@ namespace Server.Gumps
                                             var e = m_House.ConvertEntry;
 
                                             if (e != null)
-                                                from.SendGump(
+                                            {
+                                                @from.SendGump(
                                                     new WarningGump(
                                                         1060635,
                                                         30720,
@@ -1274,9 +1377,10 @@ namespace Server.Gumps
                                                         32512,
                                                         420,
                                                         280,
-                                                        okay => ConvertHouse_Callback(from, okay, m_House)
+                                                        okay => ConvertHouse_Callback(@from, okay, m_House)
                                                     )
                                                 );
+                                            }
                                         }
                                     }
 
@@ -1287,7 +1391,8 @@ namespace Server.Gumps
                                     if (isOwner && isCustomizable)
                                     {
                                         if (m_House.HasRentedVendors)
-                                            from.SendGump(
+                                        {
+                                            @from.SendGump(
                                                 new NoticeGump(
                                                     1060637,
                                                     30720,
@@ -1295,11 +1400,13 @@ namespace Server.Gumps
                                                     32512,
                                                     320,
                                                     180,
-                                                    () => CustomizeNotice_Callback(from, m_House)
+                                                    () => CustomizeNotice_Callback(@from, m_House)
                                                 )
                                             );
+                                        }
                                         else if (m_House.HasAddonContainers)
-                                            from.SendGump(
+                                        {
+                                            @from.SendGump(
                                                 new NoticeGump(
                                                     1060637,
                                                     30720,
@@ -1307,11 +1414,14 @@ namespace Server.Gumps
                                                     32512,
                                                     320,
                                                     180,
-                                                    () => CustomizeNotice_Callback(from, m_House)
+                                                    () => CustomizeNotice_Callback(@from, m_House)
                                                 )
                                             );
+                                        }
                                         else
-                                            foundation.BeginCustomize(from);
+                                        {
+                                            foundation.BeginCustomize(@from);
+                                        }
                                     }
 
                                     break;
@@ -1338,28 +1448,36 @@ namespace Server.Gumps
                             case 3: // Change House Sign
                                 {
                                     if (isOwner && m_House.Public)
-                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangeSign, from, m_House));
+                                    {
+                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangeSign, @from, m_House));
+                                    }
 
                                     break;
                                 }
                             case 4: // Change House Sign Hanger
                                 {
                                     if (isOwner && isCustomizable)
-                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangeHanger, from, m_House));
+                                    {
+                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangeHanger, @from, m_House));
+                                    }
 
                                     break;
                                 }
                             case 5: // Change Signpost
                                 {
                                     if (isOwner && isCustomizable && foundation.Signpost != null)
-                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangePost, from, m_House));
+                                    {
+                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangePost, @from, m_House));
+                                    }
 
                                     break;
                                 }
                             case 6: // Change Foundation Style
                                 {
                                     if (isOwner && isCustomizable)
-                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangeFoundation, from, m_House));
+                                    {
+                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangeFoundation, @from, m_House));
+                                    }
 
                                     break;
                                 }
@@ -1447,7 +1565,9 @@ namespace Server.Gumps
                             var hanger = foundation.SignHanger;
 
                             if (hanger != null)
+                            {
                                 hanger.ItemID = m_HangerNumbers[index];
+                            }
 
                             from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Customize, from, m_House));
                         }
@@ -1461,6 +1581,7 @@ namespace Server.Gumps
                             FoundationType newType;
 
                             if (Core.ML && index >= 5)
+                            {
                                 switch (index)
                                 {
                                     case 5:
@@ -1477,7 +1598,9 @@ namespace Server.Gumps
                                         break;
                                     default: return;
                                 }
+                            }
                             else
+                            {
                                 switch (index)
                                 {
                                     case 0:
@@ -1497,6 +1620,7 @@ namespace Server.Gumps
                                         break;
                                     default: return;
                                 }
+                            }
 
                             foundation.Type = newType;
 
@@ -1536,9 +1660,13 @@ namespace Server.Gumps
                             m_House.RemoveCoOwner(from, m_List[index]);
 
                             if (m_House.CoOwners.Count > 0)
-                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveCoOwner, from, m_House));
+                            {
+                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveCoOwner, @from, m_House));
+                            }
                             else
-                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, m_House));
+                            {
+                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, @from, m_House));
+                            }
                         }
 
                         break;
@@ -1550,9 +1678,13 @@ namespace Server.Gumps
                             m_House.RemoveFriend(from, m_List[index]);
 
                             if (m_House.Friends.Count > 0)
-                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveFriend, from, m_House));
+                            {
+                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveFriend, @from, m_House));
+                            }
                             else
-                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, m_House));
+                            {
+                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, @from, m_House));
+                            }
                         }
 
                         break;
@@ -1564,9 +1696,13 @@ namespace Server.Gumps
                             m_House.RemoveBan(from, m_List[index]);
 
                             if (m_House.Bans.Count > 0)
-                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveBan, from, m_House));
+                            {
+                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveBan, @from, m_House));
+                            }
                             else
-                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, m_House));
+                            {
+                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, @from, m_House));
+                            }
                         }
 
                         break;
@@ -1578,9 +1714,13 @@ namespace Server.Gumps
                             m_House.RemoveAccess(from, m_List[index]);
 
                             if (m_House.Access.Count > 0)
-                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveAccess, from, m_House));
+                            {
+                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveAccess, @from, m_House));
+                            }
                             else
-                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, m_House));
+                            {
+                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, @from, m_House));
+                            }
                         }
 
                         break;
@@ -1603,7 +1743,9 @@ namespace Server.Gumps
         private List<string> Wrap(string value)
         {
             if (value == null || (value = value.Trim()).Length <= 0)
+            {
                 return null;
+            }
 
             var values = value.Split(' ');
             var list = new List<string>();
@@ -1624,7 +1766,9 @@ namespace Server.Gumps
                     list.Add(v);
 
                     if (list.Count == 6)
+                    {
                         return list;
+                    }
 
                     current = "";
                 }
@@ -1633,7 +1777,9 @@ namespace Server.Gumps
                     list.Add(current);
 
                     if (list.Count == 6)
+                    {
                         return list;
+                    }
 
                     current = val;
                 }
@@ -1644,7 +1790,9 @@ namespace Server.Gumps
                         list.Add(v.Substring(0, 10));
 
                         if (list.Count == 6)
+                        {
                             return list;
+                        }
 
                         v = v.Substring(10);
                     }
@@ -1654,7 +1802,9 @@ namespace Server.Gumps
             }
 
             if (current.Length > 0)
+            {
                 list.Add(current);
+            }
 
             return list;
         }

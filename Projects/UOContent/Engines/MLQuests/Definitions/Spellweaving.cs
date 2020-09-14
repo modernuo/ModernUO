@@ -12,7 +12,9 @@ namespace Server.Engines.MLQuests.Definitions
         public static void AwardTo(PlayerMobile pm)
         {
             if (pm == null)
+            {
                 return;
+            }
 
             var context = MLQuestSystem.GetOrCreateContext(pm);
 

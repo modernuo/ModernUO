@@ -51,7 +51,10 @@ namespace Server.Items.Holiday
 
             var version = reader.ReadInt();
 
-            if (version == 1) m_Staffer = Utility.Intern(reader.ReadString());
+            if (version == 1)
+            {
+                m_Staffer = Utility.Intern(reader.ReadString());
+            }
         }
     }
 }

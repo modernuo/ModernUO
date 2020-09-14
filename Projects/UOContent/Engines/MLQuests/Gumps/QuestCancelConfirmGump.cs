@@ -15,7 +15,9 @@ namespace Server.Engines.MLQuests.Gumps
             m_CloseGumps = closeGumps;
 
             if (closeGumps)
+            {
                 BaseQuestGump.CloseOtherGumps(instance.Player);
+            }
 
             AddPage(0);
 
@@ -77,16 +79,22 @@ namespace Server.Engines.MLQuests.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_Instance.Removed)
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {
                 case 7: // Okay
                     {
                         if (info.IsSwitched(2))
+                        {
                             m_Instance.Cancel(true);
+                        }
                         else if (info.IsSwitched(1))
+                        {
                             m_Instance.Cancel(false);
+                        }
 
                         sender.Mobile.SendGump(new QuestLogGump(m_Instance.Player, m_CloseGumps));
                         break;

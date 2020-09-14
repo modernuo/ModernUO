@@ -26,9 +26,13 @@ namespace Server.Gumps
             string charter;
 
             if ((charter = guild.Charter) == null || (charter = charter.Trim()).Length <= 0)
+            {
                 AddHtmlLocalized(20, 20, 400, 35, 1013032); // No charter has been defined.
+            }
             else
+            {
                 AddHtml(20, 20, 510, 75, charter, true, true);
+            }
 
             AddButton(20, 200, 4005, 4007, 2);
             AddHtmlLocalized(55, 200, 300, 20, 1011122); // Visit the guild website :
@@ -36,7 +40,9 @@ namespace Server.Gumps
             string website;
 
             if ((website = guild.Website) == null || (website = website.Trim()).Length <= 0)
+            {
                 website = DefaultWebsite;
+            }
 
             AddHtml(55, 220, 300, 20, website);
         }
@@ -44,7 +50,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (GuildGump.BadMember(m_Mobile, m_Guild))
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {
@@ -55,7 +63,9 @@ namespace Server.Gumps
                         string website;
 
                         if ((website = m_Guild.Website) == null || (website = website.Trim()).Length <= 0)
+                        {
                             website = DefaultWebsite;
+                        }
 
                         m_Mobile.LaunchBrowser(website);
                         break;

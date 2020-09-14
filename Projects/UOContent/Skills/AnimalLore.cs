@@ -135,7 +135,9 @@ namespace Server.SkillHandlers
                 {
                     var bd = BaseInstrument.GetBaseDifficulty(c);
                     if (c.Uncalmable)
+                    {
                         bd = 0;
+                    }
 
                     AddHtmlLocalized(153, 276, 160, 18, 1070793, LabelColor); // Barding Difficulty
                     AddHtml(320, y, 35, 18, FormatDouble(bd));
@@ -277,15 +279,25 @@ namespace Server.SkillHandlers
             var foodPref = 3000340;
 
             if ((c.FavoriteFood & FoodType.FruitsAndVegies) != 0)
+            {
                 foodPref = 1049565; // Fruits and Vegetables
+            }
             else if ((c.FavoriteFood & FoodType.GrainsAndHay) != 0)
+            {
                 foodPref = 1049566; // Grains and Hay
+            }
             else if ((c.FavoriteFood & FoodType.Fish) != 0)
+            {
                 foodPref = 1049568; // Fish
+            }
             else if ((c.FavoriteFood & FoodType.Meat) != 0)
+            {
                 foodPref = 1049564; // Meat
+            }
             else if ((c.FavoriteFood & FoodType.Eggs) != 0)
+            {
                 foodPref = 1044477; // Eggs
+            }
 
             AddHtmlLocalized(153, 168, 160, 18, foodPref, LabelColor);
 
@@ -295,21 +307,37 @@ namespace Server.SkillHandlers
             var packInstinct = 3000340;
 
             if ((c.PackInstinct & PackInstinct.Canine) != 0)
+            {
                 packInstinct = 1049570; // Canine
+            }
             else if ((c.PackInstinct & PackInstinct.Ostard) != 0)
+            {
                 packInstinct = 1049571; // Ostard
+            }
             else if ((c.PackInstinct & PackInstinct.Feline) != 0)
+            {
                 packInstinct = 1049572; // Feline
+            }
             else if ((c.PackInstinct & PackInstinct.Arachnid) != 0)
+            {
                 packInstinct = 1049573; // Arachnid
+            }
             else if ((c.PackInstinct & PackInstinct.Daemon) != 0)
+            {
                 packInstinct = 1049574; // Daemon
+            }
             else if ((c.PackInstinct & PackInstinct.Bear) != 0)
+            {
                 packInstinct = 1049575; // Bear
+            }
             else if ((c.PackInstinct & PackInstinct.Equine) != 0)
+            {
                 packInstinct = 1049576; // Equine
+            }
             else if ((c.PackInstinct & PackInstinct.Bull) != 0)
+            {
                 packInstinct = 1049577; // Bull
+            }
 
             AddHtmlLocalized(153, 204, 160, 18, packInstinct, LabelColor);
 
@@ -337,7 +365,9 @@ namespace Server.SkillHandlers
             var skill = c.Skills[name];
 
             if (skill.Base < 10.0)
+            {
                 return "<div align=right>---</div>";
+            }
 
             return $"<div align=right>{skill.Value:F1}</div>";
         }
@@ -345,7 +375,9 @@ namespace Server.SkillHandlers
         private static string FormatAttributes(int cur, int max)
         {
             if (max == 0)
+            {
                 return "<div align=right>---</div>";
+            }
 
             return $"<div align=right>{cur}/{max}</div>";
         }
@@ -353,7 +385,9 @@ namespace Server.SkillHandlers
         private static string FormatStat(int val)
         {
             if (val == 0)
+            {
                 return "<div align=right>---</div>";
+            }
 
             return $"<div align=right>{val}</div>";
         }
@@ -361,7 +395,9 @@ namespace Server.SkillHandlers
         private static string FormatDouble(double val)
         {
             if (val == 0)
+            {
                 return "<div align=right>---</div>";
+            }
 
             return $"<div align=right>{val:F1}</div>";
         }
@@ -369,7 +405,9 @@ namespace Server.SkillHandlers
         private static string FormatElement(int val)
         {
             if (val <= 0)
+            {
                 return "<div align=right>---</div>";
+            }
 
             return $"<div align=right>{val}%</div>";
         }
@@ -377,7 +415,9 @@ namespace Server.SkillHandlers
         private static string FormatDamage(int min, int max)
         {
             if (min <= 0 || max <= 0)
+            {
                 return "<div align=right>---</div>";
+            }
 
             return $"<div align=right>{min}-{max}</div>";
         }

@@ -28,7 +28,9 @@ namespace Server.Engines.Quests.Ninja
                 if (obj != null)
                 {
                     if (!obj.Completed)
+                    {
                         obj.Complete();
+                    }
 
                     loc = new Point3D(411, 1085, 0);
                     map = Map.Malas;

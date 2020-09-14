@@ -191,7 +191,9 @@ namespace Server.Items
                 base.Hue = value;
 
                 if (Addon?.ShareHue == true)
+                {
                     Addon.Hue = value;
+                }
             }
         }
 
@@ -201,9 +203,13 @@ namespace Server.Items
         public void OnChop(Mobile from)
         {
             if (Addon != null && from.InRange(GetWorldLocation(), 3))
-                Addon.OnChop(from);
+            {
+                Addon.OnChop(@from);
+            }
             else
-                from.SendLocalizedMessage(500446); // That is too far away.
+            {
+                @from.SendLocalizedMessage(500446); // That is too far away.
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -214,13 +220,17 @@ namespace Server.Items
         public override void OnLocationChange(Point3D old)
         {
             if (Addon != null)
+            {
                 Addon.Location = new Point3D(X - Offset.X, Y - Offset.Y, Z - Offset.Z);
+            }
         }
 
         public override void OnMapChange()
         {
             if (Addon != null)
+            {
                 Addon.Map = Map;
+            }
         }
 
         public override void OnAfterDelete()
@@ -263,13 +273,17 @@ namespace Server.Items
             }
 
             if (version < 1 && Weight == 0)
+            {
                 Weight = -1;
+            }
         }
 
         public static void ApplyLightTo(Item item)
         {
             if ((item.ItemData.Flags & TileFlag.LightSource) == 0)
+            {
                 return; // not a light source
+            }
 
             var itemID = item.ItemID;
 
@@ -280,7 +294,9 @@ namespace Server.Items
                 var contains = false;
 
                 for (var j = 0; !contains && j < toMatch.Length; ++j)
+                {
                     contains = itemID == toMatch[j];
+                }
 
                 if (contains)
                 {

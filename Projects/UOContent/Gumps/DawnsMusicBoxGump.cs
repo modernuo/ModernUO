@@ -45,7 +45,9 @@ namespace Server.Gumps
                 }
 
                 if (info == null)
+                {
                     continue;
+                }
 
                 AddButton(19, y, 0x845, 0x846, 100 + i);
                 AddHtmlLocalized(44, y - 2, 213, 20, info.Name, 0x7FFF);
@@ -68,20 +70,30 @@ namespace Server.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_Box?.Deleted != false)
+            {
                 return;
+            }
 
             var m = sender.Mobile;
 
             if (!m_Box.IsChildOf(m.Backpack) && !m_Box.IsLockedDown)
+            {
                 m.SendLocalizedMessage(
                     1061856
                 ); // You must have the item in your backpack or locked down in order to use it.
+            }
             else if (m_Box.IsLockedDown && !m_Box.HasAccces(m))
+            {
                 m.SendLocalizedMessage(502691); // You must be the owner to use this.
+            }
             else if (info.ButtonID == 1)
+            {
                 m_Box.EndMusic(m);
+            }
             else if (info.ButtonID >= 100 && info.ButtonID - 100 < m_Box.Tracks.Count)
+            {
                 m_Box.PlayMusic(m, m_Box.Tracks[info.ButtonID - 100]);
+            }
         }
     }
 }

@@ -39,7 +39,9 @@ namespace Server.Commands.Generic
                 m_Order = Math.Sign(value);
 
                 if (m_Order == 0)
+                {
                     throw new InvalidOperationException("Sign cannot be zero.");
+                }
             }
         }
     }
@@ -133,7 +135,9 @@ namespace Server.Commands.Generic
                         );
 
                     if (!couldCompare)
+                    {
                         throw new InvalidOperationException("Property is not comparable.");
+                    }
 
                     emitter.StoreLocal(v);
                 }

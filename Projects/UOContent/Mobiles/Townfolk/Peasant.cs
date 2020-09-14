@@ -31,18 +31,26 @@ namespace Server.Mobiles
         public override void InitOutfit()
         {
             if (Female)
+            {
                 AddItem(new PlainDress());
+            }
             else
+            {
                 AddItem(new Shirt(GetRandomHue()));
+            }
 
             var lowHue = GetRandomHue();
 
             AddItem(new ShortPants(lowHue));
 
             if (Female)
+            {
                 AddItem(new Boots(lowHue));
+            }
             else
+            {
                 AddItem(new Shoes(lowHue));
+            }
 
             // if (!Female)
             // AddItem( new BodySash( lowHue ) );

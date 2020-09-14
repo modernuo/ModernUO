@@ -14,12 +14,16 @@ namespace Server.Gumps
         public override void Confirm(Mobile from)
         {
             if (m_Item?.Deleted != false)
+            {
                 return;
+            }
 
             var summon = m_Item.Summon;
 
             if (summon == null)
+            {
                 return;
+            }
 
             if (!summon.SetControlMaster(from))
             {

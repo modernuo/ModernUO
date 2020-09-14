@@ -51,14 +51,22 @@ namespace Server.Mobiles
                 var theirSkill = pm.Skills.Tailoring.Base;
 
                 if (theirSkill >= 70.1)
+                {
                     pm.NextTailorBulkOrder = TimeSpan.FromHours(6.0);
+                }
                 else if (theirSkill >= 50.1)
+                {
                     pm.NextTailorBulkOrder = TimeSpan.FromHours(2.0);
+                }
                 else
+                {
                     pm.NextTailorBulkOrder = TimeSpan.FromHours(1.0);
+                }
 
                 if (theirSkill >= 70.1 && (theirSkill - 40.0) / 300.0 > Utility.RandomDouble())
+                {
                     return new LargeTailorBOD();
+                }
 
                 return SmallTailorBOD.CreateRandomFor(from);
             }
@@ -73,7 +81,9 @@ namespace Server.Mobiles
         public override TimeSpan GetNextBulkOrder(Mobile from)
         {
             if (from is PlayerMobile mobile)
+            {
                 return mobile.NextTailorBulkOrder;
+            }
 
             return TimeSpan.Zero;
         }
@@ -81,7 +91,9 @@ namespace Server.Mobiles
         public override void OnSuccessfulBulkOrderReceive(Mobile from)
         {
             if (Core.SE && from is PlayerMobile mobile)
+            {
                 mobile.NextTailorBulkOrder = TimeSpan.Zero;
+            }
         }
     }
 }

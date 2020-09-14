@@ -147,9 +147,13 @@ namespace Server.Items
             }
 
             if (Pet == null)
-                LinkPet(from);
+            {
+                LinkPet(@from);
+            }
             else
-                CastSummonPet(from);
+            {
+                CastSummonPet(@from);
+            }
         }
 
         public void LinkPet(Mobile from)
@@ -157,7 +161,9 @@ namespace Server.Items
             var pet = Pet;
 
             if (Deleted || pet != null || RootParent != from)
+            {
                 return;
+            }
 
             from.SendLocalizedMessage(
                 1054114
@@ -170,7 +176,9 @@ namespace Server.Items
             var pet = Pet;
 
             if (Deleted || pet == null || RootParent != from)
+            {
                 return;
+            }
 
             if (Charges == 0)
             {
@@ -242,9 +250,13 @@ namespace Server.Items
             else
             {
                 if (Core.ML)
-                    new PetSummoningSpell(this, from).Cast();
+                {
+                    new PetSummoningSpell(this, @from).Cast();
+                }
                 else
-                    SummonPet(from);
+                {
+                    SummonPet(@from);
+                }
             }
         }
 
@@ -253,7 +265,9 @@ namespace Server.Items
             var pet = Pet;
 
             if (pet == null)
+            {
                 return;
+            }
 
             Charges--;
 
@@ -262,7 +276,9 @@ namespace Server.Items
                 pet.SetControlMaster(from);
 
                 if (pet.Summoned)
-                    pet.SummonMaster = from;
+                {
+                    pet.SummonMaster = @from;
+                }
 
                 pet.ControlTarget = from;
                 pet.ControlOrder = OrderType.Follow;
@@ -272,7 +288,9 @@ namespace Server.Items
                 from.Stabled.Remove(pet);
 
                 if (from is PlayerMobile mobile)
+                {
                     mobile.AutoStabled.Remove(pet);
+                }
             }
 
             pet.MoveToWorld(from.Location, from.Map);
@@ -284,7 +302,10 @@ namespace Server.Items
                 0x43
             ); // The Crystal Ball fills with a green mist. Your pet has been summoned.
 
-            if (from is PlayerMobile playerMobile) playerMobile.LastPetBallTime = DateTime.UtcNow;
+            if (from is PlayerMobile playerMobile)
+            {
+                playerMobile.LastPetBallTime = DateTime.UtcNow;
+            }
         }
 
         public void UnlinkPet(Mobile from)
@@ -357,7 +378,9 @@ namespace Server.Items
                 var from = Owner.From;
 
                 if (from.CheckAlive())
-                    m_Callback(from);
+                {
+                    m_Callback(@from);
+                }
             }
         }
 
@@ -370,7 +393,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Ball.Deleted || m_Ball.Pet != null)
+                {
                     return;
+                }
 
                 if (m_Ball.RootParent != from)
                 {
@@ -476,19 +501,25 @@ namespace Server.Items
             public override void DoHurtFizzle()
             {
                 if (!m_Stop)
+                {
                     base.DoHurtFizzle();
+                }
             }
 
             public override void DoFizzle()
             {
                 if (!m_Stop)
+                {
                     base.DoFizzle();
+                }
             }
 
             public override void OnDisturb(DisturbType type, bool message)
             {
                 if (message && !m_Stop)
+                {
                     Caster.SendLocalizedMessage(1080074); // You have been disrupted while attempting to summon your pet!
+                }
             }
 
             public override void OnCast()

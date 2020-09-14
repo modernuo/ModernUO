@@ -117,24 +117,36 @@ namespace Server.Engines.Doom
 
             m_Levers = new List<Item>(); /* codes are 0x1 shifted left x # of bits, easily handled here */
             for (; i < 4; i++)
+            {
                 m_Levers.Add(AddLeverPuzzlePart(TA[i], new LeverPuzzleLever((ushort)(1 << i), this)));
+            }
 
             m_Tiles = new List<LeverPuzzleRegion>();
             for (; i < 9; i++)
+            {
                 m_Tiles.Add(new LeverPuzzleRegion(this, TA[i]));
+            }
 
             m_Teles = new List<Item>();
             for (; i < 15; i++)
+            {
                 m_Teles.Add(AddLeverPuzzlePart(TA[i], new LampRoomTeleporter(TA[++i])));
+            }
 
             m_Statues = new List<Item>();
             for (; i < 19; i++)
+            {
                 m_Statues.Add(AddLeverPuzzlePart(TA[i], new LeverPuzzleStatue(TA[++i], this)));
+            }
 
             if (!installed)
+            {
                 Delete();
+            }
             else
+            {
                 Enabled = true;
+            }
 
             m_Box = (LampRoomBox)AddLeverPuzzlePart(TA[i], new LampRoomBox(this));
             m_LampRoom = new LampRoomRegion(this);
@@ -161,8 +173,13 @@ namespace Server.Engines.Doom
             get /* OSI: all 5 must be occupied */
             {
                 for (var i = 0; i < 5; i++)
+                {
                     if (GetOccupant(i) == null)
+                    {
                         return false;
+                    }
+                }
+
                 return true;
             }
         }
@@ -186,17 +203,25 @@ namespace Server.Engines.Doom
             new LeverPuzzleController().MoveToWorld(lp_Center, Map.Malas);
 
             if (!installed)
+            {
                 e.Mobile.SendMessage("There was a problem generating the puzzle.");
+            }
             else
+            {
                 e.Mobile.SendMessage("Lamp room puzzle successfully generated.");
+            }
         }
 
         public static Item AddLeverPuzzlePart(int[] loc, Item newitem)
         {
             if (newitem?.Deleted != false)
+            {
                 installed = false;
+            }
             else
+            {
                 newitem.MoveToWorld(new Point3D(loc[0], loc[1], loc[2]), Map.Malas);
+            }
 
             return newitem;
         }
@@ -215,25 +240,42 @@ namespace Server.Engines.Doom
 
             m_LampRoom?.Unregister();
             if (m_Tiles != null)
+            {
                 foreach (var region in m_Tiles)
+                {
                     region.Unregister();
+                }
+            }
+
             if (m_Box?.Deleted == false)
+            {
                 m_Box.Delete();
+            }
         }
 
         public static void NukeItemList(List<Item> list)
         {
             if (list?.Count > 0)
+            {
                 foreach (var item in list)
+                {
                     if (item?.Deleted == false)
+                    {
                         item.Delete();
+                    }
+                }
+            }
         }
 
         public virtual PlayerMobile GetOccupant(int index)
         {
             var region = m_Tiles[index];
 
-            if (region?.Occupant?.Alive == true) return (PlayerMobile)region.Occupant;
+            if (region?.Occupant?.Alive == true)
+            {
+                return (PlayerMobile)region.Occupant;
+            }
+
             return null;
         }
 
@@ -256,7 +298,9 @@ namespace Server.Engines.Doom
             {
                 Item s;
                 if ((s = GetStatue(i)) != null)
+                {
                     s.PublicOverheadMessage(MessageType.Regular, 0x3B2, message, fstring);
+                }
             }
         }
 
@@ -283,8 +327,15 @@ namespace Server.Engines.Doom
 
         public virtual void KillTimers()
         {
-            if (l_Timer?.Running == true) l_Timer.Stop();
-            if (m_Timer?.Running == true) m_Timer.Stop();
+            if (l_Timer?.Running == true)
+            {
+                l_Timer.Stop();
+            }
+
+            if (m_Timer?.Running == true)
+            {
+                m_Timer.Stop();
+            }
         }
 
         public virtual void RemoveSuccessful()
@@ -332,14 +383,22 @@ namespace Server.Engines.Doom
                 else
                 {
                     for (var i = 0; i < 16; i++) /* Count matching SET bits, ie correct codes */
+                    {
                         if (((MyKey >> i) & 1) == 1 && ((TheirKey >> i) & 1) == 1)
+                        {
                             correct++;
+                        }
+                    }
 
                     PuzzleStatus(Statue_Msg[correct], correct > 0 ? correct.ToString() : null);
 
                     for (var i = 0; i < 5; i++)
+                    {
                         if ((player = GetOccupant(i)) != null)
+                        {
                             new RockTimer(player, this).Start();
+                        }
+                    }
                 }
             }
 
@@ -351,7 +410,10 @@ namespace Server.Engines.Doom
             Span<ushort> ca = stackalloc ushort[] { 1, 2, 4, 8 };
             ca.Shuffle();
 
-            for (var i = 0; i < 4; i++) MyKey = (ushort)(ca[i] | (MyKey <<= 4));
+            for (var i = 0; i < 4; i++)
+            {
+                MyKey = (ushort)(ca[i] | (MyKey <<= 4));
+            }
         }
 
         private static bool IsValidDamagable(Mobile m) =>
@@ -364,7 +426,9 @@ namespace Server.Engines.Doom
             if (m != null)
             {
                 if (m is PlayerMobile && !m.Alive && m.Corpse?.Deleted == false)
+                {
                     m.Corpse.MoveToWorld(lr_Exit, Map.Malas);
+                }
 
                 BaseCreature.TeleportPets(m, lr_Exit, Map.Malas);
                 m.Location = lr_Exit;
@@ -407,7 +471,9 @@ namespace Server.Engines.Doom
         public static void PlaySounds(Point3D location, int[] sounds)
         {
             foreach (var soundid in sounds)
+            {
                 Effects.PlaySound(location, Map.Malas, soundid);
+            }
         }
 
         public static void PlayEffect(IEntity from, IEntity to, int itemid, int speed, bool explodes)
@@ -449,7 +515,9 @@ namespace Server.Engines.Doom
             );
             p.Acquire();
             foreach (var state in from.Map.GetClientsInRange(from.Location))
+            {
                 state.Send(p);
+            }
 
             Packet.Release(p);
         }
@@ -478,7 +546,9 @@ namespace Server.Engines.Doom
 
             m_Tiles = new List<LeverPuzzleRegion>();
             for (var i = 4; i < 9; i++)
+            {
                 m_Tiles.Add(new LeverPuzzleRegion(this, TA[i]));
+            }
 
             m_LampRoom = new LampRoomRegion(this);
             Enabled = true;
@@ -528,7 +598,10 @@ namespace Server.Engines.Doom
                         PlaySounds(m_Player.Location, exp);
                         PlayerSendASCII(m_Player, 1); // A speeding rock  ...
 
-                        if (AniSafe(m_Player)) m_Player.Animate(21, 10, 1, true, true, 0);
+                        if (AniSafe(m_Player))
+                        {
+                            m_Player.Animate(21, 10, 1, true, true, 0);
+                        }
                     }
                     else if (Count == 3)
                     {
@@ -546,13 +619,18 @@ namespace Server.Engines.Doom
                             var mobiles = m_IEntity.Map.GetMobilesInRange(m_IEntity.Location, 2).ToList();
 
                             for (var k = 0; k < mobiles.Count; k++)
+                            {
                                 if (IsValidDamagable(mobiles[k]) && mobiles[k] != m_Player)
                                 {
                                     PlayEffect(m_Player, mobiles[k], Rock(), 8, true);
                                     DoDamage(mobiles[k], 25, 30, false);
 
-                                    if (mobiles[k].Player) POHMessage(mobiles[k], 2); // OUCH!
+                                    if (mobiles[k].Player)
+                                    {
+                                        POHMessage(mobiles[k], 2); // OUCH!
+                                    }
                                 }
+                            }
 
                             PlayEffect(m_Player, m_IEntity, Rock(), 8, false);
                         }
@@ -597,15 +675,25 @@ namespace Server.Engines.Doom
                 if (ticks >= 71 || m_Controller.m_LampRoom.GetPlayerCount() == 0)
                 {
                     foreach (var mobile in mobiles)
+                    {
                         if (mobile?.Deleted == false && !mobile.IsDeadBondedPet)
+                        {
                             mobile.Kill();
+                        }
+                    }
+
                     m_Controller.Enabled = true;
                     Stop();
                 }
                 else
                 {
-                    if (ticks % 12 == 0) level++;
+                    if (ticks % 12 == 0)
+                    {
+                        level++;
+                    }
+
                     foreach (var mobile in mobiles)
+                    {
                         if (IsValidDamagable(mobile))
                         {
                             if (ticks % 2 == 0 && level == 5)
@@ -613,20 +701,31 @@ namespace Server.Engines.Doom
                                 if (mobile.Player)
                                 {
                                     mobile.Say(1062092);
-                                    if (AniSafe(mobile)) mobile.Animate(32, 5, 1, true, false, 0);
+                                    if (AniSafe(mobile))
+                                    {
+                                        mobile.Animate(32, 5, 1, true, false, 0);
+                                    }
                                 }
 
                                 DoDamage(mobile, 15, 20, true);
                             }
 
                             if (Utility.Random((int)(level & ~0xfffffffc), 3) == 3)
+                            {
                                 mobile.ApplyPoison(mobile, PA2[level]);
+                            }
+
                             if (ticks % 12 == 0 && level > 0 && mobile.Player)
+                            {
                                 mobile.SendLocalizedMessage(PA[level][0], null, PA[level][1]);
+                            }
                         }
+                    }
 
                     for (var i = 0; i <= level; i++)
+                    {
                         SendLocationEffect(RandomPointIn(lr_Rect, -1), 0x36B0, Utility.Random(150, 200), 0, PA[level][2]);
+                    }
                 }
             }
         }

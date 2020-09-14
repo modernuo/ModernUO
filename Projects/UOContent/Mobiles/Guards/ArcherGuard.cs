@@ -82,7 +82,9 @@ namespace Server.Mobiles
             set
             {
                 if (Deleted)
+                {
                     return;
+                }
 
                 var oldFocus = m_Focus;
 
@@ -91,15 +93,21 @@ namespace Server.Mobiles
                     m_Focus = value;
 
                     if (value != null)
+                    {
                         AggressiveAction(value);
+                    }
 
                     Combatant = value;
 
                     if (oldFocus?.Alive == false)
+                    {
                         Say("Thou hast suffered thy punishment, scoundrel.");
+                    }
 
                     if (value != null)
+                    {
                         Say(500131); // Thou wilt regret thine actions, swine!
+                    }
 
                     if (m_AttackTimer != null)
                     {
@@ -136,7 +144,9 @@ namespace Server.Mobiles
         public override bool OnBeforeDeath()
         {
             if (m_Focus?.Alive == true)
+            {
                 new AvengeTimer(m_Focus).Start(); // If a guard dies, three more guards will spawn
+            }
 
             return base.OnBeforeDeath();
         }
@@ -255,7 +265,9 @@ namespace Server.Mobiles
                 }
 
                 if (target != null && m_Owner.Combatant != target)
+                {
                     m_Owner.Combatant = target;
+                }
 
                 if (target == null)
                 {
@@ -268,13 +280,17 @@ namespace Server.Mobiles
                     target.BoltEffect(0);
 
                     if (target is BaseCreature creature)
+                    {
                         creature.NoKillAwards = true;
+                    }
 
                     target.Damage(target.HitsMax, m_Owner);
                     target.Kill(); // just in case, maybe Damage is overridden on some shard
 
                     if (target.Corpse != null && !target.Player)
+                    {
                         target.Corpse.Delete();
+                    }
 
                     m_Owner.Focus = null;
                     Stop();
@@ -377,7 +393,9 @@ namespace Server.Mobiles
                 }
 
                 if (m_Stage++ % 4 == 0 || !m_Owner.Move(m_Owner.Direction))
+                {
                     m_Owner.Direction = (Direction)Utility.Random(8);
+                }
 
                 if (m_Stage > 16)
                 {

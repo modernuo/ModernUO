@@ -43,10 +43,14 @@ namespace Server.Mobiles
             PackItem(new IronIngot(10));
 
             if (Utility.RandomDouble() < 0.05)
+            {
                 PackItem(new OrcishKinMask());
+            }
 
             if (Utility.RandomDouble() < 0.2)
+            {
                 PackItem(new BolaBall());
+            }
         }
 
         public OrcBrute(Serial serial) : base(serial)
@@ -74,7 +78,9 @@ namespace Server.Mobiles
         public override bool IsEnemy(Mobile m)
         {
             if (m.Player && m.FindItemOnLayer(Layer.Helm) is OrcishKinMask)
+            {
                 return false;
+            }
 
             return base.IsEnemy(m);
         }
@@ -97,7 +103,9 @@ namespace Server.Mobiles
         public override void OnDamagedBySpell(Mobile caster)
         {
             if (caster == this)
+            {
                 return;
+            }
 
             SpawnOrcLord(caster);
         }
@@ -107,7 +115,9 @@ namespace Server.Mobiles
             var map = target.Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             var eable = GetMobilesInRange<OrcishLord>(10);
 

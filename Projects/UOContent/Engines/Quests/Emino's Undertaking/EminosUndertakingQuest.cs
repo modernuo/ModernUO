@@ -100,13 +100,19 @@ namespace Server.Engines.Quests.Ninja
         public static bool HasLostNoteForZoel(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return false;
+            }
 
             var qs = pm.Quest;
 
             if (qs is EminosUndertakingQuest)
+            {
                 if (qs.IsObjectiveInProgress(typeof(GiveZoelNoteObjective)))
-                    return from.Backpack?.FindItemByType<NoteForZoel>() == null;
+                {
+                    return @from.Backpack?.FindItemByType<NoteForZoel>() == null;
+                }
+            }
 
             return false;
         }
@@ -114,13 +120,19 @@ namespace Server.Engines.Quests.Ninja
         public static bool HasLostEminosKatana(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return false;
+            }
 
             var qs = pm.Quest;
 
             if (qs is EminosUndertakingQuest)
+            {
                 if (qs.IsObjectiveInProgress(typeof(GiveEminoSwordObjective)))
-                    return from.Backpack?.FindItemByType<EminosKatana>() == null;
+                {
+                    return @from.Backpack?.FindItemByType<EminosKatana>() == null;
+                }
+            }
 
             return false;
         }

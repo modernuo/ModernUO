@@ -42,7 +42,9 @@ namespace Server.Items
             }
 
             if (version == 0)
+            {
                 SkillBonuses.SetValues(0, SkillName.AnimalLore, 5.0);
+            }
         }
     }
 
@@ -835,9 +837,13 @@ namespace Server.Items
                 else if (Core.AOS)
                 {
                     if (item is BaseHat hat)
+                    {
                         BaseRunicTool.ApplyAttributesTo(hat, attributeCount, min, max);
+                    }
                     else if (item is BaseJewel jewel)
+                    {
                         BaseRunicTool.ApplyAttributesTo(jewel, attributeCount, min, max);
+                    }
                 }
 
                 DropItem(item);
@@ -900,7 +906,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Slayer == SlayerName.Fey)
+            {
                 Slayer = SlayerGroup.Groups[Utility.Random(SlayerGroup.Groups.Length - 1)].Super.Name;
+            }
         }
     }
 
@@ -1016,7 +1024,9 @@ namespace Server.Items
             var v = (int)type;
 
             if (v < 0 || v >= m_Table.Length)
+            {
                 v = 0;
+            }
 
             return m_Table[v];
         }
@@ -1063,9 +1073,13 @@ namespace Server.Items
         {
             var a = Utility.Random(0, 30);
             if (a != 0)
+            {
                 Hue = a + 0x960;
+            }
             else
+            {
                 Hue = 0;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

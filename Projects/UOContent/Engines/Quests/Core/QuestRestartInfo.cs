@@ -23,9 +23,13 @@ namespace Server.Engines.Quests
         public void Reset(TimeSpan restartDelay)
         {
             if (restartDelay < TimeSpan.MaxValue)
+            {
                 RestartTime = DateTime.UtcNow + restartDelay;
+            }
             else
+            {
                 RestartTime = DateTime.MaxValue;
+            }
         }
     }
 }

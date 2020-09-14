@@ -41,10 +41,14 @@ namespace Server.Guilds
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (!(sender.Mobile is PlayerMobile pm))
+            {
                 return;
+            }
 
             if (!IsMember(pm, guild))
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {
@@ -80,7 +84,9 @@ namespace Server.Guilds
 
             // With testing on OSI, Guild stuff seems to follow a 'simpler' method of profanity protection
             if (s.Length < 1 || s.Length > maxLength)
+            {
                 return false;
+            }
 
             var exceptions = ProfanityProtection.Exceptions;
 
@@ -95,19 +101,29 @@ namespace Server.Guilds
                     var except = false;
 
                     for (var j = 0; !except && j < exceptions.Length; j++)
+                    {
                         if (c == exceptions[j])
+                        {
                             except = true;
+                        }
+                    }
 
                     if (!except)
+                    {
                         return false;
+                    }
                 }
             }
 
             var disallowed = ProfanityProtection.Disallowed;
 
             for (var i = 0; i < disallowed.Length; i++)
+            {
                 if (s.IndexOf(disallowed[i]) != -1)
+                {
                     return false;
+                }
+            }
 
             return true;
         }
@@ -115,9 +131,13 @@ namespace Server.Guilds
         public void AddHtmlText(int x, int y, int width, int height, TextDefinition text, bool back, bool scroll)
         {
             if (text?.Number > 0)
+            {
                 AddHtmlLocalized(x, y, width, height, text.Number, back, scroll);
+            }
             else if (text?.String != null)
+            {
                 AddHtml(x, y, width, height, text.String, back, scroll);
+            }
         }
 
         public static string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";

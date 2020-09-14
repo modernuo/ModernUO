@@ -19,7 +19,9 @@ namespace Server.Items
         public override void Drink(Mobile from)
         {
             if (MondainsLegacy.CheckML(from))
-                base.Drink(from);
+            {
+                base.Drink(@from);
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)

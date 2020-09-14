@@ -23,7 +23,9 @@ namespace Server.Commands.Generic
                 var ext = Extensions.Parse(from, ref args);
 
                 if (!CheckObjectTypes(from, command, ext, out var _, out var mobiles))
+                {
                     return;
+                }
 
                 var reg = from.Region;
 
@@ -34,10 +36,14 @@ namespace Server.Commands.Generic
                     foreach (var mob in reg.GetMobiles())
                     {
                         if (!BaseCommand.IsAccessible(from, mob))
+                        {
                             continue;
+                        }
 
                         if (ext.IsValid(mob))
+                        {
                             list.Add(mob);
+                        }
                     }
                 }
                 else

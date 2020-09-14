@@ -10,7 +10,9 @@ namespace Server.Engines.VeteranRewards
             Entries = entries;
 
             for (var i = 0; i < entries.Length; ++i)
+            {
                 entries[i].List = this;
+            }
         }
 
         public TimeSpan Age { get; }

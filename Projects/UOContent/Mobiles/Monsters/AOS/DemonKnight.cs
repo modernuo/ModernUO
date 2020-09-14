@@ -111,7 +111,9 @@ namespace Server.Mobiles
         public static Item CreateRandomArtifact()
         {
             if (!Core.AOS)
+            {
                 return null;
+            }
 
             var count = ArtifactRarity10.Length * 5 + ArtifactRarity11.Length * 4;
             var random = Utility.Random(count);
@@ -139,7 +141,9 @@ namespace Server.Mobiles
                 var ds = rights[i];
 
                 if (!ds.m_HasRight)
+                {
                     rights.RemoveAt(i);
+                }
             }
 
             return rights.RandomElement()?.m_Mobile;
@@ -163,12 +167,16 @@ namespace Server.Mobiles
         public static void DistributeArtifact(Mobile to, Item artifact)
         {
             if (to == null || artifact == null)
+            {
                 return;
+            }
 
             var pack = to.Backpack;
 
             if (pack?.TryDropItem(to, artifact, false) != true)
+            {
                 to.BankBox.DropItem(artifact);
+            }
 
             to.SendLocalizedMessage(
                 1062317
@@ -178,15 +186,21 @@ namespace Server.Mobiles
         public static int GetArtifactChance(Mobile boss)
         {
             if (!Core.AOS)
+            {
                 return 0;
+            }
 
             var luck = LootPack.GetLuckChanceForKiller(boss);
             int chance;
 
             if (boss is DemonKnight)
+            {
                 chance = 1500 + luck / 5;
+            }
             else
+            {
                 chance = 750 + luck / 10;
+            }
 
             return chance;
         }
@@ -209,7 +223,9 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             if (!Summoned && !NoKillAwards && CheckArtifactChance(this))
+            {
                 DistributeArtifact(this);
+            }
         }
 
         public override void GenerateLoot()
@@ -229,7 +245,9 @@ namespace Server.Mobiles
                 PlaySound(0x491);
 
                 if (Utility.RandomDouble() < 0.05)
-                    Timer.DelayCall(TimeSpan.FromSeconds(1.0), CreateBones_Callback, from);
+                {
+                    Timer.DelayCall(TimeSpan.FromSeconds(1.0), CreateBones_Callback, @from);
+                }
 
                 m_InHere = false;
             }
@@ -240,7 +258,9 @@ namespace Server.Mobiles
             var map = from.Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             var count = Utility.RandomMinMax(1, 3);
 
@@ -255,7 +275,9 @@ namespace Server.Mobiles
                     z = map.GetAverageZ(x, y);
 
                     if (z == from.Z || !map.CanFit(x, y, z, 16))
+                    {
                         continue;
+                    }
                 }
 
                 var bone = new UnholyBone

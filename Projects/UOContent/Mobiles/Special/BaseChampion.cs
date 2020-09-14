@@ -45,11 +45,19 @@ namespace Server.Mobiles
         {
             var random = Utility.RandomDouble();
             if (random <= 0.05)
+            {
                 return CreateArtifact(UniqueList);
+            }
+
             if (random <= 0.15)
+            {
                 return CreateArtifact(SharedList);
+            }
+
             if (random <= 0.30)
+            {
                 return CreateArtifact(DecorativeList);
+            }
 
             return null;
         }
@@ -57,7 +65,9 @@ namespace Server.Mobiles
         public Item CreateArtifact(Type[] list)
         {
             if (list.Length == 0)
+            {
                 return null;
+            }
 
             var type = list.RandomElement();
 
@@ -78,11 +88,17 @@ namespace Server.Mobiles
             var random = Utility.RandomDouble();
 
             if (random <= 0.05)
+            {
                 level = 20;
+            }
             else if (random <= 0.4)
+            {
                 level = 15;
+            }
             else
+            {
                 level = 10;
+            }
 
             return PowerScroll.CreateRandomNoCraft(level, level);
         }
@@ -90,7 +106,9 @@ namespace Server.Mobiles
         public void GivePowerScrolls()
         {
             if (Map != Map.Felucca)
+            {
                 return;
+            }
 
             var toGive = new List<Mobile>();
             var rights = GetLootingRights(DamageEntries, HitsMax);
@@ -100,18 +118,24 @@ namespace Server.Mobiles
                 var ds = rights[i];
 
                 if (ds.m_HasRight)
+                {
                     toGive.Add(ds.m_Mobile);
+                }
             }
 
             if (toGive.Count == 0)
+            {
                 return;
+            }
 
             for (var i = 0; i < toGive.Count; i++)
             {
                 var m = toGive[i];
 
                 if (!(m is PlayerMobile))
+                {
                     continue;
+                }
 
                 var gainedPath = false;
 
@@ -120,9 +144,13 @@ namespace Server.Mobiles
                 if (VirtueHelper.Award(m, VirtueName.Valor, pointsToGain, ref gainedPath))
                 {
                     if (gainedPath)
+                    {
                         m.SendLocalizedMessage(1054032); // You have gained a path in Valor!
+                    }
                     else
+                    {
                         m.SendLocalizedMessage(1054030); // You have gained in Valor!
+                    }
 
                     // No delay on Valor gains
                 }
@@ -144,7 +172,9 @@ namespace Server.Mobiles
         public static void GivePowerScrollTo(Mobile m, PowerScroll ps)
         {
             if (ps == null || m == null) // sanity
+            {
                 return;
+            }
 
             m.SendLocalizedMessage(1049524); // You have received a scroll of power!
 
@@ -155,20 +185,28 @@ namespace Server.Mobiles
             else
             {
                 if (m.Corpse?.Deleted == false)
+                {
                     m.Corpse.DropItem(ps);
+                }
                 else
+                {
                     m.AddToBackpack(ps);
+                }
             }
 
             if (!(m is PlayerMobile pm))
+            {
                 return;
+            }
 
             for (var j = 0; j < pm.JusticeProtectors.Count; ++j)
             {
                 var prot = pm.JusticeProtectors[j];
 
                 if (prot.Map != pm.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion(pm, prot))
+                {
                     continue;
+                }
 
                 var chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
                 {
@@ -191,9 +229,13 @@ namespace Server.Mobiles
                     else
                     {
                         if (prot.Corpse?.Deleted == false)
+                        {
                             prot.Corpse.DropItem(powerScroll);
+                        }
                         else
+                        {
                             prot.AddToBackpack(powerScroll);
+                        }
                     }
                 }
             }
@@ -206,19 +248,27 @@ namespace Server.Mobiles
                 GivePowerScrolls();
 
                 if (NoGoodies)
+                {
                     return base.OnBeforeDeath();
+                }
 
                 var map = Map;
 
                 if (map != null)
+                {
                     for (var x = -12; x <= 12; ++x)
+                    {
                         for (var y = -12; y <= 12; ++y)
                         {
                             var dist = Math.Sqrt(x * x + y * y);
 
                             if (dist <= 12)
+                            {
                                 new GoodiesTimer(map, X + x, Y + y).Start();
+                            }
                         }
+                    }
+                }
             }
 
             return base.OnBeforeDeath();
@@ -237,13 +287,19 @@ namespace Server.Mobiles
                     var ds = rights[i];
 
                     if (ds.m_HasRight)
+                    {
                         toGive.Add(ds.m_Mobile);
+                    }
                 }
 
                 if (toGive.Count > 0)
+                {
                     toGive.RandomElement().AddToBackpack(new ChampionSkull(SkullType));
+                }
                 else
+                {
                     c.DropItem(new ChampionSkull(SkullType));
+                }
             }
 
             base.OnDeath(c);
@@ -272,17 +328,22 @@ namespace Server.Mobiles
                     canFit = m_Map.CanFit(m_X, m_Y, z + i, 6, false, false);
 
                     if (canFit)
+                    {
                         z += i;
+                    }
                 }
 
                 if (!canFit)
+                {
                     return;
+                }
 
                 var g = new Gold(500, 1000);
 
                 g.MoveToWorld(new Point3D(m_X, m_Y, z), m_Map);
 
                 if (Utility.RandomDouble() <= 0.5)
+                {
                     switch (Utility.Random(3))
                     {
                         case 0: // Fire column
@@ -324,6 +385,7 @@ namespace Server.Mobiles
                                 break;
                             }
                     }
+                }
             }
         }
     }

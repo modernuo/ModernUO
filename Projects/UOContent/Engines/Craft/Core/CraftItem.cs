@@ -192,9 +192,13 @@ namespace Server.Engines.Craft
             var number = ItemIDOf(type);
 
             if (number >= 0x4000)
+            {
                 number += 1078872;
+            }
             else
+            {
                 number += 1020000;
+            }
 
             return number;
         }
@@ -202,15 +206,26 @@ namespace Server.Engines.Craft
         public static int ItemIDOf(Type type)
         {
             if (_itemIds.TryGetValue(type, out var itemId))
+            {
                 return itemId;
+            }
 
             if (type == typeof(FactionExplosionTrap))
+            {
                 itemId = 14034;
+            }
             else if (type == typeof(FactionGasTrap))
+            {
                 itemId = 4523;
+            }
             else if (type == typeof(FactionSawTrap))
+            {
                 itemId = 4359;
-            else if (type == typeof(FactionSpikeTrap)) itemId = 4517;
+            }
+            else if (type == typeof(FactionSpikeTrap))
+            {
+                itemId = 4517;
+            }
 
             if (itemId == 0)
             {
@@ -296,13 +311,19 @@ namespace Server.Engines.Craft
             consumStam = consume;
 
             if (consumMana)
-                from.Mana -= Mana;
+            {
+                @from.Mana -= Mana;
+            }
 
             if (consumHits)
-                from.Hits -= Hits;
+            {
+                @from.Hits -= Hits;
+            }
 
             if (consumStam)
-                from.Stam -= Stam;
+            {
+                @from.Stam -= Stam;
+            }
 
             return true;
         }
@@ -310,11 +331,17 @@ namespace Server.Engines.Craft
         public bool IsMarkable(Type type)
         {
             if (ForceNonExceptional) // Don't even display the stuff for marking if it can't ever be exceptional.
+            {
                 return false;
+            }
 
             for (var i = 0; i < m_MarkableTable.Length; ++i)
+            {
                 if (type == m_MarkableTable[i] || type.IsSubclassOf(m_MarkableTable[i]))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -324,15 +351,21 @@ namespace Server.Engines.Craft
             var neverColor = false;
 
             for (var i = 0; !neverColor && i < m_NeverColorTable.Length; ++i)
+            {
                 neverColor = type == m_NeverColorTable[i] || type.IsSubclassOf(m_NeverColorTable[i]);
+            }
 
             if (neverColor)
+            {
                 return false;
+            }
 
             var inItemTable = false;
 
             for (var i = 0; !inItemTable && i < m_ColoredItemTable.Length; ++i)
+            {
                 inItemTable = type == m_ColoredItemTable[i] || type.IsSubclassOf(m_ColoredItemTable[i]);
+            }
 
             return inItemTable;
         }
@@ -340,17 +373,23 @@ namespace Server.Engines.Craft
         public bool RetainsColorFrom(CraftSystem system, Type type)
         {
             if (system.RetainsColorFrom(this, type))
+            {
                 return true;
+            }
 
             var inItemTable = RetainsColor(ItemType);
 
             if (!inItemTable)
+            {
                 return false;
+            }
 
             var inResourceTable = false;
 
             for (var i = 0; !inResourceTable && i < m_ColoredResourceTable.Length; ++i)
+            {
                 inResourceTable = type == m_ColoredResourceTable[i] || type.IsSubclassOf(m_ColoredResourceTable[i]);
+            }
 
             return inResourceTable;
         }
@@ -360,20 +399,25 @@ namespace Server.Engines.Craft
             var map = from.Map;
 
             if (map == null)
+            {
                 return false;
+            }
 
             var eable = map.GetItemsInRange(from.Location, 2);
             var found = eable.Any(item => item.Z + 16 > item.Z && item.Z + 16 > item.Z && Find(item.ItemID, itemIDs));
             eable.Free();
 
             if (found)
+            {
                 return true;
+            }
 
             for (var x = -2; x <= 2; ++x)
+            {
                 for (var y = -2; y <= 2; ++y)
                 {
-                    var vx = from.X + x;
-                    var vy = from.Y + y;
+                    var vx = @from.X + x;
+                    var vy = @from.Y + y;
 
                     var tiles = map.Tiles.GetStaticTiles(vx, vy, true);
 
@@ -382,10 +426,13 @@ namespace Server.Engines.Craft
                         var z = tiles[i].Z;
                         var id = tiles[i].ID;
 
-                        if (z + 16 > from.Z && from.Z + 16 > z && Find(id, itemIDs))
+                        if (z + 16 > @from.Z && @from.Z + 16 > z && Find(id, itemIDs))
+                        {
                             return true;
+                        }
                     }
                 }
+            }
 
             return false;
         }
@@ -395,7 +442,9 @@ namespace Server.Engines.Craft
             var contains = false;
 
             for (var i = 0; !contains && i < itemIDs.Length; i += 2)
+            {
                 contains = itemID >= itemIDs[i] && itemID <= itemIDs[i + 1];
+            }
 
             return contains;
         }
@@ -406,7 +455,9 @@ namespace Server.Engines.Craft
         public int ConsumeQuantity(Container cont, Type[][] types, int[] amounts)
         {
             if (types.Length != amounts.Length)
+            {
                 throw new ArgumentException();
+            }
 
             var items = new Item[types.Length][];
             var totals = new int[types.Length];
@@ -416,6 +467,7 @@ namespace Server.Engines.Craft
                 items[i] = cont.FindItemsByType(types[i]);
 
                 for (var j = 0; j < items[i].Length; ++j)
+                {
                     if (!(items[i][j] is IHasQuantity hq))
                     {
                         totals[i] += items[i][j].Amount;
@@ -423,13 +475,18 @@ namespace Server.Engines.Craft
                     else
                     {
                         if (hq is BaseBeverage beverage && beverage.Content != RequiredBeverage)
+                        {
                             continue;
+                        }
 
                         totals[i] += hq.Quantity;
                     }
+                }
 
                 if (totals[i] < amounts[i])
+                {
                     return i;
+                }
             }
 
             for (var i = 0; i < types.Length; ++i)
@@ -458,7 +515,9 @@ namespace Server.Engines.Craft
                     else
                     {
                         if (hq is BaseBeverage beverage && beverage.Content != RequiredBeverage)
+                        {
                             continue;
+                        }
 
                         var theirAmount = hq.Quantity;
 
@@ -486,6 +545,7 @@ namespace Server.Engines.Craft
             var amount = 0;
 
             for (var i = 0; i < items.Length; ++i)
+            {
                 if (!(items[i] is IHasQuantity hq))
                 {
                     amount += items[i].Amount;
@@ -493,10 +553,13 @@ namespace Server.Engines.Craft
                 else
                 {
                     if (hq is BaseBeverage beverage && beverage.Content != RequiredBeverage)
+                    {
                         continue;
+                    }
 
                     amount += hq.Quantity;
                 }
+            }
 
             return amount;
         }
@@ -515,7 +578,9 @@ namespace Server.Engines.Craft
             var ourPack = from.Backpack;
 
             if (ourPack == null)
+            {
                 return false;
+            }
 
             if (NeedHeat && !Find(from, m_HeatSources))
             {
@@ -564,11 +629,17 @@ namespace Server.Engines.Craft
                 // ******************
 
                 for (var j = 0; types[i] == null && j < m_TypesTable.Length; ++j)
+                {
                     if (m_TypesTable[j][0] == baseType)
+                    {
                         types[i] = m_TypesTable[j];
+                    }
+                }
 
                 if (types[i] == null)
+                {
                     types[i] = new[] { baseType };
+                }
 
                 amounts[i] = craftRes.Amount;
 
@@ -586,11 +657,17 @@ namespace Server.Engines.Craft
                             res = Resources[i];
 
                             if (res.MessageNumber > 0)
+                            {
                                 message = res.MessageNumber;
+                            }
                             else if (!string.IsNullOrEmpty(res.MessageString))
+                            {
                                 message = res.MessageString;
+                            }
                             else
+                            {
                                 message = 502925; // You don't have the resources required to make that item.
+                            }
 
                             return false;
                         }
@@ -599,15 +676,23 @@ namespace Server.Engines.Craft
                 // ****************************
 
                 if (isFailure && !craftSystem.ConsumeOnFailure(from, types[i][0], this))
+                {
                     amounts[i] = 0;
+                }
             }
 
             // We adjust the amount of each resource to consume the max possible
             if (UseAllRes)
+            {
                 for (var i = 0; i < amounts.Length; ++i)
+                {
                     amounts[i] *= maxAmount;
+                }
+            }
             else
+            {
                 maxAmount = -1;
+            }
 
             RecallRune consumeExtra = null;
 
@@ -633,9 +718,13 @@ namespace Server.Engines.Craft
                 m_System = craftSystem;
 
                 if (IsQuantityType(types))
+                {
                     index = ConsumeQuantity(ourPack, types, amounts);
+                }
                 else
+                {
                     index = ourPack.ConsumeTotalGrouped(types, amounts, true, OnResourceConsumed, CheckHueGrouping);
+                }
 
                 resHue = m_ResHue;
             }
@@ -647,7 +736,9 @@ namespace Server.Engines.Craft
                     amounts[i] /= 2;
 
                     if (amounts[i] < 1)
+                    {
                         amounts[i] = 1;
+                    }
                 }
 
                 m_ResHue = 0;
@@ -655,9 +746,13 @@ namespace Server.Engines.Craft
                 m_System = craftSystem;
 
                 if (IsQuantityType(types))
+                {
                     index = ConsumeQuantity(ourPack, types, amounts);
+                }
                 else
+                {
                     index = ourPack.ConsumeTotalGrouped(types, amounts, true, OnResourceConsumed, CheckHueGrouping);
+                }
 
                 resHue = m_ResHue;
             }
@@ -667,7 +762,9 @@ namespace Server.Engines.Craft
 
                 // TODO: Optimize this
                 if (IsQuantityType(types))
+                {
                     for (var i = 0; i < types.Length; i++)
+                    {
                         if (GetQuantity(ourPack, types[i]) < amounts[i])
                         {
                             index = i;
@@ -676,18 +773,24 @@ namespace Server.Engines.Craft
                         else
                         {
                             for (var j = 0; j < types.Length; j++)
+                            {
                                 if (ourPack.GetBestGroupAmount(types[j], true, CheckHueGrouping) < amounts[j])
                                 {
                                     index = j;
                                     break;
                                 }
+                            }
                         }
+                    }
+                }
             }
 
             if (index == -1)
             {
                 if (consumeType != ConsumeType.None)
+                {
                     consumeExtra?.Delete();
+                }
 
                 return true;
             }
@@ -695,11 +798,17 @@ namespace Server.Engines.Craft
             res = Resources[index];
 
             if (res.MessageNumber > 0)
+            {
                 message = res.MessageNumber;
+            }
             else if (!string.IsNullOrEmpty(res.MessageString))
+            {
                 message = res.MessageString;
+            }
             else
+            {
                 message = 502925; // You don't have the resources required to make that item.
+            }
 
             return false;
         }
@@ -707,7 +816,9 @@ namespace Server.Engines.Craft
         private void OnResourceConsumed(Item item, int amount)
         {
             if (!RetainsColorFrom(m_System, item.GetType()))
+            {
                 return;
+            }
 
             if (amount >= m_ResAmount)
             {
@@ -721,7 +832,9 @@ namespace Server.Engines.Craft
         public double GetExceptionalChance(CraftSystem system, double chance, Mobile from)
         {
             if (ForceNonExceptional)
+            {
                 return 0.0;
+            }
 
             var bonus = 0.0;
 
@@ -761,7 +874,9 @@ namespace Server.Engines.Craft
             var chance = GetSuccessChance(from, typeRes, craftSystem, gainSkills, out allRequiredSkills);
 
             if (GetExceptionalChance(craftSystem, chance, from) > Utility.RandomDouble())
+            {
                 quality = 2;
+            }
 
             return chance > Utility.RandomDouble();
         }
@@ -786,7 +901,9 @@ namespace Server.Engines.Craft
                 var valSkill = from.Skills[craftSkill.SkillToMake].Value;
 
                 if (valSkill < minSkill)
+                {
                     allRequiredSkills = false;
+                }
 
                 if (craftSkill.SkillToMake == craftSystem.MainSkill)
                 {
@@ -796,22 +913,32 @@ namespace Server.Engines.Craft
                 }
 
                 if (gainSkills) // This is a passive check. Success chance is entirely dependant on the main skill
-                    from.CheckSkill(craftSkill.SkillToMake, minSkill, maxSkill);
+                {
+                    @from.CheckSkill(craftSkill.SkillToMake, minSkill, maxSkill);
+                }
             }
 
             double chance;
 
             if (allRequiredSkills)
+            {
                 chance = craftSystem.GetChanceAtMin(this) + (valMainSkill - minMainSkill) / (maxMainSkill - minMainSkill) *
                     (1.0 - craftSystem.GetChanceAtMin(this));
+            }
             else
+            {
                 chance = 0.0;
+            }
 
             if (allRequiredSkills && from.Talisman is BaseTalisman talisman && talisman.Skill == craftSystem.MainSkill)
+            {
                 chance += talisman.SuccessBonus / 100.0;
+            }
 
             if (allRequiredSkills && valMainSkill == maxMainSkill)
+            {
                 chance = 1.0;
+            }
 
             return chance;
         }
@@ -946,9 +1073,13 @@ namespace Server.Engines.Craft
             if (badCraft > 0)
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
-                    from.SendGump(new CraftGump(from, craftSystem, tool, badCraft));
+                {
+                    @from.SendGump(new CraftGump(@from, craftSystem, tool, badCraft));
+                }
                 else
-                    from.SendLocalizedMessage(badCraft);
+                {
+                    @from.SendLocalizedMessage(badCraft);
+                }
 
                 return;
             }
@@ -969,11 +1100,17 @@ namespace Server.Engines.Craft
                   && ConsumeAttributes(from, ref checkMessage, false)))
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
-                    from.SendGump(new CraftGump(from, craftSystem, tool, checkMessage));
+                {
+                    @from.SendGump(new CraftGump(@from, craftSystem, tool, checkMessage));
+                }
                 else if (checkMessage is int messageInt && messageInt > 0)
-                    from.SendLocalizedMessage(messageInt);
+                {
+                    @from.SendLocalizedMessage(messageInt);
+                }
                 else
-                    from.SendMessage(checkMessage.ToString());
+                {
+                    @from.SendMessage(checkMessage.ToString());
+                }
 
                 return;
             }
@@ -998,11 +1135,17 @@ namespace Server.Engines.Craft
                       && ConsumeAttributes(from, ref message, true)))
                 {
                     if (tool?.Deleted == false && tool.UsesRemaining > 0)
-                        from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                    {
+                        @from.SendGump(new CraftGump(@from, craftSystem, tool, message));
+                    }
                     else if (message is int messageIn && messageIn > 0)
-                        from.SendLocalizedMessage(messageIn);
+                    {
+                        @from.SendLocalizedMessage(messageIn);
+                    }
                     else
-                        from.SendMessage(message.ToString());
+                    {
+                        @from.SendMessage(message.ToString());
+                    }
 
                     return;
                 }
@@ -1010,18 +1153,26 @@ namespace Server.Engines.Craft
                 tool.UsesRemaining--;
 
                 if (craftSystem is DefBlacksmithy)
-                    if (from.FindItemOnLayer(Layer.OneHanded) is AncientSmithyHammer hammer && hammer != tool)
+                {
+                    if (@from.FindItemOnLayer(Layer.OneHanded) is AncientSmithyHammer hammer && hammer != tool)
                     {
                         hammer.UsesRemaining--;
                         if (hammer.UsesRemaining < 1)
+                        {
                             hammer.Delete();
+                        }
                     }
+                }
 
                 if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+                {
                     toolBroken = true;
+                }
 
                 if (toolBroken)
+                {
                     tool.Delete();
+                }
 
                 var num = 0;
 
@@ -1043,33 +1194,45 @@ namespace Server.Engines.Craft
                 if (item != null)
                 {
                     if (item is ICraftable craftable)
-                        endquality = craftable.OnCraft(quality, makersMark, from, craftSystem, typeRes, tool, this, resHue);
+                    {
+                        endquality = craftable.OnCraft(quality, makersMark, @from, craftSystem, typeRes, tool, this, resHue);
+                    }
                     else if (item.Hue == 0)
+                    {
                         item.Hue = resHue;
+                    }
 
                     if (maxAmount > 0)
                     {
                         if (!item.Stackable && item is IUsesRemaining remaining)
+                        {
                             remaining.UsesRemaining *= maxAmount;
+                        }
                         else
+                        {
                             item.Amount = maxAmount;
+                        }
                     }
 
                     from.AddToBackpack(item);
 
                     if (from.AccessLevel > AccessLevel.Player)
+                    {
                         CommandLogging.WriteLine(
-                            from,
+                            @from,
                             "Crafting {0} with craft system {1}",
                             CommandLogging.Format(item),
                             craftSystem.GetType().Name
                         );
+                    }
 
                     // from.PlaySound( 0x57 );
                 }
 
                 if (num == 0)
-                    num = craftSystem.PlayEndingEffect(from, false, true, toolBroken, endquality, makersMark, this);
+                {
+                    num = craftSystem.PlayEndingEffect(@from, false, true, toolBroken, endquality, makersMark, this);
+                }
 
                 var queryFactionImbue = false;
                 var availableSilver = 0;
@@ -1097,7 +1260,9 @@ namespace Server.Engines.Craft
                                     availableSilver = pack.GetAmount(typeof(Silver));
 
                                     if (availableSilver >= def.SilverCost)
-                                        queryFactionImbue = Faction.IsNearType(from, def.VendorType, 12);
+                                    {
+                                        queryFactionImbue = Faction.IsNearType(@from, def.VendorType, 12);
+                                    }
                                 }
                             }
                         }
@@ -1107,11 +1272,12 @@ namespace Server.Engines.Craft
                 // TODO: Scroll imbuing
 
                 if (queryFactionImbue)
-                    from.SendGump(
+                {
+                    @from.SendGump(
                         new FactionImbueGump(
                             quality,
                             item,
-                            from,
+                            @from,
                             craftSystem,
                             tool,
                             num,
@@ -1120,17 +1286,26 @@ namespace Server.Engines.Craft
                             def
                         )
                     );
+                }
                 else if (tool?.Deleted == false && tool.UsesRemaining > 0)
-                    from.SendGump(new CraftGump(from, craftSystem, tool, num));
+                {
+                    @from.SendGump(new CraftGump(@from, craftSystem, tool, num));
+                }
                 else if (num > 0)
-                    from.SendLocalizedMessage(num);
+                {
+                    @from.SendLocalizedMessage(num);
+                }
             }
             else if (!allRequiredSkills)
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
-                    from.SendGump(new CraftGump(from, craftSystem, tool, 1044153));
+                {
+                    @from.SendGump(new CraftGump(@from, craftSystem, tool, 1044153));
+                }
                 else
-                    from.SendLocalizedMessage(1044153); // You don't have the required skills to attempt this item.
+                {
+                    @from.SendLocalizedMessage(1044153); // You don't have the required skills to attempt this item.
+                }
             }
             else
             {
@@ -1144,11 +1319,17 @@ namespace Server.Engines.Craft
                 if (!ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, consumeType, ref message, true))
                 {
                     if (tool?.Deleted == false && tool.UsesRemaining > 0)
-                        from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                    {
+                        @from.SendGump(new CraftGump(@from, craftSystem, tool, message));
+                    }
                     else if (message is int messageInt && messageInt > 0)
-                        from.SendLocalizedMessage(messageInt);
+                    {
+                        @from.SendLocalizedMessage(messageInt);
+                    }
                     else
-                        from.SendMessage(message.ToString());
+                    {
+                        @from.SendMessage(message.ToString());
+                    }
 
                     return;
                 }
@@ -1156,18 +1337,26 @@ namespace Server.Engines.Craft
                 tool.UsesRemaining--;
 
                 if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+                {
                     toolBroken = true;
+                }
 
                 if (toolBroken)
+                {
                     tool.Delete();
+                }
 
                 // SkillCheck failed.
                 var num = craftSystem.PlayEndingEffect(from, true, true, toolBroken, endquality, false, this);
 
                 if (!tool.Deleted && tool.UsesRemaining > 0)
-                    from.SendGump(new CraftGump(from, craftSystem, tool, num));
+                {
+                    @from.SendGump(new CraftGump(@from, craftSystem, tool, num));
+                }
                 else if (num > 0)
-                    from.SendLocalizedMessage(num);
+                {
+                    @from.SendLocalizedMessage(num);
+                }
             }
         }
 
@@ -1214,9 +1403,13 @@ namespace Server.Engines.Craft
                     if (badCraft > 0)
                     {
                         if (m_Tool?.Deleted == false && m_Tool.UsesRemaining > 0)
+                        {
                             m_From.SendGump(new CraftGump(m_From, m_CraftSystem, m_Tool, badCraft));
+                        }
                         else
+                        {
                             m_From.SendLocalizedMessage(badCraft);
+                        }
 
                         return;
                     }
@@ -1229,7 +1422,9 @@ namespace Server.Engines.Craft
                     var context = m_CraftSystem.GetContext(m_From);
 
                     if (context == null)
+                    {
                         return;
+                    }
 
                     if (typeof(CustomCraft).IsAssignableFrom(m_CraftItem.ItemType))
                     {
@@ -1260,7 +1455,9 @@ namespace Server.Engines.Craft
                     var makersMark = false;
 
                     if (quality == 2 && m_From.Skills[m_CraftSystem.MainSkill].Base >= 100.0)
+                    {
                         makersMark = m_CraftItem.IsMarkable(m_CraftItem.ItemType);
+                    }
 
                     if (makersMark && context.MarkOption == CraftMarkOption.PromptForMark)
                     {
@@ -1278,7 +1475,9 @@ namespace Server.Engines.Craft
                     else
                     {
                         if (context.MarkOption == CraftMarkOption.DoNotMark)
+                        {
                             makersMark = false;
+                        }
 
                         m_CraftItem.CompleteCraft(quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null);
                     }

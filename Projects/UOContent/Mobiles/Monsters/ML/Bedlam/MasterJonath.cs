@@ -37,9 +37,13 @@ namespace Server.Mobiles
             Karma = -18000;
 
             if (Utility.RandomBool())
+            {
                 PackNecroScroll(Utility.RandomMinMax(5, 9));
+            }
             else
+            {
                 PackScroll(4, 7);
+            }
 
             PackReg(7);
             PackReg(7);

@@ -24,10 +24,14 @@ namespace Server.Ethics.Evil
         private void Power_OnTarget(Mobile fromMobile, object obj, Player from)
         {
             if (!(obj is IPoint3D p))
+            {
                 return;
+            }
 
             if (!CheckInvoke(from))
+            {
                 return;
+            }
 
             var powerFunctioned = false;
 
@@ -36,13 +40,19 @@ namespace Server.Ethics.Evil
             foreach (var mob in from.Mobile.GetMobilesInRange(6))
             {
                 if (mob == from.Mobile || !SpellHelper.ValidIndirectTarget(from.Mobile, mob))
+                {
                     continue;
+                }
 
                 if (mob.GetStatMod("Holy Curse") != null)
+                {
                     continue;
+                }
 
                 if (!from.Mobile.CanBeHarmful(mob, false))
+                {
                     continue;
+                }
 
                 from.Mobile.DoHarmful(mob, true);
 

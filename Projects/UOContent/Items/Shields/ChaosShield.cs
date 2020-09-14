@@ -8,7 +8,9 @@ namespace Server.Items
         public ChaosShield() : base(0x1BC3)
         {
             if (!Core.AOS)
+            {
                 LootType = LootType.Newbied;
+            }
 
             Weight = 5.0;
         }
@@ -49,13 +51,17 @@ namespace Server.Items
         public override void OnSingleClick(Mobile from)
         {
             if (Validate(Parent as Mobile))
-                base.OnSingleClick(from);
+            {
+                base.OnSingleClick(@from);
+            }
         }
 
         public virtual bool Validate(Mobile m)
         {
             if (m?.Player != true || m.AccessLevel != AccessLevel.Player || Core.AOS)
+            {
                 return true;
+            }
 
             if (!(m.Guild is Guild g) || g.Type != GuildType.Chaos)
             {

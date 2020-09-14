@@ -21,7 +21,10 @@ namespace Server
             {
                 from.PlaySound(Utility.Random(0x3A, 3));
 
-                if (from.Body.IsHuman && !from.Mounted) from.Animate(34, 5, 1, true, false, 0);
+                if (from.Body.IsHuman && !from.Mounted)
+                {
+                    @from.Animate(34, 5, 1, true, false, 0);
+                }
 
                 var amount = Utility.Dice(3, 3, 3);
                 var time = Utility.RandomMinMax(5, 30);

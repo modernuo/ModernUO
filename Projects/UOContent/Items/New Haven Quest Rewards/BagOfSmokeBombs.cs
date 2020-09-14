@@ -6,7 +6,9 @@ namespace Server.Items
         public BagOfSmokeBombs(int amount = 20)
         {
             for (var i = 0; i < amount; ++i)
+            {
                 DropItem(new SmokeBomb());
+            }
         }
 
         public BagOfSmokeBombs(Serial serial) : base(serial)

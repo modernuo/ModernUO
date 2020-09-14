@@ -88,14 +88,22 @@ namespace Server.Gumps
             AddHtml(14, 100, 590, 20, Color(Center("Entries"), LabelColor));
 
             if (page > 0)
+            {
                 AddButton(567, 104, 0x15E3, 0x15E7, 1);
+            }
             else
+            {
                 AddImage(567, 104, 0x25EA);
+            }
 
             if ((page + 1) * 10 < m_List.Count)
+            {
                 AddButton(584, 104, 0x15E1, 0x15E5, 2);
+            }
             else
+            {
                 AddImage(584, 104, 0x25E6);
+            }
 
             AddHtml(14, 120, 30, 20, Color(Center("DEL"), LabelColor));
             AddHtml(47, 120, 250, 20, Color("Name", LabelColor));
@@ -111,7 +119,9 @@ namespace Server.Gumps
                 var entry = m_List[i];
 
                 if (entry == null)
+                {
                     continue;
+                }
 
                 AddButton(13, 138 + idx * 20, 4002, 4004, 6 + i);
 
@@ -123,18 +133,26 @@ namespace Server.Gumps
                 if (entry.From != null)
                 {
                     if (entry.From.Account is Account acc)
+                    {
                         name = $"{entry.From.Name} ({acc})";
+                    }
                     else
+                    {
                         name = entry.From.Name;
+                    }
                 }
 
                 if (name != null)
+                {
                     AddHtml(x + 2, 140 + idx * 20, 250, 20, Color(name, color));
+                }
 
                 x += 250;
 
                 if (entry.Address != null)
+                {
                     AddHtml(x, 140 + idx * 20, 100, 20, Color(Center(entry.Address.ToString()), color));
+                }
 
                 x += 100;
 
@@ -162,7 +180,9 @@ namespace Server.Gumps
                 case 1: // Previous
                     {
                         if (m_Page > 0)
+                        {
                             m_Page--;
+                        }
 
                         from.SendGump(new HouseRaffleManagementGump(m_Stone, m_Sort, m_Page));
 
@@ -171,7 +191,9 @@ namespace Server.Gumps
                 case 2: // Next
                     {
                         if ((m_Page + 1) * 10 < m_Stone.Entries.Count)
+                        {
                             m_Page++;
+                        }
 
                         from.SendGump(new HouseRaffleManagementGump(m_Stone, m_Sort, m_Page));
 
@@ -204,7 +226,9 @@ namespace Server.Gumps
                             m_Stone.Entries.Remove(m_List[buttonId]);
 
                             if (m_Page > 0 && m_Page * 10 >= m_List.Count - 1)
+                            {
                                 m_Page--;
+                            }
 
                             from.SendGump(new HouseRaffleManagementGump(m_Stone, m_Sort, m_Page));
                         }
@@ -224,11 +248,19 @@ namespace Server.Gumps
                 var yIsNull = y?.From == null;
 
                 if (xIsNull && yIsNull)
+                {
                     return 0;
+                }
+
                 if (xIsNull)
+                {
                     return -1;
+                }
+
                 if (yIsNull)
+                {
                     return 1;
+                }
 
                 var result = Insensitive.Compare(x.From.Name, y.From.Name);
 
@@ -246,21 +278,37 @@ namespace Server.Gumps
                 var yIsNull = y?.From == null;
 
                 if (xIsNull && yIsNull)
+                {
                     return 0;
+                }
+
                 if (xIsNull)
+                {
                     return -1;
+                }
+
                 if (yIsNull)
+                {
                     return 1;
+                }
 
                 var a = x.From.Account as Account;
                 var b = y.From.Account as Account;
 
                 if (a == null && b == null)
+                {
                     return 0;
+                }
+
                 if (a == null)
+                {
                     return -1;
+                }
+
                 if (b == null)
+                {
                     return 1;
+                }
 
                 var result = Insensitive.Compare(a.Username, b.Username);
 
@@ -278,11 +326,19 @@ namespace Server.Gumps
                 var yIsNull = y?.Address == null;
 
                 if (xIsNull && yIsNull)
+                {
                     return 0;
+                }
+
                 if (xIsNull)
+                {
                     return -1;
+                }
+
                 if (yIsNull)
+                {
                     return 1;
+                }
 
                 var a = x.Address.GetAddressBytes();
                 var b = y.Address.GetAddressBytes();
@@ -292,7 +348,9 @@ namespace Server.Gumps
                     var compare = a[i].CompareTo(b[i]);
 
                     if (compare != 0)
+                    {
                         return compare;
+                    }
                 }
 
                 return x.Date.CompareTo(y.Date);

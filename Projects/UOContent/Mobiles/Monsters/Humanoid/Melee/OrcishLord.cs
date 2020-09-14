@@ -49,10 +49,14 @@ namespace Server.Mobiles
             PackItem(new RingmailChest());
 
             if (Utility.RandomDouble() < 0.3)
+            {
                 PackItem(Loot.RandomPossibleReagent());
+            }
 
             if (Utility.RandomDouble() < 0.2)
+            {
                 PackItem(new BolaBall());
+            }
         }
 
         public OrcishLord(Serial serial) : base(serial)
@@ -80,7 +84,9 @@ namespace Server.Mobiles
         public override bool IsEnemy(Mobile m)
         {
             if (m.Player && m.FindItemOnLayer(Layer.Helm) is OrcishKinMask)
+            {
                 return false;
+            }
 
             return base.IsEnemy(m);
         }

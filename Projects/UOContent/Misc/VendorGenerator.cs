@@ -82,7 +82,9 @@ namespace Server
             var lt = map.Tiles.GetLandTile(x, y);
 
             if (IsFloor(lt.ID) && (canFit || CanFit(map, x, y, lt.Z)))
+            {
                 return true;
+            }
 
             var tiles = map.Tiles.GetStaticTiles(x, y);
 
@@ -92,7 +94,9 @@ namespace Server
                 var id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
                 if (IsStaticFloor(t.ID) && (canFit || CanFit(map, x, y, t.Z + (id.Surface ? id.CalcHeight : 0))))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -122,9 +126,15 @@ namespace Server
             World.Broadcast(0x35, true, "Generating vendor spawns for {0}, please wait.", map);
 
             for (var i = 0; i < regions.Length; ++i)
+            {
                 for (var x = 0; x < map.Width; ++x)
+                {
                     for (var y = 0; y < map.Height; ++y)
+                    {
                         CheckPoint(map, regions[i].X + x, regions[i].Y + y);
+                    }
+                }
+            }
 
             for (var i = 0; i < m_ShopList.Count; ++i)
             {
@@ -147,11 +157,15 @@ namespace Server
                     eable.Free();
 
                     if (hasSpawner)
+                    {
                         break;
+                    }
                 }
 
                 if (hasSpawner)
+                {
                     continue;
+                }
 
                 var xAvg = xTotal / si.m_Floor.Count;
                 var yAvg = yTotal / si.m_Floor.Count;
@@ -160,25 +174,39 @@ namespace Server
                 var flags = si.m_Flags;
 
                 if ((flags & ShopFlags.Armor) != 0)
+                {
                     names.Add("armorer");
+                }
 
                 if ((flags & ShopFlags.MetalWeapon) != 0)
+                {
                     names.Add("weaponsmith");
+                }
 
                 if ((flags & ShopFlags.ArcheryWeapon) != 0)
+                {
                     names.Add("bowyer");
+                }
 
                 if ((flags & ShopFlags.Scroll) != 0)
+                {
                     names.Add("mage");
+                }
 
                 if ((flags & ShopFlags.Spellbook) != 0)
+                {
                     names.Add("mage");
+                }
 
                 if ((flags & ShopFlags.Bread) != 0)
+                {
                     names.Add("baker");
+                }
 
                 if ((flags & ShopFlags.Jewel) != 0)
+                {
                     names.Add("jeweler");
+                }
 
                 if ((flags & ShopFlags.Potion) != 0)
                 {
@@ -213,7 +241,9 @@ namespace Server
                         var fd = (int)Math.Sqrt(rx * rx + ry * ry);
 
                         if (fd > 0 && fd < 5)
+                        {
                             fd -= Utility.Random(10);
+                        }
 
                         if (fd < dist && GetFloorZ(map, fp.X, fp.Y, out _))
                         {
@@ -223,10 +253,14 @@ namespace Server
                     }
 
                     if (cp == Point2D.Zero)
+                    {
                         continue;
+                    }
 
                     if (!GetFloorZ(map, cp.X, cp.Y, out var z))
+                    {
                         continue;
+                    }
 
                     new Spawner(1, 1, 1, 0, 4, names[j]).MoveToWorld(new Point3D(cp.X, cp.Y, z), map);
                 }
@@ -238,7 +272,9 @@ namespace Server
         private static void CheckPoint(Map map, int x, int y)
         {
             if (IsFloor(map, x, y, true))
+            {
                 CheckFloor(map, x, y);
+            }
         }
 
         private static void CheckFloor(Map map, int x, int y)
@@ -246,11 +282,13 @@ namespace Server
             var tiles = map.Tiles.GetStaticTiles(x, y);
 
             for (var i = 0; i < tiles.Length; ++i)
+            {
                 if (IsDisplayCase(tiles[i].ID))
                 {
                     ProcessDisplayCase(map, tiles, x, y);
                     break;
                 }
+            }
         }
 
         private static bool IsClothes(int itemID) =>
@@ -283,33 +321,53 @@ namespace Server
             if ((flags & TileFlag.Wearable) != 0)
             {
                 if (IsClothes(itemID))
+                {
                     res |= ShopFlags.Clothes;
+                }
                 else if (IsArmor(itemID))
+                {
                     res |= ShopFlags.Armor;
+                }
                 else if (IsMetalWeapon(itemID))
+                {
                     res |= ShopFlags.MetalWeapon;
+                }
                 else if (IsArcheryWeapon(itemID))
+                {
                     res |= ShopFlags.ArcheryWeapon;
+                }
             }
 
             if (itemID == 0x98C || itemID == 0x103B || itemID == 0x103C)
+            {
                 res |= ShopFlags.Bread;
+            }
 
             if (itemID >= 0xF0F && itemID <= 0xF30)
+            {
                 res |= ShopFlags.Jewel;
+            }
 
             if (itemID >= 0xEFB && itemID <= 0xF0D)
+            {
                 res |= ShopFlags.Potion;
+            }
 
             if (itemID >= 0xF78 && itemID <= 0xF91)
+            {
                 res |= ShopFlags.Reagent;
+            }
 
             if (itemID >= 0xE35 && itemID <= 0xE3A || itemID >= 0xEF4 && itemID <= 0xEF9 ||
                 itemID >= 0x1F2D && itemID <= 0x1F72)
+            {
                 res |= ShopFlags.Scroll;
+            }
 
             if (itemID == 0xE38 || itemID == 0xEFA)
+            {
                 res |= ShopFlags.Spellbook;
+            }
 
             return res;
         }
@@ -333,13 +391,17 @@ namespace Server
                     RecurseFindFloor(map, x, y, floor);
 
                     if (floor.Count == 0)
+                    {
                         return;
+                    }
 
                     si = new ShopInfo { m_Flags = flags, m_Floor = floor };
                     m_ShopList.Add(si);
 
                     for (var i = 0; i < floor.Count; ++i)
+                    {
                         m_ShopTable[floor[i]] = si;
+                    }
                 }
             }
         }
@@ -355,9 +417,14 @@ namespace Server
             var landFlags = TileData.LandTable[lt.ID & TileData.MaxLandValue].Flags;
 
             if ((landFlags & TileFlag.Impassable) != 0 && topZ > z && z + 16 > lowZ)
+            {
                 return false;
+            }
+
             if ((landFlags & TileFlag.Impassable) == 0 && z == avgZ && !lt.Ignored)
+            {
                 hasSurface = true;
+            }
 
             var staticTiles = map.Tiles.GetStaticTiles(x, y);
 
@@ -366,7 +433,9 @@ namespace Server
             for (var i = 0; i < staticTiles.Length; ++i)
             {
                 if (IsDisplayCase(staticTiles[i].ID))
+                {
                     continue;
+                }
 
                 var id = TileData.ItemTable[staticTiles[i].ID & TileData.MaxItemValue];
 
@@ -374,9 +443,14 @@ namespace Server
                 impassable = id.Impassable;
 
                 if ((surface || impassable) && staticTiles[i].Z + id.CalcHeight > z && z + 16 > staticTiles[i].Z)
+                {
                     return false;
+                }
+
                 if (surface && !impassable && z == staticTiles[i].Z + id.CalcHeight)
+                {
                     hasSurface = true;
+                }
             }
 
             var sector = map.GetSector(x, y);
@@ -393,9 +467,14 @@ namespace Server
                     impassable = id.Impassable;
 
                     if ((surface || impassable) && item.Z + id.CalcHeight > z && z + 16 > item.Z)
+                    {
                         return false;
+                    }
+
                     if (surface && !impassable && z == item.Z + id.CalcHeight)
+                    {
                         hasSurface = true;
+                    }
                 }
             }
 
@@ -407,14 +486,22 @@ namespace Server
             var p = new Point2D(x, y);
 
             if (floor.Contains(p))
+            {
                 return;
+            }
 
             floor.Add(p);
 
             for (var xo = -1; xo <= 1; ++xo)
+            {
                 for (var yo = -1; yo <= 1; ++yo)
+                {
                     if ((xo != 0 || yo != 0) && IsFloor(map, x + xo, y + yo, false))
+                    {
                         RecurseFindFloor(map, x + xo, y + yo, floor);
+                    }
+                }
+            }
         }
 
         [Flags]

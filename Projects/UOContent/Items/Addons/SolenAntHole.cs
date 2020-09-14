@@ -84,17 +84,23 @@ namespace Server.Items
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
             if (!m.Player || !m.Alive || m.Hidden || !SpawnKilled())
+            {
                 return;
+            }
 
             if (Utility.InRange(Location, m.Location, 3) && !Utility.InRange(Location, oldLocation, 3))
             {
                 var count = 1 + Utility.Random(4);
 
                 for (var i = 0; i < count; i++)
+                {
                     SpawnAnt();
+                }
 
                 if (Utility.RandomDouble() < 0.05)
+                {
                     SpawnAnt(new Beetle());
+                }
             }
         }
 
@@ -113,16 +119,24 @@ namespace Server.Items
             if (map == Map.Trammel)
             {
                 if (random < 2)
+                {
                     SpawnAnt(new RedSolenWorker());
+                }
                 else
+                {
                     SpawnAnt(new RedSolenWarrior());
+                }
             }
             else if (map == Map.Felucca)
             {
                 if (random < 2)
+                {
                     SpawnAnt(new BlackSolenWorker());
+                }
                 else
+                {
                     SpawnAnt(new BlackSolenWarrior());
+                }
             }
         }
 
@@ -134,8 +148,12 @@ namespace Server.Items
             var p = Location;
 
             for (var i = 0; i < 5; i++)
+            {
                 if (SpellHelper.FindValidSpawnLocation(map, ref p, false))
+                {
                     break;
+                }
+            }
 
             ant.MoveToWorld(p, map);
             ant.Home = Location;
@@ -145,8 +163,12 @@ namespace Server.Items
         public bool SpawnKilled()
         {
             for (var i = m_Spawned.Count - 1; i >= 0; i--)
+            {
                 if (!m_Spawned[i].Alive || m_Spawned[i].Deleted)
+                {
                     m_Spawned.RemoveAt(i);
+                }
+            }
 
             return m_Spawned.Count < 2;
         }

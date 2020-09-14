@@ -47,8 +47,13 @@ namespace Server.Engines.Quests.Naturalist
             get
             {
                 for (var i = 0; i < m_Areas.Length; i++)
+                {
                     if (m_Areas[i] == this)
+                    {
                         return i;
+                    }
+                }
+
                 return 0;
             }
         }
@@ -61,7 +66,10 @@ namespace Server.Engines.Quests.Naturalist
         public static NestArea GetByID(int id)
         {
             if (id >= 0 && id < m_Areas.Length)
+            {
                 return m_Areas[id];
+            }
+
             return null;
         }
 

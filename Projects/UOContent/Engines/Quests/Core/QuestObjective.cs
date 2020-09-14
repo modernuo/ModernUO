@@ -149,7 +149,9 @@ namespace Server.Engines.Quests
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID == 1)
+            {
                 m_System.ShowQuestLog();
+            }
         }
     }
 

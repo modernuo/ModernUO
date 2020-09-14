@@ -87,18 +87,28 @@ namespace Server.Engines.Plants
             int tileID;
 
             if (obj is Static staticObj && !staticObj.Movable)
+            {
                 tileID = (staticObj.ItemID & 0x3FFF) | 0x4000;
+            }
             else if (obj is StaticTarget staticTarget)
+            {
                 tileID = (staticTarget.ItemID & 0x3FFF) | 0x4000;
+            }
             else if (obj is LandTarget landTarget)
+            {
                 tileID = landTarget.TileID;
+            }
             else
+            {
                 return false;
+            }
 
             var contains = false;
 
             for (var i = 0; !contains && i < m_DirtPatchTiles.Length; i += 2)
+            {
                 contains = tileID >= m_DirtPatchTiles[i] && tileID <= m_DirtPatchTiles[i + 1];
+            }
 
             return contains;
         }
@@ -112,7 +122,9 @@ namespace Server.Engines.Plants
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_PlantBowl.Deleted)
+                {
                     return;
+                }
 
                 if (!m_PlantBowl.IsChildOf(from.Backpack))
                 {

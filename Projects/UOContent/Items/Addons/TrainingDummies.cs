@@ -72,20 +72,32 @@ namespace Server.Items
             var weapon = from.Weapon as BaseWeapon;
 
             if (weapon is BaseRanged)
-                SendLocalizedMessageTo(from, 501822); // You can't practice ranged weapons on this.
+            {
+                SendLocalizedMessageTo(@from, 501822); // You can't practice ranged weapons on this.
+            }
             else if (weapon == null || !from.InRange(GetWorldLocation(), weapon.MaxRange))
-                SendLocalizedMessageTo(from, 501816); // You are too far away to do that.
+            {
+                SendLocalizedMessageTo(@from, 501816); // You are too far away to do that.
+            }
             else if (Swinging)
-                SendLocalizedMessageTo(from, 501815); // You have to wait until it stops swinging.
+            {
+                SendLocalizedMessageTo(@from, 501815); // You have to wait until it stops swinging.
+            }
             else if (from.Skills[weapon.Skill].Base >= MaxSkill)
+            {
                 SendLocalizedMessageTo(
-                    from,
+                    @from,
                     501828
                 ); // Your skill cannot improve any further by simply practicing with a dummy.
+            }
             else if (from.Mounted)
-                SendLocalizedMessageTo(from, 501829); // You can't practice on this while on a mount.
+            {
+                SendLocalizedMessageTo(@from, 501829); // You can't practice on this while on a mount.
+            }
             else
-                Use(from, weapon);
+            {
+                Use(@from, weapon);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -138,9 +150,13 @@ namespace Server.Items
             protected override void OnTick()
             {
                 if (m_Delay)
+                {
                     m_Dummy.OnHit();
+                }
                 else
+                {
                     m_Dummy.EndSwing();
+                }
 
                 m_Delay = !m_Delay;
             }

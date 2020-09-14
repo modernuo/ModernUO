@@ -19,21 +19,37 @@ namespace Server.Mobiles
             SetMana(0);
 
             if (level >= 120)
+            {
                 SetDamage(14, 18);
+            }
             else if (level >= 105)
+            {
                 SetDamage(13, 17);
+            }
             else if (level >= 90)
+            {
                 SetDamage(12, 15);
+            }
             else if (level >= 75)
+            {
                 SetDamage(11, 14);
+            }
             else if (level >= 60)
+            {
                 SetDamage(10, 12);
+            }
             else if (level >= 45)
+            {
                 SetDamage(9, 11);
+            }
             else if (level >= 30)
+            {
                 SetDamage(8, 9);
+            }
             else
+            {
                 SetDamage(7, 8);
+            }
 
             SetDamageType(ResistanceType.Physical, 60);
             SetDamageType(ResistanceType.Poison, 20);

@@ -64,7 +64,9 @@ namespace Server.Items
         public void OnChop(Mobile from)
         {
             if (!Guild.NewGuildSystem)
+            {
                 return;
+            }
 
             var house = BaseHouse.FindHouseAt(this);
 
@@ -79,12 +81,16 @@ namespace Server.Items
                 Delete();
 
                 if (contains)
+                {
                     house.Addons.Remove(this);
+                }
 
                 var deed = Deed;
 
                 if (deed != null)
-                    from.AddToBackpack(deed);
+                {
+                    @from.AddToBackpack(deed);
+                }
             }
         }
 
@@ -141,16 +147,24 @@ namespace Server.Items
             }
 
             if (Guild.NewGuildSystem && ItemID == 0xED4)
+            {
                 ItemID = 0xED6;
+            }
 
             if (version <= 2)
+            {
                 m_BeforeChangeover = true;
+            }
 
             if (Guild.NewGuildSystem && m_BeforeChangeover)
+            {
                 Timer.DelayCall(AddToHouse);
+            }
 
             if (!Guild.NewGuildSystem && Guild == null)
+            {
                 Delete();
+            }
         }
 
         private void AddToHouse()
@@ -174,10 +188,14 @@ namespace Server.Items
                 string abbr;
 
                 if ((name = Guild.Name) == null || (name = name.Trim()).Length <= 0)
+                {
                     name = "(unnamed)";
+                }
 
                 if ((abbr = Guild.Abbreviation) == null || (abbr = abbr.Trim()).Length <= 0)
+                {
                     abbr = "";
+                }
 
                 // list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
                 list.Add(1060802, $"{Utility.FixHtml(name)} [{Utility.FixHtml(abbr)}]");
@@ -197,7 +215,9 @@ namespace Server.Items
                 string name;
 
                 if ((name = Guild.Name) == null || (name = name.Trim()).Length <= 0)
+                {
                     name = "(unnamed)";
+                }
 
                 LabelTo(from, name);
             }
@@ -210,13 +230,17 @@ namespace Server.Items
         public override void OnAfterDelete()
         {
             if (!Guild.NewGuildSystem && Guild?.Disbanded == false)
+            {
                 Guild.Disband();
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (Guild.NewGuildSystem)
+            {
                 return;
+            }
 
             if (Guild?.Disbanded != false)
             {
@@ -235,10 +259,14 @@ namespace Server.Items
                 var targetFaction = targetState?.Faction;
 
                 if (guildFaction != targetFaction || targetState?.IsLeaving == true)
+                {
                     return;
+                }
 
                 if (guildState != null && targetState != null)
+                {
                     targetState.Leaving = guildState.Leaving;
+                }
 
                 Guild.Accepted.Remove(from);
                 Guild.AddMember(from);
@@ -365,10 +393,14 @@ namespace Server.Items
                 string abbr;
 
                 if ((name = Guild.Name) == null || (name = name.Trim()).Length <= 0)
+                {
                     name = "(unnamed)";
+                }
 
                 if ((abbr = Guild.Abbreviation) == null || (abbr = abbr.Trim()).Length <= 0)
+                {
                     abbr = "";
+                }
 
                 // list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
                 list.Add(1060802, $"{Utility.FixHtml(name)} [{Utility.FixHtml(abbr)}]");
@@ -404,7 +436,9 @@ namespace Server.Items
         public void Placement_OnTarget(Mobile from, object targeted)
         {
             if (!(targeted is IPoint3D p) || Deleted)
+            {
                 return;
+            }
 
             var loc = new Point3D(p);
 

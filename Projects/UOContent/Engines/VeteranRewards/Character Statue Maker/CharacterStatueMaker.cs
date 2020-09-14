@@ -49,7 +49,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, new object[] { m_Type }))
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {
@@ -74,7 +76,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076222); // 6th Year Veteran Reward
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

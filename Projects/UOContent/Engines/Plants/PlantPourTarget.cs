@@ -11,7 +11,9 @@ namespace Server.Engines.Plants
         protected override void OnTarget(Mobile from, object targeted)
         {
             if (!m_Plant.Deleted && from.InRange(m_Plant.GetWorldLocation(), 3) && targeted is Item item)
-                m_Plant.Pour(from, item);
+            {
+                m_Plant.Pour(@from, item);
+            }
         }
 
         protected override void OnTargetFinish(Mobile from)
@@ -20,7 +22,9 @@ namespace Server.Engines.Plants
                 from.InRange(m_Plant.GetWorldLocation(), 3) && m_Plant.IsUsableBy(from))
             {
                 if (from.HasGump<MainPlantGump>())
-                    from.CloseGump<MainPlantGump>();
+                {
+                    @from.CloseGump<MainPlantGump>();
+                }
 
                 from.SendGump(new MainPlantGump(m_Plant));
             }

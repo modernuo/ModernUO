@@ -57,7 +57,9 @@ namespace Server.Factions
             get
             {
                 if (Core.AOS)
+                {
                     return TimeSpan.FromDays(1.0);
+                }
 
                 return TimeSpan.MaxValue; // no decay
             }
@@ -66,7 +68,9 @@ namespace Server.Factions
         public override void OnTrigger(Mobile from)
         {
             if (!IsEnemy(from))
+            {
                 return;
+            }
 
             Conceal();
 
@@ -88,16 +92,20 @@ namespace Server.Factions
                     {
                         // TODO: Get real message
                         if (from.Alive)
+                        {
                             Placer.SendMessage(
                                 "You have earned {0} silver pieces because {1} fell for your trap.",
                                 silverGiven,
-                                from.Name
+                                @from.Name
                             );
+                        }
                         else
+                        {
                             Placer.SendLocalizedMessage(
                                 1042736,
-                                $"{silverGiven} silver\t{from.Name}"
+                                $"{silverGiven} silver\t{@from.Name}"
                             ); // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
+                        }
                     }
 
                     victimState.OnGivenSilverTo(Placer);
@@ -115,12 +123,20 @@ namespace Server.Factions
         public virtual int IsValidLocation(Point3D p, Map m)
         {
             if (m == null)
+            {
                 return 502956; // You cannot place a trap on that.
+            }
 
             if (Core.ML)
+            {
                 foreach (var item in m.GetItemsInRange(p, 0))
+                {
                     if (item is BaseFactionTrap trap && trap.Faction == Faction)
+                    {
                         return 1075263; // There is already a trap belonging to your faction at this location.;
+                    }
+                }
+            }
 
             switch (AllowedPlacing)
             {
@@ -129,7 +145,9 @@ namespace Server.Factions
                         var region = Region.Find(p, m).GetRegion<StrongholdRegion>();
 
                         if (region != null && region.Faction == Faction)
+                        {
                             return 0;
+                        }
 
                         return 1010355; // This trap can only be placed in your stronghold
                     }
@@ -138,7 +156,9 @@ namespace Server.Factions
                         var town = Town.FromRegion(Region.Find(p, m));
 
                         if (town != null)
+                        {
                             return 0;
+                        }
 
                         return 1010356; // This trap can only be placed in a faction town
                     }
@@ -147,7 +167,9 @@ namespace Server.Factions
                         var town = Town.FromRegion(Region.Find(p, m));
 
                         if (town != null && town.Owner == Faction)
+                        {
                             return 0;
+                        }
 
                         return 1010357; // This trap can only be placed in a town your faction controls
                     }
@@ -161,9 +183,13 @@ namespace Server.Factions
             base.OnMovement(m, oldLocation);
 
             if (!CheckDecay() && CheckRange(m.Location, oldLocation, 6))
+            {
                 if (Faction.Find(m) != null &&
                     (m.Skills.DetectHidden.Value - 80.0) / 20.0 > Utility.RandomDouble())
+                {
                     PrivateOverheadLocalizedMessage(m, 1010154, MessageHue, "", ""); // [Faction Trap]
+                }
+            }
         }
 
         public void PrivateOverheadLocalizedMessage(Mobile to, int number, int hue, string name, string args)
@@ -178,7 +204,9 @@ namespace Server.Factions
             var decayPeriod = DecayPeriod;
 
             if (decayPeriod == TimeSpan.MaxValue)
+            {
                 return false;
+            }
 
             if (TimeOfPlacement + decayPeriod < DateTime.UtcNow)
             {
@@ -203,7 +231,9 @@ namespace Server.Factions
             m_Concealing = null;
 
             if (!Deleted)
+            {
                 Visible = false;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -217,7 +247,9 @@ namespace Server.Factions
             writer.Write(TimeOfPlacement);
 
             if (Visible)
+            {
                 BeginConceal();
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -231,7 +263,9 @@ namespace Server.Factions
             TimeOfPlacement = reader.ReadDateTime();
 
             if (Visible)
+            {
                 BeginConceal();
+            }
 
             CheckDecay();
         }
@@ -239,7 +273,9 @@ namespace Server.Factions
         public override void OnDelete()
         {
             if (Faction?.Traps.Contains(this) == true)
+            {
                 Faction.Traps.Remove(this);
+            }
 
             base.OnDelete();
         }
@@ -247,18 +283,26 @@ namespace Server.Factions
         public virtual bool IsEnemy(Mobile mob)
         {
             if (mob.Hidden && mob.AccessLevel > AccessLevel.Player)
+            {
                 return false;
+            }
 
             if (!mob.Alive || mob.IsDeadBondedPet)
+            {
                 return false;
+            }
 
             var faction = Faction.Find(mob, true);
 
             if (faction == null && mob is BaseFactionGuard guard)
+            {
                 faction = guard.Faction;
+            }
 
             if (faction == null)
+            {
                 return false;
+            }
 
             return faction != Faction;
         }

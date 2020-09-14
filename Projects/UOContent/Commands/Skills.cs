@@ -23,9 +23,13 @@ namespace Server.Commands
             else
             {
                 if (Enum.TryParse(arg.GetString(0), true, out SkillName skill))
+                {
                     arg.Mobile.Target = new SkillTarget(skill, arg.GetDouble(1));
+                }
                 else
+                {
                     arg.Mobile.SendLocalizedMessage(1005631); // You have specified an invalid skill to set.
+                }
             }
         }
 
@@ -34,9 +38,13 @@ namespace Server.Commands
         public static void SetAllSkills_OnCommand(CommandEventArgs arg)
         {
             if (arg.Length != 1)
+            {
                 arg.Mobile.SendMessage("SetAllSkills <value>");
+            }
             else
+            {
                 arg.Mobile.Target = new AllSkillsTarget(arg.GetDouble(0));
+            }
         }
 
         [Usage("GetSkill <name>")]
@@ -50,9 +58,13 @@ namespace Server.Commands
             else
             {
                 if (Enum.TryParse(arg.GetString(0), true, out SkillName skill))
+                {
                     arg.Mobile.Target = new SkillTarget(skill);
+                }
                 else
+                {
                     arg.Mobile.SendMessage("You have specified an invalid skill to get.");
+                }
             }
         }
 
@@ -69,7 +81,9 @@ namespace Server.Commands
                     var skills = targ.Skills;
 
                     for (var i = 0; i < skills.Length; ++i)
+                    {
                         skills[i].Base = m_Value;
+                    }
 
                     CommandLogging.LogChangeProperty(from, targ, "EverySkill.Base", m_Value.ToString());
                 }
@@ -106,7 +120,9 @@ namespace Server.Commands
                     var skill = targ.Skills[m_Skill];
 
                     if (skill == null)
+                    {
                         return;
+                    }
 
                     if (m_Set)
                     {

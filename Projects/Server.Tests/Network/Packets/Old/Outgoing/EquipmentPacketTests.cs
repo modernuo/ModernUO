@@ -32,7 +32,10 @@ namespace Server.Tests.Network.Packets
             var attrs = info.Attributes;
 
             var length = 17 + (info.Unidentified ? 4 : 0) + attrs.Length * 6;
-            if (info.Crafter != null) length += 6 + (info.Crafter.Name?.Length ?? 0);
+            if (info.Crafter != null)
+            {
+                length += 6 + (info.Crafter.Name?.Length ?? 0);
+            }
 
             Span<byte> expectedData = stackalloc byte[length];
 
@@ -51,7 +54,10 @@ namespace Server.Tests.Network.Packets
                 expectedData.WriteAscii(ref pos, name);
             }
 
-            if (info.Unidentified) expectedData.Write(ref pos, -4);
+            if (info.Unidentified)
+            {
+                expectedData.Write(ref pos, -4);
+            }
 
             for (var i = 0; i < attrs.Length; i++)
             {

@@ -18,7 +18,9 @@ namespace Server.Engines.Quests.Necro
         public override bool OnMoveOver(Mobile m)
         {
             if (m.AccessLevel > AccessLevel.Player)
+            {
                 return true;
+            }
 
             if (m is PlayerMobile pm && pm.Profession == 4)
             {

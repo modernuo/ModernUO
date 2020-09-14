@@ -30,7 +30,9 @@ namespace Server.Items
             get
             {
                 if (m_House?.Deleted == true)
+                {
                     House = null;
+                }
 
                 return m_House;
             }
@@ -137,17 +139,29 @@ namespace Server.Items
         private void CalculateHue()
         {
             if (!m_Marked)
+            {
                 Hue = 0;
+            }
             else if (m_TargetMap == Map.Trammel)
+            {
                 Hue = House != null ? 0x47F : 50;
+            }
             else if (m_TargetMap == Map.Felucca)
+            {
                 Hue = House != null ? 0x66D : 0;
+            }
             else if (m_TargetMap == Map.Ilshenar)
+            {
                 Hue = House != null ? 0x55F : 1102;
+            }
             else if (m_TargetMap == Map.Malas)
+            {
                 Hue = House != null ? 0x55F : 1102;
+            }
             else if (m_TargetMap == Map.Tokuno)
+            {
                 Hue = House != null ? 0x47F : 1154;
+            }
         }
 
         public void Mark(Mobile m)
@@ -179,7 +193,9 @@ namespace Server.Items
                     var map = m_House.Map;
 
                     if (map?.CanFit(x, y, z, 16, false, false) == false)
+                    {
                         z = map.GetAverageZ(x, y);
+                    }
 
                     Target = new Point3D(x, y, z);
                     m_TargetMap = map;
@@ -193,7 +209,9 @@ namespace Server.Items
             }
 
             if (!setDesc)
+            {
                 m_Description = BaseRegion.GetRuneNameFor(Region.Find(Target, m_TargetMap));
+            }
 
             CalculateHue();
             InvalidateProperties();
@@ -208,18 +226,30 @@ namespace Server.Items
                 string desc;
 
                 if ((desc = m_Description) == null || (desc = desc.Trim()).Length == 0)
+                {
                     desc = "an unknown location";
+                }
 
                 if (m_TargetMap == Map.Tokuno)
+                {
                     list.Add(House != null ? 1063260 : 1063259, RuneFormat, desc); // ~1_val~ (Tokuno Islands)[(House)]
+                }
                 else if (m_TargetMap == Map.Malas)
+                {
                     list.Add(House != null ? 1062454 : 1060804, RuneFormat, desc); // ~1_val~ (Malas)[(House)]
+                }
                 else if (m_TargetMap == Map.Felucca)
+                {
                     list.Add(House != null ? 1062452 : 1060805, RuneFormat, desc); // ~1_val~ (Felucca)[(House)]
+                }
                 else if (m_TargetMap == Map.Trammel)
+                {
                     list.Add(House != null ? 1062453 : 1060806, RuneFormat, desc); // ~1_val~ (Trammel)[(House)]
+                }
                 else
+                {
                     list.Add(House != null ? "{0} ({1})(House)" : "{0} ({1})", string.Format(RuneFormat, desc), m_TargetMap);
+                }
             }
         }
 
@@ -230,36 +260,46 @@ namespace Server.Items
                 var desc = m_Description?.Trim().IsNullOrDefault("an unknown location");
 
                 if (m_TargetMap == Map.Tokuno)
+                {
                     LabelTo(
-                        from,
+                        @from,
                         House != null ? 1063260 : 1063259,
                         string.Format(RuneFormat, desc)
                     ); // ~1_val~ (Tokuno Islands)[(House)]
+                }
                 else if (m_TargetMap == Map.Malas)
+                {
                     LabelTo(
-                        from,
+                        @from,
                         House != null ? 1062454 : 1060804,
                         string.Format(RuneFormat, desc)
                     ); // ~1_val~ (Malas)[(House)]
+                }
                 else if (m_TargetMap == Map.Felucca)
+                {
                     LabelTo(
-                        from,
+                        @from,
                         House != null ? 1062452 : 1060805,
                         string.Format(RuneFormat, desc)
                     ); // ~1_val~ (Felucca)[(House)]
+                }
                 else if (m_TargetMap == Map.Trammel)
+                {
                     LabelTo(
-                        from,
+                        @from,
                         House != null ? 1062453 : 1060806,
                         string.Format(RuneFormat, desc)
                     ); // ~1_val~ (Trammel)[(House)]
+                }
                 else
+                {
                     LabelTo(
-                        from,
+                        @from,
                         House != null ? "{0} ({1})(House)" : "{0} ({1})",
                         string.Format(RuneFormat, desc),
                         m_TargetMap
                     );
+                }
             }
             else
             {

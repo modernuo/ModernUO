@@ -39,7 +39,9 @@ namespace Server.Items
         public static int GetRandomLevel()
         {
             if (Core.AOS && Utility.Random(25) < 1)
+            {
                 return 4; // ancient
+            }
 
             return Utility.RandomMinMax(1, 3);
         }
@@ -82,10 +84,14 @@ namespace Server.Items
             }
 
             if (version < 2)
+            {
                 m_Level = GetRandomLevel();
+            }
 
             if (version < 3 && TargetMap == Map.Tokuno)
+            {
                 TargetMap = Map.Trammel;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)

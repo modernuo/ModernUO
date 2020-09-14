@@ -148,11 +148,15 @@ namespace Server.Engines.MLQuests.Definitions
                 pm.AcquireRecipe(32);
 
                 if (pm.Skills.Blacksmith.Base < 45.0) // TODO: Verify threshold
+                {
                     pm.SendLocalizedMessage(
                         1075005
                     ); // You observe carefully but you can't grasp the complexities of smithing a bone handled machete.
+                }
                 else
+                {
                     pm.SendLocalizedMessage(1075006); // You have learned how to smith a bone handled machete!
+                }
             }
 
             base.GetRewards(instance);

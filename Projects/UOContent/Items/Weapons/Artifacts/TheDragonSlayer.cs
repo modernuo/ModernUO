@@ -46,7 +46,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Slayer == SlayerName.None)
+            {
                 Slayer = SlayerName.DragonSlaying;
+            }
         }
     }
 }

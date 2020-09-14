@@ -34,7 +34,9 @@ namespace Server.Engines.MLQuests.Mobiles
         public bool CheckComplete(PlayerMobile pm)
         {
             if (CompletedCount(pm) == Needed.Length)
+            {
                 return true;
+            }
 
             pm.SendLocalizedMessage(1073644); // You must complete all the tasks before proceeding...
             return false;
@@ -45,13 +47,17 @@ namespace Server.Engines.MLQuests.Mobiles
             var context = MLQuestSystem.GetContext(pm);
 
             if (context != null)
+            {
                 foreach (var type in Needed)
                 {
                     var quest = MLQuestSystem.FindQuest(type);
 
                     if (quest != null)
+                    {
                         context.RemoveDoneQuest(quest);
+                    }
                 }
+            }
         }
 
         public void OnCancel(PlayerMobile pm)
@@ -72,7 +78,9 @@ namespace Server.Engines.MLQuests.Mobiles
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
             if (m.Player && InRange(m, 6) && !InRange(oldLocation, 6))
+            {
                 TryTalkTo(m, false);
+            }
 
             base.OnMovement(m, oldLocation);
         }
@@ -81,9 +89,13 @@ namespace Server.Engines.MLQuests.Mobiles
         {
             if (!from.Hidden && !from.HasGump<RaceChangeConfirmGump>() &&
                 !RaceChangeConfirmGump.IsPending(from.NetState) && CanTalkTo(from))
-                TalkTo(from as PlayerMobile);
+            {
+                TalkTo(@from as PlayerMobile);
+            }
             else if (fromClick)
-                DenyTalk(from);
+            {
+                DenyTalk(@from);
+            }
         }
 
         public virtual bool CanTalkTo(Mobile from) => true;
@@ -95,7 +107,9 @@ namespace Server.Engines.MLQuests.Mobiles
         public void TalkTo(PlayerMobile pm)
         {
             if (pm == null || m_Timer?.Running == true)
+            {
                 return;
+            }
 
             var completed = CompletedCount(pm);
 
@@ -115,15 +129,19 @@ namespace Server.Engines.MLQuests.Mobiles
                 var context = MLQuestSystem.GetContext(pm);
 
                 if (context != null)
+                {
                     foreach (var type in Needed)
                     {
                         var quest = MLQuestSystem.FindQuest(type);
 
                         if (quest == null || context.HasDoneQuest(quest))
+                        {
                             continue;
+                        }
 
                         conversation.Add(quest.Title);
                     }
+                }
 
                 m_Timer = new InternalTimer(this, pm, conversation, false);
             }
@@ -136,7 +154,9 @@ namespace Server.Engines.MLQuests.Mobiles
             var context = MLQuestSystem.GetContext(pm);
 
             if (context == null)
+            {
                 return 0;
+            }
 
             var result = 0;
 
@@ -145,7 +165,9 @@ namespace Server.Engines.MLQuests.Mobiles
                 var quest = MLQuestSystem.FindQuest(type);
 
                 if (quest == null || context.HasDoneQuest(quest))
+                {
                     ++result;
+                }
             }
 
             return result;
@@ -203,7 +225,9 @@ namespace Server.Engines.MLQuests.Mobiles
                 if (m_Index >= m_Conversation.Count)
                 {
                     if (m_IsComplete)
+                    {
                         m_Owner.OnComplete(m_Target);
+                    }
 
                     Stop();
                 }
@@ -212,9 +236,13 @@ namespace Server.Engines.MLQuests.Mobiles
                     if (m_Index == 0)
                     {
                         if (m_Target.ShowFameTitle && m_Target.Fame >= 10000)
+                        {
                             m_Owner.Say(true, $"{(m_Target.Female ? "Lady" : "Lord")} {m_Target.Name}");
+                        }
                         else
+                        {
                             m_Owner.Say(true, m_Target.Name);
+                        }
                     }
 
                     TextDefinition.PublicOverheadMessage(m_Owner, MessageType.Regular, 0x3B2, m_Conversation[m_Index++]);

@@ -49,9 +49,13 @@ namespace Server.Engines.Craft
             AddAlphaRegion(10, 10, 510, 417);
 
             if (craftSystem.GumpTitleNumber > 0)
+            {
                 AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitleNumber, LabelColor);
+            }
             else
+            {
                 AddHtml(10, 12, 510, 20, craftSystem.GumpTitleString);
+            }
 
             AddHtmlLocalized(10, 37, 200, 22, 1044010, LabelColor);  // <CENTER>CATEGORIES</CENTER>
             AddHtmlLocalized(215, 37, 305, 22, 1044011, LabelColor); // <CENTER>SELECTIONS</CENTER>
@@ -103,9 +107,13 @@ namespace Server.Engines.Craft
             // ****************************************
 
             if (notice is int noticeInt && noticeInt > 0)
+            {
                 AddHtmlLocalized(170, 295, 350, 40, noticeInt, LabelColor);
+            }
             else if (notice is string)
+            {
                 AddHtml(170, 295, 350, 40, $"<BASEFONT COLOR=#{FontColor:X6}>{notice}</BASEFONT>");
+            }
 
             // If the system has more than one resource
             if (craftSystem.CraftSubRes.Init)
@@ -133,15 +141,21 @@ namespace Server.Engines.Craft
                     var items = from.Backpack.FindItemsByType(resourceType);
 
                     for (var i = 0; i < items.Length; ++i)
+                    {
                         resourceCount += items[i].Amount;
+                    }
                 }
 
                 AddButton(15, 362, 4005, 4007, GetButtonID(6, 0));
 
                 if (nameNumber > 0)
+                {
                     AddHtmlLocalized(50, 365, 250, 18, nameNumber, resourceCount.ToString(), LabelColor);
+                }
                 else
+                {
                     AddLabel(50, 362, LabelHue, $"{nameString} ({resourceCount} Available)");
+                }
             }
             // ****************************************
 
@@ -171,26 +185,38 @@ namespace Server.Engines.Craft
                     var items = from.Backpack.FindItemsByType(resourceType);
 
                     for (var i = 0; i < items.Length; ++i)
+                    {
                         resourceCount += items[i].Amount;
+                    }
                 }
 
                 AddButton(15, 382, 4005, 4007, GetButtonID(6, 7));
 
                 if (nameNumber > 0)
+                {
                     AddHtmlLocalized(50, 385, 250, 18, nameNumber, resourceCount.ToString(), LabelColor);
+                }
                 else
+                {
                     AddLabel(50, 385, LabelHue, $"{nameString} ({resourceCount} Available)");
+                }
             }
             // ****************************************
 
             CreateGroupList();
 
             if (page == CraftPage.PickResource)
-                CreateResList(false, from);
+            {
+                CreateResList(false, @from);
+            }
             else if (page == CraftPage.PickResource2)
-                CreateResList(true, from);
+            {
+                CreateResList(true, @from);
+            }
             else if (context?.LastGroupIndex > -1)
+            {
                 CreateItemList(context.LastGroupIndex);
+            }
         }
 
         public void CreateResList(bool opt, Mobile from)
@@ -206,12 +232,16 @@ namespace Server.Engines.Craft
                 if (index == 0)
                 {
                     if (i > 0)
+                    {
                         AddButton(485, 260, 4005, 4007, 0, GumpButtonType.Page, i / 10 + 1);
+                    }
 
                     AddPage(i / 10 + 1);
 
                     if (i > 0)
+                    {
                         AddButton(455, 260, 4014, 4015, 0, GumpButtonType.Page, i / 10);
+                    }
 
                     var context = m_CraftSystem.GetContext(m_From);
 
@@ -233,12 +263,15 @@ namespace Server.Engines.Craft
                     var items = from.Backpack.FindItemsByType(subResource.ItemType);
 
                     for (var j = 0; j < items.Length; ++j)
+                    {
                         resourceCount += items[j].Amount;
+                    }
                 }
 
                 AddButton(220, 60 + index * 20, 4005, 4007, GetButtonID(5, i));
 
                 if (subResource.NameNumber > 0)
+                {
                     AddHtmlLocalized(
                         255,
                         63 + index * 20,
@@ -248,8 +281,11 @@ namespace Server.Engines.Craft
                         resourceCount.ToString(),
                         LabelColor
                     );
+                }
                 else
+                {
                     AddLabel(255, 60 + index * 20, LabelHue, $"{subResource.NameString} ({resourceCount})");
+                }
             }
         }
 
@@ -258,11 +294,14 @@ namespace Server.Engines.Craft
             var context = m_CraftSystem.GetContext(m_From);
 
             if (context == null)
+            {
                 return;
+            }
 
             var items = context.Items;
 
             if (items.Count > 0)
+            {
                 for (var i = 0; i < items.Count; ++i)
                 {
                     var index = i % 10;
@@ -289,14 +328,21 @@ namespace Server.Engines.Craft
                     AddButton(220, 60 + index * 20, 4005, 4007, GetButtonID(3, i));
 
                     if (craftItem.NameNumber > 0)
+                    {
                         AddHtmlLocalized(255, 63 + index * 20, 220, 18, craftItem.NameNumber, LabelColor);
+                    }
                     else
+                    {
                         AddLabel(255, 60 + index * 20, LabelHue, craftItem.NameString);
+                    }
 
                     AddButton(480, 60 + index * 20, 4011, 4012, GetButtonID(4, i));
                 }
+            }
             else
+            {
                 AddHtmlLocalized(230, 62, 200, 22, 1044165, LabelColor); // You haven't made anything yet.
+            }
         }
 
         public void CreateItemList(int selectedGroup)
@@ -336,9 +382,13 @@ namespace Server.Engines.Craft
                 AddButton(220, 60 + index * 20, 4005, 4007, GetButtonID(1, i));
 
                 if (craftItem.NameNumber > 0)
+                {
                     AddHtmlLocalized(255, 63 + index * 20, 220, 18, craftItem.NameNumber, LabelColor);
+                }
                 else
+                {
                     AddLabel(255, 60 + index * 20, LabelHue, craftItem.NameString);
+                }
 
                 AddButton(480, 60 + index * 20, 4011, 4012, GetButtonID(2, i));
             }
@@ -358,9 +408,13 @@ namespace Server.Engines.Craft
                 AddButton(15, 80 + i * 20, 4005, 4007, GetButtonID(0, i));
 
                 if (craftGroup.NameNumber > 0)
+                {
                     AddHtmlLocalized(50, 83 + i * 20, 150, 18, craftGroup.NameNumber, LabelColor);
+                }
                 else
+                {
                     AddLabel(50, 80 + i * 20, LabelHue, craftGroup.NameString);
+                }
             }
 
             return craftGroupCol.Count;
@@ -388,7 +442,9 @@ namespace Server.Engines.Craft
                     var resIndex = item.UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
 
                     if (resIndex >= 0 && resIndex < res.Count)
+                    {
                         type = res.GetAt(resIndex).ItemType;
+                    }
                 }
 
                 m_CraftSystem.CreateItem(m_From, item.ItemType, type, m_Tool, item);
@@ -398,7 +454,9 @@ namespace Server.Engines.Craft
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID <= 0)
+            {
                 return; // Canceled
+            }
 
             var buttonID = info.ButtonID - 1;
             var type = buttonID % 7;
@@ -413,7 +471,9 @@ namespace Server.Engines.Craft
                 case 0: // Show group
                     {
                         if (context == null)
+                        {
                             break;
+                        }
 
                         if (index >= 0 && index < groups.Count)
                         {
@@ -426,7 +486,9 @@ namespace Server.Engines.Craft
                 case 1: // Create item
                     {
                         if (context == null)
+                        {
                             break;
+                        }
 
                         var groupIndex = context.LastGroupIndex;
 
@@ -435,7 +497,9 @@ namespace Server.Engines.Craft
                             var group = groups[groupIndex];
 
                             if (index >= 0 && index < group.CraftItems.Count)
-                                CraftItem(group.CraftItems[index]);
+                            {
+                                CraftItem(@group.CraftItems[index]);
+                            }
                         }
 
                         break;
@@ -443,7 +507,9 @@ namespace Server.Engines.Craft
                 case 2: // Item details
                     {
                         if (context == null)
+                        {
                             break;
+                        }
 
                         var groupIndex = context.LastGroupIndex;
 
@@ -452,7 +518,9 @@ namespace Server.Engines.Craft
                             var group = groups[groupIndex];
 
                             if (index >= 0 && index < group.CraftItems.Count)
-                                m_From.SendGump(new CraftGumpItem(m_From, system, group.CraftItems[index], m_Tool));
+                            {
+                                m_From.SendGump(new CraftGumpItem(m_From, system, @group.CraftItems[index], m_Tool));
+                            }
                         }
 
                         break;
@@ -460,24 +528,32 @@ namespace Server.Engines.Craft
                 case 3: // Create item (last 10)
                     {
                         if (context == null)
+                        {
                             break;
+                        }
 
                         var lastTen = context.Items;
 
                         if (index >= 0 && index < lastTen.Count)
+                        {
                             CraftItem(lastTen[index]);
+                        }
 
                         break;
                     }
                 case 4: // Item details (last 10)
                     {
                         if (context == null)
+                        {
                             break;
+                        }
 
                         var lastTen = context.Items;
 
                         if (index >= 0 && index < lastTen.Count)
+                        {
                             m_From.SendGump(new CraftGumpItem(m_From, system, lastTen[index], m_Tool));
+                        }
 
                         break;
                     }
@@ -494,7 +570,9 @@ namespace Server.Engines.Craft
                             else
                             {
                                 if (context != null)
+                                {
                                     context.LastResourceIndex = index;
+                                }
 
                                 m_From.SendGump(new CraftGump(m_From, system, m_Tool, null));
                             }
@@ -510,7 +588,9 @@ namespace Server.Engines.Craft
                             else
                             {
                                 if (context != null)
+                                {
                                     context.LastResourceIndex2 = index;
+                                }
 
                                 m_From.SendGump(new CraftGump(m_From, system, m_Tool, null));
                             }
@@ -525,27 +605,36 @@ namespace Server.Engines.Craft
                             case 0: // Resource selection
                                 {
                                     if (system.CraftSubRes.Init)
+                                    {
                                         m_From.SendGump(new CraftGump(m_From, system, m_Tool, null, CraftPage.PickResource));
+                                    }
 
                                     break;
                                 }
                             case 1: // Smelt item
                                 {
                                     if (system.Resmelt)
+                                    {
                                         Resmelt.Do(m_From, system, m_Tool);
+                                    }
 
                                     break;
                                 }
                             case 2: // Make last
                                 {
                                     if (context == null)
+                                    {
                                         break;
+                                    }
 
                                     var item = context.LastMade;
 
                                     if (item != null)
+                                    {
                                         CraftItem(item);
+                                    }
                                     else
+                                    {
                                         m_From.SendGump(
                                             new CraftGump(
                                                 m_From,
@@ -555,13 +644,16 @@ namespace Server.Engines.Craft
                                                 m_Page
                                             )
                                         ); // You haven't made anything yet.
+                                    }
 
                                     break;
                                 }
                             case 3: // Last 10
                                 {
                                     if (context == null)
+                                    {
                                         break;
+                                    }
 
                                     context.LastGroupIndex = 501;
                                     m_From.SendGump(new CraftGump(m_From, system, m_Tool, null));
@@ -571,7 +663,9 @@ namespace Server.Engines.Craft
                             case 4: // Toggle use resource hue
                                 {
                                     if (context == null)
+                                    {
                                         break;
+                                    }
 
                                     context.DoNotColor = !context.DoNotColor;
 
@@ -582,14 +676,18 @@ namespace Server.Engines.Craft
                             case 5: // Repair item
                                 {
                                     if (system.Repair)
+                                    {
                                         Repair.Do(m_From, system, m_Tool);
+                                    }
 
                                     break;
                                 }
                             case 6: // Toggle mark option
                                 {
                                     if (context == null || !system.MarkOption)
+                                    {
                                         break;
+                                    }
 
                                     context.MarkOption = context.MarkOption switch
                                     {
@@ -606,16 +704,20 @@ namespace Server.Engines.Craft
                             case 7: // Resource selection 2
                                 {
                                     if (system.CraftSubRes2.Init)
+                                    {
                                         m_From.SendGump(
                                             new CraftGump(m_From, system, m_Tool, null, CraftPage.PickResource2)
                                         );
+                                    }
 
                                     break;
                                 }
                             case 8: // Enhance item
                                 {
                                     if (system.CanEnhance)
+                                    {
                                         Enhance.BeginTarget(m_From, system, m_Tool);
+                                    }
 
                                     break;
                                 }

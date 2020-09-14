@@ -7,9 +7,13 @@ namespace Server.Factions
             Movable = false;
 
             if (Instance?.Deleted == true)
+            {
                 Instance = this;
+            }
             else
+            {
                 base.Delete();
+            }
         }
 
         public FactionPersistance(Serial serial) : base(serial) => Instance = this;
@@ -56,6 +60,7 @@ namespace Server.Factions
                         PersistedType type;
 
                         while ((type = (PersistedType)reader.ReadEncodedInt()) != PersistedType.Terminator)
+                        {
                             switch (type)
                             {
                                 case PersistedType.Faction:
@@ -65,6 +70,7 @@ namespace Server.Factions
                                     new TownState(reader);
                                     break;
                             }
+                        }
 
                         break;
                     }

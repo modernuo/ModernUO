@@ -24,7 +24,9 @@ namespace Server.Items
         private bool CheckUse(Mobile from)
         {
             if (!IsAccessibleTo(from))
+            {
                 return false;
+            }
 
             if (from.Map != Map || !from.InRange(GetWorldLocation(), 2))
             {
@@ -39,7 +41,9 @@ namespace Server.Items
             }
 
             if (from.Backpack?.GetAmount(typeof(SulfurousAsh)) >= (Core.AOS ? 4 : 15))
+            {
                 return true;
+            }
 
             from.SendLocalizedMessage(1049617); // You do not have enough sulfurous ash.
             return false;
@@ -57,7 +61,9 @@ namespace Server.Items
         public void Use(Mobile from, IPoint3D loc)
         {
             if (!CheckUse(from))
+            {
                 return;
+            }
 
             from.BeginAction<FireHorn>();
             Timer.DelayCall(Core.AOS ? TimeSpan.FromSeconds(6.0) : TimeSpan.FromSeconds(12.0), EndAction, from);
@@ -105,10 +111,14 @@ namespace Server.Items
                     {
                         if (from == m || !SpellHelper.ValidIndirectTarget(from, m) || !from.CanBeHarmful(m, false)
                             || Core.AOS && !from.InLOS(m))
+                        {
                             return false;
+                        }
 
                         if (m.Player)
+                        {
                             playerVsPlayer = true;
+                        }
 
                         return true;
                     }
@@ -136,9 +146,13 @@ namespace Server.Items
 
                     int avgDamage;
                     if (playerVsPlayer)
+                    {
                         avgDamage = weightAvg / 3;
+                    }
                     else
+                    {
                         avgDamage = weightAvg / 2;
+                    }
 
                     minDamage = avgDamage * 9 / 10;
                     maxDamage = avgDamage * 10 / 9;
@@ -148,7 +162,9 @@ namespace Server.Items
                     var total = prov + disc / 5 + peace / 5;
 
                     if (playerVsPlayer)
+                    {
                         total /= 3;
+                    }
 
                     maxDamage = total * 2 / 30;
                     minDamage = maxDamage * 7 / 10;
@@ -157,9 +173,13 @@ namespace Server.Items
                 double damage = Utility.RandomMinMax(minDamage, maxDamage);
 
                 if (Core.AOS && targets.Count > 1)
+                {
                     damage = damage * 2 / targets.Count;
+                }
                 else if (!Core.AOS)
+                {
                     damage /= targets.Count;
+                }
 
                 for (var i = 0; i < targets.Count; ++i)
                 {
@@ -217,13 +237,19 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Horn.Deleted)
+                {
                     return;
+                }
 
                 IPoint3D loc;
                 if (targeted is Item item)
+                {
                     loc = item.GetWorldLocation();
+                }
                 else
+                {
                     loc = targeted as IPoint3D;
+                }
 
                 m_Horn.Use(from, loc);
             }

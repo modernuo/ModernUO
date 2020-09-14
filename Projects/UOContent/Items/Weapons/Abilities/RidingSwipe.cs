@@ -38,7 +38,9 @@ namespace Server.Items
             }
 
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 

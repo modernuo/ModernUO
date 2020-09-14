@@ -41,12 +41,17 @@ namespace Server.Engines.BulkOrders
             AddLabel(275, 96, 0x480, deed.AmountCur.ToString());
 
             if (deed.RequireExceptional || deed.Material != BulkMaterialType.None)
+            {
                 AddHtmlLocalized(75, 120, 200, 20, 1045140, 0x7FFF); // Special requirements to meet:
+            }
 
             if (deed.RequireExceptional)
+            {
                 AddHtmlLocalized(75, 144, 300, 20, 1045141, 0x7FFF); // All items must be exceptional.
+            }
 
             if (deed.Material != BulkMaterialType.None)
+            {
                 AddHtmlLocalized(
                     75,
                     deed.RequireExceptional ? 168 : 144,
@@ -55,6 +60,7 @@ namespace Server.Engines.BulkOrders
                     GetMaterialNumberFor(deed.Material),
                     0x7FFF
                 ); // All items must be made with x material.
+            }
 
             AddButton(125, 192, 4005, 4007, 2);
             AddHtmlLocalized(160, 192, 300, 20, 1045154, 0x7FFF); // Combine this deed with the item requested.
@@ -66,7 +72,9 @@ namespace Server.Engines.BulkOrders
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_Deed.Deleted || !m_Deed.IsChildOf(m_From.Backpack))
+            {
                 return;
+            }
 
             if (info.ButtonID == 2) // Combine
             {
@@ -78,9 +86,14 @@ namespace Server.Engines.BulkOrders
         public static int GetMaterialNumberFor(BulkMaterialType material)
         {
             if (material >= BulkMaterialType.DullCopper && material <= BulkMaterialType.Valorite)
+            {
                 return 1045142 + (material - BulkMaterialType.DullCopper);
+            }
+
             if (material >= BulkMaterialType.Spined && material <= BulkMaterialType.Barbed)
+            {
                 return 1049348 + (material - BulkMaterialType.Spined);
+            }
 
             return 0;
         }

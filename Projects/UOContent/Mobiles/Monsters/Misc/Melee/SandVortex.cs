@@ -59,7 +59,9 @@ namespace Server.Mobiles
 
             if (combatant?.Deleted != false || combatant.Map != Map || !InRange(combatant, 12) ||
                 !CanBeHarmful(combatant) || !InLOS(combatant))
+            {
                 return;
+            }
 
             if (DateTime.UtcNow >= m_NextAttack)
             {

@@ -36,7 +36,9 @@ namespace Server.Mobiles
             PackItem(new Carrot(carrots));
 
             if (Utility.Random(5) == 0)
+            {
                 PackItem(new BrightlyColoredEggs());
+            }
 
             PackStatue();
 
@@ -68,7 +70,9 @@ namespace Server.Mobiles
         public virtual void BeginTunnel()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             new BunnyHole().MoveToWorld(Location, Map);
 

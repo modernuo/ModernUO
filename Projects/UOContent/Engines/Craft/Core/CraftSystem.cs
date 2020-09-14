@@ -70,7 +70,9 @@ namespace Server.Engines.Craft
         public CraftContext GetContext(Mobile m)
         {
             if (m == null)
+            {
                 return null;
+            }
 
             if (m.Deleted)
             {
@@ -79,7 +81,9 @@ namespace Server.Engines.Craft
             }
 
             if (!m_ContextTable.TryGetValue(m, out var c))
+            {
                 m_ContextTable[m] = c = new CraftContext();
+            }
 
             return c;
         }
@@ -95,13 +99,17 @@ namespace Server.Engines.Craft
         {
             // Verify if the type is in the list of the craftable item
             if (CraftItems.SearchFor(type) != null)
-                realCraftItem.Craft(from, this, typeRes, tool);
+            {
+                realCraftItem.Craft(@from, this, typeRes, tool);
+            }
         }
 
         public int RandomRecipe()
         {
             if (m_Recipes.Count == 0)
+            {
                 return -1;
+            }
 
             return m_Recipes.RandomElement();
         }
@@ -109,7 +117,9 @@ namespace Server.Engines.Craft
         public int RandomRareRecipe()
         {
             if (m_RareRecipes.Count == 0)
+            {
                 return -1;
+            }
 
             return m_RareRecipes.RandomElement();
         }

@@ -21,7 +21,9 @@ namespace Server.Items
             get
             {
                 if (IsSecure)
+                {
                     return 0;
+                }
 
                 return base.DefaultMaxWeight;
             }
@@ -30,7 +32,9 @@ namespace Server.Items
         public override bool IsAccessibleTo(Mobile m)
         {
             if (!BaseHouse.CheckAccessible(m, this))
+            {
                 return false;
+            }
 
             return base.IsAccessibleTo(m);
         }
@@ -38,7 +42,9 @@ namespace Server.Items
         public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
         {
             if (IsSecure && !BaseHouse.CheckHold(m, this, item, message, checkItems, plusItems, plusWeight))
+            {
                 return false;
+            }
 
             return base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
         }
@@ -46,7 +52,9 @@ namespace Server.Items
         public override bool CheckItemUse(Mobile from, Item item)
         {
             if (IsDecoContainer && item is BaseBook)
+            {
                 return true;
+            }
 
             return base.CheckItemUse(from, item);
         }
@@ -60,7 +68,9 @@ namespace Server.Items
         public override bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage)
         {
             if (!CheckHold(from, dropped, sendFullMessage, true))
+            {
                 return false;
+            }
 
             var house = BaseHouse.FindHouseAt(this);
 
@@ -74,7 +84,9 @@ namespace Server.Items
                 }
 
                 if (!house.LockDown(from, dropped, false))
+                {
                     return false;
+                }
             }
 
             var list = Items;
@@ -84,7 +96,9 @@ namespace Server.Items
                 var item = list[i];
 
                 if (!(item is Container) && item.StackWith(from, dropped, false))
+                {
                     return true;
+                }
             }
 
             DropItem(dropped);
@@ -95,7 +109,9 @@ namespace Server.Items
         public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
         {
             if (!CheckHold(from, item, true, true))
+            {
                 return false;
+            }
 
             var house = BaseHouse.FindHouseAt(this);
 
@@ -109,7 +125,9 @@ namespace Server.Items
                 }
 
                 if (!house.LockDown(from, item, false))
+                {
                     return false;
+                }
             }
 
             item.Location = new Point3D(p.X, p.Y, 0);
@@ -125,15 +143,21 @@ namespace Server.Items
             base.UpdateTotal(sender, type, delta);
 
             if (type == TotalType.Weight)
+            {
                 (RootParent as Mobile)?.InvalidateProperties();
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (from.AccessLevel > AccessLevel.Player || from.InRange(GetWorldLocation(), 2) || RootParent is PlayerVendor)
-                Open(from);
+            {
+                Open(@from);
+            }
             else
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            {
+                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            }
         }
 
         public virtual void Open(Mobile from)
@@ -171,15 +195,21 @@ namespace Server.Items
         public override void AddNameProperty(ObjectPropertyList list)
         {
             if (Name != null)
+            {
                 list.Add(1075257, Name); // Contents of ~1_PETNAME~'s pack.
+            }
             else
+            {
                 base.AddNameProperty(list);
+            }
         }
 
         public override void OnItemRemoved(Item item)
         {
             if (Items.Count == 0)
+            {
                 Delete();
+            }
 
             base.OnItemRemoved(item);
         }
@@ -187,7 +217,9 @@ namespace Server.Items
         public override bool OnDragLift(Mobile from)
         {
             if (from.AccessLevel > AccessLevel.Player)
+            {
                 return true;
+            }
 
             from.SendLocalizedMessage(500169); // You cannot pick that up.
             return false;
@@ -211,7 +243,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0)
+            {
                 Weight = 13.0;
+            }
         }
     }
 
@@ -251,7 +285,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0)
+            {
                 Weight = 13.0;
+            }
         }
     }
 
@@ -273,7 +309,9 @@ namespace Server.Items
             get
             {
                 if (Core.ML && Parent is Mobile m && m.Player && m.Backpack == this)
+                {
                     return 550;
+                }
 
                 return base.DefaultMaxWeight;
             }
@@ -281,7 +319,10 @@ namespace Server.Items
 
         public bool Dye(Mobile from, DyeTub sender)
         {
-            if (Deleted) return false;
+            if (Deleted)
+            {
+                return false;
+            }
 
             Hue = sender.DyedHue;
 
@@ -302,7 +343,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && ItemID == 0x9B2)
+            {
                 ItemID = 0xE75;
+            }
         }
     }
 
@@ -341,7 +384,9 @@ namespace Server.Items
         public bool Dye(Mobile from, DyeTub sender)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             Hue = sender.DyedHue;
 
@@ -426,7 +471,10 @@ namespace Server.Items
 
         public bool Dye(Mobile from, DyeTub sender)
         {
-            if (Deleted) return false;
+            if (Deleted)
+            {
+                return false;
+            }
 
             Hue = sender.DyedHue;
 
@@ -471,7 +519,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 0.0)
+            {
                 Weight = 25.0;
+            }
         }
     }
 
@@ -598,7 +648,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 4.0)
+            {
                 Weight = 2.0;
+            }
         }
     }
 
@@ -627,7 +679,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 6.0)
+            {
                 Weight = 2.0;
+            }
         }
     }
 
@@ -656,7 +710,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 8.0)
+            {
                 Weight = 1.0;
+            }
         }
     }
 
@@ -687,7 +743,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 3)
+            {
                 Weight = -1;
+            }
         }
     }
 
@@ -718,7 +776,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 25)
+            {
                 Weight = -1;
+            }
         }
     }
 
@@ -749,7 +809,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 25)
+            {
                 Weight = -1;
+            }
         }
     }
 
@@ -778,7 +840,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 15.0)
+            {
                 Weight = 2.0;
+            }
         }
     }
 
@@ -809,7 +873,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 15)
+            {
                 Weight = -1;
+            }
         }
     }
 
@@ -840,7 +906,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 15)
+            {
                 Weight = -1;
+            }
         }
     }
 
@@ -871,7 +939,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 15)
+            {
                 Weight = -1;
+            }
         }
     }
 
@@ -900,10 +970,14 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 15)
+            {
                 Weight = -1;
+            }
 
             if (version < 2)
+            {
                 GumpID = 0x10B;
+            }
         }
     }
 
@@ -934,7 +1008,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 15)
+            {
                 Weight = -1;
+            }
         }
     }
 }

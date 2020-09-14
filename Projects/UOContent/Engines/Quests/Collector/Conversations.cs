@@ -254,7 +254,9 @@ namespace Server.Engines.Quests.Collector
         public override void OnRead()
         {
             if (m_Logged)
+            {
                 System.AddObjective(new MakeRoomObjective());
+            }
         }
     }
 }

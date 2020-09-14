@@ -119,17 +119,23 @@ namespace Server.Mobiles
         private void DoCounter(Mobile attacker)
         {
             if (Map == null)
+            {
                 return;
+            }
 
             if (!(Utility.RandomDouble() < 0.2))
+            {
                 return;
+            }
 
             Mobile target = null;
 
             if (attacker is BaseCreature bcAttacker)
             {
                 if (bcAttacker.BardProvoked)
+                {
                     return;
+                }
 
                 target = bcAttacker.GetMaster();
             }
@@ -142,7 +148,9 @@ namespace Server.Mobiles
              */
 
             if (target?.InRange(this, 25) != true)
+            {
                 target = attacker;
+            }
 
             Animate(10, 4, 1, true, false, 0);
 
@@ -151,10 +159,14 @@ namespace Server.Mobiles
             foreach (var m in eable)
             {
                 if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
+                {
                     continue;
+                }
 
                 if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != Team))
+                {
                     continue;
+                }
 
                 DoHarmful(m);
 

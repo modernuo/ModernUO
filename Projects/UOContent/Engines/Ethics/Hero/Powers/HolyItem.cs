@@ -51,7 +51,9 @@ namespace Server.Ethics.Hero
             if (canImbue)
             {
                 if (!CheckInvoke(from))
+                {
                     return;
+                }
 
                 item.Hue = Ethic.Hero.Definition.PrimaryHue;
                 item.SavedFlags |= 0x100;

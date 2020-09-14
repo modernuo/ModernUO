@@ -57,7 +57,10 @@ namespace Server.Gumps
             {
                 if (m_House.IsOwner(m_Mobile))
                 {
-                    if (m_House.MovingCrate != null || m_House.InternalizedVendors.Count > 0) return;
+                    if (m_House.MovingCrate != null || m_House.InternalizedVendors.Count > 0)
+                    {
+                        return;
+                    }
 
                     if (!Guild.NewGuildSystem && m_House.FindGuildstone() != null)
                     {
@@ -107,16 +110,22 @@ namespace Server.Gumps
                         if (m_House.IsAosRules)
                         {
                             if (m_House.Price > 0)
+                            {
                                 toGive = new BankCheck(m_House.Price);
+                            }
                             else
+                            {
                                 toGive = m_House.GetDeed();
+                            }
                         }
                         else
                         {
                             toGive = m_House.GetDeed();
 
                             if (toGive == null && m_House.Price > 0)
+                            {
                                 toGive = new BankCheck(m_House.Price);
+                            }
                         }
 
                         var check = toGive as BankCheck;
@@ -145,10 +154,12 @@ namespace Server.Gumps
                             if (box.TryDropItem(m_Mobile, toGive, false))
                             {
                                 if (check != null)
+                                {
                                     m_Mobile.SendLocalizedMessage(
                                         1060397,
                                         check.Worth.ToString()
                                     ); // ~1_AMOUNT~ gold has been deposited into your bank box.
+                                }
 
                                 m_House.RemoveKeys(m_Mobile);
                                 m_House.Delete();

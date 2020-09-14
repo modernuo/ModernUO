@@ -17,15 +17,21 @@ namespace Server.SkillHandlers
             var map = from.Map;
 
             if (to.Player)
-                return from.CanBeHarmful(to, false, true); // normal restrictions
+            {
+                return @from.CanBeHarmful(to, false, true); // normal restrictions
+            }
 
             if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
+            {
                 return true; // felucca you can snoop anybody
+            }
 
             var reg = to.Region.GetRegion<GuardedRegion>();
 
             if (reg?.IsDisabled() != true)
+            {
                 return true; // not in town? we can snoop any npc
+            }
 
             return !to.Body.IsHuman || to is BaseCreature cret && (cret.AlwaysAttackable || cret.AlwaysMurderer);
         }
@@ -37,7 +43,9 @@ namespace Server.SkillHandlers
                 var root = cont.RootParent as Mobile;
 
                 if (root?.Alive == false)
+                {
                     return;
+                }
 
                 if (root?.AccessLevel > AccessLevel.Player && from.AccessLevel == AccessLevel.Player)
                 {
@@ -63,20 +71,28 @@ namespace Server.SkillHandlers
                         var eable = map.GetClientsInRange(from.Location, 8);
 
                         foreach (var ns in eable)
-                            if (ns.Mobile != from)
+                        {
+                            if (ns.Mobile != @from)
+                            {
                                 ns.Mobile.SendMessage(message);
+                            }
+                        }
 
                         eable.Free();
                     }
                 }
 
                 if (from.AccessLevel == AccessLevel.Player)
-                    Titles.AwardKarma(from, -4, true);
+                {
+                    Titles.AwardKarma(@from, -4, true);
+                }
 
                 if (from.AccessLevel > AccessLevel.Player || from.CheckTargetSkill(SkillName.Snooping, cont, 0.0, 100.0))
                 {
                     if (cont is TrappableContainer container && container.ExecuteTrap(from))
+                    {
                         return;
+                    }
 
                     cont.DisplayTo(from);
                 }
@@ -85,7 +101,9 @@ namespace Server.SkillHandlers
                     from.SendLocalizedMessage(500210); // You failed to peek into the container.
 
                     if (from.Skills.Hiding.Value / 2 < Utility.Random(100))
-                        from.RevealingAction();
+                    {
+                        @from.RevealingAction();
+                    }
                 }
             }
             else

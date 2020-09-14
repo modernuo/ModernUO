@@ -51,12 +51,16 @@ namespace Server.Engines.Mahjong
             set
             {
                 if (m_ShowScores == value)
+                {
                     return;
+                }
 
                 m_ShowScores = value;
 
                 if (value)
+                {
                     Players.SendPlayersPacket(true, true);
+                }
 
                 Players.SendGeneralPacket(true, true);
 
@@ -71,12 +75,16 @@ namespace Server.Engines.Mahjong
             set
             {
                 if (m_SpectatorVision == value)
+                {
                     return;
+                }
 
                 m_SpectatorVision = value;
 
                 if (Players.IsInGamePlayer(Players.DealerPosition))
+                {
                     Players.Dealer.Send(new MahjongGeneralInfo(this));
+                }
 
                 Players.SendTilesPacket(false, true);
 
@@ -159,9 +167,13 @@ namespace Server.Engines.Mahjong
             base.GetProperties(list);
 
             if (m_SpectatorVision)
+            {
                 list.Add(1062717); // Spectator Vision Enabled
+            }
             else
+            {
                 list.Add(1062718); // Spectator Vision Disabled
+            }
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -171,7 +183,9 @@ namespace Server.Engines.Mahjong
             Players.CheckPlayers();
 
             if (from.Alive && IsAccessibleTo(from) && Players.GetInGameMobiles(true, false).Count == 0)
+            {
                 list.Add(new ResetGameEntry(this));
+            }
 
             SetSecureLevelEntry.AddTo(from, this, list);
         }
@@ -186,12 +200,16 @@ namespace Server.Engines.Mahjong
         public void ResetGame(Mobile from)
         {
             if (DateTime.UtcNow - m_LastReset < TimeSpan.FromSeconds(5.0))
+            {
                 return;
+            }
 
             m_LastReset = DateTime.UtcNow;
 
             if (from != null)
-                Players.SendLocalizedMessage(1062771, from.Name); // ~1_name~ has reset the game.
+            {
+                Players.SendLocalizedMessage(1062771, @from.Name); // ~1_name~ has reset the game.
+            }
 
             Players.SendRelievePacket(true, true);
 
@@ -205,7 +223,9 @@ namespace Server.Engines.Mahjong
         public void ResetWalls(Mobile from)
         {
             if (DateTime.UtcNow - m_LastReset < TimeSpan.FromSeconds(5.0))
+            {
                 return;
+            }
 
             m_LastReset = DateTime.UtcNow;
 
@@ -214,15 +234,22 @@ namespace Server.Engines.Mahjong
             Players.SendTilesPacket(true, true);
 
             if (from != null)
+            {
                 Players.SendLocalizedMessage(1062696); // The dealer rebuilds the wall.
+            }
         }
 
         public int GetStackLevel(MahjongPieceDim dim)
         {
             var level = -1;
             foreach (var tile in Tiles)
+            {
                 if (tile.StackLevel > level && dim.IsOverlapping(tile.Dimensions))
+                {
                     level = tile.StackLevel;
+                }
+            }
+
             return level;
         }
 
@@ -237,7 +264,9 @@ namespace Server.Engines.Mahjong
             writer.Write(Tiles.Length);
 
             for (var i = 0; i < Tiles.Length; i++)
+            {
                 Tiles[i].Save(writer);
+            }
 
             DealerIndicator.Save(writer);
 
@@ -268,13 +297,17 @@ namespace Server.Engines.Mahjong
                 case 0:
                     {
                         if (version < 1)
+                        {
                             Level = SecureLevel.CoOwners;
+                        }
 
                         var length = reader.ReadInt();
                         Tiles = new MahjongTile[length];
 
                         for (var i = 0; i < length; i++)
+                        {
                             Tiles[i] = new MahjongTile(this, reader);
+                        }
 
                         DealerIndicator = new MahjongDealerIndicator(this, reader);
 
@@ -306,7 +339,9 @@ namespace Server.Engines.Mahjong
 
                 if (from.CheckAlive() && !m_Game.Deleted && m_Game.IsAccessibleTo(from) &&
                     m_Game.Players.GetInGameMobiles(true, false).Count == 0)
-                    m_Game.ResetGame(from);
+                {
+                    m_Game.ResetGame(@from);
+                }
             }
         }
     }

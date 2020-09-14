@@ -56,13 +56,19 @@ namespace Server.Commands
             void ProcessDeletion(TeleporterDefinition x)
             {
                 count += TeleportersCreator.DeleteTeleporters(x.Source);
-                if (x.Back) count += TeleportersCreator.DeleteTeleporters(x.Destination);
+                if (x.Back)
+                {
+                    count += TeleportersCreator.DeleteTeleporters(x.Destination);
+                }
             }
 
             if (!ProcessTeleporterData(from, ProcessDeletion))
             {
                 if (count > 0)
-                    from.SendMessage(WarningHue, $"Partial Completion, {count} Teleporters Removed.");
+                {
+                    @from.SendMessage(WarningHue, $"Partial Completion, {count} Teleporters Removed.");
+                }
+
                 return;
             }
 
@@ -81,9 +87,15 @@ namespace Server.Commands
             if (!ProcessTeleporterData(from, c.CreateTeleporter))
             {
                 if (c.DelCount > 0)
-                    from.SendMessage(WarningHue, $"Partial Completion: {c.DelCount} Teleporters Removed.");
+                {
+                    @from.SendMessage(WarningHue, $"Partial Completion: {c.DelCount} Teleporters Removed.");
+                }
+
                 if (c.Count > 0)
-                    from.SendMessage(WarningHue, $"Partial Completion: {c.Count} Teleporters Added.");
+                {
+                    @from.SendMessage(WarningHue, $"Partial Completion: {c.Count} Teleporters Added.");
+                }
+
                 return;
             }
 
@@ -104,7 +116,9 @@ namespace Server.Commands
 
                 var teleporters = JsonSerializer.Deserialize<List<TeleporterDefinition>>(json, JsonOptions);
                 for (var i = 0; i < teleporters.Count; i++)
+                {
                     processor(teleporters[i]);
+                }
             }
             catch (Exception ex)
             {
@@ -144,7 +158,11 @@ namespace Server.Commands
                 DelCount += DeleteTeleporters(telDef.Source);
                 Count++;
                 new Teleporter(telDef.Destination, telDef.Destination.Map).MoveToWorld(telDef.Source, telDef.Source.Map);
-                if (!telDef.Back) return;
+                if (!telDef.Back)
+                {
+                    return;
+                }
+
                 DelCount += DeleteTeleporters(telDef.Destination);
                 Count++;
                 new Teleporter(telDef.Source, telDef.Source.Map).MoveToWorld(telDef.Destination, telDef.Destination.Map);

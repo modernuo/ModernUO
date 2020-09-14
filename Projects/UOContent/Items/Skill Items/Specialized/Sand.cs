@@ -32,7 +32,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Name == "sand")
+            {
                 Name = null;
+            }
         }
     }
 }

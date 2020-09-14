@@ -129,7 +129,9 @@ namespace Server.Engines.BulkOrders
                 var number = filters[i, 0];
 
                 if (number == 0)
+                {
                     continue;
+                }
 
                 var isSelected = filters[i, 1] == filterValue ||
                                  i % xOffsets.Length == 0 && filterValue == 0;
@@ -201,7 +203,9 @@ namespace Server.Engines.BulkOrders
                             if (index >= 0 && index < filters.GetLength(0))
                             {
                                 if (filters[index, 0] == 0)
+                                {
                                     break;
+                                }
 
                                 switch (type)
                                 {

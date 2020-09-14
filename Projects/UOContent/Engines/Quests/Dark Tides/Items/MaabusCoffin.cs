@@ -32,10 +32,14 @@ namespace Server.Engines.Quests.Necro
         public void Awake(Mobile caller)
         {
             if (Maabus != null || SpawnLocation == Point3D.Zero)
+            {
                 return;
+            }
 
             foreach (var c in Components)
+            {
                 (c as MaabusCoffinComponent)?.TurnToEmpty();
+            }
 
             Maabus = new Maabus { Location = SpawnLocation, Map = Map };
             Maabus.Direction = Maabus.GetDirectionTo(caller);
@@ -46,7 +50,9 @@ namespace Server.Engines.Quests.Necro
         public void BeginSleep()
         {
             if (Maabus == null)
+            {
                 return;
+            }
 
             Effects.PlaySound(Maabus.Location, Maabus.Map, 0x48E);
 
@@ -56,7 +62,9 @@ namespace Server.Engines.Quests.Necro
         public void Sleep()
         {
             if (Maabus == null)
+            {
                 return;
+            }
 
             Effects.SendLocationParticles(
                 EffectItem.Create(Maabus.Location, Maabus.Map, EffectItem.DefaultDuration),
@@ -71,7 +79,9 @@ namespace Server.Engines.Quests.Necro
             Maabus = null;
 
             foreach (MaabusCoffinComponent c in Components)
+            {
                 c.TurnToFull();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -122,7 +132,10 @@ namespace Server.Engines.Quests.Necro
             get => Addon is MaabusCoffin coffin ? coffin.SpawnLocation : Point3D.Zero;
             set
             {
-                if (Addon is MaabusCoffin coffin) coffin.SpawnLocation = value;
+                if (Addon is MaabusCoffin coffin)
+                {
+                    coffin.SpawnLocation = value;
+                }
             }
         }
 

@@ -34,7 +34,9 @@ namespace Server.Items
         public override void HandleInvalidTransfer(Mobile from)
         {
             if (InvalidTransferMessage != null)
-                TextDefinition.SendMessageTo(from, InvalidTransferMessage);
+            {
+                TextDefinition.SendMessageTo(@from, InvalidTransferMessage);
+            }
 
             Delete();
         }
@@ -66,9 +68,13 @@ namespace Server.Items
         public virtual void CheckExpiry()
         {
             if (CreationTime + LifeSpan < DateTime.UtcNow)
+            {
                 Expire(RootParent as Mobile);
+            }
             else
+            {
                 InvalidateProperties();
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)

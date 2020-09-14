@@ -27,7 +27,9 @@ namespace Server.Mobiles
         public override bool CheckTeach(SkillName skill, Mobile from)
         {
             if (!base.CheckTeach(skill, from))
+            {
                 return false;
+            }
 
             return skill == SkillName.Anatomy
                    || skill == SkillName.Camping
@@ -51,7 +53,9 @@ namespace Server.Mobiles
             }
 
             if (m.Karma < 0)
+            {
                 Say(501224); // Thou hast strayed from the path of virtue, but thou still deservest a second chance.
+            }
 
             return true;
         }

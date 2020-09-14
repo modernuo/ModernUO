@@ -87,7 +87,9 @@ namespace Server.Items
             }
 
             if (Dipper != null)
+            {
                 Dipper = string.Intern(Dipper);
+            }
         }
     }
 }

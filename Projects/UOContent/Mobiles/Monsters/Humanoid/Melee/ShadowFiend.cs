@@ -117,9 +117,13 @@ namespace Server.Mobiles
                 }
 
                 foreach (var m in m_Owner.GetMobilesInRange(3))
+                {
                     if (m != m_Owner && m.Player && m.Hidden && m_Owner.CanBeHarmful(m) &&
                         m.AccessLevel == AccessLevel.Player)
+                    {
                         m.Hidden = false;
+                    }
+                }
             }
         }
     }

@@ -20,7 +20,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Addon is StoneAnkh ankh && ankh.IsRewardItem)
+            {
                 list.Add(1076221); // 5th Year Veteran Reward
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -93,7 +95,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Core.ML && m_IsRewardItem)
+            {
                 list.Add(1076221); // 5th Year Veteran Reward
+            }
         }
 
         public override void OnComponentUsed(AddonComponent c, Mobile from)
@@ -178,7 +182,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {
@@ -201,7 +207,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076221); // 5th Year Veteran Reward
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -251,7 +259,9 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_Deed?.Deleted != false || info.ButtonID == (int)Buttons.Cancel)
+                {
                     return;
+                }
 
                 m_Deed.m_East = info.ButtonID == (int)Buttons.East;
                 m_Deed.SendTarget(sender.Mobile);

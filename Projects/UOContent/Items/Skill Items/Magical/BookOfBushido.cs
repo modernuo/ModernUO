@@ -28,7 +28,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Core.ML)
+            {
                 Layer = Layer.OneHanded;
+            }
         }
     }
 }

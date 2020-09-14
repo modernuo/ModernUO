@@ -21,7 +21,9 @@ namespace Server.Items
             var allow = base.OnMoveOver(m);
 
             if (allow && Addon is BedOfNailsAddon addon)
+            {
                 addon.OnMoveOver(m);
+            }
 
             return allow;
         }
@@ -69,13 +71,19 @@ namespace Server.Items
                 if (m.Player)
                 {
                     if (m.Female)
+                    {
                         Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x53B, 0x53D));
+                    }
                     else
+                    {
                         Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x53E, 0x540));
+                    }
                 }
 
                 if (m_Timer?.Running != true)
+                {
                     (m_Timer = new InternalTimer(m)).Start();
+                }
             }
 
             return true;
@@ -143,7 +151,9 @@ namespace Server.Items
                             z = m_Mobile.Map.GetAverageZ(x, y);
 
                             if (!m_Mobile.Map.CanFit(x, y, z, 1, false, false))
+                            {
                                 continue;
+                            }
                         }
 
                         var blood = new Blood(Utility.RandomMinMax(0x122C, 0x122F));

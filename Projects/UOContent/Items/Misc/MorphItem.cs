@@ -57,19 +57,25 @@ namespace Server.Items
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
             if (Utility.InRange(m.Location, Location, CurrentRange) || Utility.InRange(oldLocation, Location, CurrentRange))
+            {
                 Refresh();
+            }
         }
 
         public override void OnMapChange()
         {
             if (!Deleted)
+            {
                 Refresh();
+            }
         }
 
         public override void OnLocationChange(Point3D oldLoc)
         {
             if (!Deleted)
+            {
                 Refresh();
+            }
         }
 
         public void Refresh()
@@ -113,7 +119,9 @@ namespace Server.Items
                         m_InsideRange = reader.ReadInt();
 
                         if (version < 1)
+                        {
                             m_OutsideRange = m_InsideRange;
+                        }
 
                         break;
                     }

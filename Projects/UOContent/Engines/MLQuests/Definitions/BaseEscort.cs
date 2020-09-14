@@ -10,7 +10,9 @@
         public override void GetRewards(MLQuestInstance instance)
         {
             if (AwardHumanInNeed)
+            {
                 HumanInNeed.AwardTo(instance.Player);
+            }
 
             base.GetRewards(instance);
         }

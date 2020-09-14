@@ -71,7 +71,9 @@ namespace Server.Spells.Ninjitsu
         public static void OnLogin(Mobile m)
         {
             if (GetContext(m)?.SpeedBoost == true)
+            {
                 m.Send(SpeedControl.MountSpeed);
+            }
         }
 
         public override bool CheckCast()
@@ -187,7 +189,9 @@ namespace Server.Spells.Ninjitsu
         public static MorphResult Morph(Mobile m, int entryID)
         {
             if (entryID < 0 || entryID >= Entries.Length)
+            {
                 return MorphResult.Fail;
+            }
 
             var entry = Entries[entryID];
 
@@ -217,13 +221,17 @@ namespace Server.Spells.Ninjitsu
                 var chance = (ninjitsu - entry.ReqSkill) / 37.5;
 
                 if (chance < Utility.RandomDouble())
+                {
                     return MorphResult.Fail;
+                }
             }
 
             m.CheckSkill(SkillName.Ninjitsu, 0.0, 37.5);
 
             if (!BaseFormTalisman.EntryEnabled(m, entry.Type))
+            {
                 return MorphResult.Success; // Still consumes mana, just no effect
+            }
 
             BaseMount.Dismount(m);
 
@@ -234,7 +242,9 @@ namespace Server.Spells.Ninjitsu
             m.HueMod = hueMod;
 
             if (entry.SpeedBoost)
+            {
                 m.Send(SpeedControl.MountSpeed);
+            }
 
             SkillMod mod = null;
 
@@ -265,7 +275,9 @@ namespace Server.Spells.Ninjitsu
             m_Table[m] = context;
 
             if (context.Type == typeof(BakeKitsune) || context.Type == typeof(GreyWolf))
+            {
                 m.CheckStatTimers();
+            }
         }
 
         public static void RemoveContext(Mobile m, bool resetGraphics)
@@ -273,7 +285,9 @@ namespace Server.Spells.Ninjitsu
             var context = GetContext(m);
 
             if (context != null)
+            {
                 RemoveContext(m, context, resetGraphics);
+            }
         }
 
         public static void RemoveContext(Mobile m, AnimalFormContext context, bool resetGraphics)
@@ -281,17 +295,23 @@ namespace Server.Spells.Ninjitsu
             m_Table.Remove(m);
 
             if (context.SpeedBoost)
+            {
                 m.Send(SpeedControl.Disable);
+            }
 
             var mod = context.Mod;
 
             if (mod != null)
+            {
                 m.RemoveSkillMod(mod);
+            }
 
             mod = context.StealingMod;
 
             if (mod != null)
+            {
                 m.RemoveSkillMod(mod);
+            }
 
             if (resetGraphics)
             {
@@ -422,7 +442,9 @@ namespace Server.Spells.Ninjitsu
                     }
 
                     if (!enabled)
+                    {
                         continue;
+                    }
 
                     var x = pos % 2 == 0 ? 14 : 264;
                     var y = pos / 2 * 64 + 44;
@@ -454,7 +476,9 @@ namespace Server.Spells.Ninjitsu
                 var entryID = info.ButtonID - 1;
 
                 if (entryID < 0 || entryID >= AnimalForm.Entries.Length)
+                {
                     return;
+                }
 
                 var mana = m_Spell.ScaleMana(m_Spell.RequiredMana);
                 var entry = AnimalForm.Entries[entryID];

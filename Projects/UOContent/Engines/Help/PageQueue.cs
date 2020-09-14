@@ -40,7 +40,9 @@ namespace Server.Engines.Help
             PageMap = sender.Map;
 
             if (sender is PlayerMobile pm && pm.SpeechLog != null && Array.IndexOf(SpeechLogAttachment, type) >= 0)
+            {
                 SpeechLog = new List<SpeechLogEntry>(pm.SpeechLog);
+            }
 
             m_Timer = new InternalTimer(this);
             m_Timer.Start();
@@ -101,14 +103,19 @@ namespace Server.Engines.Help
                             1008084
                         ); // You can reference our website at www.uo.com or contact us at support@uo.com. To cancel your page, please select the help button again and select cancel.
 
-                    if (m_Entry.Handler != null && m_Entry.Handler.NetState == null) m_Entry.Handler = null;
+                    if (m_Entry.Handler != null && m_Entry.Handler.NetState == null)
+                    {
+                        m_Entry.Handler = null;
+                    }
                 }
                 else
                 {
                     if (index != -1)
                         // m_Entry.AddResponse(m_Entry.Sender, "[Logout]");
 
+                    {
                         PageQueue.Remove(m_Entry);
+                    }
                 }
             }
         }
@@ -129,7 +136,9 @@ namespace Server.Engines.Help
         public static bool CheckAllowedToPage(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return true;
+            }
 
             if (pm.DesignContext != null)
             {
@@ -151,19 +160,29 @@ namespace Server.Engines.Help
         public static string GetPageTypeName(PageType type)
         {
             if (type == PageType.VerbalHarassment)
+            {
                 return "Verbal Harassment";
+            }
+
             if (type == PageType.PhysicalHarassment)
+            {
                 return "Physical Harassment";
+            }
+
             return type.ToString();
         }
 
         public static void OnHandlerChanged(Mobile old, Mobile value, PageEntry entry)
         {
             if (old != null)
+            {
                 m_KeyedByHandler.Remove(old);
+            }
 
             if (value != null)
+            {
                 m_KeyedByHandler[value] = entry;
+            }
         }
 
         [Usage("Pages")]
@@ -171,11 +190,17 @@ namespace Server.Engines.Help
         private static void Pages_OnCommand(CommandEventArgs e)
         {
             if (m_KeyedByHandler.TryGetValue(e.Mobile, out var entry))
+            {
                 e.Mobile.SendGump(new PageEntryGump(e.Mobile, entry));
+            }
             else if (List.Count > 0)
+            {
                 e.Mobile.SendGump(new PageQueueGump());
+            }
             else
+            {
                 e.Mobile.SendMessage("The page queue is empty.");
+            }
         }
 
         public static bool IsHandling(Mobile check) => m_KeyedByHandler.ContainsKey(check);
@@ -187,7 +212,9 @@ namespace Server.Engines.Help
         public static void Remove(PageEntry e)
         {
             if (e == null)
+            {
                 return;
+            }
 
             e.Stop();
 
@@ -195,7 +222,9 @@ namespace Server.Engines.Help
             m_KeyedBySender.Remove(e.Sender);
 
             if (e.Handler != null)
+            {
                 m_KeyedByHandler.Remove(e.Handler);
+            }
         }
 
         public static PageEntry GetEntry(Mobile sender)
@@ -221,20 +250,28 @@ namespace Server.Engines.Help
                 var m = ns.Mobile;
 
                 if (m?.AccessLevel >= AccessLevel.Counselor && m.AutoPageNotify && !IsHandling(m))
+                {
                     m.SendMessage("A new page has been placed in the queue.");
+                }
 
                 if (m?.AccessLevel >= AccessLevel.Counselor && m.AutoPageNotify &&
                     Core.TickCount - m.LastMoveTime < 600000)
+                {
                     isStaffOnline = true;
+                }
             }
 
             if (!isStaffOnline)
+            {
                 entry.Sender.SendMessage(
                     "We are sorry, but no staff members are currently available to assist you.  Your page will remain in the queue until one becomes available, or until you cancel it manually."
                 );
+            }
 
             if (entry.SpeechLog != null)
+            {
                 Email.SendQueueEmail(entry, GetPageTypeName(entry.Type));
+            }
         }
     }
 }

@@ -18,7 +18,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (Parent != null || !VerifyMove(from))
+            {
                 return;
+            }
 
             if (!from.InRange(this, 2))
             {
@@ -31,9 +33,13 @@ namespace Server.Items
                 var dir = PlayerMobile.GetDirection4(from.Location, Location);
 
                 if (dir == Direction.North || dir == Direction.South)
+                {
                     ItemID = 0xA55;
+                }
                 else
+                {
                     ItemID = 0xA56;
+                }
             }
             else // unrolled
             {
@@ -44,7 +50,9 @@ namespace Server.Items
                     var entry = Campfire.GetEntry(from);
 
                     if (entry?.Safe == true)
-                        from.SendGump(new LogoutGump(entry, this));
+                    {
+                        @from.SendGump(new LogoutGump(entry, this));
+                    }
                 }
             }
         }
@@ -103,7 +111,9 @@ namespace Server.Items
                 m_CloseTimer.Stop();
 
                 if (Campfire.GetEntry(pm) != m_Entry)
+                {
                     return;
+                }
 
                 if (info.ButtonID == 1 && m_Entry.Safe && m_Bedroll.Parent == null && m_Bedroll.IsAccessibleTo(pm)
                     && m_Bedroll.VerifyMove(pm) && m_Bedroll.Map == pm.Map && pm.InRange(m_Bedroll, 2))

@@ -38,7 +38,9 @@ namespace Server.Guilds
             }
 
             if (Guild.OrderChaos && isLeader)
+            {
                 AddButton(40, 154, 0x4B9, 0x4BA, 100); // Guild Faction
+            }
 
             AddImageTiled(65, 148, 160, 26, 0xA40);
             AddImageTiled(67, 150, 156, 22, 0xBBC);
@@ -48,9 +50,13 @@ namespace Server.Guilds
             Faction f;
 
             if ((gt = guild.Type) != GuildType.Regular)
+            {
                 AddHtml(233, 152, 320, 26, gt.ToString());
+            }
             else if ((f = Faction.Find(guild.Leader)) != null)
+            {
                 AddHtml(233, 152, 320, 26, f.ToString());
+            }
 
             AddImageTiled(65, 196, 480, 4, 0x238D);
 
@@ -58,13 +64,17 @@ namespace Server.Guilds
 
             AddHtml(65, 216, 480, 80, s, true, true);
             if (isLeader)
+            {
                 AddButton(40, 251, 0x4B9, 0x4BA, 4); // Charter Edit button
+            }
 
             s = guild.Website.IsNullOrDefault("Guild website not yet set.");
 
             AddHtml(65, 306, 480, 30, s, true);
             if (isLeader)
+            {
                 AddButton(40, 313, 0x4B9, 0x4BA, 5); // Website Edit button
+            }
 
             AddCheck(65, 370, 0xD2, 0xD3, player.DisplayGuildTitle, 0);
             AddHtmlLocalized(95, 370, 150, 26, 1063085, 0x0); // Show Guild Title
@@ -81,7 +91,9 @@ namespace Server.Guilds
             var pm = (PlayerMobile)sender.Mobile;
 
             if (!IsMember(pm, guild))
+            {
                 return;
+            }
 
             pm.DisplayGuildTitle = info.IsSwitched(0);
 
@@ -119,7 +131,9 @@ namespace Server.Guilds
                     {
                         // Alliance Roster
                         if (guild.Alliance?.IsMember(guild) == true)
+                        {
                             pm.SendGump(new AllianceInfo.AllianceRosterGump(pm, guild, guild.Alliance));
+                        }
 
                         break;
                     }
@@ -155,7 +169,9 @@ namespace Server.Guilds
         public void SetCharter_Callback(Mobile from, string text)
         {
             if (!IsLeader(from, guild))
+            {
                 return;
+            }
 
             var charter = Utility.FixHtml(text.Trim());
 
@@ -173,7 +189,9 @@ namespace Server.Guilds
         public void SetWebsite_Callback(Mobile from, string text)
         {
             if (!IsLeader(from, guild))
+            {
                 return;
+            }
 
             var site = Utility.FixHtml(text.Trim());
 

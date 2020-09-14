@@ -60,9 +60,13 @@ namespace Server.Mobiles
         public override string ApplyNameSuffix(string suffix)
         {
             if (suffix.Length == 0)
+            {
                 suffix = Ethic.Hero.Definition.Adjunct.String;
+            }
             else
+            {
                 suffix = $"{suffix} {Ethic.Hero.Definition.Adjunct.String}";
+            }
 
             return base.ApplyNameSuffix(suffix);
         }

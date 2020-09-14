@@ -25,7 +25,9 @@ namespace Server.PathAlgorithms
             var v = y * 3 + x;
 
             if (v < 0 || v >= 9)
+            {
                 return Direction.North;
+            }
 
             return m_CalcDirections[v];
         }

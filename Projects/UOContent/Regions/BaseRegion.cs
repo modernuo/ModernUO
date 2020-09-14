@@ -32,7 +32,9 @@ namespace Server.Regions
         public BaseRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
         {
             if (json.data.TryGetValue("rune", out var runeName))
+            {
                 RuneName = runeName.GetString();
+            }
 
             NoLogoutDelay = json.data.TryGetValue("logoutDelay", out var logoutDelay) && !logoutDelay.GetBoolean();
         }
@@ -66,7 +68,9 @@ namespace Server.Regions
                 var br = region as BaseRegion;
 
                 if (br?.RuneName != null)
+                {
                     return br.RuneName;
+                }
 
                 region = region.Parent;
             }
@@ -82,7 +86,9 @@ namespace Server.Regions
         public override void OnEnter(Mobile m)
         {
             if (m is PlayerMobile mobile && mobile.Young && !YoungProtected)
+            {
                 mobile.SendGump(new YoungDungeonWarning());
+            }
         }
 
         public override bool AcceptsSpawnsFrom(Region region) =>
@@ -92,7 +98,9 @@ namespace Server.Regions
         public void InitRectangles()
         {
             if (Rectangles != null)
+            {
                 return;
+            }
 
             // Test if area rectangles are overlapping, and in that case break them into smaller non overlapping rectangles
             for (var i = 0; i < Area.Length; i++)
@@ -118,26 +126,34 @@ namespace Server.Regions
                             var ez = rect.End.X;
 
                             if (l1 < l2)
+                            {
                                 m_RectBuffer2.Add(new Rectangle3D(new Point3D(l1, t1, sz), new Point3D(l2, b1, ez)));
+                            }
 
                             if (r1 > r2)
+                            {
                                 m_RectBuffer2.Add(new Rectangle3D(new Point3D(r2, t1, sz), new Point3D(r1, b1, ez)));
+                            }
 
                             if (t1 < t2)
+                            {
                                 m_RectBuffer2.Add(
                                     new Rectangle3D(
                                         new Point3D(Math.Max(l1, l2), t1, sz),
                                         new Point3D(Math.Min(r1, r2), t2, ez)
                                     )
                                 );
+                            }
 
                             if (b1 > b2)
+                            {
                                 m_RectBuffer2.Add(
                                     new Rectangle3D(
                                         new Point3D(Math.Max(l1, l2), b2, sz),
                                         new Point3D(Math.Min(r1, r2), b1, ez)
                                     )
                                 );
+                            }
                         }
                     }
                 }

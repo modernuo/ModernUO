@@ -374,9 +374,14 @@ namespace Server.Tests.Network.Packets
             expectedData.WriteAsciiFixed(ref pos, title, 60);
             byte flags = 0x00;
             if (warmode)
+            {
                 flags |= 0x01;
+            }
+
             if (canLift)
+            {
                 flags |= 0x02;
+            }
 
             expectedData.Write(ref pos, flags);
 

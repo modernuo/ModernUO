@@ -51,7 +51,9 @@ namespace Server.Guilds
             AddHtmlLocalized(20, 80, 120, 26, 1063025, 0x0, true); // <i>Alliance</i>
 
             if (otherAlliance?.IsMember(m_Other) == true)
+            {
                 AddHtml(150, 83, 360, 26, otherAlliance.Name);
+            }
 
             AddHtmlLocalized(20, 110, 120, 26, 1063139, 0x0, true); // <i>Abbreviation</i>
             AddHtml(150, 113, 120, 26, m_Other.Abbreviation);
@@ -69,13 +71,17 @@ namespace Server.Guilds
                 var timeRemaining = TimeSpan.Zero;
 
                 if (activeWar.WarLength != TimeSpan.Zero && activeWar.WarBeginning + activeWar.WarLength > DateTime.UtcNow)
+                {
                     timeRemaining = activeWar.WarBeginning + activeWar.WarLength - DateTime.UtcNow;
+                }
 
                 time = $"{timeRemaining.Hours:D2}:{DateTime.MinValue + timeRemaining:mm}";
 
                 otherWar = m_Other.FindActiveWar(guild);
                 if (otherWar != null)
+                {
                     otherKills = $"{otherWar.Kills}/{otherWar.MaxKills}";
+                }
             }
             else if (PendingWar)
             {
@@ -85,7 +91,9 @@ namespace Server.Guilds
 
                 otherWar = m_Other.FindPendingWar(guild);
                 if (otherWar != null)
+                {
                     otherKills = Color($"{otherWar.Kills}/{otherWar.MaxKills}", 0x990000);
+                }
             }
 
             AddHtmlLocalized(280, 110, 120, 26, 1062966, 0x0, true); // <i>Your Kills</i>
@@ -185,7 +193,9 @@ namespace Server.Guilds
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (!(sender.Mobile is PlayerMobile pm && IsMember(pm, guild)))
+            {
                 return;
+            }
 
             var playerRank = pm.GuildRank;
 
@@ -463,15 +473,19 @@ namespace Server.Guilds
                             else if (otherAlliance != null)
                             {
                                 if (otherAlliance.IsPendingMember(m_Other))
+                                {
                                     pm.SendLocalizedMessage(
                                         1063416,
                                         m_Other.Name
                                     ); // ~1_val~ is currently considering another alliance proposal.
+                                }
                                 else
+                                {
                                     pm.SendLocalizedMessage(
                                         1063426,
                                         m_Other.Name
                                     ); // ~1_val~ already belongs to an alliance.
+                                }
                             }
                             else if (m_Other.AcceptedWars.Count > 0 || m_Other.PendingWars.Count > 0)
                             {
@@ -509,15 +523,19 @@ namespace Server.Guilds
                             else if (otherAlliance != null)
                             {
                                 if (otherAlliance.IsPendingMember(m_Other))
+                                {
                                     pm.SendLocalizedMessage(
                                         1063416,
                                         m_Other.Name
                                     ); // ~1_val~ is currently considering another alliance proposal.
+                                }
                                 else
+                                {
                                     pm.SendLocalizedMessage(
                                         1063426,
                                         m_Other.Name
                                     ); // ~1_val~ already belongs to an alliance.
+                                }
                             }
                             else if (alliance.IsPendingMember(guild))
                             {
@@ -565,7 +583,9 @@ namespace Server.Guilds
                 case 10: // Show Alliance Roster
                     {
                         if (alliance != null && alliance == otherAlliance)
+                        {
                             pm.SendGump(new AllianceInfo.AllianceRosterGump(pm, guild, alliance));
+                        }
 
                         break;
                     }
@@ -696,13 +716,17 @@ namespace Server.Guilds
         public void CreateAlliance_Callback(Mobile from, string text)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return;
+            }
 
             var alliance = guild.Alliance;
             var otherAlliance = m_Other.Alliance;
 
             if (!IsMember(from, guild) || alliance != null)
+            {
                 return;
+            }
 
             var playerRank = pm.GuildRank;
 
@@ -720,12 +744,16 @@ namespace Server.Guilds
             else if (otherAlliance != null)
             {
                 if (otherAlliance.IsPendingMember(m_Other))
+                {
                     pm.SendLocalizedMessage(
                         1063416,
                         m_Other.Name
                     ); // ~1_val~ is currently considering another alliance proposal.
+                }
                 else
+                {
                     pm.SendLocalizedMessage(1063426, m_Other.Name); // ~1_val~ already belongs to an alliance.
+                }
             }
             else if (m_Other.AcceptedWars.Count > 0 || m_Other.PendingWars.Count > 0)
             {

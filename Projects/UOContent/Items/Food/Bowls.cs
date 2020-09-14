@@ -65,7 +65,9 @@ namespace Server.Items
         public override bool Eat(Mobile from)
         {
             if (!base.Eat(from))
+            {
                 return false;
+            }
 
             from.AddToBackpack(new EmptyWoodenBowl());
             return true;
@@ -103,7 +105,9 @@ namespace Server.Items
         public override bool Eat(Mobile from)
         {
             if (!base.Eat(from))
+            {
                 return false;
+            }
 
             from.AddToBackpack(new EmptyWoodenBowl());
             return true;
@@ -141,7 +145,9 @@ namespace Server.Items
         public override bool Eat(Mobile from)
         {
             if (!base.Eat(from))
+            {
                 return false;
+            }
 
             from.AddToBackpack(new EmptyWoodenBowl());
             return true;
@@ -179,7 +185,9 @@ namespace Server.Items
         public override bool Eat(Mobile from)
         {
             if (!base.Eat(from))
+            {
                 return false;
+            }
 
             from.AddToBackpack(new EmptyWoodenBowl());
             return true;
@@ -217,7 +225,9 @@ namespace Server.Items
         public override bool Eat(Mobile from)
         {
             if (!base.Eat(from))
+            {
                 return false;
+            }
 
             from.AddToBackpack(new EmptyPewterBowl());
             return true;
@@ -255,7 +265,9 @@ namespace Server.Items
         public override bool Eat(Mobile from)
         {
             if (!base.Eat(from))
+            {
                 return false;
+            }
 
             from.AddToBackpack(new EmptyPewterBowl());
             return true;
@@ -293,7 +305,9 @@ namespace Server.Items
         public override bool Eat(Mobile from)
         {
             if (!base.Eat(from))
+            {
                 return false;
+            }
 
             from.AddToBackpack(new EmptyPewterBowl());
             return true;
@@ -331,7 +345,9 @@ namespace Server.Items
         public override bool Eat(Mobile from)
         {
             if (!base.Eat(from))
+            {
                 return false;
+            }
 
             from.AddToBackpack(new EmptyPewterBowl());
             return true;
@@ -369,7 +385,9 @@ namespace Server.Items
         public override bool Eat(Mobile from)
         {
             if (!base.Eat(from))
+            {
                 return false;
+            }
 
             from.AddToBackpack(new EmptyPewterBowl());
             return true;
@@ -457,7 +475,9 @@ namespace Server.Items
         public override bool Eat(Mobile from)
         {
             if (!base.Eat(from))
+            {
                 return false;
+            }
 
             from.AddToBackpack(new EmptyWoodenTub());
             return true;
@@ -495,7 +515,9 @@ namespace Server.Items
         public override bool Eat(Mobile from)
         {
             if (!base.Eat(from))
+            {
                 return false;
+            }
 
             from.AddToBackpack(new EmptyWoodenTub());
             return true;

@@ -23,7 +23,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            {
                 return;
+            }
 
             if (info.ButtonID == 1)
             {
@@ -45,9 +47,13 @@ namespace Server.Gumps
                             GuildGump.EnsureClosed(m_Mobile);
 
                             if (m_Guild.WarDeclarations.Count > 0)
+                            {
                                 m_Mobile.SendGump(new GuildRescindDeclarationGump(m_Mobile, m_Guild));
+                            }
                             else
+                            {
                                 m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                            }
                         }
                     }
                 }

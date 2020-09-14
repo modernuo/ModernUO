@@ -184,11 +184,17 @@ namespace Server.Items
                 if (magery >= 1000)
                 {
                     if (magery >= 1200)
+                    {
                         propertyCounts = m_LegendPropertyCounts;
+                    }
                     else if (magery >= 1100)
+                    {
                         propertyCounts = m_ElderPropertyCounts;
+                    }
                     else
+                    {
                         propertyCounts = m_GrandPropertyCounts;
+                    }
 
                     minIntensity = 55;
                     maxIntensity = 75;
@@ -212,7 +218,9 @@ namespace Server.Items
             }
 
             if (makersMark)
-                Crafter = from;
+            {
+                Crafter = @from;
+            }
 
             m_Quality = (BookQuality)(quality - 1);
 
@@ -264,9 +272,13 @@ namespace Server.Items
             if (obj is Spellbook book)
             {
                 if (book.BookCount == 64)
+                {
                     book.Content = ulong.MaxValue;
+                }
                 else
+                {
                     book.Content = (1ul << book.BookCount) - 1;
+                }
 
                 from.SendMessage("The spellbook has been filled.");
 
@@ -288,7 +300,9 @@ namespace Server.Items
         private static void EventSink_OpenSpellbookRequest(Mobile from, int typeID)
         {
             if (!DesignContext.Check(from))
+            {
                 return; // They are customizing
+            }
 
             var type = typeID switch
             {
@@ -309,7 +323,10 @@ namespace Server.Items
 
         private static void EventSink_TargetedSpell(Mobile from, IEntity target, int spellId)
         {
-            if (!DesignContext.Check(from)) return; // They are customizing
+            if (!DesignContext.Check(from))
+            {
+                return; // They are customizing
+            }
 
             var book = Find(from, spellId);
 
@@ -322,20 +339,28 @@ namespace Server.Items
             var move = SpellRegistry.GetSpecialMove(spellId);
 
             if (move != null)
-                SpecialMove.SetCurrentMove(from, move);
+            {
+                SpecialMove.SetCurrentMove(@from, move);
+            }
             else
-                SpellRegistry.NewSpell(spellId, from, null)?.Cast();
+            {
+                SpellRegistry.NewSpell(spellId, @from, null)?.Cast();
+            }
         }
 
         private static void EventSink_CastSpellRequest(Mobile from, int spellID, Item item)
         {
             if (!DesignContext.Check(from))
+            {
                 return; // They are customizing
+            }
 
             var book = item as Spellbook;
 
             if (book?.HasSpell(spellID) != true)
-                book = Find(from, spellID);
+            {
+                book = Find(@from, spellID);
+            }
 
             if (book?.HasSpell(spellID) == true)
             {
@@ -350,9 +375,13 @@ namespace Server.Items
                     var spell = SpellRegistry.NewSpell(spellID, from, null);
 
                     if (spell != null)
+                    {
                         spell.Cast();
+                    }
                     else
-                        from.SendLocalizedMessage(502345); // This spell has been temporarily disabled.
+                    {
+                        @from.SendLocalizedMessage(502345); // This spell has been temporarily disabled.
+                    }
                 }
             }
             else
@@ -364,19 +393,39 @@ namespace Server.Items
         public static SpellbookType GetTypeForSpell(int spellID)
         {
             if (spellID >= 0 && spellID < 64)
+            {
                 return SpellbookType.Regular;
+            }
+
             if (spellID >= 100 && spellID < 117)
+            {
                 return SpellbookType.Necromancer;
+            }
+
             if (spellID >= 200 && spellID < 210)
+            {
                 return SpellbookType.Paladin;
+            }
+
             if (spellID >= 400 && spellID < 406)
+            {
                 return SpellbookType.Samurai;
+            }
+
             if (spellID >= 500 && spellID < 508)
+            {
                 return SpellbookType.Ninja;
+            }
+
             if (spellID >= 600 && spellID < 617)
+            {
                 return SpellbookType.Arcanist;
+            }
+
             if (spellID >= 677 && spellID < 693)
+            {
                 return SpellbookType.Mystic;
+            }
 
             return SpellbookType.Invalid;
         }
@@ -400,7 +449,9 @@ namespace Server.Items
         public static Spellbook Find(Mobile from, int spellID, SpellbookType type)
         {
             if (from == null)
+            {
                 return null;
+            }
 
             if (from.Deleted)
             {
@@ -411,9 +462,13 @@ namespace Server.Items
             var searchAgain = false;
 
             if (!m_Table.TryGetValue(from, out var list))
-                m_Table[from] = list = FindAllSpellbooks(from);
+            {
+                m_Table[@from] = list = FindAllSpellbooks(@from);
+            }
             else
+            {
                 searchAgain = true;
+            }
 
             var book = FindSpellbookInList(list, from, spellID, type);
 
@@ -434,13 +489,17 @@ namespace Server.Items
             for (var i = list.Count - 1; i >= 0; --i)
             {
                 if (i >= list.Count)
+                {
                     continue;
+                }
 
                 var book = list[i];
 
                 if (!book.Deleted && (book.Parent == from || pack != null && book.Parent == pack) &&
                     ValidateSpellbook(book, spellID, type))
+                {
                     return book;
+                }
 
                 list.RemoveAt(i);
             }
@@ -455,13 +514,19 @@ namespace Server.Items
             var spellbook = FindEquippedSpellbook(from);
 
             if (spellbook != null)
+            {
                 list.Add(spellbook);
+            }
 
             var pack = from.Backpack;
 
             for (var i = 0; i < pack?.Items.Count; ++i)
+            {
                 if (pack.Items[i] is Spellbook sp)
+                {
                     list.Add(sp);
+                }
+            }
 
             return list;
         }
@@ -474,16 +539,24 @@ namespace Server.Items
         public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
         {
             if (!Ethic.CheckTrade(from, to, newOwner, this))
+            {
                 return false;
+            }
 
             return base.AllowSecureTrade(from, to, newOwner, accepted);
         }
 
         public override bool CanEquip(Mobile from)
         {
-            if (!Ethic.CheckEquip(from, this)) return false;
+            if (!Ethic.CheckEquip(from, this))
+            {
+                return false;
+            }
 
-            if (!from.CanBeginAction<BaseWeapon>()) return false;
+            if (!from.CanBeginAction<BaseWeapon>())
+            {
+                return false;
+            }
 
             return base.CanEquip(from);
         }
@@ -496,7 +569,10 @@ namespace Server.Items
             {
                 var type = GetTypeForSpell(scroll.SpellID);
 
-                if (type != SpellbookType) return false;
+                if (type != SpellbookType)
+                {
+                    return false;
+                }
 
                 if (HasSpell(scroll.SpellID))
                 {
@@ -526,7 +602,9 @@ namespace Server.Items
         public override void OnAfterDuped(Item newItem)
         {
             if (!(newItem is Spellbook book))
+            {
                 return;
+            }
 
             book.Attributes = new AosAttributes(newItem, Attributes);
             book.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
@@ -547,13 +625,19 @@ namespace Server.Items
                     var modName = Serial.ToString();
 
                     if (strBonus != 0)
-                        from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    {
+                        @from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    }
 
                     if (dexBonus != 0)
-                        from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    {
+                        @from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    }
 
                     if (intBonus != 0)
-                        from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    {
+                        @from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    }
                 }
 
                 from.CheckStatTimers();
@@ -590,7 +674,9 @@ namespace Server.Items
             var ns = to.NetState;
 
             if (ns == null)
+            {
                 return;
+            }
 
             if (Parent == null)
             {
@@ -600,9 +686,13 @@ namespace Server.Items
             {
                 // What will happen if the client doesn't know about our parent?
                 if (ns.ContainerGridLines)
+                {
                     to.Send(new ContainerContentUpdate6017(this));
+                }
                 else
+                {
                     to.Send(new ContainerContentUpdate(this));
+                }
             }
             else if (Parent is Mobile)
             {
@@ -611,9 +701,13 @@ namespace Server.Items
             }
 
             if (ns.HighSeas)
+            {
                 to.Send(new DisplaySpellbookHS(Serial));
+            }
             else
+            {
                 to.Send(new DisplaySpellbook(Serial));
+            }
 
             if (ObjectPropertyList.Enabled)
             {
@@ -624,17 +718,25 @@ namespace Server.Items
                 else
                 {
                     if (ns.ContainerGridLines)
+                    {
                         to.Send(new SpellbookContent6017(Serial, BookOffset + 1, m_Content));
+                    }
                     else
+                    {
                         to.Send(new SpellbookContent(Serial, BookOffset + 1, m_Content));
+                    }
                 }
             }
             else
             {
                 if (ns.ContainerGridLines)
+                {
                     to.Send(new SpellbookContent6017(Serial, BookOffset + 1, m_Content));
+                }
                 else
+                {
                     to.Send(new SpellbookContent(Serial, BookOffset + 1, m_Content));
+                }
             }
         }
 
@@ -643,13 +745,19 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_Quality == BookQuality.Exceptional)
+            {
                 list.Add(1063341); // exceptional
+            }
 
             if (m_EngravedText != null)
+            {
                 list.Add(1072305, m_EngravedText); // Engraved: ~1_INSCRIPTION~
+            }
 
             if (m_Crafter != null)
+            {
                 list.Add(1050043, m_Crafter.Name); // crafted by ~1_NAME~
+            }
 
             SkillBonuses.GetProperties(list);
 
@@ -657,89 +765,141 @@ namespace Server.Items
             {
                 var entry = SlayerGroup.GetEntryByName(m_Slayer);
                 if (entry != null)
+                {
                     list.Add(entry.Title);
+                }
             }
 
             if (m_Slayer2 != SlayerName.None)
             {
                 var entry = SlayerGroup.GetEntryByName(m_Slayer2);
                 if (entry != null)
+                {
                     list.Add(entry.Title);
+                }
             }
 
             int prop;
 
             if ((prop = Attributes.WeaponDamage) != 0)
+            {
                 list.Add(1060401, prop.ToString()); // damage increase ~1_val~%
+            }
 
             if ((prop = Attributes.DefendChance) != 0)
+            {
                 list.Add(1060408, prop.ToString()); // defense chance increase ~1_val~%
+            }
 
             if ((prop = Attributes.BonusDex) != 0)
+            {
                 list.Add(1060409, prop.ToString()); // dexterity bonus ~1_val~
+            }
 
             if ((prop = Attributes.EnhancePotions) != 0)
+            {
                 list.Add(1060411, prop.ToString()); // enhance potions ~1_val~%
+            }
 
             if ((prop = Attributes.CastRecovery) != 0)
+            {
                 list.Add(1060412, prop.ToString()); // faster cast recovery ~1_val~
+            }
 
             if ((prop = Attributes.CastSpeed) != 0)
+            {
                 list.Add(1060413, prop.ToString()); // faster casting ~1_val~
+            }
 
             if ((prop = Attributes.AttackChance) != 0)
+            {
                 list.Add(1060415, prop.ToString()); // hit chance increase ~1_val~%
+            }
 
             if ((prop = Attributes.BonusHits) != 0)
+            {
                 list.Add(1060431, prop.ToString()); // hit point increase ~1_val~
+            }
 
             if ((prop = Attributes.BonusInt) != 0)
+            {
                 list.Add(1060432, prop.ToString()); // intelligence bonus ~1_val~
+            }
 
             if ((prop = Attributes.LowerManaCost) != 0)
+            {
                 list.Add(1060433, prop.ToString()); // lower mana cost ~1_val~%
+            }
 
             if ((prop = Attributes.LowerRegCost) != 0)
+            {
                 list.Add(1060434, prop.ToString()); // lower reagent cost ~1_val~%
+            }
 
             if ((prop = Attributes.Luck) != 0)
+            {
                 list.Add(1060436, prop.ToString()); // luck ~1_val~
+            }
 
             if ((prop = Attributes.BonusMana) != 0)
+            {
                 list.Add(1060439, prop.ToString()); // mana increase ~1_val~
+            }
 
             if ((prop = Attributes.RegenMana) != 0)
+            {
                 list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
+            }
 
             if (Attributes.NightSight != 0)
+            {
                 list.Add(1060441); // night sight
+            }
 
             if ((prop = Attributes.ReflectPhysical) != 0)
+            {
                 list.Add(1060442, prop.ToString()); // reflect physical damage ~1_val~%
+            }
 
             if ((prop = Attributes.RegenStam) != 0)
+            {
                 list.Add(1060443, prop.ToString()); // stamina regeneration ~1_val~
+            }
 
             if ((prop = Attributes.RegenHits) != 0)
+            {
                 list.Add(1060444, prop.ToString()); // hit point regeneration ~1_val~
+            }
 
             if (Attributes.SpellChanneling != 0)
+            {
                 list.Add(1060482); // spell channeling
+            }
 
             if ((prop = Attributes.SpellDamage) != 0)
+            {
                 list.Add(1060483, prop.ToString()); // spell damage increase ~1_val~%
+            }
 
             if ((prop = Attributes.BonusStam) != 0)
+            {
                 list.Add(1060484, prop.ToString()); // stamina increase ~1_val~
+            }
 
             if ((prop = Attributes.BonusStr) != 0)
+            {
                 list.Add(1060485, prop.ToString()); // strength bonus ~1_val~
+            }
 
             if ((prop = Attributes.WeaponSpeed) != 0)
+            {
                 list.Add(1060486, prop.ToString()); // swing speed increase ~1_val~%
+            }
 
             if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
+            {
                 list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
+            }
 
             list.Add(1042886, SpellCount.ToString()); // ~1_NUMBERS_OF_SPELLS~ Spells
         }
@@ -749,7 +909,9 @@ namespace Server.Items
             base.OnSingleClick(from);
 
             if (m_Crafter != null)
-                LabelTo(from, 1050043, m_Crafter.Name); // crafted by ~1_NAME~
+            {
+                LabelTo(@from, 1050043, m_Crafter.Name); // crafted by ~1_NAME~
+            }
 
             LabelTo(from, 1042886, SpellCount.ToString());
         }
@@ -759,11 +921,15 @@ namespace Server.Items
             var pack = from.Backpack;
 
             if (Parent == from || pack != null && Parent == pack)
-                DisplayTo(from);
+            {
+                DisplayTo(@from);
+            }
             else
-                from.SendLocalizedMessage(
+            {
+                @from.SendLocalizedMessage(
                     500207
                 ); // The spellbook must be in your backpack (and not in a container within) to open.
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -839,7 +1005,9 @@ namespace Server.Items
             SkillBonuses ??= new AosSkillBonuses(this);
 
             if (Core.AOS && Parent is Mobile mobile)
+            {
                 SkillBonuses.AddTo(mobile);
+            }
 
             var strBonus = Attributes.BonusStr;
             var dexBonus = Attributes.BonusDex;
@@ -852,13 +1020,19 @@ namespace Server.Items
                     var modName = Serial.ToString();
 
                     if (strBonus != 0)
+                    {
                         m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    }
 
                     if (dexBonus != 0)
+                    {
                         m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    }
 
                     if (intBonus != 0)
+                    {
                         m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    }
                 }
 
                 m.CheckStatTimers();

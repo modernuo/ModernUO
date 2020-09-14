@@ -53,7 +53,9 @@ namespace Server.Mobiles
                 base.Hue = value;
 
                 if (InternalItem != null)
+                {
                     InternalItem.Hue = value;
+                }
             }
         }
 
@@ -64,7 +66,9 @@ namespace Server.Mobiles
             set
             {
                 if (InternalItem != null)
+                {
                     InternalItem.ItemID = value;
+                }
             }
         }
 
@@ -95,18 +99,26 @@ namespace Server.Mobiles
                     }
                     else
                     {
-                        if (m_Rider != null) Dismount(m_Rider);
+                        if (m_Rider != null)
+                        {
+                            Dismount(m_Rider);
+                        }
 
                         Dismount(value);
 
                         if (InternalItem != null)
+                        {
                             value.AddItem(InternalItem);
+                        }
 
                         value.Direction = Direction;
 
                         Internalize();
 
-                        if (value.Target is Bola.BolaTarget) Target.Cancel(value);
+                        if (value.Target is Bola.BolaTarget)
+                        {
+                            Target.Cancel(value);
+                        }
                     }
 
                     m_Rider = value;
@@ -117,13 +129,17 @@ namespace Server.Mobiles
         public virtual void OnRiderDamaged(int amount, Mobile from, bool willKill)
         {
             if (m_Rider == null)
+            {
                 return;
+            }
 
             var attacker = from ?? m_Rider.FindMostRecentDamager(true);
 
             if (!(attacker == this || attacker == m_Rider || willKill || DateTime.UtcNow < NextMountAbility)
                 && DoMountAbility(amount, from))
+            {
                 NextMountAbility = DateTime.UtcNow + MountAbilityDelay;
+            }
         }
 
         public override bool OnBeforeDeath()
@@ -178,7 +194,9 @@ namespace Server.Mobiles
                         InternalItem = reader.ReadItem();
 
                         if (InternalItem == null)
+                        {
                             Delete();
+                        }
 
                         break;
                     }
@@ -193,20 +211,28 @@ namespace Server.Mobiles
         public override void OnDoubleClick(Mobile from)
         {
             if (IsDeadPet)
+            {
                 return;
+            }
 
             if (from.IsBodyMod && !from.Body.IsHuman)
             {
                 if (Core.AOS) // You cannot ride a mount in your current form.
-                    PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1062061, from.NetState);
+                {
+                    PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1062061, @from.NetState);
+                }
                 else
-                    from.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
+                {
+                    @from.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
+                }
 
                 return;
             }
 
             if (!CheckMountAllowed(from))
+            {
                 return;
+            }
 
             if (from.Mounted)
             {
@@ -221,7 +247,9 @@ namespace Server.Mobiles
             }
 
             if (!DesignContext.Check(from))
+            {
                 return;
+            }
 
             if (from.HasTrade)
             {
@@ -238,14 +266,18 @@ namespace Server.Mobiles
                 if (canAccess)
                 {
                     if (Poisoned)
+                    {
                         PrivateOverheadMessage(
                             MessageType.Regular,
                             0x3B2,
                             1049692,
-                            from.NetState
+                            @from.NetState
                         ); // This mount is too ill to ride.
+                    }
                     else
-                        Rider = from;
+                    {
+                        Rider = @from;
+                    }
                 }
                 else if (!Controlled && !Summoned)
                 {
@@ -269,7 +301,9 @@ namespace Server.Mobiles
             var mount = m.Mount;
 
             if (mount != null)
+            {
                 mount.Rider = null;
+            }
         }
 
         // 1040024 You are still too dazed from being knocked off your mount to ride!
@@ -323,7 +357,9 @@ namespace Server.Mobiles
         public override DeathMoveResult OnParentDeath(Mobile parent)
         {
             if (m_Mount != null)
+            {
                 m_Mount.Rider = null;
+            }
 
             return DeathMoveResult.RemainEquipped;
         }
@@ -350,7 +386,9 @@ namespace Server.Mobiles
                         m_Mount = reader.ReadMobile() as BaseMount;
 
                         if (m_Mount == null)
+                        {
                             Delete();
+                        }
 
                         break;
                     }

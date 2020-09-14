@@ -49,7 +49,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (ArmorAttributes.SelfRepair == 0)
+            {
                 ArmorAttributes.SelfRepair = 1;
+            }
         }
     }
 }

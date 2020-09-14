@@ -23,9 +23,13 @@ namespace Server.Engines.VeteranRewards
             AddHtmlLocalized(30, 55, 300, 35, 1006000); // You have selected:
 
             if (entry.NameString != null)
+            {
                 AddHtml(335, 55, 150, 35, entry.NameString);
+            }
             else
+            {
                 AddHtmlLocalized(335, 55, 150, 35, entry.Name);
+            }
 
             AddHtmlLocalized(30, 95, 300, 35, 1006001); // This will be assigned to this character:
             AddLabel(335, 95, 0, from.Name);
@@ -52,26 +56,36 @@ namespace Server.Engines.VeteranRewards
             if (info.ButtonID == 1)
             {
                 if (!RewardSystem.HasAccess(m_From, m_Entry))
+                {
                     return;
+                }
 
                 var item = m_Entry.Construct();
 
                 if (item != null)
                 {
                     if (item is RedSoulstone soulstone)
+                    {
                         soulstone.Account = m_From.Account.Username;
+                    }
 
                     if (RewardSystem.ConsumeRewardPoint(m_From))
+                    {
                         m_From.AddToBackpack(item);
+                    }
                     else
+                    {
                         item.Delete();
+                    }
                 }
             }
 
             RewardSystem.ComputeRewardInfo(m_From, out var cur, out var max);
 
             if (cur < max)
+            {
                 m_From.SendGump(new RewardNoticeGump(m_From));
+            }
         }
     }
 }

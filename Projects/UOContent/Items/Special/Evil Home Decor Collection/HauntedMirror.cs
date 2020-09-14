@@ -31,7 +31,9 @@ namespace Server.Items
                 else if (Utility.InRange(old, Location, 2) && !Utility.InRange(m.Location, Location, 2))
                 {
                     if (ItemID == 0x2A7C || ItemID == 0x2A7E)
+                    {
                         ItemID -= 1;
+                    }
                 }
             }
         }

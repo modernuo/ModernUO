@@ -34,18 +34,26 @@ namespace Server.Commands.Generic
                 var ext = Extensions.Parse(from, ref args);
 
                 if (!CheckObjectTypes(from, command, ext, out var items, out var mobiles))
+                {
                     return;
+                }
 
                 if (!(items || mobiles))
+                {
                     return;
+                }
 
                 var eable = map.GetObjectsInBounds(rect, items, mobiles);
 
                 var objs = new List<object>();
 
                 foreach (var obj in eable)
-                    if ((!mobiles || obj is Mobile) && BaseCommand.IsAccessible(from, obj) && ext.IsValid(obj))
+                {
+                    if ((!mobiles || obj is Mobile) && BaseCommand.IsAccessible(@from, obj) && ext.IsValid(obj))
+                    {
                         objs.Add(obj);
+                    }
+                }
 
                 eable.Free();
                 ext.Filter(objs);

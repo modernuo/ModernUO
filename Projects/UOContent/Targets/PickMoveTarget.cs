@@ -18,7 +18,9 @@ namespace Server.Targets
             }
 
             if (o is Item || o is Mobile)
-                from.Target = new MoveTarget(o);
+            {
+                @from.Target = new MoveTarget(o);
+            }
         }
     }
 }

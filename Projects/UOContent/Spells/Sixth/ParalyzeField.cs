@@ -45,13 +45,21 @@ namespace Server.Spells.Sixth
                 bool eastToWest;
 
                 if (rx >= 0 && ry >= 0)
+                {
                     eastToWest = false;
+                }
                 else if (rx >= 0)
+                {
                     eastToWest = true;
+                }
                 else if (ry >= 0)
+                {
                     eastToWest = true;
+                }
                 else
+                {
                     eastToWest = false;
+                }
 
                 Effects.PlaySound(p, Caster.Map, 0x20B);
 
@@ -64,7 +72,9 @@ namespace Server.Spells.Sixth
                     var loc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
 
                     if (!SpellHelper.AdjustField(ref loc, Caster.Map, 12, false))
+                    {
                         continue;
+                    }
 
                     Item item = new InternalItem(Caster, itemID, loc, Caster.Map, duration);
                     item.ProcessDelta();
@@ -103,12 +113,18 @@ namespace Server.Spells.Sixth
                 MoveToWorld(loc, map);
 
                 if (caster.InLOS(this))
+                {
                     Visible = true;
+                }
                 else
+                {
                     Delete();
+                }
 
                 if (Deleted)
+                {
                     return;
+                }
 
                 m_Caster = caster;
 
@@ -168,7 +184,9 @@ namespace Server.Spells.Sixth
                     SpellHelper.ValidIndirectTarget(m_Caster, m) && m_Caster.CanBeHarmful(m, false))
                 {
                     if (SpellHelper.CanRevealCaster(m))
+                    {
                         m_Caster.RevealingAction();
+                    }
 
                     m_Caster.DoHarmful(m);
 
@@ -182,7 +200,9 @@ namespace Server.Spells.Sixth
                         );
 
                         if (!m.Player)
+                        {
                             duration *= 3.0;
+                        }
                     }
                     else
                     {

@@ -90,7 +90,9 @@ namespace Server.Gumps
                 var count = names.Length - start;
 
                 if (count > EntryCount)
+                {
                     count = EntryCount;
+                }
 
                 var totalHeight = OffsetSize + (count + 2) * (EntryHeight + OffsetSize);
                 var backHeight = BorderSize + totalHeight + BorderSize;
@@ -125,12 +127,15 @@ namespace Server.Gumps
                     );
 
                     if (PrevLabel)
+                    {
                         AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
+                    }
                 }
 
                 x += PrevWidth + OffsetSize;
 
                 if (!OldStyle)
+                {
                     AddImageTiled(
                         x - (OldStyle ? OffsetSize : 0),
                         y,
@@ -138,11 +143,14 @@ namespace Server.Gumps
                         EntryHeight,
                         HeaderGumpID
                     );
+                }
 
                 x += emptyWidth + OffsetSize;
 
                 if (!OldStyle)
+                {
                     AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
+                }
 
                 if (page < pages)
                 {
@@ -157,13 +165,17 @@ namespace Server.Gumps
                     );
 
                     if (NextLabel)
+                    {
                         AddLabel(x + NextLabelOffsetX, y + NextLabelOffsetY, TextHue, "Next");
+                    }
                 }
 
                 AddRect(0, prop.Name, 0);
 
                 for (var i = 0; i < count; ++i)
+                {
                     AddRect(i + 1, names[index], ++index);
+                }
             }
         }
 
@@ -178,10 +190,14 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
 
             if (button != 0)
+            {
                 AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, button);
+            }
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)
@@ -189,6 +205,7 @@ namespace Server.Gumps
             var index = info.ButtonID - 1;
 
             if (index >= 0 && index < m_Values.Length)
+            {
                 try
                 {
                     var toSet = m_Values[index];
@@ -206,12 +223,15 @@ namespace Server.Gumps
                     m_Mobile.SendMessage(result);
 
                     if (result == "Property has been set.")
+                    {
                         PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                    }
                 }
                 catch
                 {
                     m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
                 }
+            }
 
             m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
         }

@@ -86,7 +86,9 @@ namespace Server.Factions
         public void Register()
         {
             if (m_Town != null && m_Faction != null)
+            {
                 m_Town.RegisterGuard(this);
+            }
         }
 
         public void Unregister()
@@ -100,14 +102,18 @@ namespace Server.Factions
             var theirFaction = Faction.Find(m);
 
             if (theirFaction == null && m is BaseFactionGuard guard)
+            {
                 theirFaction = guard.Faction;
+            }
 
             if (ourFaction != null && theirFaction != null && ourFaction != theirFaction)
             {
                 var reactionType = Orders.GetReaction(theirFaction).Type;
 
                 if (reactionType == ReactionType.Attack)
+                {
                     return true;
+                }
 
                 var list = m.Aggressed;
 
@@ -116,7 +122,9 @@ namespace Server.Factions
                     var ai = list[i];
 
                     if (ai.Defender is BaseFactionGuard bf && bf.Faction == ourFaction)
+                    {
                         return true;
+                    }
                 }
             }
 
@@ -149,7 +157,9 @@ namespace Server.Factions
         public override bool HandlesOnSpeech(Mobile from)
         {
             if (InRange(from, ListenRange))
+            {
                 return true;
+            }
 
             return base.HandlesOnSpeech(from);
         }
@@ -179,9 +189,13 @@ namespace Server.Factions
                 };
 
                 if (def != null && def.Number > 0)
+                {
                     Say(def.Number);
+                }
                 else if (def?.String != null)
+                {
                     Say(def.String);
+                }
             }
 
             Orders.SetReaction(faction, type);
@@ -217,7 +231,9 @@ namespace Server.Factions
                 else if (DateTime.UtcNow < m_OrdersEnd)
                 {
                     if (m_Town?.IsSheriff(from) != true || Town.FromRegion(Region) != m_Town)
+                    {
                         return;
+                    }
 
                     m_OrdersEnd = DateTime.UtcNow + TimeSpan.FromSeconds(10.0);
 
@@ -225,13 +241,21 @@ namespace Server.Factions
                     ReactionType newType = 0;
 
                     if (Insensitive.Contains(e.Speech, "attack"))
+                    {
                         newType = ReactionType.Attack;
+                    }
                     else if (Insensitive.Contains(e.Speech, "warn"))
+                    {
                         newType = ReactionType.Warn;
+                    }
                     else if (Insensitive.Contains(e.Speech, "ignore"))
+                    {
                         newType = ReactionType.Ignore;
+                    }
                     else
+                    {
                         understood = false;
+                    }
 
                     if (understood)
                     {
@@ -277,7 +301,9 @@ namespace Server.Factions
                     }
 
                     if (!understood)
+                    {
                         Say(1042183); // I'm sorry, I don't understand your orders...
+                    }
                 }
             }
         }
@@ -287,7 +313,9 @@ namespace Server.Factions
             base.GetProperties(list);
 
             if (m_Faction != null && Map == Faction.Facet)
+            {
                 list.Add(1060846, m_Faction.Definition.PropName); // Guard: ~1_val~
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -318,7 +346,9 @@ namespace Server.Factions
         public void PackStrongPotions(int count)
         {
             for (var i = 0; i < count; ++i)
+            {
                 PackStrongPotion();
+            }
         }
 
         public void PackStrongPotion()
@@ -334,7 +364,9 @@ namespace Server.Factions
         public void PackWeakPotions(int count)
         {
             for (var i = 0; i < count; ++i)
+            {
                 PackWeakPotion();
+            }
         }
 
         public void PackWeakPotion()
@@ -409,7 +441,9 @@ namespace Server.Factions
             }
 
             if (randomHair)
+            {
                 GenerateRandomHair();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -491,7 +525,9 @@ namespace Server.Factions
             Rider = reader.ReadMobile();
 
             if (Rider == null)
+            {
                 Delete();
+            }
         }
     }
 }

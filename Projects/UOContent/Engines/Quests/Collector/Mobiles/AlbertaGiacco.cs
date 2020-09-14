@@ -43,7 +43,9 @@ namespace Server.Engines.Quests.Collector
             QuestSystem qs = to.Quest as CollectorQuest;
 
             if (qs == null)
+            {
                 return false;
+            }
 
             return qs.IsObjectiveInProgress(typeof(FindAlbertaObjective))
                    || qs.IsObjectiveInProgress(typeof(SitOnTheStoolObjective))
@@ -61,11 +63,17 @@ namespace Server.Engines.Quests.Collector
                 QuestObjective obj = qs.FindObjective<FindAlbertaObjective>();
 
                 if (obj?.Completed == false)
+                {
                     obj.Complete();
+                }
                 else if (qs.IsObjectiveInProgress(typeof(SitOnTheStoolObjective)))
+                {
                     qs.AddConversation(new AlbertaStoolConversation());
+                }
                 else if (qs.IsObjectiveInProgress(typeof(ReturnPaintingObjective)))
+                {
                     qs.AddConversation(new AlbertaAfterPaintingConversation());
+                }
             }
         }
 

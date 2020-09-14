@@ -40,9 +40,13 @@ namespace Server.Gumps
             AddImageTiled(70, 55, 230, 2, 0x23C5);
 
             if (Title.String != null)
+            {
                 AddHtml(70, 35, 270, 20, Title.String);
+            }
             else if (Title.Number != 0)
+            {
                 AddHtmlLocalized(70, 35, 270, 20, Title.Number, 1);
+            }
 
             AddHtmlLocalized(50, 65, 150, 20, 1072843, 1); // Your Reward Points:
             AddLabel(230, 65, 0x64, Points.ToString());
@@ -78,7 +82,9 @@ namespace Server.Gumps
                 var half = offset + height / 2;
 
                 if (available)
+                {
                     AddButton(35, half - 6, 0x837, 0x838, 100 + i);
+                }
 
                 AddItem(
                     83 - bounds.Width / 2 - bounds.X,
@@ -88,16 +94,22 @@ namespace Server.Gumps
                 );
 
                 if (entry.Tooltip != 0)
+                {
                     AddTooltip(entry.Tooltip);
+                }
 
                 AddLabel(133, half - 10, available ? 0x64 : 0x21, entry.Price.ToString());
 
                 if (entry.Description != null)
                 {
                     if (entry.Description.String != null)
+                    {
                         AddHtml(190, offset, 114, height, entry.Description.String);
+                    }
                     else if (entry.Description.Number != 0)
+                    {
                         AddHtmlLocalized(190, offset, 114, height, entry.Description.Number, 1);
+                    }
                 }
 
                 offset += height + 10;
@@ -117,7 +129,9 @@ namespace Server.Gumps
             var choice = info.ButtonID;
 
             if (choice == 0)
+            {
                 return; // Close
+            }
 
             choice -= 100;
 
@@ -126,7 +140,9 @@ namespace Server.Gumps
                 var entry = Rewards[choice];
 
                 if (entry.Price <= Points)
+                {
                     sender.Mobile.SendGump(new RewardConfirmGump(this, choice, entry));
+                }
             }
         }
     }
@@ -168,7 +184,9 @@ namespace Server.Gumps
             AddItem(140, 120, entry.ItemID, entry.Hue);
 
             if (entry.Tooltip != 0)
+            {
                 AddTooltip(entry.Tooltip);
+            }
 
             AddHtmlLocalized(25, 22, 200, 20, 1074974, 0x7D00); // Confirm Selection
             AddImage(25, 40, 0xBBF);
@@ -183,9 +201,13 @@ namespace Server.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID == 7 && info.IsSwitched(1))
+            {
                 m_Parent.OnPicked(sender.Mobile, m_Index);
+            }
             else
+            {
                 sender.Mobile.SendGump(new RewardGump(m_Parent.Title, m_Parent.Rewards, m_Parent.Points, m_Parent.OnPicked));
+            }
         }
     }
 }

@@ -47,7 +47,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 2.0)
+            {
                 Weight = 4.0;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -106,10 +108,14 @@ namespace Server.Items
             private bool IsHerdable(BaseCreature bc)
             {
                 if (bc.IsParagon)
+                {
                     return false;
+                }
 
                 if (bc.Tamable)
+                {
                     return true;
+                }
 
                 var map = bc.Map;
 
@@ -122,8 +128,12 @@ namespace Server.Items
                         var t = bc.GetType();
 
                         foreach (var type in m_ChampTamables)
+                        {
                             if (type == t)
+                            {
                                 return true;
+                            }
+                        }
                     }
                 }
 
@@ -144,17 +154,21 @@ namespace Server.Items
                         var max = m_Creature.MinTameSkill + 30 + Utility.Random(10);
 
                         if (max <= from.Skills.Herding.Value)
+                        {
                             m_Creature.PrivateOverheadMessage(
                                 MessageType.Regular,
                                 0x3B2,
                                 502471,
-                                from.NetState
+                                @from.NetState
                             ); // That wasn't even challenging.
+                        }
 
                         if (from.CheckTargetSkill(SkillName.Herding, m_Creature, min, max))
                         {
                             if (p != from)
+                            {
                                 p = new Point2D(p.X, p.Y);
+                            }
 
                             m_Creature.TargetLocation = p;
                             from.SendLocalizedMessage(502479); // The animal walks where it was instructed to.

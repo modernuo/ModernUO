@@ -29,7 +29,9 @@ namespace Server.Items
             {
                 if (ItemID == 0x1A03 || ItemID == 0x1A05 || ItemID == 0x1A09 ||
                     ItemID == 0x1B1E || ItemID == 0x1B7F)
+                {
                     return true;
+                }
 
                 return false;
             }
@@ -49,10 +51,15 @@ namespace Server.Items
         public bool CouldFit(IPoint3D p, Map map)
         {
             if (map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) != true)
+            {
                 return false;
+            }
 
             if (FacingSouth)
+            {
                 return BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map); // north wall
+            }
+
             return BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map);     // west wall
         }
 
@@ -72,7 +79,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Core.ML && m_IsRewardItem)
+            {
                 list.Add(1076220); // 4th Year Veteran Reward
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -151,13 +160,17 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076220); // 4th Year Veteran Reward
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {
@@ -246,7 +259,9 @@ namespace Server.Items
             {
                 if (m_Skeleton?.Deleted != false || info.ButtonID != 0x1A03 && info.ButtonID != 0x1A05 &&
                     info.ButtonID != 0x1A09 && info.ButtonID != 0x1B1E && info.ButtonID != 0x1B7F)
+                {
                     return;
+                }
 
                 sender.Mobile.SendLocalizedMessage(1049780); // Where would you like to place this decoration?
                 sender.Mobile.Target = new InternalTarget(m_Skeleton, info.ButtonID);
@@ -267,7 +282,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Skeleton?.Deleted != false)
+                {
                     return;
+                }
 
                 if (!m_Skeleton.IsChildOf(from.Backpack))
                 {
@@ -287,7 +304,9 @@ namespace Server.Items
                 var map = from.Map;
 
                 if (p == null || map == null)
+                {
                     return;
+                }
 
                 var p3d = new Point3D(p);
                 var id = TileData.ItemTable[m_ItemID & TileData.MaxItemValue];
@@ -364,14 +383,21 @@ namespace Server.Items
                 public override void OnResponse(NetState sender, RelayInfo info)
                 {
                     if (m_Skeleton?.Deleted != false || m_House == null)
+                    {
                         return;
+                    }
 
                     HangingSkeleton banner = null;
 
                     if (info.ButtonID == (int)Buttons.East)
+                    {
                         banner = new HangingSkeleton(GetWestItemID(m_ItemID));
+                    }
+
                     if (info.ButtonID == (int)Buttons.South)
+                    {
                         banner = new HangingSkeleton(m_ItemID);
+                    }
 
                     if (banner != null)
                     {

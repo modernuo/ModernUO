@@ -198,7 +198,9 @@ namespace Server.Menus.Questions
             else if (info.ButtonID == 0)
             {
                 if (m_Mobile == m_Sender)
+                {
                     m_Mobile.SendLocalizedMessage(1010588); // You choose not to go to any city.
+                }
             }
             else
             {
@@ -206,7 +208,9 @@ namespace Server.Menus.Questions
                 var entries = IsInSecondAgeArea(m_Mobile) ? m_T2AEntries : m_Entries;
 
                 if (index >= 0 && index < entries.Length)
+                {
                     Teleport(entries[index]);
+                }
             }
         }
 
@@ -219,7 +223,9 @@ namespace Server.Menus.Questions
                 new TeleportTimer(m_Mobile, entry, TimeSpan.FromSeconds(10.0 + Utility.RandomDouble() * 110.0)).Start();
 
                 if (m_Mobile is PlayerMobile mobile)
+                {
                     mobile.UsedStuckMenu();
+                }
             }
             else
             {
@@ -293,11 +299,17 @@ namespace Server.Menus.Questions
 
                     Map destMap;
                     if (m_Mobile.Map == Map.Trammel)
+                    {
                         destMap = Map.Trammel;
+                    }
                     else if (m_Mobile.Map == Map.Felucca)
+                    {
                         destMap = Map.Felucca;
+                    }
                     else
+                    {
                         destMap = m_Mobile.Kills >= 5 ? Map.Felucca : Map.Trammel;
+                    }
 
                     BaseCreature.TeleportPets(m_Mobile, dest, destMap);
                     m_Mobile.MoveToWorld(dest, destMap);

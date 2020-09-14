@@ -32,10 +32,14 @@ namespace Server.Engines.Craft
         public override int CanCraft(Mobile from, BaseTool tool, Type itemType)
         {
             if (tool?.Deleted != false || tool.UsesRemaining < 0)
+            {
                 return 1044038; // You have worn out your tool!
+            }
 
             if (!BaseTool.CheckAccessible(tool, from))
+            {
                 return 1044263; // The tool must be on your person to use.
+            }
 
             return 0;
         }
@@ -43,14 +47,18 @@ namespace Server.Engines.Craft
         public override bool RetainsColorFrom(CraftItem item, Type type)
         {
             if (type != typeof(Cloth) && type != typeof(UncutCloth))
+            {
                 return false;
+            }
 
             type = item.ItemType;
 
             var contains = false;
 
             for (var i = 0; !contains && i < m_TailorColorables.Length; ++i)
+            {
                 contains = m_TailorColorables[i] == type;
+            }
 
             return contains;
         }
@@ -66,21 +74,35 @@ namespace Server.Engines.Craft
         )
         {
             if (toolBroken)
-                from.SendLocalizedMessage(1044038); // You have worn out your tool
+            {
+                @from.SendLocalizedMessage(1044038); // You have worn out your tool
+            }
 
             if (failed)
             {
                 if (lostMaterial)
+                {
                     return 1044043; // You failed to create the item, and some of your materials are lost.
+                }
+
                 return 1044157;     // You failed to create the item, but no materials were lost.
             }
 
             if (quality == 0)
+            {
                 return 502785; // You were barely able to make this item.  It's quality is below average.
+            }
+
             if (makersMark && quality == 2)
+            {
                 return 1044156; // You create an exceptional quality item and affix your maker's mark.
+            }
+
             if (quality == 2)
+            {
                 return 1044155; // You create an exceptional quality item.
+            }
+
             return 1044154;     // You create the item.
         }
 
@@ -102,7 +124,9 @@ namespace Server.Engines.Craft
             AddCraft(typeof(JesterHat), 1011375, 1025916, 7.2, 32.2, typeof(Cloth), 1044286, 15, 1044287);
 
             if (Core.AOS)
+            {
                 AddCraft(typeof(FlowerGarland), 1011375, 1028965, 10.0, 35.0, typeof(Cloth), 1044286, 5, 1044287);
+            }
 
             if (Core.SE)
             {
@@ -163,7 +187,9 @@ namespace Server.Engines.Craft
             AddCraft(typeof(Skirt), 1015279, 1025398, 29.0, 54.0, typeof(Cloth), 1044286, 10, 1044287);
 
             if (Core.AOS)
+            {
                 AddCraft(typeof(FurSarong), 1015279, 1028971, 35.0, 60.0, typeof(Cloth), 1044286, 12, 1044287);
+            }
 
             if (Core.SE)
             {
@@ -323,7 +349,9 @@ namespace Server.Engines.Craft
             }
 
             if (Core.AOS)
+            {
                 AddCraft(typeof(FurBoots), 1015288, 1028967, 50.0, 75.0, typeof(Cloth), 1044286, 12, 1044287);
+            }
 
             if (Core.SE)
             {

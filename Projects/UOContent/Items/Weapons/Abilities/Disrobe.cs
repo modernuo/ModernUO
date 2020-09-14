@@ -14,13 +14,17 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
             var toDisrobe = defender.FindItemOnLayer(Layer.InnerTorso);
 
             if (toDisrobe?.Movable == false)
+            {
                 toDisrobe = defender.FindItemOnLayer(Layer.OuterTorso);
+            }
 
             var pack = defender.Backpack;
 

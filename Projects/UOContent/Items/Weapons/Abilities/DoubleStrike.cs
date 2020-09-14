@@ -12,7 +12,9 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
@@ -35,7 +37,9 @@ namespace Server.Items
             var weapon = attacker.Weapon;
 
             if (!(weapon != null && attacker.InRange(defender, weapon.MaxRange) && attacker.InLOS(defender)))
+            {
                 return;
+            }
 
             BaseWeapon.InDoubleStrike = true;
             attacker.RevealingAction();

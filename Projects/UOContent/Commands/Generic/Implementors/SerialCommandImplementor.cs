@@ -20,9 +20,13 @@ namespace Server.Commands.Generic
                 object obj = null;
 
                 if (serial.IsItem)
+                {
                     obj = World.FindItem(serial);
+                }
                 else if (serial.IsMobile)
+                {
                     obj = World.FindMobile(serial);
+                }
 
                 if (obj == null)
                 {
@@ -72,7 +76,9 @@ namespace Server.Commands.Generic
                         var args = new string[oldArgs.Length - 2];
 
                         for (var i = 0; i < args.Length; ++i)
+                        {
                             args[i] = oldArgs[i + 2];
+                        }
 
                         RunCommand(e.Mobile, obj, command, args);
                     }

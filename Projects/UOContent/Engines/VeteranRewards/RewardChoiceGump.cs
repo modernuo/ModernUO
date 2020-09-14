@@ -37,15 +37,25 @@ namespace Server.Engines.VeteranRewards
             string intervalAsString;
 
             if (rewardInterval == TimeSpan.FromDays(30.0))
+            {
                 intervalAsString = "month";
+            }
             else if (rewardInterval == TimeSpan.FromDays(60.0))
+            {
                 intervalAsString = "two months";
+            }
             else if (rewardInterval == TimeSpan.FromDays(90.0))
+            {
                 intervalAsString = "three months";
+            }
             else if (rewardInterval == TimeSpan.FromDays(365.0))
+            {
                 intervalAsString = "year";
+            }
             else
+            {
                 intervalAsString = $"{rewardInterval.TotalDays} day{(rewardInterval.TotalDays == 1 ? "" : "s")}";
+            }
 
             AddPage(1);
 
@@ -84,15 +94,21 @@ namespace Server.Engines.VeteranRewards
                 page += PagesPerCategory(categories[i]);
 
                 if (categories[i].NameString != null)
+                {
                     AddHtml(135, 180 + i * 40, 300, 20, categories[i].NameString);
+                }
                 else
+                {
                     AddHtmlLocalized(135, 180 + i * 40, 300, 20, categories[i].Name);
+                }
             }
 
             page = 2;
 
             for (var i = 0; i < categories.Length; ++i)
+            {
                 RenderCategory(categories[i], i, ref page);
+            }
         }
 
         private int PagesPerCategory(RewardCategory category)
@@ -101,8 +117,12 @@ namespace Server.Engines.VeteranRewards
             var i = 0;
 
             for (var j = 0; j < entries.Count; j++)
+            {
                 if (RewardSystem.HasAccess(m_From, entries[j]))
+                {
                     i++;
+                }
+            }
 
             return (int)Math.Ceiling(i / 24.0);
         }
@@ -122,7 +142,9 @@ namespace Server.Engines.VeteranRewards
                 var entry = entries[j];
 
                 if (!RewardSystem.HasAccess(m_From, entry))
+                {
                     continue;
+                }
 
                 if (i == 24)
                 {
@@ -140,9 +162,14 @@ namespace Server.Engines.VeteranRewards
                 AddButton(55 + i / 12 * 250, 80 + i % 12 * 25, 5540, 5541, GetButtonID(index, j));
 
                 if (entry.NameString != null)
+                {
                     AddHtml(80 + i / 12 * 250, 80 + i % 12 * 25, 250, 20, entry.NameString);
+                }
                 else
+                {
                     AddHtmlLocalized(80 + i / 12 * 250, 80 + i % 12 * 25, 250, 20, entry.Name);
+                }
+
                 ++i;
             }
 
@@ -158,7 +185,9 @@ namespace Server.Engines.VeteranRewards
                 RewardSystem.ComputeRewardInfo(m_From, out var cur, out var max);
 
                 if (cur < max)
+                {
                     m_From.SendGump(new RewardNoticeGump(m_From));
+                }
             }
             else
             {
@@ -178,7 +207,9 @@ namespace Server.Engines.VeteranRewards
                         var entry = category.Entries[index];
 
                         if (!RewardSystem.HasAccess(m_From, entry))
+                        {
                             return;
+                        }
 
                         m_From.SendGump(new RewardConfirmGump(m_From, entry));
                     }

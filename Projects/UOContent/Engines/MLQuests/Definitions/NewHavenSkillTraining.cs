@@ -722,7 +722,9 @@ namespace Server.Engines.MLQuests.Definitions
                 var item = base.CreateItem();
 
                 if (item is Spellbook book)
+                {
                     book.Content = (1ul << book.BookCount) - 1;
+                }
 
                 return item;
             }

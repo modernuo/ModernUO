@@ -129,7 +129,9 @@ namespace Server.SkillHandlers
                         var music = from.Skills.Musicianship.Value;
 
                         if (music > 100.0)
+                        {
                             diff -= (music - 100.0) * 0.5;
+                        }
 
                         if (from.CanBeHarmful(m_Creature, true) && from.CanBeHarmful(creature, true))
                         {

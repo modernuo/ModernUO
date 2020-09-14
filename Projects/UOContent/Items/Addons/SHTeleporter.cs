@@ -37,7 +37,9 @@ namespace Server.Items
                 m_Active = value;
 
                 if (Addon is SHTeleporter sourceAddon)
+                {
                     sourceAddon.ChangeActive(value);
+                }
             }
         }
 
@@ -60,7 +62,9 @@ namespace Server.Items
                 m_TeleDest = value;
 
                 if (Addon is SHTeleporter sourceAddon)
+                {
                     sourceAddon.ChangeDest(value);
+                }
             }
         }
 
@@ -69,7 +73,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile m)
         {
             if (!m_Active || m_TeleDest?.Deleted != false || m_TeleDest.Map == Map.Internal)
+            {
                 return;
+            }
 
             if (m.InRange(this, 3))
             {
@@ -205,7 +211,9 @@ namespace Server.Items
         public void ChangeActive(bool active)
         {
             if (m_Changing)
+            {
                 return;
+            }
 
             m_Changing = true;
 
@@ -220,7 +228,9 @@ namespace Server.Items
         public void ChangeDest(SHTeleComponent dest)
         {
             if (m_Changing)
+            {
                 return;
+            }
 
             m_Changing = true;
 
@@ -247,7 +257,9 @@ namespace Server.Items
         public void ChangeDest(SHTeleporter destAddon)
         {
             if (m_Changing)
+            {
                 return;
+            }
 
             m_Changing = true;
 

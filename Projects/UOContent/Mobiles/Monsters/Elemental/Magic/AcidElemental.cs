@@ -72,13 +72,19 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (BaseSoundID == 263)
+            {
                 BaseSoundID = 278;
+            }
 
             if (Body == 13)
+            {
                 Body = 0x9E;
+            }
 
             if (Hue == 0x4001)
+            {
                 Hue = 0;
+            }
         }
     }
 }

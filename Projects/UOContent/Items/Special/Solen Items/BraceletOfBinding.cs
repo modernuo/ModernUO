@@ -50,7 +50,9 @@ namespace Server.Items
             get
             {
                 if (m_Bound?.Deleted == true)
+                {
                     m_Bound = null;
+                }
 
                 return m_Bound;
             }
@@ -124,9 +126,13 @@ namespace Server.Items
             var bound = Bound;
 
             if (Bound == null)
-                Bind(from);
+            {
+                Bind(@from);
+            }
             else
-                Activate(from);
+            {
+                Activate(@from);
+            }
         }
 
         public void Activate(Mobile from)
@@ -134,7 +140,9 @@ namespace Server.Items
             var bound = Bound;
 
             if (Deleted || bound == null)
+            {
                 return;
+            }
 
             if (!IsChildOf(from))
             {
@@ -168,12 +176,18 @@ namespace Server.Items
             var bound = Bound;
 
             if (Deleted || bound == null)
+            {
                 return;
+            }
 
             if (!IsChildOf(from))
-                from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
+            {
+                @from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
+            }
             else
-                CheckUse(from, true);
+            {
+                CheckUse(@from, true);
+            }
         }
 
         private bool CheckUse(Mobile from, bool successMessage)
@@ -181,7 +195,9 @@ namespace Server.Items
             var bound = Bound;
 
             if (bound == null)
+            {
                 return false;
+            }
 
             var boundRoot = bound.RootParent as Mobile;
 
@@ -219,8 +235,16 @@ namespace Server.Items
                 return false;
             }
 
-            if (!SpellHelper.CheckTravel(from, TravelCheckType.RecallFrom)) return false;
-            if (!SpellHelper.CheckTravel(from, boundRoot.Map, boundRoot.Location, TravelCheckType.RecallTo)) return false;
+            if (!SpellHelper.CheckTravel(from, TravelCheckType.RecallFrom))
+            {
+                return false;
+            }
+
+            if (!SpellHelper.CheckTravel(from, boundRoot.Map, boundRoot.Location, TravelCheckType.RecallTo))
+            {
+                return false;
+            }
+
             if (boundRoot.Map == Map.Felucca && from is PlayerMobile mobile && mobile.Young)
             {
                 mobile.SendLocalizedMessage(1049543); // You decide against traveling to Felucca while you are still young.
@@ -264,7 +288,9 @@ namespace Server.Items
             }
 
             if (successMessage)
-                from.SendLocalizedMessage(1054015); // The bracelet's twin is available for transport.
+            {
+                @from.SendLocalizedMessage(1054015); // The bracelet's twin is available for transport.
+            }
 
             return true;
         }
@@ -272,7 +298,9 @@ namespace Server.Items
         public void Bind(Mobile from)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (!IsChildOf(from))
             {
@@ -288,7 +316,9 @@ namespace Server.Items
         public void Inscribe(Mobile from)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (!IsChildOf(from))
             {
@@ -348,7 +378,9 @@ namespace Server.Items
                 m_Callback = callback;
 
                 if (!enabled)
+                {
                     Flags |= CMEFlags.Disabled;
+                }
             }
 
             public override void OnClick()
@@ -356,7 +388,9 @@ namespace Server.Items
                 var from = Owner.From;
 
                 if (from.CheckAlive())
-                    m_Callback(from);
+                {
+                    m_Callback(@from);
+                }
             }
         }
 
@@ -379,7 +413,9 @@ namespace Server.Items
                 if (m_Bracelet.Deleted || m_From.Deleted ||
                     !m_Bracelet.CheckUse(m_From, false) ||
                     !(m_Bracelet.Bound.RootParent is Mobile boundRoot))
+                {
                     return;
+                }
 
                 m_Bracelet.Charges--;
 
@@ -400,7 +436,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Bracelet.Deleted)
+                {
                     return;
+                }
 
                 if (!m_Bracelet.IsChildOf(from))
                 {
@@ -442,7 +480,9 @@ namespace Server.Items
             public override void OnResponse(Mobile from, string text)
             {
                 if (m_Bracelet.Deleted)
+                {
                     return;
+                }
 
                 if (!m_Bracelet.IsChildOf(from))
                 {

@@ -31,7 +31,9 @@ namespace Server.Engines.MLQuests.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID == 4)
+            {
                 m_Instance.ContinueReportBack(true);
+            }
         }
     }
 }

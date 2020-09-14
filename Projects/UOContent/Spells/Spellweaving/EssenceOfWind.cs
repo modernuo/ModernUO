@@ -40,14 +40,18 @@ namespace Server.Spells.Spellweaving
                 {
                     if (Caster == m || !Caster.InLOS(m) || !SpellHelper.ValidIndirectTarget(Caster, m) ||
                         !Caster.CanBeHarmful(m, false))
+                    {
                         continue;
+                    }
 
                     Caster.DoHarmful(m);
 
                     SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);
 
                     if (CheckResisted(m))
+                    {
                         continue;
+                    }
 
                     m_Table[m] = new EssenceOfWindInfo(m, fcMalus, ssiMalus, duration);
 
@@ -78,7 +82,9 @@ namespace Server.Spells.Spellweaving
         public static void StopDebuffing(Mobile m, bool message)
         {
             if (m_Table.TryGetValue(m, out var info))
+            {
                 info.Timer.DoExpire(message);
+            }
         }
 
         private class EssenceOfWindInfo

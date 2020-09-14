@@ -73,7 +73,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Hue == 0)
+            {
                 Hue = Utility.RandomBirdHue();
+            }
         }
     }
 

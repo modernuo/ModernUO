@@ -87,7 +87,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {
@@ -105,7 +107,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076219); // 3rd Year Veteran Reward
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -167,7 +171,9 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_Cactus?.Deleted != false || info.ButtonID < 0x1E0F || info.ButtonID > 0x1E14)
+                {
                     return;
+                }
 
                 var cactus = new RewardPottedCactus(info.ButtonID)
                 {

@@ -28,7 +28,9 @@ namespace Server.Engines.ConPVP
         public override void Delete()
         {
             if (Ladder.Instance == Ladder)
+            {
                 Ladder.Instance = null;
+            }
 
             base.Delete();
         }
@@ -58,7 +60,9 @@ namespace Server.Engines.ConPVP
                         Ladder = new Ladder(reader);
 
                         if (version < 1 || reader.ReadBool())
+                        {
                             Ladder.Instance = Ladder;
+                        }
 
                         break;
                     }
@@ -167,9 +171,14 @@ namespace Server.Engines.ConPVP
         public static int GetLevel(int xp)
         {
             if (xp >= 22500)
+            {
                 return 50;
+            }
+
             if (xp >= 2500)
+            {
                 return 10 + (xp - 2500) / 500;
+            }
 
             return m_ShortLevels[Math.Max(xp, 0) / 100];
         }
@@ -191,7 +200,9 @@ namespace Server.Engines.ConPVP
         public static int GetLossFactor(int level)
         {
             if (level >= 10)
+            {
                 return 100;
+            }
 
             return m_LossFactors[level - 1];
         }
@@ -201,7 +212,9 @@ namespace Server.Engines.ConPVP
             var x = ourLevel - theirLevel;
 
             if (x < -6 || x > +6)
+            {
                 return 0;
+            }
 
             var y = win ? 0 : 1;
 
@@ -211,7 +224,9 @@ namespace Server.Engines.ConPVP
         public static int GetExperienceGain(LadderEntry us, LadderEntry them, bool weWon)
         {
             if (us == null || them == null)
+            {
                 return 0;
+            }
 
             var ourLevel = GetLevel(us.Experience);
             var theirLevel = GetLevel(them.Experience);
@@ -219,17 +234,23 @@ namespace Server.Engines.ConPVP
             var scalar = GetOffsetScalar(ourLevel, theirLevel, weWon);
 
             if (scalar == 0)
+            {
                 return 0;
+            }
 
             var xp = 25 * scalar;
 
             if (!weWon)
+            {
                 xp = xp * GetLossFactor(ourLevel) / 100;
+            }
 
             xp /= 100;
 
             if (xp <= 0)
+            {
                 xp = 1;
+            }
 
             return xp * (weWon ? 1 : -1);
         }
@@ -254,10 +275,14 @@ namespace Server.Engines.ConPVP
             if (index >= 0 && index < Entries.Count)
             {
                 while (index - 1 >= 0 && entry.CompareTo(Entries[index - 1]) < 0)
+                {
                     index = Swap(index, index - 1);
+                }
 
                 while (index + 1 < Entries.Count && entry.CompareTo(Entries[index + 1]) > 0)
+                {
                     index = Swap(index, index + 1);
+                }
             }
         }
 
@@ -286,7 +311,9 @@ namespace Server.Engines.ConPVP
             writer.WriteEncodedInt(Entries.Count);
 
             for (var i = 0; i < Entries.Count; ++i)
+            {
                 Entries[i].Serialize(writer);
+            }
         }
     }
 

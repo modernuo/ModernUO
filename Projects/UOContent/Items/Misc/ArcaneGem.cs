@@ -37,9 +37,14 @@ namespace Server.Items
             var v = (int)(m.Skills.Tailoring.Value / 5);
 
             if (v < 16)
+            {
                 return 16;
+            }
+
             if (v > 24)
+            {
                 return 24;
+            }
 
             return v;
         }
@@ -91,17 +96,28 @@ namespace Server.Items
                     else
                     {
                         if (eq.CurArcaneCharges <= 0)
+                        {
                             item.Hue = DefaultArcaneHue;
+                        }
 
                         if (eq.CurArcaneCharges + charges > eq.MaxArcaneCharges)
+                        {
                             eq.CurArcaneCharges = eq.MaxArcaneCharges;
+                        }
                         else
+                        {
                             eq.CurArcaneCharges += charges;
+                        }
 
                         from.SendMessage("You recharge the item.");
                         if (Amount <= 1)
+                        {
                             Delete();
-                        else Amount--;
+                        }
+                        else
+                        {
+                            Amount--;
+                        }
                     }
                 }
                 else if (from.Skills.Tailoring.Value >= 80.0)
@@ -138,8 +154,13 @@ namespace Server.Items
 
                         from.SendMessage("You enhance the item with your gem.");
                         if (Amount <= 1)
+                        {
                             Delete();
-                        else Amount--;
+                        }
+                        else
+                        {
+                            Amount--;
+                        }
                     }
                     else
                     {
@@ -169,11 +190,15 @@ namespace Server.Items
                 var obj = items[i];
 
                 if (obj is IArcaneEquip eq && eq.IsArcane)
+                {
                     avail += eq.CurArcaneCharges;
+                }
             }
 
             if (avail < amount)
+            {
                 return false;
+            }
 
             for (var i = 0; i < items.Count; ++i)
             {

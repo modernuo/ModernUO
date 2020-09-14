@@ -116,12 +116,18 @@ namespace Server.Items
                 v = 100 - v;
 
                 if (LootPack.CheckLuck(m_LuckChance))
+                {
                     v += 10;
+                }
 
                 if (v < min)
+                {
                     v = min;
+                }
                 else if (v > max)
+                {
                     v = max;
+                }
 
                 percent = v;
             }
@@ -129,7 +135,9 @@ namespace Server.Items
             var scaledBy = Math.Abs(high - low) + 1;
 
             if (scaledBy != 0)
+            {
                 scaledBy = 10000 / scaledBy;
+            }
 
             percent *= 10000 + scaledBy;
 
@@ -142,12 +150,18 @@ namespace Server.Items
         )
         {
             if (attr == AosAttribute.CastSpeed)
+            {
                 attrs[attr] += Scale(min, max, low / scale, high / scale) * scale;
+            }
             else
+            {
                 attrs[attr] = Scale(min, max, low / scale, high / scale) * scale;
+            }
 
             if (attr == AosAttribute.SpellChanneling)
+            {
                 attrs[AosAttribute.CastSpeed] -= 1;
+            }
         }
 
         private static void ApplyAttribute(
@@ -214,7 +228,9 @@ namespace Server.Items
                 possibleSkills.Remove(sk);
 
                 for (var i = 0; !found && i < 5; ++i)
+                {
                     found = attrs.GetValues(i, out var check, out _) && check == sk;
+                }
             } while (found && count > 0);
 
             attrs.SetValues(index, sk, Scale(min, max, low, high));
@@ -247,11 +263,17 @@ namespace Server.Items
             var avail = 0;
 
             for (var i = 0; i < count; ++i)
+            {
                 if (!m_Props[i])
+                {
                     m_Possible[avail++] = i;
+                }
+            }
 
             if (avail == 0)
+            {
                 return -1;
+            }
 
             var v = m_Possible[Utility.Random(avail)];
 
@@ -267,7 +289,9 @@ namespace Server.Items
             var attrs = resInfo?.AttributeInfo;
 
             if (attrs == null)
+            {
                 return;
+            }
 
             var attributeCount = Utility.RandomMinMax(attrs.RunicMinAttributes, attrs.RunicMaxAttributes);
             var min = attrs.RunicMinIntensity;
@@ -295,14 +319,18 @@ namespace Server.Items
             m_Props.SetAll(false);
 
             if (weapon is BaseRanged)
+            {
                 m_Props.Set(2, true); // ranged weapons cannot be ubws or mageweapon
+            }
 
             for (var i = 0; i < attributeCount; ++i)
             {
                 var random = GetUniqueRandom(25);
 
                 if (random == -1)
+                {
                     break;
+                }
 
                 switch (random)
                 {
@@ -453,6 +481,7 @@ namespace Server.Items
             };
 
             if (randomizeOrder)
+            {
                 for (var i = 0; i < attrs.Length; i++)
                 {
                     var temp = attrs[i];
@@ -461,6 +490,7 @@ namespace Server.Items
                     attrs[i] = attrs[rand];
                     attrs[rand] = temp;
                 }
+            }
 
             /*
               totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Cold, totalDamage );
@@ -472,7 +502,9 @@ namespace Server.Items
              * */
 
             for (var i = 0; i < attrs.Length; i++)
+            {
                 totalDamage = AssignElementalDamage(weapon, attrs[i], totalDamage);
+            }
 
             // Order is Cold, Energy, Fire, Poison -> Physical left
             // Cannot be looped, AoselementAttribute is 'out of order'
@@ -483,7 +515,9 @@ namespace Server.Items
         private static int AssignElementalDamage(BaseWeapon weapon, AosElementAttribute attr, int totalDamage)
         {
             if (totalDamage <= 0)
+            {
                 return 0;
+            }
 
             var random = Utility.Random(totalDamage / 10 + 1) * 10;
             weapon.AosElementDamages[attr] = random;
@@ -498,7 +532,9 @@ namespace Server.Items
             var groups = SlayerGroup.Groups;
 
             if (groups.Length == 0)
+            {
                 return SlayerName.None;
+            }
 
             var
                 group = groups[
@@ -517,7 +553,9 @@ namespace Server.Items
                 var entries = group.Entries;
 
                 if (entries.Length == 0)
+                {
                     return SlayerName.None;
+                }
 
                 entry = entries.RandomElement();
             }
@@ -532,7 +570,9 @@ namespace Server.Items
             var attrs = resInfo?.AttributeInfo;
 
             if (attrs == null)
+            {
                 return;
+            }
 
             var attributeCount = Utility.RandomMinMax(attrs.RunicMinAttributes, attrs.RunicMaxAttributes);
             var min = attrs.RunicMinIntensity;
@@ -564,7 +604,10 @@ namespace Server.Items
             var baseOffset = isShield ? 0 : 4;
 
             if (!isShield && armor.MeditationAllowance == ArmorMeditationAllowance.All)
+            {
                 m_Props.Set(3, true); // remove mage armor from possible properties
+            }
+
             if (armor.Resource >= CraftResource.RegularLeather && armor.Resource <= CraftResource.BarbedLeather)
             {
                 m_Props.Set(0, true); // remove lower requirements from possible properties for leather armor
@@ -572,17 +615,21 @@ namespace Server.Items
             }
 
             if (armor.RequiredRace == Race.Elf)
+            {
                 m_Props.Set(
                     7,
                     true
                 ); // elves inherently have night sight and elf only armor doesn't get night sight as a mod
+            }
 
             for (var i = 0; i < attributeCount; ++i)
             {
                 var random = GetUniqueRandom(baseCount);
 
                 if (random == -1)
+                {
                     break;
+                }
 
                 random += baseOffset;
 
@@ -597,9 +644,14 @@ namespace Server.Items
                         break;
                     case 2:
                         if (Core.ML)
+                        {
                             ApplyAttribute(primary, min, max, AosAttribute.ReflectPhysical, 1, 15);
+                        }
                         else
+                        {
                             ApplyAttribute(primary, min, max, AosAttribute.AttackChance, 1, 15);
+                        }
+
                         break;
                     case 3:
                         ApplyAttribute(primary, min, max, AosAttribute.CastSpeed, 1, 1);
@@ -695,7 +747,9 @@ namespace Server.Items
                 var random = GetUniqueRandom(19);
 
                 if (random == -1)
+                {
                     break;
+                }
 
                 switch (random)
                 {
@@ -784,7 +838,9 @@ namespace Server.Items
                 var random = GetUniqueRandom(24);
 
                 if (random == -1)
+                {
                     break;
+                }
 
                 switch (random)
                 {
@@ -887,7 +943,9 @@ namespace Server.Items
                 var random = GetUniqueRandom(16);
 
                 if (random == -1)
+                {
                     break;
+                }
 
                 switch (random)
                 {
@@ -899,7 +957,9 @@ namespace Server.Items
                             ApplyAttribute(primary, min, max, AosAttribute.BonusInt, 1, 8);
 
                             for (var j = 0; j < 4; ++j)
+                            {
                                 m_Props.Set(j, true);
+                            }
 
                             break;
                         }

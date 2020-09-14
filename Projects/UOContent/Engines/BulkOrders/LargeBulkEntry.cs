@@ -24,7 +24,9 @@ namespace Server.Engines.BulkOrders
             var type = reader.ReadString();
 
             if (type != null)
+            {
                 realType = AssemblyHandler.FindFirstTypeForName(type);
+            }
 
             Details = new SmallBulkEntry(realType, reader.ReadInt(), reader.ReadInt());
         }
@@ -92,10 +94,14 @@ namespace Server.Engines.BulkOrders
             m_Cache ??= new Dictionary<string, Dictionary<string, SmallBulkEntry[]>>();
 
             if (!m_Cache.TryGetValue(type, out var table))
+            {
                 m_Cache[type] = table = new Dictionary<string, SmallBulkEntry[]>();
+            }
 
             if (!table.TryGetValue(name, out var entries))
+            {
                 table[name] = entries = SmallBulkEntry.LoadEntries(type, name);
+            }
 
             return entries;
         }
@@ -105,7 +111,9 @@ namespace Server.Engines.BulkOrders
             var large = new LargeBulkEntry[small.Length];
 
             for (var i = 0; i < small.Length; ++i)
+            {
                 large[i] = new LargeBulkEntry(owner, small[i]);
+            }
 
             return large;
         }

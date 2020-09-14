@@ -24,7 +24,10 @@ namespace Server
 
                 from.PlaySound(0x2D6);
 
-                if (from.Body.IsHuman) from.Animate(34, 5, 1, true, false, 0);
+                if (from.Body.IsHuman)
+                {
+                    @from.Animate(34, 5, 1, true, false, 0);
+                }
 
                 from.FixedParticles(0x375A, 10, 15, 5011, EffectLayer.Head);
                 from.PlaySound(0x1EB);

@@ -36,23 +36,31 @@ namespace Server.SkillHandlers
         public static int GetArmorRating(Mobile m)
         {
             if (!Core.AOS)
+            {
                 return (int)m.ArmorRating;
+            }
 
             var ar = 0;
 
             for (var i = 0; i < m.Items.Count; i++)
             {
                 if (!(m.Items[i] is BaseArmor armor))
+                {
                     continue;
+                }
 
                 var materialType = (int)armor.MaterialType;
                 var bodyPosition = (int)armor.BodyPosition;
 
                 if (materialType >= ArmorTable.GetLength(0) || bodyPosition >= ArmorTable.GetLength(1))
+                {
                     continue;
+                }
 
                 if (armor.ArmorAttributes.MageArmor == 0)
+                {
                     ar += ArmorTable[materialType, bodyPosition];
+                }
             }
 
             return ar;
@@ -92,7 +100,9 @@ namespace Server.SkillHandlers
                     m.AllowedStealthSteps = Math.Max((int)(m.Skills.Stealth.Value / (Core.AOS ? 5.0 : 10.0)), 1);
 
                     if (m is PlayerMobile pm)
+                    {
                         pm.IsStealthing = true;
+                    }
 
                     m.SendLocalizedMessage(502730); // You begin to move quietly.
 

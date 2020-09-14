@@ -33,7 +33,9 @@ namespace Server.Spells.Bushido
             var mana = ScaleMana(RequiredMana);
 
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (!CheckExpansion(Caster))
             {
@@ -86,7 +88,9 @@ namespace Server.Spells.Bushido
             }
 
             if (!base.CheckFizzle())
+            {
                 return false;
+            }
 
             Caster.Mana -= mana;
 
@@ -104,18 +108,26 @@ namespace Server.Spells.Bushido
         public virtual void OnCastSuccessful(Mobile caster)
         {
             if (Evasion.IsEvading(caster))
+            {
                 Evasion.EndEvasion(caster);
+            }
 
             if (Confidence.IsConfident(caster))
+            {
                 Confidence.EndConfidence(caster);
+            }
 
             if (CounterAttack.IsCountering(caster))
+            {
                 CounterAttack.StopCountering(caster);
+            }
 
             var spellID = SpellRegistry.GetRegistryNumber(this);
 
             if (spellID > 0)
+            {
                 caster.Send(new ToggleSpecialAbility(spellID + 1, true));
+            }
         }
 
         public static void OnEffectEnd(Mobile caster, Type type)
@@ -123,7 +135,9 @@ namespace Server.Spells.Bushido
             var spellID = SpellRegistry.GetRegistryNumber(type);
 
             if (spellID > 0)
+            {
                 caster.Send(new ToggleSpecialAbility(spellID + 1, false));
+            }
         }
     }
 }

@@ -34,7 +34,9 @@ namespace Server.Engines.ConPVP
                      (m is BaseCreature bc && bc.Summoned ? bc.SummonMaster as PlayerMobile : null);
 
             if (pm?.DuelContext?.StartedBeginCountdown == true)
+            {
                 return true;
+            }
 
             if (DuelContext.CheckCombat(m))
             {

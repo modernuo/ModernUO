@@ -36,9 +36,13 @@ namespace Server.SkillHandlers
                     if (from.CheckTargetSkill(SkillName.Forensics, target, 40.0, 100.0))
                     {
                         if (target is PlayerMobile pm && pm.NpcGuild == NpcGuild.ThievesGuild)
-                            from.SendLocalizedMessage(501004); // That individual is a thief!
+                        {
+                            @from.SendLocalizedMessage(501004); // That individual is a thief!
+                        }
                         else
-                            from.SendLocalizedMessage(501003); // You notice nothing unusual.
+                        {
+                            @from.SendLocalizedMessage(501003); // You notice nothing unusual.
+                        }
                     }
                     else
                     {
@@ -50,18 +54,24 @@ namespace Server.SkillHandlers
                     if (from.CheckTargetSkill(SkillName.Forensics, c, 0.0, 100.0))
                     {
                         if (c.m_Forensicist != null)
-                            from.SendLocalizedMessage(
+                        {
+                            @from.SendLocalizedMessage(
                                 1042750,
                                 c.m_Forensicist
                             ); // The forensicist  ~1_NAME~ has already discovered that:
+                        }
                         else
-                            c.m_Forensicist = from.Name;
+                        {
+                            c.m_Forensicist = @from.Name;
+                        }
 
                         if (((Body)c.Amount).IsHuman)
-                            from.SendLocalizedMessage(
+                        {
+                            @from.SendLocalizedMessage(
                                 1042751,
                                 c.Killer == null ? "no one" : c.Killer.Name
                             ); // This person was killed by ~1_KILLER_NAME~
+                        }
 
                         if (c.Looters.Count > 0)
                         {
@@ -69,7 +79,10 @@ namespace Server.SkillHandlers
                             for (var i = 0; i < c.Looters.Count; i++)
                             {
                                 if (i > 0)
+                                {
                                     sb.Append(", ");
+                                }
+
                                 sb.Append(c.Looters[i].Name);
                             }
 
@@ -91,9 +104,13 @@ namespace Server.SkillHandlers
                 else if (target is ILockpickable p)
                 {
                     if (p.Picker != null)
-                        from.SendLocalizedMessage(1042749, p.Picker.Name); // This lock was opened by ~1_PICKER_NAME~
+                    {
+                        @from.SendLocalizedMessage(1042749, p.Picker.Name); // This lock was opened by ~1_PICKER_NAME~
+                    }
                     else
-                        from.SendLocalizedMessage(501003); // You notice nothing unusual.
+                    {
+                        @from.SendLocalizedMessage(501003); // You notice nothing unusual.
+                    }
                 }
             }
         }

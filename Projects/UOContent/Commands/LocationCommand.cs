@@ -46,13 +46,17 @@ namespace Server.Commands
                         var numberStyles = arg.ToLower().StartsWith("0x") ? NumberStyles.HexNumber : NumberStyles.Integer;
 
                         if (int.TryParse(arg, numberStyles, CultureInfo.InvariantCulture, out var result))
+                        {
                             graphics.Add(result);
+                        }
                     }
                 }
 
                 var item = EffectItem.Create(new Point3D(point), e.Mobile.Map, EffectItem.DefaultDuration);
                 foreach (var graphic in graphics)
+                {
                     Effects.SendLocationParticles(item, graphic, 10, 50, 2023);
+                }
 
                 item.LabelTo(e.Mobile, label);
             }

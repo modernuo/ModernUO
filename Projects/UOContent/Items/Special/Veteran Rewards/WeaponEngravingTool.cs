@@ -58,7 +58,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             if (m_UsesRemaining > 0)
             {
@@ -82,11 +84,15 @@ namespace Server.Items
                 else
                 {
                     if (from.Backpack.FindItemByType<BlueDiamond>() != null)
-                        from.SendGump(new ConfirmGump(this, null));
+                    {
+                        @from.SendGump(new ConfirmGump(this, null));
+                    }
                     else
-                        from.SendLocalizedMessage(
+                    {
+                        @from.SendLocalizedMessage(
                             1076166
                         ); // You do not have a blue diamond needed to recharge the engraving tool.
+                    }
                 }
 
                 from.SendLocalizedMessage(1076163); // There are no charges left on this engraving tool.
@@ -98,10 +104,14 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076224); // 8th Year Veteran Reward
+            }
 
             if (ShowUsesRemaining)
+            {
                 list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -127,7 +137,9 @@ namespace Server.Items
         public virtual void Recharge(Mobile from, Mobile guildmaster)
         {
             if (from.Backpack == null)
+            {
                 return;
+            }
 
             var diamond = from.Backpack.FindItemByType<BlueDiamond>();
 
@@ -205,7 +217,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Tool?.Deleted != false)
+                {
                     return;
+                }
 
                 if (targeted is BaseWeapon item)
                 {
@@ -263,7 +277,9 @@ namespace Server.Items
             public override void OnResponse(NetState state, RelayInfo info)
             {
                 if (m_Tool?.Deleted != false || m_Target?.Deleted != false)
+                {
                     return;
+                }
 
                 if (info.ButtonID != (int)Buttons.Okay)
                 {
@@ -274,7 +290,9 @@ namespace Server.Items
                 var relay = info.GetTextEntry((int)Buttons.Text);
 
                 if (relay == null)
+                {
                     return;
+                }
 
                 if (string.IsNullOrEmpty(relay.Text))
                 {
@@ -353,7 +371,9 @@ namespace Server.Items
             public override void OnResponse(NetState state, RelayInfo info)
             {
                 if (m_Engraver?.Deleted != false || info.ButtonID != (int)Buttons.Confirm)
+                {
                     return;
+                }
 
                 m_Engraver.Recharge(state.Mobile, m_Guildmaster);
             }

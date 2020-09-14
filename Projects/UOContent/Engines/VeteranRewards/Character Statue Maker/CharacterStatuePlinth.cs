@@ -27,17 +27,23 @@ namespace Server.Items
             var point = new Point3D(p.X, p.Y, p.Z);
 
             if (map?.CanFit(point, 20) != true)
+            {
                 return false;
+            }
 
             var house = BaseHouse.FindHouseAt(point, map, 20);
 
             if (house == null)
+            {
                 return false;
+            }
 
             var result = CharacterStatueTarget.CheckDoors(point, 20, house);
 
             if (result == AddonFitResult.Valid)
+            {
                 return true;
+            }
 
             return false;
         }
@@ -47,25 +53,33 @@ namespace Server.Items
             base.OnAfterDelete();
 
             if (m_Statue?.Deleted == false)
+            {
                 m_Statue.Delete();
+            }
         }
 
         public override void OnMapChange()
         {
             if (m_Statue != null)
+            {
                 m_Statue.Map = Map;
+            }
         }
 
         public override void OnLocationChange(Point3D oldLocation)
         {
             if (m_Statue != null)
+            {
                 m_Statue.Location = new Point3D(X, Y, Z + 5);
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (m_Statue != null)
-                from.SendGump(new CharacterPlinthGump(m_Statue));
+            {
+                @from.SendGump(new CharacterPlinthGump(m_Statue));
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -86,13 +100,17 @@ namespace Server.Items
             m_Statue = reader.ReadMobile() as CharacterStatue;
 
             if (m_Statue?.SculptedBy == null || Map == Map.Internal)
+            {
                 Timer.DelayCall(Delete);
+            }
         }
 
         public void InvalidateHue()
         {
             if (m_Statue != null)
+            {
                 Hue = 0xB8F + (int)m_Statue.StatueType * 4 + (int)m_Statue.Material;
+            }
         }
 
         private class CharacterPlinthGump : Gump

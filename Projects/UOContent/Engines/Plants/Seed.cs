@@ -94,9 +94,13 @@ namespace Server.Engines.Plants
             int title;
 
             if (m_ShowType || typeInfo.PlantCategory == PlantCategory.Default)
+            {
                 title = hueInfo.Name;
+            }
             else
+            {
                 title = (int)typeInfo.PlantCategory;
+            }
 
             if (Amount == 1)
             {
@@ -149,7 +153,9 @@ namespace Server.Engines.Plants
         public override void OnAfterDuped(Item newItem)
         {
             if (!(newItem is Seed newSeed))
+            {
                 return;
+            }
 
             newSeed.PlantType = m_PlantType;
             newSeed.PlantHue = m_PlantHue;
@@ -178,13 +184,19 @@ namespace Server.Engines.Plants
             m_ShowType = reader.ReadBool();
 
             if (Weight != 1.0)
+            {
                 Weight = 1.0;
+            }
 
             if (version < 1)
+            {
                 Stackable = Core.SA;
+            }
 
             if (version < 2 && PlantHueInfo.IsCrossable(m_PlantHue))
+            {
                 m_PlantHue |= PlantHue.Reproduces;
+            }
         }
 
         private class InternalTarget : Target
@@ -200,7 +212,9 @@ namespace Server.Engines.Plants
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Seed.Deleted)
+                {
                     return;
+                }
 
                 if (!m_Seed.IsChildOf(from.Backpack))
                 {
@@ -209,11 +223,17 @@ namespace Server.Engines.Plants
                 }
 
                 if (targeted is PlantItem plant)
-                    plant.PlantSeed(from, m_Seed);
+                {
+                    plant.PlantSeed(@from, m_Seed);
+                }
                 else if (targeted is Item item)
-                    item.LabelTo(from, 1061919); // You must use a seed on a bowl of dirt!
+                {
+                    item.LabelTo(@from, 1061919); // You must use a seed on a bowl of dirt!
+                }
                 else
-                    from.SendLocalizedMessage(1061919); // You must use a seed on a bowl of dirt!
+                {
+                    @from.SendLocalizedMessage(1061919); // You must use a seed on a bowl of dirt!
+                }
             }
         }
     }

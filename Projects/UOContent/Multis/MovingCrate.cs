@@ -50,6 +50,7 @@ namespace Server.Multis
         {
             // 1. Try to stack the item
             foreach (var item in Items)
+            {
                 if (item is PackingBox)
                 {
                     var subItems = item.Items;
@@ -59,12 +60,16 @@ namespace Server.Multis
                         var subItem = subItems[i];
 
                         if (!(subItem is Container) && subItem.StackWith(null, dropped, false))
+                        {
                             return;
+                        }
                     }
                 }
+            }
 
             // 2. Try to drop the item into an existing container
             foreach (var item in Items)
+            {
                 if (item is PackingBox packingBox)
                 {
                     Container box = packingBox;
@@ -76,6 +81,7 @@ namespace Server.Multis
                         return;
                     }
                 }
+            }
 
             // 3. Drop the item into a new container
             Container subContainer = new PackingBox();
@@ -98,25 +104,37 @@ namespace Server.Multis
             var positions = new bool[Rows, Columns];
 
             foreach (var item in Items)
+            {
                 if (item is PackingBox)
                 {
                     var i = (item.Y - Bounds.Y) / VerticalSpacing;
                     if (i < 0)
+                    {
                         i = 0;
+                    }
                     else if (i >= Rows)
+                    {
                         i = Rows - 1;
+                    }
 
                     var j = (item.X - Bounds.X) / HorizontalSpacing;
                     if (j < 0)
+                    {
                         j = 0;
+                    }
                     else if (j >= Columns)
+                    {
                         j = Columns - 1;
+                    }
 
                     positions[i, j] = true;
                 }
+            }
 
             for (var i = 0; i < Rows; i++)
+            {
                 for (var j = 0; j < Columns; j++)
+                {
                     if (!positions[i, j])
                     {
                         var x = Bounds.X + j * HorizontalSpacing;
@@ -124,6 +142,8 @@ namespace Server.Multis
 
                         return new Point3D(x, y, 0);
                     }
+                }
+            }
 
             return Point3D.Zero;
         }
@@ -150,7 +170,9 @@ namespace Server.Multis
             base.OnItemRemoved(item);
 
             if (TotalItems == 0)
+            {
                 Delete();
+            }
         }
 
         public void RestartTimer()
@@ -177,16 +199,26 @@ namespace Server.Multis
 
             var toRemove = new List<Item>();
             foreach (var item in Items)
+            {
                 if (item is PackingBox && item.Items.Count == 0)
+                {
                     toRemove.Add(item);
+                }
+            }
 
             foreach (var item in toRemove)
+            {
                 item.Delete();
+            }
 
             if (TotalItems == 0)
+            {
                 Delete();
+            }
             else
+            {
                 Internalize();
+            }
         }
 
         public override void OnAfterDelete()
@@ -194,7 +226,9 @@ namespace Server.Multis
             base.OnAfterDelete();
 
             if (House?.MovingCrate == this)
+            {
                 House.MovingCrate = null;
+            }
 
             m_InternalizeTimer?.Stop();
         }
@@ -227,7 +261,9 @@ namespace Server.Multis
             }
 
             if (version == 0)
+            {
                 MaxItems = -1; // reset to default
+            }
         }
 
         public class InternalizeTimer : Timer
@@ -276,7 +312,9 @@ namespace Server.Multis
             base.OnItemRemoved(item);
 
             if (item.GetBounce() == null && TotalItems == 0)
+            {
                 Delete();
+            }
         }
 
         public override void OnItemBounceCleared(Item item)
@@ -284,7 +322,9 @@ namespace Server.Multis
             base.OnItemBounceCleared(item);
 
             if (TotalItems == 0)
+            {
                 Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -301,7 +341,9 @@ namespace Server.Multis
             var version = reader.ReadEncodedInt();
 
             if (version == 0)
+            {
                 MaxItems = -1; // reset to default
+            }
         }
     }
 }

@@ -99,16 +99,22 @@ namespace Server.Items
             get
             {
                 if (m_DefaultIndex >= 0 && m_DefaultIndex < Entries.Count)
+                {
                     return Entries[m_DefaultIndex];
+                }
 
                 return null;
             }
             set
             {
                 if (value == null)
+                {
                     m_DefaultIndex = -1;
+                }
                 else
+                {
                     m_DefaultIndex = Entries.IndexOf(value);
+                }
             }
         }
 
@@ -122,12 +128,16 @@ namespace Server.Items
             var charges = 5 + quality + (int)(from.Skills.Inscribe.Value / 30);
 
             if (charges > 10)
+            {
                 charges = 10;
+            }
 
             MaxCharges = Core.SE ? charges * 2 : charges;
 
             if (makersMark)
-                Crafter = from;
+            {
+                Crafter = @from;
+            }
 
             m_Quality = (BookQuality)(quality - 1);
 
@@ -160,7 +170,9 @@ namespace Server.Items
             writer.Write(Entries.Count);
 
             for (var i = 0; i < Entries.Count; ++i)
+            {
                 Entries[i].Serialize(writer);
+            }
 
             writer.Write(m_Description);
             writer.Write(CurCharges);
@@ -175,7 +187,9 @@ namespace Server.Items
             LootType = LootType.Blessed;
 
             if (Core.SE && Weight == 3.0)
+            {
                 Weight = 1.0;
+            }
 
             var version = reader.ReadInt();
 
@@ -203,7 +217,9 @@ namespace Server.Items
                         Entries = new List<RunebookEntry>(count);
 
                         for (var i = 0; i < count; ++i)
+                        {
                             Entries.Add(new RunebookEntry(reader));
+                        }
 
                         m_Description = reader.ReadString();
                         CurCharges = reader.ReadInt();
@@ -218,9 +234,13 @@ namespace Server.Items
         public void DropRune(Mobile from, RunebookEntry e, int index)
         {
             if (m_DefaultIndex > index)
+            {
                 m_DefaultIndex -= 1;
+            }
             else if (m_DefaultIndex == index)
+            {
                 m_DefaultIndex = -1;
+            }
 
             Entries.RemoveAt(index);
 
@@ -242,11 +262,17 @@ namespace Server.Items
             var ns = toCheck.NetState;
 
             if (ns == null)
+            {
                 return false;
+            }
 
             foreach (var gump in ns.Gumps)
+            {
                 if (gump is RunebookGump bookGump && bookGump.Book == this)
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -256,13 +282,19 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_Quality == BookQuality.Exceptional)
+            {
                 list.Add(1063341); // exceptional
+            }
 
             if (m_Crafter != null)
+            {
                 list.Add(1050043, m_Crafter.Name); // crafted by ~1_NAME~
+            }
 
             if (!string.IsNullOrEmpty(m_Description))
+            {
                 list.Add(m_Description);
+            }
         }
 
         public override bool OnDragLift(Mobile from)
@@ -274,8 +306,12 @@ namespace Server.Items
             }
 
             foreach (var m in Openers)
+            {
                 if (IsOpen(m))
+                {
                     m.CloseGump<RunebookGump>();
+                }
+            }
 
             Openers.Clear();
 
@@ -285,12 +321,16 @@ namespace Server.Items
         public override void OnSingleClick(Mobile from)
         {
             if (m_Description?.Length > 0)
-                LabelTo(from, m_Description);
+            {
+                LabelTo(@from, m_Description);
+            }
 
             base.OnSingleClick(from);
 
             if (m_Crafter != null)
-                LabelTo(from, 1050043, m_Crafter.Name);
+            {
+                LabelTo(@from, 1050043, m_Crafter.Name);
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -319,13 +359,17 @@ namespace Server.Items
         public virtual void OnTravel()
         {
             if (!Core.SA)
+            {
                 NextUse = DateTime.UtcNow + UseDelay;
+            }
         }
 
         public override void OnAfterDuped(Item newItem)
         {
             if (!(newItem is Runebook book))
+            {
                 return;
+            }
 
             book.Entries = new List<RunebookEntry>();
 
@@ -340,7 +384,9 @@ namespace Server.Items
         public bool CheckAccess(Mobile m)
         {
             if (!IsLockedDown || m.AccessLevel >= AccessLevel.GameMaster)
+            {
                 return true;
+            }
 
             var house = BaseHouse.FindHouseAt(this);
 

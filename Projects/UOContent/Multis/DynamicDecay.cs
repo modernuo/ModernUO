@@ -31,7 +31,9 @@ namespace Server.Multis
         public static TimeSpan GetRandomDuration(DecayLevel level)
         {
             if (!m_Stages.TryGetValue(level, out var info))
+            {
                 return TimeSpan.Zero;
+            }
 
             var min = info.MinDuration.Ticks;
             var max = info.MaxDuration.Ticks;

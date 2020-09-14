@@ -85,7 +85,9 @@ namespace Server.Engines.Quests.Haven
                             || backpack.GetAmount(typeof(Nightshade)) < 30
                             || backpack.GetAmount(typeof(SulfurousAsh)) < 30
                             || backpack.GetAmount(typeof(SpidersSilk)) < 30)
+                        {
                             qs.AddConversation(new FewReagentsConversation());
+                        }
                     }
 
                     QuestObjective obj = qs.FindObjective<FindUzeraanBeginObjective>();
@@ -114,7 +116,10 @@ namespace Server.Engines.Quests.Haven
                                 {
                                     cont.DropItem(new MarkScroll(5));
                                     cont.DropItem(new RecallScroll(5));
-                                    for (var i = 0; i < 5; i++) cont.DropItem(new RecallRune());
+                                    for (var i = 0; i < 5; i++)
+                                    {
+                                        cont.DropItem(new RecallRune());
+                                    }
                                 }
                                 else
                                 {
@@ -264,7 +269,9 @@ namespace Server.Engines.Quests.Haven
                                 cont.DropItem(new SpidersSilk(20));
 
                                 for (var i = 0; i < 3; i++)
+                                {
                                     cont.DropItem(Loot.RandomScroll(0, 23, SpellbookType.Regular));
+                                }
                             }
                             else
                             {
@@ -272,7 +279,9 @@ namespace Server.Engines.Quests.Haven
                                 cont.DropItem(new Bandage(25));
 
                                 for (var i = 0; i < 5; i++)
+                                {
                                     cont.DropItem(new LesserHealPotion());
+                                }
                             }
 
                             if (!player.PlaceInBackpack(cont))

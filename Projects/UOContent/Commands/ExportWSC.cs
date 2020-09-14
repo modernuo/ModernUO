@@ -23,6 +23,7 @@ namespace Server.Commands
             e.Mobile.SendMessage("This will delete all static items in the world.  Please make a backup.");
 
             foreach (var item in World.Items.Values)
+            {
                 if ((item is Static || item is BaseFloor || item is BaseWall)
                     && item.RootParent == null)
                 {
@@ -50,11 +51,14 @@ namespace Server.Commands
                     remove.Add(item);
                     w.Flush();
                 }
+            }
 
             w.Close();
 
             foreach (var item in remove)
+            {
                 item.Delete();
+            }
 
             e.Mobile.SendMessage("Export complete.  Exported {0} statics.", count);
         }

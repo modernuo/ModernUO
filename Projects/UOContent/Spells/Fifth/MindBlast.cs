@@ -19,7 +19,9 @@ namespace Server.Spells.Fifth
         public MindBlastSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {
             if (Core.AOS)
+            {
                 m_Info.LeftHandEffect = m_Info.RightHandEffect = 9002;
+            }
         }
 
         public override SpellCircle Circle => SpellCircle.Fifth;
@@ -29,7 +31,9 @@ namespace Server.Spells.Fifth
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (!Caster.CanSee(m))
             {
@@ -70,22 +74,34 @@ namespace Server.Spells.Fifth
                 int highestStat = target.Str, lowestStat = target.Str;
 
                 if (target.Dex > highestStat)
+                {
                     highestStat = target.Dex;
+                }
 
                 if (target.Dex < lowestStat)
+                {
                     lowestStat = target.Dex;
+                }
 
                 if (target.Int > highestStat)
+                {
                     highestStat = target.Int;
+                }
 
                 if (target.Int < lowestStat)
+                {
                     lowestStat = target.Int;
+                }
 
                 if (highestStat > 150)
+                {
                     highestStat = 150;
+                }
 
                 if (lowestStat > 150)
+                {
                     lowestStat = 150;
+                }
 
                 var damage = Math.Min(GetDamageScalar(m) * (highestStat - lowestStat) / 2, 45); // Many users prefer 3 or 4
 

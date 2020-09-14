@@ -50,22 +50,30 @@ namespace Server.Items
             try
             {
                 if (CraftResources.GetType(resource) != CraftResourceType.Metal)
+                {
                     return false;
+                }
 
                 var info = CraftResources.GetInfo(resource);
 
                 if (info == null || info.ResourceTypes.Length == 0)
+                {
                     return false;
+                }
 
                 var craftItem = DefBlacksmithy.CraftSystem.CraftItems.SearchFor(item.GetType());
 
                 if (craftItem == null || craftItem.Resources.Count == 0)
+                {
                     return false;
+                }
 
                 var craftResource = craftItem.Resources[0];
 
                 if (craftResource.Amount < 2)
+                {
                     return false; // Not enough metal to resmelt
+                }
 
                 var difficulty = resource switch
                 {
@@ -89,12 +97,19 @@ namespace Server.Items
                 {
                     var mining = from.Skills.Mining.Value;
                     if (mining > 100.0)
+                    {
                         mining = 100.0;
+                    }
+
                     var amount = ((4 + mining) * craftResource.Amount - 4) * 0.0068;
                     if (amount < 2)
+                    {
                         ingot.Amount = 2;
+                    }
                     else
+                    {
                         ingot.Amount = (int)amount;
+                    }
                 }
                 else
                 {
@@ -129,10 +144,12 @@ namespace Server.Items
         private bool Resmeltables() // Where context menu checks for metal items and dragon barding deeds
         {
             foreach (var i in Items)
+            {
                 return i?.Deleted == false && (
                     i is BaseWeapon weapon && CraftResources.GetType(weapon.Resource) == CraftResourceType.Metal ||
                     i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Metal ||
                     i is DragonBardingDeed);
+            }
 
             return false;
         }
@@ -142,11 +159,15 @@ namespace Server.Items
             foreach (var i in Items)
             {
                 if (!(i is IScissorable) || i.Deleted)
+                {
                     continue;
+                }
 
                 if (i is BaseClothing || i is Cloth || i is BoltOfCloth || i is Hides || i is BonePile ||
                     i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Leather)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -178,14 +199,20 @@ namespace Server.Items
             foreach (var item in smeltables)
             {
                 if (item?.Deleted != false)
+                {
                     continue;
+                }
 
                 if (item is BaseArmor armor && Resmelt(from, armor, armor.Resource) ||
                     item is BaseWeapon weapon && Resmelt(from, weapon, weapon.Resource) ||
                     item is DragonBardingDeed)
+                {
                     salvaged++;
+                }
                 else
+                {
                     notSalvaged++;
+                }
             }
 
             if (m_Failure)
@@ -224,12 +251,18 @@ namespace Server.Items
                 var item = scissorables[i];
 
                 if (!(item is IScissorable scissorable))
+                {
                     continue;
+                }
 
                 if (Scissors.CanScissor(from, scissorable) && scissorable.Scissor(from, scissors))
+                {
                     ++salvaged;
+                }
                 else
+                {
                     ++notSalvaged;
+                }
             }
 
             from.SendLocalizedMessage(
@@ -245,7 +278,10 @@ namespace Server.Items
                 }
             );
 
-            for (var i = 0; i < items.Length; i++) from.AddToBackpack(items[i]);
+            for (var i = 0; i < items.Length; i++)
+            {
+                @from.AddToBackpack(items[i]);
+            }
         }
 
         private void SalvageAll(Mobile from)
@@ -279,18 +315,24 @@ namespace Server.Items
                 m_Bag = bag;
 
                 if (!enabled)
+                {
                     Flags |= CMEFlags.Disabled;
+                }
             }
 
             public override void OnClick()
             {
                 if (m_Bag.Deleted)
+                {
                     return;
+                }
 
                 var from = Owner.From;
 
                 if (from.CheckAlive())
-                    m_Bag.SalvageAll(from);
+                {
+                    m_Bag.SalvageAll(@from);
+                }
             }
         }
 
@@ -304,18 +346,24 @@ namespace Server.Items
                 m_Bag = bag;
 
                 if (!enabled)
+                {
                     Flags |= CMEFlags.Disabled;
+                }
             }
 
             public override void OnClick()
             {
                 if (m_Bag.Deleted)
+                {
                     return;
+                }
 
                 var from = Owner.From;
 
                 if (from.CheckAlive())
-                    m_Bag.SalvageIngots(from);
+                {
+                    m_Bag.SalvageIngots(@from);
+                }
             }
         }
 
@@ -329,18 +377,24 @@ namespace Server.Items
                 m_Bag = bag;
 
                 if (!enabled)
+                {
                     Flags |= CMEFlags.Disabled;
+                }
             }
 
             public override void OnClick()
             {
                 if (m_Bag.Deleted)
+                {
                     return;
+                }
 
                 var from = Owner.From;
 
                 if (from.CheckAlive())
-                    m_Bag.SalvageCloth(from);
+                {
+                    m_Bag.SalvageCloth(@from);
+                }
             }
         }
     }

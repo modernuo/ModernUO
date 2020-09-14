@@ -45,18 +45,26 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (!from.Player)
+            {
                 return;
+            }
 
             if (from.InRange(GetWorldLocation(), 1))
-                CheckGate(from, 1);
+            {
+                CheckGate(@from, 1);
+            }
             else
-                from.SendLocalizedMessage(500446); // That is too far away.
+            {
+                @from.SendLocalizedMessage(500446); // That is too far away.
+            }
         }
 
         public override bool OnMoveOver(Mobile m)
         {
             if (m.Player)
+            {
                 CheckGate(m, 0);
+            }
 
             return true;
         }
@@ -64,7 +72,9 @@ namespace Server.Items
         public virtual void CheckGate(Mobile m, int range)
         {
             if (m.Hidden && m.AccessLevel == AccessLevel.Player && Core.ML)
+            {
                 m.RevealingAction();
+            }
 
             new DelayTimer(m, this, range).Start();
         }
@@ -103,7 +113,9 @@ namespace Server.Items
                 m.MoveToWorld(Target, TargetMap);
 
                 if (m.AccessLevel == AccessLevel.Player || !m.Hidden)
+                {
                     m.PlaySound(0x1FE);
+                }
 
                 OnGateUsed(m);
             }
@@ -136,18 +148,24 @@ namespace Server.Items
             TargetMap = reader.ReadMap();
 
             if (version >= 1)
+            {
                 Dispellable = reader.ReadBool();
+            }
         }
 
         public virtual bool ValidateUse(Mobile from, bool message)
         {
             if (from.Deleted || Deleted)
+            {
                 return false;
+            }
 
             if (from.Map != Map || !from.InRange(this, 1))
             {
                 if (message)
-                    from.SendLocalizedMessage(500446); // That is too far away.
+                {
+                    @from.SendLocalizedMessage(500446); // That is too far away.
+                }
 
                 return false;
             }
@@ -161,7 +179,10 @@ namespace Server.Items
                 from.Map != Map.Felucca && TargetMap == Map.Felucca && ShowFeluccaWarning)
             {
                 if (from.AccessLevel == AccessLevel.Player || !from.Hidden)
-                    from.Send(new PlaySound(0x20E, from.Location));
+                {
+                    @from.Send(new PlaySound(0x20E, @from.Location));
+                }
+
                 from.CloseGump<MoongateConfirmGump>();
                 from.SendGump(new MoongateConfirmGump(from, this));
             }
@@ -174,7 +195,9 @@ namespace Server.Items
         public virtual void EndConfirmation(Mobile from)
         {
             if (!ValidateUse(from, true))
+            {
                 return;
+            }
 
             UseGate(from);
         }
@@ -182,12 +205,18 @@ namespace Server.Items
         public virtual void DelayCallback(Mobile from, int range)
         {
             if (!ValidateUse(from, false) || !from.InRange(this, range))
+            {
                 return;
+            }
 
             if (TargetMap != null)
-                BeginConfirmation(from);
+            {
+                BeginConfirmation(@from);
+            }
             else
-                from.SendMessage("This moongate does not seem to go anywhere.");
+            {
+                @from.SendMessage("This moongate does not seem to go anywhere.");
+            }
         }
 
         public static bool IsInTown(Point3D p, Map map) =>
@@ -253,7 +282,9 @@ namespace Server.Items
         public virtual void Warning_Callback(Mobile from, bool okay)
         {
             if (okay)
-                EndConfirmation(from);
+            {
+                EndConfirmation(@from);
+            }
         }
 
         public override void BeginConfirmation(Mobile from)
@@ -351,6 +382,7 @@ namespace Server.Items
                 AddAlphaRegion(10, 40, 400, 200);
 
                 if (from.Map != Map.Felucca && gate.TargetMap == Map.Felucca && gate.ShowFeluccaWarning)
+                {
                     AddHtmlLocalized(
                         10,
                         40,
@@ -361,7 +393,9 @@ namespace Server.Items
                         false,
                         true
                     ); // This Gate goes to Felucca... Continue to enter the gate, Cancel to stay here
+                }
                 else
+                {
                     AddHtmlLocalized(
                         10,
                         40,
@@ -372,6 +406,7 @@ namespace Server.Items
                         false,
                         true
                     ); // Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here
+                }
 
                 AddImageTiled(10, 250, 400, 20, 2624);
                 AddAlphaRegion(10, 250, 400, 20);
@@ -408,7 +443,9 @@ namespace Server.Items
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (info.ButtonID == 1)
+            {
                 m_Gate.EndConfirmation(m_From);
+            }
         }
     }
 }

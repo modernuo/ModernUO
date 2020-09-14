@@ -55,6 +55,7 @@ namespace Server.Mobiles
             AddLoot(LootPack.Gems);
 
             if (Utility.RandomDouble() < 0.02)
+            {
                 switch (Utility.Random(5))
                 {
                     case 0:
@@ -73,6 +74,7 @@ namespace Server.Mobiles
                         PackItem(new DaemonHelm());
                         break;
                 }
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

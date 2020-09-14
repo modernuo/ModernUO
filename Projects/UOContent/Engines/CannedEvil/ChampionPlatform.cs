@@ -11,12 +11,20 @@ namespace Server.Engines.CannedEvil
             m_Spawn = spawn;
 
             for (var x = -2; x <= 2; ++x)
+            {
                 for (var y = -2; y <= 2; ++y)
+                {
                     AddComponent(0x750, x, y, -5);
+                }
+            }
 
             for (var x = -1; x <= 1; ++x)
+            {
                 for (var y = -1; y <= 1; ++y)
+                {
                     AddComponent(0x750, x, y, 0);
+                }
+            }
 
             for (var i = -1; i <= 1; ++i)
             {
@@ -75,7 +83,9 @@ namespace Server.Engines.CannedEvil
                         m_Spawn = reader.ReadItem() as ChampionSpawn;
 
                         if (m_Spawn == null)
+                        {
                             Delete();
+                        }
 
                         break;
                     }

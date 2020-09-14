@@ -45,10 +45,14 @@ namespace Server.Mobiles
             MinTameSkill = 98.7;
 
             if (Utility.RandomDouble() < .33)
+            {
                 PackItem(Seed.RandomBonsaiSeed());
+            }
 
             if (Core.ML && Utility.RandomDouble() < .33)
+            {
                 PackItem(Seed.RandomPeculiarSeed(3));
+            }
         }
 
         public Hiryu(Serial serial)
@@ -74,31 +78,69 @@ namespace Server.Mobiles
             var rand = Utility.Random(1075);
 
             if (rand <= 0)
+            {
                 return 0x855C;
+            }
+
             if (rand <= 1)
+            {
                 return 0x8490;
+            }
+
             if (rand <= 3)
+            {
                 return 0x8030;
+            }
+
             if (rand <= 5)
+            {
                 return 0x8037;
+            }
+
             if (rand <= 8)
+            {
                 return 0x8295;
+            }
+
             if (rand <= 11)
+            {
                 return 0x8123;
+            }
+
             if (rand <= 16)
+            {
                 return 0x8482;
+            }
+
             if (rand <= 24)
+            {
                 return 0x8487;
+            }
+
             if (rand <= 34)
+            {
                 return 0x8032;
+            }
+
             if (rand <= 44)
+            {
                 return 0x8899;
+            }
+
             if (rand <= 54)
+            {
                 return 0x8495;
+            }
+
             if (rand <= 64)
+            {
                 return 0x848D;
+            }
+
             if (rand <= 74)
+            {
                 return 0x847F;
+            }
 
             return 0;
         }
@@ -124,7 +166,9 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() >= 0.1)
+            {
                 return;
+            }
 
             /* Grasping Claw
                * Start cliloc: 1070836
@@ -169,15 +213,22 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (version <= 1)
+            {
                 Timer.DelayCall(Fix, version);
+            }
 
             if (version < 2)
+            {
                 for (var i = 0; i < Skills.Length; ++i)
                 {
                     Skills[i].Cap = Math.Max(100.0, Skills[i].Cap * 0.9);
 
-                    if (Skills[i].Base > Skills[i].Cap) Skills[i].Base = Skills[i].Cap;
+                    if (Skills[i].Base > Skills[i].Cap)
+                    {
+                        Skills[i].Base = Skills[i].Cap;
+                    }
                 }
+            }
         }
 
         private void Fix(int version)
@@ -186,7 +237,11 @@ namespace Server.Mobiles
             {
                 case 1:
                     {
-                        if (InternalItem != null) InternalItem.Hue = Hue;
+                        if (InternalItem != null)
+                        {
+                            InternalItem.Hue = Hue;
+                        }
+
                         goto case 0;
                     }
                 case 0:

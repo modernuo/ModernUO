@@ -14,15 +14,21 @@ namespace Server.Engines.Quests.Necro
         public override bool OnMoveOver(Mobile m)
         {
             if (m.AccessLevel > AccessLevel.Player)
+            {
                 return true;
+            }
 
             var mob = m;
 
             if (m is BaseCreature creature)
+            {
                 mob = creature.ControlMaster;
+            }
 
             if (!(mob is PlayerMobile pm))
+            {
                 return false;
+            }
 
             var qs = pm.Quest;
 

@@ -45,7 +45,9 @@ namespace Server.Engines.ConPVP
                 defs = new BitArray(basedef.Options);
 
                 for (var i = 0; i < ruleset.Flavors.Count; ++i)
+                {
                     defs.Or(ruleset.Flavors[i].Options);
+                }
 
                 height += ruleset.Flavors.Count * 18;
             }
@@ -57,15 +59,21 @@ namespace Server.Engines.ConPVP
             var opts = ruleset.Options;
 
             for (var i = 0; i < opts.Length; ++i)
+            {
                 if (defs[i] != opts[i])
+                {
                     ++changes;
+                }
+            }
 
             height += changes * 22;
 
             height += 10 + 22 + 25 + 25;
 
             if (tourney.PlayersPerParticipant > 1)
+            {
                 height += 36 + tourney.PlayersPerParticipant * 20;
+            }
 
             Closable = false;
 
@@ -106,14 +114,18 @@ namespace Server.Engines.ConPVP
                 for (var i = 0; i < tourney.ParticipantsPerMatch; ++i)
                 {
                     if (sb.Length > 0)
+                    {
                         sb.Append('v');
+                    }
 
                     sb.Append(tourney.PlayersPerParticipant);
                 }
             }
 
             if (tourney.EventController != null)
+            {
                 sb.Append(' ').Append(tourney.EventController.Title);
+            }
 
             sb.Append(" Tournament Signup");
 
@@ -164,9 +176,13 @@ namespace Server.Engines.ConPVP
                 sdText = $"{(int)tourney.SuddenDeath.TotalMinutes}:{tourney.SuddenDeath.Seconds:D2}";
 
                 if (tourney.SuddenDeathRounds > 0)
+                {
                     sdText = $"{sdText} (first {tourney.SuddenDeathRounds} rounds)";
+                }
                 else
+                {
                     sdText = $"{sdText} (all rounds)";
+                }
             }
 
             AddBorderedText(35, y, 240, 20, $"Sudden Death: {sdText}", LabelColor32, BlackColor32);
@@ -181,7 +197,9 @@ namespace Server.Engines.ConPVP
             y += 20;
 
             for (var i = 0; i < ruleset.Flavors.Count; ++i, y += 18)
+            {
                 AddBorderedText(35, y, 190, 20, $" + {ruleset.Flavors[i].Title}", LabelColor32, BlackColor32);
+            }
 
             y += 4;
 
@@ -191,6 +209,7 @@ namespace Server.Engines.ConPVP
                 y += 20;
 
                 for (var i = 0; i < opts.Length; ++i)
+                {
                     if (defs[i] != opts[i])
                     {
                         var name = ruleset.Layout.FindByIndex(i);
@@ -203,6 +222,7 @@ namespace Server.Engines.ConPVP
 
                         y += 22;
                     }
+                }
             }
             else
             {
@@ -223,9 +243,13 @@ namespace Server.Engines.ConPVP
                 for (var i = 0; i < players.Count; ++i, y += 20)
                 {
                     if (i == 0)
+                    {
                         AddImage(35, y, 0xD2);
+                    }
                     else
+                    {
                         AddGoldenButton(35, y, 1 + i);
+                    }
 
                     AddBorderedText(60, y, 200, 20, players[i].Name, LabelColor32, BlackColor32);
                 }
@@ -233,9 +257,13 @@ namespace Server.Engines.ConPVP
                 for (var i = players.Count; i < tourney.PlayersPerParticipant; ++i, y += 20)
                 {
                     if (i == 0)
+                    {
                         AddImage(35, y, 0xD2);
+                    }
                     else
+                    {
                         AddGoldenButton(35, y, 1 + i);
+                    }
 
                     AddBorderedText(60, y, 200, 20, "(Empty)", LabelColor32, BlackColor32);
                 }
@@ -274,9 +302,13 @@ namespace Server.Engines.ConPVP
         private void AddColoredText(int x, int y, int width, int height, string text, int color)
         {
             if (color == 0)
+            {
                 AddHtml(x, y, width, height, text);
+            }
             else
+            {
                 AddHtml(x, y, width, height, Color(text, color));
+            }
         }
 
         public void AddGoldenButton(int x, int y, int bid)
@@ -299,21 +331,25 @@ namespace Server.Engines.ConPVP
                             if (m_Registrar != null)
                             {
                                 if (m_Tournament.HasParticipant(from))
+                                {
                                     m_Registrar.PrivateOverheadMessage(
                                         MessageType.Regular,
                                         0x35,
                                         false,
                                         "Excuse me? You are already signed up.",
-                                        from.NetState
+                                        @from.NetState
                                     );
+                                }
                                 else
+                                {
                                     m_Registrar.PrivateOverheadMessage(
                                         MessageType.Regular,
                                         0x22,
                                         false,
                                         "The tournament has already begun. You are too late to signup now.",
-                                        from.NetState
+                                        @from.NetState
                                     );
+                                }
                             }
 
                             break;
@@ -359,21 +395,25 @@ namespace Server.Engines.ConPVP
                                     if (m_Registrar != null)
                                     {
                                         if (mob == from)
+                                        {
                                             m_Registrar.PrivateOverheadMessage(
                                                 MessageType.Regular,
                                                 0x35,
                                                 false,
                                                 "You have not yet proven yourself a worthy dueler.",
-                                                from.NetState
+                                                @from.NetState
                                             );
+                                        }
                                         else
+                                        {
                                             m_Registrar.PrivateOverheadMessage(
                                                 MessageType.Regular,
                                                 0x35,
                                                 false,
                                                 $"{mob.Name} has not yet proven themselves a worthy dueler.",
-                                                from.NetState
+                                                @from.NetState
                                             );
+                                        }
                                     }
 
                                     m_From.SendGump(new ConfirmSignupGump(m_From, m_Registrar, m_Tournament, m_Players));
@@ -399,21 +439,25 @@ namespace Server.Engines.ConPVP
                                     if (m_Registrar != null)
                                     {
                                         if (mob == from)
+                                        {
                                             m_Registrar.PrivateOverheadMessage(
                                                 MessageType.Regular,
                                                 0x35,
                                                 false,
                                                 "You have already entered this tournament.",
-                                                from.NetState
+                                                @from.NetState
                                             );
+                                        }
                                         else
+                                        {
                                             m_Registrar.PrivateOverheadMessage(
                                                 MessageType.Regular,
                                                 0x35,
                                                 false,
                                                 $"{mob.Name} has already entered this tournament.",
-                                                from.NetState
+                                                @from.NetState
                                             );
+                                        }
                                     }
 
                                     m_From.SendGump(new ConfirmSignupGump(m_From, m_Registrar, m_Tournament, m_Players));
@@ -423,21 +467,25 @@ namespace Server.Engines.ConPVP
                                 if (mob is PlayerMobile mobile && mobile.DuelContext != null)
                                 {
                                     if (mob == from)
+                                    {
                                         m_Registrar?.PrivateOverheadMessage(
                                             MessageType.Regular,
                                             0x35,
                                             false,
                                             "You are already assigned to a duel. You must yield it before joining this tournament.",
-                                            from.NetState
+                                            @from.NetState
                                         );
+                                    }
                                     else
+                                    {
                                         m_Registrar?.PrivateOverheadMessage(
                                             MessageType.Regular,
                                             0x35,
                                             false,
                                             $"{mobile.Name} is already assigned to a duel. They must yield it before joining this tournament.",
-                                            from.NetState
+                                            @from.NetState
                                         );
+                                    }
 
                                     m_From.SendGump(new ConfirmSignupGump(m_From, m_Registrar, m_Tournament, m_Players));
                                     return;
@@ -449,14 +497,20 @@ namespace Server.Engines.ConPVP
                                 string fmt;
 
                                 if (tourney.PlayersPerParticipant == 1)
+                                {
                                     fmt =
                                         "As you say m'{0}. I've written your name to the bracket. The tournament will begin {1}.";
+                                }
                                 else if (tourney.PlayersPerParticipant == 2)
+                                {
                                     fmt =
                                         "As you wish m'{0}. The tournament will begin {1}, but first you must name your partner.";
+                                }
                                 else
+                                {
                                     fmt =
                                         "As you wish m'{0}. The tournament will begin {1}, but first you must name your team.";
+                                }
 
                                 string timeUntil;
                                 var minutesUntil = (int)Math.Round(
@@ -465,9 +519,13 @@ namespace Server.Engines.ConPVP
                                 );
 
                                 if (minutesUntil == 0)
+                                {
                                     timeUntil = "momentarily";
+                                }
                                 else
+                                {
                                     timeUntil = $"in {minutesUntil} minute{(minutesUntil == 1 ? "" : "s")}";
+                                }
 
                                 m_Registrar.PrivateOverheadMessage(
                                     MessageType.Regular,
@@ -524,9 +582,13 @@ namespace Server.Engines.ConPVP
                 m_From.SendGump(new ConfirmSignupGump(m_From, m_Registrar, m_Tournament, m_Players));
 
                 if (mob.Body.IsHuman)
-                    mob.SayTo(from, 1005443); // Nay, I would rather stay here and watch a nail rust.
+                {
+                    mob.SayTo(@from, 1005443); // Nay, I would rather stay here and watch a nail rust.
+                }
                 else
-                    mob.SayTo(from, 1005444); // The creature ignores your offer.
+                {
+                    mob.SayTo(@from, 1005444); // The creature ignores your offer.
+                }
             }
             else if (AcceptDuelGump.IsIgnored(mob, from) || mob.Blessed)
             {
@@ -543,7 +605,9 @@ namespace Server.Engines.ConPVP
             else
             {
                 if (!(mob is PlayerMobile pm))
+                {
                     return;
+                }
 
                 if (pm.DuelContext != null)
                 {

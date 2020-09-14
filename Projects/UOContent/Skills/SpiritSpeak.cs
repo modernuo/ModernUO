@@ -22,7 +22,9 @@ namespace Server.SkillHandlers
                 spell.Cast();
 
                 if (spell.IsCasting)
+                {
                     return TimeSpan.FromSeconds(5.0);
+                }
 
                 return TimeSpan.Zero;
             }
@@ -37,7 +39,9 @@ namespace Server.SkillHandlers
                     var secs = m.Skills.SpiritSpeak.Base / 50;
                     secs *= 90;
                     if (secs < 15)
+                    {
                         secs = 15;
+                    }
 
                     t.Delay = TimeSpan.FromSeconds(secs); // 15seconds to 3 minutes
                     t.Start();
@@ -95,7 +99,9 @@ namespace Server.SkillHandlers
             public override void OnCasterHurt()
             {
                 if (IsCasting)
+                {
                     Disturb(DisturbType.Hurt, false, true);
+                }
             }
 
             public override bool ConsumeReagents() => true;
@@ -112,7 +118,9 @@ namespace Server.SkillHandlers
             public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable)
             {
                 if (type == DisturbType.EquipRequest || type == DisturbType.UseRequest)
+                {
                     return false;
+                }
 
                 return true;
             }
@@ -170,7 +178,9 @@ namespace Server.SkillHandlers
                         Caster.SendLocalizedMessage(number);
 
                         if (min > max)
+                        {
                             min = max;
+                        }
 
                         Caster.Hits += Utility.RandomMinMax(min, max);
 

@@ -42,7 +42,9 @@ namespace Server.Engines.Quests.Naturalist
             {
                 var study = qs.FindObjective<StudyNestsObjective>();
                 if (study == null)
+                {
                     return;
+                }
 
                 if (!study.Completed)
                 {
@@ -102,9 +104,13 @@ namespace Server.Engines.Quests.Naturalist
                         PlaySound(0x41B);
 
                         if (study.StudiedSpecialNest)
+                        {
                             qs.AddConversation(new SpecialEndConversation());
+                        }
                         else
+                        {
                             qs.AddConversation(new EndConversation());
+                        }
                     }
                     else
                     {

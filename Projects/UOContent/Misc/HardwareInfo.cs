@@ -111,18 +111,24 @@ namespace Server
                     var hwInfo = acct.HardwareInfo;
 
                     if (hwInfo != null)
+                    {
                         CommandLogging.WriteLine(
-                            from,
+                            @from,
                             "{0} {1} viewing hardware info of {2}",
-                            from.AccessLevel,
-                            CommandLogging.Format(from),
+                            @from.AccessLevel,
+                            CommandLogging.Format(@from),
                             CommandLogging.Format(m)
                         );
+                    }
 
                     if (hwInfo != null)
-                        from.SendGump(new PropertiesGump(from, hwInfo));
+                    {
+                        @from.SendGump(new PropertiesGump(@from, hwInfo));
+                    }
                     else
-                        from.SendMessage("No hardware information for that account was found.");
+                    {
+                        @from.SendMessage("No hardware information for that account was found.");
+                    }
                 }
                 else
                 {
@@ -171,7 +177,9 @@ namespace Server
             info.TimeReceived = DateTime.UtcNow;
 
             if (state.Account is Account acct)
+            {
                 acct.HardwareInfo = info;
+            }
         }
     }
 }

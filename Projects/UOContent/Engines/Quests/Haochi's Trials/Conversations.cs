@@ -51,7 +51,10 @@ namespace Server.Engines.Quests.Samurai
         {
             get
             {
-                if (m_CursedSoul) return 1063040;
+                if (m_CursedSoul)
+                {
+                    return 1063040;
+                }
 
                 // You have just gained some <a href="?ForceTopic45">Karma</a> for killing a Young Ronin.
                 return 1063041;
@@ -89,7 +92,10 @@ namespace Server.Engines.Quests.Samurai
         {
             get
             {
-                if (m_CursedSoul) return 1063045;
+                if (m_CursedSoul)
+                {
+                    return 1063045;
+                }
 
                 /* It is good that you rid the land of those dishonorable Samurai.
                    * Perhaps they will learn a greater lesson in death.<BR><BR>
@@ -147,7 +153,10 @@ namespace Server.Engines.Quests.Samurai
         {
             get
             {
-                if (m_Dragon) return 1063060;
+                if (m_Dragon)
+                {
+                    return 1063060;
+                }
 
                 /* Fear remains in your eyes but you have learned that not all is
                    * what it appears to be. <BR><BR>
@@ -231,7 +240,10 @@ namespace Server.Engines.Quests.Samurai
         {
             get
             {
-                if (m_KilledCat) return 1063071;
+                if (m_KilledCat)
+                {
+                    return 1063071;
+                }
 
                 /* You showed respect by helping another out while allowing the gypsy
                    * what little dignity she has left. <BR><BR>
@@ -303,7 +315,10 @@ namespace Server.Engines.Quests.Samurai
         {
             get
             {
-                if (m_StolenTreasure) return 1063077;
+                if (m_StolenTreasure)
+                {
+                    return 1063077;
+                }
 
                 /* Thank you for returning this sword to me and leaving the remaining
                    * treasure alone. <BR><BR>

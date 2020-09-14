@@ -354,7 +354,9 @@ namespace Server
             m_Count = 0;
 
             for (var i = 0; i < m_BritRegions.Length; ++i)
+            {
                 Generate(m_BritRegions[i]);
+            }
 
             var trammelCount = m_Count;
 
@@ -362,7 +364,9 @@ namespace Server
             m_Count = 0;
 
             for (var i = 0; i < m_BritRegions.Length; ++i)
+            {
                 Generate(m_BritRegions[i]);
+            }
 
             var feluccaCount = m_Count;
 
@@ -370,7 +374,9 @@ namespace Server
             m_Count = 0;
 
             for (var i = 0; i < m_IlshRegions.Length; ++i)
+            {
                 Generate(m_IlshRegions[i]);
+            }
 
             var ilshenarCount = m_Count;
 
@@ -378,7 +384,9 @@ namespace Server
             m_Count = 0;
 
             for (var i = 0; i < m_MalasRegions.Length; ++i)
+            {
                 Generate(m_MalasRegions[i]);
+            }
 
             var malasCount = m_Count;
 
@@ -398,16 +406,23 @@ namespace Server
         public static bool IsFrame(int id, int[] list)
         {
             if (id > list[^1])
+            {
                 return false;
+            }
 
             for (var i = 0; i < list.Length; ++i)
             {
                 var delta = id - list[i];
 
                 if (delta < 0)
+                {
                     return false;
+                }
+
                 if (delta == 0)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -430,7 +445,9 @@ namespace Server
                 var tile = tiles[i];
 
                 if (tile.Z == z && IsEastFrame(tile.ID))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -445,7 +462,9 @@ namespace Server
                 var tile = tiles[i];
 
                 if (tile.Z == z && IsSouthFrame(tile.ID))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -457,19 +476,29 @@ namespace Server
             var doorTop = doorZ + 20;
 
             if (!m_Map.CanFit(x, y, z, 16, false, false))
+            {
                 return null;
+            }
 
             if (y == 1743 && x >= 1343 && x <= 1344)
+            {
                 return null;
+            }
 
             if (y == 1679 && x >= 1392 && x <= 1393)
+            {
                 return null;
+            }
 
             if (x == 1320 && y >= 1618 && y <= 1640)
+            {
                 return null;
+            }
 
             if (x == 1383 && y >= 1642 && y <= 1643)
+            {
                 return null;
+            }
 
             BaseDoor door = new DarkWoodDoor(facing);
             door.MoveToWorld(new Point3D(x, y, z), m_Map);
@@ -482,6 +511,7 @@ namespace Server
         public static void Generate(Rectangle2D region)
         {
             for (var rx = 0; rx < region.Width; ++rx)
+            {
                 for (var ry = 0; ry < region.Height; ++ry)
                 {
                     var vx = rx + region.X;
@@ -546,6 +576,7 @@ namespace Server
                         }
                     }
                 }
+            }
         }
     }
 }

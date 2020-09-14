@@ -100,7 +100,9 @@ namespace Server.Items
                             m_MaxArcaneCharges = reader.ReadInt();
 
                             if (Hue == 2118)
+                            {
                                 Hue = ArcaneGem.DefaultArcaneHue;
+                            }
                         }
 
                         break;
@@ -108,18 +110,26 @@ namespace Server.Items
             }
 
             if (Weight == 4.0)
+            {
                 Weight = 5.0;
+            }
         }
 
         public void Update()
         {
             if (IsArcane)
+            {
                 ItemID = 0x26AD;
+            }
             else if (ItemID == 0x26AD)
+            {
                 ItemID = 0x1515;
+            }
 
             if (IsArcane && CurArcaneCharges == 0)
+            {
                 Hue = 0;
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -127,7 +137,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (IsArcane)
+            {
                 list.Add(1061837, "{0}\t{1}", m_CurArcaneCharges, m_MaxArcaneCharges); // arcane charges: ~1_val~ / ~2_val~
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -135,15 +147,21 @@ namespace Server.Items
             base.OnSingleClick(from);
 
             if (IsArcane)
-                LabelTo(from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
+            {
+                LabelTo(@from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
+            }
         }
 
         public void Flip()
         {
             if (ItemID == 0x1515)
+            {
                 ItemID = 0x1530;
+            }
             else if (ItemID == 0x1530)
+            {
                 ItemID = 0x1515;
+            }
         }
     }
 
@@ -181,7 +199,9 @@ namespace Server.Items
             get
             {
                 if (m_LabelNumber > 0)
+                {
                     return m_LabelNumber;
+                }
 
                 return base.LabelNumber;
             }
@@ -197,7 +217,9 @@ namespace Server.Items
             base.OnAdded(parent);
 
             if (parent is Mobile mobile)
+            {
                 mobile.VirtualArmorMod += 2;
+            }
         }
 
         public override void OnRemoved(IEntity parent)
@@ -205,7 +227,9 @@ namespace Server.Items
             base.OnRemoved(parent);
 
             if (parent is Mobile mobile)
+            {
                 mobile.VirtualArmorMod -= 2;
+            }
         }
 
         public override bool Dye(Mobile from, DyeTub sender)
@@ -219,18 +243,22 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Core.ML && IsRewardItem)
+            {
                 list.Add(
                     RewardSystem.GetRewardYearLabel(
                         this,
                         new object[] { Hue, m_LabelNumber }
                     )
                 ); // X Year Veteran Reward
+            }
         }
 
         public override bool CanEquip(Mobile m)
         {
             if (!base.CanEquip(m))
+            {
                 return false;
+            }
 
             return !IsRewardItem || RewardSystem.CheckIsUsableBy(m, this, new object[] { Hue, m_LabelNumber });
         }
@@ -262,7 +290,9 @@ namespace Server.Items
             }
 
             if (Parent is Mobile mobile)
+            {
                 mobile.VirtualArmorMod += 2;
+            }
         }
     }
 

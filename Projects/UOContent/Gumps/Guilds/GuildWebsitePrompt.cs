@@ -17,7 +17,9 @@ namespace Server.Gumps
         public override void OnCancel(Mobile from)
         {
             if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            {
                 return;
+            }
 
             GuildGump.EnsureClosed(m_Mobile);
             m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
@@ -26,15 +28,21 @@ namespace Server.Gumps
         public override void OnResponse(Mobile from, string text)
         {
             if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            {
                 return;
+            }
 
             text = text.Trim();
 
             if (text.Length > 50)
+            {
                 text = text.Substring(0, 50);
+            }
 
             if (text.Length > 0)
+            {
                 m_Guild.Website = text;
+            }
 
             GuildGump.EnsureClosed(m_Mobile);
             m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));

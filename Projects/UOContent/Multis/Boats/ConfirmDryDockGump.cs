@@ -32,7 +32,9 @@ namespace Server.Multis
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (info.ButtonID == 2)
+            {
                 m_Boat.EndDryDock(m_From);
+            }
         }
     }
 }

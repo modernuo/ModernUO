@@ -65,7 +65,9 @@ namespace Server.Mobiles
             PlaySound(0x1BC);
 
             if (Alive && !Deleted)
+            {
                 Timer.DelayCall(TimeSpan.FromSeconds(7.0), DoEffects);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

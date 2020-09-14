@@ -79,7 +79,9 @@ namespace Server.Engines.Quests.Samurai
                 if (obj?.Completed == false)
                 {
                     if (((SecondTrialReturnObjective)obj).Dragon)
+                    {
                         player.AddToBackpack(new LeatherSuneate());
+                    }
 
                     obj.Complete();
                     return;
@@ -116,16 +118,22 @@ namespace Server.Engines.Quests.Samurai
                 {
                     var katana = player.Backpack?.FindItemByType<HaochisKatana>();
                     if (katana == null)
+                    {
                         return;
+                    }
 
                     katana.Delete();
                     obj.Complete();
 
                     obj = qs.FindObjective<FifthTrialIntroObjective>();
                     if (((FifthTrialIntroObjective)obj)?.StolenTreasure == true)
+                    {
                         qs.AddConversation(new SixthTrialIntroConversation(true));
+                    }
                     else
+                    {
                         qs.AddConversation(new SixthTrialIntroConversation(false));
+                    }
                 }
 
                 obj = qs.FindObjective<SixthTrialReturnObjective>();

@@ -38,26 +38,38 @@ namespace Server.Mobiles
         public override void InitOutfit()
         {
             if (Female)
+            {
                 AddItem(new FancyDress());
+            }
             else
+            {
                 AddItem(new FancyShirt(GetRandomHue()));
+            }
 
             var lowHue = GetRandomHue();
 
             AddItem(new ShortPants(lowHue));
 
             if (Female)
+            {
                 AddItem(new ThighBoots(lowHue));
+            }
             else
+            {
                 AddItem(new Boots(lowHue));
+            }
 
             if (!Female)
+            {
                 AddItem(new BodySash(lowHue));
+            }
 
             AddItem(new Cloak(GetRandomHue()));
 
             if (!Female)
+            {
                 AddItem(new Longsword());
+            }
 
             Utility.AssignRandomHair(this);
 

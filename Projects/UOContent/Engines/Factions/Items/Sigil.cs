@@ -106,12 +106,16 @@ namespace Server.Factions
             get
             {
                 if (!IsBeingCorrupted)
+                {
                     return TimeSpan.Zero;
+                }
 
                 var ts = CorruptionStart + CorruptionPeriod - DateTime.UtcNow;
 
                 if (ts < TimeSpan.Zero)
+                {
                     ts = TimeSpan.Zero;
+                }
 
                 return ts;
             }
@@ -124,11 +128,17 @@ namespace Server.Factions
             ItemID = m_Town?.Definition.SigilID ?? 0x1869;
 
             if (m_Town == null)
+            {
                 AssignName(null);
+            }
             else if (IsCorrupted || IsPurifying)
+            {
                 AssignName(m_Town.Definition.CorruptedSigilName);
+            }
             else
+            {
                 AssignName(m_Town.Definition.SigilName);
+            }
 
             InvalidateProperties();
         }
@@ -138,16 +148,26 @@ namespace Server.Factions
             base.GetProperties(list);
 
             if (IsCorrupted)
+            {
                 TextDefinition.AddTo(list, m_Corrupted.Definition.SigilControl);
+            }
             else
+            {
                 list.Add(1042256); // This sigil is not corrupted.
+            }
 
             if (IsCorrupting)
+            {
                 list.Add(1042257); // This sigil is in the process of being corrupted.
+            }
             else if (IsPurifying)
+            {
                 list.Add(1042258); // This sigil has recently been corrupted, and is undergoing purification.
+            }
             else
+            {
                 list.Add(1042259); // This sigil is not in the process of being corrupted.
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -157,9 +177,13 @@ namespace Server.Factions
             if (IsCorrupted)
             {
                 if (m_Corrupted.Definition.SigilControl.Number > 0)
-                    LabelTo(from, m_Corrupted.Definition.SigilControl.Number);
+                {
+                    LabelTo(@from, m_Corrupted.Definition.SigilControl.Number);
+                }
                 else if (m_Corrupted.Definition.SigilControl.String != null)
-                    LabelTo(from, m_Corrupted.Definition.SigilControl.String);
+                {
+                    LabelTo(@from, m_Corrupted.Definition.SigilControl.String);
+                }
             }
             else
             {
@@ -167,11 +191,17 @@ namespace Server.Factions
             }
 
             if (IsCorrupting)
-                LabelTo(from, 1042257); // This sigil is in the process of being corrupted.
+            {
+                LabelTo(@from, 1042257); // This sigil is in the process of being corrupted.
+            }
             else if (IsPurifying)
-                LabelTo(from, 1042258); // This sigil has been recently corrupted, and is undergoing purification.
+            {
+                LabelTo(@from, 1042258); // This sigil has been recently corrupted, and is undergoing purification.
+            }
             else
-                LabelTo(from, 1042259); // This sigil is not in the process of being corrupted.
+            {
+                LabelTo(@from, 1042259); // This sigil is not in the process of being corrupted.
+            }
         }
 
         public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
@@ -183,10 +213,14 @@ namespace Server.Factions
         private Mobile FindOwner(IEntity parent)
         {
             if (parent is Item item)
+            {
                 return item.RootParent as Mobile;
+            }
 
             if (parent is Mobile mobile)
+            {
                 return mobile;
+            }
 
             return null;
         }
@@ -198,7 +232,9 @@ namespace Server.Factions
             var mob = FindOwner(parent);
 
             if (mob != null)
+            {
                 mob.SolidHueOverride = OwnershipHue;
+            }
         }
 
         public override void OnRemoved(IEntity parent)
@@ -208,7 +244,9 @@ namespace Server.Factions
             var mob = FindOwner(parent);
 
             if (mob != null)
+            {
                 mob.SolidHueOverride = -1;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -237,7 +275,9 @@ namespace Server.Factions
         private void Sigil_OnTarget(Mobile from, object obj)
         {
             if (Deleted || !IsChildOf(from.Backpack))
+            {
                 return;
+            }
 
             if (obj is Mobile)
             {
@@ -296,14 +336,20 @@ namespace Server.Factions
                         if (oldController == null)
                         {
                             if (m_Corrupted != newController)
+                            {
                                 BeginCorrupting(newController);
+                            }
                         }
                         else if (GraceStart > DateTime.MinValue && GraceStart + CorruptionGrace < DateTime.UtcNow)
                         {
                             if (m_Corrupted != newController)
+                            {
                                 BeginCorrupting(newController); // grace time over, reset period
+                            }
                             else
+                            {
                                 ClearCorrupting();
+                            }
 
                             GraceStart = DateTime.MinValue;
                         }
@@ -394,7 +440,9 @@ namespace Server.Factions
                         Update();
 
                         if (RootParent is Mobile mob)
+                        {
                             mob.SolidHueOverride = OwnershipHue;
+                        }
 
                         break;
                     }
@@ -406,10 +454,14 @@ namespace Server.Factions
             var monolith = LastMonolith;
 
             if (monolith == null && m_Town != null)
+            {
                 monolith = m_Town.Monolith;
+            }
 
             if (monolith?.Deleted == false)
+            {
                 monolith.Sigil = this;
+            }
 
             return monolith?.Deleted == false;
         }
@@ -431,7 +483,9 @@ namespace Server.Factions
         public override void Delete()
         {
             if (ReturnHome())
+            {
                 return;
+            }
 
             base.Delete();
         }

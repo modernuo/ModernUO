@@ -85,11 +85,13 @@ namespace Server.Engines.Harvest
             fish.Veins = veins;
 
             if (Core.ML)
+            {
                 fish.BonusResources = new[]
                 {
                     new BonusHarvestResource(0, 99.4, null, null), // set to same chance as mining ml gems
                     new BonusHarvestResource(80.0, .6, 1072597, typeof(WhitePearl))
                 };
+            }
 
             Definitions.Add(fish);
         }
@@ -155,14 +157,18 @@ namespace Server.Engines.Harvest
                 var entry = m_MutateTable[i];
 
                 if (!deepWater && entry.m_DeepWater)
+                {
                     continue;
+                }
 
                 if (skillBase >= entry.m_ReqSkill)
                 {
                     var chance = (skillValue - entry.m_MinSkill) / (entry.m_MaxSkill - entry.m_MinSkill);
 
                     if (chance > Utility.RandomDouble())
+                    {
                         return entry.m_Types.RandomElement();
+                    }
                 }
             }
 
@@ -188,15 +194,21 @@ namespace Server.Engines.Harvest
                 int level;
                 if (from is PlayerMobile mobile && mobile.Young && mobile.Map == Map.Trammel &&
                     TreasureMap.IsInHavenIsland(from))
+                {
                     level = 0;
+                }
                 else
+                {
                     level = 1;
+                }
 
                 return new TreasureMap(level, from.Map == Map.Felucca ? Map.Felucca : Map.Trammel);
             }
 
             if (type == typeof(MessageInABottle))
-                return new MessageInABottle(from.Map == Map.Felucca ? Map.Felucca : Map.Trammel);
+            {
+                return new MessageInABottle(@from.Map == Map.Felucca ? Map.Felucca : Map.Trammel);
+            }
 
             var pack = from.Backpack;
 
@@ -257,9 +269,13 @@ namespace Server.Engines.Harvest
                             case 5: // Hats
                                 {
                                     if (Utility.RandomBool())
+                                    {
                                         preLoot = new SkullCap();
+                                    }
                                     else
+                                    {
                                         preLoot = new TricorneHat();
+                                    }
 
                                     break;
                                 }
@@ -275,9 +291,13 @@ namespace Server.Engines.Harvest
                                     };
 
                                     if (Utility.Random(list.Length + 1) == 0)
+                                    {
                                         preLoot = new Candelabra();
+                                    }
                                     else
+                                    {
                                         preLoot = new ShipwreckedItem(list.RandomElement());
+                                    }
 
                                     break;
                                 }
@@ -292,12 +312,18 @@ namespace Server.Engines.Harvest
                         LockableContainer chest;
 
                         if (Utility.RandomBool())
+                        {
                             chest = new MetalGoldenChest();
+                        }
                         else
+                        {
                             chest = new WoodenChest();
+                        }
 
                         if (sos.IsAncient)
+                        {
                             chest.Hue = 0x481;
+                        }
 
                         TreasureMapChest.Fill(chest, Math.Max(1, Math.Min(4, sos.Level)));
 
@@ -326,9 +352,13 @@ namespace Server.Engines.Harvest
                 BaseCreature serp;
 
                 if (Utility.RandomDouble() < 0.25)
+                {
                     serp = new DeepSeaSerpent();
+                }
                 else
+                {
                     serp = new SeaSerpent();
+                }
 
                 int x = m.X, y = m.Y;
 
@@ -416,22 +446,34 @@ namespace Server.Engines.Harvest
                     number = 1043297;
 
                     if ((item.ItemData.Flags & TileFlag.ArticleA) != 0)
+                    {
                         name = $"a {item.ItemData.Name}";
+                    }
                     else if ((item.ItemData.Flags & TileFlag.ArticleAn) != 0)
+                    {
                         name = $"an {item.ItemData.Name}";
+                    }
                     else
+                    {
                         name = item.ItemData.Name;
+                    }
                 }
 
                 var ns = from.NetState;
 
                 if (ns == null)
+                {
                     return;
+                }
 
                 if (number == 1043297 || ns.HighSeas)
-                    from.SendLocalizedMessage(number, name);
+                {
+                    @from.SendLocalizedMessage(number, name);
+                }
                 else
-                    from.SendLocalizedMessage(number, true, name);
+                {
+                    @from.SendLocalizedMessage(number, true, name);
+                }
             }
         }
 
@@ -440,17 +482,21 @@ namespace Server.Engines.Harvest
             base.OnHarvestStarted(from, tool, def, toHarvest);
 
             if (GetHarvestDetails(from, tool, toHarvest, out _, out var map, out var loc))
+            {
                 Timer.DelayCall(
                     TimeSpan.FromSeconds(1.5),
                     () =>
                     {
                         if (Core.ML)
-                            from.RevealingAction();
+                        {
+                            @from.RevealingAction();
+                        }
 
                         Effects.SendLocationEffect(loc, map, 0x352D, 16, 4);
                         Effects.PlaySound(loc, map, 0x364);
                     }
                 );
+            }
         }
 
         public override void OnHarvestFinished(
@@ -461,7 +507,9 @@ namespace Server.Engines.Harvest
             base.OnHarvestFinished(from, tool, def, vein, bank, resource, harvested);
 
             if (Core.ML)
-                from.RevealingAction();
+            {
+                @from.RevealingAction();
+            }
         }
 
         public override object GetLock(Mobile from, Item tool, HarvestDefinition def, object toHarvest) => this;
@@ -469,7 +517,9 @@ namespace Server.Engines.Harvest
         public override bool BeginHarvesting(Mobile from, Item tool)
         {
             if (!base.BeginHarvesting(from, tool))
+            {
                 return false;
+            }
 
             from.SendLocalizedMessage(500974); // What water do you want to fish in?
             return true;
@@ -478,7 +528,9 @@ namespace Server.Engines.Harvest
         public override bool CheckHarvest(Mobile from, Item tool)
         {
             if (!base.CheckHarvest(from, tool))
+            {
                 return false;
+            }
 
             if (from.Mounted)
             {
@@ -492,7 +544,9 @@ namespace Server.Engines.Harvest
         public override bool CheckHarvest(Mobile from, Item tool, HarvestDefinition def, object toHarvest)
         {
             if (!base.CheckHarvest(from, tool, def, toHarvest))
+            {
                 return false;
+            }
 
             if (from.Mounted)
             {

@@ -106,7 +106,9 @@ namespace Server.Gumps
                                   m is PlayerMobile mobile && mobile.VisibilityList.Contains(owner)))
                 {
                     if (filter != null && !(m.Name?.ToLower().IndexOf(filter) >= 0))
+                    {
                         continue;
+                    }
 
                     list.Add(m);
                 }
@@ -142,6 +144,7 @@ namespace Server.Gumps
             var emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4 - (OldStyle ? SetWidth + OffsetSize : 0);
 
             if (!OldStyle)
+            {
                 AddImageTiled(
                     x - (OldStyle ? OffsetSize : 0),
                     y,
@@ -149,6 +152,7 @@ namespace Server.Gumps
                     EntryHeight,
                     EntryGumpID
                 );
+            }
 
             AddLabel(
                 x + TextOffsetX,
@@ -160,29 +164,39 @@ namespace Server.Gumps
             x += emptyWidth + OffsetSize;
 
             if (OldStyle)
+            {
                 AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
+            }
             else
+            {
                 AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
+            }
 
             if (page > 0)
             {
                 AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1);
 
                 if (PrevLabel)
+                {
                     AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
+                }
             }
 
             x += PrevWidth + OffsetSize;
 
             if (!OldStyle)
+            {
                 AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
+            }
 
             if ((page + 1) * EntryCount < m_Mobiles.Count)
             {
                 AddButton(x + NextOffsetX, y + NextOffsetY, NextButtonID1, NextButtonID2, 2, GumpButtonType.Reply, 1);
 
                 if (NextLabel)
+                {
                     AddLabel(x + NextLabelOffsetX, y + NextLabelOffsetY, TextHue, "Next");
+                }
             }
 
             for (int i = 0, index = page * EntryCount; i < EntryCount && index < m_Mobiles.Count; ++i, ++index)
@@ -205,10 +219,14 @@ namespace Server.Gumps
                 x += EntryWidth + OffsetSize;
 
                 if (SetGumpID != 0)
+                {
                     AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+                }
 
                 if (m.NetState != null && !m.Deleted)
+                {
                     AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 3);
+                }
             }
         }
 
@@ -243,14 +261,18 @@ namespace Server.Gumps
                 case 1: // Previous
                     {
                         if (m_Page > 0)
-                            from.SendGump(new WhoGump(from, m_Mobiles, m_Page - 1));
+                        {
+                            @from.SendGump(new WhoGump(@from, m_Mobiles, m_Page - 1));
+                        }
 
                         break;
                     }
                 case 2: // Next
                     {
                         if ((m_Page + 1) * EntryCount < m_Mobiles.Count)
-                            from.SendGump(new WhoGump(from, m_Mobiles, m_Page + 1));
+                        {
+                            @from.SendGump(new WhoGump(@from, m_Mobiles, m_Page + 1));
+                        }
 
                         break;
                     }
@@ -296,12 +318,20 @@ namespace Server.Gumps
             public int Compare(Mobile x, Mobile y)
             {
                 if (x == null || y == null)
+                {
                     throw new ArgumentException();
+                }
 
                 if (x.AccessLevel > y.AccessLevel)
+                {
                     return -1;
+                }
+
                 if (x.AccessLevel < y.AccessLevel)
+                {
                     return 1;
+                }
+
                 return Insensitive.Compare(x.Name, y.Name);
             }
         }

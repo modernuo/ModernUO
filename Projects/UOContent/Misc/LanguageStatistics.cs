@@ -167,11 +167,17 @@ namespace Server.Misc
       private static string GetFormattedInfo(string code)
     {
       if (code == null || code.Length != 3)
-        return $"Unknown code {code}";
+      {
+          return $"Unknown code {code}";
+      }
 
       for (var i = 0; i < InternationalCodes.Length; i++)
-        if (code == InternationalCodes[i].Code)
-          return $"{InternationalCodes[i].GetName()}";
+      {
+          if (code == InternationalCodes[i].Code)
+          {
+              return $"{InternationalCodes[i].GetName()}";
+          }
+      }
 
       return $"Unknown code {code}";
     }
@@ -189,41 +195,61 @@ namespace Server.Misc
 
       using var writer = new StreamWriter("languages.txt");
       if (CountAccounts)
-        foreach (Account acc in Accounts.GetAccounts())
-          for (var i = 0; i < acc.Length; i++)
+      {
+          foreach (Account acc in Accounts.GetAccounts())
           {
-            var mob = acc[i];
+              for (var i = 0; i < acc.Length; i++)
+              {
+                  var mob = acc[i];
 
-            var lang = mob?.Language;
+                  var lang = mob?.Language;
 
-            if (lang == null)
-              continue;
+                  if (lang == null)
+                  {
+                      continue;
+                  }
 
-            lang = lang.ToUpper();
+                  lang = lang.ToUpper();
 
-            if (ht.TryGetValue(lang, out var codes))
-              codes.Increase();
-            else
-              ht[lang] = new InternationalCodeCounter(lang);
+                  if (ht.TryGetValue(lang, out var codes))
+                  {
+                      codes.Increase();
+                  }
+                  else
+                  {
+                      ht[lang] = new InternationalCodeCounter(lang);
+                  }
 
-            break;
+                  break;
+              }
           }
+      }
       else
-        foreach (var mob in World.Mobiles.Values)
-          if (mob.Player)
+      {
+          foreach (var mob in World.Mobiles.Values)
           {
-            var lang = mob.Language;
+              if (mob.Player)
+              {
+                  var lang = mob.Language;
 
-            if (lang == null)
-              continue;
+                  if (lang == null)
+                  {
+                      continue;
+                  }
 
-            lang = lang.ToUpper();
+                  lang = lang.ToUpper();
 
-            if (ht.TryGetValue(lang, out var codes))
-              codes.Increase();
-            else
-              ht[lang] = new InternationalCodeCounter(lang);
+                  if (ht.TryGetValue(lang, out var codes))
+                  {
+                      codes.Increase();
+                  }
+                  else
+                  {
+                      ht[lang] = new InternationalCodeCounter(lang);
+                  }
+              }
           }
+      }
 
       writer.WriteLine(
         $"Language statistics. Numbers show how many {(CountAccounts ? "accounts" : "playermobile")} use the specified language.");
@@ -236,7 +262,9 @@ namespace Server.Misc
       list.Sort(InternationalCodeComparer.Instance);
 
       foreach (var c in list)
-        writer.WriteLine($"{GetFormattedInfo(c.Code)}‎ : {c.Count}");
+      {
+          writer.WriteLine($"{GetFormattedInfo(c.Code)}‎ : {c.Count}");
+      }
 
       e.Mobile.SendMessage("Languages list generated.");
     }
@@ -280,8 +308,10 @@ namespace Server.Misc
             $"{(DefaultLocalNames ? Language_LocalName : Language)}‎ - {(DefaultLocalNames ? Country_LocalName : Country)}";
 
           if (ShowAlternatives)
-            s +=
-              $"‎ 【{(DefaultLocalNames ? Language : Language_LocalName)}‎ - {(DefaultLocalNames ? Country : Country_LocalName)}‎】";
+          {
+              s +=
+                  $"‎ 【{(DefaultLocalNames ? Language : Language_LocalName)}‎ - {(DefaultLocalNames ? Country : Country_LocalName)}‎】";
+          }
         }
         else
         {
@@ -325,19 +355,29 @@ namespace Server.Misc
         cb = y.Count;
 
         if (ca > cb)
-          return -1;
+        {
+            return -1;
+        }
 
         if (ca < cb)
-          return 1;
+        {
+            return 1;
+        }
 
         if (a == null && b == null)
-          return 0;
+        {
+            return 0;
+        }
 
         if (a == null)
-          return 1;
+        {
+            return 1;
+        }
 
         if (b == null)
-          return -1;
+        {
+            return -1;
+        }
 
         return a.CompareTo(b);
       }

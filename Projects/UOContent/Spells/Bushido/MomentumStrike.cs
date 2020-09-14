@@ -13,7 +13,9 @@ namespace Server.Spells.Bushido
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, false))
+            {
                 return;
+            }
 
             ClearCurrentMove(attacker);
 
@@ -31,14 +33,18 @@ namespace Server.Spells.Bushido
             }
 
             if (!CheckMana(attacker, true))
+            {
                 return;
+            }
 
             var target = targets.RandomElement();
 
             var damageBonus = attacker.Skills.Bushido.Value / 100.0;
 
             if (!defender.Alive)
+            {
                 damageBonus *= 1.5;
+            }
 
             attacker.SendLocalizedMessage(1063171); // You transfer the momentum of your weapon into another enemy!
             target.SendLocalizedMessage(1063172);   // You were hit by the momentum of a Samurai's weapon!

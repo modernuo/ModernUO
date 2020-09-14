@@ -64,24 +64,36 @@ namespace Server.Engines.ConPVP
             var entries = new List<IRankedCTF>();
 
             if (section == null)
+            {
                 for (var i = 0; i < game.Context.Participants.Count; ++i)
                 {
                     var teamInfo = game.Controller.TeamInfo[i % game.Controller.TeamInfo.Length];
 
                     if (teamInfo != null)
+                    {
                         entries.Add(teamInfo);
+                    }
                 }
+            }
             else
+            {
                 foreach (var player in section.Players.Values)
+                {
                     if (player.Score > 0)
+                    {
                         entries.Add(player);
+                    }
+                }
+            }
 
             entries.Sort((a, b) => b.Score - a.Score);
 
             var height = 0;
 
             if (section == null)
+            {
                 height = 73 + entries.Count * 75 + 28;
+            }
 
             Closable = false;
 
@@ -92,7 +104,9 @@ namespace Server.Engines.ConPVP
             AddImageTiled(16, 15, 369, height - 29, 3604);
 
             for (var i = 0; i < entries.Count; i += 1)
+            {
                 AddImageTiled(22, 58 + i * 75, 357, 70, 0x2430);
+            }
 
             AddAlphaRegion(16, 15, 369, height - 29);
 
@@ -105,6 +119,7 @@ namespace Server.Engines.ConPVP
             AddImageTiled(42, 52, 264, 1, 9157);
 
             if (section == null)
+            {
                 for (var i = 0; i < entries.Count; ++i)
                 {
                     var teamInfo = entries[i] as DDTeamInfo;
@@ -183,8 +198,11 @@ namespace Server.Engines.ConPVP
                     AddBorderedText(235 + 10, 85 + i * 75, 250, 20, "Leader:", 0xFFC000, BlackColor32);
 
                     if (pl != null)
+                    {
                         AddBorderedText(235 + 15, 105 + i * 75, 250, 20, pl.Player.Name, 0xFFC000, BlackColor32);
+                    }
                 }
+            }
 
             AddButton(314, height - 42, 247, 248, 1);
         }
@@ -205,9 +223,13 @@ namespace Server.Engines.ConPVP
         private void AddColoredText(int x, int y, int width, int height, string text, int color)
         {
             if (color == 0)
+            {
                 AddHtml(x, y, width, height, text);
+            }
             else
+            {
                 AddHtml(x, y, width, height, Color(text, color));
+            }
         }
     }
 
@@ -259,7 +281,9 @@ namespace Server.Engines.ConPVP
                 m_Score = value;
 
                 if (m_TeamInfo.Leader == null || m_Score > m_TeamInfo.Leader.Score)
+                {
                     m_TeamInfo.Leader = this;
+                }
             }
         }
     }
@@ -309,10 +333,14 @@ namespace Server.Engines.ConPVP
             get
             {
                 if (mob == null)
+                {
                     return null;
+                }
 
                 if (!Players.TryGetValue(mob, out var val))
+                {
                     Players[mob] = val = new DDPlayerInfo(this, mob);
+                }
 
                 return val;
             }
@@ -347,7 +375,9 @@ namespace Server.Engines.ConPVP
             Players.Clear();
 
             if (Board != null)
+            {
                 Board.m_TeamInfo = this;
+            }
         }
 
         public void Serialize(IGenericWriter op)
@@ -376,7 +406,9 @@ namespace Server.Engines.ConPVP
             TeamInfo = new DDTeamInfo[2];
 
             for (var i = 0; i < TeamInfo.Length; ++i)
+            {
                 TeamInfo[i] = new DDTeamInfo(i);
+            }
         }
 
         public DDController(Serial serial)
@@ -420,7 +452,9 @@ namespace Server.Engines.ConPVP
             writer.WriteEncodedInt(TeamInfo.Length);
 
             for (var i = 0; i < TeamInfo.Length; ++i)
+            {
                 TeamInfo[i].Serialize(writer);
+            }
 
             writer.Write(PointA);
             writer.Write(PointB);
@@ -440,7 +474,9 @@ namespace Server.Engines.ConPVP
                         TeamInfo = new DDTeamInfo[reader.ReadEncodedInt()];
 
                         for (var i = 0; i < TeamInfo.Length; ++i)
+                        {
                             TeamInfo[i] = new DDTeamInfo(i, reader);
+                        }
 
                         PointA = reader.ReadItem() as DDWayPoint;
                         PointB = reader.ReadItem() as DDWayPoint;
@@ -470,7 +506,9 @@ namespace Server.Engines.ConPVP
             get
             {
                 if (m_Context.Arena != null)
+                {
                     return m_Context.Arena.Facet;
+                }
 
                 return Controller.Map;
             }
@@ -485,8 +523,12 @@ namespace Server.Engines.ConPVP
                 var p = m_Context.Participants[i];
 
                 for (var j = 0; j < p.Players.Length; ++j)
+                {
                     if (p.Players[j] != null)
+                    {
                         p.Players[j].Mobile.SendMessage(0x35, text);
+                    }
+                }
             }
         }
 
@@ -500,7 +542,9 @@ namespace Server.Engines.ConPVP
             var teamID = GetTeamID(mob);
 
             if (teamID >= 0)
+            {
                 return Controller.TeamInfo[teamID % Controller.TeamInfo.Length];
+            }
 
             return null;
         }
@@ -508,13 +552,19 @@ namespace Server.Engines.ConPVP
         public int GetTeamID(Mobile mob)
         {
             if (!(mob is PlayerMobile pm))
+            {
                 return -1;
+            }
 
             if (pm.DuelContext == null || pm.DuelContext != m_Context)
+            {
                 return -1;
+            }
 
             if (pm.DuelPlayer?.Eliminated != false)
+            {
                 return -1;
+            }
 
             return pm.DuelContext.Participants.IndexOf(pm.DuelPlayer.Participant);
         }
@@ -524,8 +574,12 @@ namespace Server.Engines.ConPVP
         private void ApplyHues(Participant p, int hueOverride)
         {
             for (var i = 0; i < p.Players.Length; ++i)
+            {
                 if (p.Players[i] != null)
+                {
                     p.Players[i].Mobile.SolidHueOverride = hueOverride;
+                }
+            }
         }
 
         public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
@@ -540,9 +594,13 @@ namespace Server.Engines.ConPVP
             m_Context.RemoveAggressions(mob);
 
             if (dp?.Eliminated == false)
+            {
                 mob.MoveToWorld(m_Context.Arena.GetBaseStartPoint(GetTeamID(mob)), Facet);
+            }
             else
+            {
                 m_Context.SendOutside(mob);
+            }
 
             m_Context.Refresh(mob, corpse);
             DuelContext.Debuff(mob);
@@ -570,17 +628,27 @@ namespace Server.Engines.ConPVP
 
                         // extra points for killing someone on the waypoint
                         if (Controller.PointA != null)
+                        {
                             if (mob.InRange(Controller.PointA, 2))
+                            {
                                 playerInfo.Score += 1;
+                            }
+                        }
 
                         if (Controller.PointB != null)
+                        {
                             if (mob.InRange(Controller.PointB, 2))
+                            {
                                 playerInfo.Score += 1;
+                            }
+                        }
                     }
 
                     playerInfo = victInfo[mob];
                     if (playerInfo != null)
+                    {
                         playerInfo.Score -= 1;
+                    }
                 }
             }
 
@@ -618,16 +686,22 @@ namespace Server.Engines.ConPVP
             }
 
             if (Controller.PointA != null)
+            {
                 Controller.PointA.Game = this;
+            }
 
             if (Controller.PointB != null)
+            {
                 Controller.PointB.Game = this;
+            }
 
             for (var i = 0; i < m_Context.Participants.Count; ++i)
+            {
                 ApplyHues(
                     m_Context.Participants[i],
                     Controller.TeamInfo[i % Controller.TeamInfo.Length].Color
                 );
+            }
 
             m_FinishTimer?.Stop();
             m_FinishTimer = Timer.DelayCall(Controller.Duration, Finish_Callback);
@@ -642,7 +716,9 @@ namespace Server.Engines.ConPVP
                 var teamInfo = Controller.TeamInfo[i % Controller.TeamInfo.Length];
 
                 if (teamInfo != null)
+                {
                     teams.Add(teamInfo);
+                }
             }
 
             teams.Sort((a, b) => b.Score - a.Score);
@@ -677,7 +753,9 @@ namespace Server.Engines.ConPVP
                     for (var i = 0; i < tourney.ParticipantsPerMatch; ++i)
                     {
                         if (sb.Length > 0)
+                        {
                             sb.Append('v');
+                        }
 
                         sb.Append(tourney.PlayersPerParticipant);
                     }
@@ -685,7 +763,9 @@ namespace Server.Engines.ConPVP
             }
 
             if (Controller != null)
+            {
                 sb.Append(' ').Append(Controller.Title);
+            }
 
             var title = sb.ToString();
 
@@ -696,9 +776,13 @@ namespace Server.Engines.ConPVP
                 var rank = TrophyRank.Bronze;
 
                 if (i == 0)
+                {
                     rank = TrophyRank.Gold;
+                }
                 else if (i == 1)
+                {
                     rank = TrophyRank.Silver;
+                }
 
                 var leader = teams[i].Leader;
 
@@ -707,7 +791,9 @@ namespace Server.Engines.ConPVP
                     var mob = pl.Player;
 
                     if (mob == null)
+                    {
                         continue;
+                    }
 
                     // "Red v Blue DD Champion"
 
@@ -716,7 +802,9 @@ namespace Server.Engines.ConPVP
                     sb.Append(title);
 
                     if (pl == leader)
+                    {
                         sb.Append(" Leader");
+                    }
 
                     if (pl.Score > 0)
                     {
@@ -743,12 +831,16 @@ namespace Server.Engines.ConPVP
                     Item item = new Trophy(sb.ToString(), rank);
 
                     if (pl == leader)
+                    {
                         item.ItemID = 4810;
+                    }
 
                     item.Name = $"{item.Name}, {teams[i].Name.ToLower()} team";
 
                     if (!mob.PlaceInBackpack(item))
+                    {
                         mob.BankBox.DropItem(item);
+                    }
 
                     var cash = pl.Score * 250;
 
@@ -757,7 +849,9 @@ namespace Server.Engines.ConPVP
                         item = new BankCheck(cash);
 
                         if (!mob.PlaceInBackpack(item))
+                        {
                             mob.BankBox.DropItem(item);
+                        }
 
                         mob.SendMessage(
                             "You have been awarded a {0} trophy and {1:N0}gp for your participation in this tournament.",
@@ -791,11 +885,17 @@ namespace Server.Engines.ConPVP
                 }
 
                 if (i == winner.TeamID)
+                {
                     continue;
+                }
 
                 for (var j = 0; j < p.Players.Length; ++j)
+                {
                     if (p.Players[j] != null)
+                    {
                         p.Players[j].Eliminated = true;
+                    }
+                }
             }
 
             m_Context.Finish(m_Context.Participants[winner.TeamID]);
@@ -808,16 +908,22 @@ namespace Server.Engines.ConPVP
                 var teamInfo = Controller.TeamInfo[i];
 
                 if (teamInfo.Board != null)
+                {
                     teamInfo.Board.m_TeamInfo = null;
+                }
 
                 teamInfo.Game = null;
             }
 
             if (Controller.PointA != null)
+            {
                 Controller.PointA.Game = null;
+            }
 
             if (Controller.PointB != null)
+            {
                 Controller.PointB.Game = null;
+            }
 
             m_Capturable = false;
 
@@ -834,7 +940,9 @@ namespace Server.Engines.ConPVP
             }
 
             for (var i = 0; i < m_Context.Participants.Count; ++i)
+            {
                 ApplyHues(m_Context.Participants[i], -1);
+            }
 
             m_FinishTimer?.Stop();
             m_FinishTimer = null;
@@ -843,7 +951,9 @@ namespace Server.Engines.ConPVP
         public void Dominate(DDWayPoint point, Mobile from, DDTeamInfo team)
         {
             if (point == null || from == null || team == null || !m_Capturable)
+            {
                 return;
+            }
 
             var wasDom = Controller.PointA?.TeamOwner == Controller.PointB?.TeamOwner &&
                          Controller.PointA?.TeamOwner != null;
@@ -992,9 +1102,13 @@ namespace Server.Engines.ConPVP
                 m_TeamOwner = null;
 
                 if (m_Game != null)
+                {
                     SetNonCaptureHue();
+                }
                 else
+                {
                     SetUncapturableHue();
+                }
             }
         }
 
@@ -1026,33 +1140,50 @@ namespace Server.Engines.ConPVP
         public void SetUncapturableHue()
         {
             for (var i = 0; i < Components.Count; i++)
+            {
                 Components[i].Hue = UncapturableHue;
+            }
+
             Hue = UncapturableHue;
         }
 
         public void SetNonCaptureHue()
         {
             for (var i = 0; i < Components.Count; i++)
+            {
                 Components[i].Hue = NonCapturedHue;
+            }
 
             if (m_TeamOwner != null)
+            {
                 Hue = m_TeamOwner.Color;
+            }
             else
+            {
                 Hue = NonCapturedHue;
+            }
         }
 
         public void SetCaptureHue(int stage)
         {
             if (m_TeamOwner == null)
+            {
                 return;
+            }
 
             Hue = m_TeamOwner.Color;
 
             for (var i = 0; i < Components.Count; i++)
+            {
                 if (i < stage)
+                {
                     Components[i].Hue = m_TeamOwner.Color;
+                }
                 else
+                {
                     Components[i].Hue = NonCapturedHue;
+                }
+            }
         }
 
         public override bool OnMoveOver(Mobile from)
@@ -1066,7 +1197,9 @@ namespace Server.Engines.ConPVP
                 var team = m_Game.GetTeamInfo(from);
 
                 if (team != null && team != TeamOwner)
-                    m_Game.Dominate(this, from, team);
+                {
+                    m_Game.Dominate(this, @from, team);
+                }
             }
 
             return true;

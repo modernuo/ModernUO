@@ -96,11 +96,17 @@ namespace Server.Mobiles
                 double scalar;
 
                 if (list.Count == 1)
+                {
                     scalar = 0.75;
+                }
                 else if (list.Count == 2)
+                {
                     scalar = 0.50;
+                }
                 else
+                {
                     scalar = 0.25;
+                }
 
                 for (var i = 0; i < list.Count; ++i)
                 {

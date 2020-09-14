@@ -35,7 +35,9 @@ namespace Server.Factions
         public override void OnDoubleClick(Mobile from)
         {
             if (m_Faction == null)
+            {
                 return;
+            }
 
             if (!from.InRange(GetWorldLocation(), 2))
             {
@@ -54,11 +56,15 @@ namespace Server.Factions
                     var pl = PlayerState.Find(mobile);
 
                     if (pl?.IsLeaving == true)
+                    {
                         mobile.SendLocalizedMessage(
                             1005051
                         ); // You cannot use the faction stone until you have finished quitting your current faction
+                    }
                     else
+                    {
                         mobile.SendGump(new FactionStoneGump(mobile, m_Faction));
+                    }
                 }
                 else if (existingFaction != null)
                 {

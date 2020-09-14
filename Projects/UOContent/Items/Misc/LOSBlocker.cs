@@ -23,7 +23,10 @@ namespace Server.Items
         {
             var mob = state.Mobile;
 
-            if (mob?.AccessLevel >= AccessLevel.GameMaster) return new GMItemPacket(this);
+            if (mob?.AccessLevel >= AccessLevel.GameMaster)
+            {
+                return new GMItemPacket(this);
+            }
 
             return base.GetWorldPacketFor(state);
         }
@@ -42,7 +45,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version < 1 && ItemID == 0x2199)
+            {
                 ItemID = 0x21A2;
+            }
         }
 
         public sealed class GMItemPacket : Packet
@@ -67,43 +72,61 @@ namespace Server.Items
                 var direction = (int)item.Direction;
 
                 if (amount != 0)
+                {
                     serial |= 0x80000000;
+                }
                 else
+                {
                     serial &= 0x7FFFFFFF;
+                }
 
                 Stream.Write(serial);
                 Stream.Write((short)(itemID & 0x7FFF));
 
                 if (amount != 0)
+                {
                     Stream.Write((short)amount);
+                }
 
                 x &= 0x7FFF;
 
                 if (direction != 0)
+                {
                     x |= 0x8000;
+                }
 
                 Stream.Write((short)x);
 
                 y &= 0x3FFF;
 
                 if (hue != 0)
+                {
                     y |= 0x8000;
+                }
 
                 if (flags != 0)
+                {
                     y |= 0x4000;
+                }
 
                 Stream.Write((short)y);
 
                 if (direction != 0)
+                {
                     Stream.Write((byte)direction);
+                }
 
                 Stream.Write((sbyte)loc.Z);
 
                 if (hue != 0)
+                {
                     Stream.Write((ushort)hue);
+                }
 
                 if (flags != 0)
+                {
                     Stream.Write((byte)flags);
+                }
             }
         }
     }

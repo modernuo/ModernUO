@@ -55,7 +55,9 @@ namespace Server.Commands
         public static void CreateMorphItem(int x, int y, int z, int inactiveItemID, int activeItemID, int range)
         {
             if (FindMorphItem(x, y, z, inactiveItemID, activeItemID))
+            {
                 return;
+            }
 
             var item = new MorphItem(inactiveItemID, activeItemID, range, 3);
 
@@ -66,7 +68,9 @@ namespace Server.Commands
         public static void CreateApproachLight(int x, int y, int z, int off, int on, LightType light)
         {
             if (FindMorphItem(x, y, z, off, on))
+            {
                 return;
+            }
 
             var item = new MorphItem(off, on, 2, 3);
             item.Light = light;
@@ -78,7 +82,9 @@ namespace Server.Commands
         public static void CreateSoundEffect(int x, int y, int z, int sound, int range)
         {
             if (FindEffectController(x, y, z))
+            {
                 return;
+            }
 
             var item = new EffectController();
             item.SoundID = sound;
@@ -92,7 +98,9 @@ namespace Server.Commands
         public static void CreateBigTeleporterItem(int x, int y, bool reverse)
         {
             if (FindMorphItem(x, y, 0, reverse ? 0x17DC : 0x17EE, reverse ? 0x17EE : 0x17DC))
+            {
                 return;
+            }
 
             var item = new MorphItem(reverse ? 0x17DC : 0x17EE, reverse ? 0x17EE : 0x17DC, 1, 3);
 

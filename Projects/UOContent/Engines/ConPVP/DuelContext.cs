@@ -101,7 +101,9 @@ namespace Server.Engines.ConPVP
         public static bool IsFreeConsume(Mobile mob)
         {
             if (!(mob is PlayerMobile pm) || pm.DuelContext?.m_EventGame == null)
+            {
                 return false;
+            }
 
             return pm.DuelContext.m_EventGame.FreeConsume;
         }
@@ -117,25 +119,37 @@ namespace Server.Engines.ConPVP
         public bool InstAllowSpecialMove(Mobile from, string name, SpecialMove move)
         {
             if (!StartedBeginCountdown)
+            {
                 return true;
+            }
 
             var pl = Find(from);
 
             if (pl?.Eliminated != false)
+            {
                 return true;
+            }
 
             if (CantDoAnything(from))
+            {
                 return false;
+            }
 
             string title = null;
 
             if (move is NinjaMove)
+            {
                 title = "Bushido";
+            }
             else if (move is SamuraiMove)
+            {
                 title = "Ninjitsu";
+            }
 
             if (title == null || name == null || Ruleset.GetOption(title, name))
+            {
                 return true;
+            }
 
             from.SendMessage("The dueling ruleset prevents you from using this move.");
             return false;
@@ -144,16 +158,24 @@ namespace Server.Engines.ConPVP
         public bool AllowSpellCast(Mobile from, Spell spell)
         {
             if (!StartedBeginCountdown)
+            {
                 return true;
+            }
 
             if (Find(from)?.Eliminated != false)
+            {
                 return true;
+            }
 
             if (CantDoAnything(from))
+            {
                 return false;
+            }
 
             if (spell is RecallSpell)
-                from.SendMessage("You may not cast this spell.");
+            {
+                @from.SendMessage("You may not cast this spell.");
+            }
 
             string title;
             string option;
@@ -203,7 +225,9 @@ namespace Server.Engines.ConPVP
             }
 
             if (title == null || option == null || Ruleset.GetOption(title, option))
+            {
                 return true;
+            }
 
             from.SendMessage("The dueling ruleset prevents you from casting this spell.");
             return false;
@@ -212,15 +236,21 @@ namespace Server.Engines.ConPVP
         public bool AllowItemEquip(Mobile from, Item item)
         {
             if (!StartedBeginCountdown)
+            {
                 return true;
+            }
 
             var pl = Find(from);
 
             if (pl?.Eliminated != false)
+            {
                 return true;
+            }
 
             if (item is Dagger || CheckItemEquip(from, item))
+            {
                 return true;
+            }
 
             from.SendMessage("The dueling ruleset prevents you from equipping this item.");
             return false;
@@ -229,7 +259,9 @@ namespace Server.Engines.ConPVP
         public static bool AllowSpecialAbility(Mobile from, string name, bool message)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return true;
+            }
 
             var dc = pm.DuelContext;
 
@@ -240,21 +272,31 @@ namespace Server.Engines.ConPVP
         public bool InstAllowSpecialAbility(Mobile from, string name, bool message)
         {
             if (!StartedBeginCountdown)
+            {
                 return true;
+            }
 
             var pl = Find(from);
 
             if (pl?.Eliminated != false)
+            {
                 return true;
+            }
 
             if (CantDoAnything(from))
+            {
                 return false;
+            }
 
             if (Ruleset.GetOption("Combat Abilities", name))
+            {
                 return true;
+            }
 
             if (message)
-                from.SendMessage("The dueling ruleset prevents you from using this combat ability.");
+            {
+                @from.SendMessage("The dueling ruleset prevents you from using this combat ability.");
+            }
 
             return false;
         }
@@ -264,40 +306,60 @@ namespace Server.Engines.ConPVP
             if (item is Fists)
             {
                 if (!Ruleset.GetOption("Weapons", "Wrestling"))
+                {
                     return false;
+                }
             }
             else if (item is BaseArmor armor)
             {
                 if (armor.ProtectionLevel > ArmorProtectionLevel.Regular && !Ruleset.GetOption("Armor", "Magical"))
+                {
                     return false;
+                }
 
                 if (!Core.AOS && armor.Resource != armor.DefaultResource && !Ruleset.GetOption("Armor", "Colored"))
+                {
                     return false;
+                }
 
                 if (armor is BaseShield && !Ruleset.GetOption("Armor", "Shields"))
+                {
                     return false;
+                }
             }
             else if (item is BaseWeapon weapon)
             {
                 if ((weapon.DamageLevel > WeaponDamageLevel.Regular || weapon.AccuracyLevel > WeaponAccuracyLevel.Regular) &&
                     !Ruleset.GetOption("Weapons", "Magical"))
+                {
                     return false;
+                }
 
                 if (!Core.AOS && weapon.Resource != CraftResource.Iron && weapon.Resource != CraftResource.None &&
                     !Ruleset.GetOption("Weapons", "Runics"))
+                {
                     return false;
+                }
 
                 if (weapon is BaseRanged && !Ruleset.GetOption("Weapons", "Ranged"))
+                {
                     return false;
+                }
 
                 if (!(weapon is BaseRanged) && !Ruleset.GetOption("Weapons", "Melee"))
+                {
                     return false;
+                }
 
                 if (weapon.PoisonCharges > 0 && weapon.Poison != null && !Ruleset.GetOption("Weapons", "Poisoned"))
+                {
                     return false;
+                }
 
                 if (weapon is BaseWand && !Ruleset.GetOption("Items", "Wands"))
+                {
                     return false;
+                }
             }
 
             return true;
@@ -306,21 +368,31 @@ namespace Server.Engines.ConPVP
         public bool AllowSkillUse(Mobile from, SkillName skill)
         {
             if (!StartedBeginCountdown)
+            {
                 return true;
+            }
 
             var pl = Find(from);
 
             if (pl?.Eliminated != false)
+            {
                 return true;
+            }
 
             if (CantDoAnything(from))
+            {
                 return false;
+            }
 
             var id = (int)skill;
 
             if (id >= 0 && id < SkillInfo.Table.Length)
+            {
                 if (Ruleset.GetOption("Skills", SkillInfo.Table[id].Name))
+                {
                     return true;
+                }
+            }
 
             from.SendMessage("The dueling ruleset prevents you from using this skill.");
             return false;
@@ -329,16 +401,24 @@ namespace Server.Engines.ConPVP
         public bool AllowItemUse(Mobile from, Item item)
         {
             if (!StartedBeginCountdown)
+            {
                 return true;
+            }
 
             var pl = Find(from);
 
             if (pl?.Eliminated != false)
+            {
                 return true;
+            }
 
             if (!(item is BaseRefreshPotion))
-                if (CantDoAnything(from))
+            {
+                if (CantDoAnything(@from))
+                {
                     return false;
+                }
+            }
 
             string title = null, option = null;
 
@@ -347,21 +427,37 @@ namespace Server.Engines.ConPVP
                 title = "Potions";
 
                 if (item is BaseAgilityPotion)
+                {
                     option = "Agility";
+                }
                 else if (item is BaseCurePotion)
+                {
                     option = "Cure";
+                }
                 else if (item is BaseHealPotion)
+                {
                     option = "Heal";
+                }
                 else if (item is NightSightPotion)
+                {
                     option = "Nightsight";
+                }
                 else if (item is BasePoisonPotion)
+                {
                     option = "Poison";
+                }
                 else if (item is BaseStrengthPotion)
+                {
                     option = "Strength";
+                }
                 else if (item is BaseExplosionPotion)
+                {
                     option = "Explosion";
+                }
                 else if (item is BaseRefreshPotion)
+                {
                     option = "Refresh";
+                }
             }
             else if (item is Bandage)
             {
@@ -431,7 +527,9 @@ namespace Server.Engines.ConPVP
             }
 
             if (title == null || option == null || Ruleset.GetOption(title, option))
+            {
                 return true;
+            }
 
             from.SendMessage("The dueling ruleset prevents you from using this item.");
             return false;
@@ -455,24 +553,36 @@ namespace Server.Engines.ConPVP
         public void OnLocationChanged(Mobile mob)
         {
             if (!Registered || !StartedBeginCountdown || Finished)
+            {
                 return;
+            }
 
             var arena = Arena;
 
             if (arena == null)
+            {
                 return;
+            }
 
             if (mob.Map == arena.Facet && arena.Bounds.Contains(mob.Location))
+            {
                 return;
+            }
 
             var pl = Find(mob);
 
             if (pl?.Eliminated != false)
+            {
                 return;
+            }
 
             if (mob.Map == Map.Internal)
+            {
                 if (mob.LogoutMap == arena.Facet && arena.Bounds.Contains(mob.LogoutLocation))
+                {
                     mob.LogoutLocation = arena.Outside;
+                }
+            }
 
             pl.Eliminated = true;
 
@@ -487,23 +597,31 @@ namespace Server.Engines.ConPVP
             var winner = CheckCompletion();
 
             if (winner != null)
+            {
                 Finish(winner);
+            }
         }
 
         public void OnDeath(Mobile mob, Container corpse)
         {
             if (!Registered || !Started)
+            {
                 return;
+            }
 
             var pl = Find(mob);
 
             if (pl?.Eliminated != false || m_EventGame?.OnDeath(mob, corpse) == false)
+            {
                 return;
+            }
 
             pl.Eliminated = true;
 
             if (mob.Poison != null)
+            {
                 mob.Poison = null;
+            }
 
             Requip(mob, corpse);
             DelayBounce(TimeSpan.FromSeconds(4.0), mob, corpse);
@@ -528,7 +646,9 @@ namespace Server.Engines.ConPVP
                 var p = Participants[i];
 
                 if (p.HasOpenSlot)
+                {
                     return false;
+                }
             }
 
             return true;
@@ -537,7 +657,9 @@ namespace Server.Engines.ConPVP
         public void Requip(Mobile from, Container cont)
         {
             if (!(cont is Corpse corpse))
+            {
                 return;
+            }
 
             var items = new List<Item>(corpse.Items);
 
@@ -550,12 +672,18 @@ namespace Server.Engines.ConPVP
                 var item = items[i];
 
                 if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair || !item.Movable)
+                {
                     continue;
+                }
 
                 if (pack != null)
+                {
                     pack.DropItem(item);
+                }
                 else
+                {
                     didntFit = true;
+                }
             }
 
             corpse.Carved = true;
@@ -571,15 +699,21 @@ namespace Server.Engines.ConPVP
                 var killer = from.FindMostRecentDamager(false);
 
                 if (killer?.Player == true)
-                    killer.AddToBackpack(new Head(m_Tournament == null ? HeadType.Duel : HeadType.Tournament, from.Name));
+                {
+                    killer.AddToBackpack(new Head(m_Tournament == null ? HeadType.Duel : HeadType.Tournament, @from.Name));
+                }
             }
 
             from.PlaySound(0x3E3);
 
             if (didntFit)
-                from.SendLocalizedMessage(1062472); // You gather some of your belongings. The rest remain on the corpse.
+            {
+                @from.SendLocalizedMessage(1062472); // You gather some of your belongings. The rest remain on the corpse.
+            }
             else
-                from.SendLocalizedMessage(1062471); // You quickly gather all of your belongings.
+            {
+                @from.SendLocalizedMessage(1062471); // You quickly gather all of your belongings.
+            }
         }
 
         public void Refresh(Mobile mob, Container cont)
@@ -589,17 +723,23 @@ namespace Server.Engines.ConPVP
                 mob.Resurrect();
 
                 if (mob.FindItemOnLayer(Layer.OuterTorso) is DeathRobe robe)
+                {
                     robe.Delete();
+                }
 
                 if (cont is Corpse corpse)
+                {
                     for (var i = 0; i < corpse.EquipItems.Count; ++i)
                     {
                         var item = corpse.EquipItems[i];
 
                         if (item.Movable && item.Layer != Layer.Hair && item.Layer != Layer.FacialHair &&
                             item.IsChildOf(mob.Backpack))
+                        {
                             mob.EquipItem(item);
+                        }
                     }
+                }
             }
 
             mob.Hits = mob.HitsMax;
@@ -612,7 +752,9 @@ namespace Server.Engines.ConPVP
         public void SendOutside(Mobile mob)
         {
             if (Arena == null)
+            {
                 return;
+            }
 
             mob.Combatant = null;
             mob.MoveToWorld(Arena.Outside, Arena.Facet);
@@ -621,7 +763,9 @@ namespace Server.Engines.ConPVP
         public void Finish(Participant winner)
         {
             if (Finished)
+            {
                 return;
+            }
 
             EndAutoTie();
             StopSDTimers();
@@ -633,7 +777,9 @@ namespace Server.Engines.ConPVP
                 var pl = winner.Players[i];
 
                 if (pl?.Eliminated == false)
+                {
                     DelayBounce(TimeSpan.FromSeconds(8.0), pl.Mobile, null);
+                }
             }
 
             winner.Broadcast(
@@ -664,10 +810,13 @@ namespace Server.Engines.ConPVP
                     );
 
                     if (m_Tournament != null)
+                    {
                         loser.TourneyPart?.LostMatch(m_Match);
+                    }
                 }
 
                 for (var j = 0; j < loser.Players.Length; ++j)
+                {
                     if (loser.Players[j] != null)
                     {
                         RemoveAggressions(loser.Players[j].Mobile);
@@ -675,8 +824,11 @@ namespace Server.Engines.ConPVP
                         loser.Players[j].Mobile.CloseGump<BeginGump>();
 
                         if (m_Tournament != null)
+                        {
                             loser.Players[j].Mobile.SendEverything();
+                        }
                     }
+                }
             }
 
             if (IsOneVsOne)
@@ -701,42 +853,60 @@ namespace Server.Engines.ConPVP
             var ladder = Arena == null ? Ladder.Instance : Arena.AcquireLadder();
 
             if (ladder == null)
+            {
                 return;
+            }
 
             var ourEntry = ladder.Find(us);
             var theirEntry = ladder.Find(them);
 
             if (ourEntry == null || theirEntry == null)
+            {
                 return;
+            }
 
             var xpGain = Ladder.GetExperienceGain(ourEntry, theirEntry, won);
 
             if (xpGain == 0)
+            {
                 return;
+            }
 
             if (m_Tournament != null)
+            {
                 xpGain *= xpGain > 0 ? 5 : 2;
+            }
 
             if (won)
+            {
                 ++ourEntry.Wins;
+            }
             else
+            {
                 ++ourEntry.Losses;
+            }
 
             var oldLevel = Ladder.GetLevel(ourEntry.Experience);
 
             ourEntry.Experience += xpGain;
 
             if (ourEntry.Experience < 0)
+            {
                 ourEntry.Experience = 0;
+            }
 
             ladder.UpdateEntry(ourEntry);
 
             var newLevel = Ladder.GetLevel(ourEntry.Experience);
 
             if (newLevel > oldLevel)
+            {
                 us.SendMessage(0x59, "You have achieved level {0}!", newLevel);
+            }
             else if (newLevel < oldLevel)
+            {
                 us.SendMessage(0x22, "You have lost a level. You are now at {0}.", newLevel);
+            }
         }
 
         public void UnregisterRematch()
@@ -754,7 +924,9 @@ namespace Server.Engines.ConPVP
             DestroyWall();
 
             if (!Registered)
+            {
                 return;
+            }
 
             Registered = false;
 
@@ -771,17 +943,23 @@ namespace Server.Engines.ConPVP
                     var pl = p.Players[j];
 
                     if (pl == null)
+                    {
                         continue;
+                    }
 
                     if (pl.Mobile is PlayerMobile mobile)
+                    {
                         mobile.DuelPlayer = null;
+                    }
 
                     CloseAllGumps(pl);
                 }
             }
 
             if (queryRematch && m_Tournament == null)
+            {
                 QueryRematch();
+            }
         }
 
         public void QueryRematch()
@@ -803,7 +981,9 @@ namespace Server.Engines.ConPVP
                     var oldPlayer = oldPart.Players[j];
 
                     if (oldPlayer != null)
+                    {
                         newPart.Players[j] = new DuelPlayer(oldPlayer.Mobile, newPart);
+                    }
                 }
 
                 dc.Participants.Add(newPart);
@@ -818,7 +998,9 @@ namespace Server.Engines.ConPVP
             if (mob is PlayerMobile pm)
             {
                 if (pm.DuelContext == this)
+                {
                     return pm.DuelPlayer;
+                }
 
                 return null;
             }
@@ -829,7 +1011,9 @@ namespace Server.Engines.ConPVP
                 var pl = p.Find(mob);
 
                 if (pl != null)
+                {
                     return pl;
+                }
             }
 
             return null;
@@ -859,7 +1043,9 @@ namespace Server.Engines.ConPVP
                     ++eliminated;
 
                     if (eliminated == Participants.Count - 1)
+                    {
                         hasWinner = true;
+                    }
                 }
                 else
                 {
@@ -890,7 +1076,9 @@ namespace Server.Engines.ConPVP
         private void Countdown_Callback(int count, CountdownCallback cb)
         {
             if (count == 0)
+            {
                 StopCountdown();
+            }
 
             cb(count);
         }
@@ -928,7 +1116,9 @@ namespace Server.Engines.ConPVP
                     var pl = p.Players[j];
 
                     if (pl?.Eliminated != false)
+                    {
                         continue;
+                    }
 
                     pl.Mobile.SendSound(0x1E1);
                     pl.Mobile.SendMessage(0x22, "Warning! Warning! Warning!");
@@ -957,7 +1147,9 @@ namespace Server.Engines.ConPVP
                     var pl = p.Players[j];
 
                     if (pl?.Eliminated != false)
+                    {
                         continue;
+                    }
 
                     pl.Mobile.SendSound(0x1E1);
                     pl.Mobile.SendMessage(0x22, "Warning! Warning! Warning!");
@@ -1000,7 +1192,9 @@ namespace Server.Engines.ConPVP
             m_AutoTieTimer = null;
 
             if (!Started || Finished)
+            {
                 return;
+            }
 
             Tied = true;
             Finished = true;
@@ -1040,11 +1234,15 @@ namespace Server.Engines.ConPVP
                         var pl = p.Players[j];
 
                         if (pl?.Eliminated == false)
+                        {
                             DelayBounce(TimeSpan.FromSeconds(8.0), pl.Mobile, null);
+                        }
                     }
 
                     if (p.TourneyPart != null)
+                    {
                         remaining.Add(p.TourneyPart);
+                    }
                 }
 
                 for (var j = 0; j < p.Players.Length; ++j)
@@ -1084,12 +1282,16 @@ namespace Server.Engines.ConPVP
                 var ladder = Ladder.Instance;
 
                 if (ladder == null)
+                {
                     return;
+                }
 
                 var entry = ladder.Find(pm);
 
                 if (entry != null)
-                    from.SendGump(new PropertiesGump(from, entry));
+                {
+                    @from.SendGump(new PropertiesGump(@from, entry));
+                }
             }
         }
 
@@ -1100,22 +1302,30 @@ namespace Server.Engines.ConPVP
         private static void EventSink_Login(Mobile m)
         {
             if (!(m is PlayerMobile pm))
+            {
                 return;
+            }
 
             var dc = pm.DuelContext;
 
             if (dc == null)
+            {
                 return;
+            }
 
             if (dc.ReadyWait && pm.DuelPlayer.Ready && !dc.Started && !dc.StartedBeginCountdown && !dc.Finished)
             {
                 if (dc.m_Tournament == null)
+                {
                     pm.SendGump(new ReadyGump(pm, dc, dc.ReadyCount));
+                }
             }
             else if (dc.ReadyWait && !dc.StartedBeginCountdown && !dc.Started && !dc.Finished)
             {
                 if (dc.m_Tournament == null)
+                {
                     pm.SendGump(new ReadyUpGump(pm, dc));
+                }
             }
             else if (dc.Initiator == pm && !dc.ReadyWait && !dc.StartedBeginCountdown && !dc.Started && !dc.Finished)
             {
@@ -1130,7 +1340,9 @@ namespace Server.Engines.ConPVP
                 var entry = ladder.Find(pm);
 
                 if (entry == null)
+                {
                     return; // sanity
+                }
 
                 var text =
                     $"{{0}} are ranked {LadderGump.Rank(entry.Index + 1)} at level {Ladder.GetLevel(entry.Experience)}.";
@@ -1146,21 +1358,25 @@ namespace Server.Engines.ConPVP
             else if (obj is Mobile mob)
             {
                 if (mob.Body.IsHuman)
+                {
                     mob.PrivateOverheadMessage(
                         MessageType.Regular,
                         mob.SpeechHue,
                         false,
                         "I'm not a duelist, and quite frankly, I resent the implication.",
-                        from.NetState
+                        @from.NetState
                     );
+                }
                 else
+                {
                     mob.PrivateOverheadMessage(
                         MessageType.Regular,
                         0x3B2,
                         true,
                         "It's probably better than you.",
-                        from.NetState
+                        @from.NetState
                     );
+                }
             }
             else
             {
@@ -1171,10 +1387,14 @@ namespace Server.Engines.ConPVP
         private static void EventSink_Speech(SpeechEventArgs e)
         {
             if (e.Handled)
+            {
                 return;
+            }
 
             if (!(e.Mobile is PlayerMobile pm))
+            {
                 return;
+            }
 
             if (Insensitive.Contains(e.Speech, "i wish to duel"))
             {
@@ -1194,9 +1414,13 @@ namespace Server.Engines.ConPVP
                 else if (pm.DuelContext != null)
                 {
                     if (pm.DuelContext.Initiator == pm)
+                    {
                         e.Mobile.SendMessage(0x22, "You have already started a duel.");
+                    }
                     else
+                    {
                         e.Mobile.SendMessage(0x22, "You have already been challenged in a duel.");
+                    }
                 }
                 else if (TournamentController.IsActive)
                 {
@@ -1243,7 +1467,9 @@ namespace Server.Engines.ConPVP
                         var entry = instance.Find(pm);
 
                         if (entry == null)
+                        {
                             return; // sanity
+                        }
 
                         var text =
                             $"{{0}} {{1}} ranked {LadderGump.Rank(entry.Index + 1)} at level {Ladder.GetLevel(entry.Experience)}.";
@@ -1309,7 +1535,9 @@ namespace Server.Engines.ConPVP
                         var pl = pm.DuelContext.Find(pm);
 
                         if (pl == null)
+                        {
                             return;
+                        }
 
                         var p = pl.Participant;
 
@@ -1329,6 +1557,7 @@ namespace Server.Engines.ConPVP
                                 var ns = init.NetState;
 
                                 if (ns != null)
+                                {
                                     foreach (var g in ns.Gumps)
                                     {
                                         if (g is ParticipantGump pg && pg.Participant == p)
@@ -1343,6 +1572,7 @@ namespace Server.Engines.ConPVP
                                             break;
                                         }
                                     }
+                                }
                             }
                         }
                         else if (!pm.DuelContext.StartedReadyCountdown) // at ready stage
@@ -1386,7 +1616,9 @@ namespace Server.Engines.ConPVP
                                     }
 
                                     if (send)
+                                    {
                                         init.SendGump(new DuelContextGump(init, dc));
+                                    }
                                 }
                             }
                         }
@@ -1435,7 +1667,9 @@ namespace Server.Engines.ConPVP
                                     }
 
                                     if (send)
+                                    {
                                         init.SendGump(new DuelContextGump(init, dc));
+                                    }
                                 }
                             }
                         }
@@ -1478,7 +1712,9 @@ namespace Server.Engines.ConPVP
                                 var winner = pm.DuelContext.CheckCompletion();
 
                                 if (winner != null)
+                                {
                                     pm.DuelContext.Finish(winner);
+                                }
                             }
                         }
                     }
@@ -1512,7 +1748,9 @@ namespace Server.Engines.ConPVP
                     var pl = p.Players[j];
 
                     if (pl != null)
+                    {
                         CloseAllGumps(pl);
+                    }
                 }
             }
         }
@@ -1520,7 +1758,9 @@ namespace Server.Engines.ConPVP
         public void RejectReady(Mobile rejector, string page)
         {
             if (StartedReadyCountdown)
+            {
                 return; // sanity
+            }
 
             for (var i = 0; i < Participants.Count; ++i)
             {
@@ -1531,7 +1771,9 @@ namespace Server.Engines.ConPVP
                     var pl = p.Players[j];
 
                     if (pl == null)
+                    {
                         continue;
+                    }
 
                     pl.Ready = false;
 
@@ -1540,14 +1782,20 @@ namespace Server.Engines.ConPVP
                     if (page == null) // yield
                     {
                         if (mob != rejector)
+                        {
                             mob.SendMessage(0x22, "{0} has yielded.", rejector.Name);
+                        }
                     }
                     else
                     {
                         if (mob == rejector)
+                        {
                             mob.SendMessage(0x22, "You have rejected the {0}.", Rematch ? "rematch" : page);
+                        }
                         else
+                        {
                             mob.SendMessage(0x22, "{0} has rejected the {1}.", rejector.Name, Rematch ? "rematch" : page);
+                        }
                     }
 
                     // Close all of them?
@@ -1558,9 +1806,13 @@ namespace Server.Engines.ConPVP
             }
 
             if (Rematch)
+            {
                 Unregister();
+            }
             else if (!m_Yielding)
+            {
                 Initiator.SendGump(new DuelContextGump(Initiator, this));
+            }
 
             ReadyWait = false;
             ReadyCount = 0;
@@ -1600,7 +1852,9 @@ namespace Server.Engines.ConPVP
             AnimalForm.RemoveContext(mob, true);
 
             if (DisguiseTimers.IsDisguised(mob))
+            {
                 DisguiseTimers.StopTimer(mob);
+            }
 
             if (!mob.CanBeginAction<PolymorphSpell>())
             {
@@ -1622,7 +1876,9 @@ namespace Server.Engines.ConPVP
         public static void CancelSpell(Mobile mob)
         {
             if (mob.Spell is Spell spell)
+            {
                 spell.Disturb(DisturbType.Kill);
+            }
 
             Target.Cancel(mob);
         }
@@ -1630,7 +1886,9 @@ namespace Server.Engines.ConPVP
         public void DestroyWall()
         {
             for (var i = 0; i < m_Walls.Count; ++i)
+            {
                 m_Walls[i].Delete();
+            }
 
             m_Walls.Clear();
         }
@@ -1638,7 +1896,9 @@ namespace Server.Engines.ConPVP
         public void CreateWall()
         {
             if (Arena == null)
+            {
                 return;
+            }
 
             var start = Arena.Points.EdgeWest;
             var wall = Arena.Wall;
@@ -1651,13 +1911,21 @@ namespace Server.Engines.ConPVP
             bool eastToWest;
 
             if (rx >= 0 && ry >= 0)
+            {
                 eastToWest = false;
+            }
             else if (rx >= 0)
+            {
                 eastToWest = true;
+            }
             else if (ry >= 0)
+            {
                 eastToWest = true;
+            }
             else
+            {
                 eastToWest = false;
+            }
 
             Effects.PlaySound(wall, Arena.Facet, 0x1F6);
 
@@ -1688,12 +1956,15 @@ namespace Server.Engines.ConPVP
                         var dp = p.Players[j];
 
                         if (dp == null)
+                        {
                             continue;
+                        }
 
                         players.Add(dp.Mobile);
                     }
 
                     if (players.Count > 1)
+                    {
                         for (var leaderIndex = 0; leaderIndex + 1 < players.Count; leaderIndex += Party.Capacity)
                         {
                             var leader = players[leaderIndex];
@@ -1716,7 +1987,9 @@ namespace Server.Engines.ConPVP
                                 var existing = Party.Get(player);
 
                                 if (existing == party)
+                                {
                                     continue;
+                                }
 
                                 if (party.Members.Count + party.Candidates.Count >= Party.Capacity)
                                 {
@@ -1739,6 +2012,7 @@ namespace Server.Engines.ConPVP
                                 }
                             }
                         }
+                    }
                 }
             }
         }
@@ -1754,7 +2028,9 @@ namespace Server.Engines.ConPVP
                     var pl = p.Players[j];
 
                     if (pl == null)
+                    {
                         continue;
+                    }
 
                     ClearIllegalItems(pl.Mobile);
                 }
@@ -1764,20 +2040,28 @@ namespace Server.Engines.ConPVP
         public void ClearIllegalItems(Mobile mob)
         {
             if (mob.StunReady && !AllowSpecialAbility(mob, "Stun", false))
+            {
                 mob.StunReady = false;
+            }
 
             if (mob.DisarmReady && !AllowSpecialAbility(mob, "Disarm", false))
+            {
                 mob.DisarmReady = false;
+            }
 
             var pack = mob.Backpack;
 
             if (pack == null)
+            {
                 return;
+            }
 
             for (var i = mob.Items.Count - 1; i >= 0; --i)
             {
                 if (i >= mob.Items.Count)
+                {
                     continue; // sanity
+                }
 
                 var item = mob.Items[i];
 
@@ -1786,20 +2070,26 @@ namespace Server.Engines.ConPVP
                     pack.DropItem(item);
 
                     if (item is BaseWeapon)
+                    {
                         mob.SendLocalizedMessage(
                             1062001,
                             item.Name ?? $"#{item.LabelNumber}"
                         ); // You can no longer wield your ~1_WEAPON~
+                    }
                     else if (item is BaseArmor && !(item is BaseShield))
+                    {
                         mob.SendLocalizedMessage(
                             1062002,
                             item.Name ?? $"#{item.LabelNumber}"
                         ); // You can no longer wear your ~1_ARMOR~
+                    }
                     else
+                    {
                         mob.SendLocalizedMessage(
                             1062003,
                             item.Name ?? $"#{item.LabelNumber}"
                         ); // You can no longer equip your ~1_SHIELD~
+                    }
                 }
             }
 
@@ -1812,9 +2102,13 @@ namespace Server.Engines.ConPVP
                 var bi = inHand.GetBounce();
 
                 if (bi.Parent == mob)
+                {
                     pack.DropItem(inHand);
+                }
                 else
+                {
                     inHand.Bounce(mob);
+                }
 
                 inHand.ClearBounce();
             }
@@ -1822,7 +2116,10 @@ namespace Server.Engines.ConPVP
 
         private void MessageRuleset(Mobile mob)
         {
-            if (Ruleset == null) return;
+            if (Ruleset == null)
+            {
+                return;
+            }
 
             var ruleset = Ruleset;
             var basedef = ruleset.Base;
@@ -1852,6 +2149,7 @@ namespace Server.Engines.ConPVP
             var opts = ruleset.Options;
 
             for (var i = 0; i < opts.Length; ++i)
+            {
                 if (defs[i] != opts[i])
                 {
                     var name = ruleset.Layout.FindByIndex(i);
@@ -1860,17 +2158,23 @@ namespace Server.Engines.ConPVP
                     {
                         ++changes;
 
-                        if (changes == 1) mob.SendMessage("Modifications:");
+                        if (changes == 1)
+                        {
+                            mob.SendMessage("Modifications:");
+                        }
 
                         mob.SendMessage("{0}: {1}", name, opts[i] ? "enabled" : "disabled");
                     }
                 }
+            }
         }
 
         public void SendBeginGump(int count)
         {
             if (!Registered || Finished)
+            {
                 return;
+            }
 
             if (count == 10)
             {
@@ -1900,7 +2204,9 @@ namespace Server.Engines.ConPVP
                     var pl = p.Players[j];
 
                     if (pl == null)
+                    {
                         continue;
+                    }
 
                     var mob = pl.Mobile;
 
@@ -1936,7 +2242,9 @@ namespace Server.Engines.ConPVP
                     var dp = p.Players[j];
 
                     if (dp == null || dp.Mobile == mob)
+                    {
                         continue;
+                    }
 
                     mob.RemoveAggressed(dp.Mobile);
                     mob.RemoveAggressor(dp.Mobile);
@@ -1949,7 +2257,9 @@ namespace Server.Engines.ConPVP
         public void SendReadyUpGump()
         {
             if (!Registered)
+            {
                 return;
+            }
 
             ReadyWait = true;
             ReadyCount = -1;
@@ -1976,7 +2286,9 @@ namespace Server.Engines.ConPVP
         public string ValidateStart()
         {
             if (m_Tournament == null && TournamentController.IsActive)
+            {
                 return "a tournament is active";
+            }
 
             for (var i = 0; i < Participants.Count; ++i)
             {
@@ -1987,32 +2299,47 @@ namespace Server.Engines.ConPVP
                     var dp = p.Players[j];
 
                     if (dp == null)
+                    {
                         return "a slot is empty";
+                    }
 
                     if (dp.Mobile.Region.IsPartOf<JailRegion>())
+                    {
                         return $"{dp.Mobile.Name} is in jail";
+                    }
 
                     if (Sigil.ExistsOn(dp.Mobile))
+                    {
                         return $"{dp.Mobile.Name} is holding a sigil";
+                    }
 
                     if (!dp.Mobile.Alive)
                     {
                         if (m_Tournament == null)
+                        {
                             return $"{dp.Mobile.Name} is dead";
+                        }
+
                         dp.Mobile.Resurrect();
                     }
 
                     if (m_Tournament == null && CheckCombat(dp.Mobile))
+                    {
                         return $"{dp.Mobile.Name} is in combat";
+                    }
 
                     if (dp.Mobile.Mounted)
                     {
                         var mount = dp.Mobile.Mount;
 
                         if (m_Tournament != null && mount != null)
+                        {
                             mount.Rider = null;
+                        }
                         else
+                        {
                             return $"{dp.Mobile.Name} is mounted";
+                        }
                     }
                 }
             }
@@ -2023,10 +2350,14 @@ namespace Server.Engines.ConPVP
         public void SendReadyGump(int count)
         {
             if (!Registered)
+            {
                 return;
+            }
 
             if (count != -1)
+            {
                 StartedReadyCountdown = true;
+            }
 
             ReadyCount = count;
 
@@ -2066,7 +2397,9 @@ namespace Server.Engines.ConPVP
                         var dp = p.Players[j];
 
                         if (dp != null)
+                        {
                             players.Add(dp.Mobile);
+                        }
                     }
                 }
 
@@ -2130,7 +2463,9 @@ namespace Server.Engines.ConPVP
                             var pl = p.Players[j];
 
                             if (pl == null)
+                            {
                                 continue;
+                            }
 
                             tp.Register(pl.Mobile);
 
@@ -2187,7 +2522,9 @@ namespace Server.Engines.ConPVP
                     var pl = p.Players[j];
 
                     if (pl == null)
+                    {
                         continue;
+                    }
 
                     var mob = pl.Mobile;
 
@@ -2207,7 +2544,9 @@ namespace Server.Engines.ConPVP
             }
 
             if (count == -1 && isAllReady)
+            {
                 StartCountdown(3, SendReadyGump);
+            }
         }
 
         private class InternalWall : Item
@@ -2272,7 +2611,9 @@ namespace Server.Engines.ConPVP
             public void Return()
             {
                 if (Facet == Map.Internal || Facet == null)
+                {
                     return;
+                }
 
                 if (Mobile.Map == Map.Internal)
                 {
@@ -2341,9 +2682,14 @@ namespace Server.Engines.ConPVP
                     var entry = m_Entries[i];
 
                     if (entry.Mobile == mob)
+                    {
                         return entry;
+                    }
+
                     if (entry.Expired)
+                    {
                         m_Entries.RemoveAt(i--);
+                    }
                 }
 
                 return null;
@@ -2352,7 +2698,9 @@ namespace Server.Engines.ConPVP
             public override bool OnMoveOver(Mobile m)
             {
                 if (!base.OnMoveOver(m))
+                {
                     return false;
+                }
 
                 var entry = Find(m);
 
@@ -2389,7 +2737,9 @@ namespace Server.Engines.ConPVP
                     writer.Write(entry.Facet);
 
                     if (entry.Expired)
+                    {
                         m_Entries.RemoveAt(i--);
+                    }
                 }
             }
 
@@ -2452,12 +2802,16 @@ namespace Server.Engines.ConPVP
             public override void CheckGate(Mobile m, int range)
             {
                 if (CheckCombat(m))
+                {
                     m.SendMessage(
                         0x22,
                         "You have recently been in combat with another player and cannot use this moongate."
                     );
+                }
                 else
+                {
                     base.CheckGate(m, range);
+                }
             }
 
             public override void UseGate(Mobile m)
@@ -2472,7 +2826,9 @@ namespace Server.Engines.ConPVP
                 else
                 {
                     if (m_Teleporter?.Deleted == false)
+                    {
                         m_Teleporter.Register(m);
+                    }
 
                     base.UseGate(m);
                 }

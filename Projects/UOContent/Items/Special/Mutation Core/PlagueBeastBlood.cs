@@ -25,7 +25,9 @@ namespace Server.Items
         public override void OnAfterDelete()
         {
             if (m_Timer?.Running == true)
+            {
                 m_Timer.Stop();
+            }
         }
 
         public override bool OnBandage(Mobile from)
@@ -33,7 +35,9 @@ namespace Server.Items
             if (IsAccessibleTo(from) && !Patched)
             {
                 if (m_Timer?.Running == true)
+                {
                     m_Timer.Stop();
+                }
 
                 if (Starting)
                 {
@@ -41,9 +45,13 @@ namespace Server.Items
                     Y -= 9;
 
                     if (Organ is PlagueBeastRubbleOrgan)
+                    {
                         Y -= 5;
+                    }
                     else if (Organ is PlagueBeastBackupOrgan)
+                    {
                         X += 7;
+                    }
                 }
                 else
                 {
@@ -56,9 +64,15 @@ namespace Server.Items
                 var pack = Owner?.Backpack;
 
                 if (pack != null)
+                {
                     for (var i = 0; i < pack.Items.Count; i++)
+                    {
                         if (pack.Items[i] is PlagueBeastMainOrgan main && main.Complete)
-                            main.FinishOpening(from);
+                        {
+                            main.FinishOpening(@from);
+                        }
+                    }
+                }
 
                 PublicOverheadMessage(MessageType.Regular, 0x3B2, 1071916); // * You patch up the wound with a bandage *
 
@@ -71,7 +85,9 @@ namespace Server.Items
         private void Hemorrhage()
         {
             if (Patched)
+            {
                 return;
+            }
 
             Owner?.PlaySound(0x25);
 

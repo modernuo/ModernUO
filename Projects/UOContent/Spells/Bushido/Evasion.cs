@@ -30,32 +30,46 @@ namespace Server.Spells.Bushido
         public static bool VerifyCast(Mobile caster, bool messages)
         {
             if (caster == null) // Sanity
+            {
                 return false;
+            }
 
             if (!(caster.FindItemOnLayer(Layer.OneHanded) is BaseWeapon weap))
+            {
                 weap = caster.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
+            }
 
             if (weap != null)
             {
                 if (Core.ML && caster.Skills[weap.Skill].Base < 50)
                 {
                     if (messages)
+                    {
                         caster.SendLocalizedMessage(
                             1076206
                         ); // Your skill with your equipped weapon must be 50 or higher to use Evasion.
+                    }
+
                     return false;
                 }
             }
             else if (!(caster.FindItemOnLayer(Layer.TwoHanded) is BaseShield))
             {
                 if (messages)
+                {
                     caster.SendLocalizedMessage(1062944); // You must have a weapon or a shield equipped to use this ability!
+                }
+
                 return false;
             }
 
             if (!caster.CanBeginAction<Evasion>())
             {
-                if (messages) caster.SendLocalizedMessage(501789); // You must wait before trying again.
+                if (messages)
+                {
+                    caster.SendLocalizedMessage(501789); // You must wait before trying again.
+                }
+
                 return false;
             }
 
@@ -65,15 +79,23 @@ namespace Server.Spells.Bushido
         public static bool CheckSpellEvasion(Mobile defender)
         {
             if (!(defender.FindItemOnLayer(Layer.OneHanded) is BaseWeapon weap))
+            {
                 weap = defender.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
+            }
 
             if (Core.ML)
             {
-                if (defender.Spell?.IsCasting == true) return false;
+                if (defender.Spell?.IsCasting == true)
+                {
+                    return false;
+                }
 
                 if (weap != null)
                 {
-                    if (defender.Skills[weap.Skill].Base < 50) return false;
+                    if (defender.Skills[weap.Skill].Base < 50)
+                    {
+                        return false;
+                    }
                 }
                 else if (!(defender.FindItemOnLayer(Layer.TwoHanded) is BaseShield))
                 {
@@ -130,16 +152,22 @@ namespace Server.Spells.Bushido
              */
 
             if (!Core.ML)
+            {
                 return TimeSpan.FromSeconds(8.0);
+            }
 
             double seconds = 3;
 
             if (m.Skills.Bushido.Value > 60)
+            {
                 seconds += (m.Skills.Bushido.Value - 60) / 20;
+            }
 
             if (m.Skills.Anatomy.Value >= 100.0 && m.Skills.Tactics.Value >= 100.0 && m.Skills.Bushido.Value > 100.0
             ) // Bushido being HIGHER than 100 for bonus is intended
+            {
                 seconds++;
+            }
 
             return TimeSpan.FromSeconds((int)seconds);
         }
@@ -156,16 +184,22 @@ namespace Server.Spells.Bushido
              */
 
             if (!Core.ML)
+            {
                 return 1.5;
+            }
 
             double bonus = 0;
 
             if (m.Skills.Bushido.Value >= 60)
+            {
                 bonus += (m.Skills.Bushido.Value - 60) * .004 + 0.16;
+            }
 
             if (m.Skills.Anatomy.Value >= 100 && m.Skills.Tactics.Value >= 100 && m.Skills.Bushido.Value > 100
             ) // Bushido being HIGHER than 100 for bonus is intended
+            {
                 bonus += 0.10;
+            }
 
             return 1.0 + bonus;
         }

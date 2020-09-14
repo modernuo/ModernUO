@@ -6,7 +6,9 @@ namespace Server.Items
         public MinotaurArtifact() : base(Utility.RandomList(0xB46, 0xB48, 0x9ED))
         {
             if (ItemID == 0x9ED)
+            {
                 Weight = 30;
+            }
 
             LootType = LootType.Blessed;
             Hue = 0x100;

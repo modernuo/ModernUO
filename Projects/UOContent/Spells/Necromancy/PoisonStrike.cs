@@ -32,7 +32,9 @@ namespace Server.Spells.Necromancy
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (CheckHSequence(m))
             {
@@ -65,7 +67,10 @@ namespace Server.Spells.Necromancy
                 var pvmDamage = damage * (1 + sdiBonus);
 
                 if (Core.ML && sdiBonus > 0.15)
+                {
                     sdiBonus = 0.15;
+                }
+
                 var pvpDamage = damage * (1 + sdiBonus);
 
                 var map = m.Map;
@@ -75,7 +80,9 @@ namespace Server.Spells.Necromancy
                     var targets = new List<Mobile>();
 
                     if (Caster.CanBeHarmful(m, false))
+                    {
                         targets.Add(m);
+                    }
 
                     targets.AddRange(
                         m.GetMobilesInRange(2)
@@ -91,11 +98,17 @@ namespace Server.Spells.Necromancy
                         int num;
 
                         if (targ.InRange(m.Location, 0))
+                        {
                             num = 1;
+                        }
                         else if (targ.InRange(m.Location, 1))
+                        {
                             num = 2;
+                        }
                         else
+                        {
                             num = 3;
+                        }
 
                         Caster.DoHarmful(targ);
                         SpellHelper.Damage(

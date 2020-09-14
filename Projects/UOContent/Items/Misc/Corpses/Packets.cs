@@ -11,9 +11,14 @@ namespace Server.Network
 
             var count = list.Count;
             if (beheld.Hair?.ItemID > 0)
+            {
                 count++;
+            }
+
             if (beheld.FacialHair?.ItemID > 0)
+            {
                 count++;
+            }
 
             EnsureCapacity(8 + count * 5);
 
@@ -55,9 +60,14 @@ namespace Server.Network
             var count = items.Count;
 
             if (beheld.Hair?.ItemID > 0)
+            {
                 count++;
+            }
+
             if (beheld.FacialHair != null && beheld.FacialHair.ItemID > 0)
+            {
                 count++;
+            }
 
             EnsureCapacity(5 + count * 19);
 
@@ -128,9 +138,14 @@ namespace Server.Network
             var count = items.Count;
 
             if (beheld.Hair?.ItemID > 0)
+            {
                 count++;
+            }
+
             if (beheld.FacialHair?.ItemID > 0)
+            {
                 count++;
+            }
 
             EnsureCapacity(5 + count * 20);
 

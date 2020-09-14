@@ -76,7 +76,10 @@ namespace Server.Engines.Quests.Hag
             var index = (int)ingredient;
 
             if (index >= 0 && index < m_Table.Length)
+            {
                 return m_Table[index];
+            }
+
             return m_Table[0];
         }
 
@@ -91,11 +94,17 @@ namespace Server.Engines.Quests.Hag
 
                 var found = false;
                 for (var j = 0; !found && j < oldIngredients.Length; j++)
+                {
                     if (oldIngredients[j] == currIngredient)
+                    {
                         found = true;
+                    }
+                }
 
                 if (!found)
+                {
                     ingredients[n++] = currIngredient;
+                }
             }
 
             return ingredients.RandomElement();

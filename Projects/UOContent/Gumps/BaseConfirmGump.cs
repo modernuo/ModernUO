@@ -55,9 +55,13 @@ namespace Server.Gumps
             if (info.ButtonID == (int)Buttons.Confirm)
             {
                 if (info.IsSwitched((int)Buttons.Break))
+                {
                     Confirm(state.Mobile);
+                }
                 else
+                {
                     Refuse(state.Mobile);
+                }
             }
         }
 

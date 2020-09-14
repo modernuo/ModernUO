@@ -22,27 +22,43 @@ namespace Server.Items
         {
             Direction dir;
             if (from.Location != Location)
-                dir = from.GetDirectionTo(this);
+            {
+                dir = @from.GetDirectionTo(this);
+            }
             else if (East)
+            {
                 dir = Direction.West;
+            }
             else
+            {
                 dir = Direction.North;
+            }
 
             from.Direction = dir;
 
             bool canThrow;
 
             if (!from.InRange(this, 4) || !from.InLOS(this))
+            {
                 canThrow = false;
+            }
             else if (East)
+            {
                 canThrow = dir == Direction.Left || dir == Direction.West || dir == Direction.Up;
+            }
             else
+            {
                 canThrow = dir == Direction.Up || dir == Direction.North || dir == Direction.Right;
+            }
 
             if (canThrow)
-                Throw(from);
+            {
+                Throw(@from);
+            }
             else
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            {
+                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            }
         }
 
         public void Throw(Mobile from)
@@ -61,17 +77,29 @@ namespace Server.Items
 
             int message;
             if (rand < 0.05)
+            {
                 message = 500752; // BULLSEYE! 50 Points!
+            }
             else if (rand < 0.20)
+            {
                 message = 500753; // Just missed the center! 20 points.
+            }
             else if (rand < 0.45)
+            {
                 message = 500754; // 10 point shot.
+            }
             else if (rand < 0.70)
+            {
                 message = 500755; // 5 pointer.
+            }
             else if (rand < 0.85)
+            {
                 message = 500756; // 1 point.  Bad throw.
+            }
             else
+            {
                 message = 500757; // Missed.
+            }
 
             PublicOverheadMessage(MessageType.Regular, 0x3B2, message);
         }

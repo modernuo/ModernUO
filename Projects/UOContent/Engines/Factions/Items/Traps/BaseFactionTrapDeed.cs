@@ -30,7 +30,9 @@ namespace Server.Factions
                 m_Faction = value;
 
                 if (m_Faction != null)
+                {
                     Hue = m_Faction.Definition.HuePrimary;
+                }
             }
         }
 
@@ -78,7 +80,9 @@ namespace Server.Factions
                 var trap = Construct(from);
 
                 if (trap == null)
+                {
                     return;
+                }
 
                 var message = trap.IsValidLocation(from.Location, from.Map);
 

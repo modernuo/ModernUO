@@ -45,7 +45,9 @@ namespace Server.Mobiles
             PackItem(rope);
 
             if (Utility.RandomDouble() < .05)
+            {
                 PackItem(new MessageInABottle());
+            }
 
             PackItem(new SpecialFishingNet()); // Confirm?
         }

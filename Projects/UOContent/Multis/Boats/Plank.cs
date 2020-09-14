@@ -77,7 +77,9 @@ namespace Server.Items
                         KeyValue = reader.ReadUInt();
 
                         if (Boat == null)
+                        {
                             Delete();
+                        }
 
                         break;
                     }
@@ -93,6 +95,7 @@ namespace Server.Items
         public void SetFacing(Direction dir)
         {
             if (IsOpen)
+            {
                 ItemID = dir switch
                 {
                     Direction.North => Starboard ? 0x3ED4 : 0x3ED5,
@@ -101,7 +104,9 @@ namespace Server.Items
                     Direction.West  => Starboard ? 0x3E89 : 0x3E84,
                     _               => ItemID
                 };
+            }
             else
+            {
                 ItemID = dir switch
                 {
                     Direction.North => Starboard ? 0x3EB2 : 0x3EB1,
@@ -110,12 +115,15 @@ namespace Server.Items
                     Direction.West  => Starboard ? 0x3E8A : 0x3E85,
                     _               => ItemID
                 };
+            }
         }
 
         public void Open()
         {
             if (IsOpen || Deleted)
+            {
                 return;
+            }
 
             m_CloseTimer?.Stop();
 
@@ -139,26 +147,40 @@ namespace Server.Items
             if (IsOpen)
             {
                 if (from is BaseFactionGuard)
+                {
                     return false;
+                }
 
                 if ((from.Direction & Direction.Running) != 0 || Boat?.Contains(from) == false)
+                {
                     return true;
+                }
 
                 var map = Map;
 
                 if (map == null)
+                {
                     return false;
+                }
 
                 int rx = 0, ry = 0;
 
                 if (ItemID == 0x3ED4)
+                {
                     rx = 1;
+                }
                 else if (ItemID == 0x3ED5)
+                {
                     rx = -1;
+                }
                 else if (ItemID == 0x3E84)
+                {
                     ry = 1;
+                }
                 else if (ItemID == 0x3E89)
+                {
                     ry = -1;
+                }
 
                 for (var i = 1; i <= 6; ++i)
                 {
@@ -174,7 +196,9 @@ namespace Server.Items
                             !Region.Find(new Point3D(x, y, z), map).IsPartOf<StrongholdRegion>())
                         {
                             if (i == 1 && j >= -2 && j <= 2)
+                            {
                                 return true;
+                            }
 
                             from.Location = new Point3D(x, y, z);
                             return false;
@@ -187,7 +211,9 @@ namespace Server.Items
                         !Region.Find(new Point3D(x, y, z), map).IsPartOf<StrongholdRegion>())
                     {
                         if (i == 1)
+                        {
                             return true;
+                        }
 
                         from.Location = new Point3D(x, y, z);
                         return false;
@@ -205,7 +231,9 @@ namespace Server.Items
         public void Close()
         {
             if (!IsOpen || !CanClose() || Deleted)
+            {
                 return;
+            }
 
             m_CloseTimer?.Stop();
 
@@ -231,16 +259,22 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (Boat == null)
+            {
                 return;
+            }
 
             if (from.InRange(GetWorldLocation(), 8))
             {
                 if (Boat.Contains(from))
                 {
                     if (IsOpen)
+                    {
                         Close();
+                    }
                     else
+                    {
                         Open();
+                    }
                 }
                 else
                 {

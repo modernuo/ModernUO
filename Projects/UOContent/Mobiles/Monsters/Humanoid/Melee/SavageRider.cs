@@ -11,9 +11,13 @@ namespace Server.Mobiles
             Name = NameList.RandomName("savage rider");
 
             if (Female = Utility.RandomBool())
+            {
                 Body = 186;
+            }
             else
+            {
                 Body = 185;
+            }
 
             SetStr(151, 170);
             SetDex(92, 130);
@@ -37,7 +41,9 @@ namespace Server.Mobiles
             PackItem(new Bandage(Utility.RandomMinMax(1, 15)));
 
             if (Utility.RandomDouble() < 0.1)
+            {
                 PackItem(new BolaBall());
+            }
 
             AddItem(new TribalSpear());
             AddItem(new BoneArms());
@@ -69,10 +75,14 @@ namespace Server.Mobiles
             var mount = Mount;
 
             if (mount != null)
+            {
                 mount.Rider = null;
+            }
 
             if (mount is Mobile mobile)
+            {
                 mobile.Delete();
+            }
 
             return base.OnBeforeDeath();
         }
@@ -80,7 +90,9 @@ namespace Server.Mobiles
         public override bool IsEnemy(Mobile m)
         {
             if (m.BodyMod == 183 || m.BodyMod == 184)
+            {
                 return false;
+            }
 
             return base.IsEnemy(m);
         }
@@ -99,7 +111,9 @@ namespace Server.Mobiles
                 aggressor.SendLocalizedMessage(1040008); // Your skin is scorched as the tribal paint burns away!
 
                 if (aggressor is PlayerMobile mobile)
+                {
                     mobile.SavagePaintExpiration = TimeSpan.Zero;
+                }
             }
         }
 
@@ -107,7 +121,9 @@ namespace Server.Mobiles
         {
             if (to is Dragon || to is WhiteWyrm || to is SwampDragon || to is Drake || to is Nightmare || to is Hiryu ||
                 to is LesserHiryu || to is Daemon)
+            {
                 damage *= 3;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

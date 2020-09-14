@@ -22,7 +22,9 @@ namespace Server.Misc
             var aggressed = e.Aggressed;
 
             if (!aggressor.Player || !aggressed.Player)
+            {
                 return;
+            }
 
             if (!CheckAggressions(aggressor, aggressed))
             {
@@ -50,7 +52,9 @@ namespace Server.Misc
                 var info = list[i];
 
                 if (info.Attacker == m2 && DateTime.UtcNow < info.LastCombatTime + Delay)
+                {
                     return true;
+                }
             }
 
             list = m2.Aggressors;
@@ -60,7 +64,9 @@ namespace Server.Misc
                 var info = list[i];
 
                 if (info.Attacker == m1 && DateTime.UtcNow < info.LastCombatTime + Delay)
+                {
                     return true;
+                }
             }
 
             return false;

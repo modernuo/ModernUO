@@ -39,15 +39,25 @@ namespace Server.Items
         public bool CouldFit(IPoint3D p, Map map)
         {
             if (map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) != true)
+            {
                 return false;
+            }
 
             if (Type == StoneFaceTrapType.NorthWestWall)
+            {
                 return BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map) &&
                        BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map); // north and west wall
+            }
+
             if (Type == StoneFaceTrapType.NorthWall)
+            {
                 return BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map); // north wall
+            }
+
             if (Type == StoneFaceTrapType.WestWall)
+            {
                 return BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map); // west wall
+            }
 
             return false;
         }
@@ -68,7 +78,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Core.ML && m_IsRewardItem)
+            {
                 list.Add(1076218); // 2nd Year Veteran Reward
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -147,13 +159,17 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076218); // 2nd Year Veteran Reward
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {
@@ -202,7 +218,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Head?.Deleted != false)
+                {
                     return;
+                }
 
                 if (!m_Head.IsChildOf(from.Backpack))
                 {
@@ -222,7 +240,9 @@ namespace Server.Items
                 var map = from.Map;
 
                 if (p == null || map == null)
+                {
                     return;
+                }
 
                 var p3d = new Point3D(p);
                 var id = TileData.ItemTable[0x10F5];
@@ -247,11 +267,17 @@ namespace Server.Items
                 FlamingHead head = null;
 
                 if (north && west)
+                {
                     head = new FlamingHead(StoneFaceTrapType.NorthWestWall);
+                }
                 else if (north)
+                {
                     head = new FlamingHead();
+                }
                 else if (west)
+                {
                     head = new FlamingHead(StoneFaceTrapType.WestWall);
+                }
 
                 if (north || west)
                 {

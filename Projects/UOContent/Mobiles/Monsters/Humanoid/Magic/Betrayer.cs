@@ -47,7 +47,9 @@ namespace Server.Mobiles
             PackItem(new PowerCrystal());
 
             if (Utility.RandomDouble() < 0.02)
+            {
                 PackItem(new BlackthornWelcomeBook());
+            }
 
             m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(5, 30));
         }
@@ -76,9 +78,13 @@ namespace Server.Mobiles
                 if (!IsParagon)
                 {
                     if (Utility.RandomDouble() < 0.75)
+                    {
                         c.DropItem(DawnsMusicGear.RandomCommon);
+                    }
                     else
+                    {
                         c.DropItem(DawnsMusicGear.RandomUncommon);
+                    }
                 }
                 else
                 {
@@ -118,7 +124,9 @@ namespace Server.Mobiles
                 );
 
                 if (Weapon is BaseWeapon weapon)
+                {
                     weapon.OnHit(this, defender);
+                }
 
                 if (defender.Alive)
                 {
@@ -142,7 +150,9 @@ namespace Server.Mobiles
 
             if (DateTime.UtcNow < m_NextAbilityTime || combatant?.Deleted != false || combatant.Map != Map ||
                 !InRange(combatant, 3) || !CanBeHarmful(combatant) || !InLOS(combatant))
+            {
                 return;
+            }
 
             m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(5, 30));
 
@@ -152,8 +162,12 @@ namespace Server.Mobiles
                 PlaySound(0x1DE);
 
                 foreach (var m in GetMobilesInRange(2))
+                {
                     if (m != this && IsEnemy(m))
+                    {
                         m.ApplyPoison(this, Poison.Deadly);
+                    }
+                }
             }
         }
 

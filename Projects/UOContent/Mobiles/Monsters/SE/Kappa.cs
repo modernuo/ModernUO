@@ -41,6 +41,7 @@ namespace Server.Mobiles
 
             PackItem(new RawFishSteak(3));
             for (var i = 0; i < 2; i++)
+            {
                 switch (Utility.Random(6))
                 {
                     case 0:
@@ -53,9 +54,12 @@ namespace Server.Mobiles
                         PackItem(new Axle());
                         break;
                 }
+            }
 
             if (Core.ML && Utility.RandomDouble() < .33)
+            {
                 PackItem(Seed.RandomPeculiarSeed(4));
+            }
         }
 
         public Kappa(Serial serial) : base(serial)
@@ -86,12 +90,14 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomBool())
+            {
                 if (!IsBeingDrained(defender) && Mana > 14)
                 {
                     defender.SendLocalizedMessage(1070848); // You feel your life force being stolen away.
                     BeginLifeDrain(defender, this);
                     Mana -= 15;
                 }
+            }
         }
 
         public static bool IsBeingDrained(Mobile m) => m_Table.ContainsKey(m);
@@ -134,7 +140,11 @@ namespace Server.Mobiles
                 var amt = 0;
                 Mobile target = this;
                 var rand = Utility.Random(1, 100);
-                if (willKill) amt = ((rand % 5) >> 2) + 3;
+                if (willKill)
+                {
+                    amt = ((rand % 5) >> 2) + 3;
+                }
+
                 if (Hits < 100 && rand < 21)
                 {
                     target = rand % 2 < 1 ? this : from;
@@ -146,7 +156,9 @@ namespace Server.Mobiles
                     SpillAcid(target, amt);
                     from.SendLocalizedMessage(1070820);
                     if (Mana > 14)
+                    {
                         Mana -= 15;
+                    }
                 }
             }
 
@@ -185,7 +197,9 @@ namespace Server.Mobiles
                 DrainLife(m_Mobile, m_From);
 
                 if (Running && ++m_Count == 5)
+                {
                     EndLifeDrain(m_Mobile);
+                }
             }
         }
     }

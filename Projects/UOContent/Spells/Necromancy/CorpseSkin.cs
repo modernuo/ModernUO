@@ -29,7 +29,9 @@ namespace Server.Spells.Necromancy
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (CheckHSequence(m))
             {
@@ -48,9 +50,13 @@ namespace Server.Spells.Necromancy
                  */
 
                 if (m_Table.TryGetValue(m, out var timer))
+                {
                     timer.DoExpire();
+                }
                 else
+                {
                     m.SendLocalizedMessage(1061689); // Your skin turns dry and corpselike.
+                }
 
                 m.Spell?.OnCasterHurt();
 
@@ -79,7 +85,9 @@ namespace Server.Spells.Necromancy
                 m_Table[m] = timer;
 
                 for (var i = 0; i < mods.Length; ++i)
+                {
                     m.AddResistanceMod(mods[i]);
+                }
 
                 HarmfulSpell(m);
             }
@@ -95,7 +103,9 @@ namespace Server.Spells.Necromancy
         public static bool RemoveCurse(Mobile m)
         {
             if (!m_Table.TryGetValue(m, out var t))
+            {
                 return false;
+            }
 
             m.SendLocalizedMessage(1061688); // Your skin returns to normal.
             t?.DoExpire();
@@ -116,7 +126,9 @@ namespace Server.Spells.Necromancy
             public void DoExpire()
             {
                 for (var i = 0; i < m_Mods.Length; ++i)
+                {
                     m_Mobile.RemoveResistanceMod(m_Mods[i]);
+                }
 
                 Stop();
                 BuffInfo.RemoveBuff(m_Mobile, BuffIcon.CorpseSkin);

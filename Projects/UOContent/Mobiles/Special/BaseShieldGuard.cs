@@ -68,7 +68,9 @@ namespace Server.Mobiles
 
             Utility.AssignRandomHair(this);
             if (Utility.RandomBool())
+            {
                 Utility.AssignRandomFacialHair(this, HairHue);
+            }
 
             var weapon = new VikingSword();
             weapon.Movable = false;
@@ -99,7 +101,9 @@ namespace Server.Mobiles
         public override bool HandlesOnSpeech(Mobile from)
         {
             if (from.InRange(Location, 2))
+            {
                 return true;
+            }
 
             return base.HandlesOnSpeech(from);
         }

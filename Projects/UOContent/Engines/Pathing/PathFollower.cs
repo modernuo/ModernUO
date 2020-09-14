@@ -32,7 +32,9 @@ namespace Server
         public MoveResult Move(Direction d)
         {
             if (Mover == null)
+            {
                 return m_From.Move(d) ? MoveResult.Success : MoveResult.Blocked;
+            }
 
             return Mover(d);
         }
@@ -40,7 +42,9 @@ namespace Server
         public Point3D GetGoalLocation()
         {
             if (Goal is Item item)
+            {
                 return item.GetWorldLocation();
+            }
 
             return new Point3D(Goal);
         }
@@ -71,13 +75,17 @@ namespace Server
         public bool CheckPath()
         {
             if (!Enabled)
+            {
                 return false;
+            }
 
             var goal = GetGoalLocation();
 
             if (m_Path != null && (m_Path.Success && goal == m_LastGoalLoc || m_LastPathTime + RepathDelay > DateTime.Now) &&
                 !(m_Path.Success && Check(m_From.Location, m_LastGoalLoc, 0)))
+            {
                 return false;
+            }
 
             m_LastPathTime = DateTime.UtcNow;
             m_LastGoalLoc = goal;
@@ -101,7 +109,9 @@ namespace Server
             Direction d;
 
             if (Check(m_From.Location, goal, range))
+            {
                 return true;
+            }
 
             var repathed = CheckPath();
 
@@ -110,7 +120,9 @@ namespace Server
                 d = m_From.GetDirectionTo(goal);
 
                 if (run)
+                {
                     d |= Direction.Running;
+                }
 
                 m_From.SetDirection(d);
                 Move(d);
@@ -121,7 +133,9 @@ namespace Server
             d = m_From.GetDirectionTo(m_Next);
 
             if (run)
+            {
                 d |= Direction.Running;
+            }
 
             m_From.SetDirection(d);
 
@@ -130,7 +144,9 @@ namespace Server
             if (res == MoveResult.Blocked)
             {
                 if (repathed)
+                {
                     return false;
+                }
 
                 m_Path = null;
                 CheckPath();
@@ -140,7 +156,9 @@ namespace Server
                     d = m_From.GetDirectionTo(goal);
 
                     if (run)
+                    {
                         d |= Direction.Running;
+                    }
 
                     m_From.SetDirection(d);
                     Move(d);
@@ -151,14 +169,18 @@ namespace Server
                 d = m_From.GetDirectionTo(m_Next);
 
                 if (run)
+                {
                     d |= Direction.Running;
+                }
 
                 m_From.SetDirection(d);
 
                 res = Move(d);
 
                 if (res == MoveResult.Blocked)
+                {
                     return false;
+                }
             }
 
             if (m_From.X == m_Next.X && m_From.Y == m_Next.Y)

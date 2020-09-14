@@ -59,16 +59,24 @@ namespace Server.Items
                     ItemID = m_Open ? OpenedID : ClosedID;
 
                     if (m_Open)
+                    {
                         Location = new Point3D(X + Offset.X, Y + Offset.Y, Z + Offset.Z);
+                    }
                     else
+                    {
                         Location = new Point3D(X - Offset.X, Y - Offset.Y, Z - Offset.Z);
+                    }
 
                     Effects.PlaySound(this, Map, m_Open ? OpenedSound : ClosedSound);
 
                     if (m_Open)
+                    {
                         m_Timer.Start();
+                    }
                     else
+                    {
                         m_Timer.Stop();
+                    }
                 }
             }
         }
@@ -94,7 +102,9 @@ namespace Server.Items
             get
             {
                 if (m_Link?.Deleted == true)
+                {
                     m_Link = null;
+                }
 
                 return m_Link;
             }
@@ -184,7 +194,9 @@ namespace Server.Items
                     if (list.Count >= 2)
                     {
                         for (var i = 0; i < list.Count; ++i)
+                        {
                             list[i].Link = list[(i + 1) % list.Count];
+                        }
 
                         from.SendMessage("The chain of doors have been linked.");
                     }
@@ -208,16 +220,23 @@ namespace Server.Items
                     from.BeginTarget(-1, false, TargetFlags.None, ChainLink_OnTarget, list);
 
                     if (list.Count == 1)
-                        from.SendMessage("Target the second door to link.");
+                    {
+                        @from.SendMessage("Target the second door to link.");
+                    }
                     else
-                        from.SendMessage("Target another door to link. To complete the chain, retarget the first door.");
+                    {
+                        @from.SendMessage("Target another door to link. To complete the chain, retarget the first door.");
+                    }
                 }
             }
         }
 
         private static void EventSink_OpenDoorMacroUsed(Mobile m)
         {
-            if (m.Map == null) return;
+            if (m.Map == null)
+            {
+                return;
+            }
 
             int x = m.X, y = m.Y;
 
@@ -256,6 +275,7 @@ namespace Server.Items
             var sector = m.Map.GetSector(x, y);
 
             foreach (var item in sector.Items)
+            {
                 if (item.Location.X == x && item.Location.Y == y && item.Z + item.ItemData.Height > m.Z &&
                     m.Z + 16 > item.Z && item is BaseDoor && m.CanSee(item) && m.InLOS(item))
                 {
@@ -267,6 +287,7 @@ namespace Server.Items
 
                     break;
                 }
+            }
         }
 
         public static Point3D GetOffset(DoorFacing facing) => m_Offsets[(int)facing];
@@ -274,12 +295,16 @@ namespace Server.Items
         public bool CanClose()
         {
             if (!m_Open)
+            {
                 return true;
+            }
 
             var map = Map;
 
             if (map == null)
+            {
                 return false;
+            }
 
             var p = new Point3D(X - Offset.X, Y - Offset.Y, Z - Offset.Z);
 
@@ -289,7 +314,9 @@ namespace Server.Items
         private bool CheckFit(Map map, Point3D p, int height)
         {
             if (map == Map.Internal)
+            {
                 return false;
+            }
 
             var x = p.X;
             var y = p.Y;
@@ -311,7 +338,9 @@ namespace Server.Items
                     var impassable = id.Impassable;
 
                     if ((surface || impassable) && item.Z + id.CalcHeight > z && z + height > item.Z)
+                    {
                         return false;
+                    }
                 }
             }
 
@@ -322,13 +351,19 @@ namespace Server.Items
                 if (m.Location.X == x && m.Location.Y == y)
                 {
                     if (m.Hidden && m.AccessLevel > AccessLevel.Player)
+                    {
                         continue;
+                    }
 
                     if (!m.Alive)
+                    {
                         continue;
+                    }
 
                     if (m.Z + 16 > z && z + height > m.Z)
+                    {
                         return false;
+                    }
                 }
             }
 
@@ -352,14 +387,18 @@ namespace Server.Items
         public bool IsFreeToClose()
         {
             if (!UseChainedFunctionality)
+            {
                 return CanClose();
+            }
 
             var list = GetChain();
 
             var freeToClose = true;
 
             for (var i = 0; freeToClose && i < list.Count; ++i)
+            {
                 freeToClose = list[i].CanClose();
+            }
 
             return freeToClose;
         }
@@ -400,21 +439,31 @@ namespace Server.Items
                 else
                 {
                     if (Hue == 0x44E && Map == Map.Malas)      // doom door into healer room in doom
-                        SendLocalizedMessageTo(from, 1060014); // Only the dead may pass.
+                    {
+                        SendLocalizedMessageTo(@from, 1060014); // Only the dead may pass.
+                    }
                     else
-                        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502503); // That is locked.
+                    {
+                        @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502503); // That is locked.
+                    }
 
                     return;
                 }
             }
 
             if (m_Open && !IsFreeToClose())
+            {
                 return;
+            }
 
             if (m_Open)
-                OnClosed(from);
+            {
+                OnClosed(@from);
+            }
             else
-                OnOpened(from);
+            {
+                OnOpened(@from);
+            }
 
             if (UseChainedFunctionality)
             {
@@ -423,7 +472,9 @@ namespace Server.Items
                 var list = GetChain();
 
                 for (var i = 0; i < list.Count; ++i)
+                {
                     list[i].Open = open;
+                }
             }
             else
             {
@@ -432,7 +483,9 @@ namespace Server.Items
                 var link = Link;
 
                 if (m_Open && link?.Open == false)
+                {
                     link.Open = true;
+                }
             }
         }
 
@@ -447,9 +500,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (from.AccessLevel == AccessLevel.Player && !from.InRange(GetWorldLocation(), 2))
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            {
+                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            }
             else
-                Use(from);
+            {
+                Use(@from);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -493,7 +550,9 @@ namespace Server.Items
                         m_Timer = new InternalTimer(this);
 
                         if (m_Open)
+                        {
                             m_Timer.Start();
+                        }
 
                         break;
                     }
@@ -513,7 +572,9 @@ namespace Server.Items
             protected override void OnTick()
             {
                 if (m_Door.Open && m_Door.IsFreeToClose())
+                {
                     m_Door.Open = false;
+                }
             }
         }
     }

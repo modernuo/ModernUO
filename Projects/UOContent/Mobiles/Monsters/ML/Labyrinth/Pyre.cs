@@ -61,7 +61,10 @@ namespace Server.Mobiles
         public override WeaponAbility GetWeaponAbility()
         {
             if (Utility.RandomBool())
+            {
                 return WeaponAbility.ParalyzingBlow;
+            }
+
             return WeaponAbility.BleedAttack;
         }
 

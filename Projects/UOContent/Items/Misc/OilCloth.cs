@@ -21,7 +21,9 @@ namespace Server.Items
         public bool Dye(Mobile from, DyeTub sender)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             Hue = sender.DyedHue;
 
@@ -31,7 +33,9 @@ namespace Server.Items
         public bool Scissor(Mobile from, Scissors scissors)
         {
             if (Deleted || !from.CanSee(this))
+            {
                 return false;
+            }
 
             ScissorHelper(from, new Bandage(), 1);
 
@@ -76,14 +80,22 @@ namespace Server.Items
                 else
                 {
                     if (weapon.PoisonCharges < 2)
+                    {
                         weapon.PoisonCharges = 0;
+                    }
                     else
+                    {
                         weapon.PoisonCharges -= 2;
+                    }
 
                     if (weapon.PoisonCharges > 0)
-                        from.SendLocalizedMessage(1005423); // You have removed some of the caustic substance, but not all.
+                    {
+                        @from.SendLocalizedMessage(1005423); // You have removed some of the caustic substance, but not all.
+                    }
                     else
-                        from.SendLocalizedMessage(1010497); // You have cleaned the item.
+                    {
+                        @from.SendLocalizedMessage(1010497); // You have cleaned the item.
+                    }
                 }
             }
             else if (obj == from && obj is PlayerMobile pm)

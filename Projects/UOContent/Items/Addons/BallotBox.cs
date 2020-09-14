@@ -41,7 +41,9 @@ namespace Server.Items
         public void AddLineToTopic(string line)
         {
             if (Topic.Length >= MaxTopicLines)
+            {
                 return;
+            }
 
             var newTopic = new string[Topic.Length + 1];
             Topic.CopyTo(newTopic, 0);
@@ -61,7 +63,9 @@ namespace Server.Items
         public bool IsOwner(Mobile from)
         {
             if (from.AccessLevel >= AccessLevel.GameMaster)
+            {
                 return true;
+            }
 
             var house = BaseHouse.FindHouseAt(this);
             return house?.IsOwner(from) == true;
@@ -97,7 +101,9 @@ namespace Server.Items
             writer.WriteEncodedInt(Topic.Length);
 
             for (var i = 0; i < Topic.Length; i++)
+            {
                 writer.Write(Topic[i]);
+            }
 
             writer.Write(Yes, true);
             writer.Write(No, true);
@@ -112,7 +118,9 @@ namespace Server.Items
             Topic = new string[reader.ReadEncodedInt()];
 
             for (var i = 0; i < Topic.Length; i++)
+            {
                 Topic[i] = reader.ReadString();
+            }
 
             Yes = reader.ReadStrongMobileList();
             No = reader.ReadStrongMobileList();
@@ -129,9 +137,13 @@ namespace Server.Items
                 AddBackground(0, 0, 400, 350, 0xA28);
 
                 if (isOwner)
+                {
                     AddHtmlLocalized(0, 15, 400, 35, 1011000); // <center>Ballot Box Owner's Menu</center>
+                }
                 else
+                {
                     AddHtmlLocalized(0, 15, 400, 35, 1011001); // <center>Ballot Box -- Vote Here!</center>
+                }
 
                 AddHtmlLocalized(0, 50, 400, 35, 1011002); // <center>Topic</center>
 
@@ -143,7 +155,9 @@ namespace Server.Items
                     var line = box.Topic[i];
 
                     if (!string.IsNullOrEmpty(line))
+                    {
                         AddLabelCropped(30, 90 + i * 20, 340, 20, 0x3E3, line);
+                    }
                 }
 
                 var yesCount = box.Yes.Count;
@@ -153,12 +167,18 @@ namespace Server.Items
                 AddHtmlLocalized(0, 215, 400, 35, 1011003); // <center>votes</center>
 
                 if (!isOwner)
+                {
                     AddButton(20, 240, 0xFA5, 0xFA7, 3);
+                }
+
                 AddHtmlLocalized(55, 242, 25, 35, 1011004); // aye:
                 AddLabel(78, 242, 0x0, $"[{yesCount}]");
 
                 if (!isOwner)
+                {
                     AddButton(20, 275, 0xFA5, 0xFA7, 4);
+                }
+
                 AddHtmlLocalized(55, 277, 25, 35, 1011005); // nay:
                 AddLabel(78, 277, 0x0, $"[{noCount}]");
 
@@ -184,7 +204,9 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_Box.Deleted || info.ButtonID == 0)
+                {
                     return;
+                }
 
                 var from = sender.Mobile;
 
@@ -276,7 +298,9 @@ namespace Server.Items
             public override void OnResponse(Mobile from, string text)
             {
                 if (m_Box.Deleted || !m_Box.IsOwner(from))
+                {
                     return;
+                }
 
                 if (from.Map != m_Box.Map || !from.InRange(m_Box.GetWorldLocation(), 2))
                 {
@@ -301,7 +325,9 @@ namespace Server.Items
             public override void OnCancel(Mobile from)
             {
                 if (m_Box.Deleted || !m_Box.IsOwner(from))
+                {
                     return;
+                }
 
                 if (from.Map != m_Box.Map || !from.InRange(m_Box.GetWorldLocation(), 2))
                 {

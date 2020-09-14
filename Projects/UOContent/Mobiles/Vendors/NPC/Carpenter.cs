@@ -29,7 +29,9 @@ namespace Server.Mobiles
             m_SBInfos.Add(new SBWoodenShields());
 
             if (IsTokunoVendor)
+            {
                 m_SBInfos.Add(new SBSECarpenter());
+            }
         }
 
         public override void InitOutfit()

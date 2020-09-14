@@ -15,9 +15,13 @@ namespace Server.Engines.ConPVP
             Preferences = new Preferences();
 
             if (Preferences.Instance == null)
+            {
                 Preferences.Instance = Preferences;
+            }
             else
+            {
                 Delete();
+            }
         }
 
         public PreferencesController(Serial serial) : base(serial)
@@ -32,7 +36,9 @@ namespace Server.Engines.ConPVP
         public override void Delete()
         {
             if (Preferences.Instance != Preferences)
+            {
                 base.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -123,7 +129,9 @@ namespace Server.Engines.ConPVP
             writer.WriteEncodedInt(Entries.Count);
 
             for (var i = 0; i < Entries.Count; ++i)
+            {
                 Entries[i].Serialize(writer);
+            }
         }
     }
 
@@ -148,7 +156,9 @@ namespace Server.Engines.ConPVP
                         Disliked = new List<string>(count);
 
                         for (var i = 0; i < count; ++i)
+                        {
                             Disliked.Add(reader.ReadString());
+                        }
 
                         break;
                     }
@@ -166,7 +176,9 @@ namespace Server.Engines.ConPVP
             writer.WriteEncodedInt(Disliked.Count);
 
             for (var i = 0; i < Disliked.Count; ++i)
+            {
                 writer.Write(Disliked[i]);
+            }
         }
     }
 
@@ -180,7 +192,9 @@ namespace Server.Engines.ConPVP
             m_Entry = prefs.Find(from);
 
             if (m_Entry == null)
+            {
                 return;
+            }
 
             var arenas = Arena.Arenas;
 
@@ -191,7 +205,9 @@ namespace Server.Engines.ConPVP
             AddBackground(0, 0, 499 + 40 - 365, height, 0x2436);
 
             for (var i = 1; i < arenas.Count; i += 2)
+            {
                 AddImageTiled(12, 32 + i * 31, 475 + 40 - 365, 30, 0x2430);
+            }
 
             AddAlphaRegion(10, 10, 479 + 40 - 365, height - 20);
 
@@ -222,10 +238,14 @@ namespace Server.Engines.ConPVP
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_Entry == null)
+            {
                 return;
+            }
 
             if (info.ButtonID != 1)
+            {
                 return;
+            }
 
             m_Entry.Disliked.Clear();
 
@@ -236,7 +256,9 @@ namespace Server.Engines.ConPVP
                 var idx = info.Switches[i];
 
                 if (idx >= 0 && idx < arenas.Count)
+                {
                     m_Entry.Disliked.Add(arenas[idx].Name);
+                }
             }
         }
 
@@ -252,9 +274,13 @@ namespace Server.Engines.ConPVP
         private void AddColoredText(int x, int y, int width, string text, int color)
         {
             if (color == 0)
+            {
                 AddHtml(x, y, width, 20, text);
+            }
             else
+            {
                 AddHtml(x, y, width, 20, Color(text, color));
+            }
         }
 
         private void AddColumnHeader(int width, string name)
@@ -263,7 +289,9 @@ namespace Server.Engines.ConPVP
             AddImageTiled(m_ColumnX + 2, 14, width - 4, 16, 0x2430);
 
             if (name != null)
+            {
                 AddBorderedText(m_ColumnX, 13, width, Center(name), 0xFFFFFF, 0);
+            }
 
             m_ColumnX += width;
         }

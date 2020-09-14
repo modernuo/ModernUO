@@ -73,9 +73,13 @@ namespace Server.Gumps
             from.CloseGump<GoGump>();
 
             if (node == tree.Root)
-                tree.LastBranch.Remove(from);
+            {
+                tree.LastBranch.Remove(@from);
+            }
             else
-                tree.LastBranch[from] = node;
+            {
+                tree.LastBranch[@from] = node;
+            }
 
             m_Page = page;
             m_Tree = tree;
@@ -100,16 +104,22 @@ namespace Server.Gumps
             );
 
             if (OldStyle)
+            {
                 AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
+            }
             else
+            {
                 AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
+            }
 
             if (node.Parent != null)
             {
                 AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1);
 
                 if (PrevLabel)
+                {
                     AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
+                }
             }
 
             x += PrevWidth + OffsetSize;
@@ -118,6 +128,7 @@ namespace Server.Gumps
                              (OldStyle ? SetWidth + OffsetSize : 0);
 
             if (!OldStyle)
+            {
                 AddImageTiled(
                     x - (OldStyle ? OffsetSize : 0),
                     y,
@@ -125,35 +136,46 @@ namespace Server.Gumps
                     EntryHeight,
                     EntryGumpID
                 );
+            }
 
             AddHtml(x + TextOffsetX, y, emptyWidth - TextOffsetX, EntryHeight, $"<center>{node.Name}</center>");
 
             x += emptyWidth + OffsetSize;
 
             if (OldStyle)
+            {
                 AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
+            }
             else
+            {
                 AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
+            }
 
             if (page > 0)
             {
                 AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 2);
 
                 if (PrevLabel)
+                {
                     AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
+                }
             }
 
             x += PrevWidth + OffsetSize;
 
             if (!OldStyle)
+            {
                 AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
+            }
 
             if ((page + 1) * EntryCount < node.Categories.Length + node.Locations.Length)
             {
                 AddButton(x + NextOffsetX, y + NextOffsetY, NextButtonID1, NextButtonID2, 3, GumpButtonType.Reply, 1);
 
                 if (NextLabel)
+                {
                     AddLabel(x + NextLabelOffsetX, y + NextLabelOffsetY, TextHue, "Next");
+                }
             }
 
             var totalEntryCount = node.Categories.Length + node.Locations.Length;
@@ -173,7 +195,9 @@ namespace Server.Gumps
                 x += EntryWidth + OffsetSize;
 
                 if (SetGumpID != 0)
+                {
                     AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+                }
 
                 AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, index + 4);
             }
@@ -184,23 +208,39 @@ namespace Server.Gumps
             LocationTree tree;
 
             if (from.Map == Map.Ilshenar)
+            {
                 tree = Ilshenar ??= new LocationTree("ilshenar", Map.Ilshenar);
+            }
             else if (from.Map == Map.Felucca)
+            {
                 tree = Felucca ??= new LocationTree("felucca", Map.Felucca);
+            }
             else if (from.Map == Map.Trammel)
+            {
                 tree = Trammel ??= new LocationTree("trammel", Map.Trammel);
+            }
             else if (from.Map == Map.Malas)
+            {
                 tree = Malas ??= new LocationTree("malas", Map.Malas);
+            }
             else if (from.Map == Map.Tokuno)
+            {
                 tree = Tokuno ??= new LocationTree("tokuno", Map.Tokuno);
+            }
             else
+            {
                 tree = TerMur ??= new LocationTree("termur", Map.TerMur);
+            }
 
             if (!tree.LastBranch.TryGetValue(from, out var branch))
+            {
                 branch = tree.Root;
+            }
 
             if (branch != null)
-                from.SendGump(new GoGump(0, from, tree, branch));
+            {
+                @from.SendGump(new GoGump(0, @from, tree, branch));
+            }
         }
 
         public override void OnResponse(NetState state, RelayInfo info)
@@ -212,21 +252,27 @@ namespace Server.Gumps
                 case 1:
                     {
                         if (m_Node.Parent != null)
-                            from.SendGump(new GoGump(0, from, m_Tree, m_Node.Parent));
+                        {
+                            @from.SendGump(new GoGump(0, @from, m_Tree, m_Node.Parent));
+                        }
 
                         break;
                     }
                 case 2:
                     {
                         if (m_Page > 0)
-                            from.SendGump(new GoGump(m_Page - 1, from, m_Tree, m_Node));
+                        {
+                            @from.SendGump(new GoGump(m_Page - 1, @from, m_Tree, m_Node));
+                        }
 
                         break;
                     }
                 case 3:
                     {
                         if ((m_Page + 1) * EntryCount < m_Node.Categories.Length + m_Node.Locations.Length)
-                            from.SendGump(new GoGump(m_Page + 1, from, m_Tree, m_Node));
+                        {
+                            @from.SendGump(new GoGump(m_Page + 1, @from, m_Tree, m_Node));
+                        }
 
                         break;
                     }
@@ -235,7 +281,9 @@ namespace Server.Gumps
                         var index = info.ButtonID - 4;
 
                         if (index < 0)
+                        {
                             break;
+                        }
 
                         if (index < m_Node.Categories.Length)
                         {
@@ -245,7 +293,9 @@ namespace Server.Gumps
                         {
                             index -= m_Node.Categories.Length;
                             if (index < m_Node.Locations.Length)
-                                from.MoveToWorld(m_Node.Locations[index].Location, m_Tree.Map);
+                            {
+                                @from.MoveToWorld(m_Node.Locations[index].Location, m_Tree.Map);
+                            }
                         }
 
                         break;

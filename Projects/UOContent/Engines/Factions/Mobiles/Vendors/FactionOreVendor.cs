@@ -57,7 +57,9 @@ namespace Server.Factions
             public InternalBuyInfo()
             {
                 for (var i = 0; i < 5; ++i)
+                {
                     Add(new GenericBuyInfo(typeof(IronOre), 16, 20, 0x19B8, 0, m_FixedSizeArgs));
+                }
             }
         }
 

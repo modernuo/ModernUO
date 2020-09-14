@@ -28,19 +28,32 @@ namespace Server.Factions
             if (item is BaseArmor armor)
             {
                 if (CraftResources.GetType(armor.Resource) == CraftResourceType.Leather)
+                {
                     return m_LeatherArmor;
+                }
 
                 return m_MetalArmor;
             }
 
             if (item is BaseRanged)
+            {
                 return m_RangedWeapon;
+            }
+
             if (item is BaseWeapon)
+            {
                 return m_Weapon;
+            }
+
             if (item is BaseClothing)
+            {
                 return m_Clothing;
+            }
+
             if (item is SpellScroll)
+            {
                 return m_Scroll;
+            }
 
             return null;
         }

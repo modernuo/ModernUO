@@ -42,7 +42,9 @@ namespace Server.Engines.BulkOrders
             var y = 120;
 
             for (var i = 0; i < entries.Length; ++i, y += 24)
+            {
                 AddHtmlLocalized(40, y, 210, 20, entries[i].Details.Number, 0x7FFF);
+            }
 
             if (deed.RequireExceptional || deed.Material != BulkMaterialType.None)
             {
@@ -101,15 +103,22 @@ namespace Server.Engines.BulkOrders
         public override void OnServerClose(NetState owner)
         {
             if (m_Deed?.Deleted == false)
+            {
                 m_Deed.Delete();
+            }
         }
 
         public static int GetMaterialNumberFor(BulkMaterialType material)
         {
             if (material >= BulkMaterialType.DullCopper && material <= BulkMaterialType.Valorite)
+            {
                 return 1045142 + (material - BulkMaterialType.DullCopper);
+            }
+
             if (material >= BulkMaterialType.Spined && material <= BulkMaterialType.Barbed)
+            {
                 return 1049348 + (material - BulkMaterialType.Spined);
+            }
 
             return 0;
         }

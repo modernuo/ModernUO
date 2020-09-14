@@ -44,7 +44,9 @@ namespace Server.Multis
         public void CheckAddComponents()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             AddComponents();
         }
@@ -56,12 +58,16 @@ namespace Server.Multis
         public virtual void RefreshDecay(bool setDecayTime)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             m_DecayTimer?.Stop();
 
             if (setDecayTime)
+            {
                 m_DecayTime = DateTime.UtcNow + DecayDelay;
+            }
 
             m_DecayTimer = Timer.DelayCall(DecayDelay, Delete);
         }
@@ -88,7 +94,9 @@ namespace Server.Multis
             }
 
             if (m is BaseVendor)
+            {
                 m.Direction = Direction.South;
+            }
 
             m.MoveToWorld(loc, Map);
         }
@@ -109,9 +117,13 @@ namespace Server.Multis
             var inNewRange = Utility.InRange(m.Location, Location, EventRange);
 
             if (inNewRange && !inOldRange)
+            {
                 OnEnter(m);
+            }
             else if (inOldRange && !inNewRange)
+            {
                 OnExit(m);
+            }
         }
 
         public override void OnAfterDelete()
@@ -119,16 +131,22 @@ namespace Server.Multis
             base.OnAfterDelete();
 
             for (var i = 0; i < m_Items.Count; ++i)
+            {
                 m_Items[i].Delete();
+            }
 
             for (var i = 0; i < m_Mobiles.Count; ++i)
             {
                 var bc = (BaseCreature)m_Mobiles[i];
 
                 if (bc.IsPrisoner == false)
+                {
                     m_Mobiles[i].Delete();
+                }
                 else if (m_Mobiles[i].CantWalk)
+                {
                     m_Mobiles[i].Delete();
+                }
             }
 
             m_Items.Clear();
@@ -191,7 +209,9 @@ namespace Server.Multis
             var version = reader.ReadInt();
 
             if (Weight == 8.0)
+            {
                 Weight = 1.0;
+            }
         }
     }
 }

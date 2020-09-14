@@ -38,16 +38,22 @@ namespace Server.Gumps
             var fealty = beholder.GuildFealty;
 
             if (fealty == null || !guild.IsMember(fealty))
+            {
                 fealty = leader;
+            }
 
             fealty ??= beholder;
 
             var fealtyName = fealty.Name?.Trim().IsNullOrDefault("(empty)");
 
             if (beholder == fealty)
+            {
                 AddHtmlLocalized(55, 70, 470, 20, 1018002); // yourself
+            }
             else
+            {
                 AddHtml(55, 70, 470, 20, fealtyName);
+            }
 
             AddButton(215, 50, 4005, 4007, 2);
             AddHtmlLocalized(250, 50, 170, 20, 1013023);                                       // Display guild abbreviation
@@ -112,7 +118,9 @@ namespace Server.Gumps
         public static bool BadLeader(Mobile m, Guild g)
         {
             if (m.Deleted || g.Disbanded || m.AccessLevel < AccessLevel.GameMaster && g.Leader != m)
+            {
                 return true;
+            }
 
             var stone = g.Guildstone;
 
@@ -122,7 +130,9 @@ namespace Server.Gumps
         public static bool BadMember(Mobile m, Guild g)
         {
             if (m.Deleted || g.Disbanded || m.AccessLevel < AccessLevel.GameMaster && !g.IsMember(m))
+            {
                 return true;
+            }
 
             var stone = g.Guildstone;
 
@@ -132,7 +142,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (BadMember(m_Mobile, m_Guild))
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {

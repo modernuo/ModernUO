@@ -62,7 +62,9 @@ namespace Server.Items
             writer.Write(m_DecayTimer != null);
 
             if (m_DecayTimer != null)
+            {
                 writer.WriteDeltaTime(m_DecayTime);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -82,7 +84,9 @@ namespace Server.Items
                 case 1:
                     {
                         if (reader.ReadBool())
+                        {
                             BeginDecay(reader.ReadDeltaTime() - DateTime.UtcNow);
+                        }
 
                         break;
                     }

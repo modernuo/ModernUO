@@ -20,7 +20,9 @@ namespace Server
         public static bool CheckArtifactChance(Mobile m, BaseCreature bc)
         {
             if (!Core.ML)
+            {
                 return false;
+            }
 
             return Paragon.CheckArtifactChance(m, bc);
         }
@@ -28,7 +30,9 @@ namespace Server
         public static void GiveArtifactTo(Mobile m)
         {
             if (!(ActivatorUtil.CreateInstance(Artifacts.RandomElement()) is Item item))
+            {
                 return;
+            }
 
             if (m.AddToBackpack(item))
             {
@@ -54,13 +58,19 @@ namespace Server
         public static bool CheckML(Mobile from, bool message = true)
         {
             if (from?.NetState == null)
+            {
                 return false;
+            }
 
             if (from.NetState.SupportsExpansion(Expansion.ML))
+            {
                 return true;
+            }
 
             if (message)
-                from.SendLocalizedMessage(1072791); // You must upgrade to Mondain's Legacy in order to use that item.
+            {
+                @from.SendLocalizedMessage(1072791); // You must upgrade to Mondain's Legacy in order to use that item.
+            }
 
             return false;
         }

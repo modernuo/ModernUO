@@ -53,7 +53,11 @@ namespace Server.Multis
 
             AddCampChests();
 
-            for (var i = 0; i < 3; i++) AddMobile(Orcs, 6, Utility.RandomMinMax(-7, 7), Utility.RandomMinMax(-7, 7), 0);
+            for (var i = 0; i < 3; i++)
+            {
+                AddMobile(Orcs, 6, Utility.RandomMinMax(-7, 7), Utility.RandomMinMax(-7, 7), 0);
+            }
+
             AddMobile(new OrcCaptain(), 2, Utility.RandomMinMax(-7, 7), Utility.RandomMinMax(-7, 7), 0);
 
             m_Prisoner = Utility.Random(2) switch
@@ -112,6 +116,7 @@ namespace Server.Multis
             crates.LiftOverride = true;
 
             if (Utility.RandomDouble() < 0.8)
+            {
                 switch (Utility.Random(4))
                 {
                     case 0:
@@ -127,6 +132,7 @@ namespace Server.Multis
                         crates.DropItem(new LesserPoisonPotion());
                         break;
                 }
+            }
 
             AddItem(crates, 2, -2, 0);
         }
@@ -160,7 +166,9 @@ namespace Server.Multis
         public override void AddItem(Item item, int xOffset, int yOffset, int zOffset)
         {
             if (item != null)
+            {
                 item.Movable = false;
+            }
 
             base.AddItem(item, xOffset, yOffset, zOffset);
         }

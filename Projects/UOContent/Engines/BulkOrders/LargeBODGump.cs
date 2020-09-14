@@ -64,6 +64,7 @@ namespace Server.Engines.BulkOrders
             }
 
             if (deed.Material != BulkMaterialType.None)
+            {
                 AddHtmlLocalized(
                     75,
                     y,
@@ -72,6 +73,7 @@ namespace Server.Engines.BulkOrders
                     GetMaterialNumberFor(deed.Material),
                     0x7FFF
                 ); // All items must be made with x material.
+            }
 
             AddButton(125, 168 + entries.Length * 24, 4005, 4007, 2);
             AddHtmlLocalized(
@@ -90,7 +92,9 @@ namespace Server.Engines.BulkOrders
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_Deed.Deleted || !m_Deed.IsChildOf(m_From.Backpack))
+            {
                 return;
+            }
 
             if (info.ButtonID == 2) // Combine
             {
@@ -102,9 +106,14 @@ namespace Server.Engines.BulkOrders
         public static int GetMaterialNumberFor(BulkMaterialType material)
         {
             if (material >= BulkMaterialType.DullCopper && material <= BulkMaterialType.Valorite)
+            {
                 return 1045142 + (material - BulkMaterialType.DullCopper);
+            }
+
             if (material >= BulkMaterialType.Spined && material <= BulkMaterialType.Barbed)
+            {
                 return 1049348 + (material - BulkMaterialType.Spined);
+            }
 
             return 0;
         }

@@ -26,19 +26,25 @@ namespace Server.Mobiles
         public virtual void RangeCheck()
         {
             if (Deleted || ControlMaster?.Deleted != false)
+            {
                 return;
+            }
 
             var range = RangeHome - 2;
 
             if (InRange(ControlMaster.Location, RangeHome))
+            {
                 return;
+            }
 
             var master = ControlMaster;
 
             var m_Loc = Point3D.Zero;
 
             if (Map != master.Map)
+            {
                 return;
+            }
 
             var x = X > master.X ? master.X + range : master.X - range;
             var y = Y > master.Y ? master.Y + range : master.Y - range;
@@ -50,20 +56,29 @@ namespace Server.Mobiles
 
                 m_Loc.Z = Map.GetAverageZ(m_Loc.X, m_Loc.Y);
 
-                if (Map.CanSpawnMobile(m_Loc)) break;
+                if (Map.CanSpawnMobile(m_Loc))
+                {
+                    break;
+                }
 
                 m_Loc = master.Location;
             }
 
             if (!Deleted)
+            {
                 SetLocation(m_Loc, true);
+            }
         }
 
         public override void OnThink()
         {
             var master = ControlMaster;
 
-            if (Deleted) return;
+            if (Deleted)
+            {
+                return;
+            }
+
             if (master?.Deleted != false)
             {
                 DropPackContents();
@@ -74,7 +89,9 @@ namespace Server.Mobiles
             RangeCheck();
 
             if (m_LastHidden != master.Hidden)
+            {
                 Hidden = m_LastHidden = master.Hidden;
+            }
 
             if (AIObject?.WalkMobileRange(master, 5, true, 1, 1) == true)
             {
@@ -97,13 +114,17 @@ namespace Server.Mobiles
             base.GetContextMenuEntries(from, list);
 
             if (from.Alive && Controlled && from == ControlMaster && from.InRange(this, 14))
-                list.Add(new ReleaseEntry(from, this));
+            {
+                list.Add(new ReleaseEntry(@from, this));
+            }
         }
 
         public virtual void BeginRelease(Mobile from)
         {
             if (!Deleted && Controlled && from == ControlMaster && from.CheckAlive())
-                EndRelease(from);
+            {
+                EndRelease(@from);
+            }
         }
 
         public virtual void EndRelease(Mobile from)
@@ -135,7 +156,9 @@ namespace Server.Mobiles
                 var list = new List<Item>(pack.Items);
 
                 for (var i = 0; i < list.Count; ++i)
+                {
                     list[i].MoveToWorld(Location, map);
+                }
             }
         }
 
@@ -176,7 +199,9 @@ namespace Server.Mobiles
             {
                 if (!m_Familiar.Deleted && m_Familiar.Controlled && m_From == m_Familiar.ControlMaster &&
                     m_From.CheckAlive())
+                {
                     m_Familiar.BeginRelease(m_From);
+                }
             }
         }
     }

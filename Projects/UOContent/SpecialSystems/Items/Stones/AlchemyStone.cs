@@ -20,7 +20,9 @@ namespace Server.Items
             var alcBag = new AlchemyBag();
 
             if (!from.AddToBackpack(alcBag))
+            {
                 alcBag.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

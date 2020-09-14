@@ -11,9 +11,13 @@ namespace Server.Engines.Quests.Haven
         public override void OnComplete()
         {
             if (System.From.Profession == 5) // paladin
+            {
                 System.AddConversation(new UzeraanTitheConversation());
+            }
             else
+            {
                 System.AddConversation(new UzeraanFirstTaskConversation());
+            }
         }
     }
 
@@ -31,13 +35,17 @@ namespace Server.Engines.Quests.Haven
             var curTithingPoints = pm.TithingPoints;
 
             if (curTithingPoints >= 500)
+            {
                 Complete();
+            }
             else if (curTithingPoints > m_OldTithingPoints && m_OldTithingPoints >= 0)
+            {
                 pm.SendLocalizedMessage(
                     1060240,
                     "",
                     0x41
                 ); // You must have at least 500 tithing points before you can continue in your quest.
+            }
 
             m_OldTithingPoints = curTithingPoints;
         }
@@ -104,12 +112,14 @@ namespace Server.Engines.Quests.Haven
             get
             {
                 if (System.From.Profession == 5) // paladin
+                {
                     return Step switch
                     {
                         KillHordeMinionsStep.First      => 1,
                         KillHordeMinionsStep.LearnKarma => 2,
                         _                               => 5
                     };
+                }
 
                 return 5;
             }
@@ -120,7 +130,10 @@ namespace Server.Engines.Quests.Haven
             get
             {
                 if (Step == KillHordeMinionsStep.LearnKarma && HasBeenRead)
+                {
                     return true;
+                }
+
                 return base.Completed;
             }
         }
@@ -148,7 +161,9 @@ namespace Server.Engines.Quests.Haven
             // This restriction continues until the quest is ended
             if (from is HordeMinion && from.Map == Map.Trammel && from.X >= 3314 && from.X <= 3814 && from.Y >= 2345 &&
                 from.Y <= 3095) // Haven island
+            {
                 return true;
+            }
 
             return false;
         }
@@ -159,7 +174,9 @@ namespace Server.Engines.Quests.Haven
                 corpse.Y >= 2345 && corpse.Y <= 3095) // Haven island
             {
                 if (CurProgress == 0)
+                {
                     System.From.Send(new DisplayHelpTopic(29, false)); // HEALING
+                }
 
                 CurProgress++;
             }
@@ -168,6 +185,7 @@ namespace Server.Engines.Quests.Haven
         public override void OnComplete()
         {
             if (System.From.Profession == 5)
+            {
                 switch (Step)
                 {
                     case KillHordeMinionsStep.First:
@@ -190,8 +208,11 @@ namespace Server.Engines.Quests.Haven
                             break;
                         }
                 }
+            }
             else
+            {
                 System.AddObjective(new FindUzeraanAboutReportObjective());
+            }
         }
 
         public override void ChildDeserialize(IGenericReader reader)
@@ -228,7 +249,9 @@ namespace Server.Engines.Quests.Haven
             // This restriction begins when this objective is completed, and continues until the quest is ended
             if (Completed && from is RestlessSoul && from.Map == Map.Trammel && from.X >= 5199 && from.X <= 5271 &&
                 from.Y >= 1812 && from.Y <= 1865) // Schmendrick's cave
+            {
                 return true;
+            }
 
             return false;
         }
@@ -350,7 +373,10 @@ namespace Server.Engines.Quests.Haven
         {
             get
             {
-                if (System.From.Profession == 5) return 1060755;
+                if (System.From.Profession == 5)
+                {
+                    return 1060755;
+                }
 
                 /* Use Uzeraan's teleporter to get to the Haunted graveyard.<BR><BR>
                    *
@@ -370,7 +396,9 @@ namespace Server.Engines.Quests.Haven
             // This restriction continues until the end of the quest
             if ((from is Zombie || from is Skeleton) && from.Map == Map.Trammel && from.X >= 3391 && from.X <= 3424 &&
                 from.Y >= 2639 && from.Y <= 2664) // Haven graveyard
+            {
                 return true;
+            }
 
             return false;
         }
@@ -378,7 +406,9 @@ namespace Server.Engines.Quests.Haven
         public override bool GetKillEvent(BaseCreature creature, Container corpse)
         {
             if (base.GetKillEvent(creature, corpse))
+            {
                 return true;
+            }
 
             return UzeraanTurmoilQuest.HasLostDaemonBone(System.From);
         }
@@ -387,8 +417,12 @@ namespace Server.Engines.Quests.Haven
         {
             if ((creature is Zombie || creature is Skeleton) && corpse.Map == Map.Trammel && corpse.X >= 3391 &&
                 corpse.X <= 3424 && corpse.Y >= 2639 && corpse.Y <= 2664) // Haven graveyard
+            {
                 if (Utility.RandomDouble() < 0.25)
+                {
                     CorpseWithBone = corpse;
+                }
+            }
         }
 
         public override void ChildDeserialize(IGenericReader reader)
@@ -401,7 +435,9 @@ namespace Server.Engines.Quests.Haven
         public override void ChildSerialize(IGenericWriter writer)
         {
             if (CorpseWithBone?.Deleted == true)
+            {
                 CorpseWithBone = null;
+            }
 
             writer.WriteEncodedInt(0); // version
 

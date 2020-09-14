@@ -35,12 +35,17 @@ namespace Server.Engines.Quests.Matriarch
         public override bool IgnoreYoungProtection(Mobile from)
         {
             if (Completed)
+            {
                 return false;
+            }
 
             var redSolen = ((SolenMatriarchQuest)System).RedSolen;
 
             if (redSolen)
-                return from is BlackSolenInfiltratorWarrior || from is BlackSolenInfiltratorQueen;
+            {
+                return @from is BlackSolenInfiltratorWarrior || @from is BlackSolenInfiltratorQueen;
+            }
+
             return from is RedSolenInfiltratorWarrior || from is RedSolenInfiltratorQueen;
         }
 
@@ -51,12 +56,16 @@ namespace Server.Engines.Quests.Matriarch
             if (redSolen)
             {
                 if (creature is BlackSolenInfiltratorWarrior || creature is BlackSolenInfiltratorQueen)
+                {
                     CurProgress++;
+                }
             }
             else
             {
                 if (creature is RedSolenInfiltratorWarrior || creature is RedSolenInfiltratorQueen)
+                {
                     CurProgress++;
+                }
             }
         }
 
@@ -117,9 +126,13 @@ namespace Server.Engines.Quests.Matriarch
             System.AddConversation(new ProcessFungiConversation(friend));
 
             if (redSolen)
+            {
                 player.SolenFriendship = SolenFriendship.Red;
+            }
             else
+            {
                 player.SolenFriendship = SolenFriendship.Black;
+            }
         }
     }
 
@@ -130,9 +143,13 @@ namespace Server.Engines.Quests.Matriarch
         public override void OnComplete()
         {
             if (SolenMatriarchQuest.GiveRewardTo(System.From))
+            {
                 System.Complete();
+            }
             else
+            {
                 System.AddConversation(new FullBackpackConversation(true));
+            }
         }
     }
 

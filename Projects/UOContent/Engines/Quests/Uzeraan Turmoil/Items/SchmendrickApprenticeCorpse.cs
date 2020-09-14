@@ -18,7 +18,9 @@ namespace Server.Engines.Quests.Haven
             Direction = Direction.West;
 
             foreach (var item in EquipItems)
+            {
                 DropItem(item);
+            }
 
             m_Lantern = new Lantern { Movable = false, Protected = true };
             m_Lantern.Ignite();
@@ -86,7 +88,8 @@ namespace Server.Engines.Quests.Haven
             var hue = Notoriety.GetHue(NotorietyHandlers.CorpseNotoriety(from, this));
 
             if (ItemID == 0x2006) // Corpse form
-                from.Send(
+            {
+                @from.Send(
                     new MessageLocalized(
                         Serial,
                         ItemID,
@@ -98,8 +101,10 @@ namespace Server.Engines.Quests.Haven
                         Name
                     )
                 ); // the remains of ~1_NAME~ the apprentice
+            }
             else
-                from.Send(
+            {
+                @from.Send(
                     new MessageLocalized(
                         Serial,
                         ItemID,
@@ -111,12 +116,15 @@ namespace Server.Engines.Quests.Haven
                         ""
                     )
                 ); // the remains of a wizard's apprentice
+            }
         }
 
         public override void Open(Mobile from, bool checkSelfLoot)
         {
             if (!from.InRange(GetWorldLocation(), 2))
+            {
                 return;
+            }
 
             if (from is PlayerMobile player)
             {
@@ -160,13 +168,17 @@ namespace Server.Engines.Quests.Haven
         public override void OnLocationChange(Point3D oldLoc)
         {
             if (m_Lantern?.Deleted == false)
+            {
                 m_Lantern.Location = new Point3D(X, Y + 1, Z);
+            }
         }
 
         public override void OnMapChange()
         {
             if (m_Lantern?.Deleted == false)
+            {
                 m_Lantern.Map = Map;
+            }
         }
 
         public override void OnAfterDelete()
@@ -174,13 +186,17 @@ namespace Server.Engines.Quests.Haven
             base.OnAfterDelete();
 
             if (m_Lantern?.Deleted == false)
+            {
                 m_Lantern.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
         {
             if (m_Lantern?.Deleted == true)
+            {
                 m_Lantern = null;
+            }
 
             base.Serialize(writer);
 

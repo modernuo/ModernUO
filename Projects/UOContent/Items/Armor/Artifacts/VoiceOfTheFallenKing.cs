@@ -40,7 +40,9 @@ namespace Server.Items
             if (version < 1)
             {
                 if (Hue == 0x551)
+                {
                     Hue = 0x76D;
+                }
 
                 ColdBonus = 0;
                 EnergyBonus = 0;

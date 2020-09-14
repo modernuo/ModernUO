@@ -50,12 +50,16 @@ namespace Server.Engines.Spawners
         public static bool IsValidWater(Map map, int x, int y, int z)
         {
             if (!Region.Find(new Point3D(x, y, z), map).AllowSpawn() || !map.CanFit(x, y, z, 16, false, true, false))
+            {
                 return false;
+            }
 
             var landTile = map.Tiles.GetLandTile(x, y);
 
             if (landTile.Z == z && (TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags & TileFlag.Wet) != 0)
+            {
                 return true;
+            }
 
             var staticTiles = map.Tiles.GetStaticTiles(x, y, true);
 
@@ -65,7 +69,9 @@ namespace Server.Engines.Spawners
 
                 if (staticTile.Z == z &&
                     (TileData.ItemTable[staticTile.ID & TileData.MaxItemValue].Flags & TileFlag.Wet) != 0)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -89,7 +95,9 @@ namespace Server.Engines.Spawners
         public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
         {
             if (map == null || map == Map.Internal)
+            {
                 return Location;
+            }
 
             bool waterMob, waterOnlyMob;
 
@@ -115,17 +123,27 @@ namespace Server.Engines.Spawners
                 if (waterMob)
                 {
                     if (IsValidWater(map, x, y, Z))
+                    {
                         return new Point3D(x, y, Z);
+                    }
+
                     if (IsValidWater(map, x, y, mapZ))
+                    {
                         return new Point3D(x, y, mapZ);
+                    }
                 }
 
                 if (!waterOnlyMob)
                 {
                     if (map.CanSpawnMobile(x, y, Z))
+                    {
                         return new Point3D(x, y, Z);
+                    }
+
                     if (map.CanSpawnMobile(x, y, mapZ))
+                    {
                         return new Point3D(x, y, mapZ);
+                    }
                 }
             }
 

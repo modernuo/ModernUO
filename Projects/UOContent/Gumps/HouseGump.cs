@@ -13,7 +13,9 @@ namespace Server.Gumps
         public HouseListGump(int number, List<Mobile> list, BaseHouse house, bool accountOf) : base(20, 30)
         {
             if (house.Deleted)
+            {
                 return;
+            }
 
             m_House = house;
 
@@ -28,17 +30,25 @@ namespace Server.Gumps
             AddHtmlLocalized(20, 20, 350, 20, number);
 
             if (list == null)
+            {
                 return;
+            }
 
             for (var i = 0; i < list.Count; ++i)
             {
                 if (i % 16 == 0)
                 {
-                    if (i != 0) AddButton(370, 20, 4005, 4007, 0, GumpButtonType.Page, i / 16 + 1);
+                    if (i != 0)
+                    {
+                        AddButton(370, 20, 4005, 4007, 0, GumpButtonType.Page, i / 16 + 1);
+                    }
 
                     AddPage(i / 16 + 1);
 
-                    if (i != 0) AddButton(340, 20, 4014, 4016, 0, GumpButtonType.Page, i / 16);
+                    if (i != 0)
+                    {
+                        AddButton(340, 20, 4014, 4016, 0, GumpButtonType.Page, i / 16);
+                    }
                 }
 
                 var m = list[i];
@@ -46,7 +56,9 @@ namespace Server.Gumps
                 string name;
 
                 if (m == null || (name = m.Name) == null || (name = name.Trim()).Length <= 0)
+                {
                     continue;
+                }
 
                 AddLabel(
                     55,
@@ -62,7 +74,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (m_House.Deleted)
+            {
                 return;
+            }
 
             var from = state.Mobile;
 
@@ -81,7 +95,9 @@ namespace Server.Gumps
         public HouseRemoveGump(int number, List<Mobile> list, BaseHouse house, bool accountOf) : base(20, 30)
         {
             if (house.Deleted)
+            {
                 return;
+            }
 
             m_House = house;
             m_List = list;
@@ -102,7 +118,9 @@ namespace Server.Gumps
             AddHtmlLocalized(20, 20, 350, 20, number);
 
             if (list == null)
+            {
                 return;
+            }
 
             m_Copy = new List<Mobile>(list);
 
@@ -110,11 +128,17 @@ namespace Server.Gumps
             {
                 if (i % 15 == 0)
                 {
-                    if (i != 0) AddButton(370, 20, 4005, 4007, 0, GumpButtonType.Page, i / 15 + 1);
+                    if (i != 0)
+                    {
+                        AddButton(370, 20, 4005, 4007, 0, GumpButtonType.Page, i / 15 + 1);
+                    }
 
                     AddPage(i / 15 + 1);
 
-                    if (i != 0) AddButton(340, 20, 4014, 4016, 0, GumpButtonType.Page, i / 15);
+                    if (i != 0)
+                    {
+                        AddButton(340, 20, 4014, 4016, 0, GumpButtonType.Page, i / 15);
+                    }
                 }
 
                 var m = list[i];
@@ -122,7 +146,9 @@ namespace Server.Gumps
                 string name;
 
                 if (m == null || (name = m.Name) == null || (name = name.Trim()).Length <= 0)
+                {
                     continue;
+                }
 
                 AddCheck(34, 52 + i % 15 * 20, 0xD2, 0xD3, false, i);
                 AddLabel(
@@ -139,7 +165,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (m_House.Deleted)
+            {
                 return;
+            }
 
             var from = state.Mobile;
 
@@ -154,7 +182,9 @@ namespace Server.Gumps
                         var index = switches[i];
 
                         if (index >= 0 && index < m_Copy.Count)
+                        {
                             m_List.Remove(m_Copy[index]);
+                        }
                     }
 
                     if (m_List.Count > 0)
@@ -179,7 +209,9 @@ namespace Server.Gumps
         public HouseGump(Mobile from, BaseHouse house) : base(20, 30)
         {
             if (house.Deleted)
+            {
                 return;
+            }
 
             m_House = house;
 
@@ -194,7 +226,9 @@ namespace Server.Gumps
             var isFriend = isCoOwner || m_House.IsFriend(from);
 
             if (isCombatRestricted)
+            {
                 isFriend = isCoOwner = isOwner = false;
+            }
 
             AddPage(0);
 
@@ -219,7 +253,9 @@ namespace Server.Gumps
             }
 
             if (!isFriend)
+            {
                 return;
+            }
 
             AddHtmlLocalized(55, 103, 75, 20, 1011233); // INFO
             AddButton(20, 103, 4005, 4007, 0, GumpButtonType.Page, 1);
@@ -369,7 +405,9 @@ namespace Server.Gumps
         private List<string> Wrap(string value)
         {
             if (value == null || (value = value.Trim()).Length <= 0)
+            {
                 return null;
+            }
 
             var values = value.Split(' ');
             var list = new List<string>();
@@ -390,7 +428,9 @@ namespace Server.Gumps
                     list.Add(v);
 
                     if (list.Count == 6)
+                    {
                         return list;
+                    }
 
                     current = "";
                 }
@@ -399,7 +439,9 @@ namespace Server.Gumps
                     list.Add(current);
 
                     if (list.Count == 6)
+                    {
                         return list;
+                    }
 
                     current = val;
                 }
@@ -410,7 +452,9 @@ namespace Server.Gumps
                         list.Add(v.Substring(0, 10));
 
                         if (list.Count == 6)
+                        {
                             return list;
+                        }
 
                         v = v.Substring(10);
                     }
@@ -420,7 +464,9 @@ namespace Server.Gumps
             }
 
             if (current.Length > 0)
+            {
                 list.Add(current);
+            }
 
             return list;
         }
@@ -430,12 +476,16 @@ namespace Server.Gumps
             var m = m_House.Owner;
 
             if (m == null)
+            {
                 return "(unowned)";
+            }
 
             string name;
 
             if ((name = m.Name) == null || (name = name.Trim()).Length <= 0)
+            {
                 name = "(no name)";
+            }
 
             return name;
         }
@@ -443,7 +493,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_House.Deleted)
+            {
                 return;
+            }
 
             var from = sender.Mobile;
 
@@ -454,15 +506,21 @@ namespace Server.Gumps
             var isFriend = isCoOwner || m_House.IsFriend(from);
 
             if (isCombatRestricted)
+            {
                 isFriend = isCoOwner = isOwner = false;
+            }
 
             if (!isFriend || !from.Alive)
+            {
                 return;
+            }
 
             Item sign = m_House.Sign;
 
             if (sign == null || from.Map != sign.Map || !from.InRange(sign.GetWorldLocation(), 18))
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {
@@ -724,7 +782,9 @@ namespace Server.Gumps
                                 var index = info.Switches[0] - 1;
 
                                 if (index >= 0 && index < 53)
+                                {
                                     m_House.ChangeSignType(2980 + index * 2);
+                                }
                             }
                         }
                         else
@@ -752,7 +812,9 @@ namespace Server.Prompts
             if (m_House.IsFriend(from))
             {
                 if (m_House.Sign != null)
+                {
                     m_House.Sign.Name = text;
+                }
 
                 from.SendMessage("Sign changed.");
             }

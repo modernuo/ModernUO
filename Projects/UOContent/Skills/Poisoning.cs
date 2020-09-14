@@ -50,7 +50,9 @@ namespace Server.SkillHandlers
                 protected override void OnTarget(Mobile from, object targeted)
                 {
                     if (m_Potion.Deleted)
+                    {
                         return;
+                    }
 
                     var startTimer = false;
 
@@ -61,10 +63,14 @@ namespace Server.SkillHandlers
                     else if (targeted is BaseWeapon weapon)
                     {
                         if (Core.AOS)
+                        {
                             startTimer = weapon.PrimaryAbility == WeaponAbility.InfectiousStrike ||
                                          weapon.SecondaryAbility == WeaponAbility.InfectiousStrike;
+                        }
                         else if (weapon.Layer == Layer.OneHanded)
+                        {
                             startTimer = weapon.Type == WeaponType.Slashing || weapon.Type == WeaponType.Piercing;
+                        }
                     }
 
                     if (startTimer)
@@ -82,13 +88,17 @@ namespace Server.SkillHandlers
                     else // Target can't be poisoned
                     {
                         if (Core.AOS)
-                            from.SendLocalizedMessage(
+                        {
+                            @from.SendLocalizedMessage(
                                 1060204
                             ); // You cannot poison that! You can only poison infectious weapons, food or drink.
+                        }
                         else
-                            from.SendLocalizedMessage(
+                        {
+                            @from.SendLocalizedMessage(
                                 502145
                             ); // You cannot poison that! You can only poison bladed or piercing weapons, food or drink.
+                        }
                     }
                 }
 
@@ -157,13 +167,17 @@ namespace Server.SkillHandlers
                                 if (m_Target is BaseWeapon weapon)
                                 {
                                     if (weapon.Type == WeaponType.Slashing)
+                                    {
                                         m_From.SendLocalizedMessage(
                                             1010516
                                         ); // You fail to apply a sufficient dose of poison on the blade
+                                    }
                                     else
+                                    {
                                         m_From.SendLocalizedMessage(
                                             1010518
                                         ); // You fail to apply a sufficient dose of poison
+                                    }
                                 }
                                 else
                                 {

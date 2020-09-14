@@ -63,8 +63,9 @@ namespace Server
             var map = from.Map;
 
             if (map != null && map != Map.Internal)
+            {
                 SendWarning(
-                    from,
+                    @from,
                     "You are about to freeze <u>all items in {0}</u>.",
                     BaseFreezeWarning,
                     map,
@@ -72,6 +73,7 @@ namespace Server
                     NullP3D,
                     FreezeWarning_Callback
                 );
+            }
         }
 
         [Usage("FreezeWorld")]
@@ -123,7 +125,9 @@ namespace Server
         private static void FreezeWarning_Callback(Mobile from, bool okay, StateInfo si)
         {
             if (!okay)
+            {
                 return;
+            }
 
             Freeze(from, si.m_Map, si.m_Start, si.m_End);
         }
@@ -135,43 +139,57 @@ namespace Server
             if (start3d == NullP3D && end3d == NullP3D)
             {
                 if (targetMap == null)
+                {
                     CommandLogging.WriteLine(
-                        from,
+                        @from,
                         "{0} {1} invoking freeze for every item in every map",
-                        from.AccessLevel,
-                        CommandLogging.Format(from)
+                        @from.AccessLevel,
+                        CommandLogging.Format(@from)
                     );
+                }
                 else
+                {
                     CommandLogging.WriteLine(
-                        from,
+                        @from,
                         "{0} {1} invoking freeze for every item in {0}",
-                        from.AccessLevel,
-                        CommandLogging.Format(from),
+                        @from.AccessLevel,
+                        CommandLogging.Format(@from),
                         targetMap
                     );
+                }
 
                 foreach (var item in World.Items.Values)
                 {
                     if (targetMap != null && item.Map != targetMap)
+                    {
                         continue;
+                    }
 
                     if (item.Parent != null)
+                    {
                         continue;
+                    }
 
                     if (item is Static || item is BaseFloor || item is BaseWall)
                     {
                         var itemMap = item.Map;
 
                         if (itemMap == null || itemMap == Map.Internal)
+                        {
                             continue;
+                        }
 
                         if (!mapTable.TryGetValue(itemMap, out var table))
+                        {
                             mapTable[itemMap] = table = new Dictionary<Point2D, DeltaState>();
+                        }
 
                         var p = new Point2D(item.X >> 3, item.Y >> 3);
 
                         if (!table.TryGetValue(p, out var state))
+                        {
                             table[p] = state = new DeltaState(p);
+                        }
 
                         state.m_List.Add(item);
                     }
@@ -195,23 +213,31 @@ namespace Server
                     targetMap.GetItemsInBounds(new Rectangle2D(start.X, start.Y, end.X - start.X + 1, end.Y - start.Y + 1));
 
                 foreach (var item in eable)
+                {
                     if (item is Static || item is BaseFloor || item is BaseWall)
                     {
                         var itemMap = item.Map;
 
                         if (itemMap == null || itemMap == Map.Internal)
+                        {
                             continue;
+                        }
 
                         if (!mapTable.TryGetValue(itemMap, out var table))
+                        {
                             mapTable[itemMap] = table = new Dictionary<Point2D, DeltaState>();
+                        }
 
                         var p = new Point2D(item.X >> 3, item.Y >> 3);
 
                         if (!table.TryGetValue(p, out var state))
+                        {
                             table[p] = state = new DeltaState(p);
+                        }
 
                         state.m_List.Add(item);
                     }
+                }
 
                 eable.Free();
             }
@@ -268,7 +294,9 @@ namespace Server
                     );
 
                     if (oldTileCount < 0)
+                    {
                         continue;
+                    }
 
                     var newTileCount = 0;
                     var newTiles = new StaticTile[state.m_List.Count];
@@ -281,7 +309,9 @@ namespace Server
                         var yOffset = item.Y - state.m_Y * 8;
 
                         if (xOffset < 0 || xOffset >= 8 || yOffset < 0 || yOffset >= 8)
+                        {
                             continue;
+                        }
 
                         var newTile = new StaticTile(
                             (ushort)item.ItemID,
@@ -349,7 +379,8 @@ namespace Server
             }
 
             if (totalFrozen == 0 && badDataFile)
-                from.SendGump(
+            {
+                @from.SendGump(
                     new NoticeGump(
                         1060637,
                         30720,
@@ -359,8 +390,10 @@ namespace Server
                         240
                     )
                 );
+            }
             else
-                from.SendGump(
+            {
+                @from.SendGump(
                     new NoticeGump(
                         1060637,
                         30720,
@@ -370,6 +403,7 @@ namespace Server
                         240
                     )
                 );
+            }
         }
 
         [Usage("Unfreeze")]
@@ -387,6 +421,7 @@ namespace Server
             var map = e.Mobile.Map;
 
             if (map != null && map != Map.Internal)
+            {
                 SendWarning(
                     e.Mobile,
                     "You are about to unfreeze <u>all items in {0}</u>.",
@@ -396,6 +431,7 @@ namespace Server
                     NullP3D,
                     UnfreezeWarning_Callback
                 );
+            }
         }
 
         [Usage("UnfreezeWorld")]
@@ -429,7 +465,9 @@ namespace Server
         private static void UnfreezeWarning_Callback(Mobile from, bool okay, StateInfo si)
         {
             if (!okay)
+            {
                 return;
+            }
 
             Unfreeze(from, si.m_Map, si.m_Start, si.m_End);
         }
@@ -463,6 +501,7 @@ namespace Server
             var mulWriter = new BinaryWriter(mulStream);
 
             for (var x = xStartBlock; x <= xEndBlock; ++x)
+            {
                 for (var y = yStartBlock; y <= yEndBlock; ++y)
                 {
                     var oldTiles = ReadStaticBlock(
@@ -476,7 +515,9 @@ namespace Server
                     );
 
                     if (oldTileCount < 0)
+                    {
                         continue;
+                    }
 
                     var newTileCount = 0;
                     var newTiles = new StaticTile[oldTileCount];
@@ -543,6 +584,7 @@ namespace Server
 
                     matrix.SetStaticBlock(x, y, null);
                 }
+            }
         }
 
         public static void DoUnfreeze(Map map, ref bool badDataFile, ref int totalUnfrozen)
@@ -598,7 +640,8 @@ namespace Server
             }
 
             if (totalUnfrozen == 0 && badDataFile)
-                from.SendGump(
+            {
+                @from.SendGump(
                     new NoticeGump(
                         1060637,
                         30720,
@@ -608,8 +651,10 @@ namespace Server
                         240
                     )
                 );
+            }
             else
-                from.SendGump(
+            {
+                @from.SendGump(
                     new NoticeGump(
                         1060637,
                         30720,
@@ -619,12 +664,15 @@ namespace Server
                         240
                     )
                 );
+            }
         }
 
         private static FileStream OpenWrite(FileStream orig)
         {
             if (orig == null)
+            {
                 return null;
+            }
 
             try
             {
@@ -665,18 +713,23 @@ namespace Server
                     mulStream.Seek(lookup, SeekOrigin.Begin);
 
                     if (m_TileBuffer.Length < count)
+                    {
                         m_TileBuffer = new StaticTile[count];
+                    }
 
                     var staTiles = m_TileBuffer;
 
                     if (m_Buffer == null || length > m_Buffer.Length)
+                    {
                         m_Buffer = new byte[length];
+                    }
 
                     mulStream.Read(m_Buffer, 0, length);
 
                     var index = 0;
 
                     for (var i = 0; i < count; ++i)
+                    {
                         staTiles[i]
                             .Set(
                                 (ushort)(m_Buffer[index++] | (m_Buffer[index++] << 8)),
@@ -685,6 +738,7 @@ namespace Server
                                 (sbyte)m_Buffer[index++],
                                 (short)(m_Buffer[index++] | (m_Buffer[index++] << 8))
                             );
+                    }
                 }
             }
             catch

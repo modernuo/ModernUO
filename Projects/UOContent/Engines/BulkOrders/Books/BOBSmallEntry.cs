@@ -10,9 +10,13 @@ namespace Server.Engines.BulkOrders
             RequireExceptional = bod.RequireExceptional;
 
             if (bod is SmallTailorBOD)
+            {
                 DeedType = BODType.Tailor;
+            }
             else if (bod is SmallSmithBOD)
+            {
                 DeedType = BODType.Smith;
+            }
 
             Material = bod.Material;
             AmountCur = bod.AmountCur;
@@ -32,7 +36,9 @@ namespace Server.Engines.BulkOrders
                         var type = reader.ReadString();
 
                         if (type != null)
+                        {
                             ItemType = AssemblyHandler.FindFirstTypeForName(type);
+                        }
 
                         RequireExceptional = reader.ReadBool();
 
@@ -73,9 +79,13 @@ namespace Server.Engines.BulkOrders
             SmallBOD bod = null;
 
             if (DeedType == BODType.Smith)
+            {
                 bod = new SmallSmithBOD(AmountCur, AmountMax, ItemType, Number, Graphic, RequireExceptional, Material);
+            }
             else if (DeedType == BODType.Tailor)
+            {
                 bod = new SmallTailorBOD(AmountCur, AmountMax, ItemType, Number, Graphic, RequireExceptional, Material);
+            }
 
             return bod;
         }

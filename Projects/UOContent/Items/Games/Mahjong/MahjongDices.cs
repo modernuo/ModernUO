@@ -33,10 +33,12 @@ namespace Server.Engines.Mahjong
             Game.Players.SendGeneralPacket(true, true);
 
             if (from != null)
+            {
                 Game.Players.SendLocalizedMessage(
                     1062695,
-                    $"{from.Name}\t{First}\t{Second}"
+                    $"{@from.Name}\t{First}\t{Second}"
                 ); // ~1_name~ rolls the dice and gets a ~2_number~ and a ~3_number~!
+            }
         }
 
         public void Save(IGenericWriter writer)

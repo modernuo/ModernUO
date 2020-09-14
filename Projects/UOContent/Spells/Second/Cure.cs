@@ -23,7 +23,9 @@ namespace Server.Spells.Second
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (!Caster.CanSee(m))
             {
@@ -46,7 +48,9 @@ namespace Server.Spells.Second
                         if (m.CurePoison(Caster))
                         {
                             if (Caster != m)
+                            {
                                 Caster.SendLocalizedMessage(1010058); // You have cured the target of all poisons!
+                            }
 
                             m.SendLocalizedMessage(1010059); // You have been cured of all poisons.
                         }

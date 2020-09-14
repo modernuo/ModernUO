@@ -60,7 +60,9 @@ namespace Server.Items
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
             if (!base.OnDragDrop(from, dropped))
+            {
                 return false;
+            }
 
             if (TotalItems >= 50)
             {
@@ -71,9 +73,13 @@ namespace Server.Items
                 SendLocalizedMessageTo(from, 1010442); // The item will be deleted in three minutes
 
                 if (m_Timer != null)
+                {
                     m_Timer.Stop();
+                }
                 else
+                {
                     m_Timer = new EmptyTimer(this);
+                }
 
                 m_Timer.Start();
             }
@@ -84,7 +90,9 @@ namespace Server.Items
         public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
         {
             if (!base.OnDragDropInto(from, item, p))
+            {
                 return false;
+            }
 
             if (TotalItems >= 50)
             {
@@ -95,9 +103,13 @@ namespace Server.Items
                 SendLocalizedMessageTo(from, 1010442); // The item will be deleted in three minutes
 
                 if (m_Timer != null)
+                {
                     m_Timer.Stop();
+                }
                 else
+                {
                     m_Timer = new EmptyTimer(this);
+                }
 
                 m_Timer.Start();
             }
@@ -116,7 +128,9 @@ namespace Server.Items
                 for (var i = items.Count - 1; i >= 0; --i)
                 {
                     if (i >= items.Count)
+                    {
                         continue;
+                    }
 
                     items[i].Delete();
                 }

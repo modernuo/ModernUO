@@ -40,10 +40,14 @@ namespace Server.Items
             if (version < 1)
             {
                 if (Hue == 0x54E)
+                {
                     Hue = 0x54F;
+                }
 
                 if (Attributes.NightSight == 0)
+                {
                     Attributes.NightSight = 1;
+                }
 
                 PhysicalBonus = 0;
                 FireBonus = 0;

@@ -60,10 +60,14 @@ namespace Server.Mobiles
             PackItem(new Arrow(40));
 
             if (Utility.Random(100) < 3)
+            {
                 PackItem(new FireHorn());
+            }
 
             if (Utility.Random(3) < 1)
+            {
                 PackItem(Loot.RandomGrimmochJournal());
+            }
         }
 
         public GrimmochDrummel(Serial serial) : base(serial)

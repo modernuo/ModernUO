@@ -86,7 +86,10 @@ namespace Server.Engines.Plants
         {
             if (!m_Plant.Deleted && m_Plant.PlantStatus < PlantStatus.DecorativePlant &&
                 m_Plant.PlantStatus != PlantStatus.BowlOfDirt && from.InRange(m_Plant.GetWorldLocation(), 3) &&
-                m_Plant.IsUsableBy(from)) from.SendGump(new ReproductionGump(m_Plant));
+                m_Plant.IsUsableBy(from))
+            {
+                @from.SendGump(new ReproductionGump(m_Plant));
+            }
         }
     }
 }

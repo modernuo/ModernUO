@@ -48,7 +48,9 @@ namespace Server.Spells
         public override void OnDisturb(DisturbType type, bool message)
         {
             if (message && !m_Stop)
+            {
                 Caster.SendLocalizedMessage(1113192); // You have been disrupted while attempting to fly!
+            }
         }
 
         public override void OnCast()

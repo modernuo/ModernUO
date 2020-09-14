@@ -28,7 +28,9 @@ namespace Server.Items
         public override bool CheckItemUse(Mobile from, Item item)
         {
             if (item != this)
-                return base.CheckItemUse(from, item);
+            {
+                return base.CheckItemUse(@from, item);
+            }
 
             if (from != RootParent)
             {
@@ -70,7 +72,9 @@ namespace Server.Items
             var context = GetContext(m);
 
             if (context != null)
+            {
                 RemoveContext(m, context);
+            }
         }
 
         private static void RemoveContext(Mobile m, OrangePetalsContext context)
@@ -111,12 +115,14 @@ namespace Server.Items
             protected override void OnTick()
             {
                 if (!m_Mobile.Deleted)
+                {
                     m_Mobile.LocalOverheadMessage(
                         MessageType.Regular,
                         0x3F,
                         true,
                         "* You feel the effects of your poison resistance wearing off *"
                     );
+                }
 
                 RemoveContext(m_Mobile);
             }

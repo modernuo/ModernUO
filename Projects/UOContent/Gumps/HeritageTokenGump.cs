@@ -274,7 +274,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_Token?.Deleted != false || info.ButtonID == 0)
+            {
                 return;
+            }
 
             var types = new List<Type>();
             var cliloc = 0;

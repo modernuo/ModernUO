@@ -101,7 +101,9 @@ namespace Server.Spells.Fifth
                     var timeVal = 6 * Caster.Skills.Magery.Fixed / 50 + 1;
 
                     if (timeVal > 144)
+                    {
                         timeVal = 144;
+                    }
 
                     var length = TimeSpan.FromSeconds(timeVal);
 
@@ -124,7 +126,9 @@ namespace Server.Spells.Fifth
         public static void StopTimer(Mobile m)
         {
             if (!m_Timers.TryGetValue(m, out var t))
+            {
                 return;
+            }
 
             t.Stop();
             m_Timers.Remove(m);
@@ -153,7 +157,9 @@ namespace Server.Spells.Fifth
             protected override void OnTick()
             {
                 if (m_Owner.CanBeginAction<IncognitoSpell>())
+                {
                     return;
+                }
 
                 (m_Owner as PlayerMobile)?.SetHairMods(-1, -1);
 

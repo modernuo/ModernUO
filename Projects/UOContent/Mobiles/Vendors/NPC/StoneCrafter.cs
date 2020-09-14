@@ -43,7 +43,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Title == "the stonecrafter")
+            {
                 Title = "the stone crafter";
+            }
         }
     }
 }

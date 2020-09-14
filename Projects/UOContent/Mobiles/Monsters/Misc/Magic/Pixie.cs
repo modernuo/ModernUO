@@ -39,7 +39,9 @@ namespace Server.Mobiles
 
             VirtualArmor = 100;
             if (Utility.RandomDouble() < 0.02)
+            {
                 PackStatue();
+            }
         }
 
         public Pixie(Serial serial) : base(serial)
@@ -66,7 +68,9 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             if (Utility.RandomDouble() < 0.35)
+            {
                 c.DropItem(new PixieLeg());
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

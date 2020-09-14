@@ -46,7 +46,9 @@ namespace Server.Items
         public virtual bool Axe(Mobile from, BaseAxe axe)
         {
             if (!TryCreateBoards(from, 0, new Board()))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -66,9 +68,13 @@ namespace Server.Items
                 var num = CraftResources.GetLocalizationNumber(m_Resource);
 
                 if (num > 0)
+                {
                     list.Add(num);
+                }
                 else
+                {
                     list.Add(CraftResources.GetName(m_Resource));
+                }
             }
         }
 
@@ -97,13 +103,18 @@ namespace Server.Items
             }
 
             if (version == 0)
+            {
                 m_Resource = CraftResource.RegularWood;
+            }
         }
 
         public virtual bool TryCreateBoards(Mobile from, double skill, Item item)
         {
             if (Deleted || !from.CanSee(this))
+            {
                 return false;
+            }
+
             if (from.Skills.Carpentry.Value < skill &&
                 from.Skills.Lumberjacking.Value < skill)
             {
@@ -146,7 +157,9 @@ namespace Server.Items
         public override bool Axe(Mobile from, BaseAxe axe)
         {
             if (!TryCreateBoards(from, 100, new HeartwoodBoard()))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -182,7 +195,9 @@ namespace Server.Items
         public override bool Axe(Mobile from, BaseAxe axe)
         {
             if (!TryCreateBoards(from, 100, new BloodwoodBoard()))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -218,7 +233,9 @@ namespace Server.Items
         public override bool Axe(Mobile from, BaseAxe axe)
         {
             if (!TryCreateBoards(from, 100, new FrostwoodBoard()))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -254,7 +271,9 @@ namespace Server.Items
         public override bool Axe(Mobile from, BaseAxe axe)
         {
             if (!TryCreateBoards(from, 65, new OakBoard()))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -290,7 +309,9 @@ namespace Server.Items
         public override bool Axe(Mobile from, BaseAxe axe)
         {
             if (!TryCreateBoards(from, 80, new AshBoard()))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -326,7 +347,9 @@ namespace Server.Items
         public override bool Axe(Mobile from, BaseAxe axe)
         {
             if (!TryCreateBoards(from, 95, new YewBoard()))
+            {
                 return false;
+            }
 
             return true;
         }

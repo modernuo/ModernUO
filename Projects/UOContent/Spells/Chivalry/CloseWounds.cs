@@ -30,7 +30,9 @@ namespace Server.Spells.Chivalry
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (!Caster.InRange(m, 2))
             {
@@ -64,7 +66,9 @@ namespace Server.Spells.Chivalry
                 var toHeal = Math.Clamp(ComputePowerValue(6) + Utility.RandomMinMax(0, 2), 7, 39);
 
                 if (m.Hits + toHeal > m.HitsMax)
+                {
                     toHeal = m.HitsMax - m.Hits;
+                }
 
                 SpellHelper.Heal(toHeal, m, Caster, false);
 

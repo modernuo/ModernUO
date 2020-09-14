@@ -45,25 +45,35 @@ namespace Server.Engines.Craft
                 try
                 {
                     if (Ethic.IsImbued(item))
+                    {
                         return SmeltResult.Invalid;
+                    }
 
                     if (CraftResources.GetType(resource) != CraftResourceType.Metal)
+                    {
                         return SmeltResult.Invalid;
+                    }
 
                     var info = CraftResources.GetInfo(resource);
 
                     if (info == null || info.ResourceTypes.Length == 0)
+                    {
                         return SmeltResult.Invalid;
+                    }
 
                     var craftItem = m_CraftSystem.CraftItems.SearchFor(item.GetType());
 
                     if (craftItem == null || craftItem.Resources.Count == 0)
+                    {
                         return SmeltResult.Invalid;
+                    }
 
                     var craftResource = craftItem.Resources[0];
 
                     if (craftResource.Amount < 2)
+                    {
                         return SmeltResult.Invalid; // Not enough metal to resmelt
+                    }
 
                     var difficulty = resource switch
                     {
@@ -79,7 +89,9 @@ namespace Server.Engines.Craft
                     };
 
                     if (difficulty > from.Skills.Mining.Value)
+                    {
                         return SmeltResult.NoSkill;
+                    }
 
                     var resourceType = info.ResourceTypes[0];
                     var ingot = (Item)ActivatorUtil.CreateInstance(resourceType);
@@ -87,9 +99,13 @@ namespace Server.Engines.Craft
                     if (item is DragonBardingDeed || item is BaseArmor armor && armor.PlayerConstructed ||
                         item is BaseWeapon weapon && weapon.PlayerConstructed ||
                         item is BaseClothing clothing && clothing.PlayerConstructed)
+                    {
                         ingot.Amount = craftResource.Amount / 2;
+                    }
                     else
+                    {
                         ingot.Amount = 1;
+                    }
 
                     item.Delete();
                     from.AddToBackpack(ingot);
@@ -117,9 +133,13 @@ namespace Server.Engines.Craft
                         DefBlacksmithy.CheckAnvilAndForge(from, 2, out var anvil, out var forge);
 
                         if (!anvil)
+                        {
                             num = 1044266; // You must be near an anvil
+                        }
                         else if (!forge)
+                        {
                             num = 1044265; // You must be near a forge.
+                        }
                     }
 
                     from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, num));

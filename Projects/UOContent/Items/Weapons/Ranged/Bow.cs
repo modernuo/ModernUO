@@ -55,7 +55,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 7.0)
+            {
                 Weight = 6.0;
+            }
         }
     }
 }

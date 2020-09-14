@@ -92,8 +92,12 @@ namespace Server.Mobiles
             base.GetContextMenuEntries(from, list);
 
             for (var i = 0; i < list.Count; ++i)
+            {
                 if (list[i] is PaperdollEntry)
+                {
                     list.RemoveAt(i--);
+                }
+            }
         }
 
         public override void OnThink()

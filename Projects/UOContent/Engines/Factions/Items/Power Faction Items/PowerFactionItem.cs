@@ -44,7 +44,10 @@ namespace Server
                     {
                         var weight = 0;
 
-                        foreach (var item in _items) weight += item.Weight;
+                        foreach (var item in _items)
+                        {
+                            weight += item.Weight;
+                        }
 
                         weight = Utility.Random(weight);
 

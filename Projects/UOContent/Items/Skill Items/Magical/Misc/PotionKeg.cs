@@ -49,7 +49,9 @@ namespace Server.Items
             get
             {
                 if (m_Held > 0 && (int)m_Type >= (int)PotionEffect.Conflagration)
+                {
                     return 1072658 + (int)m_Type - (int)PotionEffect.Conflagration;
+                }
 
                 return m_Held > 0 ? 1041620 + (int)m_Type : 1041641;
             }
@@ -91,7 +93,9 @@ namespace Server.Items
             }
 
             if (version < 1)
+            {
                 Timer.DelayCall(UpdateWeight);
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -101,29 +105,53 @@ namespace Server.Items
             int number;
 
             if (m_Held <= 0)
+            {
                 number = 502246; // The keg is empty.
+            }
             else if (m_Held < 5)
+            {
                 number = 502248; // The keg is nearly empty.
+            }
             else if (m_Held < 20)
+            {
                 number = 502249; // The keg is not very full.
+            }
             else if (m_Held < 30)
+            {
                 number = 502250; // The keg is about one quarter full.
+            }
             else if (m_Held < 40)
+            {
                 number = 502251; // The keg is about one third full.
+            }
             else if (m_Held < 47)
+            {
                 number = 502252; // The keg is almost half full.
+            }
             else if (m_Held < 54)
+            {
                 number = 502254; // The keg is approximately half full.
+            }
             else if (m_Held < 70)
+            {
                 number = 502253; // The keg is more than half full.
+            }
             else if (m_Held < 80)
+            {
                 number = 502255; // The keg is about three quarters full.
+            }
             else if (m_Held < 96)
+            {
                 number = 502256; // The keg is very full.
+            }
             else if (m_Held < 100)
+            {
                 number = 502257; // The liquid is almost to the top of the keg.
+            }
             else
+            {
                 number = 502258; // The keg is completely full.
+            }
 
             list.Add(number);
         }
@@ -135,29 +163,53 @@ namespace Server.Items
             int number;
 
             if (m_Held <= 0)
+            {
                 number = 502246; // The keg is empty.
+            }
             else if (m_Held < 5)
+            {
                 number = 502248; // The keg is nearly empty.
+            }
             else if (m_Held < 20)
+            {
                 number = 502249; // The keg is not very full.
+            }
             else if (m_Held < 30)
+            {
                 number = 502250; // The keg is about one quarter full.
+            }
             else if (m_Held < 40)
+            {
                 number = 502251; // The keg is about one third full.
+            }
             else if (m_Held < 47)
+            {
                 number = 502252; // The keg is almost half full.
+            }
             else if (m_Held < 54)
+            {
                 number = 502254; // The keg is approximately half full.
+            }
             else if (m_Held < 70)
+            {
                 number = 502253; // The keg is more than half full.
+            }
             else if (m_Held < 80)
+            {
                 number = 502255; // The keg is about three quarters full.
+            }
             else if (m_Held < 96)
+            {
                 number = 502256; // The keg is very full.
+            }
             else if (m_Held < 100)
+            {
                 number = 502257; // The liquid is almost to the top of the keg.
+            }
             else
+            {
                 number = 502258; // The keg is completely full.
+            }
 
             LabelTo(from, number);
         }
@@ -182,7 +234,9 @@ namespace Server.Items
                             from.PlaySound(0x240);
 
                             if (--Held == 0)
-                                from.SendLocalizedMessage(502245); // The keg is now empty.
+                            {
+                                @from.SendLocalizedMessage(502245); // The keg is now empty.
+                            }
                         }
                         else
                         {
@@ -238,7 +292,9 @@ namespace Server.Items
                     pot.Consume(toHold);
 
                     if (!pot.Deleted)
-                        pot.Bounce(from);
+                    {
+                        pot.Bounce(@from);
+                    }
 
                     return true;
                 }
@@ -266,7 +322,9 @@ namespace Server.Items
                 pot.Consume(toHold);
 
                 if (!pot.Deleted)
-                    pot.Bounce(from);
+                {
+                    pot.Bounce(@from);
+                }
 
                 return true;
             }

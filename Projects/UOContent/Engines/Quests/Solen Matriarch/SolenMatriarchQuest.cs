@@ -40,7 +40,10 @@ namespace Server.Engines.Quests.Matriarch
         {
             get
             {
-                if (IsFriend(From, RedSolen)) return 1054083;
+                if (IsFriend(From, RedSolen))
+                {
+                    return 1054083;
+                }
 
                 /* <I>The Solen Matriarch smiles happily as she eats the seed you offered.</I><BR><BR>
                    *
@@ -100,7 +103,10 @@ namespace Server.Engines.Quests.Matriarch
         public static bool IsFriend(PlayerMobile player, bool redSolen)
         {
             if (redSolen)
+            {
                 return player.SolenFriendship == SolenFriendship.Red;
+            }
+
             return player.SolenFriendship == SolenFriendship.Black;
         }
 

@@ -62,13 +62,17 @@ namespace Server.Engines.Quests.Haven
         public override bool IsEnemy(Mobile m)
         {
             if (m.Player || m is BaseVendor)
+            {
                 return false;
+            }
 
             if (m is BaseCreature bc)
             {
                 var master = bc.GetMaster();
                 if (master != null)
+                {
                     return IsEnemy(master);
+                }
             }
 
             return m.Karma < 0;
@@ -122,7 +126,8 @@ namespace Server.Engines.Quests.Haven
             var hue = Notoriety.GetHue(NotorietyHandlers.CorpseNotoriety(from, this));
 
             if (ItemID == 0x2006) // Corpse form
-                from.Send(
+            {
+                @from.Send(
                     new MessageLocalized(
                         Serial,
                         ItemID,
@@ -134,8 +139,10 @@ namespace Server.Engines.Quests.Haven
                         Name
                     )
                 ); // the remains of ~1_NAME~ the militia fighter
+            }
             else
-                from.Send(
+            {
+                @from.Send(
                     new MessageLocalized(
                         Serial,
                         ItemID,
@@ -147,16 +154,19 @@ namespace Server.Engines.Quests.Haven
                         ""
                     )
                 ); // the remains of a militia fighter
+            }
         }
 
         public override void Open(Mobile from, bool checkSelfLoot)
         {
             if (from.InRange(GetWorldLocation(), 2))
-                from.SendLocalizedMessage(
+            {
+                @from.SendLocalizedMessage(
                     1049661,
                     "",
                     0x22
                 ); // Thinking about his sacrifice, you can't bring yourself to loot the body of this militia fighter.
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

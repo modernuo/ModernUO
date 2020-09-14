@@ -101,7 +101,9 @@ namespace Server.Items
             }
 
             if (IsExpired)
+            {
                 list.Add(1150487); // [Expired]
+            }
 
             // list.Add( 1060660, "shard\t{0}", ServerList.ServerName ); // ~1_val~: ~2_val~
         }
@@ -109,7 +111,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (!ValidLocation())
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {
@@ -188,11 +192,15 @@ namespace Server.Items
             private static string FormatDescription(HouseRaffleDeed deed)
             {
                 if (deed == null)
+                {
                     return string.Empty;
+                }
 
                 if (deed.IsExpired)
+                {
                     return
                         $"<bodytextblack>This deed once entitled the bearer to build a house on the plot of land located at {HouseRaffleStone.FormatLocation(deed.PlotLocation, deed.PlotFacet, false)} on the {deed.PlotFacet} facet.<br><br>The deed has expired, and now the indicated plot of land is subject to normal house construction rules.<br><br>This deed functions as a recall rune marked for the location of the plot it represents.</bodytextblack>";
+                }
 
                 var daysLeft = (int)Math.Ceiling(
                     (deed.Stone.Started + deed.Stone.Duration +

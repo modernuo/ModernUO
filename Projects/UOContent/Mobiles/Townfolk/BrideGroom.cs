@@ -8,9 +8,13 @@ namespace Server.Mobiles
         public BrideGroom()
         {
             if (Female)
+            {
                 Title = "the bride";
+            }
             else
+            {
                 Title = "the groom";
+            }
         }
 
         public BrideGroom(Serial serial) : base(serial)
@@ -37,23 +41,35 @@ namespace Server.Mobiles
         public override void InitOutfit()
         {
             if (Female)
+            {
                 AddItem(new FancyDress());
+            }
             else
+            {
                 AddItem(new FancyShirt());
+            }
 
             var lowHue = GetRandomHue();
 
             AddItem(new LongPants(lowHue));
 
             if (Female)
+            {
                 AddItem(new Shoes(lowHue));
+            }
             else
+            {
                 AddItem(new Boots(lowHue));
+            }
 
             if (Utility.RandomBool())
+            {
                 HairItemID = 0x203B;
+            }
             else
+            {
                 HairItemID = 0x203C;
+            }
 
             HairHue = Race.RandomHairHue();
 

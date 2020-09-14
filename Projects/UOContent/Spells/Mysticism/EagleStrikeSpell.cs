@@ -29,7 +29,9 @@ namespace Server.Spells.Mysticism
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (CheckHSequence(m))
             {
@@ -58,7 +60,9 @@ namespace Server.Spells.Mysticism
         private void Damage(Mobile to)
         {
             if (to == null)
+            {
                 return;
+            }
 
             double damage = GetNewAosDamage(19, 1, 5, to);
 

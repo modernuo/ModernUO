@@ -8,10 +8,14 @@ namespace Server.Regions
         public DungeonRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
         {
             if (json.GetProperty("map", options, out Map map))
+            {
                 EntranceMap = map;
+            }
 
             if (json.GetProperty("entrance", options, out Point3D entrance))
+            {
                 EntranceLocation = entrance;
+            }
         }
 
         public override bool YoungProtected => false;

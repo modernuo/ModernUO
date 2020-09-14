@@ -24,7 +24,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {
@@ -58,17 +60,23 @@ namespace Server.Gumps
                                     if (guildFaction != targetFaction)
                                     {
                                         if (guildFaction == null)
+                                        {
                                             m_Mobile.SendLocalizedMessage(
                                                 1013027
                                             ); // That player cannot join a non-faction guild.
+                                        }
                                         else if (targetFaction == null)
+                                        {
                                             m_Mobile.SendLocalizedMessage(
                                                 1013026
                                             ); // That player must be in a faction before joining this guild.
+                                        }
                                         else
+                                        {
                                             m_Mobile.SendLocalizedMessage(
                                                 1013028
                                             ); // That person has a different faction affiliation.
+                                        }
 
                                         break;
                                     }
@@ -88,9 +96,13 @@ namespace Server.Gumps
                                     GuildGump.EnsureClosed(m_Mobile);
 
                                     if (m_Guild.Candidates.Count > 0)
+                                    {
                                         m_Mobile.SendGump(new GuildAdminCandidatesGump(m_Mobile, m_Guild));
+                                    }
                                     else
+                                    {
                                         m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                                    }
                                 }
                             }
                         }
@@ -116,9 +128,13 @@ namespace Server.Gumps
                                     GuildGump.EnsureClosed(m_Mobile);
 
                                     if (m_Guild.Candidates.Count > 0)
+                                    {
                                         m_Mobile.SendGump(new GuildAdminCandidatesGump(m_Mobile, m_Guild));
+                                    }
                                     else
+                                    {
                                         m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                                    }
                                 }
                             }
                         }

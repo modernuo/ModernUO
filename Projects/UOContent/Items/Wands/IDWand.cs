@@ -34,12 +34,18 @@ namespace Server.Items
             if (o is Item item)
             {
                 if (item is BaseWeapon weapon)
+                {
                     weapon.Identified = true;
+                }
                 else if (item is BaseArmor armor)
+                {
                     armor.Identified = true;
+                }
 
                 if (!Core.AOS)
-                    item.OnSingleClick(from);
+                {
+                    item.OnSingleClick(@from);
+                }
 
                 return true;
             }

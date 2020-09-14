@@ -34,10 +34,14 @@
             var version = reader.ReadEncodedInt();
 
             if (version < 1 && DamageIncrease == 0)
+            {
                 DamageIncrease = 10;
+            }
 
             if (version < 2 && Attributes.WeaponDamage == 10)
+            {
                 Attributes.WeaponDamage = 0;
+            }
         }
     }
 }

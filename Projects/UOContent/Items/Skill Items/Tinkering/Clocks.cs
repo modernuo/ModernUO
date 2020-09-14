@@ -41,7 +41,9 @@ namespace Server.Items
             GetTime(map, x, y, out _, out _, out var totalMinutes);
 
             if (map != null)
+            {
                 totalMinutes /= 10 + map.MapIndex * 20;
+            }
 
             return (MoonPhase)(totalMinutes % 8);
         }
@@ -58,7 +60,9 @@ namespace Server.Items
             totalMinutes = (int)(timeSpan.TotalSeconds / SecondsPerUOMinute);
 
             if (map != null)
+            {
                 totalMinutes += map.MapIndex * 320;
+            }
 
             // Really on OSI this must be by subserver
             totalMinutes += x / 16;
@@ -91,26 +95,44 @@ namespace Server.Items
             // 08:00 PM - 11:59 AM : Late at night
 
             if (hours >= 20)
+            {
                 generalNumber = 1042957; // It's late at night
+            }
             else if (hours >= 16)
+            {
                 generalNumber = 1042956; // It's early in the evening
+            }
             else if (hours >= 13)
+            {
                 generalNumber = 1042955; // It's the afternoon
+            }
             else if (hours >= 12)
+            {
                 generalNumber = 1042954; // It's around noon
+            }
             else if (hours >= 08)
+            {
                 generalNumber = 1042953; // It's late in the morning
+            }
             else if (hours >= 04)
+            {
                 generalNumber = 1042952; // It's early in the morning
+            }
             else if (hours >= 01)
+            {
                 generalNumber = 1042951; // It's the middle of the night
+            }
             else
+            {
                 generalNumber = 1042950; // 'Tis the witching hour. 12 Midnight.
+            }
 
             hours %= 12;
 
             if (hours == 0)
+            {
                 hours = 12;
+            }
 
             exactTime = $"{hours}:{minutes:D2}";
         }

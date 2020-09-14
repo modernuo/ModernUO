@@ -28,7 +28,9 @@ namespace Server.Engines.MLQuests.Items
                 };
 
                 if (loot == null)
+                {
                     continue;
+                }
 
                 Enhance(loot);
                 c.DropItem(loot);
@@ -43,9 +45,15 @@ namespace Server.Engines.MLQuests.Items
                 return;
             }
 
-            if (loot is BaseArmor armor) BaseRunicTool.ApplyAttributesTo(armor, Utility.RandomMinMax(1, 5), 10, 80);
+            if (loot is BaseArmor armor)
+            {
+                BaseRunicTool.ApplyAttributesTo(armor, Utility.RandomMinMax(1, 5), 10, 80);
+            }
 
-            if (loot is BaseJewel jewel) BaseRunicTool.ApplyAttributesTo(jewel, Utility.RandomMinMax(1, 5), 10, 80);
+            if (loot is BaseJewel jewel)
+            {
+                BaseRunicTool.ApplyAttributesTo(jewel, Utility.RandomMinMax(1, 5), 10, 80);
+            }
         }
     }
 

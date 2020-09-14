@@ -54,9 +54,13 @@ namespace Server.Engines.Quests.Ambitious
             AmbitiousQueenQuest.GiveRewardTo(System.From, ref bagOfSending, ref powderOfTranslocation, ref gold);
 
             if (!bagOfSending && !powderOfTranslocation && !gold)
+            {
                 System.Complete();
+            }
             else
+            {
                 System.AddConversation(new FullBackpackConversation(true, bagOfSending, powderOfTranslocation, gold));
+            }
         }
     }
 
@@ -85,7 +89,9 @@ namespace Server.Engines.Quests.Ambitious
         public override void OnRead()
         {
             if (m_Logged)
+            {
                 System.AddObjective(new GetRewardObjective(m_BagOfSending, m_PowderOfTranslocation, m_Gold));
+            }
         }
 
         public override void ChildDeserialize(IGenericReader reader)

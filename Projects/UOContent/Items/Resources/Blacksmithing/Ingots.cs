@@ -35,7 +35,9 @@ namespace Server.Items
             get
             {
                 if (m_Resource >= CraftResource.DullCopper && m_Resource <= CraftResource.Valorite)
+                {
                     return 1042684 + (m_Resource - CraftResource.DullCopper);
+                }
 
                 return 1042692;
             }
@@ -91,9 +93,13 @@ namespace Server.Items
         public override void AddNameProperty(ObjectPropertyList list)
         {
             if (Amount > 1)
+            {
                 list.Add(1050039, "{0}\t#{1}", Amount, 1027154); // ~1_NUMBER~ ~2_ITEMNAME~
+            }
             else
+            {
                 list.Add(1027154); // ingots
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -105,9 +111,13 @@ namespace Server.Items
                 var num = CraftResources.GetLocalizationNumber(m_Resource);
 
                 if (num > 0)
+                {
                     list.Add(num);
+                }
                 else
+                {
                     list.Add(CraftResources.GetName(m_Resource));
+                }
             }
         }
     }

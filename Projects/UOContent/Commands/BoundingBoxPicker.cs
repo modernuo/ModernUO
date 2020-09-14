@@ -38,10 +38,14 @@ namespace Server
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (!(targeted is IPoint3D p))
+                {
                     return;
+                }
 
                 if (p is Item item)
+                {
                     p = item.GetWorldTop();
+                }
 
                 if (m_First)
                 {

@@ -14,7 +14,9 @@ namespace Server.Mobiles
             Body = 752;
 
             if (summoned)
+            {
                 Hue = 2101;
+            }
 
             SetStr((int)(251 * scalar), (int)(350 * scalar));
             SetDex((int)(76 * scalar), (int)(100 * scalar));
@@ -29,9 +31,13 @@ namespace Server.Mobiles
             SetResistance(ResistanceType.Physical, (int)(35 * scalar), (int)(55 * scalar));
 
             if (summoned)
+            {
                 SetResistance(ResistanceType.Fire, (int)(50 * scalar), (int)(60 * scalar));
+            }
             else
+            {
                 SetResistance(ResistanceType.Fire, (int)(100 * scalar));
+            }
 
             SetResistance(ResistanceType.Cold, (int)(10 * scalar), (int)(30 * scalar));
             SetResistance(ResistanceType.Poison, (int)(10 * scalar), (int)(25 * scalar));
@@ -57,16 +63,24 @@ namespace Server.Mobiles
                 PackItem(new IronIngot(Utility.RandomMinMax(13, 21)));
 
                 if (Utility.RandomDouble() < 0.1)
+                {
                     PackItem(new PowerCrystal());
+                }
 
                 if (Utility.RandomDouble() < 0.15)
+                {
                     PackItem(new ClockworkAssembly());
+                }
 
                 if (Utility.RandomDouble() < 0.2)
+                {
                     PackItem(new ArcaneGem());
+                }
 
                 if (Utility.RandomDouble() < 0.25)
+                {
                     PackItem(new Gears());
+                }
             }
 
             ControlSlots = 3;
@@ -106,9 +120,13 @@ namespace Server.Mobiles
                 if (!IsParagon)
                 {
                     if (Utility.RandomDouble() < 0.75)
+                    {
                         c.DropItem(DawnsMusicGear.RandomCommon);
+                    }
                     else
+                    {
                         c.DropItem(DawnsMusicGear.RandomUncommon);
+                    }
                 }
                 else
                 {
@@ -122,7 +140,9 @@ namespace Server.Mobiles
         public override int GetIdleSound()
         {
             if (!Controlled)
+            {
                 return 542;
+            }
 
             return base.GetIdleSound();
         }
@@ -130,7 +150,9 @@ namespace Server.Mobiles
         public override int GetDeathSound()
         {
             if (!Controlled)
+            {
                 return 545;
+            }
 
             return base.GetDeathSound();
         }
@@ -140,7 +162,9 @@ namespace Server.Mobiles
         public override int GetHurtSound()
         {
             if (Controlled)
+            {
                 return 320;
+            }
 
             return base.GetHurtSound();
         }
@@ -163,7 +187,9 @@ namespace Server.Mobiles
                 );
 
                 if (Weapon is BaseWeapon weapon)
+                {
                     weapon.OnHit(this, defender);
+                }
 
                 if (defender.Alive)
                 {

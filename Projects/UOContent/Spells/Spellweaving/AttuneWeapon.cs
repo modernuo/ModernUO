@@ -32,7 +32,9 @@ namespace Server.Spells.Spellweaving
             }
 
             if (Caster.CanBeginAction<AttuneWeaponSpell>())
+            {
                 return base.CheckCast();
+            }
 
             Caster.SendLocalizedMessage(1075124); // You must wait before casting that spell again.
             return false;
@@ -72,7 +74,9 @@ namespace Server.Spells.Spellweaving
         public static void TryAbsorb(Mobile defender, ref int damage)
         {
             if (damage == 0 || !IsAbsorbing(defender) || defender.MeleeDamageAbsorb <= 0)
+            {
                 return;
+            }
 
             var absorbed = Math.Min(damage, defender.MeleeDamageAbsorb);
 
@@ -85,7 +89,9 @@ namespace Server.Spells.Spellweaving
             ); // ~1_damage~ point(s) of damage have been absorbed. A total of ~2_remaining~ point(s) of shielding remain.
 
             if (defender.MeleeDamageAbsorb <= 0)
+            {
                 StopAbsorbing(defender, true);
+            }
         }
 
         public static bool IsAbsorbing(Mobile m) => m_Table.ContainsKey(m);
@@ -93,7 +99,9 @@ namespace Server.Spells.Spellweaving
         public static void StopAbsorbing(Mobile m, bool message)
         {
             if (m_Table.TryGetValue(m, out var t))
+            {
                 t.DoExpire(message);
+            }
         }
 
         private class ExpireTimer : Timer

@@ -36,7 +36,9 @@ namespace Server.Engines.Craft
             get
             {
                 if (Items.Count > 0)
+                {
                     return Items[0];
+                }
 
                 return null;
             }
@@ -47,7 +49,9 @@ namespace Server.Engines.Craft
             Items.Remove(item);
 
             if (Items.Count == 10)
+            {
                 Items.RemoveAt(9);
+            }
 
             Items.Insert(0, item);
         }

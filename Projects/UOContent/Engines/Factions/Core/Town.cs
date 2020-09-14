@@ -81,7 +81,9 @@ namespace Server.Factions
                 var upkeep = 0;
 
                 for (var i = 0; i < vendorLists.Count; ++i)
+                {
                     upkeep += vendorLists[i].Vendors.Count * vendorLists[i].Definition.Upkeep;
+                }
 
                 return upkeep;
             }
@@ -95,7 +97,9 @@ namespace Server.Factions
                 var upkeep = 0;
 
                 for (var i = 0; i < guardLists.Count; ++i)
+                {
                     upkeep += guardLists[i].Guards.Count * guardLists[i].Definition.Upkeep;
+                }
 
                 return upkeep;
             }
@@ -112,8 +116,12 @@ namespace Server.Factions
                 var monoliths = BaseMonolith.Monoliths;
 
                 foreach (var monolith in monoliths)
+                {
                     if (monolith is TownMonolith townMonolith && townMonolith.Town == this)
+                    {
                         return townMonolith;
+                    }
+                }
 
                 return null;
             }
@@ -136,7 +144,9 @@ namespace Server.Factions
         public static Town FromRegion(Region reg)
         {
             if (reg.Map != Faction.Facet)
+            {
                 return null;
+            }
 
             var towns = Towns;
 
@@ -145,7 +155,9 @@ namespace Server.Factions
                 var town = towns[i];
 
                 if (reg.IsPartOf(town.Definition.Region))
+                {
                     return town;
+                }
             }
 
             return null;
@@ -159,11 +171,17 @@ namespace Server.Factions
 
             // NOTE: Messages not OSI-accurate, intentional
             if (isFinance && isSheriff) // GM only
+            {
                 type = "vendor or guard";
+            }
             else if (isFinance)
+            {
                 type = "vendor";
+            }
             else if (isSheriff)
+            {
                 type = "guard";
+            }
 
             from.SendMessage("Target the {0} you wish to dismiss.", type);
             from.BeginTarget(12, false, TargetFlags.None, EndOrderFiring);
@@ -176,18 +194,30 @@ namespace Server.Factions
             string type = null;
 
             if (isFinance && isSheriff) // GM only
+            {
                 type = "vendor or guard";
+            }
             else if (isFinance)
+            {
                 type = "vendor";
+            }
             else if (isSheriff)
+            {
                 type = "guard";
+            }
 
             if (obj is BaseFactionVendor vendor && vendor.Town == this && isFinance)
+            {
                 vendor.Delete();
+            }
             else if (obj is BaseFactionGuard guard && guard.Town == this && isSheriff)
+            {
                 guard.Delete();
+            }
             else
-                from.SendMessage("That is not a {0}!", type);
+            {
+                @from.SendMessage("That is not a {0}!", type);
+            }
         }
 
         public void StartIncomeTimer()
@@ -207,7 +237,9 @@ namespace Server.Factions
         public void CheckIncome()
         {
             if (LastIncome + IncomePeriod > DateTime.UtcNow || Owner == null)
+            {
                 return;
+            }
 
             ProcessIncome();
         }
@@ -240,10 +272,14 @@ namespace Server.Factions
             var list = new List<Mobile>();
 
             for (var i = 0; i < VendorLists.Count; ++i)
+            {
                 list.AddRange(VendorLists[i].Vendors);
+            }
 
             for (var i = 0; i < GuardLists.Count; ++i)
+            {
                 list.AddRange(GuardLists[i].Guards);
+            }
 
             return list;
         }
@@ -255,7 +291,9 @@ namespace Server.Factions
             GuardLists = new List<GuardList>();
 
             for (var i = 0; i < defs.Length; ++i)
+            {
                 GuardLists.Add(new GuardList(defs[i]));
+            }
         }
 
         public GuardList FindGuardList(Type type)
@@ -267,7 +305,9 @@ namespace Server.Factions
                 var guardList = guardLists[i];
 
                 if (guardList.Definition.Type == type)
+                {
                     return guardList;
+                }
             }
 
             return null;
@@ -280,7 +320,9 @@ namespace Server.Factions
             VendorLists = new List<VendorList>();
 
             for (var i = 0; i < defs.Length; ++i)
+            {
                 VendorLists.Add(new VendorList(defs[i]));
+            }
         }
 
         public VendorList FindVendorList(Type type)
@@ -292,7 +334,9 @@ namespace Server.Factions
                 var vendorList = vendorLists[i];
 
                 if (vendorList.Definition.Type == type)
+                {
                     return vendorList;
+                }
             }
 
             return null;
@@ -301,12 +345,16 @@ namespace Server.Factions
         public bool RegisterGuard(BaseFactionGuard guard)
         {
             if (guard == null)
+            {
                 return false;
+            }
 
             var guardList = FindGuardList(guard.GetType());
 
             if (guardList == null)
+            {
                 return false;
+            }
 
             guardList.Guards.Add(guard);
             return true;
@@ -315,15 +363,21 @@ namespace Server.Factions
         public bool UnregisterGuard(BaseFactionGuard guard)
         {
             if (guard == null)
+            {
                 return false;
+            }
 
             var guardList = FindGuardList(guard.GetType());
 
             if (guardList == null)
+            {
                 return false;
+            }
 
             if (!guardList.Guards.Contains(guard))
+            {
                 return false;
+            }
 
             guardList.Guards.Remove(guard);
             return true;
@@ -332,12 +386,16 @@ namespace Server.Factions
         public bool RegisterVendor(BaseFactionVendor vendor)
         {
             if (vendor == null)
+            {
                 return false;
+            }
 
             var vendorList = FindVendorList(vendor.GetType());
 
             if (vendorList == null)
+            {
                 return false;
+            }
 
             vendorList.Vendors.Add(vendor);
             return true;
@@ -346,15 +404,21 @@ namespace Server.Factions
         public bool UnregisterVendor(BaseFactionVendor vendor)
         {
             if (vendor == null)
+            {
                 return false;
+            }
 
             var vendorList = FindVendorList(vendor.GetType());
 
             if (vendorList == null)
+            {
                 return false;
+            }
 
             if (!vendorList.Vendors.Contains(vendor))
+            {
                 return false;
+            }
 
             vendorList.Vendors.Remove(vendor);
             return true;
@@ -384,7 +448,9 @@ namespace Server.Factions
         public void Capture(Faction f)
         {
             if (m_State.Owner == f)
+            {
                 return;
+            }
 
             if (m_State.Owner == null) // going from unowned to owned
             {
@@ -408,7 +474,9 @@ namespace Server.Factions
             var monolith = Monolith;
 
             if (monolith != null)
+            {
                 monolith.Faction = f;
+            }
 
             var vendorLists = VendorLists;
 
@@ -418,7 +486,9 @@ namespace Server.Factions
                 var vendors = vendorList.Vendors;
 
                 for (var j = vendors.Count - 1; j >= 0; --j)
+                {
                     vendors[j].Delete();
+                }
             }
 
             var guardLists = GuardLists;
@@ -429,7 +499,9 @@ namespace Server.Factions
                 var guards = guardList.Guards;
 
                 for (var j = guards.Count - 1; j >= 0; --j)
+                {
                     guards[j].Delete();
+                }
             }
 
             ConstructGuardLists();
@@ -449,7 +521,9 @@ namespace Server.Factions
             var idx = reader.ReadEncodedInt() - 1;
 
             if (idx >= 0 && idx < Towns.Count)
+            {
                 return Towns[idx];
+            }
 
             return null;
         }
@@ -463,7 +537,9 @@ namespace Server.Factions
                 var town = towns[i];
 
                 if (Insensitive.Equals(town.Definition.FriendlyName, name))
+                {
                     return town;
+                }
             }
 
             return null;

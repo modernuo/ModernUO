@@ -29,17 +29,23 @@ namespace Server.Mobiles
         public TownCrierEntry GetRandomEntry()
         {
             if (Entries == null || Entries.Count == 0)
+            {
                 return null;
+            }
 
             for (var i = Entries.Count - 1; Entries != null && i >= 0; --i)
             {
                 if (i >= Entries.Count)
+                {
                     continue;
+                }
 
                 var tce = Entries[i];
 
                 if (tce.Expired)
+                {
                     RemoveEntry(tce);
+                }
             }
 
             return Entries.RandomElement();
@@ -56,7 +62,9 @@ namespace Server.Mobiles
             var instances = TownCrier.Instances;
 
             for (var i = 0; i < instances.Count; ++i)
+            {
                 instances[i].ForceBeginAutoShout();
+            }
 
             return tce;
         }
@@ -64,12 +72,16 @@ namespace Server.Mobiles
         public void RemoveEntry(TownCrierEntry tce)
         {
             if (Entries == null)
+            {
                 return;
+            }
 
             Entries.Remove(tce);
 
             if (Entries.Count == 0)
+            {
                 Entries = null;
+            }
         }
 
         public static void Initialize()
@@ -92,9 +104,13 @@ namespace Server.Mobiles
             Lines = lines;
 
             if (duration < TimeSpan.Zero)
+            {
                 duration = TimeSpan.Zero;
+            }
             else if (duration > TimeSpan.FromDays(365.0))
+            {
                 duration = TimeSpan.FromDays(365.0);
+            }
 
             ExpireTime = DateTime.UtcNow + duration;
         }
@@ -122,7 +138,9 @@ namespace Server.Mobiles
             }
 
             if (ts < TimeSpan.Zero)
+            {
                 ts = TimeSpan.Zero;
+            }
 
             from.SendMessage("Duration set to: {0}", ts);
             from.SendMessage("Enter the first line to shout:");
@@ -163,7 +181,9 @@ namespace Server.Mobiles
         public override void OnCancel(Mobile from)
         {
             if (m_Entry != null)
+            {
                 m_Owner.RemoveEntry(m_Entry);
+            }
 
             if (m_Lines.Count > 0)
             {
@@ -173,9 +193,13 @@ namespace Server.Mobiles
             else
             {
                 if (m_Entry != null)
-                    from.SendMessage("Message deleted.");
+                {
+                    @from.SendMessage("Message deleted.");
+                }
                 else
-                    from.SendLocalizedMessage(502980); // Message entry cancelled.
+                {
+                    @from.SendLocalizedMessage(502980); // Message entry cancelled.
+                }
             }
 
             from.SendGump(new TownCrierGump(from, m_Owner));
@@ -210,8 +234,11 @@ namespace Server.Mobiles
             AddButton(300 - 8 - 30, 8, 0xFAB, 0xFAD, 1);
 
             if (count == 0)
+            {
                 AddHtml(8, 30, 284, 20, "<basefont color=#FFFFFF>The crier has no news.</basefont>");
+            }
             else
+            {
                 for (var i = 0; i < entries.Count; ++i)
                 {
                     var tce = entries[i];
@@ -219,7 +246,9 @@ namespace Server.Mobiles
                     var toExpire = tce.ExpireTime - DateTime.UtcNow;
 
                     if (toExpire < TimeSpan.Zero)
+                    {
                         toExpire = TimeSpan.Zero;
+                    }
 
                     var sb = new StringBuilder();
 
@@ -244,7 +273,9 @@ namespace Server.Mobiles
                     for (var j = 0; j < tce.Lines.Length; ++j)
                     {
                         if (j > 0)
+                        {
                             sb.Append("<br>");
+                        }
 
                         sb.Append(tce.Lines[j]);
                     }
@@ -253,6 +284,7 @@ namespace Server.Mobiles
 
                     AddButton(300 - 8 - 26, 35 + i * 85, 0x15E1, 0x15E5, 2 + i);
                 }
+            }
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)
@@ -273,7 +305,9 @@ namespace Server.Mobiles
                     var ts = tce.ExpireTime - DateTime.UtcNow;
 
                     if (ts < TimeSpan.Zero)
+                    {
                         ts = TimeSpan.Zero;
+                    }
 
                     m_From.SendMessage("Editing entry #{0}.", index + 1);
                     m_From.SendMessage("Enter the first line to shout:");
@@ -299,7 +333,9 @@ namespace Server.Mobiles
             Hue = Race.Human.RandomSkinHue();
 
             if (!Core.AOS)
+            {
                 NameHue = 0x35;
+            }
 
             if (Female = Utility.RandomBool())
             {
@@ -351,21 +387,29 @@ namespace Server.Mobiles
         public TownCrierEntry GetRandomEntry()
         {
             if (Entries == null || Entries.Count == 0)
+            {
                 return GlobalTownCrierEntryList.Instance.GetRandomEntry();
+            }
 
             for (var i = Entries.Count - 1; Entries != null && i >= 0; --i)
             {
                 if (i >= Entries.Count)
+                {
                     continue;
+                }
 
                 var tce = Entries[i];
 
                 if (tce.Expired)
+                {
                     RemoveEntry(tce);
+                }
             }
 
             if (Entries == null || Entries.Count == 0)
+            {
                 return GlobalTownCrierEntryList.Instance.GetRandomEntry();
+            }
 
             var entry = GlobalTownCrierEntryList.Instance.GetRandomEntry();
 
@@ -388,12 +432,16 @@ namespace Server.Mobiles
         public void RemoveEntry(TownCrierEntry tce)
         {
             if (Entries == null)
+            {
                 return;
+            }
 
             Entries.Remove(tce);
 
             if (Entries.Count == 0)
+            {
                 Entries = null;
+            }
 
             if (Entries == null && GlobalTownCrierEntryList.Instance.IsEmpty)
             {
@@ -446,9 +494,13 @@ namespace Server.Mobiles
         public override void OnDoubleClick(Mobile from)
         {
             if (from.AccessLevel >= AccessLevel.GameMaster)
-                from.SendGump(new TownCrierGump(from, this));
+            {
+                @from.SendGump(new TownCrierGump(@from, this));
+            }
             else
-                base.OnDoubleClick(from);
+            {
+                base.OnDoubleClick(@from);
+            }
         }
 
         public override bool HandlesOnSpeech(Mobile from) => m_NewsTimer == null && from.Alive && InRange(from, 12);
@@ -500,7 +552,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Core.AOS && NameHue == 0x35)
+            {
                 NameHue = -1;
+            }
         }
     }
 }

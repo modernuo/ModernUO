@@ -42,7 +42,9 @@ namespace Server.Spells.Necromancy
         public override bool CheckCast()
         {
             if (!(Table.TryGetValue(Caster, out var check) && check?.Deleted == false))
+            {
                 return base.CheckCast();
+            }
 
             Caster.SendLocalizedMessage(1061605); // You already have a familiar.
             return false;
@@ -126,8 +128,11 @@ namespace Server.Spells.Necromancy
                 AddButton(27, 53 + i * 21, 9702, 9703, i + 1);
 
                 if (name is int intName)
+                {
                     AddHtmlLocalized(50, 51 + i * 21, 150, 20, intName, enabled ? EnabledColor16 : DisabledColor16);
+                }
                 else if (name is string strName)
+                {
                     AddHtml(
                         50,
                         51 + i * 21,
@@ -135,6 +140,7 @@ namespace Server.Spells.Necromancy
                         20,
                         $"<BASEFONT COLOR=#{(enabled ? EnabledColor32 : DisabledColor32):X6}>{strName}</BASEFONT>"
                     );
+                }
             }
         }
 

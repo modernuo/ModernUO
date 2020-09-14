@@ -63,7 +63,9 @@ namespace Server.Spells.Spellweaving
                     ); // The Sanctuary is a special, single location place
 
                 for (var i = 0; i < Arcanists.Count; i++)
+                {
                     GiveArcaneFocus(Arcanists[i], duration, strengthBonus);
+                }
             }
 
             FinishSequence();
@@ -77,7 +79,9 @@ namespace Server.Spells.Spellweaving
             var lt = map.Tiles.GetLandTile(location.X, location.Y); // Land   Tiles
 
             if (IsValidTile(lt.ID) && lt.Z == location.Z)
+            {
                 return true;
+            }
 
             var tiles = map.Tiles.GetStaticTiles(location.X, location.Y); // Static Tiles
 
@@ -89,9 +93,14 @@ namespace Server.Spells.Spellweaving
                 var tand = t.ID;
 
                 if (t.Z + id.CalcHeight != location.Z)
+                {
                     continue;
+                }
+
                 if (IsValidTile(tand))
+                {
                     return true;
+                }
             }
 
             var eable = map.GetItemsInRange(location, 0);
@@ -131,7 +140,9 @@ namespace Server.Spells.Spellweaving
         private void GiveArcaneFocus(Mobile to, TimeSpan duration, int strengthBonus)
         {
             if (to == null) // Sanity
+            {
                 return;
+            }
 
             var focus = FindArcaneFocus(to);
 

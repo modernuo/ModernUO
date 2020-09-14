@@ -20,7 +20,9 @@ namespace Server.Items
             var copy = new BookPageInfo[Pages.Length];
 
             for (var i = 0; i < copy.Length; ++i)
+            {
                 copy[i] = new BookPageInfo(Pages[i].Lines);
+            }
 
             return copy;
         }
@@ -28,19 +30,30 @@ namespace Server.Items
         public bool IsMatch(BookPageInfo[] cmp)
         {
             if (cmp.Length != Pages.Length)
+            {
                 return false;
+            }
 
             for (var i = 0; i < cmp.Length; ++i)
             {
                 var a = Pages[i].Lines;
                 var b = cmp[i].Lines;
 
-                if (a.Length != b.Length) return false;
+                if (a.Length != b.Length)
+                {
+                    return false;
+                }
 
                 if (a != b)
+                {
                     for (var j = 0; j < a.Length; ++j)
+                    {
                         if (a[j] != b[j])
+                        {
                             return false;
+                        }
+                    }
+                }
             }
 
             return true;

@@ -96,6 +96,7 @@ namespace Server
                     TransformationSpellHelper.UnderTransformation(m_Mobile, typeof(VampiricEmbraceSpell)) ||
                     m_Poison.Level < 3 && OrangePetals.UnderEffect(m_Mobile) ||
                     AnimalForm.UnderTransformation(m_Mobile, typeof(Unicorn)))
+                {
                     if (m_Mobile.CurePoison(m_Mobile))
                     {
                         m_Mobile.LocalOverheadMessage(
@@ -115,6 +116,7 @@ namespace Server
                         Stop();
                         return;
                     }
+                }
 
                 if (m_Index++ == m_Poison.m_Count)
                 {
@@ -136,9 +138,13 @@ namespace Server
                     damage = 1 + (int)(m_Mobile.Hits * m_Poison.m_Scalar);
 
                     if (damage < m_Poison.m_Minimum)
+                    {
                         damage = m_Poison.m_Minimum;
+                    }
                     else if (damage > m_Poison.m_Maximum)
+                    {
                         damage = m_Poison.m_Maximum;
+                    }
 
                     m_LastDamage = damage;
                 }
@@ -146,16 +152,22 @@ namespace Server
                 From?.DoHarmful(m_Mobile, true);
 
                 if (m_Mobile is IHonorTarget honorTarget)
+                {
                     honorTarget.ReceivedHonorContext?.OnTargetPoisoned();
+                }
 
                 AOS.Damage(m_Mobile, From, damage, 0, 0, 0, 100, 0);
 
                 if (Utility.RandomDouble() >= 0.60
                 ) // OSI: randomly revealed between first and third damage tick, guessing 60% chance
+                {
                     m_Mobile.RevealingAction();
+                }
 
                 if (m_Index % m_Poison.m_MessageInterval == 0)
+                {
                     m_Mobile.OnPoisoned(From, m_Poison, m_Poison);
+                }
             }
         }
     }

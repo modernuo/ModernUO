@@ -72,7 +72,9 @@ namespace Server.Factions
                             var pl = PlayerState.Find(m_From);
 
                             if (pl == null || pl.Rank.Rank < Election.CandidateRank)
+                            {
                                 AddHtmlLocalized(20, 100, 380, 20, 1010118); // You must have a higher rank to run for office
+                            }
                         }
 
                         break;
@@ -110,14 +112,18 @@ namespace Server.Factions
                 case 1: // vote
                     {
                         if (m_Election.State == ElectionState.Election)
+                        {
                             m_From.SendGump(new VoteGump(m_From, m_Election));
+                        }
 
                         break;
                     }
                 case 2: // campaign
                     {
                         if (m_Election.CanBeCandidate(m_From))
+                        {
                             m_Election.AddCandidate(m_From);
+                        }
 
                         break;
                     }

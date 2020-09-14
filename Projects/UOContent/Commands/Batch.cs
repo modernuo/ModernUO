@@ -60,7 +60,10 @@ namespace Server.Commands
                         return;
                     }
 
-                    if (!command.ValidateArgs(Scope, eventArgs[i])) return;
+                    if (!command.ValidateArgs(Scope, eventArgs[i]))
+                    {
+                        return;
+                    }
                 }
 
                 for (var i = 0; i < commands.Length; ++i)
@@ -69,7 +72,9 @@ namespace Server.Commands
                     var bc = BatchCommands[i];
 
                     if (list.Count > 20)
+                    {
                         CommandLogging.Enabled = false;
+                    }
 
                     List<object> usedList;
 
@@ -88,12 +93,15 @@ namespace Server.Commands
                             var obj = list[j];
 
                             if (obj == null)
+                            {
                                 continue;
+                            }
 
                             var type = obj.GetType();
                             var failReason = "";
 
                             if (!propertyChains.TryGetValue(type, out var chain))
+                            {
                                 propertyChains[type] = chain = Properties.GetPropertyInfoChain(
                                     e.Mobile,
                                     type,
@@ -101,21 +109,28 @@ namespace Server.Commands
                                     PropertyAccess.Read,
                                     ref failReason
                                 );
+                            }
 
                             if (chain == null)
+                            {
                                 continue;
+                            }
 
                             var endProp = Properties.GetPropertyInfo(ref obj, chain, ref failReason);
 
                             if (endProp == null)
+                            {
                                 continue;
+                            }
 
                             try
                             {
                                 obj = endProp.GetValue(obj, null);
 
                                 if (obj != null)
+                                {
                                     usedList.Add(obj);
+                                }
                             }
                             catch
                             {
@@ -127,7 +142,9 @@ namespace Server.Commands
                     command.ExecuteList(eventArgs[i], usedList);
 
                     if (list.Count > 20)
+                    {
                         CommandLogging.Enabled = true;
+                    }
 
                     command.Flush(e.Mobile, list.Count > 20);
                 }
@@ -304,12 +321,16 @@ namespace Server.Commands
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (!SplitButtonID(info.ButtonID, 1, out var type, out var index))
+            {
                 return;
+            }
 
             var entry = info.GetTextEntry(0);
 
             if (entry != null)
+            {
                 m_Batch.Condition = entry.Text;
+            }
 
             for (var i = m_Batch.BatchCommands.Count - 1; i >= 0; --i)
             {
@@ -318,15 +339,21 @@ namespace Server.Commands
                 entry = info.GetTextEntry(1 + i * 2);
 
                 if (entry != null)
+                {
                     sc.Command = entry.Text;
+                }
 
                 entry = info.GetTextEntry(2 + i * 2);
 
                 if (entry != null)
+                {
                     sc.Object = entry.Text;
+                }
 
                 if (sc.Command.Length == 0 && sc.Object.Length == 0)
+                {
                     m_Batch.BatchCommands.RemoveAt(i);
+                }
             }
 
             switch (type)
@@ -388,7 +415,9 @@ namespace Server.Commands
                 var impl = BaseCommandImplementor.Implementors[i];
 
                 if (m_From.AccessLevel < impl.AccessLevel)
+                {
                     continue;
+                }
 
                 AddNewLine();
 
@@ -402,6 +431,7 @@ namespace Server.Commands
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (SplitButtonID(info.ButtonID, 1, out var type, out var index))
+            {
                 switch (type)
                 {
                     case 0:
@@ -411,12 +441,15 @@ namespace Server.Commands
                                 var impl = BaseCommandImplementor.Implementors[index];
 
                                 if (m_From.AccessLevel >= impl.AccessLevel)
+                                {
                                     m_Batch.Scope = impl;
+                                }
                             }
 
                             break;
                         }
                 }
+            }
 
             m_From.SendGump(new BatchGump(m_From, m_Batch));
         }

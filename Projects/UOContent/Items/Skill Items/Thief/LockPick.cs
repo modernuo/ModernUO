@@ -42,7 +42,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 0.1)
+            {
                 Weight = -1;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -60,7 +62,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Item.Deleted)
+                {
                     return;
+                }
 
                 if (targeted is ILockpickable lockpickable)
                 {
@@ -119,7 +123,9 @@ namespace Server.Items
                     var item = (Item)m_Item;
 
                     if (!m_From.InRange(item.GetWorldLocation(), 1))
+                    {
                         return;
+                    }
 
                     if (m_Item.LockLevel == 0 || m_Item.LockLevel == -255)
                     {

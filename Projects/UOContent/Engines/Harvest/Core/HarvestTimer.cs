@@ -30,7 +30,9 @@ namespace Server.Engines.Harvest
         protected override void OnTick()
         {
             if (!m_System.OnHarvesting(m_From, m_Tool, m_Definition, m_ToHarvest, m_Locked, ++m_Index == m_Count))
+            {
                 Stop();
+            }
         }
     }
 }

@@ -7,9 +7,13 @@ namespace Server.Engines.BulkOrders
             RequireExceptional = bod.RequireExceptional;
 
             if (bod is LargeTailorBOD)
+            {
                 DeedType = BODType.Tailor;
+            }
             else if (bod is LargeSmithBOD)
+            {
                 DeedType = BODType.Smith;
+            }
 
             Material = bod.Material;
             AmountMax = bod.AmountMax;
@@ -17,7 +21,9 @@ namespace Server.Engines.BulkOrders
             Entries = new BOBLargeSubEntry[bod.Entries.Length];
 
             for (var i = 0; i < Entries.Length; ++i)
+            {
                 Entries[i] = new BOBLargeSubEntry(bod.Entries[i]);
+            }
         }
 
         public BOBLargeEntry(IGenericReader reader)
@@ -39,7 +45,9 @@ namespace Server.Engines.BulkOrders
                         Entries = new BOBLargeSubEntry[reader.ReadEncodedInt()];
 
                         for (var i = 0; i < Entries.Length; ++i)
+                        {
                             Entries[i] = new BOBLargeSubEntry(reader);
+                        }
 
                         break;
                     }
@@ -63,12 +71,18 @@ namespace Server.Engines.BulkOrders
             LargeBOD bod = null;
 
             if (DeedType == BODType.Smith)
+            {
                 bod = new LargeSmithBOD(AmountMax, RequireExceptional, Material, ReconstructEntries());
+            }
             else if (DeedType == BODType.Tailor)
+            {
                 bod = new LargeTailorBOD(AmountMax, RequireExceptional, Material, ReconstructEntries());
+            }
 
             for (var i = 0; bod?.Entries.Length >= i; ++i)
+            {
                 bod.Entries[i].Owner = bod;
+            }
 
             return bod;
         }
@@ -78,11 +92,13 @@ namespace Server.Engines.BulkOrders
             var entries = new LargeBulkEntry[Entries.Length];
 
             for (var i = 0; i < Entries.Length; ++i)
+            {
                 entries[i] = new LargeBulkEntry(
                         null,
                         new SmallBulkEntry(Entries[i].ItemType, Entries[i].Number, Entries[i].Graphic)
                     )
                     { Amount = Entries[i].AmountCur };
+            }
 
             return entries;
         }
@@ -101,7 +117,9 @@ namespace Server.Engines.BulkOrders
             writer.WriteEncodedInt(Entries.Length);
 
             for (var i = 0; i < Entries.Length; ++i)
+            {
                 Entries[i].Serialize(writer);
+            }
         }
     }
 }

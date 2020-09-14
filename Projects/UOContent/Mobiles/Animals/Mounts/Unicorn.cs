@@ -71,7 +71,9 @@ namespace Server.Mobiles
         public override bool DoMountAbility(int damage, Mobile attacker)
         {
             if (Rider == null || attacker == null) // sanity
+            {
                 return false;
+            }
 
             if (Rider.Poisoned && Rider.Hits - damage < 40)
             {
@@ -84,6 +86,7 @@ namespace Server.Mobiles
                     chanceToCure /= 100;
 
                     if (chanceToCure > Utility.Random(100))
+                    {
                         if (Rider.CurePoison(this)
                         ) // TODO: Confirm if mount is the one flagged for curing it or the rider is
                         {
@@ -99,6 +102,7 @@ namespace Server.Mobiles
 
                             return true;
                         }
+                    }
                 }
             }
 
@@ -117,7 +121,9 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             if (Utility.RandomDouble() < 0.35)
+            {
                 c.DropItem(new UnicornRibs());
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

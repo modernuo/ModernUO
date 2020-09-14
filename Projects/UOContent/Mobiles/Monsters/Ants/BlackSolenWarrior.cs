@@ -43,7 +43,9 @@ namespace Server.Mobiles
             PackItem(new ZoogiFungus(Utility.RandomDouble() < 0.05 ? 13 : 3));
 
             if (Utility.RandomDouble() < 0.05)
+            {
                 PackItem(new BraceletOfBinding());
+            }
         }
 
         public BlackSolenWarrior(Serial serial) : base(serial)
@@ -74,7 +76,10 @@ namespace Server.Mobiles
         public override bool IsEnemy(Mobile m)
         {
             if (SolenHelper.CheckBlackFriendship(m))
+            {
                 return false;
+            }
+
             return base.IsEnemy(m);
         }
 

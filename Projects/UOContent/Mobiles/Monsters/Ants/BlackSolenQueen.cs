@@ -43,7 +43,9 @@ namespace Server.Mobiles
             PackItem(new ZoogiFungus(Utility.RandomDouble() > 0.05 ? 5 : 25));
 
             if (Utility.RandomDouble() < 0.05)
+            {
                 PackItem(new BallOfSummoning());
+            }
         }
 
         public BlackSolenQueen(Serial serial) : base(serial)
@@ -73,7 +75,10 @@ namespace Server.Mobiles
         public override bool IsEnemy(Mobile m)
         {
             if (SolenHelper.CheckBlackFriendship(m))
+            {
                 return false;
+            }
+
             return base.IsEnemy(m);
         }
 

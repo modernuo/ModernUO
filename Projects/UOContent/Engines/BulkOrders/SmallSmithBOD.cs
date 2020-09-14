@@ -32,7 +32,9 @@ namespace Server.Engines.BulkOrders
             var entries = useMaterials ? SmallBulkEntry.BlacksmithArmor : SmallBulkEntry.BlacksmithWeapons;
 
             if (entries.Length <= 0)
+            {
                 return;
+            }
 
             var hue = 0x44E;
             var amountMax = Utility.RandomList(10, 15, 20);
@@ -79,21 +81,30 @@ namespace Server.Engines.BulkOrders
             var entries = useMaterials ? SmallBulkEntry.BlacksmithArmor : SmallBulkEntry.BlacksmithWeapons;
 
             if (entries.Length <= 0)
+            {
                 return null;
+            }
 
             var theirSkill = m.Skills.Blacksmith.Base;
             int amountMax;
 
             if (theirSkill >= 70.1)
+            {
                 amountMax = Utility.RandomList(10, 15, 20, 20);
+            }
             else if (theirSkill >= 50.1)
+            {
                 amountMax = Utility.RandomList(10, 15, 15, 20);
+            }
             else
+            {
                 amountMax = Utility.RandomList(10, 10, 15, 20);
+            }
 
             var material = BulkMaterialType.None;
 
             if (useMaterials && theirSkill >= 70.1)
+            {
                 for (var i = 0; i < 20; ++i)
                 {
                     var check = GetRandomMaterial(BulkMaterialType.DullCopper, m_BlacksmithMaterialChances);
@@ -120,6 +131,7 @@ namespace Server.Engines.BulkOrders
                         break;
                     }
                 }
+            }
 
             var excChance = theirSkill >= 70.1 ? (theirSkill + 80.0) / 200.0 : 0.0;
 
@@ -141,16 +153,22 @@ namespace Server.Engines.BulkOrders
                     if (allRequiredSkills && chance >= 0.0)
                     {
                         if (reqExceptional)
+                        {
                             chance = item.GetExceptionalChance(system, chance, m);
+                        }
 
                         if (chance > 0.0)
+                        {
                             validEntries.Add(entries[i]);
+                        }
                     }
                 }
             }
 
             if (validEntries.Count <= 0)
+            {
                 return null;
+            }
 
             var entry = validEntries.RandomElement();
             return new SmallSmithBOD(entry, material, amountMax, reqExceptional);

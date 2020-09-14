@@ -52,7 +52,10 @@ namespace Server.Engines.Mahjong
         public static MahjongPieceDim GetDimensions(Point2D position, MahjongPieceDirection direction)
         {
             if (direction == MahjongPieceDirection.Up || direction == MahjongPieceDirection.Down)
+            {
                 return new MahjongPieceDim(position, 20, 30);
+            }
+
             return new MahjongPieceDim(position, 30, 20);
         }
 
@@ -64,7 +67,9 @@ namespace Server.Engines.Mahjong
 
             if (!IsMovable || !dim.IsValid() || validHandArea >= 0 &&
                 (curHandArea >= 0 && curHandArea != validHandArea || newHandArea >= 0 && newHandArea != validHandArea))
+            {
                 return;
+            }
 
             m_Position = position;
             Direction = direction;

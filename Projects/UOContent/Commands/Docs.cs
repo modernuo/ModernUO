@@ -158,13 +158,17 @@ namespace Server.Commands
                 var nspace = type.Namespace;
 
                 if (nspace == null || type.IsSpecialName)
+                {
                     continue;
+                }
 
                 var info = new TypeInfo(type);
                 m_Types[type] = info;
 
                 if (!m_Namespaces.TryGetValue(nspace, out var nspaces))
+                {
                     m_Namespaces[nspace] = nspaces = new List<TypeInfo>();
+                }
 
                 nspaces.Add(info);
 
@@ -175,7 +179,9 @@ namespace Server.Commands
                     m_Types.TryGetValue(baseType, out var baseInfo);
 
                     if (baseInfo == null)
+                    {
                         m_Types[baseType] = baseInfo = new TypeInfo(baseType);
+                    }
 
                     baseInfo.m_Derived ??= new List<TypeInfo>();
 
@@ -189,7 +195,9 @@ namespace Server.Commands
                     m_Types.TryGetValue(decType, out var decInfo);
 
                     if (decInfo == null)
+                    {
                         m_Types[decType] = decInfo = new TypeInfo(decType);
+                    }
 
                     decInfo.m_Nested ??= new List<TypeInfo>();
 
@@ -201,12 +209,16 @@ namespace Server.Commands
                     var iface = info.m_Interfaces[j];
 
                     if (!InAssemblies(iface, asms))
+                    {
                         continue;
+                    }
 
                     m_Types.TryGetValue(iface, out var ifaceInfo);
 
                     if (ifaceInfo == null)
+                    {
                         m_Types[iface] = ifaceInfo = new TypeInfo(iface);
+                    }
 
                     ifaceInfo.m_Derived ??= new List<TypeInfo>();
 
@@ -220,8 +232,12 @@ namespace Server.Commands
             var a = t.Assembly;
 
             for (var i = 0; i < asms.Length; ++i)
+            {
                 if (a == asms[i])
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -270,7 +286,9 @@ namespace Server.Commands
             nsHtml.WriteLine("      <h2>{0}</h2>", name);
 
             for (var i = 0; i < types.Count; ++i)
+            {
                 SaveType(types[i], nsHtml, fileName, name);
+            }
 
             nsHtml.WriteLine("   </body>");
             nsHtml.WriteLine("</html>");
@@ -279,7 +297,9 @@ namespace Server.Commands
         private static void SaveType(TypeInfo info, StreamWriter nsHtml, string nsFileName, string nsName)
         {
             if (info.m_Declaring == null)
+            {
                 nsHtml.WriteLine($"      <!-- DBG-ST -->{info.LinkName("../types/")}<br>");
+            }
 
             using var typeHtml = GetWriter(info.FileName);
             typeHtml.WriteLine("<html>");
@@ -292,9 +312,13 @@ namespace Server.Commands
             typeHtml.WriteLine("      <h4><a href=\"../namespaces/{0}\">Back to {1}</a></h4>", nsFileName, nsName);
 
             if (info.m_Type.IsEnum)
+            {
                 WriteEnum(info, typeHtml);
+            }
             else
+            {
                 WriteType(info, typeHtml);
+            }
 
             typeHtml.WriteLine("   </body>");
             typeHtml.WriteLine("</html>");
@@ -342,11 +366,15 @@ namespace Server.Commands
                         nameBuilder.Append(sanitizedName);
                         fnamBuilder.Append("T");
                         if (DontLink(typeArguments[i]))
+                        {
                             linkBuilder.Append($"<font color=\"blue\">{aliasedName}</font>");
+                        }
                         else
+                        {
                             linkBuilder.Append(
                                 $"<a href=\"@directory@{aliasedName}.html\">{aliasedName}</a>"
                             );
+                        }
                     }
 
                     nameBuilder.Append("&gt;");
@@ -364,11 +392,15 @@ namespace Server.Commands
             fileName = fnam == null ? $"docs/types/{SanitizeType(type.Name)}.html" : $"{fnam}.html";
 
             if (link == null)
+            {
                 linkName = DontLink(type)
                     ? $"<font color=\"blue\">{SanitizeType(type.Name)}</font>"
                     : $"<a href=\"@directory@{SanitizeType(type.Name)}.html\">{SanitizeType(type.Name)}</a>";
+            }
             else
+            {
                 linkName = link;
+            }
 
             // Console.WriteLine( typeName+":"+fileName+":"+linkName );
         }
@@ -378,17 +410,28 @@ namespace Server.Commands
             var anonymousType = name.Contains("<");
             var sb = new StringBuilder(name);
             for (var i = 0; i < ReplaceChars.Length; ++i)
+            {
                 sb.Replace(ReplaceChars[i], '-');
+            }
 
-            if (anonymousType) return $"(Anonymous-Type){sb}";
+            if (anonymousType)
+            {
+                return $"(Anonymous-Type){sb}";
+            }
+
             return sb.ToString();
         }
 
         public static string AliasForName(string name)
         {
             for (var i = 0; i < m_AliasLength; ++i)
+            {
                 if (m_Aliases[i, 0] == name)
+                {
                     return m_Aliases[i, 1];
+                }
+            }
+
             return name;
         }
 
@@ -419,10 +462,14 @@ namespace Server.Commands
         public static bool DontLink(Type type)
         {
             if (type.Name == "T" || string.IsNullOrEmpty(type.Namespace) || m_Namespaces == null)
+            {
                 return true;
+            }
 
             if (type.Namespace.StartsWith("Server"))
+            {
                 return false;
+            }
 
             return !m_Namespaces.ContainsKey(type.Namespace);
         }
@@ -433,7 +480,10 @@ namespace Server.Commands
             {
                 var sb = new StringBuilder(name);
 
-                for (var i = 0; i < ReplaceChars.Length; ++i) sb.Replace(ReplaceChars[i], '-');
+                for (var i = 0; i < ReplaceChars.Length; ++i)
+                {
+                    sb.Replace(ReplaceChars[i], '-');
+                }
 
                 name = sb.ToString();
             }
@@ -441,7 +491,10 @@ namespace Server.Commands
             var index = 0;
             var file = string.Concat(name, ext);
 
-            while (File.Exists(Path.Combine(root, file))) file = string.Concat(name, ++index, ext);
+            while (File.Exists(Path.Combine(root, file)))
+            {
+                file = string.Concat(name, ++index, ext);
+            }
 
             return file;
         }
@@ -451,7 +504,9 @@ namespace Server.Commands
             path = Path.Combine(m_RootDirectory, path);
 
             if (!Directory.Exists(path))
+            {
                 Directory.CreateDirectory(path);
+            }
         }
 
         private static void DeleteDirectory(string path)
@@ -459,7 +514,9 @@ namespace Server.Commands
             path = Path.Combine(m_RootDirectory, path);
 
             if (Directory.Exists(path))
+            {
                 Directory.Delete(path, true);
+            }
         }
 
         private static StreamWriter GetWriter(string root, string name) =>
@@ -477,7 +534,9 @@ namespace Server.Commands
             if (varType.IsByRef)
             {
                 if (!ignoreRef)
+                {
                     prepend = RefString;
+                }
 
                 realType = varType.GetElementType();
             }
@@ -493,7 +552,9 @@ namespace Server.Commands
                         append.Append('[');
 
                         for (var i = 1; i < realType.GetArrayRank(); ++i)
+                        {
                             append.Append(',');
+                        }
 
                         append.Append(']');
 
@@ -515,7 +576,9 @@ namespace Server.Commands
                     append.Append('[');
 
                     for (var i = 1; i < realType.GetArrayRank(); ++i)
+                    {
                         append.Append(',');
+                    }
 
                     append.Append(']');
 
@@ -546,11 +609,13 @@ namespace Server.Commands
                 else
                 {
                     for (var i = 0; i < m_AliasLength; ++i)
+                    {
                         if (m_Aliases[i, 0] == fullName)
                         {
                             aliased = m_Aliases[i, 1];
                             break;
                         }
+                    }
                 }
 
                 aliased ??= realType?.Name ?? "";
@@ -590,12 +655,16 @@ namespace Server.Commands
             var assemblies = new List<Assembly> { Core.Assembly };
 
             foreach (var asm in AssemblyHandler.Assemblies)
+            {
                 assemblies.Add(asm);
+            }
 
             var asms = assemblies.ToArray();
 
             for (var i = 0; i < asms.Length; ++i)
+            {
                 LoadTypes(asms[i], asms);
+            }
 
             DocumentLoadedTypes();
             DocumentConstructibleObjects();
@@ -795,7 +864,9 @@ namespace Server.Commands
                 for (var mat = BulkMaterialType.None; mat <= BulkMaterialType.Barbed; ++mat)
                 {
                     if (mat >= BulkMaterialType.DullCopper && mat <= BulkMaterialType.Valorite)
+                    {
                         continue;
+                    }
 
                     sbod.Material = mat;
                     DocumentTailorBOD(html, sbod.ComputeRewards(true), "10, 15", sbod.Material, sbod.Type);
@@ -816,7 +887,9 @@ namespace Server.Commands
                 for (var mat = BulkMaterialType.None; mat <= BulkMaterialType.Barbed; ++mat)
                 {
                     if (mat >= BulkMaterialType.DullCopper && mat <= BulkMaterialType.Valorite)
+                    {
                         continue;
+                    }
 
                     sbod.Material = mat;
                     DocumentTailorBOD(html, sbod.ComputeRewards(true), "20", sbod.Material, sbod.Type);
@@ -839,7 +912,9 @@ namespace Server.Commands
                 for (var mat = BulkMaterialType.None; mat <= BulkMaterialType.Barbed; ++mat)
                 {
                     if (mat >= BulkMaterialType.DullCopper && mat <= BulkMaterialType.Valorite)
+                    {
                         continue;
+                    }
 
                     sbod.Material = mat;
                     DocumentTailorBOD(html, sbod.ComputeRewards(true), "10, 15", sbod.Material, sbod.Type);
@@ -860,7 +935,9 @@ namespace Server.Commands
                 for (var mat = BulkMaterialType.None; mat <= BulkMaterialType.Barbed; ++mat)
                 {
                     if (mat >= BulkMaterialType.DullCopper && mat <= BulkMaterialType.Valorite)
+                    {
                         continue;
+                    }
 
                     sbod.Material = mat;
                     DocumentTailorBOD(html, sbod.ComputeRewards(true), "20", sbod.Material, sbod.Type);
@@ -1181,26 +1258,44 @@ namespace Server.Commands
                 else if (item is PowerScroll ps)
                 {
                     if (ps.Value == 105.0)
+                    {
                         rewards[6] = true;
+                    }
                     else if (ps.Value == 110.0)
+                    {
                         rewards[7] = true;
+                    }
                     else if (ps.Value == 115.0)
+                    {
                         rewards[8] = true;
+                    }
                     else if (ps.Value == 120.0)
+                    {
                         rewards[9] = true;
+                    }
                 }
                 else if (item is UncutCloth)
                 {
                     if (item.Hue == 0x483 || item.Hue == 0x48C || item.Hue == 0x488 || item.Hue == 0x48A)
+                    {
                         rewards[0] = true;
+                    }
                     else if (item.Hue == 0x495 || item.Hue == 0x48B || item.Hue == 0x486 || item.Hue == 0x485)
+                    {
                         rewards[1] = true;
+                    }
                     else if (item.Hue == 0x48D || item.Hue == 0x490 || item.Hue == 0x48E || item.Hue == 0x491)
+                    {
                         rewards[2] = true;
+                    }
                     else if (item.Hue == 0x48F || item.Hue == 0x494 || item.Hue == 0x484 || item.Hue == 0x497)
+                    {
                         rewards[3] = true;
+                    }
                     else
+                    {
                         rewards[4] = true;
+                    }
                 }
                 else if (item is RunicSewingKit rkit)
                 {
@@ -1254,6 +1349,7 @@ namespace Server.Commands
             var index = 0;
 
             while (index < 20)
+            {
                 if (rewards[index])
                 {
                     html.WriteLine("            <td width=\"25\" class=\"{0}\"><center><b>X</b></center></td>", style);
@@ -1269,7 +1365,9 @@ namespace Server.Commands
                         ++index;
 
                         if (index == 5 || index == 6 || index == 10 || index == 17)
+                        {
                             break;
+                        }
                     }
 
                     html.WriteLine(
@@ -1278,6 +1376,7 @@ namespace Server.Commands
                         count == 1 ? "" : $" colspan=\"{count}\""
                     );
                 }
+            }
 
             html.WriteLine("         </tr>");
         }
@@ -1477,13 +1576,21 @@ namespace Server.Commands
                 else if (item is PowerScroll ps)
                 {
                     if (ps.Value == 105.0)
+                    {
                         rewards[8] = true;
+                    }
                     else if (ps.Value == 110.0)
+                    {
                         rewards[9] = true;
+                    }
                     else if (ps.Value == 115.0)
+                    {
                         rewards[10] = true;
+                    }
                     else if (ps.Value == 120.0)
+                    {
                         rewards[11] = true;
+                    }
                 }
                 else if (item is RunicHammer rh)
                 {
@@ -1492,13 +1599,21 @@ namespace Server.Commands
                 else if (item is AncientSmithyHammer ash)
                 {
                     if (ash.Bonus == 10)
+                    {
                         rewards[20] = true;
+                    }
                     else if (ash.Bonus == 15)
+                    {
                         rewards[21] = true;
+                    }
                     else if (ash.Bonus == 30)
+                    {
                         rewards[22] = true;
+                    }
                     else if (ash.Bonus == 60)
+                    {
                         rewards[23] = true;
+                    }
                 }
 
                 item.Delete();
@@ -1557,6 +1672,7 @@ namespace Server.Commands
             var index = 0;
 
             while (index < 24)
+            {
                 if (rewards[index])
                 {
                     html.WriteLine("            <td width=\"25\" class=\"{0}\"><center><b>X</b></center></td>", style);
@@ -1572,7 +1688,9 @@ namespace Server.Commands
                         ++index;
 
                         if (index == 4 || index == 8 || index == 12 || index == 20)
+                        {
                             break;
+                        }
                     }
 
                     html.WriteLine(
@@ -1581,6 +1699,7 @@ namespace Server.Commands
                         count == 1 ? "" : $" colspan=\"{count}\""
                     );
                 }
+            }
 
             html.WriteLine("         </tr>");
         }
@@ -1601,7 +1720,9 @@ namespace Server.Commands
                     line = line.Trim();
 
                     if (line.Length == 0 || line.StartsWith("#"))
+                    {
                         continue;
+                    }
 
                     var split = line.Split('\t');
 
@@ -1614,7 +1735,9 @@ namespace Server.Commands
                         var entry = new BodyEntry(body, type, name);
 
                         if (!list.Contains(entry))
+                        {
                             list.Add(entry);
+                        }
                     }
                 }
             }
@@ -1652,7 +1775,9 @@ namespace Server.Commands
                     if (type != lastType)
                     {
                         if (lastType != ModelBodyType.Invalid)
+                        {
                             html.WriteLine("      </table></td></tr></table><br>");
+                        }
 
                         lastType = type;
 
@@ -1751,7 +1876,9 @@ namespace Server.Commands
                     for (var j = 0; j < entry.Strings.Count; ++j)
                     {
                         if (j > 0)
+                        {
                             html.Write("<br>");
+                        }
 
                         var v = entry.Strings[j];
 
@@ -1760,19 +1887,33 @@ namespace Server.Commands
                             var c = v[k];
 
                             if (c == '<')
+                            {
                                 html.Write("&lt;");
+                            }
                             else if (c == '>')
+                            {
                                 html.Write("&gt;");
+                            }
                             else if (c == '&')
+                            {
                                 html.Write("&amp;");
+                            }
                             else if (c == '"')
+                            {
                                 html.Write("&quot;");
+                            }
                             else if (c == '\'')
+                            {
                                 html.Write("&apos;");
+                            }
                             else if (c >= 0x20 && c < 0x7F)
+                            {
                                 html.Write(c);
+                            }
                             else
+                            {
                                 html.Write("&#{0};", (int)c);
+                            }
                         }
                     }
 
@@ -1807,20 +1948,28 @@ namespace Server.Commands
                     var text = Encoding.UTF8.GetString(bin.ReadBytes(length)).Trim();
 
                     if (text.Length == 0)
+                    {
                         continue;
+                    }
 
                     if (table == null || lastIndex > index)
                     {
                         if (index == 0 && text == "*withdraw*")
+                        {
                             tables.Insert(0, table = new Dictionary<int, SpeechEntry>());
+                        }
                         else
+                        {
                             tables.Add(table = new Dictionary<int, SpeechEntry>());
+                        }
                     }
 
                     lastIndex = index;
 
                     if (!table.TryGetValue(index, out var entry))
+                    {
                         table[index] = entry = new SpeechEntry(index);
+                    }
 
                     entry.Strings.Add(text);
                 }
@@ -1858,17 +2007,23 @@ namespace Server.Commands
                 var attrs = mi.GetCustomAttributes(typeof(UsageAttribute), false);
 
                 if (attrs.Length == 0)
+                {
                     continue;
+                }
 
                 var usage = attrs[0] as UsageAttribute;
 
                 attrs = mi.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
                 if (attrs.Length == 0)
+                {
                     continue;
+                }
 
                 if (usage == null || !(attrs[0] is DescriptionAttribute desc))
+                {
                     continue;
+                }
 
                 attrs = mi.GetCustomAttributes(typeof(AliasesAttribute), false);
 
@@ -1877,9 +2032,13 @@ namespace Server.Commands
                 var descString = desc.Description.Replace("<", "&lt;").Replace(">", "&gt;");
 
                 if (aliases == null)
+                {
                     list.Add(new DocCommandEntry(e.AccessLevel, e.Command, null, usage.Usage, descString));
+                }
                 else
+                {
                     list.Add(new DocCommandEntry(e.AccessLevel, e.Command, aliases.Aliases, usage.Usage, descString));
+                }
             }
 
             for (var i = 0; i < TargetCommands.AllCommands.Count; ++i)
@@ -1890,14 +2049,18 @@ namespace Server.Commands
                 var desc = command.Description;
 
                 if (usage == null || desc == null)
+                {
                     continue;
+                }
 
                 var cmds = command.Commands;
                 var cmd = cmds[0];
                 var aliases = new string[cmds.Length - 1];
 
                 for (var j = 0; j < aliases.Length; ++j)
+                {
                     aliases[j] = cmds[j + 1];
+                }
 
                 desc = desc.Replace("<", "&lt;").Replace(">", "&gt;");
 
@@ -1908,25 +2071,39 @@ namespace Server.Commands
                     sb.Append("Modifiers: ");
 
                     if ((command.Supports & CommandSupport.Global) != 0)
+                    {
                         sb.Append("<i><a href=\"#Global\">Global</a></i>, ");
+                    }
 
                     if ((command.Supports & CommandSupport.Online) != 0)
+                    {
                         sb.Append("<i><a href=\"#Online\">Online</a></i>, ");
+                    }
 
                     if ((command.Supports & CommandSupport.Region) != 0)
+                    {
                         sb.Append("<i><a href=\"#Region\">Region</a></i>, ");
+                    }
 
                     if ((command.Supports & CommandSupport.Contained) != 0)
+                    {
                         sb.Append("<i><a href=\"#Contained\">Contained</a></i>, ");
+                    }
 
                     if ((command.Supports & CommandSupport.Multi) != 0)
+                    {
                         sb.Append("<i><a href=\"#Multi\">Multi</a></i>, ");
+                    }
 
                     if ((command.Supports & CommandSupport.Area) != 0)
+                    {
                         sb.Append("<i><a href=\"#Area\">Area</a></i>, ");
+                    }
 
                     if ((command.Supports & CommandSupport.Self) != 0)
+                    {
                         sb.Append("<i><a href=\"#Self\">Self</a></i>, ");
+                    }
 
                     sb.Remove(sb.Length - 2, 2);
                     sb.Append("<br>");
@@ -1948,14 +2125,18 @@ namespace Server.Commands
                 var desc = command.Description;
 
                 if (usage == null || desc == null)
+                {
                     continue;
+                }
 
                 var cmds = command.Accessors;
                 var cmd = cmds[0];
                 var aliases = new string[cmds.Length - 1];
 
                 for (var j = 0; j < aliases.Length; ++j)
+                {
                     aliases[j] = cmds[j + 1];
+                }
 
                 desc = desc.Replace("<", "&lt;").Replace(">", "&gt;");
 
@@ -1971,7 +2152,9 @@ namespace Server.Commands
                 if (e.AccessLevel != last)
                 {
                     if (last != AccessLevel.Player)
+                    {
                         html.WriteLine("      </table></td></tr></table><br>");
+                    }
 
                     last = e.AccessLevel;
 
@@ -2069,7 +2252,9 @@ namespace Server.Commands
                 for (var i = 0; i < aliases.Length; ++i)
                 {
                     if (i != 0)
+                    {
                         html.Write(", ");
+                    }
 
                     html.Write(aliases[i]);
                 }
@@ -2098,15 +2283,22 @@ namespace Server.Commands
                 var t = types[i].m_Type;
 
                 if (t.IsAbstract || !IsConstructible(t, out var isItem))
+                {
                     continue;
+                }
 
                 var ctors = t.GetConstructors();
                 var anyConstructible = false;
 
                 for (var j = 0; !anyConstructible && j < ctors.Length; ++j)
+                {
                     anyConstructible = IsConstructible(ctors[j]);
+                }
 
-                if (anyConstructible) (isItem ? items : mobiles).Add((t, ctors));
+                if (anyConstructible)
+                {
+                    (isItem ? items : mobiles).Add((t, ctors));
+                }
             }
 
             using var html = GetWriter("docs/", "objects.html");
@@ -2168,10 +2360,14 @@ namespace Server.Commands
                 var ctor = ctors[i];
 
                 if (!IsConstructible(ctor))
+                {
                     continue;
+                }
 
                 if (!first)
+                {
                     html.Write("<br>");
+                }
 
                 first = false;
 
@@ -2184,7 +2380,9 @@ namespace Server.Commands
                     html.Write(" <a ");
 
                     if (m_Types.TryGetValue(parms[j].ParameterType, out var typeInfo))
+                    {
                         html.Write("href=\"types/{0}\" ", typeInfo.FileName);
+                    }
 
                     html.Write("title=\"{0}\">{1}</a>", GetTooltipFor(parms[j]), parms[j].Name);
                 }
@@ -2202,7 +2400,9 @@ namespace Server.Commands
                 var checkType = (Type)m_Tooltips[i, 0];
 
                 if (paramType == checkType)
+                {
                     return string.Format((string)m_Tooltips[i, 1], HtmlNewLine);
+                }
             }
 
             if (paramType.IsEnum)
@@ -2214,7 +2414,9 @@ namespace Server.Commands
                 var names = Enum.GetNames(paramType);
 
                 for (var i = 0; i < names.Length; ++i)
+                {
                     sb.AppendFormat("{0}- {1}", HtmlNewLine, names[i]);
+                }
 
                 return sb.ToString();
             }
@@ -2232,7 +2434,9 @@ namespace Server.Commands
                     var names = attr.Names;
 
                     for (var i = 0; i < names.Length; ++i)
+                    {
                         sb.AppendFormat("{0}- {1}", HtmlNewLine, names[i]);
+                    }
 
                     return sb.ToString();
                 }
@@ -2246,7 +2450,9 @@ namespace Server.Commands
                 var names = Map.GetMapNames();
 
                 for (var i = 0; i < names.Length; ++i)
+                {
                     sb.AppendFormat("{0}- {1}", HtmlNewLine, names[i]);
+                }
 
                 return sb.ToString();
             }
@@ -2266,9 +2472,13 @@ namespace Server.Commands
             string format;
 
             if (flags)
+            {
                 format = "      {0:G} = 0x{1:X}{2}<br>";
+            }
             else
+            {
                 format = "      {0:G} = {1:D}{2}<br>";
+            }
 
             for (var i = 0; i < names.Length; ++i)
             {
@@ -2295,10 +2505,14 @@ namespace Server.Commands
                 m_Types.TryGetValue(decType, out var decInfo);
 
                 if (decInfo == null)
+                {
                     typeHtml.Write(decType.Name);
+                }
                 else
                     // typeHtml.Write( "<a href=\"{0}\">{1}</a>", decInfo.m_FileName, decInfo.m_TypeName );
+                {
                     typeHtml.Write(decInfo.LinkName(null));
+                }
 
                 typeHtml.Write(") - ");
             }
@@ -2317,9 +2531,13 @@ namespace Server.Commands
                 m_Types.TryGetValue(baseType, out var baseInfo);
 
                 if (baseInfo == null)
+                {
                     typeHtml.Write(baseType.Name);
+                }
                 else
+                {
                     typeHtml.Write($"<!-- DBG-1 -->{baseInfo.LinkName(null)}");
+                }
 
                 ++extendCount;
             }
@@ -2327,7 +2545,9 @@ namespace Server.Commands
             if (ifaces.Length > 0)
             {
                 if (extendCount == 0)
+                {
                     typeHtml.Write(" : ");
+                }
 
                 for (var i = 0; i < ifaces.Length; ++i)
                 {
@@ -2335,7 +2555,9 @@ namespace Server.Commands
                     m_Types.TryGetValue(iface, out var ifaceInfo);
 
                     if (extendCount != 0)
+                    {
                         typeHtml.Write(", ");
+                    }
 
                     ++extendCount;
 
@@ -2366,7 +2588,9 @@ namespace Server.Commands
                     var derivedInfo = derived[i];
 
                     if (i != 0)
+                    {
                         typeHtml.Write(", ");
+                    }
 
                     // typeHtml.Write( "<a href=\"{0}\">{1}</a>", derivedInfo.m_FileName, derivedInfo.m_TypeName );
                     typeHtml.Write($"<!-- DBG-3 -->{derivedInfo.LinkName(null)}");
@@ -2388,7 +2612,9 @@ namespace Server.Commands
                     var nestedInfo = nested[i];
 
                     if (i != 0)
+                    {
                         typeHtml.Write(", ");
+                    }
 
                     // typeHtml.Write( "<a href=\"{0}\">{1}</a>", nestedInfo.m_FileName, nestedInfo.m_TypeName );
                     typeHtml.Write($"<!-- DBG-4 -->{nestedInfo.LinkName(null)}");
@@ -2409,11 +2635,17 @@ namespace Server.Commands
                 var mi = membs[i];
 
                 if (mi is PropertyInfo propertyInfo)
+                {
                     WriteProperty(propertyInfo, typeHtml);
+                }
                 else if (mi is ConstructorInfo constructorInfo)
+                {
                     WriteCtor(info.TypeName, constructorInfo, typeHtml);
+                }
                 else if (mi is MethodInfo methodInfo)
+                {
                     WriteMethod(methodInfo, typeHtml);
+                }
             }
         }
 
@@ -2425,16 +2657,22 @@ namespace Server.Commands
             var setMethod = pi.GetSetMethod();
 
             if (getMethod?.IsStatic == true || setMethod?.IsStatic == true)
+            {
                 html.Write(StaticString);
+            }
 
             html.Write(GetPair(pi.PropertyType, pi.Name, false));
             html.Write('(');
 
             if (pi.CanRead)
+            {
                 html.Write(GetString);
+            }
 
             if (pi.CanWrite)
+            {
                 html.Write(SetString);
+            }
 
             html.WriteLine(" )<br>");
         }
@@ -2442,7 +2680,9 @@ namespace Server.Commands
         private static void WriteCtor(string name, ConstructorInfo ctor, StreamWriter html)
         {
             if (ctor.IsStatic)
+            {
                 return;
+            }
 
             html.Write("      ");
             html.Write(CtorString);
@@ -2460,12 +2700,18 @@ namespace Server.Commands
                     var pi = parms[i];
 
                     if (i != 0)
+                    {
                         html.Write(", ");
+                    }
 
                     if (pi.IsIn)
+                    {
                         html.Write(InString);
+                    }
                     else if (pi.IsOut)
+                    {
                         html.Write(OutString);
+                    }
 
                     html.Write(GetPair(pi.ParameterType, pi.Name, pi.IsOut));
                 }
@@ -2479,15 +2725,21 @@ namespace Server.Commands
         private static void WriteMethod(MethodInfo mi, StreamWriter html)
         {
             if (mi.IsSpecialName)
+            {
                 return;
+            }
 
             html.Write("      ");
 
             if (mi.IsStatic)
+            {
                 html.Write(StaticString);
+            }
 
             if (mi.IsVirtual)
+            {
                 html.Write(VirtString);
+            }
 
             html.Write(GetPair(mi.ReturnType, mi.Name, false));
             html.Write('(');
@@ -2503,12 +2755,18 @@ namespace Server.Commands
                     var pi = parms[i];
 
                     if (i != 0)
+                    {
                         html.Write(", ");
+                    }
 
                     if (pi.IsIn)
+                    {
                         html.Write(InString);
+                    }
                     else if (pi.IsOut)
+                    {
                         html.Write(OutString);
+                    }
 
                     html.Write(GetPair(pi.ParameterType, pi.Name, pi.IsOut));
                 }
@@ -2524,7 +2782,9 @@ namespace Server.Commands
             public int Compare(object x, object y)
             {
                 if (x == y)
+                {
                     return 0;
+                }
 
                 var aCtor = x as ConstructorInfo;
                 var bCtor = y as ConstructorInfo;
@@ -2539,16 +2799,23 @@ namespace Server.Commands
                 var bStatic = GetStaticFor(bCtor, bProp, bMethod);
 
                 if (aStatic && !bStatic)
+                {
                     return -1;
+                }
+
                 if (!aStatic && bStatic)
+                {
                     return 1;
+                }
 
                 var v = 0;
 
                 if (aCtor != null)
                 {
                     if (bCtor == null)
+                    {
                         v = -1;
+                    }
                 }
                 else if (bCtor != null)
                 {
@@ -2557,7 +2824,9 @@ namespace Server.Commands
                 else if (aProp != null)
                 {
                     if (bProp == null)
+                    {
                         v = -1;
+                    }
                 }
                 else if (bProp != null)
                 {
@@ -2565,12 +2834,18 @@ namespace Server.Commands
                 }
 
                 if (v == 0)
+                {
                     v = GetNameFrom(aCtor, aProp, aMethod).CompareTo(GetNameFrom(bCtor, bProp, bMethod));
+                }
 
                 if (v == 0 && aCtor != null && bCtor != null)
+                {
                     v = aCtor.GetParameters().Length.CompareTo(bCtor.GetParameters().Length);
+                }
                 else if (v == 0 && aMethod != null && bMethod != null)
+                {
                     v = aMethod.GetParameters().Length.CompareTo(bMethod.GetParameters().Length);
+                }
 
                 return v;
             }
@@ -2578,9 +2853,14 @@ namespace Server.Commands
             private bool GetStaticFor(ConstructorInfo ctor, PropertyInfo prop, MethodInfo method)
             {
                 if (ctor != null)
+                {
                     return ctor.IsStatic;
+                }
+
                 if (method != null)
+                {
                     return method.IsStatic;
+                }
 
                 if (prop != null)
                 {
@@ -2651,7 +2931,11 @@ namespace Server.Commands
         {
             public int Compare(SpeechEntry x, SpeechEntry y)
             {
-                if (x == null && y == null) return 0;
+                if (x == null && y == null)
+                {
+                    return 0;
+                }
+
                 return x?.Index.CompareTo(y?.Index) ?? 1;
             }
         }
@@ -2682,12 +2966,17 @@ namespace Server.Commands
         {
             public int Compare(DocCommandEntry a, DocCommandEntry b)
             {
-                if (a == null && b == null) return 0;
+                if (a == null && b == null)
+                {
+                    return 0;
+                }
 
                 var v = b?.AccessLevel.CompareTo(a?.AccessLevel) ?? 1;
 
                 if (v != 0)
+                {
                     return v;
+                }
 
                 return a?.Name.CompareTo(b?.Name) ?? 1;
             }
@@ -2733,14 +3022,22 @@ namespace Server.Commands
     {
         public int Compare(BodyEntry a, BodyEntry b)
         {
-            if (a == null && b == null) return 0;
+            if (a == null && b == null)
+            {
+                return 0;
+            }
+
             var v = a?.BodyType.CompareTo(b?.BodyType) ?? 1;
 
             if (v == 0)
+            {
                 v = a?.Body.BodyID.CompareTo(b?.Body.BodyID) ?? 1;
+            }
 
             if (v != 0)
+            {
                 return v;
+            }
 
             return a?.Name.CompareTo(b?.Name) ?? 1;
         }

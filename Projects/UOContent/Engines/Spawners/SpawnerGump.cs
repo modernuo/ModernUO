@@ -36,9 +36,12 @@ namespace Server.Engines.Spawners
                 SpawnerEntry entry = null;
 
                 if (entryindex < spawner.Entries.Count)
+                {
                     entry = m_Spawner.Entries[entryindex];
+                }
 
                 if (entry == null || m_Entry != entry)
+                {
                     AddButton(
                         5,
                         22 * i + 21 + offset,
@@ -46,7 +49,9 @@ namespace Server.Engines.Spawners
                         entry != null ? 0xFBC : 0xFA7,
                         GetButtonID(2, i * 2)
                     ); // Expand
+                }
                 else
+                {
                     AddButton(
                         5,
                         22 * i + 21 + offset,
@@ -54,6 +59,7 @@ namespace Server.Engines.Spawners
                         0xFBC,
                         GetButtonID(2, i * 2)
                     ); // Unexpand
+                }
 
                 AddButton(38, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2)); // Delete
 
@@ -142,14 +148,22 @@ namespace Server.Engines.Spawners
             AddLabel(286, 325 + offset, 0x384, "Apply");
 
             if (m_Page > 0)
+            {
                 AddButton(276, 308 + offset, 0x15E3, 0x15E7, GetButtonID(1, 0));
+            }
             else
+            {
                 AddImage(276, 308 + offset, 0x25EA);
+            }
 
             if ((m_Page + 1) * 13 <= m_Spawner.Entries.Count)
+            {
                 AddButton(293, 308 + offset, 0x15E1, 0x15E5, GetButtonID(1, 1));
+            }
             else
+            {
                 AddImage(293, 308 + offset, 0x25E6);
+            }
         }
 
         public int GetButtonID(int type, int index) => 1 + index * 10 + type;
@@ -172,7 +186,9 @@ namespace Server.Engines.Spawners
                 var propte = info.GetTextEntry(index + 4);
 
                 if (cte == null)
+                {
                     continue;
+                }
 
                 var str = cte.Text.Trim().ToLower();
 
@@ -194,10 +210,14 @@ namespace Server.Engines.Spawners
                         entry.SpawnedName = str;
 
                         if (mte != null)
+                        {
                             entry.SpawnedMaxCount = Utility.ToInt32(mte.Text.Trim());
+                        }
 
                         if (poste != null)
+                        {
                             entry.SpawnedProbability = Utility.ToInt32(poste.Text.Trim());
+                        }
                     }
                     else
                     {
@@ -205,19 +225,27 @@ namespace Server.Engines.Spawners
                         var probcount = 100;
 
                         if (mte != null)
+                        {
                             maxcount = Utility.ToInt32(mte.Text.Trim());
+                        }
 
                         if (poste != null)
+                        {
                             probcount = Utility.ToInt32(poste.Text.Trim());
+                        }
 
                         entry = spawner.AddEntry(str, probcount, maxcount);
                     }
 
                     if (parmte != null)
+                    {
                         entry.Parameters = parmte.Text.Trim();
+                    }
 
                     if (propte != null)
+                    {
                         entry.Properties = propte.Text.Trim();
+                    }
                 }
                 else if (entryindex < ocount && spawner.Entries[entryindex] != null)
                 {
@@ -226,21 +254,29 @@ namespace Server.Engines.Spawners
             }
 
             for (var i = 0; i < rementries.Count; i++)
+            {
                 spawner.RemoveEntry(rementries[i]);
+            }
 
             if (ocount == 0 && spawner.Entries.Count > 0)
+            {
                 spawner.Start();
+            }
         }
 
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (m_Spawner.Deleted)
+            {
                 return;
+            }
 
             var val = info.ButtonID - 1;
 
             if (val < 0)
+            {
                 return;
+            }
 
             var type = val % 10;
             var index = val / 10;
@@ -306,9 +342,13 @@ namespace Server.Engines.Spawners
                         {
                             var entry = m_Spawner.Entries[entryindex];
                             if (buttontype == 0) // Spawn creature
+                            {
                                 m_Entry = m_Entry != entry ? entry : null;
+                            }
                             else // Remove creatures
+                            {
                                 m_Spawner.RemoveSpawn(entryindex);
+                            }
                         }
 
                         CreateArray(info, state.Mobile, m_Spawner);
@@ -317,9 +357,13 @@ namespace Server.Engines.Spawners
             }
 
             if (m_Entry != null && m_Spawner.Entries?.Contains(m_Entry) == true)
+            {
                 state.Mobile.SendGump(new SpawnerGump(m_Spawner, m_Entry, m_Page));
+            }
             else
+            {
                 state.Mobile.SendGump(new SpawnerGump(m_Spawner, null, m_Page));
+            }
         }
     }
 }

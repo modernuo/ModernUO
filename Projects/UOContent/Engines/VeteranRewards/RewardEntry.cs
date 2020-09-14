@@ -72,7 +72,9 @@ namespace Server.Engines.VeteranRewards
                 var item = ActivatorUtil.CreateInstance(ItemType, Args) as Item;
 
                 if (item is IRewardItem rewardItem)
+                {
                     rewardItem.IsRewardItem = true;
+                }
 
                 return item;
             }

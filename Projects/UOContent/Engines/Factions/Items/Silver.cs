@@ -28,9 +28,15 @@ namespace Server.Factions
         public override int GetDropSound()
         {
             if (Amount <= 1)
+            {
                 return 0x2E4;
+            }
+
             if (Amount <= 5)
+            {
                 return 0x2E5;
+            }
+
             return 0x2E6;
         }
 

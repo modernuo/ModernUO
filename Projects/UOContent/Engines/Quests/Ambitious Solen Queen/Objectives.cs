@@ -35,12 +35,17 @@ namespace Server.Engines.Quests.Ambitious
         public override bool IgnoreYoungProtection(Mobile from)
         {
             if (Completed)
+            {
                 return false;
+            }
 
             var redSolen = ((AmbitiousQueenQuest)System).RedSolen;
 
             if (redSolen)
-                return from is RedSolenQueen;
+            {
+                return @from is RedSolenQueen;
+            }
+
             return from is BlackSolenQueen;
         }
 
@@ -51,12 +56,16 @@ namespace Server.Engines.Quests.Ambitious
             if (redSolen)
             {
                 if (creature is RedSolenQueen)
+                {
                     CurProgress++;
+                }
             }
             else
             {
                 if (creature is BlackSolenQueen)
+                {
                     CurProgress++;
+                }
             }
         }
 

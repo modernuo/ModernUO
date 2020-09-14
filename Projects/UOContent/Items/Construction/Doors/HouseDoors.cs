@@ -136,9 +136,13 @@ namespace Server.Items
             Point3D loc;
 
             if (Open)
+            {
                 loc = new Point3D(X - Offset.X, Y - Offset.Y, Z - Offset.Z);
+            }
             else
+            {
                 loc = Location;
+            }
 
             return BaseHouse.FindHouseAt(loc, Map, 20);
         }
@@ -148,13 +152,19 @@ namespace Server.Items
             var house = FindHouse();
 
             if (house == null)
+            {
                 return false;
+            }
 
             if (!house.IsAosRules)
+            {
                 return true;
+            }
 
             if (house.Public ? house.IsBanned(m) : !house.HasAccess(m))
+            {
                 return false;
+            }
 
             return house.HasSecureAccess(m, Level);
         }
@@ -164,10 +174,14 @@ namespace Server.Items
             var house = FindHouse();
 
             if (house?.IsFriend(from) == true && from.AccessLevel == AccessLevel.Player && house.RefreshDecay())
-                from.SendLocalizedMessage(1043293); // Your house's age and contents have been refreshed.
+            {
+                @from.SendLocalizedMessage(1043293); // Your house's age and contents have been refreshed.
+            }
 
             if (house?.Public == true && !house.IsFriend(from))
+            {
                 house.Visits++;
+            }
         }
 
         public override bool UseLocks() => FindHouse()?.IsAosRules != true;
@@ -175,9 +189,13 @@ namespace Server.Items
         public override void Use(Mobile from)
         {
             if (!CheckAccess(from))
-                from.SendLocalizedMessage(1061637); // You are not allowed to access this.
+            {
+                @from.SendLocalizedMessage(1061637); // You are not allowed to access this.
+            }
             else
-                base.Use(from);
+            {
+                base.Use(@from);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -207,7 +225,9 @@ namespace Server.Items
                 case 0:
                     {
                         if (version < 1)
+                        {
                             Level = SecureLevel.Anyone;
+                        }
 
                         Facing = (DoorFacing)reader.ReadInt();
                         break;

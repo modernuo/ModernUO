@@ -75,7 +75,10 @@ namespace Server.Items
             get => m_Source == null;
             set
             {
-                if (value) m_Source = null;
+                if (value)
+                {
+                    m_Source = null;
+                }
             }
         }
 
@@ -99,7 +102,10 @@ namespace Server.Items
             get => m_Target == null;
             set
             {
-                if (value) m_Target = null;
+                if (value)
+                {
+                    m_Target = null;
+                }
             }
         }
 
@@ -155,7 +161,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (TriggerType == EffectTriggerType.DoubleClick)
-                DoEffect(from);
+            {
+                DoEffect(@from);
+            }
         }
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
@@ -163,7 +171,9 @@ namespace Server.Items
             if (m.Location != oldLocation && TriggerType == EffectTriggerType.InRange &&
                 Utility.InRange(GetWorldLocation(), m.Location, TriggerRange) &&
                 !Utility.InRange(GetWorldLocation(), oldLocation, TriggerRange))
+            {
                 DoEffect(m);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -177,14 +187,22 @@ namespace Server.Items
             writer.Write(SoundDelay);
 
             if (m_Source is Item srcItem)
+            {
                 writer.Write(srcItem);
+            }
             else
+            {
                 writer.Write(m_Source as Mobile);
+            }
 
             if (m_Target is Item targItem)
+            {
                 writer.Write(targItem);
+            }
             else
+            {
                 writer.Write(m_Target as Mobile);
+            }
 
             writer.Write(Sequence);
 
@@ -264,19 +282,29 @@ namespace Server.Items
         public void DoEffect(IEntity trigger)
         {
             if (Deleted || TriggerType == EffectTriggerType.None)
+            {
                 return;
+            }
 
             if (trigger is Mobile mobile && mobile.Hidden && mobile.AccessLevel > AccessLevel.Player)
+            {
                 return;
+            }
 
             if (SoundID > 0)
+            {
                 Timer.DelayCall(SoundDelay, PlaySound, trigger);
+            }
 
             if (Sequence != null)
+            {
                 Timer.DelayCall(TriggerDelay, Sequence.DoEffect, trigger);
+            }
 
             if (EffectType != ECEffectType.None)
+            {
                 Timer.DelayCall(EffectDelay, InternalDoEffect, trigger);
+            }
         }
 
         public void InternalDoEffect(IEntity trigger)
@@ -308,10 +336,14 @@ namespace Server.Items
                 case ECEffectType.Moving:
                     {
                         if (from == this)
-                            from = EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration);
+                        {
+                            @from = EffectItem.Create(@from.Location, @from.Map, EffectItem.DefaultDuration);
+                        }
 
                         if (to == this)
+                        {
                             to = EffectItem.Create(to.Location, to.Map, EffectItem.DefaultDuration);
+                        }
 
                         Effects.SendMovingParticles(
                             from,

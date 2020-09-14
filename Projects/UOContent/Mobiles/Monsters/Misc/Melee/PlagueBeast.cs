@@ -41,10 +41,14 @@ namespace Server.Mobiles
             VirtualArmor = 30;
             PackArmor(1, 5);
             if (Utility.RandomDouble() < 0.80)
+            {
                 PackItem(new PlagueBeastGland());
+            }
 
             if (Core.ML && Utility.RandomDouble() < 0.33)
+            {
                 PackItem(Seed.RandomPeculiarSeed(4));
+            }
 
             TotalDevoured = 0;
             m_DevourGoal = Utility.RandomMinMax(15, 25); // How many corpses must be devoured before a metal chest is awarded
@@ -77,10 +81,14 @@ namespace Server.Mobiles
         public bool Devour(Corpse corpse)
         {
             if (corpse?.Owner == null) // sorry we can't devour because the corpse's owner is null
+            {
                 return false;
+            }
 
             if (corpse.Owner.Body.IsHuman)
+            {
                 corpse.TurnToBones(); // Not bones yet, and we are a human body therefore we turn to bones.
+            }
 
             IncreaseHits((int)Math.Ceiling(corpse.Owner.HitsMax * 0.75));
             TotalDevoured++;
@@ -192,12 +200,16 @@ namespace Server.Mobiles
 
             foreach (var item in eable)
                 // Ensure that the corpse was killed by us
+            {
                 if (item.Killer == this && item.Owner != null && !item.DevourCorpse() && !item.Devoured)
+                {
                     PublicOverheadMessage(
                         MessageType.Emote,
                         0x3B2,
                         1053032
                     ); // * The plague beast attempts to absorb the remains, but cannot! *
+                }
+            }
 
             eable.Free();
         }
@@ -207,10 +219,14 @@ namespace Server.Mobiles
             var maxhits = 2000;
 
             if (IsParagon)
+            {
                 maxhits = (int)(maxhits * Paragon.HitsBuff);
+            }
 
             if (hp < 1000 && !Core.AOS)
+            {
                 hp = hp * 100 / 60;
+            }
 
             if (HitsMaxSeed >= maxhits)
             {

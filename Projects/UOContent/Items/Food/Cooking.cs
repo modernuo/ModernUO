@@ -54,10 +54,15 @@ namespace Server.Items
 
             protected override void OnTarget(Mobile from, object targeted)
             {
-                if (m_Item.Deleted) return;
+                if (m_Item.Deleted)
+                {
+                    return;
+                }
 
                 if (!(targeted is Item targetItem) || targetItem.Deleted)
+                {
                     return;
+                }
 
                 m_Item.Consume();
 
@@ -123,7 +128,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Hue == 51)
+            {
                 Hue = 150;
+            }
         }
 
         private class InternalTarget : Target
@@ -134,7 +141,10 @@ namespace Server.Items
 
             protected override void OnTarget(Mobile from, object targeted)
             {
-                if (m_Item.Deleted) return;
+                if (m_Item.Deleted)
+                {
+                    return;
+                }
 
                 m_Item.Consume();
 
@@ -174,7 +184,9 @@ namespace Server.Items
                     if (m_From.CheckSkill(SkillName.Cooking, 0, 10))
                     {
                         if (m_From.AddToBackpack(new Muffins()))
+                        {
                             m_From.PlaySound(0x57);
+                        }
                     }
                     else
                     {
@@ -230,7 +242,10 @@ namespace Server.Items
 
             protected override void OnTarget(Mobile from, object targeted)
             {
-                if (m_Item.Deleted) return;
+                if (m_Item.Deleted)
+                {
+                    return;
+                }
 
                 m_Item.Consume();
 
@@ -387,9 +402,13 @@ namespace Server.Items
                 m_Quantity = Math.Min(20, Math.Max(0, value));
 
                 if (m_Quantity == 0)
+                {
                     Delete();
+                }
                 else if (m_Quantity < 20 && (ItemID == 0x1039 || ItemID == 0x1045))
+                {
                     ++ItemID;
+                }
             }
         }
 
@@ -424,16 +443,22 @@ namespace Server.Items
             }
 
             if (version < 2 && Weight == 1.0)
+            {
                 Weight = 5.0;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (!Movable)
+            {
                 return;
+            }
 
             if (ItemID == 0x1039 || ItemID == 0x1045)
+            {
                 ++ItemID;
+            }
         }
     }
 
@@ -479,7 +504,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (!Movable)
+            {
                 return;
+            }
 
             from.BeginTarget(4, false, TargetFlags.None, OnTarget);
         }
@@ -487,14 +514,18 @@ namespace Server.Items
         public virtual void OnTarget(Mobile from, object obj)
         {
             if (obj is AddonComponent addon)
+            {
                 obj = addon.Addon;
+            }
 
             if (obj is IFlourMill mill)
             {
                 var needs = mill.MaxFlour - mill.CurFlour;
 
                 if (needs > Amount)
+                {
                     needs = Amount;
+                }
 
                 mill.CurFlour += needs;
                 Consume(needs);

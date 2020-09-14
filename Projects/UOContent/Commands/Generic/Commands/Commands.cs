@@ -80,7 +80,9 @@ namespace Server.Commands.Generic
                 var impl = impls[i];
 
                 if ((command.Supports & impl.SupportRequirement) != 0)
+                {
                     impl.Register(command);
+                }
             }
         }
     }
@@ -106,10 +108,16 @@ namespace Server.Commands.Generic
                 var condition = ObjectConditional.Parse(e.Mobile, ref args);
 
                 for (var i = 0; i < list.Count; ++i)
+                {
                     if (condition.CheckCondition(list[i]))
+                    {
                         AddResponse("True - that object matches the condition.");
+                    }
                     else
+                    {
                         AddResponse("False - that object does not match the condition.");
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -135,9 +143,13 @@ namespace Server.Commands.Generic
             if (obj is Item item)
             {
                 if (e.Mobile.PlaceInBackpack(item))
+                {
                     AddResponse("The item has been placed in your backpack.");
+                }
                 else
+                {
                     AddResponse("Your backpack could not hold the item.");
+                }
             }
         }
     }
@@ -194,9 +206,13 @@ namespace Server.Commands.Generic
         public override void ExecuteList(CommandEventArgs e, List<object> list)
         {
             if (list.Count == 1)
+            {
                 AddResponse("There is one matching object.");
+            }
             else
+            {
                 AddResponse($"There are {list.Count} matching objects.");
+            }
         }
     }
 
@@ -217,14 +233,18 @@ namespace Server.Commands.Generic
             if (okay)
             {
                 if (echo)
-                    gm.SendMessage("{0} : has opened their web browser to : {1}", from.Name, url);
+                {
+                    gm.SendMessage("{0} : has opened their web browser to : {1}", @from.Name, url);
+                }
 
                 from.LaunchBrowser(url);
             }
             else
             {
                 if (echo)
-                    gm.SendMessage("{0} : has chosen not to open their web browser to : {1}", from.Name, url);
+                {
+                    gm.SendMessage("{0} : has chosen not to open their web browser to : {1}", @from.Name, url);
+                }
 
                 from.SendMessage("You have chosen not to open your web browser.");
             }
@@ -259,9 +279,13 @@ namespace Server.Commands.Generic
                         );
 
                         if (echo)
+                        {
                             AddResponse("Awaiting user confirmation...");
+                        }
                         else
+                        {
                             AddResponse("Open web browser request sent.");
+                        }
 
                         mob.SendGump(
                             new WarningGump(
@@ -295,7 +319,9 @@ namespace Server.Commands.Generic
         public override void ExecuteList(CommandEventArgs e, List<object> list)
         {
             for (var i = 0; i < list.Count; ++i)
+            {
                 Execute(e, list[i], false);
+            }
         }
     }
 
@@ -324,9 +350,13 @@ namespace Server.Commands.Generic
                 if (result == "The property has been increased." || result == "The properties have been increased." ||
                     result == "The property has been decreased." || result == "The properties have been decreased." ||
                     result == "The properties have been changed.")
+                {
                     AddResponse(result);
+                }
                 else
+                {
                     LogFailure(result);
+                }
             }
             else
             {
@@ -415,9 +445,13 @@ namespace Server.Commands.Generic
             );
 
             if (m_InGump)
-                mob.SendGump(new MessageSentGump(mob, from.Name, e.ArgString));
+            {
+                mob.SendGump(new MessageSentGump(mob, @from.Name, e.ArgString));
+            }
             else
+            {
                 mob.SendMessage(e.ArgString);
+            }
         }
     }
 
@@ -438,7 +472,9 @@ namespace Server.Commands.Generic
         public override void ExecuteList(CommandEventArgs e, List<object> list)
         {
             if (e.Arguments.Length == 0)
+            {
                 return;
+            }
 
             var packs = new List<Container>(list.Count);
 
@@ -448,14 +484,22 @@ namespace Server.Commands.Generic
                 Container cont = null;
 
                 if (obj is Mobile mobile)
+                {
                     cont = mobile.Backpack;
+                }
                 else if (obj is Container container)
+                {
                     cont = container;
+                }
 
                 if (cont != null)
+                {
                     packs.Add(cont);
+                }
                 else
+                {
                     LogFailure("That is not a container.");
+                }
             }
 
             Add.Invoke(e.Mobile, e.Mobile.Location, e.Mobile.Location, e.Arguments, packs);
@@ -513,12 +557,18 @@ namespace Server.Commands.Generic
         public override void Execute(CommandEventArgs e, object obj)
         {
             if (!(obj is IPoint3D p))
+            {
                 return;
+            }
 
             if (p is Item item)
+            {
                 p = item.GetWorldTop();
+            }
             else if (p is Mobile m)
+            {
                 p = m.Location;
+            }
 
             Add.Invoke(e.Mobile, new Point3D(p), new Point3D(p), e.Arguments);
         }
@@ -539,7 +589,9 @@ namespace Server.Commands.Generic
         public override void Execute(CommandEventArgs e, object obj)
         {
             if (!(obj is IPoint3D p))
+            {
                 return;
+            }
 
             var from = e.Mobile;
 
@@ -617,7 +669,9 @@ namespace Server.Commands.Generic
                     }
 
                     if (mob.Items.IndexOf(item) == -1)
+                    {
                         --i;
+                    }
                 }
             }
 
@@ -634,9 +688,13 @@ namespace Server.Commands.Generic
             }
 
             if (takenAction)
+            {
                 AddResponse("They have been dismounted.");
+            }
             else
+            {
                 LogFailure("They were not mounted.");
+            }
         }
     }
 
@@ -698,9 +756,13 @@ namespace Server.Commands.Generic
                 var type = obj.GetType();
 
                 if (type.DeclaringType == null)
+                {
                     AddResponse($"The type of that object is {type.Name}.");
+                }
                 else
+                {
                     AddResponse($"The type of that object is {type.FullName}.");
+                }
             }
         }
     }
@@ -720,18 +782,26 @@ namespace Server.Commands.Generic
         public override void Execute(CommandEventArgs e, object obj)
         {
             if (e.Length >= 1)
+            {
                 for (var i = 0; i < e.Length; ++i)
                 {
                     var result = Properties.GetValue(e.Mobile, obj, e.GetString(i));
 
                     if (result == "Property not found." || result == "Property is write only." ||
                         result.StartsWith("Getting this property"))
+                    {
                         LogFailure(result);
+                    }
                     else
+                    {
                         AddResponse(result);
+                    }
                 }
+            }
             else
+            {
                 LogFailure("Format: Get <propertyName>");
+            }
         }
     }
 
@@ -748,11 +818,17 @@ namespace Server.Commands.Generic
             AccessLevel = level;
 
             if (objects == ObjectTypes.Items)
+            {
                 Supports = CommandSupport.AllItems;
+            }
             else if (objects == ObjectTypes.Mobiles)
+            {
                 Supports = CommandSupport.AllMobiles;
+            }
             else
+            {
                 Supports = CommandSupport.All;
+            }
 
             Commands = new[] { command };
             ObjectTypes = objects;
@@ -765,9 +841,13 @@ namespace Server.Commands.Generic
             var result = Properties.SetValue(e.Mobile, obj, m_Name, m_Value);
 
             if (result == "Property has been set.")
+            {
                 AddResponse(result);
+            }
             else
+            {
                 LogFailure(result);
+            }
         }
     }
 
@@ -786,17 +866,25 @@ namespace Server.Commands.Generic
         public override void Execute(CommandEventArgs e, object obj)
         {
             if (e.Length >= 2)
+            {
                 for (var i = 0; i + 1 < e.Length; i += 2)
                 {
                     var result = Properties.SetValue(e.Mobile, obj, e.GetString(i), e.GetString(i + 1));
 
                     if (result == "Property has been set.")
+                    {
                         AddResponse(result);
+                    }
                     else
+                    {
                         LogFailure(result);
+                    }
                 }
+            }
             else
+            {
                 LogFailure("Format: Set <propertyName> <value>");
+            }
         }
     }
 
@@ -1055,9 +1143,13 @@ namespace Server.Commands.Generic
             m.Hidden = m_Value;
 
             if (m_Value)
+            {
                 AddResponse("They have been hidden.");
+            }
             else
+            {
                 AddResponse("They have been revealed.");
+            }
         }
     }
 
@@ -1195,7 +1287,9 @@ namespace Server.Commands.Generic
         public override void Execute(CommandEventArgs e, object obj)
         {
             if (!(obj is Item item))
+            {
                 return;
+            }
 
             if (!item.IsLockedDown && !item.IsSecure)
             {
@@ -1204,11 +1298,13 @@ namespace Server.Commands.Generic
             }
 
             foreach (var house in BaseHouse.AllHouses)
+            {
                 if (house.HasSecureItem(item) || house.HasLockedDownItem(item))
                 {
                     e.Mobile.SendGump(new PropertiesGump(e.Mobile, house));
                     return;
                 }
+            }
 
             LogFailure("No house was found.");
         }

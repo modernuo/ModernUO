@@ -59,9 +59,13 @@ namespace Server.Factions
                 AddRadio(x, y, 208, 209, town.Tax == ofs, i + 1);
 
                 if (ofs < 0)
+                {
                     AddLabel(x + 35, y, 0x26, $"- {-ofs}%");
+                }
                 else
+                {
                     AddLabel(x + 35, y, 0x12A, $"+ {ofs}%");
+                }
             }
 
             AddRadio(20, 270, 208, 209, town.Tax == 0, 0);
@@ -147,9 +151,13 @@ namespace Server.Factions
 
                 AddHtmlText(55, 300, 200, 25, vendorList.Definition.Label, false, false);
                 if (town.Silver >= vendorList.Definition.Price)
+                {
                     AddButton(20, 300, 4005, 4007, ToButtonID(1, i));
+                }
                 else
+                {
                     AddImage(20, 300, 4020);
+                }
 
                 AddHtmlLocalized(55, 360, 200, 25, 1011067); // Previous page
                 AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Page, 3);
@@ -167,7 +175,9 @@ namespace Server.Factions
             }
 
             if (!FromButtonID(info.ButtonID, out var type, out var index))
+            {
                 return;
+            }
 
             switch (type)
             {
@@ -180,48 +190,66 @@ namespace Server.Factions
                                     var switches = info.Switches;
 
                                     if (switches.Length == 0)
+                                    {
                                         break;
+                                    }
 
                                     var opt = switches[0];
                                     var newTax = 0;
 
                                     if (opt >= 1 && opt <= m_PriceOffsets.Length)
+                                    {
                                         newTax = m_PriceOffsets[opt - 1];
+                                    }
 
                                     if (m_Town.Tax == newTax)
+                                    {
                                         break;
+                                    }
 
                                     if (m_From.AccessLevel == AccessLevel.Player && !m_Town.TaxChangeReady)
                                     {
                                         var remaining = DateTime.UtcNow - (m_Town.LastTaxChange + Town.TaxChangePeriod);
 
                                         if (remaining.TotalMinutes < 4)
+                                        {
                                             m_From.SendLocalizedMessage(
                                                 1042165
                                             ); // You must wait a short while before changing prices again.
+                                        }
                                         else if (remaining.TotalMinutes < 10)
+                                        {
                                             m_From.SendLocalizedMessage(
                                                 1042166
                                             ); // You must wait several minutes before changing prices again.
+                                        }
                                         else if (remaining.TotalHours < 1)
+                                        {
                                             m_From.SendLocalizedMessage(
                                                 1042167
                                             ); // You must wait up to an hour before changing prices again.
+                                        }
                                         else if (remaining.TotalHours < 4)
+                                        {
                                             m_From.SendLocalizedMessage(
                                                 1042168
                                             ); // You must wait a few hours before changing prices again.
+                                        }
                                         else
+                                        {
                                             m_From.SendLocalizedMessage(
                                                 1042169
                                             ); // You must wait several hours before changing prices again.
+                                        }
                                     }
                                     else
                                     {
                                         m_Town.Tax = newTax;
 
                                         if (m_From.AccessLevel == AccessLevel.Player)
+                                        {
                                             m_Town.LastTaxChange = DateTime.UtcNow;
+                                        }
                                     }
 
                                     break;

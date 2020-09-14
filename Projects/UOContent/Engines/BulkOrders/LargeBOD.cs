@@ -35,8 +35,12 @@ namespace Server.Engines.BulkOrders
             get
             {
                 for (var i = 0; i < m_Entries.Length; ++i)
+                {
                     if (m_Entries[i].Amount < AmountMax)
+                    {
                         return false;
+                    }
+                }
 
                 return true;
             }
@@ -51,15 +55,21 @@ namespace Server.Engines.BulkOrders
             list.Add(1060655); // large bulk order
 
             if (RequireExceptional)
+            {
                 list.Add(1045141); // All items must be exceptional.
+            }
 
             if (Material != BulkMaterialType.None)
+            {
                 list.Add(LargeBODGump.GetMaterialNumberFor(Material)); // All items must be made with x material.
+            }
 
             list.Add(1060656, AmountMax.ToString()); // amount to make: ~1_val~
 
             for (var i = 0; i < m_Entries.Length; ++i)
+            {
                 list.Add(1060658 + i, "#{0}\t{1}", m_Entries[i].Details.Number, m_Entries[i].Amount); // ~1_val~: ~2_val~
+            }
         }
 
         public override void OnDoubleClickNotAccessible(Mobile from)
@@ -75,9 +85,13 @@ namespace Server.Engines.BulkOrders
         public override void OnDoubleClick(Mobile from)
         {
             if (IsChildOf(from.Backpack) || InSecureTrade || RootParent is PlayerVendor)
-                from.SendGump(new LargeBODGump(from, this));
+            {
+                @from.SendGump(new LargeBODGump(@from, this));
+            }
             else
-                from.SendLocalizedMessage(1045156); // You must have the deed in your backpack to use it.
+            {
+                @from.SendLocalizedMessage(1045156); // You must have the deed in your backpack to use it.
+            }
         }
 
         public override void EndCombine(Mobile from, Item item)
@@ -91,11 +105,13 @@ namespace Server.Engines.BulkOrders
             LargeBulkEntry entry = null;
 
             for (var i = 0; i < m_Entries.Length; ++i)
+            {
                 if (m_Entries[i].Details.Type == small.Type)
                 {
                     entry = m_Entries[i];
                     break;
                 }
+            }
 
             if (entry == null)
             {
@@ -140,7 +156,9 @@ namespace Server.Engines.BulkOrders
                 from.SendGump(new LargeBODGump(from, this));
 
                 if (!Complete)
-                    BeginCombine(from);
+                {
+                    BeginCombine(@from);
+                }
             }
         }
 
@@ -153,7 +171,9 @@ namespace Server.Engines.BulkOrders
             writer.Write(m_Entries.Length);
 
             for (var i = 0; i < m_Entries.Length; ++i)
+            {
                 m_Entries[i].Serialize(writer);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -169,7 +189,9 @@ namespace Server.Engines.BulkOrders
                         m_Entries = new LargeBulkEntry[reader.ReadInt()];
 
                         for (var i = 0; i < m_Entries.Length; ++i)
+                        {
                             m_Entries[i] = new LargeBulkEntry(this, reader);
+                        }
 
                         break;
                     }

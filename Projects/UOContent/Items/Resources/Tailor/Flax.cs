@@ -61,12 +61,16 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Flax.Deleted)
+                {
                     return;
+                }
 
                 var wheel = targeted as ISpinningWheel;
 
                 if (wheel == null && targeted is AddonComponent component)
+                {
                     wheel = component.Addon as ISpinningWheel;
+                }
 
                 if (wheel is Item)
                 {

@@ -32,14 +32,20 @@ namespace Server.Commands.Generic
         public static bool IsAccessible(Mobile from, object obj)
         {
             if (from.AccessLevel >= AccessLevel.Administrator || obj == null)
+            {
                 return true;
+            }
 
             Mobile mob = null;
 
             if (obj is Mobile m)
+            {
                 mob = m;
+            }
             else if (obj is Item item)
+            {
                 mob = item.RootParent as Mobile;
+            }
 
             return mob == null || mob == from || from.AccessLevel > mob.AccessLevel;
         }
@@ -47,7 +53,9 @@ namespace Server.Commands.Generic
         public virtual void ExecuteList(CommandEventArgs e, List<object> list)
         {
             for (var i = 0; i < list.Count; ++i)
+            {
                 Execute(e, list[i]);
+            }
         }
 
         public virtual void Execute(CommandEventArgs e, object obj)
@@ -70,7 +78,9 @@ namespace Server.Commands.Generic
             }
 
             if (m_Responses.Count == 10)
+            {
                 return;
+            }
 
             m_Responses.Add(new MessageEntry(message));
         }
@@ -89,7 +99,9 @@ namespace Server.Commands.Generic
             }
 
             if (m_Failures.Count == 10)
+            {
                 return;
+            }
 
             m_Failures.Add(new MessageEntry(message));
         }
@@ -97,18 +109,26 @@ namespace Server.Commands.Generic
         public void Flush(Mobile from, bool flushToLog)
         {
             if (m_Responses.Count > 0)
+            {
                 for (var i = 0; i < m_Responses.Count; ++i)
                 {
                     var entry = m_Responses[i];
 
-                    from.SendMessage(entry.ToString());
+                    @from.SendMessage(entry.ToString());
 
                     if (flushToLog)
-                        CommandLogging.WriteLine(from, entry.ToString());
+                    {
+                        CommandLogging.WriteLine(@from, entry.ToString());
+                    }
                 }
+            }
             else
+            {
                 for (var i = 0; i < m_Failures.Count; ++i)
-                    from.SendMessage(m_Failures[i].ToString());
+                {
+                    @from.SendMessage(m_Failures[i].ToString());
+                }
+            }
 
             m_Responses.Clear();
             m_Failures.Clear();

@@ -193,7 +193,9 @@ namespace Server.Items
                 var idx = (int)m_Type;
 
                 if (idx < 0 || idx >= m_PlaceNames.Length)
+                {
                     return "a snowy scene";
+                }
 
                 return $"a snowy scene of {m_PlaceNames[idx]}";
             }
@@ -278,7 +280,9 @@ namespace Server.Items
             get
             {
                 if (m_Type >= SnowGlobeTypeThree.Covetous)
+                {
                     return 1075440 + ((int)m_Type - 4);
+                }
 
                 return 1075294 + (int)m_Type;
             }

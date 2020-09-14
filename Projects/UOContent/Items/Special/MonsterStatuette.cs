@@ -120,7 +120,9 @@ namespace Server.Items
             var v = (int)type;
 
             if (v < 0 || v >= m_Table.Length)
+            {
                 v = 0;
+            }
 
             return m_Table[v];
         }
@@ -141,11 +143,17 @@ namespace Server.Items
             m_Type = type;
 
             if (m_Type == MonsterStatuetteType.Slime)
+            {
                 Hue = Utility.RandomSlimeHue();
+            }
             else if (m_Type == MonsterStatuetteType.RedDeath)
+            {
                 Hue = 0x21;
+            }
             else if (m_Type == MonsterStatuetteType.HalloweenGhoul)
+            {
                 Hue = 0xF4;
+            }
         }
 
         public MonsterStatuette(Serial serial) : base(serial)
@@ -173,13 +181,21 @@ namespace Server.Items
                 ItemID = MonsterStatuetteInfo.GetInfo(m_Type).ItemID;
 
                 if (m_Type == MonsterStatuetteType.Slime)
+                {
                     Hue = Utility.RandomSlimeHue();
+                }
                 else if (m_Type == MonsterStatuetteType.RedDeath)
+                {
                     Hue = 0x21;
+                }
                 else if (m_Type == MonsterStatuetteType.HalloweenGhoul)
+                {
                     Hue = 0xF4;
+                }
                 else
+                {
                     Hue = 0;
+                }
 
                 InvalidateProperties();
             }
@@ -202,7 +218,9 @@ namespace Server.Items
                 var sounds = MonsterStatuetteInfo.GetInfo(m_Type).Sounds;
 
                 if (sounds.Length > 0)
+                {
                     Effects.PlaySound(Location, Map, sounds.RandomElement());
+                }
             }
 
             base.OnMovement(m, oldLocation);
@@ -213,12 +231,18 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Core.ML && IsRewardItem)
+            {
                 list.Add(RewardSystem.GetRewardYearLabel(this, new object[] { m_Type })); // X Year Veteran Reward
+            }
 
             if (m_TurnedOn)
+            {
                 list.Add(502695); // turned on
+            }
             else
+            {
                 list.Add(502696); // turned off
+            }
         }
 
         public bool IsOwner(Mobile mob) => BaseHouse.FindHouseAt(this)?.IsOwner(mob) == true;
@@ -294,7 +318,9 @@ namespace Server.Items
                     m_Statuette.TurnedOn = newValue;
 
                     if (newValue && !m_Statuette.IsLockedDown)
-                        from.SendLocalizedMessage(502693); // Remember, this only works when locked down.
+                    {
+                        @from.SendLocalizedMessage(502693); // Remember, this only works when locked down.
+                    }
                 }
                 else
                 {

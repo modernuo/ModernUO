@@ -42,7 +42,9 @@ namespace Server.Engines.Quests.Collector
             QuestSystem qs = to.Quest as CollectorQuest;
 
             if (qs == null)
+            {
                 return false;
+            }
 
             return qs.IsObjectiveInProgress(typeof(FindTomasObjective))
                    || qs.IsObjectiveInProgress(typeof(CaptureImagesObjective))

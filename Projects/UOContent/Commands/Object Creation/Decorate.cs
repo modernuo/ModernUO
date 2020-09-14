@@ -42,7 +42,9 @@ namespace Server.Commands
         public static void Generate(string folder, params Map[] maps)
         {
             if (!Directory.Exists(folder))
+            {
                 return;
+            }
 
             var files = Directory.GetFiles(folder, "*.cfg");
 
@@ -51,7 +53,9 @@ namespace Server.Commands
                 var list = DecorationList.ReadAll(files[i]);
 
                 for (var j = 0; j < list.Count; ++j)
+                {
                     m_Count += list[j].Generate(maps);
+                }
             }
         }
     }
@@ -82,7 +86,9 @@ namespace Server.Commands
         public Item Construct()
         {
             if (m_Type == null)
+            {
                 return null;
+            }
 
             Item item;
 
@@ -97,6 +103,7 @@ namespace Server.Commands
                     var labelNumber = 0;
 
                     for (var i = 0; i < m_Params.Length; ++i)
+                    {
                         if (m_Params[i].StartsWith("LabelNumber"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
@@ -107,6 +114,7 @@ namespace Server.Commands
                                 break;
                             }
                         }
+                    }
 
                     item = new LocalizedStatic(m_ItemID, labelNumber);
                 }
@@ -115,6 +123,7 @@ namespace Server.Commands
                     var labelNumber = 0;
 
                     for (var i = 0; i < m_Params.Length; ++i)
+                    {
                         if (m_Params[i].StartsWith("LabelNumber"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
@@ -125,6 +134,7 @@ namespace Server.Commands
                                 break;
                             }
                         }
+                    }
 
                     item = new LocalizedSign(m_ItemID, labelNumber);
                 }
@@ -133,12 +143,18 @@ namespace Server.Commands
                     var bloodied = false;
 
                     for (var i = 0; !bloodied && i < m_Params.Length; ++i)
+                    {
                         bloodied = m_Params[i] == "Bloodied";
+                    }
 
                     if (m_Type == typeofAnkhWest)
+                    {
                         item = new AnkhWest(bloodied);
+                    }
                     else
+                    {
                         item = new AnkhNorth(bloodied);
+                    }
                 }
                 else if (m_Type == typeofMarkContainer)
                 {
@@ -147,6 +163,7 @@ namespace Server.Commands
                     var map = Map.Malas;
 
                     for (var i = 0; i < m_Params.Length; ++i)
+                    {
                         if (m_Params[i] == "Bone")
                         {
                             bone = true;
@@ -160,8 +177,11 @@ namespace Server.Commands
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 map = Map.Parse(m_Params[i].Substring(++indexOf));
+                            }
                         }
+                    }
 
                     var mc = new MarkContainer(bone, locked);
 
@@ -180,48 +200,62 @@ namespace Server.Commands
                     var resetDelay = TimeSpan.Zero;
 
                     for (var i = 0; i < m_Params.Length; ++i)
+                    {
                         if (m_Params[i].StartsWith("Range"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 range = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            }
                         }
                         else if (m_Params[i].StartsWith("WarningString"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 messageString = m_Params[i].Substring(++indexOf);
+                            }
                         }
                         else if (m_Params[i].StartsWith("WarningNumber"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 messageNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            }
                         }
                         else if (m_Params[i].StartsWith("HintString"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 hintString = m_Params[i].Substring(++indexOf);
+                            }
                         }
                         else if (m_Params[i].StartsWith("HintNumber"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 hintNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            }
                         }
                         else if (m_Params[i].StartsWith("ResetDelay"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 resetDelay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                            }
                         }
+                    }
 
                     var hi = new HintItem(m_ItemID, range, messageNumber, hintNumber);
 
@@ -239,34 +273,44 @@ namespace Server.Commands
                     var resetDelay = TimeSpan.Zero;
 
                     for (var i = 0; i < m_Params.Length; ++i)
+                    {
                         if (m_Params[i].StartsWith("Range"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 range = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            }
                         }
                         else if (m_Params[i].StartsWith("WarningString"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 messageString = m_Params[i].Substring(++indexOf);
+                            }
                         }
                         else if (m_Params[i].StartsWith("WarningNumber"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 messageNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            }
                         }
                         else if (m_Params[i].StartsWith("ResetDelay"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 resetDelay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                            }
                         }
+                    }
 
                     var wi = new WarningItem(m_ItemID, range, messageNumber);
 
@@ -280,17 +324,21 @@ namespace Server.Commands
                     var direction = CannonDirection.North;
 
                     for (var i = 0; i < m_Params.Length; ++i)
+                    {
                         if (m_Params[i].StartsWith("CannonDirection"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 direction = (CannonDirection)Enum.Parse(
                                     typeof(CannonDirection),
                                     m_Params[i].Substring(++indexOf),
                                     true
                                 );
+                            }
                         }
+                    }
 
                     item = new Cannon(direction);
                 }
@@ -300,27 +348,35 @@ namespace Server.Commands
                     var destination = new Rectangle2D();
 
                     for (var i = 0; i < m_Params.Length; ++i)
+                    {
                         if (m_Params[i].StartsWith("Word"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 word = m_Params[i].Substring(++indexOf);
+                            }
                         }
                         else if (m_Params[i].StartsWith("DestStart"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 destination.Start = Point2D.Parse(m_Params[i].Substring(++indexOf));
+                            }
                         }
                         else if (m_Params[i].StartsWith("DestEnd"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 destination.End = Point2D.Parse(m_Params[i].Substring(++indexOf));
+                            }
                         }
+                    }
 
                     item = new SerpentPillar(word, destination);
                 }
@@ -330,6 +386,7 @@ namespace Server.Commands
                     var fill = false;
 
                     for (var i = 0; !fill && i < m_Params.Length; ++i)
+                    {
                         if (m_Params[i].StartsWith("Content"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
@@ -344,17 +401,23 @@ namespace Server.Commands
                                 fill = true;
                             }
                         }
+                    }
 
                     if (fill)
+                    {
                         item = (Item)ActivatorUtil.CreateInstance(m_Type, content);
+                    }
                     else
+                    {
                         item = (Item)ActivatorUtil.CreateInstance(m_Type);
+                    }
                 }
                 else if (m_Type.IsSubclassOf(typeofBaseDoor))
                 {
                     var facing = DoorFacing.WestCW;
 
                     for (var i = 0; i < m_Params.Length; ++i)
+                    {
                         if (m_Params[i].StartsWith("Facing"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
@@ -365,6 +428,7 @@ namespace Server.Commands
                                 break;
                             }
                         }
+                    }
 
                     item = (Item)ActivatorUtil.CreateInstance(m_Type, facing);
                 }
@@ -383,13 +447,17 @@ namespace Server.Commands
                 if (addon is MaabusCoffin coffin)
                 {
                     for (var i = 0; i < m_Params.Length; ++i)
+                    {
                         if (m_Params[i].StartsWith("SpawnLocation"))
                         {
                             var indexOf = m_Params[i].IndexOf('=');
 
                             if (indexOf >= 0)
+                            {
                                 coffin.SpawnLocation = Point3D.Parse(m_Params[i].Substring(++indexOf));
+                            }
                         }
+                    }
                 }
                 else if (m_ItemID > 0)
                 {
@@ -400,7 +468,9 @@ namespace Server.Commands
                         var comp = comps[i];
 
                         if (comp.Offset == Point3D.Zero)
+                        {
                             comp.ItemID = m_ItemID;
+                        }
                     }
                 }
             }
@@ -411,54 +481,76 @@ namespace Server.Commands
                 for (var i = 0; i < m_Params.Length; ++i)
                 {
                     if (!unlit && m_Params[i] == "Unlit")
+                    {
                         unlit = true;
+                    }
                     else if (!unprotected && m_Params[i] == "Unprotected")
+                    {
                         unprotected = true;
+                    }
 
                     if (unlit && unprotected)
+                    {
                         break;
+                    }
                 }
 
                 if (!unlit)
+                {
                     light.Ignite();
+                }
+
                 if (!unprotected)
+                {
                     light.Protected = true;
+                }
 
                 if (m_ItemID > 0)
+                {
                     light.ItemID = m_ItemID;
+                }
             }
             else if (item is Spawner sp)
             {
                 sp.NextSpawn = TimeSpan.Zero;
 
                 for (var i = 0; i < m_Params.Length; ++i)
+                {
                     if (m_Params[i].StartsWith("Spawn"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             sp.AddEntry(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("MinDelay"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             sp.MinDelay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("MaxDelay"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             sp.MaxDelay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("NextSpawn"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             sp.NextSpawn = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("Count"))
                     {
@@ -468,7 +560,9 @@ namespace Server.Commands
                         {
                             sp.Count = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                             for (var se = 0; se < sp.Entries.Count; se++)
+                            {
                                 sp.Entries[se].SpawnedMaxCount = sp.Count;
+                            }
                         }
                     }
                     else if (m_Params[i].StartsWith("Team"))
@@ -476,303 +570,398 @@ namespace Server.Commands
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             sp.Team = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("HomeRange"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             sp.HomeRange = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("Running"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             sp.Running = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("Group"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             sp.Group = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                        }
                     }
+                }
             }
             else if (item is RecallRune rune)
             {
                 for (var i = 0; i < m_Params.Length; ++i)
+                {
                     if (m_Params[i].StartsWith("Description"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             rune.Description = m_Params[i].Substring(++indexOf);
+                        }
                     }
                     else if (m_Params[i].StartsWith("Marked"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             rune.Marked = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("TargetMap"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             rune.TargetMap = Map.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("Target"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             rune.Target = Point3D.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
+                }
             }
             else if (item is SkillTeleporter st)
             {
                 for (var i = 0; i < m_Params.Length; ++i)
+                {
                     if (m_Params[i].StartsWith("Skill"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             st.Skill = (SkillName)Enum.Parse(typeof(SkillName), m_Params[i].Substring(++indexOf), true);
+                        }
                     }
                     else if (m_Params[i].StartsWith("RequiredFixedPoint"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             st.Required = Utility.ToInt32(m_Params[i].Substring(++indexOf)) * 0.1;
+                        }
                     }
                     else if (m_Params[i].StartsWith("Required"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             st.Required = Utility.ToDouble(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("MessageString"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             st.MessageString = m_Params[i].Substring(++indexOf);
+                        }
                     }
                     else if (m_Params[i].StartsWith("MessageNumber"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             st.MessageNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("PointDest"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             st.PointDest = Point3D.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("MapDest"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             st.MapDest = Map.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("Creatures"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             st.Creatures = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("SourceEffect"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             st.SourceEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("DestEffect"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             st.DestEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("SoundID"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             st.SoundID = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("Delay"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             st.Delay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
+                }
 
                 if (m_ItemID > 0)
+                {
                     st.ItemID = m_ItemID;
+                }
             }
             else if (item is KeywordTeleporter kt)
             {
                 for (var i = 0; i < m_Params.Length; ++i)
+                {
                     if (m_Params[i].StartsWith("Substring"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             kt.Substring = m_Params[i].Substring(++indexOf);
+                        }
                     }
                     else if (m_Params[i].StartsWith("Keyword"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             kt.Keyword = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("Range"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             kt.Range = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("PointDest"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             kt.PointDest = Point3D.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("MapDest"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             kt.MapDest = Map.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("Creatures"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             kt.Creatures = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("SourceEffect"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             kt.SourceEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("DestEffect"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             kt.DestEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("SoundID"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             kt.SoundID = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("Delay"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             kt.Delay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
+                }
 
                 if (m_ItemID > 0)
+                {
                     kt.ItemID = m_ItemID;
+                }
             }
             else if (item is Teleporter tp)
             {
                 for (var i = 0; i < m_Params.Length; ++i)
+                {
                     if (m_Params[i].StartsWith("PointDest"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             tp.PointDest = Point3D.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("MapDest"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             tp.MapDest = Map.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("Creatures"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             tp.Creatures = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("SourceEffect"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             tp.SourceEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("DestEffect"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             tp.DestEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("SoundID"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             tp.SoundID = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                        }
                     }
                     else if (m_Params[i].StartsWith("Delay"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             tp.Delay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                        }
                     }
+                }
 
                 if (m_ItemID > 0)
+                {
                     tp.ItemID = m_ItemID;
+                }
             }
             else if (item is FillableContainer cont)
             {
                 for (var i = 0; i < m_Params.Length; ++i)
+                {
                     if (m_Params[i].StartsWith("ContentType"))
                     {
                         var indexOf = m_Params[i].IndexOf('=');
 
                         if (indexOf >= 0)
+                        {
                             cont.ContentType = (FillableContentType)Enum.Parse(
                                 typeof(FillableContentType),
                                 m_Params[i].Substring(++indexOf),
                                 true
                             );
+                        }
                     }
+                }
 
                 if (m_ItemID > 0)
+                {
                     cont.ItemID = m_ItemID;
+                }
             }
             else if (m_ItemID > 0)
             {
@@ -782,12 +971,15 @@ namespace Server.Commands
             item.Movable = false;
 
             for (var i = 0; i < m_Params.Length; ++i)
+            {
                 if (m_Params[i].StartsWith("Light"))
                 {
                     var indexOf = m_Params[i].IndexOf('=');
 
                     if (indexOf >= 0)
+                    {
                         item.Light = (LightType)Enum.Parse(typeof(LightType), m_Params[i].Substring(++indexOf), true);
+                    }
                 }
                 else if (m_Params[i].StartsWith("Hue"))
                 {
@@ -798,9 +990,13 @@ namespace Server.Commands
                         var hue = Utility.ToInt32(m_Params[i].Substring(++indexOf));
 
                         if (item is DyeTub tub)
+                        {
                             tub.DyedHue = hue;
+                        }
                         else
+                        {
                             item.Hue = hue;
+                        }
                     }
                 }
                 else if (m_Params[i].StartsWith("Name"))
@@ -808,7 +1004,9 @@ namespace Server.Commands
                     var indexOf = m_Params[i].IndexOf('=');
 
                     if (indexOf >= 0)
+                    {
                         item.Name = m_Params[i].Substring(++indexOf);
+                    }
                 }
                 else if (m_Params[i].StartsWith("Amount"))
                 {
@@ -825,6 +1023,7 @@ namespace Server.Commands
                         item.Stackable = wasStackable;
                     }
                 }
+            }
 
             return item;
         }
@@ -844,7 +1043,9 @@ namespace Server.Commands
                 foreach (var item in eable)
                 {
                     if (!(item is BaseDoor))
+                    {
                         continue;
+                    }
 
                     var bd = (BaseDoor)item;
                     Point3D p;
@@ -862,12 +1063,18 @@ namespace Server.Commands
                     }
 
                     if (p.X != x || p.Y != y)
+                    {
                         continue;
+                    }
 
                     if (item.Z == z && bdItemID == itemID)
+                    {
                         res = true;
+                    }
                     else if (Math.Abs(item.Z - z) < 8)
+                    {
                         m_DeleteQueue.Enqueue(item);
+                    }
                 }
             }
             else if ((TileData.ItemTable[itemID & TileData.MaxItemValue].Flags & TileFlag.LightSource) != 0)
@@ -878,20 +1085,26 @@ namespace Server.Commands
                 var srcName = srcItem.ItemData.Name;
 
                 foreach (var item in eable)
+                {
                     if (item.Z == z)
                     {
                         if (item.ItemID == itemID)
                         {
                             if (item.Light != lt)
+                            {
                                 m_DeleteQueue.Enqueue(item);
+                            }
                             else
+                            {
                                 res = true;
+                            }
                         }
                         else if ((item.ItemData.Flags & TileFlag.LightSource) != 0 && item.ItemData.Name == srcName)
                         {
                             m_DeleteQueue.Enqueue(item);
                         }
                     }
+                }
             }
             else if (srcItem is Teleporter || srcItem is FillableContainer || srcItem is BaseBook)
             {
@@ -900,13 +1113,19 @@ namespace Server.Commands
                 var type = srcItem.GetType();
 
                 foreach (var item in eable)
+                {
                     if (item.Z == z && item.ItemID == itemID)
                     {
                         if (item.GetType() != type)
+                        {
                             m_DeleteQueue.Enqueue(item);
+                        }
                         else
+                        {
                             res = true;
+                        }
                     }
+                }
             }
             else
             {
@@ -922,7 +1141,9 @@ namespace Server.Commands
             eable.Free();
 
             while (m_DeleteQueue.Count > 0)
+            {
                 m_DeleteQueue.Dequeue().Delete();
+            }
 
             return res;
         }
@@ -954,7 +1175,9 @@ namespace Server.Commands
                     }
 
                     if (item == null)
+                    {
                         continue;
+                    }
 
                     if (FindItem(loc.X, loc.Y, loc.Z, maps[j], item))
                     {
@@ -971,12 +1194,14 @@ namespace Server.Commands
                             var itemType = door.GetType();
 
                             foreach (var link in eable)
+                            {
                                 if (link != item && link.Z == door.Z && link.GetType() == itemType)
                                 {
                                     door.Link = link;
                                     link.Link = door;
                                     break;
                                 }
+                            }
 
                             eable.Free();
                         }
@@ -1009,7 +1234,9 @@ namespace Server.Commands
             DecorationList v;
 
             while ((v = Read(ip)) != null)
+            {
                 list.Add(v);
+            }
 
             return list;
         }
@@ -1023,11 +1250,15 @@ namespace Server.Commands
                 line = line.Trim();
 
                 if (line.Length > 0 && !line.StartsWith("#"))
+                {
                     break;
+                }
             }
 
             if (string.IsNullOrEmpty(line))
+            {
                 return null;
+            }
 
             var list = new DecorationList();
 
@@ -1036,7 +1267,9 @@ namespace Server.Commands
             list.m_Type = AssemblyHandler.FindFirstTypeForName(line.Substring(0, indexOf++), true);
 
             if (list.m_Type == null)
+            {
                 throw new ArgumentException($"Type not found for header: '{line}'");
+            }
 
             line = line.Substring(indexOf);
             indexOf = line.IndexOf('(');
@@ -1047,12 +1280,16 @@ namespace Server.Commands
                 var parms = line.Substring(++indexOf);
 
                 if (line.EndsWith(")"))
+                {
                     parms = parms.Substring(0, parms.Length - 1);
+                }
 
                 list.m_Params = parms.Split(';');
 
                 for (var i = 0; i < list.m_Params.Length; ++i)
+                {
                     list.m_Params[i] = list.m_Params[i].Trim();
+                }
             }
             else
             {
@@ -1067,10 +1304,14 @@ namespace Server.Commands
                 line = line.Trim();
 
                 if (line.Length == 0)
+                {
                     break;
+                }
 
                 if (line.StartsWith("#"))
+                {
                     continue;
+                }
 
                 list.m_Entries.Add(new DecorationEntry(line));
             }

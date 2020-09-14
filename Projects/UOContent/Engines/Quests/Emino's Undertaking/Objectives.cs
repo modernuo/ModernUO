@@ -30,7 +30,9 @@ namespace Server.Engines.Quests.Ninja
         public override void CheckProgress()
         {
             if (System.From.Map == Map.Malas && System.From.InRange(new Point3D(406, 1141, 0), 2))
+            {
                 Complete();
+            }
         }
 
         public override void OnComplete()
@@ -48,7 +50,9 @@ namespace Server.Engines.Quests.Ninja
         public override void CheckProgress()
         {
             if (System.From.Map == Map.Malas && System.From.InRange(new Point3D(412, 1123, 0), 3))
+            {
                 Complete();
+            }
         }
 
         public override void OnComplete()
@@ -100,7 +104,9 @@ namespace Server.Engines.Quests.Ninja
             Mobile from = System.From;
 
             if (from.Map == Map.Malas && from.X > 399 && from.X < 408 && from.Y > 1091 && from.Y < 1099)
+            {
                 Complete();
+            }
         }
 
         public override void OnComplete()
@@ -164,7 +170,9 @@ namespace Server.Engines.Quests.Ninja
             Mobile from = System.From;
 
             if (from.Map != Map.Malas || from.Y > 992)
+            {
                 Complete();
+            }
         }
 
         public override void OnComplete()
@@ -198,7 +206,9 @@ namespace Server.Engines.Quests.Ninja
         public override void OnKill(BaseCreature creature, Container corpse)
         {
             if (creature is Henchman)
+            {
                 CurProgress++;
+            }
         }
 
         public override void OnComplete()

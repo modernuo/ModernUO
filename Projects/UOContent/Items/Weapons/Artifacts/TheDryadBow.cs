@@ -48,7 +48,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version < 1)
+            {
                 SkillBonuses.SetValues(0, m_PossibleBonusSkills.RandomElement(), Utility.Random(4) == 0 ? 10.0 : 5.0);
+            }
         }
     }
 }

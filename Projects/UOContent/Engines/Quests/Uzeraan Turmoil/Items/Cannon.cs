@@ -93,7 +93,9 @@ namespace Server.Engines.Quests.Haven
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
             if (!(Canoneer?.Deleted == false && Canoneer.Active))
+            {
                 return;
+            }
 
             var canFire = CannonDirection switch
             {
@@ -104,13 +106,17 @@ namespace Server.Engines.Quests.Haven
             };
 
             if (canFire && Canoneer.WillFire(this, m))
+            {
                 Fire(Canoneer, m);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
         {
             if (Canoneer?.Deleted == true)
+            {
                 Canoneer = null;
+            }
 
             base.Serialize(writer);
 
@@ -147,7 +153,10 @@ namespace Server.Engines.Quests.Haven
             get => Addon is Cannon cannon ? cannon.Canoneer : null;
             set
             {
-                if (Addon is Cannon cannon) cannon.Canoneer = value;
+                if (Addon is Cannon cannon)
+                {
+                    cannon.Canoneer = value;
+                }
             }
         }
 

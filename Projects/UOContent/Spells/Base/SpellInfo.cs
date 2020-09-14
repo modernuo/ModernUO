@@ -85,7 +85,9 @@ namespace Server.Spells
             Amounts = new int[regs.Length];
 
             for (var i = 0; i < regs.Length; ++i)
+            {
                 Amounts[i] = 1;
+            }
         }
 
         public int Action { get; set; }

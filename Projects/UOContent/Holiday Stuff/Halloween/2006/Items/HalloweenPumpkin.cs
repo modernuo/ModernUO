@@ -26,7 +26,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (!from.InRange(GetWorldLocation(), 2))
+            {
                 return;
+            }
 
             var douse = false;
 
@@ -90,7 +92,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Name == null && ItemID == 0x4698)
+            {
                 AssignRandomName();
+            }
         }
     }
 }

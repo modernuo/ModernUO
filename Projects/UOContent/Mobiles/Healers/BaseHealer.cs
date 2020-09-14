@@ -120,8 +120,13 @@ namespace Server.Mobiles
                     m_NextResurrect = DateTime.UtcNow + ResurrectDelay;
 
                     if (m.Map?.CanFit(m.Location, 16, false, false) != true)
+                    {
                         m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
-                    else if (CheckResurrect(m)) OfferResurrection(m);
+                    }
+                    else if (CheckResurrect(m))
+                    {
+                        OfferResurrection(m);
+                    }
                 }
                 else if (HealsYoungPlayers && m.Hits < m.HitsMax && m is PlayerMobile mobile && mobile.Young)
                 {

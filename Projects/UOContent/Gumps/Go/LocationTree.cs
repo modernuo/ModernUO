@@ -52,7 +52,9 @@ namespace Server.Gumps
             }
 
             for (var j = 0; j < parent.Locations.Length; j++)
+            {
                 parent.Locations[j].Parent = parent;
+            }
         }
     }
 }

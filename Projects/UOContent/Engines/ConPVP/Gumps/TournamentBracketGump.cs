@@ -77,14 +77,18 @@ namespace Server.Engines.ConPVP
                             for (var i = 0; i < tourney.ParticipantsPerMatch; ++i)
                             {
                                 if (sb.Length > 0)
+                                {
                                     sb.Append('v');
+                                }
 
                                 sb.Append(tourney.PlayersPerParticipant);
                             }
                         }
 
                         if (tourney.EventController != null)
+                        {
                             sb.Append(' ').Append(tourney.EventController.Title);
+                        }
 
                         sb.Append(" Tournament Bracket");
 
@@ -105,14 +109,22 @@ namespace Server.Engines.ConPVP
                                 secs %= 60;
 
                                 if (mins > 0 && secs > 0)
+                                {
                                     text =
                                         $"The tournament will begin in {mins} minute{(mins == 1 ? "" : "s")} and {secs} second{(secs == 1 ? "" : "s")}.";
+                                }
                                 else if (mins > 0)
+                                {
                                     text = $"The tournament will begin in {mins} minute{(mins == 1 ? "" : "s")}.";
+                                }
                                 else if (secs > 0)
+                                {
                                     text = $"The tournament will begin in {secs} second{(secs == 1 ? "" : "s")}.";
+                                }
                                 else
+                                {
                                     text = "The tournament will begin shortly.";
+                                }
                             }
                             else
                             {
@@ -140,7 +152,9 @@ namespace Server.Engines.ConPVP
                             defs = new BitArray(basedef.Options);
 
                             for (var i = 0; i < ruleset.Flavors.Count; ++i)
+                            {
                                 defs.Or(ruleset.Flavors[i].Options);
+                            }
                         }
                         else
                         {
@@ -152,8 +166,12 @@ namespace Server.Engines.ConPVP
                         var opts = ruleset.Options;
 
                         for (var i = 0; i < opts.Length; ++i)
+                        {
                             if (defs[i] != opts[i])
+                            {
                                 ++changes;
+                            }
+                        }
 
                         AddPage(0);
                         AddBackground(
@@ -204,9 +222,13 @@ namespace Server.Engines.ConPVP
                             sdText = $"{(int)tourney.SuddenDeath.TotalMinutes}:{tourney.SuddenDeath.Seconds:D2}";
 
                             if (tourney.SuddenDeathRounds > 0)
+                            {
                                 sdText = $"{sdText} (first {tourney.SuddenDeathRounds} rounds)";
+                            }
                             else
+                            {
                                 sdText = $"{sdText} (all rounds)";
+                            }
                         }
 
                         AddHtml(35, y, 240, 20, $"Sudden Death: {sdText}");
@@ -218,7 +240,9 @@ namespace Server.Engines.ConPVP
                         y += 20;
 
                         for (var i = 0; i < ruleset.Flavors.Count; ++i, y += 18)
+                        {
                             AddHtml(35, y, 190, 20, $" + {ruleset.Flavors[i].Title}");
+                        }
 
                         y += 4;
 
@@ -228,6 +252,7 @@ namespace Server.Engines.ConPVP
                             y += 20;
 
                             for (var i = 0; i < opts.Length; ++i)
+                            {
                                 if (defs[i] != opts[i])
                                 {
                                     var name = ruleset.Layout.FindByIndex(i);
@@ -240,6 +265,7 @@ namespace Server.Engines.ConPVP
 
                                     y += 22;
                                 }
+                            }
                         }
                         else
                         {
@@ -268,8 +294,12 @@ namespace Server.Engines.ConPVP
                             var name = part.NameList;
 
                             if (m_Tournament.TourneyType != TourneyType.Standard && part.Players.Count == 1)
+                            {
                                 if (part.Players[0] is PlayerMobile pm && pm.DuelPlayer != null)
+                                {
                                     name = Color(name, pm.DuelPlayer.Eliminated ? 0x6633333 : 0x336666);
+                                }
+                            }
 
                             AddRightArrow(25, y, ToButtonID(2, index + i), name);
                         }
@@ -279,7 +309,9 @@ namespace Server.Engines.ConPVP
                 case TourneyBracketGumpType.Participant_Info:
                     {
                         if (!(obj is TourneyParticipant part))
+                        {
                             break;
+                        }
 
                         AddPage(0);
                         AddBackground(0, 0, 300, 60 + 18 + 20 + part.Players.Count * 18 + 20 + 20 + 160, 9380);
@@ -298,8 +330,12 @@ namespace Server.Engines.ConPVP
                             var name = mob.Name;
 
                             if (m_Tournament.TourneyType != TourneyType.Standard)
+                            {
                                 if (mob is PlayerMobile pm && pm.DuelPlayer != null)
+                                {
                                     name = Color(name, pm.DuelPlayer.Eliminated ? 0x6633333 : 0x336666);
+                                }
+                            }
 
                             AddRightArrow(35, y, ToButtonID(4, i), name);
                             y += 18;
@@ -322,13 +358,17 @@ namespace Server.Engines.ConPVP
                         for (var i = 0; i < part.Log.Count; ++i)
                         {
                             if (sb.Length > 0)
+                            {
                                 sb.Append("<br>");
+                            }
 
                             sb.Append(part.Log[i]);
                         }
 
                         if (sb.Length == 0)
+                        {
                             sb.Append("Nothing logged yet.");
+                        }
 
                         AddHtml(25, y, 250, 150, Color(sb.ToString(), BlackColor32), false, true);
 
@@ -343,7 +383,9 @@ namespace Server.Engines.ConPVP
                         AddHtml(25, 35, 250, 20, Center("Participants"));
 
                         if (!(obj is Mobile mob))
+                        {
                             break;
+                        }
 
                         var ladder = Ladder.Instance;
                         var entry = ladder?.Find(mob);
@@ -378,7 +420,9 @@ namespace Server.Engines.ConPVP
                         StartPage(out var index, out var count, out var y, 12);
 
                         for (var i = 0; i < count; ++i, y += 18)
+                        {
                             AddRightArrow(25, y, ToButtonID(3, index + i), $"Round #{index + i + 1}");
+                        }
 
                         break;
                     }
@@ -391,7 +435,9 @@ namespace Server.Engines.ConPVP
                         AddHtml(25, 35, 250, 20, Center("Rounds"));
 
                         if (!(m_Object is PyramidLevel level))
+                        {
                             break;
+                        }
 
                         var matchesList = m_List != null
                             ? Utility.CastListCovariant<object, TourneyMatch>(m_List)
@@ -415,36 +461,51 @@ namespace Server.Engines.ConPVP
                             var color = -1;
 
                             if (match.InProgress)
+                            {
                                 color = 0x336666;
+                            }
                             else if (match.Context != null && match.Winner == null)
+                            {
                                 color = 0x666666;
+                            }
 
                             var sb = new StringBuilder();
 
                             if (m_Tournament.TourneyType == TourneyType.Standard)
+                            {
                                 for (var j = 0; j < match.Participants.Count; ++j)
                                 {
                                     if (sb.Length > 0)
+                                    {
                                         sb.Append(" vs ");
+                                    }
 
                                     var part = match.Participants[j];
                                     var txt = part.NameList;
 
                                     if (color == -1 && match.Context != null && match.Winner == part)
+                                    {
                                         txt = Color(txt, 0x336633);
+                                    }
                                     else if (color == -1 && match.Context != null)
+                                    {
                                         txt = Color(txt, 0x663333);
+                                    }
 
                                     sb.Append(txt);
                                 }
+                            }
                             else if (m_Tournament.EventController != null ||
                                      m_Tournament.TourneyType == TourneyType.RandomTeam ||
                                      m_Tournament.TourneyType == TourneyType.RedVsBlue ||
                                      m_Tournament.TourneyType == TourneyType.Faction)
+                            {
                                 for (var j = 0; j < match.Participants.Count; ++j)
                                 {
                                     if (sb.Length > 0)
+                                    {
                                         sb.Append(" vs ");
+                                    }
 
                                     var part = match.Participants[j];
                                     string txt;
@@ -504,18 +565,28 @@ namespace Server.Engines.ConPVP
                                     }
 
                                     if (color == -1 && match.Context != null && match.Winner == part)
+                                    {
                                         txt = Color(txt, 0x336633);
+                                    }
                                     else if (color == -1 && match.Context != null)
+                                    {
                                         txt = Color(txt, 0x663333);
+                                    }
 
                                     sb.Append(txt);
                                 }
-                            else if (m_Tournament.TourneyType == TourneyType.FreeForAll) sb.Append("Free For All");
+                            }
+                            else if (m_Tournament.TourneyType == TourneyType.FreeForAll)
+                            {
+                                sb.Append("Free For All");
+                            }
 
                             var str = sb.ToString();
 
                             if (color >= 0)
+                            {
                                 str = Color(str, color);
+                            }
 
                             AddRightArrow(25, y, ToButtonID(5, index + i + 1), str);
                         }
@@ -525,7 +596,9 @@ namespace Server.Engines.ConPVP
                 case TourneyBracketGumpType.Match_Info:
                     {
                         if (!(obj is TourneyMatch match))
+                        {
                             break;
+                        }
 
                         var ct = m_Tournament.TourneyType == TourneyType.FreeForAll ? 2 : match.Participants.Count;
 
@@ -546,16 +619,19 @@ namespace Server.Engines.ConPVP
                         AddHtml(25, 93, 250, 20, "Participants:");
 
                         if (m_Tournament.TourneyType == TourneyType.Standard)
+                        {
                             for (var i = 0; i < match.Participants.Count; ++i)
                             {
                                 var part = match.Participants[i];
 
                                 AddRightArrow(25, 113 + i * 18, ToButtonID(6, i), part.NameList);
                             }
+                        }
                         else if (m_Tournament.EventController != null ||
                                  m_Tournament.TourneyType == TourneyType.RandomTeam ||
                                  m_Tournament.TourneyType == TourneyType.RedVsBlue ||
                                  m_Tournament.TourneyType == TourneyType.Faction)
+                        {
                             for (var i = 0; i < match.Participants.Count; ++i)
                             {
                                 var part = match.Participants[i];
@@ -644,8 +720,11 @@ namespace Server.Engines.ConPVP
                                     );
                                 }
                             }
+                        }
                         else if (m_Tournament.TourneyType == TourneyType.FreeForAll)
+                        {
                             AddHtml(25, 113, 250, 20, "Free For All");
+                        }
 
                         break;
                     }
@@ -668,9 +747,13 @@ namespace Server.Engines.ConPVP
         private void AddColoredText(int x, int y, int width, int height, string text, int color)
         {
             if (color == 0)
+            {
                 AddHtml(x, y, width, height, text);
+            }
             else
+            {
                 AddHtml(x, y, width, height, Color(text, color));
+            }
         }
 
         public void AddRightArrow(int x, int y, int bid, string text)
@@ -678,7 +761,9 @@ namespace Server.Engines.ConPVP
             AddButton(x, y, 0x15E1, 0x15E5, bid);
 
             if (text != null)
+            {
                 AddHtml(x + 20, y - 1, 230, 20, text);
+            }
         }
 
         public void AddRightArrow(int x, int y, int bid)
@@ -691,7 +776,9 @@ namespace Server.Engines.ConPVP
             AddButton(x, y, 0x15E3, 0x15E7, bid);
 
             if (text != null)
+            {
                 AddHtml(x + 20, y - 1, 230, 20, text);
+            }
         }
 
         public void AddLeftArrow(int x, int y, int bid)
@@ -718,16 +805,22 @@ namespace Server.Engines.ConPVP
             y = 53 + (12 - perPage) * 18;
 
             if (m_Page > 0)
+            {
                 AddLeftArrow(242, 35, ToButtonID(1, 0));
+            }
 
             if ((m_Page + 1) * perPage < m_List.Count)
+            {
                 AddRightArrow(260, 35, ToButtonID(1, 1));
+            }
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (!FromButtonID(info.ButtonID, out var type, out var index))
+            {
                 return;
+            }
 
             switch (type)
             {
@@ -788,13 +881,16 @@ namespace Server.Engines.ConPVP
                             case 5:
                                 {
                                     if (!(m_Object is TourneyMatch match))
+                                    {
                                         break;
+                                    }
 
                                     for (var i = 0; i < m_Tournament.Pyramid.Levels.Count; ++i)
                                     {
                                         var level = m_Tournament.Pyramid.Levels[i];
 
                                         if (level.Matches.Contains(match))
+                                        {
                                             m_From.SendGump(
                                                 new TournamentBracketGump(
                                                     m_From,
@@ -805,6 +901,7 @@ namespace Server.Engines.ConPVP
                                                     level
                                                 )
                                             );
+                                        }
                                     }
 
                                     break;
@@ -820,6 +917,7 @@ namespace Server.Engines.ConPVP
                             case 0:
                                 {
                                     if (m_List != null && m_Page > 0)
+                                    {
                                         m_From.SendGump(
                                             new TournamentBracketGump(
                                                 m_From,
@@ -830,12 +928,14 @@ namespace Server.Engines.ConPVP
                                                 m_Object
                                             )
                                         );
+                                    }
 
                                     break;
                                 }
                             case 1:
                                 {
                                     if (m_List != null && (m_Page + 1) * m_PerPage < m_List.Count)
+                                    {
                                         m_From.SendGump(
                                             new TournamentBracketGump(
                                                 m_From,
@@ -846,6 +946,7 @@ namespace Server.Engines.ConPVP
                                                 m_Object
                                             )
                                         );
+                                    }
 
                                     break;
                                 }
@@ -856,9 +957,12 @@ namespace Server.Engines.ConPVP
                 case 2:
                     {
                         if (m_Type != TourneyBracketGumpType.Participant_List)
+                        {
                             break;
+                        }
 
                         if (index >= 0 && index < m_List.Count)
+                        {
                             m_From.SendGump(
                                 new TournamentBracketGump(
                                     m_From,
@@ -869,15 +973,19 @@ namespace Server.Engines.ConPVP
                                     m_List[index]
                                 )
                             );
+                        }
 
                         break;
                     }
                 case 3:
                     {
                         if (m_Type != TourneyBracketGumpType.Round_List)
+                        {
                             break;
+                        }
 
                         if (index >= 0 && index < m_List.Count)
+                        {
                             m_From.SendGump(
                                 new TournamentBracketGump(
                                     m_From,
@@ -888,15 +996,19 @@ namespace Server.Engines.ConPVP
                                     m_List[index]
                                 )
                             );
+                        }
 
                         break;
                     }
                 case 4:
                     {
                         if (m_Type != TourneyBracketGumpType.Participant_Info)
+                        {
                             break;
+                        }
 
                         if (m_Object is TourneyParticipant part && index >= 0 && index < part.Players.Count)
+                        {
                             m_From.SendGump(
                                 new TournamentBracketGump(
                                     m_From,
@@ -907,20 +1019,26 @@ namespace Server.Engines.ConPVP
                                     part.Players[index]
                                 )
                             );
+                        }
 
                         break;
                     }
                 case 5:
                     {
                         if (m_Type != TourneyBracketGumpType.Round_Info)
+                        {
                             break;
+                        }
 
                         if (!(m_Object is PyramidLevel level))
+                        {
                             break;
+                        }
 
                         if (index == 0)
                         {
                             if (level.FreeAdvance != null)
+                            {
                                 m_From.SendGump(
                                     new TournamentBracketGump(
                                         m_From,
@@ -931,10 +1049,13 @@ namespace Server.Engines.ConPVP
                                         level.FreeAdvance
                                     )
                                 );
+                            }
                             else
+                            {
                                 m_From.SendGump(
                                     new TournamentBracketGump(m_From, m_Tournament, m_Type, m_List, m_Page, m_Object)
                                 );
+                            }
                         }
                         else if (index >= 1 && index <= level.Matches.Count)
                         {
@@ -955,9 +1076,12 @@ namespace Server.Engines.ConPVP
                 case 6:
                     {
                         if (m_Type != TourneyBracketGumpType.Match_Info)
+                        {
                             break;
+                        }
 
                         if (m_Object is TourneyMatch match && index >= 0 && index < match.Participants.Count)
+                        {
                             m_From.SendGump(
                                 new TournamentBracketGump(
                                     m_From,
@@ -968,6 +1092,7 @@ namespace Server.Engines.ConPVP
                                     match.Participants[index]
                                 )
                             );
+                        }
 
                         break;
                     }

@@ -62,7 +62,9 @@ namespace Server.Items
             c.ItemID += 1;
 
             if (c.ItemID < 0x124D)
+            {
                 return;
+            }
 
             // blood
             var amount = Utility.RandomMinMax(3, 7);
@@ -78,7 +80,9 @@ namespace Server.Items
                     z = c.Map.GetAverageZ(x, y);
 
                     if (!c.Map.CanFit(x, y, z, 1, false, false))
+                    {
                         continue;
+                    }
                 }
 
                 var blood = new Blood(Utility.RandomMinMax(0x122C, 0x122F));

@@ -35,9 +35,13 @@ namespace Server.Guilds
             AddButton(345, 217, 0xF2, 0xF1, 0);
 
             if (pm.AcceptGuildInvites)
+            {
                 AddButton(20, 260, 0xD2, 0xD3, 2);
+            }
             else
+            {
                 AddButton(20, 260, 0xD3, 0xD2, 2);
+            }
 
             AddHtmlLocalized(45, 260, 200, 30, 1062943, 0x0); // <i>Ignore Guild Invites</i>
         }
@@ -45,7 +49,9 @@ namespace Server.Guilds
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (!(sender.Mobile is PlayerMobile pm) || pm.Guild != null)
+            {
                 return; // Sanity
+            }
 
             switch (info.ButtonID)
             {
@@ -115,9 +121,13 @@ namespace Server.Guilds
                         pm.AcceptGuildInvites = !pm.AcceptGuildInvites;
 
                         if (pm.AcceptGuildInvites)
+                        {
                             pm.SendLocalizedMessage(1070699); // You are now accepting guild invitations.
+                        }
                         else
+                        {
                             pm.SendLocalizedMessage(1070698); // You are now ignoring guild invitations.
+                        }
 
                         break;
                     }

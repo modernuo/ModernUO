@@ -26,7 +26,9 @@ namespace Server.Spells.Eighth
         public override bool CheckCast()
         {
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (Caster.Followers + (Core.SE ? 4 : 5) > Caster.FollowersMax)
             {

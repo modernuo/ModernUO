@@ -58,11 +58,17 @@ namespace Server.Commands
                 var ent = World.FindEntity(e.GetUInt32(0));
 
                 if (ent == null)
+                {
                     e.Mobile.SendMessage("No object with that serial was found.");
+                }
                 else if (!BaseCommand.IsAccessible(e.Mobile, ent))
+                {
                     e.Mobile.SendLocalizedMessage(500447); // That is not accessible.
+                }
                 else
+                {
                     e.Mobile.SendGump(new PropertiesGump(e.Mobile, ent));
+                }
             }
             else
             {
@@ -77,7 +83,9 @@ namespace Server.Commands
             var attrs = p.GetCustomAttributes(typeofCPA, false);
 
             if (attrs.Length == 0)
+            {
                 return null;
+            }
 
             return attrs[0] as CPA;
         }
@@ -90,7 +98,9 @@ namespace Server.Commands
             var split = propertyString.Split('.');
 
             if (split.Length == 0)
+            {
                 return null;
+            }
 
             var info = new PropertyInfo[split.Length];
 
@@ -99,7 +109,9 @@ namespace Server.Commands
                 var propertyName = split[i];
 
                 if (CIEqual(propertyName, "current"))
+                {
                     continue;
+                }
 
                 var props = type.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
 
@@ -108,7 +120,9 @@ namespace Server.Commands
                 var access = endAccess;
 
                 if (!isFinal)
+                {
                     access |= PropertyAccess.Read;
+                }
 
                 for (var j = 0; j < props.Length; ++j)
                 {
@@ -189,7 +203,9 @@ namespace Server.Commands
             for (var i = 0; i < chain.Length - 1; ++i)
             {
                 if (chain[i] == null)
+                {
                     continue;
+                }
 
                 obj = chain[i].GetValue(obj, null);
 
@@ -210,7 +226,9 @@ namespace Server.Commands
             var chain = GetPropertyInfoChain(from, o.GetType(), name, PropertyAccess.Read, ref failReason);
 
             if (chain == null || chain.Length == 0)
+            {
                 return failReason;
+            }
 
             var p = GetPropertyInfo(ref o, chain, ref failReason);
 
@@ -237,9 +255,13 @@ namespace Server.Commands
                     var valueString = args[1 + i * 2];
 
                     if (valueString.StartsWith("0x"))
+                    {
                         realValues[i] = Convert.ToInt32(valueString.Substring(2), 16);
+                    }
                     else
+                    {
                         realValues[i] = Convert.ToInt32(valueString);
+                    }
                 }
                 catch
                 {
@@ -247,21 +269,31 @@ namespace Server.Commands
                 }
 
                 if (realValues[i] > 0)
+                {
                     positive = true;
+                }
                 else if (realValues[i] < 0)
+                {
                     negative = true;
+                }
                 else
+                {
                     return "Zero is not a valid value to offset.";
+                }
 
                 string failReason = null;
                 realObjs[i] = o;
                 realProps[i] = GetPropertyInfo(from, ref realObjs[i], name, PropertyAccess.ReadWrite, ref failReason);
 
                 if (failReason != null)
+                {
                     return failReason;
+                }
 
                 if (realProps[i] == null)
+                {
                     return "Property not found.";
+                }
             }
 
             for (var i = 0; i < realProps.Length; ++i)
@@ -269,7 +301,9 @@ namespace Server.Commands
                 var obj = realProps[i].GetValue(realObjs[i], null);
 
                 if (!(obj is IConvertible))
+                {
                     return "Property is not IConvertable.";
+                }
 
                 try
                 {
@@ -287,16 +321,22 @@ namespace Server.Commands
             if (realProps.Length == 1)
             {
                 if (positive)
+                {
                     return "The property has been increased.";
+                }
 
                 return "The property has been decreased.";
             }
 
             if (positive && negative)
+            {
                 return "The properties have been changed.";
+            }
 
             if (positive)
+            {
                 return "The properties have been increased.";
+            }
 
             return "The properties have been decreased.";
         }
@@ -309,20 +349,34 @@ namespace Server.Commands
             string toString;
 
             if (value == null)
+            {
                 toString = "null";
+            }
             else if (IsNumeric(type))
+            {
                 toString = $"{value} (0x{value:X})";
+            }
             else if (IsChar(type))
+            {
                 toString = $"'{value}' ({(int)value} [0x{(int)value:X}])";
+            }
             else if (IsString(type))
+            {
                 toString = (string)value == "null" ? @"@""null""" : $"\"{value}\"";
+            }
             else if (IsText(type))
+            {
                 toString = ((TextDefinition)value).Format(false);
+            }
             else
+            {
                 toString = value.ToString();
+            }
 
             if (chain == null)
+            {
                 return $"{p.Name} = {toString}";
+            }
 
             var concat = new string[chain.Length * 2 + 1];
 
@@ -378,12 +432,17 @@ namespace Server.Commands
             var isSerial = IsSerial(type);
 
             if (isSerial) // mutate into int32
+            {
                 type = m_NumericTypes[4];
+            }
 
             if (value == "(-null-)" && !type.IsValueType)
+            {
                 value = null;
+            }
 
             if (IsEnum(type))
+            {
                 try
                 {
                     toSet = Enum.Parse(type, value ?? "", true);
@@ -392,19 +451,25 @@ namespace Server.Commands
                 {
                     return "That is not a valid enumeration member.";
                 }
+            }
             else if (IsType(type))
+            {
                 try
                 {
                     toSet = AssemblyHandler.FindFirstTypeForName(value);
 
                     if (toSet == null)
+                    {
                         return "No type with that name was found.";
+                    }
                 }
                 catch
                 {
                     return "No type with that name was found.";
                 }
+            }
             else if (IsParsable(type))
+            {
                 try
                 {
                     toSet = Parse(obj, type, value);
@@ -413,9 +478,13 @@ namespace Server.Commands
                 {
                     return "That is not properly formatted.";
                 }
+            }
             else if (value == null)
+            {
                 toSet = null;
+            }
             else if (value.StartsWith("0x") && IsNumeric(type))
+            {
                 try
                 {
                     toSet = Convert.ChangeType(Convert.ToUInt64(value.Substring(2), 16), type);
@@ -424,7 +493,9 @@ namespace Server.Commands
                 {
                     return "That is not properly formatted.";
                 }
+            }
             else
+            {
                 try
                 {
                     toSet = Convert.ChangeType(value, type);
@@ -433,9 +504,12 @@ namespace Server.Commands
                 {
                     return "That is not properly formatted.";
                 }
+            }
 
             if (isSerial) // mutate back
+            {
                 toSet = (Serial)(toSet ?? Serial.MinusOne);
+            }
 
             constructed = toSet;
             return null;
@@ -453,21 +527,29 @@ namespace Server.Commands
                     var reqLevel = AccessLevel.Administrator;
 
                     if (newLevel == AccessLevel.Administrator)
+                    {
                         reqLevel = AccessLevel.Developer;
+                    }
                     else if (newLevel >= AccessLevel.Developer)
+                    {
                         reqLevel = AccessLevel.Owner;
+                    }
 
                     if (from.AccessLevel < reqLevel)
+                    {
                         return "You do not have access to that level.";
+                    }
                 }
 
                 if (shouldLog)
+                {
                     CommandLogging.LogChangeProperty(
-                        from,
+                        @from,
                         logObject,
                         givenName,
                         toSet?.ToString() ?? "(-null-)"
                     );
+                }
 
                 prop.SetValue(obj, toSet, null);
                 return "Property has been set.";
@@ -482,7 +564,10 @@ namespace Server.Commands
         {
             try
             {
-                if (toSet is AccessLevel) return "You do not have access to that level.";
+                if (toSet is AccessLevel)
+                {
+                    return "You do not have access to that level.";
+                }
 
                 prop.SetValue(obj, toSet, null);
                 return "Property has been set.";
@@ -521,9 +606,13 @@ namespace Server.Commands
             protected override void OnTarget(Mobile from, object o)
             {
                 if (!BaseCommand.IsAccessible(from, o))
-                    from.SendLocalizedMessage(500447); // That is not accessible.
+                {
+                    @from.SendLocalizedMessage(500447); // That is not accessible.
+                }
                 else
-                    from.SendGump(new PropertiesGump(from, o));
+                {
+                    @from.SendGump(new PropertiesGump(@from, o));
+                }
             }
         }
     }
@@ -655,7 +744,9 @@ namespace Server
             get
             {
                 if (!IsBound)
+                {
                     throw new NotYetBoundException(this);
+                }
 
                 return m_Chain;
             }
@@ -666,7 +757,9 @@ namespace Server
             get
             {
                 if (!IsBound)
+                {
                     throw new NotYetBoundException(this);
+                }
 
                 return m_Chain[^1].PropertyType;
             }
@@ -675,7 +768,9 @@ namespace Server
         public bool CheckAccess(Mobile from)
         {
             if (!IsBound)
+            {
                 throw new NotYetBoundException(this);
+            }
 
             for (var i = 0; i < m_Chain.Length; ++i)
             {
@@ -686,18 +781,26 @@ namespace Server
                 var access = Access;
 
                 if (!isFinal)
+                {
                     access |= PropertyAccess.Read;
+                }
 
                 var security = Properties.GetCPA(prop);
 
                 if (security == null)
+                {
                     throw new InternalAccessException(this);
+                }
 
                 if ((access & PropertyAccess.Read) != 0 && from.AccessLevel < security.ReadLevel)
-                    throw new ReadAccessException(this, from.AccessLevel, security.ReadLevel);
+                {
+                    throw new ReadAccessException(this, @from.AccessLevel, security.ReadLevel);
+                }
 
                 if ((access & PropertyAccess.Write) != 0 && (from.AccessLevel < security.WriteLevel || security.ReadOnly))
-                    throw new WriteAccessException(this, from.AccessLevel, security.ReadLevel);
+                {
+                    throw new WriteAccessException(this, @from.AccessLevel, security.ReadLevel);
+                }
             }
 
             return true;
@@ -706,7 +809,9 @@ namespace Server
         public void BindTo(Type objectType, PropertyAccess desiredAccess)
         {
             if (IsBound)
+            {
                 throw new AlreadyBoundException(this);
+            }
 
             var split = Binding.Split('.');
 
@@ -722,20 +827,28 @@ namespace Server
                 );
 
                 if (chain[i] == null)
+                {
                     throw new UnknownPropertyException(this, split[i]);
+                }
 
                 objectType = chain[i].PropertyType;
 
                 var access = desiredAccess;
 
                 if (!isFinal)
+                {
                     access |= PropertyAccess.Read;
+                }
 
                 if ((access & PropertyAccess.Read) != 0 && !chain[i].CanRead)
+                {
                     throw new WriteOnlyException(this);
+                }
 
                 if ((access & PropertyAccess.Write) != 0 && !chain[i].CanWrite)
+                {
                     throw new ReadOnlyException(this);
+                }
             }
 
             Access = desiredAccess;
@@ -745,12 +858,16 @@ namespace Server
         public override string ToString()
         {
             if (!IsBound)
+            {
                 return Binding;
+            }
 
             var toJoin = new string[m_Chain.Length];
 
             for (var i = 0; i < toJoin.Length; ++i)
+            {
                 toJoin[i] = m_Chain[i].Name;
+            }
 
             return string.Join(".", toJoin);
         }

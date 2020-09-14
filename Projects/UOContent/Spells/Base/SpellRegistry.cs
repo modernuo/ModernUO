@@ -49,8 +49,12 @@ namespace Server.Spells
                     m_Count = 0;
 
                     for (var i = 0; i < m_Types.Length; ++i)
+                    {
                         if (m_Types[i] != null)
+                        {
                             ++m_Count;
+                        }
+                    }
                 }
 
                 return m_Count;
@@ -68,10 +72,14 @@ namespace Server.Spells
         public static void Register(int spellID, Type type)
         {
             if (spellID < 0 || spellID >= m_Types.Length)
+            {
                 return;
+            }
 
             if (m_Types[spellID] == null)
+            {
                 ++m_Count;
+            }
 
             m_Types[spellID] = type;
 
@@ -91,19 +99,25 @@ namespace Server.Spells
                 }
 
                 if (spm != null)
+                {
                     SpecialMoves.Add(spellID, spm);
+                }
             }
         }
 
         public static SpecialMove GetSpecialMove(int spellID)
         {
             if (spellID < 0 || spellID >= m_Types.Length)
+            {
                 return null;
+            }
 
             var t = m_Types[spellID];
 
             if (t == null || !t.IsSubclassOf(typeof(SpecialMove)))
+            {
                 return null;
+            }
 
             SpecialMoves.TryGetValue(spellID, out var move);
             return move;
@@ -112,7 +126,9 @@ namespace Server.Spells
         public static Spell NewSpell(int spellID, Mobile caster, Item scroll)
         {
             if (spellID < 0 || spellID >= m_Types.Length)
+            {
                 return null;
+            }
 
             var t = m_Types[spellID];
 

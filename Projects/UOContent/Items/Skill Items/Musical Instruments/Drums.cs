@@ -23,7 +23,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 3.0)
+            {
                 Weight = 4.0;
+            }
         }
     }
 }

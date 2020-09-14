@@ -11,9 +11,13 @@ namespace Server.Items
             Attributes.RegenHits = 3;
 
             if (Utility.RandomBool())
+            {
                 Attributes.BonusHits = 30;
+            }
             else
+            {
                 Attributes.AttackChance = 30;
+            }
         }
 
         public OrcChieftainHelm(Serial serial) : base(serial)
@@ -46,7 +50,10 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            if (version < 1 && Hue == 0x3f) /* Pigmented? */ Hue = 0x2a3;
+            if (version < 1 && Hue == 0x3f) /* Pigmented? */
+            {
+                Hue = 0x2a3;
+            }
         }
     }
 }

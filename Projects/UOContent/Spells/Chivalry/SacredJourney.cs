@@ -88,7 +88,9 @@ namespace Server.Spells.Chivalry
                 BaseCreature.TeleportPets(Caster, loc, map, true);
 
                 if (m_Book != null)
+                {
                     --m_Book.CurCharges;
+                }
 
                 Effects.SendLocationParticles(
                     EffectItem.Create(Caster.Location, Caster.Map, EffectItem.DefaultDuration),
@@ -109,15 +111,21 @@ namespace Server.Spells.Chivalry
         public override void OnCast()
         {
             if (m_Entry == null)
+            {
                 Caster.Target = new RecallSpellTarget(this);
+            }
             else
+            {
                 Effect(m_Entry.Location, m_Entry.Map, true);
+            }
         }
 
         public override bool CheckCast()
         {
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (Sigil.ExistsOn(Caster))
             {

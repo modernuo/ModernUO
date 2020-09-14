@@ -1371,7 +1371,9 @@ namespace Server.Items
             var version = reader.ReadEncodedInt();
 
             if (version == 0)
+            {
                 Light = LightType.Circle225;
+            }
         }
     }
 

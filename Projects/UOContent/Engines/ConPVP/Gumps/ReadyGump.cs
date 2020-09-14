@@ -26,7 +26,9 @@ namespace Server.Engines.ConPVP
                 height += 4;
 
                 if (p.Players.Length > 1)
+                {
                     height += 22;
+                }
 
                 height += p.Players.Length * 22;
             }
@@ -92,7 +94,9 @@ namespace Server.Engines.ConPVP
                 }
 
                 if (p.Players.Length > 1)
+                {
                     AddImage(35, yStore + 4, isAllReady ? 0x939 : 0x938);
+                }
             }
         }
 

@@ -13,9 +13,13 @@ namespace Server.Mobiles
             Name = NameList.RandomName("savage shaman");
 
             if (Utility.RandomBool())
+            {
                 Body = 184;
+            }
             else
+            {
                 Body = 183;
+            }
 
             SetStr(126, 145);
             SetDex(91, 110);
@@ -48,7 +52,9 @@ namespace Server.Mobiles
             PackItem(new Bandage(Utility.RandomMinMax(1, 15)));
 
             if (Utility.RandomDouble() < 0.1)
+            {
                 PackItem(new TribalBerry());
+            }
 
             AddItem(new BoneArms());
             AddItem(new BoneLegs());
@@ -75,7 +81,9 @@ namespace Server.Mobiles
         public override bool IsEnemy(Mobile m)
         {
             if (m.BodyMod == 183 || m.BodyMod == 184)
+            {
                 return false;
+            }
 
             return base.IsEnemy(m);
         }
@@ -94,7 +102,9 @@ namespace Server.Mobiles
                 aggressor.SendLocalizedMessage(1040008); // Your skin is scorched as the tribal paint burns away!
 
                 if (aggressor is PlayerMobile mobile)
+                {
                     mobile.SavagePaintExpiration = TimeSpan.Zero;
+                }
             }
         }
 
@@ -102,7 +112,9 @@ namespace Server.Mobiles
         {
             if (to is Dragon || to is WhiteWyrm || to is SwampDragon || to is Drake || to is Nightmare || to is Hiryu ||
                 to is LesserHiryu || to is Daemon)
+            {
                 damage *= 3;
+            }
         }
 
         public override void OnGotMeleeAttack(Mobile attacker)
@@ -110,24 +122,34 @@ namespace Server.Mobiles
             base.OnGotMeleeAttack(attacker);
 
             if (Utility.RandomDouble() < 0.1)
+            {
                 BeginSavageDance();
+            }
         }
 
         public void BeginSavageDance()
         {
             if (Map == null)
+            {
                 return;
+            }
 
             var list = new List<SavageShaman>();
 
             foreach (var m in GetMobilesInRange(8))
+            {
                 if (m != this && m is SavageShaman ss)
+                {
                     list.Add(ss);
+                }
+            }
 
             Animate(111, 5, 1, true, false, 0); // Do a little dance...
 
             if (AIObject != null)
+            {
                 AIObject.NextMove = Core.TickCount + 1000;
+            }
 
             if (list.Count >= 3)
             {
@@ -138,7 +160,9 @@ namespace Server.Mobiles
                     dancer.Animate(111, 5, 1, true, false, 0); // Get down tonight...
 
                     if (dancer.AIObject != null)
+                    {
                         dancer.AIObject.NextMove = Core.TickCount + 1000;
+                    }
                 }
 
                 Timer.DelayCall(TimeSpan.FromSeconds(1.0), EndSavageDance);
@@ -148,7 +172,9 @@ namespace Server.Mobiles
         public void EndSavageDance()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             var eable = GetMobilesInRange(8);
 
@@ -161,10 +187,14 @@ namespace Server.Mobiles
                             var isFriendly = m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback;
 
                             if (!isFriendly)
+                            {
                                 continue;
+                            }
 
                             if (m.Poisoned || MortalStrike.IsWounded(m) || !CanBeBeneficial(m))
+                            {
                                 continue;
+                            }
 
                             DoBeneficial(m);
 
@@ -188,10 +218,14 @@ namespace Server.Mobiles
                             var isFriendly = m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback;
 
                             if (isFriendly)
+                            {
                                 continue;
+                            }
 
                             if (!CanBeHarmful(m))
+                            {
                                 continue;
+                            }
 
                             DoHarmful(m);
 
@@ -222,10 +256,14 @@ namespace Server.Mobiles
                             var isFriendly = m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback;
 
                             if (isFriendly)
+                            {
                                 continue;
+                            }
 
                             if (!CanBeHarmful(m))
+                            {
                                 continue;
+                            }
 
                             DoHarmful(m);
 
@@ -238,18 +276,28 @@ namespace Server.Mobiles
                             var dist = GetDistanceToSqrt(m);
 
                             if (dist >= 3.0)
+                            {
                                 total -= (dist - 3.0) * 10.0;
+                            }
 
                             int level;
 
                             if (total >= 200.0 && Utility.Random(1, 100) <= 10)
+                            {
                                 level = 3;
+                            }
                             else if (total > 170.0)
+                            {
                                 level = 2;
+                            }
                             else if (total > 130.0)
+                            {
                                 level = 1;
+                            }
                             else
+                            {
                                 level = 0;
+                            }
 
                             m.ApplyPoison(this, Poison.GetPoison(level));
 

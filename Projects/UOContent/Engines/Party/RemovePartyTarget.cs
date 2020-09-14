@@ -15,14 +15,20 @@ namespace Server.Engines.PartySystem
                 var p = Party.Get(from);
 
                 if (p == null || p.Leader != from || !p.Contains(m))
+                {
                     return;
+                }
 
                 if (from == m)
-                    from.SendLocalizedMessage(
+                {
+                    @from.SendLocalizedMessage(
                         1005446
                     ); // You may only remove yourself from a party if you are not the leader.
+                }
                 else
+                {
                     p.Remove(m);
+                }
             }
         }
     }

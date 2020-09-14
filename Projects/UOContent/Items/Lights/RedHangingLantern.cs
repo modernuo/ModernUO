@@ -24,7 +24,10 @@ namespace Server.Items
             get
             {
                 if (ItemID == 0x24C2)
+                {
                     return 0x24C1;
+                }
+
                 return 0x24C3;
             }
         }
@@ -34,7 +37,10 @@ namespace Server.Items
             get
             {
                 if (ItemID == 0x24C1)
+                {
                     return 0x24C2;
+                }
+
                 return 0x24C4;
             }
         }

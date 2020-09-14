@@ -28,7 +28,9 @@ namespace Server.Items
                 Clock.GetTime(Map, X, Y, out var hours, out int _);
 
                 if (hours < 4 || hours > 20)
+                {
                     Effects.PlaySound(Location, Map, 0x569);
+                }
 
                 UpdateImage();
             }
@@ -43,7 +45,9 @@ namespace Server.Items
             base.OnAfterDelete();
 
             if (m_Timer?.Running == true)
+            {
                 m_Timer.Stop();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -70,36 +74,64 @@ namespace Server.Items
             if (FacingSouth)
             {
                 if (hours < 4)
+                {
                     ItemID = 0x2A60;
+                }
                 else if (hours < 6)
+                {
                     ItemID = 0x2A5F;
+                }
                 else if (hours < 8)
+                {
                     ItemID = 0x2A5E;
+                }
                 else if (hours < 16)
+                {
                     ItemID = 0x2A5D;
+                }
                 else if (hours < 18)
+                {
                     ItemID = 0x2A5E;
+                }
                 else if (hours < 20)
+                {
                     ItemID = 0x2A5F;
+                }
                 else
+                {
                     ItemID = 0x2A60;
+                }
             }
             else
             {
                 if (hours < 4)
+                {
                     ItemID = 0x2A64;
+                }
                 else if (hours < 6)
+                {
                     ItemID = 0x2A63;
+                }
                 else if (hours < 8)
+                {
                     ItemID = 0x2A62;
+                }
                 else if (hours < 16)
+                {
                     ItemID = 0x2A61;
+                }
                 else if (hours < 18)
+                {
                     ItemID = 0x2A62;
+                }
                 else if (hours < 20)
+                {
                     ItemID = 0x2A63;
+                }
                 else
+                {
                     ItemID = 0x2A64;
+                }
             }
         }
 
@@ -120,7 +152,9 @@ namespace Server.Items
             protected override void OnTick()
             {
                 if (m_Component?.Deleted == false)
+                {
                     m_Component.UpdateImage();
+                }
             }
         }
     }

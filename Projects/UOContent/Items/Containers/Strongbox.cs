@@ -45,7 +45,9 @@ namespace Server.Items
         public void OnChop(Mobile from)
         {
             if (m_House?.Deleted != false || m_Owner?.Deleted != false || from == m_Owner || m_House.IsOwner(from))
-                Chop(from);
+            {
+                Chop(@from);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -90,9 +92,13 @@ namespace Server.Items
         public override void AddNameProperty(ObjectPropertyList list)
         {
             if (m_Owner != null)
+            {
                 list.Add(1042887, m_Owner.Name); // a strong box owned by ~1_OWNER_NAME~
+            }
             else
+            {
                 base.AddNameProperty(list);
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -102,7 +108,9 @@ namespace Server.Items
                 LabelTo(from, 1042887, m_Owner.Name); // a strong box owned by ~1_OWNER_NAME~
 
                 if (CheckContentDisplay(from))
-                    LabelTo(from, "({0} items, {1} stones)", TotalItems, TotalWeight);
+                {
+                    LabelTo(@from, "({0} items, {1} stones)", TotalItems, TotalWeight);
+                }
             }
             else
             {
@@ -127,7 +135,10 @@ namespace Server.Items
             Container metalBox = new MetalBox();
             var subItems = new List<Item>(Items);
 
-            foreach (var subItem in subItems) metalBox.AddItem(subItem);
+            foreach (var subItem in subItems)
+            {
+                metalBox.AddItem(subItem);
+            }
 
             Delete();
 

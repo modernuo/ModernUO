@@ -26,6 +26,7 @@ namespace Server.Items
             m_Timer.Start();
 
             foreach (var c in Components)
+            {
                 switch (c.ItemID)
                 {
                     case 0x2DD9:
@@ -34,6 +35,7 @@ namespace Server.Items
                         ++c.ItemID;
                         break;
                 }
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -69,6 +71,7 @@ namespace Server.Items
             m_Timer = null;
 
             foreach (var c in Components)
+            {
                 switch (c.ItemID)
                 {
                     case 0x1016:
@@ -78,6 +81,7 @@ namespace Server.Items
                         --c.ItemID;
                         break;
                 }
+            }
 
             callback?.Invoke(this, from, hue);
         }

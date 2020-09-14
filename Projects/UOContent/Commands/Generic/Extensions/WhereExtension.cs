@@ -18,7 +18,9 @@ namespace Server.Commands.Generic
         public override void Optimize(Mobile from, Type baseType, ref AssemblyEmitter assembly)
         {
             if (baseType == null)
+            {
                 throw new InvalidOperationException("Insanity.");
+            }
 
             Conditional.Compile(ref assembly);
         }
@@ -26,7 +28,9 @@ namespace Server.Commands.Generic
         public override void Parse(Mobile from, string[] arguments, int offset, int size)
         {
             if (size < 1)
+            {
                 throw new Exception("Invalid condition syntax.");
+            }
 
             Conditional = ObjectConditional.ParseDirect(from, arguments, offset, size);
         }

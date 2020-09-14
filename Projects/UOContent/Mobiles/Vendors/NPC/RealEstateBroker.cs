@@ -25,7 +25,9 @@ namespace Server.Mobiles
         public override bool HandlesOnSpeech(Mobile from)
         {
             if (from.Alive && from.InRange(this, 3))
+            {
                 return true;
+            }
 
             return base.HandlesOnSpeech(from);
         }
@@ -129,33 +131,61 @@ namespace Server.Mobiles
             if (deed is SmallBrickHouseDeed || deed is StonePlasterHouseDeed || deed is FieldStoneHouseDeed ||
                 deed is WoodHouseDeed || deed is WoodPlasterHouseDeed ||
                 deed is ThatchedRoofCottageDeed)
+            {
                 price = 43800;
+            }
             else if (deed is BrickHouseDeed)
+            {
                 price = 144500;
+            }
             else if (deed is TwoStoryWoodPlasterHouseDeed || deed is TwoStoryStonePlasterHouseDeed)
+            {
                 price = 192400;
+            }
             else if (deed is TowerDeed)
+            {
                 price = 433200;
+            }
             else if (deed is KeepDeed)
+            {
                 price = 665200;
+            }
             else if (deed is CastleDeed)
+            {
                 price = 1022800;
+            }
             else if (deed is LargePatioDeed)
+            {
                 price = 152800;
+            }
             else if (deed is LargeMarbleDeed)
+            {
                 price = 192800;
+            }
             else if (deed is SmallTowerDeed)
+            {
                 price = 88500;
+            }
             else if (deed is LogCabinDeed)
+            {
                 price = 97800;
+            }
             else if (deed is SandstonePatioDeed)
+            {
                 price = 90900;
+            }
             else if (deed is VillaDeed)
+            {
                 price = 136500;
+            }
             else if (deed is StoneWorkshopDeed)
+            {
                 price = 60600;
+            }
             else if (deed is MarbleWorkshopDeed)
+            {
                 price = 60300;
+            }
 
             return AOS.Scale(price, 80); // refunds 80% of the purchase price
         }

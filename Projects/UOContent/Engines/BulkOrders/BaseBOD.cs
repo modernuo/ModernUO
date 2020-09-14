@@ -71,7 +71,9 @@ namespace Server.Engines.BulkOrders
             for (var i = 0; i < chances.Length; ++i)
             {
                 if (random < chances[i])
+                {
                     return i == 0 ? BulkMaterialType.None : start + (i - 1);
+                }
 
                 random -= chances[i];
             }
@@ -108,7 +110,9 @@ namespace Server.Engines.BulkOrders
                     var reward = rewardGroup.Items[i];
 
                     if (reward != null)
+                    {
                         list.Add(reward);
+                    }
                 }
             }
             else
@@ -116,7 +120,9 @@ namespace Server.Engines.BulkOrders
                 var reward = rewardGroup.AcquireItem();
 
                 if (reward != null)
+                {
                     list.Add(reward);
+                }
             }
 
             return list;
@@ -125,11 +131,15 @@ namespace Server.Engines.BulkOrders
         public virtual void BeginCombine(Mobile from)
         {
             if (Complete)
-                from.SendLocalizedMessage(
+            {
+                @from.SendLocalizedMessage(
                     1045166
                 ); // The maximum amount of requested items have already been combined to this deed.
+            }
             else
-                from.Target = new BODTarget(this);
+            {
+                @from.Target = new BODTarget(this);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -161,7 +171,9 @@ namespace Server.Engines.BulkOrders
             }
 
             if (Parent == null && Map == Map.Internal && Location == Point3D.Zero)
+            {
                 Delete();
+            }
         }
     }
 }

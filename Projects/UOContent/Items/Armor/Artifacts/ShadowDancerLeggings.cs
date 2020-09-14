@@ -41,7 +41,9 @@ namespace Server.Items
             if (version < 1)
             {
                 if (ItemID == 0x13CB)
+                {
                     ItemID = 0x13D2;
+                }
 
                 PhysicalBonus = 0;
                 PoisonBonus = 0;

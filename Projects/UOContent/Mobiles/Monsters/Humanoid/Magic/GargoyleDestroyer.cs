@@ -41,7 +41,9 @@ namespace Server.Mobiles
             VirtualArmor = 50;
 
             if (Utility.RandomDouble() < 0.2)
+            {
                 PackItem(new GargoylesPickaxe());
+            }
         }
 
         public GargoyleDestroyer(Serial serial) : base(serial)
@@ -66,7 +68,9 @@ namespace Server.Mobiles
         public override void OnDamagedBySpell(Mobile from)
         {
             if (from?.Alive == true && Utility.RandomDouble() < 0.4)
-                ThrowHatchet(from);
+            {
+                ThrowHatchet(@from);
+            }
         }
 
         public override void OnGotMeleeAttack(Mobile attacker)
@@ -74,7 +78,9 @@ namespace Server.Mobiles
             base.OnGotMeleeAttack(attacker);
 
             if (attacker?.Alive == true && attacker.Weapon is BaseRanged && Utility.RandomDouble() < 0.4)
+            {
                 ThrowHatchet(attacker);
+            }
         }
 
         public void ThrowHatchet(Mobile to)

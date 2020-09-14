@@ -25,7 +25,10 @@ namespace Server.Misc
 
         public static void Initialize()
         {
-            if (!Enabled) return;
+            if (!Enabled)
+            {
+                return;
+            }
 
             new StatusPage().Start();
 
@@ -34,7 +37,10 @@ namespace Server.Misc
 
         private static void Listen()
         {
-            if (!HttpListener.IsSupported) return;
+            if (!HttpListener.IsSupported)
+            {
+                return;
+            }
 
             if (_Listener == null)
             {
@@ -47,7 +53,10 @@ namespace Server.Misc
                 _Listener.Start();
             }
 
-            if (_Listener.IsListening) _Listener.BeginGetContext(ListenerCallback, null);
+            if (_Listener.IsListening)
+            {
+                _Listener.BeginGetContext(ListenerCallback, null);
+            }
         }
 
         private static void ListenerCallback(IAsyncResult result)
@@ -90,7 +99,10 @@ namespace Server.Misc
 
         protected override void OnTick()
         {
-            if (!Directory.Exists("web")) Directory.CreateDirectory("web");
+            if (!Directory.Exists("web"))
+            {
+                Directory.CreateDirectory("web");
+            }
 
             using (var op = new StreamWriter("web/status.html"))
             {

@@ -31,11 +31,13 @@ namespace Server.Misc
                         var disallowed = ProfanityProtection.Disallowed;
 
                         for (var i = 0; i < disallowed.Length; i++)
+                        {
                             if (name.IndexOf(disallowed[i]) != -1)
                             {
-                                from.SendLocalizedMessage(1072622); // That name isn't very polite.
+                                @from.SendLocalizedMessage(1072622); // That name isn't very polite.
                                 return;
                             }
+                        }
 
                         from.SendLocalizedMessage(
                             1072623,

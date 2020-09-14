@@ -48,14 +48,18 @@ namespace Server.Mobiles
             base.OnThink();
 
             if (DateTime.UtcNow < m_NextRestore)
+            {
                 return;
+            }
 
             m_NextRestore = DateTime.UtcNow + TimeSpan.FromSeconds(2.0);
 
             var caster = ControlMaster ?? SummonMaster;
 
             if (caster != null)
+            {
                 ++caster.Stam;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

@@ -37,7 +37,9 @@ namespace Server.Spells.Spellweaving
             var context = TransformationSpellHelper.GetContext(m);
 
             if (context?.Type == typeof(ReaperFormSpell))
+            {
                 m.Send(SpeedControl.WalkSpeed);
+            }
         }
 
         public override void DoEffect(Mobile m)

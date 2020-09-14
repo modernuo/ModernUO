@@ -23,7 +23,9 @@ namespace Server.Commands.Generic
         public override void Optimize(Mobile from, Type baseType, ref AssemblyEmitter assembly)
         {
             if (baseType == null)
+            {
                 throw new Exception("The ordering extension may only be used in combination with an object conditional.");
+            }
 
             foreach (var order in m_Orders)
             {
@@ -39,7 +41,9 @@ namespace Server.Commands.Generic
         public override void Parse(Mobile from, string[] arguments, int offset, int size)
         {
             if (size < 1)
+            {
                 throw new Exception("Invalid ordering syntax.");
+            }
 
             if (Insensitive.Equals(arguments[offset], "by"))
             {
@@ -47,7 +51,9 @@ namespace Server.Commands.Generic
                 --size;
 
                 if (size < 1)
+                {
                     throw new Exception("Invalid ordering syntax.");
+                }
             }
 
             var end = offset + size;
@@ -91,7 +97,9 @@ namespace Server.Commands.Generic
         public override void Filter(List<object> list)
         {
             if (m_Comparer == null)
+            {
                 throw new InvalidOperationException("The extension must first be optimized.");
+            }
 
             list.Sort(m_Comparer);
         }

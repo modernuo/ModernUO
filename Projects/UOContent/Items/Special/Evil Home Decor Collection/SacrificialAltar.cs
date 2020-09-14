@@ -28,7 +28,9 @@ namespace Server.Items
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
             if (!base.OnDragDrop(from, dropped))
+            {
                 return false;
+            }
 
             if (TotalItems >= 50)
             {
@@ -50,7 +52,9 @@ namespace Server.Items
         public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
         {
             if (!base.OnDragDropInto(from, item, p))
+            {
                 return false;
+            }
 
             if (TotalItems >= 50)
             {
@@ -83,7 +87,9 @@ namespace Server.Items
             var version = reader.ReadEncodedInt();
 
             if (Items.Count > 0)
+            {
                 m_Timer = Timer.DelayCall(TimeSpan.FromMinutes(3), Empty);
+            }
         }
 
         public virtual void Flip(Mobile from, Direction direction)
@@ -112,13 +118,17 @@ namespace Server.Items
                 Effects.PlaySound(location, Map, 0x32E);
 
                 if (Items.Count > 0)
+                {
                     for (var i = Items.Count - 1; i >= 0; --i)
                     {
                         if (i >= Items.Count)
+                        {
                             continue;
+                        }
 
                         Items[i].Delete();
                     }
+                }
             }
 
             m_Timer?.Stop();

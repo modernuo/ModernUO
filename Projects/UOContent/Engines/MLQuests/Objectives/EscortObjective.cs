@@ -15,19 +15,27 @@ namespace Server.Engines.MLQuests.Objectives
         {
             if (quester is BaseCreature creature && creature.Controlled ||
                 quester is BaseEscortable escortable && escortable.IsBeingDeleted)
+            {
                 return false;
+            }
 
             var context = MLQuestSystem.GetContext(pm);
 
             if (context != null)
+            {
                 foreach (var instance in context.QuestInstances)
+                {
                     if (instance.Quest.IsEscort)
                     {
                         if (message)
+                        {
                             MLQuestSystem.Tell(quester, pm, 500896); // I see you already have an escort.
+                        }
 
                         return false;
                     }
+                }
+            }
 
             var nextEscort = pm.LastEscortTime + BaseEscortable.EscortDelay;
 
@@ -38,14 +46,18 @@ namespace Server.Engines.MLQuests.Objectives
                     var minutes = (int)Math.Ceiling((nextEscort - DateTime.UtcNow).TotalMinutes);
 
                     if (minutes == 1)
+                    {
                         MLQuestSystem.Tell(quester, pm, "You must rest 1 minute before we set out on this journey.");
+                    }
                     else
+                    {
                         MLQuestSystem.Tell(
                             quester,
                             pm,
                             1071195,
                             minutes.ToString()
                         ); // You must rest ~1_minsleft~ minutes before we set out on this journey.
+                    }
                 }
 
                 return false;
@@ -59,9 +71,13 @@ namespace Server.Engines.MLQuests.Objectives
             g.AddHtmlLocalized(98, y, 312, 16, 1072206, 0x15F90); // Escort to
 
             if (Destination.Name.Number > 0)
+            {
                 g.AddHtmlLocalized(173, y, 312, 20, Destination.Name.Number, 0xFFFFFF);
+            }
             else if (Destination.Name.String != null)
+            {
                 g.AddLabel(173, y, 0x481, Destination.Name.String);
+            }
 
             y += 16;
         }
@@ -69,7 +85,9 @@ namespace Server.Engines.MLQuests.Objectives
         public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance)
         {
             if (instance == null || Destination == null)
+            {
                 return null;
+            }
 
             return new EscortObjectiveInstance(this, instance);
         }
@@ -92,10 +110,12 @@ namespace Server.Engines.MLQuests.Objectives
             m_Escort = instance.Quester as BaseCreature;
 
             if (MLQuestSystem.Debug && m_Escort == null && instance.Quester != null)
+            {
                 Console.WriteLine(
                     "Warning: EscortObjective is not supported for type '{0}'",
                     instance.Quester.GetType().Name
                 );
+            }
         }
 
         public bool HasCompleted { get; set; }
@@ -127,13 +147,17 @@ namespace Server.Engines.MLQuests.Objectives
                 ); // We have arrived! I thank thee, ~1_PLAYER_NAME~! I have no further need of thy services. Here is thy pay.
 
                 if (pm.Young || m_Escort.Region.IsPartOf("Haven Island"))
+                {
                     Titles.AwardFame(pm, 10, true);
+                }
                 else
+                {
                     VirtueHelper.AwardVirtue(
                         pm,
                         VirtueName.Compassion,
                         m_Escort is BaseEscortable escortable && escortable.IsPrisoner ? 400 : 200
                     );
+                }
 
                 EndFollow(m_Escort);
                 StopTimer();
@@ -147,7 +171,9 @@ namespace Server.Engines.MLQuests.Objectives
             else if (pm.Map != m_Escort.Map || !pm.InRange(m_Escort, 30)) // TODO: verify range
             {
                 if (m_LastSeenEscorter + BaseEscortable.AbandonDelay <= DateTime.UtcNow)
+                {
                     Abandon();
+                }
             }
             else
             {
@@ -202,7 +228,9 @@ namespace Server.Engines.MLQuests.Objectives
             pm.LastEscortTime = DateTime.UtcNow;
 
             if (m_Escort != null)
+            {
                 BeginFollow(m_Escort, pm);
+            }
         }
 
         public void Abandon()
@@ -215,9 +243,13 @@ namespace Server.Engines.MLQuests.Objectives
             if (m_Escort?.Deleted == false)
             {
                 if (!pm.Alive)
+                {
                     m_Escort.Say(500901); // Ack!  My escort has come to haunt me!
+                }
                 else
+                {
                     m_Escort.Say(500902); // My escort seems to have abandoned me!
+                }
 
                 EndFollow(m_Escort);
             }
@@ -227,13 +259,17 @@ namespace Server.Engines.MLQuests.Objectives
             pm.SendLocalizedMessage(1071194); // You have failed your escort quest...
 
             if (!instance.Removed)
+            {
                 instance.Cancel();
+            }
         }
 
         public override void OnQuesterDeleted()
         {
             if (IsCompleted() || Instance.Removed)
+            {
                 return;
+            }
 
             Abandon();
         }
@@ -242,7 +278,9 @@ namespace Server.Engines.MLQuests.Objectives
         {
             // Note: OSI also cancels it when the quest is already complete
             if ( /*IsCompleted() ||*/ Instance.Removed)
+            {
                 return;
+            }
 
             Instance.Cancel();
         }

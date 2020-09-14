@@ -41,15 +41,21 @@ namespace Server.Factions
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID != 1)
+            {
                 return;
+            }
 
             if (Faction.Find(m_From) != m_Faction)
+            {
                 return;
+            }
 
             var pack = m_From.Backpack;
 
             if (pack == null)
+            {
                 return;
+            }
 
             var horse = new FactionWarHorse(m_Faction);
 

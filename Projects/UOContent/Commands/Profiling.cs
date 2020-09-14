@@ -60,9 +60,13 @@ namespace Server.Commands
         public static void SetProfiles_OnCommand(CommandEventArgs e)
         {
             if (e.Length == 1)
+            {
                 Core.Profiling = e.GetBoolean(0);
+            }
             else
+            {
                 Core.Profiling = !Core.Profiling;
+            }
 
             e.Mobile.SendMessage("Profiling has been {0}.", Core.Profiling ? "enabled" : "disabled");
         }
@@ -148,29 +152,43 @@ namespace Server.Commands
                 var flags = item.GetExpandFlags();
 
                 if ((flags & ~(ExpandFlag.TempFlag | ExpandFlag.SaveFlag)) == 0)
+                {
                     continue;
+                }
 
                 var itemType = item.GetType();
 
                 do
                 {
                     if (!typeTable.TryGetValue(itemType, out var countTable))
+                    {
                         typeTable[itemType] = countTable = new int[9];
+                    }
 
                     if ((flags & ExpandFlag.Name) != 0)
+                    {
                         ++countTable[0];
+                    }
 
                     if ((flags & ExpandFlag.Items) != 0)
+                    {
                         ++countTable[1];
+                    }
 
                     if ((flags & ExpandFlag.Bounce) != 0)
+                    {
                         ++countTable[2];
+                    }
 
                     if ((flags & ExpandFlag.Holder) != 0)
+                    {
                         ++countTable[3];
+                    }
 
                     if ((flags & ExpandFlag.Blessed) != 0)
+                    {
                         ++countTable[4];
+                    }
 
                     /*if (( flags & ExpandFlag.TempFlag ) != 0)
                       ++countTable[5];
@@ -179,10 +197,14 @@ namespace Server.Commands
                       ++countTable[6];*/
 
                     if ((flags & ExpandFlag.Weight) != 0)
+                    {
                         ++countTable[7];
+                    }
 
                     if ((flags & ExpandFlag.Spawner) != 0)
+                    {
                         ++countTable[8];
+                    }
 
                     itemType = itemType.BaseType;
                 } while (itemType != typeof(object));
@@ -215,8 +237,12 @@ namespace Server.Commands
                     op.WriteLine("# {0}", kvp.Key.FullName);
 
                     for (var i = 0; i < countTable.Length; ++i)
+                    {
                         if (countTable[i] > 0)
+                        {
                             op.WriteLine("{0}\t{1:N0}", names[i], countTable[i]);
+                        }
+                    }
 
                     op.WriteLine();
                 }
@@ -237,7 +263,9 @@ namespace Server.Commands
             foreach (var item in World.Items.Values)
             {
                 if (item.Parent != null || item.Map != Map.Internal)
+                {
                     continue;
+                }
 
                 ++totalCount;
 
@@ -295,7 +323,9 @@ namespace Server.Commands
                     var count = bin.ReadInt32();
 
                     for (var i = 0; i < count; ++i)
+                    {
                         types.Add(AssemblyHandler.FindFirstTypeForName(bin.ReadString()));
+                    }
                 }
 
                 long total = 0;

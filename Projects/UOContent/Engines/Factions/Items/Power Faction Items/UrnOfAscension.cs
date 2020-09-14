@@ -26,20 +26,25 @@ namespace Server
             var used = false;
 
             foreach (var mob in from.GetMobilesInRange(8))
-                if (mob.Player && !mob.Alive && from.InLOS(mob))
+            {
+                if (mob.Player && !mob.Alive && @from.InLOS(mob))
                 {
-                    if (Faction.Find(mob) != ourFaction) continue;
+                    if (Faction.Find(mob) != ourFaction)
+                    {
+                        continue;
+                    }
 
                     var house = BaseHouse.FindHouseAt(mob);
 
-                    if (house?.IsFriend(from) != false || house.IsFriend(mob))
+                    if (house?.IsFriend(@from) != false || house.IsFriend(mob))
                     {
                         Faction.ClearSkillLoss(mob);
 
-                        mob.SendGump(new ResurrectGump(mob, from));
+                        mob.SendGump(new ResurrectGump(mob, @from));
                         used = true;
                     }
                 }
+            }
 
             if (used)
             {

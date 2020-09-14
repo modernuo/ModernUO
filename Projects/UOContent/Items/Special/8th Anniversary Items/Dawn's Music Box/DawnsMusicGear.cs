@@ -39,11 +39,17 @@ namespace Server.Items
             if (info != null)
             {
                 if (info.Rarity == DawnsMusicRarity.Common)
+                {
                     list.Add(1075204); // Gear for Dawn's Music Box (Common)
+                }
                 else if (info.Rarity == DawnsMusicRarity.Uncommon)
+                {
                     list.Add(1075205); // Gear for Dawn's Music Box (Uncommon)
+                }
                 else if (info.Rarity == DawnsMusicRarity.Rare)
+                {
                     list.Add(1075206); // Gear for Dawn's Music Box (Rare)
+                }
 
                 list.Add(info.Name);
             }
@@ -88,11 +94,17 @@ namespace Server.Items
                 var rand = Utility.RandomDouble();
 
                 if (rand < 0.025)
+                {
                     rarity = DawnsMusicRarity.Rare;
+                }
                 else if (rand < 0.225)
+                {
                     rarity = DawnsMusicRarity.Uncommon;
+                }
                 else
+                {
                     rarity = DawnsMusicRarity.Common;
+                }
 
                 Music = DawnsMusicBox.RandomTrack(rarity);
             }
@@ -107,7 +119,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Gear?.Deleted != false)
+                {
                     return;
+                }
 
                 if (targeted is DawnsMusicBox box)
                 {

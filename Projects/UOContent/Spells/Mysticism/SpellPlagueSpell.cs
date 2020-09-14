@@ -88,13 +88,17 @@ namespace Server.Spells.Mysticism
         public static void RemoveEffect(Mobile m)
         {
             if (m_Table.TryGetValue(m, out var context))
+            {
                 context.EndPlague(false);
+            }
         }
 
         public static void CheckPlague(Mobile m)
         {
             if (m_Table.TryGetValue(m, out var context))
+            {
                 context.OnDamage();
+            }
         }
 
         private static void OnPlayerDeath(Mobile m)
@@ -128,9 +132,13 @@ namespace Server.Spells.Mysticism
             public void SetNext(SpellPlagueContext context)
             {
                 if (m_Next == null)
+                {
                     m_Next = context;
+                }
                 else
+                {
                     m_Next.SetNext(context);
+                }
             }
 
             public void Start()
@@ -153,7 +161,9 @@ namespace Server.Spells.Mysticism
                     var resist = m_Target.Skills.MagicResist.Value;
 
                     if (resist >= 70)
+                    {
                         exploChance -= (int)((resist - 70.0) * 3.0 / 10.0);
+                    }
 
                     if (exploChance > Utility.Random(100))
                     {
@@ -167,7 +177,9 @@ namespace Server.Spells.Mysticism
                         SpellHelper.Damage(m_Owner, m_Target, damage, 0, 0, 0, 0, 0, 100);
 
                         if (m_Explosions >= 3)
+                        {
                             EndPlague();
+                        }
                     }
                 }
             }
@@ -206,7 +218,9 @@ namespace Server.Spells.Mysticism
             protected override void OnTarget(Mobile from, object o)
             {
                 if (o is Mobile mobile)
+                {
                     m_Owner.Target(mobile);
+                }
             }
 
             protected override void OnTargetFinish(Mobile from)

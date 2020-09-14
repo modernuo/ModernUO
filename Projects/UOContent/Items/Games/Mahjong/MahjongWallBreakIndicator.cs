@@ -30,7 +30,9 @@ namespace Server.Engines.Mahjong
             var dim = GetDimensions(position);
 
             if (!dim.IsValid())
+            {
                 return;
+            }
 
             Position = position;
 

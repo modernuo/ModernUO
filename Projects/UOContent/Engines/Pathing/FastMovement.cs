@@ -22,7 +22,10 @@ namespace Server.Movement
 
         public bool CheckMovement(Mobile m, Map map, Point3D loc, Direction d, out int newZ)
         {
-            if (!Enabled && _Successor != null) return _Successor.CheckMovement(m, map, loc, d, out newZ);
+            if (!Enabled && _Successor != null)
+            {
+                return _Successor.CheckMovement(m, map, loc, d, out newZ);
+            }
 
             if (map == null || map == Map.Internal)
             {
@@ -54,7 +57,10 @@ namespace Server.Movement
             var ignoreMovableImpassables = MovementImpl.IgnoreMovableImpassables;
             var reqFlags = ImpassableSurface;
 
-            if (m.CanSwim) reqFlags |= TileFlag.Wet;
+            if (m.CanSwim)
+            {
+                reqFlags |= TileFlag.Wet;
+            }
 
             if (checkDiagonals)
             {
@@ -102,7 +108,9 @@ namespace Server.Movement
                         MovementPool.AcquireMoveCache(ref list, itemsRight);
 
                         if (!Check(map, m, list, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out _))
+                        {
                             moveIsOk = false;
+                        }
                     }
                 }
                 else
@@ -114,14 +122,19 @@ namespace Server.Movement
                         MovementPool.AcquireMoveCache(ref list, itemsRight);
 
                         if (!Check(map, m, list, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out _))
+                        {
                             moveIsOk = false;
+                        }
                     }
                 }
             }
 
             MovementPool.ClearMoveCache(ref list, true);
 
-            if (!moveIsOk) newZ = startZ;
+            if (!moveIsOk)
+            {
+                newZ = startZ;
+            }
 
             return moveIsOk;
         }
@@ -149,13 +162,21 @@ namespace Server.Movement
             var itemID = item.ItemID & TileData.MaxItemValue;
             var itemData = TileData.ItemTable[itemID];
 
-            if ((itemData.Flags & ImpassableSurface) == 0) return true;
+            if ((itemData.Flags & ImpassableSurface) == 0)
+            {
+                return true;
+            }
 
             if (((itemData.Flags & TileFlag.Door) != 0 || itemID == 0x692 || itemID == 0x846 || itemID == 0x873 ||
                  itemID >= 0x6F5 && itemID <= 0x6F6) && ignoreDoors)
+            {
                 return true;
+            }
 
-            if ((itemID == 0x82 || itemID == 0x3946 || itemID == 0x3956) && ignoreSpellFields) return true;
+            if ((itemID == 0x82 || itemID == 0x3946 || itemID == 0x3956) && ignoreSpellFields)
+            {
+                return true;
+            }
 
             return item.Z + itemData.CalcHeight <= ourZ || ourTop <= item.Z;
         }
@@ -195,8 +216,13 @@ namespace Server.Movement
             var considerLand = !landTile.Ignored;
 
             if (landBlocks && canSwim && (landData.Flags & TileFlag.Wet) != 0)
+            {
                 landBlocks = false;
-            else if (cantWalk && (landData.Flags & TileFlag.Wet) == 0) landBlocks = true;
+            }
+            else if (cantWalk && (landData.Flags & TileFlag.Wet) == 0)
+            {
+                landBlocks = true;
+            }
 
             int landZ = 0, landCenter = 0, landTop = 0;
 
@@ -230,7 +256,10 @@ namespace Server.Movement
                 {
                     if (x >= 307 && x <= 354 && y >= 126 && y <= 192)
                     {
-                        if (tile.Z > newZ) newZ = tile.Z;
+                        if (tile.Z > newZ)
+                        {
+                            newZ = tile.Z;
+                        }
 
                         moveIsOk = true;
                     }
@@ -238,7 +267,10 @@ namespace Server.Movement
                     {
                         if (y >= 333 && y <= 399 || y >= 531 && y <= 597 || y >= 739 && y <= 805)
                         {
-                            if (tile.Z > newZ) newZ = tile.Z;
+                            if (tile.Z > newZ)
+                            {
+                                newZ = tile.Z;
+                            }
 
                             moveIsOk = true;
                         }
@@ -247,9 +279,15 @@ namespace Server.Movement
 
                 flags = itemData.Flags;
 
-                if ((flags & ImpassableSurface) != TileFlag.Surface && (!canSwim || (flags & TileFlag.Wet) == 0)) continue;
+                if ((flags & ImpassableSurface) != TileFlag.Surface && (!canSwim || (flags & TileFlag.Wet) == 0))
+                {
+                    continue;
+                }
 
-                if (cantWalk && (flags & TileFlag.Wet) == 0) continue;
+                if (cantWalk && (flags & TileFlag.Wet) == 0)
+                {
+                    continue;
+                }
 
                 itemZ = tile.Z;
                 itemTop = itemZ;
@@ -261,25 +299,47 @@ namespace Server.Movement
                 {
                     var cmp = Math.Abs(ourZ - m.Z) - Math.Abs(newZ - m.Z);
 
-                    if (cmp > 0 || cmp == 0 && ourZ > newZ) continue;
+                    if (cmp > 0 || cmp == 0 && ourZ > newZ)
+                    {
+                        continue;
+                    }
                 }
 
-                if (ourTop > testTop) testTop = ourTop;
+                if (ourTop > testTop)
+                {
+                    testTop = ourTop;
+                }
 
-                if (!itemData.Bridge) itemTop += itemData.Height;
+                if (!itemData.Bridge)
+                {
+                    itemTop += itemData.Height;
+                }
 
-                if (stepTop < itemTop) continue;
+                if (stepTop < itemTop)
+                {
+                    continue;
+                }
 
                 var landCheck = itemZ;
 
                 if (itemData.Height >= StepHeight)
+                {
                     landCheck += StepHeight;
+                }
                 else
+                {
                     landCheck += itemData.Height;
+                }
 
-                if (considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landZ) continue;
+                if (considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landZ)
+                {
+                    continue;
+                }
 
-                if (!IsOk(ignoreDoors, ignoreSpellFields, ourZ, testTop, tiles, items)) continue;
+                if (!IsOk(ignoreDoors, ignoreSpellFields, ourZ, testTop, tiles, items))
+                {
+                    continue;
+                }
 
                 newZ = ourZ;
                 moveIsOk = true;
@@ -296,11 +356,20 @@ namespace Server.Movement
                     return true;
                 }
 
-                if (item.Movable) continue;
+                if (item.Movable)
+                {
+                    continue;
+                }
 
-                if ((flags & ImpassableSurface) != TileFlag.Surface && (!m.CanSwim || (flags & TileFlag.Wet) == 0)) continue;
+                if ((flags & ImpassableSurface) != TileFlag.Surface && (!m.CanSwim || (flags & TileFlag.Wet) == 0))
+                {
+                    continue;
+                }
 
-                if (cantWalk && (flags & TileFlag.Wet) == 0) continue;
+                if (cantWalk && (flags & TileFlag.Wet) == 0)
+                {
+                    continue;
+                }
 
                 itemZ = item.Z;
                 itemTop = itemZ;
@@ -312,37 +381,65 @@ namespace Server.Movement
                 {
                     var cmp = Math.Abs(ourZ - m.Z) - Math.Abs(newZ - m.Z);
 
-                    if (cmp > 0 || cmp == 0 && ourZ > newZ) continue;
+                    if (cmp > 0 || cmp == 0 && ourZ > newZ)
+                    {
+                        continue;
+                    }
                 }
 
-                if (ourTop > testTop) testTop = ourTop;
+                if (ourTop > testTop)
+                {
+                    testTop = ourTop;
+                }
 
-                if (!itemData.Bridge) itemTop += itemData.Height;
+                if (!itemData.Bridge)
+                {
+                    itemTop += itemData.Height;
+                }
 
-                if (stepTop < itemTop) continue;
+                if (stepTop < itemTop)
+                {
+                    continue;
+                }
 
                 var landCheck = itemZ;
 
                 if (itemData.Height >= StepHeight)
+                {
                     landCheck += StepHeight;
+                }
                 else
+                {
                     landCheck += itemData.Height;
+                }
 
-                if (considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landZ) continue;
+                if (considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landZ)
+                {
+                    continue;
+                }
 
-                if (!IsOk(ignoreDoors, ignoreSpellFields, ourZ, testTop, tiles, items)) continue;
+                if (!IsOk(ignoreDoors, ignoreSpellFields, ourZ, testTop, tiles, items))
+                {
+                    continue;
+                }
 
                 newZ = ourZ;
                 moveIsOk = true;
             }
 
-            if (!considerLand || landBlocks || stepTop < landZ) return moveIsOk;
+            if (!considerLand || landBlocks || stepTop < landZ)
+            {
+                return moveIsOk;
+            }
 
             ourZ = landCenter;
             ourTop = ourZ + PersonHeight;
             testTop = checkTop;
 
-            if (ourTop > testTop) testTop = ourTop;
+            if (ourTop > testTop)
+            {
+                testTop = ourTop;
+            }
 
             var shouldCheck = true;
 
@@ -350,10 +447,16 @@ namespace Server.Movement
             {
                 var cmp = Math.Abs(ourZ - m.Z) - Math.Abs(newZ - m.Z);
 
-                if (cmp > 0 || cmp == 0 && ourZ > newZ) shouldCheck = false;
+                if (cmp > 0 || cmp == 0 && ourZ > newZ)
+                {
+                    shouldCheck = false;
+                }
             }
 
-            if (!shouldCheck || !IsOk(ignoreDoors, ignoreSpellFields, ourZ, testTop, tiles, items)) return moveIsOk;
+            if (!shouldCheck || !IsOk(ignoreDoors, ignoreSpellFields, ourZ, testTop, tiles, items))
+            {
+                return moveIsOk;
+            }
 
             newZ = ourZ;
             moveIsOk = true;
@@ -379,8 +482,13 @@ namespace Server.Movement
             var landBlocks = (landData.Flags & TileFlag.Impassable) != 0;
 
             if (landBlocks && m.CanSwim && (landData.Flags & TileFlag.Wet) != 0)
+            {
                 landBlocks = false;
-            else if (m.CantWalk && (landData.Flags & TileFlag.Wet) == 0) landBlocks = true;
+            }
+            else if (m.CantWalk && (landData.Flags & TileFlag.Wet) == 0)
+            {
+                landBlocks = true;
+            }
 
             int landZ = 0, landCenter = 0, landTop = 0;
 
@@ -406,21 +514,36 @@ namespace Server.Movement
                 var tileData = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
                 var calcTop = tile.Z + tileData.CalcHeight;
 
-                if (isSet && calcTop < zCenter) continue;
+                if (isSet && calcTop < zCenter)
+                {
+                    continue;
+                }
 
                 if ((tileData.Flags & TileFlag.Surface) == 0 &&
-                    (!m.CanSwim || (tileData.Flags & TileFlag.Wet) == 0)) continue;
+                    (!m.CanSwim || (tileData.Flags & TileFlag.Wet) == 0))
+                {
+                    continue;
+                }
 
-                if (loc.Z < calcTop) continue;
+                if (loc.Z < calcTop)
+                {
+                    continue;
+                }
 
-                if (m.CantWalk && (tileData.Flags & TileFlag.Wet) == 0) continue;
+                if (m.CantWalk && (tileData.Flags & TileFlag.Wet) == 0)
+                {
+                    continue;
+                }
 
                 zLow = tile.Z;
                 zCenter = calcTop;
 
                 var top = tile.Z + tileData.Height;
 
-                if (!isSet || top > zTop) zTop = top;
+                if (!isSet || top > zTop)
+                {
+                    zTop = top;
+                }
 
                 isSet = true;
             }
@@ -431,29 +554,48 @@ namespace Server.Movement
 
                 var calcTop = item.Z + itemData.CalcHeight;
 
-                if (isSet && calcTop < zCenter) continue;
+                if (isSet && calcTop < zCenter)
+                {
+                    continue;
+                }
 
                 if ((itemData.Flags & TileFlag.Surface) == 0 &&
-                    (!m.CanSwim || (itemData.Flags & TileFlag.Wet) == 0)) continue;
+                    (!m.CanSwim || (itemData.Flags & TileFlag.Wet) == 0))
+                {
+                    continue;
+                }
 
-                if (loc.Z < calcTop) continue;
+                if (loc.Z < calcTop)
+                {
+                    continue;
+                }
 
-                if (m.CantWalk && (itemData.Flags & TileFlag.Wet) == 0) continue;
+                if (m.CantWalk && (itemData.Flags & TileFlag.Wet) == 0)
+                {
+                    continue;
+                }
 
                 zLow = item.Z;
                 zCenter = calcTop;
 
                 var top = item.Z + itemData.Height;
 
-                if (!isSet || top > zTop) zTop = top;
+                if (!isSet || top > zTop)
+                {
+                    zTop = top;
+                }
 
                 isSet = true;
             }
 
             if (!isSet)
+            {
                 zLow = zTop = loc.Z;
+            }
             else if (loc.Z > zTop)
+            {
                 zTop = loc.Z;
+            }
         }
 
         public void Offset(Direction d, ref int x, ref int y)
@@ -499,12 +641,16 @@ namespace Server.Movement
             public static void AcquireMoveCache(ref List<Item> cache, IEnumerable<Item> items)
             {
                 if (cache == null)
+                {
                     lock (_MovePoolLock)
                     {
                         cache = _MoveCachePool.Count > 0 ? _MoveCachePool.Dequeue() : new List<Item>(0x10);
                     }
+                }
                 else
+                {
                     cache.Clear();
+                }
 
                 cache.AddRange(items);
             }
@@ -513,11 +659,17 @@ namespace Server.Movement
             {
                 cache?.Clear();
 
-                if (!free) return;
+                if (!free)
+                {
+                    return;
+                }
 
                 lock (_MovePoolLock)
                 {
-                    if (_MoveCachePool.Count < 0x400) _MoveCachePool.Enqueue(cache);
+                    if (_MoveCachePool.Count < 0x400)
+                    {
+                        _MoveCachePool.Enqueue(cache);
+                    }
                 }
 
                 cache = null;

@@ -91,7 +91,9 @@ namespace Server.Mobiles
         public void Peace(Mobile target)
         {
             if (target == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || Utility.RandomDouble() > 0.1)
+            {
                 return;
+            }
 
             if (target is PlayerMobile p && p.PeacedUntil < DateTime.UtcNow && !p.Hidden && CanBeHarmful(p))
             {
@@ -110,7 +112,9 @@ namespace Server.Mobiles
         {
             if (target == null || m_Suppressed.ContainsKey(target) || Deleted || !Alive ||
                 m_NextSuppress > DateTime.UtcNow || Utility.RandomDouble() > 0.1)
+            {
                 return;
+            }
 
             var delay = TimeSpan.FromSeconds(Utility.RandomMinMax(20, 80));
 
@@ -139,12 +143,16 @@ namespace Server.Mobiles
         public static void SuppressRemove(Mobile target)
         {
             if (target == null)
+            {
                 return;
+            }
 
             if (m_Suppressed.TryGetValue(target, out var t))
             {
                 if (t.Running)
+                {
                     t.Stop();
+                }
 
                 m_Suppressed.Remove(target);
             }
@@ -153,7 +161,9 @@ namespace Server.Mobiles
         public void Undress(Mobile target)
         {
             if (target == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || Utility.RandomDouble() > 0.005)
+            {
                 return;
+            }
 
             if (target.Player && target.Female && !target.Hidden && CanBeHarmful(target))
             {
@@ -176,29 +186,39 @@ namespace Server.Mobiles
             var item = m.FindItemOnLayer(layer);
 
             if (item?.Movable == true)
+            {
                 m.PlaceInBackpack(item);
+            }
         }
 
         public void Provoke(Mobile target)
         {
             if (target == null || Deleted || !Alive || m_NextProvoke > DateTime.UtcNow || Utility.RandomDouble() > 0.05)
+            {
                 return;
+            }
 
             foreach (var m in GetMobilesInRange(RangePerception))
+            {
                 if (m is BaseCreature c)
                 {
                     if (c == this || c == target || c.Unprovokable || c.IsParagon || c.BardProvoked ||
                         c.AccessLevel != AccessLevel.Player || !c.CanBeHarmful(target))
+                    {
                         continue;
+                    }
 
                     c.Provoke(this, target, true);
 
                     if (target.Player)
+                    {
                         target.SendLocalizedMessage(1072062); // You hear angry music, and start to fight.
+                    }
 
                     PlaySound(0x58A);
                     break;
                 }
+            }
 
             m_NextProvoke = DateTime.UtcNow + TimeSpan.FromSeconds(10);
         }
@@ -217,9 +237,13 @@ namespace Server.Mobiles
             protected override void OnTick()
             {
                 if (m_Owner.Deleted || !m_Owner.Alive || m_Count-- < 0)
+                {
                     SuppressRemove(m_Owner);
+                }
                 else
+                {
                     m_Owner.FixedParticles(0x376A, 1, 32, 0x15BD, EffectLayer.Waist);
+                }
             }
         }
     }

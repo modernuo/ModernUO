@@ -23,9 +23,14 @@ namespace Server.Mobiles
             if (m is BaseCreature bc)
             {
                 if (bc.Controlled && bc.ControlMaster is PlayerMobile)
+                {
                     return CheckRedFriendship(bc.ControlMaster);
+                }
+
                 if (bc.Summoned && bc.SummonMaster is PlayerMobile)
+                {
                     return CheckRedFriendship(bc.SummonMaster);
+                }
             }
 
             return m is PlayerMobile player && player.SolenFriendship == SolenFriendship.Red;
@@ -36,9 +41,14 @@ namespace Server.Mobiles
             if (m is BaseCreature bc)
             {
                 if (bc.Controlled && bc.ControlMaster is PlayerMobile)
+                {
                     return CheckBlackFriendship(bc.ControlMaster);
+                }
+
                 if (bc.Summoned && bc.SummonMaster is PlayerMobile)
+                {
                     return CheckBlackFriendship(bc.SummonMaster);
+                }
             }
 
             return m is PlayerMobile player && player.SolenFriendship == SolenFriendship.Black;
@@ -49,9 +59,13 @@ namespace Server.Mobiles
             if (from is BaseCreature bc)
             {
                 if (bc.Controlled && bc.ControlMaster is PlayerMobile)
+                {
                     OnRedDamage(bc.ControlMaster);
+                }
                 else if (bc.Summoned && bc.SummonMaster is PlayerMobile)
+                {
                     OnRedDamage(bc.SummonMaster);
+                }
             }
 
             if (from is PlayerMobile player && player.SolenFriendship == SolenFriendship.Red)
@@ -71,9 +85,13 @@ namespace Server.Mobiles
             if (from is BaseCreature bc)
             {
                 if (bc.Controlled && bc.ControlMaster is PlayerMobile)
+                {
                     OnBlackDamage(bc.ControlMaster);
+                }
                 else if (bc.Summoned && bc.SummonMaster is PlayerMobile)
+                {
                     OnBlackDamage(bc.SummonMaster);
+                }
             }
 
             if (from is PlayerMobile player && player.SolenFriendship == SolenFriendship.Black)

@@ -56,13 +56,17 @@ namespace Server.Factions
         public void Register()
         {
             if (m_Town != null && m_Faction != null)
+            {
                 m_Town.RegisterVendor(this);
+            }
         }
 
         public override bool OnMoveOver(Mobile m)
         {
             if (Core.ML)
+            {
                 return true;
+            }
 
             return base.OnMoveOver(m);
         }

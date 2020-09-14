@@ -83,7 +83,9 @@ namespace Server.Items
             }
 
             if (version == 0)
+            {
                 LootType = LootType.Regular;
+            }
         }
     }
 
@@ -531,7 +533,9 @@ namespace Server.Items
             var v = (int)type;
 
             if (v < 0 || v >= m_Table.Length)
+            {
                 v = 0;
+            }
 
             return m_Table[v];
         }

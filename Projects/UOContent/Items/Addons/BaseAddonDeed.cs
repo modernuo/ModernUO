@@ -14,7 +14,9 @@ namespace Server.Items
             Weight = 1.0;
 
             if (!Core.AOS)
+            {
                 LootType = LootType.Newbied;
+            }
         }
 
         public BaseAddonDeed(Serial serial) : base(serial)
@@ -53,15 +55,21 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 0.0)
+            {
                 Weight = 1.0;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (IsChildOf(from.Backpack))
-                from.Target = new InternalTarget(this);
+            {
+                @from.Target = new InternalTarget(this);
+            }
             else
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            {
+                @from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            }
         }
 
         private class InternalTarget : Target
@@ -81,7 +89,9 @@ namespace Server.Items
                 var map = from.Map;
 
                 if (p == null || map == null || m_Deed.Deleted)
+                {
                     return;
+                }
 
                 if (m_Deed.IsChildOf(from.Backpack))
                 {
@@ -94,15 +104,25 @@ namespace Server.Items
                     var res = addon.CouldFit(p, map, from, ref house);
 
                     if (res == AddonFitResult.Valid)
+                    {
                         addon.MoveToWorld(new Point3D(p), map);
+                    }
                     else if (res == AddonFitResult.Blocked)
-                        from.SendLocalizedMessage(500269); // You cannot build that there.
+                    {
+                        @from.SendLocalizedMessage(500269); // You cannot build that there.
+                    }
                     else if (res == AddonFitResult.NotInHouse)
-                        from.SendLocalizedMessage(500274); // You can only place this in a house that you own!
+                    {
+                        @from.SendLocalizedMessage(500274); // You can only place this in a house that you own!
+                    }
                     else if (res == AddonFitResult.DoorTooClose)
-                        from.SendLocalizedMessage(500271); // You cannot build near the door.
+                    {
+                        @from.SendLocalizedMessage(500271); // You cannot build near the door.
+                    }
                     else if (res == AddonFitResult.NoWall)
-                        from.SendLocalizedMessage(500268); // This object needs to be mounted on something.
+                    {
+                        @from.SendLocalizedMessage(500268); // This object needs to be mounted on something.
+                    }
 
                     if (res == AddonFitResult.Valid)
                     {

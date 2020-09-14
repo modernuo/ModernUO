@@ -37,7 +37,10 @@ namespace Server.Mobiles
             if (AccountGold.Enabled && m.Account != null)
             {
                 balance = m.Account.GetTotalGold();
-                if (balance >= int.MaxValue) return int.MaxValue;
+                if (balance >= int.MaxValue)
+                {
+                    return int.MaxValue;
+                }
             }
 
             Container bank = m.FindBankNoCreate();
@@ -49,7 +52,10 @@ namespace Server.Mobiles
 
                 balance += gold.Aggregate(0L, (c, t) => c + t.Amount);
                 if (balance >= int.MaxValue)
+                {
                     return int.MaxValue;
+                }
+
                 balance += checks.Aggregate(0L, (c, t) => c + t.Worth);
             }
 
@@ -79,7 +85,11 @@ namespace Server.Mobiles
                 checks = bank.FindItemsByType(typeof(BankCheck));
 
                 balance += gold.OfType<Gold>().Aggregate(0L, (c, t) => c + t.Amount);
-                if (balance >= int.MaxValue) return int.MaxValue;
+                if (balance >= int.MaxValue)
+                {
+                    return int.MaxValue;
+                }
+
                 balance += checks.OfType<BankCheck>().Aggregate(0L, (c, t) => c + t.Worth);
             }
             else
@@ -93,13 +103,20 @@ namespace Server.Mobiles
         public static bool Withdraw(Mobile from, int amount)
         {
             // If for whatever reason the TOL checks fail, we should still try old methods for withdrawing currency.
-            if (AccountGold.Enabled && from.Account?.WithdrawGold(amount) == true) return true;
+            if (AccountGold.Enabled && from.Account?.WithdrawGold(amount) == true)
+            {
+                return true;
+            }
 
             var balance = GetBalance(from, out var gold, out var checks);
 
-            if (balance < amount) return false;
+            if (balance < amount)
+            {
+                return false;
+            }
 
             for (var i = 0; amount > 0 && i < gold.Length; ++i)
+            {
                 if (gold[i].Amount <= amount)
                 {
                     amount -= gold[i].Amount;
@@ -110,6 +127,7 @@ namespace Server.Mobiles
                     gold[i].Amount -= amount;
                     amount = 0;
                 }
+            }
 
             for (var i = 0; amount > 0 && i < checks.Length; ++i)
             {
@@ -133,11 +151,17 @@ namespace Server.Mobiles
         public static bool Deposit(Mobile from, int amount)
         {
             // If for whatever reason the TOL checks fail, we should still try old methods for depositing currency.
-            if (AccountGold.Enabled && from.Account?.DepositGold(amount) == true) return true;
+            if (AccountGold.Enabled && from.Account?.DepositGold(amount) == true)
+            {
+                return true;
+            }
 
             var box = from.FindBankNoCreate();
 
-            if (box == null) return false;
+            if (box == null)
+            {
+                return false;
+            }
 
             var items = new List<Item>();
 
@@ -167,7 +191,10 @@ namespace Server.Mobiles
                 else
                 {
                     item.Delete();
-                    foreach (var curItem in items) curItem.Delete();
+                    foreach (var curItem in items)
+                    {
+                        curItem.Delete();
+                    }
 
                     return false;
                 }
@@ -179,11 +206,17 @@ namespace Server.Mobiles
         public static int DepositUpTo(Mobile from, int amount)
         {
             // If for whatever reason the TOL checks fail, we should still try old methods for depositing currency.
-            if (AccountGold.Enabled && from.Account?.DepositGold(amount) == true) return amount;
+            if (AccountGold.Enabled && from.Account?.DepositGold(amount) == true)
+            {
+                return amount;
+            }
 
             var box = from.FindBankNoCreate();
 
-            if (box == null) return 0;
+            if (box == null)
+            {
+                return 0;
+            }
 
             var amountLeft = amount;
             while (amountLeft > 0)
@@ -250,7 +283,9 @@ namespace Server.Mobiles
         public override bool HandlesOnSpeech(Mobile from)
         {
             if (from.InRange(Location, 12))
+            {
                 return true;
+            }
 
             return base.HandlesOnSpeech(from);
         }
@@ -258,6 +293,7 @@ namespace Server.Mobiles
         public override void OnSpeech(SpeechEventArgs e)
         {
             if (!e.Handled && e.Mobile.InRange(Location, 12))
+            {
                 for (var i = 0; i < e.Keywords.Length; ++i)
                 {
                     var keyword = e.Keywords[i];
@@ -281,7 +317,9 @@ namespace Server.Mobiles
                                     var pack = e.Mobile.Backpack;
 
                                     if (!int.TryParse(split[1], out var amount))
+                                    {
                                         break;
+                                    }
 
                                     if (!Core.ML && amount > 5000 || Core.ML && amount > 60000)
                                     {
@@ -322,15 +360,19 @@ namespace Server.Mobiles
                                 }
 
                                 if (AccountGold.Enabled && e.Mobile.Account != null)
+                                {
                                     Say(
                                         1155855,
                                         $"{e.Mobile.Account.TotalPlat:#,0}\t{e.Mobile.Account.TotalGold:#,0}"
                                     ); // Thy current bank balance is ~1_AMOUNT~ platinum and ~2_AMOUNT~ gold.
+                                }
                                 else
+                                {
                                     Say(
                                         1042759,
                                         GetBalance(e.Mobile).ToString("#,0")
                                     ); // Thy current bank balance is ~1_AMOUNT~ gold.
+                                }
 
                                 break;
                             }
@@ -353,7 +395,9 @@ namespace Server.Mobiles
                                 e.Handled = true;
 
                                 if (AccountGold.Enabled)
+                                {
                                     break;
+                                }
 
                                 if (e.Mobile.Criminal)
                                 {
@@ -366,7 +410,9 @@ namespace Server.Mobiles
                                 if (split.Length >= 2)
                                 {
                                     if (!int.TryParse(split[1], out var amount))
+                                    {
                                         break;
+                                    }
 
                                     if (amount < 5000)
                                     {
@@ -408,6 +454,7 @@ namespace Server.Mobiles
                             }
                     }
                 }
+            }
 
             base.OnSpeech(e);
         }
@@ -415,7 +462,9 @@ namespace Server.Mobiles
         public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
         {
             if (from.Alive)
-                list.Add(new OpenBankEntry(from, this));
+            {
+                list.Add(new OpenBankEntry(@from, this));
+            }
 
             base.AddCustomContextEntries(from, list);
         }

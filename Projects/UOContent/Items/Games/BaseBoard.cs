@@ -34,8 +34,12 @@ namespace Server.Items
         public void Reset()
         {
             for (var i = Items.Count - 1; i >= 0; --i)
+            {
                 if (i < Items.Count)
+                {
                     Items[i].Delete();
+                }
+            }
 
             CreatePieces();
         }
@@ -60,10 +64,14 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 1)
+            {
                 Level = (SecureLevel)reader.ReadInt();
+            }
 
             if (Weight == 1.0)
+            {
                 Weight = 5.0;
+            }
         }
 
         public override bool OnDragDrop(Mobile from, Item dropped) =>
@@ -78,10 +86,16 @@ namespace Server.Items
                 p.Acquire();
 
                 if (RootParent == from)
-                    from.Send(p);
+                {
+                    @from.Send(p);
+                }
                 else
+                {
                     foreach (var state in GetClientsInRange(2))
+                    {
                         state.Send(p);
+                    }
+                }
 
                 p.Release();
 
@@ -96,7 +110,9 @@ namespace Server.Items
             base.GetContextMenuEntries(from, list);
 
             if (ValidateDefault(from, this))
-                list.Add(new DefaultEntry(from, this));
+            {
+                list.Add(new DefaultEntry(@from, this));
+            }
 
             SetSecureLevelEntry.AddTo(from, this, list);
         }
@@ -124,7 +140,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (ValidateDefault(m_From, m_Board))
+                {
                     m_Board.Reset();
+                }
             }
         }
     }

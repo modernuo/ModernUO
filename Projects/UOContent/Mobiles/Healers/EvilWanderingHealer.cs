@@ -29,7 +29,9 @@ namespace Server.Mobiles
         public override bool CheckTeach(SkillName skill, Mobile from)
         {
             if (!base.CheckTeach(skill, from))
+            {
                 return false;
+            }
 
             return skill == SkillName.Anatomy
                    || skill == SkillName.Camping
@@ -54,7 +56,9 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             if (Utility.RandomDouble() < 0.5)
+            {
                 c.DropItem(new FragmentOfAMap());
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -71,7 +75,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (version < 1 && Title == "the wandering healer" && Core.AOS)
+            {
                 Title = "the priest of Mondain";
+            }
         }
     }
 }

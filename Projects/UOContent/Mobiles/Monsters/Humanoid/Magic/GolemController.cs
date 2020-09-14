@@ -47,7 +47,9 @@ namespace Server.Mobiles
             VirtualArmor = 16;
 
             if (Utility.RandomDouble() < 0.7)
+            {
                 PackItem(new ArcaneGem());
+            }
         }
 
         public GolemController(Serial serial) : base(serial)
@@ -67,7 +69,10 @@ namespace Server.Mobiles
 
         public void AddArcane(Item item)
         {
-            if (item is IArcaneEquip eq) eq.CurArcaneCharges = eq.MaxArcaneCharges = 20;
+            if (item is IArcaneEquip eq)
+            {
+                eq.CurArcaneCharges = eq.MaxArcaneCharges = 20;
+            }
 
             item.Hue = ArcaneGem.DefaultArcaneHue;
             item.LootType = LootType.Newbied;

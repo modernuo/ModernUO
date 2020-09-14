@@ -59,10 +59,14 @@ namespace Server.Engines.CannedEvil
         public void BeginSacrifice(Mobile from)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (m_Skull?.Deleted == true)
+            {
                 Skull = null;
+            }
 
             if (from.Map != Map || !from.InRange(GetWorldLocation(), 3))
             {
@@ -86,10 +90,14 @@ namespace Server.Engines.CannedEvil
         public void EndSacrifice(Mobile from, ChampionSkull skull)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (m_Skull?.Deleted == true)
+            {
                 Skull = null;
+            }
 
             if (from.Map != Map || !from.InRange(GetWorldLocation(), 3))
             {
@@ -153,17 +161,23 @@ namespace Server.Engines.CannedEvil
                         m_Skull = reader.ReadItem();
 
                         if (Platform == null)
+                        {
                             Delete();
+                        }
 
                         break;
                     }
             }
 
             if (Hue == 0x497)
+            {
                 Hue = 0x455;
+            }
 
             if (Light != LightType.Circle300)
+            {
                 Light = LightType.Circle300;
+            }
         }
 
         private class SacrificeTarget : Target

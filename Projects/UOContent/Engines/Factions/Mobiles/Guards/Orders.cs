@@ -83,7 +83,9 @@ namespace Server.Factions.AI
                         m_Reactions = new List<Reaction>(count);
 
                         for (var i = 0; i < count; ++i)
+                        {
                             m_Reactions.Add(new Reaction(reader));
+                        }
 
                         Movement = (MovementType)reader.ReadEncodedInt();
 
@@ -107,7 +109,9 @@ namespace Server.Factions.AI
                 reaction = m_Reactions[i];
 
                 if (reaction.Faction == faction)
+                {
                     return reaction;
+                }
             }
 
             reaction = new Reaction(
@@ -135,7 +139,9 @@ namespace Server.Factions.AI
             writer.WriteEncodedInt(m_Reactions.Count);
 
             for (var i = 0; i < m_Reactions.Count; ++i)
+            {
                 m_Reactions[i].Serialize(writer);
+            }
 
             writer.WriteEncodedInt((int)Movement);
         }
