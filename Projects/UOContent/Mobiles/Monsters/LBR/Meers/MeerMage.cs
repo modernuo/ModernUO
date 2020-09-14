@@ -146,7 +146,7 @@ namespace Server.Mobiles
 
         public static void StopEffect(Mobile m, bool message)
         {
-            if (m_Table.TryGetValue(m, out var timer))
+            if (m_Table.Remove(m, out var timer))
             {
                 if (message)
                     m.PublicOverheadMessage(
@@ -157,7 +157,6 @@ namespace Server.Mobiles
                     );
 
                 timer.Stop();
-                m_Table.Remove(m);
             }
         }
 

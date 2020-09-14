@@ -1033,7 +1033,7 @@ namespace Server.Accounting
             if (LoginIPs.Length == 0)
             {
                 AccountHandler.IPTable.TryGetValue(ipAddress, out var result);
-                AccountHandler.IPTable[ipAddress] = result + 1;s
+                AccountHandler.IPTable[ipAddress] = result + 1;
             }
 
             var contains = false;

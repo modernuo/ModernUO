@@ -263,9 +263,11 @@ namespace Server.Guilds
                 m_Members[i].Alliance = null;
             }
 
-            if (Alliances.TryGetValue(Name.ToLower(), out var aInfo) && aInfo == this)
+            var lowerName = Name.ToLower();
+
+            if (Alliances.TryGetValue(lowerName, out var aInfo) && aInfo == this)
             {
-                Alliances.Remove(Name.ToLower());
+                Alliances.Remove(lowerName);
             }
         }
 

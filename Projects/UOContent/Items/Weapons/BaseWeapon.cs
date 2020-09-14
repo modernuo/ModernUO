@@ -1285,14 +1285,14 @@ namespace Server.Items
                 // Bonus granted by successful use of Honorable Execution.
                 bonus += HonorableExecution.GetSwingBonus(m);
 
-                if (DualWield.Registry.ContainsKey(m))
+                if (DualWield.Registry.TryGetValue(m, out var duelWield))
                 {
-                    bonus += DualWield.Registry[m].BonusSwingSpeed;
+                    bonus += duelWield.BonusSwingSpeed;
                 }
 
-                if (Feint.Registry.ContainsKey(m))
+                if (Feint.Registry.TryGetValue(m, out var feint))
                 {
-                    bonus -= Feint.Registry[m].SwingSpeedReduction;
+                    bonus -= feint.SwingSpeedReduction;
                 }
 
                 var context = TransformationSpellHelper.GetContext(m);

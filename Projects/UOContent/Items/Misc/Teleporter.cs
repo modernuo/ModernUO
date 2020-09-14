@@ -801,10 +801,9 @@ namespace Server.Items
 
         public void StopTimer(Mobile m)
         {
-            if (m_Teleporting.TryGetValue(m, out var t))
+            if (m_Teleporting.Remove(m, out var t))
             {
                 t.Stop();
-                m_Teleporting.Remove(m);
             }
         }
 

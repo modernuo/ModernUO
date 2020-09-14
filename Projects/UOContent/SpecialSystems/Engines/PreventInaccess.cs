@@ -58,15 +58,13 @@ namespace Server.Misc
                 from.Location = dest.Location;
                 from.Map = dest.Map;
             }
-            else if (m_MoveHistory.TryGetValue(from, out var orig))
+            else if (m_MoveHistory.Remove(from, out var orig))
             {
                 from.SendMessage(
                     "Your character was moved from {0} ({1}) due to a detected client crash.",
                     orig.Location,
                     orig.Map
                 );
-
-                m_MoveHistory.Remove(from);
             }
         }
 
