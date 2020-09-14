@@ -20,7 +20,9 @@ namespace Server.Spells.Ninjitsu
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentMove(attacker);
 
@@ -32,9 +34,13 @@ namespace Server.Spells.Ninjitsu
             var isRanged = attacker.Weapon is BaseRanged;
 
             if (ninjitsu < 100) // This formula is an approximation from OSI data.  TODO: find correct formula
+            {
                 chance = 30 + (ninjitsu - 85) * 2.2;
+            }
             else
+            {
                 chance = 63 + (ninjitsu - 100) * 1.1;
+            }
 
             if (chance / 100 < Utility.RandomDouble())
             {
@@ -44,16 +50,16 @@ namespace Server.Spells.Ninjitsu
 
             var damageBonus = 0;
 
-            if (m_Table.TryGetValue(defender, out var info))
+            if (m_Table.Remove(defender, out var info))
             {
                 defender.SendLocalizedMessage(1063092); // Your opponent lands another Death Strike!
 
                 if (info.m_Steps > 0)
+                {
                     damageBonus = attacker.Skills.Ninjitsu.Fixed / 150;
+                }
 
                 info.m_Timer?.Stop();
-
-                m_Table.Remove(defender);
             }
             else
             {
@@ -78,13 +84,17 @@ namespace Server.Spells.Ninjitsu
         public static void AddStep(Mobile m)
         {
             if (m_Table.TryGetValue(m, out var info) && ++info.m_Steps >= 5)
+            {
                 ProcessDeathStrike(m);
+            }
         }
 
         private static void ProcessDeathStrike(Mobile defender)
         {
-            if (!m_Table.TryGetValue(defender, out var info))
+            if (!m_Table.Remove(defender, out var info))
+            {
                 return;
+            }
 
             int damage;
 
@@ -97,16 +107,24 @@ namespace Server.Spells.Ninjitsu
                               info.m_Attacker.Skills.Stealth.Value) / 220;
 
                 if (scalar > 1)
+                {
                     scalar = 1;
+                }
 
                 // New formula doesn't apply DamageBonus anymore, caps must be, directly, 60/30.
                 if (info.m_Steps >= 5)
+                {
                     damage = (int)Math.Floor(Math.Min(60, ninjitsu / 3 * (0.3 + 0.7 * scalar) + stalkingBonus));
+                }
                 else
+                {
                     damage = (int)Math.Floor(Math.Min(30, ninjitsu / 9 * (0.3 + 0.7 * scalar) + stalkingBonus));
+                }
 
                 if (info.m_isRanged)
+                {
                     damage /= 2;
+                }
             }
             else
             {
@@ -118,8 +136,11 @@ namespace Server.Spells.Ninjitsu
             }
 
             if (Core.ML)
+            {
                 info.m_Target.Damage(damage, info.m_Attacker); // Damage is direct.
+            }
             else
+            {
                 AOS.Damage(
                     info.m_Target,
                     info.m_Attacker,
@@ -136,10 +157,9 @@ namespace Server.Spells.Ninjitsu
                     false,
                     true
                 ); // Damage is physical.
+            }
 
             info.m_Timer?.Stop();
-
-            m_Table.Remove(info.m_Target);
         }
 
         private class DeathStrikeInfo

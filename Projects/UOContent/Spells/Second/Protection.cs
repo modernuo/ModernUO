@@ -29,7 +29,9 @@ namespace Server.Spells.Second
         public override bool CheckCast()
         {
             if (Core.AOS)
+            {
                 return true;
+            }
 
             if (Registry.ContainsKey(Caster))
             {
@@ -38,7 +40,9 @@ namespace Server.Spells.Second
             }
 
             if (Caster.CanBeginAction<DefensiveSpell>())
+            {
                 return true;
+            }
 
             Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
             return false;
@@ -55,12 +59,11 @@ namespace Server.Spells.Second
              * even after dying�until you �turn them off� by casting them again.
              */
 
-            if (m_Table.TryGetValue(target, out var mods))
+            if (m_Table.Remove(target, out var mods))
             {
                 target.PlaySound(0x1ED);
                 target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
 
-                m_Table.Remove(target);
                 Registry.Remove(target);
 
                 target.RemoveResistanceMod(mods.Item1);
@@ -100,10 +103,11 @@ namespace Server.Spells.Second
 
         public static void EndProtection(Mobile m)
         {
-            if (!m_Table.TryGetValue(m, out var mods))
+            if (!m_Table.Remove(m, out var mods))
+            {
                 return;
+            }
 
-            m_Table.Remove(m);
             Registry.Remove(m);
 
             m.RemoveResistanceMod(mods.Item1);
@@ -117,7 +121,9 @@ namespace Server.Spells.Second
             if (Core.AOS)
             {
                 if (CheckSequence())
+                {
                     Toggle(Caster, Caster);
+                }
 
                 FinishSequence();
             }

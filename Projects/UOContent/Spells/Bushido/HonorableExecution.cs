@@ -25,7 +25,9 @@ namespace Server.Spells.Bushido
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentMove(attacker);
 
@@ -64,7 +66,9 @@ namespace Server.Spells.Bushido
                 var resSpells = attacker.Skills.MagicResist.Value;
 
                 if (resSpells > 0.0)
+                {
                     mods.Add(new DefaultSkillMod(SkillName.MagicResist, true, -resSpells));
+                }
 
                 info = new HonorableExecutionInfo(attacker, mods);
                 info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(7.0), RemovePenalty, info.m_Mobile);
@@ -81,12 +85,13 @@ namespace Server.Spells.Bushido
 
         public static void RemovePenalty(Mobile target)
         {
-            if (!m_Table.TryGetValue(target, out var info) || !info.m_Penalty)
+            if (!m_Table.Remove(target, out var info) || !info.m_Penalty)
+            {
                 return;
+            }
 
             info.Clear();
             info.m_Timer?.Stop();
-            m_Table.Remove(target);
         }
 
         private class HonorableExecutionInfo
@@ -114,32 +119,44 @@ namespace Server.Spells.Bushido
             public void Apply()
             {
                 if (m_Mods == null)
+                {
                     return;
+                }
 
                 for (var i = 0; i < m_Mods.Count; ++i)
                 {
                     var mod = m_Mods[i];
 
                     if (mod is ResistanceMod resistanceMod)
+                    {
                         m_Mobile.AddResistanceMod(resistanceMod);
+                    }
                     else if (mod is SkillMod skillMod)
+                    {
                         m_Mobile.AddSkillMod(skillMod);
+                    }
                 }
             }
 
             public void Clear()
             {
                 if (m_Mods == null)
+                {
                     return;
+                }
 
                 for (var i = 0; i < m_Mods.Count; ++i)
                 {
                     var mod = m_Mods[i];
 
                     if (mod is ResistanceMod resistanceMod)
+                    {
                         m_Mobile.RemoveResistanceMod(resistanceMod);
+                    }
                     else if (mod is SkillMod skillMod)
+                    {
                         m_Mobile.RemoveSkillMod(skillMod);
+                    }
                 }
             }
         }

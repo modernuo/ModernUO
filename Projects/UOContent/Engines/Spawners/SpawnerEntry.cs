@@ -33,18 +33,20 @@ namespace Server.Engines.Spawners
             for (var i = 0; i < count; ++i)
                 // IEntity e = World.FindEntity( reader.ReadInt() );
 
+            {
                 if (reader.ReadEntity() is ISpawnable e)
                 {
                     e.Spawner = parent;
 
                     if (e is BaseCreature creature)
+                    {
                         creature.RemoveIfUntamed = true;
+                    }
 
                     Spawned.Add(e);
-
-                    if (!parent.Spawned.ContainsKey(e))
-                        parent.Spawned.Add(e, this);
+                    parent.Spawned.TryAdd(e, this);
                 }
+            }
         }
 
         [JsonPropertyName("probability")] public int SpawnedProbability { get; set; }
@@ -81,11 +83,17 @@ namespace Server.Engines.Spawners
                 object o = Spawned[i];
 
                 if (o is Item item)
+                {
                     writer.Write(item);
+                }
                 else if (o is Mobile mobile)
+                {
                     writer.Write(mobile);
+                }
                 else
+                {
                     writer.Write(Serial.MinusOne);
+                }
             }
         }
 

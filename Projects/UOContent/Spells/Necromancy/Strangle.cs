@@ -29,7 +29,9 @@ namespace Server.Spells.Necromancy
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (CheckHSequence(m))
             {
@@ -70,7 +72,10 @@ namespace Server.Spells.Necromancy
             // Calculations for the buff bar
             var spiritlevel = Caster.Skills.SpiritSpeak.Value / 10;
             if (spiritlevel < 4)
+            {
                 spiritlevel = 4;
+            }
+
             var d_MinDamage = 4;
             var d_MaxDamage = ((int)spiritlevel + 1) * 3;
             var args = $"{d_MinDamage}\t{d_MaxDamage}";
@@ -113,13 +118,13 @@ namespace Server.Spells.Necromancy
 
         public static bool RemoveCurse(Mobile m)
         {
-            if (!m_Table.TryGetValue(m, out var timer))
+            if (!m_Table.Remove(m, out var timer))
+            {
                 return false;
+            }
 
             timer.Stop();
             m.SendLocalizedMessage(1061687); // You can breath normally again.
-
-            m_Table.Remove(m);
             return true;
         }
 
@@ -153,7 +158,9 @@ namespace Server.Spells.Necromancy
                 m_Count = (int)spiritLevel;
 
                 if (m_Count < 4)
+                {
                     m_Count = 4;
+                }
 
                 m_MaxCount = m_Count;
             }
@@ -167,7 +174,9 @@ namespace Server.Spells.Necromancy
                 }
 
                 if (!m_Target.Alive || DateTime.UtcNow < m_NextHit)
+                {
                     return;
+                }
 
                 --m_Count;
 
@@ -182,9 +191,13 @@ namespace Server.Spells.Necromancy
                         var delay = (int)Math.Ceiling((1.0 + 5 * m_Count) / m_MaxCount);
 
                         if (delay <= 5)
+                        {
                             m_HitDelay = delay;
+                        }
                         else
+                        {
                             m_HitDelay = 5;
+                        }
                     }
                 }
 
@@ -203,16 +216,22 @@ namespace Server.Spells.Necromancy
                     damage *= 3 - (double)m_Target.Stam / m_Target.StamMax * 2;
 
                     if (damage < 1)
+                    {
                         damage = 1;
+                    }
 
                     if (!m_Target.Player)
+                    {
                         damage *= 1.75;
+                    }
 
                     AOS.Damage(m_Target, m_From, (int)damage, 0, 0, 0, 100, 0);
 
                     if (Utility.RandomDouble() >= 0.60
                     ) // OSI: randomly revealed between first and third damage tick, guessing 60% chance
+                    {
                         m_Target.RevealingAction();
+                    }
                 }
             }
         }

@@ -82,7 +82,9 @@ namespace Server.Spells
             var scalar = 1.0;
 
             if (!MindRotSpell.GetMindRotScalar(m, ref scalar))
+            {
                 scalar = 1.0;
+            }
 
             // Lower Mana Cost = 40%
             var lmc = Math.Min(AosAttributes.GetValue(m, AosAttribute.LowerManaCost), 40);
@@ -92,7 +94,9 @@ namespace Server.Spells
             var total = (int)(mana * scalar);
 
             if (m.Skills[MoveSkill].Value < 50.0 && GetContext(m) != null)
+            {
                 total *= 2;
+            }
 
             return total;
         }
@@ -113,7 +117,9 @@ namespace Server.Spells
             if (consume)
             {
                 if (!DelayedContext)
-                    SetContext(from);
+                {
+                    SetContext(@from);
+                }
 
                 from.Mana -= mana;
             }
@@ -124,19 +130,23 @@ namespace Server.Spells
         public virtual void SetContext(Mobile from)
         {
             if (GetContext(from) == null)
-                if (DelayedContext || from.Skills[MoveSkill].Value < 50.0)
+            {
+                if (DelayedContext || @from.Skills[MoveSkill].Value < 50.0)
                 {
-                    Timer timer = new SpecialMoveTimer(from);
+                    Timer timer = new SpecialMoveTimer(@from);
                     timer.Start();
 
-                    AddContext(from, new SpecialMoveContext(timer, GetType()));
+                    AddContext(@from, new SpecialMoveContext(timer, GetType()));
                 }
+            }
         }
 
         public virtual bool Validate(Mobile from)
         {
             if (!from.Player)
+            {
                 return true;
+            }
 
             if (HonorableExecution.IsUnderPenalty(from))
             {
@@ -153,24 +163,42 @@ namespace Server.Spells
             string option = null;
 
             if (this is Backstab)
+            {
                 option = "Backstab";
+            }
             else if (this is DeathStrike)
+            {
                 option = "Death Strike";
+            }
             else if (this is FocusAttack)
+            {
                 option = "Focus Attack";
+            }
             else if (this is KiAttack)
+            {
                 option = "Ki Attack";
+            }
             else if (this is SurpriseAttack)
+            {
                 option = "Surprise Attack";
+            }
             else if (this is HonorableExecution)
+            {
                 option = "Honorable Execution";
+            }
             else if (this is LightningStrike)
+            {
                 option = "Lightning Strike";
+            }
             else if (this is MomentumStrike)
+            {
                 option = "Momentum Strike";
+            }
 
             if (option != null && !DuelContext.AllowSpecialMove(from, option, this))
+            {
                 return false;
+            }
 
             return CheckSkills(from) && CheckMana(from, false);
         }
@@ -187,14 +215,18 @@ namespace Server.Spells
                 var moveID = kvp.Key;
 
                 if (moveID != -1)
+                {
                     m.Send(new ToggleSpecialAbility(moveID + 1, false));
+                }
             }
         }
 
         public static SpecialMove GetCurrentMove(Mobile m)
         {
             if (m == null)
+            {
                 return null;
+            }
 
             if (!Core.SE)
             {
@@ -230,7 +262,9 @@ namespace Server.Spells
             ClearCurrentMove(m);
 
             if (sameMove)
+            {
                 return true;
+            }
 
             if (move != null)
             {
@@ -243,7 +277,9 @@ namespace Server.Spells
                 var moveID = SpellRegistry.GetRegistryNumber(move);
 
                 if (moveID > 0)
+                {
                     m.Send(new ToggleSpecialAbility(moveID + 1, true));
+                }
 
                 TextDefinition.SendMessageTo(m, move.AbilityMessage);
             }
@@ -253,17 +289,17 @@ namespace Server.Spells
 
         public static void ClearCurrentMove(Mobile m)
         {
-            if (Table.TryGetValue(m, out var move))
+            if (Table.Remove(m, out var move))
             {
                 move.OnClearMove(m);
 
                 var moveID = SpellRegistry.GetRegistryNumber(move);
 
                 if (moveID > 0)
+                {
                     m.Send(new ToggleSpecialAbility(moveID + 1, false));
+                }
             }
-
-            Table.Remove(m);
         }
 
         private static void AddContext(Mobile m, SpecialMoveContext context)

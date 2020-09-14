@@ -57,7 +57,9 @@ namespace Server.Spells.Necromancy
                     var mod = new DefaultSkillMod(SkillName.MagicResist, false, 50.0);
 
                     if (m.Skills.MagicResist.Base > 50.0)
+                    {
                         m.AddSkillMod(mod);
+                    }
 
                     m_Table[m] = mod;
                 }
@@ -81,10 +83,11 @@ namespace Server.Spells.Necromancy
 
         public static bool TryEndEffect(Mobile m)
         {
-            if (!m_Table.TryGetValue(m, out var mod))
+            if (!m_Table.Remove(m, out var mod))
+            {
                 return false;
+            }
 
-            m_Table.Remove(m);
             mod?.Remove();
 
             return true;

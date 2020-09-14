@@ -19,7 +19,10 @@ namespace Server.Items
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
-            if (!Validate(attacker) || !CheckMana(attacker, true)) return;
+            if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
+                return;
+            }
 
             ClearCurrentAbility(attacker);
 
@@ -31,7 +34,9 @@ namespace Server.Items
 
             // Do not reset timer if one is already in place.
             if (!IsWounded(defender))
+            {
                 BeginWound(defender, defender.Player ? PlayerDuration : NPCDuration);
+            }
         }
 
         public static bool IsWounded(Mobile m) => m_Table.ContainsKey(m);
@@ -39,7 +44,9 @@ namespace Server.Items
         public static void BeginWound(Mobile m, TimeSpan duration)
         {
             if (m_Table.TryGetValue(m, out var timer))
+            {
                 timer?.Stop();
+            }
 
             m_Table[m] = timer = new InternalTimer(m, duration);
             timer.Start();
@@ -49,10 +56,9 @@ namespace Server.Items
 
         public static void EndWound(Mobile m)
         {
-            if (m_Table.TryGetValue(m, out var timer))
+            if (m_Table.Remove(m, out var timer))
             {
                 timer.Stop();
-                m_Table.Remove(m);
             }
 
             m.YellowHealthbar = false;

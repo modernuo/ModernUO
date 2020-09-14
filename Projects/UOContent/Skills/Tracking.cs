@@ -36,15 +36,15 @@ namespace Server.SkillHandlers
 
         public static double GetStalkingBonus(Mobile tracker, Mobile target)
         {
-            if (!m_Table.TryGetValue(tracker, out var info) || info.m_Target != target || info.m_Map != target.Map)
+            if (!m_Table.Remove(tracker, out var info) || info.m_Target != target || info.m_Map != target.Map)
+            {
                 return 0.0;
+            }
 
             var xDelta = info.m_Location.X - target.X;
             var yDelta = info.m_Location.Y - target.Y;
 
             var bonus = Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
-
-            m_Table.Remove(tracker); // Reset as of Pub 40, counting it as bug for Core.SE.
 
             return Core.ML ? Math.Min(bonus, 10 + tracker.Skills.Tracking.Value / 10) : bonus;
         }
@@ -108,7 +108,9 @@ namespace Server.SkillHandlers
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (info.ButtonID >= 1 && info.ButtonID <= 4)
+            {
                 TrackWhoGump.DisplayTo(m_Success, m_From, info.ButtonID - 1);
+            }
         }
     }
 
@@ -166,7 +168,9 @@ namespace Server.SkillHandlers
                 AddButton(20 + i % 4 * 100, 130 + i / 4 * 155, 4005, 4007, i + 1);
 
                 if (m.Name != null)
+                {
                     AddHtml(20 + i % 4 * 100, 90 + i / 4 * 155, 90, 40, m.Name);
+                }
             }
         }
 
@@ -181,7 +185,9 @@ namespace Server.SkillHandlers
             var map = from.Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             var check = m_Delegates[type];
 
@@ -207,11 +213,17 @@ namespace Server.SkillHandlers
             else
             {
                 if (type == 0)
-                    from.SendLocalizedMessage(502991); // You see no evidence of animals in the area.
+                {
+                    @from.SendLocalizedMessage(502991); // You see no evidence of animals in the area.
+                }
                 else if (type == 1)
-                    from.SendLocalizedMessage(502993); // You see no evidence of creatures in the area.
+                {
+                    @from.SendLocalizedMessage(502993); // You see no evidence of creatures in the area.
+                }
                 else
-                    from.SendLocalizedMessage(502995); // You see no evidence of people in the area.
+                {
+                    @from.SendLocalizedMessage(502995); // You see no evidence of people in the area.
+                }
             }
         }
 
@@ -219,13 +231,17 @@ namespace Server.SkillHandlers
         private static bool CheckDifficulty(Mobile from, Mobile m)
         {
             if (!Core.AOS || !m.Player)
+            {
                 return true;
+            }
 
             var tracking = from.Skills.Tracking.Fixed;
             var detectHidden = from.Skills.DetectHidden.Fixed;
 
             if (Core.ML && m.Race == Race.Elf)
+            {
                 tracking /= 2; // The 'Guide' says that it requires twice as Much tracking SKILL to track an elf.  Not the total difficulty to track.
+            }
 
             var hiding = m.Skills.Hiding.Fixed;
             var stealth = m.Skills.Stealth.Fixed;
@@ -233,19 +249,29 @@ namespace Server.SkillHandlers
 
             // Necromancy forms affect tracking difficulty
             if (TransformationSpellHelper.UnderTransformation(m, typeof(HorrificBeastSpell)))
+            {
                 divisor -= 200;
+            }
             else if (TransformationSpellHelper.UnderTransformation(m, typeof(VampiricEmbraceSpell)) && divisor < 500)
+            {
                 divisor = 500;
+            }
             else if (TransformationSpellHelper.UnderTransformation(m, typeof(WraithFormSpell)) && divisor <= 2000)
+            {
                 divisor += 200;
+            }
 
             int chance;
             if (divisor > 0)
             {
                 if (Core.SE)
+                {
                     chance = 50 * (tracking * 2 + detectHidden) / divisor;
+                }
                 else
+                {
                     chance = 50 * (tracking + detectHidden + 10 * Utility.RandomMinMax(1, 20)) / divisor;
+                }
             }
             else
             {
@@ -274,7 +300,9 @@ namespace Server.SkillHandlers
                 m_From.QuestArrow = new TrackArrow(m_From, m, m_Range * 2);
 
                 if (Core.SE)
+                {
                     Tracking.AddInfo(m_From, m);
+                }
             }
         }
 
@@ -287,11 +315,19 @@ namespace Server.SkillHandlers
             public int Compare(Mobile x, Mobile y)
             {
                 if (x == null && y == null)
+                {
                     return 0;
+                }
+
                 if (x == null)
+                {
                     return -1;
+                }
+
                 if (y == null)
+                {
                     return 1;
+                }
 
                 return m_From.GetDistanceToSqrt(x).CompareTo(m_From.GetDistanceToSqrt(y));
             }

@@ -3758,7 +3758,7 @@ namespace Server
                 }
                 else
                 {
-                    hue = Notoriety.GetHue(Notoriety.Compute(@from, this));
+                    hue = Notoriety.GetHue(Notoriety.Compute(from, this));
                 }
 
                 from.Send(new MessageLocalized(Serial, Body, MessageType.Label, hue, 3, opl.Header, Name, opl.HeaderArgs));
@@ -5571,7 +5571,7 @@ namespace Server
                     {
                         if (item.QuestItem)
                         {
-                            @from.SendLocalizedMessage(1074868); // Stacks of quest items cannot be unstacked.
+                            from.SendLocalizedMessage(1074868); // Stacks of quest items cannot be unstacked.
                         }
 
                         reject = LRReason.CannotLift;
@@ -5634,7 +5634,7 @@ namespace Server
 
                                 foreach (var ns in eable)
                                 {
-                                    if (ns.Mobile != @from && ns.Mobile.CanSee(@from) && ns.Mobile.InLOS(@from) &&
+                                    if (ns.Mobile != from && ns.Mobile.CanSee(from) && ns.Mobile.InLOS(from) &&
                                         ns.Mobile.CanSee(root))
                                     {
                                         if (p == null)
@@ -5645,7 +5645,7 @@ namespace Server
                                                 map
                                             );
 
-                                            p = Packet.Acquire(new DragEffect(src, @from, item.ItemID, item.Hue, amount));
+                                            p = Packet.Acquire(new DragEffect(src, from, item.ItemID, item.Hue, amount));
                                         }
 
                                         ns.Send(p);
@@ -5671,7 +5671,7 @@ namespace Server
 
                             if (liftSound != -1)
                             {
-                                @from.Send(new PlaySound(liftSound, @from));
+                                from.Send(new PlaySound(liftSound, from));
                             }
 
                             from.NextActionTime = Core.TickCount + ActionDelay;
@@ -5845,7 +5845,7 @@ namespace Server
 
             if (to == null || !item.DropToItem(from, to, loc))
             {
-                item.Bounce(@from);
+                item.Bounce(from);
             }
             else
             {
@@ -5882,7 +5882,7 @@ namespace Server
 
             if (!item.DropToWorld(from, loc))
             {
-                item.Bounce(@from);
+                item.Bounce(from);
             }
             else
             {
@@ -5919,7 +5919,7 @@ namespace Server
 
             if (to == null || !item.DropToMobile(from, to, loc))
             {
-                item.Bounce(@from);
+                item.Bounce(from);
             }
             else
             {
@@ -6443,7 +6443,7 @@ namespace Server
 
                 if (from != null)
                 {
-                    RegisterDamage(amount, @from);
+                    RegisterDamage(amount, from);
                 }
 
                 DisruptiveAction();
@@ -6473,7 +6473,7 @@ namespace Server
 
                 if (informMount)
                 {
-                    Mount?.OnRiderDamaged(amount, @from, newHits < 0);
+                    Mount?.OnRiderDamaged(amount, from, newHits < 0);
                 }
 
                 if (newHits < 0)
@@ -8624,7 +8624,7 @@ namespace Server
         {
             if (from.Map == Map && Utility.InUpdateRange(this, from) && from.CanSee(this))
             {
-                @from.Send(new MobileStatus(@from, this, m_NetState));
+                from.Send(new MobileStatus(from, this, m_NetState));
             }
 
             if (from == this)
@@ -8634,7 +8634,7 @@ namespace Server
 
             if (Party is IParty ip)
             {
-                ip.OnStatsQuery(@from, this);
+                ip.OnStatsQuery(from, this);
             }
         }
 
@@ -8708,7 +8708,7 @@ namespace Server
             }
             else
             {
-                hue = Notoriety.GetHue(Notoriety.Compute(@from, this));
+                hue = Notoriety.GetHue(Notoriety.Compute(from, this));
             }
 
             var name = Name ?? string.Empty;
@@ -10143,7 +10143,7 @@ namespace Server
 
             if (CanPaperdollBeOpenedBy(from))
             {
-                DisplayPaperdollTo(@from);
+                DisplayPaperdollTo(from);
             }
         }
 
@@ -10175,7 +10175,7 @@ namespace Server
         {
             if (CanPaperdollBeOpenedBy(from))
             {
-                DisplayPaperdollTo(@from);
+                DisplayPaperdollTo(from);
             }
         }
 
@@ -10590,11 +10590,11 @@ namespace Server
             {
                 if (m_CallbackHandlesCancel && m_Callback != null)
                 {
-                    m_Callback(@from, "");
+                    m_Callback(from, "");
                 }
                 else
                 {
-                    m_CancelCallback?.Invoke(@from, "");
+                    m_CancelCallback?.Invoke(from, "");
                 }
             }
         }

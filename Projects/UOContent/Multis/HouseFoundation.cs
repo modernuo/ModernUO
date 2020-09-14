@@ -125,7 +125,9 @@ namespace Server.Multis
             get
             {
                 if (m_Current == null)
+                {
                     SetInitialState();
+                }
 
                 return m_Current.Components;
             }
@@ -135,7 +137,11 @@ namespace Server.Multis
         {
             get
             {
-                if (m_Current == null) SetInitialState();
+                if (m_Current == null)
+                {
+                    SetInitialState();
+                }
+
                 return m_Current;
             }
             set => m_Current = value;
@@ -145,7 +151,11 @@ namespace Server.Multis
         {
             get
             {
-                if (m_Design == null) SetInitialState();
+                if (m_Design == null)
+                {
+                    SetInitialState();
+                }
+
                 return m_Design;
             }
             set => m_Design = value;
@@ -155,7 +165,11 @@ namespace Server.Multis
         {
             get
             {
-                if (m_Backup == null) SetInitialState();
+                if (m_Backup == null)
+                {
+                    SetInitialState();
+                }
+
                 return m_Backup;
             }
             set => m_Backup = value;
@@ -183,7 +197,10 @@ namespace Server.Multis
                 var mcl = Components;
 
                 if (mcl.Width >= 14 || mcl.Height >= 14)
+                {
                     return 4;
+                }
+
                 return 3;
             }
         }
@@ -201,9 +218,13 @@ namespace Server.Multis
             var v = 18 + (w > h ? w : h) / 2;
 
             if (v > 24)
+            {
                 v = 24;
+            }
             else if (v < 18)
+            {
                 v = 18;
+            }
 
             return v;
         }
@@ -225,7 +246,9 @@ namespace Server.Multis
             Signpost?.Delete();
 
             if (Fixtures == null)
+            {
                 return;
+            }
 
             for (var i = 0; i < Fixtures.Count; ++i)
             {
@@ -250,14 +273,18 @@ namespace Server.Multis
             Signpost?.MoveToWorld(new Point3D(Signpost.X + x, Signpost.Y + y, Signpost.Z + z), Map);
 
             if (Fixtures == null)
+            {
                 return;
+            }
 
             for (var i = 0; i < Fixtures.Count; ++i)
             {
                 var item = Fixtures[i];
 
                 if (item is BaseDoor door && Doors.Contains(door))
+                {
                     continue;
+                }
 
                 item.MoveToWorld(new Point3D(item.X + x, item.Y + y, item.Z + z), Map);
             }
@@ -268,22 +295,32 @@ namespace Server.Multis
             base.OnMapChange();
 
             if (SignHanger != null)
+            {
                 SignHanger.Map = Map;
+            }
 
             if (Signpost != null)
+            {
                 Signpost.Map = Map;
+            }
 
             if (Fixtures == null)
+            {
                 return;
+            }
 
             for (var i = 0; i < Fixtures.Count; ++i)
+            {
                 Fixtures[i].Map = Map;
+            }
         }
 
         public void ClearFixtures(Mobile from)
         {
             if (Fixtures == null)
+            {
                 return;
+            }
 
             RemoveKeys(from);
 
@@ -293,7 +330,9 @@ namespace Server.Multis
                 item.Delete();
 
                 if (item is BaseDoor door)
+                {
                     Doors.Remove(door);
+                }
             }
 
             Fixtures.Clear();
@@ -425,9 +464,13 @@ namespace Server.Multis
                         DoorFacing facing;
 
                         if (itemID == 0x31AA || itemID == 0x31A8)
+                        {
                             facing = mod == 0 ? DoorFacing.NorthCW : DoorFacing.EastCW;
+                        }
                         else
+                        {
                             facing = mod == 0 ? DoorFacing.EastCW : DoorFacing.NorthCW;
+                        }
 
                         var type = (itemID - 0x319C) / 4;
 
@@ -495,7 +538,9 @@ namespace Server.Multis
                     if (door != null)
                     {
                         if (keyValue == 0)
-                            keyValue = CreateKeys(from);
+                        {
+                            keyValue = CreateKeys(@from);
+                        }
 
                         door.Locked = true;
                         door.KeyValue = keyValue;
@@ -513,16 +558,20 @@ namespace Server.Multis
                 if (fixture is HouseTeleporter tp)
                 {
                     for (var j = 1; j <= Fixtures.Count; ++j)
+                    {
                         if (Fixtures[(i + j) % Fixtures.Count] is HouseTeleporter check && check.ItemID == tp.ItemID)
                         {
                             tp.Target = check;
                             break;
                         }
+                    }
                 }
                 else if (fixture is BaseHouseDoor door)
                 {
                     if (door.Link != null)
+                    {
                         continue;
+                    }
 
                     DoorFacing linkFacing;
                     int xOffset, yOffset;
@@ -592,6 +641,7 @@ namespace Server.Multis
                     }
 
                     for (var j = i + 1; j < Fixtures.Count; ++j)
+                    {
                         if (Fixtures[j] is BaseHouseDoor check && check.Link == null && check.Facing == linkFacing &&
                             check.X - door.X == xOffset && check.Y - door.Y == yOffset && check.Z == door.Z)
                         {
@@ -599,6 +649,7 @@ namespace Server.Multis
                             door.Link = check;
                             break;
                         }
+                    }
                 }
             }
         }
@@ -692,7 +743,9 @@ namespace Server.Multis
                 mcl.Add(south, x - xCenter, 0 - yCenter, 0);
 
                 if (x < mcl.Width - 1)
+                {
                     mcl.Add(south, x - xCenter, mcl.Height - 2 - yCenter, 0);
+                }
             }
 
             for (var y = 1; y < mcl.Height - 1; ++y)
@@ -700,7 +753,9 @@ namespace Server.Multis
                 mcl.Add(east, 0 - xCenter, y - yCenter, 0);
 
                 if (y < mcl.Height - 2)
+                {
                     mcl.Add(east, mcl.Width - 1 - xCenter, y - yCenter, 0);
+                }
             }
         }
 
@@ -716,7 +771,9 @@ namespace Server.Multis
             var y = mcl.Height - 1;
 
             for (var x = 0; x < mcl.Width; ++x)
+            {
                 mcl.Add(0x63, x - xCenter, y - yCenter, 0);
+            }
         }
 
         public MultiComponentList GetEmptyFoundation()
@@ -733,7 +790,9 @@ namespace Server.Multis
             ApplyFoundation(Type, mcl);
 
             for (var x = 1; x < mcl.Width; ++x)
+            {
                 mcl.Add(0x751, x - xCenter, y - yCenter, 0);
+            }
 
             return mcl;
         }
@@ -777,7 +836,9 @@ namespace Server.Multis
                     var tile = tiles[i];
 
                     if (tile.Z == 7 && tile.Height == 20)
+                    {
                         return true;
+                    }
                 }
             }
 
@@ -787,7 +848,9 @@ namespace Server.Multis
         public void BeginCustomize(Mobile m)
         {
             if (!m.CheckAlive())
+            {
                 return;
+            }
 
             if (SpellHelper.CheckCombat(m))
             {
@@ -797,18 +860,27 @@ namespace Server.Multis
 
             RelocateEntities();
 
-            foreach (var item in GetItems()) item.Location = BanLocation;
+            foreach (var item in GetItems())
+            {
+                item.Location = BanLocation;
+            }
 
             foreach (var mobile in GetMobiles())
+            {
                 if (mobile != m)
+                {
                     mobile.Location = BanLocation;
+                }
+            }
 
             DesignContext.Add(m, this);
             m.Send(new BeginHouseCustomization(this));
 
             var ns = m.NetState;
             if (ns != null)
+            {
                 SendInfoTo(ns);
+            }
 
             DesignState.SendDetailedInfoTo(ns);
         }
@@ -871,17 +943,23 @@ namespace Server.Multis
                 case 1:
                     {
                         if (version < 5)
+                        {
                             m_DefaultPrice = reader.ReadInt();
+                        }
 
                         goto case 0;
                     }
                 case 0:
                     {
                         if (version < 3)
+                        {
                             Type = FoundationType.Stone;
+                        }
 
                         if (version < 4)
+                        {
                             SignpostGraphic = 9;
+                        }
 
                         LastRevision = reader.ReadInt();
                         Fixtures = reader.ReadStrongItemList();
@@ -950,7 +1028,9 @@ namespace Server.Multis
             var context = DesignContext.Find(from);
 
             if (context == null)
+            {
                 return;
+            }
 
             /* Client chose to clear the design
                *  - Restore empty foundation
@@ -980,7 +1060,9 @@ namespace Server.Multis
             var context = DesignContext.Find(from);
 
             if (context == null)
+            {
                 return;
+            }
 
             /* Client chose to restore design to the last backup state
                *  - Restore backup
@@ -1010,7 +1092,9 @@ namespace Server.Multis
             var context = DesignContext.Find(from);
 
             if (context == null)
+            {
                 return;
+            }
 
             /* Client chose to backup design state
                *  - Construct a copy of the current design state
@@ -1030,7 +1114,9 @@ namespace Server.Multis
             var context = DesignContext.Find(from);
 
             if (context == null)
+            {
                 return;
+            }
 
             /* Client chose to revert design state to currently visible state
                *  - Revert design state
@@ -1103,12 +1189,16 @@ namespace Server.Multis
                     else if (cost < 0)
                     {
                         if (Banker.Deposit(from, -cost))
-                            from.SendLocalizedMessage(
+                        {
+                            @from.SendLocalizedMessage(
                                 1060397,
                                 (-cost).ToString()
                             ); // ~1_AMOUNT~ gold has been deposited into your bank box.
+                        }
                         else
+                        {
                             return;
+                        }
                     }
                 }
             }
@@ -1165,10 +1255,14 @@ namespace Server.Multis
             from.RevealingAction();
 
             foreach (var item in GetItems())
+            {
                 item.Location = BanLocation;
+            }
 
             foreach (var mobile in GetMobiles())
+            {
                 mobile.Location = BanLocation;
+            }
 
             // Restore relocated entities
             RestoreRelocatedEntities();
@@ -1195,7 +1289,9 @@ namespace Server.Multis
         public static int GetLevelZ(int level, HouseFoundation house)
         {
             if (level < 1 || level > house.MaxLevels)
+            {
                 level = 1;
+            }
 
             return (level - 1) * 20 + 7;
         }
@@ -1205,7 +1301,9 @@ namespace Server.Multis
             var level = (z - 7) / 20 + 1;
 
             if (level < 1 || level > house.MaxLevels)
+            {
                 level = 1;
+            }
 
             return level;
         }
@@ -1221,7 +1319,9 @@ namespace Server.Multis
             var delta = -1;
 
             for (var i = 0; delta < 0 && i < m_BlockIDs.Length; ++i)
+            {
                 delta = m_BlockIDs[i] - id;
+            }
 
             return delta == 0;
         }
@@ -1232,7 +1332,9 @@ namespace Server.Multis
             var delta = -4;
 
             for (var i = 0; delta < -3 && i < m_StairSeqs.Length; ++i)
+            {
                 delta = m_StairSeqs[i] - id;
+            }
 
             if (delta >= -3 && delta <= 0)
             {
@@ -1241,11 +1343,13 @@ namespace Server.Multis
             }
 
             for (var i = 0; i < m_StairIDs.Length; ++i)
+            {
                 if (m_StairIDs[i] == id)
                 {
                     dir = i % 4;
                     return true;
                 }
+            }
 
             return false;
         }
@@ -1256,7 +1360,9 @@ namespace Server.Multis
             var ay = y + mcl.Center.Y;
 
             if (ax < 0 || ay < 0 || ax >= mcl.Width || ay >= mcl.Height - 1 || z < 7 || (z - 7) % 5 != 0)
+            {
                 return false;
+            }
 
             if (IsStairBlock(id))
             {
@@ -1272,7 +1378,9 @@ namespace Server.Multis
                         z = tile.Z;
 
                         if (!IsStairBlock(id))
+                        {
                             break;
+                        }
                     }
                 }
             }
@@ -1280,10 +1388,14 @@ namespace Server.Multis
             var dir = 0;
 
             if (!IsStair(id, ref dir))
+            {
                 return false;
+            }
 
             if (AllowStairSectioning)
+            {
                 return true; // skip deletion
+            }
 
             var height = (z - 7) % 20 / 5;
 
@@ -1334,7 +1446,9 @@ namespace Server.Multis
                 y = yStart + i * yInc;
 
                 for (var j = 0; j <= i; ++j)
+                {
                     mcl.RemoveXYZH(x, y, zStart + j * 5, 5);
+                }
 
                 ax = x + mcl.Center.X;
                 ay = y + mcl.Center.Y;
@@ -1346,10 +1460,14 @@ namespace Server.Multis
                     var hasBaseFloor = false;
 
                     for (var j = 0; !hasBaseFloor && j < tiles.Length; ++j)
+                    {
                         hasBaseFloor = tiles[j].Z == 7 && tiles[j].ID != 1;
+                    }
 
                     if (!hasBaseFloor)
+                    {
                         mcl.Add(0x31F4, x, y, 7);
+                    }
                 }
             }
 
@@ -1362,7 +1480,9 @@ namespace Server.Multis
             var context = DesignContext.Find(from);
 
             if (context == null)
+            {
                 return;
+            }
 
             /* Client chose to delete a component
                *  - Read data detailing which component to delete
@@ -1402,14 +1522,18 @@ namespace Server.Multis
             if (AllowStairSectioning)
             {
                 if (DeleteStairs(mcl, itemID, x, y, z))
+                {
                     fixState = true; // The client removes the entire set of stairs locally, resend state
+                }
 
                 mcl.Remove(itemID, x, y, z);
             }
             else
             {
                 if (!DeleteStairs(mcl, itemID, x, y, z))
+                {
                     mcl.Remove(itemID, x, y, z);
+                }
             }
 
             // If needed, replace removed component with a dirt tile
@@ -1420,9 +1544,14 @@ namespace Server.Multis
                 var hasBaseFloor = false;
 
                 for (var i = 0; !hasBaseFloor && i < tiles.Length; ++i)
+                {
                     hasBaseFloor = tiles[i].Z == 7 && tiles[i].ID != 1;
+                }
 
-                if (!hasBaseFloor) mcl.Add(0x31F4, x, y, 7);
+                if (!hasBaseFloor)
+                {
+                    mcl.Add(0x31F4, x, y, 7);
+                }
             }
 
             // Update revision
@@ -1430,7 +1559,9 @@ namespace Server.Multis
 
             // Resend design state
             if (fixState)
+            {
                 design.SendDetailedInfoTo(state);
+            }
         }
 
         public static void Designer_Stairs(NetState state, IEntity e, EncodedReader pvSrc)
@@ -1439,7 +1570,9 @@ namespace Server.Multis
             var context = DesignContext.Find(from);
 
             if (context == null)
+            {
                 return;
+            }
 
             /* Client chose to add stairs
                *  - Read data detailing stair type and location
@@ -1484,7 +1617,9 @@ namespace Server.Multis
                 var entry = stairs.List[i];
 
                 if (entry.ItemId != 1)
+                {
                     mcl.Add(entry.ItemId, x + entry.OffsetX, y + entry.OffsetY, z + entry.OffsetZ);
+                }
             }
 
             // Update revision
@@ -1510,7 +1645,9 @@ namespace Server.Multis
             var context = DesignContext.Find(from);
 
             if (context == null)
+            {
                 return;
+            }
 
             /* Client chose to add a component
                *  - Read data detailing component graphic and location
@@ -1538,7 +1675,9 @@ namespace Server.Multis
             var z = GetLevelZ(context.Level, context.Foundation);
 
             if (y + mcl.Center.Y == mcl.Height - 1)
+            {
                 z = 0; // Tiles placed on the far-south of the house are at 0 Z
+            }
 
             mcl.Add(itemID, x, y, z);
 
@@ -1552,7 +1691,9 @@ namespace Server.Multis
             var context = DesignContext.Find(from);
 
             if (context == null)
+            {
                 return;
+            }
 
             /* Client closed his house design window
                *  - Remove design context
@@ -1580,10 +1721,14 @@ namespace Server.Multis
             from.RevealingAction();
 
             foreach (var item in context.Foundation.GetItems())
+            {
                 item.Location = context.Foundation.BanLocation;
+            }
 
             foreach (var mobile in context.Foundation.GetMobiles())
+            {
                 mobile.Location = context.Foundation.BanLocation;
+            }
 
             // Restore relocated entities
             context.Foundation.RestoreRelocatedEntities();
@@ -1595,7 +1740,9 @@ namespace Server.Multis
             var context = DesignContext.Find(from);
 
             if (context == null)
+            {
                 return;
+            }
 
             /* Client is moving to a new floor level
                *  - Read data detailing the target level
@@ -1611,7 +1758,9 @@ namespace Server.Multis
 
             // Validate target level
             if (newLevel < 1 || newLevel > context.MaxLevels)
+            {
                 newLevel = 1;
+            }
 
             // Update design context with new level
             context.Level = newLevel;
@@ -1644,7 +1793,9 @@ namespace Server.Multis
             var context = DesignContext.Find(from);
 
             if (context == null || !Core.SE && from.AccessLevel < AccessLevel.GameMaster)
+            {
                 return;
+            }
 
             // Read data detailing component graphic and location
             var itemID = pvSrc.ReadInt32();
@@ -1665,7 +1816,10 @@ namespace Server.Multis
             var mcl = design.Components;
 
             if (z < -3 || z > 12 || z % 3 != 0)
+            {
                 z = -3;
+            }
+
             z += GetLevelZ(context.Level, context.Foundation);
 
             var list = mcl.List;
@@ -1676,7 +1830,9 @@ namespace Server.Multis
                 if (mte.OffsetX == x && mte.OffsetY == y &&
                     GetZLevel(mte.OffsetZ, context.Foundation) == context.Level &&
                     (TileData.ItemTable[mte.ItemId & TileData.MaxItemValue].Flags & TileFlag.Roof) != 0)
+                {
                     mcl.Remove(mte.ItemId, x, y, mte.OffsetZ);
+                }
             }
 
             mcl.Add(itemID, x, y, z);
@@ -1692,7 +1848,9 @@ namespace Server.Multis
 
             // No need to check for Core.SE if trying to remove something that shouldn't be able to be placed anyways
             if (context == null)
+            {
                 return;
+            }
 
             // Read data detailing which component to delete
             var itemID = pvSrc.ReadInt32();
@@ -1735,7 +1893,9 @@ namespace Server.Multis
             Fixtures = new MultiTileEntry[toCopy.Fixtures.Length];
 
             for (var i = 0; i < Fixtures.Length; ++i)
+            {
                 Fixtures[i] = toCopy.Fixtures[i];
+            }
         }
 
         public DesignState(HouseFoundation foundation, IGenericReader reader)
@@ -1776,7 +1936,9 @@ namespace Server.Multis
             set
             {
                 if (m_PacketCache == value)
+                {
                     return;
+                }
 
                 m_PacketCache?.Release();
 
@@ -1834,13 +1996,19 @@ namespace Server.Multis
         public void SendDetailedInfoTo(NetState state)
         {
             if (state != null)
+            {
                 lock (this)
                 {
                     if (m_PacketCache == null)
+                    {
                         DesignStateDetailed.SendDetails(state, Foundation, this);
+                    }
                     else
+                    {
                         state.Send(m_PacketCache);
+                    }
                 }
+            }
         }
 
         public void FreezeFixtures()
@@ -1869,7 +2037,9 @@ namespace Server.Multis
                 var mte = list[i];
 
                 if (IsFixture(mte.ItemId))
+                {
                     ++length;
+                }
             }
 
             Fixtures = new MultiTileEntry[length];
@@ -1889,62 +2059,142 @@ namespace Server.Multis
         public static bool IsFixture(int itemID)
         {
             if (itemID >= 0x675 && itemID < 0x6F5)
+            {
                 return true;
+            }
+
             if (itemID >= 0x314 && itemID < 0x364)
+            {
                 return true;
+            }
+
             if (itemID >= 0x824 && itemID < 0x834)
+            {
                 return true;
+            }
+
             if (itemID >= 0x839 && itemID < 0x849)
+            {
                 return true;
+            }
+
             if (itemID >= 0x84C && itemID < 0x85C)
+            {
                 return true;
+            }
+
             if (itemID >= 0x866 && itemID < 0x876)
+            {
                 return true;
+            }
+
             if (itemID >= 0x0E8 && itemID < 0x0F8)
+            {
                 return true;
+            }
+
             if (itemID >= 0x1FED && itemID < 0x1FFD)
+            {
                 return true;
+            }
+
             if (itemID >= 0x181D && itemID < 0x1829)
+            {
                 return true;
+            }
+
             if (itemID >= 0x241F && itemID < 0x2421)
+            {
                 return true;
+            }
+
             if (itemID >= 0x2423 && itemID < 0x2425)
+            {
                 return true;
+            }
+
             if (itemID >= 0x2A05 && itemID < 0x2A1D)
+            {
                 return true;
+            }
+
             if (itemID >= 0x319C && itemID < 0x31B0)
+            {
                 return true;
+            }
+
             // ML doors
             if (itemID == 0x2D46 || itemID == 0x2D48 || itemID == 0x2FE2 || itemID == 0x2FE4)
+            {
                 return true;
+            }
+
             if (itemID >= 0x2D63 && itemID < 0x2D70)
+            {
                 return true;
+            }
+
             if (itemID >= 0x319C && itemID < 0x31AF)
+            {
                 return true;
+            }
+
             if (itemID >= 0x367B && itemID < 0x369B)
+            {
                 return true;
+            }
+
             // SA doors
             if (itemID >= 0x409B && itemID < 0x40A3)
+            {
                 return true;
+            }
+
             if (itemID >= 0x410C && itemID < 0x4114)
+            {
                 return true;
+            }
+
             if (itemID >= 0x41C2 && itemID < 0x41CA)
+            {
                 return true;
+            }
+
             if (itemID >= 0x41CF && itemID < 0x41D7)
+            {
                 return true;
+            }
+
             if (itemID >= 0x436E && itemID < 0x437E)
+            {
                 return true;
+            }
+
             if (itemID >= 0x46DD && itemID < 0x46E5)
+            {
                 return true;
+            }
+
             if (itemID >= 0x4D22 && itemID < 0x4D2A)
+            {
                 return true;
+            }
+
             if (itemID >= 0x50C8 && itemID < 0x50D8)
+            {
                 return true;
+            }
+
             if (itemID >= 0x5142 && itemID < 0x514A)
+            {
                 return true;
+            }
+
             // TOL doors
             if (itemID >= 0x9AD7 && itemID < 0x9AE7)
+            {
                 return true;
+            }
 
             return itemID >= 0x9B3C && itemID < 0x9B4C;
         }
@@ -2003,7 +2253,9 @@ namespace Server.Multis
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID == 1)
+            {
                 m_Foundation.EndConfirmCommit(sender.Mobile);
+            }
         }
     }
 
@@ -2026,7 +2278,9 @@ namespace Server.Multis
         public static DesignContext Find(Mobile from)
         {
             if (from == null)
+            {
                 return null;
+            }
 
             Table.TryGetValue(from, out var d);
 
@@ -2036,7 +2290,9 @@ namespace Server.Multis
         public static bool Check(Mobile m)
         {
             if (Find(m) == null)
+            {
                 return true;
+            }
 
             m.SendLocalizedMessage(1062206); // You cannot do that while customizing a house.
             return false;
@@ -2045,14 +2301,18 @@ namespace Server.Multis
         public static void Add(Mobile from, HouseFoundation foundation)
         {
             if (from == null)
+            {
                 return;
+            }
 
             var c = new DesignContext(foundation);
 
             Table[from] = c;
 
             if (from is PlayerMobile pm)
+            {
                 pm.DesignContext = c;
+            }
 
             foundation.Customizer = from;
 
@@ -2062,7 +2322,9 @@ namespace Server.Multis
             var state = from.NetState;
 
             if (state == null)
+            {
                 return;
+            }
 
             var fixtures = foundation.Fixtures;
 
@@ -2074,13 +2336,19 @@ namespace Server.Multis
             }
 
             if (foundation.Signpost != null)
+            {
                 state.Send(foundation.Signpost.RemovePacket);
+            }
 
             if (foundation.SignHanger != null)
+            {
                 state.Send(foundation.SignHanger.RemovePacket);
+            }
 
             if (foundation.Sign != null)
+            {
                 state.Send(foundation.Sign.RemovePacket);
+            }
         }
 
         public static void Remove(Mobile from)
@@ -2088,19 +2356,25 @@ namespace Server.Multis
             var context = Find(from);
 
             if (context == null)
+            {
                 return;
+            }
 
             Table.Remove(from);
 
             if (from is PlayerMobile pm)
+            {
                 pm.DesignContext = null;
+            }
 
             context.Foundation.Customizer = null;
 
             var state = from.NetState;
 
             if (state == null)
+            {
                 return;
+            }
 
             var fixtures = context.Foundation.Fixtures;
 
@@ -2208,12 +2482,16 @@ namespace Server.Multis
             m_PlaneBuffers = new byte[9][];
 
             for (var i = 0; i < m_PlaneBuffers.Length; ++i)
+            {
                 m_PlaneBuffers[i] = ArrayPool<byte>.Shared.Rent(0x400);
+            }
 
             m_StairBuffers = new byte[6][];
 
             for (var i = 0; i < m_StairBuffers.Length; ++i)
+            {
                 m_StairBuffers[i] = ArrayPool<byte>.Shared.Rent(MaxItemsPerStairBuffer * 5);
+            }
 
             Clear(m_PlaneBuffers[0], width * height * 2);
 
@@ -2330,11 +2608,17 @@ namespace Server.Multis
                 int size;
 
                 if (i == 0)
+                {
                     size = width * height * 2;
+                }
                 else if (i < 5)
+                {
                     size = (width - 1) * (height - 2) * 2;
+                }
                 else
+                {
                     size = width * (height - 1) * 2;
+                }
 
                 var inflatedBuffer = m_PlaneBuffers[i];
 
@@ -2373,7 +2657,9 @@ namespace Server.Multis
                 var count = totalStairsUsed - i * MaxItemsPerStairBuffer;
 
                 if (count > MaxItemsPerStairBuffer)
+                {
                     count = MaxItemsPerStairBuffer;
+                }
 
                 var size = count * 5;
 
@@ -2405,7 +2691,9 @@ namespace Server.Multis
             }
 
             for (var i = 0; i < m_StairBuffers.Length; ++i)
+            {
                 ArrayPool<byte>.Shared.Return(m_StairBuffers[i]);
+            }
 
             ArrayPool<byte>.Shared.Return(m_DeflatedBuffer);
 
@@ -2456,7 +2744,9 @@ namespace Server.Multis
         public static void Clear(byte[] buffer, int size)
         {
             for (var i = 0; i < size; ++i)
+            {
                 buffer[i] = 0;
+            }
         }
 
         public static void ProcessCompression()
@@ -2468,6 +2758,7 @@ namespace Server.Multis
                 var count = m_SendQueue.Count;
 
                 while (count > 0 && m_SendQueue.TryDequeue(out var sqe))
+                {
                     try
                     {
                         Packet p;
@@ -2493,7 +2784,9 @@ namespace Server.Multis
                             lock (sqe.m_Root)
                             {
                                 if (sqe.m_Revision == sqe.m_Root.Revision)
+                                {
                                     sqe.m_Root.PacketCache = p;
+                                }
                             }
                         }
 
@@ -2517,6 +2810,7 @@ namespace Server.Multis
                     {
                         count = m_SendQueue.Count;
                     }
+                }
             }
         }
 

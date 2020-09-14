@@ -120,10 +120,9 @@ namespace Server.Mobiles
 
         public static void EndLifeDrain(Mobile m)
         {
-            if (m_Table.TryGetValue(m, out var timer))
+            if (m_Table.Remove(m, out var timer))
             {
                 timer?.Stop();
-                m_Table.Remove(m);
                 m.SendLocalizedMessage(1070849); // The drain on your life force is gone.
             }
         }

@@ -95,7 +95,9 @@ namespace Server.Spells.Mysticism
                     var mount = Caster.Mount;
 
                     if (mount != null)
+                    {
                         mount.Rider = null;
+                    }
 
                     Caster.BodyMod = 0x2C1;
                     Caster.HueMod = 0;
@@ -112,7 +114,9 @@ namespace Server.Spells.Mysticism
                     };
 
                     for (var i = 0; i < mods.Length; ++i)
+                    {
                         Caster.AddResistanceMod(mods[i]);
+                    }
 
                     m_Table[Caster] = mods;
 
@@ -141,16 +145,18 @@ namespace Server.Spells.Mysticism
 
         public static void RemoveEffects(Mobile m)
         {
-            if (!m_Table.TryGetValue(m, out var mods))
+            if (!m_Table.Remove(m, out var mods))
+            {
                 return;
+            }
 
             for (var i = 0; i < mods.Length; ++i)
+            {
                 m.RemoveResistanceMod(mods[i]);
+            }
 
             m.BodyMod = 0;
             m.HueMod = -1;
-
-            m_Table.Remove(m);
 
             BuffInfo.RemoveBuff(m, BuffIcon.StoneForm);
         }

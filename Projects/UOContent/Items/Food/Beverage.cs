@@ -52,6 +52,7 @@ namespace Server.Items
         public override int ComputeItemID()
         {
             if (!IsEmpty)
+            {
                 switch (Content)
                 {
                     case BeverageType.Ale:    return 0x99F;
@@ -61,6 +62,7 @@ namespace Server.Items
                     case BeverageType.Wine:   return 0x9C7;
                     case BeverageType.Water:  return 0x99B;
                 }
+            }
 
             return 0;
         }
@@ -127,7 +129,9 @@ namespace Server.Items
         public override int ComputeItemID()
         {
             if (!IsEmpty)
+            {
                 return 0x9C8;
+            }
 
             return 0;
         }
@@ -168,9 +172,14 @@ namespace Server.Items
         public override int ComputeItemID()
         {
             if (ItemID >= 0x995 && ItemID <= 0x999)
+            {
                 return ItemID;
+            }
+
             if (ItemID == 0x9CA)
+            {
                 return ItemID;
+            }
 
             return 0x995;
         }
@@ -211,7 +220,9 @@ namespace Server.Items
         public override int ComputeItemID()
         {
             if (ItemID >= 0xFFF && ItemID <= 0x1002)
+            {
                 return ItemID;
+            }
 
             return 0xFFF;
         }
@@ -252,7 +263,9 @@ namespace Server.Items
         public override int ComputeItemID()
         {
             if (ItemID == 0x99A || ItemID == 0x9B3 || ItemID == 0x9BF || ItemID == 0x9CB)
+            {
                 return ItemID;
+            }
 
             return 0x99A;
         }
@@ -302,7 +315,9 @@ namespace Server.Items
         public override int ComputeItemID()
         {
             if (IsEmpty)
+            {
                 return ItemID >= 0x1F81 && ItemID <= 0x1F84 ? ItemID : 0x1F81;
+            }
 
             return Content switch
             {
@@ -406,7 +421,9 @@ namespace Server.Items
             if (IsEmpty)
             {
                 if (ItemID == 0x9A7 || ItemID == 0xFF7)
+                {
                     return ItemID;
+                }
 
                 return 0xFF6;
             }
@@ -416,42 +433,54 @@ namespace Server.Items
                 case BeverageType.Ale:
                     {
                         if (ItemID == 0x1F96)
+                        {
                             return ItemID;
+                        }
 
                         return 0x1F95;
                     }
                 case BeverageType.Cider:
                     {
                         if (ItemID == 0x1F98)
+                        {
                             return ItemID;
+                        }
 
                         return 0x1F97;
                     }
                 case BeverageType.Liquor:
                     {
                         if (ItemID == 0x1F9A)
+                        {
                             return ItemID;
+                        }
 
                         return 0x1F99;
                     }
                 case BeverageType.Milk:
                     {
                         if (ItemID == 0x9AD)
+                        {
                             return ItemID;
+                        }
 
                         return 0x9F0;
                     }
                 case BeverageType.Wine:
                     {
                         if (ItemID == 0x1F9C)
+                        {
                             return ItemID;
+                        }
 
                         return 0x1F9B;
                     }
                 case BeverageType.Water:
                     {
                         if (ItemID == 0xFF8 || ItemID == 0xFF9 || ItemID == 0x1F9E)
+                        {
                             return ItemID;
+                        }
 
                         return 0x1F9D;
                     }
@@ -470,9 +499,13 @@ namespace Server.Items
         public override void Deserialize(IGenericReader reader)
         {
             if (CheckType("PitcherWater") || CheckType("GlassPitcher"))
+            {
                 InternalDeserialize(reader, false);
+            }
             else
+            {
                 InternalDeserialize(reader, true);
+            }
 
             var version = reader.ReadInt();
 
@@ -565,7 +598,9 @@ namespace Server.Items
                 var num = BaseLabelNumber;
 
                 if (IsEmpty || num == 0)
+                {
                     return EmptyLabelNumber;
+                }
 
                 return BaseLabelNumber + (int)m_Content;
             }
@@ -608,9 +643,13 @@ namespace Server.Items
                 var itemID = ComputeItemID();
 
                 if (itemID > 0)
+                {
                     ItemID = itemID;
+                }
                 else
+                {
                     Delete();
+                }
             }
         }
 
@@ -627,9 +666,13 @@ namespace Server.Items
                 var itemID = ComputeItemID();
 
                 if (itemID > 0)
+                {
                     ItemID = itemID;
+                }
                 else
+                {
                     Delete();
+                }
             }
         }
 
@@ -640,11 +683,20 @@ namespace Server.Items
             var perc = m_Quantity * 100 / MaxQuantity;
 
             if (perc <= 0)
+            {
                 return 1042975; // It's empty.
+            }
+
             if (perc <= 33)
+            {
                 return 1042974; // It's nearly empty.
+            }
+
             if (perc <= 66)
+            {
                 return 1042973; // It's half full.
+            }
+
             return 1042972;     // It's full.
         }
 
@@ -653,7 +705,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (ShowQuantity)
+            {
                 list.Add(GetQuantityDescription());
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -661,13 +715,17 @@ namespace Server.Items
             base.OnSingleClick(from);
 
             if (ShowQuantity)
-                LabelTo(from, GetQuantityDescription());
+            {
+                LabelTo(@from, GetQuantityDescription());
+            }
         }
 
         public virtual bool ValidateUse(Mobile from, bool message)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             if (!Movable && !Fillable)
             {
@@ -676,7 +734,9 @@ namespace Server.Items
                 if (house?.HasLockedDownItem(this) != true)
                 {
                     if (message)
-                        from.SendLocalizedMessage(502946, "", 0x59); // That belongs to someone else.
+                    {
+                        @from.SendLocalizedMessage(502946, "", 0x59); // That belongs to someone else.
+                    }
 
                     return false;
                 }
@@ -685,7 +745,9 @@ namespace Server.Items
             if (from.Map != Map || !from.InRange(GetWorldLocation(), 2) || !from.InLOS(this))
             {
                 if (message)
-                    from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                {
+                    @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                }
 
                 return false;
             }
@@ -696,12 +758,16 @@ namespace Server.Items
         public virtual void Fill_OnTarget(Mobile from, object targ)
         {
             if (!IsEmpty || !Fillable || !ValidateUse(from, false))
+            {
                 return;
+            }
 
             if (targ is BaseBeverage bev)
             {
                 if (bev.IsEmpty || !bev.ValidateUse(from, true))
+                {
                     return;
+                }
 
                 Content = bev.Content;
                 Poison = bev.Poison;
@@ -739,10 +805,14 @@ namespace Server.Items
                 var src = item as IWaterSource;
 
                 if (src == null && item is AddonComponent component)
+                {
                     src = component.Addon as IWaterSource;
+                }
 
                 if (src == null || src.Quantity <= 0)
+                {
                     return;
+                }
 
                 if (from.Map != item.Map || !from.InRange(item.GetWorldLocation(), 2) || !from.InLOS(item))
                 {
@@ -785,7 +855,9 @@ namespace Server.Items
                     var qs = player.Quest;
 
                     if (!(qs is WitchApprenticeQuest))
+                    {
                         return;
+                    }
 
                     var obj = qs.FindObjective<FindIngredientObjective>();
 
@@ -794,7 +866,9 @@ namespace Server.Items
                         var contains = false;
 
                         for (var i = 0; !contains && i < m_SwampTiles.Length; i += 2)
+                        {
                             contains = tileID >= m_SwampTiles[i] && tileID <= m_SwampTiles[i + 1];
+                        }
 
                         if (contains)
                         {
@@ -813,12 +887,16 @@ namespace Server.Items
         public virtual void Pour_OnTarget(Mobile from, object targ)
         {
             if (IsEmpty || !Pourable || !ValidateUse(from, false))
+            {
                 return;
+            }
 
             if (targ is BaseBeverage bev)
             {
                 if (!bev.ValidateUse(from, true))
+                {
                     return;
+                }
 
                 if (bev.IsFull && bev.Content == Content)
                 {
@@ -851,7 +929,9 @@ namespace Server.Items
             else if (from == targ)
             {
                 if (from.Thirst < 20)
-                    from.Thirst += 1;
+                {
+                    @from.Thirst += 1;
+                }
 
                 if (ContainsAlchohol)
                 {
@@ -872,7 +952,9 @@ namespace Server.Items
                 from.PlaySound(Utility.RandomList(0x30, 0x2D6));
 
                 if (Poison != null)
-                    from.ApplyPoison(Poisoner, Poison);
+                {
+                    @from.ApplyPoison(Poisoner, Poison);
+                }
 
                 --Quantity;
             }
@@ -908,6 +990,7 @@ namespace Server.Items
                      Content == BeverageType.Water)
             {
                 if (from is PlayerMobile player)
+                {
                     if (player.Quest is SolenMatriarchQuest qs)
                     {
                         QuestObjective obj = qs.FindObjective<GatherWaterObjective>();
@@ -934,6 +1017,7 @@ namespace Server.Items
                             }
                         }
                     }
+                }
             }
             else
             {
@@ -946,7 +1030,9 @@ namespace Server.Items
             if (IsEmpty)
             {
                 if (!Fillable || !ValidateUse(from, true))
+                {
                     return;
+                }
 
                 from.BeginTarget(-1, true, TargetFlags.None, Fill_OnTarget);
                 SendLocalizedMessageTo(from, 500837); // Fill from what?
@@ -969,8 +1055,12 @@ namespace Server.Items
             var total = 0;
 
             for (var i = 0; i < items.Length; ++i)
+            {
                 if (items[i] is BaseBeverage bev && bev.Content == content && !bev.IsEmpty)
+                {
                     total += bev.Quantity;
+                }
+            }
 
             if (total >= quantity)
             {
@@ -981,7 +1071,9 @@ namespace Server.Items
                 for (var i = 0; i < items.Length; ++i)
                 {
                     if (!(items[i] is BaseBeverage bev) || bev.Content != content || bev.IsEmpty)
+                    {
                         continue;
+                    }
 
                     var theirQuantity = bev.Quantity;
 
@@ -1026,7 +1118,9 @@ namespace Server.Items
             base.Deserialize(reader);
 
             if (!read)
+            {
                 return;
+            }
 
             var version = reader.ReadInt();
 
@@ -1062,20 +1156,23 @@ namespace Server.Items
             if (from.BAC > 0 && from.Map != Map.Internal && !from.Deleted)
             {
                 if (m_Table.ContainsKey(from))
+                {
                     return;
+                }
 
                 if (from.BAC > 60)
-                    from.BAC = 60;
+                {
+                    @from.BAC = 60;
+                }
 
                 Timer t = new HeaveTimer(from);
                 t.Start();
 
                 m_Table[from] = t;
             }
-            else if (m_Table.TryGetValue(from, out var t))
+            else if (m_Table.Remove(from, out var t))
             {
                 t.Stop();
-                m_Table.Remove(from);
 
                 from.SendLocalizedMessage(500850); // You feel sober.
             }
@@ -1103,11 +1200,15 @@ namespace Server.Items
                 else if (m_Drunk.Alive)
                 {
                     if (m_Drunk.BAC > 60)
+                    {
                         m_Drunk.BAC = 60;
+                    }
 
                     // chance to get sober
                     if (Utility.Random(100) < 10)
+                    {
                         --m_Drunk.BAC;
+                    }
 
                     // lose some stats
                     m_Drunk.Stam -= 1;

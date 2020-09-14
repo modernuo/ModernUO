@@ -197,7 +197,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 1.0)
+            {
                 Weight = -1;
+            }
         }
     }
 
@@ -263,7 +265,9 @@ namespace Server.Items
         public override void DisplayTo(Mobile m)
         {
             if (DynamicFurniture.Open(this, m))
+            {
                 base.DisplayTo(m);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -295,7 +299,9 @@ namespace Server.Items
         public override void DisplayTo(Mobile m)
         {
             if (DynamicFurniture.Open(this, m))
+            {
                 base.DisplayTo(m);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -349,13 +355,13 @@ namespace Server.Items
 
         public static void Close(Container c)
         {
-            if (m_Table.TryGetValue(c, out var t))
+            if (m_Table.Remove(c, out var t))
             {
                 t.Stop();
-                m_Table.Remove(c);
             }
 
             if (c is Armoire || c is FancyArmoire)
+            {
                 c.ItemID = c.ItemID switch
                 {
                     0xA4C => 0xA4D,
@@ -364,6 +370,7 @@ namespace Server.Items
                     0xA52 => 0xA53,
                     _     => c.ItemID
                 };
+            }
         }
     }
 
@@ -383,7 +390,9 @@ namespace Server.Items
         protected override void OnTick()
         {
             if (m_Mobile.Map != m_Container.Map || !m_Mobile.InRange(m_Container.GetWorldLocation(), 3))
+            {
                 DynamicFurniture.Close(m_Container);
+            }
         }
     }
 }

@@ -69,7 +69,9 @@ namespace Server.Engines.Events
         {
             if (m is PlayerMobile pm && !pm.Deleted && m_Timer.Running && !m_DeathQueue.Contains(pm) &&
                 m_DeathQueue.Count < m_DeathQueueLimit)
+            {
                 m_DeathQueue.Add(pm);
+            }
         }
 
         private static void Clear_Callback()
@@ -78,7 +80,10 @@ namespace Server.Engines.Events
 
             m_DeathQueue.Clear();
 
-            if (DateTime.UtcNow <= HolidaySettings.FinishHalloween) m_ClearTimer.Stop();
+            if (DateTime.UtcNow <= HolidaySettings.FinishHalloween)
+            {
+                m_ClearTimer.Stop();
+            }
         }
 
         private static void Timer_Callback()
@@ -88,12 +93,15 @@ namespace Server.Engines.Events
             if (DateTime.UtcNow <= HolidaySettings.FinishHalloween)
             {
                 for (var index = 0; m_DeathQueue.Count > 0 && index < m_DeathQueue.Count; index++)
-                    if (!ReAnimated.ContainsKey(m_DeathQueue[index]))
-                    {
-                        player = m_DeathQueue[index];
+                {
+                    var entry = m_DeathQueue[index];
 
+                    if (!ReAnimated.ContainsKey(entry))
+                    {
+                        player = entry;
                         break;
                     }
+                }
 
                 if (player?.Deleted == false && ReAnimated.Count < m_TotalZombieLimit)
                 {
@@ -244,7 +252,9 @@ namespace Server.Engines.Events
         public override void OnDelete()
         {
             if (m_DeadPlayer?.Deleted == false)
+            {
                 HalloweenHauntings.ReAnimated?.Remove(m_DeadPlayer);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

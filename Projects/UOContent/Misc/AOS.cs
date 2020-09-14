@@ -100,7 +100,7 @@ namespace Server
 
             if (archer && from != null)
             {
-                quiver = @from.FindItemOnLayer(Layer.Cloak) as BaseQuiver;
+                quiver = from.FindItemOnLayer(Layer.Cloak) as BaseQuiver;
             }
 
             int totalDamage;

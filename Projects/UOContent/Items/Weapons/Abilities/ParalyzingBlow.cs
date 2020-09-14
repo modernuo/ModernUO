@@ -22,17 +22,17 @@ namespace Server.Items
         {
           if (!base.CheckSkills( from ))
             return false;
-    
+
           if (!(from.Weapon is Fists))
             return true;
-    
+
           Skill skill = from.Skills.Anatomy;
-    
+
           if (skill?.Base >= 80.0)
             return true;
-    
+
           from.SendLocalizedMessage( 1061811 ); // You lack the required anatomy skill to perform that attack!
-    
+
           return false;
         }*/
 
@@ -91,10 +91,9 @@ namespace Server.Items
 
         public static void EndImmunity(Mobile m)
         {
-            if (m_Table.TryGetValue(m, out var timer))
+            if (m_Table.Remove(m, out var timer))
             {
                 timer?.Stop();
-                m_Table.Remove(m);
             }
         }
 

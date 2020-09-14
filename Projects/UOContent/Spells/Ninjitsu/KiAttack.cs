@@ -81,11 +81,10 @@ namespace Server.Spells.Ninjitsu
 
         public override void OnClearMove(Mobile from)
         {
-            if (!m_Table.TryGetValue(from, out var info))
-                return;
-
-            info.m_Timer.Stop();
-            m_Table.Remove(info.m_Mobile);
+            if (m_Table.Remove(@from, out var info))
+            {
+                info.m_Timer.Stop();
+            }
         }
 
         public static double GetBonus(Mobile from)

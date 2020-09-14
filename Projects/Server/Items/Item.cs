@@ -2254,11 +2254,11 @@ namespace Server
         {
             if (m_Parent is Item parentItem)
             {
-                parentItem.GetChildContextMenuEntries(@from, list, item);
+                parentItem.GetChildContextMenuEntries(from, list, item);
             }
             else if (m_Parent is Mobile parentMobile)
             {
-                parentMobile.GetChildContextMenuEntries(@from, list, item);
+                parentMobile.GetChildContextMenuEntries(from, list, item);
             }
         }
 
@@ -2266,11 +2266,11 @@ namespace Server
         {
             if (m_Parent is Item item)
             {
-                item.GetChildContextMenuEntries(@from, list, this);
+                item.GetChildContextMenuEntries(from, list, this);
             }
             else if (m_Parent is Mobile mobile)
             {
-                mobile.GetChildContextMenuEntries(@from, list, this);
+                mobile.GetChildContextMenuEntries(from, list, this);
             }
         }
 
@@ -3241,7 +3241,7 @@ namespace Server
             // OSI sends 1074769, bug!
             if (QuestItem)
             {
-                @from.SendLocalizedMessage(
+                from.SendLocalizedMessage(
                     1049343
                 ); // You can only drop quest items into the top-most level of your backpack while you still need them for your quest.
             }
@@ -3667,7 +3667,7 @@ namespace Server
 
             if (target is Container container && p.m_X != -1 && p.m_Y != -1)
             {
-                return OnDroppedInto(@from, container, p);
+                return OnDroppedInto(from, container, p);
             }
 
             return OnDroppedOnto(from, target);
@@ -4212,11 +4212,11 @@ namespace Server
         {
             if (m_Parent is Item parentItem)
             {
-                parentItem.OnItemUsed(@from, item);
+                parentItem.OnItemUsed(from, item);
             }
             else if (m_Parent is Mobile parentMobile)
             {
-                parentMobile.OnItemUsed(@from, item);
+                parentMobile.OnItemUsed(from, item);
             }
         }
 
@@ -4234,11 +4234,11 @@ namespace Server
         {
             if (m_Parent is Item parentItem)
             {
-                parentItem.OnItemLifted(@from, item);
+                parentItem.OnItemLifted(from, item);
             }
             else if (m_Parent is Mobile parentMobile)
             {
-                parentMobile.OnItemLifted(@from, item);
+                parentMobile.OnItemLifted(from, item);
             }
         }
 
@@ -4261,7 +4261,7 @@ namespace Server
         {
             if (m_Parent is Item parentItem)
             {
-                parentItem.OnSingleClickContained(@from, item);
+                parentItem.OnSingleClickContained(from, item);
             }
         }
 
@@ -4271,7 +4271,7 @@ namespace Server
 
             if (opl.Header > 0)
             {
-                @from.Send(
+                from.Send(
                     new MessageLocalized(
                         Serial,
                         m_ItemID,
@@ -4295,7 +4295,7 @@ namespace Server
 
             if (DisplayLootType)
             {
-                LabelLootTypeTo(@from);
+                LabelLootTypeTo(from);
             }
 
             var ns = from.NetState;

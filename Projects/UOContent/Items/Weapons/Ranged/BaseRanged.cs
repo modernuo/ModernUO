@@ -71,11 +71,15 @@ namespace Server.Items
                     canSwing = !attacker.Paralyzed && !attacker.Frozen;
 
                     if (canSwing)
+                    {
                         canSwing = !(attacker.Spell is Spell sp) || !sp.IsCasting || !sp.BlocksMovement;
+                    }
                 }
 
                 if ((attacker as PlayerMobile)?.DuelContext?.CheckItemEquip(attacker, this) == false)
+                {
                     canSwing = false;
+                }
 
                 if (canSwing && attacker.HarmfulCheck(defender))
                 {
@@ -85,9 +89,13 @@ namespace Server.Items
                     if (OnFired(attacker, defender))
                     {
                         if (CheckHit(attacker, defender))
+                        {
                             OnHit(attacker, defender);
+                        }
                         else
+                        {
                             OnMiss(attacker, defender);
+                        }
                     }
                 }
 
@@ -105,7 +113,9 @@ namespace Server.Items
         {
             if (attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) &&
                 Utility.RandomDouble() <= 0.4)
+            {
                 defender.AddToBackpack(Ammo);
+            }
 
             if (Core.ML && m_Velocity > 0)
             {
@@ -116,10 +126,14 @@ namespace Server.Items
                     AOS.Damage(defender, attacker, bonus * 3, 100, 0, 0, 0, 0);
 
                     if (attacker.Player)
+                    {
                         attacker.SendLocalizedMessage(1072794); // Your arrow hits its mark with velocity!
+                    }
 
                     if (defender.Player)
+                    {
                         defender.SendLocalizedMessage(1072795); // You have been hit by an arrow with velocity!
+                    }
                 }
             }
 
@@ -136,17 +150,17 @@ namespace Server.Items
                     {
                         var ammo = AmmoType;
 
-                        if (pm.RecoverableAmmo.ContainsKey(ammo))
-                            pm.RecoverableAmmo[ammo]++;
-                        else
-                            pm.RecoverableAmmo.Add(ammo, 1);
+                        pm.RecoverableAmmo.TryGetValue(ammo, out var result);
+                        pm.RecoverableAmmo[ammo] = result + 1;
 
                         if (!pm.Warmode)
                         {
                             m_RecoveryTimer ??= Timer.DelayCall(TimeSpan.FromSeconds(10), pm.RecoverAmmo);
 
                             if (!m_RecoveryTimer.Running)
+                            {
                                 m_RecoveryTimer.Start();
+                            }
                         }
                     }
                 }
@@ -177,9 +191,13 @@ namespace Server.Items
                 {
                     // consume ammo
                     if (quiver?.ConsumeTotal(AmmoType) == true)
+                    {
                         quiver.InvalidateWeight();
+                    }
                     else if (pack?.ConsumeTotal(AmmoType) != true)
+                    {
                         return false;
+                    }
                 }
                 else if (quiver.FindItemByType(AmmoType) == null && pack?.FindItemByType(AmmoType) == null)
                 {

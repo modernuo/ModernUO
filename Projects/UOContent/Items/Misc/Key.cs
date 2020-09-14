@@ -75,7 +75,9 @@ namespace Server.Items
         public static void RemoveKeys(Mobile m, uint keyValue)
         {
             if (keyValue == 0)
+            {
                 return;
+            }
 
             RemoveKeys(m.Backpack, keyValue);
             RemoveKeys(m.BankBox, keyValue);
@@ -84,15 +86,20 @@ namespace Server.Items
         public static void RemoveKeys(Container cont, uint keyValue)
         {
             if (cont == null || keyValue == 0)
+            {
                 return;
+            }
 
             var items = cont.FindItemsByType(new[] { typeof(Key), typeof(KeyRing) });
 
             foreach (var item in items)
+            {
                 if (item is Key key)
                 {
                     if (key.KeyValue == keyValue)
+                    {
                         key.Delete();
+                    }
                 }
                 else
                 {
@@ -100,28 +107,37 @@ namespace Server.Items
 
                     keyRing.RemoveKeys(keyValue);
                 }
+            }
         }
 
         public static bool ContainsKey(Container cont, uint keyValue)
         {
             if (cont == null)
+            {
                 return false;
+            }
 
             var items = cont.FindItemsByType(new[] { typeof(Key), typeof(KeyRing) });
 
             foreach (var item in items)
+            {
                 if (item is Key key)
                 {
                     if (key.KeyValue == keyValue)
+                    {
                         return true;
+                    }
                 }
                 else
                 {
                     var keyRing = (KeyRing)item;
 
                     if (keyRing.ContainsKey(keyValue))
+                    {
                         return true;
+                    }
                 }
+            }
 
             return false;
         }
@@ -163,7 +179,9 @@ namespace Server.Items
                 case 0:
                     {
                         if (version < 2 || MaxRange == 0)
+                        {
                             MaxRange = 3;
+                        }
 
                         m_Description = reader.ReadString();
 
@@ -207,12 +225,18 @@ namespace Server.Items
             string desc;
 
             if (m_KeyVal == 0)
+            {
                 desc = "(blank)";
+            }
             else if ((desc = m_Description) == null || (desc = desc.Trim()).Length <= 0)
+            {
                 desc = null;
+            }
 
             if (desc != null)
+            {
                 list.Add(desc);
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -222,12 +246,18 @@ namespace Server.Items
             string desc;
 
             if (m_KeyVal == 0)
+            {
                 desc = "(blank)";
+            }
             else if ((desc = m_Description) == null || (desc = desc.Trim()).Length <= 0)
+            {
                 desc = "";
+            }
 
             if (desc.Length > 0)
+            {
                 from.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", "", desc));
+            }
         }
 
         public bool UseOn(Mobile from, ILockable o)
@@ -235,30 +265,44 @@ namespace Server.Items
             if (o.KeyValue == KeyValue)
             {
                 if (o is BaseDoor door && !door.UseLocks())
+                {
                     return false;
+                }
 
                 o.Locked = !o.Locked;
 
                 if (o is LockableContainer cont1)
+                {
                     if (cont1.LockLevel == -255)
+                    {
                         cont1.LockLevel = cont1.RequiredSkill - 10;
+                    }
+                }
 
                 if (o is Item item)
                 {
                     if (o.Locked)
+                    {
                         item.SendLocalizedMessageTo(from, 1048000); // You lock it.
+                    }
                     else
+                    {
                         item.SendLocalizedMessageTo(from, 1048001); // You unlock it.
+                    }
 
                     if (item is LockableContainer cont && cont.TrapType != TrapType.None && cont.TrapOnLockpick)
                     {
                         if (o.Locked)
+                        {
                             cont.SendLocalizedMessageTo(from, 501673); // You re-enable the trap.
+                        }
                         else
+                        {
                             cont.SendLocalizedMessageTo(
                                 from,
                                 501672
                             ); // You disable the trap temporarily.  Lock it again to re-enable it.
+                        }
                     }
                 }
 
@@ -315,16 +359,23 @@ namespace Server.Items
                 else if (targeted is ILockable lockable)
                 {
                     if (m_Key.UseOn(from, lockable))
+                    {
                         number = -1;
+                    }
                     else
+                    {
                         number = 501668; // This key doesn't seem to unlock that.
+                    }
                 }
                 else
                 {
                     number = 501666; // You can't unlock that!
                 }
 
-                if (number != -1) from.SendLocalizedMessage(number);
+                if (number != -1)
+                {
+                    from.SendLocalizedMessage(number);
+                }
             }
         }
 

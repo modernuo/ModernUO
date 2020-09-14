@@ -26,7 +26,9 @@ namespace Server.Spells.First
         public override bool CheckCast()
         {
             if (Core.AOS)
+            {
                 return true;
+            }
 
             if (Caster.MeleeDamageAbsorb > 0)
             {
@@ -59,15 +61,15 @@ namespace Server.Spells.First
                 {
                     var targ = Caster;
 
-                    if (m_Table.TryGetValue(targ, out var mods))
+                    if (m_Table.Remove(targ, out var mods))
                     {
                         targ.PlaySound(0x1ED);
                         targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
 
-                        m_Table.Remove(targ);
-
                         for (var i = 0; i < mods.Length; ++i)
+                        {
                             targ.RemoveResistanceMod(mods[i]);
+                        }
 
                         BuffInfo.RemoveBuff(Caster, BuffIcon.ReactiveArmor);
                     }
@@ -91,7 +93,9 @@ namespace Server.Spells.First
                         m_Table[targ] = mods;
 
                         for (var i = 0; i < mods.Length; ++i)
+                        {
                             targ.AddResistanceMod(mods[i]);
+                        }
 
                         var physresist = 15 + (int)(targ.Skills.Inscribe.Value / 20);
                         var args = $"{physresist}\t{5}\t{5}\t{5}\t{5}";
@@ -140,13 +144,16 @@ namespace Server.Spells.First
 
         public static void EndArmor(Mobile m)
         {
-            if (!m_Table.TryGetValue(m, out var mods))
+            if (!m_Table.Remove(m, out var mods))
+            {
                 return;
+            }
 
             for (var i = 0; i < mods?.Length; ++i)
+            {
                 m.RemoveResistanceMod(mods[i]);
+            }
 
-            m_Table.Remove(m);
             BuffInfo.RemoveBuff(m, BuffIcon.ReactiveArmor);
         }
     }

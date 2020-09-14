@@ -38,7 +38,7 @@ namespace Server.Misc
           // Jhelom
           // ..
           new CityInfo( "Haven", "Buckler's Hideaway", 3667, 2625, 0 )
-    
+
           if (Core.AOS)
           {
             //CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3618, 2591, 0 );
@@ -65,11 +65,13 @@ namespace Server.Misc
                     m_IPTable = new Dictionary<IPAddress, int>();
 
                     foreach (Account a in Accounts.GetAccounts())
+                    {
                         if (a.LoginIPs.Length > 0)
                         {
                             var ip = a.LoginIPs[0];
                             m_IPTable[ip] = (m_IPTable.TryGetValue(ip, out var value) ? value : 0) + 1;
                         }
+                    }
                 }
 
                 return m_IPTable;
@@ -93,7 +95,9 @@ namespace Server.Misc
             EventSink.GameLogin += EventSink_GameLogin;
 
             if (PasswordCommandEnabled)
+            {
                 CommandSystem.Register("Password", AccessLevel.Player, Password_OnCommand);
+            }
         }
 
         [Usage("Password <newPassword> <repeatPassword>")]
@@ -105,17 +109,23 @@ namespace Server.Misc
             var from = e.Mobile;
 
             if (!(from.Account is Account acct))
+            {
                 return;
+            }
 
             var accessList = acct.LoginIPs;
 
             if (accessList.Length == 0)
+            {
                 return;
+            }
 
             var ns = from.NetState;
 
             if (ns == null)
+            {
                 return;
+            }
 
             if (e.Length == 0)
             {
@@ -142,7 +152,9 @@ namespace Server.Misc
             var isSafe = true;
 
             for (var i = 0; isSafe && i < pass.Length; ++i)
+            {
                 isSafe = pass[i] >= 0x20 && pass[i] < 0x7F;
+            }
 
             if (!isSafe)
             {
@@ -166,9 +178,13 @@ namespace Server.Misc
                     if (entry != null)
                     {
                         if (entry.Message.StartsWith("[Automated: Change Password]"))
+                        {
                             from.SendMessage("You already have a password change request in the help system queue.");
+                        }
                         else
+                        {
                             from.SendMessage("Your IP address does not match that which created this account.");
+                        }
                     }
                     else if (PageQueue.CheckAllowedToPage(from))
                     {
@@ -246,19 +262,18 @@ namespace Server.Misc
             }
         }
 
-        public static bool CanCreate(IPAddress ip)
-        {
-            if (!IPTable.ContainsKey(ip))
-                return true;
-
-            return IPTable[ip] < MaxAccountsPerIP;
-        }
+        public static bool CanCreate(IPAddress ip) =>
+            !IPTable.TryGetValue(ip, out var result) || result < MaxAccountsPerIP;
 
         private static bool IsForbiddenChar(char c)
         {
             for (var i = 0; i < m_ForbiddenChars.Length; ++i)
+            {
                 if (c == m_ForbiddenChars[i])
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -266,18 +281,26 @@ namespace Server.Misc
         private static Account CreateAccount(NetState state, string un, string pw)
         {
             if (un.Length == 0 || pw.Length == 0)
+            {
                 return null;
+            }
 
             var isSafe = !(un.StartsWith(" ") || un.EndsWith(" ") || un.EndsWith("."));
 
             for (var i = 0; isSafe && i < un.Length; ++i)
+            {
                 isSafe = un[i] >= 0x20 && un[i] < 0x7F && !IsForbiddenChar(un[i]);
+            }
 
             for (var i = 0; isSafe && i < pw.Length; ++i)
+            {
                 isSafe = pw[i] >= 0x20 && pw[i] < 0x7F;
+            }
 
             if (!isSafe)
+            {
                 return null;
+            }
 
             if (!CanCreate(state.Address))
             {
@@ -307,10 +330,8 @@ namespace Server.Misc
 
                 Console.WriteLine("Login: {0}: Past IP limit threshold", e.State);
 
-                using (var op = new StreamWriter("ipLimits.log", true))
-                {
-                    op.WriteLine("{0}\tPast IP limit threshold\t{1}", e.State, DateTime.UtcNow);
-                }
+                using var op = new StreamWriter("ipLimits.log", true);
+                op.WriteLine("{0}\tPast IP limit threshold\t{1}", e.State, DateTime.UtcNow);
 
                 return;
             }
@@ -329,7 +350,9 @@ namespace Server.Misc
                     e.Accepted = acct?.CheckAccess(e.State) ?? false;
 
                     if (!e.Accepted)
+                    {
                         e.RejectReason = ALRReason.BadComm;
+                    }
                 }
                 else
                 {
@@ -362,7 +385,9 @@ namespace Server.Misc
             }
 
             if (!e.Accepted)
+            {
                 AccountAttackLimiter.RegisterInvalidAccess(e.State);
+            }
         }
 
         public static void EventSink_GameLogin(GameLoginEventArgs e)
@@ -414,15 +439,23 @@ namespace Server.Misc
             }
 
             if (!e.Accepted)
+            {
                 AccountAttackLimiter.RegisterInvalidAccess(e.State);
+            }
         }
 
         public static bool CheckAccount(Mobile mobCheck, Mobile accCheck)
         {
             if (accCheck?.Account is Account a)
+            {
                 for (var i = 0; i < a.Length; ++i)
+                {
                     if (a[i] == mobCheck)
+                    {
                         return true;
+                    }
+                }
+            }
 
             return false;
         }

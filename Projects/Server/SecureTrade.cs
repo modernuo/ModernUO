@@ -25,22 +25,22 @@ namespace Server
 
             if (from6017)
             {
-                @from.Send(new SecureTradeEquip6017(To.Container, to));
+                from.Send(new SecureTradeEquip6017(To.Container, to));
             }
             else
             {
-                @from.Send(new SecureTradeEquip(To.Container, to));
+                from.Send(new SecureTradeEquip(To.Container, to));
             }
 
             from.Send(new UpdateSecureTrade(From.Container, false, false));
 
             if (from6017)
             {
-                @from.Send(new SecureTradeEquip6017(From.Container, @from));
+                from.Send(new SecureTradeEquip6017(From.Container, from));
             }
             else
             {
-                @from.Send(new SecureTradeEquip(From.Container, @from));
+                from.Send(new SecureTradeEquip(From.Container, from));
             }
 
             from.Send(new DisplaySecureTrade(to, From.Container, To.Container, to.Name));
@@ -48,12 +48,12 @@ namespace Server
 
             if (from.Account != null && from704565)
             {
-                @from.Send(
+                from.Send(
                     new UpdateSecureTrade(
                         From.Container,
                         TradeFlag.UpdateLedger,
-                        @from.Account.TotalGold,
-                        @from.Account.TotalPlat
+                        from.Account.TotalGold,
+                        from.Account.TotalPlat
                     )
                 );
             }
@@ -63,11 +63,11 @@ namespace Server
 
             if (to6017)
             {
-                to.Send(new SecureTradeEquip6017(From.Container, @from));
+                to.Send(new SecureTradeEquip6017(From.Container, from));
             }
             else
             {
-                to.Send(new SecureTradeEquip(From.Container, @from));
+                to.Send(new SecureTradeEquip(From.Container, from));
             }
 
             to.Send(new UpdateSecureTrade(To.Container, false, false));

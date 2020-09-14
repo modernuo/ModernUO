@@ -48,7 +48,9 @@ namespace Server.Spells.Spellweaving
                 {
                     if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false) ||
                         !Caster.InLOS(m))
+                    {
                         continue;
+                    }
 
                     Caster.DoHarmful(m);
 
@@ -57,7 +59,9 @@ namespace Server.Spells.Spellweaving
                     SpellHelper.Damage(this, m, m.Player && Caster.Player ? pvpDamage : pvmDamage, 0, 0, 0, 0, 100);
 
                     if (oldSpell == null || oldSpell == m.Spell || CheckResisted(m))
+                    {
                         continue;
+                    }
 
                     m_Table[m] = Timer.DelayCall(duration, DoExpire, m);
 
@@ -77,11 +81,12 @@ namespace Server.Spells.Spellweaving
 
         public static void DoExpire(Mobile m)
         {
-            if (!m_Table.TryGetValue(m, out var t))
+            if (!m_Table.Remove(m, out var t))
+            {
                 return;
+            }
 
             t.Stop();
-            m_Table.Remove(m);
 
             BuffInfo.RemoveBuff(m, BuffIcon.Thunderstorm);
         }

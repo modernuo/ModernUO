@@ -27,7 +27,9 @@ namespace Server.Spells.Spellweaving
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (!Caster.CanSee(m))
             {
@@ -94,10 +96,10 @@ namespace Server.Spells.Spellweaving
 
         public static bool StopEffect(Mobile m)
         {
-            if (!m_Table.TryGetValue(m, out var info))
+            if (!m_Table.Remove(m, out var info))
+            {
                 return false;
-
-            m_Table.Remove(m);
+            }
 
             info.m_Timer.Stop();
             BuffInfo.RemoveBuff(m, BuffIcon.GiftOfRenewal);
@@ -151,7 +153,9 @@ namespace Server.Spells.Spellweaving
                 }
 
                 if (m.Hits >= m.HitsMax)
+                {
                     return;
+                }
 
                 var toHeal = m_GiftInfo.m_HitsPerRound;
 

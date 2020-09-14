@@ -77,17 +77,20 @@ namespace Server.Spells.Spellweaving
         private static void FinishEffect(DelayedEffectEntry effect)
         {
             if (m_WeaponDamageTable.TryGetValue(effect.m_Weapon, out var entry))
+            {
                 AOS.Damage(effect.m_Target, entry.m_Caster, entry.m_Damage, 0, 100, 0, 0, 0);
+            }
         }
 
         public static void StopImmolating(BaseWeapon weapon)
         {
-            if (!m_WeaponDamageTable.TryGetValue(weapon, out var entry))
+            if (!m_WeaponDamageTable.Remove(weapon, out var entry))
+            {
                 return;
+            }
 
             entry.m_Caster?.PlaySound(0x27);
             entry.m_Timer.Stop();
-            m_WeaponDamageTable.Remove(weapon);
 
             weapon.InvalidateProperties();
         }

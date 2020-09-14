@@ -34,18 +34,24 @@ namespace Server.Misc
             m_MoveHistory = new Dictionary<Mobile, LocationInfo>();
 
             if (Enabled)
+            {
                 EventSink.Login += OnLogin;
+            }
         }
 
         public static void OnLogin(Mobile from)
         {
             if (from == null || from.AccessLevel < AccessLevel.Counselor)
+            {
                 return;
+            }
 
             if (HasDisconnected(from))
             {
                 if (!m_MoveHistory.ContainsKey(from))
+                {
                     m_MoveHistory[from] = new LocationInfo(from.Location, from.Map);
+                }
 
                 var dest = GetRandomDestination();
 

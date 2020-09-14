@@ -1050,7 +1050,7 @@ namespace Server.Mobiles
 
             if (from.UseSkill(skillId))
             {
-                @from.Target?.Invoke(@from, target);
+                from.Target?.Invoke(from, target);
             }
 
             if (skillId == 35)
@@ -1294,7 +1294,7 @@ namespace Server.Mobiles
 
                     if (from.NetState != null)
                     {
-                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), @from.NetState.Dispose);
+                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), from.NetState.Dispose);
                     }
                 }
                 else if (from.AccessLevel >= AccessLevel.Administrator)
@@ -1470,11 +1470,11 @@ namespace Server.Mobiles
 
                             if (armor is BaseShield)
                             {
-                                @from.SendLocalizedMessage(1062003, name); // You can no longer equip your ~1_SHIELD~
+                                from.SendLocalizedMessage(1062003, name); // You can no longer equip your ~1_SHIELD~
                             }
                             else
                             {
-                                @from.SendLocalizedMessage(1062002, name); // You can no longer wear your ~1_ARMOR~
+                                from.SendLocalizedMessage(1062002, name); // You can no longer wear your ~1_ARMOR~
                             }
 
                             from.AddToBackpack(armor);
@@ -1547,7 +1547,7 @@ namespace Server.Mobiles
 
                 if (moved)
                 {
-                    @from.SendLocalizedMessage(500647); // Some equipment has been moved to your backpack.
+                    from.SendLocalizedMessage(500647); // Some equipment has been moved to your backpack.
                 }
             }
             catch (Exception e)
@@ -2011,7 +2011,7 @@ namespace Server.Mobiles
             {
                 if (Core.TOL && from.InRange(this, 2))
                 {
-                    list.Add(new CallbackEntry(1077728, () => OpenTrade(@from))); // Trade
+                    list.Add(new CallbackEntry(1077728, () => OpenTrade(from))); // Trade
                 }
 
                 if (Alive && Core.Expansion >= Expansion.AOS)
@@ -2027,11 +2027,11 @@ namespace Server.Mobiles
                     {
                         if (ourParty == null)
                         {
-                            list.Add(new AddToPartyEntry(@from, this));
+                            list.Add(new AddToPartyEntry(from, this));
                         }
                         else if (ourParty == theirParty)
                         {
-                            list.Add(new RemoveFromPartyEntry(@from, this));
+                            list.Add(new RemoveFromPartyEntry(from, this));
                         }
                     }
                 }
@@ -2041,7 +2041,7 @@ namespace Server.Mobiles
                 if (curhouse != null && Alive && Core.Expansion >= Expansion.AOS && curhouse.IsAosRules &&
                     curhouse.IsFriend(from))
                 {
-                    list.Add(new EjectPlayerEntry(@from, this));
+                    list.Add(new EjectPlayerEntry(from, this));
                 }
             }
         }
@@ -2902,11 +2902,11 @@ namespace Server.Mobiles
 
                 if (Core.ML)
                 {
-                    @from.Damage((int)(amount * (1 - (@from.Skills.MagicResist.Value * .5 + 10) / 100)), this);
+                    from.Damage((int)(amount * (1 - (from.Skills.MagicResist.Value * .5 + 10) / 100)), this);
                 }
                 else
                 {
-                    @from.Damage(amount, this);
+                    from.Damage(amount, this);
                 }
             }
 
@@ -2916,7 +2916,7 @@ namespace Server.Mobiles
                 {
                     var type = talisman.Protection.Type;
 
-                    if (type.IsInstanceOfType(@from))
+                    if (type.IsInstanceOfType(from))
                     {
                         amount = (int)(amount * (1 - (double)talisman.Protection.Amount / 100));
                     }
@@ -4188,7 +4188,7 @@ namespace Server.Mobiles
 
             if (from != null && result == ApplyPoisonResult.Poisoned && PoisonTimer is PoisonImpl.PoisonTimer timer)
             {
-                timer.From = @from;
+                timer.From = from;
             }
 
             return result;
@@ -4207,7 +4207,7 @@ namespace Server.Mobiles
             }
             else
             {
-                base.OnPoisonImmunity(@from, poison);
+                base.OnPoisonImmunity(from, poison);
             }
         }
 
@@ -4685,19 +4685,15 @@ namespace Server.Mobiles
 
         public void RemoveBuff(BuffIcon b)
         {
-            if (m_BuffTable?.ContainsKey(b) != true)
+            if (!m_BuffTable.Remove(b, out var info))
             {
                 return;
             }
-
-            var info = m_BuffTable[b];
 
             if (info.Timer?.Running == true)
             {
                 info.Timer.Stop();
             }
-
-            m_BuffTable.Remove(b);
 
             if (NetState?.BuffIcon == true)
             {

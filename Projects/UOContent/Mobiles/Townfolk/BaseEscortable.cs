@@ -149,11 +149,13 @@ namespace Server.Mobiles
                         var okay = true;
 
                         foreach (var obj in quest.Objectives)
+                        {
                             if (obj is EscortObjective objective && objective.Destination.Contains(reg))
                             {
                                 okay = false; // We're already there!
                                 break;
                             }
+                        }
 
                         if (okay)
                         {
@@ -175,7 +177,9 @@ namespace Server.Mobiles
                 if (m_MLQuest == null)
                 {
                     if (MLQuestSystem.Debug)
+                    {
                         Console.WriteLine("Warning: No suitable quest found for escort {0}", Serial);
+                    }
 
                     return null;
                 }
@@ -232,7 +236,9 @@ namespace Server.Mobiles
             var dest = GetDestination();
 
             if (dest == null || !m.Alive)
+            {
                 return false;
+            }
 
             var escorter = GetEscorter();
 
@@ -262,10 +268,14 @@ namespace Server.Mobiles
             var dest = GetDestination();
 
             if (dest == null)
+            {
                 return false;
+            }
 
             if (GetEscorter() != null || !m.Alive)
+            {
                 return false;
+            }
 
             if (EscortTable.TryGetValue(m, out var escortable) && escortable?.Deleted == false &&
                 escortable.GetEscorter() == m)
@@ -288,7 +298,9 @@ namespace Server.Mobiles
                 m_LastSeenEscorter = DateTime.UtcNow;
 
                 if (m is PlayerMobile playerMobile)
+                {
                     playerMobile.LastEscortTime = DateTime.UtcNow;
+                }
 
                 Say(
                     "Lead on! Payment will be made when we arrive in {0}.",
@@ -310,12 +322,18 @@ namespace Server.Mobiles
             base.OnSpeech(e);
 
             if (GetDestination() == null || e.Handled || !e.Mobile.InRange(Location, 3))
+            {
                 return;
+            }
 
             if (e.HasKeyword(0x1D)) // *destination*
+            {
                 e.Handled = SayDestinationTo(e.Mobile);
+            }
             else if (e.HasKeyword(0x1E)) // *i will take thee*
+            {
                 e.Handled = AcceptEscorter(e.Mobile);
+            }
         }
 
         public override void OnAfterDelete()
@@ -336,7 +354,9 @@ namespace Server.Mobiles
         protected override bool OnMove(Direction d)
         {
             if (!base.OnMove(d))
+            {
                 return false;
+            }
 
             CheckAtDestination();
 
@@ -353,7 +373,9 @@ namespace Server.Mobiles
         public virtual void StartFollow(Mobile escorter)
         {
             if (escorter == null)
+            {
                 return;
+            }
 
             ActiveSpeed = 0.1;
             PassiveSpeed = 0.2;
@@ -361,7 +383,11 @@ namespace Server.Mobiles
             ControlOrder = OrderType.Follow;
             ControlTarget = escorter;
 
-            if (IsPrisoner && CantWalk) CantWalk = false;
+            if (IsPrisoner && CantWalk)
+            {
+                CantWalk = false;
+            }
+
             CurrentSpeed = 0.1;
         }
 
@@ -379,12 +405,16 @@ namespace Server.Mobiles
         public virtual Mobile GetEscorter()
         {
             if (!Controlled)
+            {
                 return null;
+            }
 
             var master = ControlMaster;
 
             if (MLQuestSystem.Enabled || master == null)
+            {
                 return master;
+            }
 
             if (master.Deleted || master.Map != Map || !master.InRange(Location, 30) || !master.Alive)
             {
@@ -409,7 +439,9 @@ namespace Server.Mobiles
             }
 
             if (ControlOrder != OrderType.Follow)
+            {
                 StartFollow(master);
+            }
 
             m_LastSeenEscorter = DateTime.UtcNow;
             return master;
@@ -428,17 +460,23 @@ namespace Server.Mobiles
         public virtual bool CheckAtDestination()
         {
             if (MLQuestSystem.Enabled)
+            {
                 return false;
+            }
 
             var dest = GetDestination();
 
             if (dest == null)
+            {
                 return false;
+            }
 
             var escorter = GetEscorter();
 
             if (escorter == null)
+            {
                 return false;
+            }
 
             if (dest.Contains(Location))
             {
@@ -456,7 +494,9 @@ namespace Server.Mobiles
                 var gold = new Gold(500, 1000);
 
                 if (!cont.TryDropItem(escorter, gold, false))
+                {
                     gold.MoveToWorld(escorter.Location, escorter.Map);
+                }
 
                 StopFollow();
                 SetControlMaster(null);
@@ -484,18 +524,24 @@ namespace Server.Mobiles
                     else if (VirtueHelper.Award(pm, VirtueName.Compassion, IsPrisoner ? 400 : 200, ref gainedPath))
                     {
                         if (gainedPath)
+                        {
                             pm.SendLocalizedMessage(1053005); // You have achieved a path in compassion!
+                        }
                         else
+                        {
                             pm.SendLocalizedMessage(1053002); // You have gained in compassion.
+                        }
 
                         pm.NextCompassionDay =
                             DateTime.UtcNow + TimeSpan.FromDays(1.0); // in one day CompassionGains gets reset to 0
                         ++pm.CompassionGains;
 
                         if (pm.CompassionGains >= 5)
+                        {
                             pm.SendLocalizedMessage(
                                 1053004
                             ); // You must wait about a day before you can gain in compassion again.
+                        }
                     }
                     else
                     {
@@ -529,12 +575,16 @@ namespace Server.Mobiles
             writer.Write(dest != null);
 
             if (dest != null)
+            {
                 writer.Write(dest.Name);
+            }
 
             writer.Write(m_DeleteTimer != null);
 
             if (m_DeleteTimer != null)
+            {
                 writer.WriteDeltaTime(m_DeleteTime);
+            }
 
             MLQuestSystem.WriteQuestRef(writer, StaticMLQuester ? null : m_MLQuest);
         }
@@ -546,8 +596,10 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (reader.ReadBool())
+            {
                 m_DestinationString =
                     reader.ReadString(); // NOTE: We cannot EDI.Find here, regions have not yet been loaded :-(
+            }
 
             if (reader.ReadBool())
             {
@@ -561,7 +613,9 @@ namespace Server.Mobiles
                 var quest = MLQuestSystem.ReadQuestRef(reader);
 
                 if (MLQuestSystem.Enabled && quest != null && !StaticMLQuester)
+                {
                     m_MLQuest = quest;
+                }
             }
         }
 
@@ -576,14 +630,20 @@ namespace Server.Mobiles
                 if (!MLQuestSystem.Enabled && GetDestination() != null)
                 {
                     if (escorter == null || escorter == from)
-                        list.Add(new AskDestinationEntry(this, from));
+                    {
+                        list.Add(new AskDestinationEntry(this, @from));
+                    }
 
                     if (escorter == null)
-                        list.Add(new AcceptEscortEntry(this, from));
+                    {
+                        list.Add(new AcceptEscortEntry(this, @from));
+                    }
                 }
 
                 if (escorter == from)
+                {
                     list.Add(new AbandonEscortEntry(this));
+                }
             }
 
             base.AddCustomContextEntries(from, list);
@@ -594,7 +654,9 @@ namespace Server.Mobiles
         public virtual string PickRandomDestination()
         {
             if (Map.Felucca.Regions.Count == 0 || Map == null || Map == Map.Internal || Location == Point3D.Zero)
+            {
                 return null; // Not yet fully initialized
+            }
 
             var possible = GetPossibleDestinations();
             string picked = null;
@@ -605,7 +667,9 @@ namespace Server.Mobiles
                 var test = EDI.Find(picked);
 
                 if (test.Contains(Location))
+                {
                     picked = null;
+                }
             }
 
             return picked;
@@ -614,16 +678,24 @@ namespace Server.Mobiles
         public EDI GetDestination()
         {
             if (MLQuestSystem.Enabled)
+            {
                 return null;
+            }
 
             if (m_DestinationString == null && m_DeleteTimer == null)
+            {
                 m_DestinationString = PickRandomDestination();
+            }
 
             if (m_Destination != null && m_Destination.Name == m_DestinationString)
+            {
                 return m_Destination;
+            }
 
             if (Map.Felucca.Regions.Count > 0)
+            {
                 return m_Destination = EDI.Find(m_DestinationString);
+            }
 
             return m_Destination = null;
         }
@@ -668,22 +740,32 @@ namespace Server.Mobiles
             ICollection list = Map.Felucca.Regions.Values;
 
             if (list.Count == 0)
+            {
                 return;
+            }
 
             m_Table = new Dictionary<string, EscortDestinationInfo>();
 
             foreach (Region r in list)
+            {
                 if (r.Name != null && (r is DungeonRegion || r is TownRegion))
+                {
                     m_Table[r.Name] = new EscortDestinationInfo(r.Name, r);
+                }
+            }
         }
 
         public static EDI Find(string name)
         {
             if (m_Table == null)
+            {
                 LoadTable();
+            }
 
             if (name == null || m_Table == null)
+            {
                 return null;
+            }
 
             m_Table.TryGetValue(name, out var info);
             return info;

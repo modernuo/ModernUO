@@ -62,10 +62,9 @@ namespace Server.Spells.Bushido
 
         public static void EndConfidence(Mobile m)
         {
-            if (m_Table.TryGetValue(m, out var timer))
+            if (m_Table.Remove(m, out var timer))
             {
                 timer.Stop();
-                m_Table.Remove(m);
             }
 
             OnEffectEnd(m, typeof(Confidence));
@@ -85,10 +84,9 @@ namespace Server.Spells.Bushido
 
         public static void StopRegenerating(Mobile m)
         {
-            if (m_RegenTable.TryGetValue(m, out var timer))
+            if (m_RegenTable.Remove(m, out var timer))
             {
                 timer.Stop();
-                m_RegenTable.Remove(m);
             }
         }
 
