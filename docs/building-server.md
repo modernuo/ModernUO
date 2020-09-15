@@ -3,11 +3,13 @@
 ## Compiling
 
 === "Windows"
+    Using _command prompt_, _git bash_, or _powershell_, run:
     ```bash
     ./publish.cmd <os> <framework> <release|debug>
     ```
 
 === "OSX/Linux"
+    Using _terminal_, run:
     ```bash
     ./publish.sh <os> <framework> <release|debug>
     ```

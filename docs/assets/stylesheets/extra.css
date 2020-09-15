@@ -1,5 +1,8 @@
 :root {
   --muo-gold:                     #d5bf74;
+  --muo-gold-compl:               #748ad5;
+  --muo-gold-analog:              #bf74d5;
+  --muo-green:                    #77d574;
   --muo-gold-a-link:              #947a40;
 
   /* default */
@@ -16,14 +19,31 @@
 }
 
 :root > * {
-  --md-code-bg-color:             #6d6d6d;
-  --md-code-fg-color:             #ffffff;
+  --md-code-bg-color:             #212121;
+  --md-code-fg-color:             rgba(255, 255, 255, 0.7);
 
   --md-typeset-a-color:           var(--muo-gold-a-link);
 
   --md-footer-fg-color:           #ffffff;
   --md-footer-bg-color:           #212121;
   --md-footer-bg-color--dark:     #212121;
+
+  --md-code-hl-color:             var(--muo-gold);
+
+
+  --md-code-hl-number-color:      var(--muo-gold-analog);
+  --md-code-hl-special-color:     var(--md-default-bg-color--lighter);
+  --md-code-hl-function-color:    var(--muo-gold-compl);
+  --md-code-hl-constant-color:    rgba(255, 255, 255, 0.7);
+  --md-code-hl-keyword-color:     var(--muo-gold);
+  --md-code-hl-string-color:      var(--muo-green);
+  --md-code-hl-name-color:        rgba(255, 255, 255, 0.7);
+
+  --md-code-hl-operator-color:    var(--muo-gold-a-link);
+  --md-code-hl-punctuation-color: var(--muo-gold-a-link);
+  --md-code-hl-comment-color:     var(--md-default-bg-color--lighter);
+  --md-code-hl-generic-color:     var(--muo-gold-compl);
+  --md-code-hl-variable-color:    var(--muo-gold-compl);
 }
 
 .md-tabs__link--active,
@@ -68,4 +88,13 @@ html .md-footer-meta.md-typeset a:hover {
 
 .centos {
   color: #212078;
+}
+
+.codehilitetable .linenodiv pre, .highlighttable .linenodiv pre {
+  color: var(--md-default-bg-color);
+}
+
+.codehilitetable .linenodiv, .highlighttable .linenodiv {
+  box-shadow: -0.05rem 0 var(--md-default-bg-color) inset;
+  opacity: 0.7;
 }

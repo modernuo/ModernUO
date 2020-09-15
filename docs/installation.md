@@ -4,42 +4,51 @@ title: Installation
 
 # Installation
 
-## Prerequisites
-
 === "Windows"
-    1. Download and install git from [here](https://git-scm.com/download/win)
-    2. Download and install the latest [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+    ### Prerequisites
+    1. Download and install the latest [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+    1. Download and install from [here](https://git-scm.com/download/win)
+
+        !!! Tip
+            Use Git Bash as your command prompt. This can be found in the Windows Start Menu after installation.
+
+    ### Clone the Repository (Install ModernUO)
+    1. Navigate to the folder where you want to install ModernUO.
+    1. Using _Git Bash_ run:
+        ```bash
+        git clone https://github.com/modernuo/modernuo
+        cd modernuo
+        ```
 
 === "OSX"
-    1. Install homebrew from [here](https://brew.sh)
-    2. Run:
+    ### Prerequisites
+    1. Download and install the latest [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+    1. Using _terminal_, install [homebrew](https://brew.sh) and git:
         ```bash
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
         brew install git
         ```
-    3. Download and install the latest [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+    ### Clone the Repository (Install ModernUO)
+    1. Using _terminal_, navigate to the folder where you want to install ModernUO and run:
+       ```bash
+        git clone https://github.com/modernuo/modernuo
+        cd modernuo
+       ```
 
 === "Linux"
-    1. Run:
+    ### Prerequisites
+    1. Download and install the latest [.NET Core SDK](instructions [here](https://docs.microsoft.com/en-us/dotnet/core/install/linux))
+    1. Using _bash_, install git:
         ```bash
         sudo apt update && sudo apt install git
         ```
-    2. Download and install the latest [.NET Core SDK](instructions [here](https://docs.microsoft.com/en-us/dotnet/core/install/linux))
 
-## Clone the Repository
+        !!! Note
+            The command to install git might be different for your flavor of linux. Consult your local Google search for answers.
 
-=== "Windows"
-    Navigate to the folder where you want to install ModernUO.
-
-=== "OSX"
-    Using _terminal_, navigate to the folder where you want to install ModernUO.
-
-=== "Linux"
-    Using _bash_, navigate to the folder where you want to install ModernUO.
-
-Run:
-```bash
-git clone https://github.com/modernuo/modernuo
-```
-
-!!! Tip
-    Operating System: :fontawesome-brands-windows:{: .windows }<br>&nbsp;&nbsp;&nbsp;&nbsp;Use _git bash_ as your command prompt
+    ### Clone the Repository (Install ModernUO)
+    1. Using _bash_, navigate to the folder where you want to install ModernUO and run:
+       ```bash
+        git clone https://github.com/modernuo/modernuo
+        cd modernuo
+       ```
