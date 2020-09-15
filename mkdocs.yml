@@ -49,7 +49,11 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.snippets
   - pymdownx.tabbed
+  - pymdownx.caret
+  - pymdownx.mark
   - pymdownx.tilde
+  - pymdownx.critic:
+      mode: view
   - pymdownx.betterem:
       smart_enable: all
   - pymdownx.emoji:
