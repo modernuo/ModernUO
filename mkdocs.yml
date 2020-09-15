@@ -44,7 +44,9 @@ markdown_extensions:
   - markdown.extensions.toc:
       permalink: true
   - attr_list
-  - pymdownx.highlight
+  - pymdownx.highlight:
+      linenums: true
+      linenums_style: pymdownx.inline
   - pymdownx.inlinehilite
   - pymdownx.superfences
   - pymdownx.snippets

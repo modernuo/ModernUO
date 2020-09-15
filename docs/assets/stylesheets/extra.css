@@ -1,4 +1,5 @@
 :root {
+  --muo-silver:                   #888888;
   --muo-gold:                     #d5bf74;
   --muo-gold-a-link:              #947a40;
 
@@ -16,8 +17,22 @@
 }
 
 :root > * {
-  --md-code-bg-color:             #6d6d6d;
+  --md-default-fg-color--light:   var(--muo-silver);
+  --md-code-bg-color:             #212121;
   --md-code-fg-color:             #ffffff;
+  --md-code-hl-bg-color:          var(--md-primary-fg-color--dark);
+  --md-code-hl-number-color:      var(--muo-gold);
+  --md-code-hl-special-color:     var(--muo-gold);
+  --md-code-hl-function-color:    var(--muo-gold-a-link);
+  --md-code-hl-constant-color:    var(--muo-gold-a-link);
+  --md-code-hl-keyword-color:     var(--muo-gold-a-link);
+  --md-code-hl-string-color:      var(--muo-gold);
+  --md-code-hl-name-color:        var(--muo-gold-a-link);
+  --md-code-hl-operator-color:    var(--muo-gold);
+  --md-code-hl-punctuation-color: var(--muo-gold);
+  --md-code-hl-comment-color:     var(--muo-gold-a-link);
+  --md-code-hl-generic-color:     var(--muo-gold-a-link);
+  --md-code-hl-variable-color:    var(--muo-gold-a-link);
 
   --md-typeset-a-color:           var(--muo-gold-a-link);
 

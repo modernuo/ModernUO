@@ -7,23 +7,39 @@ title: Installation
 ## Prerequisites
 
 === "Windows"
-    1. Download and install git from [here](https://git-scm.com/download/win)
-    2. Download and install the latest [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+
+    - Download and install git from [here](https://git-scm.com/download/win)
+
+    === "or via Scoop"
+        - Install [scoop](https://scoop.sh)
+        - Run:
+        ```bash
+        scoop install git
+        ```
+
+    === "or via Chocolatey"
+        - Install [chocolatey](https://chocolatey.org)
+        - Run:
+        ```bash
+        choco install git
+        ```
+
+    - Download and install the latest [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
 === "OSX"
-    1. Install homebrew from [here](https://brew.sh)
-    2. Run:
-        ```bash
-        brew install git
-        ```
-    3. Download and install the latest [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+    - Install homebrew from [here](https://brew.sh)
+    - Run:
+      ```bash
+      brew install git
+      ```
+    - Download and install the latest [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
 === "Linux"
-    1. Run:
-        ```bash
-        sudo apt update && sudo apt install git
-        ```
-    2. Download and install the latest [.NET Core SDK](instructions [here](https://docs.microsoft.com/en-us/dotnet/core/install/linux))
+    - Run:
+      ```bash
+      sudo apt update && sudo apt install git
+      ```
+    - Download and install the latest [.NET Core SDK](instructions [here](https://docs.microsoft.com/en-us/dotnet/core/install/linux))
 
 ## Clone the Repository
 
