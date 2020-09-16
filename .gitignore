@@ -3,6 +3,7 @@
 /Distribution/ModernUO.*
 /Distribution/Assemblies
 /Distribution/Configuration/modernuo.json
+/Distribution/Configuration/email-settings.json
 /Distribution/Logs
 /Distribution/Backups
 /Distribution/Saves
