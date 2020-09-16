@@ -66,6 +66,7 @@ markdown_extensions:
 # Pages
 nav:
   - Home: 'index.md'
-  - Get Started:
-    - Installation: installation.md
-    - Building the Server: building-server.md
+  - 'Get Started':
+    - 'quick-start.md'
+    - 'installation.md'
+    - 'building-server.md'

@@ -1,4 +1,4 @@
 ---
-title: ModernUO
+title: Home
 template: home.html
 ---
