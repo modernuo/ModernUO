@@ -1,6 +1,10 @@
-# Building the Server
+---
+title: Creating a build
+---
 
-## Compiling
+# Creating a build
+
+The server software must be built before it can be run.
 
 === "Windows"
     Using _command prompt_, _git bash_, or _powershell_, run:
