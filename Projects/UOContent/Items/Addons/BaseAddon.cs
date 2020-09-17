@@ -204,8 +204,12 @@ namespace Server.Items
             return AddonFitResult.Valid;
         }
 
-        public static bool CheckHouse(Mobile from, Point3D p, Map map, int height, ref BaseHouse house) =>
-            from == null || BaseHouse.FindHouseAt(p, map, height)?.IsOwner(from) == true;
+        public static bool CheckHouse(Mobile from, Point3D p, Map map, int height, ref BaseHouse house)
+        {
+            house = BaseHouse.FindHouseAt(p, map, height);
+
+            return house != null && (from == null || house.IsOwner(from));
+        }
 
         public static bool IsWall(int x, int y, int z, Map map)
         {
