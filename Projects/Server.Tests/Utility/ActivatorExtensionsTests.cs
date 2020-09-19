@@ -13,6 +13,13 @@ namespace Server.Tests
         }
 
         [Fact]
+        public void TestZeroParamsNullActivator()
+        {
+            var result = typeof(TestZeroParamsClass).CreateInstance<TestZeroParamsClass>(null, null);
+            Assert.IsType<TestZeroParamsClass>(result);
+        }
+
+        [Fact]
         public void TestTwoParamsActivator()
         {
             var result = typeof(TestTwoParamsClass).CreateInstance<TestTwoParamsClass>(10, "ModernUO");
@@ -31,12 +38,30 @@ namespace Server.Tests
         }
 
         [Fact]
+        public void TestAllParamsNullOptionalActivator()
+        {
+            var result = typeof(TestTwoOptionalParamsClass).CreateInstance<TestTwoOptionalParamsClass>(null);
+            Assert.IsType<TestTwoOptionalParamsClass>(result);
+            Assert.Equal(1, result.Amount);
+            Assert.Equal("Test ModernUO", result.Name);
+        }
+
+        [Fact]
         public void TestLessParamsOptionalActivator()
         {
             var result = typeof(TestTwoOptionalParamsClass).CreateInstance<TestTwoOptionalParamsClass>(10);
             Assert.IsType<TestTwoOptionalParamsClass>(result);
             Assert.Equal(10, result.Amount);
             Assert.Equal("Test ModernUO", result.Name);
+        }
+
+        [Fact]
+        public void TestTwoParamsOptionalActivator()
+        {
+            var result = typeof(TestTwoOptionalParamsClass).CreateInstance<TestTwoOptionalParamsClass>(10, "Prod ModernUO");
+            Assert.IsType<TestTwoOptionalParamsClass>(result);
+            Assert.Equal(10, result.Amount);
+            Assert.Equal("Prod ModernUO", result.Name);
         }
 
         private class TestZeroParamsClass
