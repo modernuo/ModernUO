@@ -157,45 +157,40 @@ namespace Server.Misc
 
             var chance = A * Math.Pow(10, B * x);
 
-            if (chance > Utility.RandomDouble())
+            if (chance <= Utility.RandomDouble())
             {
-                Item i = null;
+                return;
+            }
 
-                try
+            Item i;
+
+            try
+            {
+                i = (Item)m_LesserArtifacts[(int)DropEra - 1].RandomElement().CreateInstance();
+            }
+            catch
+            {
+                return;
+            }
+
+            // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
+            pm.SendLocalizedMessage(1062317);
+
+            if (!pm.PlaceInBackpack(i))
+            {
+                if (pm.BankBox?.TryDropItem(killer, i, false) == true)
                 {
-                    i = m_LesserArtifacts[(int)DropEra - 1].RandomElement().CreateInstance()
-                        as
-                        Item;
+                    pm.SendLocalizedMessage(1079730); // The item has been placed into your bank box.
                 }
-                catch
+                else
                 {
-                    // ignored
-                }
-
-                if (i != null)
-                {
-                    pm.SendLocalizedMessage(
-                        1062317
-                    ); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
-
-                    if (!pm.PlaceInBackpack(i))
-                    {
-                        if (pm.BankBox?.TryDropItem(killer, i, false) == true)
-                        {
-                            pm.SendLocalizedMessage(1079730); // The item has been placed into your bank box.
-                        }
-                        else
-                        {
-                            pm.SendLocalizedMessage(
-                                1072523
-                            ); // You find an artifact, but your backpack and bank are too full to hold it.
-                            i.MoveToWorld(pm.Location, pm.Map);
-                        }
-                    }
-
-                    pm.ToTTotalMonsterFame = 0;
+                    // You find an artifact, but your backpack and bank are too full to hold it.
+                    pm.SendLocalizedMessage(1072523);
+                    i.MoveToWorld(pm.Location, pm.Map);
                 }
             }
+
+            pm.ToTTotalMonsterFame = 0;
         }
     }
 }
