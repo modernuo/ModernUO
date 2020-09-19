@@ -1066,7 +1066,7 @@ namespace Server
                 }
                 else
                 {
-                    item = ActivatorUtil.CreateInstance(Type) as Item;
+                    item = Type.CreateInstance<Item>();
                 }
 
                 return item;

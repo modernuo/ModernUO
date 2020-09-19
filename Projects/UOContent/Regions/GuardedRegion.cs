@@ -181,7 +181,7 @@ namespace Server.Regions
 
                 try
                 {
-                    ActivatorUtil.CreateInstance(m_GuardType, m_GuardParams);
+                    m_GuardType.CreateInstance<object>(m_GuardParams);
                 }
                 catch
                 {

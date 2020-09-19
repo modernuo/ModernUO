@@ -174,8 +174,7 @@ namespace Server.Items
                     if (NextSpawn < DateTime.UtcNow)
                     {
                         var map = Map;
-                        var bc =
-                            (BaseCreature)ActivatorUtil.CreateInstance(Creatures.RandomElement());
+                        var bc = Creatures.RandomElement().CreateInstance<BaseCreature>();
 
                         var spawnLoc = GetSpawnPosition();
 

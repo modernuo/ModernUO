@@ -45,7 +45,7 @@ namespace Server.Gumps
                     {
                         try
                         {
-                            item = ActivatorUtil.CreateInstance(type) as Item;
+                            item = type.CreateInstance<Item>();
                         }
                         catch (Exception ex)
                         {

@@ -244,7 +244,7 @@ namespace Server.Engines.Craft
 
                 try
                 {
-                    item = ActivatorUtil.CreateInstance(type) as Item;
+                    item = type.CreateInstance<Item>();
                 }
                 catch
                 {
@@ -1188,7 +1188,7 @@ namespace Server.Engines.Craft
                 }
                 else
                 {
-                    item = ActivatorUtil.CreateInstance(ItemType) as Item;
+                    item = ItemType.CreateInstance<Item>();
                 }
 
                 if (item != null)
@@ -1428,26 +1428,21 @@ namespace Server.Engines.Craft
 
                     if (typeof(CustomCraft).IsAssignableFrom(m_CraftItem.ItemType))
                     {
-                        CustomCraft cc = null;
-
                         try
                         {
-                            cc = ActivatorUtil.CreateInstance(
-                                m_CraftItem.ItemType,
+                            m_CraftItem.ItemType.CreateInstance<CustomCraft>(
                                 m_From,
                                 m_CraftItem,
                                 m_CraftSystem,
                                 m_TypeRes,
                                 m_Tool,
                                 quality
-                            ) as CustomCraft;
+                            )?.EndCraftAction();
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            // ignored
+                            Console.WriteLine(e);
                         }
-
-                        cc?.EndCraftAction();
 
                         return;
                     }

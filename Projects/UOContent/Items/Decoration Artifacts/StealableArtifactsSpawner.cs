@@ -346,7 +346,7 @@ namespace Server.Items
 
             public Item CreateInstance()
             {
-                var item = (Item)ActivatorUtil.CreateInstance(Type);
+                var item = Type.CreateInstance<Item>();
 
                 if (Hue > 0)
                 {

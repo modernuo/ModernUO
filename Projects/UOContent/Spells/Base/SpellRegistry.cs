@@ -91,7 +91,7 @@ namespace Server.Spells
 
                 try
                 {
-                    spm = ActivatorUtil.CreateInstance(type) as SpecialMove;
+                    spm = type.CreateInstance<SpecialMove>();
                 }
                 catch
                 {
@@ -139,9 +139,9 @@ namespace Server.Spells
 
                 try
                 {
-                    return (Spell)ActivatorUtil.CreateInstance(t, m_Params);
+                    return t.CreateInstance<Spell>(m_Params);
                 }
-                catch (Exception e)
+                catch
                 {
                     // ignored
                 }
@@ -167,7 +167,7 @@ namespace Server.Spells
 
                     try
                     {
-                        return (Spell)ActivatorUtil.CreateInstance(t, m_Params);
+                        return t.CreateInstance<Spell>(m_Params);
                     }
                     catch
                     {

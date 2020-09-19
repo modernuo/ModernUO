@@ -300,7 +300,7 @@ namespace Server.Commands
         public CategoryTypeEntry(Type type)
         {
             Type = type;
-            Object = ActivatorUtil.CreateInstance(type);
+            Object = type.CreateInstance<object>();
         }
 
         public Type Type { get; }

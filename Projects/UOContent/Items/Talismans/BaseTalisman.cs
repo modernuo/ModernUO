@@ -451,18 +451,18 @@ namespace Server.Items
 
             if (type != null)
             {
-                object obj;
+                IEntity entity;
 
                 try
                 {
-                    obj = ActivatorUtil.CreateInstance(type);
+                    entity = type.CreateInstance<IEntity>();
                 }
                 catch
                 {
-                    obj = null;
+                    entity = null;
                 }
 
-                if (obj is Item item)
+                if (entity is Item item)
                 {
                     var count = 1;
 
@@ -492,7 +492,7 @@ namespace Server.Items
 
                         if (i + 1 < count)
                         {
-                            item = ActivatorUtil.CreateInstance(type) as Item;
+                            item = type.CreateInstance<Item>();
                         }
                     }
 
@@ -513,7 +513,7 @@ namespace Server.Items
                         from.SendLocalizedMessage(1074853, m_Summoner.Name.ToString()); // You have been given ~1_name~
                     }
                 }
-                else if (obj is BaseCreature mob)
+                else if (entity is BaseCreature mob)
                 {
                     if (m_Creature?.Deleted == false || from.Followers + mob.ControlSlots > from.FollowersMax)
                     {
@@ -535,6 +535,10 @@ namespace Server.Items
                     mob.ControlOrder = OrderType.Friend;
 
                     m_Creature = mob;
+                }
+                else
+                {
+                    entity?.Delete();
                 }
 
                 OnAfterUse(from);

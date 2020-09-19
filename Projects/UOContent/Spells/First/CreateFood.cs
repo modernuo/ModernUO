@@ -73,18 +73,16 @@ namespace Server.Spells.First
 
         public Item Create()
         {
-            Item item;
-
             try
             {
-                item = (Item)ActivatorUtil.CreateInstance(Type);
+                return Type.CreateInstance<Item>();
             }
             catch
             {
-                item = null;
+                // ignored
             }
 
-            return item;
+            return null;
         }
     }
 }

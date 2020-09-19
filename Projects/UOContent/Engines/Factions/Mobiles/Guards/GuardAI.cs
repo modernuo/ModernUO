@@ -91,7 +91,7 @@ namespace Server.Factions
                 if (entry.Chance > Utility.Random(100))
                 {
                     releaseTime = DateTime.UtcNow + entry.Hold;
-                    return (Spell)ActivatorUtil.CreateInstance(entry.Spell, mob, null);
+                    return entry.Spell.CreateInstance<Spell>(mob, null);
                 }
             }
 
@@ -406,9 +406,9 @@ namespace Server.Factions
             {
               if (m_Mobile.Target != null)
                 m_Mobile.Target.Cancel( m_Mobile, TargetCancelType.Canceled );
-      
+
               new TeleportSpell( m_Mobile, null ).Cast();
-      
+
               m_Mobile.DebugSay( "I am stuck, I'm going to try teleporting away" );
             }
             else*/
@@ -744,7 +744,7 @@ namespace Server.Factions
                             }
                             else if (types.Count == 1)
                             {
-                                spell = ActivatorUtil.CreateInstance(types[0], m_Guard, null) as Spell;
+                                spell = types[0].CreateInstance<Spell>(m_Guard, null);
                             }
                         }
                         else if (types.Count > 0)
@@ -796,7 +796,7 @@ namespace Server.Factions
                             }
                             else if (types.Count == 1)
                             {
-                                spell = (Spell)ActivatorUtil.CreateInstance(types[0], m_Guard, null);
+                                spell = types[0].CreateInstance<Spell>(m_Guard, null);
                             }
                         }
                     }
@@ -804,24 +804,14 @@ namespace Server.Factions
 
                 if (spell != null && m_Guard.HitsMax - m_Guard.Hits + 10 > Utility.Random(100))
                 {
-                    Type type = null;
-
-                    if (spell is GreaterHealSpell)
+                    Type type = spell switch
                     {
-                        type = typeof(BaseHealPotion);
-                    }
-                    else if (spell is CureSpell)
-                    {
-                        type = typeof(BaseCurePotion);
-                    }
-                    else if (spell is StrengthSpell)
-                    {
-                        type = typeof(BaseStrengthPotion);
-                    }
-                    else if (spell is AgilitySpell)
-                    {
-                        type = typeof(BaseAgilityPotion);
-                    }
+                        GreaterHealSpell _ => typeof(BaseHealPotion),
+                        CureSpell _        => typeof(BaseCurePotion),
+                        StrengthSpell _    => typeof(BaseStrengthPotion),
+                        AgilitySpell _     => typeof(BaseAgilityPotion),
+                        _                  => null
+                    };
 
                     if (type == typeof(BaseHealPotion) && !m_Guard.CanBeginAction(type))
                     {

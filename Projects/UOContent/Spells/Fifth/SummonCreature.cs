@@ -68,7 +68,7 @@ namespace Server.Spells.Fifth
             {
                 try
                 {
-                    var creature = (BaseCreature)ActivatorUtil.CreateInstance(m_Types.RandomElement());
+                    var creature = m_Types.RandomElement().CreateInstance<BaseCreature>();
 
                     // creature.ControlSlots = 2;
 

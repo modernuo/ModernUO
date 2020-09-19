@@ -405,11 +405,11 @@ namespace Server.Commands
 
                     if (fill)
                     {
-                        item = (Item)ActivatorUtil.CreateInstance(m_Type, content);
+                        item = m_Type.CreateInstance<Item>(content);
                     }
                     else
                     {
-                        item = (Item)ActivatorUtil.CreateInstance(m_Type);
+                        item = m_Type.CreateInstance<Item>();
                     }
                 }
                 else if (m_Type.IsSubclassOf(typeofBaseDoor))
@@ -430,11 +430,11 @@ namespace Server.Commands
                         }
                     }
 
-                    item = (Item)ActivatorUtil.CreateInstance(m_Type, facing);
+                    item = m_Type.CreateInstance<Item>(facing);
                 }
                 else
                 {
-                    item = (Item)ActivatorUtil.CreateInstance(m_Type);
+                    item = m_Type.CreateInstance<Item>();
                 }
             }
             catch (Exception e)

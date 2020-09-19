@@ -5,7 +5,7 @@ using Server.Utilities;
 
 namespace Server.Commands
 {
-    public class Dupe
+    public static class Dupe
     {
         public static void Initialize()
         {
@@ -111,7 +111,7 @@ namespace Server.Commands
                     pack = from.Backpack;
                 }
 
-                var c = ActivatorUtil.GetConstructor(copy.GetType());
+                var c = copy.GetType().GetConstructor();
                 if (c != null)
                 {
                     var paramList = c.GetParameters();
@@ -128,7 +128,7 @@ namespace Server.Commands
                         {
                             if (c.Invoke(args) is Item newItem)
                             {
-                                CopyProperties(newItem, copy); // copy.Dupe( item, copy.Amount );
+                                CopyProperties(newItem, copy);
                                 copy.OnAfterDuped(newItem);
                                 newItem.Parent = null;
 
@@ -166,7 +166,7 @@ namespace Server.Commands
 
                 if (!done)
                 {
-                    from.SendMessage("Unable to dupe.  Item must have a 0 parameter constructor.");
+                    from.SendMessage("Unable to dupe. Item must have a constructor with zero required parameters.");
                 }
             }
         }

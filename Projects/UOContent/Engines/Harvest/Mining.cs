@@ -387,16 +387,17 @@ namespace Server.Engines.Harvest
 
                 if (res == resource && res.Types.Length >= 3)
                 {
+                    var map = from.Map;
+
+                    if (map == null)
+                    {
+                        return;
+                    }
+
                     try
                     {
-                        var map = from.Map;
-
-                        if (map == null)
-                        {
-                            return;
-                        }
-
-                        if (ActivatorUtil.CreateInstance(res.Types[2], 25) is BaseCreature spawned)
+                        var spawned = res.Types[2].CreateEntityInstance<BaseCreature>(25);
+                        if (spawned != null)
                         {
                             var offset = Utility.Random(8) * 2;
 

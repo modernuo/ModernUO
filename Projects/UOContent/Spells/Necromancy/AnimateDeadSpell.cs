@@ -343,7 +343,7 @@ namespace Server.Spells.Necromancy
 
             try
             {
-                summoned = ActivatorUtil.CreateInstance(toSummon) as Mobile;
+                summoned = toSummon.CreateInstance<Mobile>();
             }
             catch
             {

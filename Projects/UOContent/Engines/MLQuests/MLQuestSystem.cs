@@ -69,7 +69,7 @@ namespace Server.Engines.MLQuests
 
                     try
                     {
-                        quest = ActivatorUtil.CreateInstance(type) as MLQuest;
+                        quest = type.CreateInstance<MLQuest>();
                     }
                     catch
                     {

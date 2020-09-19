@@ -780,7 +780,7 @@ namespace Server
 
             try
             {
-                return ActivatorUtil.CreateInstance(type) as Item;
+                return type.CreateInstance<Item>();
             }
             catch
             {

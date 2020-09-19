@@ -594,7 +594,7 @@ namespace Server.Items
             {
                 try
                 {
-                    var res = (Item)ActivatorUtil.CreateInstance(CraftResources.GetInfo(m_Resource).ResourceTypes[0]);
+                    var res = CraftResources.GetInfo(m_Resource).ResourceTypes[0].CreateInstance<Item>();
 
                     ScissorHelper(from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
                     return true;

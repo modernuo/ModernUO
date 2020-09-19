@@ -72,8 +72,14 @@ namespace Server.Items
         bool ICommodity.IsDeedable => Core.ML;
 
         public int OnCraft(
-            int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
-            CraftItem craftItem, int resHue
+            int quality,
+            bool makersMark,
+            Mobile from,
+            CraftSystem craftSystem,
+            Type typeRes,
+            BaseTool tool,
+            CraftItem craftItem,
+            int resHue
         )
         {
             if (craftSystem is DefAlchemy)
@@ -151,11 +157,11 @@ namespace Server.Items
                 {
                     if (this is BaseExplosionPotion && Amount > 1)
                     {
-                        var pot = (BasePotion)ActivatorUtil.CreateInstance(GetType());
+                        var pot = GetType().CreateInstance<BaseExplosionPotion>();
 
                         Amount--;
 
-                        if (from.Backpack?.Deleted != false)
+                        if (from.Backpack?.Deleted == false)
                         {
                             from.Backpack.DropItem(pot);
                         }

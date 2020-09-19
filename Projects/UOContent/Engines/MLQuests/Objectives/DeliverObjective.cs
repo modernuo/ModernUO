@@ -49,17 +49,17 @@ namespace Server.Engines.MLQuests.Objectives
 
             for (var i = 0; i < Amount; ++i)
             {
-                if (!(ActivatorUtil.CreateInstance(Delivery) is Item item))
-                {
-                    continue;
-                }
+                var item = Delivery.CreateEntityInstance<Item>();
 
-                delivery.Add(item);
-
-                if (item.Stackable && Amount > 1)
+                if (item != null)
                 {
-                    item.Amount = Amount;
-                    break;
+                    delivery.Add(item);
+
+                    if (item.Stackable && Amount > 1)
+                    {
+                        item.Amount = Amount;
+                        break;
+                    }
                 }
             }
 
