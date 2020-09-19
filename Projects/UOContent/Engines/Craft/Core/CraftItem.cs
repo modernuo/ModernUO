@@ -1428,25 +1428,21 @@ namespace Server.Engines.Craft
 
                     if (typeof(CustomCraft).IsAssignableFrom(m_CraftItem.ItemType))
                     {
-                        CustomCraft cc = null;
-
                         try
                         {
-                            cc = m_CraftItem.ItemType.CreateInstance(
+                            ((CustomCraft)m_CraftItem.ItemType.CreateInstance(
                                 m_From,
                                 m_CraftItem,
                                 m_CraftSystem,
                                 m_TypeRes,
                                 m_Tool,
                                 quality
-                            ) as CustomCraft;
+                            ))?.EndCraftAction();
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            // ignored
+                            Console.WriteLine(e);
                         }
-
-                        cc?.EndCraftAction();
 
                         return;
                     }

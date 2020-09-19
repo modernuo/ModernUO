@@ -320,7 +320,7 @@ namespace Server.Items
                 if (contains)
                 {
                     var effect =
-                        (GreenThornsEffect)ActivatorUtil.CreateInstance(taep.Effect, land.Location, from.Map, from);
+                        (GreenThornsEffect)taep.Effect.CreateInstance(land.Location, from.Map, from);
                     return effect;
                 }
             }

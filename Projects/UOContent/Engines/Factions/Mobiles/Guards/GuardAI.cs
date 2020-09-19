@@ -91,7 +91,7 @@ namespace Server.Factions
                 if (entry.Chance > Utility.Random(100))
                 {
                     releaseTime = DateTime.UtcNow + entry.Hold;
-                    return (Spell)ActivatorUtil.CreateInstance(entry.Spell, mob, null);
+                    return (Spell)entry.Spell.CreateInstance(mob, null);
                 }
             }
 
@@ -406,9 +406,9 @@ namespace Server.Factions
             {
               if (m_Mobile.Target != null)
                 m_Mobile.Target.Cancel( m_Mobile, TargetCancelType.Canceled );
-      
+
               new TeleportSpell( m_Mobile, null ).Cast();
-      
+
               m_Mobile.DebugSay( "I am stuck, I'm going to try teleporting away" );
             }
             else*/
@@ -744,7 +744,7 @@ namespace Server.Factions
                             }
                             else if (types.Count == 1)
                             {
-                                spell = ActivatorUtil.CreateInstance(types[0], m_Guard, null) as Spell;
+                                spell = types[0].CreateInstance(m_Guard, null) as Spell;
                             }
                         }
                         else if (types.Count > 0)
@@ -796,7 +796,7 @@ namespace Server.Factions
                             }
                             else if (types.Count == 1)
                             {
-                                spell = (Spell)ActivatorUtil.CreateInstance(types[0], m_Guard, null);
+                                spell = (Spell)types[0].CreateInstance(m_Guard, null);
                             }
                         }
                     }
