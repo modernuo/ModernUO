@@ -396,8 +396,8 @@ namespace Server.Engines.Harvest
 
                     try
                     {
-                        var entity = res.Types[2].CreateInstance<IEntity>(25);
-                        if (entity is BaseCreature spawned)
+                        var spawned = res.Types[2].CreateEntityInstance<BaseCreature>(25);
+                        if (spawned != null)
                         {
                             var offset = Utility.Random(8) * 2;
 
@@ -428,10 +428,6 @@ namespace Server.Engines.Harvest
                             spawned.OnBeforeSpawn(from.Location, from.Map);
                             spawned.MoveToWorld(from.Location, from.Map);
                             spawned.Combatant = from;
-                        }
-                        else
-                        {
-                            entity.Delete();
                         }
                     }
                     catch

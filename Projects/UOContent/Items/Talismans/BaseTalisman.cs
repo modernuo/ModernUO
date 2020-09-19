@@ -536,6 +536,10 @@ namespace Server.Items
 
                     m_Creature = mob;
                 }
+                else
+                {
+                    entity?.Delete();
+                }
 
                 OnAfterUse(from);
             }

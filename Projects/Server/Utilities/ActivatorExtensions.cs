@@ -18,17 +18,19 @@ using System.Reflection;
 
 namespace Server.Utilities
 {
-    public static class ActivatorUtil
+    public static class ActivatorExtensions
     {
-        public static ConstructorInfo GetConstructor<T>(
-            Predicate<ConstructorInfo> predicate = null,
-            Type[] args = null
-        ) => GetConstructor(typeof(T), predicate, args);
-
         public static ConstructorInfo GetConstructor(
             this Type type,
             Predicate<ConstructorInfo> predicate = null,
             Type[] args = null
+        ) => type.GetConstructor(predicate, args, out _);
+
+        public static ConstructorInfo GetConstructor(
+            this Type type,
+            Predicate<ConstructorInfo> predicate,
+            Type[] args,
+            out int paramCount
         )
         {
             args ??= Array.Empty<Type>();
@@ -45,9 +47,10 @@ namespace Server.Utilities
                         continue;
                     }
 
-                    var paramList = info.GetParameters();
+                    var parameters = info.GetParameters();
+                    paramCount = parameters.Length;
 
-                    if (args.Length > paramList.Length)
+                    if (args.Length > parameters.Length)
                     {
                         continue;
                     }
@@ -55,13 +58,20 @@ namespace Server.Utilities
                     bool validated = true;
 
                     // Check that all args match params
-                    for (var j = 0; j < paramList.Length; j++)
+                    for (var j = 0; j < parameters.Length; j++)
                     {
-                        ParameterInfo param = paramList[j];
-                        if (j > args.Length && !param.IsOptional)
+                        ParameterInfo param = parameters[j];
+
+                        // All extra parameters must be optional
+                        if (j >= args.Length)
                         {
-                            validated = false;
-                            break;
+                            if (!param.IsOptional)
+                            {
+                                validated = false;
+                                break;
+                            }
+
+                            continue;
                         }
 
                         var arg = args[j];
@@ -89,6 +99,7 @@ namespace Server.Utilities
                 Console.WriteLine(e);
             }
 
+            paramCount = 0;
             return null;
         }
 
@@ -99,38 +110,44 @@ namespace Server.Utilities
 
         public static T CreateInstance<T>(
             this Type type,
-            Predicate<ConstructorInfo> constructorPredicate,
+            Predicate<ConstructorInfo> predicate,
             object[] args = null
         ) where T : class
         {
-            ConstructorInfo ctor;
+            var argLength = args?.Length ?? 0;
 
-            if (args == null || args.Length == 0)
-            {
-                ctor = type.GetConstructor(constructorPredicate);
-                if (ctor == null)
-                {
-                    Console.WriteLine("There is no constructor for {0} that matches the given predicate.", type);
-                    return default;
-                }
-
-                return (T)ctor.Invoke(Array.Empty<object>());
-            }
-
-            var types = new Type[args.Length];
+            var types = argLength > 0 ? new Type[argLength] : Array.Empty<Type>();
             for (int i = 0; i < types.Length; i++)
             {
-                types[i] = args[i]?.GetType();
+                types[i] = args![i]?.GetType();
             }
 
-            ctor = type.GetConstructor(constructorPredicate, types);
+            var ctor = type.GetConstructor(predicate, types, out var paramCount);
             if (ctor == null)
             {
                 Console.WriteLine("There is no constructor for {0} that matches the given predicate.", type);
                 return default;
             }
 
-            return ctor.Invoke(args) as T;
+            object[] paramArgs;
+            if (paramCount == 0)
+            {
+                paramArgs = Array.Empty<object>();
+            }
+            else if (argLength == paramCount)
+            {
+                paramArgs = args;
+            }
+            else
+            {
+                paramArgs = new object[paramCount];
+                for (int i = 0; i < paramCount; i++)
+                {
+                    paramArgs[i] = i < argLength ? args![i] : Type.Missing;
+                }
+            }
+
+            return ctor.Invoke(paramArgs) as T;
         }
     }
 }

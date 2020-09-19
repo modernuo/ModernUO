@@ -395,18 +395,14 @@ namespace Server.Engines.CannedEvil
                 {
                     try
                     {
-                        var item = scroll.GetType().CreateInstance<Item>();
+                        var scrollDupe = scroll.GetType().CreateEntityInstance<SpecialScroll>();
 
-                        if (item is SpecialScroll scrollDupe)
+                        if (scrollDupe != null)
                         {
                             prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
                             scrollDupe.Skill = scroll.Skill;
                             scrollDupe.Value = scroll.Value;
                             prot.AddToBackpack(scrollDupe);
-                        }
-                        else
-                        {
-                            item.Delete();
                         }
                     }
                     catch

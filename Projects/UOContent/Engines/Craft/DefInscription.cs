@@ -55,9 +55,9 @@ namespace Server.Engines.Craft
 
             if (typeItem != null)
             {
-                var entity = typeItem.CreateInstance<IEntity>();
+                var scroll = typeItem.CreateEntityInstance<SpellScroll>();
 
-                if (entity is SpellScroll scroll)
+                if (scroll != null)
                 {
                     var hasSpell = Spellbook.Find(from, scroll.SpellID)?.HasSpell(scroll.SpellID) == true;
 
@@ -65,8 +65,6 @@ namespace Server.Engines.Craft
 
                     return hasSpell ? 0 : 1042404; // null : You don't have that spell!
                 }
-
-                entity.Delete();
             }
 
             return 0;

@@ -310,16 +310,12 @@ namespace Server.Items
 
             foreach (var taep in m_Table)
             {
-                var contains = false;
-
-                for (var i = 0; !contains && i < taep.Tiles.Length; i += 2)
+                for (var i = 0; i < taep.Tiles.Length; i += 2)
                 {
-                    contains = tileID >= taep.Tiles[i] && tileID <= taep.Tiles[i + 1];
-                }
-
-                if (contains)
-                {
-                    return taep.Effect.CreateInstance<GreenThornsEffect>(land.Location, from.Map, from);
+                    if (tileID >= taep.Tiles[i] && tileID <= taep.Tiles[i + 1])
+                    {
+                        return taep.Effect.CreateInstance<GreenThornsEffect>(land.Location, from.Map, from);
+                    }
                 }
             }
 
