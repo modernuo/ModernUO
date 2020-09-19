@@ -5738,7 +5738,7 @@ namespace Server
             Item item;
             try
             {
-                item = (Item)oldItem.GetType().CreateInstance();
+                item = oldItem.GetType().CreateInstance<Item>();
             }
             catch
             {
