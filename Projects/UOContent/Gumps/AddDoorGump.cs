@@ -72,7 +72,7 @@ namespace Server.Gumps
             {
                 if (button >= 0 && button < m_Types.Length)
                 {
-                    @from.SendGump(new AddDoorGump(button));
+                    from.SendGump(new AddDoorGump(button));
                 }
             }
             else

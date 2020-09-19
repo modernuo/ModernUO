@@ -200,7 +200,7 @@ namespace Server.Gumps
                     {
                         if (m_Page > 0)
                         {
-                            @from.SendGump(new AddGump(@from, m_SearchString, m_Page - 1, m_SearchResults, true));
+                            from.SendGump(new AddGump(from, m_SearchString, m_Page - 1, m_SearchResults, true));
                         }
 
                         break;
@@ -209,7 +209,7 @@ namespace Server.Gumps
                     {
                         if ((m_Page + 1) * 10 < m_SearchResults.Length)
                         {
-                            @from.SendGump(new AddGump(@from, m_SearchString, m_Page + 1, m_SearchResults, true));
+                            from.SendGump(new AddGump(from, m_SearchString, m_Page + 1, m_SearchResults, true));
                         }
 
                         break;
@@ -279,7 +279,7 @@ namespace Server.Gumps
             {
                 if (cancelType == TargetCancelType.Canceled)
                 {
-                    @from.SendGump(new AddGump(@from, m_SearchString, m_Page, m_SearchResults, true));
+                    from.SendGump(new AddGump(from, m_SearchString, m_Page, m_SearchResults, true));
                 }
             }
         }

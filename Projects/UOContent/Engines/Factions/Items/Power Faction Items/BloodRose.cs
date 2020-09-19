@@ -23,7 +23,7 @@ namespace Server
 
                 if (from.Body.IsHuman && !from.Mounted)
                 {
-                    @from.Animate(34, 5, 1, true, false, 0);
+                    from.Animate(34, 5, 1, true, false, 0);
                 }
 
                 var amount = Utility.Dice(3, 3, 3);

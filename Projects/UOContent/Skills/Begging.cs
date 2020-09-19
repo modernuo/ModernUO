@@ -37,7 +37,7 @@ namespace Server.SkillHandlers
             {
                 if (m_SetSkillTime)
                 {
-                    @from.NextSkillTime = Core.TickCount;
+                    from.NextSkillTime = Core.TickCount;
                 }
             }
 
@@ -93,7 +93,7 @@ namespace Server.SkillHandlers
 
                 if (number != -1)
                 {
-                    @from.SendLocalizedMessage(number);
+                    from.SendLocalizedMessage(number);
                 }
             }
 

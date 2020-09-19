@@ -162,7 +162,7 @@ namespace Server.Items
         {
             if (TriggerType == EffectTriggerType.DoubleClick)
             {
-                DoEffect(@from);
+                DoEffect(from);
             }
         }
 
@@ -337,7 +337,7 @@ namespace Server.Items
                     {
                         if (from == this)
                         {
-                            @from = EffectItem.Create(@from.Location, @from.Map, EffectItem.DefaultDuration);
+                            from = EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration);
                         }
 
                         if (to == this)

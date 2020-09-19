@@ -218,7 +218,7 @@ namespace Server.Misc
         {
             if (from.AccessLevel >= AccessLevel.Administrator)
             {
-                @from.SendGump(new ShardPollGump(@from, this, true, null));
+                from.SendGump(new ShardPollGump(from, this, true, null));
             }
         }
 

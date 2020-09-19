@@ -28,11 +28,11 @@ namespace Server.Items
 
             if (!from.InRange(loc, 2) || !from.InLOS(this))
             {
-                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             }
             else if (!m_Picked)
             {
-                OnPicked(@from, loc, map);
+                OnPicked(from, loc, map);
             }
         }
 

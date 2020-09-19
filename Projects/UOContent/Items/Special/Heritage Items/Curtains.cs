@@ -34,7 +34,7 @@ namespace Server.Items
 
             if (Addon != null)
             {
-                if (@from.InRange(Location, 1))
+                if (from.InRange(Location, 1))
                 {
                     foreach (var c in Addon.Components)
                     {
@@ -46,7 +46,7 @@ namespace Server.Items
                         }
                         else
                         {
-                            @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
                         }
                     }
                 }

@@ -30,7 +30,7 @@ namespace Server.Items
 
             if (from.Alive && CheckRange(from.Location, 0))
             {
-                SpellHelper.Damage(TimeSpan.FromTicks(1), @from, @from, Utility.Dice(10, 7, 0));
+                SpellHelper.Damage(TimeSpan.FromTicks(1), from, from, Utility.Dice(10, 7, 0));
             }
         }
 

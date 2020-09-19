@@ -207,11 +207,11 @@ namespace Server.Engines.Craft
 
             if (page == CraftPage.PickResource)
             {
-                CreateResList(false, @from);
+                CreateResList(false, from);
             }
             else if (page == CraftPage.PickResource2)
             {
-                CreateResList(true, @from);
+                CreateResList(true, from);
             }
             else if (context?.LastGroupIndex > -1)
             {

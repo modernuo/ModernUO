@@ -106,7 +106,7 @@ namespace Server.Engines.Quests.Ninja
                 var obj = player.Quest.FindObjective<HallwayWalkObjective>();
                 if (obj?.StolenTreasure == true)
                 {
-                    @from.SendLocalizedMessage(
+                    from.SendLocalizedMessage(
                         1063247
                     ); // The guard is watching you carefully!  It would be unwise to remove another item from here.
                 }

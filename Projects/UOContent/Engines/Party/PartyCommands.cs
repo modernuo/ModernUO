@@ -13,15 +13,15 @@ namespace Server.Engines.PartySystem
 
             if (p != null && p.Leader != from)
             {
-                @from.SendLocalizedMessage(1005453); // You may only add members to the party if you are the leader.
+                from.SendLocalizedMessage(1005453); // You may only add members to the party if you are the leader.
             }
             else if (p != null && p.Members.Count + p.Candidates.Count >= Party.Capacity)
             {
-                @from.SendLocalizedMessage(1008095); // You may only have 10 in your party (this includes candidates).
+                from.SendLocalizedMessage(1008095); // You may only have 10 in your party (this includes candidates).
             }
             else
             {
-                @from.Target = new AddPartyTarget(@from);
+                from.Target = new AddPartyTarget(from);
             }
         }
 
@@ -57,11 +57,11 @@ namespace Server.Engines.PartySystem
 
             if (p?.Contains(target) == true)
             {
-                p.SendPrivateMessage(@from, target, text);
+                p.SendPrivateMessage(from, target, text);
             }
             else
             {
-                @from.SendLocalizedMessage(3000211); // You are not in a party.
+                from.SendLocalizedMessage(3000211); // You are not in a party.
             }
         }
 
@@ -76,11 +76,11 @@ namespace Server.Engines.PartySystem
 
             if (p != null)
             {
-                p.SendPublicMessage(@from, text);
+                p.SendPublicMessage(from, text);
             }
             else
             {
-                @from.SendLocalizedMessage(3000211); // You are not in a party.
+                from.SendLocalizedMessage(3000211); // You are not in a party.
             }
         }
 
@@ -102,11 +102,11 @@ namespace Server.Engines.PartySystem
 
                     if (canLoot)
                     {
-                        @from.SendLocalizedMessage(1005447); // You have chosen to allow your party to loot your corpse.
+                        from.SendLocalizedMessage(1005447); // You have chosen to allow your party to loot your corpse.
                     }
                     else
                     {
-                        @from.SendLocalizedMessage(
+                        from.SendLocalizedMessage(
                             1005448
                         ); // You have chosen to prevent your party from looting your corpse.
                     }
@@ -123,11 +123,11 @@ namespace Server.Engines.PartySystem
 
             if (leader == null || p?.Candidates.Contains(from) != true)
             {
-                @from.SendLocalizedMessage(3000222); // No one has invited you to be in a party.
+                from.SendLocalizedMessage(3000222); // No one has invited you to be in a party.
             }
             else if (p.Members.Count + p.Candidates.Count <= Party.Capacity)
             {
-                p.OnAccept(@from);
+                p.OnAccept(from);
             }
         }
 
@@ -140,11 +140,11 @@ namespace Server.Engines.PartySystem
 
             if (leader == null || p?.Candidates.Contains(from) != true)
             {
-                @from.SendLocalizedMessage(3000222); // No one has invited you to be in a party.
+                from.SendLocalizedMessage(3000222); // No one has invited you to be in a party.
             }
             else
             {
-                p.OnDecline(@from, leader);
+                p.OnDecline(from, leader);
             }
         }
     }

@@ -114,11 +114,11 @@ namespace Server.Commands.Generic
                 {
                     var entry = m_Responses[i];
 
-                    @from.SendMessage(entry.ToString());
+                    from.SendMessage(entry.ToString());
 
                     if (flushToLog)
                     {
-                        CommandLogging.WriteLine(@from, entry.ToString());
+                        CommandLogging.WriteLine(from, entry.ToString());
                     }
                 }
             }
@@ -126,7 +126,7 @@ namespace Server.Commands.Generic
             {
                 for (var i = 0; i < m_Failures.Count; ++i)
                 {
-                    @from.SendMessage(m_Failures[i].ToString());
+                    from.SendMessage(m_Failures[i].ToString());
                 }
             }
 

@@ -87,7 +87,7 @@ namespace Server.Items
 
                 if (RootParent == from)
                 {
-                    @from.Send(p);
+                    from.Send(p);
                 }
                 else
                 {
@@ -111,7 +111,7 @@ namespace Server.Items
 
             if (ValidateDefault(from, this))
             {
-                list.Add(new DefaultEntry(@from, this));
+                list.Add(new DefaultEntry(from, this));
             }
 
             SetSecureLevelEntry.AddTo(from, this, list);

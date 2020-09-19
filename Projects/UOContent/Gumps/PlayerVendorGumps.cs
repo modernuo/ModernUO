@@ -68,7 +68,7 @@ namespace Server.Gumps
 
                 if (from.Backpack != null)
                 {
-                    totalGold += @from.Backpack.GetAmount(typeof(Gold));
+                    totalGold += from.Backpack.GetAmount(typeof(Gold));
                 }
 
                 totalGold += Banker.GetBalance(from);
@@ -87,12 +87,12 @@ namespace Server.Gumps
 
                     if (from.Backpack != null)
                     {
-                        leftPrice -= @from.Backpack.ConsumeUpTo(typeof(Gold), leftPrice);
+                        leftPrice -= from.Backpack.ConsumeUpTo(typeof(Gold), leftPrice);
                     }
 
                     if (leftPrice > 0)
                     {
-                        Banker.Withdraw(@from, leftPrice);
+                        Banker.Withdraw(from, leftPrice);
                     }
 
                     m_Vendor.HoldGold += m_VI.Price;
@@ -260,7 +260,7 @@ namespace Server.Gumps
 
             if (info.ButtonID == 1 || info.ButtonID == 2) // See goods or Customize
             {
-                m_Vendor.CheckTeleport(@from);
+                m_Vendor.CheckTeleport(from);
             }
 
             if (!m_Vendor.CanInteractWith(from, true))
@@ -698,7 +698,7 @@ namespace Server.Gumps
 
                                 if (item != null)
                                 {
-                                    new PVHuePicker(item, m_Vendor, @from).SendTo(state);
+                                    new PVHuePicker(item, m_Vendor, from).SendTo(state);
                                 }
                             }
                         }
@@ -1046,11 +1046,11 @@ namespace Server.Gumps
                     {
                         if (m_Vendor.HairItemID > 0)
                         {
-                            new PVHuePicker(m_Vendor, false, @from).SendTo(@from.NetState);
+                            new PVHuePicker(m_Vendor, false, from).SendTo(from.NetState);
                         }
                         else
                         {
-                            @from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
                         }
 
                         break;
@@ -1067,11 +1067,11 @@ namespace Server.Gumps
                     {
                         if (m_Vendor.FacialHairItemID > 0)
                         {
-                            new PVHuePicker(m_Vendor, true, @from).SendTo(@from.NetState);
+                            new PVHuePicker(m_Vendor, true, from).SendTo(from.NetState);
                         }
                         else
                         {
-                            @from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
                         }
 
                         break;

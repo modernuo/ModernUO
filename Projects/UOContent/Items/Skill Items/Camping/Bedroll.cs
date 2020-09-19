@@ -51,7 +51,7 @@ namespace Server.Items
 
                     if (entry?.Safe == true)
                     {
-                        @from.SendGump(new LogoutGump(entry, this));
+                        from.SendGump(new LogoutGump(entry, this));
                     }
                 }
             }

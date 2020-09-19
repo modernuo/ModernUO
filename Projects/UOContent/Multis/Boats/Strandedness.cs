@@ -191,7 +191,7 @@ namespace Server.Misc
 
             if (canFit)
             {
-                @from.Location = new Point3D(x, y, z);
+                from.Location = new Point3D(x, y, z);
             }
         }
     }

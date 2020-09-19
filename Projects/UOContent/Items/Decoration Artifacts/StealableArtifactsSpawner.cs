@@ -183,11 +183,11 @@ namespace Server.Items
 
             if (Create())
             {
-                @from.SendMessage("Stealable artifacts spawner generated.");
+                from.SendMessage("Stealable artifacts spawner generated.");
             }
             else
             {
-                @from.SendMessage("Stealable artifacts spawner already present.");
+                from.SendMessage("Stealable artifacts spawner already present.");
             }
         }
 
@@ -199,11 +199,11 @@ namespace Server.Items
 
             if (Remove())
             {
-                @from.SendMessage("Stealable artifacts spawner removed.");
+                from.SendMessage("Stealable artifacts spawner removed.");
             }
             else
             {
-                @from.SendMessage("Stealable artifacts spawner not present.");
+                from.SendMessage("Stealable artifacts spawner not present.");
             }
         }
 

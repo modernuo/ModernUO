@@ -65,11 +65,11 @@ namespace Server.Commands
 
             if (start == end)
             {
-                sb.AppendFormat("at {0} in {1}", start, @from.Map);
+                sb.AppendFormat("at {0} in {1}", start, from.Map);
             }
             else
             {
-                sb.AppendFormat("from {0} to {1} in {2}", start, end, @from.Map);
+                sb.AppendFormat("from {0} to {1} in {2}", start, end, from.Map);
             }
 
             sb.Append(":");
@@ -126,7 +126,7 @@ namespace Server.Commands
 
             if (built > 0)
             {
-                @from.SendMessage(
+                from.SendMessage(
                     "{0} object{1} generated in {2:F1} seconds.",
                     built,
                     built != 1 ? "s" : "",
@@ -135,7 +135,7 @@ namespace Server.Commands
             }
             else
             {
-                SendUsage(type, @from);
+                SendUsage(type, from);
             }
         }
 
@@ -195,11 +195,11 @@ namespace Server.Commands
 
                         if (attr == null)
                         {
-                            @from.SendMessage("Property ({0}) not found.", propName);
+                            from.SendMessage("Property ({0}) not found.", propName);
                         }
                         else if (from.AccessLevel < attr.WriteLevel)
                         {
-                            @from.SendMessage(
+                            from.SendMessage(
                                 "Setting this property ({0}) requires at least {1} access level.",
                                 propName,
                                 Mobile.GetAccessLevelName(attr.WriteLevel)
@@ -207,7 +207,7 @@ namespace Server.Commands
                         }
                         else if (!thisProp.CanWrite || attr.ReadOnly)
                         {
-                            @from.SendMessage("Property ({0}) is read only.", propName);
+                            from.SendMessage("Property ({0}) is read only.", propName);
                         }
                         else
                         {
@@ -354,7 +354,7 @@ namespace Server.Commands
                     {
                         if (sendError)
                         {
-                            @from.SendMessage(result);
+                            from.SendMessage(result);
                         }
 
                         hadError = true;
@@ -404,7 +404,7 @@ namespace Server.Commands
 
                 if (objectCount >= 20)
                 {
-                    @from.SendMessage("Constructing {0} objects, please wait.", objectCount);
+                    from.SendMessage("Constructing {0} objects, please wait.", objectCount);
                 }
 
                 var sendError = true;
@@ -448,7 +448,7 @@ namespace Server.Commands
                                 z = map.GetAverageZ(x, y);
                             }
 
-                            var built = Build(@from, ctor, values, props, realProps, ref sendError);
+                            var built = Build(from, ctor, values, props, realProps, ref sendError);
 
                             sb.AppendFormat("0x{0:X}; ", built.Serial.Value);
 
@@ -500,7 +500,7 @@ namespace Server.Commands
 
             if (!foundCtor)
             {
-                @from.SendMessage("That type is not marked constructible.");
+                from.SendMessage("That type is not marked constructible.");
             }
         }
 
@@ -557,14 +557,14 @@ namespace Server.Commands
             if (e.Length >= 1)
             {
                 BoundingBoxPicker.Begin(
-                    @from,
+                    from,
                     (map, start, end) =>
-                        TileBox_Callback(@from, start, end, new TileState(TileZType.Start, 0, e.Arguments, outline))
+                        TileBox_Callback(from, start, end, new TileState(TileZType.Start, 0, e.Arguments, outline))
                 );
             }
             else
             {
-                @from.SendMessage(
+                from.SendMessage(
                     "Format: {0} <type> [params] [set {{<propertyName> <value> ...}}]",
                     outline ? "Outline" : "Tile"
                 );
@@ -656,14 +656,14 @@ namespace Server.Commands
             if (e.Length >= 1)
             {
                 BoundingBoxPicker.Begin(
-                    @from,
+                    from,
                     (map, start, end) =>
-                        TileBox_Callback(@from, start, end, new TileState(TileZType.MapAverage, 0, e.Arguments, outline))
+                        TileBox_Callback(from, start, end, new TileState(TileZType.MapAverage, 0, e.Arguments, outline))
                 );
             }
             else
             {
-                @from.SendMessage(
+                from.SendMessage(
                     "Format: {0}Avg <type> [params] [set {{<propertyName> <value> ...}}]",
                     outline ? "Outline" : "Tile"
                 );

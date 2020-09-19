@@ -148,11 +148,11 @@ namespace Server.Items
 
             if (Pet == null)
             {
-                LinkPet(@from);
+                LinkPet(from);
             }
             else
             {
-                CastSummonPet(@from);
+                CastSummonPet(from);
             }
         }
 
@@ -251,11 +251,11 @@ namespace Server.Items
             {
                 if (Core.ML)
                 {
-                    new PetSummoningSpell(this, @from).Cast();
+                    new PetSummoningSpell(this, from).Cast();
                 }
                 else
                 {
-                    SummonPet(@from);
+                    SummonPet(from);
                 }
             }
         }
@@ -277,7 +277,7 @@ namespace Server.Items
 
                 if (pet.Summoned)
                 {
-                    pet.SummonMaster = @from;
+                    pet.SummonMaster = from;
                 }
 
                 pet.ControlTarget = from;
@@ -379,7 +379,7 @@ namespace Server.Items
 
                 if (from.CheckAlive())
                 {
-                    m_Callback(@from);
+                    m_Callback(from);
                 }
             }
         }

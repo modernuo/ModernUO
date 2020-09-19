@@ -23,7 +23,7 @@ namespace Server.Misc
                 {
                     case 0x002A: // *i resign from my guild*
                         {
-                            ((Guild)@from.Guild)?.RemoveMember(@from);
+                            ((Guild)from.Guild)?.RemoveMember(from);
 
                             break;
                         }
@@ -31,16 +31,16 @@ namespace Server.Misc
                         {
                             if (!Core.SE)
                             {
-                                @from.SendMessage("Short Term Murders : {0}", @from.ShortTermMurders);
-                                @from.SendMessage("Long Term Murders : {0}", @from.Kills);
+                                from.SendMessage("Short Term Murders : {0}", from.ShortTermMurders);
+                                from.SendMessage("Long Term Murders : {0}", from.Kills);
                             }
                             else
                             {
-                                @from.SendMessage(
+                                from.SendMessage(
                                     0x3B2,
                                     "Short Term Murders: {0} Long Term Murders: {1}",
-                                    @from.ShortTermMurders,
-                                    @from.Kills
+                                    from.ShortTermMurders,
+                                    from.Kills
                                 );
                             }
 
@@ -48,7 +48,7 @@ namespace Server.Misc
                         }
                     case 0x0035: // i renounce my young player status*
                         {
-                            if (@from is PlayerMobile mobile && mobile.Young && !mobile.HasGump<RenounceYoungGump>())
+                            if (from is PlayerMobile mobile && mobile.Young && !mobile.HasGump<RenounceYoungGump>())
                             {
                                 mobile.SendGump(new RenounceYoungGump());
                             }

@@ -50,7 +50,7 @@ namespace Server.Engines.Craft
         {
             if (toolBroken)
             {
-                @from.SendLocalizedMessage(1044038); // You have worn out your tool
+                from.SendLocalizedMessage(1044038); // You have worn out your tool
             }
 
             if (failed)
@@ -380,7 +380,7 @@ namespace Server.Engines.Craft
                 AddRecipe( index, 308 );
                 ForceNonExceptional( index );
                 SetNeededExpansion( index, Expansion.ML );
-        
+
                 index = AddCraft( typeof( OrnateElvenChestEastDeed ), 1044292, 1073383, 94.7, 119.7, typeof( Log ), 1044041, 40, 1044351 );
                 AddRecipe( index, 309 );
                 ForceNonExceptional( index );

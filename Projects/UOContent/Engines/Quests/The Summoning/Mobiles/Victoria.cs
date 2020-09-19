@@ -102,7 +102,7 @@ namespace Server.Engines.Quests.Doom
                                 if (!bones.Deleted)
                                 {
                                     SayTo(
-                                        @from,
+                                        from,
                                         1050038
                                     ); // You have already given me all the Daemon bones necessary to weave the spell.  Keep these for a later time.
                                 }
@@ -112,7 +112,7 @@ namespace Server.Engines.Quests.Doom
                         {
                             // TODO: Accurate?
                             SayTo(
-                                @from,
+                                from,
                                 1050038
                             ); // You have already given me all the Daemon bones necessary to weave the spell.  Keep these for a later time.
                         }

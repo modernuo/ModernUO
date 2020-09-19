@@ -60,7 +60,7 @@ namespace Server.Items
 
             if (Map == Map.Internal)
             {
-                return @from;
+                return from;
             }
 
             return this;
@@ -88,7 +88,7 @@ namespace Server.Items
 
             if (!Users.Contains(from))
             {
-                Users.Add(@from);
+                Users.Add(from);
             }
 
             from.Target = new ThrowTarget(this);
@@ -105,7 +105,7 @@ namespace Server.Items
                         TimeSpan.FromSeconds(1.0),
                         TimeSpan.FromSeconds(1.25),
                         5,
-                        () => Detonate_OnTick(@from, timer--)
+                        () => Detonate_OnTick(from, timer--)
                     ); // 3.6 seconds explosion delay
                 }
                 else
@@ -114,7 +114,7 @@ namespace Server.Items
                         TimeSpan.FromSeconds(0.75),
                         TimeSpan.FromSeconds(1.0),
                         4,
-                        () => Detonate_OnTick(@from, timer--)
+                        () => Detonate_OnTick(from, timer--)
                     ); // 2.6 seconds explosion delay
                 }
             }
@@ -174,7 +174,7 @@ namespace Server.Items
 
             if (InstantExplosion)
             {
-                Explode(@from, true, loc, map);
+                Explode(from, true, loc, map);
             }
             else
             {
@@ -213,7 +213,7 @@ namespace Server.Items
 
             if (direct)
             {
-                alchemyBonus = (int)(@from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
+                alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
             }
 
             var eable = map.GetObjectsInRange(loc, ExplosionRange, LeveledExplosion);

@@ -170,7 +170,7 @@ namespace Server.Mobiles
 
                     if (m_Mobile.CanDrop)
                     {
-                        list.Add(new InternalEntry(@from, 6109, 14, m_Mobile, this, OrderType.Drop)); // Command: Drop
+                        list.Add(new InternalEntry(from, 6109, 14, m_Mobile, this, OrderType.Drop)); // Command: Drop
                     }
 
                     list.Add(new InternalEntry(from, 6111, 14, m_Mobile, this, OrderType.Attack)); // Command: Kill
@@ -220,15 +220,15 @@ namespace Server.Mobiles
             {
                 if (order == OrderType.Transfer)
                 {
-                    @from.SendLocalizedMessage(502038); // Click on the person to transfer ownership to.
+                    from.SendLocalizedMessage(502038); // Click on the person to transfer ownership to.
                 }
                 else if (order == OrderType.Friend)
                 {
-                    @from.SendLocalizedMessage(502020); // Click on the player whom you wish to make a co-owner.
+                    from.SendLocalizedMessage(502020); // Click on the player whom you wish to make a co-owner.
                 }
                 else if (order == OrderType.Unfriend)
                 {
-                    @from.SendLocalizedMessage(1070948); // Click on the player whom you wish to remove as a co-owner.
+                    from.SendLocalizedMessage(1070948); // Click on the player whom you wish to remove as a co-owner.
                 }
 
                 from.Target = new AIControlMobileTarget(this, order);
@@ -2634,12 +2634,12 @@ namespace Server.Mobiles
             {
                 for (var a = 0; a < count; ++a)
                 {
-                    if (a < m_Mobile.Aggressed.Count && m_Mobile.Aggressed[a].Attacker == @from)
+                    if (a < m_Mobile.Aggressed.Count && m_Mobile.Aggressed[a].Attacker == from)
                     {
                         return true;
                     }
 
-                    if (a < m_Mobile.Aggressors.Count && m_Mobile.Aggressors[a].Defender == @from)
+                    if (a < m_Mobile.Aggressors.Count && m_Mobile.Aggressors[a].Defender == from)
                     {
                         return true;
                     }
@@ -3016,9 +3016,9 @@ namespace Server.Mobiles
 
                         m_Creature.PlaySound(m_Creature.GetIdleSound());
 
-                        var args = $"{@from.Name}\t{m_Creature.Name}\t{to.Name}";
+                        var args = $"{from.Name}\t{m_Creature.Name}\t{to.Name}";
 
-                        @from.SendLocalizedMessage(1043253, args); // You have transferred your pet to ~3_GETTER~.
+                        from.SendLocalizedMessage(1043253, args); // You have transferred your pet to ~3_GETTER~.
                         to.SendLocalizedMessage(
                             1043252,
                             args

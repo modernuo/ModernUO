@@ -178,19 +178,19 @@ namespace Server.Engines.Plants
         {
             if (m_PlantStatus >= PlantStatus.DeadTwigs)
             {
-                LabelTo(@from, LabelNumber);
+                LabelTo(from, LabelNumber);
             }
             else if (m_PlantStatus >= PlantStatus.DecorativePlant)
             {
-                LabelTo(@from, 1061924); // a decorative plant
+                LabelTo(from, 1061924); // a decorative plant
             }
             else if (m_PlantStatus >= PlantStatus.FullGrownPlant)
             {
-                LabelTo(@from, PlantTypeInfo.GetInfo(m_PlantType).Name);
+                LabelTo(from, PlantTypeInfo.GetInfo(m_PlantType).Name);
             }
             else
             {
-                LabelTo(@from, 1029913); // plant bowl
+                LabelTo(from, 1029913); // plant bowl
             }
         }
 

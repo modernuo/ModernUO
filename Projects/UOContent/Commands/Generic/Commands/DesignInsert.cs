@@ -188,13 +188,13 @@ namespace Server.Commands.Generic
                         {
                             if (m_Foundations.Count == 0)
                             {
-                                @from.SendMessage(
+                                from.SendMessage(
                                     "The item has been inserted into the house design. Press ESC when you are finished."
                                 );
                             }
                             else
                             {
-                                @from.SendMessage("The item has been inserted into the house design.");
+                                from.SendMessage("The item has been inserted into the house design.");
                             }
 
                             if (!m_Foundations.Contains(house))

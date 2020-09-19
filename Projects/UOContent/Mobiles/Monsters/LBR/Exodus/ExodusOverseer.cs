@@ -100,7 +100,7 @@ namespace Server.Mobiles
         {
             if (from?.Alive == true && Utility.RandomDouble() < 0.4)
             {
-                SendEBolt(@from);
+                SendEBolt(from);
             }
 
             if (!FieldActive)

@@ -43,7 +43,7 @@ namespace Server.Engines.Quests.Matriarch
 
             if (redSolen)
             {
-                return @from is BlackSolenInfiltratorWarrior || @from is BlackSolenInfiltratorQueen;
+                return from is BlackSolenInfiltratorWarrior || from is BlackSolenInfiltratorQueen;
             }
 
             return from is RedSolenInfiltratorWarrior || from is RedSolenInfiltratorQueen;

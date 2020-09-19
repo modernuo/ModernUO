@@ -157,11 +157,11 @@ namespace Server.Items
 
                         if (from.Backpack?.Deleted != false)
                         {
-                            @from.Backpack.DropItem(pot);
+                            from.Backpack.DropItem(pot);
                         }
                         else
                         {
-                            pot.MoveToWorld(@from.Location, @from.Map);
+                            pot.MoveToWorld(from.Location, from.Map);
                         }
 
                         pot.Drink(from);

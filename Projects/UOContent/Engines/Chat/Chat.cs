@@ -49,7 +49,7 @@ namespace Server.Engines.Chat
             {
                 if (chatName.Length > 0 && chatName != accountChatName)
                 {
-                    @from.SendMessage("You cannot change chat nickname once it has been set.");
+                    from.SendMessage("You cannot change chat nickname once it has been set.");
                 }
             }
             else
@@ -104,7 +104,7 @@ namespace Server.Engines.Chat
 
             if (user == null)
             {
-                @from.SendMessage(32, name); // There is no player named '%1'.
+                from.SendMessage(32, name); // There is no player named '%1'.
             }
 
             return user;

@@ -23,11 +23,11 @@ namespace Server
             {
                 if (from.Alive)
                 {
-                    @from.Target = new InternalTarget();
+                    from.Target = new InternalTarget();
                 }
                 else
                 {
-                    Resurrect(@from);
+                    Resurrect(from);
                 }
             }
             else
@@ -49,7 +49,7 @@ namespace Server
                 {
                     if (VirtueHelper.Atrophy(from, VirtueName.Sacrifice, LossAmount))
                     {
-                        @from.SendLocalizedMessage(1052041); // You have lost some Sacrifice.
+                        from.SendLocalizedMessage(1052041); // You have lost some Sacrifice.
                     }
 
                     var level = VirtueHelper.GetLevel(from, VirtueName.Sacrifice);

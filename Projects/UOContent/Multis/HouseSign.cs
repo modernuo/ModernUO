@@ -246,13 +246,13 @@ namespace Server.Multis
 
                 if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))
                 {
-                    @from.SendLocalizedMessage(
+                    from.SendLocalizedMessage(
                         1062429
                     ); // You must be within five paces of the house sign to use this option.
                 }
                 else
                 {
-                    @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Vendors, @from, m_Sign.Owner));
+                    from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Vendors, from, m_Sign.Owner));
                 }
             }
         }

@@ -65,7 +65,7 @@ namespace Server.Items
 
             if (makersMark)
             {
-                Crafter = @from;
+                Crafter = from;
             }
 
             return quality;
@@ -141,11 +141,11 @@ namespace Server.Items
         {
             if (IsChildOf(from.Backpack) || Parent == from)
             {
-                HarvestSystem.BeginHarvesting(@from, this);
+                HarvestSystem.BeginHarvesting(from, this);
             }
             else
             {
-                @from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
             }
         }
 

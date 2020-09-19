@@ -96,14 +96,14 @@ namespace Server.Factions
                             Placer.SendMessage(
                                 "You have earned {0} silver pieces because {1} fell for your trap.",
                                 silverGiven,
-                                @from.Name
+                                from.Name
                             );
                         }
                         else
                         {
                             Placer.SendLocalizedMessage(
                                 1042736,
-                                $"{silverGiven} silver\t{@from.Name}"
+                                $"{silverGiven} silver\t{from.Name}"
                             ); // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
                         }
                     }

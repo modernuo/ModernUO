@@ -75,7 +75,7 @@ namespace Server.Engines.Craft
         {
             if (toolBroken)
             {
-                @from.SendLocalizedMessage(1044038); // You have worn out your tool
+                from.SendLocalizedMessage(1044038); // You have worn out your tool
             }
 
             if (failed)

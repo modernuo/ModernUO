@@ -194,11 +194,11 @@ namespace Server.Mobiles
             {
                 if (m_Entry != null)
                 {
-                    @from.SendMessage("Message deleted.");
+                    from.SendMessage("Message deleted.");
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(502980); // Message entry cancelled.
+                    from.SendLocalizedMessage(502980); // Message entry cancelled.
                 }
             }
 
@@ -495,11 +495,11 @@ namespace Server.Mobiles
         {
             if (from.AccessLevel >= AccessLevel.GameMaster)
             {
-                @from.SendGump(new TownCrierGump(@from, this));
+                from.SendGump(new TownCrierGump(from, this));
             }
             else
             {
-                base.OnDoubleClick(@from);
+                base.OnDoubleClick(from);
             }
         }
 

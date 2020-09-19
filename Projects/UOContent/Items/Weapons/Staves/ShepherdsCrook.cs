@@ -159,7 +159,7 @@ namespace Server.Items
                                 MessageType.Regular,
                                 0x3B2,
                                 502471,
-                                @from.NetState
+                                from.NetState
                             ); // That wasn't even challenging.
                         }
 

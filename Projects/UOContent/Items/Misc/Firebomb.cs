@@ -70,7 +70,7 @@ namespace Server.Items
 
             if (!m_Users.Contains(from))
             {
-                m_Users.Add(@from);
+                m_Users.Add(from);
             }
 
             from.Target = new ThrowTarget(this);

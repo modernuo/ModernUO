@@ -115,7 +115,7 @@ namespace Server.Mobiles
 
             if (from.Alive && Controlled && from == ControlMaster && from.InRange(this, 14))
             {
-                list.Add(new ReleaseEntry(@from, this));
+                list.Add(new ReleaseEntry(from, this));
             }
         }
 
@@ -123,7 +123,7 @@ namespace Server.Mobiles
         {
             if (!Deleted && Controlled && from == ControlMaster && from.CheckAlive())
             {
-                EndRelease(@from);
+                EndRelease(from);
             }
         }
 

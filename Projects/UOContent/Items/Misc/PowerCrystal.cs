@@ -17,11 +17,11 @@ namespace Server.Items
         {
             if (!from.InRange(GetWorldLocation(), 3))
             {
-                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             }
             else
             {
-                @from.SendAsciiMessage("This looks like part of a larger contraption.");
+                from.SendAsciiMessage("This looks like part of a larger contraption.");
             }
         }
 

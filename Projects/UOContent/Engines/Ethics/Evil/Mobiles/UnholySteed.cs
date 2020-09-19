@@ -71,11 +71,11 @@ namespace Server.Mobiles
         {
             if (Ethic.Find(from) != Ethic.Evil)
             {
-                @from.SendMessage("You may not ride this steed.");
+                from.SendMessage("You may not ride this steed.");
             }
             else
             {
-                base.OnDoubleClick(@from);
+                base.OnDoubleClick(from);
             }
         }
 

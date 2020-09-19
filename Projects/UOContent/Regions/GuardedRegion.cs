@@ -80,15 +80,15 @@ namespace Server.Regions
 
             if (reg == null)
             {
-                @from.SendMessage("You are not in a guardable region.");
+                from.SendMessage("You are not in a guardable region.");
             }
             else if (reg.Disabled)
             {
-                @from.SendMessage("The guards in this region have been disabled.");
+                from.SendMessage("The guards in this region have been disabled.");
             }
             else
             {
-                @from.SendMessage("This region is actively guarded.");
+                from.SendMessage("This region is actively guarded.");
             }
         }
 

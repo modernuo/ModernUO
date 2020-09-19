@@ -73,7 +73,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    MoveToWorld(@from.Location, @from.Map);
+                    MoveToWorld(from.Location, from.Map);
                 }
             }
         }

@@ -80,7 +80,7 @@ namespace Server.Items
         {
             if (from.Body.IsHuman && !from.Mounted)
             {
-                @from.Animate(33, 2, 1, true, true, 0);
+                from.Animate(33, 2, 1, true, true, 0);
             }
 
             from.PlaySound(0x223);

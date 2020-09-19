@@ -18,7 +18,7 @@ namespace Server.Ethics.Evil
         {
             if (from.Familiar?.Deleted == true)
             {
-                @from.Familiar = null;
+                from.Familiar = null;
             }
 
             if (from.Familiar != null)

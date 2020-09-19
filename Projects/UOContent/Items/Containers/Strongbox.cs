@@ -46,7 +46,7 @@ namespace Server.Items
         {
             if (m_House?.Deleted != false || m_Owner?.Deleted != false || from == m_Owner || m_House.IsOwner(from))
             {
-                Chop(@from);
+                Chop(from);
             }
         }
 
@@ -109,7 +109,7 @@ namespace Server.Items
 
                 if (CheckContentDisplay(from))
                 {
-                    LabelTo(@from, "({0} items, {1} stones)", TotalItems, TotalWeight);
+                    LabelTo(from, "({0} items, {1} stones)", TotalItems, TotalWeight);
                 }
             }
             else

@@ -162,20 +162,20 @@ namespace Server.Engines.Harvest
                     MessageType.Regular,
                     0x3B2,
                     500450,
-                    @from.NetState
+                    from.NetState
                 ); // You can only skin dead creatures.
             }
             else if (toHarvest is Item item)
             {
-                item.LabelTo(@from, 500464); // Use this on corpses to carve away meat and hide
+                item.LabelTo(from, 500464); // Use this on corpses to carve away meat and hide
             }
             else if (toHarvest is StaticTarget || toHarvest is LandTarget)
             {
-                @from.SendLocalizedMessage(500489); // You can't use an axe on that.
+                from.SendLocalizedMessage(500489); // You can't use an axe on that.
             }
             else
             {
-                @from.SendLocalizedMessage(1005213); // You can't do that
+                from.SendLocalizedMessage(1005213); // You can't do that
             }
         }
 
@@ -185,7 +185,7 @@ namespace Server.Engines.Harvest
 
             if (Core.ML)
             {
-                @from.RevealingAction();
+                from.RevealingAction();
             }
         }
 

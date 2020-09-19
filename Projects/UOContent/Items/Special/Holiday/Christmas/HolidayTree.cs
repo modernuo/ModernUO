@@ -265,7 +265,7 @@ namespace Server.Items
             {
                 if (m_Tree?.Deleted == false)
                 {
-                    m_Tree.OnDoubleClick(@from);
+                    m_Tree.OnDoubleClick(from);
                 }
             }
 

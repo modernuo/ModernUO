@@ -162,7 +162,7 @@ namespace Server.Items
         {
             if (house.Public || !house.IsAosRules)
             {
-                return !house.IsBanned(@from);
+                return !house.IsBanned(from);
             }
 
             return house.HasAccess(from);
@@ -174,15 +174,15 @@ namespace Server.Items
 
             if (house?.HasLockedDownItem(this) != true)
             {
-                @from.SendLocalizedMessage(1062396); // This bulletin board must be locked down in a house to be usable.
+                from.SendLocalizedMessage(1062396); // This bulletin board must be locked down in a house to be usable.
             }
             else if (!from.InRange(GetWorldLocation(), 2) || !from.InLOS(this))
             {
-                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             }
             else if (CheckAccess(house, from))
             {
-                @from.SendGump(new PlayerBBGump(@from, house, this, 0));
+                from.SendGump(new PlayerBBGump(from, house, this, 0));
             }
         }
 

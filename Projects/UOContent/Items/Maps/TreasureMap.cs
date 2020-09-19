@@ -371,11 +371,11 @@ namespace Server.Items
 
             if (!m_Completed && m_Decoder == null)
             {
-                Decode(@from);
+                Decode(from);
             }
             else
             {
-                DisplayTo(@from);
+                DisplayTo(from);
             }
         }
 
@@ -438,7 +438,7 @@ namespace Server.Items
 
                 if (from.Skills.Cartography.Value < minSkill)
                 {
-                    @from.SendLocalizedMessage(503013); // The map is too difficult to attempt to decode.
+                    from.SendLocalizedMessage(503013); // The map is too difficult to attempt to decode.
                 }
 
                 var maxSkill = minSkill + 60.0;
@@ -546,22 +546,22 @@ namespace Server.Items
             {
                 if (m_Level == 6)
                 {
-                    LabelTo(@from, 1063453);
+                    LabelTo(from, 1063453);
                 }
                 else
                 {
-                    LabelTo(@from, 1041516 + m_Level);
+                    LabelTo(from, 1041516 + m_Level);
                 }
             }
             else
             {
                 if (m_Level == 6)
                 {
-                    LabelTo(@from, 1041522, $"#{1063452}\t \t#{(m_Map == Map.Felucca ? 1041502 : 1041503)}");
+                    LabelTo(from, 1041522, $"#{1063452}\t \t#{(m_Map == Map.Felucca ? 1041502 : 1041503)}");
                 }
                 else
                 {
-                    LabelTo(@from, 1041522, $"#{1041510 + m_Level}\t \t#{(m_Map == Map.Felucca ? 1041502 : 1041503)}");
+                    LabelTo(from, 1041522, $"#{1041510 + m_Level}\t \t#{(m_Map == Map.Felucca ? 1041502 : 1041503)}");
                 }
             }
         }
@@ -706,17 +706,17 @@ namespace Server.Items
 
                             if (!map.CanFit(x, y, z, 16, true))
                             {
-                                @from.SendLocalizedMessage(
+                                from.SendLocalizedMessage(
                                     503021
                                 ); // You have found the treasure chest but something is keeping it from being dug up.
                             }
                             else if (from.BeginAction<TreasureMap>())
                             {
-                                new DigTimer(@from, m_Map, new Point3D(x, y, z), map).Start();
+                                new DigTimer(from, m_Map, new Point3D(x, y, z), map).Start();
                             }
                             else
                             {
-                                @from.SendLocalizedMessage(503020); // You are already digging treasure.
+                                from.SendLocalizedMessage(503020); // You are already digging treasure.
                             }
                         }
                     }
@@ -724,11 +724,11 @@ namespace Server.Items
                     {
                         if (Utility.InRange(targ3D, chest3D0, 8)) // We're close, but not quite
                         {
-                            @from.SendLocalizedMessage(503032); // You dig and dig but no treasure seems to be here.
+                            from.SendLocalizedMessage(503032); // You dig and dig but no treasure seems to be here.
                         }
                         else
                         {
-                            @from.SendLocalizedMessage(503035); // You dig and dig but fail to find any treasure.
+                            from.SendLocalizedMessage(503035); // You dig and dig but fail to find any treasure.
                         }
                     }
                     else
@@ -1001,11 +1001,11 @@ namespace Server.Items
 
                 if (HasDiggingTool(from))
                 {
-                    m_Map.OnBeginDig(@from);
+                    m_Map.OnBeginDig(from);
                 }
                 else
                 {
-                    @from.SendMessage("You must have a digging tool to dig for treasure.");
+                    from.SendMessage("You must have a digging tool to dig for treasure.");
                 }
             }
         }

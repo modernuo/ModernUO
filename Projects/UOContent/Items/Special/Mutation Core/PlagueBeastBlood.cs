@@ -69,7 +69,7 @@ namespace Server.Items
                     {
                         if (pack.Items[i] is PlagueBeastMainOrgan main && main.Complete)
                         {
-                            main.FinishOpening(@from);
+                            main.FinishOpening(from);
                         }
                     }
                 }

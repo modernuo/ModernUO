@@ -41,12 +41,12 @@ namespace Server.Factions
                     MessageType.Regular,
                     0x3B2,
                     1042201,
-                    @from.NetState
+                    from.NetState
                 ); // You are not in my faction, I cannot sell you a horse!
             }
             else if (FactionGump.Exists(from))
             {
-                @from.SendLocalizedMessage(1042160); // You already have a faction menu open.
+                from.SendLocalizedMessage(1042160); // You already have a faction menu open.
             }
             else if (from is PlayerMobile mobile)
             {

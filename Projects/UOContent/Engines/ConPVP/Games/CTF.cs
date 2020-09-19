@@ -499,7 +499,7 @@ namespace Server.Engines.ConPVP
 
                 if (passTo == from)
                 {
-                    @from.LocalOverheadMessage(MessageType.Regular, 0x26, false, "I can't pass to them.");
+                    from.LocalOverheadMessage(MessageType.Regular, 0x26, false, "I can't pass to them.");
                 }
                 else if (passTeam == useTeam && passTo.PlaceInBackpack(this))
                 {
@@ -507,12 +507,12 @@ namespace Server.Engines.ConPVP
                         MessageType.Regular,
                         0x59,
                         false,
-                        $"{@from.Name} has passed you the cookies!"
+                        $"{from.Name} has passed you the cookies!"
                     );
                 }
                 else
                 {
-                    @from.LocalOverheadMessage(MessageType.Regular, 0x26, false, "I can't pass to them.");
+                    from.LocalOverheadMessage(MessageType.Regular, 0x26, false, "I can't pass to them.");
                 }
             }
         }

@@ -202,7 +202,7 @@ namespace Server
                 {
                     if (VirtueHelper.Atrophy(from, VirtueName.Justice, LossAmount))
                     {
-                        @from.SendLocalizedMessage(1049373); // You have lost some Justice.
+                        from.SendLocalizedMessage(1049373); // You have lost some Justice.
                     }
 
                     pm.LastJusticeLoss = DateTime.UtcNow;

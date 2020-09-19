@@ -90,11 +90,11 @@ namespace Server.Engines.MLQuests.Mobiles
             if (!from.Hidden && !from.HasGump<RaceChangeConfirmGump>() &&
                 !RaceChangeConfirmGump.IsPending(from.NetState) && CanTalkTo(from))
             {
-                TalkTo(@from as PlayerMobile);
+                TalkTo(from as PlayerMobile);
             }
             else if (fromClick)
             {
-                DenyTalk(@from);
+                DenyTalk(from);
             }
         }
 

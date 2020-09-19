@@ -110,7 +110,7 @@ namespace Server.Engines.Quests.Ninja
             {
                 if (qs.IsObjectiveInProgress(typeof(GiveZoelNoteObjective)))
                 {
-                    return @from.Backpack?.FindItemByType<NoteForZoel>() == null;
+                    return from.Backpack?.FindItemByType<NoteForZoel>() == null;
                 }
             }
 
@@ -130,7 +130,7 @@ namespace Server.Engines.Quests.Ninja
             {
                 if (qs.IsObjectiveInProgress(typeof(GiveEminoSwordObjective)))
                 {
-                    return @from.Backpack?.FindItemByType<EminosKatana>() == null;
+                    return from.Backpack?.FindItemByType<EminosKatana>() == null;
                 }
             }
 

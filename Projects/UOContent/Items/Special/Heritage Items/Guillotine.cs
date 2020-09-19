@@ -121,11 +121,11 @@ namespace Server.Items
 
             if (from.Female)
             {
-                @from.PlaySound(Utility.RandomMinMax(0x150, 0x153));
+                from.PlaySound(Utility.RandomMinMax(0x150, 0x153));
             }
             else
             {
-                @from.PlaySound(Utility.RandomMinMax(0x15A, 0x15D));
+                from.PlaySound(Utility.RandomMinMax(0x15A, 0x15D));
             }
 
             from.LocalOverheadMessage(

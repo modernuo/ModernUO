@@ -46,7 +46,7 @@ namespace Server.SkillHandlers
             {
                 if (m_SetSkillTime)
                 {
-                    @from.NextSkillTime = Core.TickCount;
+                    from.NextSkillTime = Core.TickCount;
                 }
             }
 
@@ -126,19 +126,19 @@ namespace Server.SkillHandlers
 
                                     if (bc?.BardPacified == false)
                                     {
-                                        bc.Pacify(@from, DateTime.UtcNow + TimeSpan.FromSeconds(1.0));
+                                        bc.Pacify(from, DateTime.UtcNow + TimeSpan.FromSeconds(1.0));
                                     }
                                 }
 
                                 if (!calmed)
                                 {
-                                    @from.SendLocalizedMessage(
+                                    from.SendLocalizedMessage(
                                         1049648
                                     ); // You play hypnotic music, but there is nothing in range for you to calm.
                                 }
                                 else
                                 {
-                                    @from.SendLocalizedMessage(500615); // You play your hypnotic music, stopping the battle.
+                                    from.SendLocalizedMessage(500615); // You play your hypnotic music, stopping the battle.
                                 }
                             }
                         }

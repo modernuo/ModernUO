@@ -22,7 +22,7 @@ namespace Server.Items
 
             if (Core.AOS)
             {
-                list.Add(new TitheEntry(@from));
+                list.Add(new TitheEntry(from));
             }
         }
 

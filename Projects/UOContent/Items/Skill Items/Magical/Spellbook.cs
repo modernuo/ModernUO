@@ -219,7 +219,7 @@ namespace Server.Items
 
             if (makersMark)
             {
-                Crafter = @from;
+                Crafter = from;
             }
 
             m_Quality = (BookQuality)(quality - 1);
@@ -340,11 +340,11 @@ namespace Server.Items
 
             if (move != null)
             {
-                SpecialMove.SetCurrentMove(@from, move);
+                SpecialMove.SetCurrentMove(from, move);
             }
             else
             {
-                SpellRegistry.NewSpell(spellId, @from, null)?.Cast();
+                SpellRegistry.NewSpell(spellId, from, null)?.Cast();
             }
         }
 
@@ -359,7 +359,7 @@ namespace Server.Items
 
             if (book?.HasSpell(spellID) != true)
             {
-                book = Find(@from, spellID);
+                book = Find(from, spellID);
             }
 
             if (book?.HasSpell(spellID) == true)
@@ -380,7 +380,7 @@ namespace Server.Items
                     }
                     else
                     {
-                        @from.SendLocalizedMessage(502345); // This spell has been temporarily disabled.
+                        from.SendLocalizedMessage(502345); // This spell has been temporarily disabled.
                     }
                 }
             }
@@ -463,7 +463,7 @@ namespace Server.Items
 
             if (!m_Table.TryGetValue(from, out var list))
             {
-                m_Table[@from] = list = FindAllSpellbooks(@from);
+                m_Table[from] = list = FindAllSpellbooks(from);
             }
             else
             {
@@ -626,17 +626,17 @@ namespace Server.Items
 
                     if (strBonus != 0)
                     {
-                        @from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                        from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
                     }
 
                     if (dexBonus != 0)
                     {
-                        @from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                        from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
                     }
 
                     if (intBonus != 0)
                     {
-                        @from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                        from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
                     }
                 }
 
@@ -910,7 +910,7 @@ namespace Server.Items
 
             if (m_Crafter != null)
             {
-                LabelTo(@from, 1050043, m_Crafter.Name); // crafted by ~1_NAME~
+                LabelTo(from, 1050043, m_Crafter.Name); // crafted by ~1_NAME~
             }
 
             LabelTo(from, 1042886, SpellCount.ToString());
@@ -922,11 +922,11 @@ namespace Server.Items
 
             if (Parent == from || pack != null && Parent == pack)
             {
-                DisplayTo(@from);
+                DisplayTo(from);
             }
             else
             {
-                @from.SendLocalizedMessage(
+                from.SendLocalizedMessage(
                     500207
                 ); // The spellbook must be in your backpack (and not in a container within) to open.
             }

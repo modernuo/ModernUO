@@ -174,7 +174,7 @@ namespace Server.Engines.ConPVP
 
             if (spell is RecallSpell)
             {
-                @from.SendMessage("You may not cast this spell.");
+                from.SendMessage("You may not cast this spell.");
             }
 
             string title;
@@ -295,7 +295,7 @@ namespace Server.Engines.ConPVP
 
             if (message)
             {
-                @from.SendMessage("The dueling ruleset prevents you from using this combat ability.");
+                from.SendMessage("The dueling ruleset prevents you from using this combat ability.");
             }
 
             return false;
@@ -414,7 +414,7 @@ namespace Server.Engines.ConPVP
 
             if (!(item is BaseRefreshPotion))
             {
-                if (CantDoAnything(@from))
+                if (CantDoAnything(from))
                 {
                     return false;
                 }
@@ -700,7 +700,7 @@ namespace Server.Engines.ConPVP
 
                 if (killer?.Player == true)
                 {
-                    killer.AddToBackpack(new Head(m_Tournament == null ? HeadType.Duel : HeadType.Tournament, @from.Name));
+                    killer.AddToBackpack(new Head(m_Tournament == null ? HeadType.Duel : HeadType.Tournament, from.Name));
                 }
             }
 
@@ -708,11 +708,11 @@ namespace Server.Engines.ConPVP
 
             if (didntFit)
             {
-                @from.SendLocalizedMessage(1062472); // You gather some of your belongings. The rest remain on the corpse.
+                from.SendLocalizedMessage(1062472); // You gather some of your belongings. The rest remain on the corpse.
             }
             else
             {
-                @from.SendLocalizedMessage(1062471); // You quickly gather all of your belongings.
+                from.SendLocalizedMessage(1062471); // You quickly gather all of your belongings.
             }
         }
 
@@ -1290,7 +1290,7 @@ namespace Server.Engines.ConPVP
 
                 if (entry != null)
                 {
-                    @from.SendGump(new PropertiesGump(@from, entry));
+                    from.SendGump(new PropertiesGump(from, entry));
                 }
             }
         }
@@ -1364,7 +1364,7 @@ namespace Server.Engines.ConPVP
                         mob.SpeechHue,
                         false,
                         "I'm not a duelist, and quite frankly, I resent the implication.",
-                        @from.NetState
+                        from.NetState
                     );
                 }
                 else
@@ -1374,7 +1374,7 @@ namespace Server.Engines.ConPVP
                         0x3B2,
                         true,
                         "It's probably better than you.",
-                        @from.NetState
+                        from.NetState
                     );
                 }
             }

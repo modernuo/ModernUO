@@ -115,7 +115,7 @@ namespace Server.Items
         {
             if (dropped is PlagueBeastInnard || dropped is PlagueBeastGland)
             {
-                return base.TryDropItem(@from, dropped, sendFullMessage);
+                return base.TryDropItem(from, dropped, sendFullMessage);
             }
 
             return false;
@@ -141,7 +141,7 @@ namespace Server.Items
 
                         if (cx >= x && cx <= x + r.Width && cy >= y && cy <= y + r.Height)
                         {
-                            innard.OnDragDrop(@from, item);
+                            innard.OnDragDrop(from, item);
                             break;
                         }
                     }

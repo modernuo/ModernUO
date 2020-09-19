@@ -113,7 +113,7 @@ namespace Server.Multis
 
                     var reg = Region.Find(testPoint, map);
 
-                    if (!reg.AllowHousing(@from, testPoint)) // Cannot place houses in dungeons, towns, treasure map areas etc
+                    if (!reg.AllowHousing(from, testPoint)) // Cannot place houses in dungeons, towns, treasure map areas etc
                     {
                         if (reg.IsPartOf<TempNoHousingRegion>())
                         {
@@ -426,9 +426,9 @@ namespace Server.Multis
                 }
             }
             /*Point2D yardPoint = yard[i];
-      
+
               IPooledEnumerable eable = map.GetMultiTilesAt( yardPoint.X, yardPoint.Y );
-      
+
               foreach ( StaticTile[] tile in eable )
               {
                 for ( int j = 0; j < tile.Length; ++j )
@@ -440,7 +440,7 @@ namespace Server.Multis
                   }
                 }
               }
-      
+
               eable.Free();*/
 
             return HousePlacementResult.Valid;

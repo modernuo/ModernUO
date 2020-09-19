@@ -74,12 +74,12 @@ namespace Server.Items
 
             if (!from.HasGump<InternalGump>())
             {
-                @from.SendGump(new InternalGump(this));
+                from.SendGump(new InternalGump(this));
             }
 
             if (m_Command != DecorateCommand.None)
             {
-                @from.Target = new InternalTarget(this);
+                from.Target = new InternalTarget(this);
             }
         }
 
@@ -97,7 +97,7 @@ namespace Server.Items
             else*/
             if (!InHouse(from))
             {
-                @from.SendLocalizedMessage(502092); // You must be in your house to do this.
+                from.SendLocalizedMessage(502092); // You must be in your house to do this.
             }
             else
             {
@@ -224,15 +224,15 @@ namespace Server.Items
                     {
                         if (item is AddonComponent && m_Decorator.Command == DecorateCommand.Up)
                         {
-                            @from.SendLocalizedMessage(1042274); // You cannot raise it up any higher.
+                            from.SendLocalizedMessage(1042274); // You cannot raise it up any higher.
                         }
                         else if (item is AddonComponent && m_Decorator.Command == DecorateCommand.Down)
                         {
-                            @from.SendLocalizedMessage(1042275); // You cannot lower it down any further.
+                            from.SendLocalizedMessage(1042275); // You cannot lower it down any further.
                         }
                         else
                         {
-                            @from.SendLocalizedMessage(1042271); // That is not locked down.
+                            from.SendLocalizedMessage(1042271); // That is not locked down.
                         }
                     }
                     else if (item is VendorRentalContract)
@@ -267,7 +267,7 @@ namespace Server.Items
             {
                 if (cancelType == TargetCancelType.Canceled)
                 {
-                    @from.CloseGump<InternalGump>();
+                    from.CloseGump<InternalGump>();
                 }
             }
 
@@ -310,7 +310,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(1042273); // You cannot turn that.
+                    from.SendLocalizedMessage(1042273); // You cannot turn that.
                 }
             }
 
@@ -324,7 +324,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(1042274); // You cannot raise it up any higher.
+                    from.SendLocalizedMessage(1042274); // You cannot raise it up any higher.
                 }
             }
 
@@ -338,7 +338,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(1042275); // You cannot lower it down any further.
+                    from.SendLocalizedMessage(1042275); // You cannot lower it down any further.
                 }
             }
 

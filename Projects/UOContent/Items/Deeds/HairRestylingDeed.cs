@@ -36,11 +36,11 @@ namespace Server.Items
         {
             if (!IsChildOf(from.Backpack))
             {
-                @from.SendLocalizedMessage(1042001); // That must be in your pack...
+                from.SendLocalizedMessage(1042001); // That must be in your pack...
             }
             else
             {
-                @from.SendGump(new InternalGump(@from, this));
+                from.SendGump(new InternalGump(from, this));
             }
         }
 

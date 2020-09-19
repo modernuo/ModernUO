@@ -34,11 +34,11 @@ namespace Server.Items
 
             if (from.InRange(GetWorldLocation(), 1))
             {
-                UseGate(@from);
+                UseGate(from);
             }
             else
             {
-                @from.SendLocalizedMessage(500446); // That is too far away.
+                from.SendLocalizedMessage(500446); // That is too far away.
             }
         }
 

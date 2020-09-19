@@ -122,7 +122,7 @@ namespace Server.Items
 
             if (from.Alive)
             {
-                list.Add(new UseBagEntry(this, Charges > 0 && IsChildOf(@from.Backpack)));
+                list.Add(new UseBagEntry(this, Charges > 0 && IsChildOf(from.Backpack)));
             }
         }
 
@@ -130,24 +130,24 @@ namespace Server.Items
         {
             if (from.Region.IsPartOf<JailRegion>())
             {
-                @from.SendMessage("You may not do that in jail.");
+                from.SendMessage("You may not do that in jail.");
             }
             else if (!IsChildOf(from.Backpack))
             {
                 MessageHelper.SendLocalizedMessageTo(
                     this,
-                    @from,
+                    from,
                     1062334,
                     0x59
                 ); // The bag of sending must be in your backpack.
             }
             else if (Charges == 0)
             {
-                MessageHelper.SendLocalizedMessageTo(this, @from, 1042544, 0x59); // This item is out of charges.
+                MessageHelper.SendLocalizedMessageTo(this, from, 1042544, 0x59); // This item is out of charges.
             }
             else
             {
-                @from.Target = new SendTarget(this);
+                from.Target = new SendTarget(this);
             }
         }
 
@@ -210,7 +210,7 @@ namespace Server.Items
 
                 if (from.CheckAlive())
                 {
-                    m_Bag.OnDoubleClick(@from);
+                    m_Bag.OnDoubleClick(from);
                 }
             }
         }

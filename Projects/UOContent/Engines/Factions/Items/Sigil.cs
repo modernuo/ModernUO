@@ -178,11 +178,11 @@ namespace Server.Factions
             {
                 if (m_Corrupted.Definition.SigilControl.Number > 0)
                 {
-                    LabelTo(@from, m_Corrupted.Definition.SigilControl.Number);
+                    LabelTo(from, m_Corrupted.Definition.SigilControl.Number);
                 }
                 else if (m_Corrupted.Definition.SigilControl.String != null)
                 {
-                    LabelTo(@from, m_Corrupted.Definition.SigilControl.String);
+                    LabelTo(from, m_Corrupted.Definition.SigilControl.String);
                 }
             }
             else
@@ -192,15 +192,15 @@ namespace Server.Factions
 
             if (IsCorrupting)
             {
-                LabelTo(@from, 1042257); // This sigil is in the process of being corrupted.
+                LabelTo(from, 1042257); // This sigil is in the process of being corrupted.
             }
             else if (IsPurifying)
             {
-                LabelTo(@from, 1042258); // This sigil has been recently corrupted, and is undergoing purification.
+                LabelTo(from, 1042258); // This sigil has been recently corrupted, and is undergoing purification.
             }
             else
             {
-                LabelTo(@from, 1042259); // This sigil is not in the process of being corrupted.
+                LabelTo(from, 1042259); // This sigil is not in the process of being corrupted.
             }
         }
 

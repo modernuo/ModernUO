@@ -51,11 +51,11 @@ namespace Server.Items
 
             if (from.InRange(GetWorldLocation(), 1))
             {
-                CheckGate(@from, 1);
+                CheckGate(from, 1);
             }
             else
             {
-                @from.SendLocalizedMessage(500446); // That is too far away.
+                from.SendLocalizedMessage(500446); // That is too far away.
             }
         }
 
@@ -164,7 +164,7 @@ namespace Server.Items
             {
                 if (message)
                 {
-                    @from.SendLocalizedMessage(500446); // That is too far away.
+                    from.SendLocalizedMessage(500446); // That is too far away.
                 }
 
                 return false;
@@ -180,7 +180,7 @@ namespace Server.Items
             {
                 if (from.AccessLevel == AccessLevel.Player || !from.Hidden)
                 {
-                    @from.Send(new PlaySound(0x20E, @from.Location));
+                    from.Send(new PlaySound(0x20E, from.Location));
                 }
 
                 from.CloseGump<MoongateConfirmGump>();
@@ -211,11 +211,11 @@ namespace Server.Items
 
             if (TargetMap != null)
             {
-                BeginConfirmation(@from);
+                BeginConfirmation(from);
             }
             else
             {
-                @from.SendMessage("This moongate does not seem to go anywhere.");
+                from.SendMessage("This moongate does not seem to go anywhere.");
             }
         }
 
@@ -283,7 +283,7 @@ namespace Server.Items
         {
             if (okay)
             {
-                EndConfirmation(@from);
+                EndConfirmation(from);
             }
         }
 

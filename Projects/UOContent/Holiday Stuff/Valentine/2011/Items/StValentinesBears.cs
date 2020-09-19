@@ -125,7 +125,7 @@ namespace Server.Items
         {
             if (line != null)
             {
-                LabelTo(@from, cliloc, line);
+                LabelTo(from, cliloc, line);
             }
         }
 

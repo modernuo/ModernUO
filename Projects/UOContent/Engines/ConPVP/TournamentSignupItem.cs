@@ -55,7 +55,7 @@ namespace Server.Engines.ConPVP
                                         0x35,
                                         false,
                                         "Excuse me? You are already signed up.",
-                                        @from.NetState
+                                        from.NetState
                                     );
                                 }
                                 else
@@ -65,7 +65,7 @@ namespace Server.Engines.ConPVP
                                         0x22,
                                         false,
                                         "The tournament has already begun. You are too late to signup now.",
-                                        @from.NetState
+                                        from.NetState
                                     );
                                 }
                             }

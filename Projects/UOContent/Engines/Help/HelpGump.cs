@@ -419,7 +419,7 @@ namespace Server.Engines.Help
                         {
                             if (from.Region.IsPartOf<JailRegion>())
                             {
-                                @from.SendLocalizedMessage(
+                                from.SendLocalizedMessage(
                                     1114345,
                                     "",
                                     0x35
@@ -427,11 +427,11 @@ namespace Server.Engines.Help
                             }
                             else if (from.Region.IsPartOf("Haven Island"))
                             {
-                                @from.SendLocalizedMessage(1041529); // You're already in Haven
+                                from.SendLocalizedMessage(1041529); // You're already in Haven
                             }
                             else
                             {
-                                @from.MoveToWorld(new Point3D(3503, 2574, 14), Map.Trammel);
+                                from.MoveToWorld(new Point3D(3503, 2574, 14), Map.Trammel);
                             }
                         }
 
@@ -441,7 +441,7 @@ namespace Server.Engines.Help
 
             if (type != (PageType)(-1) && PageQueue.CheckAllowedToPage(from))
             {
-                @from.SendGump(new PagePromptGump(@from, type));
+                from.SendGump(new PagePromptGump(from, type));
             }
         }
     }

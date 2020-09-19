@@ -129,7 +129,7 @@ namespace Server.Items
 
                     if (!from.SendGump(new FacingGump(this, from)))
                     {
-                        @from.SendLocalizedMessage(1150062); // You fail to re-deed the holiday fireflies.
+                        from.SendLocalizedMessage(1150062); // You fail to re-deed the holiday fireflies.
                     }
                 }
                 else

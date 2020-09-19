@@ -70,7 +70,7 @@ namespace Server.Items
 
             if (to is ChaosDragoon || to is ChaosDragoonElite)
             {
-                @from.SendLocalizedMessage(1042047); // You fail to knock the rider from its mount.
+                from.SendLocalizedMessage(1042047); // You fail to knock the rider from its mount.
             }
 
             var mt = to.Mount;
@@ -83,7 +83,7 @@ namespace Server.Items
             {
                 if (AnimalForm.UnderTransformation(mobile))
                 {
-                    mobile.SendLocalizedMessage(1114066, @from.Name); // ~1_NAME~ knocked you out of animal form!
+                    mobile.SendLocalizedMessage(1114066, from.Name); // ~1_NAME~ knocked you out of animal form!
                 }
                 else if (mobile.Mounted)
                 {
@@ -95,7 +95,7 @@ namespace Server.Items
 
             if (Core.AOS) /* only failsafe, attacker should already be dismounted */
             {
-                (@from as PlayerMobile)?.SetMountBlock(
+                (from as PlayerMobile)?.SetMountBlock(
                     BlockMountType.BolaRecovery,
                     TimeSpan.FromSeconds(Core.ML ? 10 : 3),
                     true

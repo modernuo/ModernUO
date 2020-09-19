@@ -173,7 +173,7 @@ namespace Server.Gumps
         {
             if (targeted is Mobile mobile)
             {
-                @from.SendGump(new ViewHousesGump(@from, GetHouses(mobile), null));
+                from.SendGump(new ViewHousesGump(from, GetHouses(mobile), null));
             }
         }
 

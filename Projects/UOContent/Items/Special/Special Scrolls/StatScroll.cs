@@ -69,11 +69,11 @@ namespace Server.Items
 
             if (level >= 0 && level <= 4 && (int)Value % 5 == 0)
             {
-                LabelTo(@from, 1049463 + level, "#1049476");
+                LabelTo(from, 1049463 + level, "#1049476");
             }
             else
             {
-                LabelTo(@from, "a scroll of power ({0}{1} Maximum Stats)", Value - 225 >= 0 ? "+" : "", Value - 225);
+                LabelTo(from, "a scroll of power ({0}{1} Maximum Stats)", Value - 225 >= 0 ? "+" : "", Value - 225);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Server.Items
             }
             else
             {
-                @from.StatCap = (int)Value;
+                from.StatCap = (int)Value;
             }
 
             Effects.SendLocationParticles(

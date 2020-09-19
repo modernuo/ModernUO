@@ -32,11 +32,11 @@ namespace Server.Items
             {
                 if (ItemID == 0xF7E)
                 {
-                    @from.SendMessage("You destroy the bone.");
+                    from.SendMessage("You destroy the bone.");
                 }
                 else
                 {
-                    @from.SendMessage("You destroy the bone pile.");
+                    from.SendMessage("You destroy the bone pile.");
                 }
 
                 var gold = new Gold(25, 100);
@@ -51,11 +51,11 @@ namespace Server.Items
             {
                 if (ItemID == 0xF7E)
                 {
-                    @from.SendMessage("You damage the bone.");
+                    from.SendMessage("You damage the bone.");
                 }
                 else
                 {
-                    @from.SendMessage("You damage the bone pile.");
+                    from.SendMessage("You damage the bone pile.");
                 }
             }
         }

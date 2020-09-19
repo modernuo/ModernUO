@@ -36,7 +36,7 @@ namespace Server.Targets
             {
                 for (var i = 0; i < m_List.Count; ++i)
                 {
-                    m_List[i].EndPickTarget(@from, m, Order);
+                    m_List[i].EndPickTarget(from, m, Order);
                 }
             }
         }

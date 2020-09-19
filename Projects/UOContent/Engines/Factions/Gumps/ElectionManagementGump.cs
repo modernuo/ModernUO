@@ -180,7 +180,7 @@ namespace Server.Factions
 
                     if (bid >= 0 && bid < m_Election.Candidates.Count)
                     {
-                        @from.SendGump(new ElectionManagementGump(m_Election, m_Election.Candidates[bid]));
+                        from.SendGump(new ElectionManagementGump(m_Election, m_Election.Candidates[bid]));
                     }
                 }
             }

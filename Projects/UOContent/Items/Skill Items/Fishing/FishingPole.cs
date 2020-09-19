@@ -24,11 +24,11 @@ namespace Server.Items
 
             if (!from.InLOS(loc) || !from.InRange(loc, 2))
             {
-                @from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that
+                from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that
             }
             else
             {
-                Fishing.System.BeginHarvesting(@from, this);
+                Fishing.System.BeginHarvesting(from, this);
             }
         }
 

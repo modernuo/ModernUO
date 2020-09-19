@@ -208,14 +208,14 @@ namespace Server.Items
 
             if (reqTactics)
             {
-                @from.SendLocalizedMessage(
+                from.SendLocalizedMessage(
                     1079308,
                     reqSkill.ToString()
                 ); // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
             }
             else
             {
-                @from.SendLocalizedMessage(
+                from.SendLocalizedMessage(
                     1060182,
                     reqSkill.ToString()
                 ); // You need ~1_SKILL_REQUIREMENT~ weapon skill to perform that attack

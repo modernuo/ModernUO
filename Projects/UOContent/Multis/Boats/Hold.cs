@@ -88,7 +88,7 @@ namespace Server.Items
             }
             else
             {
-                base.OnDoubleClick(@from);
+                base.OnDoubleClick(from);
             }
         }
 

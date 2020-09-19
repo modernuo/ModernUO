@@ -272,7 +272,7 @@ namespace Server.Mobiles
 
                     if (depositedGold > 0)
                     {
-                        @from.SendLocalizedMessage(
+                        from.SendLocalizedMessage(
                             1060397,
                             depositedGold.ToString()
                         ); // ~1_AMOUNT~ gold has been deposited into your bank box.
@@ -280,7 +280,7 @@ namespace Server.Mobiles
 
                     if (m_Vendor.RentalGold > 0)
                     {
-                        @from.SendLocalizedMessage(500390); // Your bank box is full.
+                        from.SendLocalizedMessage(500390); // Your bank box is full.
                     }
                 }
             }

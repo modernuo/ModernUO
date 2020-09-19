@@ -85,11 +85,11 @@ namespace Server.Engines.BulkOrders
         {
             if (IsChildOf(from.Backpack) || InSecureTrade || RootParent is PlayerVendor)
             {
-                @from.SendGump(new SmallBODGump(@from, this));
+                from.SendGump(new SmallBODGump(from, this));
             }
             else
             {
-                @from.SendLocalizedMessage(1045156); // You must have the deed in your backpack to use it.
+                from.SendLocalizedMessage(1045156); // You must have the deed in your backpack to use it.
             }
         }
 
@@ -185,7 +185,7 @@ namespace Server.Engines.BulkOrders
 
                         if (m_AmountCur < AmountMax)
                         {
-                            BeginCombine(@from);
+                            BeginCombine(from);
                         }
                     }
                 }

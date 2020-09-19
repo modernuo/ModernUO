@@ -48,11 +48,11 @@ namespace Server.Items
         {
             if ((Arrows > 0 || Bolts > 0) && from.InRange(GetWorldLocation(), 1))
             {
-                Gather(@from);
+                Gather(from);
             }
             else
             {
-                Fire(@from);
+                Fire(from);
             }
         }
 
@@ -62,12 +62,12 @@ namespace Server.Items
 
             if (Arrows > 0)
             {
-                @from.AddToBackpack(new Arrow(Arrows));
+                from.AddToBackpack(new Arrow(Arrows));
             }
 
             if (Bolts > 0)
             {
-                @from.AddToBackpack(new Bolt(Bolts));
+                from.AddToBackpack(new Bolt(Bolts));
             }
 
             Arrows = 0;
@@ -85,7 +85,7 @@ namespace Server.Items
 
             if (!m_Entries.TryGetValue(from, out var e))
             {
-                m_Entries[@from] = e = new ScoreEntry();
+                m_Entries[from] = e = new ScoreEntry();
             }
 
             return e;
@@ -153,7 +153,7 @@ namespace Server.Items
             {
                 if (isArrow)
                 {
-                    @from.LocalOverheadMessage(
+                    from.LocalOverheadMessage(
                         MessageType.Regular,
                         0x3B2,
                         500594
@@ -161,7 +161,7 @@ namespace Server.Items
                 }
                 else if (isBolt)
                 {
-                    @from.LocalOverheadMessage(
+                    from.LocalOverheadMessage(
                         MessageType.Regular,
                         0x3B2,
                         500595
@@ -169,7 +169,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    SendLocalizedMessageTo(@from, 500593); // You must practice with ranged weapons on this.
+                    SendLocalizedMessageTo(from, 500593); // You must practice with ranged weapons on this.
                 }
 
                 return;

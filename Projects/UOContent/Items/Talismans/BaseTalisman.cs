@@ -498,19 +498,19 @@ namespace Server.Items
 
                     if (item is Board)
                     {
-                        @from.SendLocalizedMessage(1075000); // You have been given some wooden boards.
+                        from.SendLocalizedMessage(1075000); // You have been given some wooden boards.
                     }
                     else if (item is IronIngot)
                     {
-                        @from.SendLocalizedMessage(1075001); // You have been given some ingots.
+                        from.SendLocalizedMessage(1075001); // You have been given some ingots.
                     }
                     else if (item is Bandage)
                     {
-                        @from.SendLocalizedMessage(1075002); // You have been given some clean bandages.
+                        from.SendLocalizedMessage(1075002); // You have been given some clean bandages.
                     }
                     else if (m_Summoner?.Name != null)
                     {
-                        @from.SendLocalizedMessage(1074853, m_Summoner.Name.ToString()); // You have been given ~1_name~
+                        from.SendLocalizedMessage(1074853, m_Summoner.Name.ToString()); // You have been given ~1_name~
                     }
                 }
                 else if (obj is BaseCreature mob)
@@ -542,7 +542,7 @@ namespace Server.Items
 
             if (m_Removal != TalismanRemoval.None)
             {
-                @from.Target = new TalismanTarget(this);
+                from.Target = new TalismanTarget(this);
             }
         }
 
@@ -1272,7 +1272,7 @@ namespace Server.Items
 
                         if (target != from)
                         {
-                            @from.SendLocalizedMessage(1072409); // Your targets curses have been lifted
+                            from.SendLocalizedMessage(1072409); // Your targets curses have been lifted
                         }
 
                         break;
@@ -1299,7 +1299,7 @@ namespace Server.Items
 
                         if (target != from)
                         {
-                            @from.SendLocalizedMessage(1072406); // Your Targets lasting damage effects have been removed!
+                            from.SendLocalizedMessage(1072406); // Your Targets lasting damage effects have been removed!
                         }
 
                         break;
@@ -1324,7 +1324,7 @@ namespace Server.Items
 
                         if (target != from)
                         {
-                            @from.SendLocalizedMessage(1072403); // Your target's wards have been removed!
+                            from.SendLocalizedMessage(1072403); // Your target's wards have been removed!
                         }
 
                         break;

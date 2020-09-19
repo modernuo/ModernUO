@@ -61,7 +61,7 @@ namespace Server.Items
 
             if (Organ is PlagueBeastRubbleOrgan organ)
             {
-                organ.OnVeinCut(@from, this);
+                organ.OnVeinCut(from, this);
             }
         }
 

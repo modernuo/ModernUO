@@ -13,16 +13,16 @@ namespace Server.Engines.Craft
         private DefBlacksmithy() : base(1, 1, 1.25) // base( 1, 2, 1.7 )
         {
             /*
-      
+
             base( MinCraftEffect, MaxCraftEffect, Delay )
-      
+
             MinCraftEffect : The minimum number of time the mobile will play the craft effect
             MaxCraftEffect : The maximum number of time the mobile will play the craft effect
             Delay : The delay between each craft effect
-      
+
             Example: (3, 6, 1.7) would make the mobile do the PlayCraftEffect override
             function between 3 and 6 time, with a 1.7 second delay each time.
-      
+
             */
         }
 
@@ -82,7 +82,7 @@ namespace Server.Engines.Craft
             {
                 for (var y = -range; (!anvil || !forge) && y <= range; ++y)
                 {
-                    var tiles = map.Tiles.GetStaticTiles(@from.X + x, @from.Y + y, true);
+                    var tiles = map.Tiles.GetStaticTiles(from.X + x, from.Y + y, true);
 
                     for (var i = 0; (!anvil || !forge) && i < tiles.Length; ++i)
                     {
@@ -93,8 +93,8 @@ namespace Server.Engines.Craft
 
                         if (isAnvil || isForge)
                         {
-                            if (@from.Z + 16 < tiles[i].Z || tiles[i].Z + 16 < @from.Z ||
-                                !@from.InLOS(new Point3D(@from.X + x, @from.Y + y, tiles[i].Z + tiles[i].Height / 2 + 1)))
+                            if (from.Z + 16 < tiles[i].Z || tiles[i].Z + 16 < from.Z ||
+                                !from.InLOS(new Point3D(from.X + x, from.Y + y, tiles[i].Z + tiles[i].Height / 2 + 1)))
                             {
                                 continue;
                             }
@@ -151,7 +151,7 @@ namespace Server.Engines.Craft
         {
             if (toolBroken)
             {
-                @from.SendLocalizedMessage(1044038); // You have worn out your tool
+                from.SendLocalizedMessage(1044038); // You have worn out your tool
             }
 
             if (failed)
@@ -187,7 +187,7 @@ namespace Server.Engines.Craft
             /*
             Syntax for a SIMPLE craft item
             AddCraft( ObjectType, Group, MinSkill, MaxSkill, ResourceType, Amount, Message )
-      
+
             ObjectType : The type of the object you want to add to the build list.
             Group : The group in which the object will be showed in the craft menu.
             MinSkill : The minimum of skill value
@@ -195,10 +195,10 @@ namespace Server.Engines.Craft
             ResourceType : The type of the resource the mobile need to create the item
             Amount : The amount of the ResourceType it need to create the item
             Message : String or Int for Localized.  The message that will be sent to the mobile, if the specified resource is missing.
-      
+
             Syntax for a COMPLEX craft item.  A complex item is an item that need either more than
             only one skill, or more than only one resource.
-      
+
             Coming soon....
             */
 

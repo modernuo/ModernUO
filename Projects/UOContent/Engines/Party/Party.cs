@@ -154,15 +154,15 @@ namespace Server.Engines.PartySystem
 
                 if (m == from)
                 {
-                    p.SendPublicMessage(@from, "I killed myself !!");
+                    p.SendPublicMessage(from, "I killed myself !!");
                 }
                 else if (m == null)
                 {
-                    p.SendPublicMessage(@from, "I was killed !!");
+                    p.SendPublicMessage(from, "I was killed !!");
                 }
                 else
                 {
-                    p.SendPublicMessage(@from, $"I was killed by {m.Name} !!");
+                    p.SendPublicMessage(from, $"I was killed by {m.Name} !!");
                 }
             }
         }
@@ -173,11 +173,11 @@ namespace Server.Engines.PartySystem
 
             if (p != null)
             {
-                new RejoinTimer(@from).Start();
+                new RejoinTimer(from).Start();
             }
             else
             {
-                @from.Party = null;
+                from.Party = null;
             }
         }
 
@@ -348,7 +348,7 @@ namespace Server.Engines.PartySystem
 
             if (p == null)
             {
-                @from.Party = p = new Party(@from);
+                from.Party = p = new Party(from);
             }
 
             if (!p.Candidates.Contains(target))
@@ -405,7 +405,7 @@ namespace Server.Engines.PartySystem
 
                 if (mob.Party != this)
                 {
-                    m_Listeners[i].SendMessage("[{0}]: {1}", @from.Name, text);
+                    m_Listeners[i].SendMessage("[{0}]: {1}", from.Name, text);
                 }
             }
 
@@ -422,7 +422,7 @@ namespace Server.Engines.PartySystem
 
                 if (mob.Party != this)
                 {
-                    m_Listeners[i].SendMessage("[{0}]->[{1}]: {2}", @from.Name, to.Name, text);
+                    m_Listeners[i].SendMessage("[{0}]->[{1}]: {2}", from.Name, to.Name, text);
                 }
             }
 
@@ -444,13 +444,13 @@ namespace Server.Engines.PartySystem
                     {
                         p = Packet.Acquire(
                             new UnicodeMessage(
-                                @from.Serial,
-                                @from.Body,
+                                from.Serial,
+                                from.Body,
                                 MessageType.Regular,
-                                @from.SpeechHue,
+                                from.SpeechHue,
                                 3,
-                                @from.Language,
-                                @from.Name,
+                                from.Language,
+                                from.Name,
                                 text
                             )
                         );

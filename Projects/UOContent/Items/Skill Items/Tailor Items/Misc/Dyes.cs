@@ -7,10 +7,10 @@ namespace Server.Items
     {
         /*
         public bool ShowUsesRemaining { get { return false; } set { } }
-    
+
         [CommandProperty( AccessLevel.GameMaster )]
         public virtual int UsesRemaining { get { return m_UsesRemaining; } set { m_UsesRemaining = value; } }
-    
+
         private int m_UsesRemaining;
         */
 
@@ -69,15 +69,15 @@ namespace Server.Items
                     {
                         if (tub.MetallicHues) /* OSI has three metallic tubs now */
                         {
-                            @from.SendGump(new MetallicHuePicker<DyeTub>(@from, SetTubHue, tub));
+                            from.SendGump(new MetallicHuePicker<DyeTub>(from, SetTubHue, tub));
                         }
                         else if (tub.CustomHuePicker != null)
                         {
-                            @from.SendGump(new CustomHuePickerGump<DyeTub>(@from, tub.CustomHuePicker, SetTubHue, tub));
+                            from.SendGump(new CustomHuePickerGump<DyeTub>(from, tub.CustomHuePicker, SetTubHue, tub));
                         }
                         else
                         {
-                            @from.SendHuePicker(new InternalPicker(tub));
+                            from.SendHuePicker(new InternalPicker(tub));
                         }
                     }
                     else if (tub is BlackDyeTub)

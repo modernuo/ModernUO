@@ -262,7 +262,7 @@ namespace Server.Gumps
                     {
                         if (m_Page > 0)
                         {
-                            @from.SendGump(new WhoGump(@from, m_Mobiles, m_Page - 1));
+                            from.SendGump(new WhoGump(from, m_Mobiles, m_Page - 1));
                         }
 
                         break;
@@ -271,7 +271,7 @@ namespace Server.Gumps
                     {
                         if ((m_Page + 1) * EntryCount < m_Mobiles.Count)
                         {
-                            @from.SendGump(new WhoGump(@from, m_Mobiles, m_Page + 1));
+                            from.SendGump(new WhoGump(from, m_Mobiles, m_Page + 1));
                         }
 
                         break;

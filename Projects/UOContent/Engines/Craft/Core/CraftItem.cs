@@ -312,17 +312,17 @@ namespace Server.Engines.Craft
 
             if (consumMana)
             {
-                @from.Mana -= Mana;
+                from.Mana -= Mana;
             }
 
             if (consumHits)
             {
-                @from.Hits -= Hits;
+                from.Hits -= Hits;
             }
 
             if (consumStam)
             {
-                @from.Stam -= Stam;
+                from.Stam -= Stam;
             }
 
             return true;
@@ -416,8 +416,8 @@ namespace Server.Engines.Craft
             {
                 for (var y = -2; y <= 2; ++y)
                 {
-                    var vx = @from.X + x;
-                    var vy = @from.Y + y;
+                    var vx = from.X + x;
+                    var vy = from.Y + y;
 
                     var tiles = map.Tiles.GetStaticTiles(vx, vy, true);
 
@@ -426,7 +426,7 @@ namespace Server.Engines.Craft
                         var z = tiles[i].Z;
                         var id = tiles[i].ID;
 
-                        if (z + 16 > @from.Z && @from.Z + 16 > z && Find(id, itemIDs))
+                        if (z + 16 > from.Z && from.Z + 16 > z && Find(id, itemIDs))
                         {
                             return true;
                         }
@@ -914,7 +914,7 @@ namespace Server.Engines.Craft
 
                 if (gainSkills) // This is a passive check. Success chance is entirely dependant on the main skill
                 {
-                    @from.CheckSkill(craftSkill.SkillToMake, minSkill, maxSkill);
+                    from.CheckSkill(craftSkill.SkillToMake, minSkill, maxSkill);
                 }
             }
 
@@ -1074,11 +1074,11 @@ namespace Server.Engines.Craft
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    @from.SendGump(new CraftGump(@from, craftSystem, tool, badCraft));
+                    from.SendGump(new CraftGump(from, craftSystem, tool, badCraft));
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(badCraft);
+                    from.SendLocalizedMessage(badCraft);
                 }
 
                 return;
@@ -1101,15 +1101,15 @@ namespace Server.Engines.Craft
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    @from.SendGump(new CraftGump(@from, craftSystem, tool, checkMessage));
+                    from.SendGump(new CraftGump(from, craftSystem, tool, checkMessage));
                 }
                 else if (checkMessage is int messageInt && messageInt > 0)
                 {
-                    @from.SendLocalizedMessage(messageInt);
+                    from.SendLocalizedMessage(messageInt);
                 }
                 else
                 {
-                    @from.SendMessage(checkMessage.ToString());
+                    from.SendMessage(checkMessage.ToString());
                 }
 
                 return;
@@ -1136,15 +1136,15 @@ namespace Server.Engines.Craft
                 {
                     if (tool?.Deleted == false && tool.UsesRemaining > 0)
                     {
-                        @from.SendGump(new CraftGump(@from, craftSystem, tool, message));
+                        from.SendGump(new CraftGump(from, craftSystem, tool, message));
                     }
                     else if (message is int messageIn && messageIn > 0)
                     {
-                        @from.SendLocalizedMessage(messageIn);
+                        from.SendLocalizedMessage(messageIn);
                     }
                     else
                     {
-                        @from.SendMessage(message.ToString());
+                        from.SendMessage(message.ToString());
                     }
 
                     return;
@@ -1154,7 +1154,7 @@ namespace Server.Engines.Craft
 
                 if (craftSystem is DefBlacksmithy)
                 {
-                    if (@from.FindItemOnLayer(Layer.OneHanded) is AncientSmithyHammer hammer && hammer != tool)
+                    if (from.FindItemOnLayer(Layer.OneHanded) is AncientSmithyHammer hammer && hammer != tool)
                     {
                         hammer.UsesRemaining--;
                         if (hammer.UsesRemaining < 1)
@@ -1195,7 +1195,7 @@ namespace Server.Engines.Craft
                 {
                     if (item is ICraftable craftable)
                     {
-                        endquality = craftable.OnCraft(quality, makersMark, @from, craftSystem, typeRes, tool, this, resHue);
+                        endquality = craftable.OnCraft(quality, makersMark, from, craftSystem, typeRes, tool, this, resHue);
                     }
                     else if (item.Hue == 0)
                     {
@@ -1219,7 +1219,7 @@ namespace Server.Engines.Craft
                     if (from.AccessLevel > AccessLevel.Player)
                     {
                         CommandLogging.WriteLine(
-                            @from,
+                            from,
                             "Crafting {0} with craft system {1}",
                             CommandLogging.Format(item),
                             craftSystem.GetType().Name
@@ -1231,7 +1231,7 @@ namespace Server.Engines.Craft
 
                 if (num == 0)
                 {
-                    num = craftSystem.PlayEndingEffect(@from, false, true, toolBroken, endquality, makersMark, this);
+                    num = craftSystem.PlayEndingEffect(from, false, true, toolBroken, endquality, makersMark, this);
                 }
 
                 var queryFactionImbue = false;
@@ -1261,7 +1261,7 @@ namespace Server.Engines.Craft
 
                                     if (availableSilver >= def.SilverCost)
                                     {
-                                        queryFactionImbue = Faction.IsNearType(@from, def.VendorType, 12);
+                                        queryFactionImbue = Faction.IsNearType(from, def.VendorType, 12);
                                     }
                                 }
                             }
@@ -1273,11 +1273,11 @@ namespace Server.Engines.Craft
 
                 if (queryFactionImbue)
                 {
-                    @from.SendGump(
+                    from.SendGump(
                         new FactionImbueGump(
                             quality,
                             item,
-                            @from,
+                            from,
                             craftSystem,
                             tool,
                             num,
@@ -1289,22 +1289,22 @@ namespace Server.Engines.Craft
                 }
                 else if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    @from.SendGump(new CraftGump(@from, craftSystem, tool, num));
+                    from.SendGump(new CraftGump(from, craftSystem, tool, num));
                 }
                 else if (num > 0)
                 {
-                    @from.SendLocalizedMessage(num);
+                    from.SendLocalizedMessage(num);
                 }
             }
             else if (!allRequiredSkills)
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    @from.SendGump(new CraftGump(@from, craftSystem, tool, 1044153));
+                    from.SendGump(new CraftGump(from, craftSystem, tool, 1044153));
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(1044153); // You don't have the required skills to attempt this item.
+                    from.SendLocalizedMessage(1044153); // You don't have the required skills to attempt this item.
                 }
             }
             else
@@ -1320,15 +1320,15 @@ namespace Server.Engines.Craft
                 {
                     if (tool?.Deleted == false && tool.UsesRemaining > 0)
                     {
-                        @from.SendGump(new CraftGump(@from, craftSystem, tool, message));
+                        from.SendGump(new CraftGump(from, craftSystem, tool, message));
                     }
                     else if (message is int messageInt && messageInt > 0)
                     {
-                        @from.SendLocalizedMessage(messageInt);
+                        from.SendLocalizedMessage(messageInt);
                     }
                     else
                     {
-                        @from.SendMessage(message.ToString());
+                        from.SendMessage(message.ToString());
                     }
 
                     return;
@@ -1351,11 +1351,11 @@ namespace Server.Engines.Craft
 
                 if (!tool.Deleted && tool.UsesRemaining > 0)
                 {
-                    @from.SendGump(new CraftGump(@from, craftSystem, tool, num));
+                    from.SendGump(new CraftGump(from, craftSystem, tool, num));
                 }
                 else if (num > 0)
                 {
-                    @from.SendLocalizedMessage(num);
+                    from.SendLocalizedMessage(num);
                 }
             }
         }

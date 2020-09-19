@@ -288,7 +288,7 @@ namespace Server.Items
 
             if (takeItem)
             {
-                @from.PlaySound(0x42);
+                from.PlaySound(0x42);
             }
 
             return takeItem;
@@ -343,31 +343,31 @@ namespace Server.Items
 
             if (m_VacationLeft > 0)
             {
-                LabelTo(@from, 1074430, m_VacationLeft.ToString()); // Vacation days left: ~1_DAYS
+                LabelTo(from, 1074430, m_VacationLeft.ToString()); // Vacation days left: ~1_DAYS
             }
 
             if (Events.Count > 0)
             {
-                LabelTo(@from, 1074426, Events.Count.ToString()); // ~1_NUM~ event(s) to view!
+                LabelTo(from, 1074426, Events.Count.ToString()); // ~1_NUM~ event(s) to view!
             }
 
             if (m_RewardAvailable)
             {
-                LabelTo(@from, 1074362); // A reward is available!
+                LabelTo(from, 1074362); // A reward is available!
             }
 
             LabelTo(from, 1074247, $"{LiveCreatures}\t{MaxLiveCreatures}"); // Live Creatures: ~1_NUM~ / ~2_MAX~
 
             if (DeadCreatures > 0)
             {
-                LabelTo(@from, 1074248, DeadCreatures.ToString()); // Dead Creatures: ~1_NUM~
+                LabelTo(from, 1074248, DeadCreatures.ToString()); // Dead Creatures: ~1_NUM~
             }
 
             var decorations = Items.Count - LiveCreatures - DeadCreatures;
 
             if (decorations > 0)
             {
-                LabelTo(@from, 1074249, (Items.Count - LiveCreatures - DeadCreatures).ToString()); // Decorations: ~1_NUM~
+                LabelTo(from, 1074249, (Items.Count - LiveCreatures - DeadCreatures).ToString()); // Decorations: ~1_NUM~
             }
 
             LabelTo(from, 1074250, $"#{FoodNumber()}");  // Food state: ~1_STATE~
@@ -375,16 +375,16 @@ namespace Server.Items
 
             if (m_Food.State == (int)FoodState.Dead)
             {
-                LabelTo(@from, 1074577, $"{m_Food.Added}\t{m_Food.Improve}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+                LabelTo(from, 1074577, $"{m_Food.Added}\t{m_Food.Improve}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
             }
             else if (m_Food.State == (int)FoodState.Overfed)
             {
-                LabelTo(@from, 1074577, $"{m_Food.Added}\t{m_Food.Maintain}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+                LabelTo(from, 1074577, $"{m_Food.Added}\t{m_Food.Maintain}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
             }
             else
             {
                 LabelTo(
-                    @from,
+                    from,
                     1074253,
                     $"{m_Food.Added}\t{m_Food.Maintain}\t{m_Food.Improve}"
                 ); // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
@@ -392,16 +392,16 @@ namespace Server.Items
 
             if (m_Water.State == (int)WaterState.Dead)
             {
-                LabelTo(@from, 1074578, $"{m_Water.Added}\t{m_Water.Improve}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+                LabelTo(from, 1074578, $"{m_Water.Added}\t{m_Water.Improve}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
             }
             else if (m_Water.State == (int)WaterState.Strong)
             {
-                LabelTo(@from, 1074578, $"{m_Water.Added}\t{m_Water.Maintain}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+                LabelTo(from, 1074578, $"{m_Water.Added}\t{m_Water.Maintain}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
             }
             else
             {
                 LabelTo(
-                    @from,
+                    from,
                     1074254,
                     $"{m_Water.Added}\t{m_Water.Maintain}\t{m_Water.Improve}"
                 ); // Water Added: ~1_CUR~ Maintain: ~2_NEED~ Improve: ~3_GROW~

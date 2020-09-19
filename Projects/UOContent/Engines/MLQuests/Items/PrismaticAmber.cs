@@ -26,7 +26,7 @@ namespace Server.Items
 
             if (ret)
             {
-                DestroyItem(@from);
+                DestroyItem(from);
             }
 
             return ret;
@@ -38,7 +38,7 @@ namespace Server.Items
 
             if (ret)
             {
-                DestroyItem(@from);
+                DestroyItem(from);
             }
 
             return ret;
@@ -50,7 +50,7 @@ namespace Server.Items
 
             if (ret && Parent != from.Backpack)
             {
-                DestroyItem(@from);
+                DestroyItem(from);
             }
 
             return ret;

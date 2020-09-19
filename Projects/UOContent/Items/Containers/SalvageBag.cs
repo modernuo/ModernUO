@@ -280,7 +280,7 @@ namespace Server.Items
 
             for (var i = 0; i < items.Length; i++)
             {
-                @from.AddToBackpack(items[i]);
+                from.AddToBackpack(items[i]);
             }
         }
 
@@ -331,7 +331,7 @@ namespace Server.Items
 
                 if (from.CheckAlive())
                 {
-                    m_Bag.SalvageAll(@from);
+                    m_Bag.SalvageAll(from);
                 }
             }
         }
@@ -362,7 +362,7 @@ namespace Server.Items
 
                 if (from.CheckAlive())
                 {
-                    m_Bag.SalvageIngots(@from);
+                    m_Bag.SalvageIngots(from);
                 }
             }
         }
@@ -393,7 +393,7 @@ namespace Server.Items
 
                 if (from.CheckAlive())
                 {
-                    m_Bag.SalvageCloth(@from);
+                    m_Bag.SalvageCloth(from);
                 }
             }
         }

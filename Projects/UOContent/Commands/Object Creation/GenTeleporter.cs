@@ -66,7 +66,7 @@ namespace Server.Commands
             {
                 if (count > 0)
                 {
-                    @from.SendMessage(WarningHue, $"Partial Completion, {count} Teleporters Removed.");
+                    from.SendMessage(WarningHue, $"Partial Completion, {count} Teleporters Removed.");
                 }
 
                 return;
@@ -88,12 +88,12 @@ namespace Server.Commands
             {
                 if (c.DelCount > 0)
                 {
-                    @from.SendMessage(WarningHue, $"Partial Completion: {c.DelCount} Teleporters Removed.");
+                    from.SendMessage(WarningHue, $"Partial Completion: {c.DelCount} Teleporters Removed.");
                 }
 
                 if (c.Count > 0)
                 {
-                    @from.SendMessage(WarningHue, $"Partial Completion: {c.Count} Teleporters Added.");
+                    from.SendMessage(WarningHue, $"Partial Completion: {c.Count} Teleporters Added.");
                 }
 
                 return;

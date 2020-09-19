@@ -204,11 +204,11 @@ namespace Server.Items
         {
             if (Addon != null && from.InRange(GetWorldLocation(), 3))
             {
-                Addon.OnChop(@from);
+                Addon.OnChop(from);
             }
             else
             {
-                @from.SendLocalizedMessage(500446); // That is too far away.
+                from.SendLocalizedMessage(500446); // That is too far away.
             }
         }
 

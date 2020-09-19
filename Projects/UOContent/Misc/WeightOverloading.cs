@@ -82,7 +82,7 @@ namespace Server.Misc
 
             if (from.Stam * 100 / Math.Max(from.StamMax, 1) < 10)
             {
-                --@from.Stam;
+                --from.Stam;
             }
 
             if (from.Stam == 0)

@@ -100,7 +100,7 @@ namespace Server.Engines.Craft
             // Verify if the type is in the list of the craftable item
             if (CraftItems.SearchFor(type) != null)
             {
-                realCraftItem.Craft(@from, this, typeRes, tool);
+                realCraftItem.Craft(from, this, typeRes, tool);
             }
         }
 

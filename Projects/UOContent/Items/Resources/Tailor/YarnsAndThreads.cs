@@ -86,7 +86,7 @@ namespace Server.Items
 
                         if (targeted is Item item)
                         {
-                            item.SendLocalizedMessageTo(@from, 1010001 + loom.Phase++);
+                            item.SendLocalizedMessageTo(from, 1010001 + loom.Phase++);
                         }
                     }
                     else

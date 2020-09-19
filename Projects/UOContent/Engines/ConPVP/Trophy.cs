@@ -92,16 +92,16 @@ namespace Server.Items
 
             if (Owner != null)
             {
-                LabelTo(@from, "{0} -- {1}", Title, Owner.RawName);
+                LabelTo(from, "{0} -- {1}", Title, Owner.RawName);
             }
             else if (Title != null)
             {
-                LabelTo(@from, Title);
+                LabelTo(from, Title);
             }
 
             if (Date != DateTime.MinValue)
             {
-                LabelTo(@from, Date.ToString("d"));
+                LabelTo(from, Date.ToString("d"));
             }
         }
 

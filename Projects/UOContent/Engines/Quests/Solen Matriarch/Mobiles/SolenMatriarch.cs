@@ -156,7 +156,7 @@ namespace Server.Engines.Quests.Matriarch
 
             if (from.Alive)
             {
-                if (@from is PlayerMobile pm)
+                if (from is PlayerMobile pm)
                 {
                     if (pm.Quest is SolenMatriarchQuest qs && qs.RedSolen == RedSolen)
                     {

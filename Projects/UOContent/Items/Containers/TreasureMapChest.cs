@@ -321,7 +321,7 @@ namespace Server.Items
                 {
                     if (m.Alive)
                     {
-                        @from.SendLocalizedMessage(
+                        from.SendLocalizedMessage(
                             1046448
                         ); // You must first kill the guardians before you may open this chest.
                         return true;
@@ -390,7 +390,7 @@ namespace Server.Items
 
                 if (Utility.RandomDouble() <= 0.1) // 10% chance to spawn a new monster
                 {
-                    TreasureMap.Spawn(Level, GetWorldLocation(), Map, @from, false);
+                    TreasureMap.Spawn(Level, GetWorldLocation(), Map, from, false);
                 }
             }
 
@@ -486,7 +486,7 @@ namespace Server.Items
 
             if (from.Alive)
             {
-                list.Add(new RemoveEntry(@from, this));
+                list.Add(new RemoveEntry(from, this));
             }
         }
 

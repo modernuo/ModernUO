@@ -136,7 +136,7 @@ namespace Server.Items
 
             if (makersMark)
             {
-                Crafter = @from;
+                Crafter = from;
             }
 
             m_Quality = (BookQuality)(quality - 1);
@@ -322,14 +322,14 @@ namespace Server.Items
         {
             if (m_Description?.Length > 0)
             {
-                LabelTo(@from, m_Description);
+                LabelTo(from, m_Description);
             }
 
             base.OnSingleClick(from);
 
             if (m_Crafter != null)
             {
-                LabelTo(@from, 1050043, m_Crafter.Name);
+                LabelTo(from, 1050043, m_Crafter.Name);
             }
         }
 

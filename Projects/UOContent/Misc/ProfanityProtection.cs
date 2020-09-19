@@ -131,7 +131,7 @@ namespace Server.Misc
                 StartDisallowed
             ))
             {
-                e.Blocked = !OnProfanityDetected(@from, e.Speech);
+                e.Blocked = !OnProfanityDetected(from, e.Speech);
             }
         }
     }

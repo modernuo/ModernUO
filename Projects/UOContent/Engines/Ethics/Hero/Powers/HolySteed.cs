@@ -18,7 +18,7 @@ namespace Server.Ethics.Hero
         {
             if (from.Steed?.Deleted == true)
             {
-                @from.Steed = null;
+                from.Steed = null;
             }
 
             if (from.Steed != null)

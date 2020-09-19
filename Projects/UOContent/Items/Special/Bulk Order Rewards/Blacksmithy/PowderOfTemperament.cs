@@ -85,11 +85,11 @@ namespace Server.Items
         {
             if (IsChildOf(from.Backpack))
             {
-                @from.Target = new InternalTarget(this);
+                from.Target = new InternalTarget(this);
             }
             else
             {
-                @from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
             }
         }
 

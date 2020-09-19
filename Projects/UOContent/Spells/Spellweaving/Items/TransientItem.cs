@@ -35,7 +35,7 @@ namespace Server.Items
         {
             if (InvalidTransferMessage != null)
             {
-                TextDefinition.SendMessageTo(@from, InvalidTransferMessage);
+                TextDefinition.SendMessageTo(from, InvalidTransferMessage);
             }
 
             Delete();

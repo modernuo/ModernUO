@@ -60,7 +60,7 @@ namespace Server.Items
         {
             if (Validate())
             {
-                base.OnSingleClick(@from);
+                base.OnSingleClick(from);
             }
         }
 
@@ -68,7 +68,7 @@ namespace Server.Items
         {
             if (Validate())
             {
-                base.OnDoubleClick(@from);
+                base.OnDoubleClick(from);
             }
         }
 
@@ -78,7 +78,7 @@ namespace Server.Items
         {
             if (from.AccessLevel < AccessLevel)
             {
-                @from.SendMessage("You may not wear this.");
+                from.SendMessage("You may not wear this.");
             }
 
             return from.AccessLevel >= AccessLevel;

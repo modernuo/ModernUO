@@ -65,7 +65,7 @@ namespace Server.Items
                         if (!objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance &&
                             objectiveInstance.Handles(Skill))
                         {
-                            @from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
+                            from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
                             return false;
                         }
                     }
@@ -108,9 +108,9 @@ namespace Server.Items
                     for (var i = 0; i < ns; i++)
                         // skill must point down and its value must be enough
                     {
-                        if (@from.Skills[i].Lock == SkillLock.Down && @from.Skills[i].Base >= newValue)
+                        if (from.Skills[i].Lock == SkillLock.Down && from.Skills[i].Base >= newValue)
                         {
-                            @from.Skills[i].Base -= newValue;
+                            from.Skills[i].Base -= newValue;
                             canGain = true;
                             break;
                         }

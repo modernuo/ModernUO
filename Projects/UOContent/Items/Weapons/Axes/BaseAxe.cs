@@ -108,7 +108,7 @@ namespace Server.Items
 
             if (!(HarvestSystem is Mining))
             {
-                @from.SendLocalizedMessage(1010018); // What do you want to use this item on?
+                from.SendLocalizedMessage(1010018); // What do you want to use this item on?
             }
 
             HarvestSystem.BeginHarvesting(from, this);
@@ -120,7 +120,7 @@ namespace Server.Items
 
             if (HarvestSystem != null)
             {
-                BaseHarvestTool.AddContextMenuEntries(@from, this, list, HarvestSystem);
+                BaseHarvestTool.AddContextMenuEntries(from, this, list, HarvestSystem);
             }
         }
 

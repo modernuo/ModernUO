@@ -109,7 +109,7 @@ namespace Server.Mobiles
         {
             if (okay)
             {
-                EndRelease(@from);
+                EndRelease(from);
             }
         }
 
@@ -117,13 +117,13 @@ namespace Server.Mobiles
         {
             if (Backpack?.Items.Count > 0)
             {
-                @from.SendGump(
-                    new WarningGump(1060635, 30720, 1061672, 32512, 420, 280, okay => ConfirmRelease_Callback(@from, okay))
+                from.SendGump(
+                    new WarningGump(1060635, 30720, 1061672, 32512, 420, 280, okay => ConfirmRelease_Callback(from, okay))
                 );
             }
             else
             {
-                EndRelease(@from);
+                EndRelease(from);
             }
         }
 

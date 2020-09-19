@@ -31,7 +31,7 @@ namespace Server.Items
 
             if (from.Alive)
             {
-                list.Add(new EatEntry(@from, this));
+                list.Add(new EatEntry(from, this));
             }
         }
 
@@ -44,7 +44,7 @@ namespace Server.Items
 
             if (from.InRange(GetWorldLocation(), 1))
             {
-                Eat(@from);
+                Eat(from);
             }
         }
 
@@ -58,12 +58,12 @@ namespace Server.Items
 
                 if (from.Body.IsHuman && !from.Mounted)
                 {
-                    @from.Animate(34, 5, 1, true, false, 0);
+                    from.Animate(34, 5, 1, true, false, 0);
                 }
 
                 if (Poison != null)
                 {
-                    @from.ApplyPoison(Poisoner, Poison);
+                    from.ApplyPoison(Poisoner, Poison);
                 }
 
                 Consume();
@@ -88,7 +88,7 @@ namespace Server.Items
 
             if (from.Stam < from.StamMax)
             {
-                @from.Stam += Utility.Random(6, 3) + fillFactor / 5;
+                from.Stam += Utility.Random(6, 3) + fillFactor / 5;
             }
 
             if (iHunger >= 20)
@@ -102,19 +102,19 @@ namespace Server.Items
 
                 if (iHunger < 5)
                 {
-                    @from.SendLocalizedMessage(500868); // You eat the food, but are still extremely hungry.
+                    from.SendLocalizedMessage(500868); // You eat the food, but are still extremely hungry.
                 }
                 else if (iHunger < 10)
                 {
-                    @from.SendLocalizedMessage(500869); // You eat the food, and begin to feel more satiated.
+                    from.SendLocalizedMessage(500869); // You eat the food, and begin to feel more satiated.
                 }
                 else if (iHunger < 15)
                 {
-                    @from.SendLocalizedMessage(500870); // After eating the food, you feel much less hungry.
+                    from.SendLocalizedMessage(500870); // After eating the food, you feel much less hungry.
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(500871); // You feel quite full after consuming the food.
+                    from.SendLocalizedMessage(500871); // You feel quite full after consuming the food.
                 }
             }
 

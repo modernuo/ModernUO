@@ -316,7 +316,7 @@ namespace Server.Items
 
             if (!Deleted)
             {
-                base.OnDoubleClick(@from);
+                base.OnDoubleClick(from);
             }
         }
 

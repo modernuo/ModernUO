@@ -47,15 +47,15 @@ namespace Server.Factions
 
             if (m_Town.Owner == null || from.AccessLevel < AccessLevel.GameMaster && faction != m_Town.Owner)
             {
-                @from.SendLocalizedMessage(1010332); // Your faction does not control this town
+                from.SendLocalizedMessage(1010332); // Your faction does not control this town
             }
             else if (!m_Town.Owner.IsCommander(from))
             {
-                @from.SendLocalizedMessage(1005242); // Only faction Leaders can use townstones
+                from.SendLocalizedMessage(1005242); // Only faction Leaders can use townstones
             }
             else if (FactionGump.Exists(from))
             {
-                @from.SendLocalizedMessage(1042160); // You already have a faction menu open.
+                from.SendLocalizedMessage(1042160); // You already have a faction menu open.
             }
             else if (from is PlayerMobile mobile)
             {

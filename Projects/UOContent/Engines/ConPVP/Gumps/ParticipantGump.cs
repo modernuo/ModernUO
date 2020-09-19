@@ -129,7 +129,7 @@ namespace Server.Engines.ConPVP
                 else if (Context.Participants.Count > 2)
                 {
                     /*Container cont = m_Participant.Stakes;
-          
+
                     if (cont != null)
                       cont.Delete();*/
 
@@ -145,20 +145,20 @@ namespace Server.Engines.ConPVP
             /*else if (bid == 4)
             {
               m_From.SendGump( new ParticipantGump( m_From, m_Context, m_Participant ) );
-      
+
               Container cont = m_Participant.Stakes;
-      
+
               if (cont != null && !cont.Deleted)
               {
                 cont.DisplayTo( m_From );
-      
+
                 Item[] checks = cont.FindItemsByType( typeof( BankCheck ) );
-      
+
                 int gold = cont.TotalGold;
-      
+
                 for ( int i = 0; i < checks.Length; ++i )
                   gold += ((BankCheck)checks[i]).Worth;
-      
+
                 m_From.SendMessage( "This container has {0} item{1} and {2} stone{3}. In gold or check form there is a total of {4:D}gp.", cont.TotalItems, cont.TotalItems==1?"":"s", cont.TotalWeight, cont.TotalWeight==1?"":"s", gold );
               }
             }*/
@@ -225,11 +225,11 @@ namespace Server.Engines.ConPVP
                 {
                     if (mob.Body.IsHuman)
                     {
-                        mob.SayTo(@from, 1005443); // Nay, I would rather stay here and watch a nail rust.
+                        mob.SayTo(from, 1005443); // Nay, I would rather stay here and watch a nail rust.
                     }
                     else
                     {
-                        mob.SayTo(@from, 1005444); // The creature ignores your offer.
+                        mob.SayTo(from, 1005444); // The creature ignores your offer.
                     }
                 }
                 else if (AcceptDuelGump.IsIgnored(mob, from) || mob.Blessed)

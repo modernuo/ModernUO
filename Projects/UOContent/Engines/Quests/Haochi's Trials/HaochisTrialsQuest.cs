@@ -113,7 +113,7 @@ namespace Server.Engines.Quests.Samurai
             {
                 if (qs.IsObjectiveInProgress(typeof(FifthTrialReturnObjective)))
                 {
-                    return @from.Backpack?.FindItemByType<HaochisKatana>() == null;
+                    return from.Backpack?.FindItemByType<HaochisKatana>() == null;
                 }
             }
 

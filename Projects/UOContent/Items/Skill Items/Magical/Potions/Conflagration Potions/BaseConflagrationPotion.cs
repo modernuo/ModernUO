@@ -49,7 +49,7 @@ namespace Server.Items
 
             if (!m_Users.Contains(from))
             {
-                m_Users.Add(@from);
+                m_Users.Add(from);
             }
 
             from.Target = new ThrowTarget(this);
@@ -83,7 +83,7 @@ namespace Server.Items
             {
                 if (m_Users[i].Target is ThrowTarget targ && targ.Potion == this)
                 {
-                    Target.Cancel(@from);
+                    Target.Cancel(from);
                 }
             }
 
@@ -96,9 +96,9 @@ namespace Server.Items
                 {
                     var p = new Point3D(loc.X + i, loc.Y + j, loc.Z);
 
-                    if (map.CanFit(p, 12, true, false) && @from.InLOS(p))
+                    if (map.CanFit(p, 12, true, false) && from.InLOS(p))
                     {
-                        new InternalItem(@from, p, map, MinDamage, MaxDamage);
+                        new InternalItem(from, p, map, MinDamage, MaxDamage);
                     }
                 }
             }
@@ -162,7 +162,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    to = new Entity(Serial.Zero, new Point3D(p), @from.Map);
+                    to = new Entity(Serial.Zero, new Point3D(p), from.Map);
                 }
 
                 Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue);
@@ -308,12 +308,12 @@ namespace Server.Items
 
                     foreach (var m in m_Item.GetMobilesInRange(0))
                     {
-                        if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != @from) &&
-                            SpellHelper.ValidIndirectTarget(@from, m) && @from.CanBeHarmful(m, false))
+                        if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != from) &&
+                            SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false))
                         {
-                            @from.DoHarmful(m);
+                            from.DoHarmful(m);
 
-                            AOS.Damage(m, @from, m_Item.GetDamage(), 0, 100, 0, 0, 0);
+                            AOS.Damage(m, from, m_Item.GetDamage(), 0, 100, 0, 0, 0);
                             m.PlaySound(0x208);
                         }
                     }

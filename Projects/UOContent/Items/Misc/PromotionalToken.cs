@@ -148,7 +148,7 @@ namespace Server.Items
         {
             if (from?.Account != null)
             {
-                return new SoulstoneFragment(@from.Account.ToString());
+                return new SoulstoneFragment(from.Account.ToString());
             }
 
             return null;

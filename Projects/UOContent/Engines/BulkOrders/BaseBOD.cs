@@ -132,13 +132,13 @@ namespace Server.Engines.BulkOrders
         {
             if (Complete)
             {
-                @from.SendLocalizedMessage(
+                from.SendLocalizedMessage(
                     1045166
                 ); // The maximum amount of requested items have already been combined to this deed.
             }
             else
             {
-                @from.Target = new BODTarget(this);
+                from.Target = new BODTarget(this);
             }
         }
 
