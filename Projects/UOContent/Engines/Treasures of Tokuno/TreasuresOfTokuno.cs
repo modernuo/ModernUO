@@ -166,7 +166,7 @@ namespace Server.Misc
 
             try
             {
-                i = (Item)m_LesserArtifacts[(int)DropEra - 1].RandomElement().CreateInstance();
+                i = m_LesserArtifacts[(int)DropEra - 1].RandomElement().CreateInstance<Item>();
             }
             catch
             {
@@ -587,7 +587,7 @@ namespace Server.Gumps
 
                 try
                 {
-                    item = (Item)t.Type.CreateInstance();
+                    item = t.Type.CreateInstance<Item>();
                 }
                 catch
                 {

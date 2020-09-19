@@ -1066,7 +1066,7 @@ namespace Server
                 }
                 else
                 {
-                    item = Type.CreateInstance() as Item;
+                    item = Type.CreateInstance<Item>();
                 }
 
                 return item;

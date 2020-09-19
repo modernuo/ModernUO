@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: ActivatorUtil.cs                                                *
+ * File: ActivatorExtensions.cs                                          *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -93,24 +93,15 @@ namespace Server.Utilities
         }
 
         public static T CreateInstance<T>(
-            params object[] args
-        ) => (T)CreateInstance(typeof(T), null, args);
-
-        public static T CreateInstance<T>(
-            Predicate<ConstructorInfo> constructorPredicate = null,
-            object[] args = null
-        ) => (T)CreateInstance(typeof(T), constructorPredicate, args);
-
-        public static object CreateInstance(
             this Type type,
             params object[] args
-        ) => type.CreateInstance(null, args);
+        ) where T : class => type.CreateInstance<T>(null, args);
 
-        public static object CreateInstance(
+        public static T CreateInstance<T>(
             this Type type,
             Predicate<ConstructorInfo> constructorPredicate,
             object[] args = null
-        )
+        ) where T : class
         {
             ConstructorInfo ctor;
 
@@ -120,10 +111,10 @@ namespace Server.Utilities
                 if (ctor == null)
                 {
                     Console.WriteLine("There is no constructor for {0} that matches the given predicate.", type);
-                    return null;
+                    return default;
                 }
 
-                return ctor.Invoke(Array.Empty<object>());
+                return (T)ctor.Invoke(Array.Empty<object>());
             }
 
             var types = new Type[args.Length];
@@ -136,10 +127,10 @@ namespace Server.Utilities
             if (ctor == null)
             {
                 Console.WriteLine("There is no constructor for {0} that matches the given predicate.", type);
-                return null;
+                return default;
             }
 
-            return ctor.Invoke(args);
+            return ctor.Invoke(args) as T;
         }
     }
 }

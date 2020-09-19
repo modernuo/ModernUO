@@ -96,7 +96,7 @@ namespace Server.Engines.Spawners
 
                 try
                 {
-                    var spawner = type.CreateInstance(json, options) as ISpawner;
+                    var spawner = type.CreateInstance<ISpawner>(json, options);
 
                     spawner!.MoveToWorld(location, map);
                     spawner!.Respawn();

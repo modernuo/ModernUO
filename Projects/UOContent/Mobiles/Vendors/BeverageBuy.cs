@@ -41,6 +41,6 @@ namespace Server.Mobiles
 
         public override bool CanCacheDisplay => false;
 
-        public override IEntity GetEntity() => (IEntity)Type.CreateInstance(m_Content);
+        public override IEntity GetEntity() => Type.CreateInstance<IEntity>(m_Content);
     }
 }

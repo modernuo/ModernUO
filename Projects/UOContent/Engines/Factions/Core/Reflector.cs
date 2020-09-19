@@ -41,7 +41,7 @@ namespace Server.Factions
         {
             try
             {
-                return type.CreateInstance();
+                return type.CreateInstance<object>();
             }
             catch
             {

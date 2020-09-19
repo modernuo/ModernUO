@@ -51,7 +51,7 @@ namespace Server.Factions
         {
             try
             {
-                return TrapType.CreateInstance(m_Faction, from) as BaseFactionTrap;
+                return TrapType.CreateInstance<BaseFactionTrap>(m_Faction, from);
             }
             catch
             {

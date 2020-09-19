@@ -780,7 +780,7 @@ namespace Server
 
             try
             {
-                return type.CreateInstance() as Item;
+                return type.CreateInstance<Item>();
             }
             catch
             {

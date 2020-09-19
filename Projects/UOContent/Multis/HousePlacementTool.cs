@@ -1971,7 +1971,7 @@ namespace Server.Items
                     args = new object[] { from };
                 }
 
-                return Type.CreateInstance(args) as BaseHouse;
+                return Type.CreateInstance<BaseHouse>(args);
             }
             catch
             {

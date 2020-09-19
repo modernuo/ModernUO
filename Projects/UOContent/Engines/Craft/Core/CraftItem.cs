@@ -244,7 +244,7 @@ namespace Server.Engines.Craft
 
                 try
                 {
-                    item = type.CreateInstance() as Item;
+                    item = type.CreateInstance<Item>();
                 }
                 catch
                 {
@@ -1188,7 +1188,7 @@ namespace Server.Engines.Craft
                 }
                 else
                 {
-                    item = ItemType.CreateInstance() as Item;
+                    item = ItemType.CreateInstance<Item>();
                 }
 
                 if (item != null)
@@ -1430,14 +1430,14 @@ namespace Server.Engines.Craft
                     {
                         try
                         {
-                            ((CustomCraft)m_CraftItem.ItemType.CreateInstance(
+                            m_CraftItem.ItemType.CreateInstance<CustomCraft>(
                                 m_From,
                                 m_CraftItem,
                                 m_CraftSystem,
                                 m_TypeRes,
                                 m_Tool,
                                 quality
-                            ))?.EndCraftAction();
+                            )?.EndCraftAction();
                         }
                         catch (Exception e)
                         {

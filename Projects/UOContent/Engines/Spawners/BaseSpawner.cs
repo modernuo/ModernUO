@@ -563,153 +563,162 @@ namespace Server.Engines.Spawners
 
             var type = AssemblyHandler.FindFirstTypeForName(entry.SpawnedName);
 
-            if (type != null)
+            if (type == null)
             {
-                try
+                flags = EntryFlags.InvalidType;
+                return false;
+            }
+
+            try
+            {
+                IEntity entity = null;
+                string[] paramargs;
+                string[] propargs;
+
+                propargs = string.IsNullOrEmpty(entry.Properties)
+                    ? Array.Empty<string>()
+                    : CommandSystem.Split(entry.Properties.Trim());
+
+                var props = FormatProperties(propargs);
+
+                var realProps = GetTypeProperties(type, props);
+
+                if (realProps == null)
                 {
-                    object o = null;
-                    string[] paramargs;
-                    string[] propargs;
+                    flags = EntryFlags.InvalidProps;
+                    return false;
+                }
 
-                    propargs = string.IsNullOrEmpty(entry.Properties)
-                        ? Array.Empty<string>()
-                        : CommandSystem.Split(entry.Properties.Trim());
+                paramargs = string.IsNullOrEmpty(entry.Parameters)
+                    ? Array.Empty<string>()
+                    : entry.Parameters.Trim().Split(' ');
 
-                    var props = FormatProperties(propargs);
+                if (paramargs.Length == 0)
+                {
+                    entity = type.CreateInstance<IEntity>(
+                        ci => Add.IsConstructible(ci, AccessLevel.Developer)
+                    );
+                }
+                else
+                {
+                    var ctors = type.GetConstructors();
 
-                    var realProps = GetTypeProperties(type, props);
-
-                    if (realProps == null)
+                    for (var i = 0; i < ctors.Length; ++i)
                     {
-                        flags = EntryFlags.InvalidProps;
-                        return false;
-                    }
+                        var ctor = ctors[i];
 
-                    paramargs = string.IsNullOrEmpty(entry.Parameters)
-                        ? Array.Empty<string>()
-                        : entry.Parameters.Trim().Split(' ');
-
-                    if (paramargs.Length == 0)
-                    {
-                        o = type.CreateInstance(ci => Add.IsConstructible(ci, AccessLevel.Developer));
-                    }
-                    else
-                    {
-                        var ctors = type.GetConstructors();
-
-                        for (var i = 0; i < ctors.Length; ++i)
+                        if (Add.IsConstructible(ctor, AccessLevel.Developer))
                         {
-                            var ctor = ctors[i];
+                            var paramList = ctor.GetParameters();
 
-                            if (Add.IsConstructible(ctor, AccessLevel.Developer))
+                            if (paramargs.Length == paramList.Length)
                             {
-                                var paramList = ctor.GetParameters();
+                                var paramValues = Add.ParseValues(paramList, paramargs);
 
-                                if (paramargs.Length == paramList.Length)
+                                if (paramValues != null)
                                 {
-                                    var paramValues = Add.ParseValues(paramList, paramargs);
-
-                                    if (paramValues != null)
-                                    {
-                                        o = ctor.Invoke(paramValues);
-                                        break;
-                                    }
+                                    entity = ctor.Invoke(paramValues) as IEntity;
+                                    break;
                                 }
                             }
                         }
                     }
-
-                    for (var i = 0; i < realProps.Length; i++)
-                    {
-                        if (realProps[i] != null)
-                        {
-                            object toSet = null;
-                            var result = Properties.ConstructFromString(
-                                realProps[i].PropertyType,
-                                o,
-                                props[i, 1],
-                                ref toSet
-                            );
-
-                            if (result == null)
-                            {
-                                realProps[i].SetValue(o, toSet, null);
-                            }
-                            else
-                            {
-                                flags = EntryFlags.InvalidProps;
-
-                                (o as ISpawnable)?.Delete();
-
-                                return false;
-                            }
-                        }
-                    }
-
-                    if (o is Mobile m)
-                    {
-                        Spawned.Add(m, entry);
-                        entry.Spawned.Add(m);
-
-                        var loc = m is BaseVendor ? Location : GetSpawnPosition(m, map);
-
-                        m.OnBeforeSpawn(loc, map);
-                        InvalidateProperties();
-
-                        m.MoveToWorld(loc, map);
-
-                        if (m is BaseCreature c)
-                        {
-                            var walkrange = GetWalkingRange();
-
-                            c.RangeHome = walkrange >= 0 ? walkrange : m_HomeRange;
-                            c.CurrentWayPoint = WayPoint;
-
-                            if (m_Team > 0)
-                            {
-                                c.Team = m_Team;
-                            }
-
-                            c.Home = Location;
-                            c.HomeMap = Map;
-                        }
-
-                        m.Spawner = this;
-                        m.OnAfterSpawn();
-                    }
-                    else if (o is Item item)
-                    {
-                        Spawned.Add(item, entry);
-                        entry.Spawned.Add(item);
-
-                        var loc = GetSpawnPosition(item, map);
-
-                        item.OnBeforeSpawn(loc, map);
-
-                        item.MoveToWorld(loc, map);
-
-                        item.Spawner = this;
-                        item.OnAfterSpawn();
-                    }
-                    else
-                    {
-                        flags = EntryFlags.InvalidType | EntryFlags.InvalidParams;
-                        return false;
-                    }
                 }
-                catch (Exception e)
+
+                if (entity == null)
                 {
-                    Console.WriteLine($"EXCEPTION CAUGHT: {Serial}");
-                    Console.WriteLine(e);
+                    flags = EntryFlags.InvalidType | EntryFlags.InvalidParams;
                     return false;
                 }
 
-                InvalidateProperties();
-                return true;
+                for (var i = 0; i < realProps.Length; i++)
+                {
+                    if (realProps[i] != null)
+                    {
+                        object toSet = null;
+                        var result = Properties.ConstructFromString(
+                            realProps[i].PropertyType,
+                            entity,
+                            props[i, 1],
+                            ref toSet
+                        );
+
+                        if (result == null)
+                        {
+                            realProps[i].SetValue(entity, toSet, null);
+                        }
+                        else
+                        {
+                            flags = EntryFlags.InvalidProps;
+
+                            (entity as ISpawnable)?.Delete();
+
+                            return false;
+                        }
+                    }
+                }
+
+                if (entity is Mobile m)
+                {
+                    Spawned.Add(m, entry);
+                    entry.Spawned.Add(m);
+
+                    var loc = m is BaseVendor ? Location : GetSpawnPosition(m, map);
+
+                    m.OnBeforeSpawn(loc, map);
+                    InvalidateProperties();
+
+                    m.MoveToWorld(loc, map);
+
+                    if (m is BaseCreature c)
+                    {
+                        var walkrange = GetWalkingRange();
+
+                        c.RangeHome = walkrange >= 0 ? walkrange : m_HomeRange;
+                        c.CurrentWayPoint = WayPoint;
+
+                        if (m_Team > 0)
+                        {
+                            c.Team = m_Team;
+                        }
+
+                        c.Home = Location;
+                        c.HomeMap = Map;
+                    }
+
+                    m.Spawner = this;
+                    m.OnAfterSpawn();
+                }
+                else if (entity is Item item)
+                {
+                    Spawned.Add(item, entry);
+                    entry.Spawned.Add(item);
+
+                    var loc = GetSpawnPosition(item, map);
+
+                    item.OnBeforeSpawn(loc, map);
+
+                    item.MoveToWorld(loc, map);
+
+                    item.Spawner = this;
+                    item.OnAfterSpawn();
+                }
+                else
+                {
+                    // Other IEntity types that might get created are simply not supported
+                    flags = EntryFlags.InvalidType | EntryFlags.InvalidParams;
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"EXCEPTION CAUGHT: {Serial}");
+                Console.WriteLine(e);
+                return false;
             }
 
-            flags = EntryFlags.InvalidType;
-            return false;
+            InvalidateProperties();
+            return true;
         }
 
         public virtual int GetWalkingRange() => m_WalkingRange;

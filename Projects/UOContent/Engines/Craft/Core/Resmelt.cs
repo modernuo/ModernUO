@@ -94,7 +94,7 @@ namespace Server.Engines.Craft
                     }
 
                     var resourceType = info.ResourceTypes[0];
-                    var ingot = (Item)resourceType.CreateInstance();
+                    var ingot = resourceType.CreateInstance<Item>();
 
                     if (item is DragonBardingDeed || item is BaseArmor armor && armor.PlayerConstructed ||
                         item is BaseWeapon weapon && weapon.PlayerConstructed ||

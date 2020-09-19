@@ -37,7 +37,7 @@ namespace Server.Engines.Craft
 
         public override int GumpTitleNumber => 1044009;
 
-        public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefInscription());
+        public static CraftSystem CraftSystem => m_CraftSystem ??= new DefInscription();
 
         public override double GetChanceAtMin(CraftItem item) => 0.0;
 
@@ -55,9 +55,9 @@ namespace Server.Engines.Craft
 
             if (typeItem != null)
             {
-                var o = typeItem.CreateInstance();
+                var entity = typeItem.CreateInstance<IEntity>();
 
-                if (o is SpellScroll scroll)
+                if (entity is SpellScroll scroll)
                 {
                     var hasSpell = Spellbook.Find(from, scroll.SpellID)?.HasSpell(scroll.SpellID) == true;
 
@@ -66,10 +66,7 @@ namespace Server.Engines.Craft
                     return hasSpell ? 0 : 1042404; // null : You don't have that spell!
                 }
 
-                if (o is Item item)
-                {
-                    item.Delete();
-                }
+                entity.Delete();
             }
 
             return 0;

@@ -19,7 +19,7 @@ namespace Server.Factions
         {
             try
             {
-                return Definition.Type.CreateInstance() as BaseFactionGuard;
+                return Definition.Type.CreateInstance<BaseFactionGuard>();
             }
             catch
             {

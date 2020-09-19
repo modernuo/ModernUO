@@ -55,7 +55,7 @@ namespace Server
                         {
                             if (weight < item.Weight)
                             {
-                                var obj = item.Construct();
+                                var obj = item.Type.CreateInstance<Item>();
 
                                 if (obj != null)
                                 {
@@ -188,8 +188,6 @@ namespace Server
             public int Weight { get; }
 
             public Type Type { get; }
-
-            public Item Construct() => Type.CreateInstance() as Item;
         }
     }
 }

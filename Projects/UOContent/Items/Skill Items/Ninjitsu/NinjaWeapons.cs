@@ -90,7 +90,7 @@ namespace Server.Items
         {
             if (weapon.UsesRemaining > 0)
             {
-                var ammo = weapon.AmmoType.CreateInstance(weapon.UsesRemaining) as Item;
+                var ammo = weapon.AmmoType.CreateInstance<Item>(weapon.UsesRemaining);
 
                 if (ammo is INinjaAmmo ninaAmmo)
                 {

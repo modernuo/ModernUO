@@ -268,7 +268,7 @@ namespace Server.Engines.Harvest
         {
             try
             {
-                return type.CreateInstance() as Item;
+                return type.CreateInstance<Item>();
             }
             catch
             {

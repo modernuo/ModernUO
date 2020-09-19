@@ -88,8 +88,7 @@ namespace Server.Items
                     _                        => 0.0
                 };
 
-                var resourceType = info.ResourceTypes[0];
-                var ingot = (Item)resourceType.CreateInstance();
+                var ingot = info.ResourceTypes[0].CreateInstance<Item>();
 
                 if (item is DragonBardingDeed || item is BaseArmor armor && armor.PlayerConstructed ||
                     item is BaseWeapon weapon && weapon.PlayerConstructed ||

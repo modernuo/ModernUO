@@ -387,16 +387,17 @@ namespace Server.Engines.Harvest
 
                 if (res == resource && res.Types.Length >= 3)
                 {
+                    var map = from.Map;
+
+                    if (map == null)
+                    {
+                        return;
+                    }
+
                     try
                     {
-                        var map = from.Map;
-
-                        if (map == null)
-                        {
-                            return;
-                        }
-
-                        if (res.Types[2].CreateInstance(25) is BaseCreature spawned)
+                        var entity = res.Types[2].CreateInstance<IEntity>(25);
+                        if (entity is BaseCreature spawned)
                         {
                             var offset = Utility.Random(8) * 2;
 
@@ -427,6 +428,10 @@ namespace Server.Engines.Harvest
                             spawned.OnBeforeSpawn(from.Location, from.Map);
                             spawned.MoveToWorld(from.Location, from.Map);
                             spawned.Combatant = from;
+                        }
+                        else
+                        {
+                            entity.Delete();
                         }
                     }
                     catch

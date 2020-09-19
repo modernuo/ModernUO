@@ -54,7 +54,7 @@ namespace Server.Engines.MLQuests.Rewards
 
             try
             {
-                spawnedItem = m_Type.CreateInstance() as Item;
+                spawnedItem = m_Type.CreateInstance<Item>();
             }
             catch (Exception e)
             {

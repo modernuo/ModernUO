@@ -304,7 +304,7 @@ namespace Server.Items
 
             if (level == 6 && Core.AOS)
             {
-                cont.DropItem((Item)Artifacts.RandomElement().CreateInstance());
+                cont.DropItem(Artifacts.RandomElement().CreateInstance<Item>());
             }
         }
 

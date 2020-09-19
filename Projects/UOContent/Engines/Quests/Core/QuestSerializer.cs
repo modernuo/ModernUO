@@ -3,13 +3,13 @@ using Server.Utilities;
 
 namespace Server.Engines.Quests
 {
-    public class QuestSerializer
+    public static class QuestSerializer
     {
         public static object Construct(Type type)
         {
             try
             {
-                return type.CreateInstance();
+                return type.CreateInstance<object>();
             }
             catch
             {

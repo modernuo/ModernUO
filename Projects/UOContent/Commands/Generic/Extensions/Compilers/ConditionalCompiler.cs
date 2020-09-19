@@ -563,7 +563,7 @@ namespace Server.Commands.Generic
 
             var conditionalType = typeBuilder.CreateType();
 
-            return (IConditional)conditionalType.CreateInstance();
+            return conditionalType.CreateInstance<IConditional>();
         }
     }
 }

@@ -3838,7 +3838,7 @@ namespace Server.Mobiles
 
                     try
                     {
-                        ammo = kvp.Key.CreateInstance() as Item;
+                        ammo = kvp.Key.CreateInstance<Item>();
                     }
                     catch
                     {

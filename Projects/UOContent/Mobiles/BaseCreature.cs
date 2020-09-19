@@ -2820,17 +2820,9 @@ namespace Server.Mobiles
             m_SpellDefense.Add(type);
         }
 
-        public Spell GetAttackSpellRandom()
-        {
-            var type = m_SpellAttack.RandomElement();
-            return type == null ? null : type.CreateInstance(this, null) as Spell;
-        }
+        public Spell GetAttackSpellRandom() => m_SpellAttack.RandomElement()?.CreateInstance<Spell>(this, null);
 
-        public Spell GetDefenseSpellRandom()
-        {
-            var type = m_SpellDefense.RandomElement();
-            return type == null ? null : type.CreateInstance(this, null) as Spell;
-        }
+        public Spell GetDefenseSpellRandom() => m_SpellDefense.RandomElement()?.CreateInstance<Spell>(this, null);
 
         public Spell GetSpellSpecific(Type type)
         {
@@ -2840,7 +2832,7 @@ namespace Server.Mobiles
             {
                 if (m_SpellAttack[i] == type)
                 {
-                    return type.CreateInstance(this, null) as Spell;
+                    return type.CreateInstance<Spell>(this, null);
                 }
             }
 
@@ -2848,7 +2840,7 @@ namespace Server.Mobiles
             {
                 if (m_SpellDefense[i] == type)
                 {
-                    return type.CreateInstance(this, null) as Spell;
+                    return type.CreateInstance<Spell>(this, null);
                 }
             }
 

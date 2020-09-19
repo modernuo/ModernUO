@@ -49,8 +49,11 @@ namespace Server.Engines.MLQuests.Objectives
 
             for (var i = 0; i < Amount; ++i)
             {
-                if (!(Delivery.CreateInstance() is Item item))
+                var entity = Delivery.CreateInstance<IEntity>();
+
+                if (!(entity is Item item))
                 {
+                    entity.Delete();
                     continue;
                 }
 

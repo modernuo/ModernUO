@@ -19,7 +19,7 @@ namespace Server.Factions
         {
             try
             {
-                return Definition.Type.CreateInstance(town, faction) as BaseFactionVendor;
+                return Definition.Type.CreateInstance<BaseFactionVendor>(town, faction);
             }
             catch
             {

@@ -319,9 +319,7 @@ namespace Server.Items
 
                 if (contains)
                 {
-                    var effect =
-                        (GreenThornsEffect)taep.Effect.CreateInstance(land.Location, from.Map, from);
-                    return effect;
+                    return taep.Effect.CreateInstance<GreenThornsEffect>(land.Location, from.Map, from);
                 }
             }
 

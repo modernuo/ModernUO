@@ -340,18 +340,16 @@ namespace Server.Engines.Doom
                     return;
                 }
 
-                var obj = type.CreateInstance();
+                var entity = type.CreateInstance<IEntity>();
 
-                if (obj is Item item)
-                {
-                    item.Delete();
-                }
-                else if (obj is Mobile mob)
+                if (entity is Mobile mob)
                 {
                     mob.MoveToWorld(GetWorldLocation(), Map);
 
                     Creatures.Add(mob);
                 }
+
+                entity.Delete();
             }
             catch
             {

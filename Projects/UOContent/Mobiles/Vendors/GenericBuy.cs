@@ -97,16 +97,7 @@ namespace Server.Mobiles
         public int MaxAmount { get; set; }
 
         // get a new instance of an object (we just bought it)
-        public virtual IEntity GetEntity()
-        {
-            if (Args == null || Args.Length == 0)
-            {
-                return (IEntity)Type.CreateInstance();
-            }
-
-            return (IEntity)Type.CreateInstance(Args);
-            // return (Item)ActivatorUtil.CreateInstance( m_Type );
-        }
+        public virtual IEntity GetEntity() => Type.CreateInstance<IEntity>(Args);
 
         // Attempt to restock with item, (return true if restock successful)
         public bool Restock(Item item, int amount) => false;

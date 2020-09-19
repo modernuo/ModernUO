@@ -215,7 +215,7 @@ namespace Server.Mobiles
 
         public static void GiveArtifactTo(Mobile m)
         {
-            var item = (Item)Artifacts.RandomElement().CreateInstance();
+            var item = Artifacts.RandomElement().CreateInstance<Item>();
 
             if (m.AddToBackpack(item))
             {

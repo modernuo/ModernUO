@@ -42,7 +42,7 @@ namespace Server.Spells.Spellweaving
 
                     try
                     {
-                        bc = ActivatorUtil.CreateInstance<T>();
+                        bc = typeof(T).CreateInstance<BaseCreature>();
                     }
                     catch
                     {

@@ -237,7 +237,7 @@ namespace Server.Items
 
                     var resourceType = info.ResourceTypes?[0] ?? item.Resources[0].ItemType;
 
-                    var res = (Item)resourceType.CreateInstance();
+                    var res = resourceType.CreateInstance<Item>();
 
                     ScissorHelper(from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
 
