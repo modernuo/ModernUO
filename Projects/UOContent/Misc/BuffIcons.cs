@@ -131,26 +131,17 @@ namespace Server
 
         public static void AddBuff(Mobile m, BuffInfo b)
         {
-            if (m is PlayerMobile pm)
-            {
-                pm.AddBuff(b);
-            }
+            (m as PlayerMobile)?.AddBuff(b);
         }
 
         public static void RemoveBuff(Mobile m, BuffInfo b)
         {
-            if (m is PlayerMobile pm)
-            {
-                pm.RemoveBuff(b);
-            }
+            (m as PlayerMobile)?.RemoveBuff(b);
         }
 
         public static void RemoveBuff(Mobile m, BuffIcon b)
         {
-            if (m is PlayerMobile pm)
-            {
-                pm.RemoveBuff(b);
-            }
+            (m as PlayerMobile)?.RemoveBuff(b);
         }
     }
 

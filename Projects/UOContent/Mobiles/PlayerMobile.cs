@@ -4640,12 +4640,7 @@ namespace Server.Mobiles
 
         public void ResendBuffs()
         {
-            if (!BuffInfo.Enabled || m_BuffTable == null)
-            {
-                return;
-            }
-
-            if (NetState?.BuffIcon == true)
+            if (BuffInfo.Enabled && m_BuffTable != null && NetState?.BuffIcon == true)
             {
                 foreach (var info in m_BuffTable.Values)
                 {
@@ -4685,7 +4680,7 @@ namespace Server.Mobiles
 
         public void RemoveBuff(BuffIcon b)
         {
-            if (!m_BuffTable.Remove(b, out var info))
+            if (m_BuffTable == null || !m_BuffTable.Remove(b, out var info))
             {
                 return;
             }
