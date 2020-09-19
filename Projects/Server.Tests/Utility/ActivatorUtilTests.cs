@@ -1,27 +1,26 @@
-using System;
 using Server.Utilities;
 using Xunit;
 
 namespace Server.Tests
 {
-    public class TestZeroParamsClass
-    {
-    }
-
-    public class TestTwoParamsClass
-    {
-        public int Amount;
-        public string Name;
-
-        public TestTwoParamsClass(int amount, string name)
-        {
-            Amount = amount;
-            Name = name;
-        }
-    }
-
     public class ActivatorUtilTests
     {
+        private class TestZeroParamsClass
+        {
+        }
+
+        private class TestTwoParamsClass
+        {
+            public int Amount;
+            public string Name;
+
+            public TestTwoParamsClass(int amount, string name)
+            {
+                Amount = amount;
+                Name = name;
+            }
+        }
+
         [Fact]
         public void TestZeroParamsActivator()
         {
