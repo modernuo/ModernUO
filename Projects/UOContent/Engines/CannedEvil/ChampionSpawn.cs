@@ -397,7 +397,7 @@ namespace Server.Engines.CannedEvil
                     {
                         prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
 
-                        if (ActivatorUtil.CreateInstance(scroll.GetType()) is SpecialScroll scrollDupe)
+                        if (scroll.GetType().CreateInstance() is SpecialScroll scrollDupe)
                         {
                             scrollDupe.Skill = scroll.Skill;
                             scrollDupe.Value = scroll.Value;
@@ -619,7 +619,7 @@ namespace Server.Engines.CannedEvil
 
             try
             {
-                Champion = ActivatorUtil.CreateInstance(ChampionSpawnInfo.GetInfo(m_Type).Champion) as Mobile;
+                Champion = ChampionSpawnInfo.GetInfo(m_Type).Champion.CreateInstance() as Mobile;
             }
             catch
             {
@@ -782,7 +782,7 @@ namespace Server.Engines.CannedEvil
         {
             try
             {
-                return ActivatorUtil.CreateInstance(types.RandomElement()) as Mobile;
+                return types.RandomElement().CreateInstance() as Mobile;
             }
             catch
             {

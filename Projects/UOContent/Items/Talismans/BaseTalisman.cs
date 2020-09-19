@@ -455,7 +455,7 @@ namespace Server.Items
 
                 try
                 {
-                    obj = ActivatorUtil.CreateInstance(type);
+                    obj = type.CreateInstance();
                 }
                 catch
                 {
@@ -492,7 +492,7 @@ namespace Server.Items
 
                         if (i + 1 < count)
                         {
-                            item = ActivatorUtil.CreateInstance(type) as Item;
+                            item = type.CreateInstance() as Item;
                         }
                     }
 

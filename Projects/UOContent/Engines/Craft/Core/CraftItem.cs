@@ -244,7 +244,7 @@ namespace Server.Engines.Craft
 
                 try
                 {
-                    item = ActivatorUtil.CreateInstance(type) as Item;
+                    item = type.CreateInstance() as Item;
                 }
                 catch
                 {
@@ -1188,7 +1188,7 @@ namespace Server.Engines.Craft
                 }
                 else
                 {
-                    item = ActivatorUtil.CreateInstance(ItemType) as Item;
+                    item = ItemType.CreateInstance() as Item;
                 }
 
                 if (item != null)
@@ -1432,8 +1432,7 @@ namespace Server.Engines.Craft
 
                         try
                         {
-                            cc = ActivatorUtil.CreateInstance(
-                                m_CraftItem.ItemType,
+                            cc = m_CraftItem.ItemType.CreateInstance(
                                 m_From,
                                 m_CraftItem,
                                 m_CraftSystem,

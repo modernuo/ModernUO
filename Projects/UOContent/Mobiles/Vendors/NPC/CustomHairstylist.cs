@@ -265,7 +265,7 @@ namespace Server.Mobiles
                             }
                         }
 
-                        var g = ActivatorUtil.CreateInstance(buyInfo.GumpType, args) as Gump;
+                        var g = buyInfo.GumpType.CreateInstance(args) as Gump;
 
                         m_From.SendGump(g);
                     }

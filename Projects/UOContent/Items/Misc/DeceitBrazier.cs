@@ -175,7 +175,7 @@ namespace Server.Items
                     {
                         var map = Map;
                         var bc =
-                            (BaseCreature)ActivatorUtil.CreateInstance(Creatures.RandomElement());
+                            (BaseCreature)Creatures.RandomElement().CreateInstance();
 
                         var spawnLoc = GetSpawnPosition();
 

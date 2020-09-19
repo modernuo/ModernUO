@@ -9,7 +9,7 @@ namespace Server.Engines.Quests
         {
             try
             {
-                return ActivatorUtil.CreateInstance(type);
+                return type.CreateInstance();
             }
             catch
             {

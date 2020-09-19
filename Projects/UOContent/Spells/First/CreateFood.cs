@@ -77,7 +77,7 @@ namespace Server.Spells.First
 
             try
             {
-                item = (Item)ActivatorUtil.CreateInstance(Type);
+                item = (Item)Type.CreateInstance();
             }
             catch
             {

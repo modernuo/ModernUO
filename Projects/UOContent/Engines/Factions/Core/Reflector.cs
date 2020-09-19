@@ -41,7 +41,7 @@ namespace Server.Factions
         {
             try
             {
-                return ActivatorUtil.CreateInstance(type);
+                return type.CreateInstance();
             }
             catch
             {

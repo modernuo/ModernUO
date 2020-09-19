@@ -101,10 +101,10 @@ namespace Server.Mobiles
         {
             if (Args == null || Args.Length == 0)
             {
-                return (IEntity)ActivatorUtil.CreateInstance(Type);
+                return (IEntity)Type.CreateInstance();
             }
 
-            return (IEntity)ActivatorUtil.CreateInstance(Type, Args);
+            return (IEntity)Type.CreateInstance(Args);
             // return (Item)ActivatorUtil.CreateInstance( m_Type );
         }
 

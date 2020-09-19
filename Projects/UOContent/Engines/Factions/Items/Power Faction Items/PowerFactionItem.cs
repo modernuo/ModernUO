@@ -189,7 +189,7 @@ namespace Server
 
             public Type Type { get; }
 
-            public Item Construct() => ActivatorUtil.CreateInstance(Type) as Item;
+            public Item Construct() => Type.CreateInstance() as Item;
         }
     }
 }

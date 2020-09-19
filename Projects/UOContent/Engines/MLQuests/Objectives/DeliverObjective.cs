@@ -49,7 +49,7 @@ namespace Server.Engines.MLQuests.Objectives
 
             for (var i = 0; i < Amount; ++i)
             {
-                if (!(ActivatorUtil.CreateInstance(Delivery) is Item item))
+                if (!(Delivery.CreateInstance() is Item item))
                 {
                     continue;
                 }

@@ -46,7 +46,7 @@ namespace Server
                     continue;
                 }
 
-                var region = ActivatorUtil.CreateInstance(type, json, JsonConfig.DefaultOptions) as Region;
+                var region = type.CreateInstance(json, JsonConfig.DefaultOptions) as Region;
                 region?.Register();
                 count++;
             }

@@ -340,7 +340,7 @@ namespace Server.Engines.Doom
                     return;
                 }
 
-                var obj = ActivatorUtil.CreateInstance(type);
+                var obj = type.CreateInstance();
 
                 if (obj is Item item)
                 {

@@ -396,7 +396,7 @@ namespace Server.Engines.Harvest
                             return;
                         }
 
-                        if (ActivatorUtil.CreateInstance(res.Types[2], 25) is BaseCreature spawned)
+                        if (res.Types[2].CreateInstance(25) is BaseCreature spawned)
                         {
                             var offset = Utility.Random(8) * 2;
 

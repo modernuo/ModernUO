@@ -591,7 +591,7 @@ namespace Server.Engines.Spawners
 
                     if (paramargs.Length == 0)
                     {
-                        o = ActivatorUtil.CreateInstance(type, ci => Add.IsConstructible(ci, AccessLevel.Developer));
+                        o = type.CreateInstance(ci => Add.IsConstructible(ci, AccessLevel.Developer));
                     }
                     else
                     {

@@ -151,7 +151,7 @@ namespace Server.Items
                 {
                     if (this is BaseExplosionPotion && Amount > 1)
                     {
-                        var pot = (BasePotion)ActivatorUtil.CreateInstance(GetType());
+                        var pot = (BasePotion)GetType().CreateInstance();
 
                         Amount--;
 

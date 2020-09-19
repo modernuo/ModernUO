@@ -245,7 +245,7 @@ namespace Server.Items
 
                 try
                 {
-                    bc = (BaseCreature)ActivatorUtil.CreateInstance(m_SpawnTypes[level].RandomElement());
+                    bc = (BaseCreature)m_SpawnTypes[level].RandomElement().CreateInstance();
                 }
                 catch
                 {

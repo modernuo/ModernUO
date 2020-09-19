@@ -842,7 +842,7 @@ namespace Server.Items
 
             try
             {
-                item = ActivatorUtil.CreateInstance(m_Decorations[random]) as Item;
+                item = m_Decorations[random].CreateInstance() as Item;
             }
             catch
             {

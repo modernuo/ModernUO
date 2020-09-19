@@ -29,7 +29,7 @@ namespace Server
 
         public static void GiveArtifactTo(Mobile m)
         {
-            if (!(ActivatorUtil.CreateInstance(Artifacts.RandomElement()) is Item item))
+            if (!(Artifacts.RandomElement().CreateInstance() is Item item))
             {
                 return;
             }

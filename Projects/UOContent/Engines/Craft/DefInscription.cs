@@ -55,7 +55,7 @@ namespace Server.Engines.Craft
 
             if (typeItem != null)
             {
-                var o = ActivatorUtil.CreateInstance(typeItem);
+                var o = typeItem.CreateInstance();
 
                 if (o is SpellScroll scroll)
                 {

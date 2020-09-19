@@ -181,7 +181,7 @@ namespace Server.Spells.Necromancy
                 {
                     try
                     {
-                        var bc = (BaseCreature)ActivatorUtil.CreateInstance(entry.Type);
+                        var bc = (BaseCreature)entry.Type.CreateInstance();
 
                         // TODO: Is this right?
                         bc.Skills.MagicResist.Base = m_From.Skills.MagicResist.Base;
