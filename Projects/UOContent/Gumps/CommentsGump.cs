@@ -80,11 +80,11 @@ namespace Server.Gumps
 
             if (m.Account == null)
             {
-                @from.SendMessage("That player doesn't have an account loaded... weird.");
+                from.SendMessage("That player doesn't have an account loaded... weird.");
             }
             else
             {
-                @from.SendGump(new CommentsGump((Account)m.Account));
+                from.SendGump(new CommentsGump((Account)m.Account));
             }
         }
 

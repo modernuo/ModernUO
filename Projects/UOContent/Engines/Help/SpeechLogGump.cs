@@ -115,7 +115,7 @@ namespace Server.Engines.Help
                     {
                         if (m_Page - 1 >= 0)
                         {
-                            @from.SendGump(new SpeechLogGump(m_Player, m_Log, m_Page - 1));
+                            from.SendGump(new SpeechLogGump(m_Player, m_Log, m_Page - 1));
                         }
 
                         break;
@@ -124,7 +124,7 @@ namespace Server.Engines.Help
                     {
                         if ((m_Page + 1) * MaxEntriesPerPage < m_Log.Count)
                         {
-                            @from.SendGump(new SpeechLogGump(m_Player, m_Log, m_Page + 1));
+                            from.SendGump(new SpeechLogGump(m_Player, m_Log, m_Page + 1));
                         }
 
                         break;

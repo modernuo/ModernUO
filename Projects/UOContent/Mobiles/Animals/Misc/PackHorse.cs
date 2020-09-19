@@ -163,7 +163,7 @@ namespace Server.Mobiles
         {
             if (CheckAccess(animal, from))
             {
-                list.Add(new PackAnimalBackpackEntry(animal, @from));
+                list.Add(new PackAnimalBackpackEntry(animal, from));
             }
         }
 
@@ -226,7 +226,7 @@ namespace Server.Mobiles
 
             if (item != null)
             {
-                @from.Use(item);
+                from.Use(item);
             }
         }
     }

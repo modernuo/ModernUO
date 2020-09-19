@@ -87,9 +87,9 @@ namespace Server.Items
                 {
                     if (item is IScissorable obj && (obj is PlagueBeastInnard || obj is PlagueBeastMutationCore))
                     {
-                        if (CanScissor(@from, obj) && obj.Scissor(@from, m_Item))
+                        if (CanScissor(from, obj) && obj.Scissor(from, m_Item))
                         {
-                            @from.PlaySound(0x248);
+                            from.PlaySound(0x248);
                         }
                     }
                 }
@@ -97,7 +97,7 @@ namespace Server.Items
                 {
                     if (CanScissor(from, obj) && obj.Scissor(from, m_Item))
                     {
-                        @from.PlaySound(0x248);
+                        from.PlaySound(0x248);
                     }
                 }
                 else
@@ -112,7 +112,7 @@ namespace Server.Items
                 {
                     if (CanScissor(from, obj) && obj.Scissor(from, m_Item))
                     {
-                        @from.PlaySound(0x248);
+                        from.PlaySound(0x248);
                     }
                 }
                 else

@@ -756,31 +756,31 @@ namespace Server.Multis
 
             if (result == DryDockResult.Dead)
             {
-                @from.SendLocalizedMessage(502493); // You appear to be dead.
+                from.SendLocalizedMessage(502493); // You appear to be dead.
             }
             else if (result == DryDockResult.NoKey)
             {
-                @from.SendLocalizedMessage(502494); // You must have a key to the ship to dock the boat.
+                from.SendLocalizedMessage(502494); // You must have a key to the ship to dock the boat.
             }
             else if (result == DryDockResult.NotAnchored)
             {
-                @from.SendLocalizedMessage(1010570); // You must lower the anchor to dock the boat.
+                from.SendLocalizedMessage(1010570); // You must lower the anchor to dock the boat.
             }
             else if (result == DryDockResult.Mobiles)
             {
-                @from.SendLocalizedMessage(502495); // You cannot dock the ship with beings on board!
+                from.SendLocalizedMessage(502495); // You cannot dock the ship with beings on board!
             }
             else if (result == DryDockResult.Items)
             {
-                @from.SendLocalizedMessage(502496); // You cannot dock the ship with a cluttered deck.
+                from.SendLocalizedMessage(502496); // You cannot dock the ship with a cluttered deck.
             }
             else if (result == DryDockResult.Hold)
             {
-                @from.SendLocalizedMessage(502497); // Make sure your hold is empty, and try again!
+                from.SendLocalizedMessage(502497); // Make sure your hold is empty, and try again!
             }
             else if (result == DryDockResult.Valid)
             {
-                @from.SendGump(new ConfirmDryDockGump(@from, this));
+                from.SendGump(new ConfirmDryDockGump(from, this));
             }
         }
 
@@ -795,27 +795,27 @@ namespace Server.Multis
 
             if (result == DryDockResult.Dead)
             {
-                @from.SendLocalizedMessage(502493); // You appear to be dead.
+                from.SendLocalizedMessage(502493); // You appear to be dead.
             }
             else if (result == DryDockResult.NoKey)
             {
-                @from.SendLocalizedMessage(502494); // You must have a key to the ship to dock the boat.
+                from.SendLocalizedMessage(502494); // You must have a key to the ship to dock the boat.
             }
             else if (result == DryDockResult.NotAnchored)
             {
-                @from.SendLocalizedMessage(1010570); // You must lower the anchor to dock the boat.
+                from.SendLocalizedMessage(1010570); // You must lower the anchor to dock the boat.
             }
             else if (result == DryDockResult.Mobiles)
             {
-                @from.SendLocalizedMessage(502495); // You cannot dock the ship with beings on board!
+                from.SendLocalizedMessage(502495); // You cannot dock the ship with beings on board!
             }
             else if (result == DryDockResult.Items)
             {
-                @from.SendLocalizedMessage(502496); // You cannot dock the ship with a cluttered deck.
+                from.SendLocalizedMessage(502496); // You cannot dock the ship with a cluttered deck.
             }
             else if (result == DryDockResult.Hold)
             {
-                @from.SendLocalizedMessage(502497); // Make sure your hold is empty, and try again!
+                from.SendLocalizedMessage(502497); // Make sure your hold is empty, and try again!
             }
 
             if (result != DryDockResult.Valid)

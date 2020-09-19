@@ -56,7 +56,7 @@ namespace Server.Items
             }
             else
             {
-                base.OnSingleClick(@from);
+                base.OnSingleClick(from);
             }
         }
 

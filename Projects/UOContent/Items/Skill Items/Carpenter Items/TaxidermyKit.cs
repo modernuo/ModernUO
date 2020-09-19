@@ -496,7 +496,7 @@ namespace Server.Items
 
                     if (northWall && westWall)
                     {
-                        switch (@from.Direction & Direction.Mask)
+                        switch (from.Direction & Direction.Mask)
                         {
                             case Direction.North:
                             case Direction.South:
@@ -509,7 +509,7 @@ namespace Server.Items
                                 break;
 
                             default:
-                                @from.SendMessage("Turn to face the wall on which to hang this trophy.");
+                                from.SendMessage("Turn to face the wall on which to hang this trophy.");
                                 return;
                         }
                     }
@@ -526,7 +526,7 @@ namespace Server.Items
                     }
                     else
                     {
-                        @from.SendLocalizedMessage(1042626); // The trophy must be placed next to a wall.
+                        from.SendLocalizedMessage(1042626); // The trophy must be placed next to a wall.
                     }
 
                     if (itemID > 0)

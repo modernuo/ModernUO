@@ -16,11 +16,11 @@ namespace Server.Targets
         {
             if (targeted is UnholyBone bone && from.InRange(bone, 12))
             {
-                bone.Carve(@from, m_Item);
+                bone.Carve(from, m_Item);
             }
             else
             {
-                base.OnTargetOutOfRange(@from, targeted);
+                base.OnTargetOutOfRange(from, targeted);
             }
         }
 
@@ -39,7 +39,7 @@ namespace Server.Targets
             {
                 if (!pet.Controlled || pet.ControlMaster != from)
                 {
-                    @from.SendLocalizedMessage(1053022); // You cannot remove barding from a swamp dragon you do not own.
+                    from.SendLocalizedMessage(1053022); // You cannot remove barding from a swamp dragon you do not own.
                 }
                 else
                 {

@@ -127,7 +127,7 @@ namespace Server.Items
 
             if (m_Crafter != null)
             {
-                LabelTo(@from, 1050043, m_Crafter.Name); // crafted by ~1_NAME~
+                LabelTo(from, 1050043, m_Crafter.Name); // crafted by ~1_NAME~
             }
         }
 
@@ -170,7 +170,7 @@ namespace Server.Items
         {
             if (Check(from))
             {
-                Repair.Do(@from, RepairSkillInfo.GetInfo(m_Skill).System, this);
+                Repair.Do(from, RepairSkillInfo.GetInfo(m_Skill).System, this);
             }
         }
 
@@ -178,11 +178,11 @@ namespace Server.Items
         {
             if (!IsChildOf(from.Backpack))
             {
-                @from.SendLocalizedMessage(1047012); // The contract must be in your backpack to use it.
+                from.SendLocalizedMessage(1047012); // The contract must be in your backpack to use it.
             }
             else if (!VerifyRegion(from))
             {
-                TextDefinition.SendMessageTo(@from, RepairSkillInfo.GetInfo(m_Skill).NotNearbyMessage);
+                TextDefinition.SendMessageTo(from, RepairSkillInfo.GetInfo(m_Skill).NotNearbyMessage);
             }
             else
             {

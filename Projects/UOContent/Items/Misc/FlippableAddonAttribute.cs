@@ -45,7 +45,7 @@ namespace Server.Items
 
                         ClearComponents(addon);
 
-                        flipMethod.Invoke(addon, new object[] { @from, Directions[index] });
+                        flipMethod.Invoke(addon, new object[] { from, Directions[index] });
 
                         BaseHouse house = null;
                         var result = AddonFitResult.Valid;
@@ -54,14 +54,14 @@ namespace Server.Items
 
                         if (addon is BaseAddon baseAddon)
                         {
-                            result = baseAddon.CouldFit(baseAddon.Location, @from.Map, @from, ref house);
+                            result = baseAddon.CouldFit(baseAddon.Location, from.Map, from, ref house);
                         }
                         else if (addon is BaseAddonContainer container)
                         {
-                            result = container.CouldFit(container.Location, @from.Map, @from, ref house);
+                            result = container.CouldFit(container.Location, from.Map, from, ref house);
                         }
 
-                        addon.Map = @from.Map;
+                        addon.Map = from.Map;
 
                         if (result != AddonFitResult.Valid)
                         {
@@ -76,27 +76,27 @@ namespace Server.Items
 
                             ClearComponents(addon);
 
-                            flipMethod.Invoke(addon, new object[2] { @from, Directions[index] });
+                            flipMethod.Invoke(addon, new object[2] { from, Directions[index] });
 
                             if (result == AddonFitResult.Blocked)
                             {
-                                @from.SendLocalizedMessage(500269); // You cannot build that there.
+                                from.SendLocalizedMessage(500269); // You cannot build that there.
                             }
                             else if (result == AddonFitResult.NotInHouse)
                             {
-                                @from.SendLocalizedMessage(500274); // You can only place this in a house that you own!
+                                from.SendLocalizedMessage(500274); // You can only place this in a house that you own!
                             }
                             else if (result == AddonFitResult.DoorsNotClosed)
                             {
-                                @from.SendMessage("You must close all house doors before placing this.");
+                                from.SendMessage("You must close all house doors before placing this.");
                             }
                             else if (result == AddonFitResult.DoorTooClose)
                             {
-                                @from.SendLocalizedMessage(500271); // You cannot build near the door.
+                                from.SendLocalizedMessage(500271); // You cannot build near the door.
                             }
                             else if (result == AddonFitResult.NoWall)
                             {
-                                @from.SendLocalizedMessage(500268); // This object needs to be mounted on something.
+                                from.SendLocalizedMessage(500268); // This object needs to be mounted on something.
                             }
                         }
 

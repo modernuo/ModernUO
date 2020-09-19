@@ -105,7 +105,7 @@ namespace Server.Mobiles
                             MessageType.Regular,
                             0x3B2,
                             1071919,
-                            @from.Name,
+                            from.Name,
                             m.NetState
                         ); // * ~1_VAL~ slices through the plague beast's amorphous tissue *
                     }
@@ -140,7 +140,7 @@ namespace Server.Mobiles
             {
                 if (OpenedBy != null && Backpack != null)
                 {
-                    Backpack.DisplayTo(@from);
+                    Backpack.DisplayTo(from);
                 }
                 else
                 {
@@ -148,7 +148,7 @@ namespace Server.Mobiles
                         MessageType.Regular,
                         0x3B2,
                         1071917,
-                        @from.NetState
+                        from.NetState
                     ); // * You attempt to tear open the amorphous flesh, but it resists *
                 }
             }
@@ -158,7 +158,7 @@ namespace Server.Mobiles
         {
             if (IsAccessibleTo(from) && (dropped is PlagueBeastInnard || dropped is PlagueBeastGland))
             {
-                return base.OnDragDrop(@from, dropped);
+                return base.OnDragDrop(from, dropped);
             }
 
             return false;

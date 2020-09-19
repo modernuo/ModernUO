@@ -136,7 +136,7 @@ namespace Server.Items
 
             if (IsArcane)
             {
-                LabelTo(@from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
+                LabelTo(from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
             }
         }
 

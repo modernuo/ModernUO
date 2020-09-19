@@ -26,7 +26,7 @@ namespace Server
 
                 if (from.Body.IsHuman)
                 {
-                    @from.Animate(34, 5, 1, true, false, 0);
+                    from.Animate(34, 5, 1, true, false, 0);
                 }
 
                 from.FixedParticles(0x375A, 10, 15, 5011, EffectLayer.Head);

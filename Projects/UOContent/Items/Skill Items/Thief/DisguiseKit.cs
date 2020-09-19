@@ -42,35 +42,35 @@ namespace Server.Items
 
             if (!IsChildOf(from.Backpack))
             {
-                @from.SendLocalizedMessage(1042001);
+                from.SendLocalizedMessage(1042001);
             }
             else if (pm == null || pm.NpcGuild != NpcGuild.ThievesGuild)
             {
-                @from.SendLocalizedMessage(501702);
+                from.SendLocalizedMessage(501702);
             }
             else if (Stealing.SuspendOnMurder && pm.Kills > 0)
             {
-                @from.SendLocalizedMessage(501703);
+                from.SendLocalizedMessage(501703);
             }
             else if (!from.CanBeginAction<IncognitoSpell>())
             {
-                @from.SendLocalizedMessage(501704);
+                from.SendLocalizedMessage(501704);
             }
             else if (Sigil.ExistsOn(from))
             {
-                @from.SendLocalizedMessage(1010465); // You cannot disguise yourself while holding a sigil
+                from.SendLocalizedMessage(1010465); // You cannot disguise yourself while holding a sigil
             }
             else if (TransformationSpellHelper.UnderTransformation(from))
             {
-                @from.SendLocalizedMessage(1061634);
+                from.SendLocalizedMessage(1061634);
             }
             else if (from.BodyMod == 183 || from.BodyMod == 184)
             {
-                @from.SendLocalizedMessage(1040002);
+                from.SendLocalizedMessage(1040002);
             }
             else if (!from.CanBeginAction<PolymorphSpell>() || from.IsBodyMod)
             {
-                @from.SendLocalizedMessage(501705);
+                from.SendLocalizedMessage(501705);
             }
             else
             {
@@ -84,7 +84,7 @@ namespace Server.Items
         {
             if (ValidateUse(from))
             {
-                @from.SendGump(new DisguiseGump(@from, this, true, false));
+                from.SendGump(new DisguiseGump(from, this, true, false));
             }
         }
     }

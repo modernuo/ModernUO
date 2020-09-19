@@ -44,7 +44,7 @@ namespace Server.Items
 
                 if (!Core.AOS)
                 {
-                    item.OnSingleClick(@from);
+                    item.OnSingleClick(from);
                 }
 
                 return true;

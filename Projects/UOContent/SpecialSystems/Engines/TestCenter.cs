@@ -46,19 +46,19 @@ namespace Server.Misc
 
                         if (Insensitive.Equals(name, "str"))
                         {
-                            ChangeStrength(@from, (int)value);
+                            ChangeStrength(from, (int)value);
                         }
                         else if (Insensitive.Equals(name, "dex"))
                         {
-                            ChangeDexterity(@from, (int)value);
+                            ChangeDexterity(from, (int)value);
                         }
                         else if (Insensitive.Equals(name, "int"))
                         {
-                            ChangeIntelligence(@from, (int)value);
+                            ChangeIntelligence(from, (int)value);
                         }
                         else
                         {
-                            ChangeSkill(@from, name, value);
+                            ChangeSkill(from, name, value);
                         }
                     }
                     catch
@@ -164,7 +164,7 @@ namespace Server.Misc
 
                     if (skill.Owner.Total - oldFixedPoint + newFixedPoint > skill.Owner.Cap)
                     {
-                        @from.SendMessage("You can not exceed the skill cap.  Try setting another skill lower first.");
+                        from.SendMessage("You can not exceed the skill cap.  Try setting another skill lower first.");
                     }
                     else
                     {

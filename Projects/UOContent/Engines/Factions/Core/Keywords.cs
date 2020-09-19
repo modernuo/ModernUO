@@ -32,18 +32,18 @@ namespace Server.Factions
                 {
                     case 0x00E4: // *i wish to access the city treasury*
                         {
-                            var town = Town.FromRegion(@from.Region);
+                            var town = Town.FromRegion(from.Region);
 
-                            if (town?.IsFinance(@from) != true || !@from.Alive)
+                            if (town?.IsFinance(from) != true || !from.Alive)
                             {
                                 break;
                             }
 
-                            if (FactionGump.Exists(@from))
+                            if (FactionGump.Exists(from))
                             {
-                                @from.SendLocalizedMessage(1042160); // You already have a faction menu open.
+                                from.SendLocalizedMessage(1042160); // You already have a faction menu open.
                             }
-                            else if (town.Owner != null && @from is PlayerMobile mobile)
+                            else if (town.Owner != null && from is PlayerMobile mobile)
                             {
                                 mobile.SendGump(new FinanceGump(mobile, town.Owner, town));
                             }
@@ -52,71 +52,71 @@ namespace Server.Factions
                         }
                     case 0x0ED: // *i am sheriff*
                         {
-                            var town = Town.FromRegion(@from.Region);
+                            var town = Town.FromRegion(from.Region);
 
-                            if (town?.IsSheriff(@from) != true || !@from.Alive)
+                            if (town?.IsSheriff(from) != true || !from.Alive)
                             {
                                 break;
                             }
 
-                            if (FactionGump.Exists(@from))
+                            if (FactionGump.Exists(from))
                             {
-                                @from.SendLocalizedMessage(1042160); // You already have a faction menu open.
+                                from.SendLocalizedMessage(1042160); // You already have a faction menu open.
                             }
                             else if (town.Owner != null)
                             {
-                                @from.SendGump(new SheriffGump((PlayerMobile)@from, town.Owner, town));
+                                from.SendGump(new SheriffGump((PlayerMobile)from, town.Owner, town));
                             }
 
                             break;
                         }
                     case 0x00EF: // *you are fired*
                         {
-                            var town = Town.FromRegion(@from.Region);
+                            var town = Town.FromRegion(from.Region);
 
                             if (town == null)
                             {
                                 break;
                             }
 
-                            if (town.IsFinance(@from) || town.IsSheriff(@from))
+                            if (town.IsFinance(from) || town.IsSheriff(from))
                             {
-                                town.BeginOrderFiring(@from);
+                                town.BeginOrderFiring(from);
                             }
 
                             break;
                         }
                     case 0x00E5: // *i wish to resign as finance minister*
                         {
-                            var pl = PlayerState.Find(@from);
+                            var pl = PlayerState.Find(from);
 
                             if (pl?.Finance != null)
                             {
                                 pl.Finance.Finance = null;
-                                @from.SendLocalizedMessage(1005081); // You have been fired as Finance Minister
+                                from.SendLocalizedMessage(1005081); // You have been fired as Finance Minister
                             }
 
                             break;
                         }
                     case 0x00EE: // *i wish to resign as sheriff*
                         {
-                            var pl = PlayerState.Find(@from);
+                            var pl = PlayerState.Find(from);
 
                             if (pl?.Sheriff != null)
                             {
                                 pl.Sheriff.Sheriff = null;
-                                @from.SendLocalizedMessage(1010270); // You have been fired as Sheriff
+                                from.SendLocalizedMessage(1010270); // You have been fired as Sheriff
                             }
 
                             break;
                         }
                     case 0x00E9: // *what is my faction term status*
                         {
-                            var pl = PlayerState.Find(@from);
+                            var pl = PlayerState.Find(from);
 
                             if (pl?.IsLeaving == true)
                             {
-                                if (Faction.CheckLeaveTimer(@from))
+                                if (Faction.CheckLeaveTimer(from))
                                 {
                                     break;
                                 }
@@ -125,7 +125,7 @@ namespace Server.Factions
 
                                 if (remaining.TotalDays >= 1)
                                 {
-                                    @from.SendLocalizedMessage(
+                                    from.SendLocalizedMessage(
                                         1042743,
                                         remaining.TotalDays
                                             .ToString("N0")
@@ -133,7 +133,7 @@ namespace Server.Factions
                                 }
                                 else if (remaining.TotalHours >= 1)
                                 {
-                                    @from.SendLocalizedMessage(
+                                    from.SendLocalizedMessage(
                                         1042741,
                                         remaining.TotalHours
                                             .ToString("N0")
@@ -141,43 +141,43 @@ namespace Server.Factions
                                 }
                                 else
                                 {
-                                    @from.SendLocalizedMessage(
+                                    from.SendLocalizedMessage(
                                         1042742
                                     ); // Your term of service will come to an end in less than one hour.
                                 }
                             }
                             else if (pl != null)
                             {
-                                @from.SendLocalizedMessage(1042233); // You are not in the process of quitting the faction.
+                                from.SendLocalizedMessage(1042233); // You are not in the process of quitting the faction.
                             }
 
                             break;
                         }
                     case 0x00EA: // *message faction*
                         {
-                            var faction = Faction.Find(@from);
+                            var faction = Faction.Find(from);
 
-                            if (faction?.IsCommander(@from) != true)
+                            if (faction?.IsCommander(from) != true)
                             {
                                 break;
                             }
 
-                            if (@from.AccessLevel == AccessLevel.Player && !faction.FactionMessageReady)
+                            if (from.AccessLevel == AccessLevel.Player && !faction.FactionMessageReady)
                             {
-                                @from.SendLocalizedMessage(
+                                from.SendLocalizedMessage(
                                     1010264
                                 ); // The required time has not yet passed since the last message was sent
                             }
                             else
                             {
-                                faction.BeginBroadcast(@from);
+                                faction.BeginBroadcast(from);
                             }
 
                             break;
                         }
                     case 0x00EC: // *showscore*
                         {
-                            var pl = PlayerState.Find(@from);
+                            var pl = PlayerState.Find(from);
 
                             if (pl != null)
                             {
@@ -188,7 +188,7 @@ namespace Server.Factions
                         }
                     case 0x0178: // i honor your leadership
                         {
-                            Faction.Find(@from)?.BeginHonorLeadership(@from);
+                            Faction.Find(from)?.BeginHonorLeadership(from);
                             break;
                         }
                 }

@@ -261,11 +261,11 @@ namespace Server.Items
 
             if (IsEmpty)
             {
-                @from.SendGump(new SelectSkillGump(this, @from));
+                from.SendGump(new SelectSkillGump(this, from));
             }
             else
             {
-                @from.SendGump(new ConfirmTransferGump(this, @from));
+                from.SendGump(new ConfirmTransferGump(this, from));
             }
         }
 
@@ -763,21 +763,21 @@ namespace Server.Items
 
                 if (requiredAmount > 0)
                 {
-                    for (var i = 0; i < @from.Skills.Length; ++i)
+                    for (var i = 0; i < from.Skills.Length; ++i)
                     {
-                        if (@from.Skills[i].Lock != SkillLock.Down)
+                        if (from.Skills[i].Lock != SkillLock.Down)
                         {
                             continue;
                         }
 
-                        if (requiredAmount >= @from.Skills[i].BaseFixedPoint)
+                        if (requiredAmount >= from.Skills[i].BaseFixedPoint)
                         {
-                            requiredAmount -= @from.Skills[i].BaseFixedPoint;
-                            @from.Skills[i].Base = 0.0;
+                            requiredAmount -= from.Skills[i].BaseFixedPoint;
+                            from.Skills[i].Base = 0.0;
                         }
                         else
                         {
-                            @from.Skills[i].BaseFixedPoint -= requiredAmount;
+                            from.Skills[i].BaseFixedPoint -= requiredAmount;
                             break;
                         }
                     }
@@ -825,7 +825,7 @@ namespace Server.Items
                 {
                     if (--frag.UsesRemaining <= 0)
                     {
-                        @from.SendLocalizedMessage(1070974); // You have used up your soulstone fragment.
+                        from.SendLocalizedMessage(1070974); // You have used up your soulstone fragment.
                     }
                 }
             }
@@ -927,11 +927,11 @@ namespace Server.Items
 
                 if (m_Stone.IsEmpty)
                 {
-                    @from.SendGump(new SelectSkillGump(m_Stone, @from));
+                    from.SendGump(new SelectSkillGump(m_Stone, from));
                 }
                 else
                 {
-                    @from.SendGump(new ConfirmTransferGump(m_Stone, @from));
+                    from.SendGump(new ConfirmTransferGump(m_Stone, from));
                 }
             }
         }
@@ -1025,7 +1025,7 @@ namespace Server.Items
             {
                 if (m_UsesRemaining <= 0)
                 {
-                    @from.SendLocalizedMessage(1070975); // That soulstone fragment has no more uses.
+                    from.SendLocalizedMessage(1070975); // That soulstone fragment has no more uses.
                     return false;
                 }
             }

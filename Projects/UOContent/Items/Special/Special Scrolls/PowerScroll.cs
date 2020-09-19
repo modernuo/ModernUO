@@ -58,7 +58,7 @@ namespace Server.Items
             SkillName.Mysticism,
             SkillName.Imbuing
           };
-    
+
         private static SkillName[] m_HSSkills = new SkillName[]
           {
             SkillName.Fishing
@@ -185,11 +185,11 @@ namespace Server.Items
 
             if (level >= 0.0 && level <= 3.0 && Value % 5.0 == 0.0)
             {
-                LabelTo(@from, 1049639 + (int)level, GetNameLocalized());
+                LabelTo(from, 1049639 + (int)level, GetNameLocalized());
             }
             else
             {
-                LabelTo(@from, "a power scroll of {0} ({1} Skill)", GetName(), Value);
+                LabelTo(from, "a power scroll of {0} ({1} Skill)", GetName(), Value);
             }
         }
 

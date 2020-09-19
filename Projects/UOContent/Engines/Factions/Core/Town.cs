@@ -216,7 +216,7 @@ namespace Server.Factions
             }
             else
             {
-                @from.SendMessage("That is not a {0}!", type);
+                from.SendMessage("That is not a {0}!", type);
             }
         }
 

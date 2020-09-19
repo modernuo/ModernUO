@@ -1354,12 +1354,12 @@ namespace Server.Multis
 
             if (item is ISecurable securable)
             {
-                return HasSecureAccess(@from, securable.Level);
+                return HasSecureAccess(from, securable.Level);
             }
 
             if (item is Container)
             {
-                return IsCoOwner(@from);
+                return IsCoOwner(from);
             }
 
             if (item.Stackable)
@@ -1369,12 +1369,12 @@ namespace Server.Multis
 
             if (item is BaseLight)
             {
-                return IsFriend(@from);
+                return IsFriend(from);
             }
 
             if (item is PotionKeg)
             {
-                return IsFriend(@from);
+                return IsFriend(from);
             }
 
             if (item is Dices)
@@ -1859,7 +1859,7 @@ namespace Server.Multis
             {
                 if (from != null)
                 {
-                    door.KeyValue = CreateKeys(@from);
+                    door.KeyValue = CreateKeys(from);
                 }
 
                 AddDoor(door, xOffset, yOffset, zOffset);
@@ -1956,9 +1956,9 @@ namespace Server.Multis
 
                 if (from.Z + 16 >= p.Z && p.Z + 16 >= from.Z)
                 {
-                    if (@from.InRange(p, 1))
+                    if (from.InRange(p, 1))
                     {
-                        @from.SendLocalizedMessage(502120); // You cannot place a trash barrel near a door or near steps.
+                        from.SendLocalizedMessage(502120); // You cannot place a trash barrel near a door or near steps.
                         return;
                     }
                 }
@@ -2148,7 +2148,7 @@ namespace Server.Multis
 
             if (!isValid)
             {
-                @from.SendLocalizedMessage(
+                from.SendLocalizedMessage(
                     1062067
                 ); // In order to transfer the house, you and the recipient must both be outside the building and within two paces of the house sign.
             }
@@ -2527,9 +2527,9 @@ namespace Server.Multis
 
                 if (from.Z + 16 >= p.Z && p.Z + 16 >= from.Z)
                 {
-                    if (@from.InRange(p, 1))
+                    if (from.InRange(p, 1))
                     {
-                        @from.SendLocalizedMessage(502113); // You cannot place a strongbox near a door or near steps.
+                        from.SendLocalizedMessage(502113); // You cannot place a strongbox near a door or near steps.
                         return;
                     }
                 }
@@ -3912,7 +3912,7 @@ namespace Server.Multis
                     {
                         if (component.Addon != null)
                         {
-                            m_House.Release(@from, component.Addon);
+                            m_House.Release(from, component.Addon);
                         }
                     }
                     else
@@ -3942,7 +3942,7 @@ namespace Server.Multis
                         {
                             if (component.Addon != null)
                             {
-                                m_House.LockDown(@from, component.Addon);
+                                m_House.LockDown(from, component.Addon);
                             }
                         }
                         else
@@ -3995,7 +3995,7 @@ namespace Server.Multis
                     {
                         if (component.Addon != null)
                         {
-                            m_House.ReleaseSecure(@from, component.Addon);
+                            m_House.ReleaseSecure(from, component.Addon);
                         }
                     }
                     else
@@ -4020,7 +4020,7 @@ namespace Server.Multis
                         {
                             if (component.Addon != null)
                             {
-                                m_House.AddSecure(@from, component.Addon);
+                                m_House.AddSecure(from, component.Addon);
                             }
                         }
                         else
@@ -4057,11 +4057,11 @@ namespace Server.Multis
 
             if (targeted is Mobile mobile)
             {
-                m_House.Kick(@from, mobile);
+                m_House.Kick(from, mobile);
             }
             else
             {
-                @from.SendLocalizedMessage(501347); // You cannot eject that from the house!
+                from.SendLocalizedMessage(501347); // You cannot eject that from the house!
             }
         }
     }
@@ -4090,11 +4090,11 @@ namespace Server.Multis
             {
                 if (m_Banning)
                 {
-                    m_House.Ban(@from, mobile);
+                    m_House.Ban(from, mobile);
                 }
                 else
                 {
-                    m_House.RemoveBan(@from, mobile);
+                    m_House.RemoveBan(from, mobile);
                 }
             }
             else
@@ -4124,11 +4124,11 @@ namespace Server.Multis
 
             if (targeted is Mobile mobile)
             {
-                m_House.GrantAccess(@from, mobile);
+                m_House.GrantAccess(from, mobile);
             }
             else
             {
-                @from.SendLocalizedMessage(1060712); // That is not a player.
+                from.SendLocalizedMessage(1060712); // That is not a player.
             }
         }
     }
@@ -4157,11 +4157,11 @@ namespace Server.Multis
             {
                 if (m_Add)
                 {
-                    m_House.AddCoOwner(@from, mobile);
+                    m_House.AddCoOwner(from, mobile);
                 }
                 else
                 {
-                    m_House.RemoveCoOwner(@from, mobile);
+                    m_House.RemoveCoOwner(from, mobile);
                 }
             }
             else
@@ -4195,11 +4195,11 @@ namespace Server.Multis
             {
                 if (m_Add)
                 {
-                    m_House.AddFriend(@from, mobile);
+                    m_House.AddFriend(from, mobile);
                 }
                 else
                 {
-                    m_House.RemoveFriend(@from, mobile);
+                    m_House.RemoveFriend(from, mobile);
                 }
             }
             else
@@ -4224,11 +4224,11 @@ namespace Server.Multis
         {
             if (targeted is Mobile mobile)
             {
-                m_House.BeginConfirmTransfer(@from, mobile);
+                m_House.BeginConfirmTransfer(from, mobile);
             }
             else
             {
-                @from.SendLocalizedMessage(501384); // Only a player can own a house!
+                from.SendLocalizedMessage(501384); // Only a player can own a house!
             }
         }
     }

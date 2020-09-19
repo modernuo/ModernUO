@@ -40,7 +40,7 @@ namespace Server.Items
 
             if (TrapOnOpen)
             {
-                ExecuteTrap(@from);
+                ExecuteTrap(from);
             }
         }
 
@@ -111,7 +111,7 @@ namespace Server.Items
                         {
                             if (from.InRange(loc, 1))
                             {
-                                @from.Damage(TrapPower);
+                                from.Damage(TrapPower);
                             }
                             // AOS.Damage( from, m_TrapPower, 0, 100, 0, 0, 0 );
 
@@ -198,7 +198,7 @@ namespace Server.Items
         {
             if (!TrapOnOpen || !ExecuteTrap(from))
             {
-                base.Open(@from);
+                base.Open(from);
             }
         }
 

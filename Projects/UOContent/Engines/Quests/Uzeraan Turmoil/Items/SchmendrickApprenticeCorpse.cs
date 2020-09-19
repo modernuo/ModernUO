@@ -89,7 +89,7 @@ namespace Server.Engines.Quests.Haven
 
             if (ItemID == 0x2006) // Corpse form
             {
-                @from.Send(
+                from.Send(
                     new MessageLocalized(
                         Serial,
                         ItemID,
@@ -104,7 +104,7 @@ namespace Server.Engines.Quests.Haven
             }
             else
             {
-                @from.Send(
+                from.Send(
                     new MessageLocalized(
                         Serial,
                         ItemID,

@@ -134,7 +134,7 @@ namespace Server.Misc
 
             if ((!Core.ML || map == Faction.Facet) && targetFaction != null)
             {
-                if (Faction.Find(@from, true) != targetFaction)
+                if (Faction.Find(from, true) != targetFaction)
                 {
                     return false;
                 }

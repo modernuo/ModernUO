@@ -47,7 +47,7 @@ namespace Server.Items
         {
             if (CanUseWeapon(from, weapon))
             {
-                @from.BeginTarget(weapon.WeaponMaxRange, false, TargetFlags.Harmful, OnTarget, weapon);
+                from.BeginTarget(weapon.WeaponMaxRange, false, TargetFlags.Harmful, OnTarget, weapon);
             }
         }
 
@@ -69,7 +69,7 @@ namespace Server.Items
 
                     if (CombatCheck(from, target))
                     {
-                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, @from, target, weapon);
+                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, from, target, weapon);
                     }
 
                     Timer.DelayCall(TimeSpan.FromSeconds(2.5), ResetUsing, from);
@@ -125,7 +125,7 @@ namespace Server.Items
                             if (weapon.Poison == null && ammo.Poison != null
                                 || weapon.Poison != null && ammo.Poison != null && weapon.Poison.Level != ammo.Poison.Level)
                             {
-                                Unload(@from, weapon);
+                                Unload(from, weapon);
                                 need = Math.Min(MaxUses, ammo.UsesRemaining);
                             }
                         }
@@ -299,11 +299,11 @@ namespace Server.Items
             {
                 if (EvilOmenSpell.TryEndEffect(target))
                 {
-                    target.ApplyPoison(@from, Poison.GetPoison(weapon.Poison.Level + 1));
+                    target.ApplyPoison(from, Poison.GetPoison(weapon.Poison.Level + 1));
                 }
                 else
                 {
-                    target.ApplyPoison(@from, weapon.Poison);
+                    target.ApplyPoison(from, weapon.Poison);
                 }
 
                 weapon.PoisonCharges--;

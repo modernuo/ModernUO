@@ -96,7 +96,7 @@ namespace Server.Engines.Quests.Necro
                     qs.IsObjectiveInProgress(typeof(FindWellOfTearsObjective)) ||
                     qs.IsObjectiveInProgress(typeof(UseCallingScrollObjective)))
                 {
-                    return @from.Backpack?.FindItemByType<KronusScroll>() == null;
+                    return from.Backpack?.FindItemByType<KronusScroll>() == null;
                 }
             }
 

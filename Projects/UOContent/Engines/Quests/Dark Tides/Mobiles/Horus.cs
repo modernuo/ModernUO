@@ -125,7 +125,7 @@ namespace Server.Engines.Quests.Necro
 
             if (from.Alive)
             {
-                if (@from is PlayerMobile pm)
+                if (from is PlayerMobile pm)
                 {
                     var qs = pm.Quest;
 

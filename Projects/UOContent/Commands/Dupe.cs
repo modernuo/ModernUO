@@ -138,16 +138,16 @@ namespace Server.Commands
                                 }
                                 else
                                 {
-                                    newItem.MoveToWorld(@from.Location, @from.Map);
+                                    newItem.MoveToWorld(from.Location, from.Map);
                                 }
 
                                 newItem.InvalidateProperties();
 
                                 CommandLogging.WriteLine(
-                                    @from,
+                                    from,
                                     "{0} {1} duped {2} creating {3}",
-                                    @from.AccessLevel,
-                                    CommandLogging.Format(@from),
+                                    from.AccessLevel,
+                                    CommandLogging.Format(from),
                                     CommandLogging.Format(targ),
                                     CommandLogging.Format(newItem)
                                 );
@@ -166,7 +166,7 @@ namespace Server.Commands
 
                 if (!done)
                 {
-                    @from.SendMessage("Unable to dupe.  Item must have a 0 parameter constructor.");
+                    from.SendMessage("Unable to dupe.  Item must have a 0 parameter constructor.");
                 }
             }
         }

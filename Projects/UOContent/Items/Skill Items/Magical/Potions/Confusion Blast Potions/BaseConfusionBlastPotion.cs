@@ -50,7 +50,7 @@ namespace Server.Items
 
             if (!m_Users.Contains(from))
             {
-                m_Users.Add(@from);
+                m_Users.Add(from);
             }
 
             from.Target = new ThrowTarget(this);
@@ -84,7 +84,7 @@ namespace Server.Items
             {
                 if (m_Users[i].Target is ThrowTarget targ && targ.Potion == this)
                 {
-                    Target.Cancel(@from);
+                    Target.Cancel(from);
                 }
             }
 
@@ -104,7 +104,7 @@ namespace Server.Items
                         continue;
                     }
 
-                    mon.Pacify(@from, DateTime.UtcNow + TimeSpan.FromSeconds(5.0)); // TODO check
+                    mon.Pacify(from, DateTime.UtcNow + TimeSpan.FromSeconds(5.0)); // TODO check
                 }
             }
         }
@@ -180,7 +180,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    to = new Entity(Serial.Zero, new Point3D(p), @from.Map);
+                    to = new Entity(Serial.Zero, new Point3D(p), from.Map);
                 }
 
                 Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue);

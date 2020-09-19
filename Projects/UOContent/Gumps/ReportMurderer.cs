@@ -127,7 +127,7 @@ namespace Server.Gumps
         {
             if (from.RecentlyReported.Contains(killer))
             {
-                @from.RecentlyReported.Remove(killer);
+                from.RecentlyReported.Remove(killer);
             }
         }
 
@@ -178,7 +178,7 @@ namespace Server.Gumps
             m_Idx++;
             if (m_Idx < m_Killers.Count)
             {
-                @from.SendGump(new ReportMurdererGump(@from, m_Killers, m_Idx));
+                from.SendGump(new ReportMurdererGump(from, m_Killers, m_Idx));
             }
         }
 

@@ -243,11 +243,11 @@ namespace Server.Items
 
                 if (northWall && westWall)
                 {
-                    @from.SendGump(new WreathDeedGump(@from, loc, this));
+                    from.SendGump(new WreathDeedGump(from, loc, this));
                 }
                 else
                 {
-                    PlaceAddon(@from, loc, northWall, westWall);
+                    PlaceAddon(from, loc, northWall, westWall);
                 }
             }
             else
@@ -283,7 +283,7 @@ namespace Server.Items
             }
             else
             {
-                @from.SendLocalizedMessage(1062840); // The decoration must be placed next to a wall.
+                from.SendLocalizedMessage(1062840); // The decoration must be placed next to a wall.
             }
 
             if (itemID > 0)

@@ -30,11 +30,11 @@ namespace Server.Items
         {
             if (IsChildOf(from.Backpack))
             {
-                @from.SendGump(new HousePlacementCategoryGump(@from));
+                from.SendGump(new HousePlacementCategoryGump(from));
             }
             else
             {
-                @from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
             }
         }
 
@@ -268,27 +268,27 @@ namespace Server.Items
 
                 if (from.AccessLevel >= AccessLevel.GameMaster || reg.AllowHousing(from, p))
                 {
-                    m_Placed = m_Entry.OnPlacement(@from, p);
+                    m_Placed = m_Entry.OnPlacement(from, p);
                 }
                 else if (reg.IsPartOf<TempNoHousingRegion>())
                 {
-                    @from.SendLocalizedMessage(
+                    from.SendLocalizedMessage(
                         501270
                     ); // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
                 }
                 else if (reg.IsPartOf<TreasureRegion>() || reg.IsPartOf<HouseRegion>())
                 {
-                    @from.SendLocalizedMessage(
+                    from.SendLocalizedMessage(
                         1043287
                     ); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
                 }
                 else if (reg.IsPartOf<HouseRaffleRegion>())
                 {
-                    @from.SendLocalizedMessage(1150493); // You must have a deed for this plot of land in order to build here.
+                    from.SendLocalizedMessage(1150493); // You must have a deed for this plot of land in order to build here.
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(501265); // Housing can not be created in this area.
+                    from.SendLocalizedMessage(501265); // Housing can not be created in this area.
                 }
             }
         }
@@ -302,7 +302,7 @@ namespace Server.Items
 
             if (!m_Placed)
             {
-                @from.SendGump(new HousePlacementListGump(@from, m_Entries));
+                from.SendGump(new HousePlacementListGump(from, m_Entries));
             }
         }
     }
@@ -1960,15 +1960,15 @@ namespace Server.Items
 
                 if (Type == typeof(HouseFoundation))
                 {
-                    args = new object[] { @from, MultiID, m_Storage, m_Lockdowns };
+                    args = new object[] { from, MultiID, m_Storage, m_Lockdowns };
                 }
                 else if (Type == typeof(SmallOldHouse) || Type == typeof(SmallShop) || Type == typeof(TwoStoryHouse))
                 {
-                    args = new object[] { @from, MultiID };
+                    args = new object[] { from, MultiID };
                 }
                 else
                 {
-                    args = new object[] { @from };
+                    args = new object[] { from };
                 }
 
                 return ActivatorUtil.CreateInstance(Type, args) as BaseHouse;

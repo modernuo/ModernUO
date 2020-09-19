@@ -175,7 +175,7 @@ namespace Server.Items
 
             if (house?.IsFriend(from) == true && from.AccessLevel == AccessLevel.Player && house.RefreshDecay())
             {
-                @from.SendLocalizedMessage(1043293); // Your house's age and contents have been refreshed.
+                from.SendLocalizedMessage(1043293); // Your house's age and contents have been refreshed.
             }
 
             if (house?.Public == true && !house.IsFriend(from))
@@ -190,11 +190,11 @@ namespace Server.Items
         {
             if (!CheckAccess(from))
             {
-                @from.SendLocalizedMessage(1061637); // You are not allowed to access this.
+                from.SendLocalizedMessage(1061637); // You are not allowed to access this.
             }
             else
             {
-                base.Use(@from);
+                base.Use(from);
             }
         }
 

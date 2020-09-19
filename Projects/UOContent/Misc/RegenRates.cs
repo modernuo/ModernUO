@@ -83,7 +83,7 @@ namespace Server.Misc
 
             if (CheckAnimal(from, typeof(Dog)) || CheckAnimal(from, typeof(Cat)))
             {
-                points += @from.Skills.Ninjitsu.Fixed / 30;
+                points += from.Skills.Ninjitsu.Fixed / 30;
             }
 
             return TimeSpan.FromSeconds(1.0 / (0.1 * (1 + points)));
@@ -141,7 +141,7 @@ namespace Server.Misc
 
             if (!from.Meditating)
             {
-                CheckBonusSkill(@from, @from.Mana, @from.ManaMax, SkillName.Meditation);
+                CheckBonusSkill(from, from.Mana, from.ManaMax, SkillName.Meditation);
             }
 
             double rate;
@@ -239,7 +239,7 @@ namespace Server.Misc
 
             if (!Core.AOS)
             {
-                rating += GetArmorMeditationValue(@from.ShieldArmor as BaseArmor);
+                rating += GetArmorMeditationValue(from.ShieldArmor as BaseArmor);
             }
 
             rating += GetArmorMeditationValue(from.NeckArmor as BaseArmor);

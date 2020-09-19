@@ -14,7 +14,7 @@ namespace Server.Items
         {
             if (DefaultResource == CraftResource.None)
             {
-                return base.Scissor(@from, scissors);
+                return base.Scissor(from, scissors);
             }
 
             from.SendLocalizedMessage(502440); // Scissors can not be used on that to produce anything.
@@ -194,7 +194,7 @@ namespace Server.Items
 
             if (IsArcane)
             {
-                LabelTo(@from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
+                LabelTo(from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
             }
         }
 

@@ -20,7 +20,7 @@ namespace Server.Items
         {
             if (MondainsLegacy.CheckML(from))
             {
-                base.Drink(@from);
+                base.Drink(from);
             }
         }
 

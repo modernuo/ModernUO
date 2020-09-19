@@ -139,7 +139,7 @@ namespace Server.Items
 
             if (!from.InRange(GetWorldLocation(), 2) || !from.InLOS(this) || !(from.Z - Z > -3 && from.Z - Z < 3))
             {
-                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             }
             else if (house?.HasSecureAccess(from, SecureLevel.Friends) == true)
             {
@@ -167,10 +167,10 @@ namespace Server.Items
                             // ReSharper disable once PossibleNullReferenceException
                             ingots.Amount = amount;
 
-                            if (!@from.PlaceInBackpack(ingots))
+                            if (!from.PlaceInBackpack(ingots))
                             {
                                 ingots.Delete();
-                                @from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
+                                from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
                             }
                             else
                             {
@@ -180,7 +180,7 @@ namespace Server.Items
                         }
                         else
                         {
-                            @from.SendLocalizedMessage(1094725); // There are no more resources available at this time.
+                            from.SendLocalizedMessage(1094725); // There are no more resources available at this time.
                         }
 
                         break;
@@ -212,10 +212,10 @@ namespace Server.Items
                             var amount = Math.Min(5, Gems);
                             gems.Amount = amount;
 
-                            if (!@from.PlaceInBackpack(gems))
+                            if (!from.PlaceInBackpack(gems))
                             {
                                 gems.Delete();
-                                @from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
+                                from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
                             }
                             else
                             {
@@ -225,7 +225,7 @@ namespace Server.Items
                         }
                         else
                         {
-                            @from.SendLocalizedMessage(1094725); // There are no more resources available at this time.
+                            from.SendLocalizedMessage(1094725); // There are no more resources available at this time.
                         }
 
                         break;
@@ -233,7 +233,7 @@ namespace Server.Items
             }
             else
             {
-                @from.SendLocalizedMessage(1061637); // You are not allowed to access this.
+                from.SendLocalizedMessage(1061637); // You are not allowed to access this.
             }
         }
 
@@ -347,7 +347,7 @@ namespace Server.Items
 
             if (!Deleted)
             {
-                base.OnDoubleClick(@from);
+                base.OnDoubleClick(from);
             }
         }
 

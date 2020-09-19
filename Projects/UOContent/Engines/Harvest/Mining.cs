@@ -283,7 +283,7 @@ namespace Server.Engines.Harvest
         {
             if (def != OreAndStone)
             {
-                return base.GetResourceType(@from, tool, def, map, loc, resource);
+                return base.GetResourceType(from, tool, def, map, loc, resource);
             }
 
             if (from.Skills.Mining.Base >= 100.0 && from is PlayerMobile pm && pm.StoneMining && pm.ToggleMiningStone
@@ -321,11 +321,11 @@ namespace Server.Engines.Harvest
         {
             if (item is BaseGranite)
             {
-                @from.SendLocalizedMessage(1044606); // You carefully extract some workable stone from the ore vein!
+                from.SendLocalizedMessage(1044606); // You carefully extract some workable stone from the ore vein!
             }
             else
             {
-                base.SendSuccessTo(@from, item, resource);
+                base.SendSuccessTo(from, item, resource);
             }
         }
 
@@ -389,7 +389,7 @@ namespace Server.Engines.Harvest
                 {
                     try
                     {
-                        var map = @from.Map;
+                        var map = from.Map;
 
                         if (map == null)
                         {
@@ -402,31 +402,31 @@ namespace Server.Engines.Harvest
 
                             for (var i = 0; i < m_Offsets.Length; i += 2)
                             {
-                                var x = @from.X + m_Offsets[(offset + i) % m_Offsets.Length];
-                                var y = @from.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
+                                var x = from.X + m_Offsets[(offset + i) % m_Offsets.Length];
+                                var y = from.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
 
-                                if (map.CanSpawnMobile(x, y, @from.Z))
+                                if (map.CanSpawnMobile(x, y, from.Z))
                                 {
-                                    spawned.OnBeforeSpawn(new Point3D(x, y, @from.Z), map);
-                                    spawned.MoveToWorld(new Point3D(x, y, @from.Z), map);
-                                    spawned.Combatant = @from;
+                                    spawned.OnBeforeSpawn(new Point3D(x, y, from.Z), map);
+                                    spawned.MoveToWorld(new Point3D(x, y, from.Z), map);
+                                    spawned.Combatant = from;
                                     return;
                                 }
 
                                 var z = map.GetAverageZ(x, y);
 
-                                if (Math.Abs(z - @from.Z) < 10 && map.CanSpawnMobile(x, y, z))
+                                if (Math.Abs(z - from.Z) < 10 && map.CanSpawnMobile(x, y, z))
                                 {
                                     spawned.OnBeforeSpawn(new Point3D(x, y, z), map);
                                     spawned.MoveToWorld(new Point3D(x, y, z), map);
-                                    spawned.Combatant = @from;
+                                    spawned.Combatant = from;
                                     return;
                                 }
                             }
 
-                            spawned.OnBeforeSpawn(@from.Location, @from.Map);
-                            spawned.MoveToWorld(@from.Location, @from.Map);
-                            spawned.Combatant = @from;
+                            spawned.OnBeforeSpawn(from.Location, from.Map);
+                            spawned.MoveToWorld(from.Location, from.Map);
+                            spawned.Combatant = from;
                         }
                     }
                     catch
@@ -454,7 +454,7 @@ namespace Server.Engines.Harvest
 
             if (Core.ML)
             {
-                @from.RevealingAction();
+                from.RevealingAction();
             }
         }
 
@@ -462,11 +462,11 @@ namespace Server.Engines.Harvest
         {
             if (toHarvest is LandTarget)
             {
-                @from.SendLocalizedMessage(501862); // You can't mine there.
+                from.SendLocalizedMessage(501862); // You can't mine there.
             }
             else
             {
-                @from.SendLocalizedMessage(501863); // You can't mine that.
+                from.SendLocalizedMessage(501863); // You can't mine that.
             }
         }
     }

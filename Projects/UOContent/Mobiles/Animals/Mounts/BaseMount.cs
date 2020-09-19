@@ -219,11 +219,11 @@ namespace Server.Mobiles
             {
                 if (Core.AOS) // You cannot ride a mount in your current form.
                 {
-                    PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1062061, @from.NetState);
+                    PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1062061, from.NetState);
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
+                    from.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
                 }
 
                 return;
@@ -271,12 +271,12 @@ namespace Server.Mobiles
                             MessageType.Regular,
                             0x3B2,
                             1049692,
-                            @from.NetState
+                            from.NetState
                         ); // This mount is too ill to ride.
                     }
                     else
                     {
-                        Rider = @from;
+                        Rider = from;
                     }
                 }
                 else if (!Controlled && !Summoned)

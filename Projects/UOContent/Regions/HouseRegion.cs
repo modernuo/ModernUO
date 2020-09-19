@@ -65,11 +65,11 @@ namespace Server.Regions
         {
             if (item is Container)
             {
-                item.SendLocalizedMessageTo(@from, 501647); // That is secure.
+                item.SendLocalizedMessageTo(from, 501647); // That is secure.
             }
             else
             {
-                item.SendLocalizedMessageTo(@from, 1061637); // You are not allowed to access this.
+                item.SendLocalizedMessageTo(from, 1061637); // You are not allowed to access this.
             }
 
             return true;
@@ -167,7 +167,7 @@ namespace Server.Regions
 
                     if (!Core.SE)
                     {
-                        @from.SendLocalizedMessage(501284); // You may not enter.
+                        from.SendLocalizedMessage(501284); // You may not enter.
                     }
 
                     return false;
@@ -177,7 +177,7 @@ namespace Server.Regions
                 {
                     if (!Core.SE)
                     {
-                        @from.SendLocalizedMessage(501284); // You may not enter.
+                        from.SendLocalizedMessage(501284); // You may not enter.
                     }
 
                     return false;
@@ -200,7 +200,7 @@ namespace Server.Regions
                 House.IsOwner(from) && from.Alive &&
                 !from.HasGump<NoticeGump>())
             {
-                @from.SendGump(new NoticeGump(1060635, 30720, 1061826, 32512, 320, 180));
+                from.SendGump(new NoticeGump(1060635, 30720, 1061826, 32512, 320, 180));
             }
 
             return true;
@@ -334,26 +334,26 @@ namespace Server.Regions
             {
                 if (isOwner)
                 {
-                    @from.SendLocalizedMessage(502109); // Owners do not get a strongbox of their own.
+                    from.SendLocalizedMessage(502109); // Owners do not get a strongbox of their own.
                 }
                 else if (isCoOwner)
                 {
-                    House.AddStrongBox(@from);
+                    House.AddStrongBox(from);
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(1010587); // You are not a co-owner of this house.
+                    from.SendLocalizedMessage(1010587); // You are not a co-owner of this house.
                 }
             }
             else if (e.HasKeyword(0x28)) // trash barrel
             {
                 if (isCoOwner)
                 {
-                    House.AddTrashBarrel(@from);
+                    House.AddTrashBarrel(from);
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(1010587); // You are not a co-owner of this house.
+                    from.SendLocalizedMessage(1010587); // You are not a co-owner of this house.
                 }
             }
         }
@@ -385,11 +385,11 @@ namespace Server.Regions
             {
                 if (House.HasLockedDownItem(item))
                 {
-                    item.LabelTo(@from, 501643); // [locked down]
+                    item.LabelTo(from, 501643); // [locked down]
                 }
                 else if (House.HasSecureItem(item))
                 {
-                    item.LabelTo(@from, 501644); // [locked down & secure]
+                    item.LabelTo(from, 501644); // [locked down & secure]
                 }
             }
 

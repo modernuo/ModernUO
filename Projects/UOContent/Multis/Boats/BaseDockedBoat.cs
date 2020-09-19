@@ -118,11 +118,11 @@ namespace Server.Multis
         {
             if (m_ShipName != null)
             {
-                LabelTo(@from, m_ShipName);
+                LabelTo(from, m_ShipName);
             }
             else
             {
-                base.OnSingleClick(@from);
+                base.OnSingleClick(from);
             }
         }
 
@@ -207,15 +207,15 @@ namespace Server.Multis
 
                     if (region.IsPartOf<DungeonRegion>())
                     {
-                        @from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
+                        from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
                     }
                     else if (region.IsPartOf<HouseRegion>() || region.IsPartOf<ChampionSpawnRegion>())
                     {
-                        @from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
+                        from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
                     }
                     else
                     {
-                        m_Model.OnPlacement(@from, p);
+                        m_Model.OnPlacement(from, p);
                     }
                 }
             }

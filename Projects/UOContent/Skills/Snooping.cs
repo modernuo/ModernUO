@@ -18,7 +18,7 @@ namespace Server.SkillHandlers
 
             if (to.Player)
             {
-                return @from.CanBeHarmful(to, false, true); // normal restrictions
+                return from.CanBeHarmful(to, false, true); // normal restrictions
             }
 
             if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
@@ -72,7 +72,7 @@ namespace Server.SkillHandlers
 
                         foreach (var ns in eable)
                         {
-                            if (ns.Mobile != @from)
+                            if (ns.Mobile != from)
                             {
                                 ns.Mobile.SendMessage(message);
                             }
@@ -84,7 +84,7 @@ namespace Server.SkillHandlers
 
                 if (from.AccessLevel == AccessLevel.Player)
                 {
-                    Titles.AwardKarma(@from, -4, true);
+                    Titles.AwardKarma(from, -4, true);
                 }
 
                 if (from.AccessLevel > AccessLevel.Player || from.CheckTargetSkill(SkillName.Snooping, cont, 0.0, 100.0))
@@ -102,7 +102,7 @@ namespace Server.SkillHandlers
 
                     if (from.Skills.Hiding.Value / 2 < Utility.Random(100))
                     {
-                        @from.RevealingAction();
+                        from.RevealingAction();
                     }
                 }
             }

@@ -284,13 +284,13 @@ namespace Server.Gumps
 
                         /*AddHtmlLocalized( 10, 170, 275, 20, 1011237, LabelColor, false, false ); // Number of locked down items:
                         AddLabel( 310, 170, LabelHue, m_House.LockDownCount.ToString() );
-            
+
                         AddHtmlLocalized( 10, 190, 275, 20, 1011238, LabelColor, false, false ); // Maximum locked down items:
                         AddLabel( 310, 190, LabelHue, m_House.MaxLockDowns.ToString() );
-            
+
                         AddHtmlLocalized( 10, 210, 275, 20, 1011239, LabelColor, false, false ); // Number of secure containers:
                         AddLabel( 310, 210, LabelHue, m_House.SecureCount.ToString() );
-            
+
                         AddHtmlLocalized( 10, 230, 275, 20, 1011240, LabelColor, false, false ); // Maximum number of secure containers:
                         AddLabel( 310, 230, LabelHue, m_House.MaxSecures.ToString() );*/
 
@@ -682,7 +682,7 @@ namespace Server.Gumps
         {
             if (!house.Deleted)
             {
-                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, @from, house));
+                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, house));
             }
         }
 
@@ -690,7 +690,7 @@ namespace Server.Gumps
         {
             if (!house.Deleted)
             {
-                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Customize, @from, house));
+                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Customize, from, house));
             }
         }
 
@@ -814,7 +814,7 @@ namespace Server.Gumps
                 {
                     if (Banker.Deposit(from, -cost))
                     {
-                        @from.SendLocalizedMessage(
+                        from.SendLocalizedMessage(
                             1060397,
                             (-cost).ToString()
                         ); // ~1_AMOUNT~ gold has been deposited into your bank box.
@@ -969,17 +969,17 @@ namespace Server.Gumps
 
                     if (from.Map != sign.Map || !from.InRange(sign, 5))
                     {
-                        @from.SendLocalizedMessage(
+                        from.SendLocalizedMessage(
                             1062429
                         ); // You must be within five paces of the house sign to use this option.
                     }
                     else if (vendor.IsOwner(from))
                     {
-                        vendor.SendOwnerGump(@from);
+                        vendor.SendOwnerGump(from);
                     }
                     else
                     {
-                        vendor.OpenBackpack(@from);
+                        vendor.OpenBackpack(from);
                     }
                 }
 
@@ -1011,7 +1011,7 @@ namespace Server.Gumps
                                 {
                                     if (m_House.Public)
                                     {
-                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveBan, @from, m_House));
+                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveBan, from, m_House));
                                     }
 
                                     break;
@@ -1032,7 +1032,7 @@ namespace Server.Gumps
                                 {
                                     if (!m_House.Public)
                                     {
-                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveAccess, @from, m_House));
+                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveAccess, from, m_House));
                                     }
 
                                     break;
@@ -1076,7 +1076,7 @@ namespace Server.Gumps
                                 {
                                     if (isCoOwner)
                                     {
-                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ListCoOwner, @from, m_House));
+                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ListCoOwner, from, m_House));
                                     }
 
                                     break;
@@ -1097,7 +1097,7 @@ namespace Server.Gumps
                                 {
                                     if (isOwner)
                                     {
-                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveCoOwner, @from, m_House));
+                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveCoOwner, from, m_House));
                                     }
 
                                     break;
@@ -1106,7 +1106,7 @@ namespace Server.Gumps
                                 {
                                     if (isOwner)
                                     {
-                                        @from.SendGump(
+                                        from.SendGump(
                                             new WarningGump(
                                                 1060635,
                                                 30720,
@@ -1114,7 +1114,7 @@ namespace Server.Gumps
                                                 32512,
                                                 420,
                                                 280,
-                                                okay => ClearCoOwners_Callback(@from, okay, m_House)
+                                                okay => ClearCoOwners_Callback(from, okay, m_House)
                                             )
                                         );
                                     }
@@ -1143,7 +1143,7 @@ namespace Server.Gumps
                                 {
                                     if (isCoOwner)
                                     {
-                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveFriend, @from, m_House));
+                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveFriend, from, m_House));
                                     }
 
                                     break;
@@ -1152,7 +1152,7 @@ namespace Server.Gumps
                                 {
                                     if (isCoOwner)
                                     {
-                                        @from.SendGump(
+                                        from.SendGump(
                                             new WarningGump(
                                                 1060635,
                                                 30720,
@@ -1160,7 +1160,7 @@ namespace Server.Gumps
                                                 32512,
                                                 420,
                                                 280,
-                                                okay => ClearFriends_Callback(@from, okay, m_House)
+                                                okay => ClearFriends_Callback(from, okay, m_House)
                                             )
                                         );
                                     }
@@ -1293,7 +1293,7 @@ namespace Server.Gumps
 
                                         if (BaseHouse.NewVendorSystem)
                                         {
-                                            @from.SendGump(
+                                            from.SendGump(
                                                 new NoticeGump(
                                                     1060637,
                                                     30720,
@@ -1301,13 +1301,13 @@ namespace Server.Gumps
                                                     32512,
                                                     320,
                                                     180,
-                                                    () => PublicPrivateNotice_Callback(@from, m_House)
+                                                    () => PublicPrivateNotice_Callback(from, m_House)
                                                 )
                                             );
                                         }
                                         else
                                         {
-                                            @from.SendGump(
+                                            from.SendGump(
                                                 new NoticeGump(
                                                     1060637,
                                                     30720,
@@ -1315,7 +1315,7 @@ namespace Server.Gumps
                                                     0xF8C000,
                                                     320,
                                                     180,
-                                                    () => PublicPrivateNotice_Callback(@from, m_House)
+                                                    () => PublicPrivateNotice_Callback(from, m_House)
                                                 )
                                             );
                                         }
@@ -1369,7 +1369,7 @@ namespace Server.Gumps
 
                                             if (e != null)
                                             {
-                                                @from.SendGump(
+                                                from.SendGump(
                                                     new WarningGump(
                                                         1060635,
                                                         30720,
@@ -1377,7 +1377,7 @@ namespace Server.Gumps
                                                         32512,
                                                         420,
                                                         280,
-                                                        okay => ConvertHouse_Callback(@from, okay, m_House)
+                                                        okay => ConvertHouse_Callback(from, okay, m_House)
                                                     )
                                                 );
                                             }
@@ -1392,7 +1392,7 @@ namespace Server.Gumps
                                     {
                                         if (m_House.HasRentedVendors)
                                         {
-                                            @from.SendGump(
+                                            from.SendGump(
                                                 new NoticeGump(
                                                     1060637,
                                                     30720,
@@ -1400,13 +1400,13 @@ namespace Server.Gumps
                                                     32512,
                                                     320,
                                                     180,
-                                                    () => CustomizeNotice_Callback(@from, m_House)
+                                                    () => CustomizeNotice_Callback(from, m_House)
                                                 )
                                             );
                                         }
                                         else if (m_House.HasAddonContainers)
                                         {
-                                            @from.SendGump(
+                                            from.SendGump(
                                                 new NoticeGump(
                                                     1060637,
                                                     30720,
@@ -1414,13 +1414,13 @@ namespace Server.Gumps
                                                     32512,
                                                     320,
                                                     180,
-                                                    () => CustomizeNotice_Callback(@from, m_House)
+                                                    () => CustomizeNotice_Callback(from, m_House)
                                                 )
                                             );
                                         }
                                         else
                                         {
-                                            foundation.BeginCustomize(@from);
+                                            foundation.BeginCustomize(from);
                                         }
                                     }
 
@@ -1449,7 +1449,7 @@ namespace Server.Gumps
                                 {
                                     if (isOwner && m_House.Public)
                                     {
-                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangeSign, @from, m_House));
+                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangeSign, from, m_House));
                                     }
 
                                     break;
@@ -1458,7 +1458,7 @@ namespace Server.Gumps
                                 {
                                     if (isOwner && isCustomizable)
                                     {
-                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangeHanger, @from, m_House));
+                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangeHanger, from, m_House));
                                     }
 
                                     break;
@@ -1467,7 +1467,7 @@ namespace Server.Gumps
                                 {
                                     if (isOwner && isCustomizable && foundation.Signpost != null)
                                     {
-                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangePost, @from, m_House));
+                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangePost, from, m_House));
                                     }
 
                                     break;
@@ -1476,7 +1476,7 @@ namespace Server.Gumps
                                 {
                                     if (isOwner && isCustomizable)
                                     {
-                                        @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangeFoundation, @from, m_House));
+                                        from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.ChangeFoundation, from, m_House));
                                     }
 
                                     break;
@@ -1661,11 +1661,11 @@ namespace Server.Gumps
 
                             if (m_House.CoOwners.Count > 0)
                             {
-                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveCoOwner, @from, m_House));
+                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveCoOwner, from, m_House));
                             }
                             else
                             {
-                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, @from, m_House));
+                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, m_House));
                             }
                         }
 
@@ -1679,11 +1679,11 @@ namespace Server.Gumps
 
                             if (m_House.Friends.Count > 0)
                             {
-                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveFriend, @from, m_House));
+                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveFriend, from, m_House));
                             }
                             else
                             {
-                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, @from, m_House));
+                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, m_House));
                             }
                         }
 
@@ -1697,11 +1697,11 @@ namespace Server.Gumps
 
                             if (m_House.Bans.Count > 0)
                             {
-                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveBan, @from, m_House));
+                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveBan, from, m_House));
                             }
                             else
                             {
-                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, @from, m_House));
+                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, m_House));
                             }
                         }
 
@@ -1715,11 +1715,11 @@ namespace Server.Gumps
 
                             if (m_House.Access.Count > 0)
                             {
-                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveAccess, @from, m_House));
+                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveAccess, from, m_House));
                             }
                             else
                             {
-                                @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, @from, m_House));
+                                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, m_House));
                             }
                         }
 

@@ -207,7 +207,7 @@ namespace Server.Engines.Harvest
 
             if (type == typeof(MessageInABottle))
             {
-                return new MessageInABottle(@from.Map == Map.Felucca ? Map.Felucca : Map.Trammel);
+                return new MessageInABottle(from.Map == Map.Felucca ? Map.Felucca : Map.Trammel);
             }
 
             var pack = from.Backpack;
@@ -468,11 +468,11 @@ namespace Server.Engines.Harvest
 
                 if (number == 1043297 || ns.HighSeas)
                 {
-                    @from.SendLocalizedMessage(number, name);
+                    from.SendLocalizedMessage(number, name);
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(number, true, name);
+                    from.SendLocalizedMessage(number, true, name);
                 }
             }
         }
@@ -489,7 +489,7 @@ namespace Server.Engines.Harvest
                     {
                         if (Core.ML)
                         {
-                            @from.RevealingAction();
+                            from.RevealingAction();
                         }
 
                         Effects.SendLocationEffect(loc, map, 0x352D, 16, 4);
@@ -508,7 +508,7 @@ namespace Server.Engines.Harvest
 
             if (Core.ML)
             {
-                @from.RevealingAction();
+                from.RevealingAction();
             }
         }
 

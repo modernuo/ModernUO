@@ -88,7 +88,7 @@ namespace Server.SkillHandlers
                                 MessageType.Regular,
                                 0x3B2,
                                 1038202 + mnMod,
-                                @from.NetState
+                                from.NetState
                             ); // That being is at [10,20,...] percent mental strength.
                         }
                     }

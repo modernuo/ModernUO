@@ -62,11 +62,11 @@ namespace Server.Engines.Chat
         {
             if (channel.CanTalk(from))
             {
-                channel.SendIgnorableMessage(57, @from, @from.GetColorCharacter() + @from.Username, param); // %1: %2
+                channel.SendIgnorableMessage(57, from, from.GetColorCharacter() + from.Username, param); // %1: %2
             }
             else
             {
-                @from.SendMessage(36); // The moderator of this conference has not given you speaking privileges.
+                from.SendMessage(36); // The moderator of this conference has not given you speaking privileges.
             }
         }
 
@@ -74,11 +74,11 @@ namespace Server.Engines.Chat
         {
             if (channel.CanTalk(from))
             {
-                channel.SendIgnorableMessage(58, @from, @from.GetColorCharacter() + @from.Username, param); // %1 %2
+                channel.SendIgnorableMessage(58, from, from.GetColorCharacter() + from.Username, param); // %1 %2
             }
             else
             {
-                @from.SendMessage(36); // The moderator of this conference has not given you speaking privileges.
+                from.SendMessage(36); // The moderator of this conference has not given you speaking privileges.
             }
         }
 
@@ -98,18 +98,18 @@ namespace Server.Engines.Chat
 
             if (target.IsIgnored(from))
             {
-                @from.SendMessage(
+                from.SendMessage(
                     35,
                     target.Username
                 ); // %1 has chosen to ignore you. None of your messages to them will get through.
             }
             else if (target.IgnorePrivateMessage)
             {
-                @from.SendMessage(42, target.Username); // %1 has chosen to not receive private messages at the moment.
+                from.SendMessage(42, target.Username); // %1 has chosen to not receive private messages at the moment.
             }
             else
             {
-                target.SendMessage(59, @from.Mobile, @from.GetColorCharacter() + @from.Username, text); // [%1]: %2
+                target.SendMessage(59, from.Mobile, from.GetColorCharacter() + from.Username, text); // [%1]: %2
             }
         }
 
@@ -209,11 +209,11 @@ namespace Server.Engines.Chat
 
             if (joined == null)
             {
-                @from.SendMessage(33, name); // There is no conference named '%1'.
+                from.SendMessage(33, name); // There is no conference named '%1'.
             }
             else
             {
-                joined.AddUser(@from, password);
+                joined.AddUser(from, password);
             }
         }
 
@@ -285,11 +285,11 @@ namespace Server.Engines.Chat
 
             if (from.IsIgnored(target))
             {
-                @from.RemoveIgnored(target);
+                from.RemoveIgnored(target);
             }
             else
             {
-                @from.AddIgnored(target);
+                from.AddIgnored(target);
             }
         }
 
@@ -299,7 +299,7 @@ namespace Server.Engines.Chat
 
             if (target != null)
             {
-                channel.AddVoiced(target, @from);
+                channel.AddVoiced(target, from);
             }
         }
 
@@ -309,7 +309,7 @@ namespace Server.Engines.Chat
 
             if (target != null)
             {
-                channel.RemoveVoiced(target, @from);
+                channel.RemoveVoiced(target, from);
             }
         }
 
@@ -324,11 +324,11 @@ namespace Server.Engines.Chat
 
             if (channel.IsVoiced(target))
             {
-                channel.RemoveVoiced(target, @from);
+                channel.RemoveVoiced(target, from);
             }
             else
             {
-                channel.AddVoiced(target, @from);
+                channel.AddVoiced(target, from);
             }
         }
 
@@ -338,7 +338,7 @@ namespace Server.Engines.Chat
 
             if (target != null)
             {
-                channel.AddModerator(target, @from);
+                channel.AddModerator(target, from);
             }
         }
 
@@ -348,7 +348,7 @@ namespace Server.Engines.Chat
 
             if (target != null)
             {
-                channel.RemoveModerator(target, @from);
+                channel.RemoveModerator(target, from);
             }
         }
 
@@ -363,11 +363,11 @@ namespace Server.Engines.Chat
 
             if (channel.IsModerator(target))
             {
-                channel.RemoveModerator(target, @from);
+                channel.RemoveModerator(target, from);
             }
             else
             {
-                channel.AddModerator(target, @from);
+                channel.AddModerator(target, from);
             }
         }
 
@@ -387,11 +387,11 @@ namespace Server.Engines.Chat
 
             if (target.Anonymous)
             {
-                @from.SendMessage(41, target.Username); // %1 is remaining anonymous.
+                from.SendMessage(41, target.Username); // %1 is remaining anonymous.
             }
             else
             {
-                @from.SendMessage(43, target.Username, target.Mobile.Name); // %2 is known in the lands of Britannia as %2.
+                from.SendMessage(43, target.Username, target.Mobile.Name); // %2 is known in the lands of Britannia as %2.
             }
         }
 
@@ -401,7 +401,7 @@ namespace Server.Engines.Chat
 
             if (target != null)
             {
-                channel.Kick(target, @from);
+                channel.Kick(target, from);
             }
         }
 

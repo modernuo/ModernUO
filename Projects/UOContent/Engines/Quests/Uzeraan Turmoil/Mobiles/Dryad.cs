@@ -108,9 +108,9 @@ namespace Server.Engines.Quests.Haven
             if (from is PlayerMobile player)
             {
                 if (player.Quest is UzeraanTurmoilQuest qs && dropped is Apple &&
-                    UzeraanTurmoilQuest.HasLostFertileDirt(@from))
+                    UzeraanTurmoilQuest.HasLostFertileDirt(from))
                 {
-                    FocusTo(@from);
+                    FocusTo(from);
 
                     Item fertileDirt = new QuestFertileDirt();
 

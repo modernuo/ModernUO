@@ -187,15 +187,15 @@ namespace Server.Items
             {
                 if (m_MapDest != null && m_PointDest != Point3D.Zero)
                 {
-                    LabelTo(@from, "{0} [{1}]", m_PointDest, m_MapDest);
+                    LabelTo(from, "{0} [{1}]", m_PointDest, m_MapDest);
                 }
                 else if (m_MapDest != null)
                 {
-                    LabelTo(@from, "[{0}]", m_MapDest);
+                    LabelTo(from, "[{0}]", m_MapDest);
                 }
                 else if (m_PointDest != Point3D.Zero)
                 {
-                    LabelTo(@from, m_PointDest.ToString());
+                    LabelTo(from, m_PointDest.ToString());
                 }
             }
             else

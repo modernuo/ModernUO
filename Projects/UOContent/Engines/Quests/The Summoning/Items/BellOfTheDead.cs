@@ -33,11 +33,11 @@ namespace Server.Engines.Quests.Doom
         {
             if (from.InRange(GetWorldLocation(), 2))
             {
-                BeginSummon(@from);
+                BeginSummon(from);
             }
             else
             {
-                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             }
         }
 

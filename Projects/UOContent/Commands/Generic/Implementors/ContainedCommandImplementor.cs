@@ -21,7 +21,7 @@ namespace Server.Commands.Generic
         {
             if (command.ValidateArgs(this, new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args)))
             {
-                @from.BeginTarget(
+                from.BeginTarget(
                     -1,
                     command.ObjectTypes == ObjectTypes.All,
                     TargetFlags.None,

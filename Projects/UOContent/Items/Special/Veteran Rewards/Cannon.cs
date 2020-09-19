@@ -164,11 +164,11 @@ namespace Server.Items
 
                         if (Validate(keg) > 0)
                         {
-                            @from.SendGump(new InternalGump(this, keg));
+                            from.SendGump(new InternalGump(this, keg));
                         }
                         else
                         {
-                            @from.SendLocalizedMessage(
+                            from.SendLocalizedMessage(
                                 1076198
                             ); // You do not have a full keg of explosion potions needed to recharge the cannon.
                         }
@@ -326,7 +326,7 @@ namespace Server.Items
                         }
                         else
                         {
-                            @from.SendLocalizedMessage(1076203); // Target out of range.
+                            from.SendLocalizedMessage(1076203); // Target out of range.
                         }
                     }
                     else
@@ -457,7 +457,7 @@ namespace Server.Items
 
             if (!Deleted)
             {
-                base.OnDoubleClick(@from);
+                base.OnDoubleClick(from);
             }
         }
 

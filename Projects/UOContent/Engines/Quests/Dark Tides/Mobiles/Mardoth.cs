@@ -39,12 +39,12 @@ namespace Server.Engines.Quests.Necro
                         {
                             if (horn.Charges < 10)
                             {
-                                SayTo(@from, 1049384); // I have recharged the item for you.
+                                SayTo(from, 1049384); // I have recharged the item for you.
                                 horn.Charges = 10;
                             }
                             else
                             {
-                                SayTo(@from, 1049385); // That doesn't need recharging yet.
+                                SayTo(from, 1049385); // That doesn't need recharging yet.
                             }
                         }
                         else

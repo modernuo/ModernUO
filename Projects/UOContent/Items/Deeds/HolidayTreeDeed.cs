@@ -109,7 +109,7 @@ namespace Server.Items
 
             if (ValidatePlacement(from, loc))
             {
-                EndPlace(@from, type, loc);
+                EndPlace(from, type, loc);
             }
         }
 

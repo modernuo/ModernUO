@@ -36,15 +36,15 @@ namespace Server.Items
             if (!IsChildOf(from.Backpack) && Parent != from
             )                                       // TODO: These checks don't match EA, but they match BaseTool for now
             {
-                @from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
             }
             else if (UsesRemaining <= 0)
             {
-                @from.SendLocalizedMessage(1072306); // You must wait a moment for it to recharge.
+                from.SendLocalizedMessage(1072306); // You must wait a moment for it to recharge.
             }
             else
             {
-                base.OnDoubleClick(@from);
+                base.OnDoubleClick(from);
             }
         }
 

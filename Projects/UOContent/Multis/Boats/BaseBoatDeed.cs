@@ -79,11 +79,11 @@ namespace Server.Multis
             {
                 if (Core.SE)
                 {
-                    @from.SendLocalizedMessage(502482); // Where do you wish to place the ship?
+                    from.SendLocalizedMessage(502482); // Where do you wish to place the ship?
                 }
                 else
                 {
-                    @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502482); // Where do you wish to place the ship?
+                    from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502482); // Where do you wish to place the ship?
                 }
 
                 from.Target = new InternalTarget(this);
@@ -185,15 +185,15 @@ namespace Server.Multis
 
                     if (region.IsPartOf<DungeonRegion>())
                     {
-                        @from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
+                        from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
                     }
                     else if (region.IsPartOf<HouseRegion>() || region.IsPartOf<ChampionSpawnRegion>())
                     {
-                        @from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
+                        from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
                     }
                     else
                     {
-                        m_Deed.OnPlacement(@from, p);
+                        m_Deed.OnPlacement(from, p);
                     }
                 }
             }

@@ -37,7 +37,7 @@ namespace Server
                 {
                     if (VirtueHelper.Atrophy(from, VirtueName.Valor, LossAmount))
                     {
-                        @from.SendLocalizedMessage(1054040); // You have lost some Valor.
+                        from.SendLocalizedMessage(1054040); // You have lost some Valor.
                     }
 
                     pm.LastValorLoss = DateTime.UtcNow;

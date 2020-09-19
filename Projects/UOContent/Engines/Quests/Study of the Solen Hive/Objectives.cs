@@ -56,7 +56,7 @@ namespace Server.Engines.Quests.Naturalist
                         {
                             if (!nest.Special)
                             {
-                                @from.SendLocalizedMessage(
+                                from.SendLocalizedMessage(
                                     1054058
                                 ); // You begin recording your completed notes on a bit of parchment.
                             }
@@ -69,7 +69,7 @@ namespace Server.Engines.Quests.Naturalist
                 {
                     if (m_StudyState != StudyState.Inactive)
                     {
-                        @from.SendLocalizedMessage(
+                        from.SendLocalizedMessage(
                             1054046
                         ); // You abandon your study of the Solen Egg Nest without gathering the needed information.
                     }
@@ -100,24 +100,24 @@ namespace Server.Engines.Quests.Naturalist
 
                         if (nest.Special)
                         {
-                            @from.SendLocalizedMessage(
+                            from.SendLocalizedMessage(
                                 1054056
                             ); // You notice something very odd about this Solen Egg Nest. You begin taking notes.
                         }
                         else
                         {
-                            @from.SendLocalizedMessage(
+                            from.SendLocalizedMessage(
                                 1054045
                             ); // You begin studying the Solen Egg Nest to gather information.
                         }
 
                         if (from.Female)
                         {
-                            @from.PlaySound(0x30B);
+                            from.PlaySound(0x30B);
                         }
                         else
                         {
-                            @from.PlaySound(0x419);
+                            from.PlaySound(0x419);
                         }
                     }
                 }

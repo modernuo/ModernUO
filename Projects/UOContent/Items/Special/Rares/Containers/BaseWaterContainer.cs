@@ -59,7 +59,7 @@
         {
             if (IsEmpty)
             {
-                base.OnDoubleClick(@from);
+                base.OnDoubleClick(from);
             }
         }
 
@@ -73,11 +73,11 @@
             {
                 if (Name == null)
                 {
-                    LabelTo(@from, LabelNumber);
+                    LabelTo(from, LabelNumber);
                 }
                 else
                 {
-                    LabelTo(@from, Name);
+                    LabelTo(from, Name);
                 }
             }
         }
@@ -92,11 +92,11 @@
             {
                 if (Name == null)
                 {
-                    LabelTo(@from, LabelNumber);
+                    LabelTo(from, LabelNumber);
                 }
                 else
                 {
-                    LabelTo(@from, Name);
+                    LabelTo(from, Name);
                 }
             }
         }

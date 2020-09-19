@@ -216,20 +216,20 @@ namespace Server.Mobiles
                 {
                     if (!vi.IsForSale)
                     {
-                        item.LabelTo(@from, 1043307); // Price: Not for sale.
+                        item.LabelTo(from, 1043307); // Price: Not for sale.
                     }
                     else if (vi.IsForFree)
                     {
-                        item.LabelTo(@from, 1043306); // Price: FREE!
+                        item.LabelTo(from, 1043306); // Price: FREE!
                     }
                     else
                     {
-                        item.LabelTo(@from, 1043304, vi.FormattedPrice); // Price: ~1_COST~
+                        item.LabelTo(from, 1043304, vi.FormattedPrice); // Price: ~1_COST~
                     }
 
                     if (!string.IsNullOrEmpty(vi.Description))
                     {
-                        item.LabelTo(@from, "Description: {0}", vi.Description);
+                        item.LabelTo(from, "Description: {0}", vi.Description);
                     }
                 }
             }
@@ -931,7 +931,7 @@ namespace Server.Mobiles
             {
                 if (newItem)
                 {
-                    OnItemGiven(@from, item);
+                    OnItemGiven(from, item);
                 }
 
                 return true;
@@ -947,7 +947,7 @@ namespace Server.Mobiles
             {
                 if (GetVendorItem(item) == null)
                 {
-                    Timer.DelayCall(OnItemGiven, @from, item);
+                    Timer.DelayCall(OnItemGiven, from, item);
                 }
 
                 return true;
@@ -1005,7 +1005,7 @@ namespace Server.Mobiles
 
             if (ownerOnly)
             {
-                return IsOwner(@from);
+                return IsOwner(from);
             }
 
             if (House?.IsBanned(from) == true && !IsOwner(from))
@@ -1023,11 +1023,11 @@ namespace Server.Mobiles
         {
             if (IsOwner(from))
             {
-                SendOwnerGump(@from);
+                SendOwnerGump(from);
             }
             else if (CanInteractWith(from, false))
             {
-                OpenBackpack(@from);
+                OpenBackpack(from);
             }
         }
 
@@ -1304,7 +1304,7 @@ namespace Server.Mobiles
                         {
                             if (m.CanSee(e.Mobile) && m.InLOS(e.Mobile))
                             {
-                                m.OpenBackpack(@from);
+                                m.OpenBackpack(from);
                             }
                         }
 
@@ -1447,7 +1447,7 @@ namespace Server.Mobiles
             {
                 if (targeted is Item item)
                 {
-                    TryToBuy(item, @from);
+                    TryToBuy(item, from);
                 }
             }
         }
@@ -1528,11 +1528,11 @@ namespace Server.Mobiles
                     {
                         if (item is LockableContainer container && container.Locked)
                         {
-                            m_Vendor.SayTo(@from, 1043298); // Locked items may not be made not-for-sale.
+                            m_Vendor.SayTo(from, 1043298); // Locked items may not be made not-for-sale.
                         }
                         else if (item.Items.Count > 0)
                         {
-                            m_Vendor.SayTo(@from, 1043299); // To be not for sale, all items in a container must be for sale.
+                            m_Vendor.SayTo(from, 1043299); // To be not for sale, all items in a container must be for sale.
                         }
                         else
                         {

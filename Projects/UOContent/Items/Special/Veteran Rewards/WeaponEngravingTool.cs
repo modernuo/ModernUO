@@ -85,11 +85,11 @@ namespace Server.Items
                 {
                     if (from.Backpack.FindItemByType<BlueDiamond>() != null)
                     {
-                        @from.SendGump(new ConfirmGump(this, null));
+                        from.SendGump(new ConfirmGump(this, null));
                     }
                     else
                     {
-                        @from.SendLocalizedMessage(
+                        from.SendLocalizedMessage(
                             1076166
                         ); // You do not have a blue diamond needed to recharge the engraving tool.
                     }

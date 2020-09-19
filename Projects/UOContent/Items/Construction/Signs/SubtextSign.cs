@@ -36,7 +36,7 @@ namespace Server.Items
 
             if (!string.IsNullOrEmpty(m_Subtext))
             {
-                LabelTo(@from, m_Subtext);
+                LabelTo(from, m_Subtext);
             }
         }
 

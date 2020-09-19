@@ -89,13 +89,13 @@ namespace Server.SkillHandlers
                     {
                         if (Core.AOS)
                         {
-                            @from.SendLocalizedMessage(
+                            from.SendLocalizedMessage(
                                 1060204
                             ); // You cannot poison that! You can only poison infectious weapons, food or drink.
                         }
                         else
                         {
-                            @from.SendLocalizedMessage(
+                            from.SendLocalizedMessage(
                                 502145
                             ); // You cannot poison that! You can only poison bladed or piercing weapons, food or drink.
                         }

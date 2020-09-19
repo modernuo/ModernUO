@@ -165,7 +165,7 @@ namespace Server.Items
                 {
                     for (var i = 1; i < Amount; ++i) // these were stackable before, doh
                     {
-                        @from.AddToBackpack(new SpecialFishingNet());
+                        from.AddToBackpack(new SpecialFishingNet());
                     }
                 }
 
@@ -276,7 +276,7 @@ namespace Server.Items
 
                 if (index == 14)
                 {
-                    FinishEffect(p, Map, @from);
+                    FinishEffect(p, Map, from);
                 }
                 else
                 {

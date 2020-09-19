@@ -43,7 +43,7 @@ namespace Server.Engines.Quests.Ambitious
 
             if (redSolen)
             {
-                return @from is RedSolenQueen;
+                return from is RedSolenQueen;
             }
 
             return from is BlackSolenQueen;

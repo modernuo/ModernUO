@@ -78,7 +78,7 @@ namespace Server.Items
         {
             if (m_Statue != null)
             {
-                @from.SendGump(new CharacterPlinthGump(m_Statue));
+                from.SendGump(new CharacterPlinthGump(m_Statue));
             }
         }
 

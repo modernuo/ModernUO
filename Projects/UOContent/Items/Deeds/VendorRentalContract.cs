@@ -108,7 +108,7 @@ namespace Server.Items
             {
                 if (sendMessage)
                 {
-                    @from.SendLocalizedMessage(1062343); // That item is currently in use.
+                    from.SendLocalizedMessage(1062343); // That item is currently in use.
                 }
 
                 return false;
@@ -125,7 +125,7 @@ namespace Server.Items
                 {
                     if (sendMessage)
                     {
-                        @from.SendLocalizedMessage(501853); // Target is too far away.
+                        from.SendLocalizedMessage(501853); // Target is too far away.
                     }
 
                     return false;
@@ -336,7 +336,7 @@ namespace Server.Items
 
                         if (!house.LockDown(from, m_Contract))
                         {
-                            @from.AddToBackpack(m_Contract);
+                            from.AddToBackpack(m_Contract);
                         }
                     }
                 }

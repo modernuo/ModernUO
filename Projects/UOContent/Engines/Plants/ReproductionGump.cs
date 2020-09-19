@@ -158,7 +158,7 @@ namespace Server.Engines.Plants
                     {
                         if (m_Plant.PlantStatus == PlantStatus.Stage9)
                         {
-                            @from.SendGump(new SetToDecorativeGump(m_Plant));
+                            from.SendGump(new SetToDecorativeGump(m_Plant));
                         }
 
                         break;
@@ -225,11 +225,11 @@ namespace Server.Engines.Plants
                         {
                             if (m_Plant.IsCrossable)
                             {
-                                m_Plant.LabelTo(@from, 1053056); // This plant has no resources to gather!
+                                m_Plant.LabelTo(from, 1053056); // This plant has no resources to gather!
                             }
                             else
                             {
-                                m_Plant.LabelTo(@from, 1053055); // Mutated plants do not produce resources!
+                                m_Plant.LabelTo(from, 1053055); // Mutated plants do not produce resources!
                             }
                         }
                         else if (system.AvailableResources == 0)

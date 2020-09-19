@@ -62,11 +62,11 @@ namespace Server.Items
         {
             if (IsOwner(from))
             {
-                @from.SendGump(new OnOffGump(this));
+                from.SendGump(new OnOffGump(this));
             }
             else
             {
-                @from.SendLocalizedMessage(502691); // You must be the owner to use this.
+                from.SendLocalizedMessage(502691); // You must be the owner to use this.
             }
         }
 
@@ -123,7 +123,7 @@ namespace Server.Items
 
                     if (newValue && !m_Chimes.IsLockedDown)
                     {
-                        @from.SendLocalizedMessage(502693); // Remember, this only works when locked down.
+                        from.SendLocalizedMessage(502693); // Remember, this only works when locked down.
                     }
                 }
                 else

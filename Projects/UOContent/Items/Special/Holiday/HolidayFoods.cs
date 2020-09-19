@@ -28,7 +28,7 @@ namespace Server.Items
         {
             if (!m_ToothAches.TryGetValue(from, out var timer))
             {
-                m_ToothAches[@from] = timer = new CandyCaneTimer(@from);
+                m_ToothAches[from] = timer = new CandyCaneTimer(from);
             }
 
             return timer;

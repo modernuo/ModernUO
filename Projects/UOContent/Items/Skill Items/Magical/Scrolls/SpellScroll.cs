@@ -83,7 +83,7 @@ namespace Server.Items
             }
             else
             {
-                @from.SendLocalizedMessage(502345); // This spell has been temporarily disabled.
+                from.SendLocalizedMessage(502345); // This spell has been temporarily disabled.
             }
         }
     }

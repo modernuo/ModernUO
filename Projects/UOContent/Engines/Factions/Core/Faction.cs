@@ -854,12 +854,12 @@ namespace Server.Factions
 
                 if (faction != null)
                 {
-                    @from.SendGump(new ElectionManagementGump(faction.Election));
+                    from.SendGump(new ElectionManagementGump(faction.Election));
                 }
                 // from.SendGump( new Gumps.PropertiesGump( from, faction.Election ) );
                 else
                 {
-                    @from.SendMessage("That stone has no faction assigned.");
+                    from.SendMessage("That stone has no faction assigned.");
                 }
             }
             else

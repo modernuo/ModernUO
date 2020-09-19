@@ -87,11 +87,11 @@ namespace Server.Items
         {
             if (from.InRange(GetWorldLocation(), 2))
             {
-                DisplayTo(@from);
+                DisplayTo(from);
             }
             else
             {
-                @from.SendLocalizedMessage(500446); // That is too far away.
+                from.SendLocalizedMessage(500446); // That is too far away.
             }
         }
 
@@ -118,7 +118,7 @@ namespace Server.Items
 
             for (var i = 0; i < Pins.Count; ++i)
             {
-                @from.Send(new MapAddPin(this, Pins[i]));
+                from.Send(new MapAddPin(this, Pins[i]));
             }
 
             from.Send(new MapSetEditable(this, ValidateEdit(from)));

@@ -983,29 +983,29 @@ namespace Server.Mobiles
 
             if (ns.ContainerGridLines)
             {
-                @from.Send(new VendorBuyContent6017(list));
+                from.Send(new VendorBuyContent6017(list));
             }
             else
             {
-                @from.Send(new VendorBuyContent(list));
+                from.Send(new VendorBuyContent(list));
             }
 
             from.Send(new VendorBuyList(this, list));
 
             if (ns.HighSeas)
             {
-                @from.Send(new DisplayBuyListHS(this));
+                from.Send(new DisplayBuyListHS(this));
             }
             else
             {
-                @from.Send(new DisplayBuyList(this));
+                from.Send(new DisplayBuyList(this));
             }
 
             from.Send(new MobileStatusExtended(from)); // make sure their gold amount is sent
 
             for (var i = 0; i < opls.Count; ++i)
             {
-                @from.Send(opls[i]);
+                from.Send(opls[i]);
             }
 
             SayTo(from, 500186); // Greetings.  Have a look around.
@@ -1027,7 +1027,7 @@ namespace Server.Mobiles
 
             if (pack != null)
             {
-                @from.Send(new EquipUpdate(pack));
+                from.Send(new EquipUpdate(pack));
             }
 
             pack = FindItemOnLayer(Layer.ShopResale);
@@ -1107,7 +1107,7 @@ namespace Server.Mobiles
 
             if (!(smallBod != null || largeBod != null))
             {
-                return base.OnDragDrop(@from, dropped);
+                return base.OnDragDrop(from, dropped);
             }
 
             var pm = from as PlayerMobile;
@@ -1148,16 +1148,16 @@ namespace Server.Mobiles
 
             if (reward != null)
             {
-                @from.AddToBackpack(reward);
+                from.AddToBackpack(reward);
             }
 
             if (gold > 1000)
             {
-                @from.AddToBackpack(new BankCheck(gold));
+                from.AddToBackpack(new BankCheck(gold));
             }
             else if (gold > 0)
             {
-                @from.AddToBackpack(new Gold(gold));
+                from.AddToBackpack(new Gold(gold));
             }
 
             Titles.AwardFame(from, fame, true);
@@ -1415,17 +1415,17 @@ namespace Server.Mobiles
             {
                 if (SupportsBulkOrders(from))
                 {
-                    list.Add(new BulkOrderInfoEntry(@from, this));
+                    list.Add(new BulkOrderInfoEntry(from, this));
                 }
 
                 if (IsActiveSeller)
                 {
-                    list.Add(new VendorBuyEntry(@from, this));
+                    list.Add(new VendorBuyEntry(from, this));
                 }
 
                 if (IsActiveBuyer)
                 {
-                    list.Add(new VendorSellEntry(@from, this));
+                    list.Add(new VendorSellEntry(from, this));
                 }
             }
 

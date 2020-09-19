@@ -76,26 +76,26 @@ namespace Server.Items
         {
             if (!from.InRange(GetWorldLocation(), 1))
             {
-                SendLocalizedMessageTo(@from, 501816); // You are too far away to do that.
+                SendLocalizedMessageTo(from, 501816); // You are too far away to do that.
             }
             else if (Swinging)
             {
-                SendLocalizedMessageTo(@from, 501815); // You have to wait until it stops swinging.
+                SendLocalizedMessageTo(from, 501815); // You have to wait until it stops swinging.
             }
             else if (from.Skills.Stealing.Base >= MaxSkill)
             {
                 SendLocalizedMessageTo(
-                    @from,
+                    from,
                     501830
                 ); // Your ability to steal cannot improve any further by simply practicing on a dummy.
             }
             else if (from.Mounted)
             {
-                SendLocalizedMessageTo(@from, 501829); // You can't practice on this while on a mount.
+                SendLocalizedMessageTo(from, 501829); // You can't practice on this while on a mount.
             }
             else
             {
-                Use(@from);
+                Use(from);
             }
         }
 

@@ -455,11 +455,11 @@ namespace Server.Items
 
                 if (m_State == HouseRaffleState.Inactive)
                 {
-                    list.Add(new ActivateEntry(@from, this));
+                    list.Add(new ActivateEntry(from, this));
                 }
                 else
                 {
-                    list.Add(new ManagementEntry(@from, this));
+                    list.Add(new ManagementEntry(from, this));
                 }
             }
         }
@@ -479,15 +479,15 @@ namespace Server.Items
 
             if (HasEntered(from))
             {
-                @from.SendMessage(MessageHue, "You have already entered this plot's raffle.");
+                from.SendMessage(MessageHue, "You have already entered this plot's raffle.");
             }
             else if (IsAtIPLimit(from))
             {
-                @from.SendMessage(MessageHue, "You may not enter this plot's raffle.");
+                from.SendMessage(MessageHue, "You may not enter this plot's raffle.");
             }
             else
             {
-                @from.SendGump(
+                from.SendGump(
                     new WarningGump(
                         1150470,
                         0x7F00,
@@ -495,7 +495,7 @@ namespace Server.Items
                         0xFFFFFF,
                         420,
                         280,
-                        okay => Purchase_Callback(@from, okay)
+                        okay => Purchase_Callback(from, okay)
                     )
                 ); // CONFIRM TICKET PURCHASE
             }

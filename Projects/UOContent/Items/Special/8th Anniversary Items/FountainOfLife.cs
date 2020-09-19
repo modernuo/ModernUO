@@ -93,7 +93,7 @@ namespace Server.Items
 
                 if (allow)
                 {
-                    Enhance(@from);
+                    Enhance(from);
                 }
 
                 return allow;
@@ -111,7 +111,7 @@ namespace Server.Items
 
                 if (allow)
                 {
-                    Enhance(@from);
+                    Enhance(from);
                 }
 
                 return allow;

@@ -243,31 +243,31 @@ namespace Server.Gumps
 
                 if (from.RawStr * loss > 10)
                 {
-                    @from.RawStr = (int)(@from.RawStr * loss);
+                    from.RawStr = (int)(from.RawStr * loss);
                 }
 
                 if (from.RawInt * loss > 10)
                 {
-                    @from.RawInt = (int)(@from.RawInt * loss);
+                    from.RawInt = (int)(from.RawInt * loss);
                 }
 
                 if (from.RawDex * loss > 10)
                 {
-                    @from.RawDex = (int)(@from.RawDex * loss);
+                    from.RawDex = (int)(from.RawDex * loss);
                 }
 
                 for (var s = 0; s < from.Skills.Length; s++)
                 {
-                    if (@from.Skills[s].Base * loss > 35)
+                    if (from.Skills[s].Base * loss > 35)
                     {
-                        @from.Skills[s].Base *= loss;
+                        from.Skills[s].Base *= loss;
                     }
                 }
             }
 
             if (from.Alive && m_HitsScalar > 0)
             {
-                @from.Hits = (int)(@from.HitsMax * m_HitsScalar);
+                from.Hits = (int)(from.HitsMax * m_HitsScalar);
             }
         }
     }

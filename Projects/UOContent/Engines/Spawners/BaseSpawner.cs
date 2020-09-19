@@ -307,7 +307,7 @@ namespace Server.Engines.Spawners
         {
             if (from.AccessLevel >= AccessLevel.Developer)
             {
-                @from.SendGump(new SpawnerGump(this));
+                from.SendGump(new SpawnerGump(this));
             }
         }
 
@@ -350,11 +350,11 @@ namespace Server.Engines.Spawners
 
             if (m_Running)
             {
-                LabelTo(@from, "[Running]");
+                LabelTo(from, "[Running]");
             }
             else
             {
-                LabelTo(@from, "[Off]");
+                LabelTo(from, "[Off]");
             }
         }
 

@@ -53,11 +53,11 @@ namespace Server.Engines.BulkOrders
         {
             if (!from.InRange(GetWorldLocation(), 2))
             {
-                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             }
             else if (Entries.Count == 0)
             {
-                @from.SendLocalizedMessage(1062381); // The book is empty.
+                from.SendLocalizedMessage(1062381); // The book is empty.
             }
             else if (from is PlayerMobile mobile)
             {
@@ -278,7 +278,7 @@ namespace Server.Engines.BulkOrders
 
             if (!string.IsNullOrEmpty(m_BookName))
             {
-                LabelTo(@from, 1062481, m_BookName);
+                LabelTo(from, 1062481, m_BookName);
             }
         }
 
@@ -288,7 +288,7 @@ namespace Server.Engines.BulkOrders
 
             if (from.CheckAlive() && IsChildOf(from.Backpack))
             {
-                list.Add(new NameBookEntry(@from, this));
+                list.Add(new NameBookEntry(from, this));
             }
 
             SetSecureLevelEntry.AddTo(from, this, list);

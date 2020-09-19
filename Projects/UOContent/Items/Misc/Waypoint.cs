@@ -65,11 +65,11 @@ namespace Server.Items
 
             if (m_Next == null)
             {
-                LabelTo(@from, "(Unlinked)");
+                LabelTo(from, "(Unlinked)");
             }
             else
             {
-                LabelTo(@from, "(Linked: {0})", m_Next.Location);
+                LabelTo(from, "(Linked: {0})", m_Next.Location);
             }
         }
 
@@ -113,7 +113,7 @@ namespace Server.Items
             }
             else
             {
-                @from.SendMessage("Target a way point.");
+                from.SendMessage("Target a way point.");
             }
         }
     }

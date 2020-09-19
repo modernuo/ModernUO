@@ -82,7 +82,7 @@ namespace Server.Items
         {
             if (from.Body.IsHuman)
             {
-                @from.Animate(@from.Mounted ? 26 : 9, 7, 1, true, false, 0);
+                from.Animate(from.Mounted ? 26 : 9, 7, 1, true, false, 0);
             }
 
             from.PlaySound(0x23A);

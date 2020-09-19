@@ -71,21 +71,21 @@ namespace Server.Factions
 
             if (pl == null)
             {
-                @from.SendLocalizedMessage(1010366); // You cannot mount a faction war horse!
+                from.SendLocalizedMessage(1010366); // You cannot mount a faction war horse!
             }
             else if (pl.Faction != Faction)
             {
-                @from.SendLocalizedMessage(1010367); // You cannot ride an opposing faction's war horse!
+                from.SendLocalizedMessage(1010367); // You cannot ride an opposing faction's war horse!
             }
             else if (pl.Rank.Rank < 2)
             {
-                @from.SendLocalizedMessage(
+                from.SendLocalizedMessage(
                     1010368
                 ); // You must achieve a faction rank of at least two before riding a war horse!
             }
             else
             {
-                base.OnDoubleClick(@from);
+                base.OnDoubleClick(from);
             }
         }
 

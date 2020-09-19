@@ -208,7 +208,7 @@ namespace Server.Engines.Mahjong
 
             if (from != null)
             {
-                Players.SendLocalizedMessage(1062771, @from.Name); // ~1_name~ has reset the game.
+                Players.SendLocalizedMessage(1062771, from.Name); // ~1_name~ has reset the game.
             }
 
             Players.SendRelievePacket(true, true);
@@ -340,7 +340,7 @@ namespace Server.Engines.Mahjong
                 if (from.CheckAlive() && !m_Game.Deleted && m_Game.IsAccessibleTo(from) &&
                     m_Game.Players.GetInGameMobiles(true, false).Count == 0)
                 {
-                    m_Game.ResetGame(@from);
+                    m_Game.ResetGame(from);
                 }
             }
         }

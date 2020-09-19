@@ -95,7 +95,7 @@ namespace Server.Items
 
             if (Charges == 0)
             {
-                @from.SendLocalizedMessage(1019073); // This item is out of charges.
+                from.SendLocalizedMessage(1019073); // This item is out of charges.
             }
 
             ApplyDelayTo(from);
@@ -124,11 +124,11 @@ namespace Server.Items
             {
                 if (Charges > 0)
                 {
-                    OnWandUse(@from);
+                    OnWandUse(from);
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(1019073); // This item is out of charges.
+                    from.SendLocalizedMessage(1019073); // This item is out of charges.
                 }
             }
             else
@@ -301,7 +301,7 @@ namespace Server.Items
 
             if (OnWandTarget(from, o))
             {
-                ConsumeCharge(@from);
+                ConsumeCharge(from);
             }
         }
 

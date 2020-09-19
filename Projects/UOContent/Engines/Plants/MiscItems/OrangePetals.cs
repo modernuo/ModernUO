@@ -29,7 +29,7 @@ namespace Server.Items
         {
             if (item != this)
             {
-                return base.CheckItemUse(@from, item);
+                return base.CheckItemUse(from, item);
             }
 
             if (from != RootParent)

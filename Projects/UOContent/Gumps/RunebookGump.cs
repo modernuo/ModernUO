@@ -315,7 +315,7 @@ namespace Server.Gumps
                                     from.CloseGump<RunebookGump>();
                                     if (!Core.ML)
                                     {
-                                        @from.SendGump(new RunebookGump(@from, Book));
+                                        from.SendGump(new RunebookGump(from, Book));
                                     }
                                 }
                                 else

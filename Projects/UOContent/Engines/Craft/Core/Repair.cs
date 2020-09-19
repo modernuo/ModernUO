@@ -78,7 +78,7 @@ namespace Server.Engines.Craft
             {
                 if (m_Deed != null)
                 {
-                    return m_Deed.Check(@from);
+                    return m_Deed.Check(from);
                 }
 
                 return true;

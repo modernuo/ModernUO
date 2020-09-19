@@ -377,7 +377,7 @@ namespace Server.Mobiles
 
             if (IsOwner(from) && from.InLOS(this))
             {
-                list.Add(new ManageBarkeeperEntry(@from, this));
+                list.Add(new ManageBarkeeperEntry(from, this));
             }
         }
 

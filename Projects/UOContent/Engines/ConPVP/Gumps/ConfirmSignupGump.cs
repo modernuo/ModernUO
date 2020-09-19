@@ -337,7 +337,7 @@ namespace Server.Engines.ConPVP
                                         0x35,
                                         false,
                                         "Excuse me? You are already signed up.",
-                                        @from.NetState
+                                        from.NetState
                                     );
                                 }
                                 else
@@ -347,7 +347,7 @@ namespace Server.Engines.ConPVP
                                         0x22,
                                         false,
                                         "The tournament has already begun. You are too late to signup now.",
-                                        @from.NetState
+                                        from.NetState
                                     );
                                 }
                             }
@@ -401,7 +401,7 @@ namespace Server.Engines.ConPVP
                                                 0x35,
                                                 false,
                                                 "You have not yet proven yourself a worthy dueler.",
-                                                @from.NetState
+                                                from.NetState
                                             );
                                         }
                                         else
@@ -411,7 +411,7 @@ namespace Server.Engines.ConPVP
                                                 0x35,
                                                 false,
                                                 $"{mob.Name} has not yet proven themselves a worthy dueler.",
-                                                @from.NetState
+                                                from.NetState
                                             );
                                         }
                                     }
@@ -445,7 +445,7 @@ namespace Server.Engines.ConPVP
                                                 0x35,
                                                 false,
                                                 "You have already entered this tournament.",
-                                                @from.NetState
+                                                from.NetState
                                             );
                                         }
                                         else
@@ -455,7 +455,7 @@ namespace Server.Engines.ConPVP
                                                 0x35,
                                                 false,
                                                 $"{mob.Name} has already entered this tournament.",
-                                                @from.NetState
+                                                from.NetState
                                             );
                                         }
                                     }
@@ -473,7 +473,7 @@ namespace Server.Engines.ConPVP
                                             0x35,
                                             false,
                                             "You are already assigned to a duel. You must yield it before joining this tournament.",
-                                            @from.NetState
+                                            from.NetState
                                         );
                                     }
                                     else
@@ -483,7 +483,7 @@ namespace Server.Engines.ConPVP
                                             0x35,
                                             false,
                                             $"{mobile.Name} is already assigned to a duel. They must yield it before joining this tournament.",
-                                            @from.NetState
+                                            from.NetState
                                         );
                                     }
 
@@ -583,11 +583,11 @@ namespace Server.Engines.ConPVP
 
                 if (mob.Body.IsHuman)
                 {
-                    mob.SayTo(@from, 1005443); // Nay, I would rather stay here and watch a nail rust.
+                    mob.SayTo(from, 1005443); // Nay, I would rather stay here and watch a nail rust.
                 }
                 else
                 {
-                    mob.SayTo(@from, 1005444); // The creature ignores your offer.
+                    mob.SayTo(from, 1005444); // The creature ignores your offer.
                 }
             }
             else if (AcceptDuelGump.IsIgnored(mob, from) || mob.Blessed)

@@ -263,7 +263,7 @@ namespace Server.Items
 
             for (var i = 0; i < SideLength; i++)
             {
-                @from.AddToBackpack(new ArcaneGem());
+                from.AddToBackpack(new ArcaneGem());
             }
 
             from.AddToBackpack(new Diamond(SideLength));

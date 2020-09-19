@@ -30,11 +30,11 @@ namespace Server.Items
         {
             if (from.InRange(GetWorldLocation(), 2))
             {
-                @from.Target = new InternalTarget(this);
+                from.Target = new InternalTarget(this);
             }
             else
             {
-                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             }
         }
 
@@ -108,7 +108,7 @@ namespace Server.Items
 
                         if (transItem is Item item)
                         {
-                            MessageHelper.SendLocalizedMessageTo(item, @from, 1054139, transItem.TranslocationItemName, 0x43);
+                            MessageHelper.SendLocalizedMessageTo(item, from, 1054139, transItem.TranslocationItemName, 0x43);
                         }
                     }
                 }

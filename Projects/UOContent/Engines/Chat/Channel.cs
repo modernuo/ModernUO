@@ -376,7 +376,7 @@ namespace Server.Engines.Chat
 
                 if (user.CheckOnline())
                 {
-                    user.SendMessage(number, @from.Mobile, param1, param2);
+                    user.SendMessage(number, from.Mobile, param1, param2);
                 }
                 else if (!Contains(user))
                 {

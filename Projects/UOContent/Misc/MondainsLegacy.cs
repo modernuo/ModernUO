@@ -69,7 +69,7 @@ namespace Server
 
             if (message)
             {
-                @from.SendLocalizedMessage(1072791); // You must upgrade to Mondain's Legacy in order to use that item.
+                from.SendLocalizedMessage(1072791); // You must upgrade to Mondain's Legacy in order to use that item.
             }
 
             return false;

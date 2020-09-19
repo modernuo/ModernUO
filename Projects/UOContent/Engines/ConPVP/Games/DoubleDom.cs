@@ -1198,7 +1198,7 @@ namespace Server.Engines.ConPVP
 
                 if (team != null && team != TeamOwner)
                 {
-                    m_Game.Dominate(this, @from, team);
+                    m_Game.Dominate(this, from, team);
                 }
             }
 

@@ -70,7 +70,7 @@ namespace Server.Items
 
             if (makersMark)
             {
-                Crafter = @from;
+                Crafter = from;
             }
 
             return quality;
@@ -169,11 +169,11 @@ namespace Server.Items
                 // Blacksmithing shows the gump regardless of proximity of an anvil and forge after SE
                 if (num > 0 && (num != 1044267 || !Core.SE))
                 {
-                    @from.SendLocalizedMessage(num);
+                    from.SendLocalizedMessage(num);
                 }
                 else
                 {
-                    @from.SendGump(new CraftGump(@from, system, this, null));
+                    from.SendGump(new CraftGump(from, system, this, null));
                 }
             }
             else

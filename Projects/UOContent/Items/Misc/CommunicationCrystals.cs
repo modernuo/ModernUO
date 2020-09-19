@@ -115,7 +115,7 @@ namespace Server.Items
 
             if (Receivers.Count > 0)
             {
-                LabelTo(@from, 1060746, Receivers.Count.ToString()); // links: ~1_val~
+                LabelTo(from, 1060746, Receivers.Count.ToString()); // links: ~1_val~
             }
         }
 
@@ -142,7 +142,7 @@ namespace Server.Items
                 }
                 else if (Charges > 0)
                 {
-                    receiver.TransmitMessage(@from, speech);
+                    receiver.TransmitMessage(from, speech);
                     Charges--;
                 }
                 else

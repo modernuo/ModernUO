@@ -162,11 +162,11 @@ namespace Server.Commands
 
                         if (pe?.Handler == from)
                         {
-                            @from.SendMessage("You may only use this command if you are handling their help page.");
+                            from.SendMessage("You may only use this command if you are handling their help page.");
                         }
                         else
                         {
-                            @from.SendMessage("You may only use this command on someone who has paged you.");
+                            from.SendMessage("You may only use this command on someone who has paged you.");
                         }
 
                         return;
@@ -174,11 +174,11 @@ namespace Server.Commands
 
                     if (targ.AddToBackpack(held))
                     {
-                        @from.SendMessage("The item they were holding has been placed into their backpack.");
+                        from.SendMessage("The item they were holding has been placed into their backpack.");
                     }
                     else
                     {
-                        @from.SendMessage("The item they were holding has been placed at their feet.");
+                        from.SendMessage("The item they were holding has been placed at their feet.");
                     }
 
                     held.ClearBounce();
@@ -642,7 +642,7 @@ namespace Server.Commands
                             {
                                 if (Insensitive.Equals(r.Name, name))
                                 {
-                                    @from.MoveToWorld(r.GoLocation, map);
+                                    from.MoveToWorld(r.GoLocation, map);
                                     return;
                                 }
                             }
@@ -650,11 +650,11 @@ namespace Server.Commands
 
                         if (ser != 0)
                         {
-                            @from.SendMessage("No object with that serial was found.");
+                            from.SendMessage("No object with that serial was found.");
                         }
                         else
                         {
-                            @from.SendMessage("No region with that name was found.");
+                            from.SendMessage("No region with that name was found.");
                         }
 
                         return;
@@ -683,11 +683,11 @@ namespace Server.Commands
                         var y = int.Parse(e.GetString(1));
                         var z = e.Length == 3 ? int.Parse(e.GetString(2)) : map.GetAverageZ(x, y);
 
-                        @from.Location = new Point3D(x, y, z);
+                        from.Location = new Point3D(x, y, z);
                     }
                     catch
                     {
-                        @from.SendMessage("Region name not found.");
+                        from.SendMessage("Region name not found.");
                     }
                 }
             }
@@ -709,11 +709,11 @@ namespace Server.Commands
 
                     if (p != Point3D.Zero)
                     {
-                        @from.Location = p;
+                        from.Location = p;
                     }
                     else
                     {
-                        @from.SendMessage("Sextant reverse lookup failed.");
+                        from.SendMessage("Sextant reverse lookup failed.");
                     }
                 }
             }
@@ -901,7 +901,7 @@ namespace Server.Commands
 
                 if (targeted is Mobile mobile)
                 {
-                    @from.SendMenu(new EquipMenu(@from, mobile, GetEquip(mobile)));
+                    from.SendMenu(new EquipMenu(from, mobile, GetEquip(mobile)));
                 }
             }
 
@@ -1036,7 +1036,7 @@ namespace Server.Commands
                         }
                         else
                         {
-                            box.DisplayTo(@from);
+                            box.DisplayTo(from);
                         }
                     }
                     else
@@ -1133,11 +1133,11 @@ namespace Server.Commands
                 {
                     if (mobile.AccessLevel >= from.AccessLevel && mobile != from)
                     {
-                        @from.SendMessage("You can't do that to someone with higher Accesslevel than you!");
+                        from.SendMessage("You can't do that to someone with higher Accesslevel than you!");
                     }
                     else
                     {
-                        @from.SendGump(new StuckMenu(@from, mobile, false));
+                        from.SendGump(new StuckMenu(from, mobile, false));
                     }
                 }
             }

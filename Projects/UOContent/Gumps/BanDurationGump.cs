@@ -235,7 +235,7 @@ namespace Server.Gumps
                     {
                         a.Comments.Add(
                             new AccountComment(
-                                @from.RawName,
+                                from.RawName,
                                 $"Duration: {(duration == TimeSpan.MaxValue ? "Infinite" : duration.ToString())}, Comment: {comment}"
                             )
                         );
@@ -244,11 +244,11 @@ namespace Server.Gumps
 
                 if (duration == TimeSpan.MaxValue)
                 {
-                    @from.SendMessage("Ban Duration: Infinite");
+                    from.SendMessage("Ban Duration: Infinite");
                 }
                 else
                 {
-                    @from.SendMessage("Ban Duration: {0}", duration);
+                    from.SendMessage("Ban Duration: {0}", duration);
                 }
             }
             else

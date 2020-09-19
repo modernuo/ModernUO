@@ -205,7 +205,7 @@ namespace Server.Mobiles
         {
             if (Validate(from))
             {
-                new EtherealSpell(this, @from).Cast();
+                new EtherealSpell(this, from).Cast();
             }
         }
 

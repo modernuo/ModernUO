@@ -153,7 +153,7 @@ namespace Server.Engines.ConPVP
                 AddImage( 22, y + 5, 0x2616, 0x96C );
                 AddImage( 20, y + 7, 0x2616, 0x96C );
                 AddImage( 22, y + 7, 0x2616, 0x96C );
-        
+
                 AddImage( 21, y + 6, 0x2616, 0x454 );*/
 
                 AddImage(x + 3, y + 4, 0x805);
@@ -227,11 +227,11 @@ namespace Server.Engines.ConPVP
 
             if (info.ButtonID == 1 && m_Page > 0)
             {
-                @from.SendGump(new LadderGump(m_Ladder, m_Page - 1));
+                from.SendGump(new LadderGump(m_Ladder, m_Page - 1));
             }
             else if (info.ButtonID == 2 && (m_Page + 1) * 15 < Math.Min(m_List.Count, 150))
             {
-                @from.SendGump(new LadderGump(m_Ladder, m_Page + 1));
+                from.SendGump(new LadderGump(m_Ladder, m_Page + 1));
             }
         }
 

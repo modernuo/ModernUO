@@ -224,15 +224,15 @@ namespace Server.Engines.Plants
 
                 if (targeted is PlantItem plant)
                 {
-                    plant.PlantSeed(@from, m_Seed);
+                    plant.PlantSeed(from, m_Seed);
                 }
                 else if (targeted is Item item)
                 {
-                    item.LabelTo(@from, 1061919); // You must use a seed on a bowl of dirt!
+                    item.LabelTo(from, 1061919); // You must use a seed on a bowl of dirt!
                 }
                 else
                 {
-                    @from.SendLocalizedMessage(1061919); // You must use a seed on a bowl of dirt!
+                    from.SendLocalizedMessage(1061919); // You must use a seed on a bowl of dirt!
                 }
             }
         }

@@ -151,7 +151,7 @@ namespace Server.Mobiles
                         Combatant = null;
 
                         Effects.SendLocationParticles(
-                            EffectItem.Create(@from, map, EffectItem.DefaultDuration),
+                            EffectItem.Create(from, map, EffectItem.DefaultDuration),
                             0x3728,
                             10,
                             10,

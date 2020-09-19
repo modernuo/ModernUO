@@ -66,11 +66,11 @@ namespace Server.Gumps
         {
             if (m_Type == typeof(Type))
             {
-                @from.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+                from.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
             }
             else
             {
-                @from.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List));
+                from.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List));
             }
         }
     }

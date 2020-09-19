@@ -55,7 +55,7 @@ namespace Server.Engines.ConPVP
 
             if (!from.Hidden || from.AccessLevel == AccessLevel.Player)
             {
-                Effects.PlaySound(@from.Location, @from.Map, 0x20E);
+                Effects.PlaySound(from.Location, from.Map, 0x20E);
             }
 
             return true;
@@ -65,11 +65,11 @@ namespace Server.Engines.ConPVP
         {
             if (from.InRange(GetWorldLocation(), 1))
             {
-                UseGate(@from);
+                UseGate(from);
             }
             else
             {
-                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that
             }
         }
 

@@ -12,7 +12,7 @@ namespace Server.Engines.Plants
         {
             if (!m_Plant.Deleted && from.InRange(m_Plant.GetWorldLocation(), 3) && targeted is Item item)
             {
-                m_Plant.Pour(@from, item);
+                m_Plant.Pour(from, item);
             }
         }
 
@@ -23,7 +23,7 @@ namespace Server.Engines.Plants
             {
                 if (from.HasGump<MainPlantGump>())
                 {
-                    @from.CloseGump<MainPlantGump>();
+                    from.CloseGump<MainPlantGump>();
                 }
 
                 from.SendGump(new MainPlantGump(m_Plant));

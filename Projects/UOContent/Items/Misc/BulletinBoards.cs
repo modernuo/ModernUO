@@ -169,11 +169,11 @@ namespace Server.Items
                 state.Send(new BBDisplayBoard(this));
                 if (state.ContainerGridLines)
                 {
-                    state.Send(new ContainerContent6017(@from, this));
+                    state.Send(new ContainerContent6017(from, this));
                 }
                 else
                 {
-                    state.Send(new ContainerContent(@from, this));
+                    state.Send(new ContainerContent(from, this));
                 }
             }
             else
@@ -304,11 +304,11 @@ namespace Server.Items
                 {
                     if (thread == null)
                     {
-                        @from.SendMessage("You must wait {0} before creating a new thread.", FormatTS(ThreadCreateTime));
+                        from.SendMessage("You must wait {0} before creating a new thread.", FormatTS(ThreadCreateTime));
                     }
                     else
                     {
-                        @from.SendMessage("You must wait {0} before replying to another thread.", FormatTS(ThreadReplyTime));
+                        from.SendMessage("You must wait {0} before replying to another thread.", FormatTS(ThreadReplyTime));
                     }
 
                     return;

@@ -92,11 +92,11 @@ namespace Server
 
             if (current - amount >= 0)
             {
-                @from.Virtues.SetValue((int)virtue, current - amount);
+                from.Virtues.SetValue((int)virtue, current - amount);
             }
             else
             {
-                @from.Virtues.SetValue((int)virtue, 0);
+                from.Virtues.SetValue((int)virtue, 0);
             }
 
             return current > 0;

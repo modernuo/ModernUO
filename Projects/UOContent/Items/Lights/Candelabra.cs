@@ -62,7 +62,7 @@ namespace Server.Items
 
             if (IsShipwreckedItem)
             {
-                LabelTo(@from, 1041645); // recovered from a shipwreck
+                LabelTo(from, 1041645); // recovered from a shipwreck
             }
         }
     }

@@ -32,7 +32,7 @@ namespace Server.Commands
             {
                 if (o is Mobile mobile)
                 {
-                    @from.SendGump(new SkillsGump(@from, mobile));
+                    from.SendGump(new SkillsGump(from, mobile));
                 }
             }
         }

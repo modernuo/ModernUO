@@ -97,7 +97,7 @@ namespace Server.Engines.Craft
         {
             if (toolBroken)
             {
-                @from.SendLocalizedMessage(1044038); // You have worn out your tool
+                from.SendLocalizedMessage(1044038); // You have worn out your tool
             }
 
             if (failed)
@@ -710,11 +710,11 @@ namespace Server.Engines.Craft
 
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    @from.SendGump(new CraftGump(@from, m_TrapCraft.CraftSystem, tool, message));
+                    from.SendGump(new CraftGump(from, m_TrapCraft.CraftSystem, tool, message));
                 }
                 else if (message > 0)
                 {
-                    @from.SendLocalizedMessage(message);
+                    from.SendLocalizedMessage(message);
                 }
             }
         }

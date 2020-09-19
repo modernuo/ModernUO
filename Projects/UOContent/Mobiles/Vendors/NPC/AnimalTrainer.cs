@@ -49,7 +49,7 @@ namespace Server.Mobiles
 
                 if (from.Stabled.Count > 0)
                 {
-                    list.Add(new ClaimAllEntry(this, @from));
+                    list.Add(new ClaimAllEntry(this, from));
                 }
             }
 
@@ -136,11 +136,11 @@ namespace Server.Mobiles
 
             if (list.Count > 0)
             {
-                @from.SendGump(new ClaimListGump(this, @from, list));
+                from.SendGump(new ClaimListGump(this, from, list));
             }
             else
             {
-                SayTo(@from, 502671); // But I have no animals stabled with me at the moment!
+                SayTo(from, 502671); // But I have no animals stabled with me at the moment!
             }
         }
 
@@ -332,15 +332,15 @@ namespace Server.Mobiles
 
             if (claimed)
             {
-                SayTo(@from, 1042559); // Here you go... and good day to you!
+                SayTo(from, 1042559); // Here you go... and good day to you!
             }
             else if (stabled == 0)
             {
-                SayTo(@from, 502671); // But I have no animals stabled with me at the moment!
+                SayTo(from, 502671); // But I have no animals stabled with me at the moment!
             }
             else if (claimByName)
             {
-                BeginClaimList(@from);
+                BeginClaimList(from);
             }
         }
 
@@ -352,7 +352,7 @@ namespace Server.Mobiles
 
             if (pet.Summoned)
             {
-                pet.SummonMaster = @from;
+                pet.SummonMaster = from;
             }
 
             pet.ControlTarget = from;
@@ -507,15 +507,15 @@ namespace Server.Mobiles
             {
                 if (targeted is BaseCreature creature)
                 {
-                    m_Trainer.EndStable(@from, creature);
+                    m_Trainer.EndStable(from, creature);
                 }
                 else if (targeted == from)
                 {
-                    m_Trainer.SayTo(@from, 502672); // HA HA HA! Sorry, I am not an inn.
+                    m_Trainer.SayTo(from, 502672); // HA HA HA! Sorry, I am not an inn.
                 }
                 else
                 {
-                    m_Trainer.SayTo(@from, 1048053); // You can't stable that!
+                    m_Trainer.SayTo(from, 1048053); // You can't stable that!
                 }
             }
         }

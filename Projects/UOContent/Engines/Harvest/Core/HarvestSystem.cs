@@ -19,7 +19,7 @@ namespace Server.Engines.Harvest
 
             if (wornOut)
             {
-                @from.SendLocalizedMessage(1044038); // You have worn out your tool!
+                from.SendLocalizedMessage(1044038); // You have worn out your tool!
             }
 
             return !wornOut;
@@ -36,7 +36,7 @@ namespace Server.Engines.Harvest
 
             if (!inRange)
             {
-                def.SendMessageTo(@from, timed ? def.TimedOutOfRangeMessage : def.OutOfRangeMessage);
+                def.SendMessageTo(from, timed ? def.TimedOutOfRangeMessage : def.OutOfRangeMessage);
             }
 
             return inRange;
@@ -49,7 +49,7 @@ namespace Server.Engines.Harvest
 
             if (!available)
             {
-                def.SendMessageTo(@from, timed ? def.DoubleHarvestMessage : def.NoResourcesMessage);
+                def.SendMessageTo(from, timed ? def.DoubleHarvestMessage : def.NoResourcesMessage);
             }
 
             return available;
@@ -132,7 +132,7 @@ namespace Server.Engines.Harvest
 
             if (vein != null)
             {
-                vein = MutateVein(@from, tool, def, bank, toHarvest, vein);
+                vein = MutateVein(from, tool, def, bank, toHarvest, vein);
             }
 
             if (vein == null)
@@ -155,7 +155,7 @@ namespace Server.Engines.Harvest
 
                 if (type != null)
                 {
-                    type = MutateType(type, @from, tool, def, map, loc, resource);
+                    type = MutateType(type, from, tool, def, map, loc, resource);
                 }
 
                 if (type != null)
@@ -220,7 +220,7 @@ namespace Server.Engines.Harvest
                             if (Give(from, bonusItem, true)
                             ) // Bonuses always allow placing at feet, even if pack is full irregrdless of def
                             {
-                                bonus.SendSuccessTo(@from);
+                                bonus.SendSuccessTo(from);
                             }
                             else
                             {
@@ -249,7 +249,7 @@ namespace Server.Engines.Harvest
 
             if (type == null)
             {
-                def.SendMessageTo(@from, def.FailMessage);
+                def.SendMessageTo(from, def.FailMessage);
             }
 
             OnHarvestFinished(from, tool, def, vein, bank, resource, toHarvest);
@@ -414,7 +414,7 @@ namespace Server.Engines.Harvest
 
             if (!from.Mounted)
             {
-                @from.Animate(def.EffectActions.RandomElement(), 5, 1, true, false, 0);
+                from.Animate(def.EffectActions.RandomElement(), 5, 1, true, false, 0);
             }
         }
 

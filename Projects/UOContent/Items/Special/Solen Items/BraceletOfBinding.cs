@@ -127,11 +127,11 @@ namespace Server.Items
 
             if (Bound == null)
             {
-                Bind(@from);
+                Bind(from);
             }
             else
             {
-                Activate(@from);
+                Activate(from);
             }
         }
 
@@ -182,11 +182,11 @@ namespace Server.Items
 
             if (!IsChildOf(from))
             {
-                @from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
+                from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
             }
             else
             {
-                CheckUse(@from, true);
+                CheckUse(from, true);
             }
         }
 
@@ -289,7 +289,7 @@ namespace Server.Items
 
             if (successMessage)
             {
-                @from.SendLocalizedMessage(1054015); // The bracelet's twin is available for transport.
+                from.SendLocalizedMessage(1054015); // The bracelet's twin is available for transport.
             }
 
             return true;
@@ -389,7 +389,7 @@ namespace Server.Items
 
                 if (from.CheckAlive())
                 {
-                    m_Callback(@from);
+                    m_Callback(from);
                 }
             }
         }

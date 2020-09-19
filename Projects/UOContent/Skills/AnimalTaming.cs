@@ -107,7 +107,7 @@ namespace Server.SkillHandlers
             {
                 if (m_SetSkillTime)
                 {
-                    @from.NextSkillTime = Core.TickCount;
+                    from.NextSkillTime = Core.TickCount;
                 }
             }
 

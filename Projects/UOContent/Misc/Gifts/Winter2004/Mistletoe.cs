@@ -249,11 +249,11 @@ namespace Server.Items
 
                 if (northWall && westWall)
                 {
-                    @from.SendGump(new MistletoeDeedGump(@from, loc, this));
+                    from.SendGump(new MistletoeDeedGump(from, loc, this));
                 }
                 else
                 {
-                    PlaceAddon(@from, loc, northWall, westWall);
+                    PlaceAddon(from, loc, northWall, westWall);
                 }
             }
             else
@@ -289,7 +289,7 @@ namespace Server.Items
             }
             else
             {
-                @from.SendLocalizedMessage(1070883); // The mistletoe must be placed next to a wall.
+                from.SendLocalizedMessage(1070883); // The mistletoe must be placed next to a wall.
             }
 
             if (itemID > 0)

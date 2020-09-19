@@ -544,7 +544,7 @@ namespace Server.Commands
                 if (shouldLog)
                 {
                     CommandLogging.LogChangeProperty(
-                        @from,
+                        from,
                         logObject,
                         givenName,
                         toSet?.ToString() ?? "(-null-)"
@@ -607,11 +607,11 @@ namespace Server.Commands
             {
                 if (!BaseCommand.IsAccessible(from, o))
                 {
-                    @from.SendLocalizedMessage(500447); // That is not accessible.
+                    from.SendLocalizedMessage(500447); // That is not accessible.
                 }
                 else
                 {
-                    @from.SendGump(new PropertiesGump(@from, o));
+                    from.SendGump(new PropertiesGump(from, o));
                 }
             }
         }
@@ -794,12 +794,12 @@ namespace Server
 
                 if ((access & PropertyAccess.Read) != 0 && from.AccessLevel < security.ReadLevel)
                 {
-                    throw new ReadAccessException(this, @from.AccessLevel, security.ReadLevel);
+                    throw new ReadAccessException(this, from.AccessLevel, security.ReadLevel);
                 }
 
                 if ((access & PropertyAccess.Write) != 0 && (from.AccessLevel < security.WriteLevel || security.ReadOnly))
                 {
-                    throw new WriteAccessException(this, @from.AccessLevel, security.ReadLevel);
+                    throw new WriteAccessException(this, from.AccessLevel, security.ReadLevel);
                 }
             }
 

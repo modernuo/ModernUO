@@ -178,7 +178,7 @@ namespace Server.Misc
 
             if (from.Alive && (gc >= Utility.RandomDouble() && AllowGain(from, skill, amObj) || skill.Base < 10.0))
             {
-                Gain(@from, skill);
+                Gain(from, skill);
             }
 
             return success;
@@ -310,15 +310,15 @@ namespace Server.Misc
 
                 if (from.StrLock == StatLockType.Up && info.StrGain / 33.3 > Utility.RandomDouble())
                 {
-                    GainStat(@from, Stat.Str);
+                    GainStat(from, Stat.Str);
                 }
                 else if (from.DexLock == StatLockType.Up && info.DexGain / 33.3 > Utility.RandomDouble())
                 {
-                    GainStat(@from, Stat.Dex);
+                    GainStat(from, Stat.Dex);
                 }
                 else if (from.IntLock == StatLockType.Up && info.IntGain / 33.3 > Utility.RandomDouble())
                 {
-                    GainStat(@from, Stat.Int);
+                    GainStat(from, Stat.Int);
                 }
             }
         }
@@ -338,7 +338,7 @@ namespace Server.Misc
         {
             if (!(from is BaseCreature creature && creature.Controlled))
             {
-                if (@from.RawStatTotal >= @from.StatCap)
+                if (from.RawStatTotal >= from.StatCap)
                 {
                     return false;
                 }
@@ -365,17 +365,17 @@ namespace Server.Misc
                         {
                             if (CanLower(from, Stat.Dex) && (from.RawDex < from.RawInt || !CanLower(from, Stat.Int)))
                             {
-                                --@from.RawDex;
+                                --from.RawDex;
                             }
                             else if (CanLower(from, Stat.Int))
                             {
-                                --@from.RawInt;
+                                --from.RawInt;
                             }
                         }
 
                         if (CanRaise(from, Stat.Str))
                         {
-                            ++@from.RawStr;
+                            ++from.RawStr;
                         }
 
                         break;
@@ -386,17 +386,17 @@ namespace Server.Misc
                         {
                             if (CanLower(from, Stat.Str) && (from.RawStr < from.RawInt || !CanLower(from, Stat.Int)))
                             {
-                                --@from.RawStr;
+                                --from.RawStr;
                             }
                             else if (CanLower(from, Stat.Int))
                             {
-                                --@from.RawInt;
+                                --from.RawInt;
                             }
                         }
 
                         if (CanRaise(from, Stat.Dex))
                         {
-                            ++@from.RawDex;
+                            ++from.RawDex;
                         }
 
                         break;
@@ -407,17 +407,17 @@ namespace Server.Misc
                         {
                             if (CanLower(from, Stat.Str) && (from.RawStr < from.RawDex || !CanLower(from, Stat.Dex)))
                             {
-                                --@from.RawStr;
+                                --from.RawStr;
                             }
                             else if (CanLower(from, Stat.Dex))
                             {
-                                --@from.RawDex;
+                                --from.RawDex;
                             }
                         }
 
                         if (CanRaise(from, Stat.Int))
                         {
-                            ++@from.RawInt;
+                            ++from.RawInt;
                         }
 
                         break;

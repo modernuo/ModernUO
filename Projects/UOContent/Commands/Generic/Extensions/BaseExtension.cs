@@ -99,7 +99,7 @@ namespace Server.Commands.Generic
 
             foreach (var update in parsed)
             {
-                update.Optimize(@from, baseType, ref emitter);
+                update.Optimize(from, baseType, ref emitter);
             }
 
             if (size != args.Length)

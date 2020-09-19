@@ -62,11 +62,11 @@ namespace Server.Items
         {
             if (m_Boat?.ShipName != null)
             {
-                LabelTo(@from, 1042884, m_Boat.ShipName); // the tiller man of the ~1_SHIP_NAME~
+                LabelTo(from, 1042884, m_Boat.ShipName); // the tiller man of the ~1_SHIP_NAME~
             }
             else
             {
-                base.OnSingleClick(@from);
+                base.OnSingleClick(from);
             }
         }
 
@@ -74,11 +74,11 @@ namespace Server.Items
         {
             if (m_Boat?.Contains(from) == true)
             {
-                m_Boat.BeginRename(@from);
+                m_Boat.BeginRename(from);
             }
             else
             {
-                m_Boat?.BeginDryDock(@from);
+                m_Boat?.BeginDryDock(from);
             }
         }
 

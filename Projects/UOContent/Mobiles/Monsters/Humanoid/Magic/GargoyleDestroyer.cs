@@ -69,7 +69,7 @@ namespace Server.Mobiles
         {
             if (from?.Alive == true && Utility.RandomDouble() < 0.4)
             {
-                ThrowHatchet(@from);
+                ThrowHatchet(from);
             }
         }
 

@@ -161,15 +161,15 @@ namespace Server.Engines.Quests.Collector
         {
             if (m_Quantity < m_Partial)
             {
-                LabelTo(@from, 1055137); // a section of an obsidian statue
+                LabelTo(from, 1055137); // a section of an obsidian statue
             }
             else if (m_Quantity < m_Completed)
             {
-                LabelTo(@from, 1055138); // a partially reconstructed obsidian statue
+                LabelTo(from, 1055138); // a partially reconstructed obsidian statue
             }
             else
             {
-                LabelTo(@from, 1055139, m_StatueName); // an obsidian statue of ~1_STATUE_NAME~
+                LabelTo(from, 1055139, m_StatueName); // an obsidian statue of ~1_STATUE_NAME~
             }
         }
 
@@ -189,7 +189,7 @@ namespace Server.Engines.Quests.Collector
             {
                 if (!IsChildOf(from.Backpack))
                 {
-                    @from.Send(
+                    from.Send(
                         new MessageLocalized(
                             Serial,
                             ItemID,
@@ -204,7 +204,7 @@ namespace Server.Engines.Quests.Collector
                 }
                 else
                 {
-                    @from.Target = new InternalTarget(this);
+                    from.Target = new InternalTarget(this);
                 }
             }
         }
@@ -243,7 +243,7 @@ namespace Server.Engines.Quests.Collector
                 {
                     for (var i = 0; i < m_Obsidian.Quantity - 1; i++)
                     {
-                        @from.AddToBackpack(new Obsidian());
+                        from.AddToBackpack(new Obsidian());
                     }
 
                     m_Obsidian.Quantity = 1;
@@ -283,10 +283,10 @@ namespace Server.Engines.Quests.Collector
 
                         if (targObsidian.Quantity >= m_Completed)
                         {
-                            targObsidian.StatueName = RandomName(@from);
+                            targObsidian.StatueName = RandomName(from);
                         }
 
-                        @from.Send(
+                        from.Send(
                             new AsciiMessage(
                                 targObsidian.Serial,
                                 targObsidian.ItemID,

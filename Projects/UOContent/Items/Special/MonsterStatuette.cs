@@ -319,7 +319,7 @@ namespace Server.Items
 
                     if (newValue && !m_Statuette.IsLockedDown)
                     {
-                        @from.SendLocalizedMessage(502693); // Remember, this only works when locked down.
+                        from.SendLocalizedMessage(502693); // Remember, this only works when locked down.
                     }
                 }
                 else

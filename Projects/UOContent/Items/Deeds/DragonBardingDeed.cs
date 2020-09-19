@@ -63,7 +63,7 @@ namespace Server.Items
 
             if (makersMark)
             {
-                Crafter = @from;
+                Crafter = from;
             }
 
             var resourceType = typeRes ?? craftItem.Resources[0].ItemType;

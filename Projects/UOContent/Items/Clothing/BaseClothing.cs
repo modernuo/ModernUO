@@ -152,7 +152,7 @@ namespace Server.Items
 
             if (makersMark)
             {
-                Crafter = @from;
+                Crafter = from;
             }
 
             if (DefaultResource != CraftResource.None)
@@ -239,7 +239,7 @@ namespace Server.Items
 
                     var res = (Item)ActivatorUtil.CreateInstance(resourceType);
 
-                    ScissorHelper(@from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
+                    ScissorHelper(from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
 
                     res.LootType = LootType.Regular;
 
@@ -394,11 +394,11 @@ namespace Server.Items
                 {
                     if (RequiredRace == Race.Elf)
                     {
-                        @from.SendLocalizedMessage(1072203); // Only Elves may use this.
+                        from.SendLocalizedMessage(1072203); // Only Elves may use this.
                     }
                     else
                     {
-                        @from.SendMessage("Only {0} may use this.", RequiredRace.PluralName);
+                        from.SendMessage("Only {0} may use this.", RequiredRace.PluralName);
                     }
 
                     return false;
@@ -408,11 +408,11 @@ namespace Server.Items
                 {
                     if (AllowFemaleWearer)
                     {
-                        @from.SendLocalizedMessage(1010388); // Only females can wear this.
+                        from.SendLocalizedMessage(1010388); // Only females can wear this.
                     }
                     else
                     {
-                        @from.SendMessage("You may not wear this.");
+                        from.SendMessage("You may not wear this.");
                     }
 
                     return false;
@@ -422,11 +422,11 @@ namespace Server.Items
                 {
                     if (AllowMaleWearer)
                     {
-                        @from.SendLocalizedMessage(1063343); // Only males can wear this.
+                        from.SendLocalizedMessage(1063343); // Only males can wear this.
                     }
                     else
                     {
-                        @from.SendMessage("You may not wear this.");
+                        from.SendMessage("You may not wear this.");
                     }
 
                     return false;

@@ -134,7 +134,7 @@ namespace Server.Items
             {
                 foreach (var entry in moongates.Entries)
                 {
-                    var dist = @from.GetDistanceToSqrt(entry.Location);
+                    var dist = from.GetDistanceToSqrt(entry.Location);
                     if (moongateDistance > dist)
                     {
                         closestMoongate = entry.Location;
@@ -149,7 +149,7 @@ namespace Server.Items
             {
                 foreach (var p in banks)
                 {
-                    var dist = @from.GetDistanceToSqrt(p);
+                    var dist = from.GetDistanceToSqrt(p);
                     if (bankDistance > dist)
                     {
                         closestBank = p;
@@ -165,11 +165,11 @@ namespace Server.Items
             }
             else if (moongateDistance > m_LongDistance)
             {
-                moonMsg = 1046449 + (int)@from.GetDirectionTo(closestMoongate); // A moongate is * from here
+                moonMsg = 1046449 + (int)from.GetDirectionTo(closestMoongate); // A moongate is * from here
             }
             else if (moongateDistance > m_ShortDistance)
             {
-                moonMsg = 1048010 + (int)@from.GetDirectionTo(closestMoongate); // There is a Moongate * of here.
+                moonMsg = 1048010 + (int)from.GetDirectionTo(closestMoongate); // There is a Moongate * of here.
             }
             else
             {
@@ -185,11 +185,11 @@ namespace Server.Items
             }
             else if (bankDistance > m_LongDistance)
             {
-                bankMsg = 1046462 + (int)@from.GetDirectionTo(closestBank); // A town is * from here
+                bankMsg = 1046462 + (int)from.GetDirectionTo(closestBank); // A town is * from here
             }
             else if (bankDistance > m_ShortDistance)
             {
-                bankMsg = 1048002 + (int)@from.GetDirectionTo(closestBank); // There is a city Bank * of here.
+                bankMsg = 1048002 + (int)from.GetDirectionTo(closestBank); // There is a city Bank * of here.
             }
             else
             {

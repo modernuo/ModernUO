@@ -65,7 +65,7 @@ namespace Server
             if (map != null && map != Map.Internal)
             {
                 SendWarning(
-                    @from,
+                    from,
                     "You are about to freeze <u>all items in {0}</u>.",
                     BaseFreezeWarning,
                     map,
@@ -141,19 +141,19 @@ namespace Server
                 if (targetMap == null)
                 {
                     CommandLogging.WriteLine(
-                        @from,
+                        from,
                         "{0} {1} invoking freeze for every item in every map",
-                        @from.AccessLevel,
-                        CommandLogging.Format(@from)
+                        from.AccessLevel,
+                        CommandLogging.Format(from)
                     );
                 }
                 else
                 {
                     CommandLogging.WriteLine(
-                        @from,
+                        from,
                         "{0} {1} invoking freeze for every item in {0}",
-                        @from.AccessLevel,
-                        CommandLogging.Format(@from),
+                        from.AccessLevel,
+                        CommandLogging.Format(from),
                         targetMap
                     );
                 }
@@ -380,7 +380,7 @@ namespace Server
 
             if (totalFrozen == 0 && badDataFile)
             {
-                @from.SendGump(
+                from.SendGump(
                     new NoticeGump(
                         1060637,
                         30720,
@@ -393,7 +393,7 @@ namespace Server
             }
             else
             {
-                @from.SendGump(
+                from.SendGump(
                     new NoticeGump(
                         1060637,
                         30720,
@@ -641,7 +641,7 @@ namespace Server
 
             if (totalUnfrozen == 0 && badDataFile)
             {
-                @from.SendGump(
+                from.SendGump(
                     new NoticeGump(
                         1060637,
                         30720,
@@ -654,7 +654,7 @@ namespace Server
             }
             else
             {
-                @from.SendGump(
+                from.SendGump(
                     new NoticeGump(
                         1060637,
                         30720,

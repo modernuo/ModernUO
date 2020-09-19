@@ -143,15 +143,15 @@ namespace Server.Items
                     {
                         if (!from.InRange(m_Tub.GetWorldLocation(), 1) || !from.InRange(item.GetWorldLocation(), 1))
                         {
-                            @from.SendLocalizedMessage(500446); // That is too far away.
+                            from.SendLocalizedMessage(500446); // That is too far away.
                         }
                         else if (item.Parent is Mobile)
                         {
-                            @from.SendLocalizedMessage(500861); // Can't Dye clothing that is being worn.
+                            from.SendLocalizedMessage(500861); // Can't Dye clothing that is being worn.
                         }
                         else if (dyable.Dye(from, m_Tub))
                         {
-                            @from.PlaySound(0x23E);
+                            from.PlaySound(0x23E);
                         }
                     }
                     else if ((FurnitureAttribute.Check(item) || item is PotionKeg) && m_Tub.AllowFurniture)
@@ -172,11 +172,11 @@ namespace Server.Items
 
                                     if (house == null || !house.HasLockedDownItem(item) && !house.HasSecureItem(item))
                                     {
-                                        @from.SendLocalizedMessage(501022); // Furniture must be locked down to paint it.
+                                        from.SendLocalizedMessage(501022); // Furniture must be locked down to paint it.
                                     }
                                     else if (!house.IsCoOwner(from))
                                     {
-                                        @from.SendLocalizedMessage(501023); // You must be the owner to use this item.
+                                        from.SendLocalizedMessage(501023); // You must be the owner to use this item.
                                     }
                                     else
                                     {

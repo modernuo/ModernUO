@@ -82,7 +82,7 @@ namespace Server.Engines.Chat
         {
             if (Mobile.NetState != null)
             {
-                Mobile.Send(new ChatMessagePacket(@from, number, param1, param2));
+                Mobile.Send(new ChatMessagePacket(from, number, param1, param2));
             }
         }
 

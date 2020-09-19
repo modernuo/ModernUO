@@ -183,7 +183,7 @@ namespace Server
 
                 if (item != null)
                 {
-                    if (!item.Stackable || !cont.TryDropItem(@from, item, false))
+                    if (!item.Stackable || !cont.TryDropItem(from, item, false))
                     {
                         cont.DropItem(item);
                     }
@@ -572,7 +572,7 @@ namespace Server
           {
             new LootPackItem( typeof( ParrotItem ), 1 )
           };
-    
+
         public static readonly LootPack Parrot = new LootPack( new LootPackEntry[]
           {
             new LootPackEntry( false, ParrotItem, 10.00, 1 )
@@ -697,7 +697,7 @@ namespace Server
 
                 if (rnd < item.Chance)
                 {
-                    return Mutate(@from, luckChance, item.Construct(IsInTokuno(@from), IsMondain(@from)));
+                    return Mutate(from, luckChance, item.Construct(IsInTokuno(from), IsMondain(from)));
                 }
 
                 rnd -= item.Chance;
@@ -822,7 +822,7 @@ namespace Server
                             if (from != null && weapon.AccuracyLevel == 0 && weapon.DamageLevel == 0 &&
                                 weapon.DurabilityLevel == 0 && weapon.Slayer == SlayerName.None && Utility.Random(100) < 5)
                             {
-                                weapon.Slayer = SlayerGroup.GetLootSlayerType(@from.GetType());
+                                weapon.Slayer = SlayerGroup.GetLootSlayerType(from.GetType());
                             }
                         }
                         else if (item is BaseArmor armor)
@@ -849,7 +849,7 @@ namespace Server
                     }
                     else
                     {
-                        slayer = SlayerGroup.GetLootSlayerType(@from.GetType());
+                        slayer = SlayerGroup.GetLootSlayerType(from.GetType());
                     }
 
                     if (slayer == SlayerName.None)

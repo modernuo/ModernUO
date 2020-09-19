@@ -156,7 +156,7 @@ namespace Server.Gumps
 
                 if (index < VendorRentalDuration.Instances.Length)
                 {
-                    SetContractDuration(@from, VendorRentalDuration.Instances[index]);
+                    SetContractDuration(from, VendorRentalDuration.Instances[index]);
                 }
             }
             else
@@ -329,7 +329,7 @@ namespace Server.Gumps
             {
                 if (m_Contract.IsUsableBy(from, true, true, true, true))
                 {
-                    @from.SendGump(new VendorRentalContractGump(m_Contract, @from));
+                    from.SendGump(new VendorRentalContractGump(m_Contract, from));
                 }
             }
         }
@@ -594,7 +594,7 @@ namespace Server.Gumps
             {
                 if (m_Vendor.CanInteractWith(from, false) && m_Vendor.IsLandlord(from))
                 {
-                    @from.SendGump(new LandlordVendorRentalGump(m_Vendor));
+                    from.SendGump(new LandlordVendorRentalGump(m_Vendor));
                 }
             }
         }
@@ -665,7 +665,7 @@ namespace Server.Gumps
 
                     if (depositedGold > 0)
                     {
-                        @from.SendLocalizedMessage(
+                        from.SendLocalizedMessage(
                             1060397,
                             depositedGold.ToString()
                         ); // ~1_AMOUNT~ gold has been deposited into your bank box.

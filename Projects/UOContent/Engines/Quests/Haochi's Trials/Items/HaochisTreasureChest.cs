@@ -58,7 +58,7 @@ namespace Server.Engines.Quests.Samurai
                 var obj = player.Quest.FindObjective<FifthTrialIntroObjective>();
                 if (obj?.StolenTreasure == true)
                 {
-                    @from.SendLocalizedMessage(
+                    from.SendLocalizedMessage(
                         1063247
                     ); // The guard is watching you carefully!  It would be unwise to remove another item from here.
                 }

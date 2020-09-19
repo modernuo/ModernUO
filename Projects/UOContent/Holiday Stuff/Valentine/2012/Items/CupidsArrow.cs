@@ -72,7 +72,7 @@ namespace Server.Items
 
             if (IsSigned)
             {
-                LabelTo(@from, 1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
+                LabelTo(from, 1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
             }
         }
 

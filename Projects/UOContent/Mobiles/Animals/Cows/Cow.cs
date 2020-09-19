@@ -92,12 +92,12 @@ namespace Server.Mobiles
         {
             if (!from.InLOS(this) || !from.InRange(Location, 2))
             {
-                @from.SendLocalizedMessage(1080400); // You can not milk the cow from this location.
+                from.SendLocalizedMessage(1080400); // You can not milk the cow from this location.
             }
 
             if (Controlled && ControlMaster != from)
             {
-                @from.SendLocalizedMessage(1071182); // The cow nimbly escapes your attempts to milk it.
+                from.SendLocalizedMessage(1071182); // The cow nimbly escapes your attempts to milk it.
             }
 
             if (Milk == 0 && MilkedOn + TimeSpan.FromDays(1) > DateTime.UtcNow)

@@ -23,7 +23,7 @@ namespace Server.Items
 
             if (!applied)
             {
-                @from.SendLocalizedMessage(502173); // You are already under a similar effect.
+                from.SendLocalizedMessage(502173); // You are already under a similar effect.
             }
 
             return applied;

@@ -40,7 +40,7 @@ namespace Server.Engines.ConPVP
         {
             if (from.AccessLevel >= AccessLevel.GameMaster)
             {
-                @from.SendGump(new PropertiesGump(@from, this));
+                from.SendGump(new PropertiesGump(from, this));
             }
         }
     }

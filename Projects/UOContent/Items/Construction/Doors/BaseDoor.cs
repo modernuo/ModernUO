@@ -221,11 +221,11 @@ namespace Server.Items
 
                     if (list.Count == 1)
                     {
-                        @from.SendMessage("Target the second door to link.");
+                        from.SendMessage("Target the second door to link.");
                     }
                     else
                     {
-                        @from.SendMessage("Target another door to link. To complete the chain, retarget the first door.");
+                        from.SendMessage("Target another door to link. To complete the chain, retarget the first door.");
                     }
                 }
             }
@@ -440,11 +440,11 @@ namespace Server.Items
                 {
                     if (Hue == 0x44E && Map == Map.Malas)      // doom door into healer room in doom
                     {
-                        SendLocalizedMessageTo(@from, 1060014); // Only the dead may pass.
+                        SendLocalizedMessageTo(from, 1060014); // Only the dead may pass.
                     }
                     else
                     {
-                        @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502503); // That is locked.
+                        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502503); // That is locked.
                     }
 
                     return;
@@ -458,11 +458,11 @@ namespace Server.Items
 
             if (m_Open)
             {
-                OnClosed(@from);
+                OnClosed(from);
             }
             else
             {
-                OnOpened(@from);
+                OnOpened(from);
             }
 
             if (UseChainedFunctionality)
@@ -501,11 +501,11 @@ namespace Server.Items
         {
             if (from.AccessLevel == AccessLevel.Player && !from.InRange(GetWorldLocation(), 2))
             {
-                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             }
             else
             {
-                Use(@from);
+                Use(from);
             }
         }
 
