@@ -21,6 +21,9 @@ namespace Server.Json
 {
     public class WorldLocationConverter : JsonConverter<WorldLocation>
     {
+        private static Point3DConverter _point3DConverter;
+        private static MapConverter _mapConverter;
+
         private WorldLocation DeserializeArray(ref Utf8JsonReader reader)
         {
             Span<int> data = stackalloc int[3];
@@ -45,6 +48,7 @@ namespace Server.Json
                     else if (count == 3)
                     {
                         map = Map.Maps[reader.GetInt32()];
+                        hasMap = true;
                     }
 
                     count++;
@@ -52,12 +56,20 @@ namespace Server.Json
 
                 if (reader.TokenType == JsonTokenType.String)
                 {
-                    map = Map.Parse(reader.GetString());
+                    var key = reader.GetString();
+
+                    if (count != 3 || hasMap)
+                    {
+                        throw new JsonException($"Value {key} is not valid for this element.");
+                    }
+
+                    map = Map.Parse(key);
+                    hasMap = true;
                     break;
                 }
             }
 
-            if (!hasMap || count < 3 || count > 4)
+            if (!hasMap || count != 3)
             {
                 throw new JsonException("WorldLocation must be an array of x, y, z, and map");
             }
@@ -131,7 +143,10 @@ namespace Server.Json
                     }
 
                     hasLoc = true;
-                    var loc = new Point3DConverter().Read(ref reader, typeof(Point3D), options);
+
+                    _point3DConverter ??= new Point3DConverter();
+
+                    var loc = _point3DConverter.Read(ref reader, typeof(Point3D), options);
                     data[0] = loc.X;
                     data[1] = loc.Y;
                     data[2] = loc.Z;
@@ -139,15 +154,13 @@ namespace Server.Json
                     continue;
                 }
 
-                map = reader.TokenType switch
-                {
-                    JsonTokenType.String => Map.Parse(reader.GetString()),
-                    JsonTokenType.Number => Map.Maps[reader.GetInt32()],
-                    _                    => throw new JsonException($"Value for {key} must be a number or string")
-                };
+                _mapConverter ??= new MapConverter();
+                map = _mapConverter.Read(ref reader, typeof(Map), options);
+
+                hasMap = true;
             }
 
-            if (!hasMap || count < 2)
+            if (!hasMap || count != 3)
             {
                 throw new JsonException("WorldLocation must have an x, y, z, and map properties");
             }

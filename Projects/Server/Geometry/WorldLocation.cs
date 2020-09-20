@@ -104,12 +104,7 @@ namespace Server
         public int CompareTo(WorldLocation other)
         {
             var locComparison = m_Loc.CompareTo(other.m_Loc);
-            if (locComparison != 0)
-            {
-                return locComparison;
-            }
-
-            return Comparer<Map>.Default.Compare(m_Map, other.m_Map);
+            return locComparison != 0 ? locComparison : Comparer<Map>.Default.Compare(m_Map, other.m_Map);
         }
 
         public static implicit operator Point3D(WorldLocation worldLocation) => worldLocation.Location;
