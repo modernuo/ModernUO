@@ -1,20 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Server.Items;
+using Server.Json;
 
 namespace Server.Commands
 {
     public struct TeleporterDefinition
     {
-        [JsonPropertyName("src")] public WorldLocation Source { get; set; }
+        [JsonPropertyName("src")]
+        public WorldLocation Source { get; set; }
 
-        [JsonPropertyName("dst")] public WorldLocation Destination { get; set; }
+        [JsonPropertyName("dst")]
+        public WorldLocation Destination { get; set; }
 
-        [JsonPropertyName("back")] public bool Back { get; set; }
+        [JsonPropertyName("back")]
+        public bool Back { get; set; }
 
         public override string ToString() => $"{{{Source},{Destination},{Back}}}";
 
@@ -29,14 +31,7 @@ namespace Server.Commands
     public static class GenTeleporter
     {
         private const int SuccessHue = 72, WarningHue = 53, ErrorHue = 33;
-        private static readonly string TeleporterJsonDataPath = Path.Combine("Data", "teleporters.json");
-
-        private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
-        {
-            AllowTrailingCommas = true,
-            PropertyNameCaseInsensitive = true,
-            ReadCommentHandling = JsonCommentHandling.Skip
-        };
+        private static readonly string TeleporterJsonDataPath = Path.Combine(Core.BaseDirectory, "Data/teleporters.json");
 
         public static void Initialize()
         {
@@ -108,17 +103,7 @@ namespace Server.Commands
         {
             try
             {
-                string json;
-                using (var reader = new StreamReader(TeleporterJsonDataPath))
-                {
-                    json = reader.ReadToEnd();
-                }
-
-                var teleporters = JsonSerializer.Deserialize<List<TeleporterDefinition>>(json, JsonOptions);
-                for (var i = 0; i < teleporters.Count; i++)
-                {
-                    processor(teleporters[i]);
-                }
+                JsonConfig.Deserialize<List<TeleporterDefinition>>(TeleporterJsonDataPath).ForEach(processor);
             }
             catch (Exception ex)
             {
@@ -140,13 +125,15 @@ namespace Server.Commands
             public static int DeleteTeleporters(WorldLocation worldLocation)
             {
                 var eable = worldLocation.Map.GetItemsInRange<Teleporter>(worldLocation, 0);
-                var items = eable
-                    .Where(x => !(x is KeywordTeleporter || x is SkillTeleporter) && IsWithinZ(x.Z - worldLocation.Z));
+
                 var count = 0;
-                foreach (var item in items)
+                foreach (var item in eable)
                 {
-                    count++;
-                    item.Delete();
+                    if (!(item is KeywordTeleporter || item is SkillTeleporter) && IsWithinZ(item.Z - worldLocation.Z))
+                    {
+                        count++;
+                        item.Delete();
+                    }
                 }
 
                 eable.Free();

@@ -30,10 +30,10 @@ namespace Server.Json
             // In the future this should be optimized by cloning DefaultOptions
             var options = new JsonSerializerOptions
             {
-                ReadCommentHandling = JsonCommentHandling.Skip,
                 WriteIndented = true,
                 AllowTrailingCommas = true,
-                IgnoreNullValues = true
+                IgnoreNullValues = true,
+                ReadCommentHandling = JsonCommentHandling.Skip
             };
 
             options.Converters.Add(new MapConverterFactory());
@@ -43,6 +43,7 @@ namespace Server.Json
             options.Converters.Add(new IPEndPointConverterFactory());
             options.Converters.Add(new NullableStructSerializerFactory());
             options.Converters.Add(new TypeConverterFactory());
+            options.Converters.Add(new WorldLocationConverterFactory());
 
             for (var i = 0; i < converters.Length; i++)
             {

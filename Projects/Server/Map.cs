@@ -402,7 +402,7 @@ namespace Server
                 return Internal;
             }
 
-            if (!int.TryParse(value, out var index))
+            if (int.TryParse(value, out var index))
             {
                 return Maps.FirstOrDefault(m => m != null && Insensitive.Equals(m.Name, value));
             }
