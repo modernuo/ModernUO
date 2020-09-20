@@ -182,9 +182,8 @@ namespace Server.Factions
             {
                 if (Candidates.Count == 1)
                 {
-                    Faction.Broadcast(
-                        1038031
-                    ); // There are no longer any valid candidates in the Faction Commander election.
+                    // There are no longer any valid candidates in the Faction Commander election.
+                    Faction.Broadcast(1038031);
 
                     var winner = Candidates[0];
 
@@ -206,9 +205,8 @@ namespace Server.Factions
                 }
                 else if (Candidates.Count == 0) // well, I guess this'll never happen
                 {
-                    Faction.Broadcast(
-                        1038031
-                    ); // There are no longer any valid candidates in the Faction Commander election.
+                    // There are no longer any valid candidates in the Faction Commander election.
+                    Faction.Broadcast(1038031);
 
                     Candidates.Clear();
                     State = ElectionState.Pending;

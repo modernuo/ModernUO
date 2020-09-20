@@ -1015,9 +1015,9 @@ namespace Server.Engines.Craft
                                     from,
                                     craftSystem,
                                     tool,
-                                    1072847
+                                    1072847 // You must learn that recipe from a scroll.
                                 )
-                            ); // You must learn that recipe from a scroll.
+                            );
                         }
                     }
                     else
@@ -1028,9 +1028,9 @@ namespace Server.Engines.Craft
                                 from,
                                 craftSystem,
                                 tool,
-                                1044153
+                                1044153 // You don't have the required skills to attempt this item.
                             )
-                        ); // You don't have the required skills to attempt this item.
+                        );
                     }
                 }
                 else
@@ -1041,9 +1041,9 @@ namespace Server.Engines.Craft
                             from,
                             craftSystem,
                             tool,
-                            RequiredExpansionMessage(RequiredExpansion)
+                            RequiredExpansionMessage(RequiredExpansion) // The {0} expansion is required to attempt this item.
                         )
-                    ); // The {0} expansion is required to attempt this item.
+                    );
                 }
             }
             else
@@ -1052,8 +1052,7 @@ namespace Server.Engines.Craft
             }
         }
 
-        // Eventually convert to TextDefinition, but that requires that we convert all the gumps to ues it too.  Not that it wouldn't be a bad idea.
-        private object RequiredExpansionMessage(Expansion expansion)
+        private TextDefinition RequiredExpansionMessage(Expansion expansion)
         {
             return expansion switch
             {

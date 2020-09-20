@@ -3638,15 +3638,8 @@ namespace Server.Mobiles
                     {
                         ascii = true;
 
-                        if (pl.MerchantTitle != MerchantTitle.None)
-                        {
-                            text =
-                                $"({MerchantTitles.GetInfo(pl.MerchantTitle).Title.String}, {faction.Definition.FriendlyName})";
-                        }
-                        else
-                        {
-                            text = $"({pl.Rank.Title.String}, {faction.Definition.FriendlyName})";
-                        }
+                        var title = MerchantTitles.GetInfo(pl.MerchantTitle)?.Title?.String ?? pl.Rank.Title.String;
+                        text = $"({title}, {faction.Definition.FriendlyName})";
                     }
 
                     var hue = Faction.Find(from) == faction ? 98 : 38;
@@ -4116,9 +4109,8 @@ namespace Server.Mobiles
 
             if (from.Backpack == null || item.Parent != from.Backpack)
             {
-                SendLocalizedMessage(
-                    1074769
-                ); // An item must be in your backpack (and not in a container within) to be toggled as a quest item.
+                // An item must be in your backpack (and not in a container within) to be toggled as a quest item.
+                SendLocalizedMessage(1074769);
             }
             else if (item.QuestItem)
             {
@@ -4131,7 +4123,8 @@ namespace Server.Mobiles
             }
             else
             {
-                SendLocalizedMessage(1072355, "", 0x23); // That item does not match any of your quest criteria
+                // That item does not match any of your quest criteria
+                SendLocalizedMessage(1072355, "", 0x23);
             }
 
             ToggleQuestItemTarget();
@@ -4201,9 +4194,9 @@ namespace Server.Mobiles
         {
             if (Young && (DuelContext?.Started != true || DuelContext.Finished))
             {
-                SendLocalizedMessage(
-                    502808
-                ); // You would have been poisoned, were you not new to the land of Britannia. Be careful in the future.
+                // You would have been poisoned, were you not new to the land of Britannia.
+                // Be careful in the future.
+                SendLocalizedMessage(502808);
             }
             else
             {
@@ -4243,10 +4236,8 @@ namespace Server.Mobiles
         {
             if (Young && SkillsTotal >= 4500)
             {
-                ((Account)Account)
-                    ?.RemoveYoungStatus(
-                        1019036
-                    ); // You have successfully obtained a respectable skill level, and have outgrown your status as a young player!
+                // You have successfully obtained a respectable skill level, and have outgrown your status as a young player!
+                ((Account)Account)?.RemoveYoungStatus(1019036);
             }
 
             if (MLQuestSystem.Enabled)
@@ -4488,9 +4479,9 @@ namespace Server.Mobiles
             if (DateTime.UtcNow - m_LastYoungMessage > TimeSpan.FromMinutes(1.0))
             {
                 m_LastYoungMessage = DateTime.UtcNow;
-                SendLocalizedMessage(
-                    1019067
-                ); // A monster looks at you menacingly but does not attack.  You would be under attack now if not for your status as a new citizen of Britannia.
+                // A monster looks at you menacingly but does not attack.
+                // You would be under attack now if not for your status as a new citizen of Britannia.
+                SendLocalizedMessage(1019067);
             }
 
             return true;
@@ -4604,11 +4595,13 @@ namespace Server.Mobiles
 
             if (DisplayChampionTitle)
             {
-                SendLocalizedMessage(1062419, "", 0x23); // You have chosen to hide your monster kill title.
+                // You have chosen to hide your monster kill title.
+                SendLocalizedMessage(1062419, "", 0x23);
             }
             else
             {
-                SendLocalizedMessage(1062418, "", 0x23); // You have chosen to display your monster kill title.
+                // You have chosen to display your monster kill title.
+                SendLocalizedMessage(1062418, "", 0x23);
             }
 
             DisplayChampionTitle = !DisplayChampionTitle;
@@ -4801,11 +4794,8 @@ namespace Server.Mobiles
 
                 if (info.ButtonID == 1)
                 {
-                    m_Player.SendLocalizedMessage(
-                        1061075,
-                        "",
-                        0x23
-                    ); // You have cancelled automatically reinsuring all insured items upon death
+                    // You have cancelled automatically reinsuring all insured items upon death
+                    m_Player.SendLocalizedMessage(1061075, "", 0x23);
                     m_Player.AutoRenewInsurance = false;
                 }
                 else
@@ -5065,285 +5055,6 @@ namespace Server.Mobiles
                 {
                     m_From.SendLocalizedMessage(1042021); // Cancelled.
                     m_From.SendGump(new ItemInsuranceMenuGump(m_From, m_Items, m_Insure, m_Page));
-                }
-            }
-        }
-
-        [PropertyObject]
-        public class ChampionTitleInfo
-        {
-            public const int LossAmount = 90;
-            public static TimeSpan LossDelay = TimeSpan.FromDays(1.0);
-
-            private TitleInfo[] m_Values;
-
-            public ChampionTitleInfo()
-            {
-            }
-
-            public ChampionTitleInfo(IGenericReader reader)
-            {
-                var version = reader.ReadEncodedInt();
-
-                switch (version)
-                {
-                    case 0:
-                        {
-                            Harrower = reader.ReadEncodedInt();
-
-                            var length = reader.ReadEncodedInt();
-                            m_Values = new TitleInfo[length];
-
-                            for (var i = 0; i < length; i++)
-                            {
-                                m_Values[i] = new TitleInfo(reader);
-                            }
-
-                            if (m_Values.Length != ChampionSpawnInfo.Table.Length)
-                            {
-                                var oldValues = m_Values;
-                                m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
-
-                                for (var i = 0; i < m_Values.Length && i < oldValues.Length; i++)
-                                {
-                                    m_Values[i] = oldValues[i];
-                                }
-                            }
-
-                            break;
-                        }
-                }
-            }
-
-            [CommandProperty(AccessLevel.GameMaster)]
-            public int Pestilence
-            {
-                get => GetValue(ChampionSpawnType.Pestilence);
-                set => SetValue(ChampionSpawnType.Pestilence, value);
-            }
-
-            [CommandProperty(AccessLevel.GameMaster)]
-            public int Abyss
-            {
-                get => GetValue(ChampionSpawnType.Abyss);
-                set => SetValue(ChampionSpawnType.Abyss, value);
-            }
-
-            [CommandProperty(AccessLevel.GameMaster)]
-            public int Arachnid
-            {
-                get => GetValue(ChampionSpawnType.Arachnid);
-                set => SetValue(ChampionSpawnType.Arachnid, value);
-            }
-
-            [CommandProperty(AccessLevel.GameMaster)]
-            public int ColdBlood
-            {
-                get => GetValue(ChampionSpawnType.ColdBlood);
-                set => SetValue(ChampionSpawnType.ColdBlood, value);
-            }
-
-            [CommandProperty(AccessLevel.GameMaster)]
-            public int ForestLord
-            {
-                get => GetValue(ChampionSpawnType.ForestLord);
-                set => SetValue(ChampionSpawnType.ForestLord, value);
-            }
-
-            [CommandProperty(AccessLevel.GameMaster)]
-            public int SleepingDragon
-            {
-                get => GetValue(ChampionSpawnType.SleepingDragon);
-                set => SetValue(ChampionSpawnType.SleepingDragon, value);
-            }
-
-            [CommandProperty(AccessLevel.GameMaster)]
-            public int UnholyTerror
-            {
-                get => GetValue(ChampionSpawnType.UnholyTerror);
-                set => SetValue(ChampionSpawnType.UnholyTerror, value);
-            }
-
-            [CommandProperty(AccessLevel.GameMaster)]
-            public int VerminHorde
-            {
-                get => GetValue(ChampionSpawnType.VerminHorde);
-                set => SetValue(ChampionSpawnType.VerminHorde, value);
-            }
-
-            [CommandProperty(AccessLevel.GameMaster)]
-            public int Harrower { get; set; }
-
-            public int GetValue(ChampionSpawnType type) => GetValue((int)type);
-
-            public void SetValue(ChampionSpawnType type, int value)
-            {
-                SetValue((int)type, value);
-            }
-
-            public void Award(ChampionSpawnType type, int value)
-            {
-                Award((int)type, value);
-            }
-
-            public int GetValue(int index)
-            {
-                if (m_Values == null || index < 0 || index >= m_Values.Length)
-                {
-                    return 0;
-                }
-
-                m_Values[index] ??= new TitleInfo();
-
-                return m_Values[index].Value;
-            }
-
-            public DateTime GetLastDecay(int index)
-            {
-                if (m_Values == null || index < 0 || index >= m_Values.Length)
-                {
-                    return DateTime.MinValue;
-                }
-
-                m_Values[index] ??= new TitleInfo();
-
-                return m_Values[index].LastDecay;
-            }
-
-            public void SetValue(int index, int value)
-            {
-                m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
-
-                if (index < 0 || index >= m_Values.Length)
-                {
-                    return;
-                }
-
-                m_Values[index] ??= new TitleInfo();
-
-                m_Values[index].Value = Math.Max(value, 0);
-            }
-
-            public void Award(int index, int value)
-            {
-                m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
-
-                if (index < 0 || index >= m_Values.Length || value <= 0)
-                {
-                    return;
-                }
-
-                m_Values[index] ??= new TitleInfo();
-
-                m_Values[index].Value += value;
-            }
-
-            public void Atrophy(int index, int value)
-            {
-                m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
-
-                if (index < 0 || index >= m_Values.Length || value <= 0)
-                {
-                    return;
-                }
-
-                m_Values[index] ??= new TitleInfo();
-
-                var before = m_Values[index].Value;
-
-                m_Values[index].Value -= Math.Min(value, m_Values[index].Value);
-
-                if (before != m_Values[index].Value)
-                {
-                    m_Values[index].LastDecay = DateTime.UtcNow;
-                }
-            }
-
-            public override string ToString() => "...";
-
-            public static void Serialize(IGenericWriter writer, ChampionTitleInfo titles)
-            {
-                writer.WriteEncodedInt(0); // version
-
-                writer.WriteEncodedInt(titles.Harrower);
-
-                var length = titles.m_Values.Length;
-                writer.WriteEncodedInt(length);
-
-                for (var i = 0; i < length; i++)
-                {
-                    titles.m_Values[i] ??= new TitleInfo();
-
-                    TitleInfo.Serialize(writer, titles.m_Values[i]);
-                }
-            }
-
-            public static void CheckAtrophy(PlayerMobile pm)
-            {
-                var t = pm.ChampionTitles;
-                if (t == null)
-                {
-                    return;
-                }
-
-                t.m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
-
-                for (var i = 0; i < t.m_Values.Length; i++)
-                {
-                    if (t.GetLastDecay(i) + LossDelay < DateTime.UtcNow)
-                    {
-                        t.Atrophy(i, LossAmount);
-                    }
-                }
-            }
-
-            public static void
-                AwardHarrowerTitle(PlayerMobile pm) // Called when killing a harrower.  Will give a minimum of 1 point.
-            {
-                var t = pm.ChampionTitles;
-                if (t == null)
-                {
-                    return;
-                }
-
-                t.m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
-
-                var count = 1 + t.m_Values.Count(t1 => t1.Value > 900);
-
-                t.Harrower = Math.Max(count, t.Harrower); // Harrower titles never decay.
-            }
-
-            private class TitleInfo
-            {
-                public TitleInfo()
-                {
-                }
-
-                public TitleInfo(IGenericReader reader)
-                {
-                    var version = reader.ReadEncodedInt();
-
-                    switch (version)
-                    {
-                        case 0:
-                            {
-                                Value = reader.ReadEncodedInt();
-                                LastDecay = reader.ReadDateTime();
-                                break;
-                            }
-                    }
-                }
-
-                public int Value { get; set; }
-
-                public DateTime LastDecay { get; set; }
-
-                public static void Serialize(IGenericWriter writer, TitleInfo info)
-                {
-                    writer.WriteEncodedInt(0); // version
-
-                    writer.WriteEncodedInt(info.Value);
-                    writer.Write(info.LastDecay);
                 }
             }
         }

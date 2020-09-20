@@ -64,20 +64,22 @@ namespace Server.Engines.BulkOrders
                         y,
                         350,
                         20,
-                        GetMaterialNumberFor(deed.Material),
+                        GetMaterialNumberFor(deed.Material), // All items must be made with x material.
                         0x7FFF
-                    ); // All items must be made with x material.
-                    y += 24;
+                    );
                 }
             }
 
-            AddHtmlLocalized(40, 192 + entries.Length * 24, 350, 20, 1045139, 0x7FFF); // Do you want to accept this order?
+            // Do you want to accept this order?
+            AddHtmlLocalized(40, 192 + entries.Length * 24, 350, 20, 1045139, 0x7FFF);
 
+            // Ok
             AddButton(100, 216 + entries.Length * 24, 4005, 4007, 1);
-            AddHtmlLocalized(135, 216 + entries.Length * 24, 120, 20, 1006044, 0x7FFF); // Ok
+            AddHtmlLocalized(135, 216 + entries.Length * 24, 120, 20, 1006044, 0x7FFF);
 
+            // CANCEL
             AddButton(275, 216 + entries.Length * 24, 4005, 4007, 0);
-            AddHtmlLocalized(310, 216 + entries.Length * 24, 120, 20, 1011012, 0x7FFF); // CANCEL
+            AddHtmlLocalized(310, 216 + entries.Length * 24, 120, 20, 1011012, 0x7FFF);
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)

@@ -2069,27 +2069,15 @@ namespace Server.Engines.ConPVP
                 {
                     pack.DropItem(item);
 
-                    if (item is BaseWeapon)
+                    // TODO: Use Layer instead of Type
+                    int number = item switch
                     {
-                        mob.SendLocalizedMessage(
-                            1062001,
-                            item.Name ?? $"#{item.LabelNumber}"
-                        ); // You can no longer wield your ~1_WEAPON~
-                    }
-                    else if (item is BaseArmor && !(item is BaseShield))
-                    {
-                        mob.SendLocalizedMessage(
-                            1062002,
-                            item.Name ?? $"#{item.LabelNumber}"
-                        ); // You can no longer wear your ~1_ARMOR~
-                    }
-                    else
-                    {
-                        mob.SendLocalizedMessage(
-                            1062003,
-                            item.Name ?? $"#{item.LabelNumber}"
-                        ); // You can no longer equip your ~1_SHIELD~
-                    }
+                        BaseWeapon _ => 1062001, // You can no longer wield your ~1_WEAPON~
+                        BaseShield _ => 1062003, // You can no longer equip your ~1_SHIELD~
+                        _ when item is BaseArmor || item is BaseClothing => 1062002
+                    };
+
+                    mob.SendLocalizedMessage(number, item.Name ?? $"#{item.LabelNumber}");
                 }
             }
 

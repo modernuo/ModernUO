@@ -100,19 +100,14 @@ namespace Server.Engines.Craft
                     302 + m_OtherCount++ * 20,
                     310,
                     18,
-                    1048176,
+                    1048176, // Makes as many as possible at once
                     LabelColor
-                ); // Makes as many as possible at once
+                );
             }
 
             DrawItem();
             DrawSkill();
             DrawResource();
-
-            /*
-            if (craftItem.RequiresSE)
-              AddHtmlLocalized( 170, 302 + (m_OtherCount++ * 20), 310, 18, 1063363, LabelColor, false, false ); //* Requires the "Samurai Empire" expansion
-             * */
 
             if (craftItem.RequiredExpansion != Expansion.None)
             {
@@ -138,9 +133,9 @@ namespace Server.Engines.Craft
                     302 + m_OtherCount++ * 20,
                     310,
                     18,
-                    1073620,
+                    1073620, // You have not learned this recipe.
                     RedLabelColor
-                ); // You have not learned this recipe.
+                );
             }
         }
 
@@ -167,9 +162,9 @@ namespace Server.Engines.Craft
                     302 + m_OtherCount++ * 20,
                     310,
                     18,
-                    1044059,
+                    1044059, // This item may hold its maker's mark
                     LabelColor
-                ); // This item may hold its maker's mark
+                );
                 m_ShowExceptionalChance = true;
             }
         }
@@ -270,9 +265,9 @@ namespace Server.Engines.Craft
                         302 + m_OtherCount++ * 20,
                         310,
                         18,
-                        1044152,
+                        1044152, // * The item retains the color of this material
                         LabelColor
-                    ); // * The item retains the color of this material
+                    );
                     AddLabel(500, 219 + i * 20, LabelHue, "*");
                 }
 
@@ -301,9 +296,9 @@ namespace Server.Engines.Craft
                     302 + m_OtherCount++ * 20,
                     360,
                     18,
-                    1044379,
+                    1044379, // Inscribing scrolls also requires a blank scroll and mana.
                     LabelColor
-                ); // Inscribing scrolls also requires a blank scroll and mana.
+                );
             }
         }
 

@@ -750,9 +750,9 @@ namespace Server.Accounting
                             m.SendLocalizedMessage(message);
                         }
 
-                        m.SendLocalizedMessage(
-                            1019039
-                        ); // You are no longer considered a young player of Ultima Online, and are no longer subject to the limitations and benefits of being in that caste.
+                        // You are no longer considered a young player of Ultima Online,
+                        // and are no longer subject to the limitations and benefits of being in that caste.
+                        m.SendLocalizedMessage(1019039);
                     }
                 }
             }
@@ -762,9 +762,8 @@ namespace Server.Accounting
         {
             if (TotalGameTime >= YoungDuration)
             {
-                RemoveYoungStatus(
-                    1019038
-                ); // You are old enough to be considered an adult, and have outgrown your status as a young player!
+                // You are old enough to be considered an adult, and have outgrown your status as a young player!
+                RemoveYoungStatus(1019038);
             }
         }
 

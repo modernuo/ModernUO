@@ -883,13 +883,15 @@ namespace Server.Engines.CannedEvil
                 list.Add(1060742);                      // active
                 list.Add(1060658, "Type\t{0}", m_Type); // ~1_val~: ~2_val~
                 list.Add(1060659, "Level\t{0}", Level); // ~1_val~: ~2_val~
+
                 list.Add(
-                    1060660,
+                    1060660, // ~1_val~: ~2_val~
                     "Kills\t{0} of {1} ({2:F1}%)",
                     m_Kills,
                     MaxKills,
                     100.0 * ((double)m_Kills / MaxKills)
-                ); // ~1_val~: ~2_val~
+                );
+
                 // list.Add( 1060661, "Spawn Range\t{0}", m_SpawnRange ); // ~1_val~: ~2_val~
             }
             else
@@ -1145,9 +1147,8 @@ namespace Server.Engines.CannedEvil
             }
             else
             {
-                to.SendLocalizedMessage(
-                    1062317
-                ); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
+                // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
+                to.SendLocalizedMessage(1062317);
             }
         }
 
@@ -1336,11 +1337,10 @@ namespace Server.Engines.CannedEvil
         public override void AlterLightLevel(Mobile m, ref int global, ref int personal)
         {
             base.AlterLightLevel(m, ref global, ref personal);
-            global = Math.Max(
-                global,
-                1 + ChampionSpawn
-                    .Level
-            ); // This is a guesstimate.  TODO: Verify & get exact values // OSI testing: at 2 red skulls, light = 0x3 ; 1 red = 0x3.; 3 = 8; 9 = 0xD 8 = 0xD 12 = 0x12 10 = 0xD
+
+            // TODO: Verify & get exact values
+            // OSI testing: at 2 red skulls, light = 0x3 ; 1 red = 0x3.; 3 = 8; 9 = 0xD 8 = 0xD 12 = 0x12 10 = 0xD
+            global = Math.Max(global, 1 + ChampionSpawn.Level);
         }
     }
 

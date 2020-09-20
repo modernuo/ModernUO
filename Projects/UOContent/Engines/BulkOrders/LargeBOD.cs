@@ -133,9 +133,8 @@ namespace Server.Engines.BulkOrders
             }
             else if (AmountMax != small.AmountMax)
             {
-                from.SendLocalizedMessage(
-                    1045163
-                ); // The two orders have different requested amounts and cannot be combined.
+                // The two orders have different requested amounts and cannot be combined.
+                from.SendLocalizedMessage(1045163);
             }
             else if (small.AmountCur < small.AmountMax)
             {
@@ -143,9 +142,8 @@ namespace Server.Engines.BulkOrders
             }
             else if (entry.Amount >= AmountMax)
             {
-                from.SendLocalizedMessage(
-                    1045166
-                ); // The maximum amount of requested items have already been combined to this deed.
+                // The maximum amount of requested items have already been combined to this deed.
+                from.SendLocalizedMessage(1045166);
             }
             else
             {

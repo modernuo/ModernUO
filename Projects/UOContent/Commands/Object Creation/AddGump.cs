@@ -83,9 +83,9 @@ namespace Server.Gumps
                 250,
                 170,
                 20,
-                1061027,
+                1061027, // Next page
                 (m_Page + 1) * 10 < searchResults.Length ? 0x7FFF : 0x5EF7
-            ); // Next page
+            );
         }
 
         public static void Initialize()

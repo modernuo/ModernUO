@@ -436,9 +436,9 @@ namespace Server.Factions
             if (mob.Young)
             {
                 guild.RemoveMember(mob);
-                mob.SendLocalizedMessage(
-                    1042283
-                ); // You have been kicked out of your guild!  Young players may not remain in a guild which is allied with a faction.
+                // You have been kicked out of your guild!
+                // Young players may not remain in a guild which is allied with a faction.
+                mob.SendLocalizedMessage(1042283);
             }
             else if (AlreadyHasCharInFaction(mob))
             {
@@ -453,7 +453,8 @@ namespace Server.Factions
             else
             {
                 AddMember(mob);
-                mob.SendLocalizedMessage(1042756, true, $" {m_Definition.FriendlyName}"); // You are now joining a faction:
+                // You are now joining a faction:
+                mob.SendLocalizedMessage(1042756, true, $" {m_Definition.FriendlyName}");
             }
         }
 
@@ -506,15 +507,13 @@ namespace Server.Factions
             }
             else if (pl?.IsLeaving == true)
             {
-                pm.SendLocalizedMessage(
-                    1005051
-                ); // You cannot use the faction stone until you have finished quitting your current faction
+                // You cannot use the faction stone until you have finished quitting your current faction
+                pm.SendLocalizedMessage(1005051);
             }
             else if (AlreadyHasCharInFaction(pm))
             {
-                pm.SendLocalizedMessage(
-                    1005059
-                ); // You cannot join a faction because you already declared your allegiance with another character
+                // You cannot join a faction because you already declared your allegiance with another character
+                pm.SendLocalizedMessage(1005059);
             }
             else if (IsFactionBanned(mob))
             {
@@ -526,15 +525,13 @@ namespace Server.Factions
 
                 if (guild?.Leader != pm)
                 {
-                    pm.SendLocalizedMessage(
-                        1005057
-                    ); // You cannot join a faction because you are in a guild and not the guildmaster
+                    // You cannot join a faction because you are in a guild and not the guildmaster
+                    pm.SendLocalizedMessage(1005057);
                 }
                 else if (guild.Type != GuildType.Regular)
                 {
-                    pm.SendLocalizedMessage(
-                        1042161
-                    ); // You cannot join a faction because your guild is an Order or Chaos type.
+                    // You cannot join a faction because your guild is an Order or Chaos type.
+                    pm.SendLocalizedMessage(1042161);
                 }
                 else if (!Guild.NewGuildSystem && guild.Enemies?.Count > 0) // CAN join w/wars in new system
                 {
@@ -542,15 +539,13 @@ namespace Server.Factions
                 }
                 else if (Guild.NewGuildSystem && guild.Alliance != null)
                 {
-                    pm.SendLocalizedMessage(
-                        1080454
-                    ); // Your guild cannot join a faction while in alliance with non-factioned guilds.
+                    // Your guild cannot join a faction while in alliance with non-factioned guilds.
+                    pm.SendLocalizedMessage(1080454);
                 }
                 else if (!CanHandleInflux(guild.Members.Count))
                 {
-                    pm.SendLocalizedMessage(
-                        1018031
-                    ); // In the interest of faction stability, this faction declines to accept new members for now.
+                    // In the interest of faction stability, this faction declines to accept new members for now.
+                    pm.SendLocalizedMessage(1018031);
                 }
                 else
                 {
@@ -569,9 +564,8 @@ namespace Server.Factions
             }
             else if (!CanHandleInflux(1))
             {
-                pm.SendLocalizedMessage(
-                    1018031
-                ); // In the interest of faction stability, this faction declines to accept new members for now.
+                // In the interest of faction stability, this faction declines to accept new members for now.
+                pm.SendLocalizedMessage(1018031);
             }
             else
             {
@@ -579,15 +573,7 @@ namespace Server.Factions
             }
         }
 
-        public bool IsCommander(Mobile mob)
-        {
-            if (mob == null)
-            {
-                return false;
-            }
-
-            return mob.AccessLevel >= AccessLevel.GameMaster || mob == Commander;
-        }
+        public bool IsCommander(Mobile mob) => mob != null && mob.AccessLevel >= AccessLevel.GameMaster || mob == Commander;
 
         public override string ToString() => m_Definition.FriendlyName;
 
@@ -1059,14 +1045,14 @@ namespace Server.Factions
                         else if (Sigil.ExistsOn(killer))
                         {
                             sigil.ReturnHome();
-                            killer?.SendLocalizedMessage(
-                                1010258
-                            ); // The sigil has gone back to its home location because you already have a sigil.
+                            // The sigil has gone back to its home location because you already have a sigil.
+                            killer?.SendLocalizedMessage(1010258);
                         }
                         else if (!killerPack.TryDropItem(killer, sigil, false))
                         {
                             sigil.ReturnHome();
-                            killer?.SendLocalizedMessage(1010259); // The sigil has gone home because your backpack is full.
+                            // The sigil has gone home because your backpack is full.
+                            killer?.SendLocalizedMessage(1010259);
                         }
                     }
                 );
@@ -1086,10 +1072,8 @@ namespace Server.Factions
 
                     if (silver > 0)
                     {
-                        killer?.SendLocalizedMessage(
-                            1042748,
-                            silver.ToString("N0")
-                        ); // Thou hast earned ~1_AMOUNT~ silver for vanquishing the vile creature.
+                        // Thou hast earned ~1_AMOUNT~ silver for vanquishing the vile creature.
+                        killer?.SendLocalizedMessage(1042748, silver.ToString("N0"));
                     }
                 }
 
@@ -1179,10 +1163,8 @@ namespace Server.Factions
 
                             if (silver > 0)
                             {
-                                killer?.SendLocalizedMessage(
-                                    1042736,
-                                    $"{silver:N0} silver\t{victim.Name}"
-                                ); // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
+                                // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
+                                killer?.SendLocalizedMessage(1042736, $"{silver:N0} silver\t{victim.Name}");
                             }
                         }
 
@@ -1193,14 +1175,11 @@ namespace Server.Factions
 
                         var args = $"{award}\t{victim.Name}\t{killer?.Name}";
 
-                        killer?.SendLocalizedMessage(
-                            1042737 + offset,
-                            args
-                        ); // Thou hast been honored with ~1_KILL_POINTS~ kill point(s) for vanquishing ~2_DEAD_PLAYER~!
-                        victim.SendLocalizedMessage(
-                            1042738 + offset,
-                            args
-                        ); // Thou has lost ~1_KILL_POINTS~ kill point(s) to ~3_ATTACKER_NAME~ for being vanquished!
+                        // Thou hast been honored with ~1_KILL_POINTS~ kill point(s) for vanquishing ~2_DEAD_PLAYER~!
+                        killer?.SendLocalizedMessage(1042737 + offset, args);
+
+                        // Thou has lost ~1_KILL_POINTS~ kill point(s) to ~3_ATTACKER_NAME~ for being vanquished!
+                        victim.SendLocalizedMessage(1042738 + offset, args);
 
                         var killerEPL = Player.Find(killer);
                         var victimEPL = Player.Find(victim);
@@ -1227,9 +1206,8 @@ namespace Server.Factions
                     }
                     else
                     {
-                        killer?.SendLocalizedMessage(
-                            1042231
-                        ); // You have recently defeated this enemy and thus their death brings you no honor.
+                        // You have recently defeated this enemy and thus their death brings you no honor.
+                        killer?.SendLocalizedMessage(1042231);
                     }
                 }
             }

@@ -192,12 +192,12 @@ namespace Server.Engines.Craft
                 1061677,
                 1060509 + spell,
                 minSkill,
-                minSkill + 1.0,
+                minSkill + 1.0, // Yes, on OSI it's only 1.0 skill diff'.  Don't blame me, blame OSI.
                 regs[0],
                 CraftItem.LabelNumber(regs[0]),
                 1,
                 501627
-            ); // Yes, on OSI it's only 1.0 skill diff'.  Don't blame me, blame OSI.
+            );
 
             for (var i = 1; i < regs.Length; ++i)
             {

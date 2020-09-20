@@ -98,10 +98,8 @@ namespace Server.Engines.Chat
 
             if (target.IsIgnored(from))
             {
-                from.SendMessage(
-                    35,
-                    target.Username
-                ); // %1 has chosen to ignore you. None of your messages to them will get through.
+                // %1 has chosen to ignore you. None of your messages to them will get through.
+                from.SendMessage(35, target.Username);
             }
             else if (target.IgnorePrivateMessage)
             {
@@ -109,7 +107,8 @@ namespace Server.Engines.Chat
             }
             else
             {
-                target.SendMessage(59, from.Mobile, from.GetColorCharacter() + from.Username, text); // [%1]: %2
+                // [%1]: %2
+                target.SendMessage(59, from.Mobile, $"{from.GetColorCharacter()}{from.Username}", text);
             }
         }
 
@@ -156,9 +155,9 @@ namespace Server.Engines.Chat
         public static void HideCharacterName(ChatUser from, Channel channel, string param)
         {
             from.Anonymous = true;
-            from.SendMessage(
-                40
-            ); // You are no longer showing your character name to any players who inquire with the whois command.
+
+            // You are no longer showing your character name to any players who inquire with the whois command.
+            from.SendMessage(40);
         }
 
         public static void ToggleCharacterName(ChatUser from, Channel channel, string param)

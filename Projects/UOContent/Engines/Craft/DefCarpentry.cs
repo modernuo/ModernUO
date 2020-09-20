@@ -141,7 +141,7 @@ namespace Server.Engines.Craft
                     1044041,
                     5,
                     1044351
-                ); // This is in the categor of Other during AoS
+                );
                 AddSkill(index, SkillName.Tailoring, 40.0, 45.0);
                 AddRes(index, typeof(Cloth), 1044286, 5, 1044287);
             }
