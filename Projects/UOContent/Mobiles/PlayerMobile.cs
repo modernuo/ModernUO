@@ -1420,10 +1420,8 @@ namespace Server.Mobiles
 
                         if (drop)
                         {
-                            from.SendLocalizedMessage(
-                                1062001,
-                                weapon.Name ?? $"#{weapon.LabelNumber}"
-                            ); // You can no longer wield your ~1_WEAPON~
+                            // You can no longer wield your ~1_WEAPON~
+                            from.SendLocalizedMessage(1062001, weapon.Name ?? $"#{weapon.LabelNumber}");
                             from.AddToBackpack(weapon);
                             moved = true;
                         }
@@ -1510,10 +1508,8 @@ namespace Server.Mobiles
 
                         if (drop)
                         {
-                            from.SendLocalizedMessage(
-                                1062002,
-                                clothing.Name ?? $"#{clothing.LabelNumber}"
-                            ); // You can no longer wear your ~1_ARMOR~
+                            // You can no longer wear your ~1_ARMOR~
+                            from.SendLocalizedMessage(1062002, clothing.Name ?? $"#{clothing.LabelNumber}");
 
                             from.AddToBackpack(clothing);
                             moved = true;

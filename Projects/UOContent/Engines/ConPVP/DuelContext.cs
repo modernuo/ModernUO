@@ -2074,7 +2074,7 @@ namespace Server.Engines.ConPVP
                     {
                         BaseWeapon _ => 1062001, // You can no longer wield your ~1_WEAPON~
                         BaseShield _ => 1062003, // You can no longer equip your ~1_SHIELD~
-                        _ when item is BaseArmor || item is BaseClothing => 1062002
+                        _ when item is BaseArmor || item is BaseClothing => 1062002 // You can no longer wear your ~1_ARMOR~
                     };
 
                     mob.SendLocalizedMessage(number, item.Name ?? $"#{item.LabelNumber}");
