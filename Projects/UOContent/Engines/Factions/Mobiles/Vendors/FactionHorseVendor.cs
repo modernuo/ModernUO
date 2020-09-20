@@ -40,9 +40,9 @@ namespace Server.Factions
                 PrivateOverheadMessage(
                     MessageType.Regular,
                     0x3B2,
-                    1042201,
+                    1042201, // You are not in my faction, I cannot sell you a horse!
                     from.NetState
-                ); // You are not in my faction, I cannot sell you a horse!
+                );
             }
             else if (FactionGump.Exists(from))
             {

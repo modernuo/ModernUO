@@ -77,7 +77,7 @@ namespace Server.Engines.BulkOrders
                 list.Add(SmallBODGump.GetMaterialNumberFor(Material)); // All items must be made with x material.
             }
 
-            list.Add(1060656, AmountMax.ToString());               // amount to make: ~1_val~
+            list.Add(1060656, AmountMax.ToString()); // amount to make: ~1_val~
             list.Add(1060658, "#{0}\t{1}", m_Number, m_AmountCur); // ~1_val~: ~2_val~
         }
 
@@ -128,9 +128,8 @@ namespace Server.Engines.BulkOrders
 
             if (m_AmountCur >= AmountMax)
             {
-                from.SendLocalizedMessage(
-                    1045166
-                ); // The maximum amount of requested items have already been combined to this deed.
+                // The maximum amount of requested items have already been combined to this deed.
+                from.SendLocalizedMessage(1045166);
             }
             else if (Type == null || objectType != Type && !objectType.IsSubclassOf(Type) ||
                      !(item is BaseWeapon) && !(item is BaseArmor) && !(item is BaseClothing))

@@ -93,15 +93,10 @@ namespace Server.Engines.Help
 
                 if (m_Entry.Sender.NetState != null && index != -1)
                 {
-                    m_Entry.Sender.SendLocalizedMessage(
-                        1008077,
-                        true,
-                        (index + 1).ToString()
-                    ); // Thank you for paging. Queue status :
-                    m_Entry.Sender
-                        .SendLocalizedMessage(
-                            1008084
-                        ); // You can reference our website at www.uo.com or contact us at support@uo.com. To cancel your page, please select the help button again and select cancel.
+                    // Thank you for paging. Queue status :
+                    m_Entry.Sender.SendLocalizedMessage(1008077, true, (index + 1).ToString());
+                    // You can reference our website at www.uo.com or contact us at support@uo.com. To cancel your page, please select the help button again and select cancel.
+                    m_Entry.Sender.SendLocalizedMessage(1008084);
 
                     if (m_Entry.Handler != null && m_Entry.Handler.NetState == null)
                     {
@@ -111,8 +106,6 @@ namespace Server.Engines.Help
                 else
                 {
                     if (index != -1)
-                        // m_Entry.AddResponse(m_Entry.Sender, "[Logout]");
-
                     {
                         PageQueue.Remove(m_Entry);
                     }
@@ -142,9 +135,8 @@ namespace Server.Engines.Help
 
             if (pm.DesignContext != null)
             {
-                from.SendLocalizedMessage(
-                    500182
-                ); // You cannot request help while customizing a house or transferring a character.
+                // You cannot request help while customizing a house or transferring a character.
+                from.SendLocalizedMessage(500182);
                 return false;
             }
 
@@ -159,17 +151,12 @@ namespace Server.Engines.Help
 
         public static string GetPageTypeName(PageType type)
         {
-            if (type == PageType.VerbalHarassment)
+            return type switch
             {
-                return "Verbal Harassment";
-            }
-
-            if (type == PageType.PhysicalHarassment)
-            {
-                return "Physical Harassment";
-            }
-
-            return type.ToString();
+                PageType.VerbalHarassment   => "Verbal Harassment",
+                PageType.PhysicalHarassment => "Physical Harassment",
+                _                           => type.ToString()
+            };
         }
 
         public static void OnHandlerChanged(Mobile old, Mobile value, PageEntry entry)

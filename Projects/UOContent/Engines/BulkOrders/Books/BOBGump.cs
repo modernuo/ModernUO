@@ -615,9 +615,10 @@ namespace Server.Engines.BulkOrders
                                         var sizeOfDroppedBod = bobEntry is BOBLargeEntry entry ? entry.Entries.Length : 1;
 
                                         m_From.AddToBackpack(item);
-                                        m_From.SendLocalizedMessage(
-                                            1045152
-                                        ); // The bulk order deed has been placed in your backpack.
+
+                                        // The bulk order deed has been placed in your backpack.
+                                        m_From.SendLocalizedMessage(1045152);
+
                                         m_Book.Entries.Remove(bobEntry);
                                         m_Book.InvalidateProperties();
 

@@ -3241,9 +3241,9 @@ namespace Server
             // OSI sends 1074769, bug!
             if (QuestItem)
             {
-                from.SendLocalizedMessage(
-                    1049343
-                ); // You can only drop quest items into the top-most level of your backpack while you still need them for your quest.
+                // You can only drop quest items into the top-most level of your backpack
+                // while you still need them for your quest.
+                from.SendLocalizedMessage(1049343);
             }
         }
 

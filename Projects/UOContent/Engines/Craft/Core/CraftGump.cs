@@ -76,9 +76,9 @@ namespace Server.Engines.Craft
                     365,
                     150,
                     18,
-                    1044017 + (context == null ? 0 : (int)context.MarkOption),
+                    1044017 + (int)(context?.MarkOption ?? CraftMarkOption.MarkItem), // MARK ITEM
                     LabelColor
-                ); // MARK ITEM
+                );
             }
             // ****************************************
 
@@ -640,10 +640,10 @@ namespace Server.Engines.Craft
                                                 m_From,
                                                 m_CraftSystem,
                                                 m_Tool,
-                                                1044165,
+                                                1044165, // You haven't made anything yet.
                                                 m_Page
                                             )
-                                        ); // You haven't made anything yet.
+                                        );
                                     }
 
                                     break;

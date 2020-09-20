@@ -13,22 +13,24 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1075287; // A Ghost of Covetous
-            Description =
-                1075286; // What? Oh, you startled me! Sorry, I'm a little jumpy. My master Griswolt learned that a ghost has recently taken up residence in the Covetous dungeon. He sent me to capture it, but I . . . well, it terrified me, to be perfectly honest. If you think yourself courageous enough, I'll give you my Spirit Bottle, and you can try to capture it yourself. I'm certain my master would reward you richly for such service.
-            RefusalMessage =
-                1075288; // That's okay, I'm sure someone with more courage than either of us will come along eventually.
+            // What? Oh, you startled me! Sorry, I'm a little jumpy.
+            // My master Griswolt learned that a ghost has recently taken up residence in the Covetous dungeon.
+            // He sent me to capture it, but I . . . well, it terrified me, to be perfectly honest.
+            // If you think yourself courageous enough, I'll give you my Spirit Bottle, and you can try to capture it yourself.
+            // I'm certain my master would reward you richly for such service.
+            Description = 1075286;
+            // That's okay, I'm sure someone with more courage than either of us will come along eventually.
+            RefusalMessage = 1075288;
             InProgressMessage = 1075290; // You'll find that ghost in the mountain pass above the Covetous dungeon.
-            CompletionMessage =
-                1075291; // (As you try to use the Spirit Bottle, the ghost snatches it out of your hand and smashes it on the rocks) Please, don't be frightened. I need your help!
+            // (As you try to use the Spirit Bottle, the ghost snatches it out of your hand and smashes it on the rocks)
+            // Please, don't be frightened. I need your help!
+            CompletionMessage = 1075291;
             CompletionNotice = CompletionNoticeShort;
 
             Objectives.Add(new DeliverObjective(typeof(SpiritBottle), 1, "Spirit Bottle", typeof(Frederic)));
 
-            Rewards.Add(
-                new DummyReward(
-                    1075284
-                )
-            ); // Return the filled Spirit Bottle to Griswolt the Master Necromancer to receive a reward.
+            // Return the filled Spirit Bottle to Griswolt the Master Necromancer to receive a reward.
+            Rewards.Add(new DummyReward(1075284));
         }
 
         public override Type NextQuest => typeof(SaveHisDad);
@@ -67,11 +69,8 @@ namespace Server.Engines.MLQuests.Definitions
                 )
             );
 
-            Rewards.Add(
-                new DummyReward(
-                    1075339
-                )
-            ); // Hurry! You must get the silk to Leon the Alchemist quickly, or it will crumble and become useless!
+            // Hurry! You must get the silk to Leon the Alchemist quickly, or it will crumble and become useless!
+            Rewards.Add(new DummyReward(1075339));
         }
 
         public override Type NextQuest => typeof(AFathersGratitude);

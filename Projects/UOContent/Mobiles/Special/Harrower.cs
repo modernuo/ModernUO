@@ -341,7 +341,7 @@ namespace Server.Mobiles
 
                     if (ds.m_HasRight && ds.m_Mobile is PlayerMobile mobile)
                     {
-                        PlayerMobile.ChampionTitleInfo.AwardHarrowerTitle(mobile);
+                        ChampionTitleInfo.AwardHarrowerTitle(mobile);
                     }
                 }
 

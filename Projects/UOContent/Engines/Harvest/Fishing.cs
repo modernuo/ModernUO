@@ -117,21 +117,14 @@ namespace Server.Engines.Harvest
                     {
                         if (Utility.RandomDouble() < 0.5)
                         {
-                            player.SendLocalizedMessage(
-                                1055086,
-                                "",
-                                0x59
-                            ); // You pull a shellfish out of the water, and find a rainbow pearl inside of it.
-
+                            // You pull a shellfish out of the water, and find a rainbow pearl inside of it.
+                            player.SendLocalizedMessage(1055086, "", 0x59);
                             obj.CurProgress++;
                         }
                         else
                         {
-                            player.SendLocalizedMessage(
-                                1055087,
-                                "",
-                                0x2C
-                            ); // You pull a shellfish out of the water, but it doesn't have a rainbow pearl.
+                            // You pull a shellfish out of the water, but it doesn't have a rainbow pearl.
+                            player.SendLocalizedMessage(1055087, "", 0x2C);
                         }
 
                         return true;

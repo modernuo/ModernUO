@@ -4297,7 +4297,7 @@ namespace Server
                         this,
                         criminal
                     )
-                ); // new AggressorInfo( aggressor, this, criminal, true ) );
+                );
 
                 if (CanSee(aggressor))
                 {
@@ -4320,7 +4320,7 @@ namespace Server
                         this,
                         criminal
                     )
-                ); // new AggressorInfo( aggressor, this, criminal, false ) );
+                );
 
                 if (CanSee(aggressor))
                 {
@@ -4794,7 +4794,7 @@ namespace Server
                     m_NetState.Sequence,
                     this
                 )
-            ); // new MovementAck( m_NetState.Sequence, this ) );
+            );
 
             SetLocation(newLocation, false);
             SetDirection(d);
@@ -8352,9 +8352,9 @@ namespace Server
             if (item.QuestItem)
             {
                 item.QuestItem = false;
-                SendLocalizedMessage(
-                    1074769
-                ); // An item must be in your backpack (and not in a container within) to be toggled as a quest item.
+
+                // An item must be in your backpack (and not in a container within) to be toggled as a quest item.
+                SendLocalizedMessage(1074769);
             }
 
             return true;
@@ -10494,10 +10494,7 @@ namespace Server
 
                 if (m_Mobile.InLOS(combatant))
                 {
-                    weapon.OnBeforeSwing(
-                        m_Mobile,
-                        combatant
-                    ); // OnBeforeSwing for checking in regards to being hidden and whatnot
+                    weapon.OnBeforeSwing(m_Mobile, combatant);
                     m_Mobile.RevealingAction();
                     m_Mobile.NextCombatTime =
                         Core.TickCount + (int)weapon.OnSwing(m_Mobile, combatant).TotalMilliseconds;

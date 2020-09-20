@@ -18,7 +18,7 @@ namespace Server.Factions
                 pl.Mobile.SpeechHue,
                 true,
                 pl.KillPoints.ToString("N0")
-            ); // NOTE: Added 'N0'
+            );
         }
 
         private static void EventSink_Speech(SpeechEventArgs e)
@@ -133,22 +133,19 @@ namespace Server.Factions
                                 }
                                 else if (remaining.TotalHours >= 1)
                                 {
-                                    from.SendLocalizedMessage(
-                                        1042741,
-                                        remaining.TotalHours
-                                            .ToString("N0")
-                                    ); // Your term of service will come to an end in ~1_HOURS~ hours.
+                                    // Your term of service will come to an end in ~1_HOURS~ hours.
+                                    from.SendLocalizedMessage(1042741, remaining.TotalHours.ToString("N0"));
                                 }
                                 else
                                 {
-                                    from.SendLocalizedMessage(
-                                        1042742
-                                    ); // Your term of service will come to an end in less than one hour.
+                                    // Your term of service will come to an end in less than one hour.
+                                    from.SendLocalizedMessage(1042742);
                                 }
                             }
                             else if (pl != null)
                             {
-                                from.SendLocalizedMessage(1042233); // You are not in the process of quitting the faction.
+                                // You are not in the process of quitting the faction.
+                                from.SendLocalizedMessage(1042233);
                             }
 
                             break;
@@ -164,9 +161,8 @@ namespace Server.Factions
 
                             if (from.AccessLevel == AccessLevel.Player && !faction.FactionMessageReady)
                             {
-                                from.SendLocalizedMessage(
-                                    1010264
-                                ); // The required time has not yet passed since the last message was sent
+                                // The required time has not yet passed since the last message was sent
+                                from.SendLocalizedMessage(1010264);
                             }
                             else
                             {

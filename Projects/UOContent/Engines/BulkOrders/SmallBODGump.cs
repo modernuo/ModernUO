@@ -57,9 +57,9 @@ namespace Server.Engines.BulkOrders
                     deed.RequireExceptional ? 168 : 144,
                     300,
                     20,
-                    GetMaterialNumberFor(deed.Material),
+                    GetMaterialNumberFor(deed.Material), // All items must be made with x material.
                     0x7FFF
-                ); // All items must be made with x material.
+                );
             }
 
             AddButton(125, 192, 4005, 4007, 2);

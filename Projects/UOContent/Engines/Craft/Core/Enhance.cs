@@ -356,9 +356,8 @@ namespace Server.Engines.Craft
                     if (resource != CraftResource.None)
                     {
                         from.Target = new InternalTarget(craftSystem, tool, res.ItemType, resource);
-                        from.SendLocalizedMessage(
-                            1061004
-                        ); // Target an item to enhance with the properties of your selected material.
+                        // Target an item to enhance with the properties of your selected material.
+                        from.SendLocalizedMessage(1061004);
                     }
                     else
                     {
@@ -367,9 +366,10 @@ namespace Server.Engines.Craft
                                 from,
                                 craftSystem,
                                 tool,
+                                // You must select a special material in order to enhance an item with its properties.
                                 1061010
                             )
-                        ); // You must select a special material in order to enhance an item with its properties.
+                        );
                     }
                 }
             }
@@ -380,9 +380,10 @@ namespace Server.Engines.Craft
                         from,
                         craftSystem,
                         tool,
+                        // You must select a special material in order to enhance an item with its properties.
                         1061010
                     )
-                ); // You must select a special material in order to enhance an item with its properties.
+                );
             }
         }
 

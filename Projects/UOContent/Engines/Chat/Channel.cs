@@ -51,13 +51,13 @@ namespace Server.Engines.Chat
 
                 if (value)
                 {
-                    SendMessage(
-                        56
-                    ); // From now on, only moderators will have speaking privileges in this conference by default.
+                    // From now on, only moderators will have speaking privileges in this conference by default.
+                    SendMessage(56);
                 }
                 else
                 {
-                    SendMessage(55); // From now on, everyone in the conference will have speaking privileges by default.
+                    // From now on, everyone in the conference will have speaking privileges by default.
+                    SendMessage(55);
                 }
             }
         }
@@ -207,17 +207,13 @@ namespace Server.Engines.Chat
                 {
                     if (wasBanned)
                     {
-                        user.SendMessage(
-                            63,
-                            moderator.Username
-                        ); // %1, a conference moderator, has banned you from the conference.
+                        // %1, a conference moderator, has banned you from the conference.
+                        user.SendMessage(63, moderator.Username);
                     }
                     else
                     {
-                        user.SendMessage(
-                            45,
-                            moderator.Username
-                        ); // %1, a conference moderator, has kicked you out of the conference.
+                        // %1, a conference moderator, has kicked you out of the conference.
+                        user.SendMessage(45, moderator.Username);
                     }
                 }
 
@@ -250,11 +246,8 @@ namespace Server.Engines.Chat
 
                 if (moderator != null)
                 {
-                    user.SendMessage(
-                        54,
-                        moderator
-                            .Username
-                    ); // %1, a conference moderator, has granted you speaking privileges in this conference.
+                    // %1, a conference moderator, has granted you speaking privileges in this conference.
+                    user.SendMessage(54, moderator.Username);
                 }
 
                 SendMessage(52, user, user.Username); // %1 now has speaking privileges in this conference.
@@ -275,11 +268,8 @@ namespace Server.Engines.Chat
 
                 if (moderator != null)
                 {
-                    user.SendMessage(
-                        53,
-                        moderator
-                            .Username
-                    ); // %1, a conference moderator, has removed your speaking privileges for this conference.
+                    // %1, a conference moderator, has removed your speaking privileges for this conference.
+                    user.SendMessage(53, moderator.Username);
                 }
 
                 SendMessage(51, user, user.Username); // %1 no longer has speaking privileges in this conference.

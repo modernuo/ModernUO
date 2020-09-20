@@ -12,8 +12,9 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072244; // They're Breeding Like Rabbits
-            Description =
-                1072259; // Aaaahhhh!  They're everywhere!  Aaaaahhh!  Ahem.  Actually, friend, how do you feel about rabbits? Well, we're being overrun by them.  We're finding fuzzy bunnies everywhere. Aaaaahhh!
+            // Aaaahhhh!  They're everywhere!  Aaaaahhh!  Ahem.  Actually, friend, how do you feel about rabbits?
+            // Well, we're being overrun by them.  We're finding fuzzy bunnies everywhere. Aaaaahhh!
+            Description = 1072259;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -131,8 +132,11 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072248; // They'll Eat Anything
-            Description =
-                1072262; // Pork is the fruit of the land!  You can barbeque it, boil it, bake it, sautee it.  There's pork kebabs, pork creole, pork gumbo, pan fried, deep fried, stir fried.  There's apple pork, peppered pork, pork soup, pork salad, pork and potatoes, pork burger, pork sandwich, pork stew, pork chops, pork loins, shredded pork. So, lets get some piggies butchered!
+            // Pork is the fruit of the land!  You can barbeque it, boil it, bake it, sautee it.
+            // There's pork kebabs, pork creole, pork gumbo, pan fried, deep fried, stir fried.
+            // There's apple pork, peppered pork, pork soup, pork salad, pork and potatoes, pork burger, pork sandwich,
+            // pork stew, pork chops, pork loins, shredded pork. So, lets get some piggies butchered!
+            Description = 1072262;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -148,8 +152,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072251; // No Good, Fish Stealing ...
-            Description =
-                1072265; // Mighty creatures they are, aye.  Fierce and strong, can't blame 'em for wanting to feed themselves an' all. Blame or no, they're eating all the fish up, so they got to go.  Lend a hand?
+            // Mighty creatures they are, aye.
+            // Fierce and strong, can't blame 'em for wanting to feed themselves an' all.
+            // Blame or no, they're eating all the fish up, so they got to go.  Lend a hand?
+            Description = 1072265;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -165,8 +171,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072246; // A Hero in the Making
-            Description =
-                1072257; // Are you new around here?  Well, nevermind that.  You look ready for adventure, I can see the gleam of glory in your eyes!  Nothing is more valiant, more noble, more praiseworthy than mongbat slaying.
+            // Are you new around here?  Well, nevermind that.
+            // You look ready for adventure, I can see the gleam of glory in your eyes!
+            // Nothing is more valiant, more noble, more praiseworthy than mongbat slaying.
+            Description = 1072257;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -182,8 +190,11 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072247; // Bullfighting ... Sort Of
-            Description =
-                1072254; // You there! Yes, you.  Listen, I've got a little problem on my hands, but a brave, bold hero like yourself should find it a snap to solve.  Bottom line -- we need some of the bulls in the area culled.  You're welcome to any meat or hides, and of course, I'll give you a nice reward.
+            // You there! Yes, you.  Listen, I've got a little problem on my hands, but a brave,
+            // bold hero like yourself should find it a snap to solve.
+            // Bottom line -- we need some of the bulls in the area culled.
+            // You're welcome to any meat or hides, and of course, I'll give you a nice reward.
+            Description = 1072254;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -199,8 +210,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072243; // A Fine Feast.
-            Description =
-                1072261; // Mmm, I do love mutton!  It's slaughtering time again and my usual hirelings haven't turned up.  I've arranged for a butcher to come by and cut everything up but the basic sheep killing part I haven't gotten worked out yet.  Are you up for the task?
+            // Mmm, I do love mutton!  It's slaughtering time again and my usual hirelings haven't turned up.
+            // I've arranged for a butcher to come by and cut everything up but the basic sheep killing part
+            // I haven't gotten worked out yet.  Are you up for the task?
+            Description = 1072261;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -216,8 +229,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072250; // Forced Migration
-            Description =
-                1072264; // Chirp chirp ... tweet chirp.  Tra la la.  Bloody birds and their blasted noise.  I've tried everything but they just won't stop that infernal clamor.  Return me to blessed silence and I'll make it worth your while.
+            // Chirp chirp ... tweet chirp.  Tra la la.  Bloody birds and their blasted noise.
+            // I've tried everything but they just won't stop that infernal clamor.
+            // Return me to blessed silence and I'll make it worth your while.
+            Description = 1072264;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -233,8 +248,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072242; // Filthy Pests!
-            Description =
-                1072253; // They're everywhere I tell you!  They crawl in the walls, they scurry in the bushes.  Disgusting critters. Say ... I don't suppose you're up for some sewer rat killing?  Sewer rats now, not any other kind of squeaker will do.
+            // They're everywhere I tell you!  They crawl in the walls, they scurry in the bushes.
+            // Disgusting critters. Say ... I don't suppose you're up for some sewer rat killing?
+            // Sewer rats now, not any other kind of squeaker will do.
+            Description = 1072253;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -250,8 +267,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072983; // Dead Man Walking
-            Description =
-                1073009; // Why?  I ask you why?  They walk around after they're put in the ground.  It's just wrong in so many ways. Put them to proper rest, I beg you.  I'll find some way to pay you for the kindness. Just kill five zombies and five skeletons.
+            // Why?  I ask you why?  They walk around after they're put in the ground.
+            // It's just wrong in so many ways. Put them to proper rest, I beg you.
+            // I'll find some way to pay you for the kindness. Just kill five zombies and five skeletons.
+            Description = 1073009;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -268,8 +287,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072996; // King of Bears
-            Description =
-                1073030; // A pity really.  With the balance of nature awry, we have no choice but to accept the responsibility of making it all right.  It's all a part of the circle of life, after all. So, yes, the grizzly bears are running rampant. There are far too many in the region.  Will you shoulder your obligations as a higher life form?
+            // A pity really.  With the balance of nature awry, we have no choice but to accept the responsibility
+            // of making it all right. It's all a part of the circle of life, after all. So, yes, the grizzly bears are
+            // running rampant. There are far too many in the region. Will you shoulder your obligations as a higher life form?
+            Description = 1073030;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -285,8 +306,11 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072999; // Specimens
-            Description =
-                1073032; // I admire them, you know.  The solen have their place -- regimented, organized.  They're fascinating to watch with their constant strife between red and black.  I can't help but want to stir things up from time to time.  And that's where you come in.  Kill either twelve red or twelve black solen workers and let's see what happens next!
+            // I admire them, you know.  The solen have their place -- regimented, organized.
+            // They're fascinating to watch with their constant strife between red and black.
+            // I can't help but want to stir things up from time to time.  And that's where you come in.
+            // Kill either twelve red or twelve black solen workers and let's see what happens next!
+            Description = 1073032;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -305,9 +329,11 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073076; // Spirits
-            Description =
-                1073566; // It is a piteous thing when the dead continue to walk the earth. Restless spirits are known to inhabit these parts, taking the lives of unwary travelers. It is about time a hero put the dead back in their graves. I'm sure such a hero would be justly rewarded.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            // It is a piteous thing when the dead continue to walk the earth.
+            // Restless spirits are known to inhabit these parts, taking the lives of unwary travelers.
+            // It is about time a hero put the dead back in their graves. I'm sure such a hero would be justly rewarded.
+            Description = 1073566;
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage = 1073586; // The restless spirts still walk -- you must kill 15 of them.
 
             Objectives.Add(
@@ -328,8 +354,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073002; // Roll the Bones
-            Description =
-                1073011; // Why?  I ask you why?  They walk around after they're put in the ground.  It's just wrong in so many ways. Put them to proper rest, I beg you.  I'll find some way to pay you for the kindness. Just kill eight patchwork skeletons.
+            // Why?  I ask you why?  They walk around after they're put in the ground.
+            // It's just wrong in so many ways. Put them to proper rest, I beg you.
+            // I'll find some way to pay you for the kindness. Just kill eight patchwork skeletons.
+            Description = 1073011;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -345,8 +373,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073008; // It's a Ghastly Job
-            Description =
-                1073012; // Why?  I ask you why?  They walk around after they're put in the ground.  It's just wrong in so many ways. Put them to proper rest, I beg you.  I'll find some way to pay you for the kindness. Just kill twelve ghouls.
+            // Why?  I ask you why?  They walk around after they're put in the ground.
+            // It's just wrong in so many ways. Put them to proper rest, I beg you.
+            // I'll find some way to pay you for the kindness. Just kill twelve ghouls.
+            Description = 1073012;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -362,8 +392,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1074688; // Troglodytes!
-            Description =
-                1074689; // Oh nevermind, you don't look capable of my task afterall.  Haha! What was I thinking - you could never handle killing troglodytes.  It'd be suicide.  What?  I don't know, I don't want to be responsible ... well okay if you're really sure?
+            // Oh nevermind, you don't look capable of my task afterall.
+            // Haha! What was I thinking - you could never handle killing troglodytes.
+            // It'd be suicide.  What?  I don't know, I don't want to be responsible ... well okay if you're really sure?
+            Description = 1074689;
             RefusalMessage = 1074690; // Probably the wiser course of action.
             InProgressMessage = 1074691; // You still need to kill those troglodytes, remember?
 
@@ -379,9 +411,12 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073075; // Unholy Knights
-            Description =
-                1073565; // Please, hear me kind traveler. You know when a knight falls, sometimes they are cursed to roam the earth as undead mockeries of their former glory? That is too grim a fate for even any knight to suffer! Please, put them out of their misery. I will offer you what payment I can if you will end the torment of these undead wretches.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            // Please, hear me kind traveler. You know when a knight falls, sometimes they are cursed to roam the earth as
+            // undead mockeries of their former glory? That is too grim a fate for even any knight to suffer!
+            // Please, put them out of their misery.
+            // I will offer you what payment I can if you will end the torment of these undead wretches.
+            Description = 1073565;
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage = 1073585; // Your task is not done. Continue putting the Skeleton and Bone Knights to rest.
 
             Objectives.Add(
@@ -402,11 +437,17 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1074738; // A Feather in Yer Cap
-            Description =
-                1074737; // I've seen how you strut about, as if you were something special. I have some news for you, you don't impress me at all. It's not enough to have a fancy hat you know.  That may impress people in the big city, but not here. If you want a reputation you have to climb a mountain, slay some great beast, and then write about it. Trust me, it's a long process.  The first step is doing a great feat. If I were you, I'd go pluck a feather from the harpy Saliva, that would give you a good start.
+            // I've seen how you strut about, as if you were something special.
+            // I have some news for you, you don't impress me at all. It's not enough to have a fancy hat you know.
+            // That may impress people in the big city, but not here. If you want a reputation you have to climb a mountain,
+            // slay some great beast, and then write about it. Trust me, it's a long process.
+            // The first step is doing a great feat. If I were you, I'd go pluck a feather from the harpy Saliva,
+            // that would give you a good start.
+            Description = 1074737;
             RefusalMessage = 1074736; // The path to greatness isn't for everyone obviously.
-            InProgressMessage =
-                1074735; // If you're going to get anywhere in the adventuring game, you have to take some risks.  A harpy, well, it's bad, but it's not a dragon.
+            // If you're going to get anywhere in the adventuring game, you have to take some risks.
+            // A harpy, well, it's bad, but it's not a dragon.
+            InProgressMessage = 1074735;
             CompletionMessage = 1074734; // The hero returns from the glorious battle and - oh, such a small feather?
 
             Objectives.Add(new CollectObjective(1, typeof(SalivasFeather), "Saliva's Feather"));
@@ -421,13 +462,17 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1074726; // A Tale of Tail
-            Description =
-                1074727; // I've heard of you, adventurer.  Your reputation is impressive, and now I'll put it to the test. This is not something I ask lightly, for this task is fraught with danger, but it is vital.  Seek out the vile hydra Abscess, slay it, and return to me with it's tail.
+            // I've heard of you, adventurer.  Your reputation is impressive, and now I'll put it to the test.
+            // This is not something I ask lightly, for this task is fraught with danger, but it is vital.
+            // Seek out the vile hydra Abscess, slay it, and return to me with it's tail.
+            Description = 1074727;
             RefusalMessage = 1074728; // Well, the beast will still be there when you are ready I suppose.
-            InProgressMessage =
-                1074729; // Em, I thought I had explained already.  Abscess, the hydra, you know? Lots of heads but just the one tail. I need the tail. I have my reasons. Go go go.
-            CompletionMessage =
-                1074730; // Ah, the tail.  You did it!  You know the rumours about dried ground hydra tail powder are all true? Thank you so much!
+            // Em, I thought I had explained already.  Abscess, the hydra, you know? Lots of heads but just the one tail.
+            // I need the tail. I have my reasons. Go go go.
+            InProgressMessage = 1074729;
+            // Ah, the tail.  You did it!  You know the rumours about dried ground hydra tail powder are all true?\
+            // Thank you so much!
+            CompletionMessage = 1074730;
 
             Objectives.Add(new CollectObjective(1, typeof(AbscessTail), "Abscess' Tail"));
 
@@ -441,11 +486,13 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1074681; // A Trog and His Dog
-            Description =
-                1074680; // I don't know if you can handle it, but I'll give you a go at it. Troglodyte chief - name of Lurg and his mangy wolf pet need killing. Do the deed and I'll reward you.
+            // I don't know if you can handle it, but I'll give you a go at it.
+            // Troglodyte chief - name of Lurg and his mangy wolf pet need killing. Do the deed and I'll reward you.
+            Description = 1074680;
             RefusalMessage = 1074655; // Perhaps I thought too highly of you.
-            InProgressMessage =
-                1074682; // The trog chief and his mutt should be easy enough to find. Just kill them and report back.  Easy enough.
+            // The trog chief and his mutt should be easy enough to find. Just kill them and report back.
+            // Easy enough.
+            InProgressMessage = 1074682;
             CompletionMessage = 1074683; // Not half bad.  Here's your prize.
 
             Objectives.Add(new KillObjective(1, new[] { typeof(Lurg) }, "Lurg"));
@@ -461,8 +508,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072252; // Overpopulation
-            Description =
-                1072267; // I just can't bear it any longer.  Sure, it's my job to thin the deer out so they don't overeat the area and starve themselves come winter time.  Sure, I know we killed off the predators that would do this naturally so now we have to make up for it.  But they're so graceful and innocent.  I just can't do it. Will you?
+            // I just can't bear it any longer.  Sure, it's my job to thin the deer out so they don't overeat the area and
+            // starve themselves come winter time.  Sure, I know we killed off the predators that would do this naturally
+            // so now we have to make up for it.  But they're so graceful and innocent.  I just can't do it. Will you?
+            Description = 1072267;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -478,8 +527,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072245; // Wild Boar Cull
-            Description =
-                1072260; // A pity really.  With the balance of nature awry, we have no choice but to accept the responsibility of making it all right.  It's all a part of the circle of life, after all. So, yes, the boars are running rampant. There are far too many in the region.  Will you shoulder your obligations as a higher life form?
+            // A pity really.  With the balance of nature awry, we have no choice but to accept the responsibility of
+            // making it all right.  It's all a part of the circle of life, after all. So, yes, the boars are running rampant.
+            // There are far too many in the region.  Will you shoulder your obligations as a higher life form?
+            Description = 1072260;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -495,8 +546,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073089; // It's Elemental
-            Description =
-                1073579; // The universe is all about balance my friend. Tip one end, you must balance the other. That's why I must ask you to kill not just one kind of elemental, but three kinds. Snuff out some Fire, douse a few Water, and crush some Earth elementals and I'll pay you for your trouble.
+            // The universe is all about balance my friend. Tip one end, you must balance the other.
+            // That's why I must ask you to kill not just one kind of elemental, but three kinds. Snuff out some Fire, douse
+            // a few Water, and crush some Earth elementals and I'll pay you for your trouble.
+            Description = 1073579;
             RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073599; // Four of each, that's all I ask. Water, earth and fire.
 
@@ -514,8 +567,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073656; // Circle of Life
-            Description =
-                1073695; // There's been a bumper crop of evil with the Bog Things in these parts, my friend. Though they are foul creatures, they are also most fecund. Slay one and you make the land more fertile. Even better, slay several and I will give you whatever coin I can spare.
+            // There's been a bumper crop of evil with the Bog Things in these parts, my friend.
+            // Though they are foul creatures, they are also most fecund. Slay one and you make the land more fertile.
+            // Even better, slay several and I will give you whatever coin I can spare.
+            Description = 1073695;
             RefusalMessage = 1073733; // Perhaps you'll change your mind and return at some point.
             InProgressMessage = 1073736; // Continue to seek and kill the Bog Things.
 
@@ -1634,8 +1689,9 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073067; // Paroxysmus' Succubi
-            Description =
-                1074696; // The succubi that have congregated within the sinkhole to worship Paroxysmus pose a tremendous danger. Will you enter the lair and see to their destruction?
+            // The succubi that have congregated within the sinkhole to worship Paroxysmus pose a tremendous danger.
+            // Will you enter the lair and see to their destruction?
+            Description = 1074696;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -1644,9 +1700,12 @@ namespace Server.Engines.MLQuests.Definitions
                     3,
                     new[] { typeof(Succubus) },
                     "succubi",
-                    new QuestArea(1074806, "The Palace of Paroxysmus")
+                    new QuestArea(
+                        1074806, // The Palace of Paroxysmus
+                        "The Palace of Paroxysmus"
+                    )
                 )
-            ); // The Palace of Paroxysmus
+            );
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -1658,8 +1717,9 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073068; // Paroxysmus' Moloch
-            Description =
-                1074695; // The moloch daemons that have congregated to worship Paroxysmus pose a tremendous danger. Will you enter the lair and see to their destruction?
+            // The moloch daemons that have congregated to worship Paroxysmus pose a tremendous danger.
+            // Will you enter the lair and see to their destruction?
+            Description = 1074695;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -1682,8 +1742,9 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073069; // Paroxysmus' Daemons
-            Description =
-                1074694; // The daemons that have congregated to worship Paroxysmus pose a tremendous danger. Will you enter the lair and see to their destruction?
+            // The daemons that have congregated to worship Paroxysmus pose a tremendous danger.
+            // Will you enter the lair and see to their destruction?
+            Description = 1074694;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -1706,8 +1767,9 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073070; // Paroxysmus' Arcane Daemons
-            Description =
-                1074697; // The arcane daemons that worship Paroxysmus pose a tremendous danger. Will you enter the lair and see to their destruction?
+            // The arcane daemons that worship Paroxysmus pose a tremendous danger.
+            // Will you enter the lair and see to their destruction?
+            Description = 1074697;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -1730,8 +1792,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073062; // Caustic Combo
-            Description =
-                1074693; // Vile creatures have exited the sinkhole and begun terrorizing the surrounding area.  The demons are bad enough, but the elementals are an abomination, their poisons seeping into the fertile ground here.  Will you enter the sinkhole and put a stop to their depredations?
+            // Vile creatures have exited the sinkhole and begun terrorizing the surrounding area.
+            // The demons are bad enough, but the elementals are an abomination, their poisons seeping into the fertile ground here.
+            // Will you enter the sinkhole and put a stop to their depredations?
+            Description = 1074693;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -1762,8 +1826,10 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073061; // Plague Lord
-            Description =
-                1074692; // Some of the most horrific creatures have slithered out of the sinkhole there and begun terrorizing the surrounding area. The plague creatures are one of the most destruction of the minions of Paroxysmus.  Are you willing to do something about them?
+            // Some of the most horrific creatures have slithered out of the sinkhole there and begun terrorizing
+            // the surrounding area. The plague creatures are one of the most destruction of the minions of Paroxysmus.
+            // Are you willing to do something about them?
+            Description = 1074692;
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
@@ -1802,8 +1868,11 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073055; // Glassy Foe
-            Description =
-                1074669; // Good, you're here.  The presence of a twisted creature deep under the earth near Nu'Jelm has corrupted the natural growth of crystals in that region.  They've become infused with the twisting energy - they've come to a sort of life.  This is an abomination that festers within Sosaria.  You must eradicate the crystal lattice seekers.
+            // Good, you're here.  The presence of a twisted creature deep under the earth near Nu'Jelm has corrupted the
+            // natural growth of crystals in that region.  They've become infused with the twisting energy -
+            // they've come to a sort of life.  This is an abomination that festers within Sosaria.
+            // You must eradicate the crystal lattice seekers.
+            Description = 1074669;
             RefusalMessage = 1074671; // These abominations must not be permitted to fester!
             InProgressMessage = 1074672; // You must not waste time. Do not suffer these crystalline abominations to live.
             CompletionMessage = 1074673; // You have done well.  Enjoy this reward.
@@ -1827,8 +1896,11 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073053; // Daemonic Prism
-            Description =
-                1074668; // Good, you're here.  The presence of a twisted creature deep under the earth near Nu'Jelm has corrupted the natural growth of crystals in that region.  They've become infused with the twisting energy - they've come to a sort of life.  This is an abomination that festers within Sosaria. You must eradicate the crystal daemons.
+            // Good, you're here.
+            // The presence of a twisted creature deep under the earth near Nu'Jelm has corrupted the natural growth of
+            // crystals in that region.  They've become infused with the twisting energy - they've come to a sort of life.
+            // This is an abomination that festers within Sosaria. You must eradicate the crystal daemons.
+            Description = 1074668;
             RefusalMessage = 1074671; // These abominations must not be permitted to fester!
             InProgressMessage = 1074672; // You must not waste time. Do not suffer these crystalline abominations to live.
             CompletionMessage = 1074673; // You have done well.  Enjoy this reward.
@@ -1852,8 +1924,11 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1073057; // Hailstorm
-            Description =
-                1074670; // Good, you're here.  The presence of a twisted creature deep under the earth near Nu'Jelm has corrupted the natural growth of crystals in that region.  They've become infused with the twisting energy - they've come to a sort of life.  This is an abomination that festers within Sosaria.  You must eradicate the crystal vortices.
+            // Good, you're here.
+            // The presence of a twisted creature deep under the earth near Nu'Jelm has corrupted the natural growth of
+            // crystals in that region.  They've become infused with the twisting energy - they've come to a sort of life.
+            // This is an abomination that festers within Sosaria.  You must eradicate the crystal vortices.
+            Description = 1074670;
             RefusalMessage = 1074671; // These abominations must not be permitted to fester!
             InProgressMessage = 1074672; // You must not waste time. Do not suffer these crystalline abominations to live.
             CompletionMessage = 1074673; // You have done well.  Enjoy this reward.
@@ -1882,9 +1957,9 @@ namespace Server.Engines.MLQuests.Definitions
         RefusalMessage = 1074671; // These abominations must not be permitted to fester!
         InProgressMessage = 1074672; // You must not waste time. Do not suffer these crystalline abominations to live.
         CompletionMessage = 1074673; // You have done well.  Enjoy this reward.
-  
+
         Objectives.Add( new KillObjective( 3, new Type[] { typeof( CrystalHydra ) }, "crystal hydras", new QuestArea( 1074805, "The Prism of Light" ) ) ); // The Prism of Light
-  
+
         Rewards.Add( ItemReward.LargeBagOfTreasure );
       }
     }
@@ -1901,9 +1976,9 @@ namespace Server.Engines.MLQuests.Definitions
         RefusalMessage = 1074647; // How can you not feel as I do?
         InProgressMessage = 1074648; // The lush and fertile land where Dread Horn now lives is twisted and tainted, a result of his corruption.  The fey folk have sealed the land off through their magics, but you can enter through an enchanted mushroom fairy circle.
         CompletionMessage = 1074649; // Thank you.  I haven't the words to express my gratitude.
-  
+
         Objectives.Add( new KillObjective( 1, new Type[] { typeof( DreadHorn ) }, "dread horn" ) );
-  
+
         Rewards.Add( ItemReward.RewardStrongbox );
       }
     }
@@ -1919,11 +1994,11 @@ namespace Server.Engines.MLQuests.Definitions
         Description = 1072963; // I have a task for you ... adventurer.  Will you risk all to win great renown?  The Black Order is organized into three sects, each with their own speciality.  The Dragon's Flame serves the will of the Grand Mage, the Tiger's Claw answers to the Master Thief, and the Serpent's Fang kills at the direction of the High Executioner.  Slay all three and you will strike the order a devastating blow!
         RefusalMessage = 1072973; // I do not fault your decision.
         InProgressMessage = 1072974; // Once you gain entrance into The Citadel, you will need to move cautiously to find the sect leaders.
-  
+
         Objectives.Add( new KillObjective( 1, new Type[] { typeof( SerpentsFangHighExecutioner ) }, "serpent's fang high executioner", new QuestArea( 1074804, "The Citadel" ) ) ); // The Citadel
         Objectives.Add( new KillObjective( 1, new Type[] { typeof( TigersClawThief ) }, "tiger's claw thief", new QuestArea( 1074804, "The Citadel" ) ) ); // The Citadel
         Objectives.Add( new KillObjective( 1, new Type[] { typeof( DragonsFlameGrandMage ) }, "dragon's flame mage", new QuestArea( 1074804, "The Citadel" ) ) ); // The Citadel
-  
+
         Rewards.Add( ItemReward.RewardStrongbox );
       }
     }
@@ -1939,10 +2014,10 @@ namespace Server.Engines.MLQuests.Definitions
         Description = 1072969; // The Serpent's Fang sect members have gone too far! Express to them my displeasure by slaying ten of them. But remember, I do not condone war on women, so I will only accept the deaths of men, human and elf.
         RefusalMessage = 1072979; // As you wish.
         InProgressMessage = 1072980; // The Black Order's fortress home is well hidden.  Legend has it that a humble fishing village disguises the magical portal.
-  
+
         // TODO: This has to be MALES only!
         Objectives.Add( new KillObjective( 10, new Type[] { typeof( SerpentsFangAssassin ) }, "male serpent's fang assassins", new QuestArea( 1074804, "The Citadel" ) ) ); // The Citadel
-  
+
         Rewards.Add( ItemReward.BagOfTreasure );
       }
     }
@@ -1958,10 +2033,10 @@ namespace Server.Engines.MLQuests.Definitions
         Description = 1072966; // The Dragon's Flame sect members have gone too far! Express to them my displeasure by slaying ten of them. But remember, I do not condone war on women, so I will only accept the deaths of men, human or elf.  Either race will do, I care not for the shape of their ears. Yes, this action will properly make clear my disapproval and has a pleasing harmony.
         RefusalMessage = 1072979; // As you wish.
         InProgressMessage = 1072980; // The Black Order's fortress home is well hidden.  Legend has it that a humble fishing village disguises the magical portal.
-  
+
         // TODO: This has to be MALES only!
         Objectives.Add( new KillObjective( 10, new Type[] { typeof( DragonsFlameMage ) }, "male dragon's flame mages", new QuestArea( 1074804, "The Citadel" ) ) ); // The Citadel
-  
+
         Rewards.Add( ItemReward.BagOfTreasure );
       }
     }
@@ -2003,10 +2078,10 @@ namespace Server.Engines.MLQuests.Definitions
         Description = 1072968; // The Tiger's Claw sect members have gone too far! Express to them my displeasure by slaying ten of them. But remember, I do not condone war on women, so I will only accept the deaths of men, human and elf.
         RefusalMessage = 1072979; // As you wish.
         InProgressMessage = 1072980; // The Black Order's fortress home is well hidden.  Legend has it that a humble fishing village disguises the magical portal.
-  
+
         // TODO: This has to be MALES only!
         Objectives.Add( new KillObjective( 10, new Type[] { typeof( TigersClawThief ) }, "male tiger's claw thieves", new QuestArea( 1074804, "The Citadel" ) ) ); // The Citadel
-  
+
         Rewards.Add( ItemReward.BagOfTreasure );
       }
     }
@@ -2023,9 +2098,9 @@ namespace Server.Engines.MLQuests.Definitions
         RefusalMessage = 1074655; // Perhaps I thought too highly of you.
         InProgressMessage = 1074656; // An explorer discovered the cave system under Nu'Jelm.  He made multiple trips into the place bringing back fascinating crystals and artifacts that suggested the hollow place in Sosaria was inhabited by other creatures at some point.  You'll need to follow in his footsteps to find this abomination and destroy it.
         CompletionMessage = 1074657; // I am overjoyed with your efforts!  Your devotion to Sosaria is noted and appreciated.
-  
+
         Objectives.Add( new KillObjective( 1, new Type[] { typeof( ShimmeringEffusion ) }, "shimmering effusion" ) );
-  
+
         Rewards.Add( ItemReward.RewardStrongbox );
       }
     }

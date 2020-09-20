@@ -239,8 +239,8 @@ namespace Server.Engines.Craft
                     typeof(IronIngot),
                     1044036,
                     28,
-                    1044037
-                ); // Double check skill
+                    1044037 // Double check skill
+                );
                 SetNeededExpansion(index, Expansion.SE);
 
                 index = AddCraft(

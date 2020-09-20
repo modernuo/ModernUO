@@ -213,33 +213,28 @@ namespace Server.Factions
 
                                         if (remaining.TotalMinutes < 4)
                                         {
-                                            m_From.SendLocalizedMessage(
-                                                1042165
-                                            ); // You must wait a short while before changing prices again.
+                                            // You must wait a short while before changing prices again.
+                                            m_From.SendLocalizedMessage(1042165);
                                         }
                                         else if (remaining.TotalMinutes < 10)
                                         {
-                                            m_From.SendLocalizedMessage(
-                                                1042166
-                                            ); // You must wait several minutes before changing prices again.
+                                            // You must wait several minutes before changing prices again.
+                                            m_From.SendLocalizedMessage(1042166);
                                         }
                                         else if (remaining.TotalHours < 1)
                                         {
-                                            m_From.SendLocalizedMessage(
-                                                1042167
-                                            ); // You must wait up to an hour before changing prices again.
+                                            // You must wait up to an hour before changing prices again.
+                                            m_From.SendLocalizedMessage(1042167);
                                         }
                                         else if (remaining.TotalHours < 4)
                                         {
-                                            m_From.SendLocalizedMessage(
-                                                1042168
-                                            ); // You must wait a few hours before changing prices again.
+                                            // You must wait a few hours before changing prices again.
+                                            m_From.SendLocalizedMessage(1042168);
                                         }
                                         else
                                         {
-                                            m_From.SendLocalizedMessage(
-                                                1042169
-                                            ); // You must wait several hours before changing prices again.
+                                            // You must wait several hours before changing prices again.
+                                            m_From.SendLocalizedMessage(1042169);
                                         }
                                     }
                                     else
@@ -268,13 +263,13 @@ namespace Server.Factions
 
                             if (Town.FromRegion(m_From.Region) != m_Town)
                             {
-                                m_From.SendLocalizedMessage(1010305); // You must be in your controlled city to buy Items
+                                // You must be in your controlled city to buy Items
+                                m_From.SendLocalizedMessage(1010305);
                             }
                             else if (vendorList.Vendors.Count >= vendorList.Definition.Maximum)
                             {
-                                m_From.SendLocalizedMessage(
-                                    1010306
-                                ); // You currently have too many of this enhancement type to place another
+                                // You currently have too many of this enhancement type to place another
+                                m_From.SendLocalizedMessage(1010306);
                             }
                             else if (BaseBoat.FindBoatAt(m_From.Location, m_From.Map) != null)
                             {

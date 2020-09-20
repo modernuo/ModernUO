@@ -419,11 +419,8 @@ namespace Server.Engines.Help
                         {
                             if (from.Region.IsPartOf<JailRegion>())
                             {
-                                from.SendLocalizedMessage(
-                                    1114345,
-                                    "",
-                                    0x35
-                                ); // You'll need a better jailbreak plan than that!
+                                // You'll need a better jailbreak plan than that!
+                                from.SendLocalizedMessage(1114345, "", 0x35);
                             }
                             else if (from.Region.IsPartOf("Haven Island"))
                             {
