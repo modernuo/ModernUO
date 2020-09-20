@@ -402,12 +402,30 @@ namespace Server
                 return Internal;
             }
 
-            if (int.TryParse(value, out var index))
+            if (!int.TryParse(value, out var index))
             {
-                return Maps.FirstOrDefault(m => m != null && Insensitive.Equals(m.Name, value));
+                index = -1;
+            }
+            else if (index == 127)
+            {
+                return Internal;
             }
 
-            return index == 127 ? Internal : Maps.FirstOrDefault(m => m?.MapIndex == index);
+            for (int i = 0; i < Maps.Length; i++)
+            {
+                var map = Maps[i];
+                if (map == null)
+                {
+                    continue;
+                }
+
+                if (index >= 0 && map.MapIndex == index || Insensitive.Equals(map.Name, value))
+                {
+                    return map;
+                }
+            }
+
+            return null;
         }
 
         public override string ToString() => Name;
