@@ -147,9 +147,9 @@ namespace Server.Engines.Chat
         public static void ShowCharacterName(ChatUser from, Channel channel, string param)
         {
             from.Anonymous = false;
-            from.SendMessage(
-                39
-            ); // You are now showing your character name to any players who inquire with the whois command.
+
+            // You are now showing your character name to any players who inquire with the whois command.
+            from.SendMessage(39);
         }
 
         public static void HideCharacterName(ChatUser from, Channel channel, string param)

@@ -351,11 +351,8 @@ namespace Server.Items
                 case 2:
                     {
                         to.PlaySound(0x223);
-                        to.LocalOverheadMessage(
-                            MessageType.Regular,
-                            0x62,
-                            1010525
-                        ); // Pain lances through thee from a sharp metal blade.
+                        // Pain lances through thee from a sharp metal blade.
+                        to.LocalOverheadMessage(MessageType.Regular, 0x62, 1010525);
 
                         AOS.Damage(to, to, Utility.RandomMinMax(10, 40), 100, 0, 0, 0, 0);
 
@@ -364,7 +361,8 @@ namespace Server.Items
                 default:
                     {
                         to.BoltEffect(0);
-                        to.LocalOverheadMessage(MessageType.Regular, 0xDA, 1010526); // Lightning arcs through thy body.
+                        // Lightning arcs through thy body.
+                        to.LocalOverheadMessage(MessageType.Regular, 0xDA, 1010526);
 
                         AOS.Damage(to, to, Utility.RandomMinMax(10, 40), 0, 0, 0, 0, 100);
 

@@ -20,13 +20,8 @@ namespace Server.Engines.Help
             AddPage(0);
 
             AddHtmlLocalized(264, 80, 200, 24, 1062524); // Enter Description
-            AddHtmlLocalized(
-                120,
-                108,
-                420,
-                48,
-                1062638
-            ); // Please enter a brief description (up to 200 characters) of your problem:
+            // Please enter a brief description (up to 200 characters) of your problem:
+            AddHtmlLocalized(120, 108, 420, 48, 1062638);
 
             AddBackground(100, 148, 440, 200, 3500);
             AddTextEntry(120, 168, 400, 200, 1153, 0, "");

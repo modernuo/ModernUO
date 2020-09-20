@@ -891,8 +891,6 @@ namespace Server.Engines.CannedEvil
                     MaxKills,
                     100.0 * ((double)m_Kills / MaxKills)
                 );
-
-                // list.Add( 1060661, "Spawn Range\t{0}", m_SpawnRange ); // ~1_val~: ~2_val~
             }
             else
             {

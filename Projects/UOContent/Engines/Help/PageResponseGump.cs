@@ -19,17 +19,13 @@ namespace Server.Engines.Help
 
             AddPage(0);
 
-            AddHtmlLocalized(150, 40, 360, 40, 1062610); // <CENTER><U>Ultima Online Help Response</U></CENTER>
+            // <CENTER><U>Ultima Online Help Response</U></CENTER>
+            AddHtmlLocalized(150, 40, 360, 40, 1062610);
 
             AddHtml(80, 90, 480, 290, $"{name} tells {from.Name}: {text}", true, true);
 
-            AddHtmlLocalized(
-                80,
-                390,
-                480,
-                40,
-                1062611
-            );                                  // Clicking the OKAY button will remove the reponse you have received.
+            // Clicking the OKAY button will remove the reponse you have received.
+            AddHtmlLocalized(80, 390, 480, 40, 1062611);
             AddButton(400, 417, 2074, 2075, 1); // OKAY
 
             AddButton(475, 417, 2073, 2072, 0); // CANCEL

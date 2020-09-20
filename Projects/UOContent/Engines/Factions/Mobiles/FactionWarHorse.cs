@@ -79,9 +79,8 @@ namespace Server.Factions
             }
             else if (pl.Rank.Rank < 2)
             {
-                from.SendLocalizedMessage(
-                    1010368
-                ); // You must achieve a faction rank of at least two before riding a war horse!
+                // You must achieve a faction rank of at least two before riding a war horse!
+                from.SendLocalizedMessage(1010368);
             }
             else
             {

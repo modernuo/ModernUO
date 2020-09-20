@@ -26,14 +26,15 @@ namespace Server.Factions
                     15,
                     230,
                     60,
-                    1018057,
+                    1018057, // Are you sure you want your entire guild to leave this faction?
                     true,
                     true
-                ); // Are you sure you want your entire guild to leave this faction?
+                );
             }
             else
             {
-                AddHtmlLocalized(20, 15, 230, 60, 1018063, true, true); // Are you sure you want to leave this faction?
+                // Are you sure you want to leave this faction?s
+                AddHtmlLocalized(20, 15, 230, 60, 1018063, true, true);
             }
 
             AddHtmlLocalized(55, 80, 75, 20, 1011011); // CONTINUE
@@ -72,9 +73,8 @@ namespace Server.Factions
                         }
                         else if (guild.Leader != m_From)
                         {
-                            m_From.SendLocalizedMessage(
-                                1005061
-                            ); // You cannot quit the faction because you are not the guild master
+                            // You cannot quit the faction because you are not the guild master
+                            m_From.SendLocalizedMessage(1005061);
                         }
                         else
                         {
@@ -91,7 +91,8 @@ namespace Server.Factions
 
                                     if (TimeSpan.FromDays(3.0) == Faction.LeavePeriod)
                                     {
-                                        mob.SendLocalizedMessage(1005060); // Your guild will quit the faction in 3 days
+                                        // Your guild will quit the faction in 3 days
+                                        mob.SendLocalizedMessage(1005060);
                                     }
                                     else
                                     {

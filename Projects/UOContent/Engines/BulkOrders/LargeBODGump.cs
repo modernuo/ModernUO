@@ -65,13 +65,12 @@ namespace Server.Engines.BulkOrders
 
             if (deed.Material != BulkMaterialType.None)
             {
-                // All items must be made with x material.
                 AddHtmlLocalized(
                     75,
                     y,
                     300,
                     20,
-                    GetMaterialNumberFor(deed.Material),
+                    GetMaterialNumberFor(deed.Material), // All items must be made with x material.
                     0x7FFF
                 );
             }

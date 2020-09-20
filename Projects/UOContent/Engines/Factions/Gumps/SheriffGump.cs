@@ -142,9 +142,8 @@ namespace Server.Factions
                 }
                 else if (guardList.Guards.Count >= guardList.Definition.Maximum)
                 {
-                    m_From.SendLocalizedMessage(
-                        1010306
-                    ); // You currently have too many of this enhancement type to place another
+                    // You currently have too many of this enhancement type to place another
+                    m_From.SendLocalizedMessage(1010306);
                 }
                 else if (BaseBoat.FindBoatAt(m_From.Location, m_From.Map) != null)
                 {

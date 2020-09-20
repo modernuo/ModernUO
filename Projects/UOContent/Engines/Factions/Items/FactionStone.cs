@@ -57,9 +57,8 @@ namespace Server.Factions
 
                     if (pl?.IsLeaving == true)
                     {
-                        mobile.SendLocalizedMessage(
-                            1005051
-                        ); // You cannot use the faction stone until you have finished quitting your current faction
+                        // You cannot use the faction stone until you have finished quitting your current faction
+                        mobile.SendLocalizedMessage(1005051);
                     }
                     else
                     {

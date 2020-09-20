@@ -149,9 +149,8 @@ namespace Server.Engines.MLQuests.Definitions
 
                 if (pm.Skills.Blacksmith.Base < 45.0) // TODO: Verify threshold
                 {
-                    pm.SendLocalizedMessage(
-                        1075005
-                    ); // You observe carefully but you can't grasp the complexities of smithing a bone handled machete.
+                    // You observe carefully but you can't grasp the complexities of smithing a bone handled machete.
+                    pm.SendLocalizedMessage(1075005);
                 }
                 else
                 {
@@ -177,13 +176,8 @@ namespace Server.Engines.MLQuests.Definitions
             CompletionMessage =
                 1074996; // I hear sloshing ... that must mean you've got my water samples.  Whew, I'm so glad you braved the dangers in there ... I mean, I would have but I'm so busy out here.  Here's your reward!
 
-            Objectives.Add(
-                new CollectObjective(
-                    3,
-                    typeof(SamplesOfCorruptedWater),
-                    "samples of corrupted water"
-                )
-            ); // On OSI the label is "#1074999"
+            // On OSI the label is "#1074999"
+            Objectives.Add(new CollectObjective(3, typeof(SamplesOfCorruptedWater), "samples of corrupted water"));
             // TODO: "Return to" should say "Jamal (near Blighted Grove)"
             // Maybe every quest NPC has directions as a property?
 
@@ -272,9 +266,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074209, // Hey, could you help me out with something?
-                    1074215
+                    1074215  // Don’t test my patience you sniveling worm!
                 )
-            ); // Don’t test my patience you sniveling worm!
+            );
         }
 
         public override void Serialize(IGenericWriter writer)

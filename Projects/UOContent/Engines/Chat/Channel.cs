@@ -207,10 +207,8 @@ namespace Server.Engines.Chat
                 {
                     if (wasBanned)
                     {
-                        user.SendMessage(
-                            63,
-                            moderator.Username
-                        ); // %1, a conference moderator, has banned you from the conference.
+                        // %1, a conference moderator, has banned you from the conference.
+                        user.SendMessage(63, moderator.Username);
                     }
                     else
                     {

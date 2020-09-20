@@ -161,9 +161,9 @@ namespace Server.Engines.Harvest
                 mobile.PrivateOverheadMessage(
                     MessageType.Regular,
                     0x3B2,
-                    500450,
+                    500450, // You can only skin dead creatures.
                     from.NetState
-                ); // You can only skin dead creatures.
+                );
             }
             else if (toHarvest is Item item)
             {

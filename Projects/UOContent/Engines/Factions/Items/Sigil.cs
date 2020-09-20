@@ -373,9 +373,8 @@ namespace Server.Factions
                     }
                     else if (m_Corrupted == null || m_Corrupted != Faction.Find(from))
                     {
-                        from.SendLocalizedMessage(
-                            1042244
-                        ); // Your faction did not corrupt this sigil.  Take it to your stronghold.
+                        // Your faction did not corrupt this sigil.  Take it to your stronghold.
+                        from.SendLocalizedMessage(1042244);
                     }
                     else
                     {

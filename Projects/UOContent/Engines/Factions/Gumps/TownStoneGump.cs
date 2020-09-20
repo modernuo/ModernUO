@@ -54,9 +54,8 @@ namespace Server.Factions
                     {
                         if (m_Town.Sheriff != null)
                         {
-                            m_From.SendLocalizedMessage(
-                                1010342
-                            ); // You must fire your Sheriff before you can elect a new one
+                            // You must fire your Sheriff before you can elect a new one
+                            m_From.SendLocalizedMessage(1010342);
                         }
                         else
                         {
@@ -70,9 +69,8 @@ namespace Server.Factions
                     {
                         if (m_Town.Finance != null)
                         {
-                            m_From.SendLocalizedMessage(
-                                1010345
-                            ); // You must fire your finance minister before you can elect a new one
+                            // You must fire your finance minister before you can elect a new one
+                            m_From.SendLocalizedMessage(1010345);
                         }
                         else
                         {
@@ -86,7 +84,8 @@ namespace Server.Factions
                     {
                         if (m_Town.Sheriff == null)
                         {
-                            m_From.SendLocalizedMessage(1010350); // You need to elect a sheriff before you can fire one
+                            // You need to elect a sheriff before you can fire one
+                            m_From.SendLocalizedMessage(1010350);
                         }
                         else
                         {
@@ -101,9 +100,8 @@ namespace Server.Factions
                     {
                         if (m_Town.Finance == null)
                         {
-                            m_From.SendLocalizedMessage(
-                                1010352
-                            ); // You need to elect a financial minister before you can fire one
+                            // You need to elect a financial minister before you can fire one
+                            m_From.SendLocalizedMessage(1010352);
                         }
                         else
                         {
@@ -147,7 +145,8 @@ namespace Server.Factions
                 }
                 else if (pl.Sheriff != null || pl.Finance != null)
                 {
-                    from.SendLocalizedMessage(1005245); // You must pick someone who does not already hold a city post
+                    // You must pick someone who does not already hold a city post
+                    from.SendLocalizedMessage(1005245);
                 }
                 else
                 {
@@ -190,7 +189,8 @@ namespace Server.Factions
                 }
                 else if (pl.Sheriff != null || pl.Finance != null)
                 {
-                    from.SendLocalizedMessage(1005245); // You must pick someone who does not already hold a city post
+                    // You must pick someone who does not already hold a city post
+                    from.SendLocalizedMessage(1005245);
                 }
                 else
                 {

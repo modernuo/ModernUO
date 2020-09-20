@@ -40,9 +40,8 @@ namespace Server.Engines.Harvest
 
                         if (obj?.Completed == false && obj.Ingredient == Ingredient.Bones)
                         {
-                            player.SendLocalizedMessage(
-                                1055037
-                            ); // You finish your grim work, finding some of the specific bones listed in the Hag's recipe.
+                            // You finish your grim work, finding some of the specific bones listed in the Hag's recipe.
+                            player.SendLocalizedMessage(1055037);
                             obj.Complete();
 
                             return;

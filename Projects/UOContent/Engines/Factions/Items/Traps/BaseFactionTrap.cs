@@ -101,10 +101,8 @@ namespace Server.Factions
                         }
                         else
                         {
-                            Placer.SendLocalizedMessage(
-                                1042736,
-                                $"{silverGiven} silver\t{from.Name}"
-                            ); // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
+                            // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
+                            Placer.SendLocalizedMessage(1042736, $"{silverGiven} silver\t{from.Name}");
                         }
                     }
 

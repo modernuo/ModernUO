@@ -37,9 +37,8 @@ namespace Server
                 return true;
             }
 
-            from.SendLocalizedMessage(
-                1062927
-            ); // You have eaten one of these recently and eating another would provide no benefit.
+            // You have eaten one of these recently and eating another would provide no benefit.
+            from.SendLocalizedMessage(1062927);
 
             return false;
         }
