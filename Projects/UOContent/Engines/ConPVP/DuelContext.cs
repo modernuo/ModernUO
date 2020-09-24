@@ -2073,8 +2073,8 @@ namespace Server.Engines.ConPVP
                     int number = item switch
                     {
                         BaseWeapon _ => 1062001, // You can no longer wield your ~1_WEAPON~
-                        BaseShield _ => 1062003, // You can no longer equip your ~1_SHIELD~
-                        _ when item is BaseArmor || item is BaseClothing => 1062002 // You can no longer wear your ~1_ARMOR~
+                        _ when !(item is BaseShield) && (item is BaseArmor || item is BaseClothing) => 1062002, // You can no longer wear your ~1_ARMOR~
+                        _ => 1062003 // You can no longer equip your ~1_SHIELD~
                     };
 
                     mob.SendLocalizedMessage(number, item.Name ?? $"#{item.LabelNumber}");
