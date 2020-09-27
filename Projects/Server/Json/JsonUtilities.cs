@@ -22,7 +22,7 @@ using System.Text.Json;
 
 namespace Server.Json
 {
-    public static class JsonPropertySorter
+    public static class JsonUtilities
     {
         public static string SortByPropertyName(string jsonStr)
         {
@@ -42,14 +42,14 @@ namespace Server.Json
 
             using (var writer = new Utf8JsonWriter(ms, opts))
             {
-                Write(je, writer);
+                WriteJsonElementSorted(je, writer);
             }
 
             ms.TryGetBuffer(out var buffer);
             return Encoding.UTF8.GetString(buffer);
         }
 
-        private static void Write(JsonElement je, Utf8JsonWriter writer)
+        private static void WriteJsonElementSorted(JsonElement je, Utf8JsonWriter writer)
         {
             switch(je.ValueKind)
             {
