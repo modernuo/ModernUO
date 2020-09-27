@@ -1,14 +1,16 @@
 using System;
-using System.IO;
-using Server.Accounting;
-using Server.Misc;
 using Server.Network;
 
 namespace Server.Engines.Chat
 {
-    public class ChatSystem
+    public static class ChatSystem
     {
-        public static bool Enabled { get; set; } = true;
+        public static bool Enabled { get; set; }
+
+        public static void Configure()
+        {
+            Enabled = ServerConfiguration.GetOrUpdateSetting("chat.enabled", false);
+        }
 
         public static void Initialize()
         {
@@ -21,7 +23,7 @@ namespace Server.Engines.Chat
             to?.Send(new ChatMessagePacket(null, (int)type + 20, param1, param2));
         }
 
-        public static void OpenChatWindowRequest(NetState state, PacketReader pvSrc)
+        public static void OpenChatWindowRequest(NetState state, PacketReader reader)
         {
             var from = state.Mobile;
 
@@ -31,71 +33,15 @@ namespace Server.Engines.Chat
                 return;
             }
 
-            pvSrc.Seek(2, SeekOrigin.Begin);
-            var chatName = pvSrc.ReadUnicodeStringSafe((0x40 - 2) >> 1).Trim();
+            // Newer clients don't send chat username anymore so we are ignoring the rest of this packet.
 
-            var acct = state.Account as Account;
+            // TODO: How does OSI handle incognito/disguise kits?
+            // TODO: Does OSI still allow duplicate names?
+            // For now we assume they should use their raw name.
+            var chatName = from.RawName ?? $"Unknown User {Utility.RandomMinMax(1000000, 9999999)}";
 
-            string accountChatName = null;
-
-            if (acct != null)
-            {
-                accountChatName = acct.GetTag("ChatName");
-            }
-
-            accountChatName = accountChatName?.Trim();
-
-            if (!string.IsNullOrEmpty(accountChatName))
-            {
-                if (chatName.Length > 0 && chatName != accountChatName)
-                {
-                    from.SendMessage("You cannot change chat nickname once it has been set.");
-                }
-            }
-            else
-            {
-                if (chatName.Length == 0)
-                {
-                    SendCommandTo(from, ChatCommand.AskNewNickname);
-                    return;
-                }
-
-                if (NameVerification.Validate(chatName, 2, 31, true, true, true, 0, NameVerification.SpaceDashPeriodQuote) &&
-                    chatName.ToLower().IndexOf("system") == -1)
-                {
-                    // TODO: Optimize this search
-
-                    foreach (Account checkAccount in Accounts.GetAccounts())
-                    {
-                        var existingName = checkAccount.GetTag("ChatName");
-
-                        if (existingName != null)
-                        {
-                            existingName = existingName.Trim();
-
-                            if (Insensitive.Equals(existingName, chatName))
-                            {
-                                from.SendMessage("Nickname already in use.");
-                                SendCommandTo(from, ChatCommand.AskNewNickname);
-                                return;
-                            }
-                        }
-                    }
-
-                    accountChatName = chatName;
-
-                    acct?.AddTag("ChatName", chatName);
-                }
-                else
-                {
-                    from.SendLocalizedMessage(501173); // That name is disallowed.
-                    SendCommandTo(from, ChatCommand.AskNewNickname);
-                    return;
-                }
-            }
-
-            SendCommandTo(from, ChatCommand.OpenChatWindow, accountChatName);
-            ChatUser.AddChatUser(from);
+            SendCommandTo(from, ChatCommand.OpenChatWindow, chatName);
+            ChatUser.AddChatUser(from, chatName);
         }
 
         public static ChatUser SearchForUser(ChatUser from, string name)
@@ -110,7 +56,7 @@ namespace Server.Engines.Chat
             return user;
         }
 
-        public static void ChatAction(NetState state, PacketReader pvSrc)
+        public static void ChatAction(NetState state, PacketReader reader)
         {
             if (!Enabled)
             {
@@ -127,36 +73,35 @@ namespace Server.Engines.Chat
                     return;
                 }
 
-                var lang = pvSrc.ReadStringSafe(4);
-                int actionID = pvSrc.ReadInt16();
-                var param = pvSrc.ReadUnicodeString();
+                var lang = reader.ReadStringSafe(4);
+                int actionID = reader.ReadInt16();
+                var param = reader.ReadUnicodeString();
 
                 var handler = ChatActionHandlers.GetHandler(actionID);
 
-                if (handler != null)
-                {
-                    var channel = user.CurrentChannel;
-
-                    if (handler.RequireConference && channel == null)
-                        /* You must be in a conference to do this.
-                         * To join a conference, select one from the Conference menu.
-                         */
-                    {
-                        user.SendMessage(31);
-                    }
-                    else if (handler.RequireModerator && !user.IsModerator)
-                    {
-                        user.SendMessage(29); // You must have operator status to do this.
-                    }
-                    else
-                    {
-                        handler.Callback(user, channel, param);
-                    }
-                }
-                else
+                if (handler == null)
                 {
                     Console.WriteLine("Client: {0}: Unknown chat action 0x{1:X}: {2}", state, actionID, param);
+                    return;
                 }
+
+                var channel = user.CurrentChannel;
+
+                if (handler.RequireConference && channel == null)
+                {
+                    // You must be in a conference to do this.
+                    // To join a conference, select one from the Conference menu.
+                    user.SendMessage(31);
+                    return;
+                }
+
+                if (handler.RequireModerator && !user.IsModerator)
+                {
+                    user.SendMessage(29); // You must have operator status to do this.
+                    return;
+                }
+
+                handler.Callback(user, channel, param);
             }
             catch (Exception e)
             {
