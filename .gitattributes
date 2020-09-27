@@ -1,10 +1,17 @@
-*           text=auto
-*.bat       text eol=crlf
-*.cs        text diff=csharp
-*.csproj    text eol=crlf
-*.json      text eol=lf
-*.md        text eol=lf
-*.sh        text eol=lf
-*.sln       text eol=crlf
-*.yml       text eol=lf
-publish.cmd text eol=lf
+# General file endings
+*                       text=auto
+*.bat                   text eol=crlf
+*.cmd                   text eol=crlf
+*.cs                    text diff=csharp
+*.csproj                text eol=crlf
+*.json                  text eol=lf
+*.md                    text eol=lf
+*.sh                    text eol=lf
+*.sln                   text eol=crlf
+*.yml                   text eol=lf
+
+# Specific paths
+Directory.Build.props   text eol=crlf
+LICENSE                 text eol=lf
+publish.cmd             text eol=lf
+THIRD-PARTY-NOTICES     text eol=lf
