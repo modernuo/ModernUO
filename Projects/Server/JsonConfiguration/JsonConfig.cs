@@ -66,20 +66,6 @@ namespace Server.Json
             return JsonSerializer.Deserialize<T>(text, options ?? DefaultOptions);
         }
 
-        public static void SerializeSorted(string filePath, object value, JsonSerializerOptions options = null)
-        {
-            var contents = JsonPropertySorter.SortByPropertyName(Serialize(value, options));
-
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-
-            File.WriteAllText(filePath, contents);
-        }
-
         public static string Serialize(object value, JsonSerializerOptions options = null) =>
             JsonSerializer.Serialize(value, options ?? DefaultOptions);
 

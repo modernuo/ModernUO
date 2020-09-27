@@ -138,17 +138,6 @@ namespace Server
             Save();
         }
 
-        public static T GetMetadata<T>(string key) where T : class
-        {
-            m_Settings.metadata.TryGetValue(key, out var value);
-            return value as T;
-        }
-
-        public static void SetMetadata(string key, object value)
-        {
-            m_Settings.metadata[key] = value;
-        }
-
         // If mock is enabled we skip the console readline.
         public static void Load(bool mocked = false)
         {
@@ -286,19 +275,19 @@ namespace Server
                 return;
             }
 
-            JsonConfig.SerializeSorted(m_FilePath, m_Settings);
+            JsonConfig.Serialize(m_FilePath, m_Settings);
         }
 
         internal class ServerSettings
         {
-            [JsonPropertyName("dataDirectories")] public List<string> dataDirectories { get; set; } = new List<string>();
+            [JsonPropertyName("dataDirectories")]
+            public List<string> dataDirectories { get; set; } = new List<string>();
 
-            [JsonPropertyName("listeners")] public List<IPEndPoint> listeners { get; set; } = new List<IPEndPoint>();
+            [JsonPropertyName("listeners")]
+            public List<IPEndPoint> listeners { get; set; } = new List<IPEndPoint>();
 
             [JsonPropertyName("settings")]
-            public Dictionary<string, string> settings { get; set; } = new Dictionary<string, string>();
-
-            [JsonExtensionData] public Dictionary<string, object> metadata { get; set; } = new Dictionary<string, object>();
+            public SortedDictionary<string, string> settings { get; set; } = new SortedDictionary<string, string>();
         }
     }
 }
