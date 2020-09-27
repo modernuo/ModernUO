@@ -179,11 +179,11 @@ namespace Server.Gumps
 
         /*
         private static bool PrevLabel = OldStyle, NextLabel = OldStyle;
-    
+
         private static readonly int PrevLabelOffsetX = PrevWidth + 1;
-    
+
         private static readonly int PrevLabelOffsetY = 0;
-    
+
         private static readonly int NextLabelOffsetX = -29;
         private static readonly int NextLabelOffsetY = 0;
          * */
@@ -306,108 +306,110 @@ namespace Server.Gumps
                     AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
                 }
 
-                if (group == selected)
+                if (group != selected)
                 {
-                    var indentMaskX = BorderSize;
-                    var indentMaskY = y + EntryHeight + OffsetSize;
+                    continue;
+                }
 
-                    for (var j = 0; j < group.Skills.Length; ++j)
-                    {
-                        var sk = target.Skills[group.Skills[j]];
+                var indentMaskX = BorderSize;
+                var indentMaskY = y + EntryHeight + OffsetSize;
 
-                        x = BorderSize + OffsetSize;
-                        y += EntryHeight + OffsetSize;
+                for (var j = 0; j < group!.Skills.Length; ++j)
+                {
+                    var sk = target.Skills[group.Skills[j]];
 
-                        x += OffsetSize;
-                        x += IndentWidth;
+                    x = BorderSize + OffsetSize;
+                    y += EntryHeight + OffsetSize;
 
-                        AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
+                    x += OffsetSize;
+                    x += IndentWidth;
 
-                        AddButton(x + PrevOffsetX, y + PrevOffsetY, 0x15E1, 0x15E5, GetButtonID(1, j));
+                    AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
 
-                        x += PrevWidth + OffsetSize;
+                    AddButton(x + PrevOffsetX, y + PrevOffsetY, 0x15E1, 0x15E5, GetButtonID(1, j));
 
-                        x -= OldStyle ? OffsetSize : 0;
+                    x += PrevWidth + OffsetSize;
 
-                        AddImageTiled(
-                            x,
-                            y,
-                            emptyWidth + (OldStyle ? OffsetSize * 2 : 0) - OffsetSize - IndentWidth,
-                            EntryHeight,
-                            EntryGumpID
-                        );
-                        AddLabel(x + TextOffsetX, y, TextHue, sk == null ? "(null)" : sk.Name);
-
-                        x += emptyWidth + (OldStyle ? OffsetSize * 2 : 0) - OffsetSize - IndentWidth;
-                        x += OffsetSize;
-
-                        if (SetGumpID != 0)
-                        {
-                            AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-                        }
-
-                        if (sk != null)
-                        {
-                            int buttonID1, buttonID2;
-                            int xOffset, yOffset;
-
-                            switch (sk.Lock)
-                            {
-                                default:
-                                    buttonID1 = 0x983;
-                                    buttonID2 = 0x983;
-                                    xOffset = 6;
-                                    yOffset = 4;
-                                    break;
-                                case SkillLock.Down:
-                                    buttonID1 = 0x985;
-                                    buttonID2 = 0x985;
-                                    xOffset = 6;
-                                    yOffset = 4;
-                                    break;
-                                case SkillLock.Locked:
-                                    buttonID1 = 0x82C;
-                                    buttonID2 = 0x82C;
-                                    xOffset = 5;
-                                    yOffset = 2;
-                                    break;
-                            }
-
-                            AddButton(x + xOffset, y + yOffset, buttonID1, buttonID2, GetButtonID(2, j));
-
-                            y += 1;
-                            x -= OffsetSize;
-                            x -= 1;
-                            x -= 50;
-
-                            AddImageTiled(x, y, 50, EntryHeight - 2, OffsetGumpID);
-
-                            x += 1;
-                            y += 1;
-
-                            AddImageTiled(x, y, 48, EntryHeight - 4, EntryGumpID);
-
-                            AddLabelCropped(
-                                x + TextOffsetX,
-                                y - 1,
-                                48 - TextOffsetX,
-                                EntryHeight - 3,
-                                TextHue,
-                                sk.Base.ToString("F1")
-                            );
-
-                            y -= 2;
-                        }
-                    }
+                    x -= OldStyle ? OffsetSize : 0;
 
                     AddImageTiled(
-                        indentMaskX,
-                        indentMaskY,
-                        IndentWidth + OffsetSize,
-                        group.Skills.Length * (EntryHeight + OffsetSize) - (i < m_Groups.Length - 1 ? OffsetSize : 0),
-                        BackGumpID + 4
+                        x,
+                        y,
+                        emptyWidth + (OldStyle ? OffsetSize * 2 : 0) - OffsetSize - IndentWidth,
+                        EntryHeight,
+                        EntryGumpID
                     );
+                    AddLabel(x + TextOffsetX, y, TextHue, sk == null ? "(null)" : sk.Name);
+
+                    x += emptyWidth + (OldStyle ? OffsetSize * 2 : 0) - OffsetSize - IndentWidth;
+                    x += OffsetSize;
+
+                    if (SetGumpID != 0)
+                    {
+                        AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+                    }
+
+                    if (sk != null)
+                    {
+                        int buttonID1, buttonID2;
+                        int xOffset, yOffset;
+
+                        switch (sk.Lock)
+                        {
+                            default:
+                                buttonID1 = 0x983;
+                                buttonID2 = 0x983;
+                                xOffset = 6;
+                                yOffset = 4;
+                                break;
+                            case SkillLock.Down:
+                                buttonID1 = 0x985;
+                                buttonID2 = 0x985;
+                                xOffset = 6;
+                                yOffset = 4;
+                                break;
+                            case SkillLock.Locked:
+                                buttonID1 = 0x82C;
+                                buttonID2 = 0x82C;
+                                xOffset = 5;
+                                yOffset = 2;
+                                break;
+                        }
+
+                        AddButton(x + xOffset, y + yOffset, buttonID1, buttonID2, GetButtonID(2, j));
+
+                        y += 1;
+                        x -= OffsetSize;
+                        x -= 1;
+                        x -= 50;
+
+                        AddImageTiled(x, y, 50, EntryHeight - 2, OffsetGumpID);
+
+                        x += 1;
+                        y += 1;
+
+                        AddImageTiled(x, y, 48, EntryHeight - 4, EntryGumpID);
+
+                        AddLabelCropped(
+                            x + TextOffsetX,
+                            y - 1,
+                            48 - TextOffsetX,
+                            EntryHeight - 3,
+                            TextHue,
+                            sk.Base.ToString("F1")
+                        );
+
+                        y -= 2;
+                    }
                 }
+
+                AddImageTiled(
+                    indentMaskX,
+                    indentMaskY,
+                    IndentWidth + OffsetSize,
+                    group.Skills.Length * (EntryHeight + OffsetSize) - (i < m_Groups.Length - 1 ? OffsetSize : 0),
+                    BackGumpID + 4
+                );
             }
         }
 

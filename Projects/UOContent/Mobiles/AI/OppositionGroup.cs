@@ -120,7 +120,7 @@ namespace Server
 
                 for (var j = 0; !contains && j < group.Length; ++j)
                 {
-                    contains = @group[j].IsAssignableFrom(type);
+                    contains = group[j].IsAssignableFrom(type);
                 }
 
                 if (contains)

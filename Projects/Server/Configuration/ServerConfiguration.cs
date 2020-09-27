@@ -286,7 +286,7 @@ namespace Server
                 return;
             }
 
-            JsonConfig.Serialize(m_FilePath, m_Settings);
+            JsonConfig.SerializeSorted(m_FilePath, m_Settings);
         }
 
         internal class ServerSettings

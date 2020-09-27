@@ -173,7 +173,7 @@ namespace Server.Engines.BulkOrders
 
                 if (points >= group.Points)
                 {
-                    return @group;
+                    return group;
                 }
             }
 
