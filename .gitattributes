@@ -1,3 +1,4 @@
+# General file endings
 *                       text=auto
 *.bat                   text eol=crlf
 *.cfg                   text eol=lf
@@ -9,5 +10,10 @@
 *.sh                    text eol=lf
 *.sln                   text eol=crlf
 *.yml                   text eol=lf
+
+# Specific paths
+Directory.Build.props   text eol=crlf
 Distribution/Data/*.txt text eol=lf
+LICENSE                 text eol=lf
 publish.cmd             text eol=lf
+THIRD-PARTY-NOTICES     text eol=lf
