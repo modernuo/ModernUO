@@ -16,6 +16,7 @@
 using System;
 using System.Buffers;
 using System.IO;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -33,7 +34,8 @@ namespace Server.Json
                 WriteIndented = true,
                 AllowTrailingCommas = true,
                 IgnoreNullValues = true,
-                ReadCommentHandling = JsonCommentHandling.Skip
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
 
             options.Converters.Add(new MapConverterFactory());
@@ -64,8 +66,13 @@ namespace Server.Json
             return JsonSerializer.Deserialize<T>(text, options ?? DefaultOptions);
         }
 
+        public static string Serialize(object value, JsonSerializerOptions options = null) =>
+            JsonSerializer.Serialize(value, options ?? DefaultOptions);
+
         public static void Serialize(string filePath, object value, JsonSerializerOptions options = null)
         {
+            var contents = Serialize(value, options);
+
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
@@ -73,7 +80,7 @@ namespace Server.Json
 
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
-            File.WriteAllText(filePath, JsonSerializer.Serialize(value, options ?? DefaultOptions));
+            File.WriteAllText(filePath, contents);
         }
 
         public static T ToObject<T>(this ref Utf8JsonReader reader, JsonSerializerOptions options = null) =>

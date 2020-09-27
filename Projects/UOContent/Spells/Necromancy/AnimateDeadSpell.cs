@@ -226,7 +226,7 @@ namespace Server.Spells.Necromancy
 
                 if (contains)
                 {
-                    return @group;
+                    return group;
                 }
             }
 

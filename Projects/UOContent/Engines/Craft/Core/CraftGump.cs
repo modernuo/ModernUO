@@ -498,7 +498,7 @@ namespace Server.Engines.Craft
 
                             if (index >= 0 && index < group.CraftItems.Count)
                             {
-                                CraftItem(@group.CraftItems[index]);
+                                CraftItem(group.CraftItems[index]);
                             }
                         }
 
@@ -519,7 +519,7 @@ namespace Server.Engines.Craft
 
                             if (index >= 0 && index < group.CraftItems.Count)
                             {
-                                m_From.SendGump(new CraftGumpItem(m_From, system, @group.CraftItems[index], m_Tool));
+                                m_From.SendGump(new CraftGumpItem(m_From, system, group.CraftItems[index], m_Tool));
                             }
                         }
 

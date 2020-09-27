@@ -133,7 +133,7 @@ namespace Server.Guilds
 
             if (pm == null || !IsMember(pm, guild) || !pm.GuildRank.GetFlag(RankFlags.CanInvitePlayer))
             {
-                pm.SendLocalizedMessage(503301); // You don't have permission to do that.
+                from.SendLocalizedMessage(503301); // You don't have permission to do that.
             }
             else if (targ == null)
             {

@@ -25,16 +25,16 @@ namespace Server.Configurations
     {
         private const string m_RelPath = "Configuration/email-settings.json";
 
-        public static bool EmailEnabled { get; private set; }
-        public static MailboxAddress FromAddress { get; private set; }
         public static MailboxAddress CrashAddress { get; private set; }
-        public static MailboxAddress SpeechLogPageAddress { get; private set; }
-        public static string EmailServer { get; private set; }
+        public static bool EmailEnabled { get; private set; }
         public static int EmailPort { get; private set; }
-        public static string EmailServerUsername { get; private set; }
-        public static string EmailServerPassword { get; private set; }
         public static int EmailSendRetryCount { get; private set; } // seconds
         public static int EmailSendRetryDelay { get; private set; } // seconds
+        public static string EmailServer { get; private set; }
+        public static string EmailServerUsername { get; private set; }
+        public static string EmailServerPassword { get; private set; }
+        public static MailboxAddress FromAddress { get; private set; }
+        public static MailboxAddress SpeechLogPageAddress { get; private set; }
 
         public static void Configure()
         {

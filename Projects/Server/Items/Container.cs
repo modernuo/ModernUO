@@ -859,7 +859,7 @@ namespace Server.Items
 
                     if (v == 0)
                     {
-                        @group.Add(b);
+                        group.Add(b);
                     }
                     else
                     {
@@ -971,7 +971,7 @@ namespace Server.Items
 
                         if (v == 0)
                         {
-                            @group.Add(b);
+                            group.Add(b);
                         }
                         else
                         {
@@ -1087,7 +1087,7 @@ namespace Server.Items
 
                         if (v == 0)
                         {
-                            @group.Add(b);
+                            group.Add(b);
                         }
                         else
                         {
@@ -1404,7 +1404,7 @@ namespace Server.Items
 
                     if (v == 0)
                     {
-                        @group.Add(b);
+                        group.Add(b);
                     }
                     else
                     {
@@ -1465,7 +1465,7 @@ namespace Server.Items
 
                     if (v == 0)
                     {
-                        @group.Add(b);
+                        group.Add(b);
                     }
                     else
                     {
@@ -1522,7 +1522,7 @@ namespace Server.Items
 
                         if (v == 0)
                         {
-                            @group.Add(b);
+                            group.Add(b);
                         }
                         else
                         {
