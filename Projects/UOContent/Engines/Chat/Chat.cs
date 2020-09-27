@@ -1,7 +1,4 @@
 using System;
-using System.IO;
-using Server.Accounting;
-using Server.Misc;
 using Server.Network;
 
 namespace Server.Engines.Chat
@@ -44,7 +41,7 @@ namespace Server.Engines.Chat
             var chatName = from.RawName ?? $"Unknown User {Utility.RandomMinMax(1000000, 9999999)}";
 
             SendCommandTo(from, ChatCommand.OpenChatWindow, chatName);
-            ChatUser.AddChatUser(from);
+            ChatUser.AddChatUser(from, chatName);
         }
 
         public static ChatUser SearchForUser(ChatUser from, string name)

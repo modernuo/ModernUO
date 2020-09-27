@@ -12,11 +12,12 @@ namespace Server.Engines.Chat
         private static readonly List<ChatUser> m_Users = new List<ChatUser>();
         private static readonly Dictionary<Mobile, ChatUser> m_Table = new Dictionary<Mobile, ChatUser>();
 
-        public ChatUser(Mobile m)
+        public ChatUser(Mobile m, string username)
         {
             Mobile = m;
             Ignored = new List<ChatUser>();
             Ignoring = new List<ChatUser>();
+            Username = username;
         }
 
         public Mobile Mobile { get; }
@@ -25,25 +26,7 @@ namespace Server.Engines.Chat
 
         public List<ChatUser> Ignoring { get; }
 
-        public string Username
-        {
-            get
-            {
-                if (Mobile.Account is Account acct)
-                {
-                    return acct.GetTag("ChatName");
-                }
-
-                return null;
-            }
-            set
-            {
-                if (Mobile.Account is Account acct)
-                {
-                    acct.SetTag("ChatName", value);
-                }
-            }
-        }
+        public string Username { get; }
 
         public Channel CurrentChannel { get; set; }
 
@@ -123,7 +106,7 @@ namespace Server.Engines.Chat
             }
         }
 
-        public static ChatUser AddChatUser(Mobile from)
+        public static ChatUser AddChatUser(Mobile from, string username)
         {
             var user = GetChatUser(from);
 
@@ -132,7 +115,7 @@ namespace Server.Engines.Chat
                 return user;
             }
 
-            user = new ChatUser(from);
+            user = new ChatUser(from, username);
 
             m_Users.Add(user);
             m_Table[from] = user;
@@ -168,22 +151,14 @@ namespace Server.Engines.Chat
                 user.Ignoring[i].RemoveIgnored(user);
             }
 
-            if (m_Users.Contains(user))
+            if (m_Users.Remove(user))
             {
                 ChatSystem.SendCommandTo(user.Mobile, ChatCommand.CloseChatWindow);
 
                 user.CurrentChannel?.RemoveUser(user);
 
-                m_Users.Remove(user);
                 m_Table.Remove(user.Mobile);
             }
-        }
-
-        public static void RemoveChatUser(Mobile from)
-        {
-            var user = GetChatUser(from);
-
-            RemoveChatUser(user);
         }
 
         public static ChatUser GetChatUser(Mobile from)

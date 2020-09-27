@@ -90,9 +90,6 @@ namespace Server
         public static void InvokeVirtueMacroRequest(Mobile mobile, int virtueID) =>
             VirtueMacroRequest?.Invoke(mobile, virtueID);
 
-        public static event Action<Mobile> ChatRequest;
-        public static void InvokeChatRequest(Mobile m) => ChatRequest?.Invoke(m);
-
         public static event Action<Mobile, Mobile> PaperdollRequest;
 
         public static void InvokePaperdollRequest(Mobile beholder, Mobile beheld) =>
