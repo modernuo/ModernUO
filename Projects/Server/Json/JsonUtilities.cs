@@ -60,7 +60,7 @@ namespace Server.Json
                     foreach (JsonProperty x in je.EnumerateObject().OrderBy(prop => prop.Name))
                     {
                         writer.WritePropertyName(x.Name);
-                        Write(x.Value, writer);
+                        WriteJsonElementSorted(x.Value, writer);
                     }
 
                     writer.WriteEndObject();
@@ -69,7 +69,7 @@ namespace Server.Json
                     writer.WriteStartArray();
                     foreach(JsonElement x in je.EnumerateArray())
                     {
-                        Write(x, writer);
+                        WriteJsonElementSorted(x, writer);
                     }
                     writer.WriteEndArray();
                     break;
