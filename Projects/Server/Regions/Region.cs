@@ -649,8 +649,8 @@ namespace Server
 
         public virtual bool OnTarget(Mobile m, Target t, object o) => Parent?.OnTarget(m, t, o) != false;
 
-        public virtual bool OnCombatantChange(Mobile m, Mobile old, Mobile @new) =>
-            Parent?.OnCombatantChange(m, old, @new) != false;
+        public virtual bool OnCombatantChange(Mobile m, Mobile old, Mobile newMobile) =>
+            Parent?.OnCombatantChange(m, old, newMobile) != false;
 
         public virtual bool AllowHousing(Mobile from, Point3D p) => Parent?.AllowHousing(from, p) != false;
 
