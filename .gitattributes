@@ -1,7 +1,6 @@
 # General file endings
 *                       text=auto
 *.bat                   text eol=crlf
-*.cfg                   text eol=lf
 *.cmd                   text eol=crlf
 *.cs                    text diff=csharp
 *.csproj                text eol=crlf
@@ -13,7 +12,6 @@
 
 # Specific paths
 Directory.Build.props   text eol=crlf
-Distribution/Data/*.txt text eol=lf
 LICENSE                 text eol=lf
 publish.cmd             text eol=lf
 THIRD-PARTY-NOTICES     text eol=lf
