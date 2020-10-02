@@ -1,18 +1,25 @@
 # General file endings
-*                       text=auto
+*                       binary
+*.*                     text=auto
 *.bat                   text eol=crlf
 *.cmd                   text eol=crlf
-*.cs                    text diff=csharp
+*.cs                    text diff=csharp eol=lf
+*.css                   text diff=css eol=lf
 *.csproj                text eol=crlf
+*.html                  text diff=html eol=lf
 *.json                  text eol=lf
 *.md                    text eol=lf
+*.props                 text eol=crlf
 *.ruleset               text eol=crlf
 *.sh                    text eol=lf
 *.sln                   text eol=crlf
+*.svg                   text eol=lf
 *.yml                   text eol=lf
 
 # Specific paths
-Directory.Build.props   text eol=crlf
-LICENSE                 text eol=lf
 publish.cmd             text eol=lf
-THIRD-PARTY-NOTICES     text eol=lf
+
+# Assets
+*.jpg                   binary -text -eol
+*.jpeg                  binary -text -eol
+*.png                   binary -text -eol
