@@ -6,6 +6,7 @@
 *.csproj                text eol=crlf
 *.json                  text eol=lf
 *.md                    text eol=lf
+*.ruleset               text eol=crlf
 *.sh                    text eol=lf
 *.sln                   text eol=crlf
 *.yml                   text eol=lf
