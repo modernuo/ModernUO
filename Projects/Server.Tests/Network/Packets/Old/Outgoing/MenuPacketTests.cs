@@ -128,7 +128,7 @@ namespace Server.Tests.Network.Packets
             {
                 var answer = menu.Answers[i];
 #if NO_LOCAL_INIT
-        expectedData.Write(ref pos, 0);
+                expectedData.Write(ref pos, 0);
 #else
                 pos += 4;
 #endif

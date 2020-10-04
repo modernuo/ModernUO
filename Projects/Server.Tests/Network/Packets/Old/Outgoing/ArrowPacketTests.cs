@@ -55,7 +55,7 @@ namespace Server.Tests.Network.Packets
 
             expectedData.Write(ref pos, (byte)0xBA); // Packet ID
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // Command
+            expectedData.Write(ref pos, (byte)0); // Command
 #else
             pos++;
 #endif

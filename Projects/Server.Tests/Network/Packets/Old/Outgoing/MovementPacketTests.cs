@@ -98,12 +98,12 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (short)0x1); // Sub-packet
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0); // Key 1
-      expectedData.Write(ref pos, 0); // Key 2
-      expectedData.Write(ref pos, 0); // Key 3
-      expectedData.Write(ref pos, 0); // Key 4
-      expectedData.Write(ref pos, 0); // Key 5
-      expectedData.Write(ref pos, 0); // Key 6
+            expectedData.Write(ref pos, 0); // Key 1
+            expectedData.Write(ref pos, 0); // Key 2
+            expectedData.Write(ref pos, 0); // Key 3
+            expectedData.Write(ref pos, 0); // Key 4
+            expectedData.Write(ref pos, 0); // Key 5
+            expectedData.Write(ref pos, 0); // Key 6
 #endif
 
             AssertThat.Equal(data, expectedData);

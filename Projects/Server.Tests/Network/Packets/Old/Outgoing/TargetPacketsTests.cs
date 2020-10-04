@@ -49,12 +49,12 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, t.TargetID);
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0);
-      expectedData.Write(ref pos, (ushort)0);
-      expectedData.Write(ref pos, (ushort)0);
-      expectedData.Write(ref pos, (byte)0);
-      expectedData.Write(ref pos, (byte)0);
-      expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (ushort)0);
 #else
             pos += 12;
 #endif
@@ -65,8 +65,8 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (short)t.Offset.Z);
 
 #if NO_LOCAL_INIT
-      // Hue (4 bytes)
-      expectedData.Write(ref pos, 0);
+            // Hue (4 bytes)
+            expectedData.Write(ref pos, 0);
 #endif
 
             AssertThat.Equal(data, expectedData);
@@ -89,12 +89,12 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, t.TargetID);
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0);
-      expectedData.Write(ref pos, (ushort)0);
-      expectedData.Write(ref pos, (ushort)0);
-      expectedData.Write(ref pos, (byte)0);
-      expectedData.Write(ref pos, (byte)0);
-      expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (ushort)0);
 #else
             pos += 12;
 #endif
@@ -121,12 +121,12 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (byte)3); // Beneficial / Harmful
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0);
-      expectedData.Write(ref pos, (ushort)0);
-      expectedData.Write(ref pos, (ushort)0);
-      expectedData.Write(ref pos, (byte)0);
-      expectedData.Write(ref pos, (byte)0);
-      expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (ushort)0);
 #endif
 
             AssertThat.Equal(data, expectedData);
@@ -147,12 +147,12 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (byte)t.Flags);
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0);
-      expectedData.Write(ref pos, (ushort)0);
-      expectedData.Write(ref pos, (ushort)0);
-      expectedData.Write(ref pos, (byte)0);
-      expectedData.Write(ref pos, (byte)0);
-      expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (ushort)0);
 #endif
 
             AssertThat.Equal(data, expectedData);

@@ -82,7 +82,7 @@ namespace Server.Tests.Network.Packets
                 expectedData.Write(ref pos, (ushort)(i + 1)); // X
                 expectedData.Write(ref pos, (ushort)1);       // Y
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // Grid Location?
+                expectedData.Write(ref pos, (byte)0); // Grid Location?
 #else
                 pos++;
 #endif
@@ -189,7 +189,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, vendor.Serial);
 
 #if NO_LOCAL_INIT
-    expectedData.Write(ref pos, (byte)-);
+            expectedData.Write(ref pos, (byte)-);
 #endif
 
             AssertThat.Equal(data, expectedData);

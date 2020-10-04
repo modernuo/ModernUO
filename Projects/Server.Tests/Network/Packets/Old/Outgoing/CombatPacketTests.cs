@@ -20,7 +20,7 @@ namespace Server.Tests.Network.Packets
 
             expectedData.Write(ref pos, (byte)0x2F); // Packet ID
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
 #else
             pos++;
 #endif
@@ -45,7 +45,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, warmode);
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
 #else
             pos++;
 #endif
@@ -53,7 +53,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (byte)0x32);
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0);
+             expectedData.Write(ref pos, (byte)0);
 #else
             pos++;
 #endif

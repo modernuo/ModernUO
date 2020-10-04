@@ -88,7 +88,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (ushort)item.ItemID);
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
 #else
             pos++;
 #endif

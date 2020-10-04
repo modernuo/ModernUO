@@ -205,7 +205,7 @@ namespace Server.Tests.Network.Packets
             }
 
 #if NO_LOCAL_INIT
-      buffer.Write(ref bufferPos, (byte)0); // Layout terminator
+            buffer.Write(ref bufferPos, (byte)0); // Layout terminator
 #else
             bufferPos++;
 #endif

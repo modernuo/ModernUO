@@ -37,6 +37,16 @@
     <PropertyGroup  Condition="'$(IsOSX)'=='true' AND '$(RuntimeIdentifier)'==''">
         <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <DefineConstants>TRACE;DEBUG</DefineConstants>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <Optimize>true</Optimize>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Analyze'">
+        <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
     <ItemGroup Condition="'$(Configuration)'=='Analyze'">
         <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.205" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">

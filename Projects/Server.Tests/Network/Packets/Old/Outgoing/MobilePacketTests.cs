@@ -23,7 +23,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, killed);
             expectedData.Write(ref pos, corpse);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, 0);
 #endif
 
             AssertThat.Equal(data, expectedData);
@@ -45,7 +45,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (ushort)0x19); // Sub-packet
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // Command
+            expectedData.Write(ref pos, (byte)0); // Command
 #else
             pos++;
 #endif
@@ -124,7 +124,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, m.Serial);
             expectedData.WriteAsciiFixed(ref pos, m.Name ?? "", 29);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
 #endif
 
             AssertThat.Equal(data, expectedData);
@@ -216,7 +216,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, canBeRenamed);
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // type
+            expectedData.Write(ref pos, (byte)0); // type
 #endif
 
             AssertThat.Equal(data, expectedData);
@@ -415,7 +415,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, m.Serial);
             expectedData.Write(ref pos, (ushort)m.Body);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // Unknown
+             expectedData.Write(ref pos, (byte)0); // Unknown
 #else
             pos++;
 #endif
@@ -424,7 +424,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (ushort)m.X);
             expectedData.Write(ref pos, (ushort)m.Y);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (ushort)2); // Unknown
+            expectedData.Write(ref pos, (ushort)2); // Unknown
 #else
             pos += 2;
 #endif
@@ -451,7 +451,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, m.Serial);
             expectedData.Write(ref pos, (ushort)m.Body);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // Unknown
+            expectedData.Write(ref pos, (byte)0); // Unknown
 #else
             pos++;
 #endif
@@ -460,7 +460,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (ushort)m.X);
             expectedData.Write(ref pos, (ushort)m.Y);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (ushort)2); // Unknown
+            expectedData.Write(ref pos, (ushort)2); // Unknown
 #else
             pos += 2;
 #endif
@@ -511,7 +511,7 @@ namespace Server.Tests.Network.Packets
 
             Span<bool> layers = stackalloc bool[256];
 #if NO_LOCAL_INIT
-      layers.Clear();
+            layers.Clear();
 #endif
 
             var items = beheld.Items;
@@ -589,7 +589,7 @@ namespace Server.Tests.Network.Packets
             }
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0); // Zero serial, terminate list
+            expectedData.Write(ref pos, 0); // Zero serial, terminate list
 #else
             pos += 4;
 #endif
@@ -659,7 +659,7 @@ namespace Server.Tests.Network.Packets
 
             Span<bool> layers = stackalloc bool[256];
 #if NO_LOCAL_INIT
-      layers.Clear();
+            layers.Clear();
 #endif
 
             var items = beheld.Items;
@@ -760,7 +760,7 @@ namespace Server.Tests.Network.Packets
             }
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0); // Zero serial, terminate list
+            expectedData.Write(ref pos, 0); // Zero serial, terminate list
 #else
             pos += 4;
 #endif
