@@ -13,70 +13,78 @@ using Server.Items;
 
 namespace Benchmarks
 {
-  [SimpleJob(RuntimeMoniker.NetCoreApp31)]
-  public class BenchmarkFeatureFlags
-  {
-    public Dictionary<Type, FeatureFlag<Item>> m_Dictionary;
-    public ILookup<Type, FeatureFlag<Item>> m_Lookup;
-
-    public Type[] m_TypesToLookUp;
-
-    [GlobalSetup]
-    public void Setup()
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    public class BenchmarkFeatureFlags
     {
-      RNGCryptoServiceProvider csp = new RNGCryptoServiceProvider();
+        public Dictionary<Type, FeatureFlag<Item>> m_Dictionary;
+        public ILookup<Type, FeatureFlag<Item>> m_Lookup;
 
-      string file = Path.Join(AppDomain.CurrentDomain.BaseDirectory, "UOContent.dll");
-      Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
+        public Type[] m_TypesToLookUp;
 
-      m_Dictionary = new Dictionary<Type, FeatureFlag<Item>>();
-      List<FeatureFlag<Item>> m_Types = new List<FeatureFlag<Item>>();
-      m_TypesToLookUp = new Type[100];
-
-      foreach (var type in assembly.GetTypes())
-        if (typeof(Item).IsAssignableFrom(type))
+        [GlobalSetup]
+        public void Setup()
         {
-          m_Dictionary.Add(type, new FeatureFlag<Item>());
-          m_Types.Add(new FeatureFlag<Item>{Type = type});
+            RNGCryptoServiceProvider csp = new RNGCryptoServiceProvider();
+
+            string file = Path.Join(AppDomain.CurrentDomain.BaseDirectory, "UOContent.dll");
+            Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
+
+            m_Dictionary = new Dictionary<Type, FeatureFlag<Item>>();
+            List<FeatureFlag<Item>> m_Types = new List<FeatureFlag<Item>>();
+            m_TypesToLookUp = new Type[100];
+
+            foreach (var type in assembly.GetTypes())
+            {
+                if (typeof(Item).IsAssignableFrom(type))
+                {
+                    m_Dictionary.Add(type, new FeatureFlag<Item>());
+                    m_Types.Add(new FeatureFlag<Item>{Type = type});
+                }
+            }
+
+            Console.WriteLine("Dictionary Size: {0}", m_Dictionary.Count);
+            Console.WriteLine("Lookup Size: {0}", m_Types.Count);
+
+            m_Dictionary.TrimExcess();
+            m_Lookup = m_Types.ToLookup(f => f.Type);
+            Span<byte> bytes = stackalloc byte[4];
+
+            for (int i = 0; i < 100; i++)
+            {
+                csp.GetBytes(bytes);
+                m_TypesToLookUp[i] = m_Types[(int)(BinaryPrimitives.ReadUInt32BigEndian(bytes) % m_Types.Count)].Type;
+            }
         }
 
-      Console.WriteLine("Dictionary Size: {0}", m_Dictionary.Count);
-      Console.WriteLine("Lookup Size: {0}", m_Types.Count);
+        [Benchmark]
+        public FeatureFlag<Item> TestDictionary()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                m_Dictionary.TryGetValue(typeof(ExplosionPotion), out var ff);
+                if (i == 99)
+                {
+                    return ff;
+                }
+            }
 
-      m_Dictionary.TrimExcess();
-      m_Lookup = m_Types.ToLookup(f => f.Type);
-      Span<byte> bytes = stackalloc byte[4];
+            return null;
+        }
 
-      for (int i = 0; i < 100; i++)
-      {
-        csp.GetBytes(bytes);
-        m_TypesToLookUp[i] = m_Types[(int)(BinaryPrimitives.ReadUInt32BigEndian(bytes) % m_Types.Count)].Type;
-      }
+        [Benchmark]
+        public FeatureFlag<Item> TestLookup()
+        {
+            FeatureFlag<Item> ff;
+            for (int i = 0; i < 100; i++)
+            {
+                ff = m_Lookup[typeof(ExplosionPotion)].GetEnumerator().Current;
+                if (i == 99)
+                {
+                    return ff;
+                }
+            }
+
+            return null;
+        }
     }
-
-    [Benchmark]
-    public FeatureFlag<Item> TestDictionary()
-    {
-      for (int i = 0; i < 100; i++)
-      {
-        m_Dictionary.TryGetValue(typeof(ExplosionPotion), out var ff);
-        if (i == 99) return ff;
-      }
-
-      return null;
-    }
-
-    [Benchmark]
-    public FeatureFlag<Item> TestLookup()
-    {
-      FeatureFlag<Item> ff;
-      for (int i = 0; i < 100; i++)
-      {
-        ff = m_Lookup[typeof(ExplosionPotion)].GetEnumerator().Current;
-        if (i == 99) return ff;
-      }
-
-      return null;
-    }
-  }
 }

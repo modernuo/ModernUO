@@ -5,23 +5,23 @@ using Server;
 
 namespace Benchmarks
 {
-  public static class PacketTestUtilities
-  {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Write(this Span<byte> data, ref int pos, Serial serial)
+    public static class PacketTestUtilities
     {
-      BinaryPrimitives.WriteUInt32BigEndian(data.Slice(pos, 4), serial);
-      pos += 4;
-    }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Write(this Span<byte> data, ref int pos, Serial serial)
+        {
+            BinaryPrimitives.WriteUInt32BigEndian(data.Slice(pos, 4), serial);
+            pos += 4;
+        }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Write(this Span<byte> data, ref int pos, ushort value)
-    {
-      BinaryPrimitives.WriteUInt16BigEndian(data.Slice(pos, 2), value);
-      pos += 2;
-    }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Write(this Span<byte> data, ref int pos, ushort value)
+        {
+            BinaryPrimitives.WriteUInt16BigEndian(data.Slice(pos, 2), value);
+            pos += 2;
+        }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Write(this Span<byte> data, ref int pos, byte value) => data[pos++] = value;
-  }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Write(this Span<byte> data, ref int pos, byte value) => data[pos++] = value;
+    }
 }

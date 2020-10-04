@@ -2,12 +2,12 @@ using BenchmarkDotNet.Running;
 
 namespace Benchmarks
 {
-  class Program
-  {
-    static void Main(string[] args)
+    public class Program
     {
-      // var summary = BenchmarkRunner.Run<BenchmarkFeatureFlags>();
-      var summar = BenchmarkRunner.Run<BenchmarkPacketConstruction>();
+        static void Main(string[] args)
+        {
+            var featureFlags = BenchmarkRunner.Run<BenchmarkFeatureFlags>();
+            var packetConstruction = BenchmarkRunner.Run<BenchmarkPacketConstruction>();
+        }
     }
-  }
 }
