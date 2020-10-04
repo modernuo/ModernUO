@@ -22,17 +22,16 @@ namespace Server
             Patch = pat;
             Type = type;
 
-            SourceString = ToStringImpl();
+            SourceString = Utility.Intern(ToStringImpl());
         }
 
         public ClientVersion(string fmt)
         {
-            SourceString = fmt;
+            fmt = fmt.ToLower();
+            SourceString = Utility.Intern(fmt);
 
             try
             {
-                fmt = fmt.ToLower();
-
                 var br1 = fmt.IndexOf('.');
                 var br2 = fmt.IndexOf('.', br1 + 1);
 
@@ -200,13 +199,13 @@ namespace Server
             if (Type != ClientType.Regular)
             {
                 builder.Append(' ');
-                builder.Append(Type.ToString());
+                builder.Append(Type.ToString().ToLower());
             }
 
             return builder.ToString();
         }
 
-        public override string ToString() => ToStringImpl();
+        public override string ToString() => SourceString;
 
         public static bool IsNull(object x) => ReferenceEquals(x, null);
 
