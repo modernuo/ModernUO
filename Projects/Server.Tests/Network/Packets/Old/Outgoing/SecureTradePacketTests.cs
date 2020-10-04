@@ -152,7 +152,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, itemInCont.Serial);
             expectedData.Write(ref pos, (short)itemInCont.ItemID);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
 #else
             pos++;
 #endif
@@ -160,7 +160,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (short)itemInCont.X);
             expectedData.Write(ref pos, (short)itemInCont.Y);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
 #else
             pos++;
 #endif

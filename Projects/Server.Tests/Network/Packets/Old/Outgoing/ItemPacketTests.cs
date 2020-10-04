@@ -157,7 +157,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (ushort)(item.ItemID & (isMulti ? 0x3FFF : 0xFFFF)));
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0)
+            expectedData.Write(ref pos, (byte)0)
 #else
             pos++;
 #endif
@@ -212,7 +212,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (ushort)(item.ItemID & (isMulti ? 0x3FFF : 0xFFFF)));
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
 #else
             pos++;
 #endif
@@ -225,7 +225,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (byte)item.GetPacketFlags()); // Flags
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (ushort)0); // ??
+            expectedData.Write(ref pos, (ushort)0); // ??
 #endif
 
             AssertThat.Equal(data, expectedData);
@@ -351,20 +351,20 @@ namespace Server.Tests.Network.Packets
                 {
                     expectedData.Write(ref pos, 0x7FFFFFFF - i);
 #if NO_LOCAL_INIT
-          expectedData.Write(ref pos, (ushort)0);
-          expectedData.Write(ref pos, (byte)0);
+                    expectedData.Write(ref pos, (ushort)0);
+                    expectedData.Write(ref pos, (byte)0);
 #else
                     pos += 3;
 #endif
                     expectedData.Write(ref pos, (ushort)(i + offset));
 #if NO_LOCAL_INIT
-          expectedData.Write(ref pos, 0); // X. Y
+                    expectedData.Write(ref pos, 0); // X. Y
 #else
                     pos += 4;
 #endif
                     expectedData.Write(ref pos, serial);
 #if NO_LOCAL_INIT
-          expectedData.Write(ref pos, (ushort)0);
+                    expectedData.Write(ref pos, (ushort)0);
 #else
                     pos += 2;
 #endif
@@ -403,21 +403,21 @@ namespace Server.Tests.Network.Packets
                 {
                     expectedData.Write(ref pos, 0x7FFFFFFF - i);
 #if NO_LOCAL_INIT
-          expectedData.Write(ref pos, (ushort)0);
-          expectedData.Write(ref pos, (byte)0);
+                    expectedData.Write(ref pos, (ushort)0);
+                    expectedData.Write(ref pos, (byte)0);
 #else
                     pos += 3;
 #endif
                     expectedData.Write(ref pos, (ushort)(i + offset));
 #if NO_LOCAL_INIT
-          expectedData.Write(ref pos, 0); // X. Y
-          expectedData.Write(ref pos, (byte)0); // Grid Location
+                    expectedData.Write(ref pos, 0); // X. Y
+                    expectedData.Write(ref pos, (byte)0); // Grid Location
 #else
                     pos += 5;
 #endif
                     expectedData.Write(ref pos, serial);
 #if NO_LOCAL_INIT
-          expectedData.Write(ref pos, (ushort)0);
+                    expectedData.Write(ref pos, (ushort)0);
 #else
                     pos += 2;
 #endif
@@ -448,7 +448,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, item.Serial);
             expectedData.Write(ref pos, (ushort)item.ItemID);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // ItemID offset
+            expectedData.Write(ref pos, (byte)0); // ItemID offset
 #else
             pos++;
 #endif
@@ -476,7 +476,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, item.Serial);
             expectedData.Write(ref pos, (ushort)item.ItemID);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // ItemID offset
+            expectedData.Write(ref pos, (byte)0); // ItemID offset
 #else
             pos++;
 #endif
@@ -484,7 +484,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (ushort)item.X);
             expectedData.Write(ref pos, (ushort)item.Y);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // Grid Location?
+            expectedData.Write(ref pos, (byte)0); // Grid Location?
 #else
             pos++;
 #endif
@@ -525,7 +525,7 @@ namespace Server.Tests.Network.Packets
                 expectedData.Write(ref pos, child.Serial);
                 expectedData.Write(ref pos, (ushort)child.ItemID);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // ItemID offset
+                expectedData.Write(ref pos, (byte)0); // ItemID offset
 #else
                 pos++;
 #endif
@@ -577,7 +577,7 @@ namespace Server.Tests.Network.Packets
                 expectedData.Write(ref pos, child.Serial);
                 expectedData.Write(ref pos, (ushort)child.ItemID);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // ItemID offset
+                expectedData.Write(ref pos, (byte)0); // ItemID offset
 #else
                 pos++;
 #endif
@@ -585,7 +585,7 @@ namespace Server.Tests.Network.Packets
                 expectedData.Write(ref pos, (ushort)child.X);
                 expectedData.Write(ref pos, (ushort)child.Y);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // Grid Location?
+                expectedData.Write(ref pos, (byte)0); // Grid Location?
 #else
                 pos++;
 #endif

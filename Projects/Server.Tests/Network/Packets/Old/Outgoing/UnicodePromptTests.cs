@@ -27,8 +27,8 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, prompt.Serial);
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (ulong)0);
-      expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, (ulong)0);
+            expectedData.Write(ref pos, (ushort)0);
 #endif
 
             AssertThat.Equal(data, expectedData);

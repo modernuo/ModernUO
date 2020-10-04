@@ -188,8 +188,8 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (ushort)p.Y);
             expectedData.Write(ref pos, (short)p.Z);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // Unknown
-      expectedData.Write(ref pos, 0); // Server X, Server Y
+            expectedData.Write(ref pos, (byte)0); // Unknown
+            expectedData.Write(ref pos, 0); // Server X, Server Y
 #else
             pos += 5;
 #endif
@@ -326,7 +326,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (ushort)itemID);
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
 #else
             pos++;
 #endif
@@ -404,7 +404,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, soundID);
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (ushort)0); // Volume
+            expectedData.Write(ref pos, (ushort)0); // Volume
 #else
             pos += 2;
 #endif

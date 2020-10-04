@@ -23,7 +23,7 @@ namespace Server.Tests.Network.Packets
             if (length == 0)
             {
 #if NO_LOCAL_INIT
-        dest.Write(ref pos, 0);
+                dest.Write(ref pos, 0);
 #else
                 pos += 4;
 #endif

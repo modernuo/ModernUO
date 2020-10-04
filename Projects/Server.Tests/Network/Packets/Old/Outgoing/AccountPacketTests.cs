@@ -39,7 +39,7 @@ namespace Server.Tests.Network.Packets
                 if (m == null)
                 {
 #if NO_LOCAL_INIT
-          expectedData.Clear(ref pos, 60);
+                    expectedData.Clear(ref pos, 60);
 #else
                     pos += 60;
 #endif
@@ -48,7 +48,7 @@ namespace Server.Tests.Network.Packets
                 {
                     expectedData.WriteAsciiFixed(ref pos, m.Name, 30);
 #if NO_LOCAL_INIT
-          expectedData.Clear(ref pos, 30); // Password (empty)
+                     expectedData.Clear(ref pos, 30); // Password (empty)
 #else
                     pos += 30;
 #endif
@@ -178,7 +178,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (byte)0x1B); // Packet ID
             expectedData.Write(ref pos, m.Serial);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, 0);
 #else
             pos += 4;
 #endif
@@ -189,13 +189,13 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (short)m.Z);
             expectedData.Write(ref pos, (byte)m.Direction);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
 #else
             pos++;
 #endif
             expectedData.Write(ref pos, 0xFFFFFFFF);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, 0);
 #else
             pos += 4;
 #endif
@@ -263,11 +263,11 @@ namespace Server.Tests.Network.Packets
                 {
                     expectedData.WriteAsciiFixed(ref pos, m.Name, 30);
 #if NO_LOCAL_INIT
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, 0);
-          expectedData.Write(ref pos, (ushort)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, 0);
+                    expectedData.Write(ref pos, (ushort)0);
 #else
                     pos += 30;
 #endif
@@ -275,14 +275,14 @@ namespace Server.Tests.Network.Packets
                 else
                 {
 #if NO_LOCAL_INIT
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, 0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, 0);
 #else
                     pos += 60;
 #endif
@@ -333,11 +333,11 @@ namespace Server.Tests.Network.Packets
                 {
                     expectedData.WriteAsciiFixed(ref pos, m.Name, 30);
 #if NO_LOCAL_INIT
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, 0);
-          expectedData.Write(ref pos, (ushort)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, 0);
+                    expectedData.Write(ref pos, (ushort)0);
 #else
                     pos += 30;
 #endif
@@ -345,14 +345,14 @@ namespace Server.Tests.Network.Packets
                 else
                 {
 #if NO_LOCAL_INIT
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, 0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, 0);
 #else
                     pos += 60;
 #endif
@@ -373,7 +373,7 @@ namespace Server.Tests.Network.Packets
                 expectedData.Write(ref pos, ci.Map.MapID);
                 expectedData.Write(ref pos, ci.Description);
 #if NO_LOCAL_INIT
-        expectedData.Write(ref pos, 0);
+                expectedData.Write(ref pos, 0);
 #else
                 pos += 4;
 #endif
@@ -442,11 +442,11 @@ namespace Server.Tests.Network.Packets
                 {
                     expectedData.WriteAsciiFixed(ref pos, m.Name, 30);
 #if NO_LOCAL_INIT
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, 0);
-          expectedData.Write(ref pos, (ushort)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, 0);
+                    expectedData.Write(ref pos, (ushort)0);
 #else
                     pos += 30;
 #endif
@@ -454,14 +454,14 @@ namespace Server.Tests.Network.Packets
                 else
                 {
 #if NO_LOCAL_INIT
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, (ulong)0);
-          expectedData.Write(ref pos, 0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, (ulong)0);
+                    expectedData.Write(ref pos, 0);
 #else
                     pos += 60;
 #endif

@@ -22,7 +22,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (byte)0x95);
             expectedData.Write(ref pos, huePicker.Serial);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, (ushort)0);
 #else
             pos += 2;
 #endif

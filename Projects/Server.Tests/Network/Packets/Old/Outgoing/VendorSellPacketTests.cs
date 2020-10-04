@@ -73,7 +73,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, vendor.Serial);
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0);
+            expectedData.Write(ref pos, (byte)0);
 #endif
 
             AssertThat.Equal(data, expectedData);

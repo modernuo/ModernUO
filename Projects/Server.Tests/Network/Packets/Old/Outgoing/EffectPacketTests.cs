@@ -63,7 +63,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, speed);
             expectedData.Write(ref pos, duration);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, (ushort)0);
 #else
             pos += 2;
 #endif
@@ -125,7 +125,7 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, speed);
             expectedData.Write(ref pos, duration);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, (ushort)0);
 #else
             pos += 2;
 #endif
@@ -149,8 +149,8 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (byte)0x70); // Packet ID
             expectedData.Write(ref pos, (byte)0x04); // Effect
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0);
-      expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, 0);
 #else
             pos += 8;
 #endif
@@ -158,10 +158,10 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (ushort)type); // Screen Effect Type
 
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0);
-      expectedData.Write(ref pos, 0);
-      expectedData.Write(ref pos, 0);
-      expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, 0);
 #endif
 
             AssertThat.Equal(data, expectedData);
@@ -182,16 +182,16 @@ namespace Server.Tests.Network.Packets
 
             expectedData.Write(ref pos, entity.Serial);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0);
-      expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, (ushort)0);
 #else
             pos += 6;
 #endif
             expectedData.Write(ref pos, entity.Location);
             expectedData.Write(ref pos, entity.Location);
 #if NO_LOCAL_INIT
-      expectedData.Write(ref pos, 0);
-      expectedData.Write(ref pos, (ushort)0);
+            expectedData.Write(ref pos, 0);
+            expectedData.Write(ref pos, (ushort)0);
 #else
             pos += 6;
 #endif
