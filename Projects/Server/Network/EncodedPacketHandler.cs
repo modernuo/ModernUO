@@ -1,6 +1,6 @@
 namespace Server.Network
 {
-    public delegate void OnEncodedPacketReceive(NetState state, IEntity ent, EncodedReader pvSrc);
+    public delegate void OnEncodedPacketReceive(NetState state, IEntity ent, EncodedReader reader);
 
     public class EncodedPacketHandler
     {

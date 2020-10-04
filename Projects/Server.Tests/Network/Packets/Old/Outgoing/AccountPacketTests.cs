@@ -111,12 +111,7 @@ namespace Server.Tests.Network.Packets
 
             var account = new TestAccount(new[] { firstMobile, null, null, null, null });
 
-            var ns = new NetState(
-                new TestConnectionContext
-                {
-                    RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
-                }
-            )
+            var ns = new NetState(null)
             {
                 Account = account,
                 ProtocolChanges = protocolChanges

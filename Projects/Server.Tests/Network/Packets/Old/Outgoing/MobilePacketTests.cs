@@ -240,12 +240,7 @@ namespace Server.Tests.Network.Packets
             };
             beheld.DefaultMobileInit();
 
-            var ns = new NetState(
-                new AccountPacketTests.TestConnectionContext
-                {
-                    RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
-                }
-            )
+            var ns = new NetState(null)
             {
                 ProtocolChanges = changes
             };
@@ -642,12 +637,7 @@ namespace Server.Tests.Network.Packets
             beheld.FacialHairItemID = facialHairItemId;
             beheld.FacialHairHue = facialHairHue;
 
-            var ns = new NetState(
-                new AccountPacketTests.TestConnectionContext
-                {
-                    RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
-                }
-            )
+            var ns = new NetState(null)
             {
                 ProtocolChanges = protocolChanges
             };

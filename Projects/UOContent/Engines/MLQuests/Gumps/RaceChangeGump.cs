@@ -193,7 +193,7 @@ namespace Server.Engines.MLQuests.Gumps
             return false;
         }
 
-        private static void RaceChangeReply(NetState state, PacketReader pvSrc)
+        private static void RaceChangeReply(NetState state, BufferReader reader)
         {
             if (!m_Pending.TryGetValue(state, out var raceChangeState))
             {
@@ -210,7 +210,7 @@ namespace Server.Engines.MLQuests.Gumps
             var owner = raceChangeState.m_Owner;
             var targetRace = raceChangeState.m_TargetRace;
 
-            if (pvSrc.Length == 5)
+            if (reader.Length == 5)
             {
                 owner?.OnCancel(pm);
 
@@ -222,11 +222,11 @@ namespace Server.Engines.MLQuests.Gumps
                 return;
             }
 
-            int hue = pvSrc.ReadUInt16();
-            int hairItemId = pvSrc.ReadUInt16();
-            int hairHue = pvSrc.ReadUInt16();
-            int facialHairItemId = pvSrc.ReadUInt16();
-            int facialHairHue = pvSrc.ReadUInt16();
+            int hue = reader.ReadUInt16();
+            int hairItemId = reader.ReadUInt16();
+            int hairHue = reader.ReadUInt16();
+            int facialHairItemId = reader.ReadUInt16();
+            int facialHairHue = reader.ReadUInt16();
 
             pm.Race = targetRace;
             pm.Hue = targetRace.ClipSkinHue(hue) | 0x8000;

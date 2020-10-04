@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: ServerStartup.cs                                                *
+ * File: NetworkState.cs                                                 *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,25 +13,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace Server.Network
 {
-    public class ServerStartup
+    public class NetworkState
     {
-        private readonly IMessagePumpService _messagePumpService;
-        public ServerStartup(IMessagePumpService messagePumpService) => _messagePumpService = messagePumpService;
+        public static readonly NetworkState PauseState = new NetworkState(true);
+        public static readonly NetworkState ResumeState = new NetworkState(false);
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-        }
+        public bool Paused { get; }
 
-        public void Configure(IApplicationBuilder app)
-        {
-            // Run async?
-            Task.Run(() => Core.RunEventLoop(_messagePumpService));
-        }
+        internal NetworkState(bool paused) => Paused = paused;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Pause(ref NetworkState state) =>
+            Interlocked.Exchange(ref state, PauseState)?.Paused != true;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Resume(ref NetworkState state) =>
+            Interlocked.Exchange(ref state, ResumeState)?.Paused == true;
     }
 }

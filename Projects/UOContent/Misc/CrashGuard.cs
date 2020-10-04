@@ -181,7 +181,7 @@ namespace Server.Misc
 
                     try
                     {
-                        var states = TcpServer.Instances;
+                        var states = TcpServer.ConnectedClients;
 
                         op.WriteLine("- Count: {0}", states.Count);
 

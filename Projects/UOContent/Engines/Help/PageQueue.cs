@@ -232,7 +232,7 @@ namespace Server.Engines.Help
 
             var isStaffOnline = false;
 
-            foreach (var ns in TcpServer.Instances)
+            foreach (var ns in TcpServer.ConnectedClients)
             {
                 var m = ns.Mobile;
 

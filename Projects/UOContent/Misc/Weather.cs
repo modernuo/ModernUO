@@ -354,7 +354,7 @@ namespace Server.Misc
                     type = 2;
                 }
 
-                var states = TcpServer.Instances;
+                var states = TcpServer.ConnectedClients;
 
                 Packet weatherPacket = null;
 

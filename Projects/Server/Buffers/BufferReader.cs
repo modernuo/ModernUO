@@ -1,331 +1,357 @@
-// Copyright (c) Harry Pierson. All rights reserved.
-// Licensed under the MIT license.
-// See LICENSE file in the project root for full license information.
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Email: hi@modernuo.com                                                *
+ * File: BufferReader.cs                                                 *
+ * Created: 2020/08/05 - Updated: 2020/08/07                             *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
 
-using System.Diagnostics.CodeAnalysis;
+using System;
+using System.Buffers.Binary;
+using System.Data;
+using System.IO;
 using System.Runtime.CompilerServices;
-using System.Threading;
+using System.Runtime.InteropServices;
+using System.Text;
 
-namespace System.Buffers
+namespace Server.Network
 {
-    public ref struct BufferReader<T>
+    public ref struct BufferReader
     {
-        private readonly bool usingSequence;
-        private readonly ReadOnlySequence<T> sequence;
-        private SequencePosition currentPosition;
-        private SequencePosition nextPosition;
-        private bool moreData;
-        private readonly long length;
+        public Span<byte> First;
+        public Span<byte> Second;
 
-        public BufferReader(ReadOnlySpan<T> span)
+        public int Length { get; }
+        public int Position { get; private set; }
+        public int Remaining => Length - Position;
+
+        public BufferReader(ArraySegment<byte>[] buffers)
         {
-            usingSequence = false;
-            CurrentSpanIndex = 0;
-            Consumed = 0;
-            sequence = default;
-            currentPosition = default;
-            length = span.Length;
-
-            CurrentSpan = span;
-            nextPosition = default;
-            moreData = span.Length > 0;
+            First = buffers[0];
+            Second = buffers[1];
+            Position = 0;
+            Length = First.Length + Second.Length;
         }
 
-        public BufferReader(in ReadOnlySequence<T> sequence)
+        public BufferReader(Span<byte> first, Span<byte> second)
         {
-            usingSequence = true;
-            CurrentSpanIndex = 0;
-            Consumed = 0;
-            this.sequence = sequence;
-            currentPosition = sequence.Start;
-            length = -1;
+            First = first;
+            Second = second;
+            Position = 0;
+            Length = first.Length + second.Length;
+        }
 
-            var first = sequence.First.Span;
-            CurrentSpan = first;
-            nextPosition = sequence.GetPosition(first.Length);
-            moreData = first.Length > 0;
-
-            if (!moreData && !sequence.IsSingleSegment)
+        public void Trace(NetState state)
+        {
+            // We don't have data, so nothing to trace
+            if (First.Length == 0)
             {
-                moreData = true;
-                GetNextSpan();
+                return;
+            }
+
+            try
+            {
+                using var sw = new StreamWriter("Packets.log", true);
+
+                sw.WriteLine("Client: {0}: Unhandled packet 0x{1:X2}", state, First[0]);
+
+                Utility.FormatBuffer(sw, First.ToArray(), new Memory<byte>(Second.ToArray()));
+
+                sw.WriteLine();
+                sw.WriteLine();
+            }
+            catch
+            {
+                // ignored
             }
         }
 
-        public readonly bool End => !moreData;
-
-        public ReadOnlySpan<T> CurrentSpan { get; private set; }
-
-        public int CurrentSpanIndex { get; private set; }
-
-        public readonly ReadOnlySpan<T> UnreadSpan
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte ReadByte()
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => CurrentSpan.Slice(CurrentSpanIndex);
+            if (Position < First.Length)
+            {
+                return First[Position++];
+            }
+
+            if (Position < Length)
+            {
+                return Second[Position++ - First.Length];
+            }
+
+            throw new OutOfMemoryException();
         }
 
-        public long Consumed { get; private set; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool ReadBoolean() => ReadByte() > 0;
 
-        public readonly long Remaining => Length - Consumed;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public sbyte ReadSByte() => (sbyte)ReadByte();
 
-        public readonly long Length
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public short ReadInt16()
         {
-            get
+            short value;
+
+            if (Position < First.Length)
             {
-                if (length < 0)
-                    // Cast-away readonly to initialize lazy field
+                if (!BinaryPrimitives.TryReadInt16BigEndian(First.Slice(Position), out value))
+                    // Not enough space. Split the spans
                 {
-                    Volatile.Write(ref Unsafe.AsRef(length), sequence.Length);
+                    return (short)((ReadByte() >> 8) | ReadByte());
                 }
 
-                return length;
+                Position += 2;
             }
+            else if (BinaryPrimitives.TryReadInt16BigEndian(Second.Slice(Position - First.Length), out value))
+            {
+                Position += 2;
+            }
+            else
+            {
+                throw new OutOfMemoryException();
+            }
+
+            return value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool TryPeek([MaybeNullWhen(false)] out T value)
+        public ushort ReadUInt16()
         {
-            if (moreData)
+            ushort value;
+
+            if (Position < First.Length)
             {
-                value = CurrentSpan[CurrentSpanIndex];
-                return true;
-            }
-
-            value = default!;
-            return false;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryRead([MaybeNullWhen(false)] out T value)
-        {
-            if (End)
-            {
-                value = default!;
-                return false;
-            }
-
-            value = CurrentSpan[CurrentSpanIndex];
-            CurrentSpanIndex++;
-            Consumed++;
-
-            if (CurrentSpanIndex >= CurrentSpan.Length)
-            {
-                if (usingSequence)
+                if (!BinaryPrimitives.TryReadUInt16BigEndian(First.Slice(Position), out value))
+                    // Not enough space. Split the spans
                 {
-                    GetNextSpan();
+                    return (ushort)((ReadByte() >> 8) | ReadByte());
+                }
+
+                Position += 2;
+            }
+            else if (BinaryPrimitives.TryReadUInt16BigEndian(Second.Slice(Position - First.Length), out value))
+            {
+                Position += 2;
+            }
+            else
+            {
+                throw new OutOfMemoryException();
+            }
+
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int ReadInt32()
+        {
+            int value;
+
+            if (Position < First.Length)
+            {
+                if (!BinaryPrimitives.TryReadInt32BigEndian(First.Slice(Position), out value))
+                    // Not enough space. Split the spans
+                {
+                    return (ReadByte() >> 24) | (ReadByte() >> 16) | (ReadByte() >> 8) | ReadByte();
+                }
+
+                Position += 4;
+            }
+            else if (BinaryPrimitives.TryReadInt32BigEndian(Second.Slice(Position - First.Length), out value))
+            {
+                Position += 4;
+            }
+            else
+            {
+                throw new OutOfMemoryException();
+            }
+
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint ReadUInt32()
+        {
+            uint value;
+
+            if (Position < First.Length)
+            {
+                if (!BinaryPrimitives.TryReadUInt32BigEndian(First.Slice(Position), out value))
+                    // Not enough space. Split the spans
+                {
+                    return (uint)((ReadByte() >> 24) | (ReadByte() >> 16) | (ReadByte() >> 8) | ReadByte());
+                }
+
+                Position += 4;
+            }
+            else if (BinaryPrimitives.TryReadUInt32BigEndian(Second.Slice(Position - First.Length), out value))
+            {
+                Position += 4;
+            }
+            else
+            {
+                throw new OutOfMemoryException();
+            }
+
+            return value;
+        }
+
+        private static bool IsSafeChar(ushort c) => c >= 0x20 && c < 0xFFFE;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private string ReadString<T>(Encoding encoding, bool safeString = false, int fixedLength = 0x10000) where T : struct, IEquatable<T>
+        {
+            int sizeT = Unsafe.SizeOf<T>() - 1;
+
+            if (sizeT > 1)
+            {
+                throw new InvalidConstraintException("ReadString only accepts byte, sbyte, char, short, and ushort as a constraint");
+            }
+
+            Span<byte> span;
+
+            if (Position < First.Length)
+            {
+                var remaining = Remaining;
+                var size = Math.Min(fixedLength << sizeT, remaining - (remaining & sizeT));
+
+                // Find terminator
+                var index = MemoryMarshal.Cast<byte, T>(First.Slice(Position, size))
+                    .IndexOf(default(T));
+
+                // Split over both spans
+                if (index < 0)
+                {
+                    index = MemoryMarshal.Cast<byte, T>(Second.Slice(0, size - First.Length))
+                        .IndexOf(default(T));
+
+                    remaining = First.Length - Position;
+
+                    int length = index < 0 ? Remaining : remaining + index;
+
+                    Span<byte> bytes = stackalloc byte[length];
+                    First.Slice(Position).CopyTo(bytes);
+                    Second.Slice(0, length - remaining);
+
+                    Position += length;
+                    return GetString(bytes, encoding, safeString);
+                }
+
+                span = First.Slice(Position, index);
+                Position += index;
+            }
+            else
+            {
+                var remaining = Position - First.Length;
+                var size = Math.Min(fixedLength << sizeT, remaining - (remaining & sizeT));
+
+                span = Second.Slice(remaining, size);
+                var index = MemoryMarshal.Cast<byte, T>(span).IndexOf(default(T));
+
+                if (index > -1)
+                {
+                    span = span.Slice(0, index);
+                    Position += index;
                 }
                 else
                 {
-                    moreData = false;
+                    Position += size;
                 }
             }
 
-            return true;
+            return GetString(span, encoding, safeString);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Rewind(long count)
+        private static string GetString(Span<byte> span, Encoding encoding, bool safeString = false)
         {
-            if ((ulong)count > (ulong)Consumed)
+            string s = encoding.GetString(span);
+            if (!safeString)
             {
-                throw new ArgumentOutOfRangeException(nameof(count));
+                return s;
             }
 
-            Consumed -= count;
+            ReadOnlySpan<char> chars = s.AsSpan();
 
-            if (CurrentSpanIndex >= count)
+            StringBuilder stringBuilder = null;
+
+            for (int i = 0, last = 0; i < chars.Length; i++)
             {
-                CurrentSpanIndex -= (int)count;
-                moreData = true;
-            }
-            else if (usingSequence)
-            {
-                // Current segment doesn't have enough data, scan backward through segments
-                RetreatToPreviousSpan(Consumed);
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(count),
-                    $"Rewind went past the start of the memory by {count}."
-                );
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private void RetreatToPreviousSpan(long consumed)
-        {
-            ResetReader();
-            Advance(consumed);
-        }
-
-        private void ResetReader()
-        {
-            CurrentSpanIndex = 0;
-            Consumed = 0;
-            currentPosition = sequence.Start;
-            nextPosition = currentPosition;
-
-            if (sequence.TryGet(ref nextPosition, out var memory))
-            {
-                moreData = true;
-
-                if (memory.Length == 0)
+                if (!IsSafeChar(chars[i]) || stringBuilder != null && i == chars.Length - 1)
                 {
-                    CurrentSpan = default;
-                    // No data in the first span, move to one with data
-                    GetNextSpan();
-                }
-                else
-                {
-                    CurrentSpan = memory.Span;
-                }
-            }
-            else
-            {
-                // No data in any spans and at end of sequence
-                moreData = false;
-                CurrentSpan = default;
-            }
-        }
-
-        private void GetNextSpan()
-        {
-            if (!sequence.IsSingleSegment)
-            {
-                var previousNextPosition = nextPosition;
-                while (sequence.TryGet(ref nextPosition, out var memory))
-                {
-                    currentPosition = previousNextPosition;
-                    if (memory.Length > 0)
-                    {
-                        CurrentSpan = memory.Span;
-                        CurrentSpanIndex = 0;
-                        return;
-                    }
-
-                    CurrentSpan = default;
-                    CurrentSpanIndex = 0;
-                    previousNextPosition = nextPosition;
+                    (stringBuilder ??= new StringBuilder()).Append(chars.Slice(last, i - last));
+                    last = i + 1; // Skip the unsafe char
                 }
             }
 
-            moreData = false;
+            return stringBuilder?.ToString() ?? s;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Advance(long count)
-        {
-            const long TooBigOrNegative = unchecked((long)0xFFFFFFFF80000000);
-            if ((count & TooBigOrNegative) == 0 && CurrentSpan.Length - CurrentSpanIndex > (int)count)
-            {
-                CurrentSpanIndex += (int)count;
-                Consumed += count;
-            }
-            else if (usingSequence)
-            {
-                // Can't satisfy from the current span
-                AdvanceToNextSpan(count);
-            }
-            else if (CurrentSpan.Length - CurrentSpanIndex == (int)count)
-            {
-                CurrentSpanIndex += (int)count;
-                Consumed += count;
-                moreData = false;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
-        }
-
-        private void AdvanceToNextSpan(long count)
-        {
-            if (count < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
-
-            Consumed += count;
-            while (moreData)
-            {
-                var remaining = CurrentSpan.Length - CurrentSpanIndex;
-
-                if (remaining > count)
-                {
-                    CurrentSpanIndex += (int)count;
-                    count = 0;
-                    break;
-                }
-
-                // As there may not be any further segments we need to
-                // push the current index to the end of the span.
-                CurrentSpanIndex += remaining;
-                count -= remaining;
-
-                GetNextSpan();
-
-                if (count == 0)
-                {
-                    break;
-                }
-            }
-
-            if (count != 0)
-            {
-                // Not enough data left- adjust for where we actually ended and throw
-                Consumed -= count;
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
-        }
+        public string ReadLittleUniSafe(int fixedLength) => ReadString<char>(Utility.UnicodeLE, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool TryCopyTo(Span<T> destination)
-        {
-            // This API doesn't advance to facilitate conditional advancement based on the data returned.
-            // We don't provide an advance option to allow easier utilizing of stack allocated destination spans.
-            // (Because we can make this method readonly we can guarantee that we won't capture the span.)
+        public string ReadLittleUniSafe() => ReadString<char>(Utility.UnicodeLE, true);
 
-            var firstSpan = UnreadSpan;
-            if (firstSpan.Length >= destination.Length)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadLittleUni(int fixedLength) => ReadString<char>(Utility.UnicodeLE, false, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadLittleUni() => ReadString<char>(Utility.UnicodeLE);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadBigUniSafe(int fixedLength) => ReadString<char>(Utility.Unicode, true, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadBigUniSafe() => ReadString<char>(Utility.Unicode, true);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadBigUni(int fixedLength) => ReadString<char>(Utility.Unicode, false, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadBigUni() => ReadString<char>(Utility.Unicode);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadUTF8Safe(int fixedLength) => ReadString<byte>(Utility.UTF8, true, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadUTF8Safe() => ReadString<byte>(Utility.UTF8, true);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadUTF8() => ReadString<byte>(Utility.UTF8);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadAsciiSafe(int fixedLength) => ReadString<byte>(Encoding.ASCII, true, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadAsciiSafe() => ReadString<byte>(Encoding.ASCII, true);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadAscii(int fixedLength) => ReadString<byte>(Encoding.ASCII, false, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadAscii() => ReadString<byte>(Encoding.ASCII);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Seek(int offset, SeekOrigin origin) =>
+            Position = origin switch
             {
-                firstSpan.Slice(0, destination.Length).CopyTo(destination);
-                return true;
-            }
-
-            // Not enough in the current span to satisfy the request, fall through to the slow path
-            return TryCopyMultisegment(destination);
-        }
-
-        internal readonly bool TryCopyMultisegment(Span<T> destination)
-        {
-            // If we don't have enough to fill the requested buffer, return false
-            if (Remaining < destination.Length)
-            {
-                return false;
-            }
-
-            var firstSpan = UnreadSpan;
-            firstSpan.CopyTo(destination);
-            var copied = firstSpan.Length;
-
-            var next = nextPosition;
-            while (sequence.TryGet(ref next, out var nextSegment))
-            {
-                if (nextSegment.Length > 0)
-                {
-                    var nextSpan = nextSegment.Span;
-                    var toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
-                    nextSpan.Slice(0, toCopy).CopyTo(destination.Slice(copied));
-                    copied += toCopy;
-                    if (copied >= destination.Length)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            return true;
-        }
+                SeekOrigin.Begin => offset,
+                SeekOrigin.End   => Length - offset,
+                _                => Position + offset // Current
+            };
     }
 }

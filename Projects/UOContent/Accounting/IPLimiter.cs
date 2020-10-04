@@ -31,7 +31,7 @@ namespace Server.Misc
                 return true;
             }
 
-            var netStates = TcpServer.Instances;
+            var netStates = TcpServer.ConnectedClients;
 
             var count = 0;
 

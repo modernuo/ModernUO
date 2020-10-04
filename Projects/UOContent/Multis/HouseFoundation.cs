@@ -1010,7 +1010,7 @@ namespace Server.Multis
             }
         }
 
-        public static void Designer_Sync(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_Sync(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
 
@@ -1022,7 +1022,7 @@ namespace Server.Multis
             DesignContext.Find(from)?.Foundation.DesignState.SendDetailedInfoTo(state);
         }
 
-        public static void Designer_Clear(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_Clear(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
             var context = DesignContext.Find(from);
@@ -1054,7 +1054,7 @@ namespace Server.Multis
             newDesign.SendDetailedInfoTo(state);
         }
 
-        public static void Designer_Restore(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_Restore(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
             var context = DesignContext.Find(from);
@@ -1086,7 +1086,7 @@ namespace Server.Multis
             backupDesign.SendDetailedInfoTo(state);
         }
 
-        public static void Designer_Backup(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_Backup(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
             var context = DesignContext.Find(from);
@@ -1108,7 +1108,7 @@ namespace Server.Multis
             context.Foundation.BackupState = copyState;
         }
 
-        public static void Designer_Revert(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_Revert(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
             var context = DesignContext.Find(from);
@@ -1268,7 +1268,7 @@ namespace Server.Multis
             RestoreRelocatedEntities();
         }
 
-        public static void Designer_Commit(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_Commit(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
             var context = DesignContext.Find(from);
@@ -1474,7 +1474,7 @@ namespace Server.Multis
             return true;
         }
 
-        public static void Designer_Delete(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_Delete(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
             var context = DesignContext.Find(from);
@@ -1493,10 +1493,10 @@ namespace Server.Multis
                */
 
             // Read data detailing which component to delete
-            var itemID = pvSrc.ReadInt32();
-            var x = pvSrc.ReadInt32();
-            var y = pvSrc.ReadInt32();
-            var z = pvSrc.ReadInt32();
+            var itemID = reader.ReadInt32();
+            var x = reader.ReadInt32();
+            var y = reader.ReadInt32();
+            var z = reader.ReadInt32();
 
             // Verify component is deletable
             var design = context.Foundation.DesignState;
@@ -1564,7 +1564,7 @@ namespace Server.Multis
             }
         }
 
-        public static void Designer_Stairs(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_Stairs(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
             var context = DesignContext.Find(from);
@@ -1584,9 +1584,9 @@ namespace Server.Multis
                */
 
             // Read data detailing stair type and location
-            var itemID = pvSrc.ReadInt32();
-            var x = pvSrc.ReadInt32();
-            var y = pvSrc.ReadInt32();
+            var itemID = reader.ReadInt32();
+            var x = reader.ReadInt32();
+            var y = reader.ReadInt32();
 
             // Validate stair multi ID
             var design = context.Foundation.DesignState;
@@ -1639,7 +1639,7 @@ namespace Server.Multis
             }
         }
 
-        public static void Designer_Build(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_Build(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
             var context = DesignContext.Find(from);
@@ -1656,9 +1656,9 @@ namespace Server.Multis
                */
 
             // Read data detailing component graphic and location
-            var itemID = pvSrc.ReadInt32();
-            var x = pvSrc.ReadInt32();
-            var y = pvSrc.ReadInt32();
+            var itemID = reader.ReadInt32();
+            var x = reader.ReadInt32();
+            var y = reader.ReadInt32();
 
             // Add component
             var design = context.Foundation.DesignState;
@@ -1685,7 +1685,7 @@ namespace Server.Multis
             design.OnRevised();
         }
 
-        public static void Designer_Close(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_Close(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
             var context = DesignContext.Find(from);
@@ -1734,7 +1734,7 @@ namespace Server.Multis
             context.Foundation.RestoreRelocatedEntities();
         }
 
-        public static void Designer_Level(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_Level(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
             var context = DesignContext.Find(from);
@@ -1754,7 +1754,7 @@ namespace Server.Multis
                */
 
             // Read data detailing the target level
-            var newLevel = pvSrc.ReadInt32();
+            var newLevel = reader.ReadInt32();
 
             // Validate target level
             if (newLevel < 1 || newLevel > context.MaxLevels)
@@ -1772,11 +1772,11 @@ namespace Server.Multis
             context.Foundation.SendInfoTo(state);
         }
 
-        public static void QueryDesignDetails(NetState state, PacketReader pvSrc)
+        public static void QueryDesignDetails(NetState state, BufferReader reader)
         {
             var from = state.Mobile;
 
-            if (World.FindItem(pvSrc.ReadUInt32()) is HouseFoundation foundation && from.Map == foundation.Map &&
+            if (World.FindItem(reader.ReadUInt32()) is HouseFoundation foundation && from.Map == foundation.Map &&
                 from.InRange(foundation.GetWorldLocation(), 24) &&
                 from.CanSee(foundation))
             {
@@ -1787,7 +1787,7 @@ namespace Server.Multis
             }
         }
 
-        public static void Designer_Roof(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_Roof(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
             var context = DesignContext.Find(from);
@@ -1798,10 +1798,10 @@ namespace Server.Multis
             }
 
             // Read data detailing component graphic and location
-            var itemID = pvSrc.ReadInt32();
-            var x = pvSrc.ReadInt32();
-            var y = pvSrc.ReadInt32();
-            var z = pvSrc.ReadInt32();
+            var itemID = reader.ReadInt32();
+            var x = reader.ReadInt32();
+            var y = reader.ReadInt32();
+            var z = reader.ReadInt32();
 
             // Add component
             var design = context.Foundation.DesignState;
@@ -1841,7 +1841,7 @@ namespace Server.Multis
             design.OnRevised();
         }
 
-        public static void Designer_RoofDelete(NetState state, IEntity e, EncodedReader pvSrc)
+        public static void Designer_RoofDelete(NetState state, IEntity e, EncodedReader reader)
         {
             var from = state.Mobile;
             var context = DesignContext.Find(from);
@@ -1853,10 +1853,10 @@ namespace Server.Multis
             }
 
             // Read data detailing which component to delete
-            var itemID = pvSrc.ReadInt32();
-            var x = pvSrc.ReadInt32();
-            var y = pvSrc.ReadInt32();
-            var z = pvSrc.ReadInt32();
+            var itemID = reader.ReadInt32();
+            var x = reader.ReadInt32();
+            var y = reader.ReadInt32();
+            var z = reader.ReadInt32();
 
             // Verify component is deletable
             var design = context.Foundation.DesignState;

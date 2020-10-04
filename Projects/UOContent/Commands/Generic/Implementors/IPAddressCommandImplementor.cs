@@ -38,7 +38,7 @@ namespace Server.Commands.Generic
                 var list = new List<object>();
                 var addresses = new List<IPAddress>();
 
-                var states = TcpServer.Instances;
+                var states = TcpServer.ConnectedClients;
 
                 for (var i = 0; i < states.Count; ++i)
                 {

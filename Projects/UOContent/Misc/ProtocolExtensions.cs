@@ -27,9 +27,9 @@ namespace Server.Misc
             return null;
         }
 
-        public static void DecodeBundledPacket(NetState state, PacketReader pvSrc)
+        public static void DecodeBundledPacket(NetState state, BufferReader reader)
         {
-            int packetID = pvSrc.ReadByte();
+            int packetID = reader.ReadByte();
 
             var ph = GetHandler(packetID);
 
@@ -50,7 +50,7 @@ namespace Server.Misc
                 }
                 else
                 {
-                    ph.OnReceive(state, pvSrc);
+                    ph.OnReceive(state, reader);
                 }
             }
         }

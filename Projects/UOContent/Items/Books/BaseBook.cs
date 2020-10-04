@@ -330,13 +330,13 @@ namespace Server.Items
         /*public override void GetProperties( ObjectPropertyList list )
         {
           base.GetProperties( list );
-    
+
           if (m_Title?.Length > 0)
             list.Add( 1060658, "Title\t{0}", m_Title ); // ~1_val~: ~2_val~
-    
+
           if (m_Author?.Length > 0)
             list.Add( 1060659, "Author\t{0}", m_Author ); // ~1_val~: ~2_val~
-    
+
           if (m_Pages?.Length > 0)
             list.Add( 1060660, "Pages\t{0}", m_Pages.Length ); // ~1_val~: ~2_val~
         }*/
@@ -366,70 +366,70 @@ namespace Server.Items
             PacketHandlers.Register(0x93, 99, true, OldHeaderChange);
         }
 
-        public static void OldHeaderChange(NetState state, PacketReader pvSrc)
+        public static void OldHeaderChange(NetState state, BufferReader reader)
         {
             var from = state.Mobile;
 
-            if (!(World.FindItem(pvSrc.ReadUInt32()) is BaseBook book) || !book.Writable ||
+            if (!(World.FindItem(reader.ReadUInt32()) is BaseBook book) || !book.Writable ||
                 !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
             {
                 return;
             }
 
-            pvSrc.Seek(4, SeekOrigin.Current); // Skip flags and page count
+            reader.Seek(4, SeekOrigin.Current); // Skip flags and page count
 
-            var title = pvSrc.ReadStringSafe(60);
-            var author = pvSrc.ReadStringSafe(30);
+            var title = reader.ReadAsciiSafe(60);
+            var author = reader.ReadAsciiSafe(30);
 
             book.Title = Utility.FixHtml(title);
             book.Author = Utility.FixHtml(author);
         }
 
-        public static void HeaderChange(NetState state, PacketReader pvSrc)
+        public static void HeaderChange(NetState state, BufferReader reader)
         {
             var from = state.Mobile;
 
-            if (!(World.FindItem(pvSrc.ReadUInt32()) is BaseBook book) || !book.Writable ||
+            if (!(World.FindItem(reader.ReadUInt32()) is BaseBook book) || !book.Writable ||
                 !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
             {
                 return;
             }
 
-            pvSrc.Seek(4, SeekOrigin.Current); // Skip flags and page count
+            reader.Seek(4, SeekOrigin.Current); // Skip flags and page count
 
-            int titleLength = pvSrc.ReadUInt16();
+            int titleLength = reader.ReadUInt16();
 
             if (titleLength > 60)
             {
                 return;
             }
 
-            var title = pvSrc.ReadUTF8StringSafe(titleLength);
+            var title = reader.ReadUTF8Safe(titleLength);
 
-            int authorLength = pvSrc.ReadUInt16();
+            int authorLength = reader.ReadUInt16();
 
             if (authorLength > 30)
             {
                 return;
             }
 
-            var author = pvSrc.ReadUTF8StringSafe(authorLength);
+            var author = reader.ReadUTF8Safe(authorLength);
 
             book.Title = Utility.FixHtml(title);
             book.Author = Utility.FixHtml(author);
         }
 
-        public static void ContentChange(NetState state, PacketReader pvSrc)
+        public static void ContentChange(NetState state, BufferReader reader)
         {
             var from = state.Mobile;
 
-            if (!(World.FindItem(pvSrc.ReadUInt32()) is BaseBook book) || !book.Writable ||
+            if (!(World.FindItem(reader.ReadUInt32()) is BaseBook book) || !book.Writable ||
                 !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
             {
                 return;
             }
 
-            int pageCount = pvSrc.ReadUInt16();
+            int pageCount = reader.ReadUInt16();
 
             if (pageCount > book.PagesCount)
             {
@@ -438,13 +438,13 @@ namespace Server.Items
 
             for (var i = 0; i < pageCount; ++i)
             {
-                int index = pvSrc.ReadUInt16();
+                int index = reader.ReadUInt16();
 
                 if (index >= 1 && index <= book.PagesCount)
                 {
                     --index;
 
-                    int lineCount = pvSrc.ReadUInt16();
+                    int lineCount = reader.ReadUInt16();
 
                     if (lineCount <= 8)
                     {
@@ -452,7 +452,7 @@ namespace Server.Items
 
                         for (var j = 0; j < lineCount; ++j)
                         {
-                            if ((lines[j] = pvSrc.ReadUTF8StringSafe()).Length >= 80)
+                            if ((lines[j] = reader.ReadUTF8Safe()).Length >= 80)
                             {
                                 return;
                             }
