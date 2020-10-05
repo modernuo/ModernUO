@@ -5605,24 +5605,14 @@ namespace Server
                                 item.Spawner = null;
                             }
 
-                            if (amount == 0)
-                            {
-                                amount = 1;
-                            }
-
-                            if (amount > item.Amount)
-                            {
-                                amount = item.Amount;
-                            }
+                            amount = Math.Clamp(amount, 1, item.Amount);
 
                             var oldAmount = item.Amount;
-                            // item.Amount = amount; //Set in LiftItemDupe
 
                             if (amount < oldAmount)
                             {
                                 LiftItemDupe(item, amount);
                             }
-                            // item.Dupe( oldAmount - amount );
 
                             var map = from.Map;
 
