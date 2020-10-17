@@ -287,8 +287,6 @@ namespace Server.Network
 
             var packetId = r.ReadByte();
 
-            ns.WriteConsole("Packet Received: {0:X}", packetId);
-
             if (!ns.Seeded)
             {
                 if (packetId == 0xEF)
@@ -300,8 +298,6 @@ namespace Server.Network
                 else
                 {
                     var seed = (packetId << 24) | (r.ReadByte() << 16) | (r.ReadByte() << 8) | r.ReadByte();
-
-                    ns.WriteConsole("Seed: {0}", seed);
 
                     if (seed == 0)
                     {
@@ -2660,8 +2656,6 @@ namespace Server.Network
 
             var username = reader.ReadAscii(30);
             var password = reader.ReadAscii(30);
-
-            state.WriteConsole("Username {0} and password {1}", username, password);
 
             var e = new AccountLoginEventArgs(state, username, password);
 

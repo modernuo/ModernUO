@@ -422,7 +422,6 @@ namespace Server.Network
 
                 if (result.IsCanceled || result.IsCompleted)
                 {
-                    Console.WriteLine("Outgoing pipe is canceled or completed");
                     break;
                 }
 
@@ -431,13 +430,10 @@ namespace Server.Network
                     continue;
                 }
 
-                Console.WriteLine("Sending data to socket");
-
                 var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None);
 
                 if (bytesWritten > 0)
                 {
-                    Console.WriteLine("Sent {0} to the socket", bytesWritten);
                     reader.Advance((uint)bytesWritten);
                 }
             }
@@ -462,7 +458,6 @@ namespace Server.Network
                     var pipeResult = writer.GetBytes();
                     if (pipeResult.IsCanceled || pipeResult.IsCompleted)
                     {
-                        WriteConsole("Incoming Writer Pipe cancelled or completed");
                         return;
                     }
 
@@ -472,15 +467,6 @@ namespace Server.Network
 
                     if (bytesWritten > 0)
                     {
-                        WriteConsole("Received data {0}", bytesWritten);
-                        var str1 = HexStringConverter.GetString(
-                            buffer[0].AsSpan(0, Math.Min(bytesWritten, buffer[0].Count))
-                        );
-                        var str2 = HexStringConverter.GetString(
-                            buffer[1].AsSpan(0, Math.Clamp(bytesWritten - buffer[0].Count, 0, buffer[1].Count))
-                        );
-                        var str = $"{str1}{str2}";
-                        WriteConsole("Data: {0}", str);
                         writer.Advance((uint)bytesWritten);
                         m_NextCheckActivity = Core.TickCount + 90000;
                     }
@@ -538,7 +524,6 @@ namespace Server.Network
 
                     if (bytesProcessed <= 0)
                     {
-                        WriteConsole("Error Processing, bytes: {0}", bytesProcessed);
                         // Error
                         // TODO: Throw exception instead?
                         if (bytesProcessed < 0)
@@ -548,8 +533,6 @@ namespace Server.Network
 
                         return;
                     }
-
-                    WriteConsole("Received and Processed {0} bytes", bytesProcessed);
 
                     reader.Advance((uint)bytesProcessed);
                 }
