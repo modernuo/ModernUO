@@ -20,7 +20,7 @@ namespace Server.Misc
             }
         }
 
-        private static void OnPartyTrack(NetState state, BufferReader reader)
+        private static void OnPartyTrack(NetState state, ref BufferReader reader)
         {
             var from = state.Mobile;
             var party = Party.Get(from);
@@ -36,7 +36,7 @@ namespace Server.Misc
             }
         }
 
-        private static void OnGuildTrack(NetState state, BufferReader reader)
+        private static void OnGuildTrack(NetState state, ref BufferReader reader)
         {
             var from = state.Mobile;
 

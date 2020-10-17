@@ -212,7 +212,7 @@ namespace Server.Network
         private static bool IsSafeChar(ushort c) => c >= 0x20 && c < 0xFFFE;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string ReadString<T>(Encoding encoding, bool safeString = false, int fixedLength = 0x10000) where T : struct, IEquatable<T>
+        private string ReadString<T>(Encoding encoding, bool safeString = false, int fixedLength = -1) where T : struct, IEquatable<T>
         {
             int sizeT = Unsafe.SizeOf<T>() - 1;
 
@@ -226,7 +226,16 @@ namespace Server.Network
             if (Position < First.Length)
             {
                 var remaining = Remaining;
-                var size = Math.Min(fixedLength << sizeT, remaining - (remaining & sizeT));
+                int size;
+
+                if (fixedLength < 0)
+                {
+                    size = remaining - (remaining & sizeT);
+                }
+                else
+                {
+                    size = Math.Min(fixedLength << sizeT, remaining - (remaining & sizeT));
+                }
 
                 // Find terminator
                 var index = MemoryMarshal.Cast<byte, T>(First.Slice(Position, size))
@@ -240,23 +249,32 @@ namespace Server.Network
 
                     remaining = First.Length - Position;
 
-                    int length = index < 0 ? Remaining : remaining + index;
+                    int length = Math.Min(index < 0 ? size : remaining + index, size);
 
                     Span<byte> bytes = stackalloc byte[length];
                     First.Slice(Position).CopyTo(bytes);
-                    Second.Slice(0, length - remaining);
+                    Second.Slice(0, length - remaining).CopyTo(bytes.Slice(Position));
 
-                    Position += length;
+                    Position += fixedLength > 0 ? fixedLength : length;
                     return GetString(bytes, encoding, safeString);
                 }
 
                 span = First.Slice(Position, index);
-                Position += index;
+                Position += fixedLength > 0 ? fixedLength : index;
             }
             else
             {
                 var remaining = Position - First.Length;
-                var size = Math.Min(fixedLength << sizeT, remaining - (remaining & sizeT));
+                int size;
+
+                if (fixedLength < 0)
+                {
+                    size = remaining - (remaining & sizeT);
+                }
+                else
+                {
+                    size = Math.Min(fixedLength << sizeT, remaining - (remaining & sizeT));
+                }
 
                 span = Second.Slice(remaining, size);
                 var index = MemoryMarshal.Cast<byte, T>(span).IndexOf(default(T));
@@ -264,11 +282,11 @@ namespace Server.Network
                 if (index > -1)
                 {
                     span = span.Slice(0, index);
-                    Position += index;
+                    Position += fixedLength > 0 ? fixedLength : index;
                 }
                 else
                 {
-                    Position += size;
+                    Position += fixedLength > 0 ? fixedLength : size;
                 }
             }
 

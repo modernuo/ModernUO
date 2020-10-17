@@ -232,7 +232,7 @@ namespace Server.Items
             PacketHandlers.Register(0x71, 0, true, BBClientRequest);
         }
 
-        public static void BBClientRequest(NetState state, BufferReader reader)
+        public static void BBClientRequest(NetState state, ref BufferReader reader)
         {
             var from = state.Mobile;
 

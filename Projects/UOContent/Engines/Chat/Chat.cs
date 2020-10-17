@@ -23,7 +23,7 @@ namespace Server.Engines.Chat
             to?.Send(new ChatMessagePacket(null, (int)type + 20, param1, param2));
         }
 
-        public static void OpenChatWindowRequest(NetState state, BufferReader reader)
+        public static void OpenChatWindowRequest(NetState state, ref BufferReader reader)
         {
             var from = state.Mobile;
 
@@ -56,7 +56,7 @@ namespace Server.Engines.Chat
             return user;
         }
 
-        public static void ChatAction(NetState state, BufferReader reader)
+        public static void ChatAction(NetState state, ref BufferReader reader)
         {
             if (!Enabled)
             {

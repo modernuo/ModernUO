@@ -2,7 +2,7 @@ using Server.Network;
 
 namespace Server.Engines.Mahjong
 {
-    public delegate void OnMahjongPacketReceive(MahjongGame game, NetState state, BufferReader reader);
+    public delegate void OnMahjongPacketReceive(MahjongGame game, NetState state, ref BufferReader reader);
 
     public sealed class MahjongPacketHandlers
     {
@@ -41,7 +41,7 @@ namespace Server.Engines.Mahjong
             RegisterSubCommand(0x18, MoveDealerIndicator);
         }
 
-        public static void OnPacket(NetState state, BufferReader reader)
+        public static void OnPacket(NetState state,ref BufferReader reader)
         {
             var game = World.FindItem(reader.ReadUInt32()) as MahjongGame;
 
@@ -55,7 +55,7 @@ namespace Server.Engines.Mahjong
 
             if (onReceive != null)
             {
-                onReceive(game, state, reader);
+                onReceive(game, state, ref reader);
             }
             else
             {
@@ -85,7 +85,7 @@ namespace Server.Engines.Mahjong
             };
         }
 
-        public static void ExitGame(MahjongGame game, NetState state, BufferReader reader)
+        public static void ExitGame(MahjongGame game, NetState state, ref BufferReader reader)
         {
             if (game == null)
             {
@@ -97,7 +97,7 @@ namespace Server.Engines.Mahjong
             game.Players.LeaveGame(from);
         }
 
-        public static void GivePoints(MahjongGame game, NetState state, BufferReader reader)
+        public static void GivePoints(MahjongGame game, NetState state, ref BufferReader reader)
         {
             if (game?.Players.IsInGamePlayer(state.Mobile) != true)
             {
@@ -110,7 +110,7 @@ namespace Server.Engines.Mahjong
             game.Players.TransferScore(state.Mobile, to, amount);
         }
 
-        public static void RollDice(MahjongGame game, NetState state, BufferReader reader)
+        public static void RollDice(MahjongGame game, NetState state, ref BufferReader reader)
         {
             if (game?.Players.IsInGamePlayer(state.Mobile) != true)
             {
@@ -120,7 +120,7 @@ namespace Server.Engines.Mahjong
             game.Dices.RollDices(state.Mobile);
         }
 
-        public static void BuildWalls(MahjongGame game, NetState state, BufferReader reader)
+        public static void BuildWalls(MahjongGame game, NetState state, ref BufferReader reader)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
             {
@@ -130,7 +130,7 @@ namespace Server.Engines.Mahjong
             game.ResetWalls(state.Mobile);
         }
 
-        public static void ResetScores(MahjongGame game, NetState state, BufferReader reader)
+        public static void ResetScores(MahjongGame game, NetState state, ref BufferReader reader)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
             {
@@ -140,7 +140,7 @@ namespace Server.Engines.Mahjong
             game.Players.ResetScores(MahjongGame.BaseScore);
         }
 
-        public static void AssignDealer(MahjongGame game, NetState state, BufferReader reader)
+        public static void AssignDealer(MahjongGame game, NetState state, ref BufferReader reader)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
             {
@@ -152,7 +152,7 @@ namespace Server.Engines.Mahjong
             game.Players.AssignDealer(position);
         }
 
-        public static void OpenSeat(MahjongGame game, NetState state, BufferReader reader)
+        public static void OpenSeat(MahjongGame game, NetState state, ref BufferReader reader)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
             {
@@ -169,7 +169,7 @@ namespace Server.Engines.Mahjong
             game.Players.OpenSeat(position);
         }
 
-        public static void ChangeOption(MahjongGame game, NetState state, BufferReader reader)
+        public static void ChangeOption(MahjongGame game, NetState state, ref BufferReader reader)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
             {
@@ -185,7 +185,7 @@ namespace Server.Engines.Mahjong
             game.SpectatorVision = (options & 0x2) != 0;
         }
 
-        public static void MoveWallBreakIndicator(MahjongGame game, NetState state, BufferReader reader)
+        public static void MoveWallBreakIndicator(MahjongGame game, NetState state, ref BufferReader reader)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
             {
@@ -198,7 +198,7 @@ namespace Server.Engines.Mahjong
             game.WallBreakIndicator.Move(new Point2D(x, y));
         }
 
-        public static void TogglePublicHand(MahjongGame game, NetState state, BufferReader reader)
+        public static void TogglePublicHand(MahjongGame game, NetState state, ref BufferReader reader)
         {
             if (game?.Players.IsInGamePlayer(state.Mobile) != true)
             {
@@ -213,7 +213,7 @@ namespace Server.Engines.Mahjong
             game.Players.SetPublic(game.Players.GetPlayerIndex(state.Mobile), publicHand);
         }
 
-        public static void MoveTile(MahjongGame game, NetState state, BufferReader reader)
+        public static void MoveTile(MahjongGame game, NetState state, ref BufferReader reader)
         {
             if (game?.Players.IsInGamePlayer(state.Mobile) != true)
             {
@@ -248,7 +248,7 @@ namespace Server.Engines.Mahjong
             game.Tiles[number].Move(new Point2D(x, y), direction, flip, game.Players.GetPlayerIndex(state.Mobile));
         }
 
-        public static void MoveDealerIndicator(MahjongGame game, NetState state, BufferReader reader)
+        public static void MoveDealerIndicator(MahjongGame game, NetState state, ref BufferReader reader)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
             {
