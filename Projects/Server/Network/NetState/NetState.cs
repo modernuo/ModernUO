@@ -466,11 +466,13 @@ namespace Server.Network
 
                     var bytesWritten = await socket.ReceiveAsync(buffer, SocketFlags.None);
 
-                    if (bytesWritten > 0)
+                    if (bytesWritten <= 0)
                     {
-                        writer.Advance((uint)bytesWritten);
-                        m_NextCheckActivity = Core.TickCount + 90000;
+                        break;
                     }
+
+                    writer.Advance((uint)bytesWritten);
+                    m_NextCheckActivity = Core.TickCount + 90000;
 
                     // No need to flush
                 }
@@ -693,6 +695,8 @@ namespace Server.Network
                 ns.Account = null;
                 ns.ServerInfo = null;
                 ns.CityInfo = null;
+
+                TcpServer.ConnectedClients.Remove(ns);
 
                 if (a != null)
                 {
