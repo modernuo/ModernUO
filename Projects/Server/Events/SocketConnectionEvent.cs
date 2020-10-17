@@ -14,19 +14,19 @@
  *************************************************************************/
 
 using System;
-using Microsoft.AspNetCore.Connections;
+using System.Net.Sockets;
 
 namespace Server
 {
     public class SocketConnectEventArgs : EventArgs
     {
-        public SocketConnectEventArgs(ConnectionContext c)
+        public SocketConnectEventArgs(Socket c)
         {
-            Context = c;
+            Connection = c;
             AllowConnection = true;
         }
 
-        public ConnectionContext Context { get; }
+        public Socket Connection { get; }
 
         public bool AllowConnection { get; set; }
     }

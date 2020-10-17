@@ -5,7 +5,7 @@ using Server.Misc;
 
 namespace Server
 {
-    public class AccessRestrictions
+    public static class AccessRestrictions
     {
         public static void Initialize()
         {
@@ -16,7 +16,7 @@ namespace Server
         {
             try
             {
-                var ip = ((IPEndPoint)e.Context.RemoteEndPoint).Address;
+                var ip = ((IPEndPoint)e.Connection.RemoteEndPoint).Address;
 
                 if (Firewall.IsBlocked(ip))
                 {

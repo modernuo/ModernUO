@@ -186,6 +186,16 @@ namespace Server.Network
                         socket.Close();
                         throw new MaxConnectionsException();
                     }
+
+                    var args = new SocketConnectEventArgs(socket);
+                    EventSink.InvokeSocketConnect(args);
+
+                    if (!args.AllowConnection)
+                    {
+                        socket.Send(socketRejected, SocketFlags.None);
+                        socket.Shutdown(SocketShutdown.Both);
+                        socket.Close();
+                    }
                 }
                 catch (MaxConnectionsException ex)
                 {
