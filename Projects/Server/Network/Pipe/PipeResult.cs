@@ -49,8 +49,9 @@ namespace Server.Network
 
             for (int i = 0; i < Buffer.Length; i++)
             {
-                var sz = Math.Min(remaining, Buffer[0].Count);
-                bytes.Slice(offset, sz).CopyTo(Buffer[i].AsSpan());
+                var buffer = Buffer[i];
+                var sz = Math.Min(remaining, buffer.Count);
+                bytes.Slice(offset, sz).CopyTo(buffer.AsSpan());
 
                 remaining -= sz;
                 offset += sz;
