@@ -81,7 +81,7 @@ namespace Server.Engines.Chat
 
                 if (handler == null)
                 {
-                    Console.WriteLine("Client: {0}: Unknown chat action 0x{1:X}: {2}", state, actionID, param);
+                    state.WriteConsole("Unknown chat action 0x{0:X}: {1}", actionID, param);
                     return;
                 }
 

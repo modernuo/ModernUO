@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Server.Accounting;
@@ -86,6 +85,7 @@ namespace Server.Network
             m_IncomingPipe = new Pipe(m_IncomingBuffer);
             m_OutgoingBuffer = new byte[OutgoingPipeSize];
             m_OutgoingPipe = new Pipe(m_OutgoingBuffer);
+            m_NextCheckActivity = Core.TickCount + 30000;
 
             try
             {
@@ -434,6 +434,7 @@ namespace Server.Network
 
                 if (bytesWritten > 0)
                 {
+                    m_NextCheckActivity = Core.TickCount + 90000;
                     reader.Advance((uint)bytesWritten);
                 }
             }
@@ -458,7 +459,7 @@ namespace Server.Network
                     var pipeResult = writer.GetBytes();
                     if (pipeResult.IsCanceled || pipeResult.IsCompleted)
                     {
-                        return;
+                        break;
                     }
 
                     var buffer = pipeResult.Buffer;
@@ -568,7 +569,7 @@ namespace Server.Network
 
         public void CheckAlive(long curTicks)
         {
-            if (Connection != null && m_NextCheckActivity - curTicks >= 0)
+            if (Connection != null && m_NextCheckActivity - curTicks < 0)
             {
                 WriteConsole("Disconnecting due to inactivity...");
                 Dispose();
@@ -606,7 +607,7 @@ namespace Server.Network
             if (!SentFirstPacket && packetID != 0xF0 && packetID != 0xF1 && packetID != 0xCF && packetID != 0x80 &&
                 packetID != 0x91 && packetID != 0xA4 && packetID != 0xEF)
             {
-                Console.WriteLine("Client: {0}: Encrypted client detected, disconnecting", this);
+                WriteConsole("Encrypted client detected, disconnecting");
                 Dispose();
                 return true;
             }
@@ -682,8 +683,10 @@ namespace Server.Network
 
                 ns.m_Running = false;
                 ns.Connection = null;
-                ns.m_OutgoingPipe = null;
+                ns.m_IncomingBuffer = null;
                 ns.m_IncomingPipe = null;
+                ns.m_OutgoingBuffer = null;
+                ns.m_OutgoingPipe = null;
                 ns.Gumps.Clear();
                 ns.Menus.Clear();
                 ns.HuePickers.Clear();

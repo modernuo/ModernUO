@@ -29,7 +29,8 @@ namespace Server.Misc
         public static void OnFastWalk(FastWalkEventArgs e)
         {
             e.Blocked = true; // disallow this fastwalk
-            Console.WriteLine("Client: {0}: Fast movement detected (name={1})", e.NetState, e.NetState.Mobile.Name);
+            var state = e.NetState;
+            state.WriteConsole("Fast movement detected (name={0})", state.Mobile.Name);
         }
     }
 }

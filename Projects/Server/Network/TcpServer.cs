@@ -158,9 +158,7 @@ namespace Server.Network
                     break;
                 }
 
-                ns.Start();
                 ConnectedClients.Add(ns);
-
                 ns.WriteConsole("Connected. [{0} Online]", ConnectedClients.Count);
             }
         }
@@ -207,7 +205,9 @@ namespace Server.Network
                     // ignored
                 }
 
-                m_ConnectedQueue.Enqueue(new NetState(socket));
+                var ns = new NetState(socket);
+                m_ConnectedQueue.Enqueue(ns);
+                ns.Start();
             }
         }
     }

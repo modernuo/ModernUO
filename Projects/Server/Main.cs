@@ -101,7 +101,8 @@ namespace Server
 
         public static Thread Thread { get; private set; }
 
-        [ThreadStatic] private static long _TickCount;
+        [ThreadStatic]
+        private static long _TickCount;
 
         public static long TickCount => _TickCount == 0 ? 1000L * Stopwatch.GetTimestamp() / Stopwatch.Frequency : _TickCount;
 
