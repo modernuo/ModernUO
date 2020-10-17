@@ -474,14 +474,12 @@ namespace Server.Network
                     // No need to flush
                 }
             }
-            catch (SocketException ex)
-            {
-                Console.WriteLine(ex);
-                TraceException(ex);
-            }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine(ex);
+                TraceException(ex);
+#endif
             }
             finally
             {

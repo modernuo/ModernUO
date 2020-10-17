@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: BufferWriter.cs                                                 *
+ * File: CircularBufferWriter.cs                                         *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -20,7 +20,7 @@ using System.Text;
 
 namespace System.Buffers
 {
-    public ref struct BufferWriter
+    public ref struct CircularBufferWriter
     {
         public Span<byte> First;
         public Span<byte> Second;
@@ -31,7 +31,7 @@ namespace System.Buffers
         /// </summary>
         public int Position { get; private set; }
 
-        public BufferWriter(ArraySegment<byte>[] buffers)
+        public CircularBufferWriter(ArraySegment<byte>[] buffers)
         {
             First = buffers[0];
             Second = buffers[1];
@@ -39,7 +39,7 @@ namespace System.Buffers
             Length = First.Length + Second.Length;
         }
 
-        public BufferWriter(Span<byte> first, Span<byte> second)
+        public CircularBufferWriter(Span<byte> first, Span<byte> second)
         {
             First = first;
             Second = second;

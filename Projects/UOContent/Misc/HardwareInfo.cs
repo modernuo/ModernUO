@@ -142,7 +142,7 @@ namespace Server
             }
         }
 
-        public static void OnReceive(NetState state, ref BufferReader reader)
+        public static void OnReceive(NetState state, ref CircularBufferReader reader)
         {
             reader.ReadByte(); // 1: <4.0.1a, 2>=4.0.1a
 

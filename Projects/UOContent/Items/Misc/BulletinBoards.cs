@@ -232,7 +232,7 @@ namespace Server.Items
             PacketHandlers.Register(0x71, 0, true, BBClientRequest);
         }
 
-        public static void BBClientRequest(NetState state, ref BufferReader reader)
+        public static void BBClientRequest(NetState state, ref CircularBufferReader reader)
         {
             var from = state.Mobile;
 
@@ -260,7 +260,7 @@ namespace Server.Items
             }
         }
 
-        public static void BBRequestContent(Mobile from, BaseBulletinBoard board, BufferReader reader)
+        public static void BBRequestContent(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
         {
             if (!(World.FindItem(reader.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
             {
@@ -270,7 +270,7 @@ namespace Server.Items
             from.Send(new BBMessageContent(board, msg));
         }
 
-        public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, BufferReader reader)
+        public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
         {
             if (!(World.FindItem(reader.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
             {
@@ -280,7 +280,7 @@ namespace Server.Items
             from.Send(new BBMessageHeader(board, msg));
         }
 
-        public static void BBPostMessage(Mobile from, BaseBulletinBoard board, BufferReader reader)
+        public static void BBPostMessage(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
         {
             var thread = World.FindItem(reader.ReadUInt32()) as BulletinMessage;
 
@@ -337,7 +337,7 @@ namespace Server.Items
             board.PostMessage(from, thread, subject, lines);
         }
 
-        public static void BBRemoveMessage(Mobile from, BaseBulletinBoard board, BufferReader reader)
+        public static void BBRemoveMessage(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
         {
             if (!(World.FindItem(reader.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
             {

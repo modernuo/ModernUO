@@ -1,19 +1,13 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: BufferReader.cs                                                 *
- * Created: 2020/08/05 - Updated: 2020/08/07                             *
+ * File: CircularBufferReader.cs                                         *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
  * the Free Software Foundation, either version 3 of the License, or     *
  * (at your option) any later version.                                   *
- *                                                                       *
- * This program is distributed in the hope that it will be useful,       *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- * GNU General Public License for more details.                          *
  *                                                                       *
  * You should have received a copy of the GNU General Public License     *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
@@ -29,7 +23,7 @@ using System.Text;
 
 namespace Server.Network
 {
-    public ref struct BufferReader
+    public ref struct CircularBufferReader
     {
         public Span<byte> First;
         public Span<byte> Second;
@@ -38,7 +32,7 @@ namespace Server.Network
         public int Position { get; private set; }
         public int Remaining => Length - Position;
 
-        public BufferReader(ArraySegment<byte>[] buffers)
+        public CircularBufferReader(ArraySegment<byte>[] buffers)
         {
             First = buffers[0];
             Second = buffers[1];
@@ -46,7 +40,7 @@ namespace Server.Network
             Length = First.Length + Second.Length;
         }
 
-        public BufferReader(Span<byte> first, Span<byte> second)
+        public CircularBufferReader(Span<byte> first, Span<byte> second)
         {
             First = first;
             Second = second;
@@ -214,38 +208,47 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string ReadString<T>(Encoding encoding, bool safeString = false, int fixedLength = -1) where T : struct, IEquatable<T>
         {
-            int sizeT = Unsafe.SizeOf<T>() - 1;
+            int sizeT = Unsafe.SizeOf<T>();
 
-            if (sizeT > 1)
+            if (sizeT > 2)
             {
                 throw new InvalidConstraintException("ReadString only accepts byte, sbyte, char, short, and ushort as a constraint");
             }
 
-            Span<byte> span;
+            bool firstOnly = Position < First.Length;
+            bool isFixedLength = fixedLength > -1;
 
-            if (Position < First.Length)
+            var remaining = firstOnly ? Remaining : Position - First.Length;
+            int size;
+
+            // Not fixed length
+            if (isFixedLength)
             {
-                var remaining = Remaining;
-                int size;
-
-                if (fixedLength < 0)
+                size = fixedLength * sizeT;
+                if (fixedLength > Remaining)
                 {
-                    size = remaining - (remaining & sizeT);
+                    throw new OutOfMemoryException();
                 }
-                else
-                {
-                    size = Math.Min(fixedLength << sizeT, remaining - (remaining & sizeT));
-                }
+            }
+            else
+            {
+                size = remaining - (remaining & (sizeT - 1));
+            }
 
+            Span<byte> span;
+            int index;
+
+            if (firstOnly)
+            {
                 // Find terminator
-                var index = MemoryMarshal.Cast<byte, T>(First.Slice(Position, size))
-                    .IndexOf(default(T));
+                index = MemoryMarshal.Cast<byte, T>(First.Slice(Position, size))
+                    .IndexOf(default(T)) * sizeT;
 
                 // Split over both spans
                 if (index < 0)
                 {
                     index = MemoryMarshal.Cast<byte, T>(Second.Slice(0, size - First.Length))
-                        .IndexOf(default(T));
+                        .IndexOf(default(T)) * sizeT;
 
                     remaining = First.Length - Position;
 
@@ -255,41 +258,24 @@ namespace Server.Network
                     First.Slice(Position).CopyTo(bytes);
                     Second.Slice(0, length - remaining).CopyTo(bytes.Slice(Position));
 
-                    Position += fixedLength > 0 ? fixedLength : length;
+                    Position += isFixedLength ? size : length;
                     return GetString(bytes, encoding, safeString);
                 }
 
                 span = First.Slice(Position, index);
-                Position += fixedLength > 0 ? fixedLength : index;
             }
             else
             {
-                var remaining = Position - First.Length;
-                int size;
-
-                if (fixedLength < 0)
-                {
-                    size = remaining - (remaining & sizeT);
-                }
-                else
-                {
-                    size = Math.Min(fixedLength << sizeT, remaining - (remaining & sizeT));
-                }
-
                 span = Second.Slice(remaining, size);
-                var index = MemoryMarshal.Cast<byte, T>(span).IndexOf(default(T));
+                index = MemoryMarshal.Cast<byte, T>(span).IndexOf(default(T)) * sizeT;
 
-                if (index > -1)
+                if (index >= 0)
                 {
                     span = span.Slice(0, index);
-                    Position += fixedLength > 0 ? fixedLength : index;
-                }
-                else
-                {
-                    Position += fixedLength > 0 ? fixedLength : size;
                 }
             }
 
+            Position += isFixedLength ? size : index;
             return GetString(span, encoding, safeString);
         }
 
@@ -297,6 +283,7 @@ namespace Server.Network
         private static string GetString(Span<byte> span, Encoding encoding, bool safeString = false)
         {
             string s = encoding.GetString(span);
+
             if (!safeString)
             {
                 return s;

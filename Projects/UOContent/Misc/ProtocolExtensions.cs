@@ -27,7 +27,7 @@ namespace Server.Misc
             return null;
         }
 
-        public static void DecodeBundledPacket(NetState state, ref BufferReader reader)
+        public static void DecodeBundledPacket(NetState state, ref CircularBufferReader reader)
         {
             int packetID = reader.ReadByte();
 

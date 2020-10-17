@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Network
 {
-    public delegate void OnPacketReceive(NetState state, ref BufferReader reader);
+    public delegate void OnPacketReceive(NetState state, ref CircularBufferReader reader);
 
     public delegate TimeSpan ThrottlePacketCallback(NetState state);
 
