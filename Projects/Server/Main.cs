@@ -24,7 +24,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Server.Json;
 using Server.Network;
 
@@ -41,23 +40,10 @@ namespace Server
         private static TimeSpan m_ProfileTime;
         private static bool? m_IsRunningFromXUnit;
 
-        /*
-         * DateTime.Now and DateTime.UtcNow are based on actual system clock time.
-         * The resolution is acceptable but large clock jumps are possible and cause issues.
-         * GetTickCount and GetTickCount64 have poor resolution.
-         * Stopwatch.GetTimestamp() (QueryPerformanceCounter) is high resolution, but
-         * somewhat expensive to call because of its difference to DateTime.Now,
-         * which is why Stopwatch has been used to verify HRT before calling GetTimestamp(),
-         * enabling the usage of DateTime.UtcNow instead.
-         */
-
-        private static readonly double m_HighFrequency = 1000.0 / Stopwatch.Frequency;
-        private static readonly double m_LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
-
         private static int m_CycleIndex = 1;
         private static readonly float[] m_CyclesPerSecond = new float[100];
 
-        private static readonly AutoResetEvent m_Signal = new AutoResetEvent(true);
+        // private static readonly AutoResetEvent m_Signal = new AutoResetEvent(true);
 
         private static int m_ItemCount;
         private static int m_MobileCount;
@@ -115,12 +101,9 @@ namespace Server
 
         public static Thread Thread { get; private set; }
 
-        public static long TickCount => (long)Ticks;
+        [ThreadStatic] private static long _TickCount;
 
-        public static double Ticks =>
-            Stopwatch.IsHighResolution
-                ? Stopwatch.GetTimestamp() * m_HighFrequency
-                : DateTime.UtcNow.Ticks * m_LowFrequency;
+        public static long TickCount => _TickCount == 0 ? 1000L * Stopwatch.GetTimestamp() / Stopwatch.Frequency : _TickCount;
 
         public static bool MultiProcessor { get; private set; }
 
@@ -345,7 +328,7 @@ namespace Server
 
         public static void Set()
         {
-            m_Signal.Set();
+            // m_Signal.Set();
         }
 
         public static void Main(string[] args)
@@ -466,31 +449,30 @@ namespace Server
                 m.Tiles.Force();
             }
 
+            TcpServer.Start();
             EventSink.InvokeServerStarted();
-
-            // Start net socket server
-            _tcpHost = TcpServer.CreateWebHostBuilder().Build();
-
-            // Run indefinitely and block
-            _tcpHost.RunAsync(ClosingTokenSource.Token).Wait();
+            RunEventLoop();
         }
 
-        private static IWebHost _tcpHost;
-
-        public static void RunEventLoop(IMessagePumpService messagePumpService)
+        public static void RunEventLoop()
         {
             try
             {
-                var last = TickCount;
+                long now, last = _TickCount;
 
                 const int sampleInterval = 100;
                 const float ticksPerSecond = 1000.0f * sampleInterval;
+                float cyclesPerSecond;
 
                 long sample = 0;
 
                 while (!Closing)
                 {
-                    m_Signal.WaitOne();
+                    // m_Signal.WaitOne();
+
+                    _TickCount = TickCount;
+
+                    TcpServer.Slice();
 
                     Task.WaitAll(
                         Task.Run(Mobile.ProcessDeltaQueue),
@@ -498,18 +480,29 @@ namespace Server
                     );
 
                     Timer.Slice();
-                    messagePumpService.DoWork();
+                    NetState.HandleAllReceives();
 
+                    NetState.FlushAll();
                     NetState.ProcessDisposedQueue();
+
+                    // Execute other stuff
+
+                    _TickCount = 0;
 
                     if (sample++ % sampleInterval != 0)
                     {
                         continue;
                     }
 
-                    var now = TickCount;
-                    m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
+                    now = TickCount;
+                    cyclesPerSecond = ticksPerSecond / (now - last);
+                    m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] = cyclesPerSecond;
                     last = now;
+
+                    if (cyclesPerSecond > 80)
+                    {
+                        Thread.Sleep(2);
+                    }
                 }
             }
             catch (Exception e)

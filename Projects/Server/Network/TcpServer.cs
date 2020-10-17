@@ -119,18 +119,18 @@ namespace Server.Network
         }
 
         /**
-     * Pauses the TcpServer and stops accepting new sockets.
-     * This is thread-safe without using locks.
-     */
+         * Pauses the TcpServer and stops accepting new sockets.
+         * This is thread-safe without using locks.
+         */
         public static void Pause()
         {
             NetworkState.Pause(ref m_NetworkState);
         }
 
         /**
-     * Resumes accepting sockets on the TcpServer.
-     * This is thread-safe using a lock on the listeners
-     */
+         * Resumes accepting sockets on the TcpServer.
+         * This is thread-safe using a lock on the listeners
+         */
         public static void Resume()
         {
             if (!NetworkState.Resume(ref m_NetworkState))

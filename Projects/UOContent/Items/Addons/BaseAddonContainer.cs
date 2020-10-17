@@ -295,7 +295,12 @@ namespace Server.Items
                 {
                     var door = doors[i];
 
-                    if (door?.Open == true)
+                    if (door == null)
+                    {
+                        continue;
+                    }
+
+                    if (door.Open)
                     {
                         return AddonFitResult.DoorsNotClosed;
                     }

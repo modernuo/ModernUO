@@ -221,7 +221,7 @@ namespace Server.Network
 
                     if ((m_State & State.Static) != 0)
                     {
-                        m_CompiledBuffer = new byte[length];
+                        m_CompiledBuffer = ArrayPool<byte>.Shared.Rent(length);
                         Buffer.BlockCopy(buffer, 0, m_CompiledBuffer, 0, length);
                         ArrayPool<byte>.Shared.Return(buffer);
                     }
@@ -239,7 +239,7 @@ namespace Server.Network
 
                 if ((m_State & State.Static) != 0)
                 {
-                    m_CompiledBuffer = new byte[length];
+                    m_CompiledBuffer = ArrayPool<byte>.Shared.Rent(length);
                 }
                 else
                 {

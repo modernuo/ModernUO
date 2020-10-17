@@ -33,23 +33,54 @@ namespace Server.Network
 
     public partial class NetState : IComparable<NetState>
     {
+        private static int IncomingPipeSize;
+        private static int OutgoingPipeSize;
+        private static int GumpCap;
+        private static int HuePickerCap;
+        private static int MenuCap;
+
         private static readonly ConcurrentQueue<NetState> m_Disposed = new ConcurrentQueue<NetState>();
+        private static NetworkState m_NetworkState = NetworkState.ResumeState;
+
+        public static NetStateCreatedCallback CreatedCallback { get; set; }
+
         private readonly string m_ToString;
-        internal int m_AuthID;
-
         private int m_Disposing;
-
-        internal int m_Seed;
         private ClientVersion m_Version;
+        private Pipe m_IncomingPipe;
+        private Pipe m_OutgoingPipe;
+        private long m_NextCheckActivity;
+        private volatile bool m_Running;
+
+        internal int m_AuthID;
+        internal int m_Seed;
+
+        public static void Configure()
+        {
+            IncomingPipeSize = ServerConfiguration.GetOrUpdateSetting("netstate.incomingPipeSize", 1024 * 64);
+            OutgoingPipeSize = ServerConfiguration.GetOrUpdateSetting("netstate.outgoingPipeSize", 1024 * 256);
+            GumpCap = ServerConfiguration.GetOrUpdateSetting("netstate.gumpCap", 512);
+            HuePickerCap = ServerConfiguration.GetOrUpdateSetting("netstate.huePickerCap", 512);
+            MenuCap = ServerConfiguration.GetOrUpdateSetting("netstate.menuCap", 512);
+        }
+
+        public static void Initialize()
+        {
+            var checkAliveDuration = TimeSpan.FromMinutes(1.5);
+            Timer.DelayCall(checkAliveDuration, checkAliveDuration, CheckAllAlive);
+        }
 
         public NetState(Socket connection)
         {
+            m_Running = false;
             Connection = connection;
             Seeded = false;
             Gumps = new List<Gump>();
             HuePickers = new List<HuePicker>();
             Menus = new List<IMenu>();
             Trades = new List<SecureTrade>();
+            m_IncomingPipe = new Pipe(new byte[IncomingPipeSize]);
+            m_OutgoingPipe = new Pipe(new byte[OutgoingPipeSize]);
 
             try
             {
@@ -77,17 +108,15 @@ namespace Server.Network
 
         public IPAddress Address { get; }
 
-        private static NetworkState m_NetworkState = NetworkState.ResumeState;
-
         public IPacketEncoder PacketEncoder { get; set; }
-
-        public static NetStateCreatedCallback CreatedCallback { get; set; }
 
         public bool SentFirstPacket { get; set; }
 
         public bool BlockAllPackets { get; set; }
 
         public List<SecureTrade> Trades { get; }
+
+        public bool Running => m_Running;
 
         public bool Seeded { get; set; }
 
@@ -102,12 +131,6 @@ namespace Server.Network
         public List<HuePicker> HuePickers { get; private set; }
 
         public List<IMenu> Menus { get; private set; }
-
-        public static int GumpCap { get; set; } = 512;
-
-        public static int HuePickerCap { get; set; } = 512;
-
-        public static int MenuCap { get; set; } = 512;
 
         public CityInfo[] CityInfo { get; set; }
 
@@ -320,18 +343,7 @@ namespace Server.Network
 
         public static void Resume()
         {
-            if (!NetworkState.Resume(ref m_NetworkState))
-            {
-                return;
-            }
-
-            lock (TcpServer.ConnectedClients)
-            {
-                foreach (var ns in TcpServer.ConnectedClients)
-                {
-                    ns.StartReceiving();
-                }
-            }
+            NetworkState.Resume(ref m_NetworkState);
         }
 
         public virtual async void Send(Packet p)
@@ -342,21 +354,28 @@ namespace Server.Network
                 return;
             }
 
-            var outPipe = Connection.Transport.Output;
-
             try
             {
-                // TODO: Rented memory
-                ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out var length);
+                byte[] buffer = p.Compile(CompressionEnabled, out var length);
 
                 if (buffer.Length > 0 && length > 0)
                 {
-                    var result = await outPipe.WriteAsync(buffer.Slice(0, length));
+                    var writer = m_OutgoingPipe.Writer;
+                    var result = writer.GetBytes();
 
                     if (result.IsCanceled || result.IsCompleted)
                     {
                         Dispose();
-                        return;
+                    }
+                    else if (result.Length >= length)
+                    {
+                        result.CopyFrom(buffer.AsSpan(0, length));
+                        writer.Advance((uint)length);
+                    }
+                    else
+                    {
+                        WriteConsole("Too much data pending, disconnecting...");
+                        Dispose();
                     }
                 }
 
@@ -375,40 +394,72 @@ namespace Server.Network
             }
         }
 
-        public async Task ProcessIncoming(IMessagePumpService messagePumpService)
+        internal void Start()
         {
-            var inPipe = Connection.Transport.Input;
+            if (Connection == null || m_Running)
+            {
+                return;
+            }
+
+            m_Running = true;
+
+            ThreadPool.UnsafeQueueUserWorkItem(RecvTask, null);
+            ThreadPool.UnsafeQueueUserWorkItem(SendTask, null);
+        }
+
+        private async void SendTask(object state)
+        {
+            var reader = m_OutgoingPipe.Reader;
+
+            while (m_Running)
+            {
+                var result = await reader;
+
+                if (result.IsCanceled || result.IsCompleted)
+                {
+                    break;
+                }
+
+                var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None);
+
+                reader.Advance((uint)bytesWritten);
+            }
+
+            Dispose();
+        }
+
+        private async void RecvTask(object state)
+        {
+            var socket = Connection;
+            var writer = m_IncomingPipe.Writer;
 
             try
             {
                 while (true)
                 {
-                    if (AsyncState.Paused)
+                    if (m_NetworkState == NetworkState.PauseState)
                     {
                         continue;
                     }
 
-                    var result = await inPipe.ReadAsync();
-                    if (result.IsCanceled || result.IsCompleted)
+                    var pipeResult = writer.GetBytes();
+                    if (pipeResult.IsCanceled || pipeResult.IsCompleted)
                     {
                         return;
                     }
 
-                    var seq = result.Buffer;
+                    var buffer = pipeResult.Buffer;
 
-                    if (seq.IsEmpty)
+                    var bytesWritten = await socket.ReceiveAsync(buffer, SocketFlags.None);
+
+                    if (bytesWritten > 0)
                     {
-                        break;
+                        m_NextCheckActivity = Core.TickCount + 90000;
                     }
 
-                    var pos = PacketHandlers.ProcessPacket(messagePumpService, this, seq);
+                    writer.Advance((uint)bytesWritten);
 
-                    if (pos <= 0)
-                    {
-                        break;
-                    }
-
-                    inPipe.AdvanceTo(seq.Slice(0, pos).End);
+                    // No need to flush
                 }
             }
             catch (SocketException ex)
@@ -423,6 +474,108 @@ namespace Server.Network
             finally
             {
                 Dispose();
+            }
+        }
+
+        public static void HandleAllReceives()
+        {
+            var clients = TcpServer.ConnectedClients;
+
+            for (int i = 0; i < clients.Count; ++i)
+            {
+                clients[i].HandleReceive();
+            }
+        }
+
+        public void HandleReceive()
+        {
+            var reader = m_IncomingPipe.Reader;
+
+            // Process as many packets as we can synchronously
+            while (true)
+            {
+                var result = reader.BytesAvailable() <= 0 ? new PipeResult(0) : reader.TryGetBytes();
+
+                if (result.Length <= 0)
+                {
+                    return;
+                }
+
+                var bytesProcessed = PacketHandlers.ProcessPacket(this, result.Buffer);
+
+                if (bytesProcessed <= 0)
+                {
+                    // Error
+                    // TODO: Throw exception instead?
+                    if (bytesProcessed < 0)
+                    {
+                        Dispose();
+                    }
+
+                    return;
+                }
+
+                reader.Advance((uint)bytesProcessed);
+            }
+        }
+
+        public void Flush()
+        {
+            if (Connection != null)
+            {
+                m_OutgoingPipe.Writer.Flush();
+            }
+        }
+
+        public static void FlushAll()
+        {
+            var clients = TcpServer.ConnectedClients;
+
+            if (clients.Count >= 1024)
+            {
+                Parallel.ForEach(clients, ns => ns.Flush());
+            }
+            else
+            {
+                for (int i = 0; i < clients.Count; ++i)
+                {
+                    clients[i].Flush();
+                }
+            }
+        }
+
+        public void CheckAlive(long curTicks)
+        {
+            if (Connection != null && m_NextCheckActivity - curTicks >= 0)
+            {
+                WriteConsole("Disconnecting due to inactivity...");
+                Dispose();
+            }
+        }
+
+        public static void CheckAllAlive()
+        {
+            try
+            {
+                long curTicks = Core.TickCount;
+
+                var clients = TcpServer.ConnectedClients;
+
+                if (clients.Count >= 1024)
+                {
+                    Parallel.ForEach(clients, ns => ns.CheckAlive(curTicks));
+                }
+                else
+                {
+                    for (int i = 0; i < clients.Count; ++i)
+                    {
+                        clients[i].CheckAlive(curTicks);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TraceException(ex);
             }
         }
 
@@ -464,26 +617,25 @@ namespace Server.Network
 
         public virtual void Dispose()
         {
-            var disposing = Interlocked.Exchange(ref m_Disposing, 1);
-            if (disposing == 1)
+            if (Connection == null || Interlocked.Exchange(ref m_Disposing, 1) != 0)
             {
                 return;
             }
 
+            m_OutgoingPipe.Writer.Complete();
+
             try
             {
-                Connection.Transport.Input.Complete();
-                Connection.Transport.Output.Complete();
-                Connection.Abort();
-                Task.Run(Connection.DisposeAsync).Wait();
+                Connection.Shutdown(SocketShutdown.Both);
             }
             catch (Exception ex)
             {
                 TraceException(ex);
             }
-
-            Connection = null;
-            m_Disposed.Enqueue(this);
+            finally
+            {
+                m_Disposed.Enqueue(this);
+            }
         }
 
         public static void ProcessDisposedQueue()
@@ -506,6 +658,10 @@ namespace Server.Network
                     ns.Mobile = null;
                 }
 
+                ns.m_Running = false;
+                ns.Connection = null;
+                ns.m_OutgoingPipe = null;
+                ns.m_IncomingPipe = null;
                 ns.Gumps.Clear();
                 ns.Menus.Clear();
                 ns.HuePickers.Clear();
@@ -515,11 +671,11 @@ namespace Server.Network
 
                 if (a != null)
                 {
-                    ns.WriteConsole("Disconnected. [{0} Online] [{1}]", TcpServer.Instances.Count, a);
+                    ns.WriteConsole("Disconnected. [{0} Online] [{1}]", TcpServer.ConnectedClients.Count, a);
                 }
                 else
                 {
-                    ns.WriteConsole("Disconnected. [{0} Online]", TcpServer.Instances.Count);
+                    ns.WriteConsole("Disconnected. [{0} Online]", TcpServer.ConnectedClients.Count);
                 }
             }
         }

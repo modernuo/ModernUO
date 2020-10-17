@@ -267,15 +267,11 @@ namespace Server.Network
             }
         }
 
-        public static int ProcessPacket(IMessagePumpService pump, NetState ns, in ReadOnlySequence<byte> seq)
+        public static int ProcessPacket(NetState ns, ArraySegment<byte>[] segments)
         {
-            var r = new BufferReader(seq);
+            var r = new BufferReader(segments);
 
-            if (!r.TryReadByte(out var packetId))
-            {
-                ns.Dispose();
-                return -1;
-            }
+            var packetId = r.ReadByte();
 
             if (!ns.Seeded)
             {
@@ -291,8 +287,7 @@ namespace Server.Network
 
                     if (seed == 0)
                     {
-                        Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", ns);
-                        ns.Dispose();
+                        ns.WriteConsole("Invalid client detected, disconnecting");
                         return -1;
                     }
 
@@ -305,7 +300,6 @@ namespace Server.Network
 
             if (ns.CheckEncrypted(packetId))
             {
-                ns.Dispose();
                 return -1;
             }
 
@@ -324,11 +318,11 @@ namespace Server.Network
                 packetLength = r.ReadUInt16();
                 if (packetLength < 3)
                 {
-                    ns.Dispose();
                     return -1;
                 }
             }
 
+            // Not enough data, let's wait for more to come in
             if (r.Length < packetLength)
             {
                 return 0;
@@ -336,12 +330,7 @@ namespace Server.Network
 
             if (handler.Ingame && ns.Mobile?.Deleted != false)
             {
-                Console.WriteLine(
-                    "Client: {0}: Sent ingame packet (0x{1:X2}) without being attached to a valid mobile.",
-                    ns,
-                    packetId
-                );
-                ns.Dispose();
+                ns.WriteConsole("Sent ingame packet (0x{1:X2}) without being attached to a valid mobile.", ns, packetId);
                 return -1;
             }
 
@@ -352,16 +341,7 @@ namespace Server.Network
                 ns.ThrottledUntil = DateTime.UtcNow + throttled;
             }
 
-            var packet = seq.Slice(r.Position);
-            var length = (int)packet.Length;
-            var memOwner = _memoryPool.Rent(length);
-
-            // TODO: This is slow, find another way
-            packet.CopyTo(memOwner.Memory.Span);
-
-            pump.QueueWork(ns, memOwner, length, handler.OnReceive);
-
-            return packetLength;
+            return r.Position;
         }
 
         private static void UnhandledBF(NetState state, BufferReader reader)
@@ -521,7 +501,7 @@ namespace Server.Network
 
             if (flag == 0x02)
             {
-                var msgSize = (int)reader.Remaining;
+                var msgSize = reader.Remaining;
 
                 if (msgSize / 7 > 100)
                 {
