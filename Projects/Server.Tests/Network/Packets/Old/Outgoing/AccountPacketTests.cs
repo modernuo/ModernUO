@@ -1,11 +1,7 @@
 using System;
 using System.Buffers;
-using System.Collections.Generic;
-using System.IO.Pipelines;
 using System.Linq;
 using System.Net;
-using Microsoft.AspNetCore.Connections;
-using Microsoft.AspNetCore.Http.Features;
 using Server.Accounting;
 using Server.Network;
 using Xunit;
@@ -647,14 +643,6 @@ namespace Server.Tests.Network.Packets
             public bool CheckPassword(string password) => m_Password == password;
 
             public int CompareTo(TestAccount other) => other == null ? 1 : Username.CompareTo(other.Username);
-        }
-
-        internal class TestConnectionContext : ConnectionContext
-        {
-            public override string ConnectionId { get; set; }
-            public override IFeatureCollection Features { get; }
-            public override IDictionary<object, object> Items { get; set; }
-            public override IDuplexPipe Transport { get; set; }
         }
     }
 }
