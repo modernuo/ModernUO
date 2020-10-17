@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Server.Accounting;
@@ -33,11 +34,11 @@ namespace Server.Network
 
     public partial class NetState : IComparable<NetState>
     {
-        private static int IncomingPipeSize;
-        private static int OutgoingPipeSize;
-        private static int GumpCap;
-        private static int HuePickerCap;
-        private static int MenuCap;
+        private static int IncomingPipeSize = 1024 * 64;
+        private static int OutgoingPipeSize = 1024 * 256;
+        private static int GumpCap = 512;
+        private static int HuePickerCap = 512;
+        private static int MenuCap = 512;
 
         private static readonly ConcurrentQueue<NetState> m_Disposed = new ConcurrentQueue<NetState>();
         private static NetworkState m_NetworkState = NetworkState.ResumeState;
@@ -47,7 +48,9 @@ namespace Server.Network
         private readonly string m_ToString;
         private int m_Disposing;
         private ClientVersion m_Version;
+        private byte[] m_IncomingBuffer;
         private Pipe m_IncomingPipe;
+        private byte[] m_OutgoingBuffer;
         private Pipe m_OutgoingPipe;
         private long m_NextCheckActivity;
         private volatile bool m_Running;
@@ -57,11 +60,11 @@ namespace Server.Network
 
         public static void Configure()
         {
-            IncomingPipeSize = ServerConfiguration.GetOrUpdateSetting("netstate.incomingPipeSize", 1024 * 64);
-            OutgoingPipeSize = ServerConfiguration.GetOrUpdateSetting("netstate.outgoingPipeSize", 1024 * 256);
-            GumpCap = ServerConfiguration.GetOrUpdateSetting("netstate.gumpCap", 512);
-            HuePickerCap = ServerConfiguration.GetOrUpdateSetting("netstate.huePickerCap", 512);
-            MenuCap = ServerConfiguration.GetOrUpdateSetting("netstate.menuCap", 512);
+            IncomingPipeSize = ServerConfiguration.GetOrUpdateSetting("netstate.incomingPipeSize", IncomingPipeSize);
+            OutgoingPipeSize = ServerConfiguration.GetOrUpdateSetting("netstate.outgoingPipeSize", OutgoingPipeSize);
+            GumpCap = ServerConfiguration.GetOrUpdateSetting("netstate.gumpCap", GumpCap);
+            HuePickerCap = ServerConfiguration.GetOrUpdateSetting("netstate.huePickerCap", HuePickerCap);
+            MenuCap = ServerConfiguration.GetOrUpdateSetting("netstate.menuCap", MenuCap);
         }
 
         public static void Initialize()
@@ -79,8 +82,10 @@ namespace Server.Network
             HuePickers = new List<HuePicker>();
             Menus = new List<IMenu>();
             Trades = new List<SecureTrade>();
-            m_IncomingPipe = new Pipe(new byte[IncomingPipeSize]);
-            m_OutgoingPipe = new Pipe(new byte[OutgoingPipeSize]);
+            m_IncomingBuffer = new byte[IncomingPipeSize];
+            m_IncomingPipe = new Pipe(m_IncomingBuffer);
+            m_OutgoingBuffer = new byte[OutgoingPipeSize];
+            m_OutgoingPipe = new Pipe(m_OutgoingBuffer);
 
             try
             {
@@ -417,12 +422,24 @@ namespace Server.Network
 
                 if (result.IsCanceled || result.IsCompleted)
                 {
+                    Console.WriteLine("Outgoing pipe is canceled or completed");
                     break;
                 }
 
+                if (result.Length <= 0)
+                {
+                    continue;
+                }
+
+                Console.WriteLine("Sending data to socket");
+
                 var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None);
 
-                reader.Advance((uint)bytesWritten);
+                if (bytesWritten > 0)
+                {
+                    Console.WriteLine("Sent {0} to the socket", bytesWritten);
+                    reader.Advance((uint)bytesWritten);
+                }
             }
 
             Dispose();
@@ -445,6 +462,7 @@ namespace Server.Network
                     var pipeResult = writer.GetBytes();
                     if (pipeResult.IsCanceled || pipeResult.IsCompleted)
                     {
+                        WriteConsole("Incoming Writer Pipe cancelled or completed");
                         return;
                     }
 
@@ -454,10 +472,18 @@ namespace Server.Network
 
                     if (bytesWritten > 0)
                     {
+                        WriteConsole("Received data {0}", bytesWritten);
+                        var str1 = HexStringConverter.GetString(
+                            buffer[0].AsSpan(0, Math.Min(bytesWritten, buffer[0].Count))
+                        );
+                        var str2 = HexStringConverter.GetString(
+                            buffer[1].AsSpan(0, Math.Clamp(bytesWritten - buffer[0].Count, 0, buffer[1].Count))
+                        );
+                        var str = $"{str1}{str2}";
+                        WriteConsole("Data: {0}", str);
+                        writer.Advance((uint)bytesWritten);
                         m_NextCheckActivity = Core.TickCount + 90000;
                     }
-
-                    writer.Advance((uint)bytesWritten);
 
                     // No need to flush
                 }
@@ -467,9 +493,9 @@ namespace Server.Network
                 Console.WriteLine(ex);
                 TraceException(ex);
             }
-            catch
+            catch (Exception ex)
             {
-                // Console.WriteLine(ex);
+                Console.WriteLine(ex);
             }
             finally
             {
@@ -489,33 +515,48 @@ namespace Server.Network
 
         public void HandleReceive()
         {
-            var reader = m_IncomingPipe.Reader;
-
-            // Process as many packets as we can synchronously
-            while (true)
+            if (Connection == null)
             {
-                var result = reader.BytesAvailable() <= 0 ? new PipeResult(0) : reader.TryGetBytes();
+                return;
+            }
 
-                if (result.Length <= 0)
+            try
+            {
+                var reader = m_IncomingPipe.Reader;
+
+                // Process as many packets as we can synchronously
+                while (true)
                 {
-                    return;
-                }
+                    var result = reader.BytesAvailable() <= 0 ? new PipeResult(0) : reader.TryGetBytes();
 
-                var bytesProcessed = PacketHandlers.ProcessPacket(this, result.Buffer);
-
-                if (bytesProcessed <= 0)
-                {
-                    // Error
-                    // TODO: Throw exception instead?
-                    if (bytesProcessed < 0)
+                    if (result.Length <= 0)
                     {
-                        Dispose();
+                        return;
                     }
 
-                    return;
-                }
+                    var bytesProcessed = PacketHandlers.ProcessPacket(this, result.Buffer);
 
-                reader.Advance((uint)bytesProcessed);
+                    if (bytesProcessed <= 0)
+                    {
+                        WriteConsole("Error Processing, bytes: {0}", bytesProcessed);
+                        // Error
+                        // TODO: Throw exception instead?
+                        if (bytesProcessed < 0)
+                        {
+                            Dispose();
+                        }
+
+                        return;
+                    }
+
+                    WriteConsole("Received and Processed {0} bytes", bytesProcessed);
+
+                    reader.Advance((uint)bytesProcessed);
+                }
+            }
+            catch
+            {
+                Dispose();
             }
         }
 

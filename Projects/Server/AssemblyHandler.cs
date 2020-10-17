@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 
 namespace Server
@@ -44,14 +45,11 @@ namespace Server
         {
             var invoke = new List<MethodInfo>();
 
-            for (var a = 0; a < Assemblies.Length; ++a)
+            Core.Assembly.AddMethods(method, invoke);
+
+            for (var i = 0; i < Assemblies.Length; i++)
             {
-                invoke.AddRange(
-                    Assemblies[a]
-                        .GetTypes()
-                        .Select(t => t.GetMethod(method, BindingFlags.Static | BindingFlags.Public))
-                        .Where(m => m != null)
-                );
+                Assemblies[i].AddMethods(method, invoke);
             }
 
             invoke.Sort(new CallPriorityComparer());
@@ -61,6 +59,21 @@ namespace Server
                 invoke[i].Invoke(null, null);
             }
         }
+
+        private static void AddMethods(this Assembly assembly, string method, List<MethodInfo> list)
+        {
+            var types = assembly.GetTypes();
+
+            for (int i = 0; i < types.Length; i++)
+            {
+                var m = types[i].GetMethod(method, BindingFlags.Static | BindingFlags.Public);
+                if (m != null)
+                {
+                    list.Add(m);
+                }
+            }
+        }
+
 
         public static TypeCache GetTypeCache(Assembly asm)
         {

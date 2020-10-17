@@ -158,10 +158,10 @@ namespace Server.Network
                     break;
                 }
 
-                ConnectedClients.Add(ns);
                 ns.Start();
+                ConnectedClients.Add(ns);
 
-                Console.WriteLine("Client: {0}: Connected. [{1} Online]", ns, ConnectedClients.Count);
+                ns.WriteConsole("Connected. [{0} Online]", ConnectedClients.Count);
             }
         }
 

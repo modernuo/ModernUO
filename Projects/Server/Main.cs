@@ -472,16 +472,16 @@ namespace Server
 
                     _TickCount = TickCount;
 
-                    TcpServer.Slice();
-
                     Task.WaitAll(
                         Task.Run(Mobile.ProcessDeltaQueue),
                         Task.Run(Item.ProcessDeltaQueue)
                     );
 
                     Timer.Slice();
-                    NetState.HandleAllReceives();
 
+                    // Handle networking
+                    TcpServer.Slice();
+                    NetState.HandleAllReceives();
                     NetState.FlushAll();
                     NetState.ProcessDisposedQueue();
 

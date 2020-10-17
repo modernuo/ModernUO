@@ -31,9 +31,9 @@ namespace Server.Network
 
         public uint Size => (uint)m_Buffer.Length;
 
-        public Pipe(byte[] buf)
+        public Pipe(byte[] buffer)
         {
-            m_Buffer = buf;
+            m_Buffer = buffer;
             _writeIdx = 0;
             _readIdx = 0;
 
