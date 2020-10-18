@@ -190,12 +190,12 @@ namespace Server.Network
 
             m_CompiledBuffer = ms.GetBuffer();
             var length = (int)ms.Length;
+            var rentedBuffer = ArrayPool<byte>.Shared.Rent(CompressorBufferSize);
+            var old = m_CompiledBuffer;
 
             if (compress)
             {
-                var buffer = ArrayPool<byte>.Shared.Rent(CompressorBufferSize);
-
-                NetworkCompression.Compress(m_CompiledBuffer, 0, length, buffer, out length);
+                NetworkCompression.Compress(m_CompiledBuffer, 0, length, rentedBuffer, out length);
 
                 if (length <= 0)
                 {
@@ -217,37 +217,23 @@ namespace Server.Network
                 }
                 else
                 {
-                    m_CompiledLength = length;
-
-                    if ((m_State & State.Static) != 0)
-                    {
-                        m_CompiledBuffer = ArrayPool<byte>.Shared.Rent(length);
-                        Buffer.BlockCopy(buffer, 0, m_CompiledBuffer, 0, length);
-                        ArrayPool<byte>.Shared.Return(buffer);
-                    }
-                    else
-                    {
-                        m_CompiledBuffer = buffer;
-                        m_State |= State.Buffered;
-                    }
+                    old = rentedBuffer;
                 }
             }
-            else if (length > 0)
+
+            m_CompiledLength = length;
+
+            if (length > rentedBuffer.Length || (m_State & State.Static) != 0)
             {
-                var old = m_CompiledBuffer;
-                m_CompiledLength = length;
-
-                if ((m_State & State.Static) != 0)
-                {
-                    m_CompiledBuffer = ArrayPool<byte>.Shared.Rent(length);
-                }
-                else
-                {
-                    m_CompiledBuffer = ArrayPool<byte>.Shared.Rent(length);
-                    m_State |= State.Buffered;
-                }
-
+                m_CompiledBuffer = new byte[length];
                 Buffer.BlockCopy(old, 0, m_CompiledBuffer, 0, length);
+                ArrayPool<byte>.Shared.Return(rentedBuffer);
+            }
+            else
+            {
+                // Release it later using Release()
+                m_CompiledBuffer = rentedBuffer;
+                m_State |= State.Buffered;
             }
 
             PacketWriter.ReleaseInstance(Stream);

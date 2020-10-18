@@ -429,7 +429,7 @@ namespace Server.Network
 
                 if (bytesWritten > 0)
                 {
-                    WriteConsole("Sent {0} bytes", bytesWritten);
+                    // WriteConsole("Sent {0} bytes", bytesWritten);
                     m_NextCheckActivity = Core.TickCount + 90000;
                     reader.Advance((uint)bytesWritten);
                 }

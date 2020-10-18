@@ -154,7 +154,7 @@ namespace Server.Tests.Network.Packets
             Span<byte> expectedData = stackalloc byte[14];
             var pos = 0;
 
-            expectedData.Write(ref pos, (byte)0x6E);
+            expectedData.Write(ref pos, (byte)0x6E); // Packet ID
             expectedData.Write(ref pos, mobile);
             expectedData.Write(ref pos, (ushort)action);
             expectedData.Write(ref pos, (ushort)frameCount);
