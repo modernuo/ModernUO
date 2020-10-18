@@ -1,3 +1,18 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: SpanWriteExtensions.cs                                          *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -5,7 +20,7 @@ using Server;
 
 namespace System.Buffers
 {
-    public static class SpanExtensions
+    public static class SpanWriteExtensions
     {
         // Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -137,7 +152,7 @@ namespace System.Buffers
             var length = value.Length;
             pos += Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
 #if NO_LOCAL_INIT
-      span[pos] = 0; // Null terminator
+            span[pos] = 0; // Null terminator
 #endif
             pos++;
         }
@@ -149,7 +164,7 @@ namespace System.Buffers
 
             pos += Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
 #if NO_LOCAL_INIT
-      span[pos] = 0; // Null terminator
+            span[pos] = 0; // Null terminator
 #endif
             pos++;
         }
@@ -159,10 +174,10 @@ namespace System.Buffers
         {
             var length = value.Length <= amount ? value.Length : amount;
 #if NO_LOCAL_INIT
-      int bytesWritten = Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
+            int bytesWritten = Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
 
-      if (bytesWritten < amount)
-        span.Slice(pos + bytesWritten, amount - bytesWritten).Clear();
+            if (bytesWritten < amount)
+                span.Slice(pos + bytesWritten, amount - bytesWritten).Clear();
 #else
             Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
 #endif
@@ -187,7 +202,7 @@ namespace System.Buffers
         {
             pos += Encoding.BigEndianUnicode.GetBytes(value, span.Slice(pos));
 #if NO_LOCAL_INIT
-      BinaryPrimitives.WriteUInt16BigEndian(span.Slice(pos, 2), 0); // Null terminator
+            BinaryPrimitives.WriteUInt16BigEndian(span.Slice(pos, 2), 0); // Null terminator
 #endif
             pos += 2;
         }
@@ -197,7 +212,7 @@ namespace System.Buffers
         {
             pos += Encoding.Unicode.GetBytes(value, span.Slice(pos));
 #if NO_LOCAL_INIT
-      BinaryPrimitives.WriteUInt16BigEndian(span.Slice(pos, 2), 0); // Null terminator
+            BinaryPrimitives.WriteUInt16BigEndian(span.Slice(pos, 2), 0); // Null terminator
 #endif
             pos += 2;
         }
