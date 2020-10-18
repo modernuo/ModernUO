@@ -232,13 +232,13 @@ namespace Server.Items
             PacketHandlers.Register(0x71, 0, true, BBClientRequest);
         }
 
-        public static void BBClientRequest(NetState state, PacketReader pvSrc)
+        public static void BBClientRequest(NetState state, PacketReader reader)
         {
             var from = state.Mobile;
 
-            int packetID = pvSrc.ReadByte();
+            int packetID = reader.ReadByte();
 
-            if (!(World.FindItem(pvSrc.ReadUInt32()) is BaseBulletinBoard board) || !board.CheckRange(from))
+            if (!(World.FindItem(reader.ReadUInt32()) is BaseBulletinBoard board) || !board.CheckRange(from))
             {
                 return;
             }
@@ -246,23 +246,23 @@ namespace Server.Items
             switch (packetID)
             {
                 case 3:
-                    BBRequestContent(from, board, pvSrc);
+                    BBRequestContent(from, board, reader);
                     break;
                 case 4:
-                    BBRequestHeader(from, board, pvSrc);
+                    BBRequestHeader(from, board, reader);
                     break;
                 case 5:
-                    BBPostMessage(from, board, pvSrc);
+                    BBPostMessage(from, board, reader);
                     break;
                 case 6:
-                    BBRemoveMessage(from, board, pvSrc);
+                    BBRemoveMessage(from, board, reader);
                     break;
             }
         }
 
-        public static void BBRequestContent(Mobile from, BaseBulletinBoard board, PacketReader pvSrc)
+        public static void BBRequestContent(Mobile from, BaseBulletinBoard board, PacketReader reader)
         {
-            if (!(World.FindItem(pvSrc.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
+            if (!(World.FindItem(reader.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
             {
                 return;
             }
@@ -270,9 +270,9 @@ namespace Server.Items
             from.Send(new BBMessageContent(board, msg));
         }
 
-        public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, PacketReader pvSrc)
+        public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, PacketReader reader)
         {
-            if (!(World.FindItem(pvSrc.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
+            if (!(World.FindItem(reader.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
             {
                 return;
             }
@@ -280,9 +280,9 @@ namespace Server.Items
             from.Send(new BBMessageHeader(board, msg));
         }
 
-        public static void BBPostMessage(Mobile from, BaseBulletinBoard board, PacketReader pvSrc)
+        public static void BBPostMessage(Mobile from, BaseBulletinBoard board, PacketReader reader)
         {
-            var thread = World.FindItem(pvSrc.ReadUInt32()) as BulletinMessage;
+            var thread = World.FindItem(reader.ReadUInt32()) as BulletinMessage;
 
             if (thread != null && thread.Parent != board)
             {
@@ -315,14 +315,14 @@ namespace Server.Items
                 }
             }
 
-            var subject = pvSrc.ReadUTF8StringSafe(pvSrc.ReadByte());
+            var subject = reader.ReadUTF8StringSafe(reader.ReadByte());
 
             if (subject.Length == 0)
             {
                 return;
             }
 
-            var lines = new string[pvSrc.ReadByte()];
+            var lines = new string[reader.ReadByte()];
 
             if (lines.Length == 0)
             {
@@ -331,15 +331,15 @@ namespace Server.Items
 
             for (var i = 0; i < lines.Length; ++i)
             {
-                lines[i] = pvSrc.ReadUTF8StringSafe(pvSrc.ReadByte());
+                lines[i] = reader.ReadUTF8StringSafe(reader.ReadByte());
             }
 
             board.PostMessage(from, thread, subject, lines);
         }
 
-        public static void BBRemoveMessage(Mobile from, BaseBulletinBoard board, PacketReader pvSrc)
+        public static void BBRemoveMessage(Mobile from, BaseBulletinBoard board, PacketReader reader)
         {
-            if (!(World.FindItem(pvSrc.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
+            if (!(World.FindItem(reader.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
             {
                 return;
             }
