@@ -214,6 +214,7 @@ namespace Server.Tests.Network.Packets
             }
 
             expectedData.WritePacked(ref pos, buffer.Slice(0, bufferPos));
+            ArrayPool<byte>.Shared.Return(rawBuffer);
 
             // Length
             expectedData.Slice(1, 2).Write((ushort)pos);
