@@ -101,10 +101,7 @@ namespace Server
 
         public static Thread Thread { get; private set; }
 
-        [ThreadStatic]
-        private static long _TickCount;
-
-        public static long TickCount => _TickCount == 0 ? 1000L * Stopwatch.GetTimestamp() / Stopwatch.Frequency : _TickCount;
+        public static long TickCount => 1000L * Stopwatch.GetTimestamp() / Stopwatch.Frequency;
 
         public static bool MultiProcessor { get; private set; }
 
@@ -459,7 +456,7 @@ namespace Server
         {
             try
             {
-                long now, last = _TickCount;
+                long last = TickCount;
 
                 const int sampleInterval = 100;
                 const float ticksPerSecond = 1000.0f * sampleInterval;
@@ -470,8 +467,6 @@ namespace Server
                 while (!Closing)
                 {
                     // m_Signal.WaitOne();
-
-                    _TickCount = TickCount;
 
                     Task.WaitAll(
                         Task.Run(Mobile.ProcessDeltaQueue),
@@ -488,14 +483,12 @@ namespace Server
 
                     // Execute other stuff
 
-                    _TickCount = 0;
-
                     if (sample++ % sampleInterval != 0)
                     {
                         continue;
                     }
 
-                    now = TickCount;
+                    var now = TickCount;
                     cyclesPerSecond = ticksPerSecond / (now - last);
                     m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] = cyclesPerSecond;
                     last = now;
