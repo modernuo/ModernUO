@@ -351,7 +351,7 @@ namespace Server.Network
             NetworkState.Resume(ref m_NetworkState);
         }
 
-        public virtual async void Send(Packet p)
+        public virtual void Send(Packet p)
         {
             if (Connection == null || BlockAllPackets)
             {
@@ -386,15 +386,10 @@ namespace Server.Network
 
                 p.OnSend();
             }
-            catch (SocketException ex)
-            {
-                Console.WriteLine(ex);
-                TraceException(ex);
-                Dispose();
-            }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                TraceException(ex);
                 Dispose();
             }
         }
@@ -434,6 +429,7 @@ namespace Server.Network
 
                 if (bytesWritten > 0)
                 {
+                    WriteConsole("Sent {0} bytes", bytesWritten);
                     m_NextCheckActivity = Core.TickCount + 90000;
                     reader.Advance((uint)bytesWritten);
                 }
@@ -470,6 +466,8 @@ namespace Server.Network
                     {
                         break;
                     }
+
+                    WriteConsole("Received {0} bytes", bytesWritten);
 
                     writer.Advance((uint)bytesWritten);
                     m_NextCheckActivity = Core.TickCount + 90000;
@@ -531,15 +529,25 @@ namespace Server.Network
                         {
                             Dispose();
                         }
+                        else
+                        {
+                            WriteConsole("Not enough room for an entire packet!");
+                        }
 
                         return;
                     }
 
+                    WriteConsole("Processed {0} bytes for packet {1:X}", bytesProcessed, result.Buffer[0][0]);
+
                     reader.Advance((uint)bytesProcessed);
                 }
             }
-            catch
+            catch (Exception e)
             {
+#if DEBUG
+                Console.WriteLine(ex);
+                TraceException(ex);
+#endif
                 Dispose();
             }
         }
