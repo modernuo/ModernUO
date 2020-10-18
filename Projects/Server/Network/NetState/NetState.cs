@@ -542,7 +542,7 @@ namespace Server.Network
                     reader.Advance((uint)bytesProcessed);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
 #if DEBUG
                 Console.WriteLine(ex);
