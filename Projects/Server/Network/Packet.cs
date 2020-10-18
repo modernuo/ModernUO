@@ -190,11 +190,10 @@ namespace Server.Network
 
             m_CompiledBuffer = ms.GetBuffer();
             var length = (int)ms.Length;
-            var compressorBuffer = ArrayPool<byte>.Shared.Rent(CompressorBufferSize);
-            var returnBuffer = true;
 
             if (compress)
             {
+                var compressorBuffer = ArrayPool<byte>.Shared.Rent(CompressorBufferSize);
                 NetworkCompression.Compress(m_CompiledBuffer, 0, length, compressorBuffer, out length);
 
                 if (length <= 0)
@@ -214,6 +213,8 @@ namespace Server.Network
                         length
                     );
                     op.WriteLine(new StackTrace());
+
+                    ArrayPool<byte>.Shared.Return(compressorBuffer);
                 }
                 else
                 {
@@ -226,28 +227,23 @@ namespace Server.Network
                 var old = m_CompiledBuffer;
                 m_CompiledLength = length;
 
-                if (length > compressorBuffer.Length || (m_State & State.Static) != 0)
+                if ((m_State & State.Static) != 0)
                 {
                     m_CompiledBuffer = new byte[length];
                 }
                 else
                 {
                     // Release it later using Release()
-                    returnBuffer = false;
-                    m_CompiledBuffer = compressorBuffer;
+                    m_CompiledBuffer = ArrayPool<byte>.Shared.Rent(length);
                     m_State |= State.Buffered;
                 }
 
-                // Static Packet or Compressed Packet requires copying
-                if (!(returnBuffer && compress))
-                {
-                    Buffer.BlockCopy(old, 0, m_CompiledBuffer, 0, length);
-                }
-            }
+                Buffer.BlockCopy(old, 0, m_CompiledBuffer, 0, length);
 
-            if (returnBuffer)
-            {
-                ArrayPool<byte>.Shared.Return(compressorBuffer);
+                if (compress)
+                {
+                    ArrayPool<byte>.Shared.Return(old);
+                }
             }
 
             PacketWriter.ReleaseInstance(Stream);
