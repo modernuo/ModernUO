@@ -96,7 +96,7 @@ namespace Server.Gumps
             var filter = rawFilter.Trim().ToLower().IsNullOrDefault(null);
 
             var list = new List<Mobile>();
-            var states = TcpServer.ConnectedClients;
+            var states = TcpServer.Instances;
 
             for (var i = 0; i < states.Count; ++i)
             {

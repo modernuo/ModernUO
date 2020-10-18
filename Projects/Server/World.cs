@@ -88,7 +88,7 @@ namespace Server
                 p = new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text);
             }
 
-            var list = TcpServer.ConnectedClients;
+            var list = TcpServer.Instances;
 
             p.Acquire();
 

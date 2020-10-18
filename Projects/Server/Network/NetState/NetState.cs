@@ -492,7 +492,7 @@ namespace Server.Network
 
         public static void HandleAllReceives()
         {
-            var clients = TcpServer.ConnectedClients;
+            var clients = TcpServer.Instances;
 
             for (int i = 0; i < clients.Count; ++i)
             {
@@ -564,7 +564,7 @@ namespace Server.Network
 
         public static void FlushAll()
         {
-            var clients = TcpServer.ConnectedClients;
+            var clients = TcpServer.Instances;
 
             if (clients.Count >= 1024)
             {
@@ -594,7 +594,7 @@ namespace Server.Network
             {
                 long curTicks = Core.TickCount;
 
-                var clients = TcpServer.ConnectedClients;
+                var clients = TcpServer.Instances;
 
                 if (clients.Count >= 1024)
                 {
@@ -706,15 +706,15 @@ namespace Server.Network
                 ns.ServerInfo = null;
                 ns.CityInfo = null;
 
-                TcpServer.ConnectedClients.Remove(ns);
+                TcpServer.Instances.Remove(ns);
 
                 if (a != null)
                 {
-                    ns.WriteConsole("Disconnected. [{0} Online] [{1}]", TcpServer.ConnectedClients.Count, a);
+                    ns.WriteConsole("Disconnected. [{0} Online] [{1}]", TcpServer.Instances.Count, a);
                 }
                 else
                 {
-                    ns.WriteConsole("Disconnected. [{0} Online]", TcpServer.ConnectedClients.Count);
+                    ns.WriteConsole("Disconnected. [{0} Online]", TcpServer.Instances.Count);
                 }
             }
         }

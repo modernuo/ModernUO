@@ -20,9 +20,9 @@ namespace Server
             {
                 m_LevelOverride = value;
 
-                for (var i = 0; i < TcpServer.ConnectedClients.Count; ++i)
+                for (var i = 0; i < TcpServer.Instances.Count; ++i)
                 {
-                    var ns = TcpServer.ConnectedClients[i];
+                    var ns = TcpServer.Instances[i];
                     var m = ns.Mobile;
 
                     m?.CheckLightLevels(false);
@@ -111,9 +111,9 @@ namespace Server
 
             protected override void OnTick()
             {
-                for (var i = 0; i < TcpServer.ConnectedClients.Count; ++i)
+                for (var i = 0; i < TcpServer.Instances.Count; ++i)
                 {
-                    var ns = TcpServer.ConnectedClients[i];
+                    var ns = TcpServer.Instances[i];
                     var m = ns.Mobile;
 
                     m?.CheckLightLevels(false);

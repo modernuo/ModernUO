@@ -35,7 +35,7 @@ namespace Server.Network
 
         public static IPEndPoint[] ListeningAddresses { get; private set; }
         public static TcpListener[] Listeners { get; private set; }
-        public static List<NetState> ConnectedClients { get; } = new List<NetState>(128);
+        public static List<NetState> Instances { get; } = new List<NetState>(128);
 
         public static ConcurrentQueue<NetState> m_ConnectedQueue = new ConcurrentQueue<NetState>();
 
@@ -158,8 +158,8 @@ namespace Server.Network
                     break;
                 }
 
-                ConnectedClients.Add(ns);
-                ns.WriteConsole("Connected. [{0} Online]", ConnectedClients.Count);
+                Instances.Add(ns);
+                ns.WriteConsole("Connected. [{0} Online]", Instances.Count);
             }
         }
 
@@ -177,7 +177,7 @@ namespace Server.Network
                 try
                 {
                     socket = await listener.AcceptSocketAsync();
-                    if (ConnectedClients.Count >= MaxConnections)
+                    if (Instances.Count >= MaxConnections)
                     {
                         socket.Send(socketRejected, SocketFlags.None);
                         socket.Shutdown(SocketShutdown.Both);
