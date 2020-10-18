@@ -334,7 +334,7 @@ namespace Server.Items
             PacketHandlers.Register(0x56, 11, true, OnMapCommand);
         }
 
-        private static void OnMapCommand(NetState state, ref CircularBufferReader reader)
+        private static void OnMapCommand(NetState state, PacketReader reader)
         {
             var from = state.Mobile;
 

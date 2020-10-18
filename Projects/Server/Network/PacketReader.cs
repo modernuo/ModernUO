@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: CircularBufferReader.cs                                         *
+ * File: PacketReader.cs                                                 *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -23,7 +23,7 @@ using System.Text;
 
 namespace Server.Network
 {
-    public ref struct CircularBufferReader
+    public ref struct PacketReader
     {
         public Span<byte> First;
         public Span<byte> Second;
@@ -32,7 +32,7 @@ namespace Server.Network
         public int Position { get; private set; }
         public int Remaining => Length - Position;
 
-        public CircularBufferReader(ArraySegment<byte>[] buffers)
+        public PacketReader(ArraySegment<byte>[] buffers)
         {
             First = buffers[0];
             Second = buffers[1];
@@ -40,7 +40,7 @@ namespace Server.Network
             Length = First.Length + Second.Length;
         }
 
-        public CircularBufferReader(Span<byte> first, Span<byte> second)
+        public PacketReader(Span<byte> first, Span<byte> second)
         {
             First = first;
             Second = second;

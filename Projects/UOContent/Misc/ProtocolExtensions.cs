@@ -19,7 +19,7 @@ namespace Server.Misc
         public static PacketHandler GetHandler(int packetID) =>
             packetID >= 0 && packetID < m_Handlers.Length ? m_Handlers[packetID] : null;
 
-        public static void DecodeBundledPacket(NetState state, ref CircularBufferReader reader)
+        public static void DecodeBundledPacket(NetState state, PacketReader reader)
         {
             int packetID = reader.ReadByte();
 
@@ -41,7 +41,7 @@ namespace Server.Misc
                 }
                 else
                 {
-                    ph.OnReceive(state, ref reader);
+                    ph.OnReceive(state, reader);
                 }
             }
         }
