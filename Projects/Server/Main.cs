@@ -101,7 +101,7 @@ namespace Server
 
         public static Thread Thread { get; private set; }
 
-        public static long TickCount => 1000L * Stopwatch.GetTimestamp() / Stopwatch.Frequency;
+        public static long TickCount => Stopwatch.GetTimestamp() * 1000L / Stopwatch.Frequency;
 
         public static bool MultiProcessor { get; private set; }
 
@@ -460,7 +460,6 @@ namespace Server
 
                 const int sampleInterval = 100;
                 const float ticksPerSecond = 1000.0f * sampleInterval;
-                float cyclesPerSecond;
 
                 long sample = 0;
 
@@ -489,14 +488,8 @@ namespace Server
                     }
 
                     var now = TickCount;
-                    cyclesPerSecond = ticksPerSecond / (now - last);
-                    m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] = cyclesPerSecond;
+                    m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
                     last = now;
-
-                    if (cyclesPerSecond > 80)
-                    {
-                        Thread.Sleep(2);
-                    }
                 }
             }
             catch (Exception e)

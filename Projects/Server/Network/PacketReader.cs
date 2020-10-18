@@ -186,7 +186,7 @@ namespace Server.Network
         private static bool IsSafeChar(ushort c) => c >= 0x20 && c < 0xFFFE;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string ReadString<T>(Encoding encoding, bool safeString = false, int fixedLength = -1) where T : struct, IEquatable<T>
+        public string ReadString<T>(Encoding encoding, bool safeString = false, int fixedLength = -1) where T : struct, IEquatable<T>
         {
             int sizeT = Unsafe.SizeOf<T>();
 
@@ -195,10 +195,9 @@ namespace Server.Network
                 throw new InvalidConstraintException("ReadString only accepts byte, sbyte, char, short, and ushort as a constraint");
             }
 
-            bool firstOnly = Position < First.Length;
             bool isFixedLength = fixedLength > -1;
 
-            var remaining = firstOnly ? Remaining : Position - First.Length;
+            var remaining = Remaining;
             int size;
 
             // Not fixed length
@@ -218,35 +217,45 @@ namespace Server.Network
             Span<byte> span;
             int index;
 
-            if (firstOnly)
+            if (Position < First.Length)
             {
                 // Find terminator
-                index = MemoryMarshal.Cast<byte, T>(First.Slice(Position, size))
+                index = MemoryMarshal
+                    .Cast<byte, T>(First.Slice(Position, Math.Min(size, First.Length)))
                     .IndexOf(default(T)) * sizeT;
 
-                // Split over both spans
                 if (index < 0)
                 {
-                    index = MemoryMarshal.Cast<byte, T>(Second.Slice(0, size - First.Length))
-                        .IndexOf(default(T)) * sizeT;
+                    remaining = size - First.Length;
+                    // We don't have a terminator, but a fixed size to the end of the first span, so stop there
+                    if (remaining <= 0)
+                    {
+                        index = First.Length;
+                    }
+                    else
+                    {
+                        index = MemoryMarshal
+                            .Cast<byte, T>(Second.Slice(0, remaining))
+                            .IndexOf(default(T)) * sizeT;
 
-                    remaining = First.Length - Position;
+                        int secondLength = index < 0 ? remaining : index;
+                        int length = First.Length + secondLength;
 
-                    int length = Math.Min(index < 0 ? size : remaining + index, size);
+                        // Assume no strings should be too long for the stack
+                        Span<byte> bytes = stackalloc byte[length];
+                        First.Slice(Position).CopyTo(bytes);
+                        Second.Slice(0, secondLength).CopyTo(bytes.Slice(First.Length));
 
-                    Span<byte> bytes = stackalloc byte[length];
-                    First.Slice(Position).CopyTo(bytes);
-                    Second.Slice(0, length - remaining).CopyTo(bytes.Slice(Position));
-
-                    Position += isFixedLength ? size : length;
-                    return GetString(bytes, encoding, safeString);
+                        Position += length;
+                        return GetString(bytes, encoding, safeString);
+                    }
                 }
 
                 span = First.Slice(Position, index);
             }
             else
             {
-                span = Second.Slice(remaining, size);
+                span = Second.Slice( Position - First.Length, Math.Min(remaining, size));
                 index = MemoryMarshal.Cast<byte, T>(span).IndexOf(default(T)) * sizeT;
 
                 if (index >= 0)
