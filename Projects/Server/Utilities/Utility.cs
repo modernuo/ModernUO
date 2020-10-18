@@ -658,6 +658,113 @@ namespace Server
             }
         }
 
+        public static void FormatBuffer(TextWriter output, params Memory<byte>[] mems)
+        {
+            output.WriteLine("        0  1  2  3  4  5  6  7   8  9  A  B  C  D  E  F");
+            output.WriteLine("       -- -- -- -- -- -- -- --  -- -- -- -- -- -- -- --");
+
+            var byteIndex = 0;
+
+            var length = mems.Sum(mem => mem.Length);
+            var position = 0;
+            var memIndex = 0;
+            var span = mems[memIndex].Span;
+
+            var whole = length >> 4;
+            var rem = length & 0xF;
+
+            for (var i = 0; i < whole; ++i, byteIndex += 16)
+            {
+                var bytes = new StringBuilder(49);
+                var chars = new StringBuilder(16);
+
+                for (var j = 0; j < 16; ++j)
+                {
+                    var c = span[position++];
+                    if (position > span.Length)
+                    {
+                        span = mems[memIndex++].Span;
+                        position = 0;
+                    }
+
+                    bytes.Append(c.ToString("X2"));
+
+                    if (j != 7)
+                    {
+                        bytes.Append(' ');
+                    }
+                    else
+                    {
+                        bytes.Append("  ");
+                    }
+
+                    if (c >= 0x20 && c < 0x7F)
+                    {
+                        chars.Append((char)c);
+                    }
+                    else
+                    {
+                        chars.Append('.');
+                    }
+                }
+
+                output.Write(byteIndex.ToString("X4"));
+                output.Write("   ");
+                output.Write(bytes.ToString());
+                output.Write("  ");
+                output.WriteLine(chars.ToString());
+            }
+
+            if (rem != 0)
+            {
+                var bytes = new StringBuilder(49);
+                var chars = new StringBuilder(rem);
+
+                for (var j = 0; j < 16; ++j)
+                {
+                    if (j < rem)
+                    {
+                        var c = span[position++];
+                        if (position > span.Length)
+                        {
+                            span = mems[memIndex++].Span;
+                            position = 0;
+                        }
+
+                        bytes.Append(c.ToString("X2"));
+
+                        if (j != 7)
+                        {
+                            bytes.Append(' ');
+                        }
+                        else
+                        {
+                            bytes.Append("  ");
+                        }
+
+                        if (c >= 0x20 && c < 0x7F)
+                        {
+                            chars.Append((char)c);
+                        }
+                        else
+                        {
+                            chars.Append('.');
+                        }
+                    }
+                    else
+                    {
+                        bytes.Append("   ");
+                    }
+                }
+
+                output.Write(byteIndex.ToString("X4"));
+                output.Write("   ");
+                output.Write(bytes.ToString());
+                output.Write("  ");
+                output.WriteLine(chars.ToString());
+            }
+        }
+
         public static void PushColor(ConsoleColor color)
         {
             try
