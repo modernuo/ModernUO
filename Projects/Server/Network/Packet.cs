@@ -190,12 +190,12 @@ namespace Server.Network
 
             m_CompiledBuffer = ms.GetBuffer();
             var length = (int)ms.Length;
-            var rentedBuffer = ArrayPool<byte>.Shared.Rent(CompressorBufferSize);
-            var old = m_CompiledBuffer;
+            var compressorBuffer = ArrayPool<byte>.Shared.Rent(CompressorBufferSize);
+            var returnBuffer = true;
 
             if (compress)
             {
-                NetworkCompression.Compress(m_CompiledBuffer, 0, length, rentedBuffer, out length);
+                NetworkCompression.Compress(m_CompiledBuffer, 0, length, compressorBuffer, out length);
 
                 if (length <= 0)
                 {
@@ -217,23 +217,37 @@ namespace Server.Network
                 }
                 else
                 {
-                    old = rentedBuffer;
+                    m_CompiledBuffer = compressorBuffer;
                 }
             }
 
-            m_CompiledLength = length;
+            if (length > 0)
+            {
+                var old = m_CompiledBuffer;
+                m_CompiledLength = length;
 
-            if (length > rentedBuffer.Length || (m_State & State.Static) != 0)
-            {
-                m_CompiledBuffer = new byte[length];
-                Buffer.BlockCopy(old, 0, m_CompiledBuffer, 0, length);
-                ArrayPool<byte>.Shared.Return(rentedBuffer);
+                if (length > compressorBuffer.Length || (m_State & State.Static) != 0)
+                {
+                    m_CompiledBuffer = new byte[length];
+                }
+                else
+                {
+                    // Release it later using Release()
+                    returnBuffer = false;
+                    m_CompiledBuffer = compressorBuffer;
+                    m_State |= State.Buffered;
+                }
+
+                // Static Packet or Compressed Packet requires copying
+                if (!(returnBuffer && compress))
+                {
+                    Buffer.BlockCopy(old, 0, m_CompiledBuffer, 0, length);
+                }
             }
-            else
+
+            if (returnBuffer)
             {
-                // Release it later using Release()
-                m_CompiledBuffer = rentedBuffer;
-                m_State |= State.Buffered;
+                ArrayPool<byte>.Shared.Return(compressorBuffer);
             }
 
             PacketWriter.ReleaseInstance(Stream);

@@ -128,6 +128,11 @@ namespace Server
 
         public static IPAddress Intern(IPAddress ipAddress)
         {
+            if (ipAddress == null)
+            {
+                return null;
+            }
+
             _ipAddressTable ??= new Dictionary<IPAddress, IPAddress>();
 
             if (!_ipAddressTable.TryGetValue(ipAddress, out var interned))

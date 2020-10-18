@@ -89,8 +89,7 @@ namespace Server.Network
 
             try
             {
-                var ip = ((IPEndPoint)Connection.RemoteEndPoint).Address;
-                Address = ip != null ? Utility.Intern(ip) : null;
+                Address = Utility.Intern((Connection?.RemoteEndPoint as IPEndPoint)?.Address);
                 m_ToString = Address?.ToString() ?? "(error)";
             }
             catch (Exception ex)
