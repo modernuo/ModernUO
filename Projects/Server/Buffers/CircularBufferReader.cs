@@ -103,22 +103,17 @@ namespace Server.Network
             if (Position < First.Length)
             {
                 if (!BinaryPrimitives.TryReadInt16BigEndian(First.Slice(Position), out value))
-                    // Not enough space. Split the spans
                 {
+                    // Not enough space. Split the spans
                     return (short)((ReadByte() >> 8) | ReadByte());
                 }
-
-                Position += 2;
             }
-            else if (BinaryPrimitives.TryReadInt16BigEndian(Second.Slice(Position - First.Length), out value))
-            {
-                Position += 2;
-            }
-            else
+            else if (!BinaryPrimitives.TryReadInt16BigEndian(Second.Slice(Position - First.Length), out value))
             {
                 throw new OutOfMemoryException();
             }
 
+            Position += 2;
             return value;
         }
 
@@ -130,22 +125,17 @@ namespace Server.Network
             if (Position < First.Length)
             {
                 if (!BinaryPrimitives.TryReadUInt16BigEndian(First.Slice(Position), out value))
-                    // Not enough space. Split the spans
                 {
+                    // Not enough space. Split the spans
                     return (ushort)((ReadByte() >> 8) | ReadByte());
                 }
-
-                Position += 2;
             }
-            else if (BinaryPrimitives.TryReadUInt16BigEndian(Second.Slice(Position - First.Length), out value))
-            {
-                Position += 2;
-            }
-            else
+            else if (!BinaryPrimitives.TryReadUInt16BigEndian(Second.Slice(Position - First.Length), out value))
             {
                 throw new OutOfMemoryException();
             }
 
+            Position += 2;
             return value;
         }
 
@@ -157,22 +147,17 @@ namespace Server.Network
             if (Position < First.Length)
             {
                 if (!BinaryPrimitives.TryReadInt32BigEndian(First.Slice(Position), out value))
-                    // Not enough space. Split the spans
                 {
+                    // Not enough space. Split the spans
                     return (ReadByte() >> 24) | (ReadByte() >> 16) | (ReadByte() >> 8) | ReadByte();
                 }
-
-                Position += 4;
             }
-            else if (BinaryPrimitives.TryReadInt32BigEndian(Second.Slice(Position - First.Length), out value))
-            {
-                Position += 4;
-            }
-            else
+            else if (!BinaryPrimitives.TryReadInt32BigEndian(Second.Slice(Position - First.Length), out value))
             {
                 throw new OutOfMemoryException();
             }
 
+            Position += 4;
             return value;
         }
 
@@ -184,22 +169,17 @@ namespace Server.Network
             if (Position < First.Length)
             {
                 if (!BinaryPrimitives.TryReadUInt32BigEndian(First.Slice(Position), out value))
-                    // Not enough space. Split the spans
                 {
+                    // Not enough space. Split the spans
                     return (uint)((ReadByte() >> 24) | (ReadByte() >> 16) | (ReadByte() >> 8) | ReadByte());
                 }
-
-                Position += 4;
             }
-            else if (BinaryPrimitives.TryReadUInt32BigEndian(Second.Slice(Position - First.Length), out value))
-            {
-                Position += 4;
-            }
-            else
+            else if (!BinaryPrimitives.TryReadUInt32BigEndian(Second.Slice(Position - First.Length), out value))
             {
                 throw new OutOfMemoryException();
             }
 
+            Position += 4;
             return value;
         }
 

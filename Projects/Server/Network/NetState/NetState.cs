@@ -364,6 +364,7 @@ namespace Server.Network
 
                 if (buffer.Length > 0 && length > 0)
                 {
+                    WriteConsole("Sending Packet {0:X2}", p.PacketID);
                     var writer = m_OutgoingPipe.Writer;
                     var result = writer.GetBytes();
 
@@ -375,6 +376,8 @@ namespace Server.Network
                     {
                         result.CopyFrom(buffer.AsSpan(0, length));
                         writer.Advance((uint)length);
+
+                        // Flush at the end of the game
                     }
                     else
                     {
