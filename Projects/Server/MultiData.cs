@@ -174,18 +174,16 @@ namespace Server
                     var tileList = new List<MultiTileEntry>();
 
                     // Skip the first 4 bytes
-                    var reader = new BufferReader<byte>(data);
-
-                    reader.Advance(4); // ???
-                    reader.TryReadLittleEndian(out uint count);
+                    var pos = 4;
+                    var count = data.ReadUInt32LE(ref pos);
 
                     for (uint i = 0; i < count; i++)
                     {
-                        reader.TryReadLittleEndian(out ushort itemid);
-                        reader.TryReadLittleEndian(out short x);
-                        reader.TryReadLittleEndian(out short y);
-                        reader.TryReadLittleEndian(out short z);
-                        reader.TryReadLittleEndian(out ushort flagValue);
+                        var itemId = data.ReadUInt16LE(ref pos);
+                        var x = data.ReadInt16LE(ref pos);
+                        var y = data.ReadInt16LE(ref pos);
+                        var z = data.ReadInt16LE(ref pos);
+                        var flagValue = data.ReadUInt16LE(ref pos);
 
                         var tileFlag = flagValue switch
                         {
@@ -194,10 +192,10 @@ namespace Server
                             _   => TileFlag.Background // 0
                         };
 
-                        reader.TryReadLittleEndian(out uint clilocsCount);
-                        reader.Advance(clilocsCount * 4); // bypass binary block
+                        var clilocsCount = data.ReadUInt32LE(ref pos);
+                        pos += (int)Math.Min(clilocsCount, int.MaxValue) * 4; // bypass binary block
 
-                        tileList.Add(new MultiTileEntry(itemid, x, y, z, tileFlag));
+                        tileList.Add(new MultiTileEntry(itemId, x, y, z, tileFlag));
                     }
 
                     Components[chunkID] = new MultiComponentList(tileList);
