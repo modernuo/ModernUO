@@ -22,31 +22,29 @@ namespace Server.Network
     {
         private Pipe _pipe;
 
-        private PipeResult _result = new PipeResult(2);
+        public bool IsCanceled { get; } = false;
+        public bool IsCompleted { get; private set; }
 
         public PipeWriter(Pipe pipe) => _pipe = pipe;
 
-        public PipeResult GetBytes()
+        public void GetBytes(PipeResult result)
         {
             var read = _pipe._readIdx;
             var write = _pipe._writeIdx;
 
             if (read <= write)
             {
-                var sz = Math.Min(read + _pipe.Size - write - 1, _pipe.Size - write);
+                var sz = _pipe.Size - write;
 
-                _result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe.m_Buffer, (int)write, (int)sz);
-                _result.Buffer[1] = read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe.m_Buffer, 0, (int)read);
+                result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe.m_Buffer, (int)write, (int)sz);
+                result.Buffer[1] = read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe.m_Buffer, 0, (int)(read - 1));
             }
             else
             {
                 var sz = read - write - 1;
-
-                _result.Buffer[0] = sz == 0 ? new ArraySegment<byte>() : new ArraySegment<byte>(_pipe.m_Buffer, (int)write, (int)sz);
-                _result.Buffer[1] = ArraySegment<byte>.Empty;
+                result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe.m_Buffer, (int)write, (int)sz);
+                result.Buffer[1] = ArraySegment<byte>.Empty;
             }
-
-            return _result;
         }
 
         public void Advance(uint bytes)
@@ -59,14 +57,14 @@ namespace Server.Network
                 return;
             }
 
-            if (bytes > _pipe.Size - 1)
+            if (bytes > _pipe.Size)
             {
                 throw new InvalidOperationException();
             }
 
             if (read <= write)
             {
-                if (bytes > read + _pipe.Size - write)
+                if (bytes > read + _pipe.Size - write - 1)
                 {
                     throw new InvalidOperationException();
                 }
@@ -74,7 +72,7 @@ namespace Server.Network
                 var sz = Math.Min(bytes, _pipe.Size - write);
 
                 write += sz;
-                if (write > _pipe.Size - 1)
+                if (write == _pipe.Size)
                 {
                     write = 0;
                 }
@@ -83,7 +81,7 @@ namespace Server.Network
 
                 if (bytes > 0)
                 {
-                    if (bytes >= read)
+                    if (bytes > read)
                     {
                         throw new InvalidOperationException();
                     }
@@ -106,7 +104,12 @@ namespace Server.Network
 
         public void Complete()
         {
-            _result.IsCompleted = true;
+            if (IsCompleted)
+            {
+                return;
+            }
+
+            IsCompleted = true;
             _pipe.Reader.Complete();
 
             Flush();

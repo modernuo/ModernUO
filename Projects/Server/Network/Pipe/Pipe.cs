@@ -40,5 +40,7 @@ namespace Server.Network
             Writer = new PipeWriter(this);
             Reader = new PipeReader(this);
         }
+
+        public static PipeResult GetPipeResult() => new PipeResult(2);
     }
 };

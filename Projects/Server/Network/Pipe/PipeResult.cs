@@ -20,8 +20,6 @@ namespace Server.Network
     public class PipeResult
     {
         public ArraySegment<byte>[] Buffer { get; }
-        public bool IsCanceled { get; }
-        public bool IsCompleted { get; set; }
 
         public int Length
         {
@@ -65,11 +63,6 @@ namespace Server.Network
             throw new OutOfMemoryException();
         }
 
-        public PipeResult(int segments)
-        {
-            IsCanceled = false;
-            IsCompleted = false;
-            Buffer = new ArraySegment<byte>[segments];
-        }
+        public PipeResult(int segments) => Buffer = new ArraySegment<byte>[segments];
     }
 }

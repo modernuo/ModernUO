@@ -21,25 +21,28 @@ namespace Server.Network
     public class PipeReader : INotifyCompletion
     {
         private readonly Pipe _pipe;
+        public bool IsClosed { get; private set; }
 
-        private readonly PipeResult _result = new PipeResult(2);
+        // private readonly PipeResult _result = new PipeResult(2);
 
         internal PipeReader(Pipe pipe) => _pipe = pipe;
 
-        private void UpdateBufferReader()
+        private void UpdateBufferReader(PipeResult result)
         {
             var read = _pipe._readIdx;
             var write = _pipe._writeIdx;
 
             if (read <= write)
             {
-                _result.Buffer[0] = write - read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe.m_Buffer, (int)read, (int)(write - read));
-                _result.Buffer[1] = ArraySegment<byte>.Empty;
+                var sz = write - read;
+                result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe.m_Buffer, (int)read, (int)sz);
+                result.Buffer[1] = ArraySegment<byte>.Empty;
             }
             else
             {
-                _result.Buffer[0] = _pipe.Size - read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe.m_Buffer, (int)read, (int)(_pipe.Size - read));
-                _result.Buffer[1] = write == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe.m_Buffer, 0, (int)write);
+                var sz = _pipe.Size - read;
+                result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe.m_Buffer, (int)read, (int)sz);
+                result.Buffer[1] = write == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe.m_Buffer, 0, (int)write);
             }
         }
 
@@ -52,29 +55,28 @@ namespace Server.Network
             return (read <= write ? write : write + _pipe.Size) - read;
         }
 
-        public PipeResult TryGetBytes()
+        public bool TryGetBytes(PipeResult result)
         {
             if (BytesAvailable() > 0)
             {
-                UpdateBufferReader();
+                UpdateBufferReader(result);
+                return true;
             }
 
-            return _result;
+            return false;
         }
 
-        public PipeResult GetBytes()
+        public void GetBytes(PipeResult result)
         {
             if (BytesAvailable() > 0)
             {
-                UpdateBufferReader();
+                UpdateBufferReader(result);
             }
 
             if (_pipe._awaitBeginning)
             {
                 throw new Exception("Double await on PipeReader");
             }
-
-            return _result;
         }
 
         public void Advance(uint bytes)
@@ -96,7 +98,7 @@ namespace Server.Network
                 var sz = Math.Min(bytes, _pipe.Size - read);
 
                 read += sz;
-                if (read > _pipe.Size - 1)
+                if (read == _pipe.Size)
                 {
                     read = 0;
                 }
@@ -120,9 +122,11 @@ namespace Server.Network
         #region Awaitable
         // The following makes it possible to await the reader. Do not use any of this directly.
 
+        private PipeResult _awaitResult = new PipeResult(2);
+
         public PipeReader GetAwaiter() => this;
 
-        public bool Complete() => _result.IsCompleted = true;
+        public bool Complete() => IsClosed = true;
 
         public bool IsCompleted
         {
@@ -141,8 +145,8 @@ namespace Server.Network
         // TODO: Return by ref?
         public PipeResult GetResult()
         {
-            UpdateBufferReader();
-            return _result;
+            UpdateBufferReader(_awaitResult);
+            return _awaitResult;
         }
 
         public void OnCompleted(Action continuation) => _pipe._readerContinuation = state => continuation();
