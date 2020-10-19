@@ -41,14 +41,14 @@ namespace Server.Network
                 }
             }
 
-            public int CopyFrom(Span<byte> bytes)
+            public void CopyFrom(Span<byte> bytes)
             {
                 var remaining = bytes.Length;
                 var offset = 0;
 
                 if (remaining == 0)
                 {
-                    return 0;
+                    return;
                 }
 
                 for (int i = 0; i < Buffer.Length; i++)
@@ -61,7 +61,7 @@ namespace Server.Network
 
                     if (remaining == 0)
                     {
-                        return bytes.Length;
+                        return;
                     }
                 }
 

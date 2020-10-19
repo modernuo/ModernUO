@@ -366,8 +366,7 @@ namespace Server.Network
 
                 if (buffer.Length > 0 && length > 0)
                 {
-                    Span<byte> span = buffer.AsSpan(0, length);
-                    WriteConsole("Packet: {0:X2} ({1})", p.PacketID, length);
+                    WriteConsole("Send Packet: {0:X2} ({1})", p.PacketID, length);
 
                     var result = writer.GetBytes();
 
@@ -378,7 +377,8 @@ namespace Server.Network
 
                     if (result.Length >= length)
                     {
-                        writer.Advance((uint)result.CopyFrom(span));
+                        result.CopyFrom(buffer.AsSpan(0, length));
+                        writer.Advance((uint)length);
 
                         // Flush at the end of the game loop
                     }
