@@ -350,8 +350,6 @@ namespace Server.Network
             NetworkState.Resume(ref m_NetworkState);
         }
 
-        private PipeResult m_SendPipeResult;
-
         public virtual void Send(Packet p)
         {
             if (Connection == null || BlockAllPackets)
@@ -361,10 +359,6 @@ namespace Server.Network
             }
 
             var writer = m_OutgoingPipe.Writer;
-            if (writer.IsCanceled || writer.IsCompleted)
-            {
-                Dispose();
-            }
 
             try
             {
@@ -372,14 +366,19 @@ namespace Server.Network
 
                 if (buffer.Length > 0 && length > 0)
                 {
-                    m_SendPipeResult ??= Pipe.GetPipeResult();
+                    Span<byte> span = buffer.AsSpan(0, length);
+                    Console.WriteLine("Packet: {0:X2}\n{1}\n", p.PacketID, HexStringConverter.GetString(span));
 
-                    writer.GetBytes(m_SendPipeResult);
+                    var result = writer.GetBytes();
 
-                    if (m_SendPipeResult.Length >= length)
+                    if (result.IsCanceled || result.IsCompleted)
                     {
-                        m_SendPipeResult.CopyFrom(buffer.AsSpan(0, length));
-                        writer.Advance((uint)length);
+                        Dispose();
+                    }
+
+                    if (result.Length >= length)
+                    {
+                        writer.Advance((uint)result.CopyFrom(span));
 
                         // Flush at the end of the game loop
                     }
@@ -419,17 +418,23 @@ namespace Server.Network
 
             while (m_Running)
             {
-                if (reader.IsClosed)
+
+                var result = await reader;
+
+                if (result.IsCompleted || result.IsCanceled)
                 {
                     break;
                 }
-
-                var result = await reader;
 
                 if (result.Length <= 0)
                 {
                     continue;
                 }
+
+                Console.WriteLine("Sending Data: ({0}) ({1})", result.Buffer[0].Count, result.Buffer[1].Count);
+                Console.WriteLine(HexStringConverter.GetString(result.Buffer[0]));
+                Console.WriteLine(HexStringConverter.GetString(result.Buffer[1]));
+                Console.WriteLine("\n");
 
                 var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None);
 
@@ -448,25 +453,24 @@ namespace Server.Network
         {
             var socket = Connection;
             var writer = m_IncomingPipe.Writer;
-            var receiveResult = Pipe.GetPipeResult();
 
             try
             {
                 while (true)
                 {
-                    if (writer.IsCompleted)
-                    {
-                        break;
-                    }
-
                     if (m_NetworkState == NetworkState.PauseState)
                     {
                         continue;
                     }
 
-                    writer.GetBytes(receiveResult);
+                    var result = writer.GetBytes();
 
-                    var buffer = receiveResult.Buffer;
+                    if (result.IsCompleted || result.IsCanceled)
+                    {
+                        break;
+                    }
+
+                    var buffer = result.Buffer;
 
                     var bytesWritten = await socket.ReceiveAsync(buffer, SocketFlags.None);
 
@@ -506,8 +510,6 @@ namespace Server.Network
             }
         }
 
-        private PipeResult m_ReceiveResult;
-
         public void HandleReceive()
         {
             if (Connection == null)
@@ -518,23 +520,18 @@ namespace Server.Network
             try
             {
                 var reader = m_IncomingPipe.Reader;
-                m_ReceiveResult = Pipe.GetPipeResult();
 
                 // Process as many packets as we can synchronously
                 while (true)
                 {
-                    // Do we have anything in the pipe to process?
-                    if (!reader.TryGetBytes(m_ReceiveResult))
+                    var result = reader.TryGetBytes();
+
+                    if (result.IsCompleted || result.IsCanceled || result.Length <= 0)
                     {
                         return;
                     }
 
-                    if (m_ReceiveResult.Length <= 0)
-                    {
-                        return;
-                    }
-
-                    var bytesProcessed = PacketHandlers.ProcessPacket(this, m_ReceiveResult.Buffer);
+                    var bytesProcessed = PacketHandlers.ProcessPacket(this, result.Buffer);
 
                     if (bytesProcessed <= 0)
                     {
@@ -552,7 +549,7 @@ namespace Server.Network
                         return;
                     }
 
-                    WriteConsole("Processed {0} bytes for packet {1:X}", bytesProcessed, m_ReceiveResult.Buffer[0][0]);
+                    WriteConsole("Processed {0} bytes for packet {1:X}", bytesProcessed, result.Buffer[0][0]);
 
                     reader.Advance((uint)bytesProcessed);
                 }
