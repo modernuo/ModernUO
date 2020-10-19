@@ -367,7 +367,7 @@ namespace Server.Network
                 if (buffer.Length > 0 && length > 0)
                 {
                     Span<byte> span = buffer.AsSpan(0, length);
-                    Console.WriteLine("Packet: {0:X2}\n{1}\n", p.PacketID, HexStringConverter.GetString(span));
+                    WriteConsole("Packet: {0:X2} ({1})", p.PacketID, length);
 
                     var result = writer.GetBytes();
 
@@ -432,9 +432,9 @@ namespace Server.Network
                 }
 
                 Console.WriteLine("Sending Data: ({0}) ({1})", result.Buffer[0].Count, result.Buffer[1].Count);
-                Console.WriteLine(HexStringConverter.GetString(result.Buffer[0]));
-                Console.WriteLine(HexStringConverter.GetString(result.Buffer[1]));
-                Console.WriteLine("\n");
+                // Console.WriteLine(HexStringConverter.GetString(result.Buffer[0]));
+                // Console.WriteLine(HexStringConverter.GetString(result.Buffer[1]));
+                // Console.WriteLine("\n");
 
                 var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None);
 
