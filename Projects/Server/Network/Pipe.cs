@@ -178,7 +178,8 @@ namespace Server.Network
                     return;
                 }
 
-                do {
+                do
+                {
                     continuation = _pipe._readerContinuation;
                 } while (continuation == null);
 
@@ -299,7 +300,8 @@ namespace Server.Network
 
             public PipeReader GetAwaiter() => this;
 
-            public bool IsCompleted {
+            public bool IsCompleted
+            {
                 get
                 {
                     if (BytesAvailable() > 0)

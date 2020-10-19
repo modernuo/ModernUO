@@ -370,10 +370,11 @@ namespace Server.Network
 
                     var result = writer.GetBytes();
 
-                    if (result.IsCanceled || result.IsCompleted)
-                    {
-                        Dispose();
-                    }
+                    // if (result.IsCanceled || result.IsCompleted)
+                    // {
+                    //     WriteConsole("Outgoing completed");
+                    //     Dispose();
+                    // }
 
                     if (result.Length >= length)
                     {
@@ -418,20 +419,20 @@ namespace Server.Network
 
             while (m_Running)
             {
+                var result = await reader.GetBytes();
 
-                var result = await reader;
-
-                if (result.IsCompleted || result.IsCanceled)
-                {
-                    break;
-                }
+                // if (result.IsCompleted || result.IsCanceled)
+                // {
+                //     WriteConsole("Completed");
+                //     break;
+                // }
 
                 if (result.Length <= 0)
                 {
                     continue;
                 }
 
-                Console.WriteLine("Sending Data: ({0}) ({1})", result.Buffer[0].Count, result.Buffer[1].Count);
+                WriteConsole("Sending Data: ({0}) ({1})", result.Buffer[0].Count, result.Buffer[1].Count);
                 // Console.WriteLine(HexStringConverter.GetString(result.Buffer[0]));
                 // Console.WriteLine(HexStringConverter.GetString(result.Buffer[1]));
                 // Console.WriteLine("\n");
@@ -446,6 +447,7 @@ namespace Server.Network
                 }
             }
 
+            WriteConsole("Not running");
             Dispose();
         }
 
@@ -465,10 +467,16 @@ namespace Server.Network
 
                     var result = writer.GetBytes();
 
-                    if (result.IsCompleted || result.IsCanceled)
+                    if (result.Length <= 0)
                     {
-                        break;
+                        continue;
                     }
+
+                    // if (result.IsCompleted || result.IsCanceled)
+                    // {
+                    //     WriteConsole("Writer completed");
+                    //     break;
+                    // }
 
                     var buffer = result.Buffer;
 
@@ -476,6 +484,7 @@ namespace Server.Network
 
                     if (bytesWritten <= 0)
                     {
+                        WriteConsole("Received 0 bytes");
                         break;
                     }
 
@@ -526,7 +535,7 @@ namespace Server.Network
                 {
                     var result = reader.TryGetBytes();
 
-                    if (result.IsCompleted || result.IsCanceled || result.Length <= 0)
+                    if (/*result.IsCompleted || result.IsCanceled ||*/ result.Length <= 0)
                     {
                         return;
                     }
