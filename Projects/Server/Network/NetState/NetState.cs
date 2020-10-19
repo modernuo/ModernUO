@@ -638,7 +638,7 @@ namespace Server.Network
                 return;
             }
 
-            m_OutgoingPipe.Writer.Complete();
+            m_OutgoingPipe.Writer.Close();
 
             try
             {
