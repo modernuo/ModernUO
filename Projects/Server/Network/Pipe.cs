@@ -23,7 +23,6 @@ namespace Server.Network
     {
         public struct Result
         {
-            public static readonly Result Empty = new Result(0);
             public ArraySegment<byte>[] Buffer { get; }
             public bool IsCanceled { get; set; }
             public bool IsCompleted { get; set; }
@@ -232,11 +231,6 @@ namespace Server.Network
 
             public Result TryGetBytes()
             {
-                if (BytesAvailable() <= 0)
-                {
-                    return Result.Empty;
-                }
-
                 UpdateBufferReader();
                 return _result;
             }
@@ -310,11 +304,7 @@ namespace Server.Network
                 }
             }
 
-            public Result GetResult()
-            {
-                UpdateBufferReader();
-                return _result;
-            }
+            public Result GetResult() => TryGetBytes();
 
             public void OnCompleted(Action continuation) => _pipe._readerContinuation = continuation;
 
