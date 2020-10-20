@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Server.Network;
 using Xunit;
@@ -39,6 +40,85 @@ namespace Server.Tests.Network
             var result = await reader;
 
             Assert.True(result.Buffer[0].Count == 3);
+        }
+
+        private bool _signal;
+
+        private void Consumer(object state)
+        {
+            var reader = ((Pipe)state).Reader;
+
+            int count = 0;
+            byte expected_value = 0xFA;
+
+            while (count < 0x8000000)
+            {
+                var result = reader.TryGetBytes();
+
+                for (int i = 0; i < result.Buffer[0].Count; i++)
+                {
+                    Assert.True(result.Buffer[0][i] == expected_value);
+                    count++;
+
+                    if (count == 0x1000)
+                    {
+                        expected_value = 0xAC;
+                    }
+                }
+
+                for (int i = 0; i < result.Buffer[1].Count; i++)
+                {
+                    Assert.True(result.Buffer[1][i] == expected_value);
+                    count++;
+
+                    if (count == 0x1000)
+                    {
+                        expected_value = 0xAC;
+                    }
+                }
+
+                reader.Advance((uint)result.Length);
+            }
+
+            _signal = true;
+        }
+
+        [Fact]
+        public async void Threading()
+        {
+            var pipe = new Pipe(new byte[0x1001]);
+
+            ThreadPool.UnsafeQueueUserWorkItem(Consumer, pipe);
+
+            var writer = pipe.Writer;
+
+            int count = 0;
+            byte expected_value = 0xFA;
+
+            while (count < 0x8000000)
+            {
+                var result = writer.GetBytes();
+
+                if (result.Length < 16)
+                {
+                    continue;
+                }
+
+                result.CopyFrom(new[] { expected_value, expected_value, expected_value, expected_value, expected_value, expected_value, expected_value, expected_value,
+                    expected_value, expected_value, expected_value, expected_value, expected_value, expected_value, expected_value, expected_value });
+
+                writer.Advance(16);
+                count += 16;
+
+                if (count == 0x1000)
+                {
+                    expected_value = 0xAC;
+                }
+            }
+
+            while (_signal == false) { }
+
+            _signal = false;
         }
 
         [Fact]
@@ -96,6 +176,41 @@ namespace Server.Tests.Network
                 Assert.True(reader.BytesAvailable() == i);
                 reader.Advance(i);
             }
+        }
+
+        [Fact]
+        public void Sequence()
+        {
+            var pipe = new Pipe(new byte[10]);
+
+            var reader = pipe.Reader;
+            var writer = pipe.Writer;
+
+            var buffer = writer.GetBytes();
+            Assert.True(buffer.Length == 9);
+
+            buffer.CopyFrom(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
+
+            writer.Advance(9);
+            writer.Flush();
+
+            Assert.True(reader.BytesAvailable() == 9);
+
+            buffer = reader.TryGetBytes();
+
+            for (int i = 0; i < 9; i++)
+            {
+                Assert.True(buffer.Buffer[0][i] == i);
+            }
+
+            reader.Advance(4);
+            buffer = reader.TryGetBytes();
+            Assert.True(buffer.Length == 5);
+            Assert.True(buffer.Buffer[0][0] == 4);
+            Assert.True(buffer.Buffer[0][1] == 5);
+            Assert.True(buffer.Buffer[0][2] == 6);
+            Assert.True(buffer.Buffer[0][3] == 7);
+            Assert.True(buffer.Buffer[0][4] == 8);
         }
     }
 }

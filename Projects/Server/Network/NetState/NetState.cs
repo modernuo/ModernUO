@@ -370,7 +370,7 @@ namespace Server.Network
 
                     if (result.Length >= length)
                     {
-                        result.CopyFrom(m_OutgoingPipe, buffer.AsSpan(0, length));
+                        result.CopyFrom(buffer.AsSpan(0, length));
                         writer.Advance((uint)length);
 
                         // Flush at the end of the game loop
@@ -380,6 +380,10 @@ namespace Server.Network
                         WriteConsole("Too much data pending, disconnecting...");
                         Dispose();
                     }
+                }
+                else
+                {
+                    WriteConsole("Didn't write anything!");
                 }
 
                 p.OnSend();
@@ -405,13 +409,13 @@ namespace Server.Network
             ThreadPool.UnsafeQueueUserWorkItem(SendTask, null);
         }
 
-        private void SendTask(object state)
+        private async void SendTask(object state)
         {
             var reader = m_OutgoingPipe.Reader;
 
             while (m_Running)
             {
-                var result = reader.TryGetBytes();
+                var result = await reader.GetBytes();
 
                 if (result.Length <= 0)
                 {
@@ -422,7 +426,7 @@ namespace Server.Network
 
                 // WriteConsole("Sending: " + HexStringConverter.GetString(buffer[0]) + HexStringConverter.GetString(buffer[1]));
 
-                var bytesWritten = Connection.Send(buffer, SocketFlags.None);
+                var bytesWritten = await Connection.SendAsync(buffer, SocketFlags.None);
 
                 if (bytesWritten > 0)
                 {

@@ -51,34 +51,32 @@ namespace Server.Network
                 }
             }
 
-            public void CopyFrom(Pipe pipe, Span<byte> bytes)
+            public void CopyFrom(Span<byte> bytes)
             {
-                lock (pipe)
+                var remaining = bytes.Length;
+                var offset = 0;
+
+                if (remaining == 0)
                 {
-                    var remaining = bytes.Length;
-                    var offset = 0;
+                    return;
+                }
+
+                for (int i = 0; i < Buffer.Length; i++)
+                {
+                    var buffer = Buffer[i];
+                    var sz = Math.Min(remaining, buffer.Count);
+                    bytes.Slice(offset, sz).CopyTo(buffer);
+
+                    remaining -= sz;
+                    offset += sz;
 
                     if (remaining == 0)
                     {
                         return;
                     }
-
-                    for (int i = 0; i < Buffer.Length; i++)
-                    {
-                        var sz = Math.Min(remaining, Buffer[i].Count);
-                        bytes.Slice(offset, sz).CopyTo(Buffer[i].AsSpan());
-
-                        remaining -= sz;
-                        offset += sz;
-
-                        if (remaining == 0)
-                        {
-                            return;
-                        }
-                    }
-
-                    throw new OutOfMemoryException();
                 }
+
+                throw new OutOfMemoryException();
             }
 
             public Result(int segments)
@@ -96,129 +94,116 @@ namespace Server.Network
 
             public Result GetBytes()
             {
-                lock (_pipe)
+                var read = _pipe._readIdx;
+                var write = _pipe._writeIdx;
+
+                var result = new Result(2) { IsClosed = _pipe._closed };
+
+                if (read <= write)
                 {
-                    var read = _pipe._readIdx;
-                    var write = _pipe._writeIdx;
+                    var sz = Math.Min(read + _pipe.Size - write - 1, _pipe.Size - write);
 
-                    var result = new Result(2);
-                    result.IsClosed = _pipe._closed;
-
-                    if (read <= write)
-                    {
-                        var sz = Math.Min(read + _pipe.Size - write - 1, _pipe.Size - write);
-
-                        result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)write, (int)sz);
-                        result.Buffer[1] = read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)read - 1);
-                    }
-                    else
-                    {
-                        var sz = read - write - 1;
-
-                        result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)write, (int)sz);
-                        result.Buffer[1] = ArraySegment<byte>.Empty;
-                    }
-
-                    return result;
+                    result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)write, (int)sz);
+                    result.Buffer[1] = read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)read - 1);
                 }
+                else
+                {
+                    var sz = read - write - 1;
+
+                    result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)write, (int)sz);
+                    result.Buffer[1] = ArraySegment<byte>.Empty;
+                }
+
+                return result;
             }
 
             public void Advance(uint bytes)
             {
-                lock (_pipe)
+                var read = _pipe._readIdx;
+                var write = _pipe._writeIdx;
+
+                if (bytes == 0)
                 {
-                    var read = _pipe._readIdx;
-                    var write = _pipe._writeIdx;
+                    return;
+                }
 
-                    if (bytes == 0)
-                    {
-                        return;
-                    }
+                if (bytes > _pipe.Size - 1)
+                {
+                    throw new InvalidOperationException();
+                }
 
-                    if (bytes > _pipe.Size - 1)
+                if (read <= write)
+                {
+                    if (bytes > read + _pipe.Size - write - 1)
                     {
                         throw new InvalidOperationException();
                     }
 
-                    if (read <= write)
+                    var sz = Math.Min(bytes, _pipe.Size - write);
+
+                    write += sz;
+                    if (write > _pipe.Size - 1)
                     {
-                        if (bytes > read + _pipe.Size - write - 1)
+                        write = 0;
+                    }
+                    bytes -= sz;
+
+                    if (bytes > 0)
+                    {
+                        if (bytes >= read)
                         {
                             throw new InvalidOperationException();
                         }
 
-                        var sz = Math.Min(bytes, _pipe.Size - write);
-
-                        write += sz;
-                        if (write > _pipe.Size - 1)
-                        {
-                            write = 0;
-                        }
-                        bytes -= sz;
-
-                        if (bytes > 0)
-                        {
-                            if (bytes >= read)
-                            {
-                                throw new InvalidOperationException();
-                            }
-
-                            write = bytes;
-                        }
+                        write = bytes;
                     }
-                    else
-                    {
-                        if (bytes > read - write - 1)
-                        {
-                            throw new InvalidOperationException();
-                        }
-
-                        write += bytes;
-                    }
-
-                    // It's never valid to advance the write pointer to become equal to
-                    // the read pointer. Check that here.
-                    if (write == read)
-                    {
-                        throw new InvalidOperationException("Write index equals read index after advance");
-                    }
-
-                    _pipe._writeIdx = write;
                 }
+                else
+                {
+                    if (bytes > read - write - 1)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    write += bytes;
+                }
+
+                // It's never valid to advance the write pointer to become equal to
+                // the read pointer. Check that here.
+                if (write == read)
+                {
+                    throw new InvalidOperationException("Write index equals read index after advance");
+                }
+
+                _pipe._writeIdx = write;
             }
 
             public void Close()
             {
-                lock (_pipe)
-                {
-                    _pipe._closed = true;
+                _pipe._closed = true;
 
-                    Flush();
-                }
+                Flush();
             }
 
             public void Flush()
             {
-                lock (_pipe)
+                var waiting = _pipe._awaitBeginning;
+                Action continuation;
+
+                if (!waiting)
                 {
-                    var waiting = _pipe._awaitBeginning;
-                    Action continuation;
-
-                    if (!waiting)
-                    {
-                        return;
-                    }
-
-                    do
-                    {
-                        continuation = _pipe._readerContinuation;
-                    } while (continuation == null);
-
-                    _pipe._readerContinuation = null;
-                    _pipe._awaitBeginning = false;
-
-                    ThreadPool.UnsafeQueueUserWorkItem(state => continuation(), true);
+                    return;
                 }
+
+                do
+                {
+                    continuation = _pipe._readerContinuation;
+                } while (continuation == null);
+
+                _pipe._readerContinuation = null;
+                _pipe._awaitBeginning = false;
+
+                ThreadPool.UnsafeQueueUserWorkItem(state => continuation(), true);
             }
         }
 
@@ -231,97 +216,85 @@ namespace Server.Network
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public uint BytesAvailable()
             {
-                lock (_pipe)
+                var read = _pipe._readIdx;
+                var write = _pipe._writeIdx;
+
+                if (read <= write)
                 {
-                    var read = _pipe._readIdx;
-                    var write = _pipe._writeIdx;
-
-                    if (read <= write)
-                    {
-                        return write - read;
-                    }
-
-                    return write + _pipe.Size - read;
+                    return write - read;
                 }
+
+                return write + _pipe.Size - read;
             }
 
             public Result TryGetBytes()
             {
-                lock (_pipe)
+                var read = _pipe._readIdx;
+                var write = _pipe._writeIdx;
+
+                var result = new Result(2) { IsClosed = _pipe._closed };
+
+                if (read <= write)
                 {
-                    var read = _pipe._readIdx;
-                    var write = _pipe._writeIdx;
-
-                    var result = new Result(2) { IsClosed = _pipe._closed };
-
-                    if (read <= write)
-                    {
-                        result.Buffer[0] = write - read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)read, (int)(write - read));
-                        result.Buffer[1] = ArraySegment<byte>.Empty;
-                    }
-                    else
-                    {
-                        result.Buffer[0] = _pipe.Size - read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)read, (int)(_pipe.Size - read));
-                        result.Buffer[1] = write == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)write);
-                    }
-
-                    return result;
+                    result.Buffer[0] = write - read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)read, (int)(write - read));
+                    result.Buffer[1] = ArraySegment<byte>.Empty;
                 }
+                else
+                {
+                    result.Buffer[0] = _pipe.Size - read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)read, (int)(_pipe.Size - read));
+                    result.Buffer[1] = write == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)write);
+                }
+
+                return result;
             }
 
             public IPipeTask<Result> GetBytes()
             {
-                lock (_pipe)
+                if (_pipe._awaitBeginning)
                 {
-                    if (_pipe._awaitBeginning)
-                    {
-                        throw new Exception("Double await on reader");
-                    }
-
-                    return this;
+                    throw new Exception("Double await on reader");
                 }
+
+                return this;
             }
 
             public void Advance(uint bytes)
             {
-                lock (_pipe)
-                {
-                    var read = _pipe._readIdx;
-                    var write = _pipe._writeIdx;
+                var read = _pipe._readIdx;
+                var write = _pipe._writeIdx;
 
-                    if (read <= write)
+                if (read <= write)
+                {
+                    if (bytes > write - read)
                     {
-                        if (bytes > write - read)
+                        throw new InvalidOperationException();
+                    }
+
+                    read += bytes;
+                }
+                else
+                {
+                    var sz = Math.Min(bytes, _pipe.Size - read);
+
+                    read += sz;
+                    if (read > _pipe.Size - 1)
+                    {
+                        read = 0;
+                    }
+                    bytes -= sz;
+
+                    if (bytes > 0)
+                    {
+                        if (bytes > write)
                         {
                             throw new InvalidOperationException();
                         }
 
-                        read += bytes;
+                        read = bytes;
                     }
-                    else
-                    {
-                        var sz = Math.Min(bytes, _pipe.Size - read);
-
-                        read += sz;
-                        if (read > _pipe.Size - 1)
-                        {
-                            read = 0;
-                        }
-                        bytes -= sz;
-
-                        if (bytes > 0)
-                        {
-                            if (bytes > write)
-                            {
-                                throw new InvalidOperationException();
-                            }
-
-                            read = bytes;
-                        }
-                    }
-
-                    _pipe._readIdx = read;
                 }
+
+                _pipe._readIdx = read;
             }
 
             #region Awaitable
@@ -334,28 +307,19 @@ namespace Server.Network
             {
                 get
                 {
-                    lock (_pipe)
+                    if (BytesAvailable() > 0)
                     {
-                        if (BytesAvailable() > 0)
-                        {
-                            return true;
-                        }
-
-                        _pipe._awaitBeginning = true;
-                        return false;
+                        return true;
                     }
+
+                    _pipe._awaitBeginning = true;
+                    return false;
                 }
             }
 
             public Result GetResult() => TryGetBytes();
 
-            public void OnCompleted(Action continuation)
-            {
-                lock (_pipe)
-                {
-                    _pipe._readerContinuation = continuation;
-                }
-            }
+            public void OnCompleted(Action continuation) => _pipe._readerContinuation = continuation;
 
             #endregion
         }
