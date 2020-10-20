@@ -23,6 +23,7 @@ namespace Server.Network
     {
         public struct Result
         {
+            public static readonly Result Empty = new Result(0);
             public ArraySegment<byte>[] Buffer { get; }
             public bool IsCanceled { get; set; }
             public bool IsCompleted { get; set; }
@@ -94,7 +95,7 @@ namespace Server.Network
                     var sz = Math.Min(read + _pipe.Size - write - 1, _pipe.Size - write);
 
                     _result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)write, (int)sz);
-                    _result.Buffer[1] = read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)read);
+                    _result.Buffer[1] = read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)read - 1);
                 }
                 else
                 {
@@ -124,7 +125,7 @@ namespace Server.Network
 
                 if (read <= write)
                 {
-                    if (bytes > read + _pipe.Size - write)
+                    if (bytes > read + _pipe.Size - write - 1)
                     {
                         throw new InvalidOperationException();
                     }
@@ -171,7 +172,7 @@ namespace Server.Network
             public void Flush()
             {
                 var waiting = _pipe._awaitBeginning;
-                Action continuation = _pipe._readerContinuation;
+                Action continuation;
 
                 if (!waiting)
                 {
@@ -231,22 +232,17 @@ namespace Server.Network
 
             public Result TryGetBytes()
             {
-                if (BytesAvailable() > 0)
+                if (BytesAvailable() <= 0)
                 {
-                    UpdateBufferReader();
+                    return Result.Empty;
                 }
 
+                UpdateBufferReader();
                 return _result;
             }
 
-            // The PipeReader itself is awaitable
             public PipeReader GetBytes()
             {
-                if (BytesAvailable() > 0)
-                {
-                    UpdateBufferReader();
-                }
-
                 if (_pipe._awaitBeginning)
                 {
                     throw new Exception("Double await on reader");
@@ -314,7 +310,6 @@ namespace Server.Network
                 }
             }
 
-            // TODO: Return by ref?
             public Result GetResult()
             {
                 UpdateBufferReader();

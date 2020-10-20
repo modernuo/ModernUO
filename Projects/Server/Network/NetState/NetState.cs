@@ -366,15 +366,7 @@ namespace Server.Network
 
                 if (buffer.Length > 0 && length > 0)
                 {
-                    WriteConsole("Send Packet: {0:X2} ({1})", p.PacketID, length);
-
                     var result = writer.GetBytes();
-
-                    // if (result.IsCanceled || result.IsCompleted)
-                    // {
-                    //     WriteConsole("Outgoing completed");
-                    //     Dispose();
-                    // }
 
                     if (result.Length >= length)
                     {
@@ -421,21 +413,10 @@ namespace Server.Network
             {
                 var result = await reader.GetBytes();
 
-                // if (result.IsCompleted || result.IsCanceled)
-                // {
-                //     WriteConsole("Completed");
-                //     break;
-                // }
-
                 if (result.Length <= 0)
                 {
                     continue;
                 }
-
-                WriteConsole("Sending Data: ({0}) ({1})", result.Buffer[0].Count, result.Buffer[1].Count);
-                // Console.WriteLine(HexStringConverter.GetString(result.Buffer[0]));
-                // Console.WriteLine(HexStringConverter.GetString(result.Buffer[1]));
-                // Console.WriteLine("\n");
 
                 var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None);
 
@@ -458,7 +439,7 @@ namespace Server.Network
 
             try
             {
-                while (true)
+                while (m_Running)
                 {
                     if (m_NetworkState == NetworkState.PauseState)
                     {
@@ -472,23 +453,14 @@ namespace Server.Network
                         continue;
                     }
 
-                    // if (result.IsCompleted || result.IsCanceled)
-                    // {
-                    //     WriteConsole("Writer completed");
-                    //     break;
-                    // }
-
                     var buffer = result.Buffer;
 
                     var bytesWritten = await socket.ReceiveAsync(buffer, SocketFlags.None);
 
                     if (bytesWritten <= 0)
                     {
-                        WriteConsole("Received 0 bytes");
                         break;
                     }
-
-                    WriteConsole("Received {0} bytes", bytesWritten);
 
                     writer.Advance((uint)bytesWritten);
                     m_NextCheckActivity = Core.TickCount + 90000;
@@ -535,7 +507,7 @@ namespace Server.Network
                 {
                     var result = reader.TryGetBytes();
 
-                    if (/*result.IsCompleted || result.IsCanceled ||*/ result.Length <= 0)
+                    if (result.Length <= 0)
                     {
                         return;
                     }
@@ -557,8 +529,6 @@ namespace Server.Network
 
                         return;
                     }
-
-                    WriteConsole("Processed {0} bytes for packet {1:X}", bytesProcessed, result.Buffer[0][0]);
 
                     reader.Advance((uint)bytesProcessed);
                 }

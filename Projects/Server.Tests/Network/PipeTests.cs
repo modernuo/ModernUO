@@ -36,7 +36,7 @@ namespace Server.Tests.Network
                 writer.Flush();
             });
 
-            var result = await reader.GetBytes();
+            var result = await reader;
 
             Assert.True(result.Buffer[0].Count == 3);
         }
@@ -46,25 +46,37 @@ namespace Server.Tests.Network
         {
             var pipe = new Pipe(new byte[10]);
 
+            Pipe.Result result;
+
             var reader = pipe.Reader;
             var writer = pipe.Writer;
 
-            var buffer = writer.GetBytes();
-            Assert.True(buffer.Length == 9);
+            result = writer.GetBytes();
+            Assert.True(result.Length == 9);
+            Assert.True(reader.BytesAvailable() == 0);
+            result = reader.TryGetBytes();
+            Assert.True(result.Length == 0);
 
             writer.Advance(7);
-            Assert.True(buffer.Length == 9);
-
-            buffer = writer.GetBytes();
-            Assert.True(buffer.Length == 2);
+            result = writer.GetBytes();
+            Assert.True(result.Length == 2);
+            Assert.True(reader.BytesAvailable() == 7);
+            result = reader.TryGetBytes();
+            Assert.True(result.Length == 7);
 
             reader.Advance(4);
-            buffer = writer.GetBytes();
-            Assert.True(buffer.Length == 7);
+            result = writer.GetBytes();
+            Assert.True(result.Length == 6);
+            Assert.True(reader.BytesAvailable() == 3);
+            result = reader.TryGetBytes();
+            Assert.True(result.Length == 3);
 
             writer.Advance(3);
-            buffer = writer.GetBytes();
-            Assert.True(buffer.Length == 3);
+            result = writer.GetBytes();
+            Assert.True(result.Length == 3);
+            Assert.True(reader.BytesAvailable() == 6);
+            result = reader.TryGetBytes();
+            Assert.True(result.Length == 6);
 
         }
 
