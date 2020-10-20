@@ -2548,7 +2548,7 @@ namespace Server.Network
             if (e.Accepted)
             {
                 state.CityInfo = e.CityInfo;
-                state.CompressionEnabled = true;
+                // state.CompressionEnabled = true;
 
                 state.Send(SupportedFeatures.Instantiate(state));
 

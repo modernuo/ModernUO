@@ -194,7 +194,7 @@ namespace Server.Network
             if (compress)
             {
                 var compressorBuffer = ArrayPool<byte>.Shared.Rent(CompressorBufferSize);
-                NetworkCompression.Compress(m_CompiledBuffer, 0, length, compressorBuffer, out length);
+                NetworkCompression.Compress(m_CompiledBuffer, 0, length, compressorBuffer, out var compressedLength);
 
                 if (length <= 0)
                 {
@@ -219,13 +219,17 @@ namespace Server.Network
                 else
                 {
                     m_CompiledBuffer = compressorBuffer;
+                    m_CompiledLength = compressedLength;
                 }
+            }
+            else
+            {
+                m_CompiledLength = length;
             }
 
             if (length > 0)
             {
                 var old = m_CompiledBuffer;
-                m_CompiledLength = length;
 
                 if ((m_State & State.Static) != 0)
                 {

@@ -19,13 +19,23 @@ using System.Threading;
 
 namespace Server.Network
 {
+    public interface IPipeTask<T> : INotifyCompletion
+    {
+        public IPipeTask<T> GetAwaiter();
+
+        public bool IsCompleted { get; }
+
+        public T GetResult();
+
+        public void OnCompleted(Action continuation);
+    }
+
     public class Pipe
     {
         public struct Result
         {
             public ArraySegment<byte>[] Buffer { get; }
-            public bool IsCanceled { get; set; }
-            public bool IsCompleted { get; set; }
+            public bool IsClosed { get; set; }
 
             public int Length
             {
@@ -70,8 +80,7 @@ namespace Server.Network
 
             public Result(int segments)
             {
-                IsCanceled = false;
-                IsCompleted = false;
+                IsClosed = false;
                 Buffer = new ArraySegment<byte>[segments];
             }
         }
@@ -80,8 +89,6 @@ namespace Server.Network
         {
             private Pipe _pipe;
 
-            private Result _result = new Result(2);
-
             public PipeWriter(Pipe pipe) => _pipe = pipe;
 
             public Result GetBytes()
@@ -89,22 +96,25 @@ namespace Server.Network
                 var read = _pipe._readIdx;
                 var write = _pipe._writeIdx;
 
+                var result = new Result(2);
+                result.IsClosed = _pipe._closed;
+
                 if (read <= write)
                 {
                     var sz = Math.Min(read + _pipe.Size - write - 1, _pipe.Size - write);
 
-                    _result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)write, (int)sz);
-                    _result.Buffer[1] = read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)read - 1);
+                    result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)write, (int)sz);
+                    result.Buffer[1] = read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)read - 1);
                 }
                 else
                 {
                     var sz = read - write - 1;
 
-                    _result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)write, (int)sz);
-                    _result.Buffer[1] = ArraySegment<byte>.Empty;
+                    result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)write, (int)sz);
+                    result.Buffer[1] = ArraySegment<byte>.Empty;
                 }
 
-                return _result;
+                return result;
             }
 
             public void Advance(uint bytes)
@@ -158,12 +168,19 @@ namespace Server.Network
                     write += bytes;
                 }
 
+                // It's never valid to advance the write pointer to become equal to
+                // the read pointer. Check that here.
+                if (write == read)
+                {
+                    throw new InvalidOperationException("Write index equals read index after advance");
+                }
+
                 _pipe._writeIdx = write;
             }
 
-            public void Complete()
+            public void Close()
             {
-                _pipe.Reader._result.IsCompleted = true;
+                _pipe._closed = true;
 
                 Flush();
             }
@@ -190,30 +207,11 @@ namespace Server.Network
             }
         }
 
-        public class PipeReader : INotifyCompletion
+        public class PipeReader : IPipeTask<Result>
         {
             private Pipe _pipe;
 
-            internal Result _result = new Result(2);
-
             internal PipeReader(Pipe pipe) => _pipe = pipe;
-
-            private void UpdateBufferReader()
-            {
-                var read = _pipe._readIdx;
-                var write = _pipe._writeIdx;
-
-                if (read <= write)
-                {
-                    _result.Buffer[0] = write - read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)read, (int)(write - read));
-                    _result.Buffer[1] = ArraySegment<byte>.Empty;
-                }
-                else
-                {
-                    _result.Buffer[0] = _pipe.Size - read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)read, (int)(_pipe.Size - read));
-                    _result.Buffer[1] = write == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)write);
-                }
-            }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public uint BytesAvailable()
@@ -231,11 +229,26 @@ namespace Server.Network
 
             public Result TryGetBytes()
             {
-                UpdateBufferReader();
-                return _result;
+                var read = _pipe._readIdx;
+                var write = _pipe._writeIdx;
+
+                var result = new Result(2) { IsClosed = _pipe._closed };
+
+                if (read <= write)
+                {
+                    result.Buffer[0] = write - read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)read, (int)(write - read));
+                    result.Buffer[1] = ArraySegment<byte>.Empty;
+                }
+                else
+                {
+                    result.Buffer[0] = _pipe.Size - read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)read, (int)(_pipe.Size - read));
+                    result.Buffer[1] = write == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)write);
+                }
+
+                return result;
             }
 
-            public PipeReader GetBytes()
+            public IPipeTask<Result> GetBytes()
             {
                 if (_pipe._awaitBeginning)
                 {
@@ -288,7 +301,7 @@ namespace Server.Network
 
             // The following makes it possible to await the reader. Do not use any of this directly.
 
-            public PipeReader GetAwaiter() => this;
+            public IPipeTask<Result> GetAwaiter() => this;
 
             public bool IsCompleted
             {
@@ -314,6 +327,7 @@ namespace Server.Network
         private byte[] _buffer;
         private volatile uint _writeIdx;
         private volatile uint _readIdx;
+        private bool _closed;
 
         public PipeWriter Writer { get; }
         public PipeReader Reader { get; }
@@ -325,6 +339,7 @@ namespace Server.Network
             _buffer = buf;
             _writeIdx = 0;
             _readIdx = 0;
+            _closed = false;
 
             Writer = new PipeWriter(this);
             Reader = new PipeReader(this);

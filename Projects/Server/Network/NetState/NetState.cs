@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -405,20 +406,24 @@ namespace Server.Network
             ThreadPool.UnsafeQueueUserWorkItem(SendTask, null);
         }
 
-        private async void SendTask(object state)
+        private void SendTask(object state)
         {
             var reader = m_OutgoingPipe.Reader;
 
             while (m_Running)
             {
-                var result = await reader.GetBytes();
+                var result = reader.TryGetBytes();
 
                 if (result.Length <= 0)
                 {
                     continue;
                 }
 
-                var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None);
+                var buffer = result.Buffer;
+
+                // WriteConsole("Sending: " + HexStringConverter.GetString(buffer[0]) + HexStringConverter.GetString(buffer[1]));
+
+                var bytesWritten = Connection.Send(buffer, SocketFlags.None);
 
                 if (bytesWritten > 0)
                 {
@@ -638,7 +643,7 @@ namespace Server.Network
                 return;
             }
 
-            m_OutgoingPipe.Writer.Complete();
+            m_OutgoingPipe.Writer.Close();
 
             try
             {
