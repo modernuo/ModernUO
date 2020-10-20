@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -371,7 +370,7 @@ namespace Server.Network
 
                     if (result.Length >= length)
                     {
-                        result.CopyFrom(buffer.AsSpan(0, length));
+                        result.CopyFrom(m_OutgoingPipe, buffer.AsSpan(0, length));
                         writer.Advance((uint)length);
 
                         // Flush at the end of the game loop
