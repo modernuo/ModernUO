@@ -18,6 +18,8 @@ namespace Server
         bool InRange(Point3D p, int range);
 
         bool InRange(IPoint2D p, int range);
+
+        void RemoveItem(Item item);
     }
 
     public class Entity : IEntity, IComparable<Entity>
@@ -59,6 +61,10 @@ namespace Server
         }
 
         public void ProcessDelta()
+        {
+        }
+
+        public void RemoveItem(Item item)
         {
         }
 
