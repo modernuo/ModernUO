@@ -2170,60 +2170,54 @@ namespace Server
 
         public void Bounce(Mobile from)
         {
-            if (m_Parent is Item item)
-            {
-                item.RemoveItem(this);
-            }
-            else if (m_Parent is Mobile mobile)
-            {
-                mobile.RemoveItem(this);
-            }
+            m_Parent.RemoveItem(this);
 
             m_Parent = null;
 
             var bounce = GetBounce();
 
-            if (bounce != null)
+            if (bounce == null)
             {
-                var parent = bounce.Parent;
+                MoveToWorld(from.Location, from.Map);
+                return;
+            }
 
-                if (parent?.Deleted != false)
-                {
-                    MoveToWorld(bounce.WorldLoc, bounce.Map);
-                }
-                else if (parent is Item p)
-                {
-                    var root = p.RootParent;
+            var parent = bounce.Parent;
 
-                    if (p.IsAccessibleTo(from) &&
-                        (!(root is Mobile mobileRoot) || mobileRoot.CheckNonlocalDrop(from, this, p)))
-                    {
-                        Location = bounce.Location;
-                        p.AddItem(this);
-                    }
-                    else
-                    {
-                        MoveToWorld(from.Location, from.Map);
-                    }
-                }
-                else if (parent is Mobile parentMobile)
+            if (parent?.Deleted != false)
+            {
+                MoveToWorld(from.Location, from.Map);
+                return;
+            }
+
+            if (parent is Item ip)
+            {
+                var root = ip.RootParent;
+                var rpm = root as Mobile;
+
+                if (ip.IsAccessibleTo(from) &&
+                    rpm?.CheckNonlocalDrop(from, this, ip) == true &&
+                    (!ip.Movable || rpm == from || ip.Map == bounce.Map && root.Location == bounce.WorldLoc)
+                )
                 {
-                    if (!parentMobile.EquipItem(this))
-                    {
-                        MoveToWorld(bounce.WorldLoc, bounce.Map);
-                    }
+                    Location = bounce.Location;
+                    ip.AddItem(this);
                 }
                 else
                 {
-                    MoveToWorld(bounce.WorldLoc, bounce.Map);
+                    MoveToWorld(from.Location, from.Map);
                 }
-
-                ClearBounce();
+            }
+            else if ((parent as Mobile)?.EquipItem(this) == false)
+            {
+                MoveToWorld(bounce.WorldLoc, bounce.Map);
             }
             else
             {
                 MoveToWorld(from.Location, from.Map);
             }
+
+            ClearBounce();
         }
 
         /// <summary>
