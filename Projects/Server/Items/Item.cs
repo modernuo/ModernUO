@@ -2186,7 +2186,7 @@ namespace Server
 
             if (parent?.Deleted != false)
             {
-                MoveToWorld(bounce.WorldLoc, bounce.Map);
+                MoveToWorld(from.Location, from.Map);
                 return;
             }
 
@@ -2197,7 +2197,7 @@ namespace Server
 
                 if (ip.IsAccessibleTo(from) &&
                     rpm?.CheckNonlocalDrop(from, this, ip) == true &&
-                    (!ip.Movable || rpm == from || ip.Map == bounce.Map && root.InRange(bounce.WorldLoc, 2))
+                    (!ip.Movable || rpm == from || ip.Map == bounce.Map && root.Location == bounce.WorldLoc)
                 )
                 {
                     Location = bounce.Location;
