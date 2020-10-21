@@ -59,12 +59,7 @@ namespace Server.Tests.Network.Packets
         [Fact]
         public void TestFastGumpPacket()
         {
-            var ns = new NetState(
-                new AccountPacketTests.TestConnectionContext
-                {
-                    RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
-                }
-            );
+            var ns = new NetState(null);
 
             var gump = new ResurrectGump(2);
 
@@ -134,12 +129,7 @@ namespace Server.Tests.Network.Packets
         [Fact]
         public void TestPackedGumpPacket()
         {
-            var ns = new NetState(
-                new AccountPacketTests.TestConnectionContext
-                {
-                    RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
-                }
-            )
+            var ns = new NetState(null)
             {
                 ProtocolChanges = ProtocolChanges.Unpack
             };
@@ -194,9 +184,8 @@ namespace Server.Tests.Network.Packets
                 layoutList.Add(str);
             }
 
-            var memOwner = SlabMemoryPool.Shared.Rent(bufferLength);
-
-            var buffer = memOwner.Memory.Span;
+            var rawBuffer = ArrayPool<byte>.Shared.Rent(bufferLength);
+            Span<byte> buffer = rawBuffer;
             var bufferPos = 0;
 
             foreach (var layout in layoutList)
@@ -211,12 +200,12 @@ namespace Server.Tests.Network.Packets
 #endif
 
             expectedData.WritePacked(ref pos, buffer.Slice(0, bufferPos));
-            memOwner.Dispose();
+            ArrayPool<byte>.Shared.Return(rawBuffer);
 
             expectedData.Write(ref pos, gump.Strings.Count);
             bufferLength = gump.Strings.Sum(str => 2 + str.Length * 2);
-            memOwner = SlabMemoryPool.Shared.Rent(bufferLength);
-            buffer = memOwner.Memory.Span;
+            rawBuffer = ArrayPool<byte>.Shared.Rent(bufferLength);
+            buffer = rawBuffer;
             bufferPos = 0;
 
             foreach (var str in gump.Strings)
@@ -225,6 +214,7 @@ namespace Server.Tests.Network.Packets
             }
 
             expectedData.WritePacked(ref pos, buffer.Slice(0, bufferPos));
+            ArrayPool<byte>.Shared.Return(rawBuffer);
 
             // Length
             expectedData.Slice(1, 2).Write((ushort)pos);

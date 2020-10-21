@@ -8532,17 +8532,9 @@ namespace Server
         {
             _processing = true;
 
-            if (m_DeltaQueue.Count >= 512)
+            while (m_DeltaQueue.TryDequeue(out var m))
             {
-                Parallel.ForEach(m_DeltaQueue, m => m.ProcessDelta());
-                m_DeltaQueue.Clear();
-            }
-            else
-            {
-                while (m_DeltaQueue.TryDequeue(out var m))
-                {
-                    m.ProcessDelta();
-                }
+                m.ProcessDelta();
             }
 
             _processing = false;

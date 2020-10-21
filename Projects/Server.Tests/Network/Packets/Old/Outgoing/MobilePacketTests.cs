@@ -154,7 +154,7 @@ namespace Server.Tests.Network.Packets
             Span<byte> expectedData = stackalloc byte[14];
             var pos = 0;
 
-            expectedData.Write(ref pos, (byte)0x6E);
+            expectedData.Write(ref pos, (byte)0x6E); // Packet ID
             expectedData.Write(ref pos, mobile);
             expectedData.Write(ref pos, (ushort)action);
             expectedData.Write(ref pos, (ushort)frameCount);
@@ -240,12 +240,7 @@ namespace Server.Tests.Network.Packets
             };
             beheld.DefaultMobileInit();
 
-            var ns = new NetState(
-                new AccountPacketTests.TestConnectionContext
-                {
-                    RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
-                }
-            )
+            var ns = new NetState(null)
             {
                 ProtocolChanges = changes
             };
@@ -642,12 +637,7 @@ namespace Server.Tests.Network.Packets
             beheld.FacialHairItemID = facialHairItemId;
             beheld.FacialHairHue = facialHairHue;
 
-            var ns = new NetState(
-                new AccountPacketTests.TestConnectionContext
-                {
-                    RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
-                }
-            )
+            var ns = new NetState(null)
             {
                 ProtocolChanges = protocolChanges
             };

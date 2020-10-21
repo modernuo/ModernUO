@@ -378,8 +378,8 @@ namespace Server.Items
 
             reader.Seek(4, SeekOrigin.Current); // Skip flags and page count
 
-            var title = reader.ReadStringSafe(60);
-            var author = reader.ReadStringSafe(30);
+            var title = reader.ReadAsciiSafe(60);
+            var author = reader.ReadAsciiSafe(30);
 
             book.Title = Utility.FixHtml(title);
             book.Author = Utility.FixHtml(author);
@@ -404,7 +404,7 @@ namespace Server.Items
                 return;
             }
 
-            var title = reader.ReadUTF8StringSafe(titleLength);
+            var title = reader.ReadUTF8Safe(titleLength);
 
             int authorLength = reader.ReadUInt16();
 
@@ -413,7 +413,7 @@ namespace Server.Items
                 return;
             }
 
-            var author = reader.ReadUTF8StringSafe(authorLength);
+            var author = reader.ReadUTF8Safe(authorLength);
 
             book.Title = Utility.FixHtml(title);
             book.Author = Utility.FixHtml(author);
@@ -452,7 +452,7 @@ namespace Server.Items
 
                         for (var j = 0; j < lineCount; ++j)
                         {
-                            if ((lines[j] = reader.ReadUTF8StringSafe()).Length >= 80)
+                            if ((lines[j] = reader.ReadUTF8Safe()).Length >= 80)
                             {
                                 return;
                             }

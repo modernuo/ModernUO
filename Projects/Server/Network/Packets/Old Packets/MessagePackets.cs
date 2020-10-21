@@ -32,8 +32,7 @@ namespace Server.Network
         private static readonly MessageLocalized[] m_Cache_CliLocCmp = new MessageLocalized[5000];
 
         public MessageLocalized(
-            Serial serial, int graphic, MessageType type, int hue, int font, int number, string name,
-            string args
+            Serial serial, int graphic, MessageType type, int hue, int font, int number, string name, string args
         ) : base(0xC1)
         {
             name ??= "";

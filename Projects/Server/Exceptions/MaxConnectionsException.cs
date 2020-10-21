@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SocketConnectionEvent.cs                                        *
+ * File: MaxConnectionsException.cs                                      *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,26 +14,13 @@
  *************************************************************************/
 
 using System;
-using System.Net.Sockets;
 
-namespace Server
+namespace Server.Exceptions
 {
-    public class SocketConnectEventArgs : EventArgs
+    public class MaxConnectionsException : Exception
     {
-        public SocketConnectEventArgs(Socket c)
+        public MaxConnectionsException() : base("Maximum connections exceeded")
         {
-            Connection = c;
-            AllowConnection = true;
         }
-
-        public Socket Connection { get; }
-
-        public bool AllowConnection { get; set; }
-    }
-
-    public static partial class EventSink
-    {
-        public static event Action<SocketConnectEventArgs> SocketConnect;
-        public static void InvokeSocketConnect(SocketConnectEventArgs e) => SocketConnect?.Invoke(e);
     }
 }

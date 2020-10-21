@@ -1,5 +1,19 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: PacketHandlers.cs                                               *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using Server.ContextMenus;
@@ -34,9 +48,6 @@ namespace Server.Network
     {
         public delegate void PlayCharCallback(NetState state, bool val);
 
-        private const int BadFood = unchecked((int)0xBAADF00D);
-        private const int BadUOTD = unchecked((int)0xFFCEFFCE);
-
         private const int m_AuthIDWindowSize = 128;
         private static readonly PacketHandler[] m_6017Handlers = new PacketHandler[0x100];
 
@@ -54,8 +65,6 @@ namespace Server.Network
 
         private static readonly Dictionary<int, AuthIDPersistence> m_AuthIDWindow =
             new Dictionary<int, AuthIDPersistence>(m_AuthIDWindowSize);
-
-        private static readonly MemoryPool<byte> _memoryPool = SlabMemoryPoolFactory.Create();
 
         static PacketHandlers()
         {
@@ -272,15 +281,11 @@ namespace Server.Network
             }
         }
 
-        public static int ProcessPacket(IMessagePumpService pump, NetState ns, in ReadOnlySequence<byte> seq)
+        public static int ProcessPacket(NetState ns, ArraySegment<byte>[] segments)
         {
-            var r = new PacketReader(seq);
+            var reader = new PacketReader(segments);
 
-            if (!r.TryReadByte(out var packetId))
-            {
-                ns.Dispose();
-                return -1;
-            }
+            var packetId = reader.ReadByte();
 
             if (!ns.Seeded)
             {
@@ -292,12 +297,11 @@ namespace Server.Network
                 }
                 else
                 {
-                    var seed = (packetId << 24) | (r.ReadByte() << 16) | (r.ReadByte() << 8) | r.ReadByte();
+                    var seed = (packetId << 24) | (reader.ReadByte() << 16) | (reader.ReadByte() << 8) | reader.ReadByte();
 
                     if (seed == 0)
                     {
-                        Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", ns);
-                        ns.Dispose();
+                        ns.WriteConsole("Invalid client detected, disconnecting");
                         return -1;
                     }
 
@@ -310,7 +314,6 @@ namespace Server.Network
 
             if (ns.CheckEncrypted(packetId))
             {
-                ns.Dispose();
                 return -1;
             }
 
@@ -319,34 +322,29 @@ namespace Server.Network
 
             if (handler == null)
             {
-                r.Trace(ns);
+                reader.Trace(ns);
                 return -1;
             }
 
             var packetLength = handler.Length;
-            if (handler.Length <= 0 && r.Length >= 3)
+            if (handler.Length <= 0 && reader.Length >= 3)
             {
-                packetLength = r.ReadUInt16();
+                packetLength = reader.ReadUInt16();
                 if (packetLength < 3)
                 {
-                    ns.Dispose();
                     return -1;
                 }
             }
 
-            if (r.Length < packetLength)
+            // Not enough data, let's wait for more to come in
+            if (reader.Length < packetLength)
             {
                 return 0;
             }
 
             if (handler.Ingame && ns.Mobile?.Deleted != false)
             {
-                Console.WriteLine(
-                    "Client: {0}: Sent ingame packet (0x{1:X2}) without being attached to a valid mobile.",
-                    ns,
-                    packetId
-                );
-                ns.Dispose();
+                ns.WriteConsole("Sent ingame packet (0x{1:X2}) without being attached to a valid mobile.", ns, packetId);
                 return -1;
             }
 
@@ -357,14 +355,7 @@ namespace Server.Network
                 ns.ThrottledUntil = DateTime.UtcNow + throttled;
             }
 
-            var packet = seq.Slice(r.Position);
-            var length = (int)packet.Length;
-            var memOwner = _memoryPool.Rent(length);
-
-            // TODO: This is slow, find another way
-            packet.CopyTo(memOwner.Memory.Span);
-
-            pump.QueueWork(ns, memOwner, length, handler.OnReceive);
+            handler.OnReceive(ns, reader);
 
             return packetLength;
         }
@@ -403,9 +394,8 @@ namespace Server.Network
             {
                 if (ph.Ingame && state.Mobile == null)
                 {
-                    Console.WriteLine(
-                        "Client: {0}: Sent ingame packet (0xD7x{1:X2}) before having been attached to a mobile",
-                        state,
+                    state.WriteConsole(
+                        "Sent ingame packet (0xD7x{0:X2}) before having been attached to a mobile",
                         packetId
                     );
                     state.Dispose();
@@ -432,7 +422,7 @@ namespace Server.Network
 
             if (targ != null)
             {
-                EventSink.InvokeRenameRequest(from, targ, reader.ReadStringSafe());
+                EventSink.InvokeRenameRequest(from, targ, reader.ReadAsciiSafe());
             }
         }
 
@@ -526,7 +516,7 @@ namespace Server.Network
 
             if (flag == 0x02)
             {
-                var msgSize = (int)reader.Remaining;
+                var msgSize = reader.Remaining;
 
                 if (msgSize / 7 > 100)
                 {
@@ -616,7 +606,7 @@ namespace Server.Network
 
             Serial serial = reader.ReadUInt32();
             int unk = reader.ReadByte();
-            var lang = reader.ReadString(3);
+            var lang = reader.ReadAscii(3);
 
             if (serial.IsItem)
             {
@@ -692,10 +682,10 @@ namespace Server.Network
             int v1 = reader.ReadByte();
             int v2 = reader.ReadUInt16();
             int v3 = reader.ReadByte();
-            var s1 = reader.ReadString(32);
-            var s2 = reader.ReadString(32);
-            var s3 = reader.ReadString(32);
-            var s4 = reader.ReadString(32);
+            var s1 = reader.ReadAscii(32);
+            var s2 = reader.ReadAscii(32);
+            var s3 = reader.ReadAscii(32);
+            var s4 = reader.ReadAscii(32);
             int v4 = reader.ReadUInt16();
             int v5 = reader.ReadUInt16();
             var v6 = reader.ReadInt32();
@@ -710,7 +700,7 @@ namespace Server.Network
         public static void TextCommand(NetState state, PacketReader reader)
         {
             int type = reader.ReadByte();
-            var command = reader.ReadString();
+            var command = reader.ReadAscii();
 
             var m = state.Mobile;
 
@@ -794,7 +784,7 @@ namespace Server.Network
                     }
                 default:
                     {
-                        Console.WriteLine("Client: {0}: Unknown text-command type 0x{1:X2}: {2}", state, type, command);
+                        state.WriteConsole("Unknown text-command type 0x{0:X2}: {1}", state, type, command);
                         break;
                     }
             }
@@ -805,7 +795,7 @@ namespace Server.Network
             var serial = reader.ReadUInt32();
             var prompt = reader.ReadInt32();
             var type = reader.ReadInt32();
-            var text = reader.ReadStringSafe();
+            var text = reader.ReadAsciiSafe();
 
             if (text.Length > 128)
             {
@@ -835,8 +825,8 @@ namespace Server.Network
             var serial = reader.ReadUInt32();
             var prompt = reader.ReadInt32();
             var type = reader.ReadInt32();
-            var lang = reader.ReadString(4);
-            var text = reader.ReadUnicodeStringLESafe();
+            var lang = reader.ReadAscii(4);
+            var text = reader.ReadLittleUniSafe();
 
             if (text.Length > 128)
             {
@@ -922,7 +912,7 @@ namespace Server.Network
                             return;
                         }
 
-                        var text = reader.ReadUnicodeString(length);
+                        var text = reader.ReadBigUni(length);
 
                         EventSink.InvokeChangeProfileRequest(beholder, beheld, text);
 
@@ -1259,7 +1249,7 @@ namespace Server.Network
                         return;
                     }
 
-                    var text = reader.ReadUnicodeStringSafe(textLength);
+                    var text = reader.ReadBigUniSafe(textLength);
                     textEntries[j] = new TextRelay(entryID, text);
                 }
 
@@ -1336,7 +1326,7 @@ namespace Server.Network
             var type = (MessageType)reader.ReadByte();
             int hue = reader.ReadInt16();
             reader.ReadInt16(); // font
-            var text = reader.ReadStringSafe().Trim();
+            var text = reader.ReadAsciiSafe().Trim();
 
             if (text.Length <= 0 || text.Length > 128)
             {
@@ -1358,7 +1348,7 @@ namespace Server.Network
             var type = (MessageType)reader.ReadByte();
             int hue = reader.ReadInt16();
             reader.ReadInt16(); // font
-            var lang = reader.ReadString(4);
+            var lang = reader.ReadAscii(4);
             string text;
 
             var isEncoded = (type & MessageType.Encoded) != 0;
@@ -1401,13 +1391,13 @@ namespace Server.Network
                     }
                 }
 
-                text = reader.ReadUTF8StringSafe();
+                text = reader.ReadUTF8Safe();
 
                 keywords = keyList.ToArray();
             }
             else
             {
-                text = reader.ReadUnicodeStringSafe();
+                text = reader.ReadBigUniSafe();
 
                 keywords = m_EmptyInts;
             }
@@ -1603,9 +1593,8 @@ namespace Server.Network
             {
                 if (state.Mobile == null)
                 {
-                    Console.WriteLine(
-                        "Client: {0}: Sent in-game packet (0xBFx{1:X2}) before having been attached to a mobile",
-                        state,
+                    state.WriteConsole(
+                        "Sent in-game packet (0xBFx{0:X2}) before having been attached to a mobile",
                         packetID
                     );
                 }
@@ -1804,13 +1793,13 @@ namespace Server.Network
             PartyCommands.Handler?.OnPrivateMessage(
                 state.Mobile,
                 World.FindMobile(reader.ReadUInt32()),
-                reader.ReadUnicodeStringSafe()
+                reader.ReadBigUniSafe()
             );
         }
 
         public static void PartyMessage_PublicMessage(NetState state, PacketReader reader)
         {
-            PartyCommands.Handler?.OnPublicMessage(state.Mobile, reader.ReadUnicodeStringSafe());
+            PartyCommands.Handler?.OnPublicMessage(state.Mobile, reader.ReadBigUniSafe());
         }
 
         public static void PartyMessage_SetCanLoot(NetState state, PacketReader reader)
@@ -1980,7 +1969,7 @@ namespace Server.Network
 
         public static void Language(NetState state, PacketReader reader)
         {
-            var lang = reader.ReadString(4);
+            var lang = reader.ReadAscii(4);
 
             if (state.Mobile != null)
             {
@@ -1991,12 +1980,12 @@ namespace Server.Network
         public static void AssistVersion(NetState state, PacketReader reader)
         {
             var unk = reader.ReadInt32();
-            var av = reader.ReadString();
+            var av = reader.ReadAscii();
         }
 
         public static void ClientVersion(NetState state, PacketReader reader)
         {
-            var version = state.Version = new CV(reader.ReadString());
+            var version = state.Version = new CV(reader.ReadAscii());
 
             EventSink.InvokeClientVersionReceived(state, version);
         }
@@ -2006,7 +1995,7 @@ namespace Server.Network
             reader.ReadUInt16();
 
             int type = reader.ReadUInt16();
-            var version = state.Version = new CV(reader.ReadString());
+            var version = state.Version = new CV(reader.ReadAscii());
 
             EventSink.InvokeClientVersionReceived(state, version);
         }
@@ -2046,7 +2035,7 @@ namespace Server.Network
         {
             reader.ReadInt32(); // 0xEDEDEDED
 
-            var name = reader.ReadString(30);
+            var name = reader.ReadAscii(30);
 
             reader.Seek(2, SeekOrigin.Current);
 
@@ -2074,7 +2063,7 @@ namespace Server.Network
 
                     if (check != null && check.Map != Map.Internal && check != m)
                     {
-                        Console.WriteLine("Login: {0}: Account in use", state);
+                        state.WriteConsole("Account in use");
                         state.Send(new PopupMessage(PMMessage.CharInWorld));
                         return;
                     }
@@ -2217,7 +2206,7 @@ namespace Server.Network
             var unk1 = reader.ReadInt32();
             var unk2 = reader.ReadInt32();
             int unk3 = reader.ReadByte();
-            var name = reader.ReadString(30);
+            var name = reader.ReadAscii(30);
 
             reader.Seek(2, SeekOrigin.Current);
             var flags = reader.ReadInt32();
@@ -2292,7 +2281,7 @@ namespace Server.Network
 
                     if (check != null && check.Map != Map.Internal)
                     {
-                        Console.WriteLine("Login: {0}: Account in use", state);
+                        state.WriteConsole("Account in use");
                         state.Send(new PopupMessage(PMMessage.CharInWorld));
                         return;
                     }
@@ -2353,7 +2342,7 @@ namespace Server.Network
             var unk1 = reader.ReadInt32();
             var unk2 = reader.ReadInt32();
             int unk3 = reader.ReadByte();
-            var name = reader.ReadString(30);
+            var name = reader.ReadAscii(30);
 
             reader.Seek(2, SeekOrigin.Current);
             var flags = reader.ReadInt32();
@@ -2417,7 +2406,7 @@ namespace Server.Network
 
                     if (check != null && check.Map != Map.Internal)
                     {
-                        Console.WriteLine("Login: {0}: Account in use", state);
+                        state.WriteConsole("Account in use");
                         state.Send(new PopupMessage(PMMessage.CharInWorld));
                         return;
                     }
@@ -2530,27 +2519,27 @@ namespace Server.Network
             }
             else if (ClientVerification)
             {
-                Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", state);
+                state.WriteConsole("Invalid client detected, disconnecting");
                 state.Dispose();
                 return;
             }
 
             if (state.m_AuthID != 0 && authID != state.m_AuthID)
             {
-                Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", state);
+                state.WriteConsole("Invalid client detected, disconnecting");
                 state.Dispose();
                 return;
             }
 
             if (state.m_AuthID == 0 && authID != state.m_Seed)
             {
-                Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", state);
+                state.WriteConsole("Invalid client detected, disconnecting");
                 state.Dispose();
                 return;
             }
 
-            var username = reader.ReadString(30);
-            var password = reader.ReadString(30);
+            var username = reader.ReadAscii(30);
+            var password = reader.ReadAscii(30);
 
             var e = new GameLoginEventArgs(state, username, password);
 
@@ -2559,7 +2548,7 @@ namespace Server.Network
             if (e.Accepted)
             {
                 state.CityInfo = e.CityInfo;
-                state.CompressionEnabled = true;
+                // state.CompressionEnabled = true;
 
                 state.Send(SupportedFeatures.Instantiate(state));
 
@@ -2606,7 +2595,7 @@ namespace Server.Network
 
             if (state.m_Seed == 0)
             {
-                Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", state);
+                state.WriteConsole("Invalid client detected, disconnecting");
                 state.Dispose();
                 return;
             }
@@ -2631,15 +2620,15 @@ namespace Server.Network
             var z = reader.ReadSByte();
             var map = reader.ReadByte();
 
-            var account = reader.ReadString(32);
-            var character = reader.ReadString(32);
-            var ip = reader.ReadString(15);
+            var account = reader.ReadAscii(32);
+            var character = reader.ReadAscii(32);
+            var ip = reader.ReadAscii(15);
 
             var unk1 = reader.ReadInt32();
             var exception = reader.ReadInt32();
 
-            var process = reader.ReadString(100);
-            var report = reader.ReadString(100);
+            var process = reader.ReadAscii(100);
+            var report = reader.ReadAscii(100);
 
             reader.ReadByte(); // 0x00
 
@@ -2663,8 +2652,8 @@ namespace Server.Network
 
             state.SentFirstPacket = true;
 
-            var username = reader.ReadString(30);
-            var password = reader.ReadString(30);
+            var username = reader.ReadAscii(30);
+            var password = reader.ReadAscii(30);
 
             var e = new AccountLoginEventArgs(state, username, password);
 
@@ -2707,7 +2696,7 @@ namespace Server.Network
             state.Dispose();
         }
 
-        public static void EquipMacro(NetState ns, PacketReader reader)
+        public static void EquipMacro(NetState state, PacketReader reader)
         {
             int count = reader.ReadByte();
             var serialList = new List<Serial>(count);
@@ -2716,10 +2705,10 @@ namespace Server.Network
                 serialList.Add(reader.ReadUInt32());
             }
 
-            EventSink.InvokeEquipMacro(ns.Mobile, serialList);
+            EventSink.InvokeEquipMacro(state.Mobile, serialList);
         }
 
-        public static void UnequipMacro(NetState ns, PacketReader reader)
+        public static void UnequipMacro(NetState state, PacketReader reader)
         {
             int count = reader.ReadByte();
             var layers = new List<Layer>(count);
@@ -2728,30 +2717,30 @@ namespace Server.Network
                 layers.Add((Layer)reader.ReadUInt16());
             }
 
-            EventSink.InvokeUnequipMacro(ns.Mobile, layers);
+            EventSink.InvokeUnequipMacro(state.Mobile, layers);
         }
 
-        public static void TargetedSpell(NetState ns, PacketReader reader)
+        public static void TargetedSpell(NetState state, PacketReader reader)
         {
             var spellId = (short)(reader.ReadInt16() - 1); // zero based;
 
-            EventSink.InvokeTargetedSpell(ns.Mobile, World.FindEntity(reader.ReadUInt32()), spellId);
+            EventSink.InvokeTargetedSpell(state.Mobile, World.FindEntity(reader.ReadUInt32()), spellId);
         }
 
-        public static void TargetedSkillUse(NetState ns, PacketReader reader)
+        public static void TargetedSkillUse(NetState state, PacketReader reader)
         {
             var skillId = reader.ReadInt16();
 
-            EventSink.InvokeTargetedSkillUse(ns.Mobile, World.FindEntity(reader.ReadUInt32()), skillId);
+            EventSink.InvokeTargetedSkillUse(state.Mobile, World.FindEntity(reader.ReadUInt32()), skillId);
         }
 
-        public static void TargetByResourceMacro(NetState ns, PacketReader reader)
+        public static void TargetByResourceMacro(NetState state, PacketReader reader)
         {
             Serial serial = reader.ReadUInt32();
 
             if (serial.IsItem)
             {
-                EventSink.InvokeTargetByResourceMacro(ns.Mobile, World.FindItem(serial), reader.ReadInt16());
+                EventSink.InvokeTargetByResourceMacro(state.Mobile, World.FindItem(serial), reader.ReadInt16());
             }
         }
 

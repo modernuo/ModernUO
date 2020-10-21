@@ -41,7 +41,7 @@ namespace Server.Engines.Mahjong
             RegisterSubCommand(0x18, MoveDealerIndicator);
         }
 
-        public static void OnPacket(NetState state, PacketReader reader)
+        public static void OnPacket(NetState state,PacketReader reader)
         {
             var game = World.FindItem(reader.ReadUInt32()) as MahjongGame;
 

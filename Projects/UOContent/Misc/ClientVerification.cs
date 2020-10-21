@@ -171,7 +171,7 @@ namespace Server.Misc
         {
             if (ns.Connection != null)
             {
-                Console.WriteLine("Client: {0}: Disconnecting, bad version", ns);
+                ns.WriteConsole("Disconnecting, bad version");
                 ns.Dispose();
             }
         }

@@ -24,7 +24,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Server.Json;
 using Server.Network;
 
@@ -41,23 +40,10 @@ namespace Server
         private static TimeSpan m_ProfileTime;
         private static bool? m_IsRunningFromXUnit;
 
-        /*
-         * DateTime.Now and DateTime.UtcNow are based on actual system clock time.
-         * The resolution is acceptable but large clock jumps are possible and cause issues.
-         * GetTickCount and GetTickCount64 have poor resolution.
-         * Stopwatch.GetTimestamp() (QueryPerformanceCounter) is high resolution, but
-         * somewhat expensive to call because of its difference to DateTime.Now,
-         * which is why Stopwatch has been used to verify HRT before calling GetTimestamp(),
-         * enabling the usage of DateTime.UtcNow instead.
-         */
-
-        private static readonly double m_HighFrequency = 1000.0 / Stopwatch.Frequency;
-        private static readonly double m_LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
-
         private static int m_CycleIndex = 1;
         private static readonly float[] m_CyclesPerSecond = new float[100];
 
-        private static readonly AutoResetEvent m_Signal = new AutoResetEvent(true);
+        // private static readonly AutoResetEvent m_Signal = new AutoResetEvent(true);
 
         private static int m_ItemCount;
         private static int m_MobileCount;
@@ -115,12 +101,8 @@ namespace Server
 
         public static Thread Thread { get; private set; }
 
-        public static long TickCount => (long)Ticks;
-
-        public static double Ticks =>
-            Stopwatch.IsHighResolution
-                ? Stopwatch.GetTimestamp() * m_HighFrequency
-                : DateTime.UtcNow.Ticks * m_LowFrequency;
+        // Milliseconds
+        public static long TickCount => Stopwatch.GetTimestamp() * 1000L / Stopwatch.Frequency;
 
         public static bool MultiProcessor { get; private set; }
 
@@ -345,7 +327,7 @@ namespace Server
 
         public static void Set()
         {
-            m_Signal.Set();
+            // m_Signal.Set();
         }
 
         public static void Main(string[] args)
@@ -466,22 +448,16 @@ namespace Server
                 m.Tiles.Force();
             }
 
+            TcpServer.Start();
             EventSink.InvokeServerStarted();
-
-            // Start net socket server
-            _tcpHost = TcpServer.CreateWebHostBuilder().Build();
-
-            // Run indefinitely and block
-            _tcpHost.RunAsync(ClosingTokenSource.Token).Wait();
+            RunEventLoop();
         }
 
-        private static IWebHost _tcpHost;
-
-        public static void RunEventLoop(IMessagePumpService messagePumpService)
+        public static void RunEventLoop()
         {
             try
             {
-                var last = TickCount;
+                long last = TickCount;
 
                 const int sampleInterval = 100;
                 const float ticksPerSecond = 1000.0f * sampleInterval;
@@ -490,17 +466,20 @@ namespace Server
 
                 while (!Closing)
                 {
-                    m_Signal.WaitOne();
+                    // m_Signal.WaitOne();
 
-                    Task.WaitAll(
-                        Task.Run(Mobile.ProcessDeltaQueue),
-                        Task.Run(Item.ProcessDeltaQueue)
-                    );
+                    Mobile.ProcessDeltaQueue();
+                    Item.ProcessDeltaQueue();
 
                     Timer.Slice();
-                    messagePumpService.DoWork();
 
+                    // Handle networking
+                    TcpServer.Slice();
+                    NetState.HandleAllReceives();
+                    NetState.FlushAll();
                     NetState.ProcessDisposedQueue();
+
+                    // Execute other stuff
 
                     if (sample++ % sampleInterval != 0)
                     {

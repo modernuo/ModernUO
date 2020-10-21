@@ -73,15 +73,15 @@ namespace Server.Engines.Chat
                     return;
                 }
 
-                var lang = reader.ReadStringSafe(4);
+                var lang = reader.ReadAsciiSafe(4);
                 int actionID = reader.ReadInt16();
-                var param = reader.ReadUnicodeString();
+                var param = reader.ReadBigUniSafe();
 
                 var handler = ChatActionHandlers.GetHandler(actionID);
 
                 if (handler == null)
                 {
-                    Console.WriteLine("Client: {0}: Unknown chat action 0x{1:X}: {2}", state, actionID, param);
+                    state.WriteConsole("Unknown chat action 0x{0:X}: {1}", actionID, param);
                     return;
                 }
 

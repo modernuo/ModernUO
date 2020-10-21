@@ -163,7 +163,7 @@ namespace Server
             info.ScreenDepth = reader.ReadInt32();
             info.DXMajor = reader.ReadInt16();
             info.DXMinor = reader.ReadInt16();
-            info.VCDescription = reader.ReadUnicodeStringLESafe(64);
+            info.VCDescription = reader.ReadLittleUniSafe(64);
             info.VCVendorID = reader.ReadInt32();
             info.VCDeviceID = reader.ReadInt32();
             info.VCMemory = reader.ReadInt32();
@@ -171,8 +171,8 @@ namespace Server
             info.ClientsRunning = reader.ReadByte();
             info.ClientsInstalled = reader.ReadByte();
             info.PartialInstalled = reader.ReadByte();
-            info.Language = reader.ReadUnicodeStringLESafe(4);
-            info.Unknown = reader.ReadStringSafe(64);
+            info.Language = reader.ReadLittleUniSafe(4);
+            info.Unknown = reader.ReadAsciiSafe(64);
 
             info.TimeReceived = DateTime.UtcNow;
 

@@ -14,78 +14,210 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Connections;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+using System.Net.Sockets;
+using Server.Exceptions;
 
 namespace Server.Network
 {
     public static class TcpServer
     {
-        private static IPAddress[] m_ListeningAddresses;
+        private static NetworkState m_NetworkState = NetworkState.ResumeState;
 
-        // Make this thread safe
-        public static List<NetState> Instances { get; } = new List<NetState>();
+        // Sanity. 256 * 1024 * 5000 = ~1.3GB of ram
+        public static int MaxConnections { get; set; } = 5000;
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args = null) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseSetting(WebHostDefaults.SuppressStatusMessagesKey, "True")
-                .ConfigureServices(services => { services.AddSingleton<IMessagePumpService>(new MessagePumpService()); })
-                .UseKestrel(
-                    options =>
-                    {
-                        foreach (var ipep in ServerConfiguration.Listeners)
-                        {
-                            options.Listen(ipep, builder => { builder.UseConnectionHandler<ServerConnectionHandler>(); });
-                            m_ListeningAddresses = GetListeningAddresses(ipep);
-                            DisplayListener(ipep);
-                        }
+        private const long _listenerErrorMessageDelay = 10000; // 10 seconds
+        private static long _nextMaximumSocketsReachedMessage;
 
-                        // Webservices here
-                    }
-                )
-                .UseLibuv()
-                .UseStartup<ServerStartup>();
+        // AccountLoginReject BadComm
+        private static readonly byte[] socketRejected = { 0x82, 0xFF };
 
-        public static IPAddress[] GetListeningAddresses(IPEndPoint ipep)
+        public static IPEndPoint[] ListeningAddresses { get; private set; }
+        public static TcpListener[] Listeners { get; private set; }
+        public static List<NetState> Instances { get; } = new List<NetState>(128);
+
+        public static ConcurrentQueue<NetState> m_ConnectedQueue = new ConcurrentQueue<NetState>();
+
+        public static void Configure()
         {
-            if (m_ListeningAddresses != null)
-            {
-                return m_ListeningAddresses;
-            }
-
-            var list = new List<IPAddress>();
-            foreach (var adapter in NetworkInterface.GetAllNetworkInterfaces())
-            {
-                var properties = adapter.GetIPProperties();
-                foreach (var unicast in properties.UnicastAddresses)
-                {
-                    if (ipep.AddressFamily == unicast.Address.AddressFamily)
-                    {
-                        list.Add(unicast.Address);
-                    }
-                }
-            }
-
-            return list.ToArray();
+            MaxConnections = ServerConfiguration.GetOrUpdateSetting("tcpServer.maxConnections", MaxConnections);
         }
 
-        private static void DisplayListener(IPEndPoint ipep)
+        public static void Start()
         {
-            if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
+            HashSet<IPEndPoint> listeningAddresses = new HashSet<IPEndPoint>();
+            List<TcpListener> listeners = new List<TcpListener>();
+
+            foreach (var ipep in ServerConfiguration.Listeners)
             {
-                foreach (var ip in m_ListeningAddresses)
+                var listener = CreateListener(ipep);
+                if (listener == null)
                 {
-                    Console.WriteLine("Listening: {0}:{1}", ip, ipep.Port);
+                    continue;
                 }
+
+                if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
+                {
+                    listeningAddresses.UnionWith(GetListeningAddresses(ipep));
+                }
+                else
+                {
+                    listeningAddresses.Add(ipep);
+                }
+
+                listeners.Add(listener);
+                listener.BeginAcceptingSockets();
             }
-            else
+
+            foreach (var ipep in listeningAddresses)
             {
                 Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
+            }
+
+            ListeningAddresses = listeningAddresses.ToArray();
+            Listeners = listeners.ToArray();
+        }
+
+        public static IEnumerable<IPEndPoint> GetListeningAddresses(IPEndPoint ipep) =>
+            NetworkInterface.GetAllNetworkInterfaces().SelectMany(adapter =>
+                adapter.GetIPProperties().UnicastAddresses
+                    .Where(uip => ipep.AddressFamily == uip.Address.AddressFamily)
+                    .Select(uip => new IPEndPoint(uip.Address, ipep.Port))
+            );
+
+        public static TcpListener CreateListener(IPEndPoint ipep)
+        {
+            var listener = new TcpListener(ipep);
+            listener.Server.ExclusiveAddressUse = false;
+
+            try
+            {
+                listener.Start(8);
+                return listener;
+            }
+            catch (SocketException se)
+            {
+                // WSAEADDRINUSE
+                if (se.ErrorCode == 10048)
+                {
+                    Console.WriteLine("Listener: {0}:{1}: Failed (In Use)", ipep.Address, ipep.Port);
+                }
+                // WSAEADDRNOTAVAIL
+                else if (se.ErrorCode == 10049)
+                {
+                    Console.WriteLine("Listener {0}:{1}: Failed (Unavailable)", ipep.Address, ipep.Port);
+                }
+                else
+                {
+                    Console.WriteLine("Listener Exception:");
+                    Console.WriteLine(se);
+                }
+            }
+
+            return null;
+        }
+
+        /**
+         * Pauses the TcpServer and stops accepting new sockets.
+         * This is thread-safe without using locks.
+         */
+        public static void Pause()
+        {
+            NetworkState.Pause(ref m_NetworkState);
+        }
+
+        /**
+         * Resumes accepting sockets on the TcpServer.
+         * This is thread-safe using a lock on the listeners
+         */
+        public static void Resume()
+        {
+            if (!NetworkState.Resume(ref m_NetworkState))
+            {
+                return;
+            }
+
+            lock (Listeners)
+            {
+                foreach (var listener in Listeners)
+                {
+                    listener.BeginAcceptingSockets();
+                }
+            }
+        }
+
+        public static void Slice()
+        {
+            int count = 0;
+
+            while (count++ < 250)
+            {
+                if (!m_ConnectedQueue.TryDequeue(out var ns))
+                {
+                    break;
+                }
+
+                Instances.Add(ns);
+                ns.WriteConsole("Connected. [{0} Online]", Instances.Count);
+            }
+        }
+
+        private static async void BeginAcceptingSockets(this TcpListener listener)
+        {
+            while (true)
+            {
+                if (m_NetworkState.Paused)
+                {
+                    return;
+                }
+
+                Socket socket = null;
+
+                try
+                {
+                    socket = await listener.AcceptSocketAsync();
+                    if (Instances.Count >= MaxConnections)
+                    {
+                        socket.Send(socketRejected, SocketFlags.None);
+                        socket.Shutdown(SocketShutdown.Both);
+                        socket.Close();
+                        throw new MaxConnectionsException();
+                    }
+
+                    var args = new SocketConnectEventArgs(socket);
+                    EventSink.InvokeSocketConnect(args);
+
+                    if (!args.AllowConnection)
+                    {
+                        socket.Send(socketRejected, SocketFlags.None);
+                        socket.Shutdown(SocketShutdown.Both);
+                        socket.Close();
+                    }
+                }
+                catch (MaxConnectionsException)
+                {
+                    var ticks = Core.TickCount;
+
+                    if (_nextMaximumSocketsReachedMessage <= ticks)
+                    {
+                        var ipep = (IPEndPoint)socket!.RemoteEndPoint;
+                        Console.WriteLine("Listener {0}:{1}: Failed (Maximum connections reached)", ipep.Address, ipep.Port);
+                        _nextMaximumSocketsReachedMessage = ticks + _listenerErrorMessageDelay;
+                    }
+                }
+                catch
+                {
+                    // ignored
+                }
+
+                var ns = new NetState(socket);
+                m_ConnectedQueue.Enqueue(ns);
+                ns.Start();
             }
         }
     }

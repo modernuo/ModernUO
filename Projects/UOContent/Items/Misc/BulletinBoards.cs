@@ -315,7 +315,7 @@ namespace Server.Items
                 }
             }
 
-            var subject = reader.ReadUTF8StringSafe(reader.ReadByte());
+            var subject = reader.ReadUTF8Safe(reader.ReadByte());
 
             if (subject.Length == 0)
             {
@@ -331,7 +331,7 @@ namespace Server.Items
 
             for (var i = 0; i < lines.Length; ++i)
             {
-                lines[i] = reader.ReadUTF8StringSafe(reader.ReadByte());
+                lines[i] = reader.ReadUTF8Safe(reader.ReadByte());
             }
 
             board.PostMessage(from, thread, subject, lines);

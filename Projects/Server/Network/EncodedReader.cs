@@ -18,9 +18,9 @@ namespace Server.Network
             : new Point3D(m_Reader.ReadInt16(), m_Reader.ReadInt16(), m_Reader.ReadByte());
 
         public string ReadUnicodeStringSafe() =>
-            m_Reader.ReadByte() != 2 ? string.Empty : m_Reader.ReadUnicodeStringSafe(m_Reader.ReadUInt16());
+            m_Reader.ReadByte() != 2 ? string.Empty : m_Reader.ReadBigUniSafe(m_Reader.ReadUInt16());
 
         public string ReadUnicodeString() =>
-            m_Reader.ReadByte() != 2 ? string.Empty : m_Reader.ReadUnicodeString(m_Reader.ReadUInt16());
+            m_Reader.ReadByte() != 2 ? string.Empty : m_Reader.ReadBigUni(m_Reader.ReadUInt16());
     }
 }

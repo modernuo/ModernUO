@@ -1,9 +1,8 @@
-using System;
 using Server.Network;
 
 namespace Server.Misc
 {
-    public class ProtocolExtensions
+    public static class ProtocolExtensions
     {
         private static readonly PacketHandler[] m_Handlers = new PacketHandler[0x100];
 
@@ -17,15 +16,8 @@ namespace Server.Misc
             m_Handlers[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
         }
 
-        public static PacketHandler GetHandler(int packetID)
-        {
-            if (packetID >= 0 && packetID < m_Handlers.Length)
-            {
-                return m_Handlers[packetID];
-            }
-
-            return null;
-        }
+        public static PacketHandler GetHandler(int packetID) =>
+            packetID >= 0 && packetID < m_Handlers.Length ? m_Handlers[packetID] : null;
 
         public static void DecodeBundledPacket(NetState state, PacketReader reader)
         {
@@ -37,9 +29,8 @@ namespace Server.Misc
             {
                 if (ph.Ingame && state.Mobile == null)
                 {
-                    Console.WriteLine(
-                        "Client: {0}: Sent ingame packet (0xF0x{1:X2}) before having been attached to a mobile",
-                        state,
+                    state.WriteConsole(
+                        "Sent ingame packet (0xF0x{0:X2}) before having been attached to a mobile",
                         packetID
                     );
                     state.Dispose();
