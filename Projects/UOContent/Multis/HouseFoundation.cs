@@ -373,8 +373,7 @@ namespace Server.Multis
                             4 => new GenericHouseDoor(facing, 0x6B5, 0xEA, 0xF1),
                             5 => new GenericHouseDoor(facing, 0x6C5, 0xEC, 0xF3),
                             6 => new GenericHouseDoor(facing, 0x6D5, 0xEA, 0xF1),
-                            7 => new GenericHouseDoor(facing, 0x6E5, 0xEA, 0xF1),
-                            _ => door
+                            _ => new GenericHouseDoor(facing, 0x6E5, 0xEA, 0xF1),
                         };
                     }
                     else if (itemID >= 0x314 && itemID < 0x364)
@@ -484,8 +483,7 @@ namespace Server.Multis
                         door = type switch
                         {
                             0 => new GenericHouseDoor(facing, 0x367B, 0xED, 0xF4),
-                            1 => new GenericHouseDoor(facing, 0x368B, 0xEC, 0x3E7),
-                            _ => door
+                            _ => new GenericHouseDoor(facing, 0x368B, 0xEC, 0x3E7),
                         };
                     }
                     else if (itemID >= 0x409B && itemID < 0x40A3)
@@ -1978,14 +1976,9 @@ namespace Server.Multis
 
         public void OnRevised()
         {
-            lock (this)
-            {
-                Revision = ++Foundation.LastRevision;
-
-                m_PacketCache?.Release();
-
-                m_PacketCache = null;
-            }
+            Revision = ++Foundation.LastRevision;
+            m_PacketCache?.Release();
+            m_PacketCache = null;
         }
 
         public void SendGeneralInfoTo(NetState state)
@@ -1995,19 +1988,18 @@ namespace Server.Multis
 
         public void SendDetailedInfoTo(NetState state)
         {
-            if (state != null)
+            if (state == null)
             {
-                lock (this)
-                {
-                    if (m_PacketCache == null)
-                    {
-                        DesignStateDetailed.SendDetails(state, Foundation, this);
-                    }
-                    else
-                    {
-                        state.Send(m_PacketCache);
-                    }
-                }
+                return;
+            }
+
+            if (m_PacketCache == null)
+            {
+                DesignStateDetailed.SendDetails(state, Foundation, this);
+            }
+            else
+            {
+                state.Send(m_PacketCache);
             }
         }
 
@@ -2444,22 +2436,8 @@ namespace Server.Multis
     {
         public const int MaxItemsPerStairBuffer = 750;
 
-        private static readonly ConcurrentQueue<SendQueueEntry> m_SendQueue;
-        private static readonly AutoResetEvent m_Sync;
-
-        private readonly byte[][] m_PlaneBuffers;
-
         private readonly bool[] m_PlaneUsed = new bool[9];
         private readonly byte[] m_PrimBuffer = new byte[4];
-        private readonly byte[][] m_StairBuffers;
-
-        static DesignStateDetailed()
-        {
-            m_SendQueue = new ConcurrentQueue<SendQueueEntry>();
-            m_Sync = new AutoResetEvent(false);
-
-            Task.Run(ProcessCompression);
-        }
 
         public DesignStateDetailed(uint serial, int revision, int xMin, int yMin, int xMax, int yMax, MultiTileEntry[] tiles)
             : base(0xD8)
@@ -2479,26 +2457,26 @@ namespace Server.Multis
             var width = xMax - xMin + 1;
             var height = yMax - yMin + 1;
 
-            m_PlaneBuffers = new byte[9][];
+            var planeBuffers = new byte[9][];
 
-            for (var i = 0; i < m_PlaneBuffers.Length; ++i)
+            for (var i = 0; i < planeBuffers.Length; ++i)
             {
-                m_PlaneBuffers[i] = ArrayPool<byte>.Shared.Rent(0x400);
+                planeBuffers[i] = ArrayPool<byte>.Shared.Rent(0x400);
             }
 
-            m_StairBuffers = new byte[6][];
+            var stairBuffers = new byte[6][];
 
-            for (var i = 0; i < m_StairBuffers.Length; ++i)
+            for (var i = 0; i < stairBuffers.Length; ++i)
             {
-                m_StairBuffers[i] = ArrayPool<byte>.Shared.Rent(MaxItemsPerStairBuffer * 5);
+                stairBuffers[i] = ArrayPool<byte>.Shared.Rent(MaxItemsPerStairBuffer * 5);
             }
 
-            Clear(m_PlaneBuffers[0], width * height * 2);
+            Clear(planeBuffers[0], width * height * 2);
 
             for (var i = 0; i < 4; ++i)
             {
-                Clear(m_PlaneBuffers[1 + i], (width - 1) * (height - 2) * 2);
-                Clear(m_PlaneBuffers[5 + i], width * (height - 1) * 2);
+                Clear(planeBuffers[1 + i], (width - 1) * (height - 2) * 2);
+                Clear(planeBuffers[5 + i], width * (height - 1) * 2);
             }
 
             var totalStairsUsed = 0;
@@ -2532,7 +2510,7 @@ namespace Server.Multis
                     default:
                         {
                             var stairBufferIndex = totalStairsUsed / MaxItemsPerStairBuffer;
-                            var stairBuffer = m_StairBuffers[stairBufferIndex];
+                            var stairBuffer = stairBuffers[stairBufferIndex];
 
                             var byteIndex = totalStairsUsed % MaxItemsPerStairBuffer * 5;
 
@@ -2541,7 +2519,7 @@ namespace Server.Multis
 
                             stairBuffer[byteIndex++] = (byte)mte.OffsetX;
                             stairBuffer[byteIndex++] = (byte)mte.OffsetY;
-                            stairBuffer[byteIndex++] = (byte)mte.OffsetZ;
+                            stairBuffer[byteIndex] = (byte)mte.OffsetZ;
 
                             ++totalStairsUsed;
 
@@ -2570,7 +2548,7 @@ namespace Server.Multis
                 if (x < 0 || y < 0 || y >= size || index + 1 >= 0x400)
                 {
                     var stairBufferIndex = totalStairsUsed / MaxItemsPerStairBuffer;
-                    var stairBuffer = m_StairBuffers[stairBufferIndex];
+                    var stairBuffer = stairBuffers[stairBufferIndex];
 
                     var byteIndex = totalStairsUsed % MaxItemsPerStairBuffer * 5;
 
@@ -2579,27 +2557,27 @@ namespace Server.Multis
 
                     stairBuffer[byteIndex++] = (byte)mte.OffsetX;
                     stairBuffer[byteIndex++] = (byte)mte.OffsetY;
-                    stairBuffer[byteIndex++] = (byte)mte.OffsetZ;
+                    stairBuffer[byteIndex] = (byte)mte.OffsetZ;
 
                     ++totalStairsUsed;
                 }
                 else
                 {
                     m_PlaneUsed[plane] = true;
-                    m_PlaneBuffers[plane][index] = (byte)(mte.ItemId >> 8);
-                    m_PlaneBuffers[plane][index + 1] = (byte)mte.ItemId;
+                    planeBuffers[plane][index] = (byte)(mte.ItemId >> 8);
+                    planeBuffers[plane][index + 1] = (byte)mte.ItemId;
                 }
             }
 
             var planeCount = 0;
 
-            var m_DeflatedBuffer = ArrayPool<byte>.Shared.Rent(0x2000);
+            var deflatedBuffer = ArrayPool<byte>.Shared.Rent(0x2000);
 
-            for (var i = 0; i < m_PlaneBuffers.Length; ++i)
+            for (var i = 0; i < planeBuffers.Length; ++i)
             {
                 if (!m_PlaneUsed[i])
                 {
-                    ArrayPool<byte>.Shared.Return(m_PlaneBuffers[i]);
+                    ArrayPool<byte>.Shared.Return(planeBuffers[i]);
                     continue;
                 }
 
@@ -2620,11 +2598,11 @@ namespace Server.Multis
                     size = width * (height - 1) * 2;
                 }
 
-                var inflatedBuffer = m_PlaneBuffers[i];
+                var inflatedBuffer = planeBuffers[i];
 
-                var deflatedLength = m_DeflatedBuffer.Length;
+                var deflatedLength = deflatedBuffer.Length;
                 var ce = Zlib.Pack(
-                    m_DeflatedBuffer,
+                    deflatedBuffer,
                     ref deflatedLength,
                     inflatedBuffer,
                     size,
@@ -2642,7 +2620,7 @@ namespace Server.Multis
                 Write((byte)size);
                 Write((byte)deflatedLength);
                 Write((byte)(((size >> 4) & 0xF0) | ((deflatedLength >> 8) & 0xF)));
-                Write(m_DeflatedBuffer, 0, deflatedLength);
+                Write(deflatedBuffer, 0, deflatedLength);
 
                 totalLength += 4 + deflatedLength;
                 ArrayPool<byte>.Shared.Return(inflatedBuffer);
@@ -2663,11 +2641,11 @@ namespace Server.Multis
 
                 var size = count * 5;
 
-                var inflatedBuffer = m_StairBuffers[i];
+                var inflatedBuffer = stairBuffers[i];
 
-                var deflatedLength = m_DeflatedBuffer.Length;
+                var deflatedLength = deflatedBuffer.Length;
                 var ce = Zlib.Pack(
-                    m_DeflatedBuffer,
+                    deflatedBuffer,
                     ref deflatedLength,
                     inflatedBuffer,
                     size,
@@ -2685,17 +2663,17 @@ namespace Server.Multis
                 Write((byte)size);
                 Write((byte)deflatedLength);
                 Write((byte)(((size >> 4) & 0xF0) | ((deflatedLength >> 8) & 0xF)));
-                Write(m_DeflatedBuffer, 0, deflatedLength);
+                Write(deflatedBuffer, 0, deflatedLength);
 
                 totalLength += 4 + deflatedLength;
             }
 
-            for (var i = 0; i < m_StairBuffers.Length; ++i)
+            for (var i = 0; i < stairBuffers.Length; ++i)
             {
-                ArrayPool<byte>.Shared.Return(m_StairBuffers[i]);
+                ArrayPool<byte>.Shared.Return(stairBuffers[i]);
             }
 
-            ArrayPool<byte>.Shared.Return(m_DeflatedBuffer);
+            ArrayPool<byte>.Shared.Return(deflatedBuffer);
 
             Stream.Seek(15, SeekOrigin.Begin);
 
@@ -2749,106 +2727,28 @@ namespace Server.Multis
             }
         }
 
-        public static void ProcessCompression()
-        {
-            while (!Core.Closing)
-            {
-                m_Sync.WaitOne();
-
-                var count = m_SendQueue.Count;
-
-                while (count > 0 && m_SendQueue.TryDequeue(out var sqe))
-                {
-                    try
-                    {
-                        Packet p;
-
-                        lock (sqe.m_Root)
-                        {
-                            p = sqe.m_Root.PacketCache;
-                        }
-
-                        if (p == null)
-                        {
-                            p = new DesignStateDetailed(
-                                sqe.m_Serial,
-                                sqe.m_Revision,
-                                sqe.m_xMin,
-                                sqe.m_yMin,
-                                sqe.m_xMax,
-                                sqe.m_yMax,
-                                sqe.m_Tiles
-                            );
-                            p.SetStatic();
-
-                            lock (sqe.m_Root)
-                            {
-                                if (sqe.m_Revision == sqe.m_Root.Revision)
-                                {
-                                    sqe.m_Root.PacketCache = p;
-                                }
-                            }
-                        }
-
-                        sqe.m_NetState.Send(p);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-
-                        try
-                        {
-                            using var op = new StreamWriter("dsd_exceptions.txt", true);
-                            op.WriteLine(e);
-                        }
-                        catch
-                        {
-                            // ignored
-                        }
-                    }
-                    finally
-                    {
-                        count = m_SendQueue.Count;
-                    }
-                }
-            }
-        }
-
         public static void SendDetails(NetState ns, HouseFoundation house, DesignState state)
         {
-            m_SendQueue.Enqueue(new SendQueueEntry(ns, house, state));
+            var p = state.PacketCache;
 
-            m_Sync.Set();
-        }
-
-        private class SendQueueEntry
-        {
-            public readonly NetState m_NetState;
-            public readonly int m_Revision;
-            public readonly DesignState m_Root;
-            public readonly uint m_Serial;
-            public readonly MultiTileEntry[] m_Tiles;
-            public readonly int m_xMax;
-            public readonly int m_xMin;
-            public readonly int m_yMax;
-            public readonly int m_yMin;
-
-            public SendQueueEntry(NetState ns, HouseFoundation foundation, DesignState state)
+            if (p == null)
             {
-                m_NetState = ns;
-                m_Serial = foundation.Serial;
-                m_Revision = state.Revision;
-                m_Root = state;
-
                 var mcl = state.Components;
+                p = new DesignStateDetailed(
+                    house.Serial,
+                    state.Revision,
+                    mcl.Min.X,
+                    mcl.Min.Y,
+                    mcl.Max.X,
+                    mcl.Max.Y,
+                    mcl.List
+                );
 
-                m_xMin = mcl.Min.X;
-                m_yMin = mcl.Min.Y;
-                m_xMax = mcl.Max.X;
-                m_yMax = mcl.Max.Y;
-
-                m_Tiles = mcl.List;
+                p.SetStatic();
+                state.PacketCache = p;
             }
+
+            ns.Send(p);
         }
     }
 }
