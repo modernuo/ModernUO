@@ -2208,9 +2208,13 @@ namespace Server
                     MoveToWorld(from.Location, from.Map);
                 }
             }
-            else if ((parent as Mobile)?.EquipItem(this) != true)
+            else if ((parent as Mobile)?.EquipItem(this) == false)
             {
                 MoveToWorld(bounce.WorldLoc, bounce.Map);
+            }
+            else
+            {
+                MoveToWorld(from.Location, from.Map);
             }
 
             ClearBounce();
