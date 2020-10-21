@@ -2193,11 +2193,11 @@ namespace Server
             if (parent is Item ip)
             {
                 var root = ip.RootParent;
-                var mobileRoot = root as Mobile;
+                var rpm = root as Mobile;
 
                 if (ip.IsAccessibleTo(from) &&
-                    mobileRoot?.CheckNonlocalDrop(from, this, ip) == true &&
-                    (!ip.Movable || ip.Map == bounce.Map && root.InRange(bounce.WorldLoc, 2))
+                    rpm?.CheckNonlocalDrop(from, this, ip) == true &&
+                    (!ip.Movable || rpm == from || ip.Map == bounce.Map && root.InRange(bounce.WorldLoc, 2))
                 )
                 {
                     Location = bounce.Location;
@@ -2208,7 +2208,7 @@ namespace Server
                     MoveToWorld(from.Location, from.Map);
                 }
             }
-            else if (!(parent is Mobile parentMobile && parentMobile.EquipItem(this)))
+            else if ((parent as Mobile)?.EquipItem(this) != true)
             {
                 MoveToWorld(bounce.WorldLoc, bounce.Map);
             }
