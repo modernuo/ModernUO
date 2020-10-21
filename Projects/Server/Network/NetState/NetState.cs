@@ -19,9 +19,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Server.Accounting;
+using Server.Exceptions;
 using Server.Gumps;
 using Server.HuePickers;
 using Server.Items;
@@ -232,11 +233,13 @@ namespace Server.Network
             return newTrade.From.Container;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteConsole(string text)
         {
             Console.WriteLine("Client: {0}: {1}", this, text);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteConsole(string format, params object[] args)
         {
             WriteConsole(string.Format(format, args));
@@ -358,6 +361,16 @@ namespace Server.Network
                 return;
             }
 
+            var currentThread = Thread.CurrentThread;
+
+            if (currentThread != Core.Thread)
+            {
+                Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
+#if DEBUG
+                throw new InvalidThreadException(nameof(Send));
+#endif
+            }
+
             var writer = m_OutgoingPipe.Writer;
 
             try
@@ -390,8 +403,10 @@ namespace Server.Network
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine(ex);
                 TraceException(ex);
+#endif
                 Dispose();
             }
         }
@@ -413,30 +428,39 @@ namespace Server.Network
         {
             var reader = m_OutgoingPipe.Reader;
 
-            while (m_Running)
+            try
             {
-                var result = await reader.GetBytes();
-
-                if (result.Length <= 0)
+                while (m_Running)
                 {
-                    continue;
-                }
+                    var result = await reader.GetBytes();
 
-                var buffer = result.Buffer;
+                    if (result.Length <= 0)
+                    {
+                        continue;
+                    }
 
-                // WriteConsole("Sending: " + HexStringConverter.GetString(buffer[0]) + HexStringConverter.GetString(buffer[1]));
+                    var buffer = result.Buffer;
 
-                var bytesWritten = await Connection.SendAsync(buffer, SocketFlags.None);
+                    var bytesWritten = await Connection.SendAsync(buffer, SocketFlags.None);
 
-                if (bytesWritten > 0)
-                {
-                    m_NextCheckActivity = Core.TickCount + 90000;
-                    reader.Advance((uint)bytesWritten);
+                    if (bytesWritten > 0)
+                    {
+                        m_NextCheckActivity = Core.TickCount + 90000;
+                        reader.Advance((uint)bytesWritten);
+                    }
                 }
             }
-
-            WriteConsole("Not running");
-            Dispose();
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex);
+                TraceException(ex);
+#endif
+            }
+            finally
+            {
+                Dispose();
+            }
         }
 
         private async void RecvTask(object state)
@@ -529,10 +553,6 @@ namespace Server.Network
                         {
                             Dispose();
                         }
-                        else
-                        {
-                            WriteConsole("Not enough room for an entire packet!");
-                        }
 
                         return;
                     }
@@ -585,16 +605,9 @@ namespace Server.Network
 
                 var clients = TcpServer.Instances;
 
-                if (clients.Count >= 1024)
+                for (int i = 0; i < clients.Count; ++i)
                 {
-                    Parallel.ForEach(clients, ns => ns.CheckAlive(curTicks));
-                }
-                else
-                {
-                    for (int i = 0; i < clients.Count; ++i)
-                    {
-                        clients[i].CheckAlive(curTicks);
-                    }
+                    clients[i].CheckAlive(curTicks);
                 }
             }
             catch (Exception ex)

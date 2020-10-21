@@ -467,10 +467,8 @@ namespace Server
                 {
                     // m_Signal.WaitOne();
 
-                    Task.WaitAll(
-                        Task.Run(Mobile.ProcessDeltaQueue),
-                        Task.Run(Item.ProcessDeltaQueue)
-                    );
+                    Mobile.ProcessDeltaQueue();
+                    Item.ProcessDeltaQueue();
 
                     Timer.Slice();
 

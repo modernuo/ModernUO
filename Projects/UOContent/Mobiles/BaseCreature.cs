@@ -5634,105 +5634,90 @@ namespace Server.Mobiles
 
         protected override void OnTick()
         {
-            if (DateTime.UtcNow >= m_NextHourlyCheck)
-            {
-                m_NextHourlyCheck = DateTime.UtcNow + TimeSpan.FromHours(1.0);
-            }
-            else
+            if (DateTime.UtcNow < m_NextHourlyCheck)
             {
                 return;
             }
+
+            m_NextHourlyCheck = DateTime.UtcNow + TimeSpan.FromHours(1.0);
 
             var toRelease = new List<BaseCreature>();
 
             // added array for wild creatures in house regions to be removed
             var toRemove = new List<BaseCreature>();
 
-            Parallel.ForEach(
-                World.Mobiles.Values,
-                m =>
+            foreach (var m in World.Mobiles.Values)
+            {
+                if (!(m is BaseCreature c))
                 {
-                    if (!(m is BaseCreature c))
-                    {
-                        return;
-                    }
+                    continue;
+                }
 
-                    if (c is BaseMount mount && mount.Rider != null)
-                    {
-                        mount.OwnerAbandonTime = DateTime.MinValue;
-                        return;
-                    }
+                if (c is BaseMount mount && mount.Rider != null)
+                {
+                    mount.OwnerAbandonTime = DateTime.MinValue;
+                    continue;
+                }
 
-                    if (c.IsDeadPet)
-                    {
-                        var owner = c.ControlMaster;
+                if (c.IsDeadPet)
+                {
+                    var owner = c.ControlMaster;
 
-                        if (!c.IsStabled && (owner?.Deleted != false || owner.Map != c.Map ||
-                                             !owner.InRange(c, 12) || !c.CanSee(owner) || !c.InLOS(owner)))
+                    if (!c.IsStabled && (owner?.Deleted != false || owner.Map != c.Map ||
+                                         !owner.InRange(c, 12) || !c.CanSee(owner) || !c.InLOS(owner)))
+                    {
+                        if (c.OwnerAbandonTime == DateTime.MinValue)
                         {
-                            if (c.OwnerAbandonTime == DateTime.MinValue)
-                            {
-                                c.OwnerAbandonTime = DateTime.UtcNow;
-                            }
-                            else if (c.OwnerAbandonTime + c.BondingAbandonDelay <= DateTime.UtcNow)
-                            {
-                                lock (toRemove)
-                                {
-                                    toRemove.Add(c);
-                                }
-                            }
+                            c.OwnerAbandonTime = DateTime.UtcNow;
                         }
-                        else
+                        else if (c.OwnerAbandonTime + c.BondingAbandonDelay <= DateTime.UtcNow)
                         {
-                            c.OwnerAbandonTime = DateTime.MinValue;
-                        }
-                    }
-                    else if (c.Controlled && c.Commandable)
-                    {
-                        c.OwnerAbandonTime = DateTime.MinValue;
-
-                        if (c.Map != Map.Internal)
-                        {
-                            c.Loyalty -= BaseCreature.MaxLoyalty / 10;
-
-                            if (c.Loyalty < BaseCreature.MaxLoyalty / 10)
-                            {
-                                c.Say(1043270, c.Name); // * ~1_NAME~ looks around desperately *
-                                c.PlaySound(c.GetIdleSound());
-                            }
-
-                            if (c.Loyalty <= 0)
-                            {
-                                lock (toRelease)
-                                {
-                                    toRelease.Add(c);
-                                }
-                            }
-                        }
-                    }
-
-                    // added lines to check if a wild creature in a house region has to be removed or not
-                    if (!c.Controlled && !c.IsStabled && (c.Region.IsPartOf<HouseRegion>() && c.CanBeDamaged() ||
-                                                          c.RemoveIfUntamed && c.Spawner == null))
-                    {
-                        c.RemoveStep++;
-
-                        if (c.RemoveStep >= 20)
-                        {
-                            lock (toRemove)
-                            {
-                                toRemove.Add(c);
-                            }
+                            toRemove.Add(c);
                         }
                     }
                     else
                     {
-                        c.RemoveStep = 0;
+                        c.OwnerAbandonTime = DateTime.MinValue;
                     }
                 }
-            );
+                else if (c.Controlled && c.Commandable)
+                {
+                    c.OwnerAbandonTime = DateTime.MinValue;
 
-            // TODO: Parallelize this
+                    if (c.Map != Map.Internal)
+                    {
+                        c.Loyalty -= BaseCreature.MaxLoyalty / 10;
+
+                        if (c.Loyalty < BaseCreature.MaxLoyalty / 10)
+                        {
+                            c.Say(1043270, c.Name); // * ~1_NAME~ looks around desperately *
+                            c.PlaySound(c.GetIdleSound());
+                        }
+
+                        if (c.Loyalty <= 0)
+                        {
+                            toRelease.Add(c);
+                        }
+                    }
+                }
+
+                // added lines to check if a wild creature in a house region has to be removed or not
+                if (!c.Controlled && !c.IsStabled && (c.Region.IsPartOf<HouseRegion>() && c.CanBeDamaged() ||
+                                                      c.RemoveIfUntamed && c.Spawner == null))
+                {
+                    c.RemoveStep++;
+
+                    if (c.RemoveStep >= 20)
+                    {
+                        toRemove.Add(c);
+                    }
+                }
+                else
+                {
+                    c.RemoveStep = 0;
+                }
+            }
+
             foreach (var c in toRelease)
             {
                 c.Say(1043255, c.Name);              // ~1_NAME~ appears to have decided that is better off without a master!
