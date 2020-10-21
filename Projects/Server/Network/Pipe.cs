@@ -88,7 +88,7 @@ namespace Server.Network
 
         public class PipeWriter
         {
-            private Pipe _pipe;
+            private readonly Pipe _pipe;
 
             public PipeWriter(Pipe pipe) => _pipe = pipe;
 
@@ -101,10 +101,11 @@ namespace Server.Network
 
                 if (read <= write)
                 {
-                    var sz = Math.Min(read + _pipe.Size - write - 1, _pipe.Size - write);
+                    var readZero = read == 0;
+                    var sz = _pipe.Size - write - (readZero ? 1 : 0);
 
                     result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)write, (int)sz);
-                    result.Buffer[1] = read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)read - 1);
+                    result.Buffer[1] = readZero ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)read - 1);
                 }
                 else
                 {
@@ -209,7 +210,7 @@ namespace Server.Network
 
         public class PipeReader : IPipeTask<Result>
         {
-            private Pipe _pipe;
+            private readonly Pipe _pipe;
 
             internal PipeReader(Pipe pipe) => _pipe = pipe;
 
@@ -324,7 +325,7 @@ namespace Server.Network
             #endregion
         }
 
-        private byte[] _buffer;
+        private readonly byte[] _buffer;
         private volatile uint _writeIdx;
         private volatile uint _readIdx;
         private bool _closed;

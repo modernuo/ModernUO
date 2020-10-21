@@ -20,6 +20,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using Server.Exceptions;
 
 namespace Server.Network
 {
@@ -29,6 +30,9 @@ namespace Server.Network
 
         // Sanity. 256 * 1024 * 5000 = ~1.3GB of ram
         public static int MaxConnections { get; set; } = 5000;
+
+        private const long _listenerErrorMessageDelay = 10000; // 10 seconds
+        private static long _nextMaximumSocketsReachedMessage;
 
         // AccountLoginReject BadComm
         private static readonly byte[] socketRejected = { 0x82, 0xFF };
@@ -101,12 +105,12 @@ namespace Server.Network
                 // WSAEADDRINUSE
                 if (se.ErrorCode == 10048)
                 {
-                    Console.WriteLine("Listener Failed: {0}:{1} (In Use)", ipep.Address, ipep.Port);
+                    Console.WriteLine("Listener: {0}:{1}: Failed (In Use)", ipep.Address, ipep.Port);
                 }
                 // WSAEADDRNOTAVAIL
                 else if (se.ErrorCode == 10049)
                 {
-                    Console.WriteLine("Listener Failed: {0}:{1} (Unavailable)", ipep.Address, ipep.Port);
+                    Console.WriteLine("Listener {0}:{1}: Failed (Unavailable)", ipep.Address, ipep.Port);
                 }
                 else
                 {
@@ -195,10 +199,16 @@ namespace Server.Network
                         socket.Close();
                     }
                 }
-                catch (MaxConnectionsException ex)
+                catch (MaxConnectionsException)
                 {
-                    var ipep = (IPEndPoint)socket!.RemoteEndPoint;
-                    Console.WriteLine("Listener Failed: {2} ({0}:{1})", ipep.Address, ipep.Port, ex.Message);
+                    var ticks = Core.TickCount;
+
+                    if (_nextMaximumSocketsReachedMessage <= ticks)
+                    {
+                        var ipep = (IPEndPoint)socket!.RemoteEndPoint;
+                        Console.WriteLine("Listener {0}:{1}: Failed (Maximum connections reached)", ipep.Address, ipep.Port);
+                        _nextMaximumSocketsReachedMessage = ticks + _listenerErrorMessageDelay;
+                    }
                 }
                 catch
                 {
@@ -209,13 +219,6 @@ namespace Server.Network
                 m_ConnectedQueue.Enqueue(ns);
                 ns.Start();
             }
-        }
-    }
-
-    internal class MaxConnectionsException : Exception
-    {
-        public MaxConnectionsException() : base("Maximum connections exceeded")
-        {
         }
     }
 }

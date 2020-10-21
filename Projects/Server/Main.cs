@@ -101,6 +101,7 @@ namespace Server
 
         public static Thread Thread { get; private set; }
 
+        // Milliseconds
         public static long TickCount => Stopwatch.GetTimestamp() * 1000L / Stopwatch.Frequency;
 
         public static bool MultiProcessor { get; private set; }
