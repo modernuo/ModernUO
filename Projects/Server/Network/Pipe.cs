@@ -30,11 +30,11 @@ namespace Server.Network
         public void OnCompleted(Action continuation);
     }
 
-    public class Pipe
+    public class Pipe<T>
     {
-        public struct Result
+        public struct Result<T>
         {
-            public ArraySegment<byte>[] Buffer { get; }
+            public ArraySegment<T>[] Buffer { get; }
             public bool IsClosed { get; set; }
 
             public int Length
@@ -51,7 +51,7 @@ namespace Server.Network
                 }
             }
 
-            public void CopyFrom(Span<byte> bytes)
+            public void CopyFrom(ReadOnlySpan<T> bytes)
             {
                 var remaining = bytes.Length;
                 var offset = 0;
@@ -82,37 +82,37 @@ namespace Server.Network
             public Result(int segments)
             {
                 IsClosed = false;
-                Buffer = new ArraySegment<byte>[segments];
+                Buffer = new ArraySegment<T>[segments];
             }
         }
 
-        public class PipeWriter
+        public class PipeWriter<T>
         {
-            private readonly Pipe _pipe;
+            private readonly Pipe<T> _pipe;
 
-            public PipeWriter(Pipe pipe) => _pipe = pipe;
+            public PipeWriter(Pipe<T> pipe) => _pipe = pipe;
 
-            public Result GetBytes()
+            public Result<T> GetAvailable()
             {
                 var read = _pipe._readIdx;
                 var write = _pipe._writeIdx;
 
-                var result = new Result(2) { IsClosed = _pipe._closed };
+                var result = new Result<T>(2) { IsClosed = _pipe._closed };
 
                 if (read <= write)
                 {
                     var readZero = read == 0;
                     var sz = _pipe.Size - write - (readZero ? 1 : 0);
 
-                    result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)write, (int)sz);
-                    result.Buffer[1] = readZero ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)read - 1);
+                    result.Buffer[0] = sz == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)write, (int)sz);
+                    result.Buffer[1] = readZero ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, 0, (int)read - 1);
                 }
                 else
                 {
                     var sz = read - write - 1;
 
-                    result.Buffer[0] = sz == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)write, (int)sz);
-                    result.Buffer[1] = ArraySegment<byte>.Empty;
+                    result.Buffer[0] = sz == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)write, (int)sz);
+                    result.Buffer[1] = ArraySegment<T>.Empty;
                 }
 
                 return result;
@@ -189,12 +189,13 @@ namespace Server.Network
             public void Flush()
             {
                 var waiting = _pipe._awaitBeginning;
-                Action continuation;
 
                 if (!waiting)
                 {
                     return;
                 }
+
+                Action continuation;
 
                 do
                 {
@@ -208,14 +209,14 @@ namespace Server.Network
             }
         }
 
-        public class PipeReader : IPipeTask<Result>
+        public class PipeReader<T> : IPipeTask<Result<T>>
         {
-            private readonly Pipe _pipe;
+            private readonly Pipe<T> _pipe;
 
-            internal PipeReader(Pipe pipe) => _pipe = pipe;
+            internal PipeReader(Pipe<T> pipe) => _pipe = pipe;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public uint BytesAvailable()
+            public uint GetRemaining()
             {
                 var read = _pipe._readIdx;
                 var write = _pipe._writeIdx;
@@ -228,28 +229,28 @@ namespace Server.Network
                 return write + _pipe.Size - read;
             }
 
-            public Result TryGetBytes()
+            public Result<T> TryRead()
             {
                 var read = _pipe._readIdx;
                 var write = _pipe._writeIdx;
 
-                var result = new Result(2) { IsClosed = _pipe._closed };
+                var result = new Result<T>(2) { IsClosed = _pipe._closed };
 
                 if (read <= write)
                 {
-                    result.Buffer[0] = write - read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)read, (int)(write - read));
-                    result.Buffer[1] = ArraySegment<byte>.Empty;
+                    result.Buffer[0] = write - read == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)read, (int)(write - read));
+                    result.Buffer[1] = ArraySegment<T>.Empty;
                 }
                 else
                 {
-                    result.Buffer[0] = _pipe.Size - read == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, (int)read, (int)(_pipe.Size - read));
-                    result.Buffer[1] = write == 0 ? ArraySegment<byte>.Empty : new ArraySegment<byte>(_pipe._buffer, 0, (int)write);
+                    result.Buffer[0] = _pipe.Size - read == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)read, (int)(_pipe.Size - read));
+                    result.Buffer[1] = write == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, 0, (int)write);
                 }
 
                 return result;
             }
 
-            public IPipeTask<Result> GetBytes()
+            public IPipeTask<Result<T>> Read()
             {
                 if (_pipe._awaitBeginning)
                 {
@@ -302,13 +303,13 @@ namespace Server.Network
 
             // The following makes it possible to await the reader. Do not use any of this directly.
 
-            public IPipeTask<Result> GetAwaiter() => this;
+            public IPipeTask<Result<T>> GetAwaiter() => this;
 
             public bool IsCompleted
             {
                 get
                 {
-                    if (BytesAvailable() > 0)
+                    if (GetRemaining() > 0)
                     {
                         return true;
                     }
@@ -318,32 +319,32 @@ namespace Server.Network
                 }
             }
 
-            public Result GetResult() => TryGetBytes();
+            public Result<T> GetResult() => TryRead();
 
             public void OnCompleted(Action continuation) => _pipe._readerContinuation = continuation;
 
             #endregion
         }
 
-        private readonly byte[] _buffer;
+        private readonly T[] _buffer;
         private volatile uint _writeIdx;
         private volatile uint _readIdx;
         private bool _closed;
 
-        public PipeWriter Writer { get; }
-        public PipeReader Reader { get; }
+        public PipeWriter<T> Writer { get; }
+        public PipeReader<T> Reader { get; }
 
         public uint Size => (uint)_buffer.Length;
 
-        public Pipe(byte[] buf)
+        public Pipe(T[] buf)
         {
             _buffer = buf;
             _writeIdx = 0;
             _readIdx = 0;
             _closed = false;
 
-            Writer = new PipeWriter(this);
-            Reader = new PipeReader(this);
+            Writer = new PipeWriter<T>(this);
+            Reader = new PipeReader<T>(this);
         }
 
         #region Awaitable

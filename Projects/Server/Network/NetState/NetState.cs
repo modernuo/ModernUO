@@ -49,9 +49,9 @@ namespace Server.Network
         private int m_Disposing;
         private ClientVersion m_Version;
         private byte[] m_IncomingBuffer;
-        private Pipe m_IncomingPipe;
+        private Pipe<byte> m_IncomingPipe;
         private byte[] m_OutgoingBuffer;
-        private Pipe m_OutgoingPipe;
+        private Pipe<byte> m_OutgoingPipe;
         private long m_NextCheckActivity;
         private volatile bool m_Running;
 
@@ -83,9 +83,9 @@ namespace Server.Network
             Menus = new List<IMenu>();
             Trades = new List<SecureTrade>();
             m_IncomingBuffer = new byte[IncomingPipeSize];
-            m_IncomingPipe = new Pipe(m_IncomingBuffer);
+            m_IncomingPipe = new Pipe<byte>(m_IncomingBuffer);
             m_OutgoingBuffer = new byte[OutgoingPipeSize];
-            m_OutgoingPipe = new Pipe(m_OutgoingBuffer);
+            m_OutgoingPipe = new Pipe<byte>(m_OutgoingBuffer);
             m_NextCheckActivity = Core.TickCount + 30000;
 
             try
@@ -379,7 +379,7 @@ namespace Server.Network
 
                 if (buffer.Length > 0 && length > 0)
                 {
-                    var result = writer.GetBytes();
+                    var result = writer.GetAvailable();
 
                     if (result.Length >= length)
                     {
@@ -432,7 +432,7 @@ namespace Server.Network
             {
                 while (m_Running)
                 {
-                    var result = await reader.GetBytes();
+                    var result = await reader.Read();
 
                     if (result.Length <= 0)
                     {
@@ -477,7 +477,7 @@ namespace Server.Network
                         continue;
                     }
 
-                    var result = writer.GetBytes();
+                    var result = writer.GetAvailable();
 
                     if (result.Length <= 0)
                     {
@@ -536,7 +536,7 @@ namespace Server.Network
                 // Process as many packets as we can synchronously
                 while (true)
                 {
-                    var result = reader.TryGetBytes();
+                    var result = reader.TryRead();
 
                     if (result.Length <= 0)
                     {

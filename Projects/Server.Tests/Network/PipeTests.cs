@@ -18,7 +18,7 @@ namespace Server.Tests.Network
         [Fact]
         public async void Await()
         {
-            var pipe = new Pipe(new byte[100]);
+            var pipe = new Pipe<byte>(new byte[100]);
 
             var reader = pipe.Reader;
             var writer = pipe.Writer;
@@ -26,7 +26,7 @@ namespace Server.Tests.Network
             DelayedExecute(() =>
             {
                 // Write some data into the pipe
-                var buffer = writer.GetBytes();
+                var buffer = writer.GetAvailable();
                 Assert.True(buffer.Length == 99);
 
                 buffer.CopyFrom(new byte[] { 1 });
@@ -46,14 +46,14 @@ namespace Server.Tests.Network
 
         private void Consumer(object state)
         {
-            var reader = ((Pipe)state).Reader;
+            var reader = ((Pipe<byte>)state).Reader;
 
             int count = 0;
             byte expected_value = 0xFA;
 
             while (count < 0x8000000)
             {
-                var result = reader.TryGetBytes();
+                var result = reader.TryRead();
 
                 for (int i = 0; i < result.Buffer[0].Count; i++)
                 {
@@ -86,7 +86,7 @@ namespace Server.Tests.Network
         [Fact]
         public async void Threading()
         {
-            var pipe = new Pipe(new byte[0x1001]);
+            var pipe = new Pipe<byte>(new byte[0x1001]);
 
             ThreadPool.UnsafeQueueUserWorkItem(Consumer, pipe);
 
@@ -97,7 +97,7 @@ namespace Server.Tests.Network
 
             while (count < 0x8000000)
             {
-                var result = writer.GetBytes();
+                var result = writer.GetAvailable();
 
                 if (result.Length < 16)
                 {
@@ -124,38 +124,36 @@ namespace Server.Tests.Network
         [Fact]
         public void Wrap()
         {
-            var pipe = new Pipe(new byte[10]);
-
-            Pipe.Result result;
+            var pipe = new Pipe<byte>(new byte[10]);
 
             var reader = pipe.Reader;
             var writer = pipe.Writer;
 
-            result = writer.GetBytes();
+            var result = writer.GetAvailable();
             Assert.True(result.Length == 9);
-            Assert.True(reader.BytesAvailable() == 0);
-            result = reader.TryGetBytes();
+            Assert.True(reader.GetRemaining() == 0);
+            result = reader.TryRead();
             Assert.True(result.Length == 0);
 
             writer.Advance(7);
-            result = writer.GetBytes();
+            result = writer.GetAvailable();
             Assert.True(result.Length == 2);
-            Assert.True(reader.BytesAvailable() == 7);
-            result = reader.TryGetBytes();
+            Assert.True(reader.GetRemaining() == 7);
+            result = reader.TryRead();
             Assert.True(result.Length == 7);
 
             reader.Advance(4);
-            result = writer.GetBytes();
+            result = writer.GetAvailable();
             Assert.True(result.Length == 6);
-            Assert.True(reader.BytesAvailable() == 3);
-            result = reader.TryGetBytes();
+            Assert.True(reader.GetRemaining() == 3);
+            result = reader.TryRead();
             Assert.True(result.Length == 3);
 
             writer.Advance(3);
-            result = writer.GetBytes();
+            result = writer.GetAvailable();
             Assert.True(result.Length == 3);
-            Assert.True(reader.BytesAvailable() == 6);
-            result = reader.TryGetBytes();
+            Assert.True(reader.GetRemaining() == 6);
+            result = reader.TryRead();
             Assert.True(result.Length == 6);
 
         }
@@ -163,7 +161,7 @@ namespace Server.Tests.Network
         [Fact]
         public void Match()
         {
-            var pipe = new Pipe(new byte[10]);
+            var pipe = new Pipe<byte>(new byte[10]);
 
             var reader = pipe.Reader;
             var writer = pipe.Writer;
@@ -173,7 +171,7 @@ namespace Server.Tests.Network
                 writer.Advance(i);
                 writer.Flush();
 
-                Assert.True(reader.BytesAvailable() == i);
+                Assert.True(reader.GetRemaining() == i);
                 reader.Advance(i);
             }
         }
@@ -181,12 +179,12 @@ namespace Server.Tests.Network
         [Fact]
         public void Sequence()
         {
-            var pipe = new Pipe(new byte[10]);
+            var pipe = new Pipe<byte>(new byte[10]);
 
             var reader = pipe.Reader;
             var writer = pipe.Writer;
 
-            var buffer = writer.GetBytes();
+            var buffer = writer.GetAvailable();
             Assert.True(buffer.Length == 9);
 
             buffer.CopyFrom(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
@@ -194,9 +192,9 @@ namespace Server.Tests.Network
             writer.Advance(9);
             writer.Flush();
 
-            Assert.True(reader.BytesAvailable() == 9);
+            Assert.True(reader.GetRemaining() == 9);
 
-            buffer = reader.TryGetBytes();
+            buffer = reader.TryRead();
 
             for (int i = 0; i < 9; i++)
             {
@@ -204,7 +202,7 @@ namespace Server.Tests.Network
             }
 
             reader.Advance(4);
-            buffer = reader.TryGetBytes();
+            buffer = reader.TryRead();
             Assert.True(buffer.Length == 5);
             Assert.True(buffer.Buffer[0][0] == 4);
             Assert.True(buffer.Buffer[0][1] == 5);
