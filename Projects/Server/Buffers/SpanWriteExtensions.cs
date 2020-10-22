@@ -141,7 +141,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteAscii(this Span<byte> span, ref int pos, string value, int max)
         {
-            var length = value.Length <= max ? value.Length : max;
+            var length = Math.Min(value.Length, max);
 
             pos += Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
         }
@@ -160,7 +160,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteAsciiNull(this Span<byte> span, ref int pos, string value, int max)
         {
-            var length = value.Length < max ? value.Length : max - 1;
+            var length = Math.Min(value.Length, max - 1);
 
             pos += Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
 #if NO_LOCAL_INIT
@@ -172,7 +172,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteAsciiFixed(this Span<byte> span, ref int pos, string value, int amount)
         {
-            var length = value.Length <= amount ? value.Length : amount;
+            var length = Math.Min(value.Length, amount);
 #if NO_LOCAL_INIT
             int bytesWritten = Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
 

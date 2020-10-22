@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.Net;
+using System.Threading;
 using Server.Network;
 using Xunit;
 
@@ -240,7 +241,7 @@ namespace Server.Tests.Network
             };
             beheld.DefaultMobileInit();
 
-            var ns = new NetState(null)
+            var ns = new NetState(null, Thread.CurrentThread)
             {
                 ProtocolChanges = changes
             };
@@ -637,7 +638,7 @@ namespace Server.Tests.Network
             beheld.FacialHairItemID = facialHairItemId;
             beheld.FacialHairHue = facialHairHue;
 
-            var ns = new NetState(null)
+            var ns = new NetState(null, Thread.CurrentThread)
             {
                 ProtocolChanges = protocolChanges
             };

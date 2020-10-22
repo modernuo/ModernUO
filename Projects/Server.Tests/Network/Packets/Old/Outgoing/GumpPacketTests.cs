@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using Server.Gumps;
 using Server.Network;
 using Xunit;
@@ -59,7 +60,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestFastGumpPacket()
         {
-            var ns = new NetState(null);
+            var ns = new NetState(null, Thread.CurrentThread);
 
             var gump = new ResurrectGump(2);
 
@@ -129,7 +130,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestPackedGumpPacket()
         {
-            var ns = new NetState(null)
+            var ns = new NetState(null, Thread.CurrentThread)
             {
                 ProtocolChanges = ProtocolChanges.Unpack
             };

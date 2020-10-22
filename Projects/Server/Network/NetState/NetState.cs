@@ -32,6 +32,8 @@ namespace Server.Network
 {
     public delegate void NetStateCreatedCallback(NetState ns);
 
+    public delegate void EncodePacket(NetState ns, ArraySegment<byte>[] buffer, ref uint length);
+
     public partial class NetState : IComparable<NetState>
     {
         public static int IncomingPipeSize { get; private set; } = 1024 * 64;
@@ -54,6 +56,7 @@ namespace Server.Network
         private Pipe<byte> m_OutgoingPipe;
         private long m_NextCheckActivity;
         private volatile bool m_Running;
+        private Thread m_SendThread;
 
         internal int m_AuthID;
         internal int m_Seed;
@@ -74,7 +77,7 @@ namespace Server.Network
         }
 
         // For testing
-        public NetState(Socket connection, Pipe<byte> incoming, Pipe<byte> outgoing)
+        public NetState(Socket connection, Pipe<byte> incoming, Pipe<byte> outgoing, Thread sendThread)
         {
             m_Running = true;
             Connection = connection;
@@ -83,12 +86,13 @@ namespace Server.Network
             HuePickers = new List<HuePicker>();
             Menus = new List<IMenu>();
             Trades = new List<SecureTrade>();
+            m_SendThread = sendThread;
 
             m_IncomingPipe = incoming;
             m_OutgoingPipe = outgoing;
         }
 
-        public NetState(Socket connection)
+        public NetState(Socket connection, Thread sendThread)
         {
             m_Running = false;
             Connection = connection;
@@ -97,6 +101,9 @@ namespace Server.Network
             HuePickers = new List<HuePicker>();
             Menus = new List<IMenu>();
             Trades = new List<SecureTrade>();
+            m_SendThread = sendThread;
+
+
             m_IncomingBuffer = new byte[IncomingPipeSize];
             m_IncomingPipe = new Pipe<byte>(m_IncomingBuffer);
             m_OutgoingBuffer = new byte[OutgoingPipeSize];
@@ -128,7 +135,9 @@ namespace Server.Network
 
         public IPAddress Address { get; }
 
-        public IPacketEncoder PacketEncoder { get; set; }
+        public EncodePacket PacketDecoder { get; set; }
+
+        public EncodePacket PacketEncoder { get; set; }
 
         public bool SentFirstPacket { get; set; }
 
@@ -368,8 +377,59 @@ namespace Server.Network
             NetworkState.Resume(ref m_NetworkState);
         }
 
-        private static byte[] CompressorBuffer = new byte[NetworkCompression.BufferSize];
+        private static readonly byte[] CompressorBuffer = new byte[NetworkCompression.BufferSize];
 
+        public bool GetSendBuffer(uint length, out ArraySegment<byte>[] buffer)
+        {
+            var currentThread = Thread.CurrentThread;
+
+            if (currentThread != m_SendThread)
+            {
+                Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
+#if DEBUG
+                throw new InvalidThreadException(nameof(Send));
+#endif
+            }
+
+            var result = m_OutgoingPipe.Writer.GetAvailable();
+
+            if (result.IsClosed)
+            {
+                Dispose();
+                buffer = null;
+                return false;
+            }
+
+            if (result.Length < length)
+            {
+                WriteConsole("Too much data pending, disconnecting...");
+                Dispose();
+                buffer = null;
+                return false;
+            }
+
+            buffer = result.Buffer;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteSendBuffer(ArraySegment<byte>[] buffer, uint length)
+        {
+            var currentThread = Thread.CurrentThread;
+
+            if (currentThread != m_SendThread)
+            {
+                Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
+#if DEBUG
+                throw new InvalidThreadException(nameof(Send));
+#endif
+            }
+
+            PacketEncoder?.Invoke(this, buffer, ref length);
+            m_OutgoingPipe.Writer.Advance(length);
+        }
+
+        // Deprecated
         public virtual void Send(Span<byte> bytes)
         {
             if (Connection == null || BlockAllPackets || bytes.Length == 0)
@@ -379,7 +439,7 @@ namespace Server.Network
 
             var currentThread = Thread.CurrentThread;
 
-            if (currentThread != Core.Thread)
+            if (currentThread != m_SendThread)
             {
                 Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
 #if DEBUG
@@ -446,7 +506,7 @@ namespace Server.Network
 
             var currentThread = Thread.CurrentThread;
 
-            if (currentThread != Core.Thread)
+            if (currentThread != m_SendThread)
             {
                 Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
 #if DEBUG

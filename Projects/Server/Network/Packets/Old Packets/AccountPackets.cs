@@ -39,18 +39,10 @@ namespace Server.Network
 
             for (var i = 0; i < a.Length; ++i)
             {
+                var m = a[i];
                 if (a[i] != null)
                 {
-                    var name = a[i].Name;
-
-                    if (name == null)
-                    {
-                        name = "-null-";
-                    }
-                    else if ((name = name.Trim()).Length == 0)
-                    {
-                        name = "-empty-";
-                    }
+                    var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
 
                     Stream.WriteAsciiFixed(name, 30);
                     Stream.Fill(30); // password

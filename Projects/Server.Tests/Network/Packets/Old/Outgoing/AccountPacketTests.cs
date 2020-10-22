@@ -2,6 +2,7 @@ using System;
 using System.Buffers;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using Server.Accounting;
 using Server.Network;
 using Xunit;
@@ -15,11 +16,11 @@ namespace Server.Tests.Network
         {
             var firstMobile = new Mobile(0x1);
             firstMobile.DefaultMobileInit();
-            firstMobile.Name = "Test Mobile";
+            firstMobile.RawName = "Test Mobile";
 
             var secondMobile = new Mobile(0x2);
-            firstMobile.DefaultMobileInit();
-            firstMobile.Name = null;
+            secondMobile.DefaultMobileInit();
+            secondMobile.RawName = null;
 
             var account = new TestAccount(new[] { firstMobile, null, secondMobile });
 
@@ -86,7 +87,7 @@ namespace Server.Tests.Network
 
             var account = new TestAccount(new[] { firstMobile, null, null, null, null });
 
-            var ns = new NetState(null)
+            var ns = new NetState(null, Thread.CurrentThread)
             {
                 Account = account,
                 ProtocolChanges = protocolChanges

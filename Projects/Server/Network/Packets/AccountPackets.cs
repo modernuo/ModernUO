@@ -13,8 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Buffers;
+using System.IO;
 using Server.Accounting;
 
 namespace Server.Network
@@ -48,7 +48,7 @@ namespace Server.Network
         BadRequest
     }
 
-    public partial class Packets
+    public static partial class Packets
     {
         /**
          * Packet: 0x81
@@ -58,19 +58,26 @@ namespace Server.Network
          */
         public static void SendChangeCharacter(NetState ns, IAccount a)
         {
-            Span<byte> data = stackalloc byte[5 + a.Length * 60];
-            var pos = 0;
-            data.Write(ref pos, (byte)0x81); // Packet ID
-            data.Write(ref pos, (ushort)data.Length);
+            if (ns == null || a == null)
+            {
+                return;
+            }
 
-#if NO_LOCAL_INIT
-            pos++; // Count
-            data.Write(ref pos, (byte)0);
-#else
-            pos += 2;
-#endif
+            var length = 5 + a.Length * 60;
 
-            var count = 0;
+            if (!ns.GetSendBuffer((uint)length, out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+
+            writer.Write((byte)0x81); // Packet ID
+
+            writer.Write((ushort)length);
+            writer.Write((ushort)0); // Count
+
+            int count = 0;
 
             for (var i = 0; i < a.Length; ++i)
             {
@@ -78,28 +85,34 @@ namespace Server.Network
 
                 if (m == null)
                 {
-#if NO_LOCAL_INIT
-                data.Clear(ref pos, 60);
-#else
-                    pos += 60;
-#endif
+                    writer.Fill(60);
                 }
                 else
                 {
-                    var name = m.RawName?.Trim().IsNullOrDefault("-no name-");
+                    var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
 
                     count++;
-                    data.WriteAsciiFixed(ref pos, name, 30);
-#if NO_LOCAL_INIT
-                    data.Clear(ref pos, 30); // Password (empty)
-#else
-                    pos += 30;
-#endif
+                    writer.WriteAsciiFixed(name, 30);
+                    writer.Fill(30); // Password (empty)
                 }
             }
 
-            data[3] = (byte)count;
-            ns.Send(data);
+            writer.Seek(3, SeekOrigin.Begin);
+            writer.Write((byte)count);
+
+            ns.WriteSendBuffer(buffer, (uint)length);
+        }
+
+        public static void SendClientVersionRequest(NetState ns)
+        {
+            if (ns != null && ns.GetSendBuffer(3, out var buffer))
+            {
+                var writer = new CircularBufferWriter(buffer);
+                writer.Write((byte)0x81); // Packet ID
+                writer.Write((ushort)3); // Length
+
+                ns.WriteSendBuffer(buffer, 3);
+            }
         }
     }
 }
