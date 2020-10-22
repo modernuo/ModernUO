@@ -154,9 +154,6 @@ namespace Server.Network
             RegisterEncoded(0x32, true, QuestGumpRequest);
         }
 
-        public static PlayCharCallback ThirdPartyAuthCallback { get; set; }
-        public static PlayCharCallback ThirdPartyHackedCallback { get; set; }
-
         public static PacketHandler[] Handlers { get; } = new PacketHandler[0x100];
 
         public static bool SingleClickProps { get; set; }
