@@ -429,7 +429,6 @@ namespace Server.Network
             m_OutgoingPipe.Writer.Advance(length);
         }
 
-        // Deprecated
         public virtual void Send(Span<byte> bytes)
         {
             if (Connection == null || BlockAllPackets || bytes.Length == 0)
@@ -451,8 +450,6 @@ namespace Server.Network
 
             try
             {
-                // TODO: Offload this to send task
-                // Is this an ok assumption?
                 Span<byte> buffer = CompressionEnabled ? CompressorBuffer : bytes;
 
                 int length;
