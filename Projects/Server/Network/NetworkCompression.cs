@@ -11,7 +11,7 @@ namespace Server.Network
         private const int ValueIndex = 1;
 
         // UO packets may not exceed 64kb in length
-        private const int BufferSize = 0x10000;
+        public const int BufferSize = 0x10000;
 
         // Optimal compression ratio is 2 / 8;  worst compression ratio is 11 / 8
         private const int MinimalCodeLength = 2;

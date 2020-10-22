@@ -34,11 +34,11 @@ namespace Server.Network
 
     public partial class NetState : IComparable<NetState>
     {
-        private static int IncomingPipeSize = 1024 * 64;
-        private static int OutgoingPipeSize = 1024 * 256;
-        private static int GumpCap = 512;
-        private static int HuePickerCap = 512;
-        private static int MenuCap = 512;
+        public static int IncomingPipeSize { get; private set; } = 1024 * 64;
+        public static int OutgoingPipeSize { get; private set; } = 1024 * 256;
+        public static int GumpCap { get; private set; } = 512;
+        public static int HuePickerCap { get; private set; } = 512;
+        public static int MenuCap { get; private set; } = 512;
 
         private static readonly ConcurrentQueue<NetState> m_Disposed = new ConcurrentQueue<NetState>();
         private static NetworkState m_NetworkState = NetworkState.ResumeState;
@@ -71,6 +71,21 @@ namespace Server.Network
         {
             var checkAliveDuration = TimeSpan.FromMinutes(1.5);
             Timer.DelayCall(checkAliveDuration, checkAliveDuration, CheckAllAlive);
+        }
+
+        // For testing
+        public NetState(Socket connection, Pipe<byte> incoming, Pipe<byte> outgoing)
+        {
+            m_Running = true;
+            Connection = connection;
+            Seeded = false;
+            Gumps = new List<Gump>();
+            HuePickers = new List<HuePicker>();
+            Menus = new List<IMenu>();
+            Trades = new List<SecureTrade>();
+
+            m_IncomingPipe = incoming;
+            m_OutgoingPipe = outgoing;
         }
 
         public NetState(Socket connection)
@@ -351,6 +366,74 @@ namespace Server.Network
         public static void Resume()
         {
             NetworkState.Resume(ref m_NetworkState);
+        }
+
+        private static byte[] CompressorBuffer = new byte[NetworkCompression.BufferSize];
+
+        public virtual void Send(Span<byte> bytes)
+        {
+            if (Connection == null || BlockAllPackets || bytes.Length == 0)
+            {
+                return;
+            }
+
+            var currentThread = Thread.CurrentThread;
+
+            if (currentThread != Core.Thread)
+            {
+                Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
+#if DEBUG
+                throw new InvalidThreadException(nameof(Send));
+#endif
+            }
+
+            var writer = m_OutgoingPipe.Writer;
+
+            try
+            {
+                // TODO: Offload this to send task
+                // Is this an ok assumption?
+                Span<byte> buffer = CompressionEnabled ? CompressorBuffer : bytes;
+
+                int length;
+                if (CompressionEnabled)
+                {
+                    NetworkCompression.Compress(bytes, 0, bytes.Length, buffer, out length);
+                    if (length <= 0)
+                    {
+                        return;
+                    }
+
+                    buffer = buffer.Slice(0, length);
+                }
+                else
+                {
+                    length = bytes.Length;
+                }
+
+                var result = writer.GetAvailable();
+
+                if (result.Length >= length)
+                {
+                    result.CopyFrom(buffer);
+                    writer.Advance((uint)length);
+
+                    // Flush at the end of the game loop
+                }
+                else
+                {
+                    WriteConsole("Too much data pending, disconnecting...");
+                    Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex);
+                TraceException(ex);
+#endif
+                Dispose();
+            }
         }
 
         public virtual void Send(Packet p)

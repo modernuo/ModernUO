@@ -46,8 +46,6 @@ namespace Server.Network
 
     public static class PacketHandlers
     {
-        public delegate void PlayCharCallback(NetState state, bool val);
-
         private const int m_AuthIDWindowSize = 128;
         private static readonly PacketHandler[] m_6017Handlers = new PacketHandler[0x100];
 

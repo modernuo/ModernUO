@@ -8,7 +8,7 @@ using Server.Menus.Questions;
 using Server.Network;
 using Xunit;
 
-namespace Server.Tests.Network.Packets
+namespace Server.Tests.Network
 {
     internal class ContextMenuItem : Item
     {

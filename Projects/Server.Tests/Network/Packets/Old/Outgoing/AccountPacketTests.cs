@@ -6,7 +6,7 @@ using Server.Accounting;
 using Server.Network;
 using Xunit;
 
-namespace Server.Tests.Network.Packets
+namespace Server.Tests.Network
 {
     public class AccountPacketTests : IClassFixture<ServerFixture>
     {
@@ -17,41 +17,20 @@ namespace Server.Tests.Network.Packets
             firstMobile.DefaultMobileInit();
             firstMobile.Name = "Test Mobile";
 
-            var account = new TestAccount(new[] { firstMobile, null, null });
+            var secondMobile = new Mobile(0x2);
+            firstMobile.DefaultMobileInit();
+            firstMobile.Name = null;
 
-            var data = new ChangeCharacter(account).Compile();
+            var account = new TestAccount(new[] { firstMobile, null, secondMobile });
 
-            Span<byte> expectedData = stackalloc byte[5 + account.Length * 60];
-            var pos = 0;
+            var oldPacket = new ChangeCharacter(account).Compile();
 
-            expectedData.Write(ref pos, (byte)0x81);                  // Packet ID
-            expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
-            expectedData.Write(ref pos, (byte)1);                     // Count of non-null characters
-            expectedData.Write(ref pos, (byte)0);
+            var ns = PipeTestNetState.CreateOutgoing(out var outgoingPipe);
+            Packets.SendChangeCharacter(ns, account);
 
-            for (var i = 0; i < account.Length; ++i)
-            {
-                var m = account[i];
-                if (m == null)
-                {
-#if NO_LOCAL_INIT
-                    expectedData.Clear(ref pos, 60);
-#else
-                    pos += 60;
-#endif
-                }
-                else
-                {
-                    expectedData.WriteAsciiFixed(ref pos, m.Name, 30);
-#if NO_LOCAL_INIT
-                     expectedData.Clear(ref pos, 30); // Password (empty)
-#else
-                    pos += 30;
-#endif
-                }
-            }
+            var result = outgoingPipe.Reader.TryRead();
 
-            AssertThat.Equal(data, expectedData);
+            AssertThat.Equal( result.Buffer[0], oldPacket);
         }
 
         [Fact]

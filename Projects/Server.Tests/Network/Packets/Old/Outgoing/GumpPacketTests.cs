@@ -7,7 +7,7 @@ using Server.Gumps;
 using Server.Network;
 using Xunit;
 
-namespace Server.Tests.Network.Packets
+namespace Server.Tests.Network
 {
     public class GumpPacketTests
     {

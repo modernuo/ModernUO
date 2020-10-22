@@ -18,35 +18,6 @@ using Server.Accounting;
 
 namespace Server.Network
 {
-    public enum ALRReason : byte
-    {
-        Invalid = 0x00,
-        InUse = 0x01,
-        Blocked = 0x02,
-        BadPass = 0x03,
-        Idle = 0xFE,
-        BadComm = 0xFF
-    }
-
-    public enum PMMessage : byte
-    {
-        CharNoExist = 1,
-        CharExists = 2,
-        CharInWorld = 5,
-        LoginSyncError = 6,
-        IdleWarning = 7
-    }
-
-    public enum DeleteResultType
-    {
-        PasswordInvalid,
-        CharNotExist,
-        CharBeingPlayed,
-        CharTooYoung,
-        CharQueued,
-        BadRequest
-    }
-
     public sealed class ChangeCharacter : Packet
     {
         public ChangeCharacter(IAccount a) : base(0x81)
