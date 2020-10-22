@@ -569,7 +569,7 @@ namespace Server.Gumps
         {
             var m = m_House.Owner;
 
-            return m?.Deleted != false ? "(unowned)" : m.Name.Trim().IsNullOrDefault("(no name)");
+            return m?.Deleted != false ? "(unowned)" : m.Name.Trim().DefaultIfNullOrEmpty("(no name)");
         }
 
         private string GetDateTime(DateTime val) =>

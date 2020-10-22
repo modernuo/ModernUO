@@ -223,7 +223,7 @@ namespace Server.Gumps
 
             if (shouldSet)
             {
-                var comment = c?.Text.Trim().IsNullOrDefault(null);
+                var comment = c?.Text.Trim().DefaultIfNullOrEmpty(null);
 
                 for (var i = 0; i < m_List.Count; ++i)
                 {

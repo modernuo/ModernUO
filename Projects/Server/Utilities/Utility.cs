@@ -124,7 +124,7 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string IsNullOrDefault(this string value, string def) => value?.Length > 0 ? value : def;
+        public static string DefaultIfNullOrEmpty(this string value, string def) => value?.Length > 0 ? value : def;
 
         public static IPAddress Intern(IPAddress ipAddress)
         {

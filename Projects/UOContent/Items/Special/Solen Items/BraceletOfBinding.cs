@@ -93,7 +93,7 @@ namespace Server.Items
         {
             list.Add(
                 1054000,
-                $"{m_Charges}\t{m_Inscription.IsNullOrDefault(" ")}"
+                $"{m_Charges}\t{m_Inscription.DefaultIfNullOrEmpty(" ")}"
             ); // a bracelet of binding : ~1_val~ ~2_val~
         }
 
@@ -102,7 +102,7 @@ namespace Server.Items
             LabelTo(
                 from,
                 1054000,
-                $"{m_Charges}\t{m_Inscription.IsNullOrDefault(" ")}"
+                $"{m_Charges}\t{m_Inscription.DefaultIfNullOrEmpty(" ")}"
             ); // a bracelet of binding : ~1_val~ ~2_val~
         }
 

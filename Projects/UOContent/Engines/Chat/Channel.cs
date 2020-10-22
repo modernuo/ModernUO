@@ -39,7 +39,7 @@ namespace Server.Engines.Chat
         public string Password
         {
             get => m_Password;
-            set => m_Password = value?.Trim().IsNullOrDefault(null);
+            set => m_Password = (value?.Trim()).DefaultIfNullOrEmpty(null);
         }
 
         public bool VoiceRestricted
