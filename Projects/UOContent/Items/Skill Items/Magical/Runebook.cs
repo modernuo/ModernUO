@@ -416,7 +416,7 @@ namespace Server.Items
 
                         from.Send(new PlaySound(0x42, GetWorldLocation()));
 
-                        from.SendMessage(rune.Description?.Trim().IsNullOrDefault("(indescript)"));
+                        from.SendMessage((rune.Description?.Trim()).DefaultIfNullOrEmpty("(indescript)"));
 
                         return true;
                     }

@@ -93,7 +93,7 @@ namespace Server.Gumps
 
         public static List<Mobile> BuildList(Mobile owner, string rawFilter)
         {
-            var filter = rawFilter.Trim().ToLower().IsNullOrDefault(null);
+            var filter = rawFilter.Trim().ToLower().DefaultIfNullOrEmpty(null);
 
             var list = new List<Mobile>();
             var states = TcpServer.Instances;

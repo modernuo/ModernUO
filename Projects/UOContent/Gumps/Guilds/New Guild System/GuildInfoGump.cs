@@ -60,7 +60,7 @@ namespace Server.Guilds
 
             AddImageTiled(65, 196, 480, 4, 0x238D);
 
-            var s = guild.Charter.IsNullOrDefault("The guild leader has not yet set the guild charter.");
+            var s = guild.Charter.DefaultIfNullOrEmpty("The guild leader has not yet set the guild charter.");
 
             AddHtml(65, 216, 480, 80, s, true, true);
             if (isLeader)
@@ -68,7 +68,7 @@ namespace Server.Guilds
                 AddButton(40, 251, 0x4B9, 0x4BA, 4); // Charter Edit button
             }
 
-            s = guild.Website.IsNullOrDefault("Guild website not yet set.");
+            s = guild.Website.DefaultIfNullOrEmpty("Guild website not yet set.");
 
             AddHtml(65, 306, 480, 30, s, true);
             if (isLeader)

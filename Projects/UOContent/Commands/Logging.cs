@@ -120,7 +120,7 @@ namespace Server.Commands
                 return "null";
             }
 
-            ip = ip.Trim().IsNullOrDefault("empty");
+            ip = ip.Trim().DefaultIfNullOrEmpty("empty");
 
             var isSafe = true;
 

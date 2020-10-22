@@ -439,7 +439,7 @@ namespace Server.Items
                 AddHtml(255, 180, 150, 20, message.Time.ToString("yyyy-MM-dd HH:mm:ss"));
 
                 var poster = message.Poster;
-                var name = poster?.Name?.Trim().IsNullOrDefault("Someone");
+                var name = (poster?.Name?.Trim()).DefaultIfNullOrEmpty("Someone");
 
                 AddHtml(255, 200, 150, 20, name);
 

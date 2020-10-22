@@ -696,7 +696,7 @@ namespace Server.Multis
                 return;
             }
 
-            Rename(newName.Trim().IsNullOrDefault(null));
+            Rename(newName.Trim().DefaultIfNullOrEmpty(null));
         }
 
         public DryDockResult CheckDryDock(Mobile from)
@@ -859,7 +859,7 @@ namespace Server.Multis
 
             if (e.Speech.Length > 8)
             {
-                Rename(e.Speech.Substring(8).Trim().IsNullOrDefault(null));
+                Rename(e.Speech.Substring(8).Trim().DefaultIfNullOrEmpty(null));
             }
         }
 
