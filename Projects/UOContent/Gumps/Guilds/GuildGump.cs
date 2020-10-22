@@ -26,7 +26,7 @@ namespace Server.Gumps
             if (leader != null)
             {
                 var leadTitle = leader.GuildTitle?.Trim();
-                var leadName = leader.Name?.Trim().IsNullOrDefault("(empty)");
+                var leadName = (leader.Name?.Trim()).DefaultIfNullOrEmpty("(empty)");
                 var text = leadTitle?.Length > 0 ? $"{leadTitle}: {leadName}" : leadName;
 
                 AddHtml(220, 15, 250, 35, text);
@@ -44,7 +44,7 @@ namespace Server.Gumps
 
             fealty ??= beholder;
 
-            var fealtyName = fealty.Name?.Trim().IsNullOrDefault("(empty)");
+            var fealtyName = (fealty.Name?.Trim()).DefaultIfNullOrEmpty("(empty)");
 
             if (beholder == fealty)
             {

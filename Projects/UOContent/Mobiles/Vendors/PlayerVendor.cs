@@ -966,7 +966,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            var name = item.Name.IsNullOrDefault($"#{item.LabelNumber}");
+            var name = item.Name.DefaultIfNullOrEmpty($"#{item.LabelNumber}");
 
             from.SendLocalizedMessage(1043303, name); // Type in a price and description for ~1_ITEM~ (ESC=not for sale)
             from.Prompt = new VendorPricePrompt(this, vi);

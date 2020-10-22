@@ -182,7 +182,7 @@ namespace Server.Items
                 {
                     var sign = m_House.Sign;
 
-                    m_Description = sign?.Name?.Trim().IsNullOrDefault("an unnamed house");
+                    m_Description = (sign?.Name?.Trim()).DefaultIfNullOrEmpty("an unnamed house");
 
                     setDesc = true;
 
@@ -257,7 +257,7 @@ namespace Server.Items
         {
             if (m_Marked)
             {
-                var desc = m_Description?.Trim().IsNullOrDefault("an unknown location");
+                var desc = (m_Description?.Trim()).DefaultIfNullOrEmpty("an unknown location");
 
                 if (m_TargetMap == Map.Tokuno)
                 {

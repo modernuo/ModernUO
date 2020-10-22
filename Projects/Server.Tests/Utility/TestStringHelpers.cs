@@ -10,7 +10,7 @@ namespace Server.Tests
         [InlineData("this is a valid string", "default value", "this is a valid string")]
         public void TestIsNullOrDefault(string value, string defaultValue, string expected)
         {
-            var actual = value.IsNullOrDefault(defaultValue);
+            var actual = value.DefaultIfNullOrEmpty(defaultValue);
 
             Assert.Equal(expected, actual);
         }

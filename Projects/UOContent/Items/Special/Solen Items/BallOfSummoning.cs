@@ -89,7 +89,7 @@ namespace Server.Items
         {
             list.Add(
                 1054131,
-                $"{m_Charges}\t{PetName.IsNullOrDefault(" ")}"
+                $"{m_Charges}\t{PetName.DefaultIfNullOrEmpty(" ")}"
             ); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
         }
 
@@ -98,7 +98,7 @@ namespace Server.Items
             LabelTo(
                 from,
                 1054131,
-                $"{m_Charges}\t{PetName.IsNullOrDefault(" ")}"
+                $"{m_Charges}\t{PetName.DefaultIfNullOrEmpty(" ")}"
             ); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
         }
 

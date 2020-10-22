@@ -204,7 +204,7 @@ namespace Server.Engines.Chat
                 }
             }
 
-            password = password?.Trim().IsNullOrDefault(null);
+            password = (password?.Trim()).DefaultIfNullOrEmpty(null);
 
             var joined = Channel.FindChannelByName(name);
 
@@ -246,7 +246,7 @@ namespace Server.Engines.Chat
                 name = param;
             }
 
-            password = password?.Trim().IsNullOrDefault(null);
+            password = (password?.Trim()).DefaultIfNullOrEmpty(null);
 
             Channel.AddChannel(name, password).AddUser(from, password);
         }
