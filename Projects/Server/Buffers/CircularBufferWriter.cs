@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Buffers.Binary;
+using System.Data;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -235,6 +236,86 @@ namespace System.Buffers
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteString<T>(string value, Encoding encoding, int fixedLength = -1) where T : struct, IEquatable<T>
+        {
+            int sizeT = Unsafe.SizeOf<T>();
+
+            if (sizeT > 2)
+            {
+                throw new InvalidConstraintException("WriteString only accepts byte, sbyte, char, short, and ushort as a constraint");
+            }
+
+            value ??= string.Empty;
+
+            var charLength = Math.Min(fixedLength > -1 ? fixedLength : value.Length, value.Length);
+            var src = value.AsSpan(0, charLength);
+
+            var byteCount = fixedLength > -1 ? fixedLength * sizeT : encoding.GetByteCount(value);
+
+            if (Position + byteCount > Length)
+            {
+                throw new OutOfMemoryException();
+            }
+
+
+            int offset;
+            int bytesWritten;
+            int sz;
+
+            if (Position < First.Length)
+            {
+                if (Position + byteCount > First.Length)
+                {
+                    var remaining = First.Length - Position;
+                    sz = Math.DivRem(remaining, sizeT, out offset);
+                    bytesWritten = encoding.GetBytes(src.Slice(0, sz), First.Slice(Position));
+                    Position += bytesWritten;
+                    byteCount -= bytesWritten;
+
+                    // Character split between First and Second
+                    // This only happens with sizeT = 2 based encodings
+                    if (offset != 0)
+                    {
+                        Span<byte> chr = stackalloc byte[2];
+                        encoding.GetBytes(src.Slice(sz++, 1), chr);
+                        First[Position] = chr[0];
+                        Second[0] = chr[1];
+                        Position += 2;
+                        byteCount -= 2;
+                    }
+                }
+                else
+                {
+                    bytesWritten = encoding.GetBytes(src, First.Slice(Position));
+                    Position += bytesWritten;
+                    byteCount -= bytesWritten;
+
+                    if (byteCount > 0)
+                    {
+                        Position += byteCount;
+                        First.Slice(Position, byteCount).Clear();
+                    }
+
+                    return;
+                }
+            }
+            else
+            {
+                offset = Position - First.Length;
+                sz = 0;
+            }
+
+            bytesWritten = encoding.GetBytes(src.Slice(sz), Second.Slice(offset));
+            Position += bytesWritten;
+            byteCount -= bytesWritten;
+
+            if (byteCount > 0)
+            {
+                Second.Slice(offset + bytesWritten, byteCount).Clear();
+            }
+        }
+
         /// <summary>
         /// Writes a fixed-length ASCII-encoded string value to the underlying stream. To fit (size), the string content is either truncated or padded with null characters.
         /// </summary>
@@ -414,7 +495,7 @@ namespace System.Buffers
                 sz = 0;
             }
 
-            size -= Encoding.ASCII.GetBytes(src.Slice(sz), Second.Slice(offset));
+            size -= encoding.GetBytes(src.Slice(sz), Second.Slice(offset));
             Position += src.Length - sz;
             Second.Slice(Position - First.Length, size).Clear();
         }

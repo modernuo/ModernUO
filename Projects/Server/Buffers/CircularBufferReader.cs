@@ -23,16 +23,16 @@ using System.Text;
 
 namespace Server.Network
 {
-    public ref struct PacketReader
+    public ref struct CircularBufferReader
     {
-        public Span<byte> First;
-        public Span<byte> Second;
+        public ReadOnlySpan<byte> First;
+        public ReadOnlySpan<byte> Second;
 
         public int Length { get; }
         public int Position { get; private set; }
         public int Remaining => Length - Position;
 
-        public PacketReader(ArraySegment<byte>[] buffers)
+        public CircularBufferReader(ArraySegment<byte>[] buffers)
         {
             First = buffers[0];
             Second = buffers[1];
@@ -40,7 +40,7 @@ namespace Server.Network
             Length = First.Length + Second.Length;
         }
 
-        public PacketReader(Span<byte> first, Span<byte> second)
+        public CircularBufferReader(ReadOnlySpan<byte> first, ReadOnlySpan<byte> second)
         {
             First = first;
             Second = second;
@@ -200,11 +200,10 @@ namespace Server.Network
             var remaining = Remaining;
             int size;
 
-            // Not fixed length
             if (isFixedLength)
             {
                 size = fixedLength * sizeT;
-                if (fixedLength > Remaining)
+                if (size > Remaining)
                 {
                     throw new OutOfMemoryException();
                 }
@@ -214,19 +213,20 @@ namespace Server.Network
                 size = remaining - (remaining & (sizeT - 1));
             }
 
-            Span<byte> span;
+            ReadOnlySpan<byte> span;
             int index;
 
             if (Position < First.Length)
             {
+                var firstLength = First.Length - Position;
                 // Find terminator
                 index = MemoryMarshal
-                    .Cast<byte, T>(First.Slice(Position, Math.Min(size, First.Length)))
+                    .Cast<byte, T>(First.Slice(Position, Math.Min(size, First.Length) - Position))
                     .IndexOf(default(T)) * sizeT;
 
                 if (index < 0)
                 {
-                    remaining = size - First.Length;
+                    remaining = size - firstLength;
                     // We don't have a terminator, but a fixed size to the end of the first span, so stop there
                     if (remaining <= 0)
                     {
@@ -239,12 +239,12 @@ namespace Server.Network
                             .IndexOf(default(T)) * sizeT;
 
                         int secondLength = index < 0 ? remaining : index;
-                        int length = First.Length + secondLength;
+                        int length = firstLength + secondLength;
 
                         // Assume no strings should be too long for the stack
                         Span<byte> bytes = stackalloc byte[length];
                         First.Slice(Position).CopyTo(bytes);
-                        Second.Slice(0, secondLength).CopyTo(bytes.Slice(First.Length));
+                        Second.Slice(0, secondLength).CopyTo(bytes.Slice(firstLength));
 
                         Position += length;
                         return GetString(bytes, encoding, safeString);
@@ -269,7 +269,7 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string GetString(Span<byte> span, Encoding encoding, bool safeString = false)
+        private static string GetString(ReadOnlySpan<byte> span, Encoding encoding, bool safeString = false)
         {
             string s = encoding.GetString(span);
 
