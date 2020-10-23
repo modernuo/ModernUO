@@ -14,207 +14,226 @@
  *************************************************************************/
 
 using System;
+using System.Buffers.Binary;
+using System.Data;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Server.Buffers
 {
-    /// <summary>
-    ///   Provides functionality for writing primitive binary data.
-    /// </summary>
     public ref struct SpanWriter
     {
-        private int m_Position;
+        private readonly Span<byte> _buffer;
 
-        public Span<byte> Buffer { get; }
+        public int Length => _buffer.Length;
 
-        public Span<byte> Span => Buffer.Slice(0, WrittenCount);
+        public ReadOnlySpan<byte> Span => _buffer.Slice(0, Position);
 
-        public int Length => Buffer.Length;
-
-        public int WrittenCount { get; private set; }
-
-        public int Position
-        {
-            get => m_Position;
-            set
-            {
-                m_Position = value;
-
-                if (value > WrittenCount)
-                {
-                    WrittenCount = value;
-                }
-            }
-        }
+        public int Position { get; private set; }
 
         public SpanWriter(Span<byte> span)
         {
-            Buffer = span;
-            m_Position = 0;
-            WrittenCount = 0;
+            _buffer = span;
+            Position = 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void Write(bool value)
         {
-            Buffer[Position++] = *(byte*) & value;
+            _buffer[Position++] = *(byte*) & value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(byte value)
         {
-            Buffer[Position++] = value;
+            _buffer[Position++] = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(sbyte value)
         {
-            Buffer[Position++] = (byte)value;
+            _buffer[Position++] = (byte)value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(short value)
         {
-            Write((byte)(value >> 8));
-            Write((byte)value);
+            if (!BinaryPrimitives.TryWriteInt16BigEndian(_buffer.Slice(Position), value))
+            {
+                throw new OutOfMemoryException();
+            }
+
+            Position += 2;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(ushort value)
         {
-            Write((byte)(value >> 8));
-            Write((byte)value);
+            if (!BinaryPrimitives.TryWriteUInt16BigEndian(_buffer.Slice(Position), value))
+            {
+                throw new OutOfMemoryException();
+            }
+
+            Position += 2;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(int value)
         {
-            Write((byte)(value >> 24));
-            Write((byte)(value >> 16));
-            Write((byte)(value >> 8));
-            Write((byte)value);
+            if (!BinaryPrimitives.TryWriteInt32BigEndian(_buffer.Slice(Position), value))
+            {
+                throw new OutOfMemoryException();
+            }
+
+            Position += 4;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(uint value)
         {
-            Write((byte)(value >> 24));
-            Write((byte)(value >> 16));
-            Write((byte)(value >> 8));
-            Write((byte)value);
+            if (!BinaryPrimitives.TryWriteUInt32BigEndian(_buffer.Slice(Position), value))
+            {
+                throw new OutOfMemoryException();
+            }
+
+            Position += 4;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(long value)
         {
-            Write((byte)(value >> 56));
-            Write((byte)(value >> 48));
-            Write((byte)(value >> 40));
-            Write((byte)(value >> 32));
+            if (!BinaryPrimitives.TryWriteInt64BigEndian(_buffer.Slice(Position), value))
+            {
+                throw new OutOfMemoryException();
+            }
 
-            Write((byte)(value >> 24));
-            Write((byte)(value >> 16));
-            Write((byte)(value >> 8));
-            Write((byte)value);
+            Position += 8;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(ulong value)
         {
-            Write((byte)(value >> 56));
-            Write((byte)(value >> 48));
-            Write((byte)(value >> 40));
-            Write((byte)(value >> 32));
+            if (!BinaryPrimitives.TryWriteUInt64BigEndian(_buffer.Slice(Position), value))
+            {
+                throw new OutOfMemoryException();
+            }
 
-            Write((byte)(value >> 24));
-            Write((byte)(value >> 16));
-            Write((byte)(value >> 8));
-            Write((byte)value);
+            Position += 8;
         }
 
-        public void Write(ReadOnlySpan<byte> input)
+        public void Write(ReadOnlySpan<byte> buffer)
         {
-            int size = Math.Min(input.Length, Length - Position);
+            var size = buffer.Length;
+            if (Position + size > Length)
+            {
+                throw new OutOfMemoryException();
+            }
 
-            input.Slice(0, size).CopyTo(Buffer.Slice(Position));
+            buffer.Slice(0, size).CopyTo(_buffer.Slice(Position));
             Position += size;
         }
 
-        public void WriteAscii(string value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteString<T>(string value, Encoding encoding, int fixedLength = -1) where T : struct, IEquatable<T>
         {
-            Position += Encoding.ASCII.GetBytes(value ?? "", Buffer.Slice(Position));
-        }
+            int sizeT = Unsafe.SizeOf<T>();
 
-        public void WriteAsciiFixed(string value, int size, bool zero = false)
-        {
-            value ??= "";
-
-            int length = Math.Min(size, value.Length);
-
-            Encoding.ASCII.GetBytes(value.AsSpan(0, length), Buffer.Slice(Position));
-
-            if (zero)
+            if (sizeT > 2)
             {
-                Position += length;
-                Fill(size - length);
+                throw new InvalidConstraintException("WriteString only accepts byte, sbyte, char, short, and ushort as a constraint");
             }
-            else
+
+            value ??= string.Empty;
+
+            var charLength = Math.Min(fixedLength > -1 ? fixedLength : value.Length, value.Length);
+            var src = value.AsSpan(0, charLength);
+
+            var byteCount = fixedLength > -1 ? fixedLength * sizeT : encoding.GetByteCount(value);
+
+            if (Position + byteCount > Length)
             {
-                Position += size;
+                throw new OutOfMemoryException();
             }
+
+            Position += encoding.GetBytes(src, _buffer.Slice(Position));
         }
 
-        public void WriteAsciiNull(string value)
-        {
-            Position += Encoding.ASCII.GetBytes(value ?? "", Buffer.Slice(Position));
-            Write((byte)0);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteLittleUni(string value) => WriteString<char>(value, Utility.UnicodeLE);
 
-        public void WriteAsciiNull(string value, int size)
-        {
-            value ??= "";
-
-            size = Math.Min(size, value.Length);
-            Position += Encoding.ASCII.GetBytes(value.AsSpan(0, size), Buffer.Slice(Position));
-            Write((byte)0);
-        }
-
-        public void WriteLittleUni(string value)
-        {
-            Position += Encoding.Unicode.GetBytes(value ?? "", Buffer.Slice(Position));
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteLittleUniNull(string value)
         {
-            WriteLittleUni(value);
+            WriteString<char>(value, Utility.UnicodeLE);
             Write((ushort)0);
         }
 
-        public void WriteBigUni(string value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteLittleUni(string value, int fixedLength) => WriteString<char>(value, Utility.UnicodeLE, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteBigUni(string value) => WriteString<char>(value, Utility.Unicode);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteBigUniNull(string value)
         {
-            Position += Encoding.BigEndianUnicode.GetBytes(value ?? "", Buffer.Slice(Position));
+            WriteString<char>(value, Utility.Unicode);
+            Write((ushort)0);
         }
 
-        public void WriteBigUniNull(string value, bool zero = false)
-        {
-            WriteBigUni(value);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteBigUni(string value, int fixedLength) => WriteString<char>(value, Utility.Unicode, fixedLength);
 
-            if (zero)
-            {
-                Fill(2);
-            }
-            else
-            {
-                Position += 2;
-            }
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteUTF8(string value) => WriteString<byte>(value, Utility.UTF8);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteUTF8Null(string value)
         {
-            Position += Encoding.UTF8.GetBytes(value ?? "", Buffer.Slice(Position)) + 1;
+            WriteString<byte>(value, Utility.UTF8);
+            Write((byte)0);
         }
 
-        public void CopyTo(Span<byte> destination)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteAscii(string value) => WriteString<byte>(value, Encoding.ASCII);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteAsciiNull(string value)
         {
-            Buffer.Slice(Position).CopyTo(destination);
+            WriteString<byte>(value, Encoding.ASCII);
+            Write((byte)0);
         }
 
-        public void Fill(int count)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteAscii(string value, int fixedLength) => WriteString<byte>(value, Encoding.ASCII, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Clear()
         {
-            count = Math.Min(count, Buffer.Length - Position);
-            Buffer.Slice(Position, count).Clear();
-            Position += count;
+            _buffer.Slice(Position).Clear();
+            Position = Length;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Clear(int amount)
+        {
+            if (Position + amount > Length)
+            {
+                throw new OutOfMemoryException();
+            }
+
+            _buffer.Slice(Position, amount).Clear();
+            Position += amount;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Seek(int offset, SeekOrigin origin) =>
+            Position = origin switch
+            {
+                SeekOrigin.Begin => offset,
+                SeekOrigin.End   => Length - offset,
+                _                => Position + offset // Current
+            };
     }
 }

@@ -242,7 +242,7 @@ namespace Server.Network
                         First.Slice(Position).CopyTo(bytes);
                         Second.Slice(0, secondLength).CopyTo(bytes.Slice(firstLength));
 
-                        Position += length + (index >= 0 ? 1 : 0);
+                        Position += length + (index >= 0 ? sizeT : 0);
                         return GetString(bytes, encoding, safeString);
                     }
                 }
@@ -265,7 +265,7 @@ namespace Server.Network
                 }
             }
 
-            Position += isFixedLength ? size : index + 1;
+            Position += isFixedLength ? size : index + sizeT;
             return GetString(span, encoding, safeString);
         }
 
