@@ -25,6 +25,24 @@ namespace Server.Tests.Network
         [InlineData("Test String", "UTF8", false, -1, 1024, 1024, 1020)]
         [InlineData("Test String", "Unicode", false, -1, 1024, 1024, 1020)]
         [InlineData("Test String", "UnicodeLE", false, -1, 1024, 1024, 1020)]
+
+        // First only, beginning, fixed length smaller
+        [InlineData("Test String", "ASCII", false, 8, 1024, 1024, 0)]
+        [InlineData("Test String", "UTF8", false, 8, 1024, 1024, 0)]
+        [InlineData("Test String", "Unicode", false, 8, 1024, 1024, 0)]
+        [InlineData("Test String", "UnicodeLE", false, 8, 1024, 1024, 0)]
+
+        // Second only, fixed length smaller
+        [InlineData("Test String", "ASCII", false, 8, 1024, 1024, 1030)]
+        [InlineData("Test String", "UTF8", false, 8, 1024, 1024, 1030)]
+        [InlineData("Test String", "Unicode", false, 8, 1024, 1024, 1030)]
+        [InlineData("Test String", "UnicodeLE", false, 8, 1024, 1024, 1030)]
+
+        // Split, fixed length smaller
+        [InlineData("Test String", "ASCII", false, 8, 1024, 1024, 1020)]
+        [InlineData("Test String", "UTF8", false, 8, 1024, 1024, 1020)]
+        [InlineData("Test String", "Unicode", false, 8, 1024, 1024, 1020)]
+        [InlineData("Test String", "UnicodeLE", false, 8, 1024, 1024, 1020)]
         public void TestReadString(
             string value,
             string encodingStr,
@@ -54,7 +72,7 @@ namespace Server.Tests.Network
                 _                                  => reader.ReadString<byte>(encoding, isSafe, fixedLength)
             };
 
-            Assert.Equal(value, actual);
+            Assert.Equal(value.Substring(0, strLength), actual);
         }
     }
 }

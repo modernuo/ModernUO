@@ -218,10 +218,10 @@ namespace Server.Network
 
             if (Position < First.Length)
             {
-                var firstLength = First.Length - Position;
+                var firstLength = Math.Min(First.Length - Position, size);
                 // Find terminator
                 index = MemoryMarshal
-                    .Cast<byte, T>(First.Slice(Position, Math.Min(size, First.Length) - Position))
+                    .Cast<byte, T>(First.Slice(Position, firstLength))
                     .IndexOf(default(T)) * sizeT;
 
                 if (index < 0)
@@ -230,7 +230,7 @@ namespace Server.Network
                     // We don't have a terminator, but a fixed size to the end of the first span, so stop there
                     if (remaining <= 0)
                     {
-                        index = First.Length;
+                        index = firstLength;
                     }
                     else
                     {
