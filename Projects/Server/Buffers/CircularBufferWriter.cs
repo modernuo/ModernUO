@@ -24,21 +24,14 @@ namespace System.Buffers
 {
     public ref struct CircularBufferWriter
     {
-        public Span<byte> First;
-        public Span<byte> Second;
-        public int Length { get; }
+        private readonly Span<byte> First;
+        private readonly Span<byte> Second;
 
-        /// <summary>
-        /// Gets or sets the current stream m_Position.
-        /// </summary>
+        public int Length { get; }
         public int Position { get; private set; }
 
-        public CircularBufferWriter(ArraySegment<byte>[] buffers)
+        public CircularBufferWriter(ArraySegment<byte>[] buffers) : this(buffers[0], buffers[1])
         {
-            First = buffers[0];
-            Second = buffers[1];
-            Position = 0;
-            Length = First.Length + Second.Length;
         }
 
         public CircularBufferWriter(Span<byte> first, Span<byte> second)
@@ -315,7 +308,7 @@ namespace System.Buffers
         public void WriteAscii(string value) => WriteString<byte>(value, Encoding.ASCII);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteAscii(string value, int fixedLength) => WriteString<byte>(value, Utility.ASCII, fixedLength);
+        public void WriteAscii(string value, int fixedLength) => WriteString<byte>(value, Encoding.ASCII, fixedLength);
 
         /// <summary>
         /// Fills the remaining length of the buffer with 0x00's

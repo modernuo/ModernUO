@@ -25,19 +25,15 @@ namespace Server.Network
 {
     public ref struct CircularBufferReader
     {
-        public ReadOnlySpan<byte> First;
-        public ReadOnlySpan<byte> Second;
+        private readonly ReadOnlySpan<byte> First;
+        private readonly ReadOnlySpan<byte> Second;
 
         public int Length { get; }
         public int Position { get; private set; }
         public int Remaining => Length - Position;
 
-        public CircularBufferReader(ArraySegment<byte>[] buffers)
+        public CircularBufferReader(ArraySegment<byte>[] buffers) : this(buffers[0], buffers[1])
         {
-            First = buffers[0];
-            Second = buffers[1];
-            Position = 0;
-            Length = First.Length + Second.Length;
         }
 
         public CircularBufferReader(ReadOnlySpan<byte> first, ReadOnlySpan<byte> second)
