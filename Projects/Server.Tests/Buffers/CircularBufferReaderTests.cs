@@ -43,6 +43,24 @@ namespace Server.Tests.Network
         [InlineData("Test String", "UTF8", false, 8, 1024, 1024, 1020)]
         [InlineData("Test String", "Unicode", false, 8, 1024, 1024, 1020)]
         [InlineData("Test String", "UnicodeLE", false, 8, 1024, 1024, 1020)]
+
+        // First only, beginning, fixed length bigger
+        [InlineData("Test String", "ASCII", false, 20, 1024, 1024, 0)]
+        [InlineData("Test String", "UTF8", false, 20, 1024, 1024, 0)]
+        [InlineData("Test String", "Unicode", false, 20, 1024, 1024, 0)]
+        [InlineData("Test String", "UnicodeLE", false, 20, 1024, 1024, 0)]
+
+        // Second only, fixed length bigger
+        [InlineData("Test String", "ASCII", false, 20, 1024, 1024, 1030)]
+        [InlineData("Test String", "UTF8", false, 20, 1024, 1024, 1030)]
+        [InlineData("Test String", "Unicode", false, 20, 1024, 1024, 1030)]
+        [InlineData("Test String", "UnicodeLE", false, 20, 1024, 1024, 1030)]
+
+        // Split, fixed length bigger
+        [InlineData("Test String", "ASCII", false, 20, 1024, 1024, 1020)]
+        [InlineData("Test String", "UTF8", false, 20, 1024, 1024, 1020)]
+        [InlineData("Test String", "Unicode", false, 20, 1024, 1024, 1020)]
+        [InlineData("Test String", "UnicodeLE", false, 20, 1024, 1024, 1020)]
         public void TestReadString(
             string value,
             string encodingStr,

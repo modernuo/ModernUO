@@ -25,6 +25,42 @@ namespace Server.Tests.Buffers
         [InlineData("Test String", "UTF8", -1, 1024, 1024, 1020)]
         [InlineData("Test String", "Unicode", -1, 1024, 1024, 1020)]
         [InlineData("Test String", "UnicodeLE", -1, 1024, 1024, 1020)]
+
+        // First only, beginning, fixed length smaller
+        [InlineData("Test String", "ASCII", 8, 1024, 1024, 0)]
+        [InlineData("Test String", "UTF8", 8, 1024, 1024, 0)]
+        [InlineData("Test String", "Unicode", 8, 1024, 1024, 0)]
+        [InlineData("Test String", "UnicodeLE", 8, 1024, 1024, 0)]
+
+        // Second only, fixed length smaller
+        [InlineData("Test String", "ASCII", 8, 1024, 1024, 1030)]
+        [InlineData("Test String", "UTF8", 8, 1024, 1024, 1030)]
+        [InlineData("Test String", "Unicode", 8, 1024, 1024, 1030)]
+        [InlineData("Test String", "UnicodeLE", 8, 1024, 1024, 1030)]
+
+        // Split, fixed length smaller
+        [InlineData("Test String", "ASCII", 8, 1024, 1024, 1020)]
+        [InlineData("Test String", "UTF8", 8, 1024, 1024, 1020)]
+        [InlineData("Test String", "Unicode", 8, 1024, 1024, 1020)]
+        [InlineData("Test String", "UnicodeLE", 8, 1024, 1024, 1020)]
+
+        // First only, beginning, fixed length bigger
+        [InlineData("Test String", "ASCII", 20, 1024, 1024, 0)]
+        [InlineData("Test String", "UTF8", 20, 1024, 1024, 0)]
+        [InlineData("Test String", "Unicode", 20, 1024, 1024, 0)]
+        [InlineData("Test String", "UnicodeLE", 20, 1024, 1024, 0)]
+
+        // Second only, fixed length bigger
+        [InlineData("Test String", "ASCII", 20, 1024, 1024, 1030)]
+        [InlineData("Test String", "UTF8", 20, 1024, 1024, 1030)]
+        [InlineData("Test String", "Unicode", 20, 1024, 1024, 1030)]
+        [InlineData("Test String", "UnicodeLE", 20, 1024, 1024, 1030)]
+
+        // Split, fixed length bigger
+        [InlineData("Test String", "ASCII", 20, 1024, 1024, 1020)]
+        [InlineData("Test String", "UTF8", 20, 1024, 1024, 1020)]
+        [InlineData("Test String", "Unicode", 20, 1024, 1024, 1020)]
+        [InlineData("Test String", "UnicodeLE", 20, 1024, 1024, 1020)]
         public void TestWriteString(
             string value,
             string encodingStr,
