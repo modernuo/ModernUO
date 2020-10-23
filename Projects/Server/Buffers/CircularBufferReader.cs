@@ -242,7 +242,7 @@ namespace Server.Network
                         First.Slice(Position).CopyTo(bytes);
                         Second.Slice(0, secondLength).CopyTo(bytes.Slice(firstLength));
 
-                        Position += length;
+                        Position += length + (index >= 0 ? 1 : 0);
                         return GetString(bytes, encoding, safeString);
                     }
                 }
@@ -251,16 +251,21 @@ namespace Server.Network
             }
             else
             {
-                span = Second.Slice( Position - First.Length, Math.Min(remaining, size));
+                size = Math.Min(remaining, size);
+                span = Second.Slice( Position - First.Length, size);
                 index = MemoryMarshal.Cast<byte, T>(span).IndexOf(default(T)) * sizeT;
 
                 if (index >= 0)
                 {
                     span = span.Slice(0, index);
                 }
+                else
+                {
+                    index = size;
+                }
             }
 
-            Position += isFixedLength ? size : index;
+            Position += isFixedLength ? size : index + 1;
             return GetString(span, encoding, safeString);
         }
 

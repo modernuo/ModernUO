@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using Server.Network;
 using Xunit;
 
@@ -91,6 +92,32 @@ namespace Server.Tests.Network
             };
 
             Assert.Equal(value.Substring(0, strLength), actual);
+        }
+
+        [Fact]
+        public void TestReadStringBetween()
+        {
+            Span<byte> expected = stackalloc byte[19];
+            expected[0] = 0x1;
+            expected[1] = 0x1;
+            expected[2] = 0x1;
+            expected[3] = 0x1;
+            Encoding.ASCII.GetBytes("TestString", expected.Slice(4, 10));
+            expected[14] = 0x0; // Null
+            expected[15] = 0x2;
+            expected[16] = 0x2;
+            expected[17] = 0x2;
+            expected[18] = 0x2;
+
+            var reader = new CircularBufferReader(expected, stackalloc byte[0]);
+
+            var num1 = reader.ReadInt32();
+            var str = reader.ReadAscii();
+            var num2 = reader.ReadInt32();
+
+            Assert.Equal(0x01010101, num1);
+            Assert.Equal("TestString", str);
+            Assert.Equal(0x02020202, num2);
         }
     }
 }
