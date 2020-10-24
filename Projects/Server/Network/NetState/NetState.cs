@@ -378,8 +378,6 @@ namespace Server.Network
             NetworkState.Resume(ref m_NetworkState);
         }
 
-        private static readonly byte[] CompressorBuffer = new byte[NetworkCompression.BufferSize];
-
         public virtual void Send(Span<byte> buffer)
         {
             if (Connection == null || BlockAllPackets || buffer.Length == 0)
