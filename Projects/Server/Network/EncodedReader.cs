@@ -2,9 +2,9 @@ namespace Server.Network
 {
     public ref struct EncodedReader
     {
-        private PacketReader m_Reader;
+        private CircularBufferReader m_Reader;
 
-        public EncodedReader(PacketReader reader) => m_Reader = reader;
+        public EncodedReader(CircularBufferReader reader) => m_Reader = reader;
 
         public void Trace(NetState state)
         {

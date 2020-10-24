@@ -15,35 +15,29 @@
 
 using System;
 using System.Buffers.Binary;
-using System.Data;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Server.Network
 {
-    public ref struct PacketReader
+    public ref struct CircularBufferReader
     {
-        public Span<byte> First;
-        public Span<byte> Second;
+        private readonly ReadOnlySpan<byte> _first;
+        private readonly ReadOnlySpan<byte> _second;
 
         public int Length { get; }
         public int Position { get; private set; }
         public int Remaining => Length - Position;
 
-        public PacketReader(ArraySegment<byte>[] buffers)
+        public CircularBufferReader(ArraySegment<byte>[] buffers) : this(buffers[0], buffers[1])
         {
-            First = buffers[0];
-            Second = buffers[1];
-            Position = 0;
-            Length = First.Length + Second.Length;
         }
 
-        public PacketReader(Span<byte> first, Span<byte> second)
+        public CircularBufferReader(ReadOnlySpan<byte> first, ReadOnlySpan<byte> second)
         {
-            First = first;
-            Second = second;
+            _first = first;
+            _second = second;
             Position = 0;
             Length = first.Length + second.Length;
         }
@@ -51,7 +45,7 @@ namespace Server.Network
         public void Trace(NetState state)
         {
             // We don't have data, so nothing to trace
-            if (First.Length == 0)
+            if (_first.Length == 0)
             {
                 return;
             }
@@ -60,9 +54,9 @@ namespace Server.Network
             {
                 using var sw = new StreamWriter("Packets.log", true);
 
-                sw.WriteLine("Client: {0}: Unhandled packet 0x{1:X2}", state, First[0]);
+                sw.WriteLine("Client: {0}: Unhandled packet 0x{1:X2}", state, _first[0]);
 
-                Utility.FormatBuffer(sw, First.ToArray(), new Memory<byte>(Second.ToArray()));
+                Utility.FormatBuffer(sw, _first.ToArray(), new Memory<byte>(_second.ToArray()));
 
                 sw.WriteLine();
                 sw.WriteLine();
@@ -76,14 +70,14 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte ReadByte()
         {
-            if (Position < First.Length)
+            if (Position < _first.Length)
             {
-                return First[Position++];
+                return _first[Position++];
             }
 
             if (Position < Length)
             {
-                return Second[Position++ - First.Length];
+                return _second[Position++ - _first.Length];
             }
 
             throw new OutOfMemoryException();
@@ -100,15 +94,15 @@ namespace Server.Network
         {
             short value;
 
-            if (Position < First.Length)
+            if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryReadInt16BigEndian(First.Slice(Position), out value))
+                if (!BinaryPrimitives.TryReadInt16BigEndian(_first.Slice(Position), out value))
                 {
                     // Not enough space. Split the spans
                     return (short)((ReadByte() >> 8) | ReadByte());
                 }
             }
-            else if (!BinaryPrimitives.TryReadInt16BigEndian(Second.Slice(Position - First.Length), out value))
+            else if (!BinaryPrimitives.TryReadInt16BigEndian(_second.Slice(Position - _first.Length), out value))
             {
                 throw new OutOfMemoryException();
             }
@@ -122,15 +116,15 @@ namespace Server.Network
         {
             ushort value;
 
-            if (Position < First.Length)
+            if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryReadUInt16BigEndian(First.Slice(Position), out value))
+                if (!BinaryPrimitives.TryReadUInt16BigEndian(_first.Slice(Position), out value))
                 {
                     // Not enough space. Split the spans
                     return (ushort)((ReadByte() >> 8) | ReadByte());
                 }
             }
-            else if (!BinaryPrimitives.TryReadUInt16BigEndian(Second.Slice(Position - First.Length), out value))
+            else if (!BinaryPrimitives.TryReadUInt16BigEndian(_second.Slice(Position - _first.Length), out value))
             {
                 throw new OutOfMemoryException();
             }
@@ -144,15 +138,15 @@ namespace Server.Network
         {
             int value;
 
-            if (Position < First.Length)
+            if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryReadInt32BigEndian(First.Slice(Position), out value))
+                if (!BinaryPrimitives.TryReadInt32BigEndian(_first.Slice(Position), out value))
                 {
                     // Not enough space. Split the spans
                     return (ReadByte() >> 24) | (ReadByte() >> 16) | (ReadByte() >> 8) | ReadByte();
                 }
             }
-            else if (!BinaryPrimitives.TryReadInt32BigEndian(Second.Slice(Position - First.Length), out value))
+            else if (!BinaryPrimitives.TryReadInt32BigEndian(_second.Slice(Position - _first.Length), out value))
             {
                 throw new OutOfMemoryException();
             }
@@ -166,15 +160,15 @@ namespace Server.Network
         {
             uint value;
 
-            if (Position < First.Length)
+            if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryReadUInt32BigEndian(First.Slice(Position), out value))
+                if (!BinaryPrimitives.TryReadUInt32BigEndian(_first.Slice(Position), out value))
                 {
                     // Not enough space. Split the spans
                     return (uint)((ReadByte() >> 24) | (ReadByte() >> 16) | (ReadByte() >> 8) | ReadByte());
                 }
             }
-            else if (!BinaryPrimitives.TryReadUInt32BigEndian(Second.Slice(Position - First.Length), out value))
+            else if (!BinaryPrimitives.TryReadUInt32BigEndian(_second.Slice(Position - _first.Length), out value))
             {
                 throw new OutOfMemoryException();
             }
@@ -183,28 +177,20 @@ namespace Server.Network
             return value;
         }
 
-        private static bool IsSafeChar(ushort c) => c >= 0x20 && c < 0xFFFE;
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadString<T>(Encoding encoding, bool safeString = false, int fixedLength = -1) where T : struct, IEquatable<T>
+        public string ReadString(Encoding encoding, bool safeString = false, int fixedLength = -1)
         {
-            int sizeT = Unsafe.SizeOf<T>();
-
-            if (sizeT > 2)
-            {
-                throw new InvalidConstraintException("ReadString only accepts byte, sbyte, char, short, and ushort as a constraint");
-            }
+            int sizeT = Utility.GetByteLengthForEncoding(encoding);
 
             bool isFixedLength = fixedLength > -1;
 
             var remaining = Remaining;
             int size;
 
-            // Not fixed length
             if (isFixedLength)
             {
                 size = fixedLength * sizeT;
-                if (fixedLength > Remaining)
+                if (size > Remaining)
                 {
                     throw new OutOfMemoryException();
                 }
@@ -214,130 +200,107 @@ namespace Server.Network
                 size = remaining - (remaining & (sizeT - 1));
             }
 
-            Span<byte> span;
+            ReadOnlySpan<byte> span;
             int index;
 
-            if (Position < First.Length)
+            if (Position < _first.Length)
             {
+                var firstLength = Math.Min(_first.Length - Position, size);
+
                 // Find terminator
-                index = MemoryMarshal
-                    .Cast<byte, T>(First.Slice(Position, Math.Min(size, First.Length)))
-                    .IndexOf(default(T)) * sizeT;
+                index = Utility.IndexOfTerminator(_first.Slice(Position, firstLength), sizeT);
 
                 if (index < 0)
                 {
-                    remaining = size - First.Length;
+                    remaining = size - firstLength;
                     // We don't have a terminator, but a fixed size to the end of the first span, so stop there
                     if (remaining <= 0)
                     {
-                        index = First.Length;
+                        index = firstLength;
                     }
                     else
                     {
-                        index = MemoryMarshal
-                            .Cast<byte, T>(Second.Slice(0, remaining))
-                            .IndexOf(default(T)) * sizeT;
+                        index = Utility.IndexOfTerminator(_second.Slice(0, remaining), sizeT);
 
                         int secondLength = index < 0 ? remaining : index;
-                        int length = First.Length + secondLength;
+                        int length = firstLength + secondLength;
 
                         // Assume no strings should be too long for the stack
                         Span<byte> bytes = stackalloc byte[length];
-                        First.Slice(Position).CopyTo(bytes);
-                        Second.Slice(0, secondLength).CopyTo(bytes.Slice(First.Length));
+                        _first.Slice(Position).CopyTo(bytes);
+                        _second.Slice(0, secondLength).CopyTo(bytes.Slice(firstLength));
 
-                        Position += length;
-                        return GetString(bytes, encoding, safeString);
+                        Position += length + (index >= 0 ? sizeT : 0);
+                        return Utility.GetString(bytes, encoding, safeString);
                     }
                 }
 
-                span = First.Slice(Position, index);
+                span = _first.Slice(Position, index);
             }
             else
             {
-                span = Second.Slice( Position - First.Length, Math.Min(remaining, size));
-                index = MemoryMarshal.Cast<byte, T>(span).IndexOf(default(T)) * sizeT;
+                size = Math.Min(remaining, size);
+                span = _second.Slice( Position - _first.Length, size);
+                index = Utility.IndexOfTerminator(span, sizeT);
 
                 if (index >= 0)
                 {
                     span = span.Slice(0, index);
                 }
-            }
-
-            Position += isFixedLength ? size : index;
-            return GetString(span, encoding, safeString);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string GetString(Span<byte> span, Encoding encoding, bool safeString = false)
-        {
-            string s = encoding.GetString(span);
-
-            if (!safeString)
-            {
-                return s;
-            }
-
-            ReadOnlySpan<char> chars = s.AsSpan();
-
-            StringBuilder stringBuilder = null;
-
-            for (int i = 0, last = 0; i < chars.Length; i++)
-            {
-                if (!IsSafeChar(chars[i]) || stringBuilder != null && i == chars.Length - 1)
+                else
                 {
-                    (stringBuilder ??= new StringBuilder()).Append(chars.Slice(last, i - last));
-                    last = i + 1; // Skip the unsafe char
+                    index = size;
                 }
             }
 
-            return stringBuilder?.ToString() ?? s;
+            Position += isFixedLength ? size : index + sizeT;
+            return Utility.GetString(span, encoding, safeString);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUniSafe(int fixedLength) => ReadString<char>(Utility.UnicodeLE, true, fixedLength);
+        public string ReadLittleUniSafe(int fixedLength) => ReadString(Utility.UnicodeLE, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUniSafe() => ReadString<char>(Utility.UnicodeLE, true);
+        public string ReadLittleUniSafe() => ReadString(Utility.UnicodeLE, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUni(int fixedLength) => ReadString<char>(Utility.UnicodeLE, false, fixedLength);
+        public string ReadLittleUni(int fixedLength) => ReadString(Utility.UnicodeLE, false, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUni() => ReadString<char>(Utility.UnicodeLE);
+        public string ReadLittleUni() => ReadString(Utility.UnicodeLE);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUniSafe(int fixedLength) => ReadString<char>(Utility.Unicode, true, fixedLength);
+        public string ReadBigUniSafe(int fixedLength) => ReadString(Utility.Unicode, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUniSafe() => ReadString<char>(Utility.Unicode, true);
+        public string ReadBigUniSafe() => ReadString(Utility.Unicode, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUni(int fixedLength) => ReadString<char>(Utility.Unicode, false, fixedLength);
+        public string ReadBigUni(int fixedLength) => ReadString(Utility.Unicode, false, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUni() => ReadString<char>(Utility.Unicode);
+        public string ReadBigUni() => ReadString(Utility.Unicode);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadUTF8Safe(int fixedLength) => ReadString<byte>(Utility.UTF8, true, fixedLength);
+        public string ReadUTF8Safe(int fixedLength) => ReadString(Utility.UTF8, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadUTF8Safe() => ReadString<byte>(Utility.UTF8, true);
+        public string ReadUTF8Safe() => ReadString(Utility.UTF8, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadUTF8() => ReadString<byte>(Utility.UTF8);
+        public string ReadUTF8() => ReadString(Utility.UTF8);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadAsciiSafe(int fixedLength) => ReadString<byte>(Encoding.ASCII, true, fixedLength);
+        public string ReadAsciiSafe(int fixedLength) => ReadString(Encoding.ASCII, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadAsciiSafe() => ReadString<byte>(Encoding.ASCII, true);
+        public string ReadAsciiSafe() => ReadString(Encoding.ASCII, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadAscii(int fixedLength) => ReadString<byte>(Encoding.ASCII, false, fixedLength);
+        public string ReadAscii(int fixedLength) => ReadString(Encoding.ASCII, false, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadAscii() => ReadString<byte>(Encoding.ASCII);
+        public string ReadAscii() => ReadString(Encoding.ASCII);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Seek(int offset, SeekOrigin origin) =>
