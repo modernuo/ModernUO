@@ -236,60 +236,52 @@ namespace System.Buffers
                 throw new OutOfMemoryException();
             }
 
-            int offset;
-            int bytesWritten;
-            int sz;
+            int offset = 0;
+            int charCount;
 
             if (Position < _first.Length)
             {
-                if (Position + byteCount > _first.Length)
-                {
-                    var remaining = _first.Length - Position;
-                    sz = Math.DivRem(remaining, sizeT, out offset);
-                    bytesWritten = encoding.GetBytes(src.Slice(0, sz), _first.Slice(Position));
-                    Position += bytesWritten;
-                    byteCount -= bytesWritten;
+                bool firstOnly = Position + byteCount <= _first.Length;
 
-                    // Character split between First and Second
-                    // This only happens with sizeT = 2 based encodings
-                    if (offset != 0)
-                    {
-                        Span<byte> chr = stackalloc byte[2];
-                        encoding.GetBytes(src.Slice(sz++, 1), chr);
-                        _first[Position] = chr[0];
-                        _second[0] = chr[1];
-                        Position += 2;
-                        byteCount -= 2;
-                    }
+                charCount = firstOnly ? src.Length : Math.DivRem(_first.Length - Position, sizeT, out offset);
+                var bytesWritten = encoding.GetBytes(src.Slice(0, charCount), _first.Slice(Position));
+                Position += bytesWritten;
+                byteCount -= bytesWritten;
+
+                // Character split between First and Second
+                // This only happens with sizeT = 2 based encodings
+                if (offset != 0)
+                {
+                    Span<byte> chr = stackalloc byte[2];
+                    encoding.GetBytes(src.Slice(charCount++, 1), chr);
+                    _first[Position] = chr[0];
+                    _second[0] = chr[1];
+                    Position += 2;
+                    byteCount -= 2;
                 }
-                else
+                else if (firstOnly && byteCount > 0)
                 {
-                    bytesWritten = encoding.GetBytes(src, _first.Slice(Position));
-                    Position += bytesWritten;
-                    byteCount -= bytesWritten;
-
-                    if (byteCount > 0)
-                    {
-                        Position += byteCount;
-                        _first.Slice(Position, byteCount).Clear();
-                    }
-
+                    Position += byteCount;
+                    _first.Slice(Position, byteCount).Clear();
                     return;
                 }
             }
             else
             {
                 offset = Position - _first.Length;
-                sz = 0;
+                charCount = 0;
             }
 
-            bytesWritten = encoding.GetBytes(src.Slice(sz), _second.Slice(offset));
-            Position += bytesWritten;
-            byteCount -= bytesWritten;
-
-            if (byteCount > 0)
+            if (charCount < src.Length)
             {
-                _second.Slice(offset + bytesWritten, byteCount).Clear();
+                var bytesWritten = encoding.GetBytes(src.Slice(charCount), _second.Slice(offset));
+                Position += bytesWritten;
+                byteCount -= bytesWritten;
+
+                if (byteCount > 0)
+                {
+                    _second.Slice(offset + bytesWritten, byteCount).Clear();
+                }
             }
         }
 
