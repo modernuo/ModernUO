@@ -41,6 +41,11 @@ namespace Server.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void Write(bool value)
         {
+            if (Position >= Length)
+            {
+                throw new OutOfMemoryException();
+            }
+
             _buffer[Position++] = *(byte*) & value;
         }
 

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: PacketReader.cs                                                 *
+ * File: SpanReader.cs                                                   *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -19,68 +19,32 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Server.Network
+namespace Server.Buffers
 {
-    public ref struct CircularBufferReader
+    ref struct SpanReader
     {
-        private readonly ReadOnlySpan<byte> _first;
-        private readonly ReadOnlySpan<byte> _second;
+        private readonly ReadOnlySpan<byte> _buffer;
 
         public int Length { get; }
         public int Position { get; private set; }
         public int Remaining => Length - Position;
 
-        public CircularBufferReader(ArraySegment<byte>[] buffers) : this(buffers[0], buffers[1])
+        public SpanReader(ReadOnlySpan<byte> span)
         {
-        }
-
-        public CircularBufferReader(ReadOnlySpan<byte> first, ReadOnlySpan<byte> second)
-        {
-            _first = first;
-            _second = second;
+            _buffer = span;
             Position = 0;
-            Length = first.Length + second.Length;
-        }
-
-        public void Trace(NetState state)
-        {
-            // We don't have data, so nothing to trace
-            if (_first.Length == 0)
-            {
-                return;
-            }
-
-            try
-            {
-                using var sw = new StreamWriter("Packets.log", true);
-
-                sw.WriteLine("Client: {0}: Unhandled packet 0x{1:X2}", state, _first[0]);
-
-                Utility.FormatBuffer(sw, _first.ToArray(), new Memory<byte>(_second.ToArray()));
-
-                sw.WriteLine();
-                sw.WriteLine();
-            }
-            catch
-            {
-                // ignored
-            }
+            Length = span.Length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte ReadByte()
         {
-            if (Position < _first.Length)
+            if (Position >= Length)
             {
-                return _first[Position++];
+                throw new OutOfMemoryException();
             }
 
-            if (Position < Length)
-            {
-                return _second[Position++ - _first.Length];
-            }
-
-            throw new OutOfMemoryException();
+            return _buffer[Position++];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -92,17 +56,7 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public short ReadInt16()
         {
-            short value;
-
-            if (Position < _first.Length)
-            {
-                if (!BinaryPrimitives.TryReadInt16BigEndian(_first.Slice(Position), out value))
-                {
-                    // Not enough space. Split the spans
-                    return (short)((ReadByte() >> 8) | ReadByte());
-                }
-            }
-            else if (!BinaryPrimitives.TryReadInt16BigEndian(_second.Slice(Position - _first.Length), out value))
+            if (!BinaryPrimitives.TryReadInt16BigEndian(_buffer.Slice(Position), out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -114,17 +68,7 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ushort ReadUInt16()
         {
-            ushort value;
-
-            if (Position < _first.Length)
-            {
-                if (!BinaryPrimitives.TryReadUInt16BigEndian(_first.Slice(Position), out value))
-                {
-                    // Not enough space. Split the spans
-                    return (ushort)((ReadByte() >> 8) | ReadByte());
-                }
-            }
-            else if (!BinaryPrimitives.TryReadUInt16BigEndian(_second.Slice(Position - _first.Length), out value))
+            if (!BinaryPrimitives.TryReadUInt16BigEndian(_buffer.Slice(Position), out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -136,17 +80,7 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadInt32()
         {
-            int value;
-
-            if (Position < _first.Length)
-            {
-                if (!BinaryPrimitives.TryReadInt32BigEndian(_first.Slice(Position), out value))
-                {
-                    // Not enough space. Split the spans
-                    return (ReadByte() >> 24) | (ReadByte() >> 16) | (ReadByte() >> 8) | ReadByte();
-                }
-            }
-            else if (!BinaryPrimitives.TryReadInt32BigEndian(_second.Slice(Position - _first.Length), out value))
+            if (!BinaryPrimitives.TryReadInt32BigEndian(_buffer.Slice(Position), out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -158,17 +92,7 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint ReadUInt32()
         {
-            uint value;
-
-            if (Position < _first.Length)
-            {
-                if (!BinaryPrimitives.TryReadUInt32BigEndian(_first.Slice(Position), out value))
-                {
-                    // Not enough space. Split the spans
-                    return (uint)((ReadByte() >> 24) | (ReadByte() >> 16) | (ReadByte() >> 8) | ReadByte());
-                }
-            }
-            else if (!BinaryPrimitives.TryReadUInt32BigEndian(_second.Slice(Position - _first.Length), out value))
+            if (!BinaryPrimitives.TryReadUInt32BigEndian(_buffer.Slice(Position), out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -200,61 +124,10 @@ namespace Server.Network
                 size = remaining - (remaining & (sizeT - 1));
             }
 
-            ReadOnlySpan<byte> span;
-            int index;
+            int index = Utility.FindTerminator(_buffer.Slice(Position, size), sizeT);
 
-            if (Position < _first.Length)
-            {
-                var firstLength = Math.Min(_first.Length - Position, size);
-
-                // Find terminator
-                index = Utility.FindTerminator(_first.Slice(Position, firstLength), sizeT);
-
-                if (index < 0)
-                {
-                    remaining = size - firstLength;
-                    // We don't have a terminator, but a fixed size to the end of the first span, so stop there
-                    if (remaining <= 0)
-                    {
-                        index = firstLength;
-                    }
-                    else
-                    {
-                        index = Utility.FindTerminator(_second.Slice(0, remaining), sizeT);
-
-                        int secondLength = index < 0 ? remaining : index;
-                        int length = firstLength + secondLength;
-
-                        // Assume no strings should be too long for the stack
-                        Span<byte> bytes = stackalloc byte[length];
-                        _first.Slice(Position).CopyTo(bytes);
-                        _second.Slice(0, secondLength).CopyTo(bytes.Slice(firstLength));
-
-                        Position += length + (index >= 0 ? sizeT : 0);
-                        return Utility.GetString(bytes, encoding, safeString);
-                    }
-                }
-
-                span = _first.Slice(Position, index);
-            }
-            else
-            {
-                size = Math.Min(remaining, size);
-                span = _second.Slice( Position - _first.Length, size);
-                index = Utility.FindTerminator(span, sizeT);
-
-                if (index >= 0)
-                {
-                    span = span.Slice(0, index);
-                }
-                else
-                {
-                    index = size;
-                }
-            }
-
-            Position += isFixedLength ? size : index + sizeT;
-            return Utility.GetString(span, encoding, safeString);
+            Position += isFixedLength || index < 0 ? size : index + sizeT;
+            return Utility.GetString(_buffer.Slice(Position, index < 0 ? size : index), encoding, safeString);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
