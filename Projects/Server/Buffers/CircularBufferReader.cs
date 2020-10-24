@@ -182,7 +182,7 @@ namespace Server.Network
         private static bool IsSafeChar(ushort c) => c >= 0x20 && c < 0xFFFE;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int FindIndex(ReadOnlySpan<byte> buffer, int sizeT) =>
+        private static int FindTerminator(ReadOnlySpan<byte> buffer, int sizeT) =>
             sizeT switch
             {
                 2 => MemoryMarshal.Cast<byte, char>(buffer).IndexOf((char)0) * 2,
@@ -221,7 +221,7 @@ namespace Server.Network
                 var firstLength = Math.Min(First.Length - Position, size);
 
                 // Find terminator
-                index = FindIndex(First.Slice(Position, firstLength), sizeT);
+                index = FindTerminator(First.Slice(Position, firstLength), sizeT);
 
                 if (index < 0)
                 {
@@ -233,7 +233,7 @@ namespace Server.Network
                     }
                     else
                     {
-                        index = FindIndex(Second.Slice(0, remaining), sizeT);
+                        index = FindTerminator(Second.Slice(0, remaining), sizeT);
 
                         int secondLength = index < 0 ? remaining : index;
                         int length = firstLength + secondLength;
@@ -254,7 +254,7 @@ namespace Server.Network
             {
                 size = Math.Min(remaining, size);
                 span = Second.Slice( Position - First.Length, size);
-                index = FindIndex(span, sizeT);
+                index = FindTerminator(span, sizeT);
 
                 if (index >= 0)
                 {
