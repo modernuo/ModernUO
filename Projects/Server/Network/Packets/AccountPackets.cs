@@ -13,9 +13,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Buffers;
 using System.IO;
 using Server.Accounting;
+using Server.Buffers;
 
 namespace Server.Network
 {
@@ -65,17 +67,12 @@ namespace Server.Network
 
             var length = 5 + a.Length * 60;
 
-            if (!ns.GetSendBuffer((uint)length, out var buffer))
-            {
-                return;
-            }
-
-            var writer = new CircularBufferWriter(buffer);
+            Span<byte> buffer = stackalloc byte[length];
+            var writer = new SpanWriter(buffer);
 
             writer.Write((byte)0x81); // Packet ID
-
             writer.Write((ushort)length);
-            writer.Write((ushort)0); // Count
+            writer.Write((ushort)0); // Count & Placeholder
 
             int count = 0;
 
@@ -85,34 +82,31 @@ namespace Server.Network
 
                 if (m == null)
                 {
-                    writer.Fill(60);
+                    writer.Clear(60);
                 }
                 else
                 {
                     var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
 
                     count++;
-                    writer.WriteAsciiFixed(name, 30);
-                    writer.Fill(30); // Password (empty)
+                    writer.WriteAscii(name, 30);
+                    writer.Clear(30); // Password (empty)
                 }
             }
 
             writer.Seek(3, SeekOrigin.Begin);
             writer.Write((byte)count);
 
-            ns.WriteSendBuffer(buffer, (uint)length);
+            ns.Send(buffer);
         }
 
         public static void SendClientVersionRequest(NetState ns)
         {
-            if (ns != null && ns.GetSendBuffer(3, out var buffer))
+            ns?.Send(stackalloc byte[]
             {
-                var writer = new CircularBufferWriter(buffer);
-                writer.Write((byte)0x81); // Packet ID
-                writer.Write((ushort)3); // Length
-
-                ns.WriteSendBuffer(buffer, 3);
-            }
+                0x81, // PacketID
+                0x00, 0x03 // Length
+            });
         }
     }
 }

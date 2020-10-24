@@ -380,59 +380,9 @@ namespace Server.Network
 
         private static readonly byte[] CompressorBuffer = new byte[NetworkCompression.BufferSize];
 
-        public bool GetSendBuffer(uint length, out ArraySegment<byte>[] buffer)
+        public virtual void Send(Span<byte> buffer)
         {
-            var currentThread = Thread.CurrentThread;
-
-            if (currentThread != m_SendThread)
-            {
-                Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
-#if DEBUG
-                throw new InvalidThreadException(nameof(Send));
-#endif
-            }
-
-            var result = m_OutgoingPipe.Writer.GetAvailable();
-
-            if (result.IsClosed)
-            {
-                Dispose();
-                buffer = null;
-                return false;
-            }
-
-            if (result.Length < length)
-            {
-                WriteConsole("Too much data pending, disconnecting...");
-                Dispose();
-                buffer = null;
-                return false;
-            }
-
-            buffer = result.Buffer;
-            return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteSendBuffer(ArraySegment<byte>[] buffer, uint length)
-        {
-            var currentThread = Thread.CurrentThread;
-
-            if (currentThread != m_SendThread)
-            {
-                Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
-#if DEBUG
-                throw new InvalidThreadException(nameof(Send));
-#endif
-            }
-
-            PacketEncoder?.Invoke(this, buffer, ref length);
-            m_OutgoingPipe.Writer.Advance(length);
-        }
-
-        public virtual void Send(Span<byte> bytes)
-        {
-            if (Connection == null || BlockAllPackets || bytes.Length == 0)
+            if (Connection == null || BlockAllPackets || buffer.Length == 0)
             {
                 return;
             }
@@ -451,38 +401,23 @@ namespace Server.Network
 
             try
             {
-                Span<byte> buffer = CompressionEnabled ? CompressorBuffer : bytes;
-
+                var result = writer.GetAvailable();
                 int length;
                 if (CompressionEnabled)
                 {
-                    NetworkCompression.Compress(bytes, 0, bytes.Length, buffer, out length);
+                    length = NetworkCompression.Compress(buffer, new CircularBufferWriter(result.Buffer));
                     if (length <= 0)
                     {
                         return;
                     }
-
-                    buffer = buffer.Slice(0, length);
                 }
                 else
-                {
-                    length = bytes.Length;
-                }
-
-                var result = writer.GetAvailable();
-
-                if (result.Length >= length)
                 {
                     result.CopyFrom(buffer);
-                    writer.Advance((uint)length);
+                    length = buffer.Length;
+                }
 
-                    // Flush at the end of the game loop
-                }
-                else
-                {
-                    WriteConsole("Too much data pending, disconnecting...");
-                    Dispose();
-                }
+                writer.Advance((uint)length);
             }
             catch (Exception ex)
             {
