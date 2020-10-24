@@ -208,7 +208,7 @@ namespace Server.Network
                 var firstLength = Math.Min(_first.Length - Position, size);
 
                 // Find terminator
-                index = Utility.FindTerminator(_first.Slice(Position, firstLength), sizeT);
+                index = Utility.IndexOfTerminator(_first.Slice(Position, firstLength), sizeT);
 
                 if (index < 0)
                 {
@@ -220,7 +220,7 @@ namespace Server.Network
                     }
                     else
                     {
-                        index = Utility.FindTerminator(_second.Slice(0, remaining), sizeT);
+                        index = Utility.IndexOfTerminator(_second.Slice(0, remaining), sizeT);
 
                         int secondLength = index < 0 ? remaining : index;
                         int length = firstLength + secondLength;
@@ -241,7 +241,7 @@ namespace Server.Network
             {
                 size = Math.Min(remaining, size);
                 span = _second.Slice( Position - _first.Length, size);
-                index = Utility.FindTerminator(span, sizeT);
+                index = Utility.IndexOfTerminator(span, sizeT);
 
                 if (index >= 0)
                 {

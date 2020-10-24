@@ -119,7 +119,7 @@ namespace Server
             };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int FindTerminator(ReadOnlySpan<byte> buffer, int sizeT) =>
+        public static int IndexOfTerminator(ReadOnlySpan<byte> buffer, int sizeT) =>
             sizeT switch
             {
                 2 => MemoryMarshal.Cast<byte, char>(buffer).IndexOf((char)0) * 2,

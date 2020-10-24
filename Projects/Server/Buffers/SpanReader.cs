@@ -124,7 +124,7 @@ namespace Server.Buffers
                 size = remaining - (remaining & (sizeT - 1));
             }
 
-            int index = Utility.FindTerminator(_buffer.Slice(Position, size), sizeT);
+            int index = Utility.IndexOfTerminator(_buffer.Slice(Position, size), sizeT);
 
             Position += isFixedLength || index < 0 ? size : index + sizeT;
             return Utility.GetString(_buffer.Slice(Position, index < 0 ? size : index), encoding, safeString);
