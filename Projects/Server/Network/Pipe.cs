@@ -118,55 +118,55 @@ namespace Server.Network
                 return result;
             }
 
-            public void Advance(uint bytes)
+            public void Advance(uint count)
             {
                 var read = _pipe._readIdx;
                 var write = _pipe._writeIdx;
 
-                if (bytes == 0)
+                if (count == 0)
                 {
                     return;
                 }
 
-                if (bytes > _pipe.Size - 1)
+                if (count > _pipe.Size - 1)
                 {
                     throw new InvalidOperationException();
                 }
 
                 if (read <= write)
                 {
-                    if (bytes > read + _pipe.Size - write - 1)
+                    if (count > read + _pipe.Size - write - 1)
                     {
                         throw new InvalidOperationException();
                     }
 
-                    var sz = Math.Min(bytes, _pipe.Size - write);
+                    var sz = Math.Min(count, _pipe.Size - write);
 
                     write += sz;
                     if (write > _pipe.Size - 1)
                     {
                         write = 0;
                     }
-                    bytes -= sz;
+                    count -= sz;
 
-                    if (bytes > 0)
+                    if (count > 0)
                     {
-                        if (bytes >= read)
+                        if (count >= read)
                         {
                             throw new InvalidOperationException();
                         }
 
-                        write = bytes;
+                        write = count;
                     }
                 }
                 else
                 {
-                    if (bytes > read - write - 1)
+                    if (count > read - write - 1)
                     {
                         throw new InvalidOperationException();
                     }
 
-                    write += bytes;
+                    write += count;
                 }
 
                 // It's never valid to advance the write pointer to become equal to
@@ -216,7 +216,7 @@ namespace Server.Network
             internal PipeReader(Pipe<T> pipe) => _pipe = pipe;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public uint GetRemaining()
+            public uint GetAvailable()
             {
                 var read = _pipe._readIdx;
                 var write = _pipe._writeIdx;
@@ -260,39 +260,39 @@ namespace Server.Network
                 return this;
             }
 
-            public void Advance(uint bytes)
+            public void Advance(uint count)
             {
                 var read = _pipe._readIdx;
                 var write = _pipe._writeIdx;
 
                 if (read <= write)
                 {
-                    if (bytes > write - read)
+                    if (count > write - read)
                     {
                         throw new InvalidOperationException();
                     }
 
-                    read += bytes;
+                    read += count;
                 }
                 else
                 {
-                    var sz = Math.Min(bytes, _pipe.Size - read);
+                    var sz = Math.Min(count, _pipe.Size - read);
 
                     read += sz;
                     if (read > _pipe.Size - 1)
                     {
                         read = 0;
                     }
-                    bytes -= sz;
+                    count -= sz;
 
-                    if (bytes > 0)
+                    if (count > 0)
                     {
-                        if (bytes > write)
+                        if (count > write)
                         {
                             throw new InvalidOperationException();
                         }
 
-                        read = bytes;
+                        read = count;
                     }
                 }
 
@@ -309,7 +309,7 @@ namespace Server.Network
             {
                 get
                 {
-                    if (GetRemaining() > 0)
+                    if (GetAvailable() > 0)
                     {
                         return true;
                     }
