@@ -28,37 +28,31 @@ namespace Server.Tests.Buffers
 
         // First only, beginning, fixed length smaller
         [InlineData("Test String", "ASCII", 8, 1024, 1024, 0)]
-        [InlineData("Test String", "UTF8", 8, 1024, 1024, 0)]
         [InlineData("Test String", "Unicode", 8, 1024, 1024, 0)]
         [InlineData("Test String", "UnicodeLE", 8, 1024, 1024, 0)]
 
         // Second only, fixed length smaller
         [InlineData("Test String", "ASCII", 8, 1024, 1024, 1030)]
-        [InlineData("Test String", "UTF8", 8, 1024, 1024, 1030)]
         [InlineData("Test String", "Unicode", 8, 1024, 1024, 1030)]
         [InlineData("Test String", "UnicodeLE", 8, 1024, 1024, 1030)]
 
         // Split, fixed length smaller
         [InlineData("Test String", "ASCII", 8, 1024, 1024, 1020)]
-        [InlineData("Test String", "UTF8", 8, 1024, 1024, 1020)]
         [InlineData("Test String", "Unicode", 8, 1024, 1024, 1020)]
         [InlineData("Test String", "UnicodeLE", 8, 1024, 1024, 1020)]
 
         // First only, beginning, fixed length bigger
         [InlineData("Test String", "ASCII", 20, 1024, 1024, 0)]
-        [InlineData("Test String", "UTF8", 20, 1024, 1024, 0)]
         [InlineData("Test String", "Unicode", 20, 1024, 1024, 0)]
         [InlineData("Test String", "UnicodeLE", 20, 1024, 1024, 0)]
 
         // Second only, fixed length bigger
         [InlineData("Test String", "ASCII", 20, 1024, 1024, 1030)]
-        [InlineData("Test String", "UTF8", 20, 1024, 1024, 1030)]
         [InlineData("Test String", "Unicode", 20, 1024, 1024, 1030)]
         [InlineData("Test String", "UnicodeLE", 20, 1024, 1024, 1030)]
 
         // Split, fixed length bigger
         [InlineData("Test String", "ASCII", 20, 1024, 1024, 1020)]
-        [InlineData("Test String", "UTF8", 20, 1024, 1024, 1020)]
         [InlineData("Test String", "Unicode", 20, 1024, 1024, 1020)]
         [InlineData("Test String", "UnicodeLE", 20, 1024, 1024, 1020)]
         public void TestWriteString(
@@ -73,18 +67,25 @@ namespace Server.Tests.Buffers
             Span<byte> buffer = stackalloc byte[firstSize + secondSize];
             buffer.Clear();
 
-            var (encoding, byteType) = EncodingHelpers.GetEncoding(encodingStr);
+            var (encoding, _) = EncodingHelpers.GetEncoding(encodingStr);
 
             var writer = new CircularBufferWriter(buffer.Slice(0, firstSize), buffer.Slice(firstSize));
             writer.Seek(offset, SeekOrigin.Begin);
 
-            if (byteType == typeof(char))
+            switch (encodingStr)
             {
-                writer.WriteString<char>(value, encoding, fixedLength);
-            }
-            else
-            {
-                writer.WriteString<byte>(value, encoding, fixedLength);
+                case "ASCII":
+                    writer.WriteAscii(value, fixedLength);
+                    break;
+                case "Unicode":
+                    writer.WriteBigUni(value, fixedLength);
+                    break;
+                case "UnicodeLE":
+                    writer.WriteLittleUni(value, fixedLength);
+                    break;
+                case "UTF8":
+                    writer.WriteUTF8(value);
+                    break;
             }
 
             if (offset > 0)

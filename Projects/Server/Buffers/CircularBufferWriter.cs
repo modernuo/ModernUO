@@ -215,137 +215,119 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteString<T>(string value, Encoding encoding, int fixedLength = -1) where T : struct, IEquatable<T>
+        public void WriteString(ReadOnlySpan<char> value, Encoding encoding)
         {
-            int sizeT = Unsafe.SizeOf<T>();
-
-            if (sizeT > 2)
-            {
-                throw new InvalidConstraintException("WriteString only accepts byte, sbyte, char, short, and ushort as a constraint");
-            }
-
-            value ??= string.Empty;
-
-            var charLength = Math.Min(fixedLength > -1 ? fixedLength : value.Length, value.Length);
-            var src = value.AsSpan(0, charLength);
-
-            var byteCount = fixedLength > -1 ? fixedLength * sizeT : encoding.GetByteCount(value);
+            var byteCount = encoding.GetByteCount(value);
 
             if (Position + byteCount > Length)
             {
                 throw new OutOfMemoryException();
             }
 
-            int offset = 0;
-            int charCount;
+            Span<byte> bytes = stackalloc byte[byteCount];
+            encoding.GetBytes(value, bytes);
 
+            int count;
             if (Position < _first.Length)
             {
-                bool firstOnly = Position + byteCount <= _first.Length;
-
-                charCount = firstOnly ? src.Length : Math.DivRem(_first.Length - Position, sizeT, out offset);
-                var bytesWritten = encoding.GetBytes(src.Slice(0, charCount), _first.Slice(Position));
-                Position += bytesWritten;
-                byteCount -= bytesWritten;
-
-                // Character split between First and Second
-                // This only happens with sizeT = 2 based encodings
-                if (offset != 0)
-                {
-                    Span<byte> chr = stackalloc byte[2];
-                    encoding.GetBytes(src.Slice(charCount++, 1), chr);
-                    _first[Position] = chr[0];
-                    _second[0] = chr[1];
-                    Position += 2;
-                    byteCount -= 2;
-                }
-                else if (firstOnly && byteCount > 0)
-                {
-                    Position += byteCount;
-                    _first.Slice(Position, byteCount).Clear();
-                    return;
-                }
+                count = Math.Min(_first.Length - Position, byteCount);
+                bytes.Slice(0, count).CopyTo(_first.Slice(Position));
+                byteCount -= count;
+                Position += count;
             }
             else
             {
-                offset = Position - _first.Length;
-                charCount = 0;
+                count = 0;
             }
 
-            if (charCount < src.Length)
+            if (byteCount > 0)
             {
-                var bytesWritten = encoding.GetBytes(src.Slice(charCount), _second.Slice(offset));
-                Position += bytesWritten;
-                byteCount -= bytesWritten;
-
-                if (byteCount > 0)
-                {
-                    _second.Slice(offset + bytesWritten, byteCount).Clear();
-                }
+                bytes.Slice(count).CopyTo(_second.Slice(Math.Max(0, Position - _first.Length)));
+                Position += byteCount;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteLittleUni(string value) => WriteString<char>(value, Utility.UnicodeLE);
+        public void WriteLittleUni(string value, int fixedLength = -1)
+        {
+            if (fixedLength < 0) { fixedLength = value.Length; }
+
+            WriteString(value.AsSpan(0, Math.Min(fixedLength, value.Length)), Utility.UnicodeLE);
+            var count = fixedLength - value.Length;
+            if (count > 0)
+            {
+                Clear(count * 2);
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteLittleUniNull(string value)
         {
-            WriteString<char>(value, Utility.UnicodeLE);
+            WriteString(value, Utility.UnicodeLE);
             Write((ushort)0);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteLittleUni(string value, int fixedLength) => WriteString<char>(value, Utility.UnicodeLE, fixedLength);
+        public void WriteBigUni(string value, int fixedLength = -1)
+        {
+            if (fixedLength < 0) { fixedLength = value.Length; }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteBigUni(string value) => WriteString<char>(value, Utility.Unicode);
+            WriteString(value.AsSpan(0, Math.Min(fixedLength, value.Length)), Utility.Unicode);
+            var count = fixedLength - value.Length;
+            if (count > 0)
+            {
+                Clear(count * 2);
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteBigUniNull(string value)
         {
-            WriteString<char>(value, Utility.Unicode);
+            WriteString(value, Utility.Unicode);
             Write((ushort)0);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteBigUni(string value, int fixedLength) => WriteString<char>(value, Utility.Unicode, fixedLength);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteUTF8(string value) => WriteString<byte>(value, Utility.UTF8);
+        public void WriteUTF8(string value) => WriteString(value, Utility.UTF8);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteUTF8Null(string value)
         {
-            WriteString<byte>(value, Utility.UTF8);
+            WriteString(value, Utility.UTF8);
             Write((byte)0);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteAscii(string value) => WriteString<byte>(value, Encoding.ASCII);
+        public void WriteAscii(string value, int fixedLength = -1)
+        {
+            if (fixedLength < 0) { fixedLength = value.Length; }
+
+            WriteString(value.AsSpan(0, Math.Min(fixedLength, value.Length)), Encoding.ASCII);
+            var count = fixedLength - value.Length;
+            if (count > 0)
+            {
+                Clear(count);
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteAsciiNull(string value)
         {
-            WriteString<byte>(value, Encoding.ASCII);
+            WriteString(value, Encoding.ASCII);
             Write((byte)0);
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteAscii(string value, int fixedLength) => WriteString<byte>(value, Encoding.ASCII, fixedLength);
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             if (Position < _first.Length)
             {
-                _first.Slice(Position).Fill(0);
-                _second.Fill(0);
+                _first.Slice(Position).Clear();
+                _second.Clear();
             }
             else
             {
-                _second.Slice(Position - _first.Length).Fill(0);
+                _second.Slice(Position - _first.Length).Clear();
             }
 
             Position = Length;
@@ -359,16 +341,21 @@ namespace System.Buffers
                 throw new OutOfMemoryException();
             }
 
+            int count;
             if (Position < _first.Length)
             {
-                var sz = Math.Min(amount, _first.Length - Position);
-
-                _first.Slice(Position, sz).Clear();
-                _second.Slice(0, Length - sz).Clear();
+                count = Math.Min(amount, _first.Length - Position);
+                _first.Slice(Position, count).Clear();
+                count = amount - count;
             }
             else
             {
-                _second.Slice(Position - _first.Length, amount).Clear();
+                count = amount;
+            }
+
+            if (count > 0)
+            {
+                _second.Slice(Position - _first.Length, count).Clear();
             }
 
             Position += amount;
