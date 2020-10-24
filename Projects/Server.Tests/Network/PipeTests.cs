@@ -131,28 +131,28 @@ namespace Server.Tests.Network
 
             var result = writer.GetAvailable();
             Assert.True(result.Length == 9);
-            Assert.True(reader.GetRemaining() == 0);
+            Assert.True(reader.GetAvailable() == 0);
             result = reader.TryRead();
             Assert.True(result.Length == 0);
 
             writer.Advance(7);
             result = writer.GetAvailable();
             Assert.True(result.Length == 2);
-            Assert.True(reader.GetRemaining() == 7);
+            Assert.True(reader.GetAvailable() == 7);
             result = reader.TryRead();
             Assert.True(result.Length == 7);
 
             reader.Advance(4);
             result = writer.GetAvailable();
             Assert.True(result.Length == 6);
-            Assert.True(reader.GetRemaining() == 3);
+            Assert.True(reader.GetAvailable() == 3);
             result = reader.TryRead();
             Assert.True(result.Length == 3);
 
             writer.Advance(3);
             result = writer.GetAvailable();
             Assert.True(result.Length == 3);
-            Assert.True(reader.GetRemaining() == 6);
+            Assert.True(reader.GetAvailable() == 6);
             result = reader.TryRead();
             Assert.True(result.Length == 6);
 
@@ -171,7 +171,7 @@ namespace Server.Tests.Network
                 writer.Advance(i);
                 writer.Flush();
 
-                Assert.True(reader.GetRemaining() == i);
+                Assert.True(reader.GetAvailable() == i);
                 reader.Advance(i);
             }
         }
@@ -192,7 +192,7 @@ namespace Server.Tests.Network
             writer.Advance(9);
             writer.Flush();
 
-            Assert.True(reader.GetRemaining() == 9);
+            Assert.True(reader.GetAvailable() == 9);
 
             buffer = reader.TryRead();
 

@@ -225,22 +225,22 @@ namespace Server.Network
                 m_CompiledLength = length;
             }
 
-            if (length > 0)
+            if (m_CompiledLength > 0)
             {
                 var old = m_CompiledBuffer;
 
                 if ((m_State & State.Static) != 0)
                 {
-                    m_CompiledBuffer = new byte[length];
+                    m_CompiledBuffer = new byte[m_CompiledLength];
                 }
                 else
                 {
                     // Release it later using Release()
-                    m_CompiledBuffer = ArrayPool<byte>.Shared.Rent(length);
+                    m_CompiledBuffer = ArrayPool<byte>.Shared.Rent(m_CompiledLength);
                     m_State |= State.Buffered;
                 }
 
-                Buffer.BlockCopy(old, 0, m_CompiledBuffer, 0, length);
+                Buffer.BlockCopy(old, 0, m_CompiledBuffer, 0, m_CompiledLength);
 
                 if (compress)
                 {
