@@ -10,58 +10,58 @@ namespace Server.Tests.Network
     {
         [Theory]
         // First only, beginning
-        [InlineData("Test String", "ASCII", false, -1, 1024, 1024, 0)]
-        [InlineData("Test String", "UTF8", false, -1, 1024, 1024, 0)]
-        [InlineData("Test String", "Unicode", false, -1, 1024, 1024, 0)]
-        [InlineData("Test String", "UnicodeLE", false, -1, 1024, 1024, 0)]
+        [InlineData("Test String", "us-ascii", false, -1, 1024, 1024, 0)]
+        [InlineData("Test String", "utf-u", false, -1, 1024, 1024, 0)]
+        [InlineData("Test String", "utf-16BE", false, -1, 1024, 1024, 0)]
+        [InlineData("Test String", "utf-16", false, -1, 1024, 1024, 0)]
 
         // Second only
-        [InlineData("Test String", "ASCII", false, -1, 1024, 1024, 1030)]
-        [InlineData("Test String", "UTF8", false, -1, 1024, 1024, 1030)]
-        [InlineData("Test String", "Unicode", false, -1, 1024, 1024, 1030)]
-        [InlineData("Test String", "UnicodeLE", false, -1, 1024, 1024, 1030)]
+        [InlineData("Test String", "us-ascii", false, -1, 1024, 1024, 1030)]
+        [InlineData("Test String", "utf-u", false, -1, 1024, 1024, 1030)]
+        [InlineData("Test String", "utf-16BE", false, -1, 1024, 1024, 1030)]
+        [InlineData("Test String", "utf-16", false, -1, 1024, 1024, 1030)]
 
         // Split
-        [InlineData("Test String", "ASCII", false, -1, 1024, 1024, 1020)]
-        [InlineData("Test String", "UTF8", false, -1, 1024, 1024, 1020)]
-        [InlineData("Test String", "Unicode", false, -1, 1024, 1024, 1020)]
-        [InlineData("Test String", "UnicodeLE", false, -1, 1024, 1024, 1020)]
+        [InlineData("Test String", "us-ascii", false, -1, 1024, 1024, 1020)]
+        [InlineData("Test String", "utf-u", false, -1, 1024, 1024, 1020)]
+        [InlineData("Test String", "utf-16BE", false, -1, 1024, 1024, 1020)]
+        [InlineData("Test String", "utf-16", false, -1, 1024, 1024, 1020)]
 
         // First only, beginning, fixed length smaller
-        [InlineData("Test String", "ASCII", false, 8, 1024, 1024, 0)]
-        [InlineData("Test String", "UTF8", false, 8, 1024, 1024, 0)]
-        [InlineData("Test String", "Unicode", false, 8, 1024, 1024, 0)]
-        [InlineData("Test String", "UnicodeLE", false, 8, 1024, 1024, 0)]
+        [InlineData("Test String", "us-ascii", false, 8, 1024, 1024, 0)]
+        [InlineData("Test String", "utf-u", false, 8, 1024, 1024, 0)]
+        [InlineData("Test String", "utf-16BE", false, 8, 1024, 1024, 0)]
+        [InlineData("Test String", "utf-16", false, 8, 1024, 1024, 0)]
 
         // Second only, fixed length smaller
-        [InlineData("Test String", "ASCII", false, 8, 1024, 1024, 1030)]
-        [InlineData("Test String", "UTF8", false, 8, 1024, 1024, 1030)]
-        [InlineData("Test String", "Unicode", false, 8, 1024, 1024, 1030)]
-        [InlineData("Test String", "UnicodeLE", false, 8, 1024, 1024, 1030)]
+        [InlineData("Test String", "us-ascii", false, 8, 1024, 1024, 1030)]
+        [InlineData("Test String", "utf-u", false, 8, 1024, 1024, 1030)]
+        [InlineData("Test String", "utf-16BE", false, 8, 1024, 1024, 1030)]
+        [InlineData("Test String", "utf-16", false, 8, 1024, 1024, 1030)]
 
         // Split, fixed length smaller
-        [InlineData("Test String", "ASCII", false, 8, 1024, 1024, 1020)]
-        [InlineData("Test String", "UTF8", false, 8, 1024, 1024, 1020)]
-        [InlineData("Test String", "Unicode", false, 8, 1024, 1024, 1020)]
-        [InlineData("Test String", "UnicodeLE", false, 8, 1024, 1024, 1020)]
+        [InlineData("Test String", "us-ascii", false, 8, 1024, 1024, 1020)]
+        [InlineData("Test String", "utf-u", false, 8, 1024, 1024, 1020)]
+        [InlineData("Test String", "utf-16BE", false, 8, 1024, 1024, 1020)]
+        [InlineData("Test String", "utf-16", false, 8, 1024, 1024, 1020)]
 
         // First only, beginning, fixed length bigger
-        [InlineData("Test String", "ASCII", false, 20, 1024, 1024, 0)]
-        [InlineData("Test String", "UTF8", false, 20, 1024, 1024, 0)]
-        [InlineData("Test String", "Unicode", false, 20, 1024, 1024, 0)]
-        [InlineData("Test String", "UnicodeLE", false, 20, 1024, 1024, 0)]
+        [InlineData("Test String", "us-ascii", false, 20, 1024, 1024, 0)]
+        [InlineData("Test String", "utf-u", false, 20, 1024, 1024, 0)]
+        [InlineData("Test String", "utf-16BE", false, 20, 1024, 1024, 0)]
+        [InlineData("Test String", "utf-16", false, 20, 1024, 1024, 0)]
 
         // Second only, fixed length bigger
-        [InlineData("Test String", "ASCII", false, 20, 1024, 1024, 1030)]
-        [InlineData("Test String", "UTF8", false, 20, 1024, 1024, 1030)]
-        [InlineData("Test String", "Unicode", false, 20, 1024, 1024, 1030)]
-        [InlineData("Test String", "UnicodeLE", false, 20, 1024, 1024, 1030)]
+        [InlineData("Test String", "us-ascii", false, 20, 1024, 1024, 1030)]
+        [InlineData("Test String", "utf-u", false, 20, 1024, 1024, 1030)]
+        [InlineData("Test String", "utf-16BE", false, 20, 1024, 1024, 1030)]
+        [InlineData("Test String", "utf-16", false, 20, 1024, 1024, 1030)]
 
         // Split, fixed length bigger
-        [InlineData("Test String", "ASCII", false, 20, 1024, 1024, 1020)]
-        [InlineData("Test String", "UTF8", false, 20, 1024, 1024, 1020)]
-        [InlineData("Test String", "Unicode", false, 20, 1024, 1024, 1020)]
-        [InlineData("Test String", "UnicodeLE", false, 20, 1024, 1024, 1020)]
+        [InlineData("Test String", "us-ascii", false, 20, 1024, 1024, 1020)]
+        [InlineData("Test String", "utf-u", false, 20, 1024, 1024, 1020)]
+        [InlineData("Test String", "utf-16BE", false, 20, 1024, 1024, 1020)]
+        [InlineData("Test String", "utf-16", false, 20, 1024, 1024, 1020)]
         public void TestReadString(
             string value,
             string encodingStr,
@@ -75,7 +75,7 @@ namespace Server.Tests.Network
             Span<byte> buffer = stackalloc byte[firstSize + secondSize];
             buffer.Clear();
 
-            var (encoding, byteType) = EncodingHelpers.GetEncoding(encodingStr);
+            var encoding = EncodingHelpers.GetEncoding(encodingStr);
 
             var strLength = fixedLength > -1 ? Math.Min(value.Length, fixedLength) : value.Length;
             var chars = value.AsSpan(0, strLength);
@@ -85,11 +85,7 @@ namespace Server.Tests.Network
             var reader = new CircularBufferReader(buffer.Slice(0, firstSize), buffer.Slice(firstSize));
             reader.Seek(offset, SeekOrigin.Begin);
 
-            var actual = byteType switch
-            {
-                var b when b == typeof(char) => reader.ReadString<char>(encoding, isSafe, fixedLength),
-                _                                  => reader.ReadString<byte>(encoding, isSafe, fixedLength)
-            };
+            var actual = reader.ReadString(encoding, isSafe, fixedLength);
 
             Assert.Equal(value.Substring(0, strLength), actual);
         }

@@ -5,13 +5,13 @@ namespace Server.Tests
 {
     public static class EncodingHelpers
     {
-        public static (Encoding, Type) GetEncoding(string value) =>
-            value.ToUpper() switch
+        public static Encoding GetEncoding(string bodyname) =>
+            bodyname switch
             {
-                "UTF8"      => (Utility.UTF8, typeof(byte)),
-                "UNICODELE" => (Utility.UnicodeLE, typeof(char)),
-                "UNICODE"   => (Utility.Unicode, typeof(char)),
-                _           => (Encoding.ASCII, typeof(byte))
+                "utf-8"    => Utility.UTF8,
+                "utf-16"   => Utility.UnicodeLE,
+                "utf-16BE" => Utility.Unicode,
+                _          => Encoding.ASCII
             };
     }
 }

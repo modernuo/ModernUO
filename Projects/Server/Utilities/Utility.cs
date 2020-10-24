@@ -106,6 +106,18 @@ namespace Server
         public static Encoding Unicode => m_Unicode ??= new UnicodeEncoding(true, false, false);
         public static Encoding UnicodeLE => m_UnicodeLE ??= new UnicodeEncoding(false, false, false);
 
+        public static int GetByteLengthForEncoding(Encoding encoding)
+        {
+            return encoding.BodyName switch
+            {
+                "utf-16BE" => 2,
+                "utf-16"   => 2,
+                "utf-32BE" => 4,
+                "utf-32"   => 4,
+                _          => 1
+            };
+        }
+
         public static void Separate(StringBuilder sb, string value, string separator)
         {
             if (sb.Length > 0)

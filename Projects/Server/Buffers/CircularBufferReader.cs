@@ -182,14 +182,18 @@ namespace Server.Network
         private static bool IsSafeChar(ushort c) => c >= 0x20 && c < 0xFFFE;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadString<T>(Encoding encoding, bool safeString = false, int fixedLength = -1) where T : struct, IEquatable<T>
-        {
-            int sizeT = Unsafe.SizeOf<T>();
-
-            if (sizeT > 2)
+        private static int FindIndex(ReadOnlySpan<byte> buffer, int sizeT) =>
+            sizeT switch
             {
-                throw new InvalidConstraintException("ReadString only accepts byte, sbyte, char, short, and ushort as a constraint");
-            }
+                2 => MemoryMarshal.Cast<byte, char>(buffer).IndexOf((char)0) * 2,
+                4 => MemoryMarshal.Cast<byte, uint>(buffer).IndexOf((uint)0) * 4,
+                _ => buffer.IndexOf((byte)0)
+            };
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadString(Encoding encoding, bool safeString = false, int fixedLength = -1)
+        {
+            int sizeT = Utility.GetByteLengthForEncoding(encoding);
 
             bool isFixedLength = fixedLength > -1;
 
@@ -215,10 +219,9 @@ namespace Server.Network
             if (Position < First.Length)
             {
                 var firstLength = Math.Min(First.Length - Position, size);
+
                 // Find terminator
-                index = MemoryMarshal
-                    .Cast<byte, T>(First.Slice(Position, firstLength))
-                    .IndexOf(default(T)) * sizeT;
+                index = FindIndex(First.Slice(Position, firstLength), sizeT);
 
                 if (index < 0)
                 {
@@ -230,9 +233,7 @@ namespace Server.Network
                     }
                     else
                     {
-                        index = MemoryMarshal
-                            .Cast<byte, T>(Second.Slice(0, remaining))
-                            .IndexOf(default(T)) * sizeT;
+                        index = FindIndex(Second.Slice(0, remaining), sizeT);
 
                         int secondLength = index < 0 ? remaining : index;
                         int length = firstLength + secondLength;
@@ -253,7 +254,7 @@ namespace Server.Network
             {
                 size = Math.Min(remaining, size);
                 span = Second.Slice( Position - First.Length, size);
-                index = MemoryMarshal.Cast<byte, T>(span).IndexOf(default(T)) * sizeT;
+                index = FindIndex(span, sizeT);
 
                 if (index >= 0)
                 {
@@ -296,49 +297,49 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUniSafe(int fixedLength) => ReadString<char>(Utility.UnicodeLE, true, fixedLength);
+        public string ReadLittleUniSafe(int fixedLength) => ReadString(Utility.UnicodeLE, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUniSafe() => ReadString<char>(Utility.UnicodeLE, true);
+        public string ReadLittleUniSafe() => ReadString(Utility.UnicodeLE, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUni(int fixedLength) => ReadString<char>(Utility.UnicodeLE, false, fixedLength);
+        public string ReadLittleUni(int fixedLength) => ReadString(Utility.UnicodeLE, false, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUni() => ReadString<char>(Utility.UnicodeLE);
+        public string ReadLittleUni() => ReadString(Utility.UnicodeLE);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUniSafe(int fixedLength) => ReadString<char>(Utility.Unicode, true, fixedLength);
+        public string ReadBigUniSafe(int fixedLength) => ReadString(Utility.Unicode, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUniSafe() => ReadString<char>(Utility.Unicode, true);
+        public string ReadBigUniSafe() => ReadString(Utility.Unicode, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUni(int fixedLength) => ReadString<char>(Utility.Unicode, false, fixedLength);
+        public string ReadBigUni(int fixedLength) => ReadString(Utility.Unicode, false, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUni() => ReadString<char>(Utility.Unicode);
+        public string ReadBigUni() => ReadString(Utility.Unicode);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadUTF8Safe(int fixedLength) => ReadString<byte>(Utility.UTF8, true, fixedLength);
+        public string ReadUTF8Safe(int fixedLength) => ReadString(Utility.UTF8, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadUTF8Safe() => ReadString<byte>(Utility.UTF8, true);
+        public string ReadUTF8Safe() => ReadString(Utility.UTF8, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadUTF8() => ReadString<byte>(Utility.UTF8);
+        public string ReadUTF8() => ReadString(Utility.UTF8);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadAsciiSafe(int fixedLength) => ReadString<byte>(Encoding.ASCII, true, fixedLength);
+        public string ReadAsciiSafe(int fixedLength) => ReadString(Encoding.ASCII, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadAsciiSafe() => ReadString<byte>(Encoding.ASCII, true);
+        public string ReadAsciiSafe() => ReadString(Encoding.ASCII, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadAscii(int fixedLength) => ReadString<byte>(Encoding.ASCII, false, fixedLength);
+        public string ReadAscii(int fixedLength) => ReadString(Encoding.ASCII, false, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadAscii() => ReadString<byte>(Encoding.ASCII);
+        public string ReadAscii() => ReadString(Encoding.ASCII);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Seek(int offset, SeekOrigin origin) =>
