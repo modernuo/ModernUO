@@ -80,46 +80,16 @@ namespace Server.Tests.Network
 
             var account = new TestAccount(new[] { firstMobile, null, null, null, null });
 
-            var ns = new NetState(null, Thread.CurrentThread)
-            {
-                Account = account,
-                ProtocolChanges = protocolChanges
-            };
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.Account = account;
+            ns.ProtocolChanges = protocolChanges;
 
-            var data = new SupportedFeatures(ns).Compile();
+            var expected = new SupportedFeatures(ns).Compile();
+            Packets.SendSupportedFeature(ns);
 
-            Span<byte> expectedData = stackalloc byte[ns.ExtendedSupportedFeatures ? 5 : 3];
-            var pos = 0;
+            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
 
-            expectedData[pos++] = 0xB9; // Packet ID
-
-            var flags = ExpansionInfo.GetFeatures(Expansion.EJ);
-
-            if (ns.Account.Limit >= 6)
-            {
-                flags |= FeatureFlags.LiveAccount;
-                flags &= ~FeatureFlags.UOTD;
-
-                if (ns.Account.Limit > 6)
-                {
-                    flags |= FeatureFlags.SeventhCharacterSlot;
-                }
-                else
-                {
-                    flags |= FeatureFlags.SixthCharacterSlot;
-                }
-            }
-
-            if (ns.ExtendedSupportedFeatures)
-            {
-                expectedData.Write(ref pos, (uint)flags);
-            }
-            else
-            {
-                expectedData.Write(ref pos, (ushort)flags);
-            }
-
-            AssertThat.Equal(data, expectedData);
+            AssertThat.Equal(actual, expected);
         }
 
         [Fact]

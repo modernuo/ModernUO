@@ -18,52 +18,6 @@ using Server.Accounting;
 
 namespace Server.Network
 {
-    public sealed class PopupMessage : Packet
-    {
-        public PopupMessage(PMMessage msg) : base(0x53, 2)
-        {
-            Stream.Write((byte)msg);
-        }
-    }
-
-    public sealed class SupportedFeatures : Packet
-    {
-        public SupportedFeatures(NetState ns) : base(0xB9, ns.ExtendedSupportedFeatures ? 5 : 3)
-        {
-            var flags = ExpansionInfo.CoreExpansion.SupportedFeatures;
-
-            flags |= Value;
-
-            if (ns.Account.Limit >= 6)
-            {
-                flags |= FeatureFlags.LiveAccount;
-                flags &= ~FeatureFlags.UOTD;
-
-                if (ns.Account.Limit > 6)
-                {
-                    flags |= FeatureFlags.SeventhCharacterSlot;
-                }
-                else
-                {
-                    flags |= FeatureFlags.SixthCharacterSlot;
-                }
-            }
-
-            if (ns.ExtendedSupportedFeatures)
-            {
-                Stream.Write((uint)flags);
-            }
-            else
-            {
-                Stream.Write((ushort)flags);
-            }
-        }
-
-        public static FeatureFlags Value { get; set; }
-
-        public static SupportedFeatures Instantiate(NetState ns) => new SupportedFeatures(ns);
-    }
-
     public sealed class LoginConfirm : Packet
     {
         public LoginConfirm(Mobile m) : base(0x1B, 37)

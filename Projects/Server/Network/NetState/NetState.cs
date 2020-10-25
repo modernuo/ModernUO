@@ -370,7 +370,7 @@ namespace Server.Network
             NetworkState.Resume(ref m_NetworkState);
         }
 
-        public virtual void Send(Span<byte> buffer)
+        public virtual void Send(ReadOnlySpan<byte> buffer)
         {
             if (Connection == null || BlockAllPackets || buffer.Length == 0)
             {

@@ -144,5 +144,48 @@ namespace Server.Network
                 (byte)msg
             });
         }
+
+        /**
+         * Packet: 0xB9
+         * Length: 3 or 5bytes
+         */
+        public static void SendSupportedFeature(NetState ns)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            var flags = ExpansionInfo.CoreExpansion.SupportedFeatures;
+
+            if (ns.Account.Limit >= 6)
+            {
+                flags |= FeatureFlags.LiveAccount;
+                flags &= ~FeatureFlags.UOTD;
+
+                if (ns.Account.Limit > 6)
+                {
+                    flags |= FeatureFlags.SeventhCharacterSlot;
+                }
+                else
+                {
+                    flags |= FeatureFlags.SixthCharacterSlot;
+                }
+            }
+
+            var writer = new SpanWriter(stackalloc byte[ns.ExtendedSupportedFeatures ? 5 : 3]);
+            writer.Write((byte)0xB9); // Packet ID
+
+            if (ns.ExtendedSupportedFeatures)
+            {
+                writer.Write((uint)flags);
+            }
+            else
+            {
+                writer.Write((ushort)flags);
+            }
+
+            ns.Send(writer.Span);
+        }
     }
 }

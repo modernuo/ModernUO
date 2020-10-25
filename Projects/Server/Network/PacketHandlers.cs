@@ -2109,7 +2109,7 @@ namespace Server.Network
 
             state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
 
-            state.Send(SupportedFeatures.Instantiate(state));
+            Packets.SendSupportedFeature(state);
 
             state.Sequence = 0;
 
@@ -2129,7 +2129,7 @@ namespace Server.Network
 
                 m.SendEverything();
 
-                state.Send(SupportedFeatures.Instantiate(state));
+                Packets.SendSupportedFeature(state);
                 state.Send(new MobileUpdate(m));
                 // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
@@ -2152,7 +2152,7 @@ namespace Server.Network
 
                 m.SendEverything();
 
-                state.Send(SupportedFeatures.Instantiate(state));
+                Packets.SendSupportedFeature(state);
                 state.Send(new MobileUpdate(m));
                 // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
@@ -2175,7 +2175,7 @@ namespace Server.Network
 
                 m.SendEverything();
 
-                state.Send(SupportedFeatures.Instantiate(state));
+                Packets.SendSupportedFeature(state);
                 state.Send(new MobileUpdateOld(m));
                 // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
@@ -2546,7 +2546,7 @@ namespace Server.Network
                 state.CompressionEnabled = true;
                 state.PacketEncoder = NetworkCompression.Compress;
 
-                state.Send(SupportedFeatures.Instantiate(state));
+                Packets.SendSupportedFeature(state);
 
                 if (state.NewCharacterList)
                 {

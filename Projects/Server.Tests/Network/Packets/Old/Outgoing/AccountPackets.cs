@@ -40,9 +40,6 @@ namespace Server.Tests.Network
         }
     }
 
-    /// <summary>
-    ///     Asks the client for it's version
-    /// </summary>
     public sealed class ClientVersionReq : Packet
     {
         public ClientVersionReq() : base(0xBD)
@@ -56,6 +53,46 @@ namespace Server.Tests.Network
         public DeleteResult(DeleteResultType res) : base(0x85, 2)
         {
             Stream.Write((byte)res);
+        }
+    }
+
+    public sealed class PopupMessage : Packet
+    {
+        public PopupMessage(PMMessage msg) : base(0x53, 2)
+        {
+            Stream.Write((byte)msg);
+        }
+    }
+
+    public sealed class SupportedFeatures : Packet
+    {
+        public SupportedFeatures(NetState ns) : base(0xB9, ns.ExtendedSupportedFeatures ? 5 : 3)
+        {
+            var flags = ExpansionInfo.CoreExpansion.SupportedFeatures;
+
+            if (ns.Account.Limit >= 6)
+            {
+                flags |= FeatureFlags.LiveAccount;
+                flags &= ~FeatureFlags.UOTD;
+
+                if (ns.Account.Limit > 6)
+                {
+                    flags |= FeatureFlags.SeventhCharacterSlot;
+                }
+                else
+                {
+                    flags |= FeatureFlags.SixthCharacterSlot;
+                }
+            }
+
+            if (ns.ExtendedSupportedFeatures)
+            {
+                Stream.Write((uint)flags);
+            }
+            else
+            {
+                Stream.Write((ushort)flags);
+            }
         }
     }
 }
