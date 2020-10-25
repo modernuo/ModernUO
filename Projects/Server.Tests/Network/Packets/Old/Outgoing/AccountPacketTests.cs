@@ -27,7 +27,7 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendChangeCharacter(ns, account);
 
-            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            var actual = ns.SendPipe.Reader.TryRead().Buffer[0];
             AssertThat.Equal( actual, oldPacket);
         }
 
@@ -40,7 +40,7 @@ namespace Server.Tests.Network
 
             Packets.SendClientVersionRequest(ns);
 
-            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            var actual = ns.SendPipe.Reader.TryRead().Buffer[0];
             AssertThat.Equal(actual, expected);
         }
 
@@ -52,7 +52,7 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendCharacterDeleteResult(ns, DeleteResultType.BadRequest);
 
-            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            var actual = ns.SendPipe.Reader.TryRead().Buffer[0];
             AssertThat.Equal(actual, expected);
         }
 
@@ -64,7 +64,7 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendPopupMessage(ns, PMMessage.LoginSyncError);
 
-            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            var actual = ns.SendPipe.Reader.TryRead().Buffer[0];
             AssertThat.Equal(actual, expected);
         }
 
@@ -86,7 +86,7 @@ namespace Server.Tests.Network
             var expected = new SupportedFeatures(ns).Compile();
             Packets.SendSupportedFeature(ns);
 
-            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            var actual = ns.SendPipe.Reader.TryRead().Buffer[0];
             AssertThat.Equal(actual, expected);
         }
 
@@ -107,7 +107,7 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendLoginConfirmation(ns, m);
 
-            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            var actual = ns.SendPipe.Reader.TryRead().Buffer[0];
             AssertThat.Equal(actual, expected);
         }
 
@@ -119,7 +119,7 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendLoginComplete(ns);
 
-            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            var actual = ns.SendPipe.Reader.TryRead().Buffer[0];
             AssertThat.Equal(actual, expected);
         }
 
@@ -137,7 +137,7 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendCharacterListUpdate(ns, acct);
 
-            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            var actual = ns.SendPipe.Reader.TryRead().Buffer[0];
             AssertThat.Equal(actual, expected);
         }
 
@@ -162,7 +162,7 @@ namespace Server.Tests.Network
 
             Packets.SendCharacterList(ns);
 
-            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            var actual = ns.SendPipe.Reader.TryRead().Buffer[0];
             AssertThat.Equal(actual, expected);
         }
 

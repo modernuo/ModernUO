@@ -22,7 +22,7 @@ namespace Server.Tests.Network
             var span = new CharacterList(acct, info).Compile();
 
             Span<byte> expected = stackalloc byte[NetworkCompression.BufferSize];
-            NetworkCompression.Compress(span, 0, span.Length, expected, out var length);
+            var length = NetworkCompression.Compress(span, expected);
             expected = expected.Slice(0, length);
 
             Span<byte> actual = stackalloc byte[0x10000]; // Pipe

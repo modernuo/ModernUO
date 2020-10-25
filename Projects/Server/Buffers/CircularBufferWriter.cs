@@ -29,7 +29,7 @@ namespace System.Buffers
         public int Length { get; }
         public int Position { get; private set; }
 
-        public CircularBufferWriter(ArraySegment<byte>[] buffers) : this(buffers[0], buffers[1])
+        public CircularBufferWriter(CircularBuffer<byte> buffer) : this(buffer.GetSpan(0), buffer.GetSpan(1))
         {
         }
 

@@ -126,5 +126,15 @@ namespace System.Buffers
 
             return new CircularBuffer<T>(first, second);
         }
+
+        public Span<T> GetSpan(int index)
+        {
+            if (index < 0 || index > 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            return index == 0 ? _first : _second;
+        }
     }
 }

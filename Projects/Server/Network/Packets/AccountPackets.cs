@@ -61,15 +61,13 @@ namespace Server.Network
          */
         public static void SendChangeCharacter(NetState ns, IAccount a)
         {
-            if (ns == null || a == null)
+            if (ns == null || a == null || !ns.GetAvailableSendPipe(out var buffer))
             {
                 return;
             }
 
             var length = 5 + a.Length * 60;
-
-            Span<byte> buffer = stackalloc byte[length];
-            var writer = new SpanWriter(buffer);
+            var writer = new CircularBufferWriter(buffer);
 
             writer.Write((byte)0x81); // Packet ID
             writer.Write((ushort)length);
@@ -95,10 +93,12 @@ namespace Server.Network
                 }
             }
 
+            var position = writer.Position;
             writer.Seek(3, SeekOrigin.Begin);
             writer.Write((byte)count);
+            writer.Seek(position, SeekOrigin.Begin);
 
-            ns.Send(buffer);
+            ns.Send(buffer, writer.Position);
         }
 
         /**
@@ -109,11 +109,14 @@ namespace Server.Network
          */
         public static void SendClientVersionRequest(NetState ns)
         {
-            ns?.Send(stackalloc byte[]
+            if (ns != null && ns.GetAvailableSendPipe(out var buffer))
             {
-                0xBD, // PacketID
-                0x00, 0x03 // Length
-            });
+                buffer[0] = 0xBD; // Packet ID
+                buffer[1] = 0x00;
+                buffer[2] = 0x03; // Length
+
+                ns.Send(buffer, 3);
+            }
         }
 
         /**
@@ -124,10 +127,13 @@ namespace Server.Network
          */
         public static void SendCharacterDeleteResult(NetState ns, DeleteResultType res)
         {
-            ns?.Send(stackalloc byte[] {
-                0x85, // Packet ID
-                (byte)res
-            });
+            if (ns != null && ns.GetAvailableSendPipe(out var buffer))
+            {
+                buffer[0] = 0x85; // Packet ID
+                buffer[1] = (byte)res;
+
+                ns.Send(buffer, 2);
+            }
         }
 
         /**
@@ -138,11 +144,13 @@ namespace Server.Network
          */
         public static void SendPopupMessage(NetState ns, PMMessage msg)
         {
-            ns?.Send(stackalloc byte[]
+            if (ns != null && ns.GetAvailableSendPipe(out var buffer))
             {
-                0x53, // Packet ID
-                (byte)msg
-            });
+                buffer[0] = 0x53; // Packet ID
+                buffer[1] = (byte)msg;
+
+                ns.Send(buffer, 2);
+            }
         }
 
         /**
@@ -153,7 +161,7 @@ namespace Server.Network
          */
         public static void SendSupportedFeature(NetState ns)
         {
-            if (ns == null)
+            if (ns == null || !ns.GetAvailableSendPipe(out var buffer))
             {
                 return;
             }
@@ -175,7 +183,7 @@ namespace Server.Network
                 }
             }
 
-            var writer = new SpanWriter(stackalloc byte[ns.ExtendedSupportedFeatures ? 5 : 3]);
+            var writer = new CircularBufferWriter(buffer);
             writer.Write((byte)0xB9); // Packet ID
 
             if (ns.ExtendedSupportedFeatures)
@@ -187,7 +195,7 @@ namespace Server.Network
                 writer.Write((ushort)flags);
             }
 
-            ns.Send(writer.Span);
+            ns.Send(buffer, ns.ExtendedSupportedFeatures ? 5 : 3);
         }
 
         /**
@@ -198,12 +206,12 @@ namespace Server.Network
          */
         public static void SendLoginConfirmation(NetState ns, Mobile m)
         {
-            if (ns == null)
+            if (ns == null || !ns.GetAvailableSendPipe(out var buffer))
             {
                 return;
             }
 
-            var writer = new SpanWriter(stackalloc byte[37]);
+            var writer = new CircularBufferWriter(buffer);
             writer.Write((byte)0x1B); // PacketID
             writer.Write(m.Serial);
             writer.Write(0);
@@ -228,7 +236,7 @@ namespace Server.Network
             writer.Write((short)(map?.Height ?? Map.Felucca.Height));
             writer.Clear();
 
-            ns.Send(writer.Span);
+            ns.Send(buffer, 37);
         }
 
         /**
@@ -239,10 +247,12 @@ namespace Server.Network
          */
         public static void SendLoginComplete(NetState ns)
         {
-            ns?.Send(stackalloc byte[]
+            if (ns != null && ns.GetAvailableSendPipe(out var buffer))
             {
-                0x55 // Packet ID
-            });
+                buffer[0] = 0x55; // Packet ID
+
+                ns.Send(buffer, 1);
+            }
         }
 
         /**
@@ -253,12 +263,12 @@ namespace Server.Network
          */
         public static void SendCharacterListUpdate(NetState ns, IAccount a)
         {
-            if (ns == null || a == null)
+            if (ns == null || a == null || !ns.GetAvailableSendPipe(out var buffer))
             {
                 return;
             }
 
-            var writer = new SpanWriter(stackalloc byte[4 + a.Length * 60]);
+            var writer = new CircularBufferWriter(buffer);
             writer.Write((byte)0x86); // Packet ID
             writer.Seek(2, SeekOrigin.Current); // Length
 
@@ -293,7 +303,7 @@ namespace Server.Network
             }
 
             writer.WriteLength();
-            ns.Send(writer.Span);
+            ns.Send(buffer, writer.Position);
         }
 
         /**
@@ -306,14 +316,14 @@ namespace Server.Network
         {
             var acct = ns?.Account;
 
-            if (acct == null)
+            if (acct == null || !ns.GetAvailableSendPipe(out var buffer))
             {
                 return;
             }
 
             var cityInfo = ns.CityInfo;
 
-            var writer = new SpanWriter(stackalloc byte[11 + acct.Length * 60 + cityInfo.Length * 89]);
+            var writer = new CircularBufferWriter(buffer);
             writer.Write((byte)0xA9); // Packet ID
             writer.Seek(2, SeekOrigin.Current); // Length
 
@@ -385,7 +395,7 @@ namespace Server.Network
             writer.Write((short)-1);
 
             writer.WriteLength();
-            ns.Send(writer.Span);
+            ns.Send(buffer, writer.Position);
         }
     }
 }

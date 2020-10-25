@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Buffers.Binary;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -31,6 +32,10 @@ namespace Server.Network
         public int Remaining => Length - Position;
 
         public CircularBufferReader(ArraySegment<byte>[] buffers) : this(buffers[0], buffers[1])
+        {
+        }
+
+        public CircularBufferReader(CircularBuffer<byte> buffer) : this(buffer.GetSpan(0), buffer.GetSpan(1))
         {
         }
 

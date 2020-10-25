@@ -20,7 +20,7 @@ namespace Server.Network
 {
     public static class PacketUtilities
     {
-        public static void WriteLength(this SpanWriter writer)
+        public static void WriteLength(this CircularBufferWriter writer)
         {
             var length = writer.Position;
             writer.Seek(1, SeekOrigin.Begin);
