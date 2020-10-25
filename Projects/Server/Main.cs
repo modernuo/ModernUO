@@ -325,11 +325,6 @@ namespace Server
             Console.WriteLine("done");
         }
 
-        public static void Set()
-        {
-            // m_Signal.Set();
-        }
-
         public static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;

@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using Server.ContextMenus;
@@ -46,8 +47,6 @@ namespace Server.Network
 
     public static class PacketHandlers
     {
-        public delegate void PlayCharCallback(NetState state, bool val);
-
         private const int m_AuthIDWindowSize = 128;
         private static readonly PacketHandler[] m_6017Handlers = new PacketHandler[0x100];
 
@@ -153,9 +152,6 @@ namespace Server.Network
 
             RegisterEncoded(0x32, true, QuestGumpRequest);
         }
-
-        public static PlayCharCallback ThirdPartyAuthCallback { get; set; }
-        public static PlayCharCallback ThirdPartyHackedCallback { get; set; }
 
         public static PacketHandler[] Handlers { get; } = new PacketHandler[0x100];
 
@@ -281,9 +277,9 @@ namespace Server.Network
             }
         }
 
-        public static int ProcessPacket(NetState ns, ArraySegment<byte>[] segments)
+        public static int ProcessPacket(NetState ns, ref CircularBuffer<byte> buffer)
         {
-            var reader = new CircularBufferReader(segments);
+            var reader = new CircularBufferReader(ref buffer);
 
             var packetId = reader.ReadByte();
 

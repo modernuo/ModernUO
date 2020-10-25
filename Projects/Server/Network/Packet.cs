@@ -89,8 +89,6 @@ namespace Server.Network
 
         public void OnSend()
         {
-            Core.Set(); // Is this still needed if this is done async?
-
             if ((m_State & (State.Acquired | State.Static)) == 0)
             {
                 Free();

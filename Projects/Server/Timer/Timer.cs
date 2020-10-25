@@ -402,8 +402,6 @@ namespace Server
 
                     ProcessChanged();
 
-                    var loaded = false;
-
                     for (var i = 0; i < m_Timers.Length; i++)
                     {
                         var now = Core.TickCount;
@@ -427,8 +425,6 @@ namespace Server
                                     m_Queue.Enqueue(t);
                                 }
 
-                                loaded = true;
-
                                 if (t.m_Count != 0 && ++t.m_Index >= t.m_Count)
                                 {
                                     t.Stop();
@@ -439,11 +435,6 @@ namespace Server
                                 }
                             }
                         }
-                    }
-
-                    if (loaded)
-                    {
-                        Core.Set();
                     }
 
                     m_Signal.WaitOne(1, false);

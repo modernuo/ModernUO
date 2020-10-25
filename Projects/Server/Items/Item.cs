@@ -3361,8 +3361,6 @@ namespace Server
                     m_DeltaQueue.Add(this);
                 }
             }
-
-            Core.Set();
         }
 
         public void RemDelta(ItemDelta flags)
