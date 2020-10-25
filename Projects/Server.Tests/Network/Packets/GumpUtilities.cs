@@ -3,7 +3,7 @@ using System.Buffers;
 using System.IO.Compression;
 using System.Text;
 
-namespace Server.Tests.Network.Packets
+namespace Server.Tests.Network
 {
     public static class GumpUtilities
     {

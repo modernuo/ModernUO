@@ -2,7 +2,7 @@ using System;
 using System.Buffers;
 using Server.Network;
 
-namespace Server.Tests.Network.Packets
+namespace Server.Tests.Network
 {
     public static class AttributeNormalizerUtilities
     {

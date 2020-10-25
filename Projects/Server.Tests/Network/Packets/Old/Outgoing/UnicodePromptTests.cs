@@ -4,7 +4,7 @@ using Server.Network;
 using Server.Prompts;
 using Xunit;
 
-namespace Server.Tests.Network.Packets
+namespace Server.Tests.Network
 {
     internal class TestPrompt : Prompt
     {

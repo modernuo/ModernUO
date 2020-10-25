@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Server.Network;
 
-namespace Server.Tests.Network.Packets
+namespace Server.Tests.Network
 {
     public static class PacketTestUtilities
     {
