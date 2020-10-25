@@ -387,7 +387,7 @@ namespace Server.Network
 
         public virtual void Send(CircularBuffer<byte> buffer, int length)
         {
-            if (Connection == null || BlockAllPackets || buffer.Length == 0)
+            if (Connection == null || BlockAllPackets || length == 0 || buffer.Length == 0)
             {
                 return;
             }
