@@ -2,6 +2,7 @@ using System;
 using System.Buffers;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using Server.Accounting;
 using Server.Network;
@@ -23,17 +24,13 @@ namespace Server.Tests.Network
             secondMobile.RawName = null;
 
             var account = new TestAccount(new[] { firstMobile, null, secondMobile });
-
             var oldPacket = new ChangeCharacter(account).Compile();
 
-            var ns = PipeTestNetState.CreateOutgoing(out var outgoingPipe);
-
+            using var ns = new NetState(new Socket(SocketType.Stream, ProtocolType.Tcp), Thread.CurrentThread);
             Packets.SendChangeCharacter(ns, account);
 
-            var actual = outgoingPipe.Reader.TryRead().Buffer[0];
-
+            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
             AssertThat.Equal( actual, oldPacket);
-            ns.Dispose();
         }
 
         [Fact]
@@ -41,13 +38,13 @@ namespace Server.Tests.Network
         {
             var expected = new ClientVersionReq().Compile();
 
-            var ns = PipeTestNetState.CreateOutgoing(out var outgoingPipe);
+            using var ns = new NetState(new Socket(SocketType.Stream, ProtocolType.Tcp), Thread.CurrentThread);
 
             Packets.SendClientVersionRequest(ns);
 
-            var actual = outgoingPipe.Reader.TryRead().Buffer[0];
-
+            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
             AssertThat.Equal(actual, expected);
+            ns.Dispose();
         }
 
         [Fact]

@@ -12,7 +12,7 @@ namespace Server.Network
         private const int ValueIndex = 1;
 
         // UO packets may not exceed 64kb in length
-        public const int BufferSize = 0x10000;
+        private const int BufferSize = 0x10000;
 
         // Optimal compression ratio is 2 / 8;  worst compression ratio is 11 / 8
         private const int MinimalCodeLength = 2;
@@ -61,13 +61,13 @@ namespace Server.Network
             0x4, 0x00D
         };
 
-        public static int Compress(ReadOnlySpan<byte> input, CircularBufferWriter output)
+        public static void Compress(ReadOnlySpan<byte> input, CircularBufferWriter output)
         {
             int inputCapacity = input.Length;
 
             if (inputCapacity > DefiniteOverflow)
             {
-                return 0;
+                return;
             }
 
             int bitCount = 0;
@@ -89,7 +89,7 @@ namespace Server.Network
 
                     if (output.Length < output.Position + 1)
                     {
-                        return 0;
+                        return;
                     }
 
                     output.Write((byte)(bitValue >> bitCount));
@@ -114,13 +114,11 @@ namespace Server.Network
 
                 if (output.Length < output.Position + 1)
                 {
-                    return 0;
+                    return;
                 }
 
                 output.Write((byte)(bitValue >> bitCount));
             }
-
-            return output.Position;
         }
 
         public static unsafe void Compress(

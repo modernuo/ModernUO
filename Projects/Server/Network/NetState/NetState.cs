@@ -33,15 +33,15 @@ namespace Server.Network
 {
     public delegate void NetStateCreatedCallback(NetState ns);
 
-    public delegate void EncodePacket(NetState ns, ArraySegment<byte>[] buffer, ref uint length);
+    public delegate void EncodePacket(ReadOnlySpan<byte> inputBuffer, CircularBufferWriter outputBuffer);
 
-    public partial class NetState : IComparable<NetState>
+    public partial class NetState : IComparable<NetState>, IDisposable
     {
-        public static int IncomingPipeSize { get; private set; } = 1024 * 64;
-        public static int OutgoingPipeSize { get; private set; } = 1024 * 256;
-        public static int GumpCap { get; private set; } = 512;
-        public static int HuePickerCap { get; private set; } = 512;
-        public static int MenuCap { get; private set; } = 512;
+        private static int IncomingPipeSize = 1024 * 64;
+        private static int OutgoingPipeSize = 1024 * 256;
+        private static int GumpCap = 512;
+        private static int HuePickerCap = 512;
+        private static int MenuCap = 512;
 
         private static readonly ConcurrentQueue<NetState> m_Disposed = new ConcurrentQueue<NetState>();
         private static NetworkState m_NetworkState = NetworkState.ResumeState;
@@ -52,12 +52,14 @@ namespace Server.Network
         private int m_Disposing;
         private ClientVersion m_Version;
         private byte[] m_IncomingBuffer;
-        private Pipe<byte> m_IncomingPipe;
+        public Pipe<byte> IncomingPipe { get; private set; }
         private byte[] m_OutgoingBuffer;
-        private Pipe<byte> m_OutgoingPipe;
+        public Pipe<byte> OutgoingPipe { get; private set; }
         private long m_NextCheckActivity;
         private volatile bool m_Running;
-        private Thread m_SendThread;
+        private Thread _sendThread;
+        private volatile EncodePacket _packetDecoder;
+        private volatile EncodePacket _packetEncoder;
 
         internal int m_AuthID;
         internal int m_Seed;
@@ -77,23 +79,7 @@ namespace Server.Network
             Timer.DelayCall(checkAliveDuration, checkAliveDuration, CheckAllAlive);
         }
 
-        // For testing
-        public NetState(Socket connection, Pipe<byte> incoming, Pipe<byte> outgoing, Thread sendThread)
-        {
-            m_Running = true;
-            Connection = connection;
-            Seeded = false;
-            Gumps = new List<Gump>();
-            HuePickers = new List<HuePicker>();
-            Menus = new List<IMenu>();
-            Trades = new List<SecureTrade>();
-            m_SendThread = sendThread;
-
-            m_IncomingPipe = incoming;
-            m_OutgoingPipe = outgoing;
-        }
-
-        public NetState(Socket connection, Thread sendThread)
+        public NetState(Socket connection, Thread sendThread = null)
         {
             m_Running = false;
             Connection = connection;
@@ -102,14 +88,12 @@ namespace Server.Network
             HuePickers = new List<HuePicker>();
             Menus = new List<IMenu>();
             Trades = new List<SecureTrade>();
-            m_SendThread = sendThread;
-
-
             m_IncomingBuffer = new byte[IncomingPipeSize];
-            m_IncomingPipe = new Pipe<byte>(m_IncomingBuffer);
+            IncomingPipe = new Pipe<byte>(m_IncomingBuffer);
             m_OutgoingBuffer = new byte[OutgoingPipeSize];
-            m_OutgoingPipe = new Pipe<byte>(m_OutgoingBuffer);
+            OutgoingPipe = new Pipe<byte>(m_OutgoingBuffer);
             m_NextCheckActivity = Core.TickCount + 30000;
+            _sendThread = sendThread ?? Core.Thread;
 
             try
             {
@@ -136,9 +120,17 @@ namespace Server.Network
 
         public IPAddress Address { get; }
 
-        public EncodePacket PacketDecoder { get; set; }
+        public EncodePacket PacketDecoder
+        {
+            get => _packetDecoder;
+            set => _packetDecoder = value;
+        }
 
-        public EncodePacket PacketEncoder { get; set; }
+        public EncodePacket PacketEncoder
+        {
+            get => _packetEncoder;
+            set => _packetEncoder = value;
+        }
 
         public bool SentFirstPacket { get; set; }
 
@@ -387,7 +379,7 @@ namespace Server.Network
 
             var currentThread = Thread.CurrentThread;
 
-            if (currentThread != m_SendThread)
+            if (currentThread != _sendThread)
             {
                 Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
 #if DEBUG
@@ -395,19 +387,17 @@ namespace Server.Network
 #endif
             }
 
-            var writer = m_OutgoingPipe.Writer;
+            var writer = OutgoingPipe.Writer;
 
             try
             {
                 var result = writer.GetAvailable();
                 int length;
-                if (CompressionEnabled)
+                if (PacketEncoder != null)
                 {
-                    length = NetworkCompression.Compress(buffer, new CircularBufferWriter(result.Buffer));
-                    if (length <= 0)
-                    {
-                        return;
-                    }
+                    var bufferWriter = new CircularBufferWriter(result.Buffer);
+                    PacketEncoder?.Invoke(buffer, bufferWriter);
+                    length = bufferWriter.Position;
                 }
                 else
                 {
@@ -437,15 +427,15 @@ namespace Server.Network
 
             var currentThread = Thread.CurrentThread;
 
-            if (currentThread != m_SendThread)
+            if (currentThread != _sendThread)
             {
-                Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
+                Console.Error.WriteLine("Core: Attempted to send packet outside send thread! [{0}]", currentThread.ManagedThreadId);
 #if DEBUG
                 throw new InvalidThreadException(nameof(Send));
 #endif
             }
 
-            var writer = m_OutgoingPipe.Writer;
+            var writer = OutgoingPipe.Writer;
 
             try
             {
@@ -500,7 +490,7 @@ namespace Server.Network
 
         private async void SendTask(object state)
         {
-            var reader = m_OutgoingPipe.Reader;
+            var reader = OutgoingPipe.Reader;
 
             try
             {
@@ -537,10 +527,19 @@ namespace Server.Network
             }
         }
 
+        private int DecodePacket(ReadOnlySpan<byte> input, ArraySegment<byte>[] output)
+        {
+            var writer = new CircularBufferWriter(output);
+            PacketDecoder(input, writer);
+            return writer.Position;
+        }
+
         private async void RecvTask(object state)
         {
             var socket = Connection;
-            var writer = m_IncomingPipe.Writer;
+            var writer = IncomingPipe.Writer;
+
+            byte[] encodingBuffer = null;
 
             try
             {
@@ -558,13 +557,32 @@ namespace Server.Network
                         continue;
                     }
 
-                    var buffer = result.Buffer;
+                    int bytesWritten;
 
-                    var bytesWritten = await socket.ReceiveAsync(buffer, SocketFlags.None);
-
-                    if (bytesWritten <= 0)
+                    if (PacketDecoder != null)
                     {
-                        break;
+                        encodingBuffer ??= ArrayPool<byte>.Shared.Rent(0x10000);
+                        bytesWritten = await socket.ReceiveAsync(encodingBuffer, SocketFlags.None);
+                        if (bytesWritten <= 0)
+                        {
+                            break;
+                        }
+                        bytesWritten = DecodePacket(encodingBuffer.AsSpan(0, bytesWritten), result.Buffer);
+                    }
+                    else
+                    {
+                        if (encodingBuffer != null)
+                        {
+                            var returnBuffer = encodingBuffer;
+                            encodingBuffer = null;
+                            ArrayPool<byte>.Shared.Return(returnBuffer);
+                        }
+
+                        bytesWritten = await socket.ReceiveAsync(result.Buffer, SocketFlags.None);
+                        if (bytesWritten <= 0)
+                        {
+                            break;
+                        }
                     }
 
                     writer.Advance((uint)bytesWritten);
@@ -582,6 +600,10 @@ namespace Server.Network
             }
             finally
             {
+                if (encodingBuffer != null)
+                {
+                    ArrayPool<byte>.Shared.Return(encodingBuffer);
+                }
                 Dispose();
             }
         }
@@ -605,7 +627,7 @@ namespace Server.Network
 
             try
             {
-                var reader = m_IncomingPipe.Reader;
+                var reader = IncomingPipe.Reader;
 
                 // Process as many packets as we can synchronously
                 while (true)
@@ -648,7 +670,7 @@ namespace Server.Network
         {
             if (Connection != null)
             {
-                m_OutgoingPipe.Writer.Flush();
+                OutgoingPipe.Writer.Flush();
             }
         }
 
@@ -733,7 +755,7 @@ namespace Server.Network
                 return;
             }
 
-            m_OutgoingPipe.Writer.Close();
+            OutgoingPipe.Writer.Close();
 
             try
             {
@@ -772,9 +794,9 @@ namespace Server.Network
                 ns.m_Running = false;
                 ns.Connection = null;
                 ns.m_IncomingBuffer = null;
-                ns.m_IncomingPipe = null;
+                ns.IncomingPipe = null;
                 ns.m_OutgoingBuffer = null;
-                ns.m_OutgoingPipe = null;
+                ns.OutgoingPipe = null;
                 ns.Gumps.Clear();
                 ns.Menus.Clear();
                 ns.HuePickers.Clear();
