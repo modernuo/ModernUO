@@ -2549,6 +2549,7 @@ namespace Server.Network
             {
                 state.CityInfo = e.CityInfo;
                 state.CompressionEnabled = true;
+                state.PacketEncoder = NetworkCompression.Compress;
 
                 state.Send(SupportedFeatures.Instantiate(state));
 

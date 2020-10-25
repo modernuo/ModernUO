@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 
 namespace Server.Network
 {
@@ -59,6 +60,66 @@ namespace Server.Network
             0x9, 0x167, 0xA, 0x210, 0xA, 0x23A, 0xA, 0x1B8, 0xB, 0x3AF, 0xA, 0x18E, 0xA, 0x2EC, 0x7, 0x062,
             0x4, 0x00D
         };
+
+        public static void Compress(ReadOnlySpan<byte> input, CircularBufferWriter output)
+        {
+            int inputCapacity = input.Length;
+
+            if (inputCapacity > DefiniteOverflow)
+            {
+                return;
+            }
+
+            int bitCount = 0;
+            int bitValue = 0;
+
+            int inputIdx = 0;
+
+            while (inputIdx < inputCapacity)
+            {
+                int i = input[inputIdx++] << 1;
+
+                bitCount += _huffmanTable[i];
+                bitValue <<= _huffmanTable[i];
+                bitValue |= _huffmanTable[i + 1];
+
+                while (bitCount >= 8)
+                {
+                    bitCount -= 8;
+
+                    if (output.Length < output.Position + 1)
+                    {
+                        return;
+                    }
+
+                    output.Write((byte)(bitValue >> bitCount));
+                }
+            }
+
+            // terminal code
+            bitCount += _huffmanTable[0x200];
+            bitValue <<= _huffmanTable[0x200];
+            bitValue |= _huffmanTable[0x201];
+
+            // align on byte boundary
+            if ((bitCount & 7) != 0)
+            {
+                bitValue <<= (8 - (bitCount & 7));
+                bitCount += (8 - (bitCount & 7));
+            }
+
+            while (bitCount >= 8)
+            {
+                bitCount -= 8;
+
+                if (output.Length < output.Position + 1)
+                {
+                    return;
+                }
+
+                output.Write((byte)(bitValue >> bitCount));
+            }
+        }
 
         public static unsafe void Compress(
             ReadOnlySpan<byte> input, int offset, int count, Span<byte> output, out int length
