@@ -33,6 +33,10 @@ namespace Server.Network
 {
     public delegate void NetStateCreatedCallback(NetState ns);
 
+    public delegate void EncodePacket(ReadOnlySpan<byte> inputBuffer, CircularBufferWriter outputBuffer);
+
+    public delegate void DecodePacket(NetState ns, CircularBufferReader inputBuffer, Span<byte> outputBuffer, out uint length);
+
     public partial class NetState : IComparable<NetState>
     {
         private static int IncomingPipeSize = 1024 * 64;
@@ -55,6 +59,7 @@ namespace Server.Network
         private Pipe<byte> m_OutgoingPipe;
         private long m_NextCheckActivity;
         private volatile bool m_Running;
+        private Thread _sendThread;
 
         internal int m_AuthID;
         internal int m_Seed;
@@ -74,7 +79,7 @@ namespace Server.Network
             Timer.DelayCall(checkAliveDuration, checkAliveDuration, CheckAllAlive);
         }
 
-        public NetState(Socket connection)
+        public NetState(Socket connection, Thread sendThread = null)
         {
             m_Running = false;
             Connection = connection;
@@ -88,6 +93,7 @@ namespace Server.Network
             m_OutgoingBuffer = new byte[OutgoingPipeSize];
             m_OutgoingPipe = new Pipe<byte>(m_OutgoingBuffer);
             m_NextCheckActivity = Core.TickCount + 30000;
+            _sendThread = sendThread ?? Core.Thread;
 
             try
             {
@@ -114,7 +120,9 @@ namespace Server.Network
 
         public IPAddress Address { get; }
 
-        public IPacketEncoder PacketEncoder { get; set; }
+        public DecodePacket PacketDecoder { get; set; }
+
+        public EncodePacket PacketEncoder { get; set; }
 
         public bool SentFirstPacket { get; set; }
 
@@ -354,6 +362,53 @@ namespace Server.Network
             NetworkState.Resume(ref m_NetworkState);
         }
 
+        public virtual void Send(Span<byte> buffer)
+        {
+            if (Connection == null || BlockAllPackets || buffer.Length == 0)
+            {
+                return;
+            }
+
+            var currentThread = Thread.CurrentThread;
+
+            if (currentThread != _sendThread)
+            {
+                Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
+#if DEBUG
+                throw new InvalidThreadException(nameof(Send));
+#endif
+            }
+
+            var writer = m_OutgoingPipe.Writer;
+
+            try
+            {
+                var result = writer.GetAvailable();
+                int length;
+                if (PacketEncoder != null)
+                {
+                    var bufferWriter = new CircularBufferWriter(result.Buffer);
+                    PacketEncoder?.Invoke(buffer, bufferWriter);
+                    length = bufferWriter.Position;
+                }
+                else
+                {
+                    result.CopyFrom(buffer);
+                    length = buffer.Length;
+                }
+
+                writer.Advance((uint)length);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex);
+                TraceException(ex);
+#endif
+                Dispose();
+            }
+        }
+
         public virtual void Send(Packet p)
         {
             if (Connection == null || BlockAllPackets)
@@ -364,9 +419,9 @@ namespace Server.Network
 
             var currentThread = Thread.CurrentThread;
 
-            if (currentThread != Core.Thread)
+            if (currentThread != _sendThread)
             {
-                Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
+                Console.Error.WriteLine("Core: Attempted to send packet outside send thread! [{0}]", currentThread.ManagedThreadId);
 #if DEBUG
                 throw new InvalidThreadException(nameof(Send));
 #endif
