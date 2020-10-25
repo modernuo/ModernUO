@@ -16,7 +16,7 @@
 using System;
 using System.IO;
 using Server.Accounting;
-using Server.Buffers;
+using System.Buffers;
 
 namespace Server.Network
 {
@@ -147,7 +147,9 @@ namespace Server.Network
 
         /**
          * Packet: 0xB9
-         * Length: 3 or 5bytes
+         * Length: 3 or 5 bytes
+         *
+         * Sends support features based on the client version
          */
         public static void SendSupportedFeature(NetState ns)
         {
@@ -185,6 +187,204 @@ namespace Server.Network
                 writer.Write((ushort)flags);
             }
 
+            ns.Send(writer.Span);
+        }
+
+        /**
+         * Packet: 0x1B
+         * Length: 37 bytes
+         *
+         * Sends login confirmation
+         */
+        public static void SendLoginConfirmation(NetState ns, Mobile m)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            var writer = new SpanWriter(stackalloc byte[37]);
+            writer.Write((byte)0x1B); // PacketID
+            writer.Write(m.Serial);
+            writer.Write(0);
+            writer.Write((short)m.Body);
+            writer.Write((short)m.X);
+            writer.Write((short)m.Y);
+            writer.Write((short)m.Z);
+            writer.Write((byte)m.Direction);
+            writer.Write((byte)0);
+            writer.Write(-1);
+
+            writer.Write(0);
+
+            var map = m.Map;
+
+            if (map == null || map == Map.Internal)
+            {
+                map = m.LogoutMap;
+            }
+
+            writer.Write((short)(map?.Width ?? Map.Felucca.Width));
+            writer.Write((short)(map?.Height ?? Map.Felucca.Height));
+            writer.Clear();
+
+            ns.Send(writer.Span);
+        }
+
+        /**
+         * Packet: 0x55
+         * Length: 1 byte
+         *
+         * Sends login completion
+         */
+        public static void SendLoginComplete(NetState ns)
+        {
+            ns?.Send(stackalloc byte[]
+            {
+                0x55 // Packet ID
+            });
+        }
+
+        /**
+         * Packet: 0x86
+         * Length: Up to 424 bytes
+         *
+         * Sends updated character list
+         */
+        public static void SendCharacterListUpdate(NetState ns, IAccount a)
+        {
+            if (ns == null || a == null)
+            {
+                return;
+            }
+
+            var writer = new SpanWriter(stackalloc byte[4 + a.Length * 60]);
+            writer.Write((byte)0x86); // Packet ID
+            writer.Seek(2, SeekOrigin.Current); // Length
+
+            var highSlot = -1;
+
+            for (var i = a.Length - 1; i >= 0; i--)
+            {
+                if (a[i] != null)
+                {
+                    highSlot = i;
+                    break;
+                }
+            }
+
+            var count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
+            writer.Write((byte)count);
+
+            for (int i = 0; i < count; i++)
+            {
+                var m = a[i];
+
+                if (m == null)
+                {
+                    writer.Clear(60);
+                }
+                else
+                {
+                    var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
+                    writer.WriteAscii(name, 30);
+                    writer.Clear(30); // password
+                }
+            }
+
+            writer.WriteLength();
+            ns.Send(writer.Span);
+        }
+
+        /**
+         * Packet: 0xA9
+         * Length: 1410 or more bytes
+         *
+         * Sends list of characters and starting cities
+         */
+        public static void SendCharacterList(NetState ns)
+        {
+            var acct = ns?.Account;
+
+            if (acct == null)
+            {
+                return;
+            }
+
+            var cityInfo = ns.CityInfo;
+
+            var writer = new SpanWriter(stackalloc byte[11 + acct.Length * 60 + cityInfo.Length * 89]);
+            writer.Write((byte)0xA9); // Packet ID
+            writer.Seek(2, SeekOrigin.Current); // Length
+
+            var highSlot = -1;
+
+            for (var i = acct.Length - 1; i >= 0; i--)
+            {
+                if (acct[i] != null)
+                {
+                    highSlot = i;
+                    break;
+                }
+            }
+
+            var count = Math.Max(Math.Max(highSlot + 1, acct.Limit), 5);
+            writer.Write((byte)count);
+
+            for (int i = 0; i < count; i++)
+            {
+                var m = acct[i];
+
+                if (m == null)
+                {
+                    writer.Clear(60);
+                }
+                else
+                {
+                    var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
+                    writer.WriteAscii(name, 30);
+                    writer.Clear(30); // password
+                }
+            }
+
+            writer.Write((byte)cityInfo.Length);
+
+            for (int i = 0; i < cityInfo.Length; ++i)
+            {
+                var ci = cityInfo[i];
+
+                writer.Write((byte)i);
+                writer.WriteAscii(ci.City, 32);
+                writer.WriteAscii(ci.Building, 32);
+                writer.Write(ci.X);
+                writer.Write(ci.Y);
+                writer.Write(ci.Z);
+                writer.Write(ci.Map.MapID);
+                writer.Write(ci.Description);
+                writer.Write(0);
+            }
+
+            var flags = ExpansionInfo.CoreExpansion.CharacterListFlags;
+
+            if (count > 6)
+            {
+                flags |= CharacterListFlags.SeventhCharacterSlot |
+                         CharacterListFlags.SixthCharacterSlot; // 7th Character Slot - TODO: Is SixthCharacterSlot Required?
+            }
+            else if (count == 6)
+            {
+                flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
+            }
+            else if (acct.Limit == 1)
+            {
+                flags |= CharacterListFlags.SlotLimit &
+                         CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
+            }
+
+            writer.Write((int)flags);
+            writer.Write((short)-1);
+
+            writer.WriteLength();
             ns.Send(writer.Span);
         }
     }

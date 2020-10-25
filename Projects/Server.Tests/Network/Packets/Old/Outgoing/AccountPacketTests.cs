@@ -2,7 +2,6 @@ using System;
 using System.Buffers;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using Server.Accounting;
 using Server.Network;
 using Xunit;
@@ -88,7 +87,6 @@ namespace Server.Tests.Network
             Packets.SendSupportedFeature(ns);
 
             var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
-
             AssertThat.Equal(actual, expected);
         }
 
@@ -104,59 +102,25 @@ namespace Server.Tests.Network
             m.Direction = Direction.Down;
             m.LogoutMap = Map.Felucca;
 
-            var data = new LoginConfirm(m).Compile();
+            var expected = new LoginConfirm(m).Compile();
 
-            Span<byte> expectedData = stackalloc byte[37];
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            Packets.SendLoginConfirmation(ns, m);
 
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0x1B); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, 0);
-#else
-            pos += 4;
-#endif
-
-            expectedData.Write(ref pos, (ushort)m.Body);
-            expectedData.Write(ref pos, (ushort)m.X);
-            expectedData.Write(ref pos, (ushort)m.Y);
-            expectedData.Write(ref pos, (short)m.Z);
-            expectedData.Write(ref pos, (byte)m.Direction);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0);
-#else
-            pos++;
-#endif
-            expectedData.Write(ref pos, 0xFFFFFFFF);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, 0);
-#else
-            pos += 4;
-#endif
-            var map = m.Map;
-
-            if (map == null || map == Map.Internal)
-            {
-                map = m.LogoutMap;
-            }
-
-            expectedData.Write(ref pos, (ushort)(map?.Width ?? Map.Felucca.Width));
-            expectedData.Write(ref pos, (ushort)(map?.Height ?? Map.Felucca.Height));
-
-            AssertThat.Equal(data, expectedData);
+            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            AssertThat.Equal(actual, expected);
         }
 
         [Fact]
         public void TestLoginComplete()
         {
-            var data = new LoginComplete().Compile();
+            var expected = new LoginComplete().Compile();
 
-            Span<byte> expectedData = stackalloc byte[]
-            {
-                0x55 // Packet ID
-            };
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            Packets.SendLoginComplete(ns);
 
-            AssertThat.Equal(data, expectedData);
+            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            AssertThat.Equal(actual, expected);
         }
 
         [Fact]
@@ -164,66 +128,17 @@ namespace Server.Tests.Network
         {
             var firstMobile = new Mobile(0x1);
             firstMobile.DefaultMobileInit();
-            firstMobile.Name = "Test Mobile";
+            firstMobile.RawName = "Test Mobile";
 
-            var account = new TestAccount(new[] { firstMobile, null, null, null, null });
+            var acct = new TestAccount(new[] { null, firstMobile, null, null, null });
 
-            var data = new CharacterListUpdate(account).Compile();
+            var expected = new CharacterListUpdate(acct).Compile();
 
-            Span<byte> expectedData = stackalloc byte[4 + account.Length * 60];
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            Packets.SendCharacterListUpdate(ns, acct);
 
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0x86);                  // Packet ID
-            expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
-
-            var highSlot = -1;
-            for (var i = account.Length - 1; i >= 0; i--)
-            {
-                if (account[i] != null)
-                {
-                    highSlot = i;
-                    break;
-                }
-            }
-
-            var count = Math.Max(Math.Max(highSlot + 1, account.Limit), 5);
-            expectedData.Write(ref pos, (byte)count);
-
-            for (var i = 0; i < count; i++)
-            {
-                var m = account[i];
-
-                if (m != null)
-                {
-                    expectedData.WriteAsciiFixed(ref pos, m.Name, 30);
-#if NO_LOCAL_INIT
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, 0);
-                    expectedData.Write(ref pos, (ushort)0);
-#else
-                    pos += 30;
-#endif
-                }
-                else
-                {
-#if NO_LOCAL_INIT
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, 0);
-#else
-                    pos += 60;
-#endif
-                }
-            }
-
-            AssertThat.Equal(data, expectedData);
+            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            AssertThat.Equal(actual, expected);
         }
 
         [Fact]
@@ -233,106 +148,22 @@ namespace Server.Tests.Network
             firstMobile.DefaultMobileInit();
             firstMobile.Name = "Test Mobile";
 
-            var account = new TestAccount(new[] { firstMobile, null, null, null, null });
+            var acct = new TestAccount(new[] { null, firstMobile, null, null, null });
             var info = new[]
             {
                 new CityInfo("Test City", "Test Building", 50, 100, 10, -10)
             };
 
-            var data = new CharacterList(account, info).Compile();
+            var expected = new CharacterList(acct, info).Compile();
 
-            Span<byte> expectedData = stackalloc byte[11 + account.Length * 60 + info.Length * 89];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.CityInfo = info;
+            ns.Account = acct;
 
-            expectedData.Write(ref pos, (byte)0xA9);                  // Packet ID
-            expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
+            Packets.SendCharacterList(ns);
 
-            var highSlot = -1;
-            for (var i = account.Length - 1; i >= 0; i--)
-            {
-                if (account[i] != null)
-                {
-                    highSlot = i;
-                    break;
-                }
-            }
-
-            var count = Math.Max(Math.Max(highSlot + 1, account.Limit), 5);
-            expectedData.Write(ref pos, (byte)count);
-
-            for (var i = 0; i < count; i++)
-            {
-                var m = account[i];
-                if (m != null)
-                {
-                    expectedData.WriteAsciiFixed(ref pos, m.Name, 30);
-#if NO_LOCAL_INIT
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, 0);
-                    expectedData.Write(ref pos, (ushort)0);
-#else
-                    pos += 30;
-#endif
-                }
-                else
-                {
-#if NO_LOCAL_INIT
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, 0);
-#else
-                    pos += 60;
-#endif
-                }
-            }
-
-            expectedData.Write(ref pos, (byte)info.Length);
-
-            for (var i = 0; i < info.Length; i++)
-            {
-                var ci = info[i];
-                expectedData.Write(ref pos, (byte)i);
-                expectedData.WriteAsciiFixed(ref pos, ci.City, 32);
-                expectedData.WriteAsciiFixed(ref pos, ci.Building, 32);
-                expectedData.Write(ref pos, ci.X);
-                expectedData.Write(ref pos, ci.Y);
-                expectedData.Write(ref pos, ci.Z);
-                expectedData.Write(ref pos, ci.Map.MapID);
-                expectedData.Write(ref pos, ci.Description);
-#if NO_LOCAL_INIT
-                expectedData.Write(ref pos, 0);
-#else
-                pos += 4;
-#endif
-            }
-
-            var flags = ExpansionInfo.GetInfo(Expansion.EJ).CharacterListFlags;
-            if (count > 6)
-            {
-                flags |= CharacterListFlags.SeventhCharacterSlot |
-                         CharacterListFlags.SixthCharacterSlot; // 7th Character Slot
-            }
-            else if (count == 6)
-            {
-                flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
-            }
-            else if (account.Limit == 1)
-            {
-                flags |= CharacterListFlags.SlotLimit &
-                         CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
-            }
-
-            expectedData.Write(ref pos, (int)flags);
-            expectedData.Write(ref pos, (short)-1);
-
-            AssertThat.Equal(data, expectedData);
+            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            AssertThat.Equal(actual, expected);
         }
 
         [Fact]

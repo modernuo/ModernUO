@@ -2095,7 +2095,7 @@ namespace Server.Network
 
         public static void DoLogin(NetState state, Mobile m)
         {
-            state.Send(new LoginConfirm(m));
+            Packets.SendLoginConfirmation(state, m);
 
             if (m.Map != null)
             {
@@ -2183,7 +2183,7 @@ namespace Server.Network
                 state.Send(new MobileIncomingOld(m, m));
             }
 
-            state.Send(LoginComplete.Instance);
+            Packets.SendLoginComplete(state);
             state.Send(new CurrentTime());
             state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
             if (m.Map != null)
@@ -2550,7 +2550,7 @@ namespace Server.Network
 
                 if (state.NewCharacterList)
                 {
-                    state.Send(new CharacterList(state.Account, state.CityInfo));
+                    Packets.SendCharacterList(state);
                 }
                 else
                 {

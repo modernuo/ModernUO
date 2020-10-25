@@ -1,3 +1,4 @@
+using System;
 using Server.Accounting;
 using Server.Network;
 
@@ -93,6 +94,154 @@ namespace Server.Tests.Network
             {
                 Stream.Write((ushort)flags);
             }
+        }
+    }
+
+    public sealed class LoginConfirm : Packet
+    {
+        public LoginConfirm(Mobile m) : base(0x1B, 37)
+        {
+            Stream.Write(m.Serial);
+            Stream.Write(0);
+            Stream.Write((short)m.Body);
+            Stream.Write((short)m.X);
+            Stream.Write((short)m.Y);
+            Stream.Write((short)m.Z);
+            Stream.Write((byte)m.Direction);
+            Stream.Write((byte)0);
+            Stream.Write(-1);
+
+            var map = m.Map;
+
+            if (map == null || map == Map.Internal)
+            {
+                map = m.LogoutMap;
+            }
+
+            Stream.Write((short)0);
+            Stream.Write((short)0);
+            Stream.Write((short)(map?.Width ?? Map.Felucca.Width));
+            Stream.Write((short)(map?.Height ?? Map.Felucca.Height));
+
+            Stream.Fill();
+        }
+    }
+
+    public sealed class LoginComplete : Packet
+    {
+        public LoginComplete() : base(0x55, 1)
+        {
+        }
+    }
+
+    public sealed class CharacterListUpdate : Packet
+    {
+        public CharacterListUpdate(IAccount a) : base(0x86)
+        {
+            EnsureCapacity(4 + a.Length * 60);
+
+            var highSlot = -1;
+
+            for (var i = 0; i < a.Length; ++i)
+            {
+                if (a[i] != null)
+                {
+                    highSlot = i;
+                }
+            }
+
+            var count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
+
+            Stream.Write((byte)count);
+
+            for (var i = 0; i < count; ++i)
+            {
+                var m = a[i];
+
+                if (m != null)
+                {
+                    var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
+                    Stream.WriteAsciiFixed(name, 30);
+                    Stream.Fill(30); // password
+                }
+                else
+                {
+                    Stream.Fill(60);
+                }
+            }
+        }
+    }
+
+    public sealed class CharacterList : Packet
+    {
+        public CharacterList(IAccount a, CityInfo[] info) : base(0xA9)
+        {
+            EnsureCapacity(11 + a.Length * 60 + info.Length * 89);
+
+            var highSlot = -1;
+
+            for (var i = 0; i < a.Length; ++i)
+            {
+                if (a[i] != null)
+                {
+                    highSlot = i;
+                }
+            }
+
+            var count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
+
+            Stream.Write((byte)count);
+
+            for (var i = 0; i < count; ++i)
+            {
+                if (a[i] != null)
+                {
+                    Stream.WriteAsciiFixed(a[i].Name, 30);
+                    Stream.Fill(30); // password
+                }
+                else
+                {
+                    Stream.Fill(60);
+                }
+            }
+
+            Stream.Write((byte)info.Length);
+
+            for (var i = 0; i < info.Length; ++i)
+            {
+                var ci = info[i];
+
+                Stream.Write((byte)i);
+                Stream.WriteAsciiFixed(ci.City, 32);
+                Stream.WriteAsciiFixed(ci.Building, 32);
+                Stream.Write(ci.X);
+                Stream.Write(ci.Y);
+                Stream.Write(ci.Z);
+                Stream.Write(ci.Map.MapID);
+                Stream.Write(ci.Description);
+                Stream.Write(0);
+            }
+
+            var flags = ExpansionInfo.CoreExpansion.CharacterListFlags;
+
+            if (count > 6)
+            {
+                flags |= CharacterListFlags.SeventhCharacterSlot |
+                         CharacterListFlags.SixthCharacterSlot; // 7th Character Slot - TODO: Is SixthCharacterSlot Required?
+            }
+            else if (count == 6)
+            {
+                flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
+            }
+            else if (a.Limit == 1)
+            {
+                flags |= CharacterListFlags.SlotLimit &
+                         CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
+            }
+
+            Stream.Write((int)flags); // Additional Flags
+
+            Stream.Write((short)-1);
         }
     }
 }
