@@ -13,9 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
-
-namespace Server.Buffers
+namespace System.Buffers
 {
     public readonly ref struct CircularBuffer<T> where T : struct
     {
