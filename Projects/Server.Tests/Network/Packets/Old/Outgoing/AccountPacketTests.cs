@@ -2,7 +2,6 @@ using System;
 using System.Buffers;
 using System.Linq;
 using System.Net;
-using System.Net.Sockets;
 using System.Threading;
 using Server.Accounting;
 using Server.Network;
@@ -61,15 +60,13 @@ namespace Server.Tests.Network
         [Fact]
         public void TestPopupMessage()
         {
-            var data = new PopupMessage(PMMessage.IdleWarning).Compile();
+            var expected = new PopupMessage(PMMessage.LoginSyncError).Compile();
 
-            Span<byte> expectedData = stackalloc byte[2];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            Packets.SendPopupMessage(ns, PMMessage.LoginSyncError);
 
-            expectedData.Write(ref pos, (byte)0x53); // Packet ID
-            expectedData.Write(ref pos, (byte)PMMessage.IdleWarning);
-
-            AssertThat.Equal(data, expectedData);
+            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            AssertThat.Equal(actual, expected);
         }
 
         [Theory]

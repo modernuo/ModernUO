@@ -2059,7 +2059,7 @@ namespace Server.Network
                     if (check != null && check.Map != Map.Internal && check != m)
                     {
                         state.WriteConsole("Account in use");
-                        state.Send(new PopupMessage(PMMessage.CharInWorld));
+                        Packets.SendPopupMessage(state, PMMessage.CharInWorld);
                         return;
                     }
                 }
@@ -2277,7 +2277,7 @@ namespace Server.Network
                     if (check != null && check.Map != Map.Internal)
                     {
                         state.WriteConsole("Account in use");
-                        state.Send(new PopupMessage(PMMessage.CharInWorld));
+                        Packets.SendPopupMessage(state, PMMessage.CharInWorld);
                         return;
                     }
                 }
@@ -2402,7 +2402,7 @@ namespace Server.Network
                     if (check != null && check.Map != Map.Internal)
                     {
                         state.WriteConsole("Account in use");
-                        state.Send(new PopupMessage(PMMessage.CharInWorld));
+                        Packets.SendPopupMessage(state, PMMessage.CharInWorld);
                         return;
                     }
                 }

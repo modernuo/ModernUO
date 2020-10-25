@@ -22,16 +22,17 @@ namespace Server.Network
 {
     public enum ALRReason : byte
     {
-        Invalid = 0x00,
-        InUse = 0x01,
-        Blocked = 0x02,
-        BadPass = 0x03,
-        Idle = 0xFE,
-        BadComm = 0xFF
+        Invalid = 0,
+        InUse = 1,
+        Blocked = 2,
+        BadPass = 3,
+        Idle = 254,
+        BadComm = 255
     }
 
     public enum PMMessage : byte
     {
+        None = 0,
         CharNoExist = 1,
         CharExists = 2,
         CharInWorld = 5,
@@ -124,8 +125,23 @@ namespace Server.Network
         public static void SendCharacterDeleteResult(NetState ns, DeleteResultType res)
         {
             ns?.Send(stackalloc byte[] {
-                0x85, // Pakcet ID
+                0x85, // Packet ID
                 (byte)res
+            });
+        }
+
+        /**
+         * Packet: 0x53
+         * Length: 2 bytes
+         *
+         * Sends a PopupMessage with a predetermined message
+         */
+        public static void SendPopupMessage(NetState ns, PMMessage msg)
+        {
+            ns?.Send(stackalloc byte[]
+            {
+                0x53, // Packet ID
+                (byte)msg
             });
         }
     }
