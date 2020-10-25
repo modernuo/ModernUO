@@ -115,5 +115,18 @@ namespace Server.Buffers
                 _second.CopyTo(bytes.Slice(_first.Length));
             }
         }
+
+        public CircularBuffer<T> Slice(int offset, int count)
+        {
+            var firstCount = Math.Min(count, _first.Length - offset);
+            var first = offset < _first.Length
+                ? _first.Slice(offset, firstCount)
+                : Span<T>.Empty;
+
+            var secondCount = offset > _first.Length ? count : count - firstCount;
+            var second = secondCount > 0 ? _second.Slice(Math.Max(0, offset - _first.Length), secondCount) : Span<T>.Empty;
+
+            return new CircularBuffer<T>(first, second);
+        }
     }
 }
