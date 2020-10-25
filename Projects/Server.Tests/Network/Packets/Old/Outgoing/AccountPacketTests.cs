@@ -26,7 +26,7 @@ namespace Server.Tests.Network
             var account = new TestAccount(new[] { firstMobile, null, secondMobile });
             var oldPacket = new ChangeCharacter(account).Compile();
 
-            using var ns = new NetState(new Socket(SocketType.Stream, ProtocolType.Tcp), Thread.CurrentThread);
+            using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendChangeCharacter(ns, account);
 
             var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
@@ -38,27 +38,24 @@ namespace Server.Tests.Network
         {
             var expected = new ClientVersionReq().Compile();
 
-            using var ns = new NetState(new Socket(SocketType.Stream, ProtocolType.Tcp), Thread.CurrentThread);
+            using var ns = PacketTestUtilities.CreateTestNetState();
 
             Packets.SendClientVersionRequest(ns);
 
             var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
             AssertThat.Equal(actual, expected);
-            ns.Dispose();
         }
 
         [Fact]
         public void TestDeleteResult()
         {
-            var data = new DeleteResult(DeleteResultType.BadRequest).Compile();
+            var expected = new DeleteResult(DeleteResultType.BadRequest).Compile();
 
-            Span<byte> expectedData = stackalloc byte[2];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            Packets.SendCharacterDeleteResult(ns, DeleteResultType.BadRequest);
 
-            expectedData.Write(ref pos, (byte)0x85); // Packet ID
-            expectedData.Write(ref pos, (byte)DeleteResultType.BadRequest);
-
-            AssertThat.Equal(data, expectedData);
+            var actual = ns.OutgoingPipe.Reader.TryRead().Buffer[0];
+            AssertThat.Equal(actual, expected);
         }
 
         [Fact]

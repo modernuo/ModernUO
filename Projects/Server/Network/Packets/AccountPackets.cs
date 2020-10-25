@@ -104,7 +104,7 @@ namespace Server.Network
          * Packet: 0xBD
          * Length: 3 bytes
          *
-         * Requests for the client version
+         * Sends a requests for the client version
          */
         public static void SendClientVersionRequest(NetState ns)
         {
@@ -112,6 +112,20 @@ namespace Server.Network
             {
                 0xBD, // PacketID
                 0x00, 0x03 // Length
+            });
+        }
+
+        /**
+         * Packet: 0x85
+         * Length: 2 bytes
+         *
+         * Sends the result of a deletion request
+         */
+        public static void SendCharacterDeleteResult(NetState ns, DeleteResultType res)
+        {
+            ns?.Send(stackalloc byte[] {
+                0x85, // Pakcet ID
+                (byte)res
             });
         }
     }
