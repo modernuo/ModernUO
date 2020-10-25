@@ -61,11 +61,14 @@ namespace Server.Network
             0x4, 0x00D
         };
 
-        public static int Compress(Span<byte> input, Span<byte> output)
+        public static void Compress(CircularBuffer<byte> buffer, ref int length)
         {
-            int inputCapacity = input.Length;
+            length = Compress(buffer, length, buffer);
+        }
 
-            if (inputCapacity > DefiniteOverflow)
+        public static int Compress(CircularBuffer<byte> input, int inputLength, CircularBuffer<byte> output)
+        {
+            if (inputLength > DefiniteOverflow)
             {
                 return 0;
             }
@@ -76,7 +79,7 @@ namespace Server.Network
             int inputIdx = 0;
             int outputIdx = 0;
 
-            while (inputIdx < inputCapacity)
+            while (inputIdx < inputLength)
             {
                 int i = input[inputIdx++] << 1;
 
@@ -122,21 +125,20 @@ namespace Server.Network
             return outputIdx;
         }
 
-        public static void Compress(ReadOnlySpan<byte> input, CircularBufferWriter output)
+        public static int Compress(ReadOnlySpan<byte> input, Span<byte> output)
         {
-            int inputCapacity = input.Length;
-
-            if (inputCapacity > DefiniteOverflow)
+            if (input.Length > DefiniteOverflow)
             {
-                return;
+                return 0;
             }
 
             int bitCount = 0;
             int bitValue = 0;
 
             int inputIdx = 0;
+            int outputIdx = 0;
 
-            while (inputIdx < inputCapacity)
+            while (inputIdx < input.Length)
             {
                 int i = input[inputIdx++] << 1;
 
@@ -147,12 +149,12 @@ namespace Server.Network
                 {
                     bitCount -= 8;
 
-                    if (output.Length < output.Position + 1)
+                    if (output.Length < outputIdx + 1)
                     {
-                        return;
+                        return 0;
                     }
 
-                    output.Write((byte)(bitValue >> bitCount));
+                    output[outputIdx++] = (byte)(bitValue >> bitCount);
                 }
             }
 
@@ -171,119 +173,15 @@ namespace Server.Network
             {
                 bitCount -= 8;
 
-                if (output.Length < output.Position + 1)
+                if (output.Length < outputIdx + 1)
                 {
-                    return;
+                    return 0;
                 }
 
-                output.Write((byte)(bitValue >> bitCount));
-            }
-        }
-
-        public static unsafe void Compress(
-            ReadOnlySpan<byte> input, int offset, int count, Span<byte> output, out int length
-        )
-        {
-            if (input == null)
-            {
-                throw new ArgumentNullException(nameof(input));
+                output[outputIdx++] = (byte)(bitValue >> bitCount);
             }
 
-            if (offset < 0 || offset >= input.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(offset));
-            }
-
-            if (count < 0 || count > input.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
-
-            if (input.Length - offset < count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(offset));
-            }
-
-            length = 0;
-
-            if (count > DefiniteOverflow)
-            {
-                return;
-            }
-
-            var bitCount = 0;
-            var bitValue = 0;
-
-            fixed (int* pTable = _huffmanTable)
-            {
-                fixed (byte* pInputBuffer = input)
-                {
-                    byte* pInput = pInputBuffer + offset, pInputEnd = pInput + count;
-
-                    fixed (byte* pOutputBuffer = output)
-                    {
-                        byte* pOutput = pOutputBuffer, pOutputEnd = pOutput + BufferSize;
-
-                        int* pEntry;
-                        while (pInput < pInputEnd)
-                        {
-                            pEntry = &pTable[*pInput++ << 1];
-
-                            bitCount += pEntry[CountIndex];
-
-                            bitValue <<= pEntry[CountIndex];
-                            bitValue |= pEntry[ValueIndex];
-
-                            while (bitCount >= 8)
-                            {
-                                bitCount -= 8;
-
-                                if (pOutput < pOutputEnd)
-                                {
-                                    *pOutput++ = (byte)(bitValue >> bitCount);
-                                }
-                                else
-                                {
-                                    length = 0;
-                                    return;
-                                }
-                            }
-                        }
-
-                        // terminal code
-                        pEntry = &pTable[0x200];
-
-                        bitCount += pEntry[CountIndex];
-
-                        bitValue <<= pEntry[CountIndex];
-                        bitValue |= pEntry[ValueIndex];
-
-                        // align on byte boundary
-                        if ((bitCount & 7) != 0)
-                        {
-                            bitValue <<= 8 - (bitCount & 7);
-                            bitCount += 8 - (bitCount & 7);
-                        }
-
-                        while (bitCount >= 8)
-                        {
-                            bitCount -= 8;
-
-                            if (pOutput < pOutputEnd)
-                            {
-                                *pOutput++ = (byte)(bitValue >> bitCount);
-                            }
-                            else
-                            {
-                                length = 0;
-                                return;
-                            }
-                        }
-
-                        length = (int)(pOutput - pOutputBuffer);
-                    }
-                }
-            }
+            return outputIdx;
         }
     }
 }
