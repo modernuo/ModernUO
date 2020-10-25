@@ -12,7 +12,7 @@ namespace Server.Network
         private const int ValueIndex = 1;
 
         // UO packets may not exceed 64kb in length
-        private const int BufferSize = 0x10000;
+        public const int BufferSize = 0x10000;
 
         // Optimal compression ratio is 2 / 8;  worst compression ratio is 11 / 8
         private const int MinimalCodeLength = 2;
@@ -61,6 +61,67 @@ namespace Server.Network
             0x4, 0x00D
         };
 
+        public static int Compress(Span<byte> input, Span<byte> output)
+        {
+            int inputCapacity = input.Length;
+
+            if (inputCapacity > DefiniteOverflow)
+            {
+                return 0;
+            }
+
+            int bitCount = 0;
+            int bitValue = 0;
+
+            int inputIdx = 0;
+            int outputIdx = 0;
+
+            while (inputIdx < inputCapacity)
+            {
+                int i = input[inputIdx++] << 1;
+
+                bitCount += _huffmanTable[i];
+                bitValue = (bitValue << _huffmanTable[i]) | _huffmanTable[i + 1];
+
+                while (bitCount >= 8)
+                {
+                    bitCount -= 8;
+
+                    if (output.Length < outputIdx + 1)
+                    {
+                        return 0;
+                    }
+
+                    output[outputIdx++] = (byte)(bitValue >> bitCount);
+                }
+            }
+
+            // terminal code
+            bitCount += _huffmanTable[0x200];
+            bitValue = (bitValue << _huffmanTable[0x200]) | _huffmanTable[0x201];
+
+            // align on byte boundary
+            if ((bitCount & 7) != 0)
+            {
+                bitValue <<= 8 - (bitCount & 7);
+                bitCount += 8 - (bitCount & 7);
+            }
+
+            while (bitCount >= 8)
+            {
+                bitCount -= 8;
+
+                if (output.Length < outputIdx + 1)
+                {
+                    return 0;
+                }
+
+                output[outputIdx++] = (byte)(bitValue >> bitCount);
+            }
+
+            return outputIdx;
+        }
+
         public static void Compress(ReadOnlySpan<byte> input, CircularBufferWriter output)
         {
             int inputCapacity = input.Length;
@@ -80,8 +141,7 @@ namespace Server.Network
                 int i = input[inputIdx++] << 1;
 
                 bitCount += _huffmanTable[i];
-                bitValue <<= _huffmanTable[i];
-                bitValue |= _huffmanTable[i + 1];
+                bitValue = (bitValue << _huffmanTable[i]) | _huffmanTable[i + 1];
 
                 while (bitCount >= 8)
                 {
@@ -98,14 +158,13 @@ namespace Server.Network
 
             // terminal code
             bitCount += _huffmanTable[0x200];
-            bitValue <<= _huffmanTable[0x200];
-            bitValue |= _huffmanTable[0x201];
+            bitValue = (bitValue << _huffmanTable[0x200]) | _huffmanTable[0x201];
 
             // align on byte boundary
             if ((bitCount & 7) != 0)
             {
-                bitValue <<= (8 - (bitCount & 7));
-                bitCount += (8 - (bitCount & 7));
+                bitValue <<= 8 - (bitCount & 7);
+                bitCount += 8 - (bitCount & 7);
             }
 
             while (bitCount >= 8)
