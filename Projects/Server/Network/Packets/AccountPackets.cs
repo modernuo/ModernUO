@@ -53,9 +53,10 @@ namespace Server.Network
     {
         /**
          * Packet: 0x81
-         * Size: Up to 425 bytes
+         * Length: Up to 425 bytes
          *
          * Displays the list of characters during the login process.
+         * Note: Currently Unused
          */
         public static void SendChangeCharacter(NetState ns, IAccount a)
         {
@@ -99,11 +100,17 @@ namespace Server.Network
             ns.Send(buffer);
         }
 
+        /**
+         * Packet: 0xBD
+         * Length: 3 bytes
+         *
+         * Requests for the client version
+         */
         public static void SendClientVersionRequest(NetState ns)
         {
             ns?.Send(stackalloc byte[]
             {
-                0x81, // PacketID
+                0xBD, // PacketID
                 0x00, 0x03 // Length
             });
         }

@@ -2075,7 +2075,7 @@ namespace Server.Network
                 // TODO: Make this wait one tick so we don't have to call it unnecessarily
                 NetState.ProcessDisposedQueue();
 
-                state.Send(new ClientVersionReq());
+                Packets.SendClientVersionRequest(state);
 
                 state.BlockAllPackets = true;
 
@@ -2310,7 +2310,7 @@ namespace Server.Network
                     race
                 );
 
-                state.Send(new ClientVersionReq());
+                Packets.SendClientVersionRequest(state);
 
                 state.BlockAllPackets = true;
 
@@ -2436,7 +2436,7 @@ namespace Server.Network
                     race
                 );
 
-                state.Send(new ClientVersionReq());
+                Packets.SendClientVersionRequest(state);
 
                 state.BlockAllPackets = true;
 

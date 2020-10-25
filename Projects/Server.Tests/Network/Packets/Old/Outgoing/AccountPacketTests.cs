@@ -27,25 +27,27 @@ namespace Server.Tests.Network
             var oldPacket = new ChangeCharacter(account).Compile();
 
             var ns = PipeTestNetState.CreateOutgoing(out var outgoingPipe);
+
             Packets.SendChangeCharacter(ns, account);
 
-            var result = outgoingPipe.Reader.TryRead();
+            var actual = outgoingPipe.Reader.TryRead().Buffer[0];
 
-            AssertThat.Equal( result.Buffer[0], oldPacket);
+            AssertThat.Equal( actual, oldPacket);
+            ns.Dispose();
         }
 
         [Fact]
         public void TestClientVersionReq()
         {
-            var data = new ClientVersionReq().Compile();
+            var expected = new ClientVersionReq().Compile();
 
-            Span<byte> expectedData = stackalloc byte[]
-            {
-                0xBD,      // Packet ID
-                0x00, 0x03 // Length
-            };
+            var ns = PipeTestNetState.CreateOutgoing(out var outgoingPipe);
 
-            AssertThat.Equal(data, expectedData);
+            Packets.SendClientVersionRequest(ns);
+
+            var actual = outgoingPipe.Reader.TryRead().Buffer[0];
+
+            AssertThat.Equal(actual, expected);
         }
 
         [Fact]
