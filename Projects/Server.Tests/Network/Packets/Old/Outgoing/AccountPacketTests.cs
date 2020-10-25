@@ -6,7 +6,7 @@ using Server.Accounting;
 using Server.Network;
 using Xunit;
 
-namespace Server.Tests.Network.Packets
+namespace Server.Tests.Network
 {
     public class AccountPacketTests : IClassFixture<ServerFixture>
     {

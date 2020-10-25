@@ -4,7 +4,7 @@ using Server.Items;
 using Server.Network;
 using Xunit;
 
-namespace Server.Tests.Network.Packets
+namespace Server.Tests.Network
 {
     public class SecureTradePacketTests : IClassFixture<ServerFixture>
     {

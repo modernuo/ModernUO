@@ -4,7 +4,7 @@ using Server.Network;
 using Server.Targeting;
 using Xunit;
 
-namespace Server.Tests.Network.Packets
+namespace Server.Tests.Network
 {
     public class TestMultiTarget : MultiTarget
     {
