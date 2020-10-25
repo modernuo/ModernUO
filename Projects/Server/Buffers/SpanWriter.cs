@@ -161,7 +161,18 @@ namespace Server.Buffers
                 throw new OutOfMemoryException();
             }
 
-            Position += encoding.GetBytes(src, _buffer.Slice(Position));
+            var bytesWritten = encoding.GetBytes(src, _buffer.Slice(Position));
+
+            Position += bytesWritten;
+
+            if (fixedLength > -1)
+            {
+                var extra = (fixedLength * sizeT) - bytesWritten;
+                if (extra > 0)
+                {
+                    Clear(extra);
+                }
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
