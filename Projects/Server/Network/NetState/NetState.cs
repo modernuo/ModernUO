@@ -35,8 +35,6 @@ namespace Server.Network
 
     public delegate void EncodePacket(ReadOnlySpan<byte> inputBuffer, CircularBufferWriter outputBuffer);
 
-    public delegate void DecodePacket(NetState ns, CircularBufferReader inputBuffer, Span<byte> outputBuffer, out uint length);
-
     public partial class NetState : IComparable<NetState>
     {
         private static int IncomingPipeSize = 1024 * 64;
@@ -60,6 +58,8 @@ namespace Server.Network
         private long m_NextCheckActivity;
         private volatile bool m_Running;
         private Thread _sendThread;
+        private volatile EncodePacket _packetDecoder;
+        private volatile EncodePacket _packetEncoder;
 
         internal int m_AuthID;
         internal int m_Seed;
@@ -120,9 +120,17 @@ namespace Server.Network
 
         public IPAddress Address { get; }
 
-        public DecodePacket PacketDecoder { get; set; }
+        public EncodePacket PacketDecoder
+        {
+            get => _packetDecoder;
+            set => _packetDecoder = value;
+        }
 
-        public EncodePacket PacketEncoder { get; set; }
+        public EncodePacket PacketEncoder
+        {
+            get => _packetEncoder;
+            set => _packetEncoder = value;
+        }
 
         public bool SentFirstPacket { get; set; }
 
@@ -519,10 +527,19 @@ namespace Server.Network
             }
         }
 
+        private int DecodePacket(ReadOnlySpan<byte> input, ArraySegment<byte>[] output)
+        {
+            var writer = new CircularBufferWriter(output);
+            PacketDecoder(input, writer);
+            return writer.Position;
+        }
+
         private async void RecvTask(object state)
         {
             var socket = Connection;
             var writer = m_IncomingPipe.Writer;
+
+            byte[] encodingBuffer = null;
 
             try
             {
@@ -540,13 +557,32 @@ namespace Server.Network
                         continue;
                     }
 
-                    var buffer = result.Buffer;
+                    int bytesWritten;
 
-                    var bytesWritten = await socket.ReceiveAsync(buffer, SocketFlags.None);
-
-                    if (bytesWritten <= 0)
+                    if (PacketDecoder != null)
                     {
-                        break;
+                        encodingBuffer ??= ArrayPool<byte>.Shared.Rent(0x10000);
+                        bytesWritten = await socket.ReceiveAsync(encodingBuffer, SocketFlags.None);
+                        if (bytesWritten <= 0)
+                        {
+                            break;
+                        }
+                        bytesWritten = DecodePacket(encodingBuffer.AsSpan(0, bytesWritten), result.Buffer);
+                    }
+                    else
+                    {
+                        if (encodingBuffer != null)
+                        {
+                            var returnBuffer = encodingBuffer;
+                            encodingBuffer = null;
+                            ArrayPool<byte>.Shared.Return(returnBuffer);
+                        }
+
+                        bytesWritten = await socket.ReceiveAsync(result.Buffer, SocketFlags.None);
+                        if (bytesWritten <= 0)
+                        {
+                            break;
+                        }
                     }
 
                     writer.Advance((uint)bytesWritten);
@@ -564,6 +600,10 @@ namespace Server.Network
             }
             finally
             {
+                if (encodingBuffer != null)
+                {
+                    ArrayPool<byte>.Shared.Return(encodingBuffer);
+                }
                 Dispose();
             }
         }
