@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using Server.ContextMenus;
@@ -276,9 +277,9 @@ namespace Server.Network
             }
         }
 
-        public static int ProcessPacket(NetState ns, ArraySegment<byte>[] segments)
+        public static int ProcessPacket(NetState ns, ref CircularBuffer<byte> buffer)
         {
-            var reader = new CircularBufferReader(segments);
+            var reader = new CircularBufferReader(ref buffer);
 
             var packetId = reader.ReadByte();
 

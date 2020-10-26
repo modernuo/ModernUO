@@ -15,7 +15,7 @@
 
 namespace System.Buffers
 {
-    public readonly ref struct CircularBuffer<T> where T : struct
+    public readonly ref struct CircularBuffer<T>
     {
         private readonly Span<T> _first;
         private readonly Span<T> _second;

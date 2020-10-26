@@ -31,7 +31,7 @@ namespace Server.Network
         public int Position { get; private set; }
         public int Remaining => Length - Position;
 
-        public CircularBufferReader(ArraySegment<byte>[] buffers) : this(buffers[0], buffers[1])
+        public CircularBufferReader(ref CircularBuffer<byte> buffer) : this(buffer.GetSpan(0), buffer.GetSpan(1))
         {
         }
 
