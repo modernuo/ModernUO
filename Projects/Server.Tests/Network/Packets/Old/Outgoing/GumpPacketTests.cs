@@ -2,8 +2,6 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Threading;
 using Server.Gumps;
 using Server.Network;
 using Xunit;
