@@ -381,13 +381,11 @@ namespace Server.Network
                 return;
             }
 
+#if DEBUG
             var currentThread = Thread.CurrentThread;
-
             if (currentThread != _sendThread)
             {
-                Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
-#if DEBUG
-                throw new InvalidThreadException(nameof(Send));
+                throw new InvalidThreadException("Attempted to send packet outside send thread!");
 #endif
             }
 
@@ -414,13 +412,12 @@ namespace Server.Network
                 return;
             }
 
+#if DEBUG
             var currentThread = Thread.CurrentThread;
 
             if (currentThread != _sendThread)
             {
-                Console.Error.WriteLine("Core: Attempted to send packet outside send thread! [{0}]", currentThread.ManagedThreadId);
-#if DEBUG
-                throw new InvalidThreadException(nameof(Send));
+                throw new InvalidThreadException("Attempted to send packet outside send thread!");
 #endif
             }
 
