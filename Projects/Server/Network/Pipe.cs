@@ -26,7 +26,7 @@ namespace Server.Network
 
         public bool IsCompleted { get; }
 
-        public T GetResult();
+        public void GetResult();
 
         public void OnCompleted(Action continuation);
     }
@@ -183,7 +183,7 @@ namespace Server.Network
             }
         }
 
-        public class PipeReader<T> : IPipeTask<PipeReader<T>>
+        public class PipeReader<T> : IPipeTask<T>
         {
             private readonly Pipe<T> _pipe;
 
@@ -201,6 +201,17 @@ namespace Server.Network
                 }
 
                 return write + _pipe.Size - read;
+            }
+
+            public IPipeTask<T> Read(ArraySegment<T>[] segments, out bool isClosed)
+            {
+                if (_pipe._awaitBeginning)
+                {
+                    throw new Exception("Double await on reader");
+                }
+
+                isClosed = !TryRead(segments);
+                return this;
             }
 
             public bool TryRead(out CircularBuffer<T> buffer)
@@ -288,7 +299,7 @@ namespace Server.Network
 
             // The following makes it possible to await the reader. Do not use any of this directly.
 
-            public IPipeTask<PipeReader<T>> GetAwaiter() => this;
+            public IPipeTask<T> GetAwaiter() => this;
 
             public bool IsCompleted
             {
@@ -304,7 +315,9 @@ namespace Server.Network
                 }
             }
 
-            public PipeReader<T> GetResult() => this;
+            public void GetResult()
+            {
+            }
 
             public void OnCompleted(Action continuation) => _pipe._readerContinuation = continuation;
 
