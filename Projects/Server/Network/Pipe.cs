@@ -212,6 +212,8 @@ namespace Server.Network
                 return write + _pipe.Size - read;
             }
 
+            private ArraySegment<T>[] _segments;
+
             public IPipeTask<Result> Read(ArraySegment<T>[] segments)
             {
                 if (_pipe._awaitBeginning)
@@ -219,8 +221,7 @@ namespace Server.Network
                     throw new Exception("Double await on reader");
                 }
 
-                TryRead(segments);
-
+                _segments = segments;
                 return this;
             }
 
@@ -249,7 +250,7 @@ namespace Server.Network
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public bool TryRead(ArraySegment<T>[] segments)
+            public void TryRead(ArraySegment<T>[] segments)
             {
                 var read = _pipe._readIdx;
                 var write = _pipe._writeIdx;
@@ -264,8 +265,6 @@ namespace Server.Network
                     segments[0] = _pipe.Size - read == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)read, (int)(_pipe.Size - read));
                     segments[1] = write == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, 0, (int)write);
                 }
-
-                return !_pipe._closed;
             }
 
             public void Advance(uint count)
@@ -327,7 +326,22 @@ namespace Server.Network
                 }
             }
 
-            public Result GetResult() => new Result(_pipe._closed);
+            public Result GetResult()
+            {
+                if (_pipe._closed)
+                {
+                    _segments = null;
+                    return new Result(true);
+                }
+
+                if (_segments != null)
+                {
+                    TryRead(_segments);
+                    _segments = null;
+                }
+
+                return new Result(false);
+            }
 
             public void OnCompleted(Action continuation) => _pipe._readerContinuation = continuation;
 
