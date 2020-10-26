@@ -98,7 +98,7 @@ namespace Server.Network
             writer.Write((byte)count);
             writer.Seek(position, SeekOrigin.Begin);
 
-            ns.Send(buffer, writer.Position);
+            ns.Send(ref buffer, writer.Position);
         }
 
         /**
@@ -115,7 +115,7 @@ namespace Server.Network
                 buffer[1] = 0x00;
                 buffer[2] = 0x03; // Length
 
-                ns.Send(buffer, 3);
+                ns.Send(ref buffer, 3);
             }
         }
 
@@ -132,7 +132,7 @@ namespace Server.Network
                 buffer[0] = 0x85; // Packet ID
                 buffer[1] = (byte)res;
 
-                ns.Send(buffer, 2);
+                ns.Send(ref buffer, 2);
             }
         }
 
@@ -149,7 +149,7 @@ namespace Server.Network
                 buffer[0] = 0x53; // Packet ID
                 buffer[1] = (byte)msg;
 
-                ns.Send(buffer, 2);
+                ns.Send(ref buffer, 2);
             }
         }
 
@@ -195,7 +195,7 @@ namespace Server.Network
                 writer.Write((ushort)flags);
             }
 
-            ns.Send(buffer, ns.ExtendedSupportedFeatures ? 5 : 3);
+            ns.Send(ref buffer, ns.ExtendedSupportedFeatures ? 5 : 3);
         }
 
         /**
@@ -236,7 +236,7 @@ namespace Server.Network
             writer.Write((short)(map?.Height ?? Map.Felucca.Height));
             writer.Clear();
 
-            ns.Send(buffer, 37);
+            ns.Send(ref buffer, 37);
         }
 
         /**
@@ -251,7 +251,7 @@ namespace Server.Network
             {
                 buffer[0] = 0x55; // Packet ID
 
-                ns.Send(buffer, 1);
+                ns.Send(ref buffer, 1);
             }
         }
 
@@ -302,8 +302,8 @@ namespace Server.Network
                 }
             }
 
-            writer.WriteLength();
-            ns.Send(buffer, writer.Position);
+            writer.WritePacketLength();
+            ns.Send(ref buffer, writer.Position);
         }
 
         /**
@@ -394,8 +394,8 @@ namespace Server.Network
             writer.Write((int)flags);
             writer.Write((short)-1);
 
-            writer.WriteLength();
-            ns.Send(buffer, writer.Position);
+            writer.WritePacketLength();
+            ns.Send(ref buffer, writer.Position);
         }
     }
 }
