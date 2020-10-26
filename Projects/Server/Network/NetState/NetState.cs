@@ -489,8 +489,8 @@ namespace Server.Network
             {
                 while (m_Running)
                 {
-                    await reader.Read(segments, out var isClosed);
-                    if (isClosed)
+                    var result = await reader.Read(segments);
+                    if (result.Closed)
                     {
                         break;
                     }

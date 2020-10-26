@@ -26,19 +26,27 @@ namespace Server.Network
 
         public bool IsCompleted { get; }
 
-        public void GetResult();
+        public T GetResult();
 
         public void OnCompleted(Action continuation);
     }
 
     public class Pipe<T>
     {
+        public readonly struct Result<T>
+        {
+            public bool Closed { get; }
+
+            public Result(bool closed) => Closed = closed;
+        }
+
         public class PipeWriter<T>
         {
             private readonly Pipe<T> _pipe;
 
             public PipeWriter(Pipe<T> pipe) => _pipe = pipe;
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool GetAvailable(ArraySegment<T>[] segments)
             {
                 var read = _pipe._readIdx;
@@ -63,6 +71,7 @@ namespace Server.Network
                 return !_pipe._closed;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool GetAvailable(out CircularBuffer<T> buffer)
             {
                 var read = _pipe._readIdx;
@@ -183,7 +192,7 @@ namespace Server.Network
             }
         }
 
-        public class PipeReader<T> : IPipeTask<T>
+        public class PipeReader<T> : IPipeTask<Result<T>>
         {
             private readonly Pipe<T> _pipe;
 
@@ -203,17 +212,19 @@ namespace Server.Network
                 return write + _pipe.Size - read;
             }
 
-            public IPipeTask<T> Read(ArraySegment<T>[] segments, out bool isClosed)
+            public IPipeTask<Result<T>> Read(ArraySegment<T>[] segments)
             {
                 if (_pipe._awaitBeginning)
                 {
                     throw new Exception("Double await on reader");
                 }
 
-                isClosed = !TryRead(segments);
+                TryRead(segments);
+
                 return this;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool TryRead(out CircularBuffer<T> buffer)
             {
                 var read = _pipe._readIdx;
@@ -237,6 +248,7 @@ namespace Server.Network
                 return !_pipe._closed;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool TryRead(ArraySegment<T>[] segments)
             {
                 var read = _pipe._readIdx;
@@ -299,7 +311,7 @@ namespace Server.Network
 
             // The following makes it possible to await the reader. Do not use any of this directly.
 
-            public IPipeTask<T> GetAwaiter() => this;
+            public IPipeTask<Result<T>> GetAwaiter() => this;
 
             public bool IsCompleted
             {
@@ -315,9 +327,7 @@ namespace Server.Network
                 }
             }
 
-            public void GetResult()
-            {
-            }
+            public Result<T> GetResult() => new Result<T>(_pipe._closed);
 
             public void OnCompleted(Action continuation) => _pipe._readerContinuation = continuation;
 
