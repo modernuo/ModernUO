@@ -23,7 +23,6 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Server.Accounting;
-using Server.Exceptions;
 using Server.Gumps;
 using Server.HuePickers;
 using Server.Items;
@@ -55,7 +54,6 @@ namespace Server.Network
         private byte[] _sendBuffer;
         private long m_NextCheckActivity;
         private volatile bool m_Running;
-        private readonly Thread _sendThread;
         private volatile EncodePacket _packetDecoder;
         private volatile EncodePacket _packetEncoder;
 
@@ -77,7 +75,7 @@ namespace Server.Network
             Timer.DelayCall(checkAliveDuration, checkAliveDuration, CheckAllAlive);
         }
 
-        public NetState(Socket connection, Thread sendThread = null)
+        public NetState(Socket connection)
         {
             m_Running = false;
             Connection = connection;
@@ -91,7 +89,6 @@ namespace Server.Network
             _sendBuffer = new byte[SendPipeSize];
             SendPipe = new Pipe<byte>(_sendBuffer);
             m_NextCheckActivity = Core.TickCount + 30000;
-            _sendThread = sendThread ?? Core.Thread;
 
             try
             {
@@ -372,22 +369,12 @@ namespace Server.Network
             NetworkState.Resume(ref m_NetworkState);
         }
 
-        public bool GetAvailableSendPipe(out CircularBuffer<byte> buffer) => SendPipe.Writer.GetAvailable(out buffer);
-
         public virtual void Send(ref CircularBuffer<byte> buffer, int length)
         {
             if (Connection == null || BlockAllPackets || buffer.Length == 0)
             {
                 return;
             }
-
-#if DEBUG
-            var currentThread = Thread.CurrentThread;
-            if (currentThread != _sendThread)
-            {
-                throw new InvalidThreadException("Attempted to send packet outside send thread!");
-            }
-#endif
 
             try
             {
@@ -412,15 +399,6 @@ namespace Server.Network
                 return;
             }
 
-#if DEBUG
-            var currentThread = Thread.CurrentThread;
-
-            if (currentThread != _sendThread)
-            {
-                throw new InvalidThreadException("Attempted to send packet outside send thread!");
-            }
-#endif
-
             var writer = SendPipe.Writer;
 
             try
@@ -429,7 +407,7 @@ namespace Server.Network
 
                 if (buffer.Length > 0 && length > 0)
                 {
-                    if (!GetAvailableSendPipe(out var pipeBuffer))
+                    if (!SendPipe.Writer.GetAvailable(out var pipeBuffer))
                     {
                         p.OnSend();
                         return;
@@ -489,7 +467,8 @@ namespace Server.Network
             {
                 while (m_Running)
                 {
-                    if (!(await reader).TryRead(segments))
+                    var result = await reader.Read(segments);
+                    if (result.Closed)
                     {
                         break;
                     }
