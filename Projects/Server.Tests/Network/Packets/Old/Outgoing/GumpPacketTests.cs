@@ -60,7 +60,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestFastGumpPacket()
         {
-            var ns = new NetState(null, Thread.CurrentThread);
+            var ns = new NetState(null);
 
             var gump = new ResurrectGump(2);
 
@@ -130,7 +130,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestPackedGumpPacket()
         {
-            var ns = new NetState(null, Thread.CurrentThread)
+            var ns = new NetState(null)
             {
                 ProtocolChanges = ProtocolChanges.Unpack
             };

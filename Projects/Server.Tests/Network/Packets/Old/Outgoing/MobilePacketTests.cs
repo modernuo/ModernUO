@@ -241,7 +241,7 @@ namespace Server.Tests.Network
             };
             beheld.DefaultMobileInit();
 
-            var ns = new NetState(null, Thread.CurrentThread)
+            var ns = new NetState(null)
             {
                 ProtocolChanges = changes
             };
@@ -638,7 +638,7 @@ namespace Server.Tests.Network
             beheld.FacialHairItemID = facialHairItemId;
             beheld.FacialHairHue = facialHairHue;
 
-            var ns = new NetState(null, Thread.CurrentThread)
+            var ns = new NetState(null)
             {
                 ProtocolChanges = protocolChanges
             };
