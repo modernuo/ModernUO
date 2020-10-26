@@ -386,8 +386,8 @@ namespace Server.Network
             if (currentThread != _sendThread)
             {
                 throw new InvalidThreadException("Attempted to send packet outside send thread!");
-#endif
             }
+#endif
 
             try
             {
@@ -418,8 +418,8 @@ namespace Server.Network
             if (currentThread != _sendThread)
             {
                 throw new InvalidThreadException("Attempted to send packet outside send thread!");
-#endif
             }
+#endif
 
             var writer = SendPipe.Writer;
 
