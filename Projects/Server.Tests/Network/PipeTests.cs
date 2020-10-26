@@ -38,7 +38,7 @@ namespace Server.Tests.Network
             });
 
             var segments = new ArraySegment<byte>[2];
-            (await reader).TryRead(segments);
+            await reader.Read(segments);
 
             Assert.True(segments[0].Count == 3);
         }
