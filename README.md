@@ -7,7 +7,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ##### Ultima Online Server Emulator for the modern era!
 [![.NET](https://img.shields.io/badge/.NET-%205.0-5C2D91)](https://dotnet.microsoft.com/download/dotnet/5.0)
-[![.NET Core](https://img.shields.io/badge/.NET-Core%203.1.7-5C2D91)](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+[![.NET Core](https://img.shields.io/badge/.NET-Core%203.1.9-5C2D91)](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 <br />
 ![Windows](https://img.shields.io/badge/-server%202019-0078D6?logo=windows)
 ![OSX](https://img.shields.io/badge/-catalina-222222?logo=apple&logoColor=white)
@@ -27,7 +27,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ## Publishing a build
 #### Requirements
-- [.NET Core 3.1.7 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+- [.NET Core 3.1.9 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 <br />or
 - [.NET 5.0 (Preview) SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 
@@ -41,7 +41,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
     - `centos.7`, `centos.8` for CentOS
     - If blank, will use host operating system
   - Supported `framework`:
-    - `core` for .NET Core 3.1.7
+    - `core` for .NET Core 3.1.9
     - `net` for .NET 5.0
 
 ## Deploying / Running Server
@@ -49,7 +49,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 - Copy `Distribution` directory to the production server
 
 #### Requirements
-- [.NET Core 3.1.7 Runtime](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+- [.NET Core 3.1.9 Runtime](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 <br />or
 - [.NET 5.0 (Preview) Runtime](https://dotnet.microsoft.com/download/dotnet/5.0)
 
