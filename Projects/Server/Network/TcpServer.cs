@@ -215,7 +215,7 @@ namespace Server.Network
                     // ignored
                 }
 
-                var ns = new NetState(socket, Core.Thread);
+                var ns = new NetState(socket);
                 m_ConnectedQueue.Enqueue(ns);
                 ns.Start();
             }
