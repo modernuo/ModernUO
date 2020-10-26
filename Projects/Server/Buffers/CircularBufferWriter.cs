@@ -157,6 +157,34 @@ namespace System.Buffers
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteLE(int value)
+        {
+            if (Position < _first.Length)
+            {
+                if (!BinaryPrimitives.TryWriteInt32LittleEndian(_first.Slice(Position), value))
+                {
+                    // Not enough space. Split the spans
+                    Write((byte)(value >> 24));
+                    Write((byte)(value >> 16));
+                    Write((byte)(value >> 8));
+                    Write((byte)value);
+                }
+                else
+                {
+                    Position += 4;
+                }
+            }
+            else if (BinaryPrimitives.TryWriteInt32LittleEndian(_second.Slice(Position - _first.Length), value))
+            {
+                Position += 4;
+            }
+            else
+            {
+                throw new OutOfMemoryException();
+            }
+        }
+
         /// <summary>
         /// Writes a 4-byte unsigned integer value to the underlying stream.
         /// </summary>

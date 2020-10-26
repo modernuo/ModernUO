@@ -311,4 +311,51 @@ namespace Server.Tests.Network
             Stream.Write((int)flags); // Additional Flags
         }
     }
+
+    public sealed class AccountLoginRej : Packet
+    {
+        public AccountLoginRej(ALRReason reason) : base(0x82, 2)
+        {
+            Stream.Write((byte)reason);
+        }
+    }
+
+    public sealed class AccountLoginAck : Packet
+    {
+        public AccountLoginAck(ServerInfo[] info) : base(0xA8)
+        {
+            EnsureCapacity(6 + info.Length * 40);
+
+            Stream.Write((byte)0x5D); // Unknown
+
+            Stream.Write((ushort)info.Length);
+
+            for (var i = 0; i < info.Length; ++i)
+            {
+                var si = info[i];
+
+                Stream.Write((ushort)i);
+                Stream.WriteAsciiFixed(si.Name, 32);
+                Stream.Write((byte)si.FullPercent);
+                Stream.Write((sbyte)si.TimeZone);
+                Stream.Write(Utility.GetAddressValue(si.Address.Address));
+            }
+        }
+    }
+
+    public sealed class PlayServerAck : Packet
+    {
+        public PlayServerAck(ServerInfo si, int authId) : base(0x8C, 11)
+        {
+            var addr = Utility.GetAddressValue(si.Address.Address);
+
+            Stream.Write((byte)addr);
+            Stream.Write((byte)(addr >> 8));
+            Stream.Write((byte)(addr >> 16));
+            Stream.Write((byte)(addr >> 24));
+
+            Stream.Write((short)si.Address.Port);
+            Stream.Write(authId);
+        }
+    }
 }

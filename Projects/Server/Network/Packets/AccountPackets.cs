@@ -406,5 +406,83 @@ namespace Server.Network
             writer.WritePacketLength();
             ns.Send(ref buffer, writer.Position);
         }
+
+        /**
+         * Packet: 0x82
+         * Length: 2 bytes
+         *
+         * Sends a reason for rejecting the login
+         */
+        public static void SendAccountLoginRejected(NetState ns, ALRReason reason)
+        {
+            if (ns != null && ns.SendPipe.Writer.GetAvailable(out var buffer))
+            {
+                buffer[0] = 0x82; // Packet ID
+                buffer[1] = (byte)reason;
+
+                ns.Send(ref buffer, 2);
+            }
+        }
+
+        /**
+         * Packet: 0xA8
+         * Length: up to 240 bytes
+         *
+         * Sends login acknowledge with server listing
+         */
+        public static void SendAccountLoginAck(NetState ns)
+        {
+            if (ns == null || !ns.SendPipe.Writer.GetAvailable(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0xA8); // Packet ID
+            writer.Seek(2, SeekOrigin.Current); // Length
+
+            writer.Write((byte)0x5D);
+
+            var info = ns.ServerInfo;
+            writer.Write((ushort)info.Length);
+
+            for (var i = 0; i < info.Length; ++i)
+            {
+                var si = info[i];
+
+                writer.Write((ushort)i);
+                writer.WriteAscii(si.Name, 32);
+                writer.Write((byte)si.FullPercent);
+                writer.Write((sbyte)si.TimeZone);
+                writer.Write(Utility.GetAddressValue(si.Address.Address));
+            }
+
+            writer.WritePacketLength();
+            ns.Send(ref buffer, writer.Position);
+        }
+
+        /**
+         * Packet: 0x8C
+         * Length: 11 bytes
+         *
+         * Sends acknowledge play server
+         */
+        public static void SendPlayServerAck(NetState ns, ServerInfo si, int authId)
+        {
+            if (ns == null || !ns.SendPipe.Writer.GetAvailable(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0x8C); // Packet ID
+
+            var addr = Utility.GetAddressValue(si.Address.Address);
+            writer.WriteLE(addr);
+            writer.Write((short)si.Address.Port);
+            writer.Write(authId);
+
+            ns.Send(ref buffer, writer.Position);
+        }
     }
 }

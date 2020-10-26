@@ -2570,10 +2570,10 @@ namespace Server.Network
             {
                 var si = info[index];
 
-                state.m_AuthID = PlayServerAck.m_AuthID = GenerateAuthID(state);
+                state.m_AuthID = GenerateAuthID(state);
 
                 state.SentFirstPacket = false;
-                state.Send(new PlayServerAck(si));
+                Packets.SendPlayServerAck(state, si, state.m_AuthID);
             }
         }
 
@@ -2671,17 +2671,14 @@ namespace Server.Network
             }
             else
             {
-                var info = e.Servers.ToArray();
-
-                state.ServerInfo = info;
-
-                state.Send(new AccountLoginAck(info));
+                state.ServerInfo = e.Servers.ToArray();
+                Packets.SendAccountLoginAck(state);
             }
         }
 
         public static void AccountLogin_ReplyRej(NetState state, ALRReason reason)
         {
-            state.Send(new AccountLoginRej(reason));
+            Packets.SendAccountLoginRejected(state, reason);
             state.Dispose();
         }
 

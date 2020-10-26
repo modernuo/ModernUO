@@ -196,15 +196,13 @@ namespace Server.Tests.Network
         public void TestAccountLoginRej()
         {
             var reason = ALRReason.BadComm;
-            var data = new AccountLoginRej(reason).Compile();
+            var expected = new AccountLoginRej(reason).Compile();
 
-            Span<byte> expectedData = stackalloc byte[2];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            Packets.SendAccountLoginRejected(ns, reason);
 
-            expectedData.Write(ref pos, (byte)0x82); // Packet ID
-            expectedData.Write(ref pos, (byte)reason);
-
-            AssertThat.Equal(data, expectedData);
+            ns.SendPipe.Reader.TryRead(out var buffer);
+            AssertThat.Equal(buffer.GetSpan(0), expected);
         }
 
         [Fact]
@@ -215,47 +213,31 @@ namespace Server.Tests.Network
                 new ServerInfo("Test Server", 0, TimeZoneInfo.Local, IPEndPoint.Parse("127.0.0.1"))
             };
 
-            var data = new AccountLoginAck(info).Compile();
+            var expected = new AccountLoginAck(info).Compile();
 
-            Span<byte> expectedData = stackalloc byte[6 + info.Length * 40];
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ServerInfo = info;
 
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0xA8); // Packet ID
-            expectedData.Write(ref pos, (ushort)expectedData.Length);
-            expectedData.Write(ref pos, (byte)0x5D); // Unknown
-            expectedData.Write(ref pos, (ushort)info.Length);
+            Packets.SendAccountLoginAck(ns);
 
-            for (var i = 0; i < info.Length; i++)
-            {
-                var si = info[i];
-                expectedData.Write(ref pos, (ushort)i);
-                expectedData.WriteAsciiFixed(ref pos, si.Name, 32);
-                expectedData.Write(ref pos, (byte)si.FullPercent);
-                expectedData.Write(ref pos, (byte)si.TimeZone);
-                expectedData.Write(ref pos, Utility.GetAddressValue(si.Address.Address));
-            }
-
-            AssertThat.Equal(data, expectedData);
+            ns.SendPipe.Reader.TryRead(out var buffer);
+            AssertThat.Equal(buffer.GetSpan(0), expected);
         }
 
         [Fact]
         public void TestPlayServerAck()
         {
             var si = new ServerInfo("Test Server", 0, TimeZoneInfo.Local, IPEndPoint.Parse("127.0.0.1"));
+            var authId = 0x123456;
 
-            var data = new PlayServerAck(si).Compile();
+            var expected = new PlayServerAck(si, authId).Compile();
 
-            var addr = Utility.GetAddressValue(si.Address.Address);
+            using var ns = PacketTestUtilities.CreateTestNetState();
 
-            Span<byte> expectedData = stackalloc byte[11];
-            var pos = 0;
+            Packets.SendPlayServerAck(ns, si, authId);
 
-            expectedData.Write(ref pos, (byte)0x8C); // Packet ID
-            expectedData.WriteLE(ref pos, addr);
-            expectedData.Write(ref pos, (ushort)si.Address.Port);
-            expectedData.Write(ref pos, -1); // Auth ID
-
-            AssertThat.Equal(data, expectedData);
+            ns.SendPipe.Reader.TryRead(out var buffer);
+            AssertThat.Equal(buffer.GetSpan(0), expected);
         }
 
         internal class TestAccount : IAccount, IComparable<TestAccount>
