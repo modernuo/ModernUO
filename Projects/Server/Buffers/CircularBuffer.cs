@@ -15,7 +15,7 @@
 
 namespace System.Buffers
 {
-    public readonly ref struct CircularBuffer<T> where T : struct
+    public readonly ref struct CircularBuffer<T>
     {
         private readonly Span<T> _first;
         private readonly Span<T> _second;
@@ -125,6 +125,16 @@ namespace System.Buffers
             var second = secondCount > 0 ? _second.Slice(Math.Max(0, offset - _first.Length), secondCount) : Span<T>.Empty;
 
             return new CircularBuffer<T>(first, second);
+        }
+
+        public Span<T> GetSpan(int index)
+        {
+            if (index < 0 || index > 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            return index == 0 ? _first : _second;
         }
     }
 }

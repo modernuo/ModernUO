@@ -61,12 +61,12 @@ namespace Server.Network
             0x4, 0x00D
         };
 
-        public static void Compress(CircularBuffer<byte> buffer, ref int length)
+        public static void Compress(ref CircularBuffer<byte> buffer, ref int length)
         {
-            length = Compress(buffer, length, buffer);
+            length = Compress(ref buffer, length, ref buffer);
         }
 
-        public static int Compress(CircularBuffer<byte> input, int inputLength, CircularBuffer<byte> output)
+        public static int Compress(ref CircularBuffer<byte> input, int inputLength, ref CircularBuffer<byte> output)
         {
             if (inputLength > DefiniteOverflow)
             {

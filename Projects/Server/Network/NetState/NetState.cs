@@ -33,9 +33,9 @@ namespace Server.Network
 {
     public delegate void NetStateCreatedCallback(NetState ns);
 
-    public delegate void EncodePacket(CircularBuffer<byte> buffer, ref int length);
+    public delegate void EncodePacket(ref CircularBuffer<byte> buffer, ref int length);
 
-    public partial class NetState : IComparable<NetState>
+    public partial class NetState : IComparable<NetState>, IDisposable
     {
         private static int RecvPipeSize = 1024 * 64;
         private static int SendPipeSize = 1024 * 256;
@@ -52,9 +52,7 @@ namespace Server.Network
         private int m_Disposing;
         private ClientVersion m_Version;
         private byte[] _recvBuffer;
-        private Pipe<byte> _recvPipe;
         private byte[] _sendBuffer;
-        private Pipe<byte> _sendPipe;
         private long m_NextCheckActivity;
         private volatile bool m_Running;
         private readonly Thread _sendThread;
@@ -89,9 +87,9 @@ namespace Server.Network
             Menus = new List<IMenu>();
             Trades = new List<SecureTrade>();
             _recvBuffer = new byte[RecvPipeSize];
-            _recvPipe = new Pipe<byte>(_recvBuffer);
+            RecvPipe = new Pipe<byte>(_recvBuffer);
             _sendBuffer = new byte[SendPipeSize];
-            _sendPipe = new Pipe<byte>(_sendBuffer);
+            SendPipe = new Pipe<byte>(_sendBuffer);
             m_NextCheckActivity = Core.TickCount + 30000;
             _sendThread = sendThread ?? Core.Thread;
 
@@ -141,6 +139,10 @@ namespace Server.Network
         public bool Running => m_Running;
 
         public bool Seeded { get; set; }
+
+        public Pipe<byte> RecvPipe { get; private set; }
+
+        public Pipe<byte> SendPipe { get; private set; }
 
         public Socket Connection { get; private set; }
 
@@ -370,29 +372,27 @@ namespace Server.Network
             NetworkState.Resume(ref m_NetworkState);
         }
 
-        public Pipe<byte>.Result<byte> GetAvailableSendPipe() => _recvPipe.Writer.GetAvailable();
+        public bool GetAvailableSendPipe(out CircularBuffer<byte> buffer) => SendPipe.Writer.GetAvailable(out buffer);
 
-        public virtual void Send(CircularBuffer<byte> buffer, int length)
+        public virtual void Send(ref CircularBuffer<byte> buffer, int length)
         {
             if (Connection == null || BlockAllPackets || buffer.Length == 0)
             {
                 return;
             }
 
+#if DEBUG
             var currentThread = Thread.CurrentThread;
-
             if (currentThread != _sendThread)
             {
-                Console.Error.WriteLine("Core: Attempted to send packet outside core thread! [{0}]", currentThread.ManagedThreadId);
-#if DEBUG
-                throw new InvalidThreadException(nameof(Send));
-#endif
+                throw new InvalidThreadException("Attempted to send packet outside send thread!");
             }
+#endif
 
             try
             {
-                _packetEncoder?.Invoke(buffer, ref length);
-                _sendPipe.Writer.Advance((uint)length);
+                _packetEncoder?.Invoke(ref buffer, ref length);
+                SendPipe.Writer.Advance((uint)length);
             }
             catch (Exception ex)
             {
@@ -412,17 +412,16 @@ namespace Server.Network
                 return;
             }
 
+#if DEBUG
             var currentThread = Thread.CurrentThread;
 
             if (currentThread != _sendThread)
             {
-                Console.Error.WriteLine("Core: Attempted to send packet outside send thread! [{0}]", currentThread.ManagedThreadId);
-#if DEBUG
-                throw new InvalidThreadException(nameof(Send));
-#endif
+                throw new InvalidThreadException("Attempted to send packet outside send thread!");
             }
+#endif
 
-            var writer = _sendPipe.Writer;
+            var writer = SendPipe.Writer;
 
             try
             {
@@ -430,11 +429,15 @@ namespace Server.Network
 
                 if (buffer.Length > 0 && length > 0)
                 {
-                    var result = writer.GetAvailable();
-
-                    if (result.Length >= length)
+                    if (!GetAvailableSendPipe(out var pipeBuffer))
                     {
-                        result.CopyFrom(buffer.AsSpan(0, length));
+                        p.OnSend();
+                        return;
+                    }
+
+                    if (pipeBuffer.Length >= length)
+                    {
+                        pipeBuffer.CopyFrom(buffer.AsSpan(0, length));
                         writer.Advance((uint)length);
 
                         // Flush at the end of the game loop
@@ -449,8 +452,6 @@ namespace Server.Network
                 {
                     WriteConsole("Didn't write anything!");
                 }
-
-                p.OnSend();
             }
             catch (Exception ex)
             {
@@ -459,6 +460,10 @@ namespace Server.Network
                 TraceException(ex);
 #endif
                 Dispose();
+            }
+            finally
+            {
+                p.OnSend();
             }
         }
 
@@ -477,22 +482,24 @@ namespace Server.Network
 
         private async void SendTask(object state)
         {
-            var reader = _sendPipe.Reader;
+            var reader = SendPipe.Reader;
+            var segments = new ArraySegment<byte>[2];
 
             try
             {
                 while (m_Running)
                 {
-                    var result = await reader.Read();
+                    if (!(await reader).TryRead(segments))
+                    {
+                        break;
+                    }
 
-                    if (result.Length <= 0)
+                    if (segments[0].Count + segments[1].Count <= 0)
                     {
                         continue;
                     }
 
-                    var buffer = result.Buffer;
-
-                    var bytesWritten = await Connection.SendAsync(buffer, SocketFlags.None);
+                    var bytesWritten = await Connection.SendAsync(segments, SocketFlags.None);
 
                     if (bytesWritten > 0)
                     {
@@ -517,13 +524,14 @@ namespace Server.Network
         private void DecodePacket(ArraySegment<byte>[] buffer, ref int length)
         {
             CircularBuffer<byte> cBuffer = new CircularBuffer<byte>(buffer);
-            _packetDecoder?.Invoke(cBuffer, ref length);
+            _packetDecoder?.Invoke(ref cBuffer, ref length);
         }
 
         private async void RecvTask(object state)
         {
             var socket = Connection;
-            var writer = _recvPipe.Writer;
+            var writer = RecvPipe.Writer;
+            var segments = new ArraySegment<byte>[2];
 
             try
             {
@@ -534,20 +542,24 @@ namespace Server.Network
                         continue;
                     }
 
-                    var result = writer.GetAvailable();
+                    // TODO: Make awaitable
+                    if (!writer.GetAvailable(segments))
+                    {
+                        break;
+                    }
 
-                    if (result.Length <= 0)
+                    if (segments[0].Count + segments[1].Count <= 0)
                     {
                         continue;
                     }
 
-                    var bytesWritten = await socket.ReceiveAsync(result.Buffer, SocketFlags.None);
+                    var bytesWritten = await socket.ReceiveAsync(segments, SocketFlags.None);
                     if (bytesWritten <= 0)
                     {
                         break;
                     }
 
-                    DecodePacket(result.Buffer, ref bytesWritten);
+                    DecodePacket(segments, ref bytesWritten);
 
                     writer.Advance((uint)bytesWritten);
                     m_NextCheckActivity = Core.TickCount + 90000;
@@ -587,19 +599,17 @@ namespace Server.Network
 
             try
             {
-                var reader = _recvPipe.Reader;
+                var reader = RecvPipe.Reader;
 
                 // Process as many packets as we can synchronously
                 while (true)
                 {
-                    var result = reader.TryRead();
-
-                    if (result.Length <= 0)
+                    if (!reader.TryRead(out var buffer) || buffer.Length <= 0)
                     {
                         return;
                     }
 
-                    var bytesProcessed = PacketHandlers.ProcessPacket(this, result.Buffer);
+                    var bytesProcessed = PacketHandlers.ProcessPacket(this, ref buffer);
 
                     if (bytesProcessed <= 0)
                     {
@@ -630,7 +640,7 @@ namespace Server.Network
         {
             if (Connection != null)
             {
-                _sendPipe.Writer.Flush();
+                SendPipe.Writer.Flush();
             }
         }
 
@@ -715,7 +725,7 @@ namespace Server.Network
                 return;
             }
 
-            _sendPipe.Writer.Close();
+            SendPipe.Writer.Close();
 
             try
             {
@@ -754,9 +764,9 @@ namespace Server.Network
                 ns.m_Running = false;
                 ns.Connection = null;
                 ns._recvBuffer = null;
-                ns._recvPipe = null;
+                ns.RecvPipe = null;
                 ns._sendBuffer = null;
-                ns._sendPipe = null;
+                ns.SendPipe = null;
                 ns.Gumps.Clear();
                 ns.Menus.Clear();
                 ns.HuePickers.Clear();

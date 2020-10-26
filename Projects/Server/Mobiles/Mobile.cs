@@ -8524,8 +8524,6 @@ namespace Server
                     m_DeltaQueue.Enqueue(this);
                 }
             }
-
-            Core.Set();
         }
 
         public static void ProcessDeltaQueue()
