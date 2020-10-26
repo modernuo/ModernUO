@@ -369,8 +369,6 @@ namespace Server.Network
             NetworkState.Resume(ref m_NetworkState);
         }
 
-        public bool GetAvailableSendPipe(out CircularBuffer<byte> buffer) => SendPipe.Writer.GetAvailable(out buffer);
-
         public virtual void Send(ref CircularBuffer<byte> buffer, int length)
         {
             if (Connection == null || BlockAllPackets || buffer.Length == 0)
@@ -409,7 +407,7 @@ namespace Server.Network
 
                 if (buffer.Length > 0 && length > 0)
                 {
-                    if (!GetAvailableSendPipe(out var pipeBuffer))
+                    if (!SendPipe.Writer.GetAvailable(out var pipeBuffer))
                     {
                         p.OnSend();
                         return;
