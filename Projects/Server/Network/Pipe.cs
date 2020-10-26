@@ -33,7 +33,7 @@ namespace Server.Network
 
     public class Pipe<T>
     {
-        public readonly struct Result<T>
+        public readonly struct Result
         {
             public bool Closed { get; }
 
@@ -192,7 +192,7 @@ namespace Server.Network
             }
         }
 
-        public class PipeReader<T> : IPipeTask<Result<T>>
+        public class PipeReader<T> : IPipeTask<Result>
         {
             private readonly Pipe<T> _pipe;
 
@@ -212,7 +212,7 @@ namespace Server.Network
                 return write + _pipe.Size - read;
             }
 
-            public IPipeTask<Result<T>> Read(ArraySegment<T>[] segments)
+            public IPipeTask<Result> Read(ArraySegment<T>[] segments)
             {
                 if (_pipe._awaitBeginning)
                 {
@@ -311,7 +311,7 @@ namespace Server.Network
 
             // The following makes it possible to await the reader. Do not use any of this directly.
 
-            public IPipeTask<Result<T>> GetAwaiter() => this;
+            public IPipeTask<Result> GetAwaiter() => this;
 
             public bool IsCompleted
             {
@@ -327,7 +327,7 @@ namespace Server.Network
                 }
             }
 
-            public Result<T> GetResult() => new Result<T>(_pipe._closed);
+            public Result GetResult() => new Result(_pipe._closed);
 
             public void OnCompleted(Action continuation) => _pipe._readerContinuation = continuation;
 
