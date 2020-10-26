@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -26,9 +27,9 @@ namespace Server.Network
 
         public EndPoint RemoteEndPoint { get; }
 
-        public Task<int> SendAsync(ArraySegment<byte>[] buffer, SocketFlags flags);
+        public Task<int> SendAsync(IList<ArraySegment<byte>> buffer, SocketFlags flags);
 
-        public Task<int> ReceiveAsync(ArraySegment<byte>[] buffer, SocketFlags flags);
+        public Task<int> ReceiveAsync(IList<ArraySegment<byte>> buffer, SocketFlags flags);
 
         public void Shutdown(SocketShutdown how);
     }

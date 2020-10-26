@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -28,11 +29,11 @@ namespace Server.Network
 
         public NetworkSocket(Socket connection) => Connection = connection;
 
-        public Task<int> SendAsync(ArraySegment<byte>[] buffer, SocketFlags flags) =>
-            Connection.SendAsync(buffer, flags);
+        public Task<int> SendAsync(IList<ArraySegment<byte>> buffers, SocketFlags flags) =>
+            Connection.SendAsync(buffers, flags);
 
-        public Task<int> ReceiveAsync(ArraySegment<byte>[] buffer, SocketFlags flags) =>
-            Connection.ReceiveAsync(buffer, flags);
+        public Task<int> ReceiveAsync(IList<ArraySegment<byte>> buffers, SocketFlags flags) =>
+            Connection.ReceiveAsync(buffers, flags);
 
         public void Shutdown(SocketShutdown how) => Connection.Shutdown(how);
     }
