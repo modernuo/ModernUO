@@ -212,6 +212,8 @@ namespace Server.Network
                 return write + _pipe.Size - read;
             }
 
+            private ArraySegment<T>[] _segments;
+
             public IPipeTask<Result> Read(ArraySegment<T>[] segments)
             {
                 if (_pipe._awaitBeginning)
@@ -219,8 +221,7 @@ namespace Server.Network
                     throw new Exception("Double await on reader");
                 }
 
-                TryRead(segments);
-
+                _segments = segments;
                 return this;
             }
 
@@ -325,7 +326,22 @@ namespace Server.Network
                 }
             }
 
-            public Result GetResult() => new Result(_pipe._closed);
+            public Result GetResult()
+            {
+                if (_pipe._closed)
+                {
+                    _segments = null;
+                    return new Result(true);
+                }
+
+                if (_segments != null)
+                {
+                    TryRead(_segments);
+                    _segments = null;
+                }
+
+                return new Result(false);
+            }
 
             public void OnCompleted(Action continuation) => _pipe._readerContinuation = continuation;
 
