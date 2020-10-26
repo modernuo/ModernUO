@@ -310,7 +310,7 @@ namespace Server.Network
          * Packet: 0xA9
          * Length: 1410 or more bytes
          *
-         * Sends list of characters and starting cities
+         * Sends list of characters and starting cities.
          */
         public static void SendCharacterList(NetState ns)
         {
@@ -320,6 +320,9 @@ namespace Server.Network
             {
                 return;
             }
+
+            var client70130 = ns.NewCharacterList;
+            var textLength = client70130 ? 32 : 31;
 
             var cityInfo = ns.CityInfo;
 
@@ -364,14 +367,17 @@ namespace Server.Network
                 var ci = cityInfo[i];
 
                 writer.Write((byte)i);
-                writer.WriteAscii(ci.City, 32);
-                writer.WriteAscii(ci.Building, 32);
-                writer.Write(ci.X);
-                writer.Write(ci.Y);
-                writer.Write(ci.Z);
-                writer.Write(ci.Map.MapID);
-                writer.Write(ci.Description);
-                writer.Write(0);
+                writer.WriteAscii(ci.City, textLength);
+                writer.WriteAscii(ci.Building, textLength);
+                if (client70130)
+                {
+                    writer.Write(ci.X);
+                    writer.Write(ci.Y);
+                    writer.Write(ci.Z);
+                    writer.Write(ci.Map.MapID);
+                    writer.Write(ci.Description);
+                    writer.Write(0);
+                }
             }
 
             var flags = ExpansionInfo.CoreExpansion.CharacterListFlags;
@@ -392,7 +398,10 @@ namespace Server.Network
             }
 
             writer.Write((int)flags);
-            writer.Write((short)-1);
+            if (client70130)
+            {
+                writer.Write((short)-1);
+            }
 
             writer.WritePacketLength();
             ns.Send(ref buffer, writer.Position);

@@ -2548,15 +2548,7 @@ namespace Server.Network
                 state.PacketEncoder = NetworkCompression.Compress;
 
                 Packets.SendSupportedFeature(state);
-
-                if (state.NewCharacterList)
-                {
-                    Packets.SendCharacterList(state);
-                }
-                else
-                {
-                    state.Send(new CharacterListOld(state.Account, state.CityInfo));
-                }
+                Packets.SendCharacterList(state);
             }
             else
             {

@@ -142,7 +142,7 @@ namespace Server.Tests.Network
         }
 
         [Fact]
-        public void TestCharacterList()
+        public void TestCharacterList70130()
         {
             var firstMobile = new Mobile(0x1);
             firstMobile.DefaultMobileInit();
@@ -159,6 +159,7 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             ns.CityInfo = info;
             ns.Account = acct;
+            ns.ProtocolChanges = ProtocolChanges.Version70130;
 
             Packets.SendCharacterList(ns);
 
@@ -173,95 +174,22 @@ namespace Server.Tests.Network
             firstMobile.DefaultMobileInit();
             firstMobile.Name = "Test Mobile";
 
-            var account = new TestAccount(new[] { firstMobile, null, null, null, null });
+            var acct = new TestAccount(new[] { null, firstMobile, null, null, null });
             var info = new[]
             {
                 new CityInfo("Test City", "Test Building", 50, 100, 10, -10)
             };
 
-            var data = new CharacterListOld(account, info).Compile();
+            var expected = new CharacterListOld(acct, info).Compile();
 
-            Span<byte> expectedData = stackalloc byte[9 + account.Length * 60 + info.Length * 63];
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.CityInfo = info;
+            ns.Account = acct;
 
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0xA9);                  // Packet ID
-            expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
+            Packets.SendCharacterList(ns);
 
-            var highSlot = -1;
-            for (var i = account.Length - 1; i >= 0; i--)
-            {
-                if (account[i] != null)
-                {
-                    highSlot = i;
-                    break;
-                }
-            }
-
-            var count = Math.Max(Math.Max(highSlot + 1, account.Limit), 5);
-            expectedData.Write(ref pos, (byte)count);
-
-            for (var i = 0; i < count; i++)
-            {
-                var m = account[i];
-                if (m != null)
-                {
-                    expectedData.WriteAsciiFixed(ref pos, m.Name, 30);
-#if NO_LOCAL_INIT
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, 0);
-                    expectedData.Write(ref pos, (ushort)0);
-#else
-                    pos += 30;
-#endif
-                }
-                else
-                {
-#if NO_LOCAL_INIT
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, (ulong)0);
-                    expectedData.Write(ref pos, 0);
-#else
-                    pos += 60;
-#endif
-                }
-            }
-
-            expectedData.Write(ref pos, (byte)info.Length);
-
-            for (var i = 0; i < info.Length; i++)
-            {
-                var ci = info[i];
-                expectedData.Write(ref pos, (byte)i);
-                expectedData.WriteAsciiFixed(ref pos, ci.City, 31);
-                expectedData.WriteAsciiFixed(ref pos, ci.Building, 31);
-            }
-
-            var flags = ExpansionInfo.GetInfo(Expansion.EJ).CharacterListFlags;
-            if (count > 6)
-            {
-                flags |= CharacterListFlags.SeventhCharacterSlot |
-                         CharacterListFlags.SixthCharacterSlot; // 7th Character Slot
-            }
-            else if (count == 6)
-            {
-                flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
-            }
-            else if (account.Limit == 1)
-            {
-                flags |= CharacterListFlags.SlotLimit &
-                         CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
-            }
-
-            expectedData.Write(ref pos, (int)flags);
-
-            AssertThat.Equal(data, expectedData);
+            ns.SendPipe.Reader.TryRead(out var buffer);
+            AssertThat.Equal(buffer.GetSpan(0), expected);
         }
 
         [Fact]

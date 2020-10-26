@@ -244,4 +244,71 @@ namespace Server.Tests.Network
             Stream.Write((short)-1);
         }
     }
+
+    public sealed class CharacterListOld : Packet
+    {
+        public CharacterListOld(IAccount a, CityInfo[] info) : base(0xA9)
+        {
+            EnsureCapacity(9 + a.Length * 60 + info.Length * 63);
+
+            var highSlot = -1;
+
+            for (var i = 0; i < a.Length; ++i)
+            {
+                if (a[i] != null)
+                {
+                    highSlot = i;
+                }
+            }
+
+            var count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
+
+            Stream.Write((byte)count);
+
+            for (var i = 0; i < count; ++i)
+            {
+                var m = a[i];
+                if (m != null)
+                {
+                    var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
+                    Stream.WriteAsciiFixed(name, 30);
+                    Stream.Fill(30); // password
+                }
+                else
+                {
+                    Stream.Fill(60);
+                }
+            }
+
+            Stream.Write((byte)info.Length);
+
+            for (var i = 0; i < info.Length; ++i)
+            {
+                var ci = info[i];
+
+                Stream.Write((byte)i);
+                Stream.WriteAsciiFixed(ci.City, 31);
+                Stream.WriteAsciiFixed(ci.Building, 31);
+            }
+
+            var flags = ExpansionInfo.CoreExpansion.CharacterListFlags;
+
+            if (count > 6)
+            {
+                flags |= CharacterListFlags.SeventhCharacterSlot |
+                         CharacterListFlags.SixthCharacterSlot; // 7th Character Slot - TODO: Is SixthCharacterSlot Required?
+            }
+            else if (count == 6)
+            {
+                flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
+            }
+            else if (a.Limit == 1)
+            {
+                flags |= CharacterListFlags.SlotLimit &
+                         CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
+            }
+
+            Stream.Write((int)flags); // Additional Flags
+        }
+    }
 }
