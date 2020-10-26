@@ -21,7 +21,7 @@ namespace Server.Tests.Network
             secondMobile.DefaultMobileInit();
             secondMobile.RawName = null;
 
-            var account = new TestAccount(new[] { firstMobile, null, secondMobile });
+            var account = new MockAccount(new[] { firstMobile, null, secondMobile });
             var oldPacket = new ChangeCharacter(account).Compile();
 
             using var ns = PacketTestUtilities.CreateTestNetState();
@@ -77,7 +77,7 @@ namespace Server.Tests.Network
             firstMobile.DefaultMobileInit();
             firstMobile.Name = "Test Mobile";
 
-            var account = new TestAccount(new[] { firstMobile, null, null, null, null });
+            var account = new MockAccount(new[] { firstMobile, null, null, null, null });
 
             using var ns = PacketTestUtilities.CreateTestNetState();
             ns.Account = account;
@@ -130,7 +130,7 @@ namespace Server.Tests.Network
             firstMobile.DefaultMobileInit();
             firstMobile.RawName = "Test Mobile";
 
-            var acct = new TestAccount(new[] { null, firstMobile, null, null, null });
+            var acct = new MockAccount(new[] { null, firstMobile, null, null, null });
 
             var expected = new CharacterListUpdate(acct).Compile();
 
@@ -148,7 +148,7 @@ namespace Server.Tests.Network
             firstMobile.DefaultMobileInit();
             firstMobile.Name = "Test Mobile";
 
-            var acct = new TestAccount(new[] { null, firstMobile, null, null, null });
+            var acct = new MockAccount(new[] { null, firstMobile, null, null, null });
             var info = new[]
             {
                 new CityInfo("Test City", "Test Building", 50, 100, 10, -10)
@@ -174,7 +174,7 @@ namespace Server.Tests.Network
             firstMobile.DefaultMobileInit();
             firstMobile.Name = "Test Mobile";
 
-            var acct = new TestAccount(new[] { null, firstMobile, null, null, null });
+            var acct = new MockAccount(new[] { null, firstMobile, null, null, null });
             var info = new[]
             {
                 new CityInfo("Test City", "Test Building", 50, 100, 10, -10)
@@ -238,95 +238,6 @@ namespace Server.Tests.Network
 
             ns.SendPipe.Reader.TryRead(out var buffer);
             AssertThat.Equal(buffer.GetSpan(0), expected);
-        }
-
-        internal class TestAccount : IAccount, IComparable<TestAccount>
-        {
-            private readonly Mobile[] m_Mobiles;
-            private string m_Password;
-
-            public TestAccount(Mobile[] mobiles)
-            {
-                m_Mobiles = mobiles;
-                foreach (var mobile in mobiles)
-                {
-                    if (mobile != null)
-                    {
-                        mobile.Account = this;
-                    }
-                }
-
-                Length = mobiles.Length;
-                Count = mobiles.Count(t => t != null);
-                Limit = mobiles.Length;
-            }
-
-            public int TotalGold { get; private set; }
-            public int TotalPlat { get; private set; }
-
-            public bool DepositGold(int amount)
-            {
-                TotalGold += amount;
-                return true;
-            }
-
-            public bool DepositPlat(int amount)
-            {
-                TotalPlat += amount;
-                return true;
-            }
-
-            public bool WithdrawGold(int amount)
-            {
-                if (TotalGold - amount < 0)
-                {
-                    return false;
-                }
-
-                TotalGold -= amount;
-                return true;
-            }
-
-            public bool WithdrawPlat(int amount)
-            {
-                if (TotalPlat - amount < 0)
-                {
-                    return false;
-                }
-
-                TotalPlat -= amount;
-                return true;
-            }
-
-            public long GetTotalGold() => TotalGold + TotalPlat * 100;
-
-            public int CompareTo(IAccount other) => other == null ? 1 : Username.CompareTo(other.Username);
-
-            public string Username { get; set; }
-            public string Email { get; set; }
-            public AccessLevel AccessLevel { get; set; }
-            public int Length { get; }
-            public int Limit { get; }
-            public int Count { get; }
-
-            public Mobile this[int index]
-            {
-                get => m_Mobiles[index];
-                set => m_Mobiles[index] = value;
-            }
-
-            public void Delete()
-            {
-            }
-
-            public void SetPassword(string password)
-            {
-                m_Password = password;
-            }
-
-            public bool CheckPassword(string password) => m_Password == password;
-
-            public int CompareTo(TestAccount other) => other == null ? 1 : Username.CompareTo(other.Username);
         }
     }
 }
