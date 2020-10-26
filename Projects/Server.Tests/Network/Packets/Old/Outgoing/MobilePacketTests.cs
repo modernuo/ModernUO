@@ -1,6 +1,5 @@
 using System;
 using System.Buffers;
-using System.Net;
 using Server.Network;
 using Xunit;
 

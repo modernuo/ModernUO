@@ -2060,7 +2060,7 @@ namespace Server.Network
                     if (check != null && check.Map != Map.Internal && check != m)
                     {
                         state.WriteConsole("Account in use");
-                        state.Send(new PopupMessage(PMMessage.CharInWorld));
+                        Packets.SendPopupMessage(state, PMMessage.CharInWorld);
                         return;
                     }
                 }
@@ -2076,7 +2076,7 @@ namespace Server.Network
                 // TODO: Make this wait one tick so we don't have to call it unnecessarily
                 NetState.ProcessDisposedQueue();
 
-                state.Send(new ClientVersionReq());
+                Packets.SendClientVersionRequest(state);
 
                 state.BlockAllPackets = true;
 
@@ -2096,7 +2096,7 @@ namespace Server.Network
 
         public static void DoLogin(NetState state, Mobile m)
         {
-            state.Send(new LoginConfirm(m));
+            Packets.SendLoginConfirmation(state, m);
 
             if (m.Map != null)
             {
@@ -2110,7 +2110,7 @@ namespace Server.Network
 
             state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
 
-            state.Send(SupportedFeatures.Instantiate(state));
+            Packets.SendSupportedFeature(state);
 
             state.Sequence = 0;
 
@@ -2130,7 +2130,7 @@ namespace Server.Network
 
                 m.SendEverything();
 
-                state.Send(SupportedFeatures.Instantiate(state));
+                Packets.SendSupportedFeature(state);
                 state.Send(new MobileUpdate(m));
                 // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
@@ -2153,7 +2153,7 @@ namespace Server.Network
 
                 m.SendEverything();
 
-                state.Send(SupportedFeatures.Instantiate(state));
+                Packets.SendSupportedFeature(state);
                 state.Send(new MobileUpdate(m));
                 // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
@@ -2176,7 +2176,7 @@ namespace Server.Network
 
                 m.SendEverything();
 
-                state.Send(SupportedFeatures.Instantiate(state));
+                Packets.SendSupportedFeature(state);
                 state.Send(new MobileUpdateOld(m));
                 // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
@@ -2184,7 +2184,7 @@ namespace Server.Network
                 state.Send(new MobileIncomingOld(m, m));
             }
 
-            state.Send(LoginComplete.Instance);
+            Packets.SendLoginComplete(state);
             state.Send(new CurrentTime());
             state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
             if (m.Map != null)
@@ -2278,7 +2278,7 @@ namespace Server.Network
                     if (check != null && check.Map != Map.Internal)
                     {
                         state.WriteConsole("Account in use");
-                        state.Send(new PopupMessage(PMMessage.CharInWorld));
+                        Packets.SendPopupMessage(state, PMMessage.CharInWorld);
                         return;
                     }
                 }
@@ -2311,7 +2311,7 @@ namespace Server.Network
                     race
                 );
 
-                state.Send(new ClientVersionReq());
+                Packets.SendClientVersionRequest(state);
 
                 state.BlockAllPackets = true;
 
@@ -2403,7 +2403,7 @@ namespace Server.Network
                     if (check != null && check.Map != Map.Internal)
                     {
                         state.WriteConsole("Account in use");
-                        state.Send(new PopupMessage(PMMessage.CharInWorld));
+                        Packets.SendPopupMessage(state, PMMessage.CharInWorld);
                         return;
                     }
                 }
@@ -2437,7 +2437,7 @@ namespace Server.Network
                     race
                 );
 
-                state.Send(new ClientVersionReq());
+                Packets.SendClientVersionRequest(state);
 
                 state.BlockAllPackets = true;
 
@@ -2547,16 +2547,8 @@ namespace Server.Network
                 state.CompressionEnabled = true;
                 state.PacketEncoder = NetworkCompression.Compress;
 
-                state.Send(SupportedFeatures.Instantiate(state));
-
-                if (state.NewCharacterList)
-                {
-                    state.Send(new CharacterList(state.Account, state.CityInfo));
-                }
-                else
-                {
-                    state.Send(new CharacterListOld(state.Account, state.CityInfo));
-                }
+                Packets.SendSupportedFeature(state);
+                Packets.SendCharacterList(state);
             }
             else
             {
@@ -2578,10 +2570,10 @@ namespace Server.Network
             {
                 var si = info[index];
 
-                state.m_AuthID = PlayServerAck.m_AuthID = GenerateAuthID(state);
+                state.m_AuthID = GenerateAuthID(state);
 
                 state.SentFirstPacket = false;
-                state.Send(new PlayServerAck(si));
+                Packets.SendPlayServerAck(state, si, state.m_AuthID);
             }
         }
 
@@ -2679,17 +2671,14 @@ namespace Server.Network
             }
             else
             {
-                var info = e.Servers.ToArray();
-
-                state.ServerInfo = info;
-
-                state.Send(new AccountLoginAck(info));
+                state.ServerInfo = e.Servers.ToArray();
+                Packets.SendAccountLoginAck(state);
             }
         }
 
         public static void AccountLogin_ReplyRej(NetState state, ALRReason reason)
         {
-            state.Send(new AccountLoginRej(reason));
+            Packets.SendAccountLoginRejected(state, reason);
             state.Dispose();
         }
 

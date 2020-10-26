@@ -1,52 +1,9 @@
-/*************************************************************************
- * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
- * Email: hi@modernuo.com                                                *
- * File: AccountPackets.cs                                               *
- *                                                                       *
- * This program is free software: you can redistribute it and/or modify  *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- *                                                                       *
- * You should have received a copy of the GNU General Public License     *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
- *************************************************************************/
-
 using System;
 using Server.Accounting;
+using Server.Network;
 
-namespace Server.Network
+namespace Server.Tests.Network
 {
-    public enum ALRReason : byte
-    {
-        Invalid = 0x00,
-        InUse = 0x01,
-        Blocked = 0x02,
-        BadPass = 0x03,
-        Idle = 0xFE,
-        BadComm = 0xFF
-    }
-
-    public enum PMMessage : byte
-    {
-        CharNoExist = 1,
-        CharExists = 2,
-        CharInWorld = 5,
-        LoginSyncError = 6,
-        IdleWarning = 7
-    }
-
-    public enum DeleteResultType
-    {
-        PasswordInvalid,
-        CharNotExist,
-        CharBeingPlayed,
-        CharTooYoung,
-        CharQueued,
-        BadRequest
-    }
-
     public sealed class ChangeCharacter : Packet
     {
         public ChangeCharacter(IAccount a) : base(0x81)
@@ -68,18 +25,10 @@ namespace Server.Network
 
             for (var i = 0; i < a.Length; ++i)
             {
+                var m = a[i];
                 if (a[i] != null)
                 {
-                    var name = a[i].Name;
-
-                    if (name == null)
-                    {
-                        name = "-null-";
-                    }
-                    else if ((name = name.Trim()).Length == 0)
-                    {
-                        name = "-empty-";
-                    }
+                    var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
 
                     Stream.WriteAsciiFixed(name, 30);
                     Stream.Fill(30); // password
@@ -92,9 +41,6 @@ namespace Server.Network
         }
     }
 
-    /// <summary>
-    ///     Asks the client for it's version
-    /// </summary>
     public sealed class ClientVersionReq : Packet
     {
         public ClientVersionReq() : base(0xBD)
@@ -125,8 +71,6 @@ namespace Server.Network
         {
             var flags = ExpansionInfo.CoreExpansion.SupportedFeatures;
 
-            flags |= Value;
-
             if (ns.Account.Limit >= 6)
             {
                 flags |= FeatureFlags.LiveAccount;
@@ -151,10 +95,6 @@ namespace Server.Network
                 Stream.Write((ushort)flags);
             }
         }
-
-        public static FeatureFlags Value { get; set; }
-
-        public static SupportedFeatures Instantiate(NetState ns) => new SupportedFeatures(ns);
     }
 
     public sealed class LoginConfirm : Packet
@@ -189,8 +129,6 @@ namespace Server.Network
 
     public sealed class LoginComplete : Packet
     {
-        public static readonly Packet Instance = SetStatic(new LoginComplete());
-
         public LoginComplete() : base(0x55, 1)
         {
         }
@@ -222,7 +160,8 @@ namespace Server.Network
 
                 if (m != null)
                 {
-                    Stream.WriteAsciiFixed(m.Name, 30);
+                    var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
+                    Stream.WriteAsciiFixed(name, 30);
                     Stream.Fill(30); // password
                 }
                 else
@@ -300,12 +239,10 @@ namespace Server.Network
                          CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
             }
 
-            Stream.Write((int)(flags | AdditionalFlags)); // Additional Flags
+            Stream.Write((int)flags); // Additional Flags
 
             Stream.Write((short)-1);
         }
-
-        public static CharacterListFlags AdditionalFlags { get; set; }
     }
 
     public sealed class CharacterListOld : Packet
@@ -330,9 +267,11 @@ namespace Server.Network
 
             for (var i = 0; i < count; ++i)
             {
-                if (a[i] != null)
+                var m = a[i];
+                if (m != null)
                 {
-                    Stream.WriteAsciiFixed(a[i].Name, 30);
+                    var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
+                    Stream.WriteAsciiFixed(name, 30);
                     Stream.Fill(30); // password
                 }
                 else
@@ -369,7 +308,7 @@ namespace Server.Network
                          CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
             }
 
-            Stream.Write((int)(flags | CharacterList.AdditionalFlags)); // Additional Flags
+            Stream.Write((int)flags); // Additional Flags
         }
     }
 
@@ -406,9 +345,7 @@ namespace Server.Network
 
     public sealed class PlayServerAck : Packet
     {
-        internal static int m_AuthID = -1;
-
-        public PlayServerAck(ServerInfo si) : base(0x8C, 11)
+        public PlayServerAck(ServerInfo si, int authId) : base(0x8C, 11)
         {
             var addr = Utility.GetAddressValue(si.Address.Address);
 
@@ -418,7 +355,7 @@ namespace Server.Network
             Stream.Write((byte)(addr >> 24));
 
             Stream.Write((short)si.Address.Port);
-            Stream.Write(m_AuthID);
+            Stream.Write(authId);
         }
     }
 }

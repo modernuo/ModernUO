@@ -218,11 +218,14 @@ namespace Server.Misc
             if (!(state.Account is Account acct))
             {
                 state.Dispose();
+                return;
             }
-            else if (index < 0 || index >= acct.Length)
+
+            DeleteResultType res;
+
+            if (index < 0 || index >= acct.Length)
             {
-                state.Send(new DeleteResult(DeleteResultType.BadRequest));
-                state.Send(new CharacterListUpdate(acct));
+                res = DeleteResultType.BadRequest;
             }
             else
             {
@@ -230,25 +233,21 @@ namespace Server.Misc
 
                 if (m == null)
                 {
-                    state.Send(new DeleteResult(DeleteResultType.CharNotExist));
-                    state.Send(new CharacterListUpdate(acct));
+                    res = DeleteResultType.CharNotExist;
                 }
                 else if (m.NetState != null)
                 {
-                    state.Send(new DeleteResult(DeleteResultType.CharBeingPlayed));
-                    state.Send(new CharacterListUpdate(acct));
+                    res = DeleteResultType.CharBeingPlayed;
                 }
                 else if (RestrictDeletion && DateTime.UtcNow < m.CreationTime + DeleteDelay)
                 {
-                    state.Send(new DeleteResult(DeleteResultType.CharTooYoung));
-                    state.Send(new CharacterListUpdate(acct));
+                    res = DeleteResultType.CharTooYoung;
                 }
                 else if (m.AccessLevel == AccessLevel.Player &&
                          Region.Find(m.LogoutLocation, m.LogoutMap).IsPartOf<JailRegion>()
                 ) // Don't need to check current location, if netstate is null, they're logged out
                 {
-                    state.Send(new DeleteResult(DeleteResultType.BadRequest));
-                    state.Send(new CharacterListUpdate(acct));
+                    res = DeleteResultType.BadRequest;
                 }
                 else
                 {
@@ -257,9 +256,14 @@ namespace Server.Misc
                     acct.Comments.Add(new AccountComment("System", $"Character #{index + 1} {m} deleted by {state}"));
 
                     m.Delete();
-                    state.Send(new CharacterListUpdate(acct));
+                    Packets.SendCharacterListUpdate(state, acct);
+                    return;
                 }
             }
+
+            Packets.SendCharacterDeleteResult(state, res);
+            Packets.SendCharacterListUpdate(state, acct);
+
         }
 
         public static bool CanCreate(IPAddress ip) =>

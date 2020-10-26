@@ -29,6 +29,10 @@ namespace System.Buffers
         public int Length { get; }
         public int Position { get; private set; }
 
+        public CircularBufferWriter(CircularBuffer<byte> buffer) : this(buffer.GetSpan(0), buffer.GetSpan(1))
+        {
+        }
+
         public CircularBufferWriter(Span<byte> first, Span<byte> second)
         {
             _first = first;
@@ -144,6 +148,34 @@ namespace System.Buffers
                 }
             }
             else if (BinaryPrimitives.TryWriteInt32BigEndian(_second.Slice(Position - _first.Length), value))
+            {
+                Position += 4;
+            }
+            else
+            {
+                throw new OutOfMemoryException();
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteLE(int value)
+        {
+            if (Position < _first.Length)
+            {
+                if (!BinaryPrimitives.TryWriteInt32LittleEndian(_first.Slice(Position), value))
+                {
+                    // Not enough space. Split the spans
+                    Write((byte)(value >> 24));
+                    Write((byte)(value >> 16));
+                    Write((byte)(value >> 8));
+                    Write((byte)value);
+                }
+                else
+                {
+                    Position += 4;
+                }
+            }
+            else if (BinaryPrimitives.TryWriteInt32LittleEndian(_second.Slice(Position - _first.Length), value))
             {
                 Position += 4;
             }

@@ -75,7 +75,7 @@ namespace Server.Network
             Timer.DelayCall(checkAliveDuration, checkAliveDuration, CheckAllAlive);
         }
 
-        public NetState(Socket connection)
+        public NetState(ISocket connection)
         {
             m_Running = false;
             Connection = connection;
@@ -141,7 +141,7 @@ namespace Server.Network
 
         public Pipe<byte> SendPipe { get; private set; }
 
-        public Socket Connection { get; private set; }
+        public ISocket Connection { get; private set; }
 
         public bool CompressionEnabled { get; set; }
 
@@ -371,7 +371,7 @@ namespace Server.Network
 
         public virtual void Send(ref CircularBuffer<byte> buffer, int length)
         {
-            if (Connection == null || BlockAllPackets || buffer.Length == 0)
+            if (Connection == null || BlockAllPackets || buffer.Length == 0 || length <= 0)
             {
                 return;
             }

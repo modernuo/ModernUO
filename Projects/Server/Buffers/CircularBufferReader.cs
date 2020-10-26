@@ -35,6 +35,10 @@ namespace Server.Network
         {
         }
 
+        public CircularBufferReader(CircularBuffer<byte> buffer) : this(buffer.GetSpan(0), buffer.GetSpan(1))
+        {
+        }
+
         public CircularBufferReader(ReadOnlySpan<byte> first, ReadOnlySpan<byte> second)
         {
             _first = first;
