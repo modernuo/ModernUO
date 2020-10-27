@@ -61,7 +61,7 @@ namespace Server.Network
          */
         public static void SendChangeCharacter(NetState ns, IAccount a)
         {
-            if (ns == null || a == null || !ns.SendPipe.Writer.GetAvailable(out var buffer))
+            if (ns == null || a == null || !ns.GetSendBuffer(out var buffer))
             {
                 return;
             }
@@ -109,7 +109,7 @@ namespace Server.Network
          */
         public static void SendClientVersionRequest(NetState ns)
         {
-            if (ns != null && ns.SendPipe.Writer.GetAvailable(out var buffer))
+            if (ns != null && ns.GetSendBuffer(out var buffer))
             {
                 buffer[0] = 0xBD; // Packet ID
                 buffer[1] = 0x00;
@@ -127,7 +127,7 @@ namespace Server.Network
          */
         public static void SendCharacterDeleteResult(NetState ns, DeleteResultType res)
         {
-            if (ns != null && ns.SendPipe.Writer.GetAvailable(out var buffer))
+            if (ns != null && ns.GetSendBuffer(out var buffer))
             {
                 buffer[0] = 0x85; // Packet ID
                 buffer[1] = (byte)res;
@@ -144,7 +144,7 @@ namespace Server.Network
          */
         public static void SendPopupMessage(NetState ns, PMMessage msg)
         {
-            if (ns != null && ns.SendPipe.Writer.GetAvailable(out var buffer))
+            if (ns != null && ns.GetSendBuffer(out var buffer))
             {
                 buffer[0] = 0x53; // Packet ID
                 buffer[1] = (byte)msg;
@@ -161,7 +161,7 @@ namespace Server.Network
          */
         public static void SendSupportedFeature(NetState ns)
         {
-            if (ns == null || !ns.SendPipe.Writer.GetAvailable(out var buffer))
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
                 return;
             }
@@ -206,7 +206,7 @@ namespace Server.Network
          */
         public static void SendLoginConfirmation(NetState ns, Mobile m)
         {
-            if (ns == null || !ns.SendPipe.Writer.GetAvailable(out var buffer))
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
                 return;
             }
@@ -247,7 +247,7 @@ namespace Server.Network
          */
         public static void SendLoginComplete(NetState ns)
         {
-            if (ns != null && ns.SendPipe.Writer.GetAvailable(out var buffer))
+            if (ns != null && ns.GetSendBuffer(out var buffer))
             {
                 buffer[0] = 0x55; // Packet ID
 
@@ -263,7 +263,7 @@ namespace Server.Network
          */
         public static void SendCharacterListUpdate(NetState ns, IAccount a)
         {
-            if (ns == null || a == null || !ns.SendPipe.Writer.GetAvailable(out var buffer))
+            if (ns == null || a == null || !ns.GetSendBuffer(out var buffer))
             {
                 return;
             }
@@ -316,7 +316,7 @@ namespace Server.Network
         {
             var acct = ns?.Account;
 
-            if (acct == null || !ns.SendPipe.Writer.GetAvailable(out var buffer))
+            if (acct == null || !ns.GetSendBuffer(out var buffer))
             {
                 return;
             }
@@ -415,7 +415,7 @@ namespace Server.Network
          */
         public static void SendAccountLoginRejected(NetState ns, ALRReason reason)
         {
-            if (ns != null && ns.SendPipe.Writer.GetAvailable(out var buffer))
+            if (ns != null && ns.GetSendBuffer(out var buffer))
             {
                 buffer[0] = 0x82; // Packet ID
                 buffer[1] = (byte)reason;
@@ -432,7 +432,7 @@ namespace Server.Network
          */
         public static void SendAccountLoginAck(NetState ns)
         {
-            if (ns == null || !ns.SendPipe.Writer.GetAvailable(out var buffer))
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
                 return;
             }
@@ -469,7 +469,7 @@ namespace Server.Network
          */
         public static void SendPlayServerAck(NetState ns, ServerInfo si, int authId)
         {
-            if (ns == null || !ns.SendPipe.Writer.GetAvailable(out var buffer))
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
                 return;
             }

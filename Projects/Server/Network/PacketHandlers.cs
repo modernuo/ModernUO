@@ -277,9 +277,9 @@ namespace Server.Network
             }
         }
 
-        public static int ProcessPacket(NetState ns, ref CircularBuffer<byte> buffer)
+        public static int ProcessPacket(NetState ns, ArraySegment<byte>[] buffer)
         {
-            var reader = new CircularBufferReader(ref buffer);
+            var reader = new CircularBufferReader(buffer);
 
             var packetId = reader.ReadByte();
 

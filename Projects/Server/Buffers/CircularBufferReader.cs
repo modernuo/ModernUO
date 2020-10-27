@@ -35,7 +35,7 @@ namespace Server.Network
         {
         }
 
-        public CircularBufferReader(CircularBuffer<byte> buffer) : this(buffer.GetSpan(0), buffer.GetSpan(1))
+        public CircularBufferReader(ArraySegment<byte>[] buffer) : this(buffer[0], buffer[1])
         {
         }
 

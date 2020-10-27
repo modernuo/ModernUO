@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -27,78 +26,125 @@ namespace Server.Network
         public bool IsCompleted { get; }
 
         public T GetResult();
-
-        public void OnCompleted(Action continuation);
     }
 
     public class Pipe<T>
     {
-        public readonly struct Result
+        public struct Result
         {
-            public bool Closed { get; }
+            public ArraySegment<T>[] Buffer { get; }
+            public bool IsClosed { get; set; }
 
-            public Result(bool closed) => Closed = closed;
+            public int Length
+            {
+                get
+                {
+                    var length = 0;
+                    for (int i = 0; i < Buffer.Length; i++)
+                    {
+                        length += Buffer[i].Count;
+                    }
+
+                    return length;
+                }
+            }
+
+            public void CopyFrom(ReadOnlySpan<T> bytes)
+            {
+                var remaining = bytes.Length;
+                var offset = 0;
+
+                if (remaining == 0)
+                {
+                    return;
+                }
+
+                for (int i = 0; i < Buffer.Length; i++)
+                {
+                    var buffer = Buffer[i];
+                    var sz = Math.Min(remaining, buffer.Count);
+                    bytes.Slice(offset, sz).CopyTo(buffer);
+
+                    remaining -= sz;
+                    offset += sz;
+
+                    if (remaining == 0)
+                    {
+                        return;
+                    }
+                }
+
+                throw new OutOfMemoryException();
+            }
+
+            public Result(int segments)
+            {
+                IsClosed = false;
+                Buffer = new ArraySegment<T>[segments];
+            }
         }
 
-        public class PipeWriter<T>
+        public class PipeWriter : IPipeTask<Result>
         {
             private readonly Pipe<T> _pipe;
 
-            public PipeWriter(Pipe<T> pipe) => _pipe = pipe;
+            private Result _result = new Result(2);
+
+            internal PipeWriter(Pipe<T> pipe) => _pipe = pipe;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public bool GetAvailable(ArraySegment<T>[] segments)
+            public uint GetAvailable()
             {
                 var read = _pipe._readIdx;
                 var write = _pipe._writeIdx;
 
                 if (read <= write)
                 {
-                    var readZero = read == 0;
-                    var sz = _pipe.Size - write - (readZero ? 1 : 0);
+                    if (read == 0)
+                    {
+                        return _pipe.Size - write - 1;
+                    }
 
-                    segments[0] = sz == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)write, (int)sz);
-                    segments[1] = readZero ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, 0, (int)read - 1);
-                }
-                else
-                {
-                    var sz = read - write - 1;
-
-                    segments[0] = sz == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)write, (int)sz);
-                    segments[1] = ArraySegment<T>.Empty;
+                    return _pipe.Size - write + (read - 1);
                 }
 
-                return !_pipe._closed;
+                return read - write - 1;
             }
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public bool GetAvailable(out CircularBuffer<T> buffer)
+            public Result TryGetMemory()
             {
                 var read = _pipe._readIdx;
                 var write = _pipe._writeIdx;
 
-                Span<T> first;
-                Span<T> second;
+                _result.IsClosed = _pipe._closed;
 
                 if (read <= write)
                 {
                     var readZero = read == 0;
                     var sz = _pipe.Size - write - (readZero ? 1 : 0);
 
-                    first = sz == 0 ? Span<T>.Empty : _pipe._buffer.AsSpan((int)write, (int)sz);
-                    second = readZero ? Span<T>.Empty : _pipe._buffer.AsSpan(0, (int)read - 1);
+                    _result.Buffer[0] = sz == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)write, (int)sz);
+                    _result.Buffer[1] = readZero ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, 0, (int)read - 1);
                 }
                 else
                 {
                     var sz = read - write - 1;
 
-                    first = sz == 0 ? Span<T>.Empty : _pipe._buffer.AsSpan((int)write, (int)sz);
-                    second = Span<T>.Empty;
+                    _result.Buffer[0] = sz == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)write, (int)sz);
+                    _result.Buffer[1] = ArraySegment<T>.Empty;
                 }
 
-                buffer = new CircularBuffer<T>(first, second);
+                return _result;
+            }
 
-                return !_pipe._closed;
+            public IPipeTask<Result> GetMemory()
+            {
+                if (_pipe._writeAwaitBeginning)
+                {
+                    throw new Exception("Double await on reader");
+                }
+
+                return this;
             }
 
             public void Advance(uint count)
@@ -171,7 +217,12 @@ namespace Server.Network
 
             public void Flush()
             {
-                var waiting = _pipe._awaitBeginning;
+                if (_pipe._readIdx == _pipe._writeIdx)
+                {
+                    return;
+                }
+
+                var waiting = _pipe._readAwaitBeginning;
 
                 if (!waiting)
                 {
@@ -182,19 +233,47 @@ namespace Server.Network
 
                 do
                 {
-                    continuation = _pipe._readerContinuation;
+                    continuation = _pipe._readContinuation;
                 } while (continuation == null);
 
-                _pipe._readerContinuation = null;
-                _pipe._awaitBeginning = false;
+                _pipe._readContinuation = null;
+                _pipe._readAwaitBeginning = false;
 
                 ThreadPool.UnsafeQueueUserWorkItem(state => continuation(), true);
             }
+
+            #region Awaitable
+
+            // The following makes it possible to await the writer. Do not use any of this directly.
+
+            public IPipeTask<Result> GetAwaiter() => this;
+
+            public bool IsCompleted
+            {
+                get
+                {
+                    if (GetAvailable() > 0)
+                    {
+                        return true;
+                    }
+
+                    _pipe._writeAwaitBeginning = true;
+                    return false;
+                }
+            }
+
+            public Result GetResult() => TryGetMemory();
+
+            public void OnCompleted(Action continuation) => _pipe._writeContinuation = continuation;
+
+            #endregion
         }
 
-        public class PipeReader<T> : IPipeTask<Result>
+        public class PipeReader : IPipeTask<Result>
         {
             private readonly Pipe<T> _pipe;
+
+            private Result _result = new Result(2);
 
             internal PipeReader(Pipe<T> pipe) => _pipe = pipe;
 
@@ -212,59 +291,35 @@ namespace Server.Network
                 return write + _pipe.Size - read;
             }
 
-            private ArraySegment<T>[] _segments;
-
-            public IPipeTask<Result> Read(ArraySegment<T>[] segments)
+            public Result TryRead()
             {
-                if (_pipe._awaitBeginning)
+                var read = _pipe._readIdx;
+                var write = _pipe._writeIdx;
+
+                _result.IsClosed = _pipe._closed;
+
+                if (read <= write)
+                {
+                    _result.Buffer[0] = write - read == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)read, (int)(write - read));
+                    _result.Buffer[1] = ArraySegment<T>.Empty;
+                }
+                else
+                {
+                    _result.Buffer[0] = _pipe.Size - read == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)read, (int)(_pipe.Size - read));
+                    _result.Buffer[1] = write == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, 0, (int)write);
+                }
+
+                return _result;
+            }
+
+            public IPipeTask<Result> Read()
+            {
+                if (_pipe._readAwaitBeginning)
                 {
                     throw new Exception("Double await on reader");
                 }
 
-                _segments = segments;
                 return this;
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public bool TryRead(out CircularBuffer<T> buffer)
-            {
-                var read = _pipe._readIdx;
-                var write = _pipe._writeIdx;
-
-                Span<T> first;
-                Span<T> second;
-
-                if (read <= write)
-                {
-                    first = write - read == 0 ? Span<T>.Empty : _pipe._buffer.AsSpan((int)read, (int)(write - read));
-                    second = Span<T>.Empty;
-                }
-                else
-                {
-                    first = _pipe.Size - read == 0 ? Span<T>.Empty : _pipe._buffer.AsSpan((int)read, (int)(_pipe.Size - read));
-                    second = write == 0 ? Span<T>.Empty : _pipe._buffer.AsSpan(0, (int)write);
-                }
-
-                buffer = new CircularBuffer<T>(first, second);
-                return !_pipe._closed;
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void TryRead(ArraySegment<T>[] segments)
-            {
-                var read = _pipe._readIdx;
-                var write = _pipe._writeIdx;
-
-                if (read <= write)
-                {
-                    segments[0] = write - read == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)read, (int)(write - read));
-                    segments[1] = ArraySegment<T>.Empty;
-                }
-                else
-                {
-                    segments[0] = _pipe.Size - read == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, (int)read, (int)(_pipe.Size - read));
-                    segments[1] = write == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(_pipe._buffer, 0, (int)write);
-                }
             }
 
             public void Advance(uint count)
@@ -306,6 +361,33 @@ namespace Server.Network
                 _pipe._readIdx = read;
             }
 
+            public void Commit()
+            {
+                if (_pipe._readIdx == (_pipe._writeIdx + 1) % _pipe.Size)
+                {
+                    return;
+                }
+
+                var waiting = _pipe._writeAwaitBeginning;
+
+                if (!waiting)
+                {
+                    return;
+                }
+
+                Action continuation;
+
+                do
+                {
+                    continuation = _pipe._writeContinuation;
+                } while (continuation == null);
+
+                _pipe._writeContinuation = null;
+                _pipe._readAwaitBeginning = false;
+
+                ThreadPool.UnsafeQueueUserWorkItem(state => continuation(), true);
+            }
+
             #region Awaitable
 
             // The following makes it possible to await the reader. Do not use any of this directly.
@@ -321,29 +403,14 @@ namespace Server.Network
                         return true;
                     }
 
-                    _pipe._awaitBeginning = true;
+                    _pipe._readAwaitBeginning = true;
                     return false;
                 }
             }
 
-            public Result GetResult()
-            {
-                if (_pipe._closed)
-                {
-                    _segments = null;
-                    return new Result(true);
-                }
+            public Result GetResult() => TryRead();
 
-                if (_segments != null)
-                {
-                    TryRead(_segments);
-                    _segments = null;
-                }
-
-                return new Result(false);
-            }
-
-            public void OnCompleted(Action continuation) => _pipe._readerContinuation = continuation;
+            public void OnCompleted(Action continuation) => _pipe._readContinuation = continuation;
 
             #endregion
         }
@@ -353,8 +420,8 @@ namespace Server.Network
         private volatile uint _readIdx;
         private bool _closed;
 
-        public PipeWriter<T> Writer { get; }
-        public PipeReader<T> Reader { get; }
+        public PipeWriter Writer { get; }
+        public PipeReader Reader { get; }
 
         public uint Size => (uint)_buffer.Length;
 
@@ -365,13 +432,16 @@ namespace Server.Network
             _readIdx = 0;
             _closed = false;
 
-            Writer = new PipeWriter<T>(this);
-            Reader = new PipeReader<T>(this);
+            Writer = new PipeWriter(this);
+            Reader = new PipeReader(this);
         }
 
         #region Awaitable
-        private volatile bool _awaitBeginning;
-        private volatile Action _readerContinuation;
+        private volatile bool _readAwaitBeginning;
+        private volatile Action _readContinuation;
+
+        private volatile bool _writeAwaitBeginning;
+        private volatile Action _writeContinuation;
 
         #endregion
     }

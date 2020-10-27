@@ -19,13 +19,13 @@ namespace Server.Tests.Network
             secondMobile.RawName = null;
 
             var account = new MockAccount(new[] { firstMobile, null, secondMobile });
-            var oldPacket = new ChangeCharacter(account).Compile();
+            var expected = new ChangeCharacter(account).Compile();
 
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendChangeCharacter(ns, account);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), oldPacket);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -37,8 +37,8 @@ namespace Server.Tests.Network
 
             Packets.SendClientVersionRequest(ns);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), expected);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -49,8 +49,8 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendCharacterDeleteResult(ns, DeleteResultType.BadRequest);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), expected);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -61,8 +61,8 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendPopupMessage(ns, PMMessage.LoginSyncError);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), expected);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Theory]
@@ -83,8 +83,8 @@ namespace Server.Tests.Network
             var expected = new SupportedFeatures(ns).Compile();
             Packets.SendSupportedFeature(ns);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), expected);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -104,8 +104,8 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendLoginConfirmation(ns, m);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), expected);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -116,8 +116,8 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendLoginComplete(ns);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), expected);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -134,8 +134,8 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendCharacterListUpdate(ns, acct);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), expected);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -160,8 +160,8 @@ namespace Server.Tests.Network
 
             Packets.SendCharacterList(ns);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), expected);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -185,8 +185,8 @@ namespace Server.Tests.Network
 
             Packets.SendCharacterList(ns);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), expected);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -198,8 +198,8 @@ namespace Server.Tests.Network
             using var ns = PacketTestUtilities.CreateTestNetState();
             Packets.SendAccountLoginRejected(ns, reason);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), expected);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -217,8 +217,8 @@ namespace Server.Tests.Network
 
             Packets.SendAccountLoginAck(ns);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), expected);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -233,8 +233,8 @@ namespace Server.Tests.Network
 
             Packets.SendPlayServerAck(ns, si, authId);
 
-            ns.SendPipe.Reader.TryRead(out var buffer);
-            AssertThat.Equal(buffer.GetSpan(0), expected);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 }
