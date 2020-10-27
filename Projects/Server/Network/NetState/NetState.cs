@@ -36,8 +36,8 @@ namespace Server.Network
 
     public partial class NetState : IComparable<NetState>, IDisposable
     {
-        private static int RecvPipeSize = 1024 * 64;
-        private static int SendPipeSize = 1024 * 256;
+        private static int RecvPipeSize = 1024 * 64 + 1;
+        private static int SendPipeSize = 1024 * 256 + 1;
         private static int GumpCap = 512;
         private static int HuePickerCap = 512;
         private static int MenuCap = 512;
