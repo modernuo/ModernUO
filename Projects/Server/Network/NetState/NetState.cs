@@ -36,8 +36,8 @@ namespace Server.Network
 
     public partial class NetState : IComparable<NetState>, IDisposable
     {
-        private static int RecvPipeSize = 1024 * 64;
-        private static int SendPipeSize = 1024 * 256;
+        private static int RecvPipeSize = 1024 * 64 + 1;
+        private static int SendPipeSize = 1024 * 256 + 1;
         private static int GumpCap = 512;
         private static int HuePickerCap = 512;
         private static int MenuCap = 512;
@@ -369,9 +369,17 @@ namespace Server.Network
             NetworkState.Resume(ref m_NetworkState);
         }
 
+        public bool GetSendBuffer(out CircularBuffer<byte> cBuffer)
+        {
+            var result = SendPipe.Writer.TryGetMemory();
+            cBuffer = new CircularBuffer<byte>(result.Buffer);
+
+            return !(result.IsClosed || result.Length <= 0);
+        }
+
         public virtual void Send(ref CircularBuffer<byte> buffer, int length)
         {
-            if (Connection == null || BlockAllPackets || buffer.Length == 0 || length <= 0)
+            if (Connection == null || BlockAllPackets || length <= 0)
             {
                 return;
             }
@@ -407,15 +415,16 @@ namespace Server.Network
 
                 if (buffer.Length > 0 && length > 0)
                 {
-                    if (!SendPipe.Writer.GetAvailable(out var pipeBuffer))
+                    var result = writer.TryGetMemory();
+                    if (result.IsClosed)
                     {
                         p.OnSend();
                         return;
                     }
 
-                    if (pipeBuffer.Length >= length)
+                    if (result.Length >= length)
                     {
-                        pipeBuffer.CopyFrom(buffer.AsSpan(0, length));
+                        result.CopyFrom(buffer.AsSpan(0, length));
                         writer.Advance((uint)length);
 
                         // Flush at the end of the game loop
@@ -461,24 +470,23 @@ namespace Server.Network
         private async void SendTask(object state)
         {
             var reader = SendPipe.Reader;
-            var segments = new ArraySegment<byte>[2];
 
             try
             {
                 while (m_Running)
                 {
-                    var result = await reader.Read(segments);
-                    if (result.Closed)
+                    var result = await reader.Read();
+                    if (result.IsClosed)
                     {
                         break;
                     }
 
-                    if (segments[0].Count + segments[1].Count <= 0)
+                    if (result.Length <= 0)
                     {
                         continue;
                     }
 
-                    var bytesWritten = await Connection.SendAsync(segments, SocketFlags.None);
+                    var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None);
 
                     if (bytesWritten > 0)
                     {
@@ -510,7 +518,6 @@ namespace Server.Network
         {
             var socket = Connection;
             var writer = RecvPipe.Writer;
-            var segments = new ArraySegment<byte>[2];
 
             try
             {
@@ -521,24 +528,25 @@ namespace Server.Network
                         continue;
                     }
 
-                    // TODO: Make awaitable
-                    if (!writer.GetAvailable(segments))
+                    var result = await writer.GetMemory();
+
+                    if (result.IsClosed)
                     {
                         break;
                     }
 
-                    if (segments[0].Count + segments[1].Count <= 0)
+                    if (result.Length <= 0)
                     {
                         continue;
                     }
 
-                    var bytesWritten = await socket.ReceiveAsync(segments, SocketFlags.None);
+                    var bytesWritten = await socket.ReceiveAsync(result.Buffer, SocketFlags.None);
                     if (bytesWritten <= 0)
                     {
                         break;
                     }
 
-                    DecodePacket(segments, ref bytesWritten);
+                    DecodePacket(result.Buffer, ref bytesWritten);
 
                     writer.Advance((uint)bytesWritten);
                     m_NextCheckActivity = Core.TickCount + 90000;
@@ -583,12 +591,14 @@ namespace Server.Network
                 // Process as many packets as we can synchronously
                 while (true)
                 {
-                    if (!reader.TryRead(out var buffer) || buffer.Length <= 0)
+                    var result = reader.TryRead();
+
+                    if (result.IsClosed || result.Length <= 0)
                     {
                         return;
                     }
 
-                    var bytesProcessed = PacketHandlers.ProcessPacket(this, ref buffer);
+                    var bytesProcessed = PacketHandlers.ProcessPacket(this, result.Buffer);
 
                     if (bytesProcessed <= 0)
                     {

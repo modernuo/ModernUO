@@ -26,20 +26,18 @@ namespace Server.Tests.Network
             DelayedExecute(() =>
             {
 ;                // Write some data into the pipe
-                writer.GetAvailable(out var buffer);
-                Assert.True(buffer.Length == 99);
-                buffer[0] = 0x1;
-                buffer[1] = 0x2;
-                buffer[2] = 0x3;
+                var result = writer.TryGetMemory();
+                Assert.True(result.Buffer[0].Count == 99);
+                result.Buffer[0][0] = 0x1;
+                result.Buffer[0][1] = 0x2;
+                result.Buffer[0][2] = 0x3;
 
                 writer.Advance(3);
                 writer.Flush();
             });
 
-            var segments = new ArraySegment<byte>[2];
-            await reader.Read(segments);
-
-            Assert.Equal(3, segments[0].Count);
+            var result = await reader.Read();
+            Assert.Equal(3, result.Buffer[0].Count);
         }
 
         private bool _signal;
@@ -53,11 +51,11 @@ namespace Server.Tests.Network
 
             while (count < 0x8000000)
             {
-                reader.TryRead(out var buffer);
+                var result = reader.TryRead();
 
-                var first = buffer.GetSpan(0);
+                var first = result.Buffer[0];
 
-                for (int i = 0; i < first.Length; i++)
+                for (int i = 0; i < first.Count; i++)
                 {
                     Assert.True(first[i] == expected_value);
                     count++;
@@ -68,8 +66,8 @@ namespace Server.Tests.Network
                     }
                 }
 
-                var second = buffer.GetSpan(1);
-                for (int i = 0; i < second.Length; i++)
+                var second = result.Buffer[1];
+                for (int i = 0; i < second.Count; i++)
                 {
                     Assert.True(second[i] == expected_value);
                     count++;
@@ -80,7 +78,7 @@ namespace Server.Tests.Network
                     }
                 }
 
-                reader.Advance((uint)buffer.Length);
+                reader.Advance((uint)result.Length);
             }
 
             _signal = true;
@@ -100,14 +98,14 @@ namespace Server.Tests.Network
 
             while (count < 0x8000000)
             {
-                writer.GetAvailable(out var buffer);
+                var result = writer.TryGetMemory();
 
-                if (buffer.Length < 16)
+                if (result.Length < 16)
                 {
                     continue;
                 }
 
-                buffer.CopyFrom(new[] {
+                result.CopyFrom(new[] {
                     expected_value, expected_value, expected_value, expected_value,
                     expected_value, expected_value, expected_value, expected_value,
                     expected_value, expected_value, expected_value, expected_value,
@@ -136,33 +134,33 @@ namespace Server.Tests.Network
             var reader = pipe.Reader;
             var writer = pipe.Writer;
 
-            writer.GetAvailable(out var buffer);
+            var result = writer.TryGetMemory();
 
-            Assert.Equal(9, buffer.Length);
+            Assert.Equal(9, result.Length);
             Assert.Equal(0u, reader.GetAvailable());
-            reader.TryRead(out buffer);
-            Assert.Equal(0, buffer.Length);
+            result = reader.TryRead();
+            Assert.Equal(0, result.Length);
 
             writer.Advance(7);
-            writer.GetAvailable(out buffer);
-            Assert.Equal(2, buffer.Length);
+            result = writer.TryGetMemory();
+            Assert.Equal(2, result.Length);
             Assert.Equal(7u, reader.GetAvailable());
-            reader.TryRead(out buffer);
-            Assert.Equal(7, buffer.Length);
+            result = reader.TryRead();
+            Assert.Equal(7, result.Length);
 
             reader.Advance(4);
-            writer.GetAvailable(out buffer);
-            Assert.Equal(6, buffer.Length);
+            result = writer.TryGetMemory();
+            Assert.Equal(6, result.Length);
             Assert.Equal(3u, reader.GetAvailable());
-            reader.TryRead(out buffer);
-            Assert.Equal(3, buffer.Length);
+            result = reader.TryRead();
+            Assert.Equal(3, result.Length);
 
             writer.Advance(3);
-            writer.GetAvailable(out buffer);
-            Assert.Equal(3, buffer.Length);
+            result = writer.TryGetMemory();
+            Assert.Equal(3, result.Length);
             Assert.Equal(6u, reader.GetAvailable());
-            reader.TryRead(out buffer);
-            Assert.Equal(6, buffer.Length);
+            result = reader.TryRead();
+            Assert.Equal(6, result.Length);
         }
 
         [Fact]
@@ -191,19 +189,19 @@ namespace Server.Tests.Network
             var reader = pipe.Reader;
             var writer = pipe.Writer;
 
-            writer.GetAvailable(out var buffer);
-            Assert.True(buffer.Length == 9);
+            var result = writer.TryGetMemory();
+            Assert.Equal(9, result.Length);
 
-            buffer.CopyFrom(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
+            result.CopyFrom(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
 
             writer.Advance(9);
             writer.Flush();
 
             Assert.Equal(9u, reader.GetAvailable());
 
-            reader.TryRead(out buffer);
+            result = reader.TryRead();
 
-            var first = buffer.GetSpan(0);
+            var first = result.Buffer[0];
 
             for (int i = 0; i < 9; i++)
             {
@@ -211,9 +209,9 @@ namespace Server.Tests.Network
             }
 
             reader.Advance(4);
-            reader.TryRead(out buffer);
-            first = buffer.GetSpan(0);
-            Assert.Equal(5, buffer.Length);
+            result = reader.TryRead();
+            Assert.Equal(5, result.Length);
+            first = result.Buffer[0];
             Assert.Equal(4, first[0]);
             Assert.Equal(5, first[1]);
             Assert.Equal(6, first[2]);

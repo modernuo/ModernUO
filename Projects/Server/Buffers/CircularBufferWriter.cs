@@ -33,6 +33,10 @@ namespace System.Buffers
         {
         }
 
+        public CircularBufferWriter(ArraySegment<byte>[] buffer) : this(buffer[0], buffer[1])
+        {
+        }
+
         public CircularBufferWriter(Span<byte> first, Span<byte> second)
         {
             _first = first;
