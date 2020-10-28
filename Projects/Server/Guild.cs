@@ -14,6 +14,8 @@ namespace Server.Guilds
     {
         private static Serial m_NextID = 1;
 
+        private int _savePosition = -1;
+
         protected BaseGuild(uint id) // serialization ctor
         {
             Serial = id;
@@ -45,6 +47,7 @@ namespace Server.Guilds
 
         public void Serialize()
         {
+            SaveBuffer ??= new BufferWriter(true);
             SaveBuffer.Flush();
             Serialize(SaveBuffer);
         }

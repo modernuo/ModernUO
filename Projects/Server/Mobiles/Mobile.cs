@@ -2636,6 +2636,7 @@ namespace Server
 
         public void Serialize()
         {
+            SaveBuffer ??= new BufferWriter(true);
             SaveBuffer.Flush();
             Serialize(SaveBuffer);
         }

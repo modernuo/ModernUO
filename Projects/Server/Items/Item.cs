@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Server.ContextMenus;
 using Server.Items;
 using Server.Network;
@@ -829,6 +828,7 @@ namespace Server
 
         public void Serialize()
         {
+            SaveBuffer ??= new BufferWriter(true);
             SaveBuffer.Flush();
             Serialize(SaveBuffer);
         }
