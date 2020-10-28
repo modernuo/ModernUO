@@ -582,6 +582,9 @@ namespace Server
 
         private bool m_YellowHealthbar;
 
+        // Position in the save buffer where serialization ends. -1 if dirty
+        private int _savePosition = -1;
+
         public Mobile(Serial serial)
         {
             m_Region = Map.Internal.DefaultRegion;
@@ -599,8 +602,6 @@ namespace Server
                 World.m_MobileTypes.Add(ourType);
                 TypeRef = World.m_MobileTypes.Count - 1;
             }
-
-            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public Mobile()
@@ -620,8 +621,6 @@ namespace Server
                 World.m_MobileTypes.Add(ourType);
                 TypeRef = World.m_MobileTypes.Count - 1;
             }
-
-            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public static bool DragEffects { get; set; } = true;
@@ -2628,7 +2627,7 @@ namespace Server
             AddNameProperties(list);
         }
 
-        public BufferedFileWriter SaveBuffer { get; }
+        public BufferWriter SaveBuffer { get; set; }
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
@@ -2643,6 +2642,13 @@ namespace Server
 
         public virtual void Serialize(IGenericWriter writer)
         {
+            // The item is clean, so let's skip
+            if (_savePosition > -1)
+            {
+                writer.Seek(_savePosition, SeekOrigin.Begin);
+                return;
+            }
+
             writer.Write(32); // version
 
             writer.WriteDeltaTime(LastStrGain);

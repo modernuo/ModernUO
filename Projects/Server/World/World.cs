@@ -9,11 +9,21 @@ using Server.Network;
 
 namespace Server
 {
+    public enum WorldState
+    {
+        NotRunning,
+        Loading,
+        Running,
+        Saving,
+        WritingSave
+    }
+
     public static class World
     {
         private static readonly ManualResetEvent m_DiskWriteHandle = new ManualResetEvent(true);
 
-        private static Queue<IEntity> _addQueue, _deleteQueue;
+        private static Dictionary<Serial, IEntity> _pendingAddQueue;
+        private static Dictionary<Serial, IEntity> _pendingDeleteQueue;
 
         public static readonly string MobileIndexPath = Path.Combine("Saves/Mobiles/", "Mobiles.idx");
         public static readonly string MobileTypesPath = Path.Combine("Saves/Mobiles/", "Mobiles.tdb");
@@ -49,7 +59,7 @@ namespace Server
         {
             if (m_DiskWriteHandle.Set())
             {
-                Console.WriteLine("Closing Save Files. ");
+                Console.WriteLine("Closing Save Files.");
             }
         }
 
@@ -169,10 +179,8 @@ namespace Server
 
             Loading = true;
 
-            _addQueue = new Queue<IEntity>();
-            _deleteQueue = new Queue<IEntity>();
-
-            int mobileCount, itemCount, guildCount;
+            _pendingAddQueue = new Dictionary<Serial, IEntity>();
+            _pendingDeleteQueue = new Dictionary<Serial, IEntity>();
 
             var ctorArgs = new object[1];
 
@@ -188,7 +196,7 @@ namespace Server
                 using var tdbReader = new BinaryReader(tdb);
                 var types = ReadTypes(tdbReader);
 
-                mobileCount = idxReader.ReadInt32();
+                var mobileCount = idxReader.ReadInt32();
 
                 Mobiles = new Dictionary<Serial, Mobile>(mobileCount);
 
@@ -245,7 +253,7 @@ namespace Server
 
                 var types = ReadTypes(tdbReader);
 
-                itemCount = idxReader.ReadInt32();
+                var itemCount = idxReader.ReadInt32();
 
                 Items = new Dictionary<Serial, Item>(itemCount);
 
@@ -297,7 +305,7 @@ namespace Server
                 using var idx = new FileStream(GuildIndexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                 var idxReader = new BinaryReader(idx);
 
-                guildCount = idxReader.ReadInt32();
+                var guildCount = idxReader.ReadInt32();
 
                 var createEventArgs = new CreateGuildEventArgs(0xFFFFFFFF);
                 for (var i = 0; i < guildCount; ++i)
@@ -634,12 +642,7 @@ namespace Server
             idxWriter.Close();
         }
 
-        public static void Save()
-        {
-            Save(true, false);
-        }
-
-        public static void Save(bool message, bool permitBackgroundWrite)
+        public static void Save(bool message = true, bool permitBackgroundWrite = false)
         {
             if (Saving)
             {
@@ -660,9 +663,6 @@ namespace Server
             {
                 Broadcast(0x35, true, "The world is saving, please wait.");
             }
-
-            var strategy = SaveStrategy.Acquire();
-            Console.WriteLine("Core: Using {0} save strategy", strategy.Name.ToLower());
 
             Console.Write($"[{DateTime.UtcNow.ToLongTimeString()}] World: Saving...");
 
@@ -705,7 +705,7 @@ namespace Server
 
             ProcessSafetyQueues();
 
-            strategy.ProcessDecay();
+            // Process Decays
 
             Console.WriteLine("Save done in {0:F2} seconds.", watch.Elapsed.TotalSeconds);
 
@@ -722,20 +722,9 @@ namespace Server
             NetState.Resume();
         }
 
-        public static IEntity FindEntity(Serial serial)
-        {
-            if (serial.IsItem)
-            {
-                return FindItem(serial);
-            }
-
-            if (serial.IsMobile)
-            {
-                return FindMobile(serial);
-            }
-
-            return null;
-        }
+        public static IEntity FindEntity(Serial serial) =>
+            serial.IsItem ? (IEntity)FindItem(serial) :
+            serial.IsMobile ? FindMobile(serial) : null;
 
         public static Mobile FindMobile(Serial serial)
         {
@@ -785,82 +774,6 @@ namespace Server
         public static void RemoveItem(Item item)
         {
             Items.Remove(item.Serial);
-        }
-
-        private interface IEntityEntry
-        {
-            Serial Serial { get; }
-            int TypeID { get; }
-            long Position { get; }
-            int Length { get; }
-        }
-
-        private sealed class GuildEntry : IEntityEntry
-        {
-            public GuildEntry(BaseGuild g, long pos, int length)
-            {
-                Guild = g;
-                Position = pos;
-                Length = length;
-            }
-
-            public BaseGuild Guild { get; }
-
-            public Serial Serial => Guild?.Serial ?? 0;
-
-            public int TypeID => 0;
-
-            public long Position { get; }
-
-            public int Length { get; }
-        }
-
-        private sealed class ItemEntry : IEntityEntry
-        {
-            public ItemEntry(Item item, int typeID, string typeName, long pos, int length)
-            {
-                Item = item;
-                TypeID = typeID;
-                TypeName = typeName;
-                Position = pos;
-                Length = length;
-            }
-
-            public Item Item { get; }
-
-            public string TypeName { get; }
-
-            public Serial Serial => Item?.Serial ?? Serial.MinusOne;
-
-            public int TypeID { get; }
-
-            public long Position { get; }
-
-            public int Length { get; }
-        }
-
-        private sealed class MobileEntry : IEntityEntry
-        {
-            public MobileEntry(Mobile mobile, int typeID, string typeName, long pos, int length)
-            {
-                Mobile = mobile;
-                TypeID = typeID;
-                TypeName = typeName;
-                Position = pos;
-                Length = length;
-            }
-
-            public Mobile Mobile { get; }
-
-            public string TypeName { get; }
-
-            public Serial Serial => Mobile?.Serial ?? Serial.MinusOne;
-
-            public int TypeID { get; }
-
-            public long Position { get; }
-
-            public int Length { get; }
         }
     }
 }

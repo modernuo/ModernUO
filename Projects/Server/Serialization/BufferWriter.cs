@@ -15,13 +15,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Server.Guilds;
 
 namespace Server
 {
-    public class BufferedFileWriter : IGenericWriter
+    public class BufferWriter : IGenericWriter
     {
         private const int LargeByteBufferSize = 256;
 
@@ -35,14 +37,14 @@ namespace Server
         private int m_Index;
         private int m_MaxBufferChars;
 
-        public BufferedFileWriter(bool prefixStr)
+        public BufferWriter(bool prefixStr)
         {
             m_PrefixStrings = prefixStr;
             m_Encoding = Utility.UTF8;
             Data = new byte[BufferSize];
         }
 
-        protected virtual int BufferSize => Data?.Length ?? 64;
+        protected virtual int BufferSize => 256;
 
         public byte[] Data { get; private set; }
 
@@ -50,6 +52,10 @@ namespace Server
 
         public void Close()
         {
+            if (m_Index > 0)
+            {
+                Flush();
+            }
         }
 
         public void WriteEncodedInt(int value)
@@ -764,9 +770,13 @@ namespace Server
             }
         }
 
-        public void WriteTo(IGenericWriter writer)
-        {
-            writer.Write(Data, (int)Position);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Seek(int offset, SeekOrigin origin) =>
+            m_Index = origin switch
+            {
+                SeekOrigin.Begin => offset,
+                SeekOrigin.End   => Data.Length - offset,
+                _                => m_Index + offset // Current
+            };
     }
 }

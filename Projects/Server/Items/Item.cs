@@ -220,6 +220,9 @@ namespace Server
 
         private ObjectPropertyList m_PropertyList;
 
+        // Position in the save buffer where serialization ends. -1 if dirty
+        private int _savePosition = -1;
+
         [Constructible]
         public Item(int itemID = 0)
         {
@@ -244,8 +247,6 @@ namespace Server
                 World.m_ItemTypes.Add(ourType);
                 TypeRef = World.m_ItemTypes.Count - 1;
             }
-
-            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public Item(Serial serial)
@@ -260,8 +261,6 @@ namespace Server
                 World.m_ItemTypes.Add(ourType);
                 TypeRef = World.m_ItemTypes.Count - 1;
             }
-
-            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public int TempFlags
@@ -821,7 +820,7 @@ namespace Server
             AddNameProperties(list);
         }
 
-        public BufferedFileWriter SaveBuffer { get; }
+        public BufferWriter SaveBuffer { get; set; }
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
@@ -836,6 +835,13 @@ namespace Server
 
         public virtual void Serialize(IGenericWriter writer)
         {
+            // The item is clean, so let's skip
+            if (_savePosition > -1)
+            {
+                writer.Seek(_savePosition, SeekOrigin.Begin);
+                return;
+            }
+
             writer.Write(9); // version
 
             var flags = SaveFlag.None;

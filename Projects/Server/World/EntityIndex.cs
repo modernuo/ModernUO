@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: ISerializable.cs                                                *
+ * File: EntityIndex.cs                                                  *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -15,12 +15,14 @@
 
 namespace Server
 {
-    public interface ISerializable
+    public readonly struct EntityIndex<T> where T : IEntity
     {
-        BufferWriter SaveBuffer { get; set; }
-        int TypeRef { get; }
-        Serial Serial { get; }
-        void Serialize();
-        void Serialize(IGenericWriter writer);
+        T Entity { get; }
+
+        int TypeID { get; }
+
+        long Position { get; }
+
+        int Length { get; }
     }
 }
