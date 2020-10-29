@@ -10,7 +10,7 @@ namespace Server.Guilds
         Order
     }
 
-    public abstract class BaseGuild : ISerializable
+    public abstract class BaseGuild : ISerialEntity, ISerializable
     {
         private static Serial m_NextID = 1;
 
@@ -36,6 +36,8 @@ namespace Server.Guilds
         public abstract string Name { get; set; }
         public abstract GuildType Type { get; set; }
         public abstract bool Disbanded { get; }
+
+        public abstract void Delete();
 
         public static Dictionary<uint, BaseGuild> List { get; } = new Dictionary<uint, BaseGuild>();
         public BufferWriter SaveBuffer { get; set; }
@@ -86,6 +88,6 @@ namespace Server.Guilds
             return results;
         }
 
-        public override string ToString() => $"0x{Serial:X} \"{Name} [{Abbreviation}]\"";
+        public override string ToString() => $"0x{Serial.Value:X} \"{Name} [{Abbreviation}]\"";
     }
 }

@@ -611,7 +611,7 @@ namespace Server
 
             DefaultMobileInit();
 
-            World.AddMobile(this);
+            World.AddEntity(this);
 
             var ourType = GetType();
             TypeRef = World.m_MobileTypes.IndexOf(ourType);
@@ -2837,7 +2837,7 @@ namespace Server
             m_FacialHair = null;
             m_MountItem = null;
 
-            World.RemoveMobile(this);
+            World.RemoveEntity(this);
 
             OnAfterDelete();
 
@@ -3554,8 +3554,6 @@ namespace Server
         public virtual void OnAfterSpawn()
         {
         }
-
-        int IComparable<IEntity>.CompareTo(IEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
         public virtual bool InRange(Point2D p, int range) =>
             p.m_X >= Location.m_X - range

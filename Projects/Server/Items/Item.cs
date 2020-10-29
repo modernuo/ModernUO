@@ -236,7 +236,7 @@ namespace Server
 
             SetLastMoved();
 
-            World.AddItem(this);
+            World.AddEntity(this);
 
             var ourType = GetType();
             TypeRef = World.m_ItemTypes.IndexOf(ourType);
@@ -1118,8 +1118,6 @@ namespace Server
             }
         }
 
-        int IComparable<IEntity>.CompareTo(IEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
-
         /// <summary>
         ///     Moves the Item to a given <paramref name="location" /> and <paramref name="map" />.
         /// </summary>
@@ -1569,7 +1567,7 @@ namespace Server
                 m_Map = null;
             }
 
-            World.RemoveItem(this);
+            World.RemoveEntity(this);
 
             OnAfterDelete();
 

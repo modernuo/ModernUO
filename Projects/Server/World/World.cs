@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Server.Guilds;
 using Server.Network;
@@ -22,8 +23,8 @@ namespace Server
     {
         private static readonly ManualResetEvent m_DiskWriteHandle = new ManualResetEvent(true);
 
-        private static Dictionary<Serial, IEntity> _pendingAddQueue;
-        private static Dictionary<Serial, IEntity> _pendingDeleteQueue;
+        private static Dictionary<Serial, IEntity> _pendingAdd;
+        private static Dictionary<Serial, IEntity> _pendingDelete;
 
         public static readonly string MobileIndexPath = Path.Combine("Saves/Mobiles/", "Mobiles.idx");
         public static readonly string MobileTypesPath = Path.Combine("Saves/Mobiles/", "Mobiles.tdb");
@@ -42,6 +43,8 @@ namespace Server
 
         internal static List<Type> m_ItemTypes = new List<Type>();
         internal static List<Type> m_MobileTypes = new List<Type>();
+
+        public static WorldState WorldState { get; private set; }
 
         public static bool Saving { get; private set; }
 
@@ -179,8 +182,8 @@ namespace Server
 
             Loading = true;
 
-            _pendingAddQueue = new Dictionary<Serial, IEntity>();
-            _pendingDeleteQueue = new Dictionary<Serial, IEntity>();
+            _pendingAdd = new Dictionary<Serial, IEntity>();
+            _pendingDelete = new Dictionary<Serial, IEntity>();
 
             var ctorArgs = new object[1];
 
@@ -465,7 +468,7 @@ namespace Server
                 Console.WriteLine("An error was encountered while loading a saved object");
 
                 Console.WriteLine(" - Type: {0}", failedType);
-                Console.WriteLine(" - Serial: {0}", failedSerial);
+                Console.WriteLine(" - Serial: {0:X}", failedSerial);
 
                 Console.WriteLine("Delete the object? (y/n)");
 
@@ -722,58 +725,131 @@ namespace Server
             NetState.Resume();
         }
 
-        public static IEntity FindEntity(Serial serial) =>
-            serial.IsItem ? (IEntity)FindItem(serial) :
-            serial.IsMobile ? FindMobile(serial) : null;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IEntity FindEntity(Serial serial, bool returnDeleted = false) => FindEntity<IEntity>(serial);
 
-        public static Mobile FindMobile(Serial serial)
+        public static T FindEntity<T>(Serial serial, bool returnDeleted = false) where T : class, IEntity
         {
-            Mobiles.TryGetValue(serial, out var mob);
-
-            return mob;
-        }
-
-        public static void AddMobile(Mobile m)
-        {
-            if (Saving)
+            switch (WorldState)
             {
-                AppendSafetyLog("add", m);
-                _addQueue.Enqueue(m);
+                default: return default;
+                case WorldState.Loading:
+                case WorldState.Saving:
+                case WorldState.WritingSave:
+                    {
+                        if (_pendingDelete.TryGetValue(serial, out var entity))
+                        {
+                            return !returnDeleted ? null : entity as T;
+                        }
+
+                        if (_pendingAdd.TryGetValue(serial, out entity))
+                        {
+                            return entity as T;
+                        }
+
+                        goto case WorldState.Running;
+                    }
+                case WorldState.Running:
+                    {
+                        if (serial.IsItem)
+                        {
+                            Items.TryGetValue(serial, out var item);
+                            return item as T;
+                        }
+
+                        if (serial.IsMobile)
+                        {
+                            Mobiles.TryGetValue(serial, out var mob);
+                            return mob as T;
+                        }
+
+                        return default;
+                    }
             }
-            else
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Item FindItem(Serial serial, bool returnDeleted = false) => FindEntity<Item>(serial, returnDeleted);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Mobile FindMobile(Serial serial, bool returnDeleted = false) =>
+            FindEntity<Mobile>(serial, returnDeleted);
+
+        public static void AddEntity<T>(T entity) where T : class, IEntity
+        {
+            switch (WorldState)
             {
-                Mobiles.Add(m.Serial, m);
+                default: // Not Running
+                    {
+                        throw new Exception($"Added {typeof(T).Name} before world load.\n");
+                    }
+                case WorldState.Saving:
+                    {
+                        AppendSafetyLog("add", entity);
+                        goto case WorldState.WritingSave;
+                    }
+                case WorldState.Loading:
+                case WorldState.WritingSave:
+                    {
+                        if (_pendingDelete.Remove(entity.Serial))
+                        {
+                            Utility.PushColor(ConsoleColor.Red);
+                            Console.WriteLine($"Deleted then added {typeof(T).Name} during {WorldState.ToString().ToLower()} state.");
+                            Utility.PopColor();
+                        }
+                        _pendingAdd[entity.Serial] = entity;
+                        break;
+                    }
+                case WorldState.Running:
+                    {
+                        if (entity.Serial.IsItem)
+                        {
+                            Items[entity.Serial] = entity as Item;
+                        }
+
+                        if (entity.Serial.IsMobile)
+                        {
+                            Mobiles[entity.Serial] = entity as Mobile;
+                        }
+                        break;
+                    }
             }
         }
 
-        public static Item FindItem(Serial serial)
+        public static void RemoveEntity<T>(T entity) where T : class, IEntity
         {
-            Items.TryGetValue(serial, out var item);
-
-            return item;
-        }
-
-        public static void AddItem(Item item)
-        {
-            if (Saving)
+            switch (WorldState)
             {
-                AppendSafetyLog("add", item);
-                _addQueue.Enqueue(item);
-            }
-            else
-            {
-                Items.Add(item.Serial, item);
-            }
-        }
+                default: // Not Running
+                    {
+                        throw new Exception($"Removed {typeof(T).Name} before world load.\n");
+                    }
+                case WorldState.Saving:
+                    {
+                        AppendSafetyLog("delete", entity);
+                        goto case WorldState.WritingSave;
+                    }
+                case WorldState.Loading:
+                case WorldState.WritingSave:
+                    {
+                        _pendingAdd.Remove(entity.Serial);
+                        _pendingDelete[entity.Serial] = entity;
+                        break;
+                    }
+                case WorldState.Running:
+                    {
+                        if (entity.Serial.IsItem)
+                        {
+                            Items.Remove(entity.Serial);
+                        }
 
-        public static void RemoveMobile(Mobile m)
-        {
-            Mobiles.Remove(m.Serial);
-        }
-
-        public static void RemoveItem(Item item)
-        {
-            Items.Remove(item.Serial);
+                        if (entity.Serial.IsMobile)
+                        {
+                            Mobiles.Remove(entity.Serial);
+                        }
+                        break;
+                    }
+            }
         }
     }
 }

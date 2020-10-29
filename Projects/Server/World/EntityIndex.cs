@@ -15,7 +15,7 @@
 
 namespace Server
 {
-    public readonly struct EntityIndex<T> where T : IEntity
+    public readonly struct EntityIndex<T> where T : ISerialEntity
     {
         T Entity { get; }
 

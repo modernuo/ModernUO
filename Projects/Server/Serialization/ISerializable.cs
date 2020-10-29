@@ -22,5 +22,6 @@ namespace Server
         Serial Serial { get; }
         void Serialize();
         void Serialize(IGenericWriter writer);
+        void Delete();
     }
 }

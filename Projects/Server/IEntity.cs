@@ -1,10 +1,24 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: IEntity.cs                                                      *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 
 namespace Server
 {
-    public interface IEntity : IPoint3D, IComparable<IEntity>
+    public interface IEntity : IPoint3D, ISerialEntity
     {
-        Serial Serial { get; }
         Point3D Location { get; }
         Map Map { get; }
         bool Deleted { get; }
@@ -22,7 +36,14 @@ namespace Server
         void RemoveItem(Item item);
     }
 
-    public class Entity : IEntity, IComparable<Entity>
+    public interface ISerialEntity : IComparable<ISerialEntity>
+    {
+        Serial Serial { get; }
+
+        int IComparable<ISerialEntity>.CompareTo(ISerialEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
+    }
+
+    public class Entity : IEntity
     {
         public Entity(Serial serial, Point3D loc, Map map)
         {
@@ -31,10 +52,6 @@ namespace Server
             Map = map;
             Deleted = false;
         }
-
-        public int CompareTo(Entity other) => CompareTo((IEntity)other);
-
-        public int CompareTo(IEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
         public Serial Serial { get; }
 
