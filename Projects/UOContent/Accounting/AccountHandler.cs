@@ -256,13 +256,13 @@ namespace Server.Misc
                     acct.Comments.Add(new AccountComment("System", $"Character #{index + 1} {m} deleted by {state}"));
 
                     m.Delete();
-                    Packets.SendCharacterListUpdate(state, acct);
+                    state.SendCharacterListUpdate(acct);
                     return;
                 }
             }
 
-            Packets.SendCharacterDeleteResult(state, res);
-            Packets.SendCharacterListUpdate(state, acct);
+            state.SendCharacterDeleteResult(res);
+            state.SendCharacterListUpdate(acct);
 
         }
 

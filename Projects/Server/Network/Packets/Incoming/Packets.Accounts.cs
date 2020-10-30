@@ -19,7 +19,7 @@ namespace Server.Network
 {
     public static partial class Packets
     {
-        public static void CreateCharacter(NetState state, CircularBufferReader reader)
+        public static void CreateCharacter(this NetState state, CircularBufferReader reader)
         {
             var unk1 = reader.ReadInt32();
             var unk2 = reader.ReadInt32();
@@ -100,7 +100,7 @@ namespace Server.Network
                     if (check != null && check.Map != Map.Internal)
                     {
                         state.WriteConsole("Account in use");
-                        SendPopupMessage(state, PMMessage.CharInWorld);
+                        state.SendPopupMessage(PMMessage.CharInWorld);
                         return;
                     }
                 }
@@ -133,7 +133,7 @@ namespace Server.Network
                     race
                 );
 
-                SendClientVersionRequest(state);
+                state.SendClientVersionRequest();
 
                 state.BlockAllPackets = true;
 
@@ -155,7 +155,7 @@ namespace Server.Network
             }
         }
 
-        public static void CreateCharacter70160(NetState state, CircularBufferReader reader)
+        public static void CreateCharacter70160(this NetState state, CircularBufferReader reader)
         {
             var unk1 = reader.ReadInt32();
             var unk2 = reader.ReadInt32();
@@ -225,7 +225,7 @@ namespace Server.Network
                     if (check != null && check.Map != Map.Internal)
                     {
                         state.WriteConsole("Account in use");
-                        SendPopupMessage(state, PMMessage.CharInWorld);
+                        state.SendPopupMessage(PMMessage.CharInWorld);
                         return;
                     }
                 }

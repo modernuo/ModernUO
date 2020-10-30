@@ -59,7 +59,7 @@ namespace Server.Network
          * Displays the list of characters during the login process.
          * Note: Currently Unused
          */
-        public static void SendChangeCharacter(NetState ns, IAccount a)
+        public static void SendChangeCharacter(this NetState ns, IAccount a)
         {
             if (ns == null || a == null || !ns.GetSendBuffer(out var buffer))
             {
@@ -107,7 +107,7 @@ namespace Server.Network
          *
          * Sends a requests for the client version
          */
-        public static void SendClientVersionRequest(NetState ns)
+        public static void SendClientVersionRequest(this NetState ns)
         {
             if (ns != null && ns.GetSendBuffer(out var buffer))
             {
@@ -125,7 +125,7 @@ namespace Server.Network
          *
          * Sends the result of a deletion request
          */
-        public static void SendCharacterDeleteResult(NetState ns, DeleteResultType res)
+        public static void SendCharacterDeleteResult(this NetState ns, DeleteResultType res)
         {
             if (ns != null && ns.GetSendBuffer(out var buffer))
             {
@@ -142,7 +142,7 @@ namespace Server.Network
          *
          * Sends a PopupMessage with a predetermined message
          */
-        public static void SendPopupMessage(NetState ns, PMMessage msg)
+        public static void SendPopupMessage(this NetState ns, PMMessage msg)
         {
             if (ns != null && ns.GetSendBuffer(out var buffer))
             {
@@ -159,7 +159,7 @@ namespace Server.Network
          *
          * Sends support features based on the client version
          */
-        public static void SendSupportedFeature(NetState ns)
+        public static void SendSupportedFeature(this NetState ns)
         {
             if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
@@ -204,7 +204,7 @@ namespace Server.Network
          *
          * Sends login confirmation
          */
-        public static void SendLoginConfirmation(NetState ns, Mobile m)
+        public static void SendLoginConfirmation(this NetState ns, Mobile m)
         {
             if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
@@ -245,7 +245,7 @@ namespace Server.Network
          *
          * Sends login completion
          */
-        public static void SendLoginComplete(NetState ns)
+        public static void SendLoginComplete(this NetState ns)
         {
             if (ns != null && ns.GetSendBuffer(out var buffer))
             {
@@ -261,7 +261,7 @@ namespace Server.Network
          *
          * Sends updated character list
          */
-        public static void SendCharacterListUpdate(NetState ns, IAccount a)
+        public static void SendCharacterListUpdate(this NetState ns, IAccount a)
         {
             if (ns == null || a == null || !ns.GetSendBuffer(out var buffer))
             {
@@ -312,7 +312,7 @@ namespace Server.Network
          *
          * Sends list of characters and starting cities.
          */
-        public static void SendCharacterList(NetState ns)
+        public static void SendCharacterList(this NetState ns)
         {
             var acct = ns?.Account;
 
@@ -413,7 +413,7 @@ namespace Server.Network
          *
          * Sends a reason for rejecting the login
          */
-        public static void SendAccountLoginRejected(NetState ns, ALRReason reason)
+        public static void SendAccountLoginRejected(this NetState ns, ALRReason reason)
         {
             if (ns != null && ns.GetSendBuffer(out var buffer))
             {
@@ -430,7 +430,7 @@ namespace Server.Network
          *
          * Sends login acknowledge with server listing
          */
-        public static void SendAccountLoginAck(NetState ns)
+        public static void SendAccountLoginAck(this NetState ns)
         {
             if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
@@ -467,7 +467,7 @@ namespace Server.Network
          *
          * Sends acknowledge play server
          */
-        public static void SendPlayServerAck(NetState ns, ServerInfo si, int authId)
+        public static void SendPlayServerAck(this NetState ns, ServerInfo si, int authId)
         {
             if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
