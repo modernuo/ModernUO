@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using Server.ContextMenus;
@@ -45,7 +44,7 @@ namespace Server.Network
         Encoded = 0xC0
     }
 
-    public static class PacketHandlers
+    public static partial class Packets
     {
         private const int m_AuthIDWindowSize = 128;
         private static readonly PacketHandler[] m_6017Handlers = new PacketHandler[0x100];
@@ -65,7 +64,7 @@ namespace Server.Network
         private static readonly Dictionary<int, AuthIDPersistence> m_AuthIDWindow =
             new Dictionary<int, AuthIDPersistence>(m_AuthIDWindowSize);
 
-        static PacketHandlers()
+        static Packets()
         {
             Register(0x00, 104, false, CreateCharacter);
             Register(0x01, 5, false, Disconnect);
@@ -2060,7 +2059,7 @@ namespace Server.Network
                     if (check != null && check.Map != Map.Internal && check != m)
                     {
                         state.WriteConsole("Account in use");
-                        Packets.SendPopupMessage(state, PMMessage.CharInWorld);
+                        SendPopupMessage(state, PMMessage.CharInWorld);
                         return;
                     }
                 }
@@ -2076,7 +2075,7 @@ namespace Server.Network
                 // TODO: Make this wait one tick so we don't have to call it unnecessarily
                 NetState.ProcessDisposedQueue();
 
-                Packets.SendClientVersionRequest(state);
+                SendClientVersionRequest(state);
 
                 state.BlockAllPackets = true;
 
@@ -2096,7 +2095,7 @@ namespace Server.Network
 
         public static void DoLogin(NetState state, Mobile m)
         {
-            Packets.SendLoginConfirmation(state, m);
+            SendLoginConfirmation(state, m);
 
             if (m.Map != null)
             {
@@ -2110,7 +2109,7 @@ namespace Server.Network
 
             state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
 
-            Packets.SendSupportedFeature(state);
+            SendSupportedFeature(state);
 
             state.Sequence = 0;
 
@@ -2130,7 +2129,7 @@ namespace Server.Network
 
                 m.SendEverything();
 
-                Packets.SendSupportedFeature(state);
+                SendSupportedFeature(state);
                 state.Send(new MobileUpdate(m));
                 // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
@@ -2153,7 +2152,7 @@ namespace Server.Network
 
                 m.SendEverything();
 
-                Packets.SendSupportedFeature(state);
+                SendSupportedFeature(state);
                 state.Send(new MobileUpdate(m));
                 // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
@@ -2176,7 +2175,7 @@ namespace Server.Network
 
                 m.SendEverything();
 
-                Packets.SendSupportedFeature(state);
+                SendSupportedFeature(state);
                 state.Send(new MobileUpdateOld(m));
                 // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
@@ -2184,7 +2183,7 @@ namespace Server.Network
                 state.Send(new MobileIncomingOld(m, m));
             }
 
-            Packets.SendLoginComplete(state);
+            SendLoginComplete(state);
             state.Send(new CurrentTime());
             state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
             if (m.Map != null)
@@ -2195,268 +2194,6 @@ namespace Server.Network
             EventSink.InvokeLogin(m);
 
             m.ClearFastwalkStack();
-        }
-
-        public static void CreateCharacter(NetState state, CircularBufferReader reader)
-        {
-            var unk1 = reader.ReadInt32();
-            var unk2 = reader.ReadInt32();
-            int unk3 = reader.ReadByte();
-            var name = reader.ReadAscii(30);
-
-            reader.Seek(2, SeekOrigin.Current);
-            var flags = reader.ReadInt32();
-            reader.Seek(8, SeekOrigin.Current);
-            int prof = reader.ReadByte();
-            reader.Seek(15, SeekOrigin.Current);
-
-            int genderRace = reader.ReadByte();
-
-            int str = reader.ReadByte();
-            int dex = reader.ReadByte();
-            int intl = reader.ReadByte();
-            int is1 = reader.ReadByte();
-            int vs1 = reader.ReadByte();
-            int is2 = reader.ReadByte();
-            int vs2 = reader.ReadByte();
-            int is3 = reader.ReadByte();
-            int vs3 = reader.ReadByte();
-            int hue = reader.ReadUInt16();
-            int hairVal = reader.ReadInt16();
-            int hairHue = reader.ReadInt16();
-            int hairValf = reader.ReadInt16();
-            int hairHuef = reader.ReadInt16();
-            reader.ReadByte();
-            int cityIndex = reader.ReadByte();
-            var charSlot = reader.ReadInt32();
-            var clientIP = reader.ReadInt32();
-            int shirtHue = reader.ReadInt16();
-            int pantsHue = reader.ReadInt16();
-
-            /*
-            Pre-7.0.0.0:
-            0x00, 0x01 -> Human Male, Human Female
-            0x02, 0x03 -> Elf Male, Elf Female
-
-            Post-7.0.0.0:
-            0x00, 0x01
-            0x02, 0x03 -> Human Male, Human Female
-            0x04, 0x05 -> Elf Male, Elf Female
-            0x05, 0x06 -> Gargoyle Male, Gargoyle Female
-            */
-
-            var female = genderRace % 2 != 0;
-
-            Race race;
-
-            if (state.StygianAbyss)
-            {
-                var raceID = (byte)(genderRace < 4 ? 0 : genderRace / 2 - 1);
-                race = Race.Races[raceID];
-            }
-            else
-            {
-                race = Race.Races[(byte)(genderRace / 2)];
-            }
-
-            race ??= Race.DefaultRace;
-
-            var info = state.CityInfo;
-            var a = state.Account;
-
-            if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
-            {
-                state.Dispose();
-            }
-            else
-            {
-                // Check if anyone is using this account
-                for (var i = 0; i < a.Length; ++i)
-                {
-                    var check = a[i];
-
-                    if (check != null && check.Map != Map.Internal)
-                    {
-                        state.WriteConsole("Account in use");
-                        Packets.SendPopupMessage(state, PMMessage.CharInWorld);
-                        return;
-                    }
-                }
-
-                state.Flags = (ClientFlags)flags;
-
-                var args = new CharacterCreatedEventArgs(
-                    state,
-                    a,
-                    name,
-                    female,
-                    hue,
-                    str,
-                    dex,
-                    intl,
-                    info[cityIndex],
-                    new[]
-                    {
-                        new SkillNameValue((SkillName)is1, vs1),
-                        new SkillNameValue((SkillName)is2, vs2),
-                        new SkillNameValue((SkillName)is3, vs3)
-                    },
-                    shirtHue,
-                    pantsHue,
-                    hairVal,
-                    hairHue,
-                    hairValf,
-                    hairHuef,
-                    prof,
-                    race
-                );
-
-                Packets.SendClientVersionRequest(state);
-
-                state.BlockAllPackets = true;
-
-                EventSink.InvokeCharacterCreated(args);
-
-                var m = args.Mobile;
-
-                if (m != null)
-                {
-                    state.Mobile = m;
-                    m.NetState = state;
-                    new LoginTimer(state, m).Start();
-                }
-                else
-                {
-                    state.BlockAllPackets = false;
-                    state.Dispose();
-                }
-            }
-        }
-
-        public static void CreateCharacter70160(NetState state, CircularBufferReader reader)
-        {
-            var unk1 = reader.ReadInt32();
-            var unk2 = reader.ReadInt32();
-            int unk3 = reader.ReadByte();
-            var name = reader.ReadAscii(30);
-
-            reader.Seek(2, SeekOrigin.Current);
-            var flags = reader.ReadInt32();
-            reader.Seek(8, SeekOrigin.Current);
-            int prof = reader.ReadByte();
-            reader.Seek(15, SeekOrigin.Current);
-
-            int genderRace = reader.ReadByte();
-
-            int str = reader.ReadByte();
-            int dex = reader.ReadByte();
-            int intl = reader.ReadByte();
-            int is1 = reader.ReadByte();
-            int vs1 = reader.ReadByte();
-            int is2 = reader.ReadByte();
-            int vs2 = reader.ReadByte();
-            int is3 = reader.ReadByte();
-            int vs3 = reader.ReadByte();
-            int is4 = reader.ReadByte();
-            int vs4 = reader.ReadByte();
-
-            int hue = reader.ReadUInt16();
-            int hairVal = reader.ReadInt16();
-            int hairHue = reader.ReadInt16();
-            int hairValf = reader.ReadInt16();
-            int hairHuef = reader.ReadInt16();
-            reader.ReadByte();
-            int cityIndex = reader.ReadByte();
-            var charSlot = reader.ReadInt32();
-            var clientIP = reader.ReadInt32();
-            int shirtHue = reader.ReadInt16();
-            int pantsHue = reader.ReadInt16();
-
-            /*
-            0x00, 0x01
-            0x02, 0x03 -> Human Male, Human Female
-            0x04, 0x05 -> Elf Male, Elf Female
-            0x05, 0x06 -> Gargoyle Male, Gargoyle Female
-            */
-
-            var female = genderRace % 2 != 0;
-
-            Race race;
-
-            var raceID = (byte)(genderRace < 4 ? 0 : genderRace / 2 - 1);
-            race = Race.Races[raceID] ?? Race.DefaultRace;
-
-            var info = state.CityInfo;
-            var a = state.Account;
-
-            if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
-            {
-                state.Dispose();
-            }
-            else
-            {
-                // Check if anyone is using this account
-                for (var i = 0; i < a.Length; ++i)
-                {
-                    var check = a[i];
-
-                    if (check != null && check.Map != Map.Internal)
-                    {
-                        state.WriteConsole("Account in use");
-                        Packets.SendPopupMessage(state, PMMessage.CharInWorld);
-                        return;
-                    }
-                }
-
-                state.Flags = (ClientFlags)flags;
-
-                var args = new CharacterCreatedEventArgs(
-                    state,
-                    a,
-                    name,
-                    female,
-                    hue,
-                    str,
-                    dex,
-                    intl,
-                    info[cityIndex],
-                    new[]
-                    {
-                        new SkillNameValue((SkillName)is1, vs1),
-                        new SkillNameValue((SkillName)is2, vs2),
-                        new SkillNameValue((SkillName)is3, vs3),
-                        new SkillNameValue((SkillName)is4, vs4)
-                    },
-                    shirtHue,
-                    pantsHue,
-                    hairVal,
-                    hairHue,
-                    hairValf,
-                    hairHuef,
-                    prof,
-                    race
-                );
-
-                Packets.SendClientVersionRequest(state);
-
-                state.BlockAllPackets = true;
-
-                EventSink.InvokeCharacterCreated(args);
-
-                var m = args.Mobile;
-
-                if (m != null)
-                {
-                    state.Mobile = m;
-                    m.NetState = state;
-                    new LoginTimer(state, m).Start();
-                }
-                else
-                {
-                    state.BlockAllPackets = false;
-                    state.Dispose();
-                }
-            }
         }
 
         private static int GenerateAuthID(NetState state)
@@ -2547,8 +2284,8 @@ namespace Server.Network
                 state.CompressionEnabled = true;
                 state.PacketEncoder = NetworkCompression.Compress;
 
-                Packets.SendSupportedFeature(state);
-                Packets.SendCharacterList(state);
+                SendSupportedFeature(state);
+                SendCharacterList(state);
             }
             else
             {
@@ -2573,7 +2310,7 @@ namespace Server.Network
                 state.m_AuthID = GenerateAuthID(state);
 
                 state.SentFirstPacket = false;
-                Packets.SendPlayServerAck(state, si, state.m_AuthID);
+                SendPlayServerAck(state, si, state.m_AuthID);
             }
         }
 
@@ -2672,13 +2409,13 @@ namespace Server.Network
             else
             {
                 state.ServerInfo = e.Servers.ToArray();
-                Packets.SendAccountLoginAck(state);
+                SendAccountLoginAck(state);
             }
         }
 
         public static void AccountLogin_ReplyRej(NetState state, ALRReason reason)
         {
-            Packets.SendAccountLoginRejected(state, reason);
+            SendAccountLoginRejected(state, reason);
             state.Dispose();
         }
 

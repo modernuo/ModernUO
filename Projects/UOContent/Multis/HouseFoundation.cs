@@ -975,23 +975,23 @@ namespace Server.Multis
 
         public static void Initialize()
         {
-            PacketHandlers.RegisterExtended(0x1E, true, QueryDesignDetails);
+            Packets.RegisterExtended(0x1E, true, QueryDesignDetails);
 
-            PacketHandlers.RegisterEncoded(0x02, true, Designer_Backup);
-            PacketHandlers.RegisterEncoded(0x03, true, Designer_Restore);
-            PacketHandlers.RegisterEncoded(0x04, true, Designer_Commit);
-            PacketHandlers.RegisterEncoded(0x05, true, Designer_Delete);
-            PacketHandlers.RegisterEncoded(0x06, true, Designer_Build);
-            PacketHandlers.RegisterEncoded(0x0C, true, Designer_Close);
-            PacketHandlers.RegisterEncoded(0x0D, true, Designer_Stairs);
-            PacketHandlers.RegisterEncoded(0x0E, true, Designer_Sync);
-            PacketHandlers.RegisterEncoded(0x10, true, Designer_Clear);
-            PacketHandlers.RegisterEncoded(0x12, true, Designer_Level);
+            Packets.RegisterEncoded(0x02, true, Designer_Backup);
+            Packets.RegisterEncoded(0x03, true, Designer_Restore);
+            Packets.RegisterEncoded(0x04, true, Designer_Commit);
+            Packets.RegisterEncoded(0x05, true, Designer_Delete);
+            Packets.RegisterEncoded(0x06, true, Designer_Build);
+            Packets.RegisterEncoded(0x0C, true, Designer_Close);
+            Packets.RegisterEncoded(0x0D, true, Designer_Stairs);
+            Packets.RegisterEncoded(0x0E, true, Designer_Sync);
+            Packets.RegisterEncoded(0x10, true, Designer_Clear);
+            Packets.RegisterEncoded(0x12, true, Designer_Level);
 
-            PacketHandlers.RegisterEncoded(0x13, true, Designer_Roof);       // Samurai Empire roof
-            PacketHandlers.RegisterEncoded(0x14, true, Designer_RoofDelete); // Samurai Empire roof
+            Packets.RegisterEncoded(0x13, true, Designer_Roof);       // Samurai Empire roof
+            Packets.RegisterEncoded(0x14, true, Designer_RoofDelete); // Samurai Empire roof
 
-            PacketHandlers.RegisterEncoded(0x1A, true, Designer_Revert);
+            Packets.RegisterEncoded(0x1A, true, Designer_Revert);
 
             EventSink.Speech += EventSink_Speech;
         }

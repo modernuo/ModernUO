@@ -25,7 +25,7 @@ namespace Server.Engines.Mahjong
 
         public static void Initialize()
         {
-            PacketHandlers.Register(0xDA, 0, true, OnPacket);
+            Packets.Register(0xDA, 0, true, OnPacket);
 
             RegisterSubCommand(0x6, ExitGame);
             RegisterSubCommand(0xA, GivePoints);
