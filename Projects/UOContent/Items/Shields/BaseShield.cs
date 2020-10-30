@@ -142,9 +142,9 @@ namespace Server.Items
 
             /*
             FORMULA: Displayed AR = ((Parrying Skill * Base AR of Shield) � 200) + 1
-      
+
             FORMULA: % Chance of Blocking = parry skill - (shieldAR * 2)
-      
+
             FORMULA: Melee Damage Absorbed = (AR of Shield) / 2 | Archery Damage Absorbed = AR of Shield
             */
             if (owner.CheckSkill(SkillName.Parry, chance))

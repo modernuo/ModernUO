@@ -598,7 +598,7 @@ namespace Server.Network
                         return;
                     }
 
-                    var bytesProcessed = Packets.ProcessPacket(this, result.Buffer);
+                    var bytesProcessed = this.ProcessPacket(result.Buffer);
 
                     if (bytesProcessed <= 0)
                     {
