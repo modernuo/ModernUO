@@ -86,7 +86,7 @@ namespace Server.Network
             Register(0xEC, 0, false, EquipMacro);
             Register(0xED, 0, false, UnequipMacro);
             Register(0xF4, 0, false, CrashReport);
-            Register(0xF8, 106, false, CreateCharacter70160);
+            Register(0xF8, 106, false, CreateCharacter);
             Register(0xFB, 2, false, ShowPublicHouseContent);
 
             Register6017(0x08, 15, true, DropReq6017);

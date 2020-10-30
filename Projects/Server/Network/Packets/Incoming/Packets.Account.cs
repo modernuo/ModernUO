@@ -63,6 +63,32 @@ namespace Server.Network
             int is3 = reader.ReadByte();
             int vs3 = reader.ReadByte();
 
+            SkillNameValue[] skills;
+
+            // We have protocol changes by now, so this is ok
+            if (state.NewCharacterCreation)
+            {
+                int is4 = reader.ReadByte();
+                int vs4 = reader.ReadByte();
+
+                skills = new[]
+                {
+                    new SkillNameValue((SkillName)is1, vs1),
+                    new SkillNameValue((SkillName)is2, vs2),
+                    new SkillNameValue((SkillName)is3, vs3),
+                    new SkillNameValue((SkillName)is4, vs4)
+                };
+            }
+            else
+            {
+                skills = new[]
+                {
+                    new SkillNameValue((SkillName)is1, vs1),
+                    new SkillNameValue((SkillName)is2, vs2),
+                    new SkillNameValue((SkillName)is3, vs3)
+                };
+            }
+
             int hue = reader.ReadUInt16();
             int hairVal = reader.ReadInt16();
             int hairHue = reader.ReadInt16();
@@ -89,19 +115,8 @@ namespace Server.Network
 
             var female = genderRace % 2 != 0;
 
-            Race race;
-
-            if (state.StygianAbyss)
-            {
-                var raceID = (byte)(genderRace < 4 ? 0 : genderRace / 2 - 1);
-                race = Race.Races[raceID];
-            }
-            else
-            {
-                race = Race.Races[(byte)(genderRace / 2)];
-            }
-
-            race ??= Race.DefaultRace;
+            var raceID = state.StygianAbyss ? (byte)(genderRace < 4 ? 0 : genderRace / 2 - 1) : (byte)(genderRace / 2);
+            Race race = Race.Races[raceID] ?? Race.DefaultRace;
 
             var info = state.CityInfo;
             var a = state.Account;
@@ -137,12 +152,7 @@ namespace Server.Network
                     dex,
                     intl,
                     info[cityIndex],
-                    new[]
-                    {
-                        new SkillNameValue((SkillName)is1, vs1),
-                        new SkillNameValue((SkillName)is2, vs2),
-                        new SkillNameValue((SkillName)is3, vs3)
-                    },
+                    skills,
                     shirtHue,
                     pantsHue,
                     hairVal,
@@ -154,130 +164,6 @@ namespace Server.Network
                 );
 
                 state.SendClientVersionRequest();
-
-                state.BlockAllPackets = true;
-
-                EventSink.InvokeCharacterCreated(args);
-
-                var m = args.Mobile;
-
-                if (m != null)
-                {
-                    state.Mobile = m;
-                    m.NetState = state;
-                    new LoginTimer(state, m).Start();
-                }
-                else
-                {
-                    state.BlockAllPackets = false;
-                    state.Dispose();
-                }
-            }
-        }
-
-        public static void CreateCharacter70160(this NetState state, CircularBufferReader reader)
-        {
-            var unk1 = reader.ReadInt32();
-            var unk2 = reader.ReadInt32();
-            int unk3 = reader.ReadByte();
-            var name = reader.ReadAscii(30);
-
-            reader.Seek(2, SeekOrigin.Current);
-            var flags = reader.ReadInt32();
-            reader.Seek(8, SeekOrigin.Current);
-            int prof = reader.ReadByte();
-            reader.Seek(15, SeekOrigin.Current);
-
-            int genderRace = reader.ReadByte();
-
-            int str = reader.ReadByte();
-            int dex = reader.ReadByte();
-            int intl = reader.ReadByte();
-            int is1 = reader.ReadByte();
-            int vs1 = reader.ReadByte();
-            int is2 = reader.ReadByte();
-            int vs2 = reader.ReadByte();
-            int is3 = reader.ReadByte();
-            int vs3 = reader.ReadByte();
-            int is4 = reader.ReadByte(); // v7.0.16.0
-            int vs4 = reader.ReadByte(); // v7.0.16.0
-
-            int hue = reader.ReadUInt16();
-            int hairVal = reader.ReadInt16();
-            int hairHue = reader.ReadInt16();
-            int hairValf = reader.ReadInt16();
-            int hairHuef = reader.ReadInt16();
-            reader.ReadByte();
-            int cityIndex = reader.ReadByte();
-            var charSlot = reader.ReadInt32();
-            var clientIP = reader.ReadInt32();
-            int shirtHue = reader.ReadInt16();
-            int pantsHue = reader.ReadInt16();
-
-            /*
-            0x00, 0x01
-            0x02, 0x03 -> Human Male, Human Female
-            0x04, 0x05 -> Elf Male, Elf Female
-            0x05, 0x06 -> Gargoyle Male, Gargoyle Female
-            */
-
-            var female = genderRace % 2 != 0;
-
-            var raceID = (byte)(genderRace < 4 ? 0 : genderRace / 2 - 1);
-            var race = Race.Races[raceID] ?? Race.DefaultRace;
-
-            var info = state.CityInfo;
-            var a = state.Account;
-
-            if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
-            {
-                state.Dispose();
-            }
-            else
-            {
-                // Check if anyone is using this account
-                for (var i = 0; i < a.Length; ++i)
-                {
-                    var check = a[i];
-
-                    if (check != null && check.Map != Map.Internal)
-                    {
-                        state.WriteConsole("Account in use");
-                        state.SendPopupMessage(PMMessage.CharInWorld);
-                        return;
-                    }
-                }
-
-                state.Flags = (ClientFlags)flags;
-
-                var args = new CharacterCreatedEventArgs(
-                    state,
-                    a,
-                    name,
-                    female,
-                    hue,
-                    str,
-                    dex,
-                    intl,
-                    info[cityIndex],
-                    new[]
-                    {
-                        new SkillNameValue((SkillName)is1, vs1),
-                        new SkillNameValue((SkillName)is2, vs2),
-                        new SkillNameValue((SkillName)is3, vs3),
-                        new SkillNameValue((SkillName)is4, vs4)
-                    },
-                    shirtHue,
-                    pantsHue,
-                    hairVal,
-                    hairHue,
-                    hairValf,
-                    hairHuef,
-                    prof,
-                    race
-                );
-
-                SendClientVersionRequest(state);
 
                 state.BlockAllPackets = true;
 
