@@ -12,7 +12,7 @@ namespace Server
 {
     public enum WorldState
     {
-        NotRunning,
+        Initial,
         Loading,
         Running,
         Saving,
