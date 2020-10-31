@@ -9309,6 +9309,8 @@ namespace Server
 
         public bool RemoveStatMod(string name)
         {
+            StatMods ??= new List<StatMod>();
+
             for (var i = 0; i < StatMods.Count; ++i)
             {
                 var check = StatMods[i];
@@ -9327,6 +9329,8 @@ namespace Server
 
         public StatMod GetStatMod(string name)
         {
+            StatMods ??= new List<StatMod>();
+
             for (var i = 0; i < StatMods.Count; ++i)
             {
                 var check = StatMods[i];
@@ -9342,6 +9346,8 @@ namespace Server
 
         public void AddStatMod(StatMod mod)
         {
+            StatMods ??= new List<StatMod>();
+
             for (var i = 0; i < StatMods.Count; ++i)
             {
                 var check = StatMods[i];
@@ -9387,6 +9393,8 @@ namespace Server
         public int GetStatOffset(StatType type)
         {
             var offset = 0;
+
+            StatMods ??= new List<StatMod>();
 
             for (var i = 0; i < StatMods.Count; ++i)
             {
