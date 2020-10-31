@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: Packets.Targest.cs                                              *
+ * File: IncomingTargetingPackets.cs                                     *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,8 +18,13 @@ using Server.Targeting;
 
 namespace Server.Network
 {
-    public static partial class Packets
+    public static class IncomingTargetingPackets
     {
+        public static void Configure()
+        {
+            IncomingPackets.Register(0x6C, 19, true, TargetResponse);
+        }
+
         public static void TargetResponse(this NetState state, CircularBufferReader reader)
         {
             int type = reader.ReadByte();
@@ -133,30 +138,6 @@ namespace Server.Network
             finally
             {
                 prof?.Finish();
-            }
-        }
-
-        public static void TargetedSpell(this NetState state, CircularBufferReader reader)
-        {
-            var spellId = (short)(reader.ReadInt16() - 1); // zero based;
-
-            EventSink.InvokeTargetedSpell(state.Mobile, World.FindEntity(reader.ReadUInt32()), spellId);
-        }
-
-        public static void TargetedSkillUse(this NetState state, CircularBufferReader reader)
-        {
-            var skillId = reader.ReadInt16();
-
-            EventSink.InvokeTargetedSkillUse(state.Mobile, World.FindEntity(reader.ReadUInt32()), skillId);
-        }
-
-        public static void TargetByResourceMacro(this NetState state, CircularBufferReader reader)
-        {
-            Serial serial = reader.ReadUInt32();
-
-            if (serial.IsItem)
-            {
-                EventSink.InvokeTargetByResourceMacro(state.Mobile, World.FindItem(serial), reader.ReadInt16());
             }
         }
     }

@@ -36,9 +36,15 @@ namespace Server.Network
         Encoded = 0xC0
     }
 
-    public static partial class Packets
+    public static class IncomingMessagePackets
     {
         private static readonly KeywordList m_KeywordList = new KeywordList();
+
+        public static void Configure()
+        {
+            IncomingPackets.Register(0x03, 0, true, AsciiSpeech);
+            IncomingPackets.Register(0xAD, 0, true, UnicodeSpeech);
+        }
 
         public static void AsciiSpeech(this NetState state, CircularBufferReader reader)
         {

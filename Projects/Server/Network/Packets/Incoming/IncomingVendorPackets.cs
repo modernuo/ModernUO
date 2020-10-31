@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: Packets.Vendors.cs                                              *
+ * File: IncomingVendorPackets.cs                                        *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -17,8 +17,14 @@ using System.Collections.Generic;
 
 namespace Server.Network
 {
-    public static partial class Packets
+    public static class IncomingVendorPackets
     {
+        public static void Configure()
+        {
+            IncomingPackets.Register(0x3B, 0, true, VendorBuyReply);
+            IncomingPackets.Register(0x9F, 0, true, VendorSellReply);
+        }
+
         public static void VendorBuyReply(this NetState state, CircularBufferReader reader)
         {
             var vendor = World.FindMobile(reader.ReadUInt32());

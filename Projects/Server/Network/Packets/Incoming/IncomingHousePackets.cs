@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: Packets.Houses.cs                                               *
+ * File: IncomingHousePackets.cs                                         *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -15,8 +15,13 @@
 
 namespace Server.Network
 {
-    public static partial class Packets
+    public static class IncomingHousePackets
     {
+        public static void Configure()
+        {
+            IncomingPackets.Register(0xFB, 2, false, ShowPublicHouseContent);
+        }
+
         public static void ShowPublicHouseContent(NetState state, CircularBufferReader reader)
         {
             var showPublicHouseContent = reader.ReadBoolean();

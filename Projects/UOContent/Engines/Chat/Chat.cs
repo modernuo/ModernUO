@@ -14,8 +14,8 @@ namespace Server.Engines.Chat
 
         public static void Initialize()
         {
-            Packets.Register(0xB5, 0x40, true, OpenChatWindowRequest);
-            Packets.Register(0xB3, 0, true, ChatAction);
+            IncomingPackets.Register(0xB5, 0x40, true, OpenChatWindowRequest);
+            IncomingPackets.Register(0xB3, 0, true, ChatAction);
         }
 
         public static void SendCommandTo(Mobile to, ChatCommand type, string param1 = null, string param2 = null)

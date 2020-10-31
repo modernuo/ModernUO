@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: Packets.Player.cs                                               *
+ * File: IncomingPlayerPackets.cs                                        *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,25 +18,38 @@ using Server.Gumps;
 
 namespace Server.Network
 {
-    public static partial class Packets
+    public static class IncomingPlayerPackets
     {
-        public static bool SingleClickProps { get; set; }
-
-        // TODO: Change to outside configuration
-        public static int[] ValidAnimations { get; set; } =
+        public static void Configure()
         {
-            6, 21, 32, 33,
-            100, 101, 102,
-            103, 104, 105,
-            106, 107, 108,
-            109, 110, 111,
-            112, 113, 114,
-            115, 116, 117,
-            118, 119, 120,
-            121, 123, 124,
-            125, 126, 127,
-            128
-        };
+            IncomingPackets.Register(0x01, 5, false, Disconnect);
+            IncomingPackets.Register(0x02, 7, true, MovementReq);
+            IncomingPackets.Register(0x05, 5, true, AttackReq);
+            IncomingPackets.Register(0x12, 0, true, TextCommand);
+            IncomingPackets.Register(0x22, 3, true, Resynchronize);
+            IncomingPackets.Register(0x2C, 2, true, DeathStatusResponse);
+            IncomingPackets.Register(0x34, 10, true, MobileQuery);
+            IncomingPackets.Register(0x3A, 0, true, ChangeSkillLock);
+            IncomingPackets.Register(0x72, 5, true, SetWarMode);
+            IncomingPackets.Register(0x73, 2, false, PingReq);
+            IncomingPackets.Register(0x7D, 13, true, MenuResponse);
+            IncomingPackets.Register(0x95, 9, true, HuePickerResponse);
+            IncomingPackets.Register(0x9A, 0, true, AsciiPromptResponse);
+            IncomingPackets.Register(0x9B, 258, true, HelpRequest);
+            IncomingPackets.Register(0xA4, 149, false, SystemInfo);
+            IncomingPackets.Register(0xA7, 4, true, RequestScrollWindow);
+            IncomingPackets.Register(0xB1, 0, true, DisplayGumpResponse);
+            IncomingPackets.Register(0xC2, 0, true, UnicodePromptResponse);
+            IncomingPackets.Register(0xC8, 2, true, SetUpdateRange);
+            IncomingPackets.Register(0xD0, 0, true, ConfigurationFile);
+            IncomingPackets.Register(0xD1, 2, true, LogoutReq);
+            IncomingPackets.Register(0xD7, 0, true, EncodedCommand);
+            IncomingPackets.Register(0xF4, 0, false, CrashReport);
+
+            IncomingPackets.RegisterEncoded(0x19, true, SetAbility);
+            IncomingPackets.RegisterEncoded(0x28, true, GuildGumpRequest);
+            IncomingPackets.RegisterEncoded(0x32, true, QuestGumpRequest);
+        }
 
         public static void DeathStatusResponse(this NetState state, CircularBufferReader reader)
         {
@@ -525,142 +538,6 @@ namespace Server.Network
             }
         }
 
-        public static void Animate(this NetState state, CircularBufferReader reader)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            var action = reader.ReadInt32();
-
-            var ok = false;
-
-            for (var i = 0; !ok && i < ValidAnimations.Length; ++i)
-            {
-                ok = action == ValidAnimations[i];
-            }
-
-            if (ok && from.Alive && from.Body.IsHuman && !from.Mounted)
-            {
-                from.Animate(action, 7, 1, true, false, 0);
-            }
-        }
-
-        public static void QuestArrow(this NetState state, CircularBufferReader reader)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            var rightClick = reader.ReadBoolean();
-
-            from.QuestArrow?.OnClick(rightClick);
-        }
-
-        public static void CastSpell(this NetState state, CircularBufferReader reader)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            Item spellbook = reader.ReadInt16() == 1 ? World.FindItem(reader.ReadUInt32()) : null;
-
-            var spellID = reader.ReadInt16() - 1;
-            EventSink.InvokeCastSpellRequest(from, spellID, spellbook);
-        }
-
-        public static void ToggleFlying(this NetState state, CircularBufferReader reader)
-        {
-            state.Mobile?.ToggleFlying();
-        }
-
-        public static void StunRequest(this NetState state, CircularBufferReader reader)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            EventSink.InvokeStunRequest(from);
-        }
-
-        public static void DisarmRequest(this NetState state, CircularBufferReader reader)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            EventSink.InvokeDisarmRequest(from);
-        }
-
-        public static void StatLockChange(this NetState state, CircularBufferReader reader)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            int stat = reader.ReadByte();
-            int lockValue = reader.ReadByte();
-
-            if (lockValue > 2)
-            {
-                lockValue = 0;
-            }
-
-            switch (stat)
-            {
-                case 0:
-                    from.StrLock = (StatLockType)lockValue;
-                    break;
-                case 1:
-                    from.DexLock = (StatLockType)lockValue;
-                    break;
-                case 2:
-                    from.IntLock = (StatLockType)lockValue;
-                    break;
-            }
-        }
-
-        public static void ScreenSize(this NetState state, CircularBufferReader reader)
-        {
-            var width = reader.ReadInt32();
-            var unk = reader.ReadInt32();
-        }
-
-        public static void CloseStatus(this NetState state, CircularBufferReader reader)
-        {
-            Serial serial = reader.ReadUInt32();
-        }
-
-        public static void Language(this NetState state, CircularBufferReader reader)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            from.Language = reader.ReadAscii(4);
-        }
-
         public static void MobileQuery(this NetState state, CircularBufferReader reader)
         {
             var from = state.Mobile;
@@ -745,6 +622,37 @@ namespace Server.Network
         public static void QuestGumpRequest(this NetState state, IEntity e, EncodedReader reader)
         {
             EventSink.InvokeQuestGumpRequest(state.Mobile);
+        }
+
+        public static void EncodedCommand(this NetState state, CircularBufferReader reader)
+        {
+            var e = World.FindEntity(reader.ReadUInt32());
+            int packetId = reader.ReadUInt16();
+
+            var ph = IncomingPackets.GetEncodedHandler(packetId);
+
+            if (ph == null)
+            {
+                reader.Trace(state);
+                return;
+            }
+
+            if (ph.Ingame && state.Mobile == null)
+            {
+                state.WriteConsole(
+                    "Sent ingame packet (0xD7x{0:X2}) before having been attached to a mobile",
+                    packetId
+                );
+                state.Dispose();
+            }
+            else if (ph.Ingame && state.Mobile.Deleted)
+            {
+                state.Dispose();
+            }
+            else
+            {
+                ph.OnReceive(state, e, new EncodedReader(reader));
+            }
         }
     }
 }

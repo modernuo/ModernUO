@@ -89,7 +89,7 @@ namespace Server
 
         public static void Initialize()
         {
-            Packets.Register(0xD9, 0x10C, false, OnReceive);
+            IncomingPackets.Register(0xD9, 0x10C, false, OnReceive);
 
             CommandSystem.Register("HWInfo", AccessLevel.GameMaster, HWInfo_OnCommand);
         }

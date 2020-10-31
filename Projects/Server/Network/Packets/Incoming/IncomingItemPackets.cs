@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: Packets.Items.cs                                                *
+ * File: IncomingItemPackets.cs                                          *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -19,8 +19,18 @@ using Server.Items;
 
 namespace Server.Network
 {
-    public static partial class Packets
+    public static class IncomingItemPackets
     {
+        public static void Configure()
+        {
+            IncomingPackets.Register(0x07, 7, true, LiftReq);
+            IncomingPackets.Register(0x08, 14, true, DropReq);
+            IncomingPackets.Register(0x13, 10, true, EquipReq);
+            IncomingPackets.Register(0xEC, 0, false, EquipMacro);
+            IncomingPackets.Register(0xED, 0, false, UnequipMacro);
+            IncomingPackets.Register6017(0x08, 15, true, DropReq6017);
+        }
+
         public static void LiftReq(this NetState state, CircularBufferReader reader)
         {
             Serial serial = reader.ReadUInt32();

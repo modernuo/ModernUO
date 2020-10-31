@@ -361,9 +361,9 @@ namespace Server.Items
 
         public static void Initialize()
         {
-            Packets.Register(0xD4, 0, true, HeaderChange);
-            Packets.Register(0x66, 0, true, ContentChange);
-            Packets.Register(0x93, 99, true, OldHeaderChange);
+            IncomingPackets.Register(0xD4, 0, true, HeaderChange);
+            IncomingPackets.Register(0x66, 0, true, ContentChange);
+            IncomingPackets.Register(0x93, 99, true, OldHeaderChange);
         }
 
         public static void OldHeaderChange(NetState state, CircularBufferReader reader)

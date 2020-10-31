@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: Packets.Account.cs                                              *
+ * File: IncomingAccountPackets.cs                                       *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -20,7 +20,7 @@ using CV = Server.ClientVersion;
 
 namespace Server.Network
 {
-    public static partial class Packets
+    public static class IncomingAccountPackets
     {
         private const int m_AuthIDWindowSize = 128;
         private static readonly Dictionary<int, AuthIDPersistence> m_AuthIDWindow =
@@ -36,6 +36,23 @@ namespace Server.Network
                 Age = DateTime.UtcNow;
                 Version = v;
             }
+        }
+
+        public static void Configure()
+        {
+            IncomingPackets.Register(0x00, 104, false, CreateCharacter);
+            IncomingPackets.Register(0x5D, 73, false, PlayCharacter);
+            IncomingPackets.Register(0x80, 62, false, AccountLogin);
+            IncomingPackets.Register(0x83, 39, false, DeleteCharacter);
+            IncomingPackets.Register(0x91, 65, false, GameLogin);
+            IncomingPackets.Register(0xA0, 3, false, PlayServer);
+            IncomingPackets.Register(0xBB, 9, false, AccountID);
+            IncomingPackets.Register(0xBD, 0, false, ClientVersion);
+            IncomingPackets.Register(0xBE, 0, true, AssistVersion);
+            IncomingPackets.Register(0xCF, 0, false, AccountLogin);
+            IncomingPackets.Register(0xE1, 0, false, ClientType);
+            IncomingPackets.Register(0xEF, 21, false, LoginServerSeed);
+            IncomingPackets.Register(0xF8, 106, false, CreateCharacter);
         }
 
         public static void CreateCharacter(this NetState state, CircularBufferReader reader)
@@ -269,7 +286,7 @@ namespace Server.Network
                 // TODO: Make this wait one tick so we don't have to call it unnecessarily
                 NetState.ProcessDisposedQueue();
 
-                SendClientVersionRequest(state);
+                state.SendClientVersionRequest();
 
                 state.BlockAllPackets = true;
 
