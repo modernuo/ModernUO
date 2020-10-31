@@ -40,7 +40,7 @@ namespace Server
         void Write(float value);
         void Write(char value);
         void Write(byte value);
-        void Write(ReadOnlySpan<byte> value);
+        void Write(byte[] value, int length);
         void Write(sbyte value);
         void Write(bool value);
         void WriteEncodedInt(int value);

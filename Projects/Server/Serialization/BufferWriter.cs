@@ -335,15 +335,16 @@ namespace Server
             m_Buffer[m_Index++] = value;
         }
 
-        public void Write(ReadOnlySpan<byte> value)
+        public void Write(byte[] value, int length)
         {
-            int remaining = value.Length;
+            int remaining = length;
             int idx = 0;
 
             while (remaining > 0)
             {
                 int size = Math.Min(m_Buffer.Length - m_Index, remaining);
-                value.Slice(idx).CopyTo(m_Buffer.AsSpan(m_Index, size));
+                Buffer.BlockCopy(value, idx, m_Buffer, m_Index, size);
+                // value.Slice(idx).CopyTo(m_Buffer.AsSpan(m_Index, size));
 
                 remaining -= size;
                 m_Index += size;

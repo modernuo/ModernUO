@@ -717,8 +717,7 @@ namespace Server
         public static void SerializeTo(this ISerializable entity, IGenericWriter writer)
         {
             var saveBuffer = entity.SaveBuffer;
-            var data = saveBuffer.Data.AsSpan(0, (int)saveBuffer.Position);
-            writer.Write(data);
+            writer.Write(saveBuffer.Data, (int)saveBuffer.Position);
         }
     }
 }
