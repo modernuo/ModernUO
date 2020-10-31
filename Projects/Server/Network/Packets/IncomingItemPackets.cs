@@ -31,7 +31,7 @@ namespace Server.Network
             IncomingPackets.Register6017(0x08, 15, true, DropReq6017);
         }
 
-        public static void LiftReq(this NetState state, CircularBufferReader reader)
+        public static void LiftReq(NetState state, CircularBufferReader reader)
         {
             Serial serial = reader.ReadUInt32();
             int amount = reader.ReadUInt16();
@@ -40,7 +40,7 @@ namespace Server.Network
             state.Mobile.Lift(item, amount, out _, out _);
         }
 
-        public static void EquipReq(this NetState state, CircularBufferReader reader)
+        public static void EquipReq(NetState state, CircularBufferReader reader)
         {
             var from = state.Mobile;
             var item = from.Holding;
@@ -65,7 +65,7 @@ namespace Server.Network
             item.ClearBounce();
         }
 
-        public static void DropReq(this NetState state, CircularBufferReader reader)
+        public static void DropReq(NetState state, CircularBufferReader reader)
         {
             reader.ReadInt32(); // serial, ignored
             int x = reader.ReadInt16();
@@ -102,7 +102,7 @@ namespace Server.Network
             }
         }
 
-        public static void DropReq6017(this NetState state, CircularBufferReader reader)
+        public static void DropReq6017(NetState state, CircularBufferReader reader)
         {
             reader.ReadInt32(); // serial, ignored
             int x = reader.ReadInt16();
@@ -140,7 +140,7 @@ namespace Server.Network
             }
         }
 
-        public static void EquipMacro(this NetState state, CircularBufferReader reader)
+        public static void EquipMacro(NetState state, CircularBufferReader reader)
         {
             int count = reader.ReadByte();
             var serialList = new List<Serial>(count);
@@ -152,7 +152,7 @@ namespace Server.Network
             EventSink.InvokeEquipMacro(state.Mobile, serialList);
         }
 
-        public static void UnequipMacro(this NetState state, CircularBufferReader reader)
+        public static void UnequipMacro(NetState state, CircularBufferReader reader)
         {
             int count = reader.ReadByte();
             var layers = new List<Layer>(count);

@@ -27,7 +27,7 @@ namespace Server.Network
             IncomingPackets.Register(0xD6, 0, true, BatchQueryProperties);
         }
 
-        public static void ObjectHelpRequest(this NetState state, CircularBufferReader reader)
+        public static void ObjectHelpRequest(NetState state, CircularBufferReader reader)
         {
             var from = state.Mobile;
 
@@ -56,7 +56,7 @@ namespace Server.Network
             }
         }
 
-        public static void UseReq(this NetState state, CircularBufferReader reader)
+        public static void UseReq(NetState state, CircularBufferReader reader)
         {
             var from = state.Mobile;
 
@@ -100,7 +100,7 @@ namespace Server.Network
             }
         }
 
-        public static void LookReq(this NetState state, CircularBufferReader reader)
+        public static void LookReq(NetState state, CircularBufferReader reader)
         {
             var from = state.Mobile;
 
@@ -149,7 +149,7 @@ namespace Server.Network
             }
         }
 
-        public static void BatchQueryProperties(this NetState state, CircularBufferReader reader)
+        public static void BatchQueryProperties(NetState state, CircularBufferReader reader)
         {
             if (!ObjectPropertyList.Enabled)
             {

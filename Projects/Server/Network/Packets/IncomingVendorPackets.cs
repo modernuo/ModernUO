@@ -25,7 +25,7 @@ namespace Server.Network
             IncomingPackets.Register(0x9F, 0, true, VendorSellReply);
         }
 
-        public static void VendorBuyReply(this NetState state, CircularBufferReader reader)
+        public static void VendorBuyReply(NetState state, CircularBufferReader reader)
         {
             var vendor = World.FindMobile(reader.ReadUInt32());
             var flag = reader.ReadByte();
@@ -72,7 +72,7 @@ namespace Server.Network
             }
         }
 
-        public static void VendorSellReply(this NetState state, CircularBufferReader reader)
+        public static void VendorSellReply(NetState state, CircularBufferReader reader)
         {
             Serial serial = reader.ReadUInt32();
             var vendor = World.FindMobile(serial);

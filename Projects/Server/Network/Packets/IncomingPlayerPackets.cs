@@ -51,18 +51,18 @@ namespace Server.Network
             IncomingPackets.RegisterEncoded(0x32, true, QuestGumpRequest);
         }
 
-        public static void DeathStatusResponse(this NetState state, CircularBufferReader reader)
+        public static void DeathStatusResponse(NetState state, CircularBufferReader reader)
         {
             // Ignored
         }
 
-        public static void RequestScrollWindow(this NetState state, CircularBufferReader reader)
+        public static void RequestScrollWindow(NetState state, CircularBufferReader reader)
         {
             int lastTip = reader.ReadInt16();
             int type = reader.ReadByte();
         }
 
-        public static void AttackReq(this NetState state, CircularBufferReader reader)
+        public static void AttackReq(NetState state, CircularBufferReader reader)
         {
             var from = state.Mobile;
 
@@ -79,7 +79,7 @@ namespace Server.Network
             }
         }
 
-        public static void HuePickerResponse(this NetState state, CircularBufferReader reader)
+        public static void HuePickerResponse(NetState state, CircularBufferReader reader)
         {
             var serial = reader.ReadUInt32();
             _ = reader.ReadInt16(); // Item ID
@@ -96,7 +96,7 @@ namespace Server.Network
             }
         }
 
-        public static void SystemInfo(this NetState state, CircularBufferReader reader)
+        public static void SystemInfo(NetState state, CircularBufferReader reader)
         {
             int v1 = reader.ReadByte();
             int v2 = reader.ReadUInt16();
@@ -112,7 +112,7 @@ namespace Server.Network
             var v8 = reader.ReadInt32();
         }
 
-        public static void TextCommand(this NetState state, CircularBufferReader reader)
+        public static void TextCommand(NetState state, CircularBufferReader reader)
         {
             var from = state.Mobile;
 
@@ -210,7 +210,7 @@ namespace Server.Network
             }
         }
 
-        public static void AsciiPromptResponse(this NetState state, CircularBufferReader reader)
+        public static void AsciiPromptResponse(NetState state, CircularBufferReader reader)
         {
             var from = state.Mobile;
 
@@ -246,7 +246,7 @@ namespace Server.Network
             }
         }
 
-        public static void UnicodePromptResponse(this NetState state, CircularBufferReader reader)
+        public static void UnicodePromptResponse(NetState state, CircularBufferReader reader)
         {
             var from = state.Mobile;
 
@@ -283,7 +283,7 @@ namespace Server.Network
             }
         }
 
-        public static void MenuResponse(this NetState state, CircularBufferReader reader)
+        public static void MenuResponse(NetState state, CircularBufferReader reader)
         {
             var serial = reader.ReadUInt32();
             int menuID = reader.ReadInt16(); // unused in our implementation
@@ -313,33 +313,33 @@ namespace Server.Network
             }
         }
 
-        public static void Disconnect(this NetState state, CircularBufferReader reader)
+        public static void Disconnect(NetState state, CircularBufferReader reader)
         {
             var minusOne = reader.ReadInt32();
         }
 
-        public static void ConfigurationFile(this NetState state, CircularBufferReader reader)
+        public static void ConfigurationFile(NetState state, CircularBufferReader reader)
         {
         }
 
-        public static void LogoutReq(this NetState state, CircularBufferReader reader)
+        public static void LogoutReq(NetState state, CircularBufferReader reader)
         {
             state.Send(new LogoutAck());
         }
 
-        public static void ChangeSkillLock(this NetState state, CircularBufferReader reader)
+        public static void ChangeSkillLock(NetState state, CircularBufferReader reader)
         {
             var s = state.Mobile.Skills[reader.ReadInt16()];
 
             s?.SetLockNoRelay((SkillLock)reader.ReadByte());
         }
 
-        public static void HelpRequest(this NetState state, CircularBufferReader reader)
+        public static void HelpRequest(NetState state, CircularBufferReader reader)
         {
             EventSink.InvokeHelpRequest(state.Mobile);
         }
 
-        public static void DisplayGumpResponse(this NetState state, CircularBufferReader reader)
+        public static void DisplayGumpResponse(NetState state, CircularBufferReader reader)
         {
             var serial = reader.ReadUInt32();
             var typeID = reader.ReadInt32();
@@ -461,13 +461,13 @@ namespace Server.Network
             }
         }
 
-        public static void SetWarMode(this NetState state, CircularBufferReader reader)
+        public static void SetWarMode(NetState state, CircularBufferReader reader)
         {
             state.Mobile?.DelayChangeWarmode(reader.ReadBoolean());
         }
 
         // TODO: Throttle/make this more safe
-        public static void Resynchronize(this NetState state, CircularBufferReader reader)
+        public static void Resynchronize(NetState state, CircularBufferReader reader)
         {
             var from = state.Mobile;
 
@@ -494,18 +494,18 @@ namespace Server.Network
             from.ClearFastwalkStack();
         }
 
-        public static void PingReq(this NetState state, CircularBufferReader reader)
+        public static void PingReq(NetState state, CircularBufferReader reader)
         {
             state.Send(PingAck.Instantiate(reader.ReadByte()));
         }
 
-        public static void SetUpdateRange(this NetState state, CircularBufferReader reader)
+        public static void SetUpdateRange(NetState state, CircularBufferReader reader)
         {
             state.Send(ChangeUpdateRange.Instantiate(18));
         }
 
         // TODO: Change to OSI fastwalk stack
-        public static void MovementReq(this NetState state, CircularBufferReader reader)
+        public static void MovementReq(NetState state, CircularBufferReader reader)
         {
             var from = state.Mobile;
 
@@ -538,7 +538,7 @@ namespace Server.Network
             }
         }
 
-        public static void MobileQuery(this NetState state, CircularBufferReader reader)
+        public static void MobileQuery(NetState state, CircularBufferReader reader)
         {
             var from = state.Mobile;
             if (from == null)
@@ -575,7 +575,7 @@ namespace Server.Network
             }
         }
 
-        public static void CrashReport(this NetState state, CircularBufferReader reader)
+        public static void CrashReport(NetState state, CircularBufferReader reader)
         {
             var clientMaj = reader.ReadByte();
             var clientMin = reader.ReadByte();
@@ -624,7 +624,7 @@ namespace Server.Network
             EventSink.InvokeQuestGumpRequest(state.Mobile);
         }
 
-        public static void EncodedCommand(this NetState state, CircularBufferReader reader)
+        public static void EncodedCommand(NetState state, CircularBufferReader reader)
         {
             var e = World.FindEntity(reader.ReadUInt32());
             int packetId = reader.ReadUInt16();
