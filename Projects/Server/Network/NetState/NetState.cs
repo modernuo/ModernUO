@@ -598,7 +598,7 @@ namespace Server.Network
                         return;
                     }
 
-                    var bytesProcessed = PacketHandlers.ProcessPacket(this, result.Buffer);
+                    var bytesProcessed = this.ProcessPacket(result.Buffer);
 
                     if (bytesProcessed <= 0)
                     {
@@ -685,7 +685,7 @@ namespace Server.Network
         }
 
         public PacketHandler GetHandler(int packetID) =>
-            ContainerGridLines ? PacketHandlers.Get6017Handler(packetID) : PacketHandlers.GetHandler(packetID);
+            ContainerGridLines ? IncomingPackets.Get6017Handler(packetID) : IncomingPackets.GetHandler(packetID);
 
         public static void TraceException(Exception ex)
         {

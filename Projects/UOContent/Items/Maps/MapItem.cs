@@ -331,7 +331,7 @@ namespace Server.Items
 
         public static void Initialize()
         {
-            PacketHandlers.Register(0x56, 11, true, OnMapCommand);
+            IncomingPackets.Register(0x56, 11, true, OnMapCommand);
         }
 
         private static void OnMapCommand(NetState state, CircularBufferReader reader)

@@ -24,9 +24,9 @@ namespace Server.Accounting
                 return;
             }
 
-            PacketHandlers.RegisterThrottler(0x80, Throttle_Callback);
-            PacketHandlers.RegisterThrottler(0x91, Throttle_Callback);
-            PacketHandlers.RegisterThrottler(0xCF, Throttle_Callback);
+            IncomingPackets.RegisterThrottler(0x80, Throttle_Callback);
+            IncomingPackets.RegisterThrottler(0x91, Throttle_Callback);
+            IncomingPackets.RegisterThrottler(0xCF, Throttle_Callback);
         }
 
         public static TimeSpan Throttle_Callback(NetState ns)

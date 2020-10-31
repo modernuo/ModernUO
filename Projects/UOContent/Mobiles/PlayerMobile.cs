@@ -1015,7 +1015,7 @@ namespace Server.Mobiles
         {
             if (FastwalkPrevention)
             {
-                PacketHandlers.RegisterThrottler(0x02, MovementThrottle_Callback);
+                IncomingPackets.RegisterThrottler(0x02, MovementThrottle_Callback);
             }
 
             EventSink.Login += OnLogin;
