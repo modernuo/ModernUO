@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: AccountPackets.cs                                               *
+ * File: OutgoingAccountPackets.cs                                       *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -50,7 +50,7 @@ namespace Server.Network
         BadRequest
     }
 
-    public static partial class Packets
+    public static class OutgoingAccountPackets
     {
         /**
          * Packet: 0x81
