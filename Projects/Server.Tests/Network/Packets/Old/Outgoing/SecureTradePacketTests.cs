@@ -16,8 +16,8 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var firstCont = new Container(Serial.LastItem + 1);
-            var secondCont = new Container(Serial.LastItem + 2);
+            var firstCont = new Container(World.NewItem);
+            var secondCont = new Container(World.NewItem);
 
             var data = new DisplaySecureTrade(m, firstCont, secondCont, name).Compile();
 
@@ -44,7 +44,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestCloseSecureTrade()
         {
-            var cont = new Container(Serial.LastItem + 1);
+            var cont = new Container(World.NewItem);
 
             var data = new CloseSecureTrade(cont).Compile();
 
@@ -64,8 +64,8 @@ namespace Server.Tests.Network
         [InlineData(false, true)] // Update second
         public void TestUpdateSecureTrade(bool first, bool second)
         {
-            var firstCont = new Container(Serial.LastItem + 1);
-            var secondCont = new Container(Serial.LastItem + 2);
+            var firstCont = new Container(World.NewItem);
+            var secondCont = new Container(World.NewItem);
 
             var cont = first ? firstCont : secondCont;
             var data = new UpdateSecureTrade(cont, first, second).Compile();
@@ -88,7 +88,7 @@ namespace Server.Tests.Network
         [InlineData(250000, 50000, TradeFlag.UpdateLedger)]
         public void TestUpdateGoldSecureTrade(int gold, int plat, TradeFlag flag)
         {
-            var cont = new Container(Serial.LastItem + 1);
+            var cont = new Container(World.NewItem);
             var data = new UpdateSecureTrade(cont, flag, gold, plat).Compile();
 
             Span<byte> expectedData = stackalloc byte[16];
@@ -110,8 +110,8 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var cont = new Container(Serial.LastItem + 1);
-            var itemInCont = new Item(Serial.LastItem + 2) { Parent = cont };
+            var cont = new Container(World.NewItem);
+            var itemInCont = new Item(World.NewItem) { Parent = cont };
 
             var data = new SecureTradeEquip(itemInCont, m).Compile();
             Span<byte> expectedData = stackalloc byte[20];
@@ -140,8 +140,8 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var cont = new Container(Serial.LastItem + 1);
-            var itemInCont = new Item(Serial.LastItem + 2) { Parent = cont };
+            var cont = new Container(World.NewItem);
+            var itemInCont = new Item(World.NewItem) { Parent = cont };
 
             var data = new SecureTradeEquip6017(itemInCont, m).Compile();
 

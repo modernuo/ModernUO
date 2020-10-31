@@ -15,14 +15,22 @@
 
 namespace Server
 {
-    public readonly struct EntityIndex<T> where T : ISerialEntity
+    public readonly struct EntityIndex<T> where T : ISerializable
     {
-        T Entity { get; }
+        public T Entity { get; }
 
-        int TypeID { get; }
+        public int TypeID { get;  }
 
-        long Position { get; }
+        public long Position { get; }
 
-        int Length { get; }
+        public int Length { get; }
+
+        public EntityIndex(T entity, int typeID, long position, int length)
+        {
+            Entity = entity;
+            TypeID = typeID;
+            Position = position;
+            Length = length;
+        }
     }
 }

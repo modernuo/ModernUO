@@ -145,7 +145,7 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var item = new ContextMenuItem(Serial.LastItem + 1);
+            var item = new ContextMenuItem(World.NewItem);
             var menu = new ContextMenu(m, item);
 
             var data = new DisplayContextMenu(menu).Compile();
@@ -196,7 +196,7 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var item = new ContextMenuItem(Serial.LastItem + 1);
+            var item = new ContextMenuItem(World.NewItem);
             var menu = new ContextMenu(m, item);
 
             var data = new DisplayContextMenuOld(menu).Compile();

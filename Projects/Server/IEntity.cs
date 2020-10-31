@@ -17,14 +17,15 @@ using System;
 
 namespace Server
 {
-    public interface IEntity : IPoint3D, ISerialEntity
+    public interface IEntity : IPoint3D, ISerializable
     {
+        // Serial Serial { get; }
         Point3D Location { get; }
         Map Map { get; }
         bool Deleted { get; }
+        void Delete();
         void MoveToWorld(Point3D location, Map map);
 
-        void Delete();
         void ProcessDelta();
 
         bool InRange(Point2D p, int range);
@@ -34,13 +35,6 @@ namespace Server
         bool InRange(IPoint2D p, int range);
 
         void RemoveItem(Item item);
-    }
-
-    public interface ISerialEntity : IComparable<ISerialEntity>
-    {
-        Serial Serial { get; }
-
-        int IComparable<ISerialEntity>.CompareTo(ISerialEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
     }
 
     public class Entity : IEntity
@@ -53,6 +47,8 @@ namespace Server
             Deleted = false;
         }
 
+        public BufferWriter SaveBuffer { get; set; }
+        public int TypeRef { get; } = -1;
         public Serial Serial { get; }
 
         public Point3D Location { get; private set; }
@@ -102,5 +98,19 @@ namespace Server
             && p.X <= Location.m_X + range
             && p.Y >= Location.m_Y - range
             && p.Y <= Location.m_Y + range;
+
+        public void Serialize(DateTime serializeStart)
+        {
+        }
+
+        public void Deserialize(IGenericReader reader)
+        {
+            // Should not actually be saved
+            Timer.DelayCall(Delete);
+        }
+
+        public void Serialize(IGenericWriter writer)
+        {
+        }
     }
 }

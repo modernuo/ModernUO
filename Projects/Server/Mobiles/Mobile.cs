@@ -423,7 +423,7 @@ namespace Server
     /// <summary>
     ///     Base class representing players, npcs, and creatures.
     /// </summary>
-    public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable, IPropertyListObject
+    public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IPropertyListObject
     {
         private const int
             WarmodeCatchCount = 4; // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
@@ -595,31 +595,31 @@ namespace Server
             DamageEntries = new List<DamageEntry>();
 
             var ourType = GetType();
-            TypeRef = World.m_MobileTypes.IndexOf(ourType);
+            TypeRef = World.MobileTypes.IndexOf(ourType);
 
             if (TypeRef == -1)
             {
-                World.m_MobileTypes.Add(ourType);
-                TypeRef = World.m_MobileTypes.Count - 1;
+                World.MobileTypes.Add(ourType);
+                TypeRef = World.MobileTypes.Count - 1;
             }
         }
 
         public Mobile()
         {
             m_Region = Map.Internal.DefaultRegion;
-            Serial = Serial.NewMobile;
+            Serial = World.NewMobile;
 
             DefaultMobileInit();
 
             World.AddEntity(this);
 
             var ourType = GetType();
-            TypeRef = World.m_MobileTypes.IndexOf(ourType);
+            TypeRef = World.MobileTypes.IndexOf(ourType);
 
             if (TypeRef == -1)
             {
-                World.m_MobileTypes.Add(ourType);
-                TypeRef = World.m_MobileTypes.Count - 1;
+                World.MobileTypes.Add(ourType);
+                TypeRef = World.MobileTypes.Count - 1;
             }
         }
 
@@ -2634,7 +2634,7 @@ namespace Server
 
         public int TypeRef { get; }
 
-        public void Serialize()
+        public void Serialize(DateTime serializeStart)
         {
             SaveBuffer ??= new BufferWriter(true);
             SaveBuffer.Flush();
@@ -2785,11 +2785,6 @@ namespace Server
         public virtual void Delete()
         {
             if (Deleted)
-            {
-                return;
-            }
-
-            if (!World.OnDelete(this))
             {
                 return;
             }

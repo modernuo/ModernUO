@@ -40,8 +40,7 @@ namespace Server
         void Write(float value);
         void Write(char value);
         void Write(byte value);
-        void Write(byte[] value);
-        void Write(byte[] value, int length);
+        void Write(ReadOnlySpan<byte> value);
         void Write(sbyte value);
         void Write(bool value);
         void WriteEncodedInt(int value);
@@ -85,7 +84,6 @@ namespace Server
         void WriteGuildSet<T>(HashSet<T> set) where T : BaseGuild;
         void WriteGuildSet<T>(HashSet<T> set, bool tidy) where T : BaseGuild;
 
-        // Only for non-forward only serializers
-        int Seek(int offset, SeekOrigin origin);
+        long Seek(long offset, SeekOrigin origin);
     }
 }

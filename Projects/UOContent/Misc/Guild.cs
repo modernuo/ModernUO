@@ -575,7 +575,7 @@ namespace Server.Guilds
 
         protected override void OnTick()
         {
-            foreach (var g in BaseGuild.List.Values)
+            foreach (var g in World.Guilds.Values)
             {
                 (g as Guild)?.CheckExpiredWars();
             }
@@ -632,7 +632,7 @@ namespace Server.Guilds
             PendingWars = new List<WarDeclaration>();
         }
 
-        public Guild(uint id) : base(id) // serialization ctor
+        public Guild(Serial serial) : base(serial)
         {
         }
 
@@ -815,7 +815,6 @@ namespace Server.Guilds
 
         public static void Configure()
         {
-            EventSink.CreateGuild += EventSink_CreateGuild;
             EventSink.GuildGumpRequest += EventSink_GuildGumpRequest;
 
             CommandSystem.Register("GuildProps", AccessLevel.Counselor, GuildProps_OnCommand);
@@ -885,7 +884,7 @@ namespace Server.Guilds
         {
             m_Leader = null;
 
-            List.Remove(Serial);
+            World.RemoveGuild(this);
 
             foreach (var m in Members)
             {
@@ -945,7 +944,7 @@ namespace Server.Guilds
             else
             {
                 var g = uint.TryParse(arg, out var id)
-                    ? Find(id) as Guild
+                    ? World.FindGuild(id) as Guild
                     : FindByAbbrev(arg) as Guild ?? FindByName(arg) as Guild;
 
                 if (g != null)
@@ -975,11 +974,6 @@ namespace Server.Guilds
             {
                 pm.SendGump(new GuildInfoGump(pm, pm.Guild as Guild));
             }
-        }
-
-        public static void EventSink_CreateGuild(CreateGuildEventArgs args)
-        {
-            args.Guild = new Guild(args.Id);
         }
 
         public static Guild GetAllianceLeader(Guild g)
@@ -1232,6 +1226,11 @@ namespace Server.Guilds
 
             writer.Write(Charter);
             writer.Write(Website);
+        }
+
+        public override void Delete()
+        {
+            World.RemoveGuild(this);
         }
 
         public override void Deserialize(IGenericReader reader)

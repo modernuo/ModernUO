@@ -191,7 +191,7 @@ namespace Server
         Spawner = 0x100
     }
 
-    public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable, IPropertyListObject
+    public class Item : IHued, IComparable<Item>, ISpawnable, IPropertyListObject
     {
         public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
         public static readonly List<Item> EmptyItems = new List<Item>();
@@ -226,7 +226,7 @@ namespace Server
         public Item(int itemID = 0)
         {
             m_ItemID = itemID;
-            Serial = Serial.NewItem;
+            Serial = World.NewItem;
 
             // m_Items = new ArrayList( 1 );
             Visible = true;
@@ -239,12 +239,12 @@ namespace Server
             World.AddEntity(this);
 
             var ourType = GetType();
-            TypeRef = World.m_ItemTypes.IndexOf(ourType);
+            TypeRef = World.ItemTypes.IndexOf(ourType);
 
             if (TypeRef == -1)
             {
-                World.m_ItemTypes.Add(ourType);
-                TypeRef = World.m_ItemTypes.Count - 1;
+                World.ItemTypes.Add(ourType);
+                TypeRef = World.ItemTypes.Count - 1;
             }
         }
 
@@ -253,12 +253,12 @@ namespace Server
             Serial = serial;
 
             var ourType = GetType();
-            TypeRef = World.m_ItemTypes.IndexOf(ourType);
+            TypeRef = World.ItemTypes.IndexOf(ourType);
 
             if (TypeRef == -1)
             {
-                World.m_ItemTypes.Add(ourType);
-                TypeRef = World.m_ItemTypes.Count - 1;
+                World.ItemTypes.Add(ourType);
+                TypeRef = World.ItemTypes.Count - 1;
             }
         }
 
@@ -826,8 +826,13 @@ namespace Server
 
         public int TypeRef { get; }
 
-        public void Serialize()
+        public void Serialize(DateTime serializeStart)
         {
+            if (Decays && Parent == null && Map != Map.Internal && LastMoved + DecayTime <= serializeStart)
+            {
+                World.EnqueueForDecay(this);
+            }
+
             SaveBuffer ??= new BufferWriter(true);
             SaveBuffer.Flush();
             Serialize(SaveBuffer);
@@ -1522,7 +1527,7 @@ namespace Server
 
         public virtual void Delete()
         {
-            if (Deleted || !World.OnDelete(this))
+            if (Deleted)
             {
                 return;
             }

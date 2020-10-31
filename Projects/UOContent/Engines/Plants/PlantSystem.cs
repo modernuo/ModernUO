@@ -405,7 +405,7 @@ namespace Server.Engines.Plants
             GrowAll();
         }
 
-        private static void EventSink_WorldSave(bool message)
+        private static void EventSink_WorldSave()
         {
             GrowAll();
         }

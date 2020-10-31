@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: CreateGuildEvent.cs                                             *
+ * File: EntityTypeIndex.cs                                              *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,23 +13,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
-using Server.Guilds;
-
 namespace Server
 {
-    public class CreateGuildEventArgs : EventArgs
+    public readonly struct EntityTypeIndex : IIndexInfo<Serial>
     {
-        public CreateGuildEventArgs(uint id) => Id = id;
+        public string TypeName { get; }
 
-        public uint Id { get; set; }
+        public EntityTypeIndex(string typeName) => TypeName = typeName;
 
-        public BaseGuild Guild { get; set; }
-    }
-
-    public static partial class EventSink
-    {
-        public static event Action<CreateGuildEventArgs> CreateGuild;
-        public static void InvokeCreateGuild(CreateGuildEventArgs e) => CreateGuild?.Invoke(e);
+        public Serial CreateIndex(uint num) => num;
     }
 }

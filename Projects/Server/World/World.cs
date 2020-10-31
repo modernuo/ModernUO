@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Server.Guilds;
 using Server.Network;
 
@@ -25,67 +27,110 @@ namespace Server
 
         private static Dictionary<Serial, IEntity> _pendingAdd;
         private static Dictionary<Serial, IEntity> _pendingDelete;
+        private static ConcurrentQueue<Item> _decayQueue = new ConcurrentQueue<Item>();
 
-        public static readonly string MobileIndexPath = Path.Combine("Saves/Mobiles/", "Mobiles.idx");
-        public static readonly string MobileTypesPath = Path.Combine("Saves/Mobiles/", "Mobiles.tdb");
-        public static readonly string MobileDataPath = Path.Combine("Saves/Mobiles/", "Mobiles.bin");
+        public const uint ItemOffset = 0x40000000;
+        public const uint MaxItemSerial = 0x7FFFFFFF;
+        private const uint _maxItems = int.MaxValue - ItemOffset;
+        private const uint _maxMobiles = ItemOffset;
 
-        public static readonly string ItemIndexPath = Path.Combine("Saves/Items/", "Items.idx");
-        public static readonly string ItemTypesPath = Path.Combine("Saves/Items/", "Items.tdb");
-        public static readonly string ItemDataPath = Path.Combine("Saves/Items/", "Items.bin");
+        private static Serial _lastMobile = Serial.Zero;
+        private static Serial _lastItem = ItemOffset;
+        private static Serial _lastGuild = Serial.Zero;
 
-        public static readonly string GuildIndexPath = Path.Combine("Saves/Guilds/", "Guilds.idx");
-        public static readonly string GuildDataPath = Path.Combine("Saves/Guilds/", "Guilds.bin");
-
-        private static readonly Type[] m_SerialTypeArray = { typeof(Serial) };
-
-        internal static int m_Saves;
-
-        internal static List<Type> m_ItemTypes = new List<Type>();
-        internal static List<Type> m_MobileTypes = new List<Type>();
-
-        public static WorldState WorldState { get; private set; }
-
-        public static bool Saving { get; private set; }
-
-        public static bool Loaded { get; private set; }
-
-        public static bool Loading { get; private set; }
-
-        public static Dictionary<Serial, Mobile> Mobiles { get; private set; }
-
-        public static Dictionary<Serial, Item> Items { get; private set; }
-
-        public static string LoadingType { get; private set; }
-
-        public static void NotifyDiskWriteComplete()
+        public static Serial NewMobile
         {
-            if (m_DiskWriteHandle.Set())
+            get
             {
-                Console.WriteLine("Closing Save Files.");
+                uint last = _lastMobile;
+
+                for (int i = 0; i < _maxMobiles; i++)
+                {
+                    last++;
+
+                    if (last >= _lastMobile)
+                    {
+                        last = 0;
+                    }
+
+                    if (FindMobile(last) == null)
+                    {
+                        _lastMobile = last;
+                        return last;
+                    }
+                }
+
+                throw new Exception("No serials left to allocate for mobiles");
             }
         }
+
+        public static Serial NewItem
+        {
+            get
+            {
+                uint last = _lastItem;
+
+                for (int i = 0; i < _maxItems; i++)
+                {
+                    last++;
+
+                    if (last - ItemOffset >= _maxItems)
+                    {
+                        last = ItemOffset;
+                    }
+
+                    if (FindItem(last) == null)
+                    {
+                        _lastItem = last;
+                        return last;
+                    }
+                }
+
+                throw new Exception("No serials left to allocate for items");
+            }
+        }
+
+        public static Serial NewGuild
+        {
+            get
+            {
+                while (FindGuild(_lastGuild += 1) != null)
+                {
+                }
+
+                return _lastGuild;
+            }
+        }
+
+
+        internal static int _Saves;
+        internal static List<Type> ItemTypes { get; } = new List<Type>();
+        internal static List<Type> MobileTypes { get; } = new List<Type>();
+        internal static List<Type> GuildTypes { get; } = new List<Type>();
+
+        public static WorldState WorldState { get; private set; }
+        public static bool Saving => WorldState == WorldState.Saving;
+        public static bool Running => WorldState == WorldState.Running;
+        public static bool Loading => WorldState == WorldState.Loading;
+
+        public static Dictionary<Serial, Mobile> Mobiles { get; private set; }
+        public static Dictionary<Serial, Item> Items { get; private set; }
+        public static Dictionary<Serial, BaseGuild> Guilds { get; private set; }
 
         public static void WaitForWriteCompletion()
         {
             m_DiskWriteHandle.WaitOne();
         }
 
-        public static bool OnDelete(IEntity entity)
+        public static void EnqueueForDecay(Item item)
         {
-            if (Saving || Loading)
+            if (WorldState != WorldState.Saving)
             {
-                if (Saving)
-                {
-                    AppendSafetyLog("delete", entity);
-                }
-
-                _deleteQueue.Enqueue(entity);
-
-                return false;
+                Console.WriteLine("Attempting to queue {0} for decay but the world is not saving", item);
+                return;
             }
 
-            return true;
+            _decayQueue.Enqueue(item);
         }
 
         public static void Broadcast(int hue, bool ascii, string text)
@@ -121,8 +166,10 @@ namespace Server
             Broadcast(hue, ascii, string.Format(format, args));
         }
 
-        private static List<Tuple<ConstructorInfo, string>> ReadTypes(BinaryReader tdbReader)
+        private static List<Tuple<ConstructorInfo, string>> ReadTypes<I>(BinaryReader tdbReader)
         {
+            var constructorTypes = new[] { typeof(I) };
+
             var count = tdbReader.ReadInt32();
 
             var types = new List<Tuple<ConstructorInfo, string>>(count);
@@ -133,11 +180,15 @@ namespace Server
 
                 var t = AssemblyHandler.FindFirstTypeForName(typeName);
 
-                if (t == null)
+                if (t?.IsAbstract != false)
                 {
                     Console.WriteLine("failed");
 
-                    Console.WriteLine("Error: Type '{0}' was not found. Delete all of those types? (y/n)", typeName);
+                    Console.WriteLine(
+                        "Error: Type '{0}' was {1}. Delete all of those types? (y/n)",
+                        typeName,
+                        t?.IsAbstract == true ? "marked abstract" : "not found"
+                    );
 
                     if (Console.ReadKey(true).Key == ConsoleKey.Y)
                     {
@@ -151,7 +202,7 @@ namespace Server
                     throw new Exception($"Bad type '{typeName}'");
                 }
 
-                var ctor = t.GetConstructor(m_SerialTypeArray);
+                var ctor = t.GetConstructor(constructorTypes);
 
                 if (ctor != null)
                 {
@@ -166,368 +217,152 @@ namespace Server
             return types;
         }
 
-        public static void Load()
+        private static Dictionary<I, T> LoadIndex<I, T>(IIndexInfo<I> indexInfo, out List<EntityIndex<T>> entities) where T : class, ISerializable
         {
-            if (Loaded)
+            var map = new Dictionary<I, T>();
+            object[] ctorArgs = new object[1];
+
+            var indexType = indexInfo.TypeName;
+
+            string indexPath = Path.Combine("Saves", indexType, $"{indexType}.idx");
+            string typesPath = Path.Combine("Saves", indexType, $"{indexType}.tdb");
+
+            entities = new List<EntityIndex<T>>();
+
+            if (!File.Exists(indexPath) || !File.Exists(typesPath))
+            {
+                return map;
+            }
+
+            using FileStream idx = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            BinaryReader idxReader = new BinaryReader(idx);
+
+            using (FileStream tdb = new FileStream(typesPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                BinaryReader tdbReader = new BinaryReader(tdb);
+
+                List<Tuple<ConstructorInfo, string>> types = ReadTypes<I>(tdbReader);
+
+                var count = idxReader.ReadInt32();
+
+                for (int i = 0; i < count; ++i)
+                {
+                    var typeID = idxReader.ReadInt32();
+                    var number = idxReader.ReadUInt32();
+                    var pos = idxReader.ReadInt64();
+                    var length = idxReader.ReadInt32();
+
+                    Tuple<ConstructorInfo, string> objs = types[typeID];
+
+                    if (objs == null)
+                    {
+                        continue;
+                    }
+
+                    T t;
+                    ConstructorInfo ctor = objs.Item1;
+                    I indexer = indexInfo.CreateIndex(number);
+
+                    ctorArgs[0] = indexer;
+                    t = ctor.Invoke(ctorArgs) as T;
+
+                    if (t != null)
+                    {
+                        entities.Add(new EntityIndex<T>(t, typeID, pos, length));
+                        map[indexer] = t;
+                    }
+                }
+
+                tdbReader.Close();
+            }
+
+            idxReader.Close();
+
+            return map;
+        }
+
+        private static void LoadData<I, T>(IIndexInfo<I> indexInfo, List<EntityIndex<T>> entities) where T : ISerializable
+        {
+            var indexType = indexInfo.TypeName;
+
+            string dataPath = Path.Combine("Saves", indexType, $"{indexType}.bin");
+
+            if (!File.Exists(dataPath))
             {
                 return;
             }
 
-            Loaded = true;
-            LoadingType = null;
+            using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            BinaryFileReader reader = new BinaryFileReader(new BinaryReader(bin));
+
+            foreach (var entry in entities)
+            {
+                T t = entry.Entity;
+
+                if (t == null)
+                {
+                    continue;
+                }
+
+                reader.Seek(entry.Position, SeekOrigin.Begin);
+
+                t.Deserialize(reader);
+
+                if (reader.Position != entry.Position + entry.Length)
+                {
+                    Console.WriteLine($"***** Bad deserialize on {t.GetType()} *****");
+                    Console.WriteLine(
+                        $"Serialized object was {entry.Length} bytes, but {reader.Position - entry.Position} bytes deserialized"
+                    );
+
+                    Console.WriteLine("Delete the object and continue? (y/n)");
+
+                    if (Console.ReadKey(true).Key != ConsoleKey.Y)
+                    {
+                        throw new Exception("Deserialization failed.");
+                    }
+                    t.Delete();
+                }
+            }
+
+            reader.Close();
+        }
+
+        public static void Load()
+        {
+            if (WorldState != WorldState.Initial)
+            {
+                return;
+            }
+
+            WorldState = WorldState.Loading;
 
             Console.Write("World: Loading...");
 
             var watch = Stopwatch.StartNew();
 
-            Loading = true;
-
             _pendingAdd = new Dictionary<Serial, IEntity>();
             _pendingDelete = new Dictionary<Serial, IEntity>();
 
-            var ctorArgs = new object[1];
+            List<EntityIndex<Item>> items;
+            List<EntityIndex<Mobile>> mobiles;
+            List<EntityIndex<BaseGuild>> guilds;
 
-            var items = new List<ItemEntry>();
-            var mobiles = new List<MobileEntry>();
-            var guilds = new List<GuildEntry>();
+            IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
+            IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
+            IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
 
-            if (File.Exists(MobileIndexPath) && File.Exists(MobileTypesPath))
-            {
-                using var idx = new FileStream(MobileIndexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                using var idxReader = new BinaryReader(idx);
-                using var tdb = new FileStream(MobileTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                using var tdbReader = new BinaryReader(tdb);
-                var types = ReadTypes(tdbReader);
+            Items = LoadIndex(itemIndexInfo, out items);
+            Mobiles = LoadIndex(mobileIndexInfo, out mobiles);
+            Guilds = LoadIndex(guildIndexInfo, out guilds);
 
-                var mobileCount = idxReader.ReadInt32();
-
-                Mobiles = new Dictionary<Serial, Mobile>(mobileCount);
-
-                for (var i = 0; i < mobileCount; ++i)
-                {
-                    var typeID = idxReader.ReadInt32();
-                    var serial = idxReader.ReadUInt32();
-                    var pos = idxReader.ReadInt64();
-                    var length = idxReader.ReadInt32();
-
-                    var objs = types[typeID];
-
-                    if (objs == null)
-                    {
-                        continue;
-                    }
-
-                    Mobile m = null;
-                    var ctor = objs.Item1;
-                    var typeName = objs.Item2;
-
-                    try
-                    {
-                        ctorArgs[0] = (Serial)serial;
-                        m = (Mobile)ctor.Invoke(ctorArgs);
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    if (m != null)
-                    {
-                        mobiles.Add(new MobileEntry(m, typeID, typeName, pos, length));
-                        AddMobile(m);
-                    }
-                }
-
-                tdbReader.Close();
-                idxReader.Close();
-            }
-            else
-            {
-                Mobiles = new Dictionary<Serial, Mobile>();
-            }
-
-            if (File.Exists(ItemIndexPath) && File.Exists(ItemTypesPath))
-            {
-                using var idx = new FileStream(ItemIndexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                using var idxReader = new BinaryReader(idx);
-
-                var tdb = new FileStream(ItemTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                using var tdbReader = new BinaryReader(tdb);
-
-                var types = ReadTypes(tdbReader);
-
-                var itemCount = idxReader.ReadInt32();
-
-                Items = new Dictionary<Serial, Item>(itemCount);
-
-                for (var i = 0; i < itemCount; ++i)
-                {
-                    var typeID = idxReader.ReadInt32();
-                    var serial = idxReader.ReadUInt32();
-                    var pos = idxReader.ReadInt64();
-                    var length = idxReader.ReadInt32();
-
-                    var objs = types[typeID];
-
-                    if (objs == null)
-                    {
-                        continue;
-                    }
-
-                    Item item = null;
-                    var ctor = objs.Item1;
-                    var typeName = objs.Item2;
-
-                    try
-                    {
-                        ctorArgs[0] = (Serial)serial;
-                        item = (Item)ctor.Invoke(ctorArgs);
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    if (item != null)
-                    {
-                        items.Add(new ItemEntry(item, typeID, typeName, pos, length));
-                        AddItem(item);
-                    }
-                }
-
-                tdbReader.Close();
-                idxReader.Close();
-            }
-            else
-            {
-                Items = new Dictionary<Serial, Item>();
-            }
-
-            if (File.Exists(GuildIndexPath))
-            {
-                using var idx = new FileStream(GuildIndexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var idxReader = new BinaryReader(idx);
-
-                var guildCount = idxReader.ReadInt32();
-
-                var createEventArgs = new CreateGuildEventArgs(0xFFFFFFFF);
-                for (var i = 0; i < guildCount; ++i)
-                {
-                    idxReader.ReadInt32(); // no typeid for guilds
-                    var id = idxReader.ReadUInt32();
-                    var pos = idxReader.ReadInt64();
-                    var length = idxReader.ReadInt32();
-
-                    createEventArgs.Id = id;
-                    EventSink.InvokeCreateGuild(createEventArgs);
-                    var guild = createEventArgs.Guild;
-                    if (guild != null)
-                    {
-                        guilds.Add(new GuildEntry(guild, pos, length));
-                    }
-                }
-
-                idxReader.Close();
-            }
-
-            bool failedMobiles = false, failedItems = false, failedGuilds = false;
-            Type failedType = null;
-            var failedSerial = Serial.Zero;
-            Exception failed = null;
-            var failedTypeID = 0;
-
-            if (File.Exists(MobileDataPath))
-            {
-                using var bin = new FileStream(MobileDataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var reader = new BinaryFileReader(new BinaryReader(bin));
-
-                for (var i = 0; i < mobiles.Count; ++i)
-                {
-                    var entry = mobiles[i];
-                    var m = entry.Mobile;
-
-                    if (m != null)
-                    {
-                        reader.Seek(entry.Position, SeekOrigin.Begin);
-
-                        try
-                        {
-                            LoadingType = entry.TypeName;
-                            m.Deserialize(reader);
-
-                            if (reader.Position != entry.Position + entry.Length)
-                            {
-                                throw new Exception($"***** Bad serialize on {m.GetType()} *****");
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            mobiles.RemoveAt(i);
-
-                            failed = e;
-                            failedMobiles = true;
-                            failedType = m.GetType();
-                            failedTypeID = entry.TypeID;
-                            failedSerial = m.Serial;
-
-                            break;
-                        }
-                    }
-                }
-
-                reader.Close();
-            }
-
-            if (!failedMobiles && File.Exists(ItemDataPath))
-            {
-                using var bin = new FileStream(ItemDataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var reader = new BinaryFileReader(new BinaryReader(bin));
-
-                for (var i = 0; i < items.Count; ++i)
-                {
-                    var entry = items[i];
-                    var item = entry.Item;
-
-                    if (item != null)
-                    {
-                        reader.Seek(entry.Position, SeekOrigin.Begin);
-
-                        try
-                        {
-                            LoadingType = entry.TypeName;
-                            item.Deserialize(reader);
-
-                            if (reader.Position != entry.Position + entry.Length)
-                            {
-                                throw new Exception($"***** Bad serialize on {item.GetType()} *****");
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            items.RemoveAt(i);
-
-                            failed = e;
-                            failedItems = true;
-                            failedType = item.GetType();
-                            failedTypeID = entry.TypeID;
-                            failedSerial = item.Serial;
-
-                            break;
-                        }
-                    }
-                }
-
-                reader.Close();
-            }
-
-            LoadingType = null;
-
-            if (!failedMobiles && !failedItems && File.Exists(GuildDataPath))
-            {
-                using var bin = new FileStream(GuildDataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var reader = new BinaryFileReader(new BinaryReader(bin));
-
-                for (var i = 0; i < guilds.Count; ++i)
-                {
-                    var entry = guilds[i];
-                    var g = entry.Guild;
-
-                    if (g != null)
-                    {
-                        reader.Seek(entry.Position, SeekOrigin.Begin);
-
-                        try
-                        {
-                            g.Deserialize(reader);
-
-                            if (reader.Position != entry.Position + entry.Length)
-                            {
-                                throw new Exception($"***** Bad serialize on Guild {g.Serial} *****");
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            guilds.RemoveAt(i);
-
-                            failed = e;
-                            failedGuilds = true;
-                            failedType = typeof(BaseGuild);
-                            failedTypeID = g.Serial.ToInt32();
-                            failedSerial = g.Serial;
-
-                            break;
-                        }
-                    }
-                }
-
-                reader.Close();
-            }
-
-            if (failedItems || failedMobiles || failedGuilds)
-            {
-                Console.WriteLine("An error was encountered while loading a saved object");
-
-                Console.WriteLine(" - Type: {0}", failedType);
-                Console.WriteLine(" - Serial: {0:X}", failedSerial);
-
-                Console.WriteLine("Delete the object? (y/n)");
-
-                if (Console.ReadKey(true).Key == ConsoleKey.Y)
-                {
-                    if (failedType != typeof(BaseGuild))
-                    {
-                        Console.WriteLine("Delete all objects of that type? (y/n)");
-
-                        if (Console.ReadKey(true).Key == ConsoleKey.Y)
-                        {
-                            if (failedMobiles)
-                            {
-                                for (var i = 0; i < mobiles.Count;)
-                                {
-                                    if (mobiles[i].TypeID == failedTypeID)
-                                    {
-                                        mobiles.RemoveAt(i);
-                                    }
-                                    else
-                                    {
-                                        ++i;
-                                    }
-                                }
-                            }
-                            else if (failedItems)
-                            {
-                                for (var i = 0; i < items.Count;)
-                                {
-                                    if (items[i].TypeID == failedTypeID)
-                                    {
-                                        items.RemoveAt(i);
-                                    }
-                                    else
-                                    {
-                                        ++i;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    SaveIndex(mobiles, MobileIndexPath);
-                    SaveIndex(items, ItemIndexPath);
-                    SaveIndex(guilds, GuildIndexPath);
-                }
-
-                Console.WriteLine("After pressing return an exception will be thrown and the server will terminate.");
-                Console.ReadLine();
-
-                throw new Exception(
-                    $"Load failed (items={failedItems}, mobiles={failedMobiles}, guilds={failedGuilds}, type={failedType}, serial={failedSerial})",
-                    failed
-                );
-            }
+            LoadData(itemIndexInfo, items);
+            LoadData(mobileIndexInfo, mobiles);
+            LoadData(guildIndexInfo, guilds);
 
             EventSink.InvokeWorldLoad();
 
-            Loading = false;
+            WorldState = WorldState.Running;
 
             ProcessSafetyQueues();
 
@@ -539,6 +374,7 @@ namespace Server
                 }
 
                 item.ClearProperties();
+                // Serialize to buffers
             }
 
             foreach (var m in Mobiles.Values)
@@ -561,36 +397,23 @@ namespace Server
 
         private static void ProcessSafetyQueues()
         {
-            while (_addQueue.Count > 0)
+            foreach (var entity in _pendingAdd.Values)
             {
-                var entity = _addQueue.Dequeue();
-
-                if (entity is Item item)
-                {
-                    AddItem(item);
-                }
-                else if (entity is Mobile mob)
-                {
-                    AddMobile(mob);
-                }
+                AddEntity(entity);
             }
 
-            while (_deleteQueue.Count > 0)
+            foreach (var entity in _pendingDelete.Values)
             {
-                var entity = _deleteQueue.Dequeue();
+                if (_pendingAdd.ContainsKey(entity.Serial))
+                {
+                    Console.Error.WriteLine("Entity {0} was both pending both deletion and addition after save", entity);
+                }
 
-                if (entity is Item item)
-                {
-                    item.Delete();
-                }
-                else if (entity is Mobile mob)
-                {
-                    mob.Delete();
-                }
+                RemoveEntity(entity);
             }
         }
 
-        private static void AppendSafetyLog(string action, IEntity entity)
+        private static void AppendSafetyLog(string action, ISerializable entity)
         {
             var message =
                 $"Warning: Attempted to {action} {entity} during world save.{Environment.NewLine}This action could cause inconsistent state.{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
@@ -610,117 +433,149 @@ namespace Server
             }
         }
 
-        private static void SaveIndex<T>(List<T> list, string path) where T : IEntityEntry
+        private static void FinishWorldSave()
         {
-            if (!Directory.Exists("Saves/Mobiles/"))
-            {
-                Directory.CreateDirectory("Saves/Mobiles/");
-            }
+            WorldState = WorldState.Running;
 
-            if (!Directory.Exists("Saves/Items/"))
-            {
-                Directory.CreateDirectory("Saves/Items/");
-            }
-
-            if (!Directory.Exists("Saves/Guilds/"))
-            {
-                Directory.CreateDirectory("Saves/Guilds/");
-            }
-
-            using var idx = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
-            var idxWriter = new BinaryWriter(idx);
-
-            idxWriter.Write(list.Count);
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                var e = list[i];
-
-                idxWriter.Write(e.TypeID);
-                idxWriter.Write(e.Serial);
-                idxWriter.Write(e.Position);
-                idxWriter.Write(e.Length);
-            }
-
-            idxWriter.Close();
+            ProcessDecay();
+            ProcessSafetyQueues();
         }
 
-        public static void Save(bool message = true, bool permitBackgroundWrite = false)
+        public static void WriteFiles(object state)
         {
-            if (Saving)
+            IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
+            IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
+            IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
+
+            WriteEntities(itemIndexInfo, Items, ItemTypes);
+            WriteEntities(mobileIndexInfo, Mobiles, MobileTypes);
+            WriteEntities(guildIndexInfo, Guilds, GuildTypes);
+
+            if (m_DiskWriteHandle.Set())
+            {
+                Console.WriteLine("Closing Save Files.");
+            }
+
+            Timer.DelayCall(FinishWorldSave);
+        }
+
+        private static void WriteEntities<I, T>(IIndexInfo<I> indexInfo, Dictionary<I, T> entities, List<Type> types) where T : class, ISerializable
+        {
+            var typeName = indexInfo.TypeName;
+
+            var path = Path.Combine("Saves", typeName);
+
+            AssemblyHandler.EnsureDirectory(path);
+
+            string idxPath = Path.Combine(path, $"{typeName}.idx");
+            string tdbPath = Path.Combine(path, $"{typeName}.tdb");
+            string binPath = Path.Combine(path, $"{typeName}.bin");
+
+            var idx = new BinaryFileWriter(idxPath, false);
+            var tdb = new BinaryFileWriter(tdbPath, false);
+            var bin = new BinaryFileWriter(binPath, true);
+
+            idx.Write(entities.Count);
+            foreach (var mob in entities.Values)
+            {
+                long start = bin.Position;
+
+                idx.Write(mob.TypeRef);
+                idx.Write(mob.Serial);
+                idx.Write(start);
+
+                mob.SerializeTo(bin);
+
+                idx.Write((int)(bin.Position - start));
+            }
+
+            tdb.Write(types.Count);
+            for (int i = 0; i < types.Count; ++i)
+            {
+                tdb.Write(types[i].FullName);
+            }
+
+            idx.Close();
+            tdb.Close();
+            bin.Close();
+        }
+
+        private static void SaveEntities<T>(IEnumerable<T> list, DateTime serializeStart) where T : class, ISerializable
+        {
+            Parallel.ForEach(list, (t, now) => {
+                t.Serialize(serializeStart);
+            });
+        }
+
+        private static void ProcessDecay()
+        {
+            Item item;
+
+            while (_decayQueue.TryDequeue(out item))
+            {
+                if (item.OnDecay())
+                {
+                    // TODO: Add Logging
+                    item.Delete();
+                }
+            }
+        }
+
+        public static void Save()
+        {
+            if (WorldState != WorldState.Running)
             {
                 return;
             }
 
-            ++m_Saves;
+            ++_Saves;
 
+            NetState.FlushAll();
             NetState.Pause();
 
             WaitForWriteCompletion(); // Blocks Save until current disk flush is done.
 
-            Saving = true;
+            WorldState = WorldState.Saving;
 
             m_DiskWriteHandle.Reset();
 
-            if (message)
-            {
-                Broadcast(0x35, true, "The world is saving, please wait.");
-            }
+            Broadcast(0x35, true, "The world is saving, please wait.");
 
-            Console.Write($"[{DateTime.UtcNow.ToLongTimeString()}] World: Saving...");
+            var now = DateTime.UtcNow;
+
+            Console.Write("[{0}] World: Saving...", now.ToLongTimeString());
 
             var watch = Stopwatch.StartNew();
 
-            if (!Directory.Exists("Saves/Mobiles/"))
-            {
-                Directory.CreateDirectory("Saves/Mobiles/");
-            }
-
-            if (!Directory.Exists("Saves/Items/"))
-            {
-                Directory.CreateDirectory("Saves/Items/");
-            }
-
-            if (!Directory.Exists("Saves/Guilds/"))
-            {
-                Directory.CreateDirectory("Saves/Guilds/");
-            }
-
-            strategy.Save(permitBackgroundWrite);
+            SaveEntities(Items.Values, now);
+            SaveEntities(Mobiles.Values, now);
+            SaveEntities(Guilds.Values, now);
 
             try
             {
-                EventSink.InvokeWorldSave(message);
+                EventSink.InvokeWorldSave();
             }
             catch (Exception e)
             {
-                throw new Exception("World Save event threw an exception.  Save failed!", e);
+                throw new Exception("World Save event threw an exception. Save failed!", e);
             }
+
+            WorldState = WorldState.WritingSave;
+
+            ThreadPool.QueueUserWorkItem(WriteFiles);
 
             watch.Stop();
 
-            Saving = false;
+            var duration = watch.Elapsed.TotalSeconds;
 
-            if (!permitBackgroundWrite)
-            {
-                NotifyDiskWriteComplete(); // Sets the DiskWriteHandle.  If we allow background writes, we leave this upto the individual save strategies.
-            }
+            Console.WriteLine("Save done in {0:F2} seconds.", duration);
 
-            ProcessSafetyQueues();
-
-            // Process Decays
-
-            Console.WriteLine("Save done in {0:F2} seconds.", watch.Elapsed.TotalSeconds);
-
-            if (message)
-            {
-                Broadcast(
-                    0x35,
-                    true,
-                    "World save complete. The entire process took {0:F1} seconds.",
-                    watch.Elapsed.TotalSeconds
-                );
-            }
+            Broadcast(
+                0x35,
+                true,
+                "World save complete. The entire process took {0:F2} seconds.",
+                duration
+            );
 
             NetState.Resume();
         }
@@ -775,6 +630,9 @@ namespace Server
         public static Mobile FindMobile(Serial serial, bool returnDeleted = false) =>
             FindEntity<Mobile>(serial, returnDeleted);
 
+        public static BaseGuild FindGuild(Serial serial) => Guilds.TryGetValue(serial, out var guild) ? guild : null;
+
+
         public static void AddEntity<T>(T entity) where T : class, IEntity
         {
             switch (WorldState)
@@ -816,6 +674,8 @@ namespace Server
             }
         }
 
+        public static void AddGuild(BaseGuild guild) => Guilds[guild.Serial] = guild;
+
         public static void RemoveEntity<T>(T entity) where T : class, IEntity
         {
             switch (WorldState)
@@ -850,6 +710,15 @@ namespace Server
                         break;
                     }
             }
+        }
+
+        public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
+
+        public static void SerializeTo(this ISerializable entity, IGenericWriter writer)
+        {
+            var saveBuffer = entity.SaveBuffer;
+            var data = saveBuffer.Data.AsSpan(0, (int)saveBuffer.Position);
+            writer.Write(data);
         }
     }
 }

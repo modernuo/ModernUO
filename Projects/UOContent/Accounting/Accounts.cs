@@ -69,12 +69,9 @@ namespace Server.Accounting
             }
         }
 
-        public static void Save(bool message)
+        public static void Save()
         {
-            if (!Directory.Exists("Saves/Accounts"))
-            {
-                Directory.CreateDirectory("Saves/Accounts");
-            }
+            AssemblyHandler.EnsureDirectory("Saves/Accounts");
 
             var filePath = Path.Combine("Saves/Accounts", "accounts.xml");
 
