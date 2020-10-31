@@ -366,6 +366,8 @@ namespace Server
 
             ProcessSafetyQueues();
 
+            var now = DateTime.UtcNow;
+
             foreach (var item in Items.Values)
             {
                 if (item.Parent == null)
@@ -374,7 +376,7 @@ namespace Server
                 }
 
                 item.ClearProperties();
-                // Serialize to buffers
+                item.Serialize(now);
             }
 
             foreach (var m in Mobiles.Values)
@@ -383,6 +385,12 @@ namespace Server
                 m.UpdateTotals();
 
                 m.ClearProperties();
+                m.Serialize(now);
+            }
+
+            foreach (var g in Guilds.Values)
+            {
+                g.Serialize(now);
             }
 
             watch.Stop();
