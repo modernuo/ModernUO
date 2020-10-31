@@ -28,9 +28,9 @@ namespace Server
             PluralName = pluralName;
         }
 
-        public static Race DefaultRace => Races[0];
-
         public static Race[] Races { get; } = new Race[0x100];
+
+        public static Race DefaultRace => Races[0];
 
         public static Race Human => Races[0];
         public static Race Elf => Races[1];

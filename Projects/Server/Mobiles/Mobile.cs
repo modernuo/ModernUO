@@ -2940,13 +2940,13 @@ namespace Server
 
                         if (ns.StygianAbyss)
                         {
-                            Packets.SendSupportedFeature(ns);
+                            ns.SendSupportedFeature();
                             ns.Send(new MobileUpdate(this));
                             ns.Send(new MobileAttributes(this));
                         }
                         else
                         {
-                            Packets.SendSupportedFeature(ns);
+                            ns.SendSupportedFeature();
                             ns.Send(new MobileUpdateOld(this));
                             ns.Send(new MobileAttributes(this));
                         }
@@ -3084,13 +3084,13 @@ namespace Server
 
                 if (ns.StygianAbyss)
                 {
-                    Packets.SendSupportedFeature(ns);
+                    ns.SendSupportedFeature();
                     ns.Send(new MobileUpdate(this));
                     ns.Send(new MobileAttributes(this));
                 }
                 else
                 {
-                    Packets.SendSupportedFeature(ns);
+                    ns.SendSupportedFeature();
                     ns.Send(new MobileUpdateOld(this));
                     ns.Send(new MobileAttributes(this));
                 }

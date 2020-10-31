@@ -30,7 +30,7 @@ namespace Server
 
                 if (ObjectPropertyList.Enabled)
                 {
-                    PacketHandlers.SingleClickProps =
+                    IncomingEntityPackets.SingleClickProps =
                         true; // single click for everything is overridden to check object property list
                 }
 

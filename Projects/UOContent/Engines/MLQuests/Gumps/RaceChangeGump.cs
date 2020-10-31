@@ -80,7 +80,7 @@ namespace Server.Engines.MLQuests.Gumps
         {
             m_Pending = new Dictionary<NetState, RaceChangeState>();
 
-            PacketHandlers.RegisterExtended(0x2A, true, RaceChangeReply);
+            IncomingExtendedCommandPackets.RegisterExtended(0x2A, true, RaceChangeReply);
         }
 
         public static bool IsPending(NetState state) => state != null && m_Pending.ContainsKey(state);

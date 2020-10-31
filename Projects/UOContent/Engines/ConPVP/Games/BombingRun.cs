@@ -376,21 +376,21 @@ namespace Server.Engines.ConPVP
               int climb = count / 2;
               if (climb > 3)
                 climb = 3;
-      
+
               for ( i = 0; i < climb; i++ )
               {
                 p = ((Point3D)list[i]);
                 p.Z += (i+1) * 4;
                 list[i] = p;
               }
-      
+
               for ( ; i < count - climb; i++ )
               {
                 p = ((Point3D)list[i]);
                 p.Z += 16;
                 list[i] = p;
               }
-      
+
               for ( i = climb; i > 0; i-- )
               {
                 p = ((Point3D)list[i]);
