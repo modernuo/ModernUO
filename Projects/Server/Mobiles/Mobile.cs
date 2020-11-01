@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Guilds;
@@ -425,11 +424,15 @@ namespace Server
     /// </summary>
     public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IPropertyListObject
     {
-        private const int
-            WarmodeCatchCount = 4; // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
+        // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
+        private const int WarmodeCatchCount = 4;
 
+        // TODO: Make these configurations
         private static readonly TimeSpan WarmodeSpamCatch = TimeSpan.FromSeconds(Core.SE ? 1.0 : 0.5);
         private static readonly TimeSpan WarmodeSpamDelay = TimeSpan.FromSeconds(Core.SE ? 4.0 : 2.0);
+        private static readonly TimeSpan ExpireCombatantDelay = TimeSpan.FromMinutes(1.0);
+        private static readonly TimeSpan LogoutDelay = TimeSpan.FromDays(1.0);
+        private static readonly TimeSpan ExpireAggressorsDelay = TimeSpan.FromSeconds(5.0);
 
         private static readonly Packet[][] m_MovingPacketCache =
         {
@@ -508,7 +511,7 @@ namespace Server
         private bool m_Female, m_Warmode, m_Hidden, m_Blessed, m_Flying;
         private int m_Followers, m_FollowersMax;
         private bool m_Frozen;
-        private FrozenTimer m_FrozenTimer;
+        private Timer m_FrozenTimer;
         private BaseGuild m_Guild;
         private string m_GuildTitle;
 
@@ -554,7 +557,7 @@ namespace Server
         private NetState m_NetState;
         private DateTime m_NextWarmodeChange;
         private bool m_Paralyzed;
-        private ParalyzedTimer m_ParaTimer;
+        private Timer m_ParaTimer;
         private bool m_Player;
         private Poison m_Poison;
         private Prompt m_Prompt;
@@ -918,6 +921,8 @@ namespace Server
 
         public bool ChangingCombatant => m_ChangingCombatant > 0;
 
+        private void ExpireCombatant() => Combatant = null;
+
         /// <summary>
         ///     Overridable. Gets or sets which Mobile that this Mobile is currently engaged in combat with.
         ///     <seealso cref="OnCombatantChange" />
@@ -960,7 +965,7 @@ namespace Server
                     else
                     {
                         m_NetState?.Send(new ChangeCombatant(m_Combatant.Serial));
-                        m_ExpireCombatant ??= new ExpireCombatantTimer(this);
+                        m_ExpireCombatant ??= Timer.DelayCall(ExpireCombatantDelay, ExpireCombatant);
                         m_ExpireCombatant.Start();
 
                         m_CombatTimer ??= new CombatTimer(this);
@@ -1527,10 +1532,9 @@ namespace Server
                         EventSink.InvokeDisconnected(this);
 
                         // Disconnected, start the logout timer
-
                         if (m_LogoutTimer == null)
                         {
-                            m_LogoutTimer = new LogoutTimer(this);
+                            m_LogoutTimer = Timer.DelayCall(LogoutDelay, Logout);
                         }
                         else
                         {
@@ -1958,7 +1962,7 @@ namespace Server
                 {
                     if (m_ExpireCriminal == null)
                     {
-                        m_ExpireCriminal = new ExpireCriminalTimer(this);
+                        m_ExpireCriminal = Timer.DelayCall(ExpireCriminalDelay, ExpireCriminal);
                     }
                     else
                     {
@@ -3842,15 +3846,26 @@ namespace Server
             }
             else if (m_ExpireAggrTimer == null)
             {
-                m_ExpireAggrTimer = new ExpireAggressorsTimer(this);
+                m_ExpireAggrTimer = Timer.DelayCall(ExpireAggressorsDelay, ExpireAggressorsDelay, ExpireAggr);
                 m_ExpireAggrTimer.Start();
+            }
+        }
+
+        private void ExpireAggr()
+        {
+            if (Deleted || Aggressors.Count == 0 && Aggressed.Count == 0)
+            {
+                StopAggrExpire();
+            }
+            else
+            {
+                CheckAggrExpire();
             }
         }
 
         private void StopAggrExpire()
         {
             m_ExpireAggrTimer?.Stop();
-
             m_ExpireAggrTimer = null;
         }
 
@@ -4007,7 +4022,8 @@ namespace Server
                 return;
             }
 
-            DateTime now = DateTime.UtcNow, next = m_NextWarmodeChange;
+            var now = DateTime.UtcNow;
+            var next = m_NextWarmodeChange;
 
             if (now > next || m_WarmodeChanges == 0)
             {
@@ -4081,15 +4097,25 @@ namespace Server
 
         public virtual TimeSpan GetLogoutDelay() => Region.GetLogoutDelay(this);
 
+        private void ExpireParalyzed()
+        {
+            Paralyzed = false;
+        }
+
         public void Paralyze(TimeSpan duration)
         {
             if (!m_Paralyzed)
             {
                 Paralyzed = true;
 
-                m_ParaTimer = new ParalyzedTimer(this, duration);
+                m_ParaTimer = Timer.DelayCall(duration, ExpireParalyzed);
                 m_ParaTimer.Start();
             }
+        }
+
+        private void ExpireFrozen()
+        {
+            Frozen = false;
         }
 
         public void Freeze(TimeSpan duration)
@@ -4098,7 +4124,7 @@ namespace Server
             {
                 Frozen = true;
 
-                m_FrozenTimer = new FrozenTimer(this, duration);
+                m_FrozenTimer = Timer.DelayCall(duration, ExpireFrozen);
                 m_FrozenTimer.Start();
             }
         }
@@ -4213,7 +4239,7 @@ namespace Server
             {
                 if (m_ExpireCombatant == null)
                 {
-                    m_ExpireCombatant = new ExpireCombatantTimer(this);
+                    m_ExpireCombatant = Timer.DelayCall(ExpireCombatantDelay, ExpireCombatant);
                 }
                 else
                 {
@@ -5945,13 +5971,21 @@ namespace Server
             return true;
         }
 
+        private void AutoManifest()
+        {
+            if (!Alive)
+            {
+                Warmode = false;
+            }
+        }
+
         public virtual void Manifest(TimeSpan delay)
         {
             Warmode = true;
 
             if (m_AutoManifestTimer == null)
             {
-                m_AutoManifestTimer = new AutoManifestTimer(this, delay);
+                m_AutoManifestTimer = Timer.DelayCall(delay, AutoManifest);
             }
             else
             {
@@ -6214,9 +6248,7 @@ namespace Server
             }
         }
 
-        public static Mobile GetDamagerFrom(DamageEntry de) => de?.Damager;
-
-        public Mobile FindMostRecentDamager(bool allowSelf) => GetDamagerFrom(FindMostRecentDamageEntry(allowSelf));
+        public Mobile FindMostRecentDamager(bool allowSelf) => FindMostRecentDamageEntry(allowSelf)?.Damager;
 
         public DamageEntry FindMostRecentDamageEntry(bool allowSelf)
         {
@@ -6242,7 +6274,7 @@ namespace Server
             return null;
         }
 
-        public Mobile FindLeastRecentDamager(bool allowSelf) => GetDamagerFrom(FindLeastRecentDamageEntry(allowSelf));
+        public Mobile FindLeastRecentDamager(bool allowSelf) => FindLeastRecentDamageEntry(allowSelf)?.Damager;
 
         public DamageEntry FindLeastRecentDamageEntry(bool allowSelf)
         {
@@ -6269,7 +6301,7 @@ namespace Server
             return null;
         }
 
-        public Mobile FindMostTotalDamager(bool allowSelf) => GetDamagerFrom(FindMostTotalDamageEntry(allowSelf));
+        public Mobile FindMostTotalDamager(bool allowSelf) => FindMostTotalDamageEntry(allowSelf)?.Damager;
 
         public DamageEntry FindMostTotalDamageEntry(bool allowSelf)
         {
@@ -6297,7 +6329,7 @@ namespace Server
             return mostTotal;
         }
 
-        public Mobile FindLeastTotalDamager(bool allowSelf) => GetDamagerFrom(FindLeastTotalDamageEntry(allowSelf));
+        public Mobile FindLeastTotalDamager(bool allowSelf) => FindLeastTotalDamageEntry(allowSelf)?.Damager;
 
         public DamageEntry FindLeastTotalDamageEntry(bool allowSelf)
         {
@@ -6397,19 +6429,9 @@ namespace Server
         {
         }
 
-        public virtual void Damage(int amount)
-        {
-            Damage(amount, null);
-        }
-
         public virtual bool CanBeDamaged() => !m_Blessed;
 
-        public virtual void Damage(int amount, Mobile from)
-        {
-            Damage(amount, from, true);
-        }
-
-        public virtual void Damage(int amount, Mobile from, bool informMount)
+        public virtual void Damage(int amount, Mobile from = null, bool informMount = true)
         {
             if (!CanBeDamaged() || Deleted)
             {
@@ -6649,15 +6671,9 @@ namespace Server
             }
         }
 
-        public void Heal(int amount)
-        {
-            Heal(amount, this, true);
-        }
+        public void Heal(int amount) => Heal(amount, this, true);
 
-        public void Heal(int amount, Mobile from)
-        {
-            Heal(amount, from, true);
-        }
+        public void Heal(int amount, Mobile from) => Heal(amount, from, true);
 
         public void Heal(int amount, Mobile from, bool message)
         {
@@ -7018,8 +7034,7 @@ namespace Server
 
                         if (m_Criminal)
                         {
-                            m_ExpireCriminal ??= new ExpireCriminalTimer(this);
-
+                            m_ExpireCriminal ??= Timer.DelayCall(ExpireCriminalDelay, ExpireCriminal);
                             m_ExpireCriminal.Start();
                         }
 
@@ -8767,45 +8782,38 @@ namespace Server
         {
         }
 
-        public static TimeSpan GetHitsRegenRate(Mobile m)
+        private class WarmodeTimer : Timer
         {
-            if (HitsRegenRateHandler == null)
+            private Mobile m_Mobile;
+
+            public WarmodeTimer(Mobile m, bool value) : base(WarmodeSpamDelay)
             {
-                return DefaultHitsRate;
+                m_Mobile = m;
+                Value = value;
             }
 
-            return HitsRegenRateHandler(m);
-        }
+            public bool Value{ get; set; }
 
-        public static TimeSpan GetStamRegenRate(Mobile m)
-        {
-            if (StamRegenRateHandler == null)
+            protected override void OnTick()
             {
-                return DefaultStamRate;
+                m_Mobile.Warmode = Value;
+                m_Mobile.m_WarmodeChanges = 0;
+
+                m_Mobile.m_WarmodeTimer = null;
             }
-
-            return StamRegenRateHandler(m);
         }
 
-        public static TimeSpan GetManaRegenRate(Mobile m)
-        {
-            if (ManaRegenRateHandler == null)
-            {
-                return DefaultManaRate;
-            }
+        public static TimeSpan GetHitsRegenRate(Mobile m) => HitsRegenRateHandler?.Invoke(m) ?? DefaultHitsRate;
 
-            return ManaRegenRateHandler(m);
-        }
+        public static TimeSpan GetStamRegenRate(Mobile m) => StamRegenRateHandler?.Invoke(m) ?? DefaultStamRate;
 
-        public Prompt BeginPrompt(PromptCallback callback, PromptCallback cancelCallback)
-        {
-            return Prompt = new SimplePrompt(callback, cancelCallback);
-        }
+        public static TimeSpan GetManaRegenRate(Mobile m) => ManaRegenRateHandler?.Invoke(m) ?? DefaultManaRate;
 
-        public Prompt BeginPrompt(PromptCallback callback, bool callbackHandlesCancel = false)
-        {
-            return Prompt = new SimplePrompt(callback, callbackHandlesCancel);
-        }
+        public Prompt BeginPrompt(PromptCallback callback, PromptCallback cancelCallback) =>
+            Prompt = new SimplePrompt(callback, cancelCallback);
+
+        public Prompt BeginPrompt(PromptCallback callback, bool callbackHandlesCancel = false) =>
+            Prompt = new SimplePrompt(callback, callbackHandlesCancel);
 
         public Prompt BeginPrompt<T>(PromptStateCallback<T> callback, PromptStateCallback<T> cancelCallback, T state) =>
             Prompt = new SimpleStatePrompt<T>(callback, cancelCallback, state);
@@ -8873,155 +8881,66 @@ namespace Server
 
         public IPooledEnumerable<Item> GetItemsInRange(int range) => GetItemsInRange<Item>(range);
 
-        public IPooledEnumerable<T> GetItemsInRange<T>(int range) where T : Item
-        {
-            var map = m_Map;
+        public IPooledEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
+            m_Map?.GetItemsInRange<T>(m_Location, range) ?? Map.NullEnumerable<T>.Instance;
 
-            if (map == null)
-            {
-                return Map.NullEnumerable<T>.Instance;
-            }
-
-            return map.GetItemsInRange<T>(m_Location, range);
-        }
-
-        public IPooledEnumerable<IEntity> GetObjectsInRange(int range)
-        {
-            var map = m_Map;
-
-            if (map == null)
-            {
-                return Map.NullEnumerable<IEntity>.Instance;
-            }
-
-            return map.GetObjectsInRange(m_Location, range);
-        }
+        public IPooledEnumerable<IEntity> GetObjectsInRange(int range) =>
+            m_Map?.GetObjectsInRange(m_Location, range) ?? Map.NullEnumerable<IEntity>.Instance;
 
         public IPooledEnumerable<Mobile> GetMobilesInRange(int range) => GetMobilesInRange<Mobile>(range);
 
-        public IPooledEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile
-        {
-            var map = m_Map;
+        public IPooledEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile =>
+            m_Map?.GetMobilesInRange<T>(m_Location, range) ?? Map.NullEnumerable<T>.Instance;
 
-            if (map == null)
-            {
-                return Map.NullEnumerable<T>.Instance;
-            }
+        public IPooledEnumerable<NetState> GetClientsInRange(int range) =>
+            m_Map?.GetClientsInRange(m_Location, range) ?? Map.NullEnumerable<NetState>.Instance;
 
-            return map.GetMobilesInRange<T>(m_Location, range);
-        }
-
-        public IPooledEnumerable<NetState> GetClientsInRange(int range)
-        {
-            var map = m_Map;
-
-            if (map == null)
-            {
-                return Map.NullEnumerable<NetState>.Instance;
-            }
-
-            return map.GetClientsInRange(m_Location, range);
-        }
-
-        public void SayTo(Mobile to, bool ascii, string text)
-        {
+        public void SayTo(Mobile to, bool ascii, string text) =>
             PrivateOverheadMessage(MessageType.Regular, SpeechHue, ascii, text, to.NetState);
-        }
 
-        public void SayTo(Mobile to, string text)
-        {
-            SayTo(to, false, text);
-        }
+        public void SayTo(Mobile to, string text) => SayTo(to, false, text);
 
-        public void SayTo(Mobile to, string format, params object[] args)
-        {
-            SayTo(to, false, string.Format(format, args));
-        }
+        public void SayTo(Mobile to, string format, params object[] args) => SayTo(to, false, string.Format(format, args));
 
-        public void SayTo(Mobile to, bool ascii, string format, params object[] args)
-        {
+        public void SayTo(Mobile to, bool ascii, string format, params object[] args) =>
             SayTo(to, ascii, string.Format(format, args));
-        }
 
-        public void SayTo(Mobile to, int number)
-        {
+        public void SayTo(Mobile to, int number) =>
             to.Send(new MessageLocalized(Serial, Body, MessageType.Regular, SpeechHue, 3, number, Name, ""));
-        }
 
-        public void SayTo(Mobile to, int number, string args)
-        {
+        public void SayTo(Mobile to, int number, string args) =>
             to.Send(new MessageLocalized(Serial, Body, MessageType.Regular, SpeechHue, 3, number, Name, args));
-        }
 
-        public void Say(bool ascii, string text)
-        {
-            PublicOverheadMessage(MessageType.Regular, SpeechHue, ascii, text);
-        }
+        public void Say(bool ascii, string text) => PublicOverheadMessage(MessageType.Regular, SpeechHue, ascii, text);
 
-        public void Say(string text)
-        {
-            PublicOverheadMessage(MessageType.Regular, SpeechHue, false, text);
-        }
+        public void Say(string text) => PublicOverheadMessage(MessageType.Regular, SpeechHue, false, text);
 
-        public void Say(string format, params object[] args)
-        {
-            Say(string.Format(format, args));
-        }
+        public void Say(string format, params object[] args) => Say(string.Format(format, args));
 
-        public void Say(int number, AffixType type, string affix, string args)
-        {
+        public void Say(int number, AffixType type, string affix, string args) =>
             PublicOverheadMessage(MessageType.Regular, SpeechHue, number, type, affix, args);
-        }
 
-        public void Say(int number, string args = "")
-        {
-            PublicOverheadMessage(MessageType.Regular, SpeechHue, number, args);
-        }
+        public void Say(int number, string args = "") => PublicOverheadMessage(MessageType.Regular, SpeechHue, number, args);
 
-        public void Emote(string text)
-        {
-            PublicOverheadMessage(MessageType.Emote, EmoteHue, false, text);
-        }
+        public void Emote(string text) => PublicOverheadMessage(MessageType.Emote, EmoteHue, false, text);
 
-        public void Emote(string format, params object[] args)
-        {
-            Emote(string.Format(format, args));
-        }
+        public void Emote(string format, params object[] args) => Emote(string.Format(format, args));
 
-        public void Emote(int number, string args = "")
-        {
-            PublicOverheadMessage(MessageType.Emote, EmoteHue, number, args);
-        }
+        public void Emote(int number, string args = "") => PublicOverheadMessage(MessageType.Emote, EmoteHue, number, args);
 
-        public void Whisper(string text)
-        {
-            PublicOverheadMessage(MessageType.Whisper, WhisperHue, false, text);
-        }
+        public void Whisper(string text) => PublicOverheadMessage(MessageType.Whisper, WhisperHue, false, text);
 
-        public void Whisper(string format, params object[] args)
-        {
-            Whisper(string.Format(format, args));
-        }
+        public void Whisper(string format, params object[] args) => Whisper(string.Format(format, args));
 
-        public void Whisper(int number, string args = "")
-        {
+        public void Whisper(int number, string args = "") =>
             PublicOverheadMessage(MessageType.Whisper, WhisperHue, number, args);
-        }
 
-        public void Yell(string text)
-        {
-            PublicOverheadMessage(MessageType.Yell, YellHue, false, text);
-        }
+        public void Yell(string text) => PublicOverheadMessage(MessageType.Yell, YellHue, false, text);
 
-        public void Yell(string format, params object[] args)
-        {
-            Yell(string.Format(format, args));
-        }
+        public void Yell(string format, params object[] args) => Yell(string.Format(format, args));
 
-        public void Yell(int number, string args = "")
-        {
+        public void Yell(int number, string args = "") =>
             PublicOverheadMessage(MessageType.Yell, YellHue, number, args);
-        }
 
         public bool SendHuePicker(HuePicker p, bool throwOnOffline = false)
         {
@@ -9039,10 +8958,7 @@ namespace Server
             return false;
         }
 
-        public Gump FindGump<T>() where T : Gump
-        {
-            return m_NetState?.Gumps.Find(g => g is T);
-        }
+        public Gump FindGump<T>() where T : Gump => m_NetState?.Gumps.Find(g => g is T);
 
         public bool CloseGump<T>() where T : Gump
         {
@@ -9286,7 +9202,7 @@ namespace Server
 
             if (m_ExpireCombatant == null)
             {
-                m_ExpireCombatant = new ExpireCombatantTimer(this);
+                m_ExpireCombatant = Timer.DelayCall(ExpireCombatantDelay, ExpireCombatant);
             }
             else
             {
@@ -9644,21 +9560,16 @@ namespace Server
         public void MovingEffect(
             IEntity to, int itemID, int speed, int duration, bool fixedDirection, bool explodes,
             int hue, int renderMode
-        )
-        {
+        ) =>
             Effects.SendMovingEffect(this, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode);
-        }
 
-        public void MovingEffect(IEntity to, int itemID, int speed, int duration, bool fixedDirection, bool explodes)
-        {
+        public void MovingEffect(IEntity to, int itemID, int speed, int duration, bool fixedDirection, bool explodes) =>
             Effects.SendMovingEffect(this, to, itemID, speed, duration, fixedDirection, explodes);
-        }
 
         public void MovingParticles(
             IEntity to, int itemID, int speed, int duration, bool fixedDirection, bool explodes,
             int hue, int renderMode, int effect, int explodeEffect, int explodeSound, EffectLayer layer, int unknown
-        )
-        {
+        ) =>
             Effects.SendMovingParticles(
                 this,
                 to,
@@ -9675,13 +9586,11 @@ namespace Server
                 layer,
                 unknown
             );
-        }
 
         public void MovingParticles(
             IEntity to, int itemID, int speed, int duration, bool fixedDirection, bool explodes,
             int hue, int renderMode, int effect, int explodeEffect, int explodeSound, int unknown
-        )
-        {
+        ) =>
             Effects.SendMovingParticles(
                 this,
                 to,
@@ -9698,13 +9607,11 @@ namespace Server
                 (EffectLayer)255,
                 unknown
             );
-        }
 
         public void MovingParticles(
             IEntity to, int itemID, int speed, int duration, bool fixedDirection, bool explodes,
             int effect, int explodeEffect, int explodeSound, int unknown
-        )
-        {
+        ) =>
             Effects.SendMovingParticles(
                 this,
                 to,
@@ -9718,13 +9625,11 @@ namespace Server
                 explodeSound,
                 unknown
             );
-        }
 
         public void MovingParticles(
             IEntity to, int itemID, int speed, int duration, bool fixedDirection, bool explodes,
             int effect, int explodeEffect, int explodeSound
-        )
-        {
+        ) =>
             Effects.SendMovingParticles(
                 this,
                 to,
@@ -9740,48 +9645,30 @@ namespace Server
                 explodeSound,
                 0
             );
-        }
 
-        public void FixedEffect(int itemID, int speed, int duration, int hue, int renderMode)
-        {
+        public void FixedEffect(int itemID, int speed, int duration, int hue, int renderMode) =>
             Effects.SendTargetEffect(this, itemID, speed, duration, hue, renderMode);
-        }
 
-        public void FixedEffect(int itemID, int speed, int duration)
-        {
+        public void FixedEffect(int itemID, int speed, int duration) =>
             Effects.SendTargetEffect(this, itemID, speed, duration, 0, 0);
-        }
 
         public void FixedParticles(
-            int itemID, int speed, int duration, int effect, int hue, int renderMode,
-            EffectLayer layer, int unknown
-        )
-        {
+            int itemID, int speed, int duration, int effect, int hue, int renderMode, EffectLayer layer, int unknown
+        ) =>
             Effects.SendTargetParticles(this, itemID, speed, duration, hue, renderMode, effect, layer, unknown);
-        }
 
         public void FixedParticles(
-            int itemID, int speed, int duration, int effect, int hue, int renderMode,
-            EffectLayer layer
-        )
-        {
+            int itemID, int speed, int duration, int effect, int hue, int renderMode, EffectLayer layer
+        ) =>
             Effects.SendTargetParticles(this, itemID, speed, duration, hue, renderMode, effect, layer, 0);
-        }
 
-        public void FixedParticles(int itemID, int speed, int duration, int effect, EffectLayer layer, int unknown)
-        {
+        public void FixedParticles(int itemID, int speed, int duration, int effect, EffectLayer layer, int unknown) =>
             Effects.SendTargetParticles(this, itemID, speed, duration, 0, 0, effect, layer, unknown);
-        }
 
-        public void FixedParticles(int itemID, int speed, int duration, int effect, EffectLayer layer)
-        {
+        public void FixedParticles(int itemID, int speed, int duration, int effect, EffectLayer layer) =>
             Effects.SendTargetParticles(this, itemID, speed, duration, 0, 0, effect, layer, 0);
-        }
 
-        public void BoltEffect(int hue)
-        {
-            Effects.SendBoltEffect(this, true, hue);
-        }
+        public void BoltEffect(int hue) => Effects.SendBoltEffect(this, true, hue);
 
         public Direction GetDirectionTo(int x, int y)
         {
@@ -9825,7 +9712,6 @@ namespace Server
         }
 
         public Direction GetDirectionTo(Point2D p) => GetDirectionTo(p.m_X, p.m_Y);
-
         public Direction GetDirectionTo(Point3D p) => GetDirectionTo(p.m_X, p.m_Y);
 
         public Direction GetDirectionTo(IPoint2D p)
@@ -9947,15 +9833,11 @@ namespace Server
             }
         }
 
-        public void PrivateOverheadMessage(MessageType type, int hue, int number, NetState state)
-        {
+        public void PrivateOverheadMessage(MessageType type, int hue, int number, NetState state) =>
             PrivateOverheadMessage(type, hue, number, "", state);
-        }
 
-        public void PrivateOverheadMessage(MessageType type, int hue, int number, string args, NetState state)
-        {
+        public void PrivateOverheadMessage(MessageType type, int hue, int number, string args, NetState state) =>
             state?.Send(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
-        }
 
         public void LocalOverheadMessage(MessageType type, int hue, bool ascii, string text)
         {
@@ -9976,10 +9858,8 @@ namespace Server
             }
         }
 
-        public void LocalOverheadMessage(MessageType type, int hue, int number, string args = "")
-        {
+        public void LocalOverheadMessage(MessageType type, int hue, int number, string args = "") =>
             m_NetState?.Send(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
-        }
 
         public void NonlocalOverheadMessage(MessageType type, int hue, int number, string args = "")
         {
@@ -10033,10 +9913,7 @@ namespace Server
             eable.Free();
         }
 
-        public void SendLocalizedMessage(int number)
-        {
-            m_NetState?.Send(MessageLocalized.InstantiateGeneric(number));
-        }
+        public void SendLocalizedMessage(int number) => m_NetState?.Send(MessageLocalized.InstantiateGeneric(number));
 
         public void SendLocalizedMessage(int number, string args, int hue = 0x3B2)
         {
@@ -10052,8 +9929,7 @@ namespace Server
             }
         }
 
-        public void SendLocalizedMessage(int number, bool append, string affix, string args = "", int hue = 0x3B2)
-        {
+        public void SendLocalizedMessage(int number, bool append, string affix, string args = "", int hue = 0x3B2) =>
             m_NetState?.Send(
                 new MessageLocalizedAffix(
                     Serial.MinusOne,
@@ -10068,47 +9944,28 @@ namespace Server
                     args
                 )
             );
-        }
 
-        public void SendMessage(string text)
-        {
-            SendMessage(0x3B2, text);
-        }
+        public void SendMessage(string text) => SendMessage(0x3B2, text);
 
-        public void SendMessage(string format, params object[] args)
-        {
+        public void SendMessage(string format, params object[] args) =>
             SendMessage(0x3B2, string.Format(format, args));
-        }
 
-        public void SendMessage(int hue, string text)
-        {
+        public void SendMessage(int hue, string text) =>
             m_NetState?.Send(new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text));
-        }
 
-        public void SendMessage(int hue, string format, params object[] args)
-        {
+        public void SendMessage(int hue, string format, params object[] args) =>
             SendMessage(hue, string.Format(format, args));
-        }
 
-        public void SendAsciiMessage(string text)
-        {
-            SendAsciiMessage(0x3B2, text);
-        }
+        public void SendAsciiMessage(string text) => SendAsciiMessage(0x3B2, text);
 
-        public void SendAsciiMessage(string format, params object[] args)
-        {
+        public void SendAsciiMessage(string format, params object[] args) =>
             SendAsciiMessage(0x3B2, string.Format(format, args));
-        }
 
-        public void SendAsciiMessage(int hue, string text)
-        {
+        public void SendAsciiMessage(int hue, string text) =>
             m_NetState?.Send(new AsciiMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text));
-        }
 
-        public void SendAsciiMessage(int hue, string format, params object[] args)
-        {
+        public void SendAsciiMessage(int hue, string format, params object[] args) =>
             SendAsciiMessage(hue, string.Format(format, args));
-        }
 
         /// <summary>
         ///     Overridable. Event invoked when the Mobile is double clicked. By default, this method can either dismount or open the
@@ -10164,155 +10021,6 @@ namespace Server
             if (CanPaperdollBeOpenedBy(from))
             {
                 DisplayPaperdollTo(from);
-            }
-        }
-
-        private class MovementRecord
-        {
-            private static readonly Queue<MovementRecord> m_InstancePool = new Queue<MovementRecord>();
-            public long m_End;
-
-            private MovementRecord(long end) => m_End = end;
-
-            public static MovementRecord NewInstance(long end)
-            {
-                MovementRecord r;
-
-                if (m_InstancePool.Count > 0)
-                {
-                    r = m_InstancePool.Dequeue();
-
-                    r.m_End = end;
-                }
-                else
-                {
-                    r = new MovementRecord(end);
-                }
-
-                return r;
-            }
-
-            public bool Expired()
-            {
-                var v = Core.TickCount - m_End >= 0;
-
-                if (v)
-                {
-                    m_InstancePool.Enqueue(this);
-                }
-
-                return v;
-            }
-        }
-
-        private class WarmodeTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public WarmodeTimer(Mobile m, bool value)
-                : base(WarmodeSpamDelay)
-            {
-                m_Mobile = m;
-                Value = value;
-            }
-
-            public bool Value { get; set; }
-
-            protected override void OnTick()
-            {
-                m_Mobile.Warmode = Value;
-                m_Mobile.m_WarmodeChanges = 0;
-
-                m_Mobile.m_WarmodeTimer = null;
-            }
-        }
-
-        private class SimpleTarget : Target
-        {
-            private readonly TargetCallback m_Callback;
-
-            public SimpleTarget(int range, TargetFlags flags, bool allowGround, TargetCallback callback)
-                : base(range, allowGround, flags) =>
-                m_Callback = callback;
-
-            protected override void OnTarget(Mobile from, object targeted)
-            {
-                m_Callback?.Invoke(from, targeted);
-            }
-        }
-
-        private class SimpleStateTarget<T> : Target
-        {
-            private readonly TargetStateCallback<T> m_Callback;
-            private readonly T m_State;
-
-            public SimpleStateTarget(
-                int range, TargetFlags flags, bool allowGround, TargetStateCallback<T> callback,
-                T state
-            )
-                : base(range, allowGround, flags)
-            {
-                m_Callback = callback;
-                m_State = state;
-            }
-
-            protected override void OnTarget(Mobile from, object targeted)
-            {
-                m_Callback?.Invoke(from, targeted, m_State);
-            }
-        }
-
-        private class AutoManifestTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public AutoManifestTimer(Mobile m, TimeSpan delay)
-                : base(delay) =>
-                m_Mobile = m;
-
-            protected override void OnTick()
-            {
-                if (!m_Mobile.Alive)
-                {
-                    m_Mobile.Warmode = false;
-                }
-            }
-        }
-
-        private class LocationComparer : IComparer<IEntity>
-        {
-            private static LocationComparer m_Instance;
-
-            public LocationComparer(IEntity relativeTo) => RelativeTo = relativeTo;
-
-            public IEntity RelativeTo { get; set; }
-
-            public int Compare(IEntity x, IEntity y) => GetDistance(x) - GetDistance(y);
-
-            public static LocationComparer GetInstance(IEntity relativeTo)
-            {
-                if (m_Instance == null)
-                {
-                    m_Instance = new LocationComparer(relativeTo);
-                }
-                else
-                {
-                    m_Instance.RelativeTo = relativeTo;
-                }
-
-                return m_Instance;
-            }
-
-            private int GetDistance(IEntity p)
-            {
-                var x = RelativeTo.X - p.X;
-                var y = RelativeTo.Y - p.Y;
-                var z = RelativeTo.Z - p.Z;
-
-                x *= 11;
-                y *= 11;
-
-                return x * x + y * y + z * z;
             }
         }
 
@@ -10382,62 +10090,16 @@ namespace Server
             }
         }
 
-        private class LogoutTimer : Timer
+        private void Logout()
         {
-            private readonly Mobile m_Mobile;
-
-            public LogoutTimer(Mobile m)
-                : base(TimeSpan.FromDays(1.0))
+            if (m_Map != Map.Internal)
             {
-                Priority = TimerPriority.OneSecond;
-                m_Mobile = m;
-            }
+                EventSink.InvokeLogout(this);
 
-            protected override void OnTick()
-            {
-                if (m_Mobile.m_Map != Map.Internal)
-                {
-                    EventSink.InvokeLogout(m_Mobile);
+                LogoutLocation = m_Location;
+                LogoutMap = m_Map;
 
-                    m_Mobile.LogoutLocation = m_Mobile.m_Location;
-                    m_Mobile.LogoutMap = m_Mobile.m_Map;
-
-                    m_Mobile.Internalize();
-                }
-            }
-        }
-
-        private class ParalyzedTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public ParalyzedTimer(Mobile m, TimeSpan duration)
-                : base(duration)
-            {
-                Priority = TimerPriority.TwentyFiveMS;
-                m_Mobile = m;
-            }
-
-            protected override void OnTick()
-            {
-                m_Mobile.Paralyzed = false;
-            }
-        }
-
-        private class FrozenTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public FrozenTimer(Mobile m, TimeSpan duration)
-                : base(duration)
-            {
-                Priority = TimerPriority.TwentyFiveMS;
-                m_Mobile = m;
-            }
-
-            protected override void OnTick()
-            {
-                m_Mobile.Frozen = false;
+                Internalize();
             }
         }
 
@@ -10490,134 +10152,9 @@ namespace Server
             }
         }
 
-        private class ExpireCombatantTimer : Timer
+        private void ExpireCriminal()
         {
-            private readonly Mobile m_Mobile;
-
-            public ExpireCombatantTimer(Mobile m)
-                : base(TimeSpan.FromMinutes(1.0))
-            {
-                Priority = TimerPriority.FiveSeconds;
-                m_Mobile = m;
-            }
-
-            protected override void OnTick()
-            {
-                m_Mobile.Combatant = null;
-            }
-        }
-
-        private class ExpireCriminalTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public ExpireCriminalTimer(Mobile m)
-                : base(ExpireCriminalDelay)
-            {
-                Priority = TimerPriority.FiveSeconds;
-                m_Mobile = m;
-            }
-
-            protected override void OnTick()
-            {
-                m_Mobile.Criminal = false;
-            }
-        }
-
-        private class ExpireAggressorsTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public ExpireAggressorsTimer(Mobile m)
-                : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0))
-            {
-                m_Mobile = m;
-                Priority = TimerPriority.FiveSeconds;
-            }
-
-            protected override void OnTick()
-            {
-                if (m_Mobile.Deleted || m_Mobile.Aggressors.Count == 0 && m_Mobile.Aggressed.Count == 0)
-                {
-                    m_Mobile.StopAggrExpire();
-                }
-                else
-                {
-                    m_Mobile.CheckAggrExpire();
-                }
-            }
-        }
-
-        private class SimplePrompt : Prompt
-        {
-            private readonly PromptCallback m_Callback;
-            private readonly bool m_CallbackHandlesCancel;
-            private readonly PromptCallback m_CancelCallback;
-
-            public SimplePrompt(PromptCallback callback, PromptCallback cancelCallback)
-            {
-                m_Callback = callback;
-                m_CancelCallback = cancelCallback;
-            }
-
-            public SimplePrompt(PromptCallback callback, bool callbackHandlesCancel = false)
-            {
-                m_Callback = callback;
-                m_CallbackHandlesCancel = callbackHandlesCancel;
-            }
-
-            public override void OnResponse(Mobile from, string text)
-            {
-                m_Callback?.Invoke(from, text);
-            }
-
-            public override void OnCancel(Mobile from)
-            {
-                if (m_CallbackHandlesCancel && m_Callback != null)
-                {
-                    m_Callback(from, "");
-                }
-                else
-                {
-                    m_CancelCallback?.Invoke(from, "");
-                }
-            }
-        }
-
-        private class SimpleStatePrompt<T> : Prompt
-        {
-            private readonly PromptStateCallback<T> m_Callback;
-            private readonly PromptStateCallback<T> m_CancelCallback;
-
-            private readonly T m_State;
-
-            public SimpleStatePrompt(PromptStateCallback<T> callback, PromptStateCallback<T> cancelCallback, T state)
-            {
-                m_Callback = callback;
-                m_CancelCallback = cancelCallback;
-                m_State = state;
-            }
-
-            public SimpleStatePrompt(PromptStateCallback<T> callback, bool callbackHandlesCancel, T state)
-            {
-                m_Callback = callback;
-                m_State = state;
-                m_CancelCallback = callbackHandlesCancel ? callback : null;
-            }
-
-            public SimpleStatePrompt(PromptStateCallback<T> callback, T state) : this(callback, false, state)
-            {
-            }
-
-            public override void OnResponse(Mobile from, string text)
-            {
-                m_Callback?.Invoke(from, text, m_State);
-            }
-
-            public override void OnCancel(Mobile from)
-            {
-                m_CancelCallback?.Invoke(from, "", m_State);
-            }
+            Criminal = false;
         }
     }
 }
