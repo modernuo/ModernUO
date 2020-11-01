@@ -1342,7 +1342,7 @@ namespace Server.Mobiles
             return (double)chance / 1000;
         }
 
-        public override void Damage(int amount, Mobile from)
+        public override void Damage(int amount, Mobile from = null, bool informMount = true)
         {
             var oldHits = Hits;
 
@@ -1356,9 +1356,7 @@ namespace Server.Mobiles
                 amount = (int)(amount * 1.25);
             }
 
-            var oath = BloodOathSpell.GetBloodOath(from);
-
-            if (oath == this)
+            if (from != null && BloodOathSpell.GetBloodOath(from) == this)
             {
                 amount = (int)(amount * 1.1);
                 from.Damage(amount, from);

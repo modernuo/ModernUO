@@ -2874,20 +2874,18 @@ namespace Server.Mobiles
             SendToStaffMessage(from, string.Format(format, args));
         }
 
-        public override void Damage(int amount, Mobile from)
+        public override void Damage(int amount, Mobile from = null, bool informMount = true)
         {
             if (EvilOmenSpell.TryEndEffect(this))
             {
                 amount = (int)(amount * 1.25);
             }
 
-            var oath = BloodOathSpell.GetBloodOath(from);
-
             /* Per EA's UO Herald Pub48 (ML):
              * ((resist spellsx10)/20 + 10=percentage of damage resisted)
              */
 
-            if (oath == this)
+            if (from != null && BloodOathSpell.GetBloodOath(from) == this)
             {
                 amount = (int)(amount * 1.1);
 
@@ -2919,7 +2917,7 @@ namespace Server.Mobiles
                 }
             }
 
-            base.Damage(amount, from);
+            base.Damage(amount, from, informMount);
         }
 
         public override bool IsHarmfulCriminal(Mobile target)
