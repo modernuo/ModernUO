@@ -68,5 +68,6 @@ namespace Server
         HashSet<T> ReadGuildSet<T>() where T : BaseGuild;
         Race ReadRace();
         bool End();
+        int Read(Span<byte> buffer);
     }
 }

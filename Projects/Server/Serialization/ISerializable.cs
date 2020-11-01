@@ -13,8 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
-
 namespace Server
 {
     public interface ISerializable
@@ -22,7 +20,7 @@ namespace Server
         BufferWriter SaveBuffer { get; set; }
         int TypeRef { get; }
         Serial Serial { get; }
-        void Serialize(DateTime serializeStart);
+        void Serialize();
         void Deserialize(IGenericReader reader);
         void Serialize(IGenericWriter writer);
         void Delete();

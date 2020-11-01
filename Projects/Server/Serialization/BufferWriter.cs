@@ -40,6 +40,13 @@ namespace Server
 
         private int m_MaxBufferChars;
 
+        public BufferWriter(byte[] buffer, bool prefixStr)
+        {
+            m_PrefixStrings = prefixStr;
+            m_Encoding = Utility.UTF8;
+            m_Buffer = buffer;
+        }
+
         public BufferWriter(bool prefixStr)
         {
             m_PrefixStrings = prefixStr;
@@ -69,7 +76,9 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Resize(int size)
         {
-            Array.Resize(ref m_Buffer, size);
+            var copy = new byte[size];
+            Buffer.BlockCopy(m_Buffer, 0, copy, 0, size);
+            m_Buffer = copy;
         }
 
         public virtual void Flush()
@@ -77,9 +86,16 @@ namespace Server
             Resize(m_Buffer.Length * 2);
         }
 
+        public void Reset()
+        {
+            m_Position = 0;
+            m_Index = 0;
+        }
+
         public virtual long Seek(long offset, SeekOrigin origin)
         {
-            Flush();
+            m_Position += m_Index;
+            m_Index = 0;
 
             return origin switch
             {

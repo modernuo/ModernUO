@@ -24,7 +24,11 @@ namespace Server
         public BinaryFileWriter(string filename, bool prefixStr) : base(prefixStr) =>
             m_File = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
 
-        public BinaryFileWriter(Stream stream, bool prefixStr) : base(prefixStr) => m_File = stream;
+        public BinaryFileWriter(Stream stream, bool prefixStr) : base(prefixStr)
+        {
+            m_File = stream;
+            m_Position = m_File.Position;
+        }
 
 
         protected override int BufferSize => 512;
@@ -48,8 +52,7 @@ namespace Server
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            m_Position += m_Index;
-            m_Index = 0;
+            Flush();
 
             return m_Position = m_File.Seek(offset, origin);
         }

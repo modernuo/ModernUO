@@ -287,6 +287,8 @@ namespace Server
 
         public bool End() => m_File.PeekChar() == -1;
 
+        public int Read(Span<byte> buffer) => m_File.Read(buffer);
+
         public void Close()
         {
             m_File.Close();

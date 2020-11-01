@@ -137,7 +137,7 @@ namespace Server
             m_DiskWriteHandle.WaitOne();
         }
 
-        public static void EnqueueForDecay(Item item)
+        private static void EnqueueForDecay(Item item)
         {
             if (WorldState != WorldState.Saving)
             {
@@ -338,6 +338,11 @@ namespace Server
                     }
                     t.Delete();
                 }
+
+                reader.Seek(entry.Position, SeekOrigin.Begin);
+
+                t.SaveBuffer = new BufferWriter(new byte[entry.Length], true);
+                reader.Read(t.SaveBuffer.Data);
             }
 
             reader.Close();
@@ -381,8 +386,6 @@ namespace Server
 
             ProcessSafetyQueues();
 
-            var now = DateTime.UtcNow;
-
             foreach (var item in Items.Values)
             {
                 if (item.Parent == null)
@@ -391,7 +394,6 @@ namespace Server
                 }
 
                 item.ClearProperties();
-                item.Serialize(now);
             }
 
             foreach (var m in Mobiles.Values)
@@ -400,12 +402,6 @@ namespace Server
                 m.UpdateTotals();
 
                 m.ClearProperties();
-                m.Serialize(now);
-            }
-
-            foreach (var g in Guilds.Values)
-            {
-                g.Serialize(now);
             }
 
             watch.Stop();
@@ -525,8 +521,13 @@ namespace Server
 
         private static void SaveEntities<T>(IEnumerable<T> list, DateTime serializeStart) where T : class, ISerializable
         {
-            Parallel.ForEach(list, (t, now) => {
-                t.Serialize(serializeStart);
+            Parallel.ForEach(list, t => {
+                if (t is Item item && item.CanDecay() && item.LastMoved + item.DecayTime <= serializeStart)
+                {
+                    EnqueueForDecay(item);
+                }
+
+                t.Serialize();
             });
         }
 
