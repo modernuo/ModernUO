@@ -726,6 +726,9 @@ namespace Server
         {
             var saveBuffer = entity.SaveBuffer;
             writer.Write(saveBuffer.Data, (int)saveBuffer.Position);
+
+            // Resize to exact buffer size
+            entity.SaveBuffer.Resize((int)entity.SaveBuffer.Position);
         }
     }
 }
