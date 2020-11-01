@@ -1,16 +1,31 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: IEntity.cs                                                      *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 
 namespace Server
 {
-    public interface IEntity : IPoint3D, IComparable<IEntity>
+    public interface IEntity : IPoint3D, ISerializable
     {
-        Serial Serial { get; }
+        // Serial Serial { get; }
         Point3D Location { get; }
         Map Map { get; }
         bool Deleted { get; }
+        void Delete();
         void MoveToWorld(Point3D location, Map map);
 
-        void Delete();
         void ProcessDelta();
 
         bool InRange(Point2D p, int range);
@@ -22,7 +37,7 @@ namespace Server
         void RemoveItem(Item item);
     }
 
-    public class Entity : IEntity, IComparable<Entity>
+    public class Entity : IEntity
     {
         public Entity(Serial serial, Point3D loc, Map map)
         {
@@ -32,10 +47,8 @@ namespace Server
             Deleted = false;
         }
 
-        public int CompareTo(Entity other) => CompareTo((IEntity)other);
-
-        public int CompareTo(IEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
-
+        public BufferWriter SaveBuffer { get; set; }
+        public int TypeRef { get; } = -1;
         public Serial Serial { get; }
 
         public Point3D Location { get; private set; }
@@ -85,5 +98,19 @@ namespace Server
             && p.X <= Location.m_X + range
             && p.Y >= Location.m_Y - range
             && p.Y <= Location.m_Y + range;
+
+        public void Serialize(DateTime serializeStart)
+        {
+        }
+
+        public void Deserialize(IGenericReader reader)
+        {
+            // Should not actually be saved
+            Timer.DelayCall(Delete);
+        }
+
+        public void Serialize(IGenericWriter writer)
+        {
+        }
     }
 }

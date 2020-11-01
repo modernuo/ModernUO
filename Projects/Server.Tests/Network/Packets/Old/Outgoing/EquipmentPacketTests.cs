@@ -13,7 +13,7 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var item = new Item(Serial.LastItem + 1);
+            var item = new Item(World.NewItem);
 
             var info = new EquipmentInfo(
                 500000,
@@ -77,7 +77,7 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var item = new Item(Serial.LastItem + 1) { Parent = m };
+            var item = new Item(World.NewItem) { Parent = m };
 
             var data = new EquipUpdate(item).Compile();
 

@@ -423,7 +423,7 @@ namespace Server
     /// <summary>
     ///     Base class representing players, npcs, and creatures.
     /// </summary>
-    public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable, IPropertyListObject
+    public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IPropertyListObject
     {
         private const int
             WarmodeCatchCount = 4; // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
@@ -582,6 +582,9 @@ namespace Server
 
         private bool m_YellowHealthbar;
 
+        // Position in the save buffer where serialization ends. -1 if dirty
+        private int _savePosition = -1;
+
         public Mobile(Serial serial)
         {
             m_Region = Map.Internal.DefaultRegion;
@@ -592,36 +595,32 @@ namespace Server
             DamageEntries = new List<DamageEntry>();
 
             var ourType = GetType();
-            TypeRef = World.m_MobileTypes.IndexOf(ourType);
+            TypeRef = World.MobileTypes.IndexOf(ourType);
 
             if (TypeRef == -1)
             {
-                World.m_MobileTypes.Add(ourType);
-                TypeRef = World.m_MobileTypes.Count - 1;
+                World.MobileTypes.Add(ourType);
+                TypeRef = World.MobileTypes.Count - 1;
             }
-
-            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public Mobile()
         {
             m_Region = Map.Internal.DefaultRegion;
-            Serial = Serial.NewMobile;
+            Serial = World.NewMobile;
 
             DefaultMobileInit();
 
-            World.AddMobile(this);
+            World.AddEntity(this);
 
             var ourType = GetType();
-            TypeRef = World.m_MobileTypes.IndexOf(ourType);
+            TypeRef = World.MobileTypes.IndexOf(ourType);
 
             if (TypeRef == -1)
             {
-                World.m_MobileTypes.Add(ourType);
-                TypeRef = World.m_MobileTypes.Count - 1;
+                World.MobileTypes.Add(ourType);
+                TypeRef = World.MobileTypes.Count - 1;
             }
-
-            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public static bool DragEffects { get; set; } = true;
@@ -2628,21 +2627,29 @@ namespace Server
             AddNameProperties(list);
         }
 
-        public BufferedFileWriter SaveBuffer { get; }
+        public BufferWriter SaveBuffer { get; set; }
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
         public int TypeRef { get; }
 
-        public void Serialize()
+        public void Serialize(DateTime serializeStart)
         {
+            SaveBuffer ??= new BufferWriter(true);
             SaveBuffer.Flush();
             Serialize(SaveBuffer);
         }
 
         public virtual void Serialize(IGenericWriter writer)
         {
+            // The item is clean, so let's skip
+            if (_savePosition > -1)
+            {
+                writer.Seek(_savePosition, SeekOrigin.Begin);
+                return;
+            }
+
             writer.Write(32); // version
 
             writer.WriteDeltaTime(LastStrGain);
@@ -2782,11 +2789,6 @@ namespace Server
                 return;
             }
 
-            if (!World.OnDelete(this))
-            {
-                return;
-            }
-
             if (m_NetState != null)
             {
                 m_NetState.CancelAllTrades();
@@ -2830,7 +2832,7 @@ namespace Server
             m_FacialHair = null;
             m_MountItem = null;
 
-            World.RemoveMobile(this);
+            World.RemoveEntity(this);
 
             OnAfterDelete();
 
@@ -3547,8 +3549,6 @@ namespace Server
         public virtual void OnAfterSpawn()
         {
         }
-
-        int IComparable<IEntity>.CompareTo(IEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
         public virtual bool InRange(Point2D p, int range) =>
             p.m_X >= Location.m_X - range
@@ -9309,6 +9309,8 @@ namespace Server
 
         public bool RemoveStatMod(string name)
         {
+            StatMods ??= new List<StatMod>();
+
             for (var i = 0; i < StatMods.Count; ++i)
             {
                 var check = StatMods[i];
@@ -9327,6 +9329,8 @@ namespace Server
 
         public StatMod GetStatMod(string name)
         {
+            StatMods ??= new List<StatMod>();
+
             for (var i = 0; i < StatMods.Count; ++i)
             {
                 var check = StatMods[i];
@@ -9342,6 +9346,8 @@ namespace Server
 
         public void AddStatMod(StatMod mod)
         {
+            StatMods ??= new List<StatMod>();
+
             for (var i = 0; i < StatMods.Count; ++i)
             {
                 var check = StatMods[i];
@@ -9387,6 +9393,8 @@ namespace Server
         public int GetStatOffset(StatType type)
         {
             var offset = 0;
+
+            StatMods ??= new List<StatMod>();
 
             for (var i = 0; i < StatMods.Count; ++i)
             {

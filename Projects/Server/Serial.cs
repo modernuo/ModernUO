@@ -7,41 +7,13 @@ namespace Server
         public static readonly Serial MinusOne = new Serial(0xFFFFFFFF);
         public static readonly Serial Zero = new Serial(0);
 
-        public static Serial LastMobile { get; private set; } = Zero;
-
-        public static Serial LastItem { get; private set; } = 0x40000000;
-
-        public static Serial NewMobile
-        {
-            get
-            {
-                while (World.FindMobile(LastMobile += 1) != null)
-                {
-                }
-
-                return LastMobile;
-            }
-        }
-
-        public static Serial NewItem
-        {
-            get
-            {
-                while (World.FindItem(LastItem = LastItem + 1) != null)
-                {
-                }
-
-                return LastItem;
-            }
-        }
-
         private Serial(uint serial) => Value = serial;
 
         public uint Value { get; }
 
-        public bool IsMobile => Value > 0 && Value < 0x40000000;
+        public bool IsMobile => Value > 0 && Value < World.ItemOffset;
 
-        public bool IsItem => Value >= 0x40000000 && Value < 0x80000000;
+        public bool IsItem => Value >= World.ItemOffset && Value < World.MaxItemSerial;
 
         public bool IsValid => Value > 0;
 

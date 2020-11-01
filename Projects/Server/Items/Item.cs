@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Server.ContextMenus;
 using Server.Items;
 using Server.Network;
@@ -192,7 +191,7 @@ namespace Server
         Spawner = 0x100
     }
 
-    public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable, IPropertyListObject
+    public class Item : IHued, IComparable<Item>, ISpawnable, IPropertyListObject
     {
         public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
         public static readonly List<Item> EmptyItems = new List<Item>();
@@ -220,11 +219,14 @@ namespace Server
 
         private ObjectPropertyList m_PropertyList;
 
+        // Position in the save buffer where serialization ends. -1 if dirty
+        private int _savePosition = -1;
+
         [Constructible]
         public Item(int itemID = 0)
         {
             m_ItemID = itemID;
-            Serial = Serial.NewItem;
+            Serial = World.NewItem;
 
             // m_Items = new ArrayList( 1 );
             Visible = true;
@@ -234,18 +236,16 @@ namespace Server
 
             SetLastMoved();
 
-            World.AddItem(this);
+            World.AddEntity(this);
 
             var ourType = GetType();
-            TypeRef = World.m_ItemTypes.IndexOf(ourType);
+            TypeRef = World.ItemTypes.IndexOf(ourType);
 
             if (TypeRef == -1)
             {
-                World.m_ItemTypes.Add(ourType);
-                TypeRef = World.m_ItemTypes.Count - 1;
+                World.ItemTypes.Add(ourType);
+                TypeRef = World.ItemTypes.Count - 1;
             }
-
-            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public Item(Serial serial)
@@ -253,15 +253,13 @@ namespace Server
             Serial = serial;
 
             var ourType = GetType();
-            TypeRef = World.m_ItemTypes.IndexOf(ourType);
+            TypeRef = World.ItemTypes.IndexOf(ourType);
 
             if (TypeRef == -1)
             {
-                World.m_ItemTypes.Add(ourType);
-                TypeRef = World.m_ItemTypes.Count - 1;
+                World.ItemTypes.Add(ourType);
+                TypeRef = World.ItemTypes.Count - 1;
             }
-
-            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public int TempFlags
@@ -821,21 +819,34 @@ namespace Server
             AddNameProperties(list);
         }
 
-        public BufferedFileWriter SaveBuffer { get; }
+        public BufferWriter SaveBuffer { get; set; }
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
         public int TypeRef { get; }
 
-        public void Serialize()
+        public void Serialize(DateTime serializeStart)
         {
+            if (Decays && Parent == null && Map != Map.Internal && LastMoved + DecayTime <= serializeStart)
+            {
+                World.EnqueueForDecay(this);
+            }
+
+            SaveBuffer ??= new BufferWriter(true);
             SaveBuffer.Flush();
             Serialize(SaveBuffer);
         }
 
         public virtual void Serialize(IGenericWriter writer)
         {
+            // The item is clean, so let's skip
+            if (_savePosition > -1)
+            {
+                writer.Seek(_savePosition, SeekOrigin.Begin);
+                return;
+            }
+
             writer.Write(9); // version
 
             var flags = SaveFlag.None;
@@ -1111,8 +1122,6 @@ namespace Server
                 writer.WriteEncodedInt(info.m_SavedFlags);
             }
         }
-
-        int IComparable<IEntity>.CompareTo(IEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
         /// <summary>
         ///     Moves the Item to a given <paramref name="location" /> and <paramref name="map" />.
@@ -1518,7 +1527,7 @@ namespace Server
 
         public virtual void Delete()
         {
-            if (Deleted || !World.OnDelete(this))
+            if (Deleted)
             {
                 return;
             }
@@ -1563,7 +1572,7 @@ namespace Server
                 m_Map = null;
             }
 
-            World.RemoveItem(this);
+            World.RemoveEntity(this);
 
             OnAfterDelete();
 

@@ -15,9 +15,9 @@ namespace Server.Tests.Network
             var vendor = new Mobile(0x1);
             vendor.DefaultMobileInit();
 
-            var item1 = new Item(Serial.LastItem + 1);
-            var item2 = new Item(Serial.LastItem + 2) { Name = "Second Item" };
-            var item3 = new Item(Serial.LastItem + 3);
+            var item1 = new Item(World.NewItem);
+            var item2 = new Item(World.NewItem) { Name = "Second Item" };
+            var item3 = new Item(World.NewItem);
 
             var sellStates = new List<SellItemState>
             {

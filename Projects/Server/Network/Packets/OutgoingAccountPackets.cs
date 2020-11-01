@@ -374,7 +374,7 @@ namespace Server.Network
                     writer.Write(ci.X);
                     writer.Write(ci.Y);
                     writer.Write(ci.Z);
-                    writer.Write(ci.Map.MapID);
+                    writer.Write(ci.Map?.MapID ?? 0);
                     writer.Write(ci.Description);
                     writer.Write(0);
                 }

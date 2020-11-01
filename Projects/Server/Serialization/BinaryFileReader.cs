@@ -131,7 +131,7 @@ namespace Server
 
         public Mobile ReadMobile() => World.FindMobile(ReadUInt());
 
-        public BaseGuild ReadGuild() => BaseGuild.Find(ReadUInt());
+        public BaseGuild ReadGuild() => World.FindGuild(ReadUInt());
 
         public T ReadItem<T>() where T : Item => ReadItem() as T;
 

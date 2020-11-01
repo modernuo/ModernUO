@@ -497,8 +497,8 @@ namespace Server.Tests.Network
         [Fact]
         public void TestContainerContent()
         {
-            var cont = new Container(Serial.LastItem + 1);
-            cont.AddItem(new Item(Serial.LastItem + 2));
+            var cont = new Container(World.NewItem);
+            cont.AddItem(new Item(World.NewItem));
 
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
@@ -549,8 +549,8 @@ namespace Server.Tests.Network
         [Fact]
         public void TestContainerContent6017()
         {
-            var cont = new Container(Serial.LastItem + 1);
-            cont.AddItem(new Item(Serial.LastItem + 2));
+            var cont = new Container(World.NewItem);
+            cont.AddItem(new Item(World.NewItem));
 
             var m = new Mobile(0x1);
             m.DefaultMobileInit();

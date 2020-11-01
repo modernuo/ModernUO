@@ -106,7 +106,7 @@ namespace Server.Misc
                 Console.WriteLine("WARNING: Automatic backup FAILED: {0}", e);
             }
 
-            World.Save(true, permitBackgroundWrite);
+            World.Save();
         }
 
         private static void Backup()

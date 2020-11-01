@@ -101,7 +101,7 @@ namespace Server.Items
                         }
                         else
                         {
-                            throw new Exception(World.LoadingType);
+                            throw new Exception("Invalid beverage type");
                         }
 
                         break;
@@ -380,7 +380,7 @@ namespace Server.Items
                         }
                         else
                         {
-                            throw new Exception(World.LoadingType);
+                            throw new Exception("Invalid beverage type");
                         }
 
                         break;
@@ -550,7 +550,7 @@ namespace Server.Items
                         }
                         else
                         {
-                            throw new Exception(World.LoadingType);
+                            throw new Exception("Invalid beverage type");
                         }
 
                         break;
@@ -1106,7 +1106,7 @@ namespace Server.Items
             writer.Write(m_Quantity);
         }
 
-        protected bool CheckType(string name) => World.LoadingType == $"Server.Items.{name}";
+        protected bool CheckType(string name) => GetType().FullName == $"Server.Items.{name}";
 
         public override void Deserialize(IGenericReader reader)
         {

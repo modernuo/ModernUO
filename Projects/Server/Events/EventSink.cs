@@ -109,8 +109,8 @@ namespace Server
         public static event Action WorldLoad;
         public static void InvokeWorldLoad() => WorldLoad?.Invoke();
 
-        public static event Action<bool> WorldSave;
-        public static void InvokeWorldSave(bool sendMessage) => WorldSave?.Invoke(sendMessage);
+        public static event Action WorldSave;
+        public static void InvokeWorldSave() => WorldSave?.Invoke();
 
         public static event Action<Mobile, int> SetAbility;
         public static void InvokeSetAbility(Mobile mobile, int index) => SetAbility?.Invoke(mobile, index);

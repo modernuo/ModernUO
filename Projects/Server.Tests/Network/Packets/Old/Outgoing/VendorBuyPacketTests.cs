@@ -13,13 +13,13 @@ namespace Server.Tests.Network
         [Fact]
         public void TestVendorBuyContent()
         {
-            var cont = new Container(Serial.LastItem + 1);
+            var cont = new Container(World.NewItem);
 
             var buyStates = new List<BuyItemState>
             {
-                new BuyItemState("First Item", cont.Serial, Serial.NewItem, 10, 1, 0x01, 0),
-                new BuyItemState("Second Item", cont.Serial, Serial.NewItem, 20, 2, 0x0A, 0),
-                new BuyItemState("Third Item", cont.Serial, Serial.NewItem, 30, 10, 0x0F, 0)
+                new BuyItemState("First Item", cont.Serial, World.NewItem, 10, 1, 0x01, 0),
+                new BuyItemState("Second Item", cont.Serial, World.NewItem, 20, 2, 0x0A, 0),
+                new BuyItemState("Third Item", cont.Serial, World.NewItem, 30, 10, 0x0F, 0)
             };
 
             var data = new VendorBuyContent(buyStates).Compile();
@@ -52,13 +52,13 @@ namespace Server.Tests.Network
         [Fact]
         public void TestVendorBuyContent6017()
         {
-            var cont = new Container(Serial.LastItem + 1);
+            var cont = new Container(World.NewItem);
 
             var buyStates = new List<BuyItemState>
             {
-                new BuyItemState("First Item", cont.Serial, Serial.NewItem, 10, 1, 0x01, 0),
-                new BuyItemState("Second Item", cont.Serial, Serial.NewItem, 20, 2, 0x0A, 0),
-                new BuyItemState("Third Item", cont.Serial, Serial.NewItem, 30, 10, 0x0F, 0)
+                new BuyItemState("First Item", cont.Serial, World.NewItem, 10, 1, 0x01, 0),
+                new BuyItemState("Second Item", cont.Serial, World.NewItem, 20, 2, 0x0A, 0),
+                new BuyItemState("Third Item", cont.Serial, World.NewItem, 30, 10, 0x0F, 0)
             };
 
             var data = new VendorBuyContent6017(buyStates).Compile();
@@ -139,13 +139,13 @@ namespace Server.Tests.Network
             var vendor = new Mobile(0x1);
             vendor.DefaultMobileInit();
 
-            var cont = new Container(Serial.LastItem + 1);
+            var cont = new Container(World.NewItem);
 
             var buyStates = new List<BuyItemState>
             {
-                new BuyItemState("First Item", cont.Serial, Serial.NewItem, 10, 1, 0x01, 0),
-                new BuyItemState("Second Item", cont.Serial, Serial.NewItem, 20, 2, 0x0A, 0),
-                new BuyItemState("Third Item", cont.Serial, Serial.NewItem, 30, 10, 0x0F, 0)
+                new BuyItemState("First Item", cont.Serial, World.NewItem, 10, 1, 0x01, 0),
+                new BuyItemState("Second Item", cont.Serial, World.NewItem, 20, 2, 0x0A, 0),
+                new BuyItemState("Third Item", cont.Serial, World.NewItem, 30, 10, 0x0F, 0)
             };
 
             var data = new VendorBuyList(vendor, buyStates).Compile();
