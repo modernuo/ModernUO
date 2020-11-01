@@ -145,22 +145,17 @@ namespace Server
         {
             var count = ReadInt();
 
-            if (count > 0)
+            var list = new List<T>(count);
+
+            for (var i = 0; i < count; ++i)
             {
-                var list = new List<T>(count);
-
-                for (var i = 0; i < count; ++i)
+                if (ReadItem() is T item)
                 {
-                    if (ReadItem() is T item)
-                    {
-                        list.Add(item);
-                    }
+                    list.Add(item);
                 }
-
-                return list;
             }
 
-            return new List<T>();
+            return list;
         }
 
         public HashSet<Item> ReadItemSet() => ReadItemSet<Item>();
@@ -169,22 +164,17 @@ namespace Server
         {
             var count = ReadInt();
 
-            if (count > 0)
+            var set = new HashSet<T>();
+
+            for (var i = 0; i < count; ++i)
             {
-                var set = new HashSet<T>();
-
-                for (var i = 0; i < count; ++i)
+                if (ReadItem() is T item)
                 {
-                    if (ReadItem() is T item)
-                    {
-                        set.Add(item);
-                    }
+                    set.Add(item);
                 }
-
-                return set;
             }
 
-            return new HashSet<T>();
+            return set;
         }
 
         public List<Mobile> ReadStrongMobileList() => ReadStrongMobileList<Mobile>();
@@ -193,22 +183,17 @@ namespace Server
         {
             var count = ReadInt();
 
-            if (count > 0)
+            var list = new List<T>(count);
+
+            for (var i = 0; i < count; ++i)
             {
-                var list = new List<T>(count);
-
-                for (var i = 0; i < count; ++i)
+                if (ReadMobile() is T m)
                 {
-                    if (ReadMobile() is T m)
-                    {
-                        list.Add(m);
-                    }
+                    list.Add(m);
                 }
-
-                return list;
             }
 
-            return new List<T>();
+            return list;
         }
 
         public HashSet<Mobile> ReadMobileSet() => ReadMobileSet<Mobile>();
@@ -216,23 +201,17 @@ namespace Server
         public HashSet<T> ReadMobileSet<T>() where T : Mobile
         {
             var count = ReadInt();
+            var set = new HashSet<T>();
 
-            if (count > 0)
+            for (var i = 0; i < count; ++i)
             {
-                var set = new HashSet<T>();
-
-                for (var i = 0; i < count; ++i)
+                if (ReadMobile() is T item)
                 {
-                    if (ReadMobile() is T item)
-                    {
-                        set.Add(item);
-                    }
+                    set.Add(item);
                 }
-
-                return set;
             }
 
-            return new HashSet<T>();
+            return set;
         }
 
         public List<BaseGuild> ReadStrongGuildList() => ReadStrongGuildList<BaseGuild>();
@@ -240,11 +219,10 @@ namespace Server
         public List<T> ReadStrongGuildList<T>() where T : BaseGuild
         {
             var count = ReadInt();
+            var list = new List<T>(count);
 
             if (count > 0)
             {
-                var list = new List<T>(count);
-
                 for (var i = 0; i < count; ++i)
                 {
                     if (ReadGuild() is T g)
@@ -252,11 +230,9 @@ namespace Server
                         list.Add(g);
                     }
                 }
-
-                return list;
             }
 
-            return new List<T>();
+            return list;
         }
 
         public HashSet<BaseGuild> ReadGuildSet() => ReadGuildSet<BaseGuild>();
@@ -265,10 +241,10 @@ namespace Server
         {
             var count = ReadInt();
 
+            var set = new HashSet<T>();
+
             if (count > 0)
             {
-                var set = new HashSet<T>();
-
                 for (var i = 0; i < count; ++i)
                 {
                     if (ReadGuild() is T item)
@@ -276,11 +252,9 @@ namespace Server
                         set.Add(item);
                     }
                 }
-
-                return set;
             }
 
-            return new HashSet<T>();
+            return set;
         }
 
         public Race ReadRace() => Race.Races[ReadByte()];
