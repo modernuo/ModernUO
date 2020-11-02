@@ -46,7 +46,11 @@ namespace Server
 
         public override void Close()
         {
-            base.Close();
+            if (m_Index > 0)
+            {
+                Flush();
+            }
+
             m_File.Close();
         }
 
