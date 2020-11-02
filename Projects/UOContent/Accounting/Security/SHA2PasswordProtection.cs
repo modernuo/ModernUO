@@ -16,7 +16,6 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using Server.Misc;
 
 namespace Server.Accounting.Security
 {
