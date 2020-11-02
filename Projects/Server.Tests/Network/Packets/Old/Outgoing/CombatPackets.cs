@@ -27,9 +27,6 @@ namespace Server.Network
 
     public sealed class SetWarMode : Packet
     {
-        public static readonly Packet InWarMode = SetStatic(new SetWarMode(true));
-        public static readonly Packet InPeaceMode = SetStatic(new SetWarMode(false));
-
         public SetWarMode(bool mode) : base(0x72, 5)
         {
             Stream.Write(mode);
@@ -37,8 +34,6 @@ namespace Server.Network
             Stream.Write((byte)0x32);
             Stream.Write((byte)0x00);
         }
-
-        public static Packet Instantiate(bool mode) => mode ? InWarMode : InPeaceMode;
     }
 
     public sealed class ChangeCombatant : Packet

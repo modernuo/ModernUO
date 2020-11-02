@@ -1,22 +1,23 @@
+using Server.Mobiles;
 using Server.Network;
 
-namespace Server
+namespace Server.SkillHandlers
 {
     public class QuestArrow
     {
-        public QuestArrow(Mobile m, Mobile t)
+        public QuestArrow(PlayerMobile m, Mobile t)
         {
             Running = true;
             Mobile = m;
             Target = t;
         }
 
-        public QuestArrow(Mobile m, Mobile t, int x, int y) : this(m, t)
+        public QuestArrow(PlayerMobile m, Mobile t, int x, int y) : this(m, t)
         {
             Update(x, y);
         }
 
-        public Mobile Mobile { get; }
+        public PlayerMobile Mobile { get; }
 
         public Mobile Target { get; }
 

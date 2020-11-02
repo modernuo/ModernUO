@@ -13,22 +13,13 @@ namespace Server.Tests.Network
             Serial attacker = 0x1000;
             Serial defender = 0x2000;
 
-            var data = new Swing(attacker, defender).Compile();
+            var expected = new Swing(attacker, defender).Compile();
 
-            Span<byte> expectedData = stackalloc byte[10];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendSwing(attacker, defender);
 
-            expectedData.Write(ref pos, (byte)0x2F); // Packet ID
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0);
-#else
-            pos++;
-#endif
-
-            expectedData.Write(ref pos, attacker);
-            expectedData.Write(ref pos, defender);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Theory]
@@ -36,45 +27,27 @@ namespace Server.Tests.Network
         [InlineData(false)]
         public void TestSetWarMode(bool warmode)
         {
-            var data = new SetWarMode(warmode).Compile();
+            var expected = new SetWarMode(warmode).Compile();
 
-            Span<byte> expectedData = stackalloc byte[5];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendSetWarMode(warmode);
 
-            expectedData.Write(ref pos, (byte)0x72); // Packet ID
-            expectedData.Write(ref pos, warmode);
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0);
-#else
-            pos++;
-#endif
-
-            expectedData.Write(ref pos, (byte)0x32);
-
-#if NO_LOCAL_INIT
-             expectedData.Write(ref pos, (byte)0);
-#else
-            pos++;
-#endif
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestChangeCombatant()
+        [Theory]
+        [InlineData(0x1000u)]
+        [InlineData(0u)]
+        public void TestChangeCombatant(Serial serial)
         {
-            Serial combatant = 0x1000;
+            var expected = new ChangeCombatant(serial).Compile();
 
-            var data = new ChangeCombatant(combatant).Compile();
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendChangeCombatant(serial);
 
-            Span<byte> expectedData = stackalloc byte[5];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0xAA); // Packet ID
-            expectedData.Write(ref pos, combatant);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 }
