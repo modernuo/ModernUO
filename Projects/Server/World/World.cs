@@ -462,6 +462,9 @@ namespace Server
 
         public static void WriteFiles(object state)
         {
+            Console.Write("Closing Save Files...");
+            var watch = Stopwatch.StartNew();
+
             IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
             IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
             IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
@@ -470,10 +473,11 @@ namespace Server
             WriteEntities(mobileIndexInfo, Mobiles, MobileTypes);
             WriteEntities(guildIndexInfo, Guilds, GuildTypes);
 
-            if (m_DiskWriteHandle.Set())
-            {
-                Console.WriteLine("Closing Save Files.");
-            }
+            watch.Stop();
+
+            m_DiskWriteHandle.Set();
+
+            Console.Write("done {0:F1}", watch.Elapsed.TotalSeconds);
 
             Timer.DelayCall(FinishWorldSave);
         }
@@ -552,12 +556,12 @@ namespace Server
                 return;
             }
 
+            WaitForWriteCompletion(); // Blocks Save until current disk flush is done.s
+
             ++_Saves;
 
             NetState.FlushAll();
             NetState.Pause();
-
-            WaitForWriteCompletion(); // Blocks Save until current disk flush is done.
 
             WorldState = WorldState.Saving;
 
@@ -594,12 +598,11 @@ namespace Server
 
             Console.WriteLine("Save done in {0:F2} seconds.", duration);
 
-            Broadcast(
-                0x35,
-                true,
-                "World save complete. The entire process took {0:F2} seconds.",
-                duration
-            );
+            // Only broadcast if it took at least 150ms
+            if (duration >= 0.15)
+            {
+                Broadcast(0x35, true, $"World save completed in {duration:F2} seconds.");
+            }
 
             NetState.Resume();
         }
