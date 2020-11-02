@@ -6485,60 +6485,17 @@ namespace Server
 
         public void SendVisibleDamageRelated(Mobile from, int amount)
         {
-            NetState ourState = m_NetState, theirState = from?.m_NetState;
+            var ourState = m_NetState ?? GetDamageMaster(from)?.m_NetState;
+            var theirState = from?.m_NetState ?? from?.GetDamageMaster(this)?.m_NetState;
 
-            if (ourState == null)
+            if (amount > 0)
             {
-                var master = GetDamageMaster(from);
-
-                if (master != null)
-                {
-                    ourState = master.m_NetState;
-                }
-            }
-
-            if (theirState == null && from != null)
-            {
-                var master = from.GetDamageMaster(this);
-
-                if (master != null)
-                {
-                    theirState = master.m_NetState;
-                }
-            }
-
-            if (amount > 0 && (ourState != null || theirState != null))
-            {
-                Packet p = null; // = new DamagePacket( this, amount );
-
-                if (ourState != null)
-                {
-                    p = ourState.DamagePacket
-                        ? Packet.Acquire(new DamagePacket(Serial, amount))
-                        : Packet.Acquire(new DamagePacketOld(Serial, amount));
-
-                    ourState.Send(p);
-                }
+                ourState?.SendDamage(Serial, amount);
 
                 if (theirState != null && theirState != ourState)
                 {
-                    var newPacket = theirState.DamagePacket;
-
-                    if (newPacket && !(p is DamagePacket))
-                    {
-                        Packet.Release(p);
-                        p = Packet.Acquire(new DamagePacket(Serial, amount));
-                    }
-                    else if (!newPacket && !(p is DamagePacketOld))
-                    {
-                        Packet.Release(p);
-                        p = Packet.Acquire(new DamagePacketOld(Serial, amount));
-                    }
-
-                    theirState.Send(p);
+                    theirState.SendDamage(Serial, amount);
                 }
-
-                Packet.Release(p);
             }
         }
 
@@ -6558,37 +6515,21 @@ namespace Server
 
             var eable = map.GetClientsInRange(m_Location);
 
-            Packet pNew = null;
-            Packet pOld = null;
-
             foreach (var ns in eable)
             {
                 if (ns.Mobile.CanSee(this))
                 {
-                    if (ns.DamagePacket)
-                    {
-                        pNew ??= Packet.Acquire(new DamagePacket(Serial, amount));
-
-                        ns.Send(pNew);
-                    }
-                    else
-                    {
-                        pOld ??= Packet.Acquire(new DamagePacketOld(Serial, amount));
-
-                        ns.Send(pOld);
-                    }
+                    ns.SendDamage(Serial, amount);
                 }
             }
-
-            Packet.Release(pNew);
-            Packet.Release(pOld);
 
             eable.Free();
         }
 
         public void SendVisibleDamageSelective(Mobile from, int amount)
         {
-            NetState ourState = m_NetState, theirState = from?.m_NetState;
+            var ourState = m_NetState;
+            var theirState = from?.m_NetState;
 
             var damager = from;
             var damaged = this;
@@ -6620,39 +6561,23 @@ namespace Server
                 }
             }
 
-            if (amount > 0 && (ourState != null || theirState != null))
+            if (amount > 0)
             {
-                if (damaged.CanSeeVisibleDamage && ourState != null)
+                if (damaged.CanSeeVisibleDamage)
                 {
-                    if (ourState.DamagePacket)
-                    {
-                        ourState.Send(new DamagePacket(Serial, amount));
-                    }
-                    else
-                    {
-                        ourState.Send(new DamagePacketOld(Serial, amount));
-                    }
+                    ourState?.SendDamage(Serial, amount);
                 }
 
                 if (theirState != null && theirState != ourState && damager.CanSeeVisibleDamage)
                 {
-                    if (theirState.DamagePacket)
-                    {
-                        theirState.Send(new DamagePacket(Serial, amount));
-                    }
-                    else
-                    {
-                        theirState.Send(new DamagePacketOld(Serial, amount));
-                    }
+                    theirState.SendDamage(Serial, amount);
                 }
             }
         }
 
-        public void Heal(int amount) => Heal(amount, this, true);
+        public void Heal(int amount) => Heal(amount, this);
 
-        public void Heal(int amount, Mobile from) => Heal(amount, from, true);
-
-        public void Heal(int amount, Mobile from, bool message)
+        public void Heal(int amount, Mobile from, bool message = true)
         {
             if (!Alive || IsDeadBondedPet)
             {

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: DamagePackets.cs                                                *
+ * File: OutgoingDamagePackets.cs                                        *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,30 +14,38 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
 
 namespace Server.Network
 {
-    public sealed class DamagePacketOld : Packet
+    public static class OutgoingDamagePackets
     {
-        public DamagePacketOld(Serial mobile, int amount) : base(0xBF)
+        public static void SendDamage(this NetState ns, Serial serial, int amount)
         {
-            EnsureCapacity(11);
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
 
-            Stream.Write((short)0x22);
-            Stream.Write((byte)1);
-            Stream.Write(mobile);
+            var writer = new CircularBufferWriter(buffer);
 
-            Stream.Write((byte)Math.Clamp(amount, 0, 255));
-        }
-    }
+            if (ns.DamagePacket)
+            {
+                writer.Write((byte)0x0B); // Packet ID
+                writer.Write(serial);
+                writer.Write((ushort)Math.Clamp(amount, 0, 0xFFFF));
+            }
+            else
+            {
+                writer.Write((byte)0xBF); // Packet ID
+                writer.Write((ushort)11); // Length
+                writer.Write((ushort)0x22);
+                writer.Write((byte)1);
+                writer.Write(serial);
+                writer.Write((byte)Math.Clamp(amount, 0, 0xFF));
+            }
 
-    public sealed class DamagePacket : Packet
-    {
-        public DamagePacket(Serial mobile, int amount) : base(0x0B, 7)
-        {
-            Stream.Write(mobile);
-
-            Stream.Write((ushort)Math.Clamp(amount, 0, 0xFFFF));
+            ns.Send(ref buffer, writer.Position);
         }
     }
 }

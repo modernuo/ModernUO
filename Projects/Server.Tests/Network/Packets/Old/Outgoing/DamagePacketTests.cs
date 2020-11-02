@@ -1,5 +1,4 @@
 using System;
-using System.Buffers;
 using Server.Network;
 using Xunit;
 
@@ -8,49 +7,40 @@ namespace Server.Tests.Network
     public class DamagePacketTests : IClassFixture<ServerFixture>
     {
         [Theory]
-        [InlineData(10, 10)]
-        [InlineData(-5, 0)]
-        [InlineData(1024, 0xFF)]
-        public void TestDamagePacketOld(int inputAmount, byte expectedAmount)
+        [InlineData(10)]
+        [InlineData(-5)]
+        [InlineData(1024)]
+        public void TestDamagePacketOld(int inputAmount)
         {
-            var m = new Mobile(0x1);
-            m.DefaultMobileInit();
+            Serial serial = 0x1024;
 
-            var data = new DamagePacketOld(m.Serial, inputAmount).Compile();
+            var expected = new DamagePacketOld(serial, inputAmount).Compile();
 
-            Span<byte> expectedData = stackalloc byte[11];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendDamage(serial, inputAmount);
 
-            expectedData.Write(ref pos, (byte)0xBF);   // Packet ID
-            expectedData.Write(ref pos, (ushort)11);   // Length
-            expectedData.Write(ref pos, (ushort)0x22); // Sub-packet
-            expectedData.Write(ref pos, (byte)0x01);   // Command
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.Write(ref pos, expectedAmount);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Theory]
-        [InlineData(10, 10)]
-        [InlineData(-5, 0)]
-        [InlineData(1024, 1024)]
-        [InlineData(100000, 0xFFFF)]
-        public void TestDamage(int inputAmount, ushort expectedAmount)
+        [InlineData(10)]
+        [InlineData(-5)]
+        [InlineData(1024)]
+        [InlineData(100000)]
+        public void TestDamage(int inputAmount)
         {
-            var m = new Mobile(0x1);
-            m.DefaultMobileInit();
+            Serial serial = 0x1024;
 
-            var data = new DamagePacket(m.Serial, inputAmount).Compile();
+            var expected = new DamagePacket(serial, inputAmount).Compile();
 
-            Span<byte> expectedData = stackalloc byte[7];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = ProtocolChanges.DamagePacket;
 
-            expectedData.Write(ref pos, (byte)0x0B); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.Write(ref pos, expectedAmount);
+            ns.SendDamage(serial, inputAmount);
 
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 }

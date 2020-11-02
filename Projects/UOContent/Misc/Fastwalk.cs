@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Misc
 {
     // This fastwalk detection is no longer required
