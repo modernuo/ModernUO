@@ -137,7 +137,7 @@ namespace Server
             m_DiskWriteHandle.WaitOne();
         }
 
-        public static void EnqueueForDecay(Item item)
+        private static void EnqueueForDecay(Item item)
         {
             if (WorldState != WorldState.Saving)
             {
@@ -338,6 +338,11 @@ namespace Server
                     }
                     t.Delete();
                 }
+
+                reader.Seek(entry.Position, SeekOrigin.Begin);
+
+                t.SaveBuffer = new BufferWriter(new byte[entry.Length], true);
+                reader.Read(t.SaveBuffer.Data);
             }
 
             reader.Close();
@@ -381,8 +386,6 @@ namespace Server
 
             ProcessSafetyQueues();
 
-            var now = DateTime.UtcNow;
-
             foreach (var item in Items.Values)
             {
                 if (item.Parent == null)
@@ -391,7 +394,6 @@ namespace Server
                 }
 
                 item.ClearProperties();
-                item.Serialize(now);
             }
 
             foreach (var m in Mobiles.Values)
@@ -400,12 +402,6 @@ namespace Server
                 m.UpdateTotals();
 
                 m.ClearProperties();
-                m.Serialize(now);
-            }
-
-            foreach (var g in Guilds.Values)
-            {
-                g.Serialize(now);
             }
 
             watch.Stop();
@@ -466,6 +462,9 @@ namespace Server
 
         public static void WriteFiles(object state)
         {
+            Console.Write("Closing Save Files...");
+            var watch = Stopwatch.StartNew();
+
             IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
             IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
             IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
@@ -474,10 +473,11 @@ namespace Server
             WriteEntities(mobileIndexInfo, Mobiles, MobileTypes);
             WriteEntities(guildIndexInfo, Guilds, GuildTypes);
 
-            if (m_DiskWriteHandle.Set())
-            {
-                Console.WriteLine("Closing Save Files.");
-            }
+            watch.Stop();
+
+            m_DiskWriteHandle.Set();
+
+            Console.WriteLine("done {0:F1} seconds.", watch.Elapsed.TotalSeconds);
 
             Timer.DelayCall(FinishWorldSave);
         }
@@ -525,8 +525,13 @@ namespace Server
 
         private static void SaveEntities<T>(IEnumerable<T> list, DateTime serializeStart) where T : class, ISerializable
         {
-            Parallel.ForEach(list, (t, now) => {
-                t.Serialize(serializeStart);
+            Parallel.ForEach(list, t => {
+                if (t is Item item && item.CanDecay() && item.LastMoved + item.DecayTime <= serializeStart)
+                {
+                    EnqueueForDecay(item);
+                }
+
+                t.Serialize();
             });
         }
 
@@ -551,12 +556,12 @@ namespace Server
                 return;
             }
 
+            WaitForWriteCompletion(); // Blocks Save until current disk flush is done.s
+
             ++_Saves;
 
             NetState.FlushAll();
             NetState.Pause();
-
-            WaitForWriteCompletion(); // Blocks Save until current disk flush is done.
 
             WorldState = WorldState.Saving;
 
@@ -593,12 +598,11 @@ namespace Server
 
             Console.WriteLine("Save done in {0:F2} seconds.", duration);
 
-            Broadcast(
-                0x35,
-                true,
-                "World save complete. The entire process took {0:F2} seconds.",
-                duration
-            );
+            // Only broadcast if it took at least 150ms
+            if (duration >= 0.15)
+            {
+                Broadcast(0x35, true, $"World save completed in {duration:F2} seconds.");
+            }
 
             NetState.Resume();
         }

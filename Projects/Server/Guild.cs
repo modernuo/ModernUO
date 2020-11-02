@@ -38,10 +38,10 @@ namespace Server.Guilds
 
         public int TypeRef => 0;
 
-        public void Serialize(DateTime serializeStart)
+        public void Serialize()
         {
             SaveBuffer ??= new BufferWriter(true);
-            SaveBuffer.Flush();
+            SaveBuffer.Reset();
             Serialize(SaveBuffer);
         }
 

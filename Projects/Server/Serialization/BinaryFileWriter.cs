@@ -20,11 +20,18 @@ namespace Server
     public class BinaryFileWriter : BufferWriter
     {
         private readonly Stream m_File;
+        private long m_Position;
 
         public BinaryFileWriter(string filename, bool prefixStr) : base(prefixStr) =>
             m_File = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
 
-        public BinaryFileWriter(Stream stream, bool prefixStr) : base(prefixStr) => m_File = stream;
+        public BinaryFileWriter(Stream stream, bool prefixStr) : base(prefixStr)
+        {
+            m_File = stream;
+            m_Position = m_File.Position;
+        }
+
+        public override long Position => m_Position + m_Index;
 
 
         protected override int BufferSize => 512;
@@ -35,21 +42,24 @@ namespace Server
             {
                 m_Position += m_Index;
 
-                m_File.Write(m_Buffer, 0, m_Index);
+                m_File.Write(m_Buffer, 0, (int)m_Index);
                 m_Index = 0;
             }
         }
 
         public override void Close()
         {
-            base.Close();
+            if (m_Index > 0)
+            {
+                Flush();
+            }
+
             m_File.Close();
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            m_Position += m_Index;
-            m_Index = 0;
+            Flush();
 
             return m_Position = m_File.Seek(offset, origin);
         }

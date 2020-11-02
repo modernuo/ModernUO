@@ -826,15 +826,10 @@ namespace Server
 
         public int TypeRef { get; }
 
-        public void Serialize(DateTime serializeStart)
+        public void Serialize()
         {
-            if (Decays && Parent == null && Map != Map.Internal && LastMoved + DecayTime <= serializeStart)
-            {
-                World.EnqueueForDecay(this);
-            }
-
             SaveBuffer ??= new BufferWriter(true);
-            SaveBuffer.Flush();
+            SaveBuffer.Reset();
             Serialize(SaveBuffer);
         }
 
@@ -2393,8 +2388,12 @@ namespace Server
 
         public bool AtPoint(int x, int y) => m_Location.m_X == x && m_Location.m_Y == y;
 
+        public virtual bool CanDecay() =>
+            Decays && Parent == null && Map != Map.Internal;
+
+
         public virtual bool OnDecay() =>
-            Decays && Parent == null && Map != Map.Internal && Region.Find(Location, Map).OnDecay(this);
+            CanDecay() && Region.Find(Location, Map).OnDecay(this);
 
         public void SetLastMoved()
         {

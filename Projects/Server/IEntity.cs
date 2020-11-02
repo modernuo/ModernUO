@@ -99,7 +99,7 @@ namespace Server
             && p.Y >= Location.m_Y - range
             && p.Y <= Location.m_Y + range;
 
-        public void Serialize(DateTime serializeStart)
+        public void Serialize()
         {
         }
 

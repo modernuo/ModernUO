@@ -31,14 +31,20 @@ namespace Server
         private readonly bool m_PrefixStrings;
 
         protected byte[] m_Buffer;
-        protected int m_Index;
-        protected long m_Position;
+        protected long m_Index;
 
         private readonly char[] m_SingleCharBuffer = new char[1];
 
         private byte[] m_CharacterBuffer;
 
         private int m_MaxBufferChars;
+
+        public BufferWriter(byte[] buffer, bool prefixStr)
+        {
+            m_PrefixStrings = prefixStr;
+            m_Encoding = Utility.UTF8;
+            m_Buffer = buffer;
+        }
 
         public BufferWriter(bool prefixStr)
         {
@@ -47,29 +53,23 @@ namespace Server
             m_Buffer = new byte[BufferSize];
         }
 
+        public virtual long Position => m_Index;
+
         protected virtual int BufferSize => 256;
 
         public byte[] Data => m_Buffer;
 
-        public long Position
-        {
-            get => m_Position + m_Index;
-            set => Seek(value, value < 0 ? SeekOrigin.End : SeekOrigin.Begin);
-        }
-
         public virtual void Close()
         {
-            if (m_Index > 0)
-            {
-                Flush();
-            }
         }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Resize(int size)
         {
-            Array.Resize(ref m_Buffer, size);
+            var copy = new byte[size];
+            Buffer.BlockCopy(m_Buffer, 0, copy, 0, Math.Min(size, m_Buffer.Length));
+            m_Buffer = copy;
         }
 
         public virtual void Flush()
@@ -77,16 +77,19 @@ namespace Server
             Resize(m_Buffer.Length * 2);
         }
 
+        public void Reset()
+        {
+            m_Index = 0;
+        }
+
         public virtual long Seek(long offset, SeekOrigin origin)
         {
-            Flush();
-
             return origin switch
             {
-                SeekOrigin.Begin   => m_Position = offset,
-                SeekOrigin.Current => m_Position += offset,
-                SeekOrigin.End     => m_Position = BufferSize - offset,
-                _                  => m_Position
+                SeekOrigin.Begin   => m_Index = offset,
+                SeekOrigin.Current => m_Index += offset,
+                SeekOrigin.End     => m_Index = BufferSize - offset,
+                _                  => m_Index
             };
         }
 
@@ -321,7 +324,7 @@ namespace Server
 
             m_SingleCharBuffer[0] = value;
 
-            var byteCount = m_Encoding.GetBytes(m_SingleCharBuffer, 0, 1, m_Buffer, m_Index);
+            var byteCount = m_Encoding.GetBytes(m_SingleCharBuffer, 0, 1, m_Buffer, (int)m_Index);
             m_Index += byteCount;
         }
 
@@ -337,13 +340,13 @@ namespace Server
 
         public void Write(byte[] value, int length)
         {
-            int remaining = length;
-            int idx = 0;
+            var remaining = length;
+            var idx = 0;
 
             while (remaining > 0)
             {
-                int size = Math.Min(m_Buffer.Length - m_Index, remaining);
-                Buffer.BlockCopy(value, idx, m_Buffer, m_Index, size);
+                int size = Math.Min(m_Buffer.Length - (int)m_Index, remaining);
+                Buffer.BlockCopy(value, idx, m_Buffer, (int)m_Index, size);
                 // value.Slice(idx).CopyTo(m_Buffer.AsSpan(m_Index, size));
 
                 remaining -= size;
@@ -775,7 +778,7 @@ namespace Server
                         Flush();
                     }
 
-                    Buffer.BlockCopy(m_CharacterBuffer, 0, m_Buffer, m_Index, byteLength);
+                    Buffer.BlockCopy(m_CharacterBuffer, 0, m_Buffer, (int)m_Index, byteLength);
                     m_Index += byteLength;
 
                     current += charCount;
@@ -791,7 +794,7 @@ namespace Server
                     Flush();
                 }
 
-                Buffer.BlockCopy(m_CharacterBuffer, 0, m_Buffer, m_Index, byteLength);
+                Buffer.BlockCopy(m_CharacterBuffer, 0, m_Buffer, (int)m_Index, byteLength);
                 m_Index += byteLength;
             }
         }

@@ -50,7 +50,7 @@ namespace Server.Misc
 
             if (m_Warning == TimeSpan.Zero)
             {
-                Save(true);
+                Save();
             }
             else
             {
@@ -85,12 +85,7 @@ namespace Server.Misc
 
         public static void Save()
         {
-            Save(false);
-        }
-
-        public static void Save(bool permitBackgroundWrite)
-        {
-            if (AutoRestart.Restarting)
+            if (AutoRestart.Restarting || !World.Running)
             {
                 return;
             }
@@ -118,10 +113,7 @@ namespace Server.Misc
 
             var root = Path.Combine(Core.BaseDirectory, "Backups/Automatic");
 
-            if (!Directory.Exists(root))
-            {
-                Directory.CreateDirectory(root);
-            }
+            AssemblyHandler.EnsureDirectory(root);
 
             var existing = Directory.GetDirectories(root);
 
