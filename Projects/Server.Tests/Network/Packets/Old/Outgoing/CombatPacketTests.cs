@@ -36,11 +36,11 @@ namespace Server.Tests.Network
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory]
-        [InlineData(0x1000u)]
-        [InlineData(0u)]
-        public void TestChangeCombatant(Serial serial)
+        [Fact]
+        public void TestChangeCombatant()
         {
+            Serial serial = 0x1024;
+
             var expected = new ChangeCombatant(serial).Compile();
 
             using var ns = PacketTestUtilities.CreateTestNetState();
