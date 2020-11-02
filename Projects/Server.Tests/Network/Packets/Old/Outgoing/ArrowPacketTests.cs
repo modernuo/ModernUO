@@ -10,16 +10,13 @@ namespace Server.Tests.Network
         [Fact]
         public void TestCancelArrow()
         {
-            var data = new CancelArrow().Compile();
+            var expected = new CancelArrow().Compile();
 
-            Span<byte> expectedData = stackalloc byte[6];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendCancelArrow(0, 0, Serial.Zero);
 
-            expectedData.Write(ref pos, (byte)0xBA); // Packet ID
-            expectedData.Write(ref pos, (byte)0);    // Command
-            expectedData.Write(ref pos, 0xFFFFFFFF); // X, Y
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Theory]
@@ -28,63 +25,45 @@ namespace Server.Tests.Network
         [InlineData(100000, 100000)]
         public void TestSetArrow(int x, int y)
         {
-            var data = new SetArrow(x, y).Compile();
+            var expected = new SetArrow(x, y).Compile();
 
-            Span<byte> expectedData = stackalloc byte[6];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendSetArrow(x, y, Serial.Zero);
 
-            expectedData.Write(ref pos, (byte)0xBA); // Packet ID
-            expectedData.Write(ref pos, (byte)0x01); // Command
-            expectedData.Write(ref pos, (ushort)x);
-            expectedData.Write(ref pos, (ushort)y);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Theory]
-        [InlineData(0, 0)]
-        [InlineData(100, 10)]
-        [InlineData(100000, 100000)]
-        public void TestCancelArrowHS(int x, int y)
+        [InlineData(0, 0, 0x1024u)]
+        [InlineData(100, 10, 0x1024u)]
+        [InlineData(100000, 100000, 0x1024u)]
+        public void TestCancelArrowHS(int x, int y, Serial serial)
         {
-            Serial serial = 0x01;
-            var data = new CancelArrowHS(x, y, serial).Compile();
+            var expected = new CancelArrowHS(x, y, serial).Compile();
 
-            Span<byte> expectedData = stackalloc byte[10];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = ProtocolChanges.HighSeas;
+            ns.SendCancelArrow(x, y, serial);
 
-            expectedData.Write(ref pos, (byte)0xBA); // Packet ID
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0); // Command
-#else
-            pos++;
-#endif
-            expectedData.Write(ref pos, (ushort)x);
-            expectedData.Write(ref pos, (ushort)y);
-            expectedData.Write(ref pos, serial);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Theory]
-        [InlineData(0, 0)]
-        [InlineData(100, 10)]
-        [InlineData(100000, 100000)]
-        public void TestSetArrowHS(int x, int y)
+        [InlineData(0, 0, 0x1024u)]
+        [InlineData(100, 10, 0x1024u)]
+        [InlineData(100000, 100000, 0x1024u)]
+        public void TestSetArrowHS(int x, int y, Serial serial)
         {
-            Serial serial = 0x01;
-            var data = new SetArrowHS(x, y, serial).Compile();
+            var expected = new SetArrowHS(x, y, serial).Compile();
 
-            Span<byte> expectedData = stackalloc byte[10];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = ProtocolChanges.HighSeas;
+            ns.SendSetArrow(x, y, serial);
 
-            expectedData.Write(ref pos, (byte)0xBA); // Packet ID
-            expectedData.Write(ref pos, (byte)0x01); // Command
-            expectedData.Write(ref pos, (ushort)x);
-            expectedData.Write(ref pos, (ushort)y);
-            expectedData.Write(ref pos, serial);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 }

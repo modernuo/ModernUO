@@ -34,21 +34,7 @@ namespace Server
                 return;
             }
 
-            var ns = Mobile.NetState;
-
-            if (ns == null)
-            {
-                return;
-            }
-
-            if (ns.HighSeas)
-            {
-                ns.Send(new SetArrowHS(x, y, Target.Serial));
-            }
-            else
-            {
-                ns.Send(new SetArrow(x, y));
-            }
+            Mobile.NetState?.SendSetArrow(x, y, Target.Serial);
         }
 
         public void Stop()
@@ -64,20 +50,7 @@ namespace Server
             }
 
             Mobile.ClearQuestArrow();
-
-            var ns = Mobile.NetState;
-
-            if (ns != null)
-            {
-                if (ns.HighSeas)
-                {
-                    ns.Send(new CancelArrowHS(x, y, Target.Serial));
-                }
-                else
-                {
-                    ns.Send(new CancelArrow());
-                }
-            }
+            Mobile.NetState?.SendCancelArrow(x, y, Target.Serial);
 
             Running = false;
             OnStop();
