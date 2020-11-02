@@ -89,7 +89,6 @@ namespace Server
         public void Reset()
         {
             m_Position = 0;
-            m_Index = 0;
         }
 
         public virtual long Seek(long offset, SeekOrigin origin)
