@@ -1,7 +1,7 @@
 using Server.Mobiles;
 using Server.Network;
 
-namespace Server.SkillHandlers
+namespace Server
 {
     public class QuestArrow
     {
