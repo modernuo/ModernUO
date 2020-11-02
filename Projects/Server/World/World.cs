@@ -477,7 +477,7 @@ namespace Server
 
             m_DiskWriteHandle.Set();
 
-            Console.Write("done {0:F1}", watch.Elapsed.TotalSeconds);
+            Console.WriteLine("done {0:F1} seconds.", watch.Elapsed.TotalSeconds);
 
             Timer.DelayCall(FinishWorldSave);
         }
