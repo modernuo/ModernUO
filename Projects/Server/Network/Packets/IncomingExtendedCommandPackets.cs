@@ -42,7 +42,6 @@ namespace Server.Network
 
             RegisterExtended(0x05, false, ScreenSize);
             RegisterExtended(0x06, true, PartyMessage);
-            RegisterExtended(0x07, true, QuestArrow);
             RegisterExtended(0x09, true, DisarmRequest);
             RegisterExtended(0x0A, true, StunRequest);
             RegisterExtended(0x0B, false, Language);
@@ -215,20 +214,6 @@ namespace Server.Network
         public static void PartyMessage_Decline(NetState state, CircularBufferReader reader)
         {
             PartyCommands.Handler?.OnDecline(state.Mobile, World.FindMobile(reader.ReadUInt32()));
-        }
-
-        public static void QuestArrow(NetState state, CircularBufferReader reader)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            var rightClick = reader.ReadBoolean();
-
-            from.QuestArrow?.OnClick(rightClick);
         }
 
         public static void Animate(NetState state, CircularBufferReader reader)

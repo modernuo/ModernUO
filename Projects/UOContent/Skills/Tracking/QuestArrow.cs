@@ -1,22 +1,23 @@
+using Server.Mobiles;
 using Server.Network;
 
 namespace Server
 {
     public class QuestArrow
     {
-        public QuestArrow(Mobile m, Mobile t)
+        public QuestArrow(PlayerMobile m, Mobile t)
         {
             Running = true;
             Mobile = m;
             Target = t;
         }
 
-        public QuestArrow(Mobile m, Mobile t, int x, int y) : this(m, t)
+        public QuestArrow(PlayerMobile m, Mobile t, int x, int y) : this(m, t)
         {
             Update(x, y);
         }
 
-        public Mobile Mobile { get; }
+        public PlayerMobile Mobile { get; }
 
         public Mobile Target { get; }
 
@@ -34,21 +35,7 @@ namespace Server
                 return;
             }
 
-            var ns = Mobile.NetState;
-
-            if (ns == null)
-            {
-                return;
-            }
-
-            if (ns.HighSeas)
-            {
-                ns.Send(new SetArrowHS(x, y, Target.Serial));
-            }
-            else
-            {
-                ns.Send(new SetArrow(x, y));
-            }
+            Mobile.NetState?.SendSetArrow(x, y, Target.Serial);
         }
 
         public void Stop()
@@ -64,20 +51,7 @@ namespace Server
             }
 
             Mobile.ClearQuestArrow();
-
-            var ns = Mobile.NetState;
-
-            if (ns != null)
-            {
-                if (ns.HighSeas)
-                {
-                    ns.Send(new CancelArrowHS(x, y, Target.Serial));
-                }
-                else
-                {
-                    ns.Send(new CancelArrow());
-                }
-            }
+            Mobile.NetState?.SendCancelArrow(x, y, Target.Serial);
 
             Running = false;
             OnStop();

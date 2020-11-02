@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Gumps;
+using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
 using Server.Spells.Necromancy;
@@ -12,18 +13,32 @@ namespace Server.SkillHandlers
     {
         private static readonly Dictionary<Mobile, TrackingInfo> m_Table = new Dictionary<Mobile, TrackingInfo>();
 
-        public static void Initialize()
+        public static void Configure()
         {
+            IncomingExtendedCommandPackets.RegisterExtended(0x07, true, QuestArrow);
             SkillInfo.Table[(int)SkillName.Tracking].Callback = OnUse;
+        }
+
+        public static void QuestArrow(NetState state, CircularBufferReader reader)
+        {
+            if (state.Mobile is PlayerMobile from)
+            {
+                var rightClick = reader.ReadBoolean();
+
+                from.QuestArrow?.OnClick(rightClick);
+            }
         }
 
         public static TimeSpan OnUse(Mobile m)
         {
-            m.SendLocalizedMessage(1011350); // What do you wish to track?
+            if (m is PlayerMobile pm)
+            {
+                m.SendLocalizedMessage(1011350); // What do you wish to track?
 
-            m.CloseGump<TrackWhatGump>();
-            m.CloseGump<TrackWhoGump>();
-            m.SendGump(new TrackWhatGump(m));
+                m.CloseGump<TrackWhatGump>();
+                m.CloseGump<TrackWhoGump>();
+                m.SendGump(new TrackWhatGump(pm));
+            }
 
             return TimeSpan.FromSeconds(10.0); // 10 second delay before being able to re-use a skill
         }
@@ -73,10 +88,10 @@ namespace Server.SkillHandlers
 
     public class TrackWhatGump : Gump
     {
-        private readonly Mobile m_From;
+        private readonly PlayerMobile m_From;
         private readonly bool m_Success;
 
-        public TrackWhatGump(Mobile from) : base(20, 30)
+        public TrackWhatGump(PlayerMobile from) : base(20, 30)
         {
             m_From = from;
             m_Success = from.CheckSkill(SkillName.Tracking, 0.0, 21.1);
@@ -126,12 +141,12 @@ namespace Server.SkillHandlers
             IsPlayer
         };
 
-        private readonly Mobile m_From;
+        private readonly PlayerMobile m_From;
 
         private readonly List<Mobile> m_List;
         private readonly int m_Range;
 
-        private TrackWhoGump(Mobile from, List<Mobile> list, int range) : base(20, 30)
+        private TrackWhoGump(PlayerMobile from, List<Mobile> list, int range) : base(20, 30)
         {
             m_From = from;
             m_List = list;
@@ -174,7 +189,7 @@ namespace Server.SkillHandlers
             }
         }
 
-        public static void DisplayTo(bool success, Mobile from, int type)
+        public static void DisplayTo(bool success, PlayerMobile from, int type)
         {
             if (!success)
             {
@@ -330,89 +345,6 @@ namespace Server.SkillHandlers
                 }
 
                 return m_From.GetDistanceToSqrt(x).CompareTo(m_From.GetDistanceToSqrt(y));
-            }
-        }
-    }
-
-    public class TrackArrow : QuestArrow
-    {
-        private readonly Timer m_Timer;
-        private Mobile m_From;
-
-        public TrackArrow(Mobile from, Mobile target, int range) : base(from, target)
-        {
-            m_From = from;
-            m_Timer = new TrackTimer(from, target, range, this);
-            m_Timer.Start();
-        }
-
-        public override void OnClick(bool rightClick)
-        {
-            if (rightClick)
-            {
-                Tracking.ClearTrackingInfo(m_From);
-
-                m_From = null;
-
-                Stop();
-            }
-        }
-
-        public override void OnStop()
-        {
-            m_Timer.Stop();
-
-            if (m_From != null)
-            {
-                Tracking.ClearTrackingInfo(m_From);
-
-                m_From.SendLocalizedMessage(503177); // You have lost your quarry.
-            }
-        }
-    }
-
-    public class TrackTimer : Timer
-    {
-        private readonly QuestArrow m_Arrow;
-        private readonly Mobile m_From;
-        private readonly int m_Range;
-        private readonly Mobile m_Target;
-        private int m_LastX, m_LastY;
-
-        public TrackTimer(Mobile from, Mobile target, int range, QuestArrow arrow) : base(
-            TimeSpan.FromSeconds(0.25),
-            TimeSpan.FromSeconds(2.5)
-        )
-        {
-            m_From = from;
-            m_Target = target;
-            m_Range = range;
-
-            m_Arrow = arrow;
-        }
-
-        protected override void OnTick()
-        {
-            if (!m_Arrow.Running)
-            {
-                Stop();
-                return;
-            }
-
-            if (m_From.NetState == null || m_From.Deleted || m_Target.Deleted || m_From.Map != m_Target.Map ||
-                !m_From.InRange(m_Target, m_Range) || m_Target.Hidden && m_Target.AccessLevel > m_From.AccessLevel)
-            {
-                m_Arrow.Stop();
-                Stop();
-                return;
-            }
-
-            if (m_LastX != m_Target.X || m_LastY != m_Target.Y)
-            {
-                m_LastX = m_Target.X;
-                m_LastY = m_Target.Y;
-
-                m_Arrow.Update();
             }
         }
     }

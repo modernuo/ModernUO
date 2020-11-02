@@ -196,13 +196,15 @@ namespace Server.Mobiles
 
         private bool m_NoDeltaRecursion;
 
-        private int
-            m_NonAutoreinsuredItems; // number of items that could not be automatically reinsured because gold in bank was not enough
+        // number of items that could not be automatically reinsured because gold in bank was not enough
+        private int m_NonAutoreinsuredItems;
 
         private DateTime m_SavagePaintExpiration;
         private TimeSpan m_ShortTermElapse;
 
         private DateTime[] m_StuckMenuUses;
+
+        private QuestArrow m_QuestArrow;
 
         public PlayerMobile()
         {
@@ -793,6 +795,23 @@ namespace Server.Mobiles
         public int KnownRecipes => m_AcquiredRecipes?.Count ?? 0;
 
         public HonorContext ReceivedHonorContext { get; set; }
+
+        public QuestArrow QuestArrow
+        {
+            get => m_QuestArrow;
+            set
+            {
+                if (m_QuestArrow != value)
+                {
+                    m_QuestArrow?.Stop();
+
+                    m_QuestArrow = value;
+                }
+            }
+        }
+
+
+        public void ClearQuestArrow() => m_QuestArrow = null;
 
         public override void ToggleFlying()
         {
@@ -1627,6 +1646,7 @@ namespace Server.Mobiles
                 pm.Quest?.StopTimer();
 
                 pm.SpeechLog = null;
+                pm.ClearQuestArrow();
                 pm.LastOnline = DateTime.UtcNow;
             }
 

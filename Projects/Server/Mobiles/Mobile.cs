@@ -562,8 +562,6 @@ namespace Server
         private Poison m_Poison;
         private Prompt m_Prompt;
         private ObjectPropertyList m_PropertyList;
-
-        private QuestArrow m_QuestArrow;
         private Race m_Race;
         private Region m_Region;
 
@@ -955,7 +953,7 @@ namespace Server
 
                     if (m_Combatant == null)
                     {
-                        m_NetState?.Send(new ChangeCombatant(Serial.Zero));
+                        m_NetState?.SendChangeCombatant(Serial.Zero);
                         m_ExpireCombatant?.Stop();
                         m_CombatTimer?.Stop();
 
@@ -964,7 +962,7 @@ namespace Server
                     }
                     else
                     {
-                        m_NetState?.Send(new ChangeCombatant(m_Combatant.Serial));
+                        m_NetState?.SendChangeCombatant(m_Combatant.Serial);
                         m_ExpireCombatant ??= Timer.DelayCall(ExpireCombatantDelay, ExpireCombatant);
                         m_ExpireCombatant.Start();
 
@@ -1450,10 +1448,7 @@ namespace Server
                     m_Warmode = value;
                     Delta(MobileDelta.Flags);
 
-                    if (m_NetState != null)
-                    {
-                        Send(SetWarMode.Instantiate(value));
-                    }
+                    m_NetState?.SendSetWarMode(value);
 
                     if (!m_Warmode)
                     {
@@ -1504,8 +1499,6 @@ namespace Server
                     m_Map?.OnClientChange(m_NetState, value, this);
 
                     m_Target?.Cancel(this, TargetCancelType.Disconnected);
-
-                    QuestArrow = null;
 
                     m_Spell?.OnConnectionChanged();
 
@@ -2009,20 +2002,6 @@ namespace Server
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Mounted => Mount != null;
-
-        public QuestArrow QuestArrow
-        {
-            get => m_QuestArrow;
-            set
-            {
-                if (m_QuestArrow != value)
-                {
-                    m_QuestArrow?.Stop();
-
-                    m_QuestArrow = value;
-                }
-            }
-        }
 
         public virtual bool CanTarget => true;
         public virtual bool ClickTitle => true;
@@ -4503,8 +4482,6 @@ namespace Server
                 OnWeightChange(oldWeight);
             }
         }
-
-        public void ClearQuestArrow() => m_QuestArrow = null;
 
         public void ClearTarget() => m_Target = null;
 
