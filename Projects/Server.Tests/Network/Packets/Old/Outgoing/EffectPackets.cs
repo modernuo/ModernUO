@@ -15,48 +15,8 @@
 
 namespace Server.Network
 {
-    public enum EffectType
-    {
-        Moving,
-        Lightning,
-        FixedXYZ,
-        FixedFrom
-    }
-
     public class ParticleEffect : Packet
     {
-        public ParticleEffect(
-            EffectType type, Serial from, Serial to, int itemID, Point3D fromPoint, Point3D toPoint,
-            int speed, int duration, bool fixedDirection, bool explode, int hue, int renderMode, int effect,
-            int explodeEffect, int explodeSound, Serial serial, int layer, int unknown
-        ) : base(0xC7, 49)
-        {
-            Stream.Write((byte)type);
-            Stream.Write(from);
-            Stream.Write(to);
-            Stream.Write((short)itemID);
-            Stream.Write((short)fromPoint.m_X);
-            Stream.Write((short)fromPoint.m_Y);
-            Stream.Write((sbyte)fromPoint.m_Z);
-            Stream.Write((short)toPoint.m_X);
-            Stream.Write((short)toPoint.m_Y);
-            Stream.Write((sbyte)toPoint.m_Z);
-            Stream.Write((byte)speed);
-            Stream.Write((byte)duration);
-            Stream.Write((byte)0);
-            Stream.Write((byte)0);
-            Stream.Write(fixedDirection);
-            Stream.Write(explode);
-            Stream.Write(hue);
-            Stream.Write(renderMode);
-            Stream.Write((short)effect);
-            Stream.Write((short)explodeEffect);
-            Stream.Write((short)explodeSound);
-            Stream.Write(serial);
-            Stream.Write((byte)layer);
-            Stream.Write((short)unknown);
-        }
-
         public ParticleEffect(
             EffectType type, Serial from, Serial to, int itemID, IPoint3D fromPoint, IPoint3D toPoint,
             int speed, int duration, bool fixedDirection, bool explode, int hue, int renderMode, int effect,
@@ -92,31 +52,6 @@ namespace Server.Network
 
     public class HuedEffect : Packet
     {
-        public HuedEffect(
-            EffectType type, Serial from, Serial to, int itemID, Point3D fromPoint, Point3D toPoint, int speed,
-            int duration, bool fixedDirection, bool explode, int hue, int renderMode
-        ) : base(0xC0, 36)
-        {
-            Stream.Write((byte)type);
-            Stream.Write(from);
-            Stream.Write(to);
-            Stream.Write((short)itemID);
-            Stream.Write((short)fromPoint.m_X);
-            Stream.Write((short)fromPoint.m_Y);
-            Stream.Write((sbyte)fromPoint.m_Z);
-            Stream.Write((short)toPoint.m_X);
-            Stream.Write((short)toPoint.m_Y);
-            Stream.Write((sbyte)toPoint.m_Z);
-            Stream.Write((byte)speed);
-            Stream.Write((byte)duration);
-            Stream.Write((byte)0);
-            Stream.Write((byte)0);
-            Stream.Write(fixedDirection);
-            Stream.Write(explode);
-            Stream.Write(hue);
-            Stream.Write(renderMode);
-        }
-
         public HuedEffect(
             EffectType type, Serial from, Serial to, int itemID, IPoint3D fromPoint, IPoint3D toPoint,
             int speed, int duration, bool fixedDirection, bool explode, int hue, int renderMode
@@ -292,15 +227,6 @@ namespace Server.Network
         )
         {
         }
-    }
-
-    public enum ScreenEffectType
-    {
-        FadeOut = 0x00,
-        FadeIn = 0x01,
-        LightFlash = 0x02,
-        FadeInOut = 0x03,
-        DarkFlash = 0x04
     }
 
     public class ScreenEffect : Packet
