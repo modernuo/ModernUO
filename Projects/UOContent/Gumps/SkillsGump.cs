@@ -634,7 +634,7 @@ namespace Server.Gumps
                 var aName = SkillInfo.Table[(int)a].Name;
                 var bName = SkillInfo.Table[(int)b].Name;
 
-                return aName.CompareTo(bName);
+                return string.CompareOrdinal(aName, bName);
             }
         }
     }

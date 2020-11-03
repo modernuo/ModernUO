@@ -4,10 +4,10 @@
         <Authors>Kamron Batman</Authors>
         <Company>ModernUO</Company>
         <Copyright>2019-2020</Copyright>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net50</TargetFramework>
         <Platforms>x64</Platforms>
         <PlatformTarget>x64</PlatformTarget>
-        <LangVersion>8.0</LangVersion>
+        <LangVersion>9</LangVersion>
         <PublicRelease>true</PublicRelease>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <NoWarn>NU1603</NoWarn>

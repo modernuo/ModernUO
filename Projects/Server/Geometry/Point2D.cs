@@ -104,23 +104,13 @@ namespace Server
         public int CompareTo(Point2D other)
         {
             var xComparison = m_X.CompareTo(other.m_X);
-            if (xComparison != 0)
-            {
-                return xComparison;
-            }
-
-            return m_Y.CompareTo(other.m_Y);
+            return xComparison != 0 ? xComparison : m_Y.CompareTo(other.m_Y);
         }
 
         public int CompareTo(IPoint2D other)
         {
             var xComparison = m_X.CompareTo(other.X);
-            if (xComparison != 0)
-            {
-                return xComparison;
-            }
-
-            return m_Y.CompareTo(other.Y);
+            return xComparison != 0 ? xComparison : m_Y.CompareTo(other.Y);
         }
     }
 }

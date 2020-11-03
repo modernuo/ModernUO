@@ -1,3 +1,4 @@
+using System;
 using Server.Gumps;
 using Server.Misc;
 using Server.Mobiles;
@@ -119,7 +120,7 @@ namespace Server.Guilds
 
             for (var i = 0; i < disallowed.Length; i++)
             {
-                if (s.IndexOf(disallowed[i]) != -1)
+                if (s.IndexOf(disallowed[i], StringComparison.Ordinal) != -1)
                 {
                     return false;
                 }

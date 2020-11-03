@@ -244,7 +244,7 @@ namespace Server
                     break;
                 }
 
-                if (ipStr.IndexOf(":", StringComparison.Ordinal) == -1)
+                if (ipStr.IndexOf(':') == -1)
                 {
                     ipStr += ":2593";
                 }

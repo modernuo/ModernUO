@@ -2463,12 +2463,12 @@ namespace Server.Gumps
                                                 var m = ns.Mobile;
                                                 var a = ns.Account;
 
-                                                isMatch = m?.Name.ToLower().IndexOf(match) >= 0
-                                                          || a?.Username.ToLower().IndexOf(match) >= 0;
+                                                isMatch = m?.Name.ToLower().IndexOf(match, StringComparison.Ordinal) >= 0
+                                                          || a?.Username.ToLower().IndexOf(match, StringComparison.Ordinal) >= 0;
                                             }
                                             else
                                             {
-                                                isMatch = ns.ToString().IndexOf(match) >= 0;
+                                                isMatch = ns.ToString().IndexOf(match, StringComparison.Ordinal) >= 0;
                                             }
 
                                             if (isMatch)
@@ -2725,7 +2725,8 @@ namespace Server.Gumps
                                     else
                                     {
                                         results = Accounts.GetAccounts()
-                                            .Where(acct => acct.Username.ToLower().IndexOf(match) >= 0)
+                                            .Where(acct =>
+                                                acct.Username.ToLower().IndexOf(match, StringComparison.Ordinal) >= 0)
                                             .ToList();
                                         results.Sort(AccountComparer.Instance);
                                     }

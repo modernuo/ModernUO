@@ -60,12 +60,12 @@ namespace Server
                     }
                 }
 
-                if (fmt.IndexOf("god") >= 0 || fmt.IndexOf("gq") >= 0)
+                if (fmt.IndexOf("god", StringComparison.Ordinal) >= 0 || fmt.IndexOf("gq", StringComparison.Ordinal) >= 0)
                 {
                     Type = ClientType.God;
                 }
-                else if (fmt.IndexOf("third dawn") >= 0 || fmt.IndexOf("uo:td") >= 0 || fmt.IndexOf("uotd") >= 0 ||
-                         fmt.IndexOf("uo3d") >= 0 || fmt.IndexOf("uo:3d") >= 0)
+                else if (fmt.IndexOf("third dawn", StringComparison.Ordinal) >= 0 || fmt.IndexOf("uo:td", StringComparison.Ordinal) >= 0 || fmt.IndexOf("uotd", StringComparison.Ordinal) >= 0 ||
+                         fmt.IndexOf("uo3d", StringComparison.Ordinal) >= 0 || fmt.IndexOf("uo:3d", StringComparison.Ordinal) >= 0)
                 {
                     Type = ClientType.UOTD;
                 }

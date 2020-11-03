@@ -868,7 +868,7 @@ namespace Server.Gumps
                     return -1;
                 }
 
-                return y == null ? 1 : x.Name.CompareTo(x.Name);
+                return y == null ? 1 : string.CompareOrdinal(x.Name, x.Name);
             }
         }
 

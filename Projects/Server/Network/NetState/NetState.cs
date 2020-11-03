@@ -163,7 +163,7 @@ namespace Server.Network
 
         public bool IsDisposing => m_Disposing != 0;
 
-        public int CompareTo(NetState other) => other == null ? 1 : m_ToString.CompareTo(other.m_ToString);
+        public int CompareTo(NetState other) => string.CompareOrdinal(m_ToString, other?.m_ToString);
 
         public void ValidateAllTrades()
         {

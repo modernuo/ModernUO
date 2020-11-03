@@ -330,12 +330,7 @@ namespace Server.Gumps
 
             public int CompareTo(InternalEntry comp)
             {
-                if (Name == null && comp.Name == null)
-                {
-                    return 0;
-                }
-
-                var v = Name?.CompareTo(comp.Name) ?? 1;
+                var v = string.CompareOrdinal(Name, comp.Name);
 
                 return v == 0 ? Body.CompareTo(comp.Body) : v;
             }
