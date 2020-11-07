@@ -33,15 +33,15 @@ jobs:
   strategy:
     matrix:
       'Debian 9':
-        containerImage: debian:stretch
+        containerImage: amd64/buildpack-deps:stretch
       'Debian 10':
-        containerImage: debian:buster
+        containerImage: amd64/buildpack-deps:buster
       'Debian 11':
-        containerImage: debian:bullseye
+        containerImage: amd64/buildpack-deps:bullseye
       'Ubuntu 18':
-        containerImage: ubuntu:bionic
+        containerImage: amd64/buildpack-deps:bionic
       'Ubuntu 20':
-        containerImage: ubuntu:focal
+        containerImage: amd64/buildpack-deps:focal
 
   displayName: Linux
 
