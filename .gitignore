@@ -8,33 +8,13 @@
 /Distribution/Backups
 /Distribution/Saves
 /Distribution/docs
-/Distribution/System.IO.Pipelines.dll
-/Distribution/libdrng.dll
 /Distribution/zlib.dll
 /Distribution/libz.dylib
 /Distribution/libz.so
-/Distribution/Microsoft.Bcl.AsyncInterfaces.dll
-/Distribution/System.ComponentModel.Annotations.dll
-/Distribution/System.Runtime.CompilerServices.Unsafe.dll
 /Distribution/ZLib.Bindings.dll
-/Distribution/Data/modernuo.json
 /Distribution/runtimes
 /Distribution/nohup.out
-
-# LibUv Dependencies
-/Distribution/libuv.dylib
-/Distribution/libuv.dll
-/Distribution/libuv.so
-/Distribution/Microsoft.AspNetCore.Connections.Abstractions.dll
-/Distribution/Microsoft.AspNetCore.Http.Features.dll
-/Distribution/Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll
-/Distribution/Microsoft.Extensions.Configuration.Abstractions.dll
-/Distribution/Microsoft.Extensions.DependencyInjection.Abstractions.dll
-/Distribution/Microsoft.Extensions.FileProviders.Abstractions.dll
-/Distribution/Microsoft.Extensions.Hosting.Abstractions.dll
-/Distribution/Microsoft.Extensions.Logging.Abstractions.dll
-/Distribution/Microsoft.Extensions.Options.dll
-/Distribution/Microsoft.Extensions.Primitives.dll
+/Distribution/ref
 
 /Projects/*/obj
 /Projects/*/bin
