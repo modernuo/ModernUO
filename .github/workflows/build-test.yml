@@ -22,7 +22,7 @@ jobs:
     - name: Setup .NET 5
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100-rc.2
+        dotnet-version: 5.0.100-rc.2.20479.15
     - name: Restore NuGet Packages
       run: dotnet restore --force-evaluate
     - name: Build Server
