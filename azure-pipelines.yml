@@ -15,29 +15,29 @@ jobs:
 
   steps:
   - task: UseDotNet@2
-    displayName: 'Install .NET Core'
+    displayName: 'Install .NET 5'
     inputs:
       packageType: sdk
-      version: '3.1.401'
+      version: '5.0.100-rc.2.20479.15'
   - task: NuGetAuthenticate@0
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
-  - script: dotnet build -c $(buildConfiguration) -f netcoreapp3.1 --no-restore Projects/Server/Server.csproj
+  - script: dotnet build -c $(buildConfiguration) -f net5.0 --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'
-  - script: dotnet build -c $(buildConfiguration) -f netcoreapp3.1 --no-restore Projects/UOContent/UOContent.csproj
+  - script: dotnet build -c $(buildConfiguration) -f net5.0 --no-restore Projects/UOContent/UOContent.csproj
     displayName: 'Build UO Content'
-  - script: dotnet test --no-restore -f netcoreapp3.1
+  - script: dotnet test --no-restore -f net5.0
     displayName: 'Test'
 
 - job: BuildLinux
   strategy:
     matrix:
       'Debian 10':
-        containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
+        containerImage: mcr.microsoft.com/dotnet/core/sdk:5.0-buster
       'Ubuntu 18':
-        containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-bionic
+        containerImage: mcr.microsoft.com/dotnet/core/sdk:5.0-bionic
       'Ubuntu 20':
-        containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
+        containerImage: mcr.microsoft.com/dotnet/core/sdk:5.0-focal
 
   displayName: Linux
 
@@ -48,16 +48,16 @@ jobs:
 
   steps:
   - task: UseDotNet@2
-    displayName: 'Install .NET Core'
+    displayName: 'Install .NET 5'
     inputs:
       packageType: sdk
-      version: '3.1.401'
+      version: '5.0.100-rc.2.20479.15'
   - task: NuGetAuthenticate@0
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
-  - script: dotnet build -c $(buildConfiguration) -f netcoreapp3.1 --no-restore Projects/Server/Server.csproj
+  - script: dotnet build -c $(buildConfiguration) -f net5.0 --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'
-  - script: dotnet build -c $(buildConfiguration) -f netcoreapp3.1 --no-restore Projects/UOContent/UOContent.csproj
+  - script: dotnet build -c $(buildConfiguration) -f net5.0 --no-restore Projects/UOContent/UOContent.csproj
     displayName: 'Build UO Content'
-  - script: dotnet test --no-restore -f netcoreapp3.1
+  - script: dotnet test --no-restore -f net5.0
     displayName: 'Test'
