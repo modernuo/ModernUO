@@ -36,8 +36,10 @@ jobs:
         containerImage: amd64/buildpack-deps:stretch
       'Debian 10':
         containerImage: amd64/buildpack-deps:buster
-      'Debian 11':
-        containerImage: amd64/buildpack-deps:bullseye
+      # 'Debian 11':
+      #   containerImage: amd64/buildpack-deps:bullseye
+      'Ubuntu 16':
+        containerImage: amd64/buildpack-deps:xenial
       'Ubuntu 18':
         containerImage: amd64/buildpack-deps:bionic
       'Ubuntu 20':
