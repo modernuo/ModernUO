@@ -30,6 +30,7 @@
         <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
         <SelfContained>false</SelfContained>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <InvariantGlobalization>true</InvariantGlobalization>
     </PropertyGroup>
     <PropertyGroup  Condition="'$(IsWindows)'=='true' AND '$(RuntimeIdentifier)'==''">
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
