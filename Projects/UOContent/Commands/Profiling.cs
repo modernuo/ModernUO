@@ -192,7 +192,7 @@ namespace Server.Commands
 
                     /*if (( flags & ExpandFlag.TempFlag ) != 0)
                       ++countTable[5];
-          
+
                     if (( flags & ExpandFlag.SaveFlag ) != 0)
                       ++countTable[6];*/
 
@@ -390,7 +390,7 @@ namespace Server.Commands
 
                 var v = -aCount.CompareTo(bCount);
 
-                return v != 0 ? v : x.Key.FullName?.CompareTo(y.Key.FullName) ?? -1;
+                return v != 0 ? v : string.CompareOrdinal(x.Key.FullName, y.Key.FullName);
             }
         }
 
@@ -403,7 +403,7 @@ namespace Server.Commands
 
                 var v = -aCount.CompareTo(bCount);
 
-                return v != 0 ? v : x.Key.FullName?.CompareTo(y.Key.FullName) ?? 1;
+                return v != 0 ? v : string.CompareOrdinal(x.Key.FullName, y.Key.FullName);
             }
         }
     }

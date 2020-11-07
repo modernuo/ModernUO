@@ -451,7 +451,7 @@ namespace Server.Commands
             "ICloneable",
             "Type"
         };
-    
+
         public static bool DontLink( string name )
         {
           foreach( string dontLink in m_DontLink )
@@ -2835,7 +2835,10 @@ namespace Server.Commands
 
                 if (v == 0)
                 {
-                    v = GetNameFrom(aCtor, aProp, aMethod).CompareTo(GetNameFrom(bCtor, bProp, bMethod));
+                    v = string.CompareOrdinal(
+                        GetNameFrom(aCtor, aProp, aMethod),
+                        GetNameFrom(bCtor, bProp, bMethod)
+                    );
                 }
 
                 if (v == 0 && aCtor != null && bCtor != null)
@@ -2879,11 +2882,7 @@ namespace Server.Commands
 
         private class TypeComparer : IComparer<TypeInfo>
         {
-            public int Compare(TypeInfo x, TypeInfo y) =>
-                x == null && y == null ? 0 :
-                x == null ? -1 :
-                y == null ? 1 :
-                x.TypeName.CompareTo(y.TypeName);
+            public int Compare(TypeInfo x, TypeInfo y) => string.CompareOrdinal(x?.TypeName, y?.TypeName);
         }
 
         private class TypeInfo
@@ -2973,12 +2972,7 @@ namespace Server.Commands
 
                 var v = b?.AccessLevel.CompareTo(a?.AccessLevel) ?? 1;
 
-                if (v != 0)
-                {
-                    return v;
-                }
-
-                return a?.Name.CompareTo(b?.Name) ?? 1;
+                return v != 0 ? v : string.CompareOrdinal(a?.Name, b?.Name);
             }
         }
     }
@@ -3034,12 +3028,7 @@ namespace Server.Commands
                 v = a?.Body.BodyID.CompareTo(b?.Body.BodyID) ?? 1;
             }
 
-            if (v != 0)
-            {
-                return v;
-            }
-
-            return a?.Name.CompareTo(b?.Name) ?? 1;
+            return v != 0 ? v : string.CompareOrdinal(a?.Name, b?.Name);
         }
     }
 }

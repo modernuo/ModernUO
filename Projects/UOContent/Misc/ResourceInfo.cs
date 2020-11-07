@@ -806,9 +806,8 @@ namespace Server.Items
         ///     Returns the first <see cref="CraftResource" /> in the series of resources for which '<paramref name="resource" />'
         ///     belongs.
         /// </summary>
-        public static CraftResource GetStart(CraftResource resource)
-        {
-            return GetType(resource) switch
+        public static CraftResource GetStart(CraftResource resource) =>
+            GetType(resource) switch
             {
                 CraftResourceType.Metal   => CraftResource.Iron,
                 CraftResourceType.Leather => CraftResource.RegularLeather,
@@ -816,7 +815,6 @@ namespace Server.Items
                 CraftResourceType.Wood    => CraftResource.RegularWood,
                 _                         => CraftResource.None
             };
-        }
 
         /// <summary>
         ///     Returns the index of '<paramref name="resource" />' in the seriest of resources for which it belongs.
@@ -872,72 +870,39 @@ namespace Server.Items
         /// </summary>
         public static CraftResource GetFromOreInfo(OreInfo info)
         {
-            if (info.Name.IndexOf("Spined") >= 0)
+            if (info.Name.IndexOf("Spined", StringComparison.Ordinal) >= 0)
             {
                 return CraftResource.SpinedLeather;
             }
 
-            if (info.Name.IndexOf("Horned") >= 0)
+            if (info.Name.IndexOf("Horned", StringComparison.Ordinal) >= 0)
             {
                 return CraftResource.HornedLeather;
             }
 
-            if (info.Name.IndexOf("Barbed") >= 0)
+            if (info.Name.IndexOf("Barbed", StringComparison.Ordinal) >= 0)
             {
                 return CraftResource.BarbedLeather;
             }
 
-            if (info.Name.IndexOf("Leather") >= 0)
+            if (info.Name.IndexOf("Leather", StringComparison.Ordinal) >= 0)
             {
                 return CraftResource.RegularLeather;
             }
 
-            if (info.Level == 0)
+            return info.Level switch
             {
-                return CraftResource.Iron;
-            }
-
-            if (info.Level == 1)
-            {
-                return CraftResource.DullCopper;
-            }
-
-            if (info.Level == 2)
-            {
-                return CraftResource.ShadowIron;
-            }
-
-            if (info.Level == 3)
-            {
-                return CraftResource.Copper;
-            }
-
-            if (info.Level == 4)
-            {
-                return CraftResource.Bronze;
-            }
-
-            if (info.Level == 5)
-            {
-                return CraftResource.Gold;
-            }
-
-            if (info.Level == 6)
-            {
-                return CraftResource.Agapite;
-            }
-
-            if (info.Level == 7)
-            {
-                return CraftResource.Verite;
-            }
-
-            if (info.Level == 8)
-            {
-                return CraftResource.Valorite;
-            }
-
-            return CraftResource.None;
+                0 => CraftResource.Iron,
+                1 => CraftResource.DullCopper,
+                2 => CraftResource.ShadowIron,
+                3 => CraftResource.Copper,
+                4 => CraftResource.Bronze,
+                5 => CraftResource.Gold,
+                6 => CraftResource.Agapite,
+                7 => CraftResource.Verite,
+                8 => CraftResource.Valorite,
+                _ => CraftResource.None
+            };
         }
 
         /// <summary>
@@ -946,34 +911,22 @@ namespace Server.Items
         /// </summary>
         public static CraftResource GetFromOreInfo(OreInfo info, ArmorMaterialType material)
         {
-            if (material == ArmorMaterialType.Studded || material == ArmorMaterialType.Leather ||
-                material == ArmorMaterialType.Spined ||
-                material == ArmorMaterialType.Horned || material == ArmorMaterialType.Barbed)
+            if (material != ArmorMaterialType.Studded && material != ArmorMaterialType.Leather &&
+                material != ArmorMaterialType.Spined && material != ArmorMaterialType.Horned &&
+                material != ArmorMaterialType.Barbed)
             {
-                if (info.Level == 0)
-                {
-                    return CraftResource.RegularLeather;
-                }
-
-                if (info.Level == 1)
-                {
-                    return CraftResource.SpinedLeather;
-                }
-
-                if (info.Level == 2)
-                {
-                    return CraftResource.HornedLeather;
-                }
-
-                if (info.Level == 3)
-                {
-                    return CraftResource.BarbedLeather;
-                }
-
-                return CraftResource.None;
+                return GetFromOreInfo(info);
             }
 
-            return GetFromOreInfo(info);
+            return info.Level switch
+            {
+                0 => CraftResource.RegularLeather,
+                1 => CraftResource.SpinedLeather,
+                2 => CraftResource.HornedLeather,
+                3 => CraftResource.BarbedLeather,
+                _ => CraftResource.None
+            };
+
         }
     }
 

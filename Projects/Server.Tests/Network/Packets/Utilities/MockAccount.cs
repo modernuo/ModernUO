@@ -64,7 +64,7 @@ namespace Server.Tests.Network
 
         public long GetTotalGold() => TotalGold + TotalPlat * 100;
 
-        public int CompareTo(IAccount other) => other == null ? 1 : Username.CompareTo(other.Username);
+        public int CompareTo(IAccount other) => string.CompareOrdinal(Username, other?.Username);
 
         public string Username { get; set; }
         public string Email { get; set; }
@@ -90,6 +90,6 @@ namespace Server.Tests.Network
 
         public bool CheckPassword(string password) => m_Password == password;
 
-        public int CompareTo(MockAccount other) => other == null ? 1 : Username.CompareTo(other.Username);
+        public int CompareTo(MockAccount other) => string.CompareOrdinal(Username, other?.Username);
     }
 }

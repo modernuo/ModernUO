@@ -26,7 +26,7 @@
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
     </Target>
     <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.2.31">
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.3.37">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

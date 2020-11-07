@@ -135,7 +135,7 @@ namespace Server.Gumps
                 var t = types[i];
 
                 if ((typeofMobile.IsAssignableFrom(t) || typeofItem.IsAssignableFrom(t)) &&
-                    t.Name.ToLower().IndexOf(match) >= 0 && !results.Contains(t))
+                    t.Name.ToLower().IndexOf(match, StringComparison.Ordinal) >= 0 && !results.Contains(t))
                 {
                     var ctors = t.GetConstructors();
 
@@ -236,7 +236,7 @@ namespace Server.Gumps
 
         private class TypeNameComparer : IComparer<Type>
         {
-            public int Compare(Type x, Type y) => x?.Name.CompareTo(y?.Name) ?? 1;
+            public int Compare(Type x, Type y) => string.CompareOrdinal(x?.Name, y?.Name);
         }
 
         public class InternalTarget : Target

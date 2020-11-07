@@ -202,7 +202,7 @@ namespace Server.Misc
 
             for (var i = 0; i < disallowed.Length; ++i)
             {
-                var indexOf = name.IndexOf(disallowed[i]);
+                var indexOf = name.IndexOf(disallowed[i], StringComparison.Ordinal);
 
                 if (indexOf == -1)
                 {

@@ -403,7 +403,7 @@ namespace Server.Accounting
             }
         }
 
-        public int CompareTo(IAccount other) => other == null ? 1 : Username.CompareTo(other.Username);
+        public int CompareTo(IAccount other) => string.CompareOrdinal(Username, other?.Username);
 
         /// <summary>
         ///     This amount represents the current amount of Gold owned by the player.
@@ -512,7 +512,7 @@ namespace Server.Accounting
         /// <returns>Total gold, capped at Int32.MaxValue</returns>
         public long GetTotalGold() => TotalGold + TotalPlat * AccountGold.CurrencyThreshold;
 
-        public int CompareTo(Account other) => other == null ? 1 : Username.CompareTo(other.Username);
+        public int CompareTo(Account other) => string.CompareOrdinal(Username, other?.Username);
 
         /// <summary>
         ///     Gets the value of a specific flag in the Flags bitfield.
