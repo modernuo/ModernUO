@@ -7,7 +7,6 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ##### Ultima Online Server Emulator for the modern era!
 [![.NET](https://img.shields.io/badge/.NET-%205.0-5C2D91)](https://dotnet.microsoft.com/download/dotnet/5.0)
-[![.NET Core](https://img.shields.io/badge/.NET-Core%203.1.9-5C2D91)](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 <br />
 ![Windows](https://img.shields.io/badge/-server%202019-0078D6?logo=windows)
 ![OSX](https://img.shields.io/badge/-catalina-222222?logo=apple&logoColor=white)
@@ -27,31 +26,24 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ## Publishing a build
 #### Requirements
-- [.NET Core 3.1.9 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
-<br />or
-- [.NET 5.0 (Preview) SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
+- [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 
 #### Publishing Builds
-- Using terminal or powershell: `./publish.cmd [os] [framework] [release|debug (default: release)]`
+- Using terminal or powershell: `./publish.cmd [release|debug (default: release)] [os]`
   - Supported `os`:
     - `win` for Windows 8/10/2019
     - `osx` for MacOS
     - `ubuntu.16.04`, `ubuntu.18.04` `ubuntu.20.04` for Ubuntu LTS
     - `debian.9`, `debian.10` for Debian
     - `centos.7`, `centos.8` for CentOS
-    - If blank, will use host operating system
-  - Supported `framework`:
-    - `core` for .NET Core 3.1.9
-    - `net` for .NET 5.0
+    - If blank, the host operating system is used
 
 ## Deploying / Running Server
 - Follow the [publish](https://github.com/modernuo/ModernUO#publishing-a-build) instructions
 - Copy `Distribution` directory to the production server
 
 #### Requirements
-- [.NET Core 3.1.9 Runtime](https://dotnet.microsoft.com/download/dotnet-core/3.1)
-<br />or
-- [.NET 5.0 (Preview) Runtime](https://dotnet.microsoft.com/download/dotnet/5.0)
+- [.NET 5 Runtime](https://dotnet.microsoft.com/download/dotnet/5.0)
 
 #### Running
 - `dotnet ModernUO.dll`

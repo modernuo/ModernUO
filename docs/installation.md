@@ -6,7 +6,7 @@ title: Installation
 
 === "Windows"
     ### Prerequisites
-    1. Download and install the latest [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+    1. Download and install the latest [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
     1. Download and install from [here](https://git-scm.com/download/win)
 
         !!! Tip
@@ -22,7 +22,7 @@ title: Installation
 
 === "OSX"
     <h3>Prerequisites</h3>
-    1. Download and install the latest [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+    1. Download and install the latest [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
     1. Using _terminal_, install [homebrew](https://brew.sh) and git:
         ```bash
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
