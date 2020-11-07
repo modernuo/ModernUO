@@ -32,12 +32,16 @@ jobs:
 - job: BuildLinux
   strategy:
     matrix:
+      'Debian 9':
+        containerImage: debian:stretch
       'Debian 10':
-        containerImage: mcr.microsoft.com/dotnet/core/sdk:5.0-buster
+        containerImage: debian:buster
+      'Debian 11':
+        containerImage: debian:bullseye
       'Ubuntu 18':
-        containerImage: mcr.microsoft.com/dotnet/core/sdk:5.0-bionic
+        containerImage: ubuntu:bionic
       'Ubuntu 20':
-        containerImage: mcr.microsoft.com/dotnet/core/sdk:5.0-focal
+        containerImage: ubuntu:focal
 
   displayName: Linux
 
