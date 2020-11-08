@@ -17,7 +17,7 @@ using System;
 
 namespace Server
 {
-    public class HexStringConverter
+    public static class HexStringConverter
     {
         public static readonly uint[] m_Lookup32Chars = CreateLookup32Chars();
 
@@ -40,7 +40,11 @@ namespace Server
             return result;
         }
 
-        public static unsafe string GetString(ReadOnlySpan<byte> bytes)
+        public static string ToHexString(this byte[] bytes) => new ReadOnlySpan<byte>(bytes).ToHexString();
+
+        public static string ToHexString(this Span<byte> bytes) => ((ReadOnlySpan<byte>)bytes).ToHexString();
+
+        public static unsafe string ToHexString(this ReadOnlySpan<byte> bytes)
         {
             var result = new string((char)0, bytes.Length * 2);
             fixed (char* resultP = result)
@@ -49,6 +53,36 @@ namespace Server
                 for (var i = 0; i < bytes.Length; i++)
                 {
                     resultP2[i] = m_Lookup32Chars[bytes[i]];
+                }
+            }
+
+            return result;
+        }
+
+        public static string ToDelimitedHexString(this byte[] bytes) => ((ReadOnlySpan<byte>)bytes).ToDelimitedHexString();
+
+        public static unsafe string ToDelimitedHexString(this ReadOnlySpan<byte> bytes)
+        {
+            const uint delimiter = 0x20002C; // ", "
+            const char openBracket = '[';
+            const char closeBracket = ']';
+            var length = bytes.Length * 4; // len * 2 + (len - 1) * 2 + 2
+
+            var result = new string((char)0, length);
+            fixed (char* resultP = result)
+            {
+                resultP[0] = openBracket;
+                resultP[length - 1] = closeBracket;
+
+                var resultP2 = (uint*)(resultP + 1);
+                for (int a = 0, i = 0; a < bytes.Length; a++, i++)
+                {
+                    if (a > 0)
+                    {
+                        resultP2[i++] = delimiter;
+                    }
+
+                    resultP2[i] = m_Lookup32Chars[bytes[a]];
                 }
             }
 

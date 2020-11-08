@@ -30,7 +30,7 @@ namespace Server.Accounting.Security
             var bytes = new byte[Encoding.ASCII.GetByteCount(password)];
             Encoding.ASCII.GetBytes(password, bytes);
 
-            return HexStringConverter.GetString(m_SHA2HashProvider.ComputeHash(bytes));
+            return m_SHA2HashProvider.ComputeHash(bytes).ToHexString();
         }
 
         public bool ValidatePassword(string encryptedPassword, string plainPassword) =>
