@@ -72,7 +72,6 @@ jobs:
       packageType: sdk
       version: '5.0.100-rc.2.20479.15'
   - task: NuGetAuthenticate@0
-    displayName: Install OpenSSL 1.0 for CentOS 8
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
   - script: dotnet build -r $(os) -c $(buildConfiguration) -f net5.0 --no-restore Projects/Server/Server.csproj
