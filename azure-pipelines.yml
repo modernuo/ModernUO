@@ -6,6 +6,7 @@ trigger:
 variables:
   buildConfiguration: 'Release'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
 
 jobs:
 - job: BuildWindows
@@ -22,9 +23,9 @@ jobs:
   - task: NuGetAuthenticate@0
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
-  - script: dotnet build -c $(buildConfiguration) -f net5.0 --no-restore Projects/Server/Server.csproj
+  - script: dotnet build -r win-x64 -c $(buildConfiguration) -f net5.0 --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'
-  - script: dotnet build -c $(buildConfiguration) -f net5.0 --no-restore Projects/UOContent/UOContent.csproj
+  - script: dotnet build -r win-x64 -c $(buildConfiguration) -f net5.0 --no-restore Projects/UOContent/UOContent.csproj
     displayName: 'Build UO Content'
   - script: dotnet test --no-restore -f net5.0
     displayName: 'Test'
@@ -32,18 +33,30 @@ jobs:
 - job: BuildLinux
   strategy:
     matrix:
+      'CentOS 8':
+        containerImage: modernuo/centos-net5:8
+        os: centos.8-x64
+      'CentOS 7':
+        containerImage: centos:7
+        os: centos.7-x64
       'Debian 9':
         containerImage: amd64/buildpack-deps:stretch
+        os: debian.9-x64
       'Debian 10':
         containerImage: amd64/buildpack-deps:buster
+        os: debian.10-x64
       # 'Debian 11':
       #   containerImage: amd64/buildpack-deps:bullseye
+      #   os: debian.11-x64
       'Ubuntu 16':
         containerImage: amd64/buildpack-deps:xenial
+        os: ubuntu.16.04-x64
       'Ubuntu 18':
         containerImage: amd64/buildpack-deps:bionic
+        os: ubuntu.18.04-x64
       'Ubuntu 20':
         containerImage: amd64/buildpack-deps:focal
+        os: ubuntu.20.04-x64
 
   displayName: Linux
 
@@ -59,11 +72,12 @@ jobs:
       packageType: sdk
       version: '5.0.100-rc.2.20479.15'
   - task: NuGetAuthenticate@0
+    displayName: Install OpenSSL 1.0 for CentOS 8
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
-  - script: dotnet build -c $(buildConfiguration) -f net5.0 --no-restore Projects/Server/Server.csproj
+  - script: dotnet build -r $(os) -c $(buildConfiguration) -f net5.0 --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'
-  - script: dotnet build -c $(buildConfiguration) -f net5.0 --no-restore Projects/UOContent/UOContent.csproj
+  - script: dotnet build -r $(os) -c $(buildConfiguration) -f net5.0 --no-restore Projects/UOContent/UOContent.csproj
     displayName: 'Build UO Content'
   - script: dotnet test --no-restore -f net5.0
     displayName: 'Test'
