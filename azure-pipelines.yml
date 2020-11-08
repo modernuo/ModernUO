@@ -34,7 +34,7 @@ jobs:
   strategy:
     matrix:
       'CentOS 8':
-        containerImage: docker.pkg.github.com/modernuo/centos-8-docker/centos:8
+        containerImage: modernuo/centos-net5:8
         os: centos.8-x64
       'CentOS 7':
         containerImage: centos:7
