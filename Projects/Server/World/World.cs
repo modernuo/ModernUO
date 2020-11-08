@@ -39,10 +39,9 @@ namespace Server
     public static class World
     {
         private static readonly ManualResetEvent m_DiskWriteHandle = new ManualResetEvent(true);
-
-        private static Dictionary<Serial, IEntity> _pendingAdd;
-        private static Dictionary<Serial, IEntity> _pendingDelete;
-        private static ConcurrentQueue<Item> _decayQueue = new ConcurrentQueue<Item>();
+        private static readonly Dictionary<Serial, IEntity> _pendingAdd = new Dictionary<Serial, IEntity>();
+        private static readonly Dictionary<Serial, IEntity> _pendingDelete = new Dictionary<Serial, IEntity>();
+        private static readonly ConcurrentQueue<Item> _decayQueue = new ConcurrentQueue<Item>();
 
         public const uint ItemOffset = 0x40000000;
         public const uint MaxMobileSerial = ItemOffset - 1;
@@ -70,8 +69,7 @@ namespace Server
 
                     if (FindMobile(last) == null)
                     {
-                        _lastMobile = last;
-                        return last;
+                        return _lastMobile = last;
                     }
                 }
 
@@ -96,8 +94,7 @@ namespace Server
 
                     if (FindItem(last) == null)
                     {
-                        _lastItem = last;
-                        return last;
+                        return _lastItem = last;
                     }
                 }
 
@@ -116,7 +113,6 @@ namespace Server
                 return _lastGuild;
             }
         }
-
 
         internal static int _Saves;
         internal static List<Type> ItemTypes { get; } = new List<Type>();
@@ -360,9 +356,6 @@ namespace Server
             Console.Write("World: Loading...");
 
             var watch = Stopwatch.StartNew();
-
-            _pendingAdd = new Dictionary<Serial, IEntity>();
-            _pendingDelete = new Dictionary<Serial, IEntity>();
 
             List<EntityIndex<Item>> items;
             List<EntityIndex<Mobile>> mobiles;
