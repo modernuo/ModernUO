@@ -72,8 +72,6 @@ jobs:
       packageType: sdk
       version: '5.0.100-rc.2.20479.15'
   - task: NuGetAuthenticate@0
-  - script: dnf install -y compat-openssl10
-    condition: startsWith(variables.os, 'centos.8')
     displayName: Install OpenSSL 1.0 for CentOS 8
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
