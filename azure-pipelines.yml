@@ -63,6 +63,8 @@ jobs:
       packageType: sdk
       version: '5.0.100-rc.2.20479.15'
   - task: NuGetAuthenticate@0
+  - task: Set System Globalization Invariance
+    script: export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
   - script: dotnet build -c $(buildConfiguration) -f net5.0 --no-restore Projects/Server/Server.csproj
