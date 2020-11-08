@@ -1,5 +1,3 @@
-dotnet restore --force-evaluate
-
 :<<"::SHELLSCRIPT"
 @ECHO OFF
 GOTO :CMDSCRIPT
@@ -25,6 +23,13 @@ else
   config="-c Release"
 fi
 
+if [[ $os == *'centos'* ]]; then
+  export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+fi
+
+echo dotnet restore --force-evaluate
+dotnet restore --force-evaluate
+
 echo dotnet publish ${config} ${os} -f net5.0 --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
 dotnet publish ${config} ${os} -f net5.0 --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
 echo dotnet publish ${config} ${os} -f net5.0 --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
@@ -44,6 +49,9 @@ IF "%~2" == "" (
 ) ELSE (
   SET os=-r %~1-x64
 )
+
+echo dotnet restore --force-evaluate
+dotnet restore --force-evaluate
 
 echo dotnet publish %config% %os% -f net5.0 --no-restore --self-contained=false -o Distribution Projects\Server\Server.csproj
 dotnet publish %config% %os% -f net5.0 --no-restore --self-contained=false -o Distribution Projects\Server\Server.csproj
