@@ -265,34 +265,14 @@ namespace Server.Commands
 
     public class CategorySorter : IComparer<CategoryEntry>
     {
-        public int Compare(CategoryEntry x, CategoryEntry y)
-        {
-            var a = x?.Title;
-            var b = y?.Title;
-
-            return a switch
-            {
-                null when b == null => 0,
-                null                => 1,
-                _                   => a.CompareTo(b)
-            };
-        }
+        public int Compare(CategoryEntry x, CategoryEntry y) =>
+            string.CompareOrdinal(x?.Title, y?.Title);
     }
 
     public class CategoryTypeSorter : IComparer<CategoryTypeEntry>
     {
-        public int Compare(CategoryTypeEntry x, CategoryTypeEntry y)
-        {
-            var a = x?.Type.Name;
-            var b = y?.Type.Name;
-
-            return a switch
-            {
-                null when b == null => 0,
-                null                => 1,
-                _                   => a.CompareTo(b)
-            };
-        }
+        public int Compare(CategoryTypeEntry x, CategoryTypeEntry y) =>
+            string.CompareOrdinal(x?.Type.Name, y?.Type.Name);
     }
 
     public class CategoryTypeEntry

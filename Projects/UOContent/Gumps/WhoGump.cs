@@ -105,7 +105,7 @@ namespace Server.Gumps
                 if (m != null && (m == owner || !m.Hidden || owner.AccessLevel >= m.AccessLevel ||
                                   m is PlayerMobile mobile && mobile.VisibilityList.Contains(owner)))
                 {
-                    if (filter != null && !(m.Name?.ToLower().IndexOf(filter) >= 0))
+                    if (filter != null && !(m.Name?.ToLower().IndexOf(filter, StringComparison.Ordinal) >= 0))
                     {
                         continue;
                     }

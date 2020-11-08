@@ -108,7 +108,7 @@ namespace Server
 
         public AccessLevel AccessLevel { get; }
 
-        public int CompareTo(CommandEntry e) => e == null ? 1 : Command.CompareTo(e.Command);
+        public int CompareTo(CommandEntry e) => string.CompareOrdinal(Command, e?.Command);
     }
 
     public static class CommandSystem

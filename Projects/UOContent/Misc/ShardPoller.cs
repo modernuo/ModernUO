@@ -393,7 +393,7 @@ namespace Server.Misc
             do
             {
                 ++count;
-                index = title.IndexOf("<br>", index + 1);
+                index = title.IndexOf("<br>", index + 1, StringComparison.Ordinal);
             } while (index >= 0);
 
             return count;

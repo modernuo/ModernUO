@@ -598,7 +598,7 @@ namespace Server.Items
                 {
                     isMatch = true;
                 }
-                else if (m_Substring != null && e.Speech.ToLower().IndexOf(m_Substring.ToLower()) >= 0)
+                else if (m_Substring != null && e.Speech.ToLower().IndexOf(m_Substring.ToLower(), StringComparison.Ordinal) >= 0)
                 {
                     isMatch = true;
                 }

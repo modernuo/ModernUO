@@ -522,28 +522,7 @@ namespace Server.Engines.ConPVP
 
         public static List<Arena> Arenas { get; } = new List<Arena>();
 
-        public int CompareTo(Arena c)
-        {
-            var a = m_Name;
-            var b = c.m_Name;
-
-            if (a == null && b == null)
-            {
-                return 0;
-            }
-
-            if (a == null)
-            {
-                return -1;
-            }
-
-            if (b == null)
-            {
-                return +1;
-            }
-
-            return a.CompareTo(b);
-        }
+        public int CompareTo(Arena c) => string.CompareOrdinal(m_Name, c?.m_Name);
 
         public Ladder AcquireLadder() => Ladder?.Ladder ?? ConPVP.Ladder.Instance;
 
