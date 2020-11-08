@@ -63,9 +63,9 @@ namespace Server
                 {
                     last++;
 
-                    if (last >= _lastMobile)
+                    if (last >= _maxMobiles)
                     {
-                        last = 0;
+                        last = 1;
                     }
 
                     if (FindMobile(last) == null)
