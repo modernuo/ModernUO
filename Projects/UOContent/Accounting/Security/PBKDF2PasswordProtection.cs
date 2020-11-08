@@ -39,7 +39,7 @@ namespace Server.Accounting.Security
             rfc2898.Salt.CopyTo(output.Slice(2, m_SaltSize));
             rfc2898.GetBytes(m_HashSize).CopyTo(output.Slice(m_SaltSize + 2));
 
-            return HexStringConverter.GetString(output);
+            return output.ToHexString();
         }
 
         public bool ValidatePassword(string encryptedPassword, string plainPassword)
