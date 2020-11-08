@@ -45,9 +45,9 @@ namespace Server
         private static ConcurrentQueue<Item> _decayQueue = new ConcurrentQueue<Item>();
 
         public const uint ItemOffset = 0x40000000;
+        public const uint MaxMobileSerial = ItemOffset - 1;
         public const uint MaxItemSerial = 0x7FFFFFFF;
-        private const uint _maxItems = int.MaxValue - ItemOffset;
-        private const uint _maxMobiles = ItemOffset;
+        private const uint _maxItems = MaxItemSerial - ItemOffset;
 
         private static Serial _lastMobile = Serial.Zero;
         private static Serial _lastItem = ItemOffset;
@@ -59,11 +59,11 @@ namespace Server
             {
                 uint last = _lastMobile;
 
-                for (int i = 0; i < _maxMobiles; i++)
+                for (int i = 0; i < MaxMobileSerial; i++)
                 {
                     last++;
 
-                    if (last >= _maxMobiles)
+                    if (last >= MaxMobileSerial)
                     {
                         last = 1;
                     }
@@ -89,7 +89,7 @@ namespace Server
                 {
                     last++;
 
-                    if (last - ItemOffset >= _maxItems)
+                    if (last >= MaxItemSerial)
                     {
                         last = ItemOffset;
                     }
