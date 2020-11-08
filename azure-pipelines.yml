@@ -32,9 +32,9 @@ jobs:
 - job: BuildLinux
   strategy:
     matrix:
-      'CentOS 6'
+      'CentOS 6':
         containerImage: tcnksm/centos-buildpack-deps:6
-      'CentOS 7'
+      'CentOS 7':
         containerImage: tcnksm/centos-buildpack-deps:7
       'Debian 9':
         containerImage: amd64/buildpack-deps:stretch
