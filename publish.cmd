@@ -23,7 +23,7 @@ else
   config="-c Release"
 fi
 
-if [[ $os == *'centos'* ]]; then
+if [[ $os == *'centos'* || $os == *'rhel'* ]]; then
   export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 fi
 
