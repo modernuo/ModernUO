@@ -235,26 +235,6 @@ namespace Server.Network
 
         public static void CreateMovingHuedEffect(
             ref Span<byte> buffer,
-            int itemID, IPoint3D from, IPoint3D to, int speed, int duration, bool fixedDirection,
-            bool explodes, int hue, int renderMode
-        ) => CreateHuedEffect(
-            ref  buffer,
-            EffectType.Moving,
-            Serial.Zero,
-            Serial.Zero,
-            itemID,
-            from,
-            to,
-            speed,
-            duration,
-            fixedDirection,
-            explodes,
-            hue,
-            renderMode
-        );
-
-        public static void CreateMovingHuedEffect(
-            ref Span<byte> buffer,
             IEntity from, IEntity to, int itemID, int speed, int duration, bool fixedDirection,
             bool explodes, int hue, int renderMode
         ) => CreateHuedEffect(
@@ -265,6 +245,26 @@ namespace Server.Network
             itemID,
             from.Location,
             to.Location,
+            speed,
+            duration,
+            fixedDirection,
+            explodes,
+            hue,
+            renderMode
+        );
+
+        public static void CreateMovingHuedEffect(
+            ref Span<byte> buffer,
+            Serial from, Serial to, int itemID, IPoint3D fromLocation, IPoint3D toLocation, int speed, int duration,
+            bool fixedDirection, bool explodes, int hue, int renderMode
+        ) => CreateHuedEffect(
+            ref  buffer,
+            EffectType.Moving,
+            from,
+            to,
+            itemID,
+            fromLocation,
+            toLocation,
             speed,
             duration,
             fixedDirection,
