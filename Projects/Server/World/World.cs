@@ -39,15 +39,14 @@ namespace Server
     public static class World
     {
         private static readonly ManualResetEvent m_DiskWriteHandle = new ManualResetEvent(true);
-
-        private static Dictionary<Serial, IEntity> _pendingAdd;
-        private static Dictionary<Serial, IEntity> _pendingDelete;
-        private static ConcurrentQueue<Item> _decayQueue = new ConcurrentQueue<Item>();
+        private static readonly Dictionary<Serial, IEntity> _pendingAdd = new Dictionary<Serial, IEntity>();
+        private static readonly Dictionary<Serial, IEntity> _pendingDelete = new Dictionary<Serial, IEntity>();
+        private static readonly ConcurrentQueue<Item> _decayQueue = new ConcurrentQueue<Item>();
 
         public const uint ItemOffset = 0x40000000;
         public const uint MaxItemSerial = 0x7FFFFFFF;
-        private const uint _maxItems = int.MaxValue - ItemOffset;
-        private const uint _maxMobiles = ItemOffset;
+        public const uint MaxMobileSerial = ItemOffset - 1;
+        private const uint _maxItems = MaxItemSerial - ItemOffset + 1;
 
         private static Serial _lastMobile = Serial.Zero;
         private static Serial _lastItem = ItemOffset;
@@ -59,19 +58,18 @@ namespace Server
             {
                 uint last = _lastMobile;
 
-                for (int i = 0; i < _maxMobiles; i++)
+                for (int i = 0; i < MaxMobileSerial; i++)
                 {
                     last++;
 
-                    if (last >= _lastMobile)
+                    if (last > MaxMobileSerial)
                     {
-                        last = 0;
+                        last = 1;
                     }
 
                     if (FindMobile(last) == null)
                     {
-                        _lastMobile = last;
-                        return last;
+                        return _lastMobile = last;
                     }
                 }
 
@@ -89,15 +87,14 @@ namespace Server
                 {
                     last++;
 
-                    if (last - ItemOffset >= _maxItems)
+                    if (last > MaxItemSerial)
                     {
                         last = ItemOffset;
                     }
 
                     if (FindItem(last) == null)
                     {
-                        _lastItem = last;
-                        return last;
+                        return _lastItem = last;
                     }
                 }
 
@@ -116,7 +113,6 @@ namespace Server
                 return _lastGuild;
             }
         }
-
 
         internal static int _Saves;
         internal static List<Type> ItemTypes { get; } = new List<Type>();
@@ -360,9 +356,6 @@ namespace Server
             Console.Write("World: Loading...");
 
             var watch = Stopwatch.StartNew();
-
-            _pendingAdd = new Dictionary<Serial, IEntity>();
-            _pendingDelete = new Dictionary<Serial, IEntity>();
 
             List<EntityIndex<Item>> items;
             List<EntityIndex<Mobile>> mobiles;

@@ -17,7 +17,7 @@ elif [[ -f /etc/os-release ]]; then
 fi
 
 if [[ $config ]]; then
-  config="$(tr '[:lower:]' '[:upper:]' <<< ${3:0:1})${3:1}"
+  config="$(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}"
   config="-c $config"
 else
   config="-c Release"
