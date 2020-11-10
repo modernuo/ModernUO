@@ -17,7 +17,7 @@ jobs:
     - name: Setup .NET 5
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100-rc.2.20479.15
+        dotnet-version: 5.0.100
     - uses: dotnet/nbgv@master
       id: nbgv
     - name: Create Release
@@ -53,7 +53,7 @@ jobs:
     - name: Setup .NET 5
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100-rc.2.20479.15
+        dotnet-version: 5.0.100-
     - uses: dotnet/nbgv@master
       id: nbgv
     - name: Load Release URL File from release job

@@ -4,7 +4,6 @@ trigger:
 - master
 
 variables:
-  buildConfiguration: 'Release'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
 
@@ -19,15 +18,15 @@ jobs:
     displayName: 'Install .NET 5'
     inputs:
       packageType: sdk
-      version: '5.0.100-rc.2.20479.15'
+      version: '5.0.100'
   - task: NuGetAuthenticate@0
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
-  - script: dotnet build -r win-x64 -c $(buildConfiguration) -f net5.0 --no-restore Projects/Server/Server.csproj
+  - script: dotnet build -r win-x64 -c Release --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'
-  - script: dotnet build -r win-x64 -c $(buildConfiguration) -f net5.0 --no-restore Projects/UOContent/UOContent.csproj
+  - script: dotnet build -r win-x64 -c Release --no-restore Projects/UOContent/UOContent.csproj
     displayName: 'Build UO Content'
-  - script: dotnet test --no-restore -f net5.0
+  - script: dotnet test --no-restore
     displayName: 'Test'
 
 - job: BuildLinux
@@ -74,9 +73,9 @@ jobs:
   - task: NuGetAuthenticate@0
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
-  - script: dotnet build -r $(os) -c $(buildConfiguration) -f net5.0 --no-restore Projects/Server/Server.csproj
+  - script: dotnet build -r $(os) -c Release --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'
-  - script: dotnet build -r $(os) -c $(buildConfiguration) -f net5.0 --no-restore Projects/UOContent/UOContent.csproj
+  - script: dotnet build -r $(os) -c Release --no-restore Projects/UOContent/UOContent.csproj
     displayName: 'Build UO Content'
-  - script: dotnet test --no-restore -f net5.0
+  - script: dotnet test --no-restore
     displayName: 'Test'
