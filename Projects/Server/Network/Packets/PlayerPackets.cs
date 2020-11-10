@@ -306,19 +306,6 @@ namespace Server.Network
         }
     }
 
-    public sealed class PlaySound : Packet
-    {
-        public PlaySound(int soundID, IPoint3D target) : base(0x54, 12)
-        {
-            Stream.Write((byte)1); // flags
-            Stream.Write((short)soundID);
-            Stream.Write((short)0); // volume
-            Stream.Write((short)target.X);
-            Stream.Write((short)target.Y);
-            Stream.Write((short)target.Z);
-        }
-    }
-
     public sealed class PlayMusic : Packet
     {
         public static readonly Packet InvalidInstance = SetStatic(new PlayMusic(MusicName.Invalid));

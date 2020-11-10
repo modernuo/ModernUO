@@ -377,7 +377,32 @@ namespace Server.Network
             return !(result.IsClosed || result.Length <= 0);
         }
 
-        public virtual void Send(ref CircularBuffer<byte> buffer, int length)
+        public void Send(ref Span<byte> span)
+        {
+            var length = span.Length;
+            if (Connection == null || BlockAllPackets || length <= 0)
+            {
+                return;
+            }
+
+            try
+            {
+                GetSendBuffer(out var buffer);
+                buffer.CopyFrom(span);
+                _packetEncoder?.Invoke(ref buffer, ref length);
+                SendPipe.Writer.Advance((uint)length);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex);
+                TraceException(ex);
+#endif
+                Dispose();
+            }
+        }
+
+        public void Send(ref CircularBuffer<byte> buffer, int length)
         {
             if (Connection == null || BlockAllPackets || length <= 0)
             {
