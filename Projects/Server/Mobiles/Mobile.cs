@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
 using Server.Accounting;
@@ -7314,11 +7315,13 @@ namespace Server
             eable.Free();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SendSound(int soundID)
         {
             m_NetState?.SendSoundEffect(soundID, this);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SendSound(int soundID, IPoint3D p)
         {
             m_NetState?.SendSoundEffect(soundID, p);
@@ -7370,12 +7373,7 @@ namespace Server
             DisruptiveAction(); // Anything that unhides you will also distrupt meditation
         }
 
-        public void SendRemovePacket()
-        {
-            SendRemovePacket(true);
-        }
-
-        public void SendRemovePacket(bool everyone)
+        public void SendRemovePacket(bool everyone = true)
         {
             if (m_Map == null)
             {
