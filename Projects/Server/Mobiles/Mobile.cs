@@ -5660,12 +5660,7 @@ namespace Server
 
                             from.Holding = item;
 
-                            var liftSound = item.GetLiftSound(from);
-
-                            if (liftSound != -1)
-                            {
-                                from.Send(new PlaySound(liftSound, from));
-                            }
+                            from.SendSound(item.GetLiftSound(from));
 
                             from.NextActionTime = Core.TickCount + ActionDelay;
 
@@ -7321,18 +7316,12 @@ namespace Server
 
         public void SendSound(int soundID)
         {
-            if (soundID != -1 && m_NetState != null)
-            {
-                Send(new PlaySound(soundID, this));
-            }
+            m_NetState?.SendSoundEffect(soundID, this);
         }
 
         public void SendSound(int soundID, IPoint3D p)
         {
-            if (soundID != -1 && m_NetState != null)
-            {
-                Send(new PlaySound(soundID, p));
-            }
+            m_NetState?.SendSoundEffect(soundID, p);
         }
 
         public void PlaySound(int soundID)
@@ -7342,7 +7331,8 @@ namespace Server
                 return;
             }
 
-            var p = Packet.Acquire(new PlaySound(soundID, this));
+            Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
+            OutgoingEffectPackets.CreateSoundEffect(ref buffer, soundID, this);
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -7350,11 +7340,9 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this))
                 {
-                    state.Send(p);
+                    state.Send(ref buffer);
                 }
             }
-
-            Packet.Release(p);
 
             eable.Free();
         }

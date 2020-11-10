@@ -138,7 +138,13 @@ namespace Server
             IPoint3D p, Map map, int itemID, int duration, int speed = 10, int hue = 0, int renderMode = 0
         )
         {
-            SendPacket(p, map, new LocationEffect(p, itemID, speed, duration, hue, renderMode));
+            Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
+            OutgoingEffectPackets.CreateLocationHuedEffect(
+                ref effect,
+                p, itemID, speed, duration, hue, renderMode
+            );
+
+            SendEffect(p, map, ref effect);
         }
 
         public static void SendLocationParticles(IEntity e, int itemID, int speed, int duration, int effect)
@@ -195,12 +201,15 @@ namespace Server
 
         public static void SendTargetEffect(IEntity target, int itemID, int speed, int duration, int hue = 0, int renderMode = 0)
         {
-            if (target is Mobile mobile)
-            {
-                mobile.ProcessDelta();
-            }
+            (target as Mobile)?.ProcessDelta();
 
-            SendPacket(target.Location, target.Map, new TargetEffect(target, itemID, speed, duration, hue, renderMode));
+            Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
+            OutgoingEffectPackets.CreateTargetHuedEffect(
+                ref effect,
+                target, itemID, speed, duration, hue, renderMode
+            );
+
+            SendEffect(target.Location, target.Map, ref effect);
         }
 
         public static void SendTargetParticles(
@@ -216,10 +225,7 @@ namespace Server
             int effect, EffectLayer layer, int unknown = 0
         )
         {
-            if (target is Mobile mobile)
-            {
-                mobile.ProcessDelta();
-            }
+            (target as Mobile)?.ProcessDelta();
 
             var map = target.Map;
 
@@ -264,21 +270,33 @@ namespace Server
             bool fixedDirection, bool explodes, int hue = 0, int renderMode = 0
         )
         {
-            if (from is Mobile mobile)
-            {
-                mobile.ProcessDelta();
-            }
+            (from as Mobile)?.ProcessDelta();
+            (to as Mobile)?.ProcessDelta();
 
-            if (to is Mobile mobile1)
-            {
-                mobile1.ProcessDelta();
-            }
-
-            SendPacket(
-                from.Location,
-                from.Map,
-                new MovingEffect(from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode)
+            Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
+            OutgoingEffectPackets.CreateMovingHuedEffect(
+                ref effect,
+                from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode
             );
+
+            SendEffect(from.Location, from.Map, ref effect);
+        }
+
+        public static void SendMovingEffect(
+            IPoint3D from, IPoint3D to, Map map, int itemID, int speed, int duration,
+            bool fixedDirection, bool explodes, int hue = 0, int renderMode = 0
+        )
+        {
+            (from as Mobile)?.ProcessDelta();
+            (to as Mobile)?.ProcessDelta();
+
+            Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
+            OutgoingEffectPackets.CreateMovingHuedEffect(
+                ref effect,
+                itemID, from, to, speed, duration, fixedDirection, explodes, hue, renderMode
+            );
+
+            SendEffect(from, map, ref effect);
         }
 
         public static void SendMovingParticles(
@@ -385,7 +403,7 @@ namespace Server
             eable.Free();
         }
 
-        public static void SendPacket(IPoint3D origin, Map map, Packet p)
+        public static void SendEffect(IPoint3D origin, Map map, ref Span<byte> effectBuffer)
         {
             if (map == null)
             {
@@ -394,15 +412,11 @@ namespace Server
 
             var eable = map.GetClientsInRange(new Point3D(origin));
 
-            p.Acquire();
-
             foreach (var state in eable)
             {
                 state.Mobile.ProcessDelta();
-                state.Send(p);
+                state.Send(ref effectBuffer);
             }
-
-            p.Release();
 
             eable.Free();
         }

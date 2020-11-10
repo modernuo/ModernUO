@@ -591,7 +591,7 @@ namespace Server.Items
 
                     scroll.Delete();
 
-                    from.Send(new PlaySound(0x249, GetWorldLocation()));
+                    from.SendSound(0x249, GetWorldLocation());
                     return true;
                 }
             }

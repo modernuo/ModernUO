@@ -49,8 +49,7 @@ namespace Server.ContextMenus
                                 book.Content |= (ulong)1 << val;
 
                                 m_Scroll.Consume();
-
-                                from.Send(new PlaySound(0x249, book.GetWorldLocation()));
+                                from.SendSound(0x249, book.GetWorldLocation());
                             }
                         }
                     }

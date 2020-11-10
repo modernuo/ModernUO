@@ -36,6 +36,25 @@ namespace Server.Network
             writer.Write((short)target.Z);
         }
 
+        public static void SendSoundEffect(this NetState ns, int soundID, IPoint3D target)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0xC7);
+            writer.Write((byte)1); // flags
+            writer.Write((short)soundID);
+            writer.Write((short)0); // volume
+            writer.Write((short)target.X);
+            writer.Write((short)target.Y);
+            writer.Write((short)target.Z);
+
+            ns.Send(ref buffer, writer.Position);
+        }
+
         public static void CreateParticleEffect(
             ref Span<byte> buffer,
             EffectType type, Serial from, Serial to, int itemID, IPoint3D fromPoint, IPoint3D toPoint,
@@ -210,6 +229,26 @@ namespace Server.Network
             duration,
             true,
             false,
+            hue,
+            renderMode
+        );
+
+        public static void CreateMovingHuedEffect(
+            ref Span<byte> buffer,
+            int itemID, IPoint3D from, IPoint3D to, int speed, int duration, bool fixedDirection,
+            bool explodes, int hue, int renderMode
+        ) => CreateHuedEffect(
+            ref  buffer,
+            EffectType.Moving,
+            Serial.Zero,
+            Serial.Zero,
+            itemID,
+            from,
+            to,
+            speed,
+            duration,
+            fixedDirection,
+            explodes,
             hue,
             renderMode
         );

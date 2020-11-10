@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Server.Commands.Generic;
@@ -420,19 +421,16 @@ namespace Server.Commands
                 toAll
             );
 
-            Packet p = new PlaySound(index, m.Location);
-
-            p.Acquire();
+            Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
+            OutgoingEffectPackets.CreateSoundEffect(ref buffer, index, m);
 
             foreach (var state in m.GetClientsInRange(12))
             {
                 if (toAll || state.Mobile.CanSee(m))
                 {
-                    state.Send(p);
+                    state.Send(ref buffer);
                 }
             }
-
-            p.Release();
         }
 
         [Usage("Echo <text>")]

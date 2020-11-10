@@ -414,7 +414,7 @@ namespace Server.Items
 
                         rune.Delete();
 
-                        from.Send(new PlaySound(0x42, GetWorldLocation()));
+                        from.SendSound(0x42, GetWorldLocation());
 
                         from.SendMessage((rune.Description?.Trim()).DefaultIfNullOrEmpty("(indescript)"));
 
@@ -432,7 +432,7 @@ namespace Server.Items
             {
                 if (CurCharges < MaxCharges)
                 {
-                    from.Send(new PlaySound(0x249, GetWorldLocation()));
+                    from.SendSound(0x249, GetWorldLocation());
 
                     var amount = dropped.Amount;
 

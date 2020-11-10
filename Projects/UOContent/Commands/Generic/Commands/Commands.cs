@@ -394,7 +394,7 @@ namespace Server.Commands.Generic
                     index,
                     CommandLogging.Format(mob)
                 );
-                mob.Send(new PlaySound(index, mob.Location));
+                mob.SendSound(index);
             }
             else
             {
