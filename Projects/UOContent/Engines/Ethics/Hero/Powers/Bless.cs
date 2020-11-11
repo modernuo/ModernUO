@@ -68,7 +68,7 @@ namespace Server.Ethics.Hero
             {
                 SpellHelper.Turn(from.Mobile, p);
 
-                Effects.PlaySound(p, from.Mobile.Map, 0x299);
+                Effects.PlaySound(new Point3D(p), from.Mobile.Map, 0x299);
 
                 from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You consecrate the area.");
 

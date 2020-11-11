@@ -63,7 +63,7 @@ namespace Server.Spells.Sixth
                 rune.Mark(Caster);
 
                 Caster.PlaySound(0x1FA);
-                Effects.SendLocationEffect(Caster, Caster.Map, 14201, 16);
+                Effects.SendLocationEffect(Caster, 14201, 16);
             }
 
             FinishSequence();

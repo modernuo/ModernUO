@@ -66,7 +66,7 @@ namespace Server.Engines.Quests.Haven
 
         public override bool HandlesOnMovement => Canoneer?.Deleted == false && Canoneer.Active;
 
-        public void DoFireEffect(IPoint3D target)
+        public void DoFireEffect(Point3D target)
         {
             var from = CannonDirection switch
             {
@@ -85,7 +85,7 @@ namespace Server.Engines.Quests.Haven
 
         public void Fire(Mobile from, Mobile target)
         {
-            DoFireEffect(target);
+            DoFireEffect(target.Location);
 
             target.Damage(9999, from);
         }

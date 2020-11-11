@@ -61,7 +61,9 @@ namespace Server
             ParticleSupportType == ParticleSupportType.Full ||
             ParticleSupportType == ParticleSupportType.Detect && state.IsUOTDClient;
 
-        public static void PlaySound(IPoint3D p, Map map, int soundID)
+        public static void PlaySound(IEntity e, int soundID) => PlaySound(e.Location, e.Map, soundID);
+
+        public static void PlaySound(Point3D p, Map map, int soundID)
         {
             if (soundID <= -1)
             {
@@ -135,7 +137,11 @@ namespace Server
         }
 
         public static void SendLocationEffect(
-            IPoint3D p, Map map, int itemID, int duration, int speed = 10, int hue = 0, int renderMode = 0
+            IEntity e, int itemID, int duration, int speed = 10, int hue = 0, int renderMode = 0
+        ) => SendLocationEffect(e.Location, e.Map, itemID, duration, speed, hue, renderMode);
+
+        public static void SendLocationEffect(
+            Point3D p, Map map, int itemID, int duration, int speed = 10, int hue = 0, int renderMode = 0
         )
         {
             Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
@@ -177,7 +183,10 @@ namespace Server
             Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength] : null;
             if (itemID != 0)
             {
-                OutgoingEffectPackets.CreateLocationHuedEffect(ref regular, e, itemID, speed, duration, hue, renderMode);
+                OutgoingEffectPackets.CreateLocationHuedEffect(
+                    ref regular,
+                    e.Location, itemID, speed, duration, hue, renderMode
+                );
             }
 
             var eable = map.GetClientsInRange(e.Location);
@@ -266,54 +275,130 @@ namespace Server
         }
 
         public static void SendMovingEffect(
-            IEntity from, IEntity to, int itemID, int speed, int duration,
-            bool fixedDirection, bool explodes, int hue = 0, int renderMode = 0
+            Map map, int itemID, Point3D from, Point3D to, int speed, int duration,
+            bool fixedDirection = false, bool explodes = false, int hue = 0, int renderMode = 0
+        ) => SendMovingEffect(
+            Serial.Zero,
+            Serial.Zero,
+            from,
+            map,
+            itemID,
+            from,
+            to,
+            speed,
+            duration,
+            fixedDirection,
+            explodes,
+            hue,
+            renderMode
+        );
+
+        public static void SendMovingEffect(
+            Point3D origin, Map map, int itemID, Point3D from, Point3D to, int speed, int duration,
+            bool fixedDirection = false, bool explodes = false, int hue = 0, int renderMode = 0
+        ) => SendMovingEffect(
+            Serial.Zero,
+            Serial.Zero,
+            origin,
+            map,
+            itemID,
+            from,
+            to,
+            speed,
+            duration,
+            fixedDirection,
+            explodes,
+            hue,
+            renderMode
+        );
+
+        public static void SendMovingEffect(
+            IEntity from, Point3D to, int itemID,
+            int speed, int duration, bool fixedDirection = false, bool explodes = false, int hue = 0, int renderMode = 0
         )
         {
             (from as Mobile)?.ProcessDelta();
-            (to as Mobile)?.ProcessDelta();
 
-            Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
-            OutgoingEffectPackets.CreateMovingHuedEffect(
-                ref effect,
-                from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode
+            SendMovingEffect(
+                from.Serial,
+                Serial.Zero,
+                from.Location,
+                from.Map,
+                itemID,
+                from.Location,
+                to,
+                speed,
+                duration,
+                fixedDirection,
+                explodes,
+                hue,
+                renderMode
             );
-
-            SendPacket(from.Location, from.Map, ref effect);
         }
 
         public static void SendMovingEffect(
-            IEntity from, IPoint3D to, int itemID, int speed, int duration,
-            bool fixedDirection, bool explodes, int hue = 0, int renderMode = 0
+            IEntity from, IEntity to, int itemID,
+            int speed, int duration, bool fixedDirection = false, bool explodes = false, int hue = 0, int renderMode = 0
         )
         {
             (from as Mobile)?.ProcessDelta();
             (to as Mobile)?.ProcessDelta();
 
-            Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
-            OutgoingEffectPackets.CreateMovingHuedEffect(
-                ref effect,
-                from.Serial, Serial.Zero, itemID, from, to, speed, duration, fixedDirection, explodes, hue, renderMode
+            SendMovingEffect(
+                from,
+                to,
+                from.Location,
+                from.Map,
+                itemID,
+                from.Location,
+                to.Location,
+                speed,
+                duration,
+                fixedDirection,
+                explodes,
+                hue,
+                renderMode
             );
-
-            SendPacket(from.Location, from.Map, ref effect);
         }
 
         public static void SendMovingEffect(
-            IPoint3D from, IPoint3D to, Map map, int itemID, int speed, int duration,
-            bool fixedDirection, bool explodes, int hue = 0, int renderMode = 0
+            IEntity from, IEntity to, Point3D origin, Map map, int itemID, Point3D fromLocation, Point3D toLocation,
+            int speed, int duration, bool fixedDirection = false, bool explodes = false, int hue = 0, int renderMode = 0
         )
         {
             (from as Mobile)?.ProcessDelta();
             (to as Mobile)?.ProcessDelta();
 
+            SendMovingEffect(
+                from.Serial,
+                to.Serial,
+                origin,
+                map,
+                itemID,
+                fromLocation,
+                toLocation,
+                speed,
+                duration,
+                fixedDirection,
+                explodes,
+                hue,
+                renderMode
+            );
+        }
+
+        public static void SendMovingEffect(
+            Serial from, Serial to, Point3D origin, Map map, int itemID, Point3D fromLocation, Point3D toLocation,
+            int speed, int duration, bool fixedDirection = false, bool explodes = false, int hue = 0, int renderMode = 0
+        )
+        {
             Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
             OutgoingEffectPackets.CreateMovingHuedEffect(
                 ref effect,
-                Serial.Zero, Serial.Zero, itemID, from, to, speed, duration, fixedDirection, explodes, hue, renderMode
+                from, to, itemID, fromLocation, toLocation, speed, duration, fixedDirection,
+                explodes, hue, renderMode
             );
 
-            SendPacket(from, map, ref effect);
+            SendPacket(origin, map, ref effect);
         }
 
         public static void SendMovingParticles(
@@ -420,7 +505,7 @@ namespace Server
             eable.Free();
         }
 
-        public static void SendPacket(IPoint3D origin, Map map, ref Span<byte> effectBuffer)
+        public static void SendPacket(Point3D origin, Map map, ref Span<byte> effectBuffer)
         {
             if (map == null)
             {

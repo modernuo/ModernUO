@@ -3375,11 +3375,13 @@ namespace Server
                 Packet hitsPacket = null;
                 Packet statPacketTrue = null;
                 Packet statPacketFalse = null;
-                Packet deadPacket = null;
                 Packet hairPacket = null;
                 Packet facialhairPacket = null;
                 Packet hbpPacket = null;
                 Packet hbyPacket = null;
+
+                Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
+                OutgoingMobilePackets.CreateBondedStatus(ref deadBuffer, m.Serial, true);
 
                 var eable = m.Map.GetClientsInRange(m.m_Location);
 
@@ -3400,9 +3402,7 @@ namespace Server
 
                             if (m.IsDeadBondedPet)
                             {
-                                deadPacket ??= Packet.Acquire(new BondedStatus(m.Serial, true));
-
-                                state.Send(deadPacket);
+                                state.Send(ref deadBuffer);
                             }
                         }
 
@@ -3503,7 +3503,6 @@ namespace Server
                 Packet.Release(hitsPacket);
                 Packet.Release(statPacketTrue);
                 Packet.Release(statPacketFalse);
-                Packet.Release(deadPacket);
                 Packet.Release(hairPacket);
                 Packet.Release(facialhairPacket);
                 Packet.Release(hbpPacket);
@@ -5384,7 +5383,7 @@ namespace Server
 
             if (sound >= 0)
             {
-                Effects.PlaySound(this, Map, sound);
+                Effects.PlaySound(this, sound);
             }
 
             if (!m_Player)
@@ -7327,6 +7326,9 @@ namespace Server
             m_NetState?.SendSoundEffect(soundID, p);
         }
 
+        /**
+         * Plays a sound to netstates that can see this mobile
+         */
         public void PlaySound(int soundID)
         {
             if (soundID == -1 || m_Map == null)
@@ -7516,7 +7518,7 @@ namespace Server
 
                             if (m.IsDeadBondedPet)
                             {
-                                ns.Send(new BondedStatus(m.Serial, true));
+                                ns.SendBondedStatus(m.Serial, true);
                             }
 
                             if (ObjectPropertyList.Enabled)
@@ -7676,7 +7678,7 @@ namespace Server
 
                     if (IsDeadBondedPet)
                     {
-                        state.Send(new BondedStatus(Serial, true));
+                        state.SendBondedStatus(Serial, true);
                     }
 
                     if (ObjectPropertyList.Enabled)
@@ -7962,7 +7964,7 @@ namespace Server
 
                                 if (IsDeadBondedPet)
                                 {
-                                    m.m_NetState.Send(new BondedStatus(Serial, true));
+                                    m.m_NetState.SendBondedStatus(Serial, true);
                                 }
 
                                 if (ObjectPropertyList.Enabled)
@@ -7989,7 +7991,7 @@ namespace Server
 
                             if (m.IsDeadBondedPet)
                             {
-                                ourState.Send(new BondedStatus(m.Serial, true));
+                                ourState.SendBondedStatus(m.Serial, true);
                             }
 
                             if (ObjectPropertyList.Enabled)
@@ -8024,7 +8026,7 @@ namespace Server
 
                             if (IsDeadBondedPet)
                             {
-                                ns.Send(new BondedStatus(Serial, true));
+                                ns.SendBondedStatus(Serial, true);
                             }
 
                             if (ObjectPropertyList.Enabled)
@@ -8112,7 +8114,7 @@ namespace Server
 
                     if (IsDeadBondedPet)
                     {
-                        state.Send(new BondedStatus(Serial, true));
+                        state.SendBondedStatus(Serial, true);
                     }
 
                     if (ObjectPropertyList.Enabled)

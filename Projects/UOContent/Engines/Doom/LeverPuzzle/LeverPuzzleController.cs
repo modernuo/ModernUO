@@ -481,7 +481,7 @@ namespace Server.Engines.Doom
             Effects.SendMovingParticles(from, to, itemid, speed, 0, true, explodes, 2, 0, 0);
         }
 
-        private static void SendLocationEffect(IPoint3D p, int itemID, int speed, int duration, int hue)
+        private static void SendLocationEffect(Point3D p, int itemID, int speed, int duration, int hue)
         {
             Effects.SendLocationEffect(p, Map.Malas, itemID, speed, duration, hue);
         }

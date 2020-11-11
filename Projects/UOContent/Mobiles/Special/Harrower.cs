@@ -687,7 +687,7 @@ namespace Server.Mobiles
                                     30,
                                     5052
                                 );
-                                Effects.PlaySound(g, g.Map, 0x208);
+                                Effects.PlaySound(g, 0x208);
 
                                 break;
                             }
@@ -700,7 +700,7 @@ namespace Server.Mobiles
                                     10,
                                     5044
                                 );
-                                Effects.PlaySound(g, g.Map, 0x307);
+                                Effects.PlaySound(g, 0x307);
 
                                 break;
                             }

@@ -40,9 +40,11 @@ namespace Server.Spells.Fourth
 
                 SpellHelper.GetSurfaceTop(ref p);
 
+                var loc = new Point3D(p);
+
                 if (!Core.AOS)
                 {
-                    Effects.PlaySound(p, Caster.Map, 0x299);
+                    Effects.PlaySound(loc, Caster.Map, 0x299);
                 }
 
                 if (Caster.Map == null)
@@ -51,7 +53,7 @@ namespace Server.Spells.Fourth
                     return;
                 }
 
-                var targets = Caster.Map.GetMobilesInRange(new Point3D(p), Core.AOS ? 2 : 3)
+                var targets = Caster.Map.GetMobilesInRange(loc, Core.AOS ? 2 : 3)
                     .Where(m => Caster.CanBeBeneficial(m, false));
 
                 if (Core.AOS)

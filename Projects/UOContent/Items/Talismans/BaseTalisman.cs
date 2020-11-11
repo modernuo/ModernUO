@@ -408,7 +408,7 @@ namespace Server.Items
                         20,
                         5042
                     );
-                    Effects.PlaySound(m_Creature, m_Creature.Map, 0x201);
+                    Effects.PlaySound(m_Creature, 0x201);
 
                     m_Creature.Delete();
                 }

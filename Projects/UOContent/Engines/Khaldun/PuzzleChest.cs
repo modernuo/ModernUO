@@ -330,7 +330,7 @@ namespace Server.Items
             {
                 case 0:
                     {
-                        Effects.SendLocationEffect(to, to.Map, 0x113A, 20, 10);
+                        Effects.SendLocationEffect(to, 0x113A, 20);
                         to.PlaySound(0x231);
                         to.LocalOverheadMessage(MessageType.Regular, 0x44, 1010523); // A toxic vapor envelops thee.
 
@@ -340,7 +340,7 @@ namespace Server.Items
                     }
                 case 1:
                     {
-                        Effects.SendLocationEffect(to, to.Map, 0x3709, 30);
+                        Effects.SendLocationEffect(to, 0x3709, 30);
                         to.PlaySound(0x54);
                         to.LocalOverheadMessage(MessageType.Regular, 0xEE, 1010524); // Searing heat scorches thy skin.
 
