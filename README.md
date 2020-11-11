@@ -21,22 +21,19 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![GitHub build](https://img.shields.io/github/workflow/status/modernuo/ModernUO/Build?logo=github)](https://github.com/modernuo/ModernUO/actions)
 [![AzurePipelines build](https://dev.azure.com/modernuo/modernuo/_apis/build/status/Build?branchName=master)](https://dev.azure.com/modernuo/modernuo/_build/latest?definitionId=1&branchName=master)
 
-## Goals
-- See [Goals](./GOALS.md)
-
-## Publishing a build
+## Building the server
 #### Requirements
 - [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 
 #### Publishing Builds
 - Using terminal or powershell: `./publish.cmd [release|debug (default: release)] [os]`
-  - Supported `os`:
-    - `win` for Windows 8/10/2019
-    - `osx` for MacOS
-    - `ubuntu.16.04`, `ubuntu.18.04` `ubuntu.20.04` for Ubuntu LTS
-    - `debian.9`, `debian.10` for Debian
-    - `centos.7`, `centos.8` for CentOS
-    - If blank, the host operating system is used
+  - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/master/release-notes/5.0/5.0-supported-os.md)
+    - `win` - Windows 8.1/10/2016/2019
+    - `osx` - MacOS
+    - `ubuntu.16.04`, `ubuntu.18.04` `ubuntu.20.04` - Ubuntu LTS
+    - `debian.9`, `debian.10` - Debian
+    - `centos.7`, `centos.8` - CentOS
+    - If blank, the operating system running the build is used
 
 ## Deploying / Running Server
 - Follow the [publish](https://github.com/modernuo/ModernUO#publishing-a-build) instructions

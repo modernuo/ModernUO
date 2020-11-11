@@ -30,10 +30,10 @@ fi
 echo dotnet restore --force-evaluate
 dotnet restore --force-evaluate
 
-echo dotnet publish ${config} ${os} -f net5.0 --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
-dotnet publish ${config} ${os} -f net5.0 --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
-echo dotnet publish ${config} ${os} -f net5.0 --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
-dotnet publish ${config} ${os} -f net5.0 --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
+echo dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
+dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
+echo dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
+dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
 exit $?
 
 :CMDSCRIPT
@@ -53,7 +53,7 @@ IF "%~2" == "" (
 echo dotnet restore --force-evaluate
 dotnet restore --force-evaluate
 
-echo dotnet publish %config% %os% -f net5.0 --no-restore --self-contained=false -o Distribution Projects\Server\Server.csproj
-dotnet publish %config% %os% -f net5.0 --no-restore --self-contained=false -o Distribution Projects\Server\Server.csproj
-echo dotnet publish %config% %os% -f net5.0 --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
-dotnet publish %config% %os% -f net5.0 --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
+echo dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution Projects\Server\Server.csproj
+dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution Projects\Server\Server.csproj
+echo dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
+dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
