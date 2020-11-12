@@ -377,17 +377,16 @@ namespace Server.Network
             return !(result.IsClosed || result.Length <= 0);
         }
 
-        public void Send(ref Span<byte> span)
+        public void Send(ReadOnlySpan<byte> span)
         {
             var length = span.Length;
-            if (Connection == null || BlockAllPackets || length <= 0)
+            if (Connection == null || BlockAllPackets || length <= 0 || !GetSendBuffer(out var buffer))
             {
                 return;
             }
 
             try
             {
-                GetSendBuffer(out var buffer);
                 buffer.CopyFrom(span);
                 _packetEncoder?.Invoke(ref buffer, ref length);
                 SendPipe.Writer.Advance((uint)length);
@@ -402,6 +401,9 @@ namespace Server.Network
             }
         }
 
+        /**
+         * Send data using a circular buffer from SendPipe
+         */
         public void Send(ref CircularBuffer<byte> buffer, int length)
         {
             if (Connection == null || BlockAllPackets || length <= 0)

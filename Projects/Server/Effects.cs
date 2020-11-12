@@ -80,7 +80,7 @@ namespace Server
                 foreach (var state in eable)
                 {
                     state.Mobile.ProcessDelta();
-                    state.Send(ref buffer);
+                    state.Send(buffer);
                 }
 
                 eable.Free();
@@ -121,14 +121,14 @@ namespace Server
                 {
                     if (SendParticlesTo(state))
                     {
-                        state.Send(ref preEffect);
+                        state.Send(preEffect);
                     }
 
-                    state.Send(ref boltEffect);
+                    state.Send(boltEffect);
 
                     if (sound)
                     {
-                        state.Send(ref soundEffect);
+                        state.Send(soundEffect);
                     }
                 }
             }
@@ -197,11 +197,11 @@ namespace Server
 
                 if (SendParticlesTo(state))
                 {
-                    state.Send(ref particles);
+                    state.Send(particles);
                 }
                 else if (itemID != 0)
                 {
-                    state.Send(ref regular);
+                    state.Send(regular);
                 }
             }
 
@@ -263,11 +263,11 @@ namespace Server
 
                 if (SendParticlesTo(state))
                 {
-                    state.Send(ref particles);
+                    state.Send(particles);
                 }
                 else if (itemID != 0)
                 {
-                    state.Send(ref regular);
+                    state.Send(regular);
                 }
             }
 
@@ -494,11 +494,11 @@ namespace Server
 
                 if (SendParticlesTo(state))
                 {
-                    state.Send(ref particles);
+                    state.Send(particles);
                 }
                 else if (itemID > 1)
                 {
-                    state.Send(ref regular);
+                    state.Send(regular);
                 }
             }
 
@@ -517,7 +517,7 @@ namespace Server
             foreach (var state in eable)
             {
                 state.Mobile.ProcessDelta();
-                state.Send(ref effectBuffer);
+                state.Send(effectBuffer);
             }
 
             eable.Free();

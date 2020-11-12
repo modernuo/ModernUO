@@ -3842,7 +3842,6 @@ namespace Server.Mobiles
 
             Span<byte> buffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
             OutgoingMobilePackets.CreateBondedStatus(ref buffer, Serial, false);
-
             Effects.SendPacket(Location, Map, ref buffer);
 
             SendIncomingPacket();

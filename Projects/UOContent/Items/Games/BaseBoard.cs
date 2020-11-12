@@ -92,7 +92,7 @@ namespace Server.Items
 
                     foreach (var state in GetClientsInRange(2))
                     {
-                        state.Send(ref buffer);
+                        state.Send(buffer);
                     }
                 }
 

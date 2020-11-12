@@ -428,7 +428,7 @@ namespace Server.Commands
             {
                 if (toAll || state.Mobile.CanSee(m))
                 {
-                    state.Send(ref buffer);
+                    state.Send(buffer);
                 }
             }
         }

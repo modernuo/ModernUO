@@ -32,7 +32,7 @@ namespace Server.Network
             writer.Write(attacker);
             writer.Write(defender);
 
-            ns.Send(ref buffer, 10);
+            ns.Send(ref buffer, writer.Position);
         }
 
         public static void SendSetWarMode(this NetState ns, bool warmode)
@@ -47,7 +47,7 @@ namespace Server.Network
             // Warmode, 0x00, 0x32, 0x00
             writer.Write(warmode ? 0x01003200 : 0x00003200);
 
-            ns.Send(ref buffer, 5);
+            ns.Send(ref buffer, writer.Position);
         }
 
         public static void SendChangeCombatant(this NetState ns, Serial combatant)
@@ -61,7 +61,7 @@ namespace Server.Network
             writer.Write((byte)0xAA); // Packet ID
             writer.Write(combatant);
 
-            ns.Send(ref buffer, 5);
+            ns.Send(ref buffer, writer.Position);
         }
     }
 }

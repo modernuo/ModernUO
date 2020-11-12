@@ -3402,7 +3402,7 @@ namespace Server
 
                             if (m.IsDeadBondedPet)
                             {
-                                state.Send(ref deadBuffer);
+                                state.Send(deadBuffer);
                             }
                         }
 
@@ -7345,7 +7345,7 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this))
                 {
-                    state.Send(ref buffer);
+                    state.Send(buffer);
                 }
             }
 
