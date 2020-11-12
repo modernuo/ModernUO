@@ -453,15 +453,8 @@ namespace Server
             EffectLayer layer, int unknown
         )
         {
-            if (from is Mobile fromMob)
-            {
-                fromMob.ProcessDelta();
-            }
-
-            if (to is Mobile toMob)
-            {
-                toMob.ProcessDelta();
-            }
+            (from as Mobile)?.ProcessDelta();
+            (to as Mobile)?.ProcessDelta();
 
             var map = from.Map;
 
