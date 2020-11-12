@@ -254,56 +254,6 @@ namespace Server.Network
         }
     }
 
-    public sealed class ScreenFadeOut : ScreenEffect
-    {
-        public static readonly Packet Instance = SetStatic(new ScreenFadeOut());
-
-        public ScreenFadeOut()
-            : base(ScreenEffectType.FadeOut)
-        {
-        }
-    }
-
-    public sealed class ScreenFadeIn : ScreenEffect
-    {
-        public static readonly Packet Instance = SetStatic(new ScreenFadeIn());
-
-        public ScreenFadeIn()
-            : base(ScreenEffectType.FadeIn)
-        {
-        }
-    }
-
-    public sealed class ScreenFadeInOut : ScreenEffect
-    {
-        public static readonly Packet Instance = SetStatic(new ScreenFadeInOut());
-
-        public ScreenFadeInOut()
-            : base(ScreenEffectType.FadeInOut)
-        {
-        }
-    }
-
-    public sealed class ScreenLightFlash : ScreenEffect
-    {
-        public static readonly Packet Instance = SetStatic(new ScreenLightFlash());
-
-        public ScreenLightFlash()
-            : base(ScreenEffectType.LightFlash)
-        {
-        }
-    }
-
-    public sealed class ScreenDarkFlash : ScreenEffect
-    {
-        public static readonly Packet Instance = SetStatic(new ScreenDarkFlash());
-
-        public ScreenDarkFlash()
-            : base(ScreenEffectType.DarkFlash)
-        {
-        }
-    }
-
     public sealed class BoltEffect : Packet
     {
         public BoltEffect(IEntity target, int hue) : base(0xC0, 36)

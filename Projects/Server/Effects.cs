@@ -104,7 +104,7 @@ namespace Server
                 e, 0, 10, 5, 0, 0, 5031, 3, 0
             );
 
-            Span<byte> boltEffect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
+            Span<byte> boltEffect = stackalloc byte[OutgoingEffectPackets.BoltEffectLength];
             OutgoingEffectPackets.CreateBoltEffect(ref boltEffect, e, hue);
 
             Span<byte> soundEffect = sound ? stackalloc byte[OutgoingEffectPackets.SoundPacketLength] : null;

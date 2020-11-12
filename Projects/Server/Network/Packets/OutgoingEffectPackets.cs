@@ -23,11 +23,12 @@ namespace Server.Network
         public const int SoundPacketLength = 12;
         public const int ParticleEffectLength = 49;
         public const int HuedEffectLength = 36;
+        public const int BoltEffectLength = 36;
 
         public static void CreateSoundEffect(ref Span<byte> buffer, int soundID, IPoint3D target)
         {
             var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xC7);
+            writer.Write((byte)0x54); // Packet ID
             writer.Write((byte)1); // flags
             writer.Write((short)soundID);
             writer.Write((short)0); // volume
@@ -44,7 +45,7 @@ namespace Server.Network
             }
 
             var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0xC7);
+            writer.Write((byte)0x54); // Packet ID
             writer.Write((byte)1); // flags
             writer.Write((short)soundID);
             writer.Write((short)0); // volume
@@ -63,7 +64,7 @@ namespace Server.Network
         )
         {
             var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xC7);
+            writer.Write((byte)0xC7); // Packet ID
             writer.Write((byte)type);
             writer.Write(from);
             writer.Write(to);
@@ -174,7 +175,7 @@ namespace Server.Network
         )
         {
             var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xC0);
+            writer.Write((byte)0xC0); // Packet ID
             writer.Write((byte)type);
             writer.Write(from);
             writer.Write(to);
@@ -319,6 +320,7 @@ namespace Server.Network
             var writer = new CircularBufferWriter(buffer);
 
             writer.Write((byte)0x70); // Packet ID
+            writer.Write((byte)0x4);
             writer.Clear(8);
             writer.Write((ushort)type);
             writer.Clear(16);
