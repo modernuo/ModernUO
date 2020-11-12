@@ -886,7 +886,7 @@ namespace Server.Items
                         m_Chest.Z++;
                     }
 
-                    Effects.PlaySound(m_Chest, m_Map, 0x33B);
+                    Effects.PlaySound(m_Chest.Location, m_Map, 0x33B);
                 }
 
                 if (m_Chest?.Location.Z >= m_Location.Z)

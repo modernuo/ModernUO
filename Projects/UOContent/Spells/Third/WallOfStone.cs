@@ -59,7 +59,7 @@ namespace Server.Spells.Third
                     eastToWest = false;
                 }
 
-                Effects.PlaySound(p, Caster.Map, 0x1F6);
+                Effects.PlaySound(new Point3D(p), Caster.Map, 0x1F6);
 
                 for (var i = -1; i <= 1; ++i)
                 {

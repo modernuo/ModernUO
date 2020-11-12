@@ -58,7 +58,7 @@ namespace Server.Items
             }
         }
 
-        public void Use(Mobile from, IPoint3D loc)
+        public void Use(Mobile from, Point3D loc)
         {
             if (!CheckUse(from))
             {
@@ -84,23 +84,14 @@ namespace Server.Items
             from.Backpack.ConsumeUpTo(typeof(SulfurousAsh), sulfAsh);
 
             from.PlaySound(0x15F);
-            Effects.SendPacket(
+            Effects.SendMovingEffect(
                 from,
-                from.Map,
-                new HuedEffect(
-                    EffectType.Moving,
-                    from.Serial,
-                    Serial.Zero,
-                    0x36D4,
-                    from.Location,
-                    loc,
-                    5,
-                    0,
-                    false,
-                    true,
-                    0,
-                    0
-                )
+                loc,
+                0x36D4,
+                5,
+                0,
+                false,
+                true
             );
 
             var eable = from.Map.GetMobilesInRange(new Point3D(loc), 2);
@@ -241,14 +232,14 @@ namespace Server.Items
                     return;
                 }
 
-                IPoint3D loc;
+                Point3D loc;
                 if (targeted is Item item)
                 {
                     loc = item.GetWorldLocation();
                 }
                 else
                 {
-                    loc = targeted as IPoint3D;
+                    loc = new Point3D(targeted as IPoint3D);
                 }
 
                 m_Horn.Use(from, loc);

@@ -60,7 +60,7 @@ namespace Server.Spells.Seventh
                                 20,
                                 5042
                             );
-                            Effects.PlaySound(bc, bc.Map, 0x201);
+                            Effects.PlaySound(bc, 0x201);
 
                             bc.Delete();
                         }

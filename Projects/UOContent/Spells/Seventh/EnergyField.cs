@@ -62,7 +62,7 @@ namespace Server.Spells.Seventh
                     eastToWest = false;
                 }
 
-                Effects.PlaySound(p, Caster.Map, 0x20B);
+                Effects.PlaySound(new Point3D(p), Caster.Map, 0x20B);
 
                 TimeSpan duration;
 

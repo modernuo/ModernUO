@@ -46,10 +46,11 @@ namespace Server.Spells.Seventh
                 var map = Caster.Map;
 
                 var playerVsPlayer = false;
+                var loc = new Point3D(p);
 
                 if (map != null)
                 {
-                    var eable = map.GetMobilesInRange(new Point3D(p), 2);
+                    var eable = map.GetMobilesInRange(loc, 2);
 
                     targets = eable.Where(
                             m =>
@@ -86,7 +87,7 @@ namespace Server.Spells.Seventh
 
                 if (targets.Count > 0)
                 {
-                    Effects.PlaySound(p, Caster.Map, 0x160);
+                    Effects.PlaySound(loc, Caster.Map, 0x160);
 
                     if (Core.AOS && targets.Count > 2)
                     {

@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using Server.HuePickers;
 
 namespace Server.Network
 {
@@ -305,19 +306,6 @@ namespace Server.Network
         }
     }
 
-    public sealed class PlaySound : Packet
-    {
-        public PlaySound(int soundID, IPoint3D target) : base(0x54, 12)
-        {
-            Stream.Write((byte)1); // flags
-            Stream.Write((short)soundID);
-            Stream.Write((short)0); // volume
-            Stream.Write((short)target.X);
-            Stream.Write((short)target.Y);
-            Stream.Write((short)target.Z);
-        }
-    }
-
     public sealed class PlayMusic : Packet
     {
         public static readonly Packet InvalidInstance = SetStatic(new PlayMusic(MusicName.Invalid));
@@ -428,6 +416,16 @@ namespace Server.Network
             EnsureCapacity(5);
 
             Stream.Write((short)0x21);
+        }
+    }
+
+    public sealed class DisplayHuePicker : Packet
+    {
+        public DisplayHuePicker(HuePicker huePicker) : base(0x95, 9)
+        {
+            Stream.Write(huePicker.Serial);
+            Stream.Write((short)0);
+            Stream.Write((short)huePicker.ItemID);
         }
     }
 }

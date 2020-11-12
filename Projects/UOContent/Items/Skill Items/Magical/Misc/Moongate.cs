@@ -180,7 +180,7 @@ namespace Server.Items
             {
                 if (from.AccessLevel == AccessLevel.Player || !from.Hidden)
                 {
-                    from.Send(new PlaySound(0x20E, from.Location));
+                    from.SendSound(0x20E, from);
                 }
 
                 from.CloseGump<MoongateConfirmGump>();

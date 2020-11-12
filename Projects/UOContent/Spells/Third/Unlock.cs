@@ -27,16 +27,17 @@ namespace Server.Spells.Third
             if (CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
+                var loc = new Point3D(p);
 
                 Effects.SendLocationParticles(
-                    EffectItem.Create(new Point3D(p), Caster.Map, EffectItem.DefaultDuration),
+                    EffectItem.Create(loc, Caster.Map, EffectItem.DefaultDuration),
                     0x376A,
                     9,
                     32,
                     5024
                 );
 
-                Effects.PlaySound(p, Caster.Map, 0x1FF);
+                Effects.PlaySound(loc, Caster.Map, 0x1FF);
 
                 if (p is Mobile)
                 {

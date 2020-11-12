@@ -51,9 +51,11 @@ namespace Server.Spells.Mysticism
 
                 if (map != null)
                 {
-                    PlayEffect(p, Caster.Map);
+                    var loc = new Point3D(p);
 
-                    foreach (var m in map.GetMobilesInRange(new Point3D(p), 2))
+                    PlayEffect(loc, Caster.Map);
+
+                    foreach (var m in map.GetMobilesInRange(loc, 2))
                     {
                         if (m == Caster)
                         {
@@ -94,7 +96,7 @@ namespace Server.Spells.Mysticism
             Caster.Target = new SpellTargetPoint3D(this);
         }
 
-        private static void PlayEffect(IPoint3D p, Map map)
+        private static void PlayEffect(Point3D p, Map map)
         {
             Effects.PlaySound(p, map, 0x64F);
 
@@ -105,7 +107,7 @@ namespace Server.Spells.Mysticism
             PlaySingleEffect(p, map, -1, 1, 1, 3);
         }
 
-        private static void PlaySingleEffect(IPoint3D p, Map map, int a, int b, int c, int d)
+        private static void PlaySingleEffect(Point3D p, Map map, int a, int b, int c, int d)
         {
             int x = p.X, y = p.Y, z = p.Z + 18;
 
@@ -120,25 +122,20 @@ namespace Server.Spells.Mysticism
             SendEffectPacket(p, map, new Point3D(x + a, y + c, z), new Point3D(x + a, y + d, z));
         }
 
-        private static void SendEffectPacket(IPoint3D p, Map map, Point3D orig, Point3D dest)
+        private static void SendEffectPacket(Point3D p, Map map, Point3D orig, Point3D dest)
         {
-            Effects.SendPacket(
+            Effects.SendMovingEffect(
                 p,
                 map,
-                new HuedEffect(
-                    EffectType.Moving,
-                    Serial.Zero,
-                    Serial.Zero,
-                    0x36D4,
-                    orig,
-                    dest,
-                    0,
-                    0,
-                    false,
-                    false,
-                    0x63,
-                    0x4
-                )
+                0x36D4,
+                orig,
+                dest,
+                0,
+                0,
+                false,
+                false,
+                0x63,
+                0x4
             );
         }
     }

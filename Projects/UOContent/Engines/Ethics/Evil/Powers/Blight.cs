@@ -68,7 +68,7 @@ namespace Server.Ethics.Evil
             {
                 SpellHelper.Turn(from.Mobile, p);
 
-                Effects.PlaySound(p, from.Mobile.Map, 0x1FB);
+                Effects.PlaySound(new Point3D(p), from.Mobile.Map, 0x1FB);
 
                 from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You curse the area.");
 

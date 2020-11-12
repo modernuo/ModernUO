@@ -3550,7 +3550,7 @@ namespace Server.Items
                     20,
                     5042
                 );
-                Effects.PlaySound(defender, defender.Map, 0x201);
+                Effects.PlaySound(defender, 0x201);
 
                 defender.Delete();
             }

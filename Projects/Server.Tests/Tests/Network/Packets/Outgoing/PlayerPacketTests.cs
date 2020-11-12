@@ -389,35 +389,6 @@ namespace Server.Tests.Network
         }
 
         [Theory]
-        [InlineData(10, 1000, 10, 5)]
-        public void TestPlaySound(ushort soundID, int x, int y, int z)
-        {
-            var p = new Point3D(x, y, z);
-
-            var data = new PlaySound(soundID, p).Compile();
-
-            Span<byte> expectedData = stackalloc byte[12];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0x54); // Packet ID
-            expectedData.Write(ref pos, (byte)1);    // Flags
-            expectedData.Write(ref pos, soundID);
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (ushort)0); // Volume
-#else
-            pos += 2;
-#endif
-
-            expectedData.Write(ref pos, (ushort)p.X);
-            expectedData.Write(ref pos, (ushort)p.Y);
-            expectedData.Write(ref pos, (short)p.Z);
-
-
-            AssertThat.Equal(data, expectedData);
-        }
-
-        [Theory]
         [InlineData(MusicName.Approach)]
         [InlineData(MusicName.Combat1)]
         [InlineData(MusicName.ValoriaShips)]

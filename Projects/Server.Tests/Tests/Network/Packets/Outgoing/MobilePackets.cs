@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: DisplayHuePicker.cs                                             *
+ * File: MobilePackets.cs                                                *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,17 +13,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using Server.HuePickers;
+using Server.Network;
 
-namespace Server.Network
+namespace Server.Tests.Network
 {
-    public sealed class DisplayHuePicker : Packet
+    public sealed class BondedStatus : Packet
     {
-        public DisplayHuePicker(HuePicker huePicker) : base(0x95, 9)
+        public BondedStatus(Serial serial, bool bonded) : base(0xBF)
         {
-            Stream.Write(huePicker.Serial);
-            Stream.Write((short)0);
-            Stream.Write((short)huePicker.ItemID);
+            EnsureCapacity(11);
+
+            Stream.Write((short)0x19);
+            Stream.Write((byte)0);
+            Stream.Write(serial);
+            Stream.Write((byte)(bonded ? 1 : 0));
         }
     }
 }

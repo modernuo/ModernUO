@@ -476,14 +476,14 @@ namespace Server.Engines.Doom
             }
         }
 
-        public static void PlayEffect(IEntity from, IEntity to, int itemid, int speed, bool explodes)
+        private static void PlayEffect(IEntity from, IEntity to, int itemid, int speed, bool explodes)
         {
             Effects.SendMovingParticles(from, to, itemid, speed, 0, true, explodes, 2, 0, 0);
         }
 
-        public static void SendLocationEffect(IPoint3D p, int itemID, int speed, int duration, int hue)
+        private static void SendLocationEffect(Point3D p, int itemID, int speed, int duration, int hue)
         {
-            Effects.SendPacket(p, Map.Malas, new LocationEffect(p, itemID, speed, duration, hue, 0));
+            Effects.SendLocationEffect(p, Map.Malas, itemID, speed, duration, hue);
         }
 
         public static void PlayerSendASCII(Mobile player, int index)

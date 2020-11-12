@@ -43,6 +43,7 @@ namespace Server.Spells.Fourth
 
                 var map = Caster.Map;
                 var directTarget = p as Mobile;
+                var loc = new Point3D(p);
 
                 if (map != null)
                 {
@@ -54,13 +55,13 @@ namespace Server.Spells.Fourth
                         targets.Add(directTarget);
                     }
 
-                    var eable = map.GetMobilesInRange(new Point3D(p), 2);
+                    var eable = map.GetMobilesInRange(loc, 2);
                     targets.AddRange(eable.Where(m => m != directTarget).Where(m => AreaCanTarget(m, feluccaRules)));
 
                     eable.Free();
                 }
 
-                Effects.PlaySound(p, Caster.Map, 0x299);
+                Effects.PlaySound(loc, Caster.Map, 0x299);
 
                 if (targets.Count > 0)
                 {

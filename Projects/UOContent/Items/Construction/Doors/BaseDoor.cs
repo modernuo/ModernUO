@@ -67,7 +67,7 @@ namespace Server.Items
                         Location = new Point3D(X - Offset.X, Y - Offset.Y, Z - Offset.Z);
                     }
 
-                    Effects.PlaySound(this, Map, m_Open ? OpenedSound : ClosedSound);
+                    Effects.PlaySound(this, m_Open ? OpenedSound : ClosedSound);
 
                     if (m_Open)
                     {

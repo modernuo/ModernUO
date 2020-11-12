@@ -58,7 +58,8 @@ namespace Server.Mobiles
                     20,
                     5042
                 );
-                Effects.PlaySound(m_Mobile, m_Mobile.Map, 0x201);
+
+                Effects.PlaySound(m_Mobile,0x201);
 
                 m_Mobile.Delete();
             }
@@ -405,13 +406,13 @@ namespace Server.Mobiles
 
         /*
         // An area attack that only damages staff, wtf?
-    
+
         private DateTime m_NextWave;
-    
+
         public void AreaHeatDamage()
         {
           Mobile mob = ControlMaster;
-    
+
           if (mob != null)
           {
             if (mob.InRange( Location, 2 ))
@@ -422,9 +423,9 @@ namespace Server.Mobiles
                 mob.SendLocalizedMessage( 1008112 ); // The intense heat is damaging you!
               }
             }
-    
+
             GuardedRegion r = Region as GuardedRegion;
-    
+
             if (r != null && mob.Alive)
             {
               foreach ( Mobile m in GetMobilesInRange( 2 ) )
@@ -434,7 +435,7 @@ namespace Server.Mobiles
               }
             }
           }
-    
+
           m_NextWave = DateTime.UtcNow + TimeSpan.FromSeconds( 3 );
         }
         */

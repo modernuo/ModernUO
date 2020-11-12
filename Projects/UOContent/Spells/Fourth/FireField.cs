@@ -62,7 +62,7 @@ namespace Server.Spells.Fourth
                     eastToWest = false;
                 }
 
-                Effects.PlaySound(p, Caster.Map, 0x20C);
+                Effects.PlaySound(new Point3D(p), Caster.Map, 0x20C);
 
                 var itemID = eastToWest ? 0x398C : 0x3996;
 

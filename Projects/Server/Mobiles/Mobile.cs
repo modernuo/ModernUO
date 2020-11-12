@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
 using Server.Accounting;
@@ -3374,11 +3375,13 @@ namespace Server
                 Packet hitsPacket = null;
                 Packet statPacketTrue = null;
                 Packet statPacketFalse = null;
-                Packet deadPacket = null;
                 Packet hairPacket = null;
                 Packet facialhairPacket = null;
                 Packet hbpPacket = null;
                 Packet hbyPacket = null;
+
+                Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
+                OutgoingMobilePackets.CreateBondedStatus(ref deadBuffer, m.Serial, true);
 
                 var eable = m.Map.GetClientsInRange(m.m_Location);
 
@@ -3399,9 +3402,7 @@ namespace Server
 
                             if (m.IsDeadBondedPet)
                             {
-                                deadPacket ??= Packet.Acquire(new BondedStatus(m.Serial, true));
-
-                                state.Send(deadPacket);
+                                state.Send(deadBuffer);
                             }
                         }
 
@@ -3502,7 +3503,6 @@ namespace Server
                 Packet.Release(hitsPacket);
                 Packet.Release(statPacketTrue);
                 Packet.Release(statPacketFalse);
-                Packet.Release(deadPacket);
                 Packet.Release(hairPacket);
                 Packet.Release(facialhairPacket);
                 Packet.Release(hbpPacket);
@@ -5383,7 +5383,7 @@ namespace Server
 
             if (sound >= 0)
             {
-                Effects.PlaySound(this, Map, sound);
+                Effects.PlaySound(this, sound);
             }
 
             if (!m_Player)
@@ -5660,12 +5660,7 @@ namespace Server
 
                             from.Holding = item;
 
-                            var liftSound = item.GetLiftSound(from);
-
-                            if (liftSound != -1)
-                            {
-                                from.Send(new PlaySound(liftSound, from));
-                            }
+                            from.SendSound(item.GetLiftSound(from));
 
                             from.NextActionTime = Core.TickCount + ActionDelay;
 
@@ -7319,22 +7314,21 @@ namespace Server
             eable.Free();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SendSound(int soundID)
         {
-            if (soundID != -1 && m_NetState != null)
-            {
-                Send(new PlaySound(soundID, this));
-            }
+            m_NetState?.SendSoundEffect(soundID, this);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SendSound(int soundID, IPoint3D p)
         {
-            if (soundID != -1 && m_NetState != null)
-            {
-                Send(new PlaySound(soundID, p));
-            }
+            m_NetState?.SendSoundEffect(soundID, p);
         }
 
+        /**
+         * Plays a sound to netstates that can see this mobile
+         */
         public void PlaySound(int soundID)
         {
             if (soundID == -1 || m_Map == null)
@@ -7342,7 +7336,8 @@ namespace Server
                 return;
             }
 
-            var p = Packet.Acquire(new PlaySound(soundID, this));
+            Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
+            OutgoingEffectPackets.CreateSoundEffect(ref buffer, soundID, this);
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -7350,11 +7345,9 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this))
                 {
-                    state.Send(p);
+                    state.Send(buffer);
                 }
             }
-
-            Packet.Release(p);
 
             eable.Free();
         }
@@ -7382,12 +7375,7 @@ namespace Server
             DisruptiveAction(); // Anything that unhides you will also distrupt meditation
         }
 
-        public void SendRemovePacket()
-        {
-            SendRemovePacket(true);
-        }
-
-        public void SendRemovePacket(bool everyone)
+        public void SendRemovePacket(bool everyone = true)
         {
             if (m_Map == null)
             {
@@ -7530,7 +7518,7 @@ namespace Server
 
                             if (m.IsDeadBondedPet)
                             {
-                                ns.Send(new BondedStatus(m.Serial, true));
+                                ns.SendBondedStatus(m.Serial, true);
                             }
 
                             if (ObjectPropertyList.Enabled)
@@ -7690,7 +7678,7 @@ namespace Server
 
                     if (IsDeadBondedPet)
                     {
-                        state.Send(new BondedStatus(Serial, true));
+                        state.SendBondedStatus(Serial, true);
                     }
 
                     if (ObjectPropertyList.Enabled)
@@ -7976,7 +7964,7 @@ namespace Server
 
                                 if (IsDeadBondedPet)
                                 {
-                                    m.m_NetState.Send(new BondedStatus(Serial, true));
+                                    m.m_NetState.SendBondedStatus(Serial, true);
                                 }
 
                                 if (ObjectPropertyList.Enabled)
@@ -8003,7 +7991,7 @@ namespace Server
 
                             if (m.IsDeadBondedPet)
                             {
-                                ourState.Send(new BondedStatus(m.Serial, true));
+                                ourState.SendBondedStatus(m.Serial, true);
                             }
 
                             if (ObjectPropertyList.Enabled)
@@ -8038,7 +8026,7 @@ namespace Server
 
                             if (IsDeadBondedPet)
                             {
-                                ns.Send(new BondedStatus(Serial, true));
+                                ns.SendBondedStatus(Serial, true);
                             }
 
                             if (ObjectPropertyList.Enabled)
@@ -8126,7 +8114,7 @@ namespace Server
 
                     if (IsDeadBondedPet)
                     {
-                        state.Send(new BondedStatus(Serial, true));
+                        state.SendBondedStatus(Serial, true);
                     }
 
                     if (ObjectPropertyList.Enabled)

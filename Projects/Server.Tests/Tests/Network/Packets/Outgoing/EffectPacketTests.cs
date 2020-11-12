@@ -1,5 +1,4 @@
 using System;
-using System.Buffers;
 using Server.Network;
 using Xunit;
 
@@ -7,6 +6,21 @@ namespace Server.Tests.Network
 {
     public class EffectPackets
     {
+        [Theory]
+        [InlineData(10, 1000, 10, 5)]
+        public void TestSoundEffect(ushort soundID, int x, int y, int z)
+        {
+            var p = new Point3D(x, y, z);
+
+            var expected = new PlaySound(soundID, p).Compile();
+
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendSoundEffect(soundID, p);
+
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        }
+
         [Fact]
         public void TestParticleEffect()
         {
@@ -29,56 +43,21 @@ namespace Server.Tests.Network
             byte layer = 9;
             ushort unknown = 0;
 
-            var data = new ParticleEffect(
-                effectType,
-                from,
-                to,
-                itemId,
-                fromPoint,
-                toPoint,
-                speed,
-                duration,
-                direction,
-                explode,
-                hue,
-                renderMode,
-                effect,
-                explodeEffect,
-                explodeSound,
-                serial,
-                layer,
+            var expected = new ParticleEffect(
+                effectType, from, to, itemId, fromPoint, toPoint, speed, duration, direction,
+                explode, hue, renderMode, effect, explodeEffect, explodeSound, serial, layer,
                 unknown
             ).Compile();
 
-            Span<byte> expectedData = stackalloc byte[49];
+            Span<byte> actual = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
+            OutgoingEffectPackets.CreateParticleEffect(
+                ref actual,
+                effectType, from, to, itemId, fromPoint, toPoint, speed, duration, direction,
+                explode, hue, renderMode, effect, explodeEffect, explodeSound, serial, layer,
+                unknown
+            );
 
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0xC7); // Packet ID
-            expectedData.Write(ref pos, (byte)effectType);
-            expectedData.Write(ref pos, from);
-            expectedData.Write(ref pos, to);
-            expectedData.Write(ref pos, (ushort)itemId);
-            expectedData.Write(ref pos, fromPoint);
-            expectedData.Write(ref pos, toPoint);
-            expectedData.Write(ref pos, speed);
-            expectedData.Write(ref pos, duration);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (ushort)0);
-#else
-            pos += 2;
-#endif
-            expectedData.Write(ref pos, direction);
-            expectedData.Write(ref pos, explode);
-            expectedData.Write(ref pos, hue);
-            expectedData.Write(ref pos, renderMode);
-            expectedData.Write(ref pos, effect);
-            expectedData.Write(ref pos, explodeEffect);
-            expectedData.Write(ref pos, explodeSound);
-            expectedData.Write(ref pos, serial);
-            expectedData.Write(ref pos, layer);
-            expectedData.Write(ref pos, unknown);
-
-            AssertThat.Equal(data, expectedData);
+            AssertThat.Equal(actual, expected);
         }
 
         [Fact]
@@ -97,74 +76,33 @@ namespace Server.Tests.Network
             var hue = 0x1024;
             var renderMode = 1;
 
-            var data = new HuedEffect(
-                effectType,
-                from,
-                to,
-                itemId,
-                fromPoint,
-                toPoint,
-                speed,
-                duration,
-                direction,
-                explode,
-                hue,
-                renderMode
+            var expected = new HuedEffect(
+                effectType, from, to, itemId, fromPoint, toPoint, speed,
+                duration, direction, explode, hue, renderMode
             ).Compile();
 
-            Span<byte> expectedData = stackalloc byte[36];
+            Span<byte> actual = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
+            OutgoingEffectPackets.CreateHuedEffect(
+                ref actual,
+                effectType, from, to, itemId, fromPoint, toPoint, speed,
+                duration, direction, explode, hue, renderMode
+            );
 
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0xC0); // Packet ID
-            expectedData.Write(ref pos, (byte)effectType);
-            expectedData.Write(ref pos, from);
-            expectedData.Write(ref pos, to);
-            expectedData.Write(ref pos, (ushort)itemId);
-            expectedData.Write(ref pos, fromPoint);
-            expectedData.Write(ref pos, toPoint);
-            expectedData.Write(ref pos, speed);
-            expectedData.Write(ref pos, duration);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (ushort)0);
-#else
-            pos += 2;
-#endif
-            expectedData.Write(ref pos, direction);
-            expectedData.Write(ref pos, explode);
-            expectedData.Write(ref pos, hue);
-            expectedData.Write(ref pos, renderMode);
-
-            AssertThat.Equal(data, expectedData);
+            AssertThat.Equal(actual, expected);
         }
 
-        [Fact]
-        public void TestScreenEffect()
+        [Theory]
+        [InlineData(ScreenEffectType.DarkFlash)]
+        [InlineData(ScreenEffectType.FadeInOut)]
+        public void TestScreenEffect(ScreenEffectType screenType)
         {
-            var type = ScreenEffectType.FadeOut;
-            var data = new ScreenEffect(type).Compile();
+            var expected = new ScreenEffect(screenType).Compile();
 
-            Span<byte> expectedData = stackalloc byte[28];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendScreenEffect(screenType);
 
-            expectedData.Write(ref pos, (byte)0x70); // Packet ID
-            expectedData.Write(ref pos, (byte)0x04); // Effect
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, 0);
-            expectedData.Write(ref pos, 0);
-#else
-            pos += 8;
-#endif
-
-            expectedData.Write(ref pos, (ushort)type); // Screen Effect Type
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, 0);
-            expectedData.Write(ref pos, 0);
-            expectedData.Write(ref pos, 0);
-            expectedData.Write(ref pos, 0);
-#endif
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -172,32 +110,15 @@ namespace Server.Tests.Network
         {
             IEntity entity = new Entity(0x1000, new Point3D(1000, 100, -10), Map.Felucca);
             var hue = 0x1024;
-            var data = new BoltEffect(entity, hue).Compile();
+            var expected = new BoltEffect(entity, hue).Compile();
 
-            Span<byte> expectedData = stackalloc byte[36];
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0xC0); // Packet ID
-            expectedData.Write(ref pos, (byte)0x01); // Effect
+            Span<byte> actual = stackalloc byte[OutgoingEffectPackets.BoltEffectLength];
+            OutgoingEffectPackets.CreateBoltEffect(
+                ref actual,
+                entity, hue
+            );
 
-
-            expectedData.Write(ref pos, entity.Serial);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, 0);
-            expectedData.Write(ref pos, (ushort)0);
-#else
-            pos += 6;
-#endif
-            expectedData.Write(ref pos, entity.Location);
-            expectedData.Write(ref pos, entity.Location);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, 0);
-            expectedData.Write(ref pos, (ushort)0);
-#else
-            pos += 6;
-#endif
-            expectedData.Write(ref pos, hue);
-
-            AssertThat.Equal(data, expectedData);
+            AssertThat.Equal(actual, expected);
         }
     }
 }

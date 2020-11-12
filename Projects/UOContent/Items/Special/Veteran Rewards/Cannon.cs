@@ -214,11 +214,11 @@ namespace Server.Items
             }
         }
 
-        public void DoFireEffect(IPoint3D target)
+        public void DoFireEffect(Point3D target)
         {
             var map = Map;
 
-            if (target == null || map == null)
+            if (map == null)
             {
                 return;
             }
@@ -228,7 +228,7 @@ namespace Server.Items
 
             for (var count = Utility.Random(3); count > 0; count--)
             {
-                IPoint3D location = new Point3D(
+                Point3D location = new Point3D(
                     target.X + Utility.RandomMinMax(-1, 1),
                     target.Y + Utility.RandomMinMax(-1, 1),
                     target.Z
@@ -320,9 +320,11 @@ namespace Server.Items
                                 break;
                         }
 
-                        if (allow && Utility.InRange(new Point3D(p), m_Cannon.Location, 14))
+                        var loc = new Point3D(p);
+
+                        if (allow && Utility.InRange(loc, m_Cannon.Location, 14))
                         {
-                            m_Cannon.DoFireEffect(p);
+                            m_Cannon.DoFireEffect(loc);
                         }
                         else
                         {

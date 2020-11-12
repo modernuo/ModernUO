@@ -81,23 +81,20 @@ namespace Server.Items
         {
             if (dropped is BasePiece piece && piece.Board == this && base.OnDragDropInto(from, dropped, point))
             {
-                Packet p = new PlaySound(0x127, GetWorldLocation());
-
-                p.Acquire();
-
                 if (RootParent == from)
                 {
-                    from.Send(p);
+                    from.SendSound(0x127, GetWorldLocation());
                 }
                 else
                 {
+                    Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
+                    OutgoingEffectPackets.CreateSoundEffect(ref buffer, 0x127, GetWorldLocation());
+
                     foreach (var state in GetClientsInRange(2))
                     {
-                        state.Send(p);
+                        state.Send(buffer);
                     }
                 }
-
-                p.Release();
 
                 return true;
             }

@@ -103,8 +103,8 @@ namespace Server.Mobiles
                 LootPack.FilthyRich.Generate(this, rm.Backpack, false, LootPack.GetLuckChanceForKiller(this));
             }
 
-            Effects.PlaySound(this, Map, GetDeathSound());
-            Effects.SendLocationEffect(Location, Map, 0x3709, 30, 10, 0x835, 0);
+            Effects.PlaySound(this, GetDeathSound());
+            Effects.SendLocationEffect(Location, Map, 0x3709, 30, 10, 0x835);
             rm.MoveToWorld(Location, Map);
 
             Delete();

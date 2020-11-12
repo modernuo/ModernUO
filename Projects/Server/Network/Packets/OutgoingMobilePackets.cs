@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: OutgoingCombatPackets.cs                                        *
+ * File: OutgoingMobilePackets.cs                                        *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,29 +13,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Buffers;
 
 namespace Server.Network
 {
-    public static class OutgoingCombatPackets
+    public static class OutgoingMobilePackets
     {
-        public static void SendSwing(this NetState ns, Serial attacker, Serial defender)
+        public const int BondedStatusPacketLength = 11;
+
+        public static void CreateBondedStatus(ref Span<byte> buffer, Serial serial, bool bonded)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
-            {
-                return;
-            }
-
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0x2F); // Packet ID
-            writer.Write((byte)0);
-            writer.Write(attacker);
-            writer.Write(defender);
-
-            ns.Send(ref buffer, writer.Position);
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0xBF); // Packet ID
+            writer.Write((ushort)11); // Length
+            writer.Write((ushort)0x19); // Subpacket ID
+            writer.Write((byte)0); // Command
+            writer.Write(serial);
+            writer.Write(bonded);
         }
 
-        public static void SendSetWarMode(this NetState ns, bool warmode)
+        public static void SendBondedStatus(this NetState ns, Serial serial, bool bonded)
         {
             if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
@@ -43,23 +41,12 @@ namespace Server.Network
             }
 
             var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0x72); // Packet ID
-            // Warmode, 0x00, 0x32, 0x00
-            writer.Write(warmode ? 0x01003200 : 0x00003200);
-
-            ns.Send(ref buffer, writer.Position);
-        }
-
-        public static void SendChangeCombatant(this NetState ns, Serial combatant)
-        {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
-            {
-                return;
-            }
-
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0xAA); // Packet ID
-            writer.Write(combatant);
+            writer.Write((byte)0xBF);   // Packet ID
+            writer.Write((ushort)11);   // Length
+            writer.Write((ushort)0x19); // Subpacket ID
+            writer.Write((byte)0);      // Command
+            writer.Write(serial);
+            writer.Write(bonded);
 
             ns.Send(ref buffer, writer.Position);
         }

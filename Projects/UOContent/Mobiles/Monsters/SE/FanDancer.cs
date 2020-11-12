@@ -78,68 +78,42 @@ namespace Server.Mobiles
          * Effect: damage is dealt to the attacker, no damage is taken by the fan dancer
          */
 
+        private void ThrowFan(Mobile to)
+        {
+            if (!(Utility.RandomDouble() < 0.8) || to.InRange(this, 1))
+            {
+                return;
+            }
+
+            /* Fan Throw
+             * Effect: - To: "0x57D4F5B" - ItemId: "0x27A3" - ItemIdName: "Tessen" - FromLocation: "(992 299, 24)" - ToLocation: "(992 308, 22)" - Speed: "10" - Duration: "0" - FixedDirection: "False" - Explode: "False" - Hue: "0x0" - Render: "0x0"
+             * Damage: 50-65
+             */
+            Effects.SendMovingEffect(
+                to.Location,
+                to.Map,
+                0x27A3,
+                Location,
+                to.Location,
+                10,
+                0,
+                false,
+                false
+            );
+
+            AOS.Damage(to, this, Utility.RandomMinMax(50, 65), 100, 0, 0, 0, 0);
+        }
+
         public override void OnDamagedBySpell(Mobile attacker)
         {
             base.OnDamagedBySpell(attacker);
-
-            if (Utility.RandomDouble() < 0.8 && !attacker.InRange(this, 1))
-            {
-                /* Fan Throw
-                 * Effect: - To: "0x57D4F5B" - ItemId: "0x27A3" - ItemIdName: "Tessen" - FromLocation: "(992 299, 24)" - ToLocation: "(992 308, 22)" - Speed: "10" - Duration: "0" - FixedDirection: "False" - Explode: "False" - Hue: "0x0" - Render: "0x0"
-                 * Damage: 50-65
-                 */
-                Effects.SendPacket(
-                    attacker,
-                    attacker.Map,
-                    new HuedEffect(
-                        EffectType.Moving,
-                        Serial.Zero,
-                        Serial.Zero,
-                        0x27A3,
-                        Location,
-                        attacker.Location,
-                        10,
-                        0,
-                        false,
-                        false,
-                        0,
-                        0
-                    )
-                );
-                AOS.Damage(attacker, this, Utility.RandomMinMax(50, 65), 100, 0, 0, 0, 0);
-            }
+            ThrowFan(attacker);
         }
 
         public override void OnGotMeleeAttack(Mobile attacker)
         {
             base.OnGotMeleeAttack(attacker);
-
-            if (Utility.RandomDouble() < 0.8 && !attacker.InRange(this, 1))
-            {
-                /* Fan Throw
-                 * Effect: - To: "0x57D4F5B" - ItemId: "0x27A3" - ItemIdName: "Tessen" - FromLocation: "(992 299, 24)" - ToLocation: "(992 308, 22)" - Speed: "10" - Duration: "0" - FixedDirection: "False" - Explode: "False" - Hue: "0x0" - Render: "0x0"
-                 * Damage: 50-65
-                 */
-                Effects.SendPacket(
-                    attacker,
-                    attacker.Map,
-                    new HuedEffect(
-                        EffectType.Moving,
-                        Serial.Zero,
-                        Serial.Zero,
-                        0x27A3,
-                        Location,
-                        attacker.Location,
-                        10,
-                        0,
-                        false,
-                        false,
-                        0,
-                        0
-                    )
-                );
-                AOS.Damage(attacker, this, Utility.RandomMinMax(50, 65), 100, 0, 0, 0, 0);
-            }
+            ThrowFan(attacker);
         }
 
         public override void OnGaveMeleeAttack(Mobile defender)
@@ -158,9 +132,8 @@ namespace Server.Mobiles
                  * Effect does not stack
                  */
 
-                defender.SendLocalizedMessage(
-                    1070833
-                ); // The creature fans you with fire, reducing your resistance to fire attacks.
+                // The creature fans you with fire, reducing your resistance to fire attacks.
+                defender.SendLocalizedMessage(1070833);
 
                 var effect = -(defender.FireResistance / 10);
 

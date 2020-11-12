@@ -2278,7 +2278,7 @@ namespace Server.Mobiles
                 20,
                 5042
             );
-            Effects.PlaySound(m, m.Map, 0x201);
+            Effects.PlaySound(m, 0x201);
 
             m.Delete();
         }
@@ -3216,12 +3216,7 @@ namespace Server.Mobiles
 
             if (IsBonded)
             {
-                var sound = GetDeathSound();
-
-                if (sound >= 0)
-                {
-                    Effects.PlaySound(this, Map, sound);
-                }
+                Effects.PlaySound(this, GetDeathSound());
 
                 Warmode = false;
 
@@ -3845,7 +3840,9 @@ namespace Server.Mobiles
 
             IsDeadPet = false;
 
-            Effects.SendPacket(Location, Map, new BondedStatus(Serial, false));
+            Span<byte> buffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
+            OutgoingMobilePackets.CreateBondedStatus(ref buffer, Serial, false);
+            Effects.SendPacket(Location, Map, ref buffer);
 
             SendIncomingPacket();
             SendIncomingPacket();
