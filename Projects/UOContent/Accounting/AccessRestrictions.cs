@@ -16,7 +16,7 @@ namespace Server
         {
             try
             {
-                var ip = ((IPEndPoint)e.Connection.RemoteEndPoint).Address;
+                var ip = (e.Connection.RemoteEndPoint as IPEndPoint)?.Address;
 
                 if (Firewall.IsBlocked(ip))
                 {

@@ -1,3 +1,5 @@
+using System;
+
 namespace Server.Engines.Chat
 {
     public class ChatActionHandlers
@@ -84,7 +86,7 @@ namespace Server.Engines.Chat
 
         public static void PrivateMessage(ChatUser from, Channel channel, string param)
         {
-            var indexOf = param.IndexOf(' ');
+            var indexOf = param.IndexOf(' ', StringComparison.Ordinal);
 
             var name = param.Substring(0, indexOf);
             var text = param.Substring(indexOf + 1);
@@ -171,7 +173,7 @@ namespace Server.Engines.Chat
             string name;
             string password = null;
 
-            var start = param.IndexOf('\"');
+            var start = param.IndexOf('\"', StringComparison.Ordinal);
 
             if (start >= 0)
             {
@@ -189,7 +191,7 @@ namespace Server.Engines.Chat
             }
             else
             {
-                var indexOf = param.IndexOf(' ');
+                var indexOf = param.IndexOf(' ', StringComparison.Ordinal);
 
                 if (indexOf >= 0)
                 {
@@ -226,7 +228,7 @@ namespace Server.Engines.Chat
             string name;
             string password = null;
 
-            var start = param.IndexOf('{');
+            var start = param.IndexOf('{', StringComparison.Ordinal);
 
             if (start >= 0)
             {

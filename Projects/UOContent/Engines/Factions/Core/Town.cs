@@ -286,7 +286,7 @@ namespace Server.Factions
 
         public void ConstructGuardLists()
         {
-            var defs = Owner?.Definition.Guards ?? new GuardDefinition[0];
+            var defs = Owner?.Definition.Guards ?? Array.Empty<GuardDefinition>();
 
             GuardLists = new List<GuardList>();
 

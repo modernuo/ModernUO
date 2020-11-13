@@ -478,7 +478,7 @@ namespace Server.Engines.ConPVP
                 hasAppended = true;
             }
 
-            sb.Append(".");
+            sb.Append('.');
 
             if (TourneyType == TourneyType.Standard)
             {

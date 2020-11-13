@@ -100,7 +100,7 @@ namespace System.Buffers
         {
             if (bytes.Length < Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(bytes.Length));
+                throw new ArgumentOutOfRangeException(nameof(bytes));
             }
 
             if (_first.Length > 0)

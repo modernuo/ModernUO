@@ -160,10 +160,9 @@ namespace Server.Gumps
             CommandSystem.Register("ViewHouses", AccessLevel.GameMaster, ViewHouses_OnCommand);
         }
 
-        [Usage("ViewHouses")]
-        [Description(
-            "Displays a menu listing all houses of a targeted player. The menu also contains specific house details, and options to: go to house, open house menu, and demolish house."
-        )]
+        [Usage("ViewHouses"), Description(
+             "Displays a menu listing all houses of a targeted player. The menu also contains specific house details, and options to: go to house, open house menu, and demolish house."
+         )]
         public static void ViewHouses_OnCommand(CommandEventArgs e)
         {
             e.Mobile.BeginTarget(-1, false, TargetFlags.None, ViewHouses_OnTarget);

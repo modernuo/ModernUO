@@ -331,8 +331,7 @@ namespace Server.Items
             CommandSystem.Register("RandomTalisman", AccessLevel.GameMaster, RandomTalisman_OnCommand);
         }
 
-        [Usage("RandomTalisman <count>")]
-        [Description("Generates random talismans in your backpack.")]
+        [Usage("RandomTalisman <count>"), Description("Generates random talismans in your backpack.")]
         public static void RandomTalisman_OnCommand(CommandEventArgs e)
         {
             var m = e.Mobile;

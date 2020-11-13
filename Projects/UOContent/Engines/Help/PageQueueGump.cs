@@ -188,7 +188,7 @@ namespace Server.Engines.Help
 
                 while ((line = ip.ReadLine()?.Trim()) != null)
                 {
-                    if (line.Length == 0 || line.StartsWith("#"))
+                    if (line.Length == 0 || line.StartsWith("#", StringComparison.Ordinal))
                     {
                         continue;
                     }

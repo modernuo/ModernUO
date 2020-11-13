@@ -44,25 +44,13 @@ namespace Server.Commands
             }
         }
 
-        public static object Format(object o)
-        {
-            if (o is Mobile m)
+        public static object Format(object o) =>
+            o switch
             {
-                if (m.Account == null)
-                {
-                    return $"{m} (no account)";
-                }
-
-                return $"{m} ('{m.Account.Username}')";
-            }
-
-            if (o is Item item)
-            {
-                return $"0x{item.Serial.Value:X} ({item.GetType().Name})";
-            }
-
-            return o;
-        }
+                Mobile m  => m.Account == null ? $"{m} (no account)" : $"{m} ('{m.Account.Username}')",
+                Item item => $"0x{item.Serial.Value:X} ({item.GetType().Name})",
+                _         => o
+            };
 
         public static void WriteLine(Mobile from, string format, params object[] args)
         {
@@ -126,7 +114,7 @@ namespace Server.Commands
 
             for (var i = 0; isSafe && i < m_NotSafe.Length; ++i)
             {
-                isSafe = ip.IndexOf(m_NotSafe[i]) == -1;
+                isSafe = !ip.Contains(m_NotSafe[i], StringComparison.Ordinal);
             }
 
             if (isSafe)

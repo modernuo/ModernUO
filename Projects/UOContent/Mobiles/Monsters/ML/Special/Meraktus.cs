@@ -62,7 +62,7 @@ namespace Server.Mobiles
         public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
         public override Type[] UniqueList => new[] { typeof(Subdue) };
-        public override Type[] SharedList => new Type[] { };
+        public override Type[] SharedList => Array.Empty<Shared>();
 
         public override Type[] DecorativeList => new[]
         {

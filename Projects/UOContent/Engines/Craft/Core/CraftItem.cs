@@ -456,7 +456,7 @@ namespace Server.Engines.Craft
         {
             if (types.Length != amounts.Length)
             {
-                throw new ArgumentException();
+                throw new ArgumentOutOfRangeException(nameof(types));
             }
 
             var items = new Item[types.Length][];

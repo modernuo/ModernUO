@@ -26,8 +26,7 @@ namespace Server.Misc
             CommandSystem.Register("SetSaves", AccessLevel.Administrator, SetSaves_OnCommand);
         }
 
-        [Usage("SetSaves <true | false>")]
-        [Description("Enables or disables automatic shard saving.")]
+        [Usage("SetSaves <true | false>"), Description("Enables or disables automatic shard saving.")]
         public static void SetSaves_OnCommand(CommandEventArgs e)
         {
             if (e.Length == 1)
@@ -169,7 +168,7 @@ namespace Server.Misc
             {
                 var info = new DirectoryInfo(paths[i]);
 
-                if (info.Name.StartsWith(match))
+                if (info.Name.StartsWith(match, StringComparison.Ordinal))
                 {
                     return info;
                 }
@@ -183,7 +182,7 @@ namespace Server.Misc
 
         private static string FindTimeStamp(string input)
         {
-            var start = input.IndexOf('(');
+            var start = input.IndexOf('(', StringComparison.Ordinal);
 
             if (start >= 0)
             {

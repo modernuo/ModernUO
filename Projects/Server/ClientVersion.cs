@@ -32,7 +32,7 @@ namespace Server
 
             try
             {
-                var br1 = fmt.IndexOf('.');
+                var br1 = fmt.IndexOf('.', StringComparison.Ordinal);
                 var br2 = fmt.IndexOf('.', br1 + 1);
 
                 var br3 = br2 + 1;
@@ -60,12 +60,15 @@ namespace Server
                     }
                 }
 
-                if (fmt.IndexOf("god", StringComparison.Ordinal) >= 0 || fmt.IndexOf("gq", StringComparison.Ordinal) >= 0)
+                if (fmt.Contains("god", StringComparison.Ordinal) || fmt.Contains("gq", StringComparison.Ordinal))
                 {
                     Type = ClientType.God;
                 }
-                else if (fmt.IndexOf("third dawn", StringComparison.Ordinal) >= 0 || fmt.IndexOf("uo:td", StringComparison.Ordinal) >= 0 || fmt.IndexOf("uotd", StringComparison.Ordinal) >= 0 ||
-                         fmt.IndexOf("uo3d", StringComparison.Ordinal) >= 0 || fmt.IndexOf("uo:3d", StringComparison.Ordinal) >= 0)
+                else if (fmt.Contains("third dawn", StringComparison.Ordinal) ||
+                         fmt.Contains("uo:td", StringComparison.Ordinal) ||
+                         fmt.Contains("uotd", StringComparison.Ordinal) ||
+                         fmt.Contains("uo3d", StringComparison.Ordinal) ||
+                         fmt.Contains("uo:3d", StringComparison.Ordinal))
                 {
                     Type = ClientType.UOTD;
                 }

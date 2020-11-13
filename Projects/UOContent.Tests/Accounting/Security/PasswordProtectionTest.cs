@@ -9,12 +9,9 @@ namespace Server.Tests.Accounting.Security
     {
         private const string plainPassword = "hello-good-sir";
 
-        [Theory]
-        [InlineData(typeof(Argon2PasswordProtection))]
-        [InlineData(typeof(PBKDF2PasswordProtection))]
-        [InlineData(typeof(SHA2PasswordProtection))]
-        [InlineData(typeof(SHA1PasswordProtection))]
-        [InlineData(typeof(MD5PasswordProtection))]
+        [Theory, InlineData(typeof(Argon2PasswordProtection)), InlineData(typeof(PBKDF2PasswordProtection)),
+         InlineData(typeof(SHA2PasswordProtection)), InlineData(typeof(SHA1PasswordProtection)),
+         InlineData(typeof(MD5PasswordProtection))]
         public void TestValidates(Type protectionType)
         {
             var passwordProtection = Activator.CreateInstance(protectionType) as IPasswordProtection;
@@ -28,12 +25,9 @@ namespace Server.Tests.Accounting.Security
             Assert.True(passwordProtection.ValidatePassword(encryptedPassword, plainPassword));
         }
 
-        [Theory]
-        [InlineData(typeof(Argon2PasswordProtection))]
-        [InlineData(typeof(PBKDF2PasswordProtection))]
-        [InlineData(typeof(SHA2PasswordProtection))]
-        [InlineData(typeof(SHA1PasswordProtection))]
-        [InlineData(typeof(MD5PasswordProtection))]
+        [Theory, InlineData(typeof(Argon2PasswordProtection)), InlineData(typeof(PBKDF2PasswordProtection)),
+         InlineData(typeof(SHA2PasswordProtection)), InlineData(typeof(SHA1PasswordProtection)),
+         InlineData(typeof(MD5PasswordProtection))]
         public void TestPasswordDoesNotValidate(Type protectionType)
         {
             var passwordProtection = Activator.CreateInstance(protectionType) as IPasswordProtection;

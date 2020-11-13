@@ -55,7 +55,7 @@ namespace Server.Gumps
 
         public bool Closable { get; set; } = true;
 
-        public static int GetTypeID(Type type) => type?.FullName?.GetHashCode() ?? -1;
+        public static int GetTypeID(Type type) => type?.FullName?.GetHashCode(StringComparison.Ordinal) ?? -1;
 
         public void AddPage(int page)
         {

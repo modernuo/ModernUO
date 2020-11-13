@@ -38,8 +38,7 @@ namespace Server
             CommandSystem.Register("GlobalLight", AccessLevel.GameMaster, Light_OnCommand);
         }
 
-        [Usage("GlobalLight <value>")]
-        [Description("Sets the current global light level.")]
+        [Usage("GlobalLight <value>"), Description("Sets the current global light level.")]
         private static void Light_OnCommand(CommandEventArgs e)
         {
             if (e.Length >= 1)

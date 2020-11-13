@@ -48,8 +48,7 @@ namespace Server.Commands
             CommandSystem.Register("RebuildCategorization", AccessLevel.Administrator, RebuildCategorization_OnCommand);
         }
 
-        [Usage("RebuildCategorization")]
-        [Description("Rebuilds the categorization data file used by the Add command.")]
+        [Usage("RebuildCategorization"), Description("Rebuilds the categorization data file used by the Add command.")]
         public static void RebuildCategorization_OnCommand(CommandEventArgs e)
         {
             var root = new CategoryEntry(null, "Add Menu", new[] { Items, Mobiles });
@@ -305,7 +304,7 @@ namespace Server.Commands
 
             var text = lines[index].Text;
 
-            var start = text.IndexOf('(');
+            var start = text.IndexOf('(', StringComparison.Ordinal);
 
             if (start < 0)
             {

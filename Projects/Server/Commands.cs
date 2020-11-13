@@ -188,7 +188,7 @@ namespace Server
 
         public static bool Handle(Mobile from, string text, MessageType type = MessageType.Regular)
         {
-            if (!text.StartsWith(Prefix) && type != MessageType.Command)
+            if (!text.StartsWith(Prefix, StringComparison.Ordinal) && type != MessageType.Command)
             {
                 return false;
             }
@@ -198,7 +198,7 @@ namespace Server
                 text = text.Substring(Prefix.Length);
             }
 
-            var indexOf = text.IndexOf(' ');
+            var indexOf = text.IndexOf(' ', StringComparison.Ordinal);
 
             string command;
             string[] args;

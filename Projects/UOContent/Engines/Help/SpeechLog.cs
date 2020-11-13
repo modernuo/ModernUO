@@ -34,8 +34,7 @@ namespace Server.Engines.Help
             CommandSystem.Register("SpeechLog", AccessLevel.Counselor, SpeechLog_OnCommand);
         }
 
-        [Usage("SpeechLog")]
-        [Description("Opens the speech log of a given target.")]
+        [Usage("SpeechLog"), Description("Opens the speech log of a given target.")]
         private static void SpeechLog_OnCommand(CommandEventArgs e)
         {
             var from = e.Mobile;

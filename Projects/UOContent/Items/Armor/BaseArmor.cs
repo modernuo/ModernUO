@@ -471,8 +471,7 @@ namespace Server.Items
 
         public virtual Race RequiredRace => null;
 
-        [Hue]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Hue, CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;

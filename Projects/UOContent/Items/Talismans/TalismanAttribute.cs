@@ -61,7 +61,7 @@ namespace Server.Items
         public bool IsEmpty => Type == null;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsItem => Type?.Namespace.Equals("Server.Items") == true;
+        public bool IsItem => Type?.Namespace == "Server.Items";
 
         public override string ToString() => Type?.Name ?? "None";
 
@@ -89,7 +89,7 @@ namespace Server.Items
 
             if (GetSaveFlag(flags, SaveFlag.Type))
             {
-                writer.Write(Type.FullName);
+                writer.Write(Type!.FullName);
             }
 
             if (GetSaveFlag(flags, SaveFlag.Name))

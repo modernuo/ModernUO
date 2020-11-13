@@ -10,8 +10,7 @@ namespace Server.Items
             CommandSystem.Register("Flip", AccessLevel.GameMaster, Flip_OnCommand);
         }
 
-        [Usage("Flip")]
-        [Description("Turns an item.")]
+        [Usage("Flip"), Description("Turns an item.")]
         public static void Flip_OnCommand(CommandEventArgs e)
         {
             e.Mobile.Target = new FlipTarget();

@@ -120,9 +120,11 @@ namespace Server.Network
             }
         }
 
+        private readonly object _object = new object();
+
         public byte[] Compile(bool compress, out int length)
         {
-            lock (this)
+            lock (_object)
             {
                 if (m_CompiledBuffer == null)
                 {

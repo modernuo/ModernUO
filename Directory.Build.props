@@ -9,14 +9,14 @@
         <PlatformTarget>x64</PlatformTarget>
         <LangVersion>9</LangVersion>
         <PublicRelease>true</PublicRelease>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+<!--        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>-->
         <NoWarn>NU1603</NoWarn>
         <RuntimeIdentifiers>win-x64;debian.10-x64;debian.9-x64;ubuntu.16.04-x64;ubuntu.18.04-x64;ubuntu.20.04-x64;centos.7-x64;centos.8-x64;osx-x64</RuntimeIdentifiers>
         <Configurations>Debug;Release;Analyze</Configurations>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-        <UseNETCoreGenerator>true</UseNETCoreGenerator>
+<!--        <UseNETCoreGenerator>true</UseNETCoreGenerator>-->
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <WarningsAsErrors />
+<!--        <WarningsAsErrors />-->
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
         <IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX>
@@ -46,16 +46,18 @@
         <Optimize>true</Optimize>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Analyze'">
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
+        <AnalysisLevel>latest</AnalysisLevel>
     </PropertyGroup>
     <ItemGroup Condition="'$(Configuration)'=='Analyze'">
-        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.205" PrivateAssets="all" />
+<!--        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.205" PrivateAssets="all" />-->
         <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
-            <Version>3.0.0</Version>
+            <Version>3.3.1</Version>
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <AdditionalFiles Include=".\stylecop.json" />
+<!--        <AdditionalFiles Include=".\stylecop.json" />-->
         <AdditionalFiles Include=".\Rules.ruleset" />
     </ItemGroup>
 </Project>

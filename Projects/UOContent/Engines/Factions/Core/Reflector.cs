@@ -5,7 +5,7 @@ using Server.Utilities;
 
 namespace Server.Factions
 {
-    public class Reflector
+    public static class Reflector
     {
         private static List<Town> m_Towns;
 

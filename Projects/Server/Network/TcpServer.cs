@@ -180,7 +180,7 @@ namespace Server.Network
 
                 try
                 {
-                    socket = await listener.AcceptSocketAsync();
+                    socket = await listener.AcceptSocketAsync().ConfigureAwait(false);
                     if (Instances.Count >= MaxConnections)
                     {
                         socket.Send(socketRejected, SocketFlags.None);
@@ -205,8 +205,10 @@ namespace Server.Network
 
                     if (_nextMaximumSocketsReachedMessage <= ticks)
                     {
-                        var ipep = (IPEndPoint)socket!.RemoteEndPoint;
-                        Console.WriteLine("Listener {0}:{1}: Failed (Maximum connections reached)", ipep.Address, ipep.Port);
+                        if (socket?.RemoteEndPoint is IPEndPoint ipep)
+                        {
+                            Console.WriteLine("Listener {0}:{1}: Failed (Maximum connections reached)", ipep.Address, ipep.Port);
+                        }
                         _nextMaximumSocketsReachedMessage = ticks + _listenerErrorMessageDelay;
                     }
                 }

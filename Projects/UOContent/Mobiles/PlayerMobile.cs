@@ -1749,9 +1749,7 @@ namespace Server.Mobiles
 
             if (item is BaseArmor || item is BaseWeapon)
             {
-                Hits = Hits;
-                Stam = Stam;
-                Mana = Mana;
+                CheckStatTimers();
             }
 
             if (NetState != null)
@@ -1766,9 +1764,7 @@ namespace Server.Mobiles
 
             if (item is BaseArmor || item is BaseWeapon)
             {
-                Hits = Hits;
-                Stam = Stam;
-                Mana = Mana;
+                CheckStatTimers();
             }
 
             if (NetState != null)
@@ -1876,12 +1872,7 @@ namespace Server.Mobiles
                 }
             }
 
-            if (DuelContext?.AllowSkillUse(this, skill) == false)
-            {
-                return false;
-            }
-
-            return DesignContext.Check(this);
+            return DuelContext?.AllowSkillUse(this, skill) != false && DesignContext.Check(this);
         }
 
         public virtual void RecheckTownProtection()

@@ -26,8 +26,7 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public Point3D Offset { get; set; }
 
-        [Hue]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Hue, CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;

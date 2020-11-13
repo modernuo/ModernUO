@@ -82,7 +82,7 @@ namespace Server.Mobiles
 
         public override Type[] DecorativeList => new[] { typeof(WallBlood), typeof(TatteredAncientMummyWrapping) };
 
-        public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
+        public override MonsterStatuetteType[] StatueTypes => Array.Empty<MonsterStatuetteType>();
 
         public override string DefaultName => "Neira";
 

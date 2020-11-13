@@ -215,9 +215,9 @@ namespace Server
                 return "";
             }
 
-            var hasOpen = str.IndexOf('<') >= 0;
-            var hasClose = str.IndexOf('>') >= 0;
-            var hasPound = str.IndexOf('#') >= 0;
+            var hasOpen = str.Contains('<', StringComparison.Ordinal);
+            var hasClose = str.Contains('>', StringComparison.Ordinal);
+            var hasPound = str.Contains('#', StringComparison.Ordinal);
 
             if (!hasOpen && !hasClose && !hasPound)
             {
@@ -942,7 +942,7 @@ namespace Server
             int i;
 
 #pragma warning disable CA1806 // Do not ignore method results
-            if (value.StartsWith("0x"))
+            if (value.StartsWith("0x", StringComparison.Ordinal))
             {
                 int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
             }
@@ -960,7 +960,7 @@ namespace Server
             uint i;
 
 #pragma warning disable CA1806 // Do not ignore method results
-            if (value.StartsWith("0x"))
+            if (value.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
             {
                 uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
             }
@@ -974,12 +974,12 @@ namespace Server
         }
 
         public static bool ToInt32(string value, out int i) =>
-            value.StartsWith("0x")
+            value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
                 ? int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i)
                 : int.TryParse(value, out i);
 
         public static bool ToUInt32(string value, out uint i) =>
-            value.StartsWith("0x")
+            value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
                 ? uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i)
                 : uint.TryParse(value, out i);
 

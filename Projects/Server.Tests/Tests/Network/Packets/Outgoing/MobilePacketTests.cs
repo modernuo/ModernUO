@@ -221,10 +221,8 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(ProtocolChanges.Version70610)]
-        [InlineData(ProtocolChanges.Version400a)]
-        [InlineData(ProtocolChanges.Version502b)]
+        [Theory, InlineData(ProtocolChanges.Version70610), InlineData(ProtocolChanges.Version400a),
+         InlineData(ProtocolChanges.Version502b)]
         public void TestMobileStatusExtended(ProtocolChanges changes)
         {
             var beholder = new Mobile(0x1)
@@ -340,10 +338,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData("None")]
-        [InlineData("Lesser")]
-        [InlineData("Lethal")]
+        [Theory, InlineData("None"), InlineData("Lesser"), InlineData("Lethal")]
         public void TestHealthbarPoison(string pName)
         {
             var p = Poison.GetPoison(pName);
@@ -366,11 +361,7 @@ namespace Server.Tests.Network
             Assert.Equal(p?.Level, m.Poison?.Level);
         }
 
-        [Theory]
-        [InlineData(false, false)]
-        [InlineData(true, false)]
-        [InlineData(false, true)]
-        [InlineData(true, true)]
+        [Theory, InlineData(false, false), InlineData(true, false), InlineData(false, true), InlineData(true, true)]
         public void TestYellowBar(bool isBlessed, bool isYellowHealth)
         {
             var m = new Mobile(0x1);
@@ -464,10 +455,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(0, 0, 0, 0)]
-        [InlineData(10, 1024, 0, 0)]
-        [InlineData(10, 1024, 11, 2048)]
+        [Theory, InlineData(0, 0, 0, 0), InlineData(10, 1024, 0, 0), InlineData(10, 1024, 11, 2048)]
         public void TestMobileIncoming(int hairItemId, int hairHue, int facialHairItemId, int facialHairHue)
         {
             var beholder = new Mobile(0x1)
@@ -594,13 +582,11 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(ProtocolChanges.Version6000, 0, 0, 0, 0)]
-        [InlineData(ProtocolChanges.Version6000, 10, 1024, 0, 0)]
-        [InlineData(ProtocolChanges.Version6000, 10, 1024, 11, 2048)]
-        [InlineData(ProtocolChanges.Version7000, 0, 0, 0, 0)]
-        [InlineData(ProtocolChanges.Version7000, 10, 1024, 0, 0)]
-        [InlineData(ProtocolChanges.Version7000, 10, 1024, 11, 2048)]
+        [Theory, InlineData(ProtocolChanges.Version6000, 0, 0, 0, 0),
+         InlineData(ProtocolChanges.Version6000, 10, 1024, 0, 0),
+         InlineData(ProtocolChanges.Version6000, 10, 1024, 11, 2048), InlineData(ProtocolChanges.Version7000, 0, 0, 0, 0),
+         InlineData(ProtocolChanges.Version7000, 10, 1024, 0, 0),
+         InlineData(ProtocolChanges.Version7000, 10, 1024, 11, 2048)]
         public void TestMobileIncomingOld(
             ProtocolChanges protocolChanges, int hairItemId, int hairHue, int facialHairItemId, int facialHairHue
         )

@@ -5,7 +5,7 @@ using Server.Mobiles;
 
 namespace Server.Misc
 {
-    public class Titles
+    public static class Titles
     {
         public const int MinFame = 0;
         public const int MaxFame = 15000;
@@ -395,7 +395,7 @@ namespace Server.Misc
                 var skillLevel = GetSkillLevel(highest);
                 var skillTitle = highest.Info.Title;
 
-                if (mob.Female && skillTitle.EndsWith("man"))
+                if (mob.Female && skillTitle.EndsWith("man", StringComparison.Ordinal))
                 {
                     skillTitle = $"{skillTitle.Substring(0, skillTitle.Length - 3)}woman";
                 }

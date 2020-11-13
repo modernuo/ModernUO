@@ -120,8 +120,7 @@ namespace Server.Gumps
             CommandSystem.Register("ToTAdmin", AccessLevel.Administrator, ToTAdmin_OnCommand);
         }
 
-        [Usage("ToTAdmin")]
-        [Description("Displays a menu to configure Treasures of Tokuno.")]
+        [Usage("ToTAdmin"), Description("Displays a menu to configure Treasures of Tokuno.")]
         public static void ToTAdmin_OnCommand(CommandEventArgs e)
         {
             ToTAdminGump tg;

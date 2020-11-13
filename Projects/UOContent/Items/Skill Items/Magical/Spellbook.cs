@@ -259,8 +259,7 @@ namespace Server.Items
             CommandSystem.Register("AllSpells", AccessLevel.GameMaster, AllSpells_OnCommand);
         }
 
-        [Usage("AllSpells")]
-        [Description("Completely fills a targeted spellbook with scrolls.")]
+        [Usage("AllSpells"), Description("Completely fills a targeted spellbook with scrolls.")]
         private static void AllSpells_OnCommand(CommandEventArgs e)
         {
             e.Mobile.BeginTarget(-1, false, TargetFlags.None, AllSpells_OnTarget);

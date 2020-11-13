@@ -3,7 +3,7 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class SolenHelper
+    public static class SolenHelper
     {
         public static void PackPicnicBasket(BaseCreature solen)
         {

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 using Server.Network;
@@ -99,7 +100,7 @@ namespace Server
             }
 
             AddHash(number);
-            AddHash(arguments.GetHashCode());
+            AddHash(arguments.GetHashCode(StringComparison.Ordinal));
 
             Stream.Write(number);
 

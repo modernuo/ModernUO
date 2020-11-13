@@ -293,8 +293,7 @@ namespace Server
         Locked
     }
 
-    [CustomEnum(new[] { "North", "Right", "East", "Down", "South", "Left", "West", "Up" })]
-    [Flags]
+    [CustomEnum(new[] { "North", "Right", "East", "Down", "South", "Left", "West", "Up" }), Flags]
     public enum Direction : byte
     {
         North = 0x0,
@@ -1340,8 +1339,7 @@ namespace Server
 
         public virtual int Luck => 0;
 
-        [Hue]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Hue, CommandProperty(AccessLevel.GameMaster)]
         public int HueMod
         {
             get => m_HueMod;
@@ -1356,8 +1354,7 @@ namespace Server
             }
         }
 
-        [Hue]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Hue, CommandProperty(AccessLevel.GameMaster)]
         public virtual int Hue
         {
             get
@@ -1778,8 +1775,7 @@ namespace Server
             }
         }
 
-        [Body]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Body, CommandProperty(AccessLevel.GameMaster)]
         public Body Body
         {
             get
@@ -1805,8 +1801,7 @@ namespace Server
             }
         }
 
-        [Body]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Body, CommandProperty(AccessLevel.GameMaster)]
         public int BodyValue
         {
             get => Body.BodyID;
@@ -2481,8 +2476,6 @@ namespace Server
             get => m_Poison;
             set
             {
-                /*if (m_Poison != value && (m_Poison == null || value == null || m_Poison.Level < value.Level))
-                {*/
                 m_Poison = value;
                 Delta(MobileDelta.HealthbarPoison);
 
@@ -2500,7 +2493,6 @@ namespace Server
                 }
 
                 CheckStatTimers();
-                /*}*/
             }
         }
 
@@ -9171,7 +9163,7 @@ namespace Server
             CheckStatTimers();
         }
 
-        private MobileDelta GetStatDelta(StatType type)
+        private static MobileDelta GetStatDelta(StatType type)
         {
             MobileDelta delta = 0;
 

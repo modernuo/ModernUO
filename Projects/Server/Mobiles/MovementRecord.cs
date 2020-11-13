@@ -20,7 +20,7 @@ namespace Server.Mobiles
     public class MovementRecord
     {
         private static readonly Queue<MovementRecord> m_InstancePool = new Queue<MovementRecord>();
-        public long m_End;
+        private long m_End;
 
         private MovementRecord(long end) => m_End = end;
 

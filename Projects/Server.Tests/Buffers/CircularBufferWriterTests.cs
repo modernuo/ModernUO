@@ -7,54 +7,47 @@ namespace Server.Tests.Buffers
 {
     public class CircularBufferWriterTests
     {
-        [Theory]
+        [Theory, InlineData("Test String", "us-ascii", -1, 1024, 1024, 0),
+         InlineData("Test String", "utf-8", -1, 1024, 1024, 0), InlineData("Test String", "utf-16BE", -1, 1024, 1024, 0),
+         InlineData("Test String", "utf-16", -1, 1024, 1024, 0), InlineData("Test String", "us-ascii", -1, 1024, 1024, 1030),
+         InlineData("Test String", "utf-8", -1, 1024, 1024, 1030),
+         InlineData("Test String", "utf-16BE", -1, 1024, 1024, 1030),
+         InlineData("Test String", "utf-16", -1, 1024, 1024, 1030),
+         InlineData("Test String", "us-ascii", -1, 1024, 1024, 1020),
+         InlineData("Test String", "utf-8", -1, 1024, 1024, 1020),
+         InlineData("Test String", "utf-16BE", -1, 1024, 1024, 1020),
+         InlineData("Test String", "utf-16", -1, 1024, 1024, 1020), InlineData("Test String", "us-ascii", 8, 1024, 1024, 0),
+         InlineData("Test String", "utf-16BE", 8, 1024, 1024, 0), InlineData("Test String", "utf-16", 8, 1024, 1024, 0),
+         InlineData("Test String", "us-ascii", 8, 1024, 1024, 1030),
+         InlineData("Test String", "utf-16BE", 8, 1024, 1024, 1030),
+         InlineData("Test String", "utf-16", 8, 1024, 1024, 1030),
+         InlineData("Test String", "us-ascii", 8, 1024, 1024, 1020),
+         InlineData("Test String", "utf-16BE", 8, 1024, 1024, 1020),
+         InlineData("Test String", "utf-16", 8, 1024, 1024, 1020), InlineData("Test String", "us-ascii", 20, 1024, 1024, 0),
+         InlineData("Test String", "utf-16BE", 20, 1024, 1024, 0), InlineData("Test String", "utf-16", 20, 1024, 1024, 0),
+         InlineData("Test String", "us-ascii", 20, 1024, 1024, 1030),
+         InlineData("Test String", "utf-16BE", 20, 1024, 1024, 1030),
+         InlineData("Test String", "utf-16", 20, 1024, 1024, 1030),
+         InlineData("Test String", "us-ascii", 20, 1024, 1024, 1020),
+         InlineData("Test String", "utf-16BE", 20, 1024, 1024, 1020),
+         InlineData("Test String", "utf-16", 20, 1024, 1024, 1020)]
         // First only, beginning
-        [InlineData("Test String", "us-ascii", -1, 1024, 1024, 0)]
-        [InlineData("Test String", "utf-8", -1, 1024, 1024, 0)]
-        [InlineData("Test String", "utf-16BE", -1, 1024, 1024, 0)]
-        [InlineData("Test String", "utf-16", -1, 1024, 1024, 0)]
 
         // Second only
-        [InlineData("Test String", "us-ascii", -1, 1024, 1024, 1030)]
-        [InlineData("Test String", "utf-8", -1, 1024, 1024, 1030)]
-        [InlineData("Test String", "utf-16BE", -1, 1024, 1024, 1030)]
-        [InlineData("Test String", "utf-16", -1, 1024, 1024, 1030)]
 
         // Split
-        [InlineData("Test String", "us-ascii", -1, 1024, 1024, 1020)]
-        [InlineData("Test String", "utf-8", -1, 1024, 1024, 1020)]
-        [InlineData("Test String", "utf-16BE", -1, 1024, 1024, 1020)]
-        [InlineData("Test String", "utf-16", -1, 1024, 1024, 1020)]
 
         // First only, beginning, fixed length smaller
-        [InlineData("Test String", "us-ascii", 8, 1024, 1024, 0)]
-        [InlineData("Test String", "utf-16BE", 8, 1024, 1024, 0)]
-        [InlineData("Test String", "utf-16", 8, 1024, 1024, 0)]
 
         // Second only, fixed length smaller
-        [InlineData("Test String", "us-ascii", 8, 1024, 1024, 1030)]
-        [InlineData("Test String", "utf-16BE", 8, 1024, 1024, 1030)]
-        [InlineData("Test String", "utf-16", 8, 1024, 1024, 1030)]
 
         // Split, fixed length smaller
-        [InlineData("Test String", "us-ascii", 8, 1024, 1024, 1020)]
-        [InlineData("Test String", "utf-16BE", 8, 1024, 1024, 1020)]
-        [InlineData("Test String", "utf-16", 8, 1024, 1024, 1020)]
 
         // First only, beginning, fixed length bigger
-        [InlineData("Test String", "us-ascii", 20, 1024, 1024, 0)]
-        [InlineData("Test String", "utf-16BE", 20, 1024, 1024, 0)]
-        [InlineData("Test String", "utf-16", 20, 1024, 1024, 0)]
 
         // Second only, fixed length bigger
-        [InlineData("Test String", "us-ascii", 20, 1024, 1024, 1030)]
-        [InlineData("Test String", "utf-16BE", 20, 1024, 1024, 1030)]
-        [InlineData("Test String", "utf-16", 20, 1024, 1024, 1030)]
 
         // Split, fixed length bigger
-        [InlineData("Test String", "us-ascii", 20, 1024, 1024, 1020)]
-        [InlineData("Test String", "utf-16BE", 20, 1024, 1024, 1020)]
-        [InlineData("Test String", "utf-16", 20, 1024, 1024, 1020)]
         public void TestWriteString(
             string value,
             string encodingStr,

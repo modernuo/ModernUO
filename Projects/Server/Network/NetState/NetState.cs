@@ -513,7 +513,7 @@ namespace Server.Network
                         continue;
                     }
 
-                    var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None);
+                    var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None).ConfigureAwait(false);
 
                     if (bytesWritten > 0)
                     {
@@ -567,7 +567,7 @@ namespace Server.Network
                         continue;
                     }
 
-                    var bytesWritten = await socket.ReceiveAsync(result.Buffer, SocketFlags.None);
+                    var bytesWritten = await socket.ReceiveAsync(result.Buffer, SocketFlags.None).ConfigureAwait(false);
                     if (bytesWritten <= 0)
                     {
                         break;

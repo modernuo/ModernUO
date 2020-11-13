@@ -105,8 +105,7 @@ namespace Server.Misc
             CommandSystem.Register("ValidateName", AccessLevel.Administrator, ValidateName_OnCommand);
         }
 
-        [Usage("ValidateName")]
-        [Description("Checks the result of NameValidation on the specified name.")]
+        [Usage("ValidateName"), Description("Checks the result of NameValidation on the specified name.")]
         public static void ValidateName_OnCommand(CommandEventArgs e)
         {
             if (Validate(e.ArgString, 2, 16, true, false, true, 1, SpaceDashPeriodQuote))
@@ -236,7 +235,7 @@ namespace Server.Misc
 
             for (var i = 0; i < startDisallowed.Length; ++i)
             {
-                if (name.StartsWith(startDisallowed[i]))
+                if (name.StartsWith(startDisallowed[i], StringComparison.Ordinal))
                 {
                     return false;
                 }

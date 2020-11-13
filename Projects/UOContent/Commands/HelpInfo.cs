@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Server.Commands.Generic;
@@ -22,10 +23,9 @@ namespace Server.Commands
             FillTable();
         }
 
-        [Usage("HelpInfo [<command>]")]
-        [Description(
-            "Gives information on a specified command, or when no argument specified, displays a gump containing all commands"
-        )]
+        [Usage("HelpInfo [<command>]"), Description(
+             "Gives information on a specified command, or when no argument specified, displays a gump containing all commands"
+         )]
         private static void HelpInfo_OnCommand(CommandEventArgs e)
         {
             if (e.Length > 0)
@@ -93,7 +93,9 @@ namespace Server.Commands
 
                 var aliases = attrs.Length == 0 ? null : attrs[0] as AliasesAttribute;
 
-                var descString = desc.Description.Replace("<", "(").Replace(">", ")");
+                var descString = desc.Description
+                    .Replace("<", "(", StringComparison.Ordinal)
+                    .Replace(">", ")", StringComparison.Ordinal);
 
                 if (aliases == null)
                 {
@@ -137,7 +139,9 @@ namespace Server.Commands
                     aliases[j] = cmds[j + 1];
                 }
 
-                desc = desc.Replace("<", "(").Replace(">", ")");
+                desc = desc
+                    .Replace("<", "(", StringComparison.Ordinal)
+                    .Replace(">", ")", StringComparison.Ordinal);
 
                 if (command.Supports != CommandSupport.Single)
                 {
@@ -224,7 +228,9 @@ namespace Server.Commands
                     aliases[j] = cmds[j + 1];
                 }
 
-                desc = desc.Replace("<", ")").Replace(">", ")");
+                desc = desc
+                    .Replace("<", ")", StringComparison.Ordinal)
+                    .Replace(">", ")", StringComparison.Ordinal);
 
                 list.Add(new CommandInfo(command.AccessLevel, cmd, aliases, usage, desc));
 
@@ -406,7 +412,10 @@ namespace Server.Commands
                 var sb = new StringBuilder();
 
                 sb.Append("Usage: ");
-                sb.Append(info.Usage.Replace("<", "(").Replace(">", ")"));
+                var usage = info.Usage
+                    .Replace("<", "(", StringComparison.Ordinal)
+                    .Replace(">", ")", StringComparison.Ordinal);
+                sb.Append(usage);
                 sb.Append("<BR>");
 
                 var aliases = info.Aliases;

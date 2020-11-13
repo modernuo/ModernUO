@@ -189,8 +189,7 @@ namespace Server.Engines.Doom
             CommandSystem.Register("GenLeverPuzzle", AccessLevel.Administrator, GenLampPuzzle_OnCommand);
         }
 
-        [Usage("GenLeverPuzzle")]
-        [Description("Generates lamp room and lever puzzle in doom.")]
+        [Usage("GenLeverPuzzle"), Description("Generates lamp room and lever puzzle in doom.")]
         public static void GenLampPuzzle_OnCommand(CommandEventArgs e)
         {
             if (Map.Malas.GetItemsInRange(lp_Center, 0).OfType<LeverPuzzleController>().Any())

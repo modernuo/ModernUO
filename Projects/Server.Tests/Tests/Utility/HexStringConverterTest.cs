@@ -5,8 +5,7 @@ namespace Server.Tests.Accounting
 {
     public class HexStringConverterTest
     {
-        [Theory]
-        [InlineData("ABCDEF1234", new byte[] { 0xAB, 0xCD, 0xEF, 0x12, 0x34 })]
+        [Theory, InlineData("ABCDEF1234", new byte[] { 0xAB, 0xCD, 0xEF, 0x12, 0x34 })]
         public void TestGetBytes(string input, byte[] bytes)
         {
             Span<byte> outputBytes = stackalloc byte[input.Length / 2];
@@ -16,8 +15,7 @@ namespace Server.Tests.Accounting
             Assert.Equal(input, bytes.ToHexString());
         }
 
-        [Theory]
-        [InlineData("[AB, CD, EF, 12, 34]", new byte[] { 0xAB, 0xCD, 0xEF, 0x12, 0x34 })]
+        [Theory, InlineData("[AB, CD, EF, 12, 34]", new byte[] { 0xAB, 0xCD, 0xEF, 0x12, 0x34 })]
         public void TestsGetStringDelimited(string expected, byte[] bytes)
         {
             Assert.Equal(expected, bytes.ToDelimitedHexString());

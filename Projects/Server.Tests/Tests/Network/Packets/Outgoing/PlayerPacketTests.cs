@@ -43,9 +43,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
+        [Theory, InlineData(false), InlineData(true)]
         public void TestDeathStatus(bool isDead)
         {
             var data = new DeathStatus(isDead).Compile();
@@ -61,11 +59,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(0, true)]
-        [InlineData(0, false)]
-        [InlineData(100, true)]
-        [InlineData(1000, false)]
+        [Theory, InlineData(0, true), InlineData(0, false), InlineData(100, true), InlineData(1000, false)]
         public void TestSpecialAbility(int abilityId, bool active)
         {
             var data = new ToggleSpecialAbility(abilityId, active).Compile();
@@ -82,9 +76,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData("This is a header", "This is a body", "This is a footer")]
-        [InlineData(null, null, null)]
+        [Theory, InlineData("This is a header", "This is a body", "This is a footer"), InlineData(null, null, null)]
         public void TestDisplayProfile(string header, string body, string footer)
         {
             Serial m = 0x1000;
@@ -110,9 +102,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(LRReason.CannotLift)]
-        [InlineData(LRReason.TryToSteal)]
+        [Theory, InlineData(LRReason.CannotLift), InlineData(LRReason.TryToSteal)]
         public void TestLiftRej(LRReason reason)
         {
             var data = new LiftRej(reason).Compile();
@@ -140,9 +130,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(1, 2, 3)]
-        [InlineData(4, 5, 6)]
+        [Theory, InlineData(1, 2, 3), InlineData(4, 5, 6)]
         public void TestWeather(int type, int density, int temp)
         {
             var data = new Weather(type, density, temp).Compile();
@@ -235,10 +223,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(10)]
-        [InlineData(255)]
+        [Theory, InlineData(0), InlineData(10), InlineData(255)]
         public void TestSequence(byte num)
         {
             var data = new Sequence(num).Compile();
@@ -252,10 +237,8 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(SkillName.Alchemy, 0, 1)]
-        [InlineData(SkillName.Archery, 10, 1000)]
-        [InlineData(SkillName.Begging, 100000, 1000)]
+        [Theory, InlineData(SkillName.Alchemy, 0, 1), InlineData(SkillName.Archery, 10, 1000),
+         InlineData(SkillName.Begging, 100000, 1000)]
         public void TestSkillChange(SkillName skillName, int baseFixedPoint, int capFixedPoint)
         {
             // TODO: Eliminate all of this and just create a Skill directly
@@ -287,10 +270,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("This is a URL, I promise")]
+        [Theory, InlineData(null), InlineData(""), InlineData("This is a URL, I promise")]
         public void TestLaunchBrowser(string url)
         {
             var data = new LaunchBrowser(url).Compile();
@@ -341,9 +321,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(1, false)]
-        [InlineData(2, true)]
+        [Theory, InlineData(1, false), InlineData(2, true)]
         public void TestSeasonChange(int season, bool playSound)
         {
             var data = new SeasonChange(season, playSound).Compile();
@@ -358,10 +336,8 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(0x1024, "Test Title", true, true)]
-        [InlineData(0x1024, "Test Title", false, true)]
-        [InlineData(0x1024, "Test Title", true, false)]
+        [Theory, InlineData(0x1024, "Test Title", true, true), InlineData(0x1024, "Test Title", false, true),
+         InlineData(0x1024, "Test Title", true, false)]
         public void TestDisplayPaperdoll(uint m, string title, bool warmode, bool canLift)
         {
             var data = new DisplayPaperdoll(m, title, warmode, canLift).Compile();
@@ -388,10 +364,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(MusicName.Approach)]
-        [InlineData(MusicName.Combat1)]
-        [InlineData(MusicName.ValoriaShips)]
+        [Theory, InlineData(MusicName.Approach), InlineData(MusicName.Combat1), InlineData(MusicName.ValoriaShips)]
         public void TestPlayMusic(MusicName music)
         {
             var data = new PlayMusic(music).Compile();
@@ -405,9 +378,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(10, 1, "Some text")]
-        [InlineData(100, 10, "Some more text")]
+        [Theory, InlineData(10, 1, "Some text"), InlineData(100, 10, "Some more text")]
         public void TestScrollMessage(int type, int tip, string text)
         {
             var data = new ScrollMessage(type, tip, text).Compile();
@@ -462,10 +433,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(10)]
-        [InlineData(100)]
+        [Theory, InlineData(0), InlineData(10), InlineData(100)]
         public void TestPingAck(byte ping)
         {
             var data = new PingAck(ping).Compile();

@@ -31,25 +31,25 @@ namespace Server
             m_Position = m_File.Position;
         }
 
-        public override long Position => m_Position + m_Index;
+        public override long Position => m_Position + Index;
 
 
         protected override int BufferSize => 512;
 
         public override void Flush()
         {
-            if (m_Index > 0)
+            if (Index > 0)
             {
-                m_Position += m_Index;
+                m_Position += Index;
 
-                m_File.Write(m_Buffer, 0, (int)m_Index);
-                m_Index = 0;
+                m_File.Write(Buffer, 0, (int)Index);
+                Index = 0;
             }
         }
 
         public override void Close()
         {
-            if (m_Index > 0)
+            if (Index > 0)
             {
                 Flush();
             }

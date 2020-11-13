@@ -71,8 +71,7 @@ namespace Server.Regions
             CommandSystem.Register("ToggleGuarded", AccessLevel.Administrator, ToggleGuarded_OnCommand);
         }
 
-        [Usage("CheckGuarded")]
-        [Description("Returns a value indicating if the current region is guarded or not.")]
+        [Usage("CheckGuarded"), Description("Returns a value indicating if the current region is guarded or not.")]
         private static void CheckGuarded_OnCommand(CommandEventArgs e)
         {
             var from = e.Mobile;
@@ -92,8 +91,7 @@ namespace Server.Regions
             }
         }
 
-        [Usage("SetGuarded <true|false>")]
-        [Description("Enables or disables guards for the current region.")]
+        [Usage("SetGuarded <true|false>"), Description("Enables or disables guards for the current region.")]
         private static void SetGuarded_OnCommand(CommandEventArgs e)
         {
             var from = e.Mobile;
@@ -123,8 +121,7 @@ namespace Server.Regions
             }
         }
 
-        [Usage("ToggleGuarded")]
-        [Description("Toggles the state of guards for the current region.")]
+        [Usage("ToggleGuarded"), Description("Toggles the state of guards for the current region.")]
         private static void ToggleGuarded_OnCommand(CommandEventArgs e)
         {
             var from = e.Mobile;

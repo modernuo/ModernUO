@@ -78,10 +78,7 @@ namespace Server.Items
 
         private ScoreEntry GetEntryFor(Mobile from)
         {
-            if (m_Entries == null)
-            {
-                m_Entries = new Dictionary<Mobile, ScoreEntry>();
-            }
+            m_Entries ??= new Dictionary<Mobile, ScoreEntry>();
 
             if (!m_Entries.TryGetValue(from, out var e))
             {

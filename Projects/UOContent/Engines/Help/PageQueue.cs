@@ -172,8 +172,7 @@ namespace Server.Engines.Help
             }
         }
 
-        [Usage("Pages")]
-        [Description("Opens the page queue menu.")]
+        [Usage("Pages"), Description("Opens the page queue menu.")]
         private static void Pages_OnCommand(CommandEventArgs e)
         {
             if (m_KeyedByHandler.TryGetValue(e.Mobile, out var entry))

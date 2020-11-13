@@ -7,10 +7,7 @@ namespace Server.Tests.Network
 {
     public class MovementPacketTests : IClassFixture<ServerFixture>
     {
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(2)]
+        [Theory, InlineData(0), InlineData(1), InlineData(2)]
         public void TestSpeedControl(byte speedControl)
         {
             var data = new SpeedControl(speedControl).Compile();

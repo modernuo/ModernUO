@@ -83,9 +83,8 @@ namespace Server.Gumps
             CommandSystem.Register("WhoList", AccessLevel.Counselor, WhoList_OnCommand);
         }
 
-        [Usage("WhoList [filter]")]
-        [Aliases("Who")]
-        [Description("Lists all connected clients. Optionally filters results by name.")]
+        [Usage("WhoList [filter]"), Aliases("Who"),
+         Description("Lists all connected clients. Optionally filters results by name.")]
         private static void WhoList_OnCommand(CommandEventArgs e)
         {
             e.Mobile.SendGump(new WhoGump(e.Mobile, e.ArgString));
@@ -105,7 +104,7 @@ namespace Server.Gumps
                 if (m != null && (m == owner || !m.Hidden || owner.AccessLevel >= m.AccessLevel ||
                                   m is PlayerMobile mobile && mobile.VisibilityList.Contains(owner)))
                 {
-                    if (filter != null && !(m.Name?.ToLower().IndexOf(filter, StringComparison.Ordinal) >= 0))
+                    if (filter != null && m.Name?.ToLower().Contains(filter, StringComparison.Ordinal) != true)
                     {
                         continue;
                     }

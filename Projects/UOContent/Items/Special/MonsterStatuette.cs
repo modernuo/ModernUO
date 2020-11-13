@@ -1,3 +1,4 @@
+using System;
 using Server.Engines.VeteranRewards;
 using Server.Gumps;
 using Server.Multis;
@@ -82,7 +83,7 @@ namespace Server.Items
             /* Efreet */ new MonsterStatuetteInfo(1080521, 0x2590, 0x300),
             /* Slime */ new MonsterStatuetteInfo(1015246, 0x20E8, 456),
             /* PlagueBeast */ new MonsterStatuetteInfo(1029747, 0x2613, 0x1BF),
-            /* RedDeath */ new MonsterStatuetteInfo(1094932, 0x2617, new int[] { }),
+            /* RedDeath */ new MonsterStatuetteInfo(1094932, 0x2617, Array.Empty<int>()),
             /* Spider */ new MonsterStatuetteInfo(1029668, 0x25C4, 1170),
             /* OphidianArchMage */ new MonsterStatuetteInfo(1029641, 0x25A9, 639),
             /* OphidianWarrior */ new MonsterStatuetteInfo(1029645, 0x25AD, 634),

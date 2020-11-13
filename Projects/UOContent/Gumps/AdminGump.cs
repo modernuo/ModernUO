@@ -196,8 +196,8 @@ namespace Server.Gumps
                         AddLabel(20, 350, LabelHue, "Operating System: ");
                         var os = Environment.OSVersion.ToString();
 
-                        os = os.Replace("Microsoft", "MSFT");
-                        os = os.Replace("Service Pack", "SP");
+                        os = os.Replace("Microsoft", "MSFT", StringComparison.Ordinal);
+                        os = os.Replace("Service Pack", "SP", StringComparison.Ordinal);
 
                         AddLabel(150, 350, LabelHue, os);
 
@@ -243,7 +243,7 @@ namespace Server.Gumps
                         sb.Append(curIOCP);
                         sb.Append("<br>Usage: ");
                         sb.Append((maxIOCP - curIOCP) * 100 / maxIOCP);
-                        sb.Append("%");
+                        sb.Append('%');
 
                         AddLabel(20, 200, LabelHue, "Pooling:");
                         AddHtml(20, 220, 380, 150, sb.ToString(), true, true);
@@ -1485,10 +1485,9 @@ namespace Server.Gumps
             CommandSystem.Register("Admin", AccessLevel.Administrator, Admin_OnCommand);
         }
 
-        [Usage("Admin")]
-        [Description(
-            "Opens an interface providing server information and administration features including client, account, and firewall management."
-        )]
+        [Usage("Admin"), Description(
+             "Opens an interface providing server information and administration features including client, account, and firewall management."
+         )]
         public static void Admin_OnCommand(CommandEventArgs e)
         {
             e.Mobile.SendGump(new AdminGump(e.Mobile, AdminGumpPage.Clients));
@@ -2463,12 +2462,12 @@ namespace Server.Gumps
                                                 var m = ns.Mobile;
                                                 var a = ns.Account;
 
-                                                isMatch = m?.Name.ToLower().IndexOf(match, StringComparison.Ordinal) >= 0
-                                                          || a?.Username.ToLower().IndexOf(match, StringComparison.Ordinal) >= 0;
+                                                isMatch = m?.Name.ToLower().Contains(match, StringComparison.Ordinal) == true
+                                                          || a?.Username.ToLower().Contains(match, StringComparison.Ordinal) == true;
                                             }
                                             else
                                             {
-                                                isMatch = ns.ToString().IndexOf(match, StringComparison.Ordinal) >= 0;
+                                                isMatch = ns.ToString().Contains(match, StringComparison.Ordinal);
                                             }
 
                                             if (isMatch)
@@ -2726,7 +2725,7 @@ namespace Server.Gumps
                                     {
                                         results = Accounts.GetAccounts()
                                             .Where(acct =>
-                                                acct.Username.ToLower().IndexOf(match, StringComparison.Ordinal) >= 0)
+                                                acct.Username.ToLower().Contains(match, StringComparison.Ordinal))
                                             .ToList();
                                         results.Sort(AccountComparer.Instance);
                                     }
@@ -3539,7 +3538,7 @@ namespace Server.Gumps
                                         {
                                             var check = Firewall.List[i].ToString();
 
-                                            if (check?.IndexOf(match) >= 0)
+                                            if (check?.Contains(match, StringComparison.Ordinal) == true)
                                             {
                                                 results.Add(Firewall.List[i]);
                                             }
