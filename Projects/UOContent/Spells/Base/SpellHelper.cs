@@ -61,7 +61,7 @@ namespace Server.Spells
         TeleportTo
     }
 
-    public class SpellHelper
+    public static class SpellHelper
     {
         private static readonly TimeSpan AosDamageDelay = TimeSpan.FromSeconds(1.0);
         private static readonly TimeSpan OldDamageDelay = TimeSpan.FromSeconds(0.5);
@@ -1221,7 +1221,7 @@ namespace Server.Spells
         }
     }
 
-    public class TransformationSpellHelper
+    public static class TransformationSpellHelper
     {
         private static readonly Dictionary<Mobile, TransformContext> m_Table = new Dictionary<Mobile, TransformContext>();
 

@@ -620,7 +620,7 @@ namespace Server.Commands
 
 namespace Server
 {
-    public abstract class PropertyException : ApplicationException
+    public abstract class PropertyException : Exception
     {
         protected Property m_Property;
 

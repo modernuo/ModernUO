@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Server.Multis
 {
-    public class DynamicDecay
+    public static class DynamicDecay
     {
         private static readonly Dictionary<DecayLevel, DecayStageInfo> m_Stages;
 

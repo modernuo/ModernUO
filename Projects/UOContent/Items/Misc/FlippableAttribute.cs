@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-    public class FlipCommandHandlers
+    public static class FlipCommandHandlers
     {
         public static void Initialize()
         {

@@ -5,7 +5,7 @@ using Server.Mobiles;
 
 namespace Server.Items
 {
-    public class Ankhs
+    public static class Ankhs
     {
         public const int ResurrectRange = 2;
         public const int TitheRange = 2;

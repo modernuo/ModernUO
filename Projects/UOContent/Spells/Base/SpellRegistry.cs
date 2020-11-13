@@ -4,7 +4,7 @@ using Server.Utilities;
 
 namespace Server.Spells
 {
-    public class SpellRegistry
+    public static class SpellRegistry
     {
         private static readonly Type[] m_Types = new Type[700];
         private static int m_Count;

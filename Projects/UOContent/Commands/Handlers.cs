@@ -17,7 +17,7 @@ using Server.Targets;
 
 namespace Server.Commands
 {
-    public class CommandHandlers
+    public static class CommandHandlers
     {
         public static void Initialize()
         {

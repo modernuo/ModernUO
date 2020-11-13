@@ -283,7 +283,7 @@ namespace Server.Items
         }
     }
 
-    public class DisguiseTimers
+    public static class DisguiseTimers
     {
         public static Dictionary<Mobile, Timer> Timers { get; } = new Dictionary<Mobile, Timer>();
 

@@ -6,7 +6,7 @@ using Server.Items;
 
 namespace Server
 {
-    public class Statics
+    public static class Statics
     {
         public delegate void FreezeCallback(Mobile from, bool okay, StateInfo si);
 

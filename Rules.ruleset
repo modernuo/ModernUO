@@ -373,8 +373,10 @@
         <Rule Id="CA1031" Action="None" />
         <Rule Id="CA1034" Action="None" />
         <Rule Id="CA1036" Action="None" />
+        <Rule Id="CA1051" Action="None" /> <!-- Visible fields that shouldn't be -->
         <Rule Id="CA1054" Action="None" />
         <Rule Id="CA1055" Action="None" />
+        <Rule Id="CA1056" Action="None" />
         <Rule Id="CA1062" Action="None" />
         <Rule Id="CA1063" Action="None" />
         <Rule Id="CA1069" Action="None" />
@@ -397,6 +399,7 @@
         <Rule Id="CA1819" Action="None" />
         <Rule Id="CA1822" Action="None" />
         <Rule Id="CA1823" Action="None" />
+        <Rule Id="CA2119" Action="None" /> <!-- Lots of properties and methods are not used but provided for consumption -->
         <Rule Id="CA2211" Action="None" />
         <Rule Id="CA2214" Action="None" />
         <Rule Id="CA2225" Action="None" />

@@ -9,7 +9,7 @@ using CommandInfoSorter = Server.Commands.Docs.CommandEntrySorter;
 
 namespace Server.Commands
 {
-    public class HelpInfo
+    public static class HelpInfo
     {
         public static Dictionary<string, CommandInfo> HelpInfos { get; } = new Dictionary<string, CommandInfo>();
 

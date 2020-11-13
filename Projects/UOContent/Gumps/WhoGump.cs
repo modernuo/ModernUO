@@ -316,9 +316,14 @@ namespace Server.Gumps
 
             public int Compare(Mobile x, Mobile y)
             {
-                if (x == null || y == null)
+                if (x == null)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentNullException(nameof(x));
+                }
+
+                if (y == null)
+                {
+                    throw new ArgumentNullException(nameof(y));
                 }
 
                 if (x.AccessLevel > y.AccessLevel)
@@ -326,12 +331,7 @@ namespace Server.Gumps
                     return -1;
                 }
 
-                if (x.AccessLevel < y.AccessLevel)
-                {
-                    return 1;
-                }
-
-                return Insensitive.Compare(x.Name, y.Name);
+                return x.AccessLevel < y.AccessLevel ? 1 : Insensitive.Compare(x.Name, y.Name);
             }
         }
     }
