@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-    public class CrimsonCincture : HalfApron, ITokunoDyable
+    public class CrimsonCincture : HalfApron
     {
         [Constructible]
         public CrimsonCincture()

@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
 namespace Server
 {
-    public class Firewall
+    public static class Firewall
     {
         static Firewall()
         {
@@ -30,13 +31,13 @@ namespace Server
 
                     /*
                       object toAdd;
-          
+
                       IPAddress addr;
                       if (IPAddress.TryParse( line, out addr ))
                         toAdd = addr;
                       else
                         toAdd = line;
-          
+
                       m_Blocked.Add( toAdd.ToString() );
                        * */
                 }
@@ -47,22 +48,13 @@ namespace Server
 
         public static IFirewallEntry ToFirewallEntry(object entry)
         {
-            if (entry is IFirewallEntry firewallEntry)
+            return entry switch
             {
-                return firewallEntry;
-            }
-
-            if (entry is IPAddress address)
-            {
-                return new IPFirewallEntry(address);
-            }
-
-            if (entry is string s)
-            {
-                return ToFirewallEntry(s);
-            }
-
-            return null;
+                IFirewallEntry firewallEntry => firewallEntry,
+                IPAddress address            => new IPFirewallEntry(address),
+                string s                     => ToFirewallEntry(s),
+                _                            => null
+            };
         }
 
         public static IFirewallEntry ToFirewallEntry(string entry)
@@ -73,9 +65,9 @@ namespace Server
             }
 
             // Try CIDR parse
-            var str = entry.Split('/');
+            var str = entry?.Split('/');
 
-            if (str.Length == 2)
+            if (str?.Length == 2)
             {
                 if (IPAddress.TryParse(str[0], out var cidrPrefix))
                 {
@@ -180,7 +172,7 @@ namespace Server
             return false;
             /*
             bool contains = false;
-      
+
             for ( int i = 0; !contains && i < m_Blocked.Count; ++i )
             {
               if (m_Blocked[i] is IPAddress)
@@ -188,14 +180,14 @@ namespace Server
                       else if (m_Blocked[i] is String)
                       {
                           string s = (string)m_Blocked[i];
-      
+
                           contains = Utility.IPMatchCIDR( s, ip );
-      
+
                           if (!contains)
                               contains = Utility.IPMatch( s, ip );
                       }
             }
-      
+
             return contains;
              * */
         }
@@ -312,10 +304,10 @@ namespace Server
                     return obj.Equals(m_Entry);
                 }
 
-                return obj is WildcardIPFirewallEntry entry && m_Entry.Equals(entry.m_Entry);
+                return obj is WildcardIPFirewallEntry entry && m_Entry == entry.m_Entry;
             }
 
-            public override int GetHashCode() => m_Entry.GetHashCode();
+            public override int GetHashCode() => m_Entry.GetHashCode(StringComparison.Ordinal);
         }
     }
 }

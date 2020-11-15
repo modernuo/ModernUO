@@ -1,6 +1,6 @@
 namespace Server.Misc
 {
-    public class RaceDefinitions
+    public static class RaceDefinitions
     {
         public static void Configure()
         {

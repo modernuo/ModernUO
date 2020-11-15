@@ -49,8 +49,8 @@ namespace Server.Commands
             CommandSystem.Register("Props", AccessLevel.Counselor, Props_OnCommand);
         }
 
-        [Usage("Props [serial]")]
-        [Description("Opens a menu where you can view and edit all properties of a targeted (or specified) object.")]
+        [Usage("Props [serial]"),
+         Description("Opens a menu where you can view and edit all properties of a targeted (or specified) object.")]
         private static void Props_OnCommand(CommandEventArgs e)
         {
             if (e.Length == 1)
@@ -254,7 +254,7 @@ namespace Server.Commands
                 {
                     var valueString = args[1 + i * 2];
 
-                    if (valueString.StartsWith("0x"))
+                    if (valueString.StartsWith("0x", StringComparison.Ordinal))
                     {
                         realValues[i] = Convert.ToInt32(valueString.Substring(2), 16);
                     }
@@ -483,7 +483,7 @@ namespace Server.Commands
             {
                 toSet = null;
             }
-            else if (value.StartsWith("0x") && IsNumeric(type))
+            else if (value.StartsWith("0x", StringComparison.Ordinal) && IsNumeric(type))
             {
                 try
                 {
@@ -620,7 +620,7 @@ namespace Server.Commands
 
 namespace Server
 {
-    public abstract class PropertyException : ApplicationException
+    public abstract class PropertyException : Exception
     {
         protected Property m_Property;
 
@@ -739,13 +739,15 @@ namespace Server
 
         public PropertyAccess Access { get; private set; }
 
+        private void NotYetBound() => throw new NotYetBoundException(this);
+
         public PropertyInfo[] Chain
         {
             get
             {
                 if (!IsBound)
                 {
-                    throw new NotYetBoundException(this);
+                    NotYetBound();
                 }
 
                 return m_Chain;
@@ -758,7 +760,7 @@ namespace Server
             {
                 if (!IsBound)
                 {
-                    throw new NotYetBoundException(this);
+                    NotYetBound();
                 }
 
                 return m_Chain[^1].PropertyType;

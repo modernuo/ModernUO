@@ -12,7 +12,7 @@ using Server.Spells;
 
 namespace Server.Commands.Generic
 {
-    public class TargetCommands
+    public static class TargetCommands
     {
         public static List<BaseCommand> AllCommands { get; } = new List<BaseCommand>();
 
@@ -788,7 +788,7 @@ namespace Server.Commands.Generic
                     var result = Properties.GetValue(e.Mobile, obj, e.GetString(i));
 
                     if (result == "Property not found." || result == "Property is write only." ||
-                        result.StartsWith("Getting this property"))
+                        result.StartsWith("Getting this property", StringComparison.Ordinal))
                     {
                         LogFailure(result);
                     }

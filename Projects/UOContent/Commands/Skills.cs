@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Commands
 {
-    public class SkillsCommand
+    public static class SkillsCommand
     {
         public static void Initialize()
         {
@@ -12,8 +12,7 @@ namespace Server.Commands
             CommandSystem.Register("SetAllSkills", AccessLevel.GameMaster, SetAllSkills_OnCommand);
         }
 
-        [Usage("SetSkill <name> <value>")]
-        [Description("Sets a skill value by name of a targeted mobile.")]
+        [Usage("SetSkill <name> <value>"), Description("Sets a skill value by name of a targeted mobile.")]
         public static void SetSkill_OnCommand(CommandEventArgs arg)
         {
             if (arg.Length != 2)
@@ -33,8 +32,7 @@ namespace Server.Commands
             }
         }
 
-        [Usage("SetAllSkills <name> <value>")]
-        [Description("Sets all skill values of a targeted mobile.")]
+        [Usage("SetAllSkills <name> <value>"), Description("Sets all skill values of a targeted mobile.")]
         public static void SetAllSkills_OnCommand(CommandEventArgs arg)
         {
             if (arg.Length != 1)
@@ -47,8 +45,7 @@ namespace Server.Commands
             }
         }
 
-        [Usage("GetSkill <name>")]
-        [Description("Gets a skill value by name of a targeted mobile.")]
+        [Usage("GetSkill <name>"), Description("Gets a skill value by name of a targeted mobile.")]
         public static void GetSkill_OnCommand(CommandEventArgs arg)
         {
             if (arg.Length != 1)

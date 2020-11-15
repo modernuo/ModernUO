@@ -7,7 +7,7 @@ using Server.Spells.Ninjitsu;
 
 namespace Server.Misc
 {
-    public class RegenRates
+    public static class RegenRates
     {
         [CallPriority(10)]
         public static void Configure()

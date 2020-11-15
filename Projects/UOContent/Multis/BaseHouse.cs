@@ -1688,8 +1688,7 @@ namespace Server.Multis
                     4 => new GenericHouseDoor(facing, 0x6B5, 0xEA, 0xF1),
                     5 => new GenericHouseDoor(facing, 0x6C5, 0xEC, 0xF3),
                     6 => new GenericHouseDoor(facing, 0x6D5, 0xEA, 0xF1),
-                    7 => new GenericHouseDoor(facing, 0x6E5, 0xEA, 0xF1),
-                    _ => null
+                    _ => new GenericHouseDoor(facing, 0x6E5, 0xEA, 0xF1) // 7
                 };
             }
             else if (itemID >= 0x314 && itemID < 0x364)
@@ -1792,8 +1791,7 @@ namespace Server.Multis
                 door = type switch
                 {
                     0 => new GenericHouseDoor(facing, 0x367B, 0xED, 0xF4),
-                    1 => new GenericHouseDoor(facing, 0x368B, 0xEC, 0x3E7),
-                    _ => null
+                    _ => new GenericHouseDoor(facing, 0x368B, 0xEC, 0x3E7) // 1
                 };
             }
             else if (itemID >= 0x409B && itemID < 0x40A3)

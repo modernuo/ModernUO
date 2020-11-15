@@ -9,7 +9,7 @@ using Server.Regions;
 
 namespace Server.Misc
 {
-    public class AccountHandler
+    public static class AccountHandler
     {
         private static int MaxAccountsPerIP;
         private static bool AutoAccountCreation;
@@ -100,10 +100,9 @@ namespace Server.Misc
             }
         }
 
-        [Usage("Password <newPassword> <repeatPassword>")]
-        [Description(
-            "Changes the password of the commanding players account. Requires the same C-class IP address as the account's creator."
-        )]
+        [Usage("Password <newPassword> <repeatPassword>"), Description(
+             "Changes the password of the commanding players account. Requires the same C-class IP address as the account's creator."
+         )]
         public static void Password_OnCommand(CommandEventArgs e)
         {
             var from = e.Mobile;
@@ -177,7 +176,7 @@ namespace Server.Misc
 
                     if (entry != null)
                     {
-                        if (entry.Message.StartsWith("[Automated: Change Password]"))
+                        if (entry.Message.StartsWith("[Automated: Change Password]", StringComparison.Ordinal))
                         {
                             from.SendMessage("You already have a password change request in the help system queue.");
                         }
@@ -289,7 +288,9 @@ namespace Server.Misc
                 return null;
             }
 
-            var isSafe = !(un.StartsWith(" ") || un.EndsWith(" ") || un.EndsWith("."));
+            var isSafe = !(un.StartsWith(" ", StringComparison.Ordinal) ||
+                           un.EndsWith(" ", StringComparison.Ordinal) ||
+                           un.EndsWith(".", StringComparison.Ordinal));
 
             for (var i = 0; isSafe && i < un.Length; ++i)
             {

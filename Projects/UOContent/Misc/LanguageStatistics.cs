@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Server.Accounting;
@@ -188,8 +187,7 @@ namespace Server.Misc
             CommandSystem.Register("LanguageStatistics", AccessLevel.Administrator, LanguageStatistics_OnCommand);
         }
 
-        [Usage("LanguageStatistics")]
-        [Description("Generate a file containing the list of languages for each PlayerMobile.")]
+        [Usage("LanguageStatistics"), Description("Generate a file containing the list of languages for each PlayerMobile.")]
         public static void LanguageStatistics_OnCommand(CommandEventArgs e)
         {
             var ht = new Dictionary<string, InternationalCodeCounter>();

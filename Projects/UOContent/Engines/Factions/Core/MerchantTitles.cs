@@ -35,7 +35,7 @@ namespace Server.Factions
         public TextDefinition Assigned { get; }
     }
 
-    public class MerchantTitles
+    public static class MerchantTitles
     {
         public static MerchantTitleInfo[] Info { get; } =
         {

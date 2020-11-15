@@ -4,7 +4,7 @@ using Server.Utilities;
 
 namespace Server.Mobiles
 {
-    public class Paragon
+    public static class Paragon
     {
         public static double ChestChance = .10;               // Chance that a paragon will carry a paragon chest
         public static double ChocolateIngredientChance = .20; // Chance that a paragon will drop a chocolatiering ingredient

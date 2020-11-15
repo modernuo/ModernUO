@@ -1,6 +1,6 @@
 namespace Server.Misc
 {
-    public class Strandedness
+    public static class Strandedness
     {
         private static readonly Point2D[] m_Felucca =
         {

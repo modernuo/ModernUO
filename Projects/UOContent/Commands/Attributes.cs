@@ -2,6 +2,7 @@ using System;
 
 namespace Server
 {
+    [AttributeUsage(AttributeTargets.Method)]
     public class UsageAttribute : Attribute
     {
         public UsageAttribute(string usage) => Usage = usage;
@@ -9,6 +10,7 @@ namespace Server
         public string Usage { get; }
     }
 
+    [AttributeUsage(AttributeTargets.Method)]
     public class DescriptionAttribute : Attribute
     {
         public DescriptionAttribute(string description) => Description = description;
@@ -16,6 +18,7 @@ namespace Server
         public string Description { get; }
     }
 
+    [AttributeUsage(AttributeTargets.Method)]
     public class AliasesAttribute : Attribute
     {
         public AliasesAttribute(params string[] aliases) => Aliases = aliases;

@@ -6,7 +6,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-    public class TestCenter
+    public static class TestCenter
     {
         public static bool Enabled { get; private set; }
 
@@ -267,7 +267,7 @@ namespace Server.Misc
                     case 3: // Command list
                         {
                             sender.Mobile.SendAsciiMessage(0x482, "The command prefix is \"{0}\"", CommandSystem.Prefix);
-                            CommandHandlers.Help_OnCommand(new CommandEventArgs(sender.Mobile, "help", "", new string[0]));
+                            CommandHandlers.Help_OnCommand(new CommandEventArgs(sender.Mobile, "help", "", Array.Empty<string>()));
 
                             break;
                         }

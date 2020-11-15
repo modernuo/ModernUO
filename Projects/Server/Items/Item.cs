@@ -524,8 +524,7 @@ namespace Server
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public int PileWeight => (int)Math.Ceiling(Weight * Amount);
 
-        [Hue]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Hue, CommandProperty(AccessLevel.GameMaster)]
         public virtual int Hue
         {
             get => m_Hue;

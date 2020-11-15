@@ -89,8 +89,7 @@ namespace Server.Mobiles
             CommandSystem.Register("TownCriers", AccessLevel.GameMaster, TownCriers_OnCommand);
         }
 
-        [Usage("TownCriers")]
-        [Description("Manages the global town crier list.")]
+        [Usage("TownCriers"), Description("Manages the global town crier list.")]
         public static void TownCriers_OnCommand(CommandEventArgs e)
         {
             e.Mobile.SendGump(new TownCrierGump(e.Mobile, Instance));

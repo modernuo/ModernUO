@@ -25,7 +25,7 @@ namespace Server.Misc
                     0,
                     NameVerification.Empty,
                     NameVerification.StartDisallowed,
-                    Core.ML ? NameVerification.Disallowed : new string[] { }
+                    Core.ML ? NameVerification.Disallowed : Array.Empty<string>()
                 ))
                 {
                     if (Core.ML)

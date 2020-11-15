@@ -20,7 +20,7 @@ namespace Server.Misc
         ToTThree
     }
 
-    public class TreasuresOfTokuno
+    public static class TreasuresOfTokuno
     {
         public const int ItemsPerReward = 10;
 
@@ -78,6 +78,12 @@ namespace Server.Misc
             typeof(FluteOfRenewal),
             typeof(LeurociansMempoOfFortune), typeof(LesserPigmentsOfTokuno), typeof(MetalPigmentsOfTokuno),
             typeof(ChestOfHeirlooms)
+        };
+
+        public static Type[] TokunoDyable { get; } =
+        {
+            typeof(DupresShield), typeof(CrimsonCincture), typeof(OssianGrimoire), typeof(QuiverOfInfinity),
+            typeof(BaseFormTalisman), typeof(BaseWand), typeof(JesterHatofChuckles)
         };
 
         public static TreasuresOfTokunoEra DropEra { get; set; } = TreasuresOfTokunoEra.None;
@@ -338,7 +344,7 @@ namespace Server.Gumps
 
         public ToTTurnInGump(Mobile collector, List<ItemTileButtonInfo> buttons) : base(
             1071012,
-            Utility.CastListContravariant<ItemTileButtonInfo, ImageTileButtonInfo>(buttons)
+            buttons.ToList<ImageTileButtonInfo>()
         ) // Click a minor artifact to give it to Ihara Soko.
             =>
                 m_Collector = collector;

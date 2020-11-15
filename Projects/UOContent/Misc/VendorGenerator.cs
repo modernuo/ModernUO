@@ -40,8 +40,8 @@ namespace Server
             CommandSystem.Register("VendorGen", AccessLevel.Administrator, VendorGen_OnCommand);
         }
 
-        [Usage("VendorGen")]
-        [Description("Generates vendors based on display cases and floor plans. Analyzes the map files, slow.")]
+        [Usage("VendorGen"),
+         Description("Generates vendors based on display cases and floor plans. Analyzes the map files, slow.")]
         private static void VendorGen_OnCommand(CommandEventArgs e)
         {
             Process(Map.Trammel, m_BritRegions);

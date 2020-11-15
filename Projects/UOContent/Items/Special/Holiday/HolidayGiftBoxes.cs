@@ -1,6 +1,6 @@
 ﻿namespace Server.Items
 {
-    public class GiftBoxHues
+    public static class GiftBoxHues
     {
         /* there's possibly a couple more, but this is what we could verify on OSI */
 

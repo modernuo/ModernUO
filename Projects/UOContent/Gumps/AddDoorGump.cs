@@ -102,8 +102,7 @@ namespace Server.Gumps
             CommandSystem.Register("AddDoor", AccessLevel.GameMaster, AddDoor_OnCommand);
         }
 
-        [Usage("AddDoor")]
-        [Description("Displays a menu from which you can interactively add doors.")]
+        [Usage("AddDoor"), Description("Displays a menu from which you can interactively add doors.")]
         public static void AddDoor_OnCommand(CommandEventArgs e)
         {
             e.Mobile.SendGump(new AddDoorGump());

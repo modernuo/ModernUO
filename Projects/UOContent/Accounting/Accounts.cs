@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace Server.Accounting
 {
-    public class Accounts
+    public static class Accounts
     {
         private static Dictionary<string, IAccount> m_Accounts = new Dictionary<string, IAccount>();
 
@@ -55,6 +55,11 @@ namespace Server.Accounting
             doc.Load(filePath);
 
             var root = doc["accounts"];
+
+            if (root == null)
+            {
+                throw new FileLoadException("Unable to load xml file");
+            }
 
             foreach (XmlElement account in root.GetElementsByTagName("account"))
             {

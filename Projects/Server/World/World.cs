@@ -73,7 +73,8 @@ namespace Server
                     }
                 }
 
-                throw new Exception("No serials left to allocate for mobiles");
+                OutOfMemory("No serials left to allocate for mobiles");
+                return Serial.MinusOne;
             }
         }
 
@@ -98,7 +99,8 @@ namespace Server
                     }
                 }
 
-                throw new Exception("No serials left to allocate for items");
+                OutOfMemory("No serials left to allocate for items");
+                return Serial.MinusOne;
             }
         }
 
@@ -113,6 +115,8 @@ namespace Server
                 return _lastGuild;
             }
         }
+
+        private static void OutOfMemory(string message) => throw new OutOfMemoryException(message);
 
         internal static int _Saves;
         internal static List<Type> ItemTypes { get; } = new List<Type>();
@@ -157,15 +161,13 @@ namespace Server
                 p = new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text);
             }
 
-            var list = TcpServer.Instances;
-
             p.Acquire();
 
-            for (var i = 0; i < list.Count; ++i)
+            foreach (var ns in TcpServer.Instances)
             {
-                if (list[i].Mobile != null)
+                if (ns.Mobile != null)
                 {
-                    list[i].Send(p);
+                    ns.Send(p);
                 }
             }
 
@@ -338,7 +340,7 @@ namespace Server
                 reader.Seek(entry.Position, SeekOrigin.Begin);
 
                 t.SaveBuffer = new BufferWriter(new byte[entry.Length], true);
-                reader.Read(t.SaveBuffer.Data);
+                reader.Read(t.SaveBuffer.Buffer);
             }
 
             reader.Close();
@@ -737,7 +739,7 @@ namespace Server
         public static void SerializeTo(this ISerializable entity, IGenericWriter writer)
         {
             var saveBuffer = entity.SaveBuffer;
-            writer.Write(saveBuffer.Data, (int)saveBuffer.Position);
+            writer.Write(saveBuffer.Buffer, (int)saveBuffer.Position);
 
             // Resize to exact buffer size
             entity.SaveBuffer.Resize((int)entity.SaveBuffer.Position);

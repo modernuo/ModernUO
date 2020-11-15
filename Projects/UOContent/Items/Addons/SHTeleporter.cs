@@ -187,8 +187,7 @@ namespace Server.Items
             CommandSystem.Register("SHTelGen", AccessLevel.Administrator, SHTelGen_OnCommand);
         }
 
-        [Usage("SHTelGen")]
-        [Description("Generates solen hives teleporters.")]
+        [Usage("SHTelGen"), Description("Generates solen hives teleporters.")]
         public static void SHTelGen_OnCommand(CommandEventArgs e)
         {
             World.Broadcast(0x35, true, "Solen hives teleporters are being generated, please wait.");

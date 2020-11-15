@@ -25,7 +25,9 @@ namespace System.Text.Json.Serialization
             }
 
             var structType = typeToConvert.GenericTypeArguments[0];
-            return !structType.IsPrimitive && structType.Namespace?.StartsWith(nameof(System)) != true && !structType.IsEnum;
+            return !structType.IsPrimitive &&
+                   structType.Namespace?.StartsWith(nameof(System), StringComparison.Ordinal) != true &&
+                   !structType.IsEnum;
         }
 
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>

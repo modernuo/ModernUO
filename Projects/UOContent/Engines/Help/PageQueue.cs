@@ -114,7 +114,7 @@ namespace Server.Engines.Help
         }
     }
 
-    public class PageQueue
+    public static class PageQueue
     {
         private static readonly Dictionary<Mobile, PageEntry> m_KeyedByHandler = new Dictionary<Mobile, PageEntry>();
         private static readonly Dictionary<Mobile, PageEntry> m_KeyedBySender = new Dictionary<Mobile, PageEntry>();
@@ -172,8 +172,7 @@ namespace Server.Engines.Help
             }
         }
 
-        [Usage("Pages")]
-        [Description("Opens the page queue menu.")]
+        [Usage("Pages"), Description("Opens the page queue menu.")]
         private static void Pages_OnCommand(CommandEventArgs e)
         {
             if (m_KeyedByHandler.TryGetValue(e.Mobile, out var entry))

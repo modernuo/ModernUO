@@ -11,7 +11,7 @@ namespace Server.Accounting
         ///     By default, when 1,000,000,000 Gold is accumulated, it will transform
         ///     into 1 Platinum.
         ///     !!! WARNING !!!
-        ///     The client is designed to perceive the currency threashold at 1,000,000,000
+        ///     The client is designed to perceive the currency threshold at 1,000,000,000
         ///     if you change this, it may cause unexpected results when using secure trading.
         /// </summary>
         public static int CurrencyThreshold = 1000000000;

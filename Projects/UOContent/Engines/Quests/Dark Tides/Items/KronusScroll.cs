@@ -1,7 +1,6 @@
 using System;
 using Server.Items;
 using Server.Mobiles;
-using Server.Network;
 
 namespace Server.Engines.Quests.Necro
 {
@@ -32,21 +31,46 @@ namespace Server.Engines.Quests.Necro
                 return;
             }
 
-            if (from is PlayerMobile pm)
+            if (!(from is PlayerMobile pm))
             {
-                var qs = pm.Quest;
+                return;
+            }
 
-                if (qs is DarkTidesQuest)
+            var qs = pm.Quest;
+
+            if (qs is DarkTidesQuest)
+            {
+                if (qs.IsObjectiveInProgress(typeof(FindMardothAboutKronusObjective)))
                 {
-                    if (qs.IsObjectiveInProgress(typeof(FindMardothAboutKronusObjective)))
+                    pm.SendLocalizedMessage(
+                        1060151,
+                        "",
+                        0x41
+                    ); // You read the scroll, but decide against performing the calling until you are instructed to do so by Mardoth.
+                }
+                else if (qs.IsObjectiveInProgress(typeof(FindWellOfTearsObjective)))
+                {
+                    pm.SendLocalizedMessage(
+                        1060152,
+                        "",
+                        0x41
+                    ); // You must be at the Well of Tears in the city of Necromancers to use this scroll.
+                }
+                else if (qs.IsObjectiveInProgress(typeof(UseCallingScrollObjective)))
+                {
+                    if (pm.Map == m_WellOfTearsMap && m_WellOfTearsArea.Contains(pm))
                     {
-                        pm.SendLocalizedMessage(
-                            1060151,
-                            "",
-                            0x41
-                        ); // You read the scroll, but decide against performing the calling until you are instructed to do so by Mardoth.
+                        QuestObjective obj = qs.FindObjective<UseCallingScrollObjective>();
+
+                        if (obj?.Completed == false)
+                        {
+                            obj.Complete();
+                        }
+
+                        Delete();
+                        new CallingTimer(pm).Start();
                     }
-                    else if (qs.IsObjectiveInProgress(typeof(FindWellOfTearsObjective)))
+                    else
                     {
                         pm.SendLocalizedMessage(
                             1060152,
@@ -54,37 +78,14 @@ namespace Server.Engines.Quests.Necro
                             0x41
                         ); // You must be at the Well of Tears in the city of Necromancers to use this scroll.
                     }
-                    else if (qs.IsObjectiveInProgress(typeof(UseCallingScrollObjective)))
-                    {
-                        if (pm.Map == m_WellOfTearsMap && m_WellOfTearsArea.Contains(pm))
-                        {
-                            QuestObjective obj = qs.FindObjective<UseCallingScrollObjective>();
-
-                            if (obj?.Completed == false)
-                            {
-                                obj.Complete();
-                            }
-
-                            Delete();
-                            new CallingTimer(pm).Start();
-                        }
-                        else
-                        {
-                            pm.SendLocalizedMessage(
-                                1060152,
-                                "",
-                                0x41
-                            ); // You must be at the Well of Tears in the city of Necromancers to use this scroll.
-                        }
-                    }
-                    else
-                    {
-                        pm.SendLocalizedMessage(
-                            1060150,
-                            "",
-                            0x41
-                        ); // A strange terror grips your heart as you attempt to read the scroll.  You decide it would be a bad idea to read it out loud.
-                    }
+                }
+                else
+                {
+                    pm.SendLocalizedMessage(
+                        1060150,
+                        "",
+                        0x41
+                    ); // A strange terror grips your heart as you attempt to read the scroll.  You decide it would be a bad idea to read it out loud.
                 }
             }
         }

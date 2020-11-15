@@ -42,7 +42,9 @@ namespace Server.Engines.MLQuests
 
                 while ((line = sr.ReadLine()) != null)
                 {
-                    if (line.Length == 0 || line.StartsWith("#"))
+                    line = line.Trim();
+
+                    if (line.Length == 0 || line.StartsWith("#", StringComparison.Ordinal))
                     {
                         continue;
                     }
@@ -176,8 +178,8 @@ namespace Server.Engines.MLQuests
             EventSink.QuestGumpRequest += EventSink_QuestGumpRequest;
         }
 
-        [Usage("MLQuestsInfo")]
-        [Description("Displays general information about the ML quest system, or a quest by type name.")]
+        [Usage("MLQuestsInfo"),
+         Description("Displays general information about the ML quest system, or a quest by type name.")]
         public static void MLQuestsInfo_OnCommand(CommandEventArgs e)
         {
             var m = e.Mobile;
@@ -202,8 +204,8 @@ namespace Server.Engines.MLQuests
             m.SendMessage("Number of active instances: {0}", quest.Instances.Count);
         }
 
-        [Usage("SaveQuest <type> [saveEnabled=true]")]
-        [Description("Allows serialization for a specific quest to be turned on or off.")]
+        [Usage("SaveQuest <type> [saveEnabled=true]"),
+         Description("Allows serialization for a specific quest to be turned on or off.")]
         public static void SaveQuest_OnCommand(CommandEventArgs e)
         {
             var m = e.Mobile;
@@ -235,8 +237,8 @@ namespace Server.Engines.MLQuests
             }
         }
 
-        [Usage("SaveAllQuests [saveEnabled=true]")]
-        [Description("Allows serialization for all quests to be turned on or off.")]
+        [Usage("SaveAllQuests [saveEnabled=true]"),
+         Description("Allows serialization for all quests to be turned on or off.")]
         public static void SaveAllQuests_OnCommand(CommandEventArgs e)
         {
             var m = e.Mobile;
@@ -264,8 +266,8 @@ namespace Server.Engines.MLQuests
             }
         }
 
-        [Usage("InvalidQuestItems")]
-        [Description("Provides an overview of all quest items not located in the top-level of a player's backpack.")]
+        [Usage("InvalidQuestItems"),
+         Description("Provides an overview of all quest items not located in the top-level of a player's backpack.")]
         public static void InvalidQuestItems_OnCommand(CommandEventArgs e)
         {
             var m = e.Mobile;

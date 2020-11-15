@@ -2,8 +2,7 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-    [Flippable(0xFAF, 0xFB0)]
-    [Anvil]
+    [Flippable(0xFAF, 0xFB0), Anvil]
     public class Anvil : Item
     {
         [Constructible]

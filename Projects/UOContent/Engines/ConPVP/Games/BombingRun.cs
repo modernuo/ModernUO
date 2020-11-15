@@ -800,7 +800,7 @@ namespace Server.Engines.ConPVP
                 {
                     if (!m_Bomb.m_Flying && m_Bomb.Map != Map.Internal)
                     {
-                        Effects.SendLocationEffect(m_Bomb.GetWorldLocation(), m_Bomb.Map, 0x377A, 16, 10, m_Bomb.Hue, 0);
+                        Effects.SendLocationEffect(m_Bomb.GetWorldLocation(), m_Bomb.Map, 0x377A, 16, 10, m_Bomb.Hue);
                     }
 
                     if (m_Bomb.Location != m_Bomb.m_Game.Controller.BombHome)

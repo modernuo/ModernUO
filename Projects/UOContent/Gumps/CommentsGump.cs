@@ -62,8 +62,7 @@ namespace Server.Gumps
             CommandSystem.Register("Comments", AccessLevel.Counselor, Comments_OnCommand);
         }
 
-        [Usage("Comments")]
-        [Description("View/Modify/Add account comments.")]
+        [Usage("Comments"), Description("View/Modify/Add account comments.")]
         private static void Comments_OnCommand(CommandEventArgs args)
         {
             args.Mobile.SendMessage("Select the player to view account comments.");

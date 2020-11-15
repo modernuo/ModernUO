@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Commands
 {
-    public class ExportCommand
+    public static class ExportCommand
     {
         private const string ExportFile = @"C:\Uo\WorldForge\items.wsc";
 

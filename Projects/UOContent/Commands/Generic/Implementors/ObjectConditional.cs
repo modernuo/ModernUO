@@ -103,21 +103,19 @@ namespace Server.Commands.Generic
                 return Empty;
             }
 
-            var index = 0;
-
-            var objectType = AssemblyHandler.FindFirstTypeForName(args[offset + index], true);
+            var objectType = AssemblyHandler.FindFirstTypeForName(args[offset], true);
 
             if (objectType == null)
             {
-                throw new Exception($"No type with that name ({args[offset + index]}) was found.");
+                throw new Exception($"No type with that name ({args[offset]}) was found.");
             }
-
-            ++index;
 
             var conditions = new List<ICondition[]>();
             var current = new List<ICondition>();
 
             current.Add(TypeCondition.Default);
+
+            var index = 1;
 
             while (index < size)
             {

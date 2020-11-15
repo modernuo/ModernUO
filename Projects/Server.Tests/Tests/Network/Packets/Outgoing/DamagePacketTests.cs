@@ -6,10 +6,7 @@ namespace Server.Tests.Network
 {
     public class DamagePacketTests : IClassFixture<ServerFixture>
     {
-        [Theory]
-        [InlineData(10)]
-        [InlineData(-5)]
-        [InlineData(1024)]
+        [Theory, InlineData(10), InlineData(-5), InlineData(1024)]
         public void TestDamagePacketOld(int inputAmount)
         {
             Serial serial = 0x1024;
@@ -23,11 +20,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory]
-        [InlineData(10)]
-        [InlineData(-5)]
-        [InlineData(1024)]
-        [InlineData(100000)]
+        [Theory, InlineData(10), InlineData(-5), InlineData(1024), InlineData(100000)]
         public void TestDamage(int inputAmount)
         {
             Serial serial = 0x1024;

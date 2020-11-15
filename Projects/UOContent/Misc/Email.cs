@@ -119,13 +119,13 @@ namespace Server.Misc
                 try
                 {
                     using var client = new SmtpClient();
-                    await client.ConnectAsync(EmailConfiguration.EmailServer, EmailConfiguration.EmailPort, true);
+                    await client.ConnectAsync(EmailConfiguration.EmailServer, EmailConfiguration.EmailPort, true).ConfigureAwait(false);
                     await client.AuthenticateAsync(
                         EmailConfiguration.EmailServerUsername,
                         EmailConfiguration.EmailServerPassword
-                    );
-                    await client.SendAsync(message);
-                    await client.DisconnectAsync(true);
+                    ).ConfigureAwait(false);
+                    await client.SendAsync(message).ConfigureAwait(false);
+                    await client.DisconnectAsync(true).ConfigureAwait(false);
                     return;
                 }
                 catch (Exception ex)
@@ -138,7 +138,7 @@ namespace Server.Misc
 
                     delay *= delay;
 
-                    await Task.Delay(delay * 1000);
+                    await Task.Delay(delay * 1000).ConfigureAwait(false);
                 }
             }
         }

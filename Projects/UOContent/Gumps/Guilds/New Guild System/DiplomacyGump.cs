@@ -26,7 +26,7 @@ namespace Server.Guilds
                 "",
                 0,
                 GuildDisplayType.All,
-                Utility.CastListCovariant<BaseGuild, Guild>(new List<BaseGuild>(World.Guilds.Values)),
+                World.Guilds.Values.CastListCovariant<BaseGuild, Guild>(),
                 1063136 + (int)GuildDisplayType.All
             )
         {
@@ -44,7 +44,7 @@ namespace Server.Guilds
                 filter,
                 startNumber,
                 display,
-                Utility.CastListCovariant<BaseGuild, Guild>(new List<BaseGuild>(World.Guilds.Values)),
+                World.Guilds.Values.CastListCovariant<BaseGuild, Guild>(),
                 1063136 + (int)display
             )
         {

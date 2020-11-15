@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-    public class DupresShield : BaseShield, ITokunoDyable
+    public class DupresShield : BaseShield
     {
         [Constructible]
         public DupresShield() : base(0x2B01)

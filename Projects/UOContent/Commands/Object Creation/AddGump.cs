@@ -93,10 +93,9 @@ namespace Server.Gumps
             CommandSystem.Register("AddMenu", AccessLevel.GameMaster, AddMenu_OnCommand);
         }
 
-        [Usage("AddMenu [searchString]")]
-        [Description(
-            "Opens an add menu, with an optional initial search string. This menu allows you to search for Items or Mobiles and add them interactively."
-        )]
+        [Usage("AddMenu [searchString]"), Description(
+             "Opens an add menu, with an optional initial search string. This menu allows you to search for Items or Mobiles and add them interactively."
+         )]
         private static void AddMenu_OnCommand(CommandEventArgs e)
         {
             var val = e.ArgString.Trim();
@@ -135,7 +134,7 @@ namespace Server.Gumps
                 var t = types[i];
 
                 if ((typeofMobile.IsAssignableFrom(t) || typeofItem.IsAssignableFrom(t)) &&
-                    t.Name.ToLower().IndexOf(match, StringComparison.Ordinal) >= 0 && !results.Contains(t))
+                    t.Name.ToLower().Contains(match, StringComparison.Ordinal) && !results.Contains(t))
                 {
                     var ctors = t.GetConstructors();
 

@@ -757,7 +757,7 @@ namespace Server.Gumps
             if (t == typeof(byte) || t == typeof(sbyte) || t == typeof(short) || t == typeof(ushort) || t == typeof(int) ||
                 t == typeof(uint) || t == typeof(long) || t == typeof(ulong))
             {
-                if (s.StartsWith("0x"))
+                if (s.StartsWith("0x", StringComparison.Ordinal))
                 {
                     if (t == typeof(ulong) || t == typeof(uint) || t == typeof(ushort) || t == typeof(byte))
                     {

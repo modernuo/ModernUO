@@ -928,10 +928,9 @@ namespace Server.Guilds
             Alliance = null;
         }
 
-        [Usage("GuildProps")]
-        [Description(
-            "Opens a menu where you can view and edit guild properties of a targeted player or guild stone.  If the new Guild system is active, also brings up the guild gump."
-        )]
+        [Usage("GuildProps"), Description(
+             "Opens a menu where you can view and edit guild properties of a targeted player or guild stone.  If the new Guild system is active, also brings up the guild gump."
+         )]
         private static void GuildProps_OnCommand(CommandEventArgs e)
         {
             var arg = e.ArgString.Trim();

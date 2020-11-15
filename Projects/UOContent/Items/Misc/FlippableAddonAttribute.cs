@@ -76,7 +76,7 @@ namespace Server.Items
 
                             ClearComponents(addon);
 
-                            flipMethod.Invoke(addon, new object[2] { from, Directions[index] });
+                            flipMethod.Invoke(addon, new object[] { from, Directions[index] });
 
                             if (result == AddonFitResult.Blocked)
                             {

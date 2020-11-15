@@ -21,9 +21,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
+        [Theory, InlineData(true), InlineData(false)]
         public void TestSetWarMode(bool warmode)
         {
             var expected = new SetWarMode(warmode).Compile();

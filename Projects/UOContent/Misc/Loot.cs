@@ -4,7 +4,7 @@ using Server.Utilities;
 
 namespace Server
 {
-    public class Loot
+    public static class Loot
     {
         public static Type[] MLWeaponTypes { get; } =
         {

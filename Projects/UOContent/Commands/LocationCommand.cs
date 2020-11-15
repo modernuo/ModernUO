@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Globalization;
 using Server.Commands.Generic;
 using Server.Items;
 using Server.Targeting;
@@ -43,9 +42,7 @@ namespace Server.Commands
                     graphics = new List<int>();
                     foreach (var arg in e.Arguments)
                     {
-                        var numberStyles = arg.ToLower().StartsWith("0x") ? NumberStyles.HexNumber : NumberStyles.Integer;
-
-                        if (int.TryParse(arg, numberStyles, CultureInfo.InvariantCulture, out var result))
+                        if (Utility.ToInt32(arg, out var result))
                         {
                             graphics.Add(result);
                         }

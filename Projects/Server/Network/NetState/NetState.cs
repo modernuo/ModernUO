@@ -513,7 +513,7 @@ namespace Server.Network
                         continue;
                     }
 
-                    var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None);
+                    var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None).ConfigureAwait(false);
 
                     if (bytesWritten > 0)
                     {
@@ -567,7 +567,7 @@ namespace Server.Network
                         continue;
                     }
 
-                    var bytesWritten = await socket.ReceiveAsync(result.Buffer, SocketFlags.None);
+                    var bytesWritten = await socket.ReceiveAsync(result.Buffer, SocketFlags.None).ConfigureAwait(false);
                     if (bytesWritten <= 0)
                     {
                         break;
@@ -596,11 +596,9 @@ namespace Server.Network
 
         public static void HandleAllReceives()
         {
-            var clients = TcpServer.Instances;
-
-            for (int i = 0; i < clients.Count; ++i)
+            foreach (var ns in TcpServer.Instances)
             {
-                clients[i].HandleReceive();
+                ns.HandleReceive();
             }
         }
 
@@ -662,11 +660,9 @@ namespace Server.Network
 
         public static void FlushAll()
         {
-            var clients = TcpServer.Instances;
-
-            for (int i = 0; i < clients.Count; ++i)
+            foreach (var ns in TcpServer.Instances)
             {
-                clients[i].Flush();
+                ns.Flush();
             }
         }
 
@@ -685,11 +681,9 @@ namespace Server.Network
             {
                 long curTicks = Core.TickCount;
 
-                var clients = TcpServer.Instances;
-
-                for (int i = 0; i < clients.Count; ++i)
+                foreach (var ns in TcpServer.Instances)
                 {
-                    clients[i].CheckAlive(curTicks);
+                    ns.CheckAlive(curTicks);
                 }
             }
             catch (Exception ex)

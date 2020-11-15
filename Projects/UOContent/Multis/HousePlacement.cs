@@ -18,7 +18,7 @@ namespace Server.Multis
         BadRegionRaffle
     }
 
-    public class HousePlacement
+    public static class HousePlacement
     {
         private const int YardSize = 5;
 

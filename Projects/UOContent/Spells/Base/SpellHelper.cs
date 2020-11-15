@@ -18,6 +18,7 @@ using Server.Targeting;
 
 namespace Server
 {
+#pragma warning disable CA1052
     public class DefensiveSpell
     {
         public static void Nullify(Mobile from)
@@ -46,6 +47,7 @@ namespace Server
             }
         }
     }
+#pragma warning restore CA1052
 }
 
 namespace Server.Spells
@@ -61,7 +63,7 @@ namespace Server.Spells
         TeleportTo
     }
 
-    public class SpellHelper
+    public static class SpellHelper
     {
         private static readonly TimeSpan AosDamageDelay = TimeSpan.FromSeconds(1.0);
         private static readonly TimeSpan OldDamageDelay = TimeSpan.FromSeconds(0.5);
@@ -197,7 +199,7 @@ namespace Server.Spells
                     from.Direction = from.GetDirectionTo(item.GetWorldLocation());
                 }
             }
-            else if (from != target)
+            else if (from.Equals(target))
             {
                 from.Direction = from.GetDirectionTo(target);
             }
@@ -1221,7 +1223,7 @@ namespace Server.Spells
         }
     }
 
-    public class TransformationSpellHelper
+    public static class TransformationSpellHelper
     {
         private static readonly Dictionary<Mobile, TransformContext> m_Table = new Dictionary<Mobile, TransformContext>();
 

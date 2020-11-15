@@ -9,7 +9,7 @@ using Server.Spells.Seventh;
 
 namespace Server
 {
-    public class AOS
+    public static class AOS
     {
         public static void DisableStatInfluences()
         {

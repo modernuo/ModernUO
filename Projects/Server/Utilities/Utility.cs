@@ -215,9 +215,9 @@ namespace Server
                 return "";
             }
 
-            var hasOpen = str.IndexOf('<') >= 0;
-            var hasClose = str.IndexOf('>') >= 0;
-            var hasPound = str.IndexOf('#') >= 0;
+            var hasOpen = str.Contains('<', StringComparison.Ordinal);
+            var hasClose = str.Contains('>', StringComparison.Ordinal);
+            var hasPound = str.Contains('#', StringComparison.Ordinal);
 
             if (!hasOpen && !hasClose && !hasPound)
             {
@@ -891,23 +891,42 @@ namespace Server
             }
         }
 
-        public static List<TOutput> CastListContravariant<TInput, TOutput>(List<TInput> list) where TInput : TOutput =>
-            list.ConvertAll(value => (TOutput)value);
-
-        public static List<TOutput> CastListCovariant<TInput, TOutput>(List<TInput> list) where TOutput : TInput =>
-            list.ConvertAll(value => (TOutput)value);
-
-        public static List<TOutput> SafeConvertList<TInput, TOutput>(List<TInput> list) where TOutput : class
+        public static List<TOutput> CastListContravariant<TInput, TOutput>(this IReadOnlyCollection<TInput> coll)
+            where TInput : TOutput
         {
-            if ((list?.Capacity ?? 0) == 0)
+            var outputList = new List<TOutput>();
+            foreach (var entry in coll)
             {
-                return new List<TOutput>();
+                outputList.Add(entry);
             }
 
-            var output = new List<TOutput>(list.Capacity);
-            output.AddRange(list.OfType<TOutput>());
+            return outputList;
+        }
 
-            return output;
+        public static List<TOutput> CastListCovariant<TInput, TOutput>(this IReadOnlyCollection<TInput> coll)
+            where TOutput : TInput
+        {
+            var outputList = new List<TOutput>();
+            foreach (var entry in coll)
+            {
+                outputList.Add((TOutput)entry);
+            }
+
+            return outputList;
+        }
+
+        public static List<TOutput> SafeConvertList<TInput, TOutput>(this IReadOnlyCollection<TInput> coll) where TOutput : class
+        {
+            var outputList = new List<TOutput>();
+            foreach (var entry in coll)
+            {
+                if (entry is TOutput outEntry)
+                {
+                    outputList.Add(outEntry);
+                }
+            }
+
+            return outputList;
         }
 
         public static bool ToBoolean(string value)
@@ -942,7 +961,7 @@ namespace Server
             int i;
 
 #pragma warning disable CA1806 // Do not ignore method results
-            if (value.StartsWith("0x"))
+            if (value.StartsWith("0x", StringComparison.Ordinal))
             {
                 int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
             }
@@ -960,7 +979,7 @@ namespace Server
             uint i;
 
 #pragma warning disable CA1806 // Do not ignore method results
-            if (value.StartsWith("0x"))
+            if (value.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
             {
                 uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
             }
@@ -974,12 +993,12 @@ namespace Server
         }
 
         public static bool ToInt32(string value, out int i) =>
-            value.StartsWith("0x")
+            value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
                 ? int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i)
                 : int.TryParse(value, out i);
 
         public static bool ToUInt32(string value, out uint i) =>
-            value.StartsWith("0x")
+            value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
                 ? uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i)
                 : uint.TryParse(value, out i);
 
@@ -1034,7 +1053,7 @@ namespace Server
         public static string GetAttribute(XmlElement node, string attributeName, string defaultValue = null) =>
             node?.Attributes[attributeName]?.Value ?? defaultValue;
 
-        public static string GetText(XmlElement node, string defaultValue) => node == null ? defaultValue : node.InnerText;
+        public static string GetText(XmlElement node, string defaultValue) => node?.InnerText ?? defaultValue;
 
         public static int GetAddressValue(IPAddress address) => BitConverter.ToInt32(address.GetAddressBytes(), 0);
 

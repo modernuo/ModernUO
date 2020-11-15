@@ -94,8 +94,7 @@ namespace Server
             CommandSystem.Register("HWInfo", AccessLevel.GameMaster, HWInfo_OnCommand);
         }
 
-        [Usage("HWInfo")]
-        [Description("Displays information about a targeted player's hardware.")]
+        [Usage("HWInfo"), Description("Displays information about a targeted player's hardware.")]
         public static void HWInfo_OnCommand(CommandEventArgs e)
         {
             e.Mobile.BeginTarget(-1, false, TargetFlags.None, HWInfo_OnTarget);

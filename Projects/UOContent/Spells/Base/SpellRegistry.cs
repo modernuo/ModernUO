@@ -4,7 +4,7 @@ using Server.Utilities;
 
 namespace Server.Spells
 {
-    public class SpellRegistry
+    public static class SpellRegistry
     {
         private static readonly Type[] m_Types = new Type[700];
         private static int m_Count;
@@ -152,7 +152,7 @@ namespace Server.Spells
 
         public static Spell NewSpell(string name, Mobile caster, Item scroll)
         {
-            name = name.Replace(" ", "");
+            name = name.Replace(" ", "", StringComparison.Ordinal);
 
             for (var i = 0; i < m_CircleNames.Length; ++i)
             {

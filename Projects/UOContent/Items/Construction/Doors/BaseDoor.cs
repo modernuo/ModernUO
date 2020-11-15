@@ -135,8 +135,7 @@ namespace Server.Items
             CommandSystem.Register("ChainLink", AccessLevel.GameMaster, ChainLink_OnCommand);
         }
 
-        [Usage("Link")]
-        [Description("Links two targeted doors together.")]
+        [Usage("Link"), Description("Links two targeted doors together.")]
         private static void Link_OnCommand(CommandEventArgs e)
         {
             e.Mobile.BeginTarget(-1, false, TargetFlags.None, Link_OnFirstTarget);
@@ -172,8 +171,7 @@ namespace Server.Items
             }
         }
 
-        [Usage("ChainLink")]
-        [Description("Chain-links two or more targeted doors together.")]
+        [Usage("ChainLink"), Description("Chain-links two or more targeted doors together.")]
         private static void ChainLink_OnCommand(CommandEventArgs e)
         {
             e.Mobile.BeginTarget(-1, false, TargetFlags.None, ChainLink_OnTarget, new List<BaseDoor>());

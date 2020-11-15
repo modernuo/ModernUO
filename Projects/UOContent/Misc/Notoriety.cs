@@ -12,7 +12,7 @@ using Server.Spells.Seventh;
 
 namespace Server.Misc
 {
-    public class NotorietyHandlers
+    public static class NotorietyHandlers
     {
         public static void Initialize()
         {

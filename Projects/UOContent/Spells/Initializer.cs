@@ -16,7 +16,7 @@ using Server.Spells.Third;
 
 namespace Server.Spells
 {
-    public class Initializer
+    public static class Initializer
     {
         public static void Initialize()
         {

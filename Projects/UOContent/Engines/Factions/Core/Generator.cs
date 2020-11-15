@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Server.Factions
 {
-    public class Generator
+    public static class Generator
     {
         public static void Initialize()
         {
@@ -35,14 +35,14 @@ namespace Server.Factions
 
             var def = town.Definition;
 
-            if (!CheckExistance(def.Monolith, facet, typeof(TownMonolith)))
+            if (!CheckExistence(def.Monolith, facet, typeof(TownMonolith)))
             {
                 var mono = new TownMonolith(town);
                 mono.MoveToWorld(def.Monolith, facet);
                 mono.Sigil = new Sigil(town);
             }
 
-            if (!CheckExistance(def.TownStone, facet, typeof(TownStone)))
+            if (!CheckExistence(def.TownStone, facet, typeof(TownStone)))
             {
                 new TownStone(town).MoveToWorld(def.TownStone, facet);
             }
@@ -56,12 +56,12 @@ namespace Server.Factions
 
             var stronghold = faction.Definition.Stronghold;
 
-            if (!CheckExistance(stronghold.JoinStone, facet, typeof(JoinStone)))
+            if (!CheckExistence(stronghold.JoinStone, facet, typeof(JoinStone)))
             {
                 new JoinStone(faction).MoveToWorld(stronghold.JoinStone, facet);
             }
 
-            if (!CheckExistance(stronghold.FactionStone, facet, typeof(FactionStone)))
+            if (!CheckExistence(stronghold.FactionStone, facet, typeof(FactionStone)))
             {
                 new FactionStone(faction).MoveToWorld(stronghold.FactionStone, facet);
             }
@@ -70,14 +70,14 @@ namespace Server.Factions
             {
                 var monolith = stronghold.Monoliths[i];
 
-                if (!CheckExistance(monolith, facet, typeof(StrongholdMonolith)))
+                if (!CheckExistence(monolith, facet, typeof(StrongholdMonolith)))
                 {
                     new StrongholdMonolith(towns[i], faction).MoveToWorld(monolith, facet);
                 }
             }
         }
 
-        private static bool CheckExistance(Point3D loc, Map facet, Type type) =>
+        private static bool CheckExistence(Point3D loc, Map facet, Type type) =>
             facet.GetItemsInRange(loc, 0).Any(type.IsInstanceOfType);
     }
 }

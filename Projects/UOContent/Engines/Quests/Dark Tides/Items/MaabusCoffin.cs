@@ -78,9 +78,9 @@ namespace Server.Engines.Quests.Necro
             Maabus.Delete();
             Maabus = null;
 
-            foreach (MaabusCoffinComponent c in Components)
+            foreach (var c in Components)
             {
-                c.TurnToFull();
+                (c as MaabusCoffinComponent)?.TurnToFull();
             }
         }
 

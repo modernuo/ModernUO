@@ -260,14 +260,14 @@ namespace Server.Items
 
             if (m_SourceEffect && sendEffect)
             {
-                Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
+                Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
             }
 
             m.MoveToWorld(p, map);
 
             if (m_DestEffect && sendEffect)
             {
-                Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
+                Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
             }
 
             if (m_SoundID > 0 && sendEffect)
@@ -598,7 +598,7 @@ namespace Server.Items
                 {
                     isMatch = true;
                 }
-                else if (m_Substring != null && e.Speech.ToLower().IndexOf(m_Substring.ToLower(), StringComparison.Ordinal) >= 0)
+                else if (m_Substring != null && e.Speech.ToLower().Contains(m_Substring.ToLower(), StringComparison.Ordinal))
                 {
                     isMatch = true;
                 }

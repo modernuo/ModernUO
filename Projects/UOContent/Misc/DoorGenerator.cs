@@ -3,7 +3,7 @@ using Server.Network;
 
 namespace Server
 {
-    public class DoorGenerator
+    public static class DoorGenerator
     {
         private static readonly Rectangle2D[] m_BritRegions =
         {
@@ -337,8 +337,7 @@ namespace Server
             CommandSystem.Register("DoorGen", AccessLevel.Administrator, DoorGen_OnCommand);
         }
 
-        [Usage("DoorGen")]
-        [Description("Generates doors by analyzing the map. Slow.")]
+        [Usage("DoorGen"), Description("Generates doors by analyzing the map. Slow.")]
         public static void DoorGen_OnCommand(CommandEventArgs e)
         {
             Generate();

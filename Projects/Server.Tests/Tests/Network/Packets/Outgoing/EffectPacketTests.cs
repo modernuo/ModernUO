@@ -6,8 +6,7 @@ namespace Server.Tests.Network
 {
     public class EffectPackets
     {
-        [Theory]
-        [InlineData(10, 1000, 10, 5)]
+        [Theory, InlineData(10, 1000, 10, 5)]
         public void TestSoundEffect(ushort soundID, int x, int y, int z)
         {
             var p = new Point3D(x, y, z);
@@ -91,9 +90,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(actual, expected);
         }
 
-        [Theory]
-        [InlineData(ScreenEffectType.DarkFlash)]
-        [InlineData(ScreenEffectType.FadeInOut)]
+        [Theory, InlineData(ScreenEffectType.DarkFlash), InlineData(ScreenEffectType.FadeInOut)]
         public void TestScreenEffect(ScreenEffectType screenType)
         {
             var expected = new ScreenEffect(screenType).Compile();

@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Commands
 {
-    public class GenKhaldun
+    public static class GenKhaldun
     {
         private static int m_Count;
 

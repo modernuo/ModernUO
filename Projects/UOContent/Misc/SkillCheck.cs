@@ -5,7 +5,7 @@ using Server.Regions;
 
 namespace Server.Misc
 {
-    public class SkillCheck
+    public static class SkillCheck
     {
         public enum Stat
         {

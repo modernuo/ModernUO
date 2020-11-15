@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.Engines.Craft
 {
-    public class Repair
+    public static class Repair
     {
         public static void Do(Mobile from, CraftSystem craftSystem, BaseTool tool)
         {

@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Server.Items;
 
 namespace Server.Commands
 {
-    public class SignParser
+    public static class SignParser
     {
         private static readonly Queue<Item> m_ToDelete = new Queue<Item>();
 
@@ -13,8 +14,7 @@ namespace Server.Commands
             CommandSystem.Register("SignGen", AccessLevel.Administrator, SignGen_OnCommand);
         }
 
-        [Usage("SignGen")]
-        [Description("Generates world/shop signs on all facets.")]
+        [Usage("SignGen"), Description("Generates world/shop signs on all facets.")]
         public static void SignGen_OnCommand(CommandEventArgs c)
         {
             Parse(c.Mobile);
@@ -108,14 +108,13 @@ namespace Server.Commands
 
             Item sign;
 
-            if (name.StartsWith("#"))
+            if (name.StartsWith("#", StringComparison.Ordinal))
             {
                 sign = new LocalizedSign(itemID, Utility.ToInt32(name.Substring(1)));
             }
             else
             {
-                sign = new Sign(itemID);
-                sign.Name = name;
+                sign = new Sign(itemID) { Name = name };
             }
 
             if (map == Map.Malas)

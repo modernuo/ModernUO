@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Gumps;
@@ -386,7 +387,7 @@ namespace Server.Mobiles
 
                 CloseClaimList(e.Mobile);
 
-                var index = e.Speech.IndexOf(' ');
+                var index = e.Speech.IndexOf(' ', StringComparison.Ordinal);
 
                 if (index != -1)
                 {

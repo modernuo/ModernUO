@@ -30,8 +30,7 @@ namespace Server
         private readonly Encoding m_Encoding;
         private readonly bool m_PrefixStrings;
 
-        protected byte[] m_Buffer;
-        protected long m_Index;
+        protected long Index { get; set; }
 
         private readonly char[] m_SingleCharBuffer = new char[1];
 
@@ -43,21 +42,21 @@ namespace Server
         {
             m_PrefixStrings = prefixStr;
             m_Encoding = Utility.UTF8;
-            m_Buffer = buffer;
+            Buffer = buffer;
         }
 
         public BufferWriter(bool prefixStr)
         {
             m_PrefixStrings = prefixStr;
             m_Encoding = Utility.UTF8;
-            m_Buffer = new byte[BufferSize];
+            Buffer = new byte[BufferSize];
         }
 
-        public virtual long Position => m_Index;
+        public virtual long Position => Index;
 
         protected virtual int BufferSize => 256;
 
-        public byte[] Data => m_Buffer;
+        public byte[] Buffer { get; protected set; }
 
         public virtual void Close()
         {
@@ -68,28 +67,28 @@ namespace Server
         public void Resize(int size)
         {
             var copy = new byte[size];
-            Buffer.BlockCopy(m_Buffer, 0, copy, 0, Math.Min(size, m_Buffer.Length));
-            m_Buffer = copy;
+            System.Buffer.BlockCopy(Buffer, 0, copy, 0, Math.Min(size, Buffer.Length));
+            Buffer = copy;
         }
 
         public virtual void Flush()
         {
-            Resize(m_Buffer.Length * 2);
+            Resize(Buffer.Length * 2);
         }
 
         public void Reset()
         {
-            m_Index = 0;
+            Index = 0;
         }
 
         public virtual long Seek(long offset, SeekOrigin origin)
         {
             return origin switch
             {
-                SeekOrigin.Begin   => m_Index = offset,
-                SeekOrigin.Current => m_Index += offset,
-                SeekOrigin.End     => m_Index = BufferSize - offset,
-                _                  => m_Index
+                SeekOrigin.Begin   => Index = offset,
+                SeekOrigin.Current => Index += offset,
+                SeekOrigin.End     => Index = BufferSize - offset,
+                _                  => Index
             };
         }
 
@@ -99,21 +98,21 @@ namespace Server
 
             while (v >= 0x80)
             {
-                if (m_Index + 1 > m_Buffer.Length)
+                if (Index + 1 > Buffer.Length)
                 {
                     Flush();
                 }
 
-                m_Buffer[m_Index++] = (byte)(v | 0x80);
+                Buffer[Index++] = (byte)(v | 0x80);
                 v >>= 7;
             }
 
-            if (m_Index + 1 > m_Buffer.Length)
+            if (Index + 1 > Buffer.Length)
             {
                 Flush();
             }
 
-            m_Buffer[m_Index++] = (byte)v;
+            Buffer[Index++] = (byte)v;
         }
 
         public void Write(string value)
@@ -122,21 +121,21 @@ namespace Server
             {
                 if (value == null)
                 {
-                    if (m_Index + 1 > m_Buffer.Length)
+                    if (Index + 1 > Buffer.Length)
                     {
                         Flush();
                     }
 
-                    m_Buffer[m_Index++] = 0;
+                    Buffer[Index++] = 0;
                 }
                 else
                 {
-                    if (m_Index + 1 > m_Buffer.Length)
+                    if (Index + 1 > Buffer.Length)
                     {
                         Flush();
                     }
 
-                    m_Buffer[m_Index++] = 1;
+                    Buffer[Index++] = 1;
 
                     InternalWriteString(value);
                 }
@@ -199,143 +198,143 @@ namespace Server
 
         public void Write(long value)
         {
-            if (m_Index + 8 > m_Buffer.Length)
+            if (Index + 8 > Buffer.Length)
             {
                 Flush();
             }
 
-            m_Buffer[m_Index] = (byte)value;
-            m_Buffer[m_Index + 1] = (byte)(value >> 8);
-            m_Buffer[m_Index + 2] = (byte)(value >> 16);
-            m_Buffer[m_Index + 3] = (byte)(value >> 24);
-            m_Buffer[m_Index + 4] = (byte)(value >> 32);
-            m_Buffer[m_Index + 5] = (byte)(value >> 40);
-            m_Buffer[m_Index + 6] = (byte)(value >> 48);
-            m_Buffer[m_Index + 7] = (byte)(value >> 56);
-            m_Index += 8;
+            Buffer[Index] = (byte)value;
+            Buffer[Index + 1] = (byte)(value >> 8);
+            Buffer[Index + 2] = (byte)(value >> 16);
+            Buffer[Index + 3] = (byte)(value >> 24);
+            Buffer[Index + 4] = (byte)(value >> 32);
+            Buffer[Index + 5] = (byte)(value >> 40);
+            Buffer[Index + 6] = (byte)(value >> 48);
+            Buffer[Index + 7] = (byte)(value >> 56);
+            Index += 8;
         }
 
         public void Write(ulong value)
         {
-            if (m_Index + 8 > m_Buffer.Length)
+            if (Index + 8 > Buffer.Length)
             {
                 Flush();
             }
 
-            m_Buffer[m_Index] = (byte)value;
-            m_Buffer[m_Index + 1] = (byte)(value >> 8);
-            m_Buffer[m_Index + 2] = (byte)(value >> 16);
-            m_Buffer[m_Index + 3] = (byte)(value >> 24);
-            m_Buffer[m_Index + 4] = (byte)(value >> 32);
-            m_Buffer[m_Index + 5] = (byte)(value >> 40);
-            m_Buffer[m_Index + 6] = (byte)(value >> 48);
-            m_Buffer[m_Index + 7] = (byte)(value >> 56);
-            m_Index += 8;
+            Buffer[Index] = (byte)value;
+            Buffer[Index + 1] = (byte)(value >> 8);
+            Buffer[Index + 2] = (byte)(value >> 16);
+            Buffer[Index + 3] = (byte)(value >> 24);
+            Buffer[Index + 4] = (byte)(value >> 32);
+            Buffer[Index + 5] = (byte)(value >> 40);
+            Buffer[Index + 6] = (byte)(value >> 48);
+            Buffer[Index + 7] = (byte)(value >> 56);
+            Index += 8;
         }
 
         public void Write(int value)
         {
-            if (m_Index + 4 > m_Buffer.Length)
+            if (Index + 4 > Buffer.Length)
             {
                 Flush();
             }
 
-            m_Buffer[m_Index] = (byte)value;
-            m_Buffer[m_Index + 1] = (byte)(value >> 8);
-            m_Buffer[m_Index + 2] = (byte)(value >> 16);
-            m_Buffer[m_Index + 3] = (byte)(value >> 24);
-            m_Index += 4;
+            Buffer[Index] = (byte)value;
+            Buffer[Index + 1] = (byte)(value >> 8);
+            Buffer[Index + 2] = (byte)(value >> 16);
+            Buffer[Index + 3] = (byte)(value >> 24);
+            Index += 4;
         }
 
         public void Write(uint value)
         {
-            if (m_Index + 4 > m_Buffer.Length)
+            if (Index + 4 > Buffer.Length)
             {
                 Flush();
             }
 
-            m_Buffer[m_Index] = (byte)value;
-            m_Buffer[m_Index + 1] = (byte)(value >> 8);
-            m_Buffer[m_Index + 2] = (byte)(value >> 16);
-            m_Buffer[m_Index + 3] = (byte)(value >> 24);
-            m_Index += 4;
+            Buffer[Index] = (byte)value;
+            Buffer[Index + 1] = (byte)(value >> 8);
+            Buffer[Index + 2] = (byte)(value >> 16);
+            Buffer[Index + 3] = (byte)(value >> 24);
+            Index += 4;
         }
 
         public void Write(short value)
         {
-            if (m_Index + 2 > m_Buffer.Length)
+            if (Index + 2 > Buffer.Length)
             {
                 Flush();
             }
 
-            m_Buffer[m_Index] = (byte)value;
-            m_Buffer[m_Index + 1] = (byte)(value >> 8);
-            m_Index += 2;
+            Buffer[Index] = (byte)value;
+            Buffer[Index + 1] = (byte)(value >> 8);
+            Index += 2;
         }
 
         public void Write(ushort value)
         {
-            if (m_Index + 2 > m_Buffer.Length)
+            if (Index + 2 > Buffer.Length)
             {
                 Flush();
             }
 
-            m_Buffer[m_Index] = (byte)value;
-            m_Buffer[m_Index + 1] = (byte)(value >> 8);
-            m_Index += 2;
+            Buffer[Index] = (byte)value;
+            Buffer[Index + 1] = (byte)(value >> 8);
+            Index += 2;
         }
 
         public unsafe void Write(double value)
         {
-            if (m_Index + 8 > m_Buffer.Length)
+            if (Index + 8 > Buffer.Length)
             {
                 Flush();
             }
 
-            fixed (byte* pBuffer = m_Buffer)
+            fixed (byte* pBuffer = Buffer)
             {
-                *(double*)(pBuffer + m_Index) = value;
+                *(double*)(pBuffer + Index) = value;
             }
 
-            m_Index += 8;
+            Index += 8;
         }
 
         public unsafe void Write(float value)
         {
-            if (m_Index + 4 > m_Buffer.Length)
+            if (Index + 4 > Buffer.Length)
             {
                 Flush();
             }
 
-            fixed (byte* pBuffer = m_Buffer)
+            fixed (byte* pBuffer = Buffer)
             {
-                *(float*)(pBuffer + m_Index) = value;
+                *(float*)(pBuffer + Index) = value;
             }
 
-            m_Index += 4;
+            Index += 4;
         }
 
         public void Write(char value)
         {
-            if (m_Index + 8 > m_Buffer.Length)
+            if (Index + 8 > Buffer.Length)
             {
                 Flush();
             }
 
             m_SingleCharBuffer[0] = value;
 
-            var byteCount = m_Encoding.GetBytes(m_SingleCharBuffer, 0, 1, m_Buffer, (int)m_Index);
-            m_Index += byteCount;
+            var byteCount = m_Encoding.GetBytes(m_SingleCharBuffer, 0, 1, Buffer, (int)Index);
+            Index += byteCount;
         }
 
         public void Write(byte value)
         {
-            if (m_Index + 1 > m_Buffer.Length)
+            if (Index + 1 > Buffer.Length)
             {
                 Flush();
             }
 
-            m_Buffer[m_Index++] = value;
+            Buffer[Index++] = value;
         }
 
         public void Write(byte[] value, int length)
@@ -345,15 +344,15 @@ namespace Server
 
             while (remaining > 0)
             {
-                int size = Math.Min(m_Buffer.Length - (int)m_Index, remaining);
-                Buffer.BlockCopy(value, idx, m_Buffer, (int)m_Index, size);
+                int size = Math.Min(Buffer.Length - (int)Index, remaining);
+                System.Buffer.BlockCopy(value, idx, Buffer, (int)Index, size);
                 // value.Slice(idx).CopyTo(m_Buffer.AsSpan(m_Index, size));
 
                 remaining -= size;
-                m_Index += size;
+                Index += size;
                 idx += size;
 
-                if (m_Index == m_Buffer.Length)
+                if (Index == Buffer.Length)
                 {
                     Flush();
                 }
@@ -362,22 +361,22 @@ namespace Server
 
         public void Write(sbyte value)
         {
-            if (m_Index + 1 > m_Buffer.Length)
+            if (Index + 1 > Buffer.Length)
             {
                 Flush();
             }
 
-            m_Buffer[m_Index++] = (byte)value;
+            Buffer[Index++] = (byte)value;
         }
 
         public void Write(bool value)
         {
-            if (m_Index + 1 > m_Buffer.Length)
+            if (Index + 1 > Buffer.Length)
             {
                 Flush();
             }
 
-            m_Buffer[m_Index++] = (byte)(value ? 1 : 0);
+            Buffer[Index++] = (byte)(value ? 1 : 0);
         }
 
         public void Write(Point3D value)
@@ -773,13 +772,13 @@ namespace Server
                     var charCount = charsLeft > m_MaxBufferChars ? m_MaxBufferChars : charsLeft;
                     var byteLength = m_Encoding.GetBytes(value, current, charCount, m_CharacterBuffer, 0);
 
-                    if (m_Index + byteLength > m_Buffer.Length)
+                    if (Index + byteLength > Buffer.Length)
                     {
                         Flush();
                     }
 
-                    Buffer.BlockCopy(m_CharacterBuffer, 0, m_Buffer, (int)m_Index, byteLength);
-                    m_Index += byteLength;
+                    System.Buffer.BlockCopy(m_CharacterBuffer, 0, Buffer, (int)Index, byteLength);
+                    Index += byteLength;
 
                     current += charCount;
                     charsLeft -= charCount;
@@ -789,13 +788,13 @@ namespace Server
             {
                 var byteLength = m_Encoding.GetBytes(value, 0, value.Length, m_CharacterBuffer, 0);
 
-                if (m_Index + byteLength > m_Buffer.Length)
+                if (Index + byteLength > Buffer.Length)
                 {
                     Flush();
                 }
 
-                Buffer.BlockCopy(m_CharacterBuffer, 0, m_Buffer, (int)m_Index, byteLength);
-                m_Index += byteLength;
+                System.Buffer.BlockCopy(m_CharacterBuffer, 0, Buffer, (int)Index, byteLength);
+                Index += byteLength;
             }
         }
     }

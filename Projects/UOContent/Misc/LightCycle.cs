@@ -4,6 +4,7 @@ using Server.Network;
 
 namespace Server
 {
+#pragma warning disable CA1052
     public class LightCycle
     {
         public const int DayLevel = 0;
@@ -20,9 +21,8 @@ namespace Server
             {
                 m_LevelOverride = value;
 
-                for (var i = 0; i < TcpServer.Instances.Count; ++i)
+                foreach (var ns in TcpServer.Instances)
                 {
-                    var ns = TcpServer.Instances[i];
                     var m = ns.Mobile;
 
                     m?.CheckLightLevels(false);
@@ -38,8 +38,7 @@ namespace Server
             CommandSystem.Register("GlobalLight", AccessLevel.GameMaster, Light_OnCommand);
         }
 
-        [Usage("GlobalLight <value>")]
-        [Description("Sets the current global light level.")]
+        [Usage("GlobalLight <value>"), Description("Sets the current global light level.")]
         private static void Light_OnCommand(CommandEventArgs e)
         {
             if (e.Length >= 1)
@@ -111,12 +110,9 @@ namespace Server
 
             protected override void OnTick()
             {
-                for (var i = 0; i < TcpServer.Instances.Count; ++i)
+                foreach (var ns in TcpServer.Instances)
                 {
-                    var ns = TcpServer.Instances[i];
-                    var m = ns.Mobile;
-
-                    m?.CheckLightLevels(false);
+                    ns.Mobile?.CheckLightLevels(false);
                 }
             }
         }
@@ -139,4 +135,5 @@ namespace Server
             }
         }
     }
+#pragma warning restore CA1052
 }

@@ -19,13 +19,6 @@ namespace Server.Commands
         public bool Back { get; set; }
 
         public override string ToString() => $"{{{Source},{Destination},{Back}}}";
-
-        public bool Equals(TeleporterDefinition other) =>
-            Source.Equals(other.Source) && Destination.Equals(other.Destination) && Back == other.Back;
-
-        public override bool Equals(object obj) => obj is TeleporterDefinition other && Equals(other);
-
-        public override int GetHashCode() => HashCode.Combine(Source, Destination, Back);
     }
 
     public static class GenTeleporter
@@ -39,8 +32,7 @@ namespace Server.Commands
             CommandSystem.Register("TelGenDelete", AccessLevel.Administrator, TelGenDelete_OnCommand);
         }
 
-        [Usage("TelGenDelete")]
-        [Description("Destroys world/dungeon teleporters for all facets.")]
+        [Usage("TelGenDelete"), Description("Destroys world/dungeon teleporters for all facets.")]
         public static void TelGenDelete_OnCommand(CommandEventArgs e)
         {
             var from = e.Mobile;
@@ -70,8 +62,7 @@ namespace Server.Commands
             from.SendMessage(WarningHue, $"{count} Teleporters Removed.");
         }
 
-        [Usage("TelGen")]
-        [Description("Generates world/dungeon teleporters for all facets.")]
+        [Usage("TelGen"), Description("Generates world/dungeon teleporters for all facets.")]
         public static void GenTeleporter_OnCommand(CommandEventArgs e)
         {
             var from = e.Mobile;

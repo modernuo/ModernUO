@@ -6,6 +6,7 @@ using Server.Targeting;
 
 namespace Server
 {
+#pragma warning disable CA1052
     public class JusticeVirtue
     {
         private const int LossAmount = 950;
@@ -285,4 +286,5 @@ namespace Server
             }
         }
     }
+#pragma warning restore CA1052
 }

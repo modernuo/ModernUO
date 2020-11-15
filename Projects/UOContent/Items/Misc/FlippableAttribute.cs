@@ -3,15 +3,14 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-    public class FlipCommandHandlers
+    public static class FlipCommandHandlers
     {
         public static void Initialize()
         {
             CommandSystem.Register("Flip", AccessLevel.GameMaster, Flip_OnCommand);
         }
 
-        [Usage("Flip")]
-        [Description("Turns an item.")]
+        [Usage("Flip"), Description("Turns an item.")]
         public static void Flip_OnCommand(CommandEventArgs e)
         {
             e.Mobile.Target = new FlipTarget();

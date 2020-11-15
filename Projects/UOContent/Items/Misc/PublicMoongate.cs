@@ -114,8 +114,7 @@ namespace Server.Items
             CommandSystem.Register("MoonGen", AccessLevel.Administrator, MoonGen_OnCommand);
         }
 
-        [Usage("MoonGen")]
-        [Description("Generates public moongates. Removes all old moongates.")]
+        [Usage("MoonGen"), Description("Generates public moongates. Removes all old moongates.")]
         public static void MoonGen_OnCommand(CommandEventArgs e)
         {
             DeleteAll();

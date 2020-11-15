@@ -354,13 +354,10 @@ namespace Server.Misc
                     type = 2;
                 }
 
-                var states = TcpServer.Instances;
-
                 Packet weatherPacket = null;
 
-                for (var i = 0; i < states.Count; ++i)
+                foreach (var ns in TcpServer.Instances)
                 {
-                    var ns = states[i];
                     var mob = ns.Mobile;
 
                     if (mob == null || mob.Map != Facet)

@@ -189,8 +189,7 @@ namespace Server.Engines.Doom
             CommandSystem.Register("GenLeverPuzzle", AccessLevel.Administrator, GenLampPuzzle_OnCommand);
         }
 
-        [Usage("GenLeverPuzzle")]
-        [Description("Generates lamp room and lever puzzle in doom.")]
+        [Usage("GenLeverPuzzle"), Description("Generates lamp room and lever puzzle in doom.")]
         public static void GenLampPuzzle_OnCommand(CommandEventArgs e)
         {
             if (Map.Malas.GetItemsInRange(lp_Center, 0).OfType<LeverPuzzleController>().Any())
@@ -372,7 +371,7 @@ namespace Server.Engines.Doom
                         SendLocationEffect(lp_Center, 0x1153, 0, 60, 1);
                         PlaySounds(lp_Center, cs1);
 
-                        Effects.SendBoltEffect(player, true);
+                        Effects.SendBoltEffect(player);
                         player.MoveToWorld(lr_Enter, Map.Malas);
 
                         m_Timer = new LampRoomTimer(this);

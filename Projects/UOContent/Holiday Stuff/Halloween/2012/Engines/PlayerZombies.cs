@@ -6,7 +6,7 @@ using Server.Mobiles;
 
 namespace Server.Engines.Events
 {
-    public class HalloweenHauntings
+    public static class HalloweenHauntings
     {
         private static Timer m_Timer;
         private static Timer m_ClearTimer;

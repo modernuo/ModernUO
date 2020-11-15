@@ -20,8 +20,7 @@ namespace Server.Items
 
         public override bool DisplayWeight => false;
 
-        [Hue]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Hue, CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;
@@ -33,8 +32,6 @@ namespace Server.Items
 
                     if (!Deleted && ShareHue && Components != null)
                     {
-                        Hue = value;
-
                         foreach (var c in Components)
                         {
                             c.Hue = value;

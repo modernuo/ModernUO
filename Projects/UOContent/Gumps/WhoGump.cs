@@ -83,9 +83,8 @@ namespace Server.Gumps
             CommandSystem.Register("WhoList", AccessLevel.Counselor, WhoList_OnCommand);
         }
 
-        [Usage("WhoList [filter]")]
-        [Aliases("Who")]
-        [Description("Lists all connected clients. Optionally filters results by name.")]
+        [Usage("WhoList [filter]"), Aliases("Who"),
+         Description("Lists all connected clients. Optionally filters results by name.")]
         private static void WhoList_OnCommand(CommandEventArgs e)
         {
             e.Mobile.SendGump(new WhoGump(e.Mobile, e.ArgString));
@@ -96,16 +95,15 @@ namespace Server.Gumps
             var filter = rawFilter.Trim().ToLower().DefaultIfNullOrEmpty(null);
 
             var list = new List<Mobile>();
-            var states = TcpServer.Instances;
 
-            for (var i = 0; i < states.Count; ++i)
+            foreach (var ns in TcpServer.Instances)
             {
-                var m = states[i].Mobile;
+                var m = ns.Mobile;
 
                 if (m != null && (m == owner || !m.Hidden || owner.AccessLevel >= m.AccessLevel ||
                                   m is PlayerMobile mobile && mobile.VisibilityList.Contains(owner)))
                 {
-                    if (filter != null && !(m.Name?.ToLower().IndexOf(filter, StringComparison.Ordinal) >= 0))
+                    if (filter != null && m.Name?.ToLower().Contains(filter, StringComparison.Ordinal) != true)
                     {
                         continue;
                     }
@@ -317,9 +315,14 @@ namespace Server.Gumps
 
             public int Compare(Mobile x, Mobile y)
             {
-                if (x == null || y == null)
+                if (x == null)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentNullException(nameof(x));
+                }
+
+                if (y == null)
+                {
+                    throw new ArgumentNullException(nameof(y));
                 }
 
                 if (x.AccessLevel > y.AccessLevel)
@@ -327,12 +330,7 @@ namespace Server.Gumps
                     return -1;
                 }
 
-                if (x.AccessLevel < y.AccessLevel)
-                {
-                    return 1;
-                }
-
-                return Insensitive.Compare(x.Name, y.Name);
+                return x.AccessLevel < y.AccessLevel ? 1 : Insensitive.Compare(x.Name, y.Name);
             }
         }
     }

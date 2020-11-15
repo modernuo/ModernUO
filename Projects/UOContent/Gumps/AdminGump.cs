@@ -196,8 +196,8 @@ namespace Server.Gumps
                         AddLabel(20, 350, LabelHue, "Operating System: ");
                         var os = Environment.OSVersion.ToString();
 
-                        os = os.Replace("Microsoft", "MSFT");
-                        os = os.Replace("Service Pack", "SP");
+                        os = os.Replace("Microsoft", "MSFT", StringComparison.Ordinal);
+                        os = os.Replace("Service Pack", "SP", StringComparison.Ordinal);
 
                         AddLabel(150, 350, LabelHue, os);
 
@@ -243,7 +243,7 @@ namespace Server.Gumps
                         sb.Append(curIOCP);
                         sb.Append("<br>Usage: ");
                         sb.Append((maxIOCP - curIOCP) * 100 / maxIOCP);
-                        sb.Append("%");
+                        sb.Append('%');
 
                         AddLabel(20, 200, LabelHue, "Pooling:");
                         AddHtml(20, 220, 380, 150, sb.ToString(), true, true);
@@ -446,7 +446,7 @@ namespace Server.Gumps
                     {
                         if (m_List == null)
                         {
-                            var states = TcpServer.Instances;
+                            var states = TcpServer.Instances.ToList();
                             states.Sort(NetStateComparer.Instance);
 
                             m_List = states.ToList<object>();
@@ -612,14 +612,11 @@ namespace Server.Gumps
                         if (m_List == null)
                         {
                             sharedAccounts = GetAllSharedAccounts();
-                            m_List = Utility.CastListContravariant<KeyValuePair<IPAddress, List<Account>>, object>(
-                                sharedAccounts
-                            );
+                            m_List = sharedAccounts.CastListContravariant<KeyValuePair<IPAddress, List<Account>>, object>();
                         }
                         else
                         {
-                            sharedAccounts =
-                                Utility.CastListCovariant<object, KeyValuePair<IPAddress, List<Account>>>(m_List);
+                            sharedAccounts = m_List.CastListCovariant<object, KeyValuePair<IPAddress, List<Account>>>();
                         }
 
                         AddLabelCropped(12, 120, 60, 20, LabelHue, "Count");
@@ -1007,11 +1004,11 @@ namespace Server.Gumps
                         if (m_List == null)
                         {
                             ipAddresses = a.LoginIPs.ToList();
-                            m_List = Utility.CastListContravariant<IPAddress, object>(ipAddresses);
+                            m_List = ipAddresses.CastListContravariant<IPAddress, object>();
                         }
                         else
                         {
-                            ipAddresses = Utility.CastListCovariant<object, IPAddress>(m_List);
+                            ipAddresses = m_List.CastListCovariant<object, IPAddress>();
                         }
 
                         AddHtml(10, 195, 400, 20, Color(Center("Client Addresses"), LabelColor32));
@@ -1079,11 +1076,11 @@ namespace Server.Gumps
                         if (m_List == null)
                         {
                             ipRestrictions = a.IPRestrictions.ToList();
-                            m_List = Utility.CastListContravariant<string, object>(ipRestrictions);
+                            m_List = ipRestrictions.CastListContravariant<string, object>();
                         }
                         else
                         {
-                            ipRestrictions = Utility.CastListCovariant<object, string>(m_List);
+                            ipRestrictions = m_List.CastListCovariant<object, string>();
                         }
 
                         AddHtml(10, 195, 400, 20, Color(Center("Address Restrictions"), LabelColor32));
@@ -1268,11 +1265,11 @@ namespace Server.Gumps
                         if (m_List == null)
                         {
                             firewallEntries = Firewall.List;
-                            m_List = Utility.CastListContravariant<Firewall.IFirewallEntry, object>(firewallEntries);
+                            m_List = firewallEntries.CastListContravariant<Firewall.IFirewallEntry, object>();
                         }
                         else
                         {
-                            firewallEntries = Utility.CastListCovariant<object, Firewall.IFirewallEntry>(m_List);
+                            firewallEntries = m_List.CastListCovariant<object, Firewall.IFirewallEntry>();
                         }
 
                         AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
@@ -1354,11 +1351,11 @@ namespace Server.Gumps
                             }
 
                             blockedAccts.Sort(AccountComparer.Instance);
-                            m_List = Utility.CastListContravariant<Account, object>(blockedAccts);
+                            m_List = blockedAccts.CastListContravariant<Account, object>();
                         }
                         else
                         {
-                            blockedAccts = Utility.CastListCovariant<object, Account>(m_List);
+                            blockedAccts = m_List.CastListCovariant<object, Account>();
                         }
 
                         if (listPage > 0)
@@ -1485,10 +1482,9 @@ namespace Server.Gumps
             CommandSystem.Register("Admin", AccessLevel.Administrator, Admin_OnCommand);
         }
 
-        [Usage("Admin")]
-        [Description(
-            "Opens an interface providing server information and administration features including client, account, and firewall management."
-        )]
+        [Usage("Admin"), Description(
+             "Opens an interface providing server information and administration features including client, account, and firewall management."
+         )]
         public static void Admin_OnCommand(CommandEventArgs e)
         {
             e.Mobile.SendGump(new AdminGump(e.Mobile, AdminGumpPage.Clients));
@@ -1972,7 +1968,7 @@ namespace Server.Gumps
 
             if (m_PageType == AdminGumpPage.Accounts)
             {
-                var list = Utility.CastListCovariant<object, Account>(m_List);
+                var list = m_List.CastListCovariant<object, Account>();
 
                 if (list != null && m_State is List<Account> rads)
                 {
@@ -2350,12 +2346,10 @@ namespace Server.Gumps
 
                                     if (level > AccessLevel.Player)
                                     {
-                                        var clients = TcpServer.Instances;
                                         var count = 0;
 
-                                        for (var i = 0; i < clients.Count; ++i)
+                                        foreach (var ns in TcpServer.Instances)
                                         {
-                                            var ns = clients[i];
                                             var a = ns.Account;
 
                                             if (a == null)
@@ -2450,12 +2444,8 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        var instances = TcpServer.Instances;
-
-                                        for (var i = 0; i < instances.Count; ++i)
+                                        foreach (var ns in TcpServer.Instances)
                                         {
-                                            var ns = instances[i];
-
                                             bool isMatch;
 
                                             if (forName)
@@ -2463,12 +2453,12 @@ namespace Server.Gumps
                                                 var m = ns.Mobile;
                                                 var a = ns.Account;
 
-                                                isMatch = m?.Name.ToLower().IndexOf(match, StringComparison.Ordinal) >= 0
-                                                          || a?.Username.ToLower().IndexOf(match, StringComparison.Ordinal) >= 0;
+                                                isMatch = m?.Name.ToLower().Contains(match, StringComparison.Ordinal) == true
+                                                          || a?.Username.ToLower().Contains(match, StringComparison.Ordinal) == true;
                                             }
                                             else
                                             {
-                                                isMatch = ns.ToString().IndexOf(match, StringComparison.Ordinal) >= 0;
+                                                isMatch = ns.ToString().Contains(match, StringComparison.Ordinal);
                                             }
 
                                             if (isMatch)
@@ -2518,7 +2508,7 @@ namespace Server.Gumps
                                                     from,
                                                     AdminGumpPage.Clients,
                                                     0,
-                                                    Utility.CastListContravariant<NetState, object>(results),
+                                                    results.CastListContravariant<NetState, object>(),
                                                     "One match found."
                                                 )
                                             );
@@ -2531,7 +2521,7 @@ namespace Server.Gumps
                                                 from,
                                                 AdminGumpPage.Clients,
                                                 0,
-                                                Utility.CastListContravariant<NetState, object>(results),
+                                                results.CastListContravariant<NetState, object>(),
                                                 notice ?? (results.Count == 0 ? "Nothing matched your search terms." : null)
                                             )
                                         );
@@ -2726,7 +2716,7 @@ namespace Server.Gumps
                                     {
                                         results = Accounts.GetAccounts()
                                             .Where(acct =>
-                                                acct.Username.ToLower().IndexOf(match, StringComparison.Ordinal) >= 0)
+                                                acct.Username.ToLower().Contains(match, StringComparison.Ordinal))
                                             .ToList();
                                         results.Sort(AccountComparer.Instance);
                                     }
@@ -2751,7 +2741,7 @@ namespace Server.Gumps
                                                 from,
                                                 AdminGumpPage.Accounts,
                                                 0,
-                                                Utility.CastListContravariant<IAccount, object>(results),
+                                                results.CastListContravariant<IAccount, object>(),
                                                 results.Count == 0 ? "Nothing matched your search terms." : null,
                                                 new List<object>()
                                             )
@@ -2879,7 +2869,7 @@ namespace Server.Gumps
                                                 from,
                                                 AdminGumpPage.Accounts,
                                                 0,
-                                                Utility.CastListContravariant<Account, object>(list),
+                                                list.CastListContravariant<Account, object>(),
                                                 null,
                                                 new List<object>()
                                             )
@@ -3502,7 +3492,7 @@ namespace Server.Gumps
                                                         from,
                                                         AdminGumpPage.Accounts,
                                                         0,
-                                                        Utility.CastListContravariant<Account, object>(kvp.Value),
+                                                        kvp.Value.CastListContravariant<Account, object>(),
                                                         null,
                                                         new List<object>()
                                                     )
@@ -3539,7 +3529,7 @@ namespace Server.Gumps
                                         {
                                             var check = Firewall.List[i].ToString();
 
-                                            if (check?.IndexOf(match) >= 0)
+                                            if (check?.Contains(match, StringComparison.Ordinal) == true)
                                             {
                                                 results.Add(Firewall.List[i]);
                                             }
@@ -3691,7 +3681,7 @@ namespace Server.Gumps
                                 {
                                     index -= 4;
 
-                                    if (m_List != null && index >= 0 && index < m_List.Count)
+                                    if (m_List != null && index < m_List.Count)
                                     {
                                         from.SendGump(
                                             new AdminGump(from, AdminGumpPage.FirewallInfo, 0, null, null, m_List[index])
@@ -3899,7 +3889,7 @@ namespace Server.Gumps
                     }
                 case 8:
                     {
-                        if (m_List != null && index >= 0 && index < m_List.Count)
+                        if (m_List != null && index < m_List.Count)
                         {
                             if (!(m_State is Account a))
                             {
@@ -3943,7 +3933,7 @@ namespace Server.Gumps
                     }
                 case 9:
                     {
-                        if (m_List != null && index >= 0 && index < m_List.Count)
+                        if (m_List != null && index < m_List.Count)
                         {
                             if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
                             {
@@ -3968,7 +3958,7 @@ namespace Server.Gumps
                                             from,
                                             AdminGumpPage.Accounts,
                                             0,
-                                            Utility.CastListContravariant<Account, object>(list),
+                                            list.CastListContravariant<Account, object>(),
                                             null,
                                             new List<object>()
                                         )
@@ -3994,7 +3984,7 @@ namespace Server.Gumps
                     }
                 case 10:
                     {
-                        if (m_List != null && index >= 0 && index < m_List.Count)
+                        if (m_List != null && index < m_List.Count)
                         {
                             if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
                             {

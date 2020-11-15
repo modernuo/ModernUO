@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server
 {
-    public class ValorVirtue
+    public static class ValorVirtue
     {
         private const int LossAmount = 250;
         private static readonly TimeSpan LossDelay = TimeSpan.FromDays(7.0);

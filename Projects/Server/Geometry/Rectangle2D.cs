@@ -13,11 +13,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+
 namespace Server
 {
-    [NoSort]
-    [Parsable]
-    [PropertyObject]
+    [NoSort, Parsable, PropertyObject]
     public struct Rectangle2D
     {
         private Point2D m_Start;
@@ -43,7 +43,7 @@ namespace Server
 
         public static Rectangle2D Parse(string value)
         {
-            var start = value.IndexOf('(');
+            var start = value.IndexOf('(', StringComparison.Ordinal);
             var end = value.IndexOf(',', start + 1);
 
             Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var x);

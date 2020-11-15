@@ -2,7 +2,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-    public class LoginStats
+    public static class LoginStats
     {
         public static void Initialize()
         {

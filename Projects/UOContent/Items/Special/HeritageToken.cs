@@ -2,10 +2,6 @@
 
 namespace Server.Items
 {
-    public interface ITokunoDyable
-    {
-    }
-
     public class HeritageToken : Item
     {
         [Constructible]

@@ -5,7 +5,7 @@ using Server.Mobiles;
 
 namespace Server.Engines.VeteranRewards
 {
-    public class RewardSystem
+    public static class RewardSystem
     {
         private static RewardCategory[] m_Categories;
         private static RewardList[] m_Lists;

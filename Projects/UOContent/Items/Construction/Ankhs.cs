@@ -5,7 +5,7 @@ using Server.Mobiles;
 
 namespace Server.Items
 {
-    public class Ankhs
+    public static class Ankhs
     {
         public const int ResurrectRange = 2;
         public const int TitheRange = 2;
@@ -130,8 +130,7 @@ namespace Server.Items
 
         public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
-        [Hue]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Hue, CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;
@@ -222,8 +221,7 @@ namespace Server.Items
 
             public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
-            [Hue]
-            [CommandProperty(AccessLevel.GameMaster)]
+            [Hue, CommandProperty(AccessLevel.GameMaster)]
             public override int Hue
             {
                 get => base.Hue;
@@ -319,8 +317,7 @@ namespace Server.Items
 
         public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
-        [Hue]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Hue, CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;
@@ -413,8 +410,7 @@ namespace Server.Items
 
             public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
-            [Hue]
-            [CommandProperty(AccessLevel.GameMaster)]
+            [Hue, CommandProperty(AccessLevel.GameMaster)]
             public override int Hue
             {
                 get => base.Hue;

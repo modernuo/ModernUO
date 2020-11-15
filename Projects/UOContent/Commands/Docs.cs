@@ -11,7 +11,7 @@ using Server.Network;
 
 namespace Server.Commands
 {
-    public class Docs
+    public static class Docs
     {
         private const int Iron = 0xCCCCDD;
         private const int DullCopper = 0xAAAAAA;
@@ -109,8 +109,7 @@ namespace Server.Commands
             CommandSystem.Register("DocGen", AccessLevel.Administrator, DocGen_OnCommand);
         }
 
-        [Usage("DocGen")]
-        [Description("Generates RunUO documentation.")]
+        [Usage("DocGen"), Description("Generates RunUO documentation.")]
         private static void DocGen_OnCommand(CommandEventArgs e)
         {
             World.Broadcast(0x35, true, "Documentation is being generated, please wait.");
@@ -332,7 +331,7 @@ namespace Server.Commands
 
             if (type.IsGenericType)
             {
-                var index = type.Name.IndexOf('`');
+                var index = type.Name.IndexOf('`', StringComparison.Ordinal);
 
                 if (index > 0)
                 {
@@ -346,7 +345,7 @@ namespace Server.Commands
                         : new StringBuilder($"<a href=\"@directory@{rootType}-T-.html\">{rootType}</a>");
 
                     nameBuilder.Append("&lt;");
-                    fnamBuilder.Append("-");
+                    fnamBuilder.Append('-');
                     linkBuilder.Append("&lt;");
 
                     var typeArguments = type.GetGenericArguments();
@@ -364,7 +363,7 @@ namespace Server.Commands
                         var aliasedName = AliasForName(sanitizedName);
 
                         nameBuilder.Append(sanitizedName);
-                        fnamBuilder.Append("T");
+                        fnamBuilder.Append('T');
                         if (DontLink(typeArguments[i]))
                         {
                             linkBuilder.Append($"<font color=\"blue\">{aliasedName}</font>");
@@ -378,7 +377,7 @@ namespace Server.Commands
                     }
 
                     nameBuilder.Append("&gt;");
-                    fnamBuilder.Append("-");
+                    fnamBuilder.Append('-');
                     linkBuilder.Append("&gt;");
 
                     name = nameBuilder.ToString();
@@ -407,7 +406,7 @@ namespace Server.Commands
 
         public static string SanitizeType(string name)
         {
-            var anonymousType = name.Contains("<");
+            var anonymousType = name.Contains('<', StringComparison.Ordinal);
             var sb = new StringBuilder(name);
             for (var i = 0; i < ReplaceChars.Length; ++i)
             {
@@ -466,7 +465,7 @@ namespace Server.Commands
                 return true;
             }
 
-            if (type.Namespace.StartsWith("Server"))
+            if (type.Namespace.StartsWith("Server", StringComparison.Ordinal))
             {
                 return false;
             }
@@ -489,11 +488,12 @@ namespace Server.Commands
             }
 
             var index = 0;
-            var file = string.Concat(name, ext);
+            var file = $"{name}{ext}";
 
             while (File.Exists(Path.Combine(root, file)))
             {
-                file = string.Concat(name, ++index, ext);
+                index++;
+                file = $"{name}{index}{ext}";
             }
 
             return file;
@@ -604,7 +604,7 @@ namespace Server.Commands
                 if (realType?.IsGenericType == true)
                 {
                     FormatGeneric(realType, out _, out _, out var linkName);
-                    aliased = linkName.Replace("@directory@", null);
+                    aliased = linkName.Replace("@directory@", null, StringComparison.Ordinal);
                 }
                 else
                 {
@@ -621,7 +621,7 @@ namespace Server.Commands
                 aliased ??= realType?.Name ?? "";
             }
 
-            return string.Concat(prepend, aliased, append, name);
+            return $"{prepend}{aliased}{append}{name}";
         }
 
         private static bool Document()
@@ -1719,7 +1719,7 @@ namespace Server.Commands
                 {
                     line = line.Trim();
 
-                    if (line.Length == 0 || line.StartsWith("#"))
+                    if (line.Length == 0 || line.StartsWith("#", StringComparison.Ordinal))
                     {
                         continue;
                     }
@@ -2029,16 +2029,11 @@ namespace Server.Commands
 
                 var aliases = attrs.Length == 0 ? null : attrs[0] as AliasesAttribute;
 
-                var descString = desc.Description.Replace("<", "&lt;").Replace(">", "&gt;");
+                var descString = desc.Description
+                    .Replace("<", "&lt;", StringComparison.Ordinal)
+                    .Replace(">", "&gt;", StringComparison.Ordinal);
 
-                if (aliases == null)
-                {
-                    list.Add(new DocCommandEntry(e.AccessLevel, e.Command, null, usage.Usage, descString));
-                }
-                else
-                {
-                    list.Add(new DocCommandEntry(e.AccessLevel, e.Command, aliases.Aliases, usage.Usage, descString));
-                }
+                list.Add(new DocCommandEntry(e.AccessLevel, e.Command, aliases?.Aliases, usage.Usage, descString));
             }
 
             for (var i = 0; i < TargetCommands.AllCommands.Count; ++i)
@@ -2062,7 +2057,9 @@ namespace Server.Commands
                     aliases[j] = cmds[j + 1];
                 }
 
-                desc = desc.Replace("<", "&lt;").Replace(">", "&gt;");
+                desc = desc
+                    .Replace("<", "&lt;", StringComparison.Ordinal)
+                    .Replace(">", "&gt;", StringComparison.Ordinal);
 
                 if (command.Supports != CommandSupport.Single)
                 {
@@ -2138,7 +2135,9 @@ namespace Server.Commands
                     aliases[j] = cmds[j + 1];
                 }
 
-                desc = desc.Replace("<", "&lt;").Replace(">", "&gt;");
+                desc = desc
+                    .Replace("<", "&lt;", StringComparison.Ordinal)
+                    .Replace(">", "&gt;", StringComparison.Ordinal);
 
                 list.Add(new DocCommandEntry(command.AccessLevel, cmd, aliases, usage, desc));
             }
@@ -2237,7 +2236,9 @@ namespace Server.Commands
             {
                 html.Write(
                     "<td class=\"rentry\"><b>Usage: {0}</b><br>{1}</td>",
-                    usage.Replace("<", "&lt;").Replace(">", "&gt;"),
+                    usage
+                        .Replace("<", "&lt;", StringComparison.Ordinal)
+                        .Replace(">", "&gt;", StringComparison.Ordinal),
                     desc
                 );
             }
@@ -2245,7 +2246,9 @@ namespace Server.Commands
             {
                 html.Write(
                     "<td class=\"rentry\"><b>Usage: {0}</b><br>Alias{1}: ",
-                    usage.Replace("<", "&lt;").Replace(">", "&gt;"),
+                    usage
+                        .Replace("<", "&lt;", StringComparison.Ordinal)
+                        .Replace(">", "&gt;", StringComparison.Ordinal),
                     aliases.Length == 1 ? "" : "es"
                 );
 
@@ -2564,7 +2567,7 @@ namespace Server.Commands
                     if (ifaceInfo == null)
                     {
                         FormatGeneric(iface, out _, out _, out var linkName);
-                        typeHtml.Write($"<!-- DBG-2.1 -->{linkName.Replace("@directory@", null)}");
+                        typeHtml.Write($"<!-- DBG-2.1 -->{linkName.Replace("@directory@", null, StringComparison.Ordinal)}");
                     }
                     else
                     {
@@ -2910,7 +2913,7 @@ namespace Server.Commands
             public string FileName => m_FileName;
             public string TypeName => m_TypeName;
 
-            public string LinkName(string dirRoot) => m_LinkName.Replace("@directory@", dirRoot);
+            public string LinkName(string dirRoot) => m_LinkName.Replace("@directory@", dirRoot, StringComparison.Ordinal);
         }
 
         private class SpeechEntry
@@ -3009,7 +3012,7 @@ namespace Server.Commands
             return Body == e?.Body && BodyType == e.BodyType && Name == e.Name;
         }
 
-        public override int GetHashCode() => Body.BodyID ^ (int)BodyType ^ Name.GetHashCode();
+        public override int GetHashCode() => Body.BodyID ^ (int)BodyType ^ Name.GetHashCode(StringComparison.Ordinal);
     }
 
     public class BodyEntrySorter : IComparer<BodyEntry>

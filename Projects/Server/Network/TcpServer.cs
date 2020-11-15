@@ -39,7 +39,7 @@ namespace Server.Network
 
         public static IPEndPoint[] ListeningAddresses { get; private set; }
         public static TcpListener[] Listeners { get; private set; }
-        public static List<NetState> Instances { get; } = new List<NetState>(128);
+        public static HashSet<NetState> Instances { get; } = new HashSet<NetState>(128);
 
         public static ConcurrentQueue<NetState> m_ConnectedQueue = new ConcurrentQueue<NetState>();
 
@@ -180,7 +180,7 @@ namespace Server.Network
 
                 try
                 {
-                    socket = await listener.AcceptSocketAsync();
+                    socket = await listener.AcceptSocketAsync().ConfigureAwait(false);
                     if (Instances.Count >= MaxConnections)
                     {
                         socket.Send(socketRejected, SocketFlags.None);
@@ -205,8 +205,10 @@ namespace Server.Network
 
                     if (_nextMaximumSocketsReachedMessage <= ticks)
                     {
-                        var ipep = (IPEndPoint)socket!.RemoteEndPoint;
-                        Console.WriteLine("Listener {0}:{1}: Failed (Maximum connections reached)", ipep.Address, ipep.Port);
+                        if (socket?.RemoteEndPoint is IPEndPoint ipep)
+                        {
+                            Console.WriteLine("Listener {0}:{1}: Failed (Maximum connections reached)", ipep.Address, ipep.Port);
+                        }
                         _nextMaximumSocketsReachedMessage = ticks + _listenerErrorMessageDelay;
                     }
                 }

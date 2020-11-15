@@ -10,7 +10,6 @@ namespace Server.Network
     {
         private const int CompressorBufferSize = 0x10000;
 
-        private const int BufferSize = 4096;
         private readonly int m_Length;
 
         private byte[] m_CompiledBuffer;
@@ -120,9 +119,11 @@ namespace Server.Network
             }
         }
 
+        private readonly object _object = new object();
+
         public byte[] Compile(bool compress, out int length)
         {
-            lock (this)
+            lock (_object)
             {
                 if (m_CompiledBuffer == null)
                 {

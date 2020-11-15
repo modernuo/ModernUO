@@ -140,14 +140,9 @@ namespace Server.Items
         {
             var components = Components;
 
-            var stageTable = m_StageTable;
-
             for (var i = 0; i < components.Count; ++i)
             {
-                if (!(components[i] is AddonComponent component))
-                {
-                    continue;
-                }
+                var component = components[i];
 
                 var itemTable = FindItemTable(component.ItemID);
 

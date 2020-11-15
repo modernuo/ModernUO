@@ -39,7 +39,7 @@ namespace Server.Items
         void AttackAnimation(Mobile from, Mobile to);
     }
 
-    public class NinjaWeapon
+    public static class NinjaWeapon
     {
         private const int MaxUses = 10;
 

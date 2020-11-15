@@ -123,8 +123,7 @@ namespace Server.Items
 
         public virtual int VirtualDamageBonus => 0;
 
-        [Hue]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Hue, CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;
@@ -1919,7 +1918,7 @@ namespace Server.Items
                 {
                     pois = 100;
                 }
-                else if (type == 4)
+                else
                 {
                     nrgy = 100;
                 }
@@ -4145,14 +4144,12 @@ namespace Server.Items
                             m_MaxRange = 1; // default
                         }
 
-                        if (version < 5)
-                        {
-                            m_Resource = CraftResource.Iron;
-                            Attributes = new AosAttributes(this);
-                            WeaponAttributes = new AosWeaponAttributes(this);
-                            AosElementDamages = new AosElementAttributes(this);
-                            SkillBonuses = new AosSkillBonuses(this);
-                        }
+                        // version < 5
+                        m_Resource = CraftResource.Iron;
+                        Attributes = new AosAttributes(this);
+                        WeaponAttributes = new AosWeaponAttributes(this);
+                        AosElementDamages = new AosElementAttributes(this);
+                        SkillBonuses = new AosSkillBonuses(this);
 
                         m_MinDamage = reader.ReadInt();
                         m_MaxDamage = reader.ReadInt();

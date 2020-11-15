@@ -1,3 +1,5 @@
+using System;
+
 namespace Server.Misc
 {
     public enum ProfanityAction
@@ -24,7 +26,7 @@ namespace Server.Misc
             '{', '}', '?', '|', '(', ')', '%', '$', '&', '#', '@'
         };
 
-        public static string[] StartDisallowed { get; } = { };
+        public static string[] StartDisallowed { get; } = Array.Empty<string>();
 
         public static string[] Disallowed { get; } =
         {

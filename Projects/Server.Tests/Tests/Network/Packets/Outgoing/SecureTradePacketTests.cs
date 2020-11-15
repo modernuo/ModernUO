@@ -8,9 +8,8 @@ namespace Server.Tests.Network
 {
     public class SecureTradePacketTests : IClassFixture<ServerFixture>
     {
-        [Theory]
-        [InlineData("short-name")]
-        [InlineData("this is a really long name that is more than 30 characters, probably")]
+        [Theory, InlineData("short-name"),
+         InlineData("this is a really long name that is more than 30 characters, probably")]
         public void TestDisplaySecureTrade(string name)
         {
             var m = new Mobile(0x1);
@@ -59,9 +58,9 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(true, false)] // Update first
-        [InlineData(false, true)] // Update second
+        [Theory, InlineData(true, false), InlineData(false, true)]
+        // Update first
+         // Update second
         public void TestUpdateSecureTrade(bool first, bool second)
         {
             var firstCont = new Container(World.NewItem);
@@ -83,9 +82,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory]
-        [InlineData(100000, 30, TradeFlag.UpdateGold)]
-        [InlineData(250000, 50000, TradeFlag.UpdateLedger)]
+        [Theory, InlineData(100000, 30, TradeFlag.UpdateGold), InlineData(250000, 50000, TradeFlag.UpdateLedger)]
         public void TestUpdateGoldSecureTrade(int gold, int plat, TradeFlag flag)
         {
             var cont = new Container(World.NewItem);

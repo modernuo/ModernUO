@@ -141,7 +141,7 @@ namespace Server.Mobiles
 
             if (Core.ML && IsRewardItem)
             {
-                list.Add(RewardSystem.GetRewardYearLabel(this, new object[] { })); // X Year Veteran Reward
+                list.Add(RewardSystem.GetRewardYearLabel(this, Array.Empty<object>())); // X Year Veteran Reward
             }
         }
 

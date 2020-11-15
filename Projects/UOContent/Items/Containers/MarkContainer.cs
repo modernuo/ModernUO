@@ -97,8 +97,7 @@ namespace Server.Items
             CommandSystem.Register("SecretLocGen", AccessLevel.Administrator, SecretLocGen_OnCommand);
         }
 
-        [Usage("SecretLocGen")]
-        [Description("Generates mark containers to Malas secret locations.")]
+        [Usage("SecretLocGen"), Description("Generates mark containers to Malas secret locations.")]
         public static void SecretLocGen_OnCommand(CommandEventArgs e)
         {
             CreateMalasPassage(951, 546, -70, 1006, 994, -70, false, false);

@@ -1,6 +1,6 @@
 namespace Server.Gumps
 {
-    public class PropsConfig
+    public static class PropsConfig
     {
         public static readonly bool OldStyle = false;
 
@@ -13,7 +13,7 @@ namespace Server.Gumps
         public static readonly int OffsetGumpID = 0x0A40; // Pure black
 
         public static readonly int
-            HeaderGumpID = OldStyle ? 0x0BBC : 0x0E14; // Light offwhite, textured : Dark navy blue, textured
+            HeaderGumpID = OldStyle ? 0x0BBC : 0x0E14; // Light off-white, textured : Dark navy blue, textured
 
         public static readonly int EntryGumpID = 0x0BBC;                   // Light offwhite, textured
         public static readonly int BackGumpID = 0x13BE;                    // Gray slate/stoney

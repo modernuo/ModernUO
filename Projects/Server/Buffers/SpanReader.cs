@@ -21,7 +21,7 @@ using Server;
 
 namespace System.Buffers
 {
-    ref struct SpanReader
+    public ref struct SpanReader
     {
         private readonly ReadOnlySpan<byte> _buffer;
 

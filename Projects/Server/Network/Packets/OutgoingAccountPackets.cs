@@ -15,8 +15,8 @@
 
 using System;
 using System.IO;
-using Server.Accounting;
 using System.Buffers;
+using Server.Accounting;
 
 namespace Server.Network
 {

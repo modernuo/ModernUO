@@ -43,8 +43,7 @@ namespace Server.Engines.Craft
             CommandSystem.Register("ForgetAllRecipes", AccessLevel.GameMaster, ForgetAllRecipes_OnCommand);
         }
 
-        [Usage("LearnAllRecipes")]
-        [Description("Teaches a player all available recipes.")]
+        [Usage("LearnAllRecipes"), Description("Teaches a player all available recipes.")]
         private static void LearnAllRecipes_OnCommand(CommandEventArgs e)
         {
             var m = e.Mobile;
@@ -73,8 +72,7 @@ namespace Server.Engines.Craft
             );
         }
 
-        [Usage("ForgetAllRecipes")]
-        [Description("Makes a player forget all the recipes they've learned.")]
+        [Usage("ForgetAllRecipes"), Description("Makes a player forget all the recipes they've learned.")]
         private static void ForgetAllRecipes_OnCommand(CommandEventArgs e)
         {
             var m = e.Mobile;

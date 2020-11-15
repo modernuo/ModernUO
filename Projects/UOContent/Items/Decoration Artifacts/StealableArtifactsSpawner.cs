@@ -175,8 +175,7 @@ namespace Server.Items
             CommandSystem.Register("RemoveStealArties", AccessLevel.Administrator, RemoveStealArties_OnCommand);
         }
 
-        [Usage("GenStealArties")]
-        [Description("Generates the stealable artifacts spawner.")]
+        [Usage("GenStealArties"), Description("Generates the stealable artifacts spawner.")]
         private static void GenStealArties_OnCommand(CommandEventArgs args)
         {
             var from = args.Mobile;
@@ -191,8 +190,8 @@ namespace Server.Items
             }
         }
 
-        [Usage("RemoveStealArties")]
-        [Description("Removes the stealable artifacts spawner and every not yet stolen stealable artifacts.")]
+        [Usage("RemoveStealArties"),
+         Description("Removes the stealable artifacts spawner and every not yet stolen stealable artifacts.")]
         private static void RemoveStealArties_OnCommand(CommandEventArgs args)
         {
             var from = args.Mobile;

@@ -26,7 +26,7 @@ namespace Server.Items
                 return;
             }
 
-            Effects.SendLocationEffect(Location, Map, 0x1D99, 48, 2, GetEffectHue(), 0);
+            Effects.SendLocationEffect(Location, Map, 0x1D99, 48, 2, GetEffectHue());
 
             if (from.Alive && CheckRange(from.Location, 0))
             {

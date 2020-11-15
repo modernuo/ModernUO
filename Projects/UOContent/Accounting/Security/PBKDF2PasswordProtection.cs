@@ -26,8 +26,7 @@ namespace Server.Accounting.Security
         private const int m_SaltSize = 8;
         private const int m_HashSize = 32;
         private const int m_OutputSize = 2 + m_SaltSize + m_HashSize;
-        public static IPasswordProtection Instance = new PBKDF2PasswordProtection();
-        private static readonly HashAlgorithmName m_Algorithm = HashAlgorithmName.SHA256;
+        public static readonly IPasswordProtection Instance = new PBKDF2PasswordProtection();
 
         public string EncryptPassword(string plainPassword)
         {
@@ -35,7 +34,7 @@ namespace Server.Accounting.Security
             var iterations = Utility.RandomMinMax(m_MinIterations, m_MaxIterations);
             BinaryPrimitives.WriteUInt16LittleEndian(output.Slice(0, 2), (ushort)iterations);
 
-            var rfc2898 = new Rfc2898DeriveBytes(plainPassword, m_SaltSize, iterations, m_Algorithm);
+            var rfc2898 = new Rfc2898DeriveBytes(plainPassword, m_SaltSize, iterations, HashAlgorithmName.SHA256);
             rfc2898.Salt.CopyTo(output.Slice(2, m_SaltSize));
             rfc2898.GetBytes(m_HashSize).CopyTo(output.Slice(m_SaltSize + 2));
 
@@ -51,7 +50,7 @@ namespace Server.Accounting.Security
             var salt = encryptedBytes.Slice(2, m_SaltSize);
 
             ReadOnlySpan<byte> hash =
-                new Rfc2898DeriveBytes(plainPassword, salt.ToArray(), iterations, m_Algorithm).GetBytes(m_HashSize);
+                new Rfc2898DeriveBytes(plainPassword, salt.ToArray(), iterations, HashAlgorithmName.SHA256).GetBytes(m_HashSize);
 
             return hash.SequenceEqual(encryptedBytes.Slice(m_SaltSize + 2));
         }

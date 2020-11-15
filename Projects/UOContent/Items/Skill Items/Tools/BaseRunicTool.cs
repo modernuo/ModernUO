@@ -132,14 +132,7 @@ namespace Server.Items
                 percent = v;
             }
 
-            var scaledBy = Math.Abs(high - low) + 1;
-
-            if (scaledBy != 0)
-            {
-                scaledBy = 10000 / scaledBy;
-            }
-
-            percent *= 10000 + scaledBy;
+            percent *= 10000 + 10000 / Math.Abs(high - low) + 1;
 
             return low + (high - low) * percent / 1000001;
         }
@@ -497,7 +490,7 @@ namespace Server.Items
               totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Energy, totalDamage );
               totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Fire, totalDamage );
               totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Poison, totalDamage );
-      
+
               weapon.AosElementDamages[AosElementAttribute.Physical] = 100 - totalDamage;
              * */
 

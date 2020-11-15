@@ -107,7 +107,7 @@ namespace Server.Items
                 return;
             }
 
-            Effects.SendLocationEffect(Location, Map, GetBaseID(Type) + 1, 18, 3, GetEffectHue(), 0);
+            Effects.SendLocationEffect(Location, Map, GetBaseID(Type) + 1, 18, 3, GetEffectHue());
             Effects.PlaySound(Location, Map, 0x22C);
 
             foreach (var mob in GetMobilesInRange(0))
@@ -132,7 +132,7 @@ namespace Server.Items
         public virtual void OnSpikeRetracted()
         {
             Extended = false;
-            Effects.SendLocationEffect(Location, Map, GetExtendedID(Type) - 1, 6, 3, GetEffectHue(), 0);
+            Effects.SendLocationEffect(Location, Map, GetExtendedID(Type) - 1, 6, 3, GetEffectHue());
         }
 
         public override void Serialize(IGenericWriter writer)

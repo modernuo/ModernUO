@@ -65,9 +65,7 @@ namespace Server.Tests.Network
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory]
-        [InlineData(ProtocolChanges.Version70610)]
-        [InlineData(ProtocolChanges.Version6000)]
+        [Theory, InlineData(ProtocolChanges.Version70610), InlineData(ProtocolChanges.Version6000)]
         public void TestSupportedFeatures(ProtocolChanges protocolChanges)
         {
             var firstMobile = new Mobile(0x1);

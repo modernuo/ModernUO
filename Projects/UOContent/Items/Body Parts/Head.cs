@@ -1,3 +1,5 @@
+using System;
+
 namespace Server.Items
 {
     public enum HeadType
@@ -79,17 +81,17 @@ namespace Server.Items
 
                     if (format != null)
                     {
-                        if (format.StartsWith("the head of "))
+                        if (format.StartsWith("the head of ", StringComparison.Ordinal))
                         {
-                            format = format.Substring("the head of ".Length);
+                            format = format.Substring(14); // "the head of|..."
                         }
 
-                        if (format.EndsWith(", taken in a duel"))
+                        if (format.EndsWith(", taken in a duel", StringComparison.Ordinal))
                         {
                             format = format.Substring(0, format.Length - ", taken in a duel".Length);
                             HeadType = HeadType.Duel;
                         }
-                        else if (format.EndsWith(", taken in a tournament"))
+                        else if (format.EndsWith(", taken in a tournament", StringComparison.Ordinal))
                         {
                             format = format.Substring(0, format.Length - ", taken in a tournament".Length);
                             HeadType = HeadType.Tournament;

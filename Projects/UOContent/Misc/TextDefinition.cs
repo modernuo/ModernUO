@@ -1,4 +1,3 @@
-using System.Globalization;
 using Server.Gumps;
 using Server.Network;
 
@@ -200,14 +199,7 @@ namespace Server
                 return null;
             }
 
-            int i;
-            bool isInteger;
-
-            isInteger = value.StartsWith("0x")
-                ? int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i)
-                : int.TryParse(value, out i);
-
-            return isInteger ? new TextDefinition(i) : new TextDefinition(value);
+            return Utility.ToInt32(value, out var i) ? new TextDefinition(i) : new TextDefinition(value);
         }
 
         public static bool IsNullOrEmpty(TextDefinition def) => def?.IsEmpty != false;
