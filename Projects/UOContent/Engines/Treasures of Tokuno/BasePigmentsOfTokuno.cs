@@ -228,12 +228,8 @@ namespace Server.Items
                 return true;
             }
 
-            if (i is ITokunoDyable)
-            {
-                return true;
-            }
-
-            return IsInTypeList(t, TreasuresOfTokuno.LesserArtifactsTotal)
+            return IsInTypeList(t, TreasuresOfTokuno.TokunoDyable)
+                   || IsInTypeList(t, TreasuresOfTokuno.LesserArtifactsTotal)
                    || IsInTypeList(t, TreasuresOfTokuno.GreaterArtifacts)
                    || IsInTypeList(t, DemonKnight.ArtifactRarity10)
                    || IsInTypeList(t, DemonKnight.ArtifactRarity11)
@@ -251,7 +247,7 @@ namespace Server.Items
         {
             for (var i = 0; i < list.Length; i++)
             {
-                if (list[i] == t)
+                if (list[i].IsAssignableFrom(t))
                 {
                     return true;
                 }

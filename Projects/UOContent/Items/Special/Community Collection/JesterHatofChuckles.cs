@@ -1,6 +1,6 @@
 ﻿namespace Server.Items
 {
-    public class JesterHatofChuckles : BaseHat, ITokunoDyable
+    public class JesterHatofChuckles : BaseHat
     {
         [Constructible]
         public JesterHatofChuckles() : this(Utility.RandomList(0x13e, 0x03, 0x172, 0x3f))

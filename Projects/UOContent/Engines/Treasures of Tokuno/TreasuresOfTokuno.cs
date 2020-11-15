@@ -80,6 +80,12 @@ namespace Server.Misc
             typeof(ChestOfHeirlooms)
         };
 
+        public static Type[] TokunoDyable { get; } =
+        {
+            typeof(DupresShield), typeof(CrimsonCincture), typeof(OssianGrimoire), typeof(QuiverOfInfinity),
+            typeof(BaseFormTalisman), typeof(BaseWand), typeof(JesterHatofChuckles)
+        };
+
         public static TreasuresOfTokunoEra DropEra { get; set; } = TreasuresOfTokunoEra.None;
 
         public static TreasuresOfTokunoEra RewardEra { get; set; } = TreasuresOfTokunoEra.ToTOne;

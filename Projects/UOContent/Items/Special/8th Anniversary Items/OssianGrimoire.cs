@@ -1,6 +1,6 @@
 ﻿namespace Server.Items
 {
-    public class OssianGrimoire : NecromancerSpellbook, ITokunoDyable
+    public class OssianGrimoire : NecromancerSpellbook
     {
         [Constructible]
         public OssianGrimoire()

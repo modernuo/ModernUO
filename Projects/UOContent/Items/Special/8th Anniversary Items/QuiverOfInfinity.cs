@@ -1,6 +1,6 @@
 ﻿namespace Server.Items
 {
-    public class QuiverOfInfinity : BaseQuiver, ITokunoDyable
+    public class QuiverOfInfinity : BaseQuiver
     {
         [Constructible]
         public QuiverOfInfinity() : base(0x2B02)

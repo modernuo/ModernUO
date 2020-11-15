@@ -373,6 +373,7 @@
         <Rule Id="CA1031" Action="None" />
         <Rule Id="CA1034" Action="None" />
         <Rule Id="CA1036" Action="None" />
+        <Rule Id="CA1043" Action="None" /> <!-- Non integral/string indexers -->
         <Rule Id="CA1051" Action="None" /> <!-- Visible fields that shouldn't be -->
         <Rule Id="CA1054" Action="None" />
         <Rule Id="CA1055" Action="None" />
