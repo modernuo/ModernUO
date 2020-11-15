@@ -97,7 +97,7 @@ namespace Server.Network
         {
             get
             {
-                if (m_Expansion != null)
+                if (m_Expansion == null)
                 {
                     for (var i = ExpansionInfo.Table.Length - 1; i >= 0; i--)
                     {
