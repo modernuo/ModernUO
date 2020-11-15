@@ -367,12 +367,12 @@ namespace Server
             IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
             IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
 
-            Items = LoadIndex(itemIndexInfo, out items);
             Mobiles = LoadIndex(mobileIndexInfo, out mobiles);
+            Items = LoadIndex(itemIndexInfo, out items);
             Guilds = LoadIndex(guildIndexInfo, out guilds);
 
-            LoadData(itemIndexInfo, items);
             LoadData(mobileIndexInfo, mobiles);
+            LoadData(itemIndexInfo, items);
             LoadData(guildIndexInfo, guilds);
 
             EventSink.InvokeWorldLoad();
@@ -464,8 +464,8 @@ namespace Server
             IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
             IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
 
-            WriteEntities(itemIndexInfo, Items, ItemTypes);
             WriteEntities(mobileIndexInfo, Mobiles, MobileTypes);
+            WriteEntities(itemIndexInfo, Items, ItemTypes);
             WriteEntities(guildIndexInfo, Guilds, GuildTypes);
 
             watch.Stop();

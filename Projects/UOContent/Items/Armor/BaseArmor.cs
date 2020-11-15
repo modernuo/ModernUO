@@ -1655,17 +1655,12 @@ namespace Server.Items
                 return true;
             }
 
-            if (Layer == Layer.Pants)
+            return Layer switch
             {
-                return m.FindItemOnLayer(Layer.InnerLegs) != null;
-            }
-
-            if (Layer == Layer.Shirt)
-            {
-                return m.FindItemOnLayer(Layer.InnerTorso) != null;
-            }
-
-            return false;
+                Layer.Pants => m.FindItemOnLayer(Layer.InnerLegs) != null,
+                Layer.Shirt => m.FindItemOnLayer(Layer.InnerTorso) != null,
+                _           => false
+            };
         }
 
         public override bool OnEquip(Mobile from)
