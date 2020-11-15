@@ -110,10 +110,7 @@ namespace Server.Network
                         }
                     }
 
-                    if (m_Expansion == null)
-                    {
-                        ExpansionInfo.GetInfo(Expansion.None);
-                    }
+                    m_Expansion ??= ExpansionInfo.GetInfo(Expansion.None);
                 }
 
                 return m_Expansion;
