@@ -344,7 +344,7 @@ namespace Server.Gumps
 
         public ToTTurnInGump(Mobile collector, List<ItemTileButtonInfo> buttons) : base(
             1071012,
-            Utility.CastListContravariant<ItemTileButtonInfo, ImageTileButtonInfo>(buttons)
+            buttons.ToList<ImageTileButtonInfo>()
         ) // Click a minor artifact to give it to Ihara Soko.
             =>
                 m_Collector = collector;

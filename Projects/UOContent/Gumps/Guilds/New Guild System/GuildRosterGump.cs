@@ -28,7 +28,7 @@ namespace Server.Guilds
             : base(
                 pm,
                 g,
-                Utility.SafeConvertList<Mobile, PlayerMobile>(g.Members),
+                g.Members.SafeConvertList<Mobile, PlayerMobile>(),
                 currentComparer,
                 ascending,
                 filter,

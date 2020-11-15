@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -25,7 +26,7 @@ namespace Server.Engines.ConPVP
         private const int BlackColor32 = 0x000008;
         private const int LabelColor32 = 0xFFFFFF;
         private readonly Mobile m_From;
-        private readonly List<object> m_List;
+        private List<object> m_List;
         private readonly object m_Object;
         private readonly int m_Page;
         private readonly Tournament m_Tournament;
@@ -279,9 +280,8 @@ namespace Server.Engines.ConPVP
                         AddPage(0);
                         AddBackground(0, 0, 300, 300, 9380);
 
-                        var pList = m_List != null
-                            ? Utility.CastListCovariant<object, TourneyParticipant>(m_List)
-                            : new List<TourneyParticipant>(tourney.Participants);
+                        var pList = m_List?.CastListCovariant<object, TourneyParticipant>()
+                                    ?? new List<TourneyParticipant>(tourney.Participants);
 
                         AddLeftArrow(25, 11, ToButtonID(0, 0));
                         AddHtml(25, 35, 250, 20, Center($"{pList.Count} Participant{(pList.Count == 1 ? "" : "s")}"));
@@ -440,7 +440,7 @@ namespace Server.Engines.ConPVP
                         }
 
                         var matchesList = m_List != null
-                            ? Utility.CastListCovariant<object, TourneyMatch>(m_List)
+                            ? m_List.CastListCovariant<object, TourneyMatch>()
                             : new List<TourneyMatch>(level.Matches);
 
                         AddRightArrow(

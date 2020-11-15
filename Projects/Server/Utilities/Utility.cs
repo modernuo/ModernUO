@@ -891,23 +891,42 @@ namespace Server
             }
         }
 
-        public static List<TOutput> CastListContravariant<TInput, TOutput>(List<TInput> list) where TInput : TOutput =>
-            list.ConvertAll(value => (TOutput)value);
-
-        public static List<TOutput> CastListCovariant<TInput, TOutput>(List<TInput> list) where TOutput : TInput =>
-            list.ConvertAll(value => (TOutput)value);
-
-        public static List<TOutput> SafeConvertList<TInput, TOutput>(List<TInput> list) where TOutput : class
+        public static List<TOutput> CastListContravariant<TInput, TOutput>(this IReadOnlyCollection<TInput> coll)
+            where TInput : TOutput
         {
-            if ((list?.Capacity ?? 0) == 0)
+            var outputList = new List<TOutput>();
+            foreach (var entry in coll)
             {
-                return new List<TOutput>();
+                outputList.Add(entry);
             }
 
-            var output = new List<TOutput>(list.Capacity);
-            output.AddRange(list.OfType<TOutput>());
+            return outputList;
+        }
 
-            return output;
+        public static List<TOutput> CastListCovariant<TInput, TOutput>(this IReadOnlyCollection<TInput> coll)
+            where TOutput : TInput
+        {
+            var outputList = new List<TOutput>();
+            foreach (var entry in coll)
+            {
+                outputList.Add((TOutput)entry);
+            }
+
+            return outputList;
+        }
+
+        public static List<TOutput> SafeConvertList<TInput, TOutput>(this IReadOnlyCollection<TInput> coll) where TOutput : class
+        {
+            var outputList = new List<TOutput>();
+            foreach (var entry in coll)
+            {
+                if (entry is TOutput outEntry)
+                {
+                    outputList.Add(outEntry);
+                }
+            }
+
+            return outputList;
         }
 
         public static bool ToBoolean(string value)

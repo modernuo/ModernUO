@@ -36,7 +36,7 @@ namespace Server.Gumps
 
             if (text.Length >= 3)
             {
-                var guilds = Utility.CastListCovariant<BaseGuild, Guild>(BaseGuild.Search(text));
+                var guilds = BaseGuild.Search(text).CastListCovariant<BaseGuild, Guild>();
 
                 GuildGump.EnsureClosed(m_Mobile);
 
