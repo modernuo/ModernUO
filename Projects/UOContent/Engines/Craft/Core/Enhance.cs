@@ -18,7 +18,7 @@ namespace Server.Engines.Craft
         NoSkill
     }
 
-    public class Enhance
+    public static class Enhance
     {
         public static EnhanceResult Invoke(
             Mobile from, CraftSystem craftSystem, BaseTool tool, Item item,

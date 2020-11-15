@@ -9,7 +9,7 @@ using Server.Regions;
 
 namespace Server.Misc
 {
-    public class AccountHandler
+    public static class AccountHandler
     {
         private static int MaxAccountsPerIP;
         private static bool AutoAccountCreation;

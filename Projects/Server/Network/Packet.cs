@@ -10,7 +10,6 @@ namespace Server.Network
     {
         private const int CompressorBufferSize = 0x10000;
 
-        private const int BufferSize = 4096;
         private readonly int m_Length;
 
         private byte[] m_CompiledBuffer;

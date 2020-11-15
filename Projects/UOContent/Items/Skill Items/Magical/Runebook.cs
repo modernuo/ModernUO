@@ -5,7 +5,6 @@ using Server.Engines.Craft;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Multis;
-using Server.Network;
 
 namespace Server.Items
 {

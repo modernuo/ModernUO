@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Server.Engines.Plants;
 using Server.Items;
-using Server.Network;
 
 namespace Server.Mobiles
 {
@@ -96,9 +95,7 @@ namespace Server.Mobiles
                 Location,
                 to.Location,
                 10,
-                0,
-                false,
-                false
+                0
             );
 
             AOS.Damage(to, this, Utility.RandomMinMax(50, 65), 100, 0, 0, 0, 0);

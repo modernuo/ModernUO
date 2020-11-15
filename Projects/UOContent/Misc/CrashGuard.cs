@@ -185,18 +185,16 @@ namespace Server.Misc
 
                         op.WriteLine("- Count: {0}", states.Count);
 
-                        for (var i = 0; i < states.Count; ++i)
+                        foreach (var ns in TcpServer.Instances)
                         {
-                            var state = states[i];
+                            op.Write("+ {0}:", ns);
 
-                            op.Write("+ {0}:", state);
-
-                            if (state.Account is Account a)
+                            if (ns.Account is Account a)
                             {
                                 op.Write(" (account = {0})", a.Username);
                             }
 
-                            var m = state.Mobile;
+                            var m = ns.Mobile;
 
                             if (m != null)
                             {

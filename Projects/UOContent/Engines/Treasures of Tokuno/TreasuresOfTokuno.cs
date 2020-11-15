@@ -20,7 +20,7 @@ namespace Server.Misc
         ToTThree
     }
 
-    public class TreasuresOfTokuno
+    public static class TreasuresOfTokuno
     {
         public const int ItemsPerReward = 10;
 

@@ -22,7 +22,9 @@ namespace Server.Accounting.Security
     public class SHA1PasswordProtection : IPasswordProtection
     {
         public static IPasswordProtection Instance = new SHA1PasswordProtection();
+#pragma warning disable CA5350
         private readonly SHA1CryptoServiceProvider m_SHA1HashProvider = new SHA1CryptoServiceProvider();
+#pragma warning restore CA5350
 
         public string EncryptPassword(string plainPassword)
         {

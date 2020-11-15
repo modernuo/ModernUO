@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Misc
 {
-    public class NameVerification
+    public static class NameVerification
     {
         public static readonly char[] SpaceDashPeriodQuote =
         {

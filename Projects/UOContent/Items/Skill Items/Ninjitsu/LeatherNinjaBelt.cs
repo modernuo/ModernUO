@@ -6,7 +6,7 @@ using Server.Mobiles;
 namespace Server.Items
 {
     [Flippable(0x2790, 0x27DB)]
-    public class LeatherNinjaBelt : BaseWaist, IDyable, INinjaWeapon
+    public class LeatherNinjaBelt : BaseWaist, INinjaWeapon
     {
         private Poison m_Poison;
         private int m_PoisonCharges;

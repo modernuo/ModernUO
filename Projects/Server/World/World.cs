@@ -161,15 +161,13 @@ namespace Server
                 p = new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text);
             }
 
-            var list = TcpServer.Instances;
-
             p.Acquire();
 
-            for (var i = 0; i < list.Count; ++i)
+            foreach (var ns in TcpServer.Instances)
             {
-                if (list[i].Mobile != null)
+                if (ns.Mobile != null)
                 {
-                    list[i].Send(p);
+                    ns.Send(p);
                 }
             }
 

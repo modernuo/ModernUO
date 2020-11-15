@@ -12,7 +12,7 @@ using Server.Spells;
 
 namespace Server.Commands.Generic
 {
-    public class TargetCommands
+    public static class TargetCommands
     {
         public static List<BaseCommand> AllCommands { get; } = new List<BaseCommand>();
 

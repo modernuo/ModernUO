@@ -522,31 +522,14 @@ namespace Server.Engines.ConPVP
                                     {
                                         if (m_Tournament.ParticipantsPerMatch == 4)
                                         {
-                                            var name = "(null)";
-
-                                            switch (j)
+                                            var name = j switch
                                             {
-                                                case 0:
-                                                    {
-                                                        name = "Minax";
-                                                        break;
-                                                    }
-                                                case 1:
-                                                    {
-                                                        name = "Council of Mages";
-                                                        break;
-                                                    }
-                                                case 2:
-                                                    {
-                                                        name = "True Britannians";
-                                                        break;
-                                                    }
-                                                case 3:
-                                                    {
-                                                        name = "Shadowlords";
-                                                        break;
-                                                    }
-                                            }
+                                                0 => "Minax",
+                                                1 => "Council of Mages",
+                                                2 => "True Britannians",
+                                                3 => "Shadowlords",
+                                                _ => "(null)"
+                                            };
 
                                             txt = $"{name} ({part.Players.Count})";
                                         }
@@ -658,31 +641,14 @@ namespace Server.Engines.ConPVP
                                 {
                                     if (m_Tournament.ParticipantsPerMatch == 4)
                                     {
-                                        var name = "(null)";
-
-                                        switch (i)
+                                        var name = i switch
                                         {
-                                            case 0:
-                                                {
-                                                    name = "Minax";
-                                                    break;
-                                                }
-                                            case 1:
-                                                {
-                                                    name = "Council of Mages";
-                                                    break;
-                                                }
-                                            case 2:
-                                                {
-                                                    name = "True Britannians";
-                                                    break;
-                                                }
-                                            case 3:
-                                                {
-                                                    name = "Shadowlords";
-                                                    break;
-                                                }
-                                        }
+                                            0 => "Minax",
+                                            1 => "Council of Mages",
+                                            2 => "True Britannians",
+                                            3 => "Shadowlords",
+                                            _ => "(null)"
+                                        };
 
                                         AddRightArrow(
                                             25,

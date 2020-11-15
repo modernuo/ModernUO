@@ -9532,7 +9532,7 @@ namespace Server
             Effects.SendTargetEffect(this, itemID, speed, duration, hue, renderMode);
 
         public void FixedEffect(int itemID, int speed, int duration) =>
-            Effects.SendTargetEffect(this, itemID, speed, duration, 0, 0);
+            Effects.SendTargetEffect(this, itemID, speed, duration);
 
         public void FixedParticles(
             int itemID, int speed, int duration, int effect, int hue, int renderMode, EffectLayer layer, int unknown
@@ -9542,13 +9542,13 @@ namespace Server
         public void FixedParticles(
             int itemID, int speed, int duration, int effect, int hue, int renderMode, EffectLayer layer
         ) =>
-            Effects.SendTargetParticles(this, itemID, speed, duration, hue, renderMode, effect, layer, 0);
+            Effects.SendTargetParticles(this, itemID, speed, duration, hue, renderMode, effect, layer);
 
         public void FixedParticles(int itemID, int speed, int duration, int effect, EffectLayer layer, int unknown) =>
             Effects.SendTargetParticles(this, itemID, speed, duration, 0, 0, effect, layer, unknown);
 
         public void FixedParticles(int itemID, int speed, int duration, int effect, EffectLayer layer) =>
-            Effects.SendTargetParticles(this, itemID, speed, duration, 0, 0, effect, layer, 0);
+            Effects.SendTargetParticles(this, itemID, speed, duration, 0, 0, effect, layer);
 
         public void BoltEffect(int hue) => Effects.SendBoltEffect(this, true, hue);
 

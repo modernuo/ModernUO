@@ -64,7 +64,7 @@ namespace Server.Items
                 return;
             }
 
-            Effects.SendLocationEffect(Location, Map, GetBaseID(Type) + 1, 6, 3, GetEffectHue(), 0);
+            Effects.SendLocationEffect(Location, Map, GetBaseID(Type) + 1, 6, 3, GetEffectHue());
             Effects.PlaySound(Location, Map, 0x21C);
 
             SpellHelper.Damage(TimeSpan.FromTicks(1), from, from, Utility.RandomMinMax(5, 15));

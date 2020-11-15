@@ -5,7 +5,7 @@ using Server.Items;
 
 namespace Server.Engines.Events
 {
-    public class PumpkinPatchSpawner
+    public static class PumpkinPatchSpawner
     {
         private static Timer m_Timer;
 
@@ -31,7 +31,7 @@ namespace Server.Engines.Events
             }
         }
 
-        protected static void PumpkinPatchSpawnerCallback()
+        private static void PumpkinPatchSpawnerCallback()
         {
             AddPumpkin(Map.Felucca);
             AddPumpkin(Map.Trammel);

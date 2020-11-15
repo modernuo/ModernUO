@@ -3,7 +3,7 @@ using Server.Accounting;
 
 namespace Server.Misc
 {
-    public class AccountPrompt
+    public static class AccountPrompt
     {
         public static void Initialize()
         {

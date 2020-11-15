@@ -784,35 +784,14 @@ namespace Server.Engines.ConPVP
                         {
                             if (m_ParticipantsPerMatch == 4)
                             {
-                                var name = "(null)";
-
-                                switch (Pyramid.Levels[0]
-                                    .Matches[0]
-                                    .Participants.IndexOf(
-                                        winner
-                                    ))
+                                var name = Pyramid.Levels[0].Matches[0].Participants.IndexOf(winner) switch
                                 {
-                                    case 0:
-                                        {
-                                            name = "Minax";
-                                            break;
-                                        }
-                                    case 1:
-                                        {
-                                            name = "Council of Mages";
-                                            break;
-                                        }
-                                    case 2:
-                                        {
-                                            name = "True Britannians";
-                                            break;
-                                        }
-                                    case 3:
-                                        {
-                                            name = "Shadowlords";
-                                            break;
-                                        }
-                                }
+                                    0 => "Minax",
+                                    1 => "Council of Mages",
+                                    2 => "True Britannians",
+                                    3 => "Shadowlords",
+                                    _ => "(null)"
+                                };
 
                                 Alert("The tournament has completed!", $"The {name} team has won!");
                             }
@@ -940,33 +919,14 @@ namespace Server.Engines.ConPVP
                                     {
                                         if (m_ParticipantsPerMatch == 4)
                                         {
-                                            var name = "(null)";
-
-                                            switch (Pyramid.Levels[0]
-                                                .Matches[0]
-                                                .Participants.IndexOf(winner))
+                                            var name = Pyramid.Levels[0].Matches[0].Participants.IndexOf(winner) switch
                                             {
-                                                case 0:
-                                                    {
-                                                        name = "Minax";
-                                                        break;
-                                                    }
-                                                case 1:
-                                                    {
-                                                        name = "Council of Mages";
-                                                        break;
-                                                    }
-                                                case 2:
-                                                    {
-                                                        name = "True Britannians";
-                                                        break;
-                                                    }
-                                                case 3:
-                                                    {
-                                                        name = "Shadowlords";
-                                                        break;
-                                                    }
-                                            }
+                                                0 => "Minax",
+                                                1 => "Council of Mages",
+                                                2 => "True Britannians",
+                                                3 => "Shadowlords",
+                                                _ => "(null)"
+                                            };
 
                                             Alert("The tournament has completed!", $"The {name} team has won!");
                                         }

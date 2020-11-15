@@ -11,7 +11,7 @@ using Server.Network;
 
 namespace Server.Commands
 {
-    public class Docs
+    public static class Docs
     {
         private const int Iron = 0xCCCCDD;
         private const int DullCopper = 0xAAAAAA;

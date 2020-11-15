@@ -1351,10 +1351,12 @@ namespace Server.Engines.Craft
         }
     }
 
+    [AttributeUsage(AttributeTargets.Class)]
     public class ForgeAttribute : Attribute
     {
     }
 
+    [AttributeUsage(AttributeTargets.Class)]
     public class AnvilAttribute : Attribute
     {
     }

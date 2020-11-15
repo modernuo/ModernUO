@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Server
 {
-    public class Firewall
+    public static class Firewall
     {
         static Firewall()
         {
@@ -48,22 +48,13 @@ namespace Server
 
         public static IFirewallEntry ToFirewallEntry(object entry)
         {
-            if (entry is IFirewallEntry firewallEntry)
+            return entry switch
             {
-                return firewallEntry;
-            }
-
-            if (entry is IPAddress address)
-            {
-                return new IPFirewallEntry(address);
-            }
-
-            if (entry is string s)
-            {
-                return ToFirewallEntry(s);
-            }
-
-            return null;
+                IFirewallEntry firewallEntry => firewallEntry,
+                IPAddress address            => new IPFirewallEntry(address),
+                string s                     => ToFirewallEntry(s),
+                _                            => null
+            };
         }
 
         public static IFirewallEntry ToFirewallEntry(string entry)

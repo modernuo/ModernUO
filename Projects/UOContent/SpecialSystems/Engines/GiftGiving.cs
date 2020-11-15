@@ -10,7 +10,7 @@ namespace Server.Misc
         BankBox
     }
 
-    public class GiftGiving
+    public static class GiftGiving
     {
         private static readonly List<GiftGiver> m_Givers = new List<GiftGiver>();
 

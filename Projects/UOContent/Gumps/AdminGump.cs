@@ -446,7 +446,7 @@ namespace Server.Gumps
                     {
                         if (m_List == null)
                         {
-                            var states = TcpServer.Instances;
+                            var states = TcpServer.Instances.ToList();
                             states.Sort(NetStateComparer.Instance);
 
                             m_List = states.ToList<object>();
@@ -2349,12 +2349,10 @@ namespace Server.Gumps
 
                                     if (level > AccessLevel.Player)
                                     {
-                                        var clients = TcpServer.Instances;
                                         var count = 0;
 
-                                        for (var i = 0; i < clients.Count; ++i)
+                                        foreach (var ns in TcpServer.Instances)
                                         {
-                                            var ns = clients[i];
                                             var a = ns.Account;
 
                                             if (a == null)
@@ -2449,12 +2447,8 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        var instances = TcpServer.Instances;
-
-                                        for (var i = 0; i < instances.Count; ++i)
+                                        foreach (var ns in TcpServer.Instances)
                                         {
-                                            var ns = instances[i];
-
                                             bool isMatch;
 
                                             if (forName)
@@ -3690,7 +3684,7 @@ namespace Server.Gumps
                                 {
                                     index -= 4;
 
-                                    if (m_List != null && index >= 0 && index < m_List.Count)
+                                    if (m_List != null && index < m_List.Count)
                                     {
                                         from.SendGump(
                                             new AdminGump(from, AdminGumpPage.FirewallInfo, 0, null, null, m_List[index])
@@ -3898,7 +3892,7 @@ namespace Server.Gumps
                     }
                 case 8:
                     {
-                        if (m_List != null && index >= 0 && index < m_List.Count)
+                        if (m_List != null && index < m_List.Count)
                         {
                             if (!(m_State is Account a))
                             {
@@ -3942,7 +3936,7 @@ namespace Server.Gumps
                     }
                 case 9:
                     {
-                        if (m_List != null && index >= 0 && index < m_List.Count)
+                        if (m_List != null && index < m_List.Count)
                         {
                             if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
                             {
@@ -3993,7 +3987,7 @@ namespace Server.Gumps
                     }
                 case 10:
                     {
-                        if (m_List != null && index >= 0 && index < m_List.Count)
+                        if (m_List != null && index < m_List.Count)
                         {
                             if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
                             {

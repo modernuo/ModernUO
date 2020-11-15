@@ -18,6 +18,7 @@ using Server.Targeting;
 
 namespace Server
 {
+#pragma warning disable CA1052
     public class DefensiveSpell
     {
         public static void Nullify(Mobile from)
@@ -46,6 +47,7 @@ namespace Server
             }
         }
     }
+#pragma warning restore CA1052
 }
 
 namespace Server.Spells
@@ -197,7 +199,7 @@ namespace Server.Spells
                     from.Direction = from.GetDirectionTo(item.GetWorldLocation());
                 }
             }
-            else if (from != target)
+            else if (from.Equals(target))
             {
                 from.Direction = from.GetDirectionTo(target);
             }

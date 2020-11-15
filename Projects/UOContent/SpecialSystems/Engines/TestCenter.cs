@@ -6,7 +6,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-    public class TestCenter
+    public static class TestCenter
     {
         public static bool Enabled { get; private set; }
 

@@ -4,11 +4,11 @@ using Server.Network;
 
 namespace Server.Misc
 {
-    public class IPLimiter
+    public static class IPLimiter
     {
-        public static IPAddress[] Exemptions =
+        public static readonly IPAddress[] Exemptions =
         {
-            // IPAddress.Parse( "127.0.0.1" ),
+            IPAddress.Parse( "127.0.0.1" )
         };
 
         public static bool Enabled { get; private set; }
@@ -31,15 +31,11 @@ namespace Server.Misc
                 return true;
             }
 
-            var netStates = TcpServer.Instances;
-
             var count = 0;
 
-            for (var i = 0; i < netStates.Count; ++i)
+            foreach (var ns in TcpServer.Instances)
             {
-                var compState = netStates[i];
-
-                if (ourAddress.Equals(compState.Address))
+                if (ourAddress.Equals(ns.Address))
                 {
                     ++count;
 

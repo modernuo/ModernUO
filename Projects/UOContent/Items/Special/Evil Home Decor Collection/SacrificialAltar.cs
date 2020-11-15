@@ -114,7 +114,7 @@ namespace Server.Items
                 var location = Location;
                 location.Z += 10;
 
-                Effects.SendLocationEffect(location, Map, 0x3709, 10, 10, 0x356, 0);
+                Effects.SendLocationEffect(location, Map, 0x3709, 10, 10, 0x356);
                 Effects.PlaySound(location, Map, 0x32E);
 
                 if (Items.Count > 0)

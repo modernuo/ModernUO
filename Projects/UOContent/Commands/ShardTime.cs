@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Server.Commands
 {
-    public class ShardTime
+    public static class ShardTime
     {
         public static void Initialize()
         {
@@ -12,7 +13,7 @@ namespace Server.Commands
         [Usage("Time"), Description("Returns the server's local time.")]
         private static void Time_OnCommand(CommandEventArgs e)
         {
-            e.Mobile.SendMessage(DateTime.UtcNow.ToString());
+            e.Mobile.SendMessage(DateTime.UtcNow.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

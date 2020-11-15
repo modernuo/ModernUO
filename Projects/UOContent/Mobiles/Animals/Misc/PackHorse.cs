@@ -92,15 +92,7 @@ namespace Server.Mobiles
 
         public override DeathMoveResult GetInventoryMoveResultFor(Item item) => DeathMoveResult.MoveToCorpse;
 
-        public override bool IsSnoop(Mobile from)
-        {
-            if (PackAnimal.CheckAccess(this, from))
-            {
-                return false;
-            }
-
-            return base.IsSnoop(from);
-        }
+        public override bool IsSnoop(Mobile from) => !PackAnimal.CheckAccess(this, from) && base.IsSnoop(from);
 
         public override bool OnDragDrop(Mobile from, Item item)
         {
@@ -157,7 +149,7 @@ namespace Server.Mobiles
         }
     }
 
-    public class PackAnimal
+    public static class PackAnimal
     {
         public static void GetContextMenuEntries(BaseCreature animal, Mobile from, List<ContextMenuEntry> list)
         {
@@ -167,21 +159,10 @@ namespace Server.Mobiles
             }
         }
 
-        public static bool CheckAccess(BaseCreature animal, Mobile from)
-        {
-            if (from == animal || from.AccessLevel >= AccessLevel.GameMaster)
-            {
-                return true;
-            }
-
-            if (from.Alive && animal.Controlled && !animal.IsDeadPet &&
-                (from == animal.ControlMaster || from == animal.SummonMaster || animal.IsPetFriend(from)))
-            {
-                return true;
-            }
-
-            return false;
-        }
+        public static bool CheckAccess(BaseCreature animal, Mobile from) =>
+            from == animal || from.AccessLevel >= AccessLevel.GameMaster || from.Alive && animal.Controlled &&
+            !animal.IsDeadPet &&
+            (from == animal.ControlMaster || from == animal.SummonMaster || animal.IsPetFriend(from));
 
         public static void CombineBackpacks(BaseCreature animal)
         {

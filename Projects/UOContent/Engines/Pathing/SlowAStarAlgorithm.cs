@@ -99,12 +99,12 @@ namespace Server.PathAlgorithms.SlowAStar
                     var yBacktrack = curNode.py;
                     var zBacktrack = curNode.pz;
 
+                    path[pathCount++] = (Direction)curNode.dir;
+
                     if (pathCount == MaxNodes)
                     {
                         break;
                     }
-
-                    path[pathCount++] = (Direction)curNode.dir;
 
                     while (xBacktrack != startNode.x || yBacktrack != startNode.y || zBacktrack != startNode.z)
                     {

@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server
 {
-    public class HonorVirtue
+    public static class HonorVirtue
     {
         private static readonly TimeSpan UseDelay = TimeSpan.FromMinutes(5.0);
 

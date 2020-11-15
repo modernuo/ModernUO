@@ -80,9 +80,7 @@ namespace Server.Items
                 new Entity(Serial.Zero, endLoc, map),
                 0x36E4,
                 5,
-                0,
-                false,
-                false
+                0
             );
 
             Timer.DelayCall(TimeSpan.FromSeconds(1.0), FinishLaunch, endLoc, map);

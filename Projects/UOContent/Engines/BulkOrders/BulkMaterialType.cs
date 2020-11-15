@@ -26,7 +26,7 @@ namespace Server.Engines.BulkOrders
         Leather
     }
 
-    public class BGTClassifier
+    public static class BGTClassifier
     {
         public static BulkGenericType Classify(BODType deedType, Type itemType)
         {

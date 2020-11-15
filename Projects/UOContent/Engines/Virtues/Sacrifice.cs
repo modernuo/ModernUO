@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server
 {
-    public class SacrificeVirtue
+    public static class SacrificeVirtue
     {
         private const int LossAmount = 500;
         private static readonly TimeSpan GainDelay = TimeSpan.FromDays(1.0);

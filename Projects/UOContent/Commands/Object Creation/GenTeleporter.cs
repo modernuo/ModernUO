@@ -19,13 +19,6 @@ namespace Server.Commands
         public bool Back { get; set; }
 
         public override string ToString() => $"{{{Source},{Destination},{Back}}}";
-
-        public bool Equals(TeleporterDefinition other) =>
-            Source.Equals(other.Source) && Destination.Equals(other.Destination) && Back == other.Back;
-
-        public override bool Equals(object obj) => obj is TeleporterDefinition other && Equals(other);
-
-        public override int GetHashCode() => HashCode.Combine(Source, Destination, Back);
     }
 
     public static class GenTeleporter

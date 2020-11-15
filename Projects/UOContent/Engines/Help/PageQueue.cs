@@ -114,7 +114,7 @@ namespace Server.Engines.Help
         }
     }
 
-    public class PageQueue
+    public static class PageQueue
     {
         private static readonly Dictionary<Mobile, PageEntry> m_KeyedByHandler = new Dictionary<Mobile, PageEntry>();
         private static readonly Dictionary<Mobile, PageEntry> m_KeyedBySender = new Dictionary<Mobile, PageEntry>();

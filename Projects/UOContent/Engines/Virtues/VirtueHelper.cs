@@ -23,7 +23,7 @@ namespace Server
         Honesty
     }
 
-    public class VirtueHelper
+    public static class VirtueHelper
     {
         public static bool HasAny(Mobile from, VirtueName virtue) => from.Virtues.GetValue((int)virtue) > 0;
 

@@ -80,7 +80,7 @@ namespace Server.Factions
 
             var silverToAward = from.Alive ? 20 : 40;
 
-            if (silverToAward > 0 && Placer != null && Faction != null)
+            if (Placer != null && Faction != null)
             {
                 var victimState = PlayerState.Find(from);
 

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Server
 {
-    public class ShrinkTable
+    public static class ShrinkTable
     {
         public const int DefaultItemID = 0x1870; // Yellow virtue stone
 

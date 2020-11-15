@@ -102,7 +102,7 @@ namespace Server.Items
                                 from.LocalOverheadMessage(MessageType.Regular, 0x2A, 503000);
                             }
 
-                            Effects.SendLocationEffect(loc, facet, 0x36BD, 15, 10);
+                            Effects.SendLocationEffect(loc, facet, 0x36BD, 15);
                             Effects.PlaySound(loc, facet, 0x307);
 
                             break;

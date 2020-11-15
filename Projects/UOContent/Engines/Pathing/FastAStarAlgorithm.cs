@@ -295,8 +295,7 @@ namespace Server.PathAlgorithms.FastAStar
                 int y;
                 switch (i)
                 {
-                    default:
-                    case 0:
+                    default: // 0
                         x = 0;
                         y = -1;
                         break;

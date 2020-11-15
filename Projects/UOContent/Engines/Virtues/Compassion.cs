@@ -3,7 +3,7 @@ using Server.Mobiles;
 
 namespace Server
 {
-    public class CompassionVirtue
+    public static class CompassionVirtue
     {
         private const int LossAmount = 500;
         private static readonly TimeSpan LossDelay = TimeSpan.FromDays(7.0);

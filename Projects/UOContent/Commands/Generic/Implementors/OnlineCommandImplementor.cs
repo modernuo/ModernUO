@@ -36,11 +36,8 @@ namespace Server.Commands.Generic
 
                 var list = new List<object>();
 
-                var states = TcpServer.Instances;
-
-                for (var i = 0; i < states.Count; ++i)
+                foreach (var ns in TcpServer.Instances)
                 {
-                    var ns = states[i];
                     var mob = ns.Mobile;
 
                     if (mob == null)

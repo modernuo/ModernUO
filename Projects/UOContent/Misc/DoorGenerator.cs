@@ -3,7 +3,7 @@ using Server.Network;
 
 namespace Server
 {
-    public class DoorGenerator
+    public static class DoorGenerator
     {
         private static readonly Rectangle2D[] m_BritRegions =
         {

@@ -5,7 +5,7 @@ using Server.Items;
 
 namespace Server.Commands
 {
-    public class SignParser
+    public static class SignParser
     {
         private static readonly Queue<Item> m_ToDelete = new Queue<Item>();
 

@@ -5,7 +5,7 @@ using Server.Multis;
 
 namespace Server.Misc
 {
-    public class Cleanup
+    public static class Cleanup
     {
         public static void Initialize()
         {

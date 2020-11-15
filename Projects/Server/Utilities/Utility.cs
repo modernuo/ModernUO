@@ -1034,7 +1034,7 @@ namespace Server
         public static string GetAttribute(XmlElement node, string attributeName, string defaultValue = null) =>
             node?.Attributes[attributeName]?.Value ?? defaultValue;
 
-        public static string GetText(XmlElement node, string defaultValue) => node == null ? defaultValue : node.InnerText;
+        public static string GetText(XmlElement node, string defaultValue) => node?.InnerText ?? defaultValue;
 
         public static int GetAddressValue(IPAddress address) => BitConverter.ToInt32(address.GetAddressBytes(), 0);
 
