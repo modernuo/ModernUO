@@ -1021,13 +1021,13 @@ namespace Server.Mobiles
                 AddItem(pack);
             }
 
-            from.Send(new EquipUpdate(pack));
+            from.NetState?.SendEquipUpdate(pack);
 
             pack = FindItemOnLayer(Layer.ShopSell);
 
             if (pack != null)
             {
-                from.Send(new EquipUpdate(pack));
+                from.NetState?.SendEquipUpdate(pack);
             }
 
             pack = FindItemOnLayer(Layer.ShopResale);
@@ -1038,7 +1038,7 @@ namespace Server.Mobiles
                 AddItem(pack);
             }
 
-            from.Send(new EquipUpdate(pack));
+            from.NetState?.SendEquipUpdate(pack);
         }
 
         public virtual void VendorSell(Mobile from)

@@ -5699,7 +5699,7 @@ namespace Server
                 }
                 else if (item.Parent is Mobile)
                 {
-                    state.Send(new EquipUpdate(item));
+                    state.SendEquipUpdate(item);
                 }
                 else
                 {

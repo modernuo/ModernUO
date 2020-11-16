@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Collections.Generic;
 using Server.Network;
 using Xunit;
 
@@ -7,18 +8,22 @@ namespace Server.Tests.Network
 {
     public class EquipmentPacketTests : IClassFixture<ServerFixture>
     {
-        [Fact]
-        public void TestDisplayEquipmentInfo()
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("Some Crafter", false)]
+        [InlineData("", true)]
+        public void TestDisplayEquipmentInfo(string name, bool unidentified)
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
+            m.RawName = name;
 
             var item = new Item(World.NewItem);
 
             var info = new EquipmentInfo(
                 500000,
                 m,
-                false,
+                unidentified,
                 new[]
                 {
                     new EquipInfoAttribute(500001, 1),
@@ -27,48 +32,19 @@ namespace Server.Tests.Network
                 }
             );
 
-            var data = new DisplayEquipmentInfo(item, info).Compile();
+            var expected = new DisplayEquipmentInfo(item, info).Compile();
 
-            var attrs = info.Attributes;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendDisplayEquipmentInfo(
+                item.Serial,
+                info.Number,
+                info.Crafter?.RawName,
+                info.Unidentified,
+                new List<EquipInfoAttribute>(info.Attributes)
+            );
 
-            var length = 17 + (info.Unidentified ? 4 : 0) + attrs.Length * 6;
-            if (info.Crafter != null)
-            {
-                length += 6 + (info.Crafter.Name?.Length ?? 0);
-            }
-
-            Span<byte> expectedData = stackalloc byte[length];
-
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0xBF);     // Packet ID
-            expectedData.Write(ref pos, (ushort)length); // Length
-            expectedData.Write(ref pos, (ushort)0x10);   // Subcommand
-            expectedData.Write(ref pos, item.Serial);
-            expectedData.Write(ref pos, info.Number);
-            if (info.Crafter != null)
-            {
-                var name = info.Crafter.Name ?? "";
-                expectedData.Write(ref pos, -3);
-                expectedData.Write(ref pos, (ushort)name.Length);
-                expectedData.WriteAscii(ref pos, name);
-            }
-
-            if (info.Unidentified)
-            {
-                expectedData.Write(ref pos, -4);
-            }
-
-            for (var i = 0; i < attrs.Length; i++)
-            {
-                var attr = attrs[i];
-                expectedData.Write(ref pos, attr.Number);
-                expectedData.Write(ref pos, (ushort)attr.Charges);
-            }
-
-            expectedData.Write(ref pos, -1);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -79,25 +55,13 @@ namespace Server.Tests.Network
 
             var item = new Item(World.NewItem) { Parent = m };
 
-            var data = new EquipUpdate(item).Compile();
+            var expected = new EquipUpdate(item).Compile();
 
-            Span<byte> expectedData = stackalloc byte[15];
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0x2E); // Packet ID
-            expectedData.Write(ref pos, item.Serial);
-            expectedData.Write(ref pos, (ushort)item.ItemID);
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendEquipUpdate(item);
 
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0);
-#else
-            pos++;
-#endif
-
-            expectedData.Write(ref pos, (byte)item.Layer);
-            expectedData.Write(ref pos, item.Parent.Serial);
-            expectedData.Write(ref pos, (ushort)item.Hue);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 }

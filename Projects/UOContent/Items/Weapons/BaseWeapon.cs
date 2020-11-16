@@ -3413,9 +3413,7 @@ namespace Server.Items
                 return;
             }
 
-            var eqInfo = new EquipmentInfo(number, m_Crafter, false, attrs.ToArray());
-
-            from.Send(new DisplayEquipmentInfo(this, eqInfo));
+            from.NetState?.SendDisplayEquipmentInfo(Serial, number, m_Crafter?.RawName, false, attrs);
         }
 
         public virtual int GetHitAttackSound(Mobile attacker, Mobile defender)

@@ -696,7 +696,7 @@ namespace Server.Items
             else if (Parent is Mobile)
             {
                 // What will happen if the client doesn't know about our parent?
-                to.Send(new EquipUpdate(this));
+                to.NetState?.SendEquipUpdate(this);
             }
 
             if (ns.HighSeas)

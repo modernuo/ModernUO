@@ -1450,8 +1450,6 @@ namespace Server
                 return;
             }
 
-            Packet p = null;
-
             var eable = map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
             foreach (var state in eable)
@@ -1471,11 +1469,7 @@ namespace Server
                     }
                     else
                     {
-                        if (p != null)
-                        {
-                            state.Send(p);
-                        }
-                        else if (m_Parent is Item)
+                        if (m_Parent is Item)
                         {
                             if (state.ContainerGridLines)
                             {
@@ -1488,10 +1482,8 @@ namespace Server
                         }
                         else if (m_Parent is Mobile)
                         {
-                            p = new EquipUpdate(this);
-                            p.Acquire();
-
-                            state.Send(p);
+                            // TODO: Optimize by writing once?
+                            state.SendEquipUpdate(this);
                         }
 
                         if (ObjectPropertyList.Enabled)
@@ -1502,7 +1494,7 @@ namespace Server
                 }
                 else if ((flags & ItemDelta.EquipOnly) != 0 && m_Parent is Mobile)
                 {
-                    state.Send(p ??= Packet.Acquire(new EquipUpdate(this)));
+                    state.SendEquipUpdate(this);
 
                     if (ObjectPropertyList.Enabled)
                     {
@@ -1515,7 +1507,6 @@ namespace Server
                 }
             }
 
-            Packet.Release(p);
             eable.Free();
         }
 
