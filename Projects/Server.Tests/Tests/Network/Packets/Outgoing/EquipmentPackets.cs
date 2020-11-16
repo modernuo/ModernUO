@@ -17,19 +17,6 @@ using System;
 
 namespace Server.Network
 {
-    public class EquipInfoAttribute
-    {
-        public EquipInfoAttribute(int number, int charges = -1)
-        {
-            Number = number;
-            Charges = charges;
-        }
-
-        public int Number { get; }
-
-        public int Charges { get; }
-    }
-
     public class EquipmentInfo
     {
         public EquipmentInfo(int number, Mobile crafter, bool unidentified, EquipInfoAttribute[] attributes)
@@ -56,7 +43,7 @@ namespace Server.Network
             var attrs = info.Attributes;
 
             EnsureCapacity(
-                17 + (info.Crafter?.Name?.Length ?? 0) +
+                17 + (info.Crafter?.RawName?.Length ?? 0) +
                 (info.Unidentified ? 4 : 0) + attrs.Length * 6
             );
 
@@ -65,22 +52,15 @@ namespace Server.Network
 
             Stream.Write(info.Number);
 
-            if (info.Crafter != null)
-            {
-                var name = info.Crafter.Name;
+            var name = info.Crafter?.RawName?.Trim() ?? "";
 
+            if (name.Length > 0)
+            {
                 Stream.Write(-3);
 
-                if (name == null)
-                {
-                    Stream.Write((ushort)0);
-                }
-                else
-                {
-                    var length = name.Length;
-                    Stream.Write((ushort)length);
-                    Stream.WriteAsciiFixed(name, length);
-                }
+                var length = name.Length;
+                Stream.Write((ushort)length);
+                Stream.WriteAsciiFixed(name, length);
             }
 
             if (info.Unidentified)

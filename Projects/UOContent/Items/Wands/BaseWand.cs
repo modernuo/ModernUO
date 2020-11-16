@@ -268,14 +268,7 @@ namespace Server.Items
                 return;
             }
 
-            var eqInfo = new EquipmentInfo(
-                number,
-                Crafter,
-                false,
-                attrs.ToArray()
-            );
-
-            from.Send(new DisplayEquipmentInfo(this, eqInfo));
+            from.NetState?.SendDisplayEquipmentInfo(Serial, number, Crafter?.RawName, false, attrs);
         }
 
         public void Cast(Spell spell)

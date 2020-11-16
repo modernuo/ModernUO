@@ -39,7 +39,8 @@ namespace Server.Items
                     $"Bank container has {TotalItems} items, {TotalWeight} stones",
                     Owner.NetState
                 );
-                Owner.Send(new EquipUpdate(this));
+
+                Owner.NetState?.SendEquipUpdate(this);
                 DisplayTo(Owner);
             }
         }
