@@ -9,11 +9,15 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    name: Build (${{ matrix.name }})
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: macos-latest
+          - os: macos-10.15
+            name: MacOS 10.15
+          - os: macos-11.0
+            name: MacOS 11.0
 
     steps:
     - uses: actions/checkout@v2

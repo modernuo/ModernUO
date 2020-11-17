@@ -29,15 +29,7 @@
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>
         <PackageReference Include="MailKit" Version="2.8.0" />
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.2.31">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="Zlib.Bindings" Version="1.4.0" />
         <PackageReference Include="Argon2.Bindings" Version="1.8.0" />
-    </ItemGroup>
-    <ItemGroup Condition="'$(Configuration)'=='Analyze'">
-        <AdditionalFiles Include="..\..\stylecop.json" />
-        <AdditionalFiles Include="..\..\Rules.ruleset" />
     </ItemGroup>
 </Project>
