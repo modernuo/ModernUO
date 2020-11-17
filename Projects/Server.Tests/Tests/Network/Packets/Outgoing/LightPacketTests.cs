@@ -11,32 +11,27 @@ namespace Server.Tests.Network
         public void TestGlobalLightLevel()
         {
             byte lightLevel = 5;
-            var data = new GlobalLightLevel(lightLevel).Compile();
+            var expected = new GlobalLightLevel(lightLevel).Compile();
 
-            Span<byte> expectedData = stackalloc byte[2];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendGlobalLightLevel(lightLevel);
 
-            expectedData.Write(ref pos, (byte)0x4F); // Packet ID
-            expectedData.Write(ref pos, lightLevel);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
         public void TestPersonalLightLevel()
         {
-            Serial serial = 0x1;
+            Serial serial = 0x1024;
             byte lightLevel = 5;
-            var data = new PersonalLightLevel(serial, lightLevel).Compile();
+            var expected = new PersonalLightLevel(serial, lightLevel).Compile();
 
-            Span<byte> expectedData = stackalloc byte[6];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendPersonalLightLevel(serial, lightLevel);
 
-            expectedData.Write(ref pos, (byte)0x4E); // Packet ID
-            expectedData.Write(ref pos, serial);
-            expectedData.Write(ref pos, lightLevel);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 }

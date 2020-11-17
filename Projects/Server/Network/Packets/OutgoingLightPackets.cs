@@ -19,7 +19,7 @@ namespace Server.Network
 {
     public static class OutgoingLightPackets
     {
-        public static void SendPersonalLightLevel(this NetState ns, Serial serial, int level = 0)
+        public static void SendPersonalLightLevel(this NetState ns, Serial serial, int level)
         {
             if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
