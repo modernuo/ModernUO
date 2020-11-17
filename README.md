@@ -9,7 +9,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![.NET](https://img.shields.io/badge/.NET-%205.0-5C2D91)](https://dotnet.microsoft.com/download/dotnet/5.0)
 <br />
 ![Windows](https://img.shields.io/badge/-server%202019-0078D6?logo=windows)
-![OSX](https://img.shields.io/badge/-catalina-222222?logo=apple&logoColor=white)
+![OSX](https://img.shields.io/badge/-big%20sur-222222?logo=apple&logoColor=white)
 ![Debian](https://img.shields.io/badge/-buster-A81D33?logo=debian)
 ![Ubuntu](https://img.shields.io/badge/-20LTS-E95420?logo=ubuntu&logoColor=white)
 ![CentOS](https://img.shields.io/badge/-8.1-262577?logo=centos&logoColor=white)
@@ -29,7 +29,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 - Using terminal or powershell: `./publish.cmd [release|debug (default: release)] [os]`
   - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/master/release-notes/5.0/5.0-supported-os.md)
     - `win` - Windows 8.1/10/2016/2019
-    - `osx` - MacOS
+    - `osx` - MacOS 10.13+/11.0 (High Sierra, Mojave, Catalina, & Big Sur)
     - `ubuntu.16.04`, `ubuntu.18.04` `ubuntu.20.04` - Ubuntu LTS
     - `debian.9`, `debian.10` - Debian
     - `centos.7`, `centos.8` - CentOS
