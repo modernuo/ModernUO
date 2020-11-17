@@ -29,6 +29,12 @@ namespace Server
             m_End = new Point2D(end);
         }
 
+        public Rectangle2D(Point2D start, Point2D end)
+        {
+            m_Start = start;
+            m_End = end;
+        }
+
         public Rectangle2D(int x, int y, int width, int height)
         {
             m_Start = new Point2D(x, y);

@@ -32,8 +32,6 @@ namespace Server
 
         protected long Index { get; set; }
 
-        private readonly char[] m_SingleCharBuffer = new char[1];
-
         private byte[] m_CharacterBuffer;
 
         private int m_MaxBufferChars;
@@ -190,7 +188,7 @@ namespace Server
         {
             var bits = decimal.GetBits(value);
 
-            for (var i = 0; i < bits.Length; ++i)
+            for (var i = 0; i < 4; ++i)
             {
                 Write(bits[i]);
             }
@@ -312,19 +310,6 @@ namespace Server
             }
 
             Index += 4;
-        }
-
-        public void Write(char value)
-        {
-            if (Index + 8 > Buffer.Length)
-            {
-                Flush();
-            }
-
-            m_SingleCharBuffer[0] = value;
-
-            var byteCount = m_Encoding.GetBytes(m_SingleCharBuffer, 0, 1, Buffer, (int)Index);
-            Index += byteCount;
         }
 
         public void Write(byte value)
@@ -769,7 +754,7 @@ namespace Server
 
                 while (charsLeft > 0)
                 {
-                    var charCount = charsLeft > m_MaxBufferChars ? m_MaxBufferChars : charsLeft;
+                    var charCount = Math.Min(charsLeft, m_MaxBufferChars);
                     var byteLength = m_Encoding.GetBytes(value, current, charCount, m_CharacterBuffer, 0);
 
                     if (Index + byteLength > Buffer.Length)

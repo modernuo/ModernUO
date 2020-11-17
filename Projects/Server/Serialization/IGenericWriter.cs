@@ -38,7 +38,6 @@ namespace Server
         void Write(ushort value);
         void Write(double value);
         void Write(float value);
-        void Write(char value);
         void Write(byte value);
         void Write(byte[] value, int length);
         void Write(sbyte value);

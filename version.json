@@ -1,4 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/master/src/NerdBank.GitVersioning/version.schema.json",
-  "version": "0.8.1"
+  "version": "0.8.1",
+  "cloudBuild": {
+    "setVersionVariables": false,
+    "setAllVariables": false
+  }
 }

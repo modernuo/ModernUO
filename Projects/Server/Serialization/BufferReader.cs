@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: BinaryFileReader.cs                                             *
+ * File: BufferReader.cs                                                 *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,26 +14,48 @@
  *************************************************************************/
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
+using System.Text;
 using Server.Guilds;
 
 namespace Server
 {
-    public sealed class BinaryFileReader : IGenericReader
+    public class BufferReader : IGenericReader
     {
-        private readonly BinaryReader m_File;
+        private readonly Encoding _encoding;
+        private ArraySegment<byte> _segment;
+        public int Position { get; private set; }
 
-        public BinaryFileReader(BinaryReader br) => m_File = br;
+        public BufferReader(ArraySegment<byte> segment)
+        {
+            _segment = segment;
+            _encoding = Utility.UTF8;
+        }
 
-        public long Position => m_File.BaseStream.Position;
+        public string ReadString()
+        {
+            if (!ReadBool())
+            {
+                return null;
+            }
 
-        public string ReadString() => ReadByte() != 0 ? m_File.ReadString() : null;
+            var length = ReadEncodedInt();
+            var s = length == 0 ? "" : _encoding.GetString(_segment.AsSpan(Position, length));
+            Position += length;
+            return s;
+        }
+
+        public DateTime ReadDateTime() => new DateTime(ReadLong());
+
+        public DateTimeOffset ReadDateTimeOffset() => new DateTimeOffset(ReadLong(), ReadTimeSpan());
+
+        public TimeSpan ReadTimeSpan() => new TimeSpan(ReadLong());
 
         public DateTime ReadDeltaTime()
         {
-            var ticks = m_File.ReadInt64();
+            var ticks = ReadLong();
             var now = DateTime.UtcNow.Ticks;
 
             if (ticks > 0 && ticks + now < 0)
@@ -56,7 +78,69 @@ namespace Server
             }
         }
 
-        public IPAddress ReadIPAddress() => new IPAddress(m_File.ReadInt64());
+        public decimal ReadDecimal() => new decimal(new[] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });
+
+        public long ReadLong()
+        {
+            var v = BinaryPrimitives.ReadInt64LittleEndian(_segment.AsSpan(Position, 8));
+            Position += 8;
+            return v;
+        }
+
+        public ulong ReadULong()
+        {
+            var v = BinaryPrimitives.ReadUInt64LittleEndian(_segment.AsSpan(Position, 8));
+            Position += 8;
+            return v;
+        }
+
+        public int ReadInt()
+        {
+            var v = BinaryPrimitives.ReadInt32LittleEndian(_segment.AsSpan(Position, 4));
+            Position += 4;
+            return v;
+        }
+
+        public uint ReadUInt()
+        {
+            var v = BinaryPrimitives.ReadUInt32LittleEndian(_segment.AsSpan(Position, 4));
+            Position += 4;
+            return v;
+        }
+
+        public short ReadShort()
+        {
+            var v = BinaryPrimitives.ReadInt16LittleEndian(_segment.AsSpan(Position, 2));
+            Position += 2;
+            return v;
+        }
+
+        public ushort ReadUShort()
+        {
+            var v = BinaryPrimitives.ReadUInt16LittleEndian(_segment.AsSpan(Position, 2));
+            Position += 2;
+            return v;
+        }
+
+        public double ReadDouble()
+        {
+            var v = BinaryPrimitives.ReadDoubleLittleEndian(_segment.AsSpan(Position, 8));
+            Position += 8;
+            return v;
+        }
+
+        public float ReadFloat()
+        {
+            var v = BinaryPrimitives.ReadSingleLittleEndian(_segment.AsSpan(Position, 4));
+            Position += 4;
+            return v;
+        }
+
+        public byte ReadByte() => _segment[Position++];
+
+        public sbyte ReadSByte() => (sbyte)_segment[Position++];
+
+        public bool ReadBool() => _segment[Position++] != 0;
 
         public int ReadEncodedInt()
         {
@@ -65,7 +149,7 @@ namespace Server
 
             do
             {
-                b = m_File.ReadByte();
+                b = ReadByte();
                 v |= (b & 0x7F) << shift;
                 shift += 7;
             } while (b >= 0x80);
@@ -73,43 +157,7 @@ namespace Server
             return v;
         }
 
-        public DateTime ReadDateTime() => new DateTime(m_File.ReadInt64());
-
-        public DateTimeOffset ReadDateTimeOffset()
-        {
-            var ticks = m_File.ReadInt64();
-            var offset = new TimeSpan(m_File.ReadInt64());
-
-            return new DateTimeOffset(ticks, offset);
-        }
-
-        public TimeSpan ReadTimeSpan() => new TimeSpan(m_File.ReadInt64());
-
-        public decimal ReadDecimal() => m_File.ReadDecimal();
-
-        public long ReadLong() => m_File.ReadInt64();
-
-        public ulong ReadULong() => m_File.ReadUInt64();
-
-        public int ReadInt() => m_File.ReadInt32();
-
-        public uint ReadUInt() => m_File.ReadUInt32();
-
-        public short ReadShort() => m_File.ReadInt16();
-
-        public ushort ReadUShort() => m_File.ReadUInt16();
-
-        public double ReadDouble() => m_File.ReadDouble();
-
-        public float ReadFloat() => m_File.ReadSingle();
-
-        public char ReadChar() => m_File.ReadChar();
-
-        public byte ReadByte() => m_File.ReadByte();
-
-        public sbyte ReadSByte() => m_File.ReadSByte();
-
-        public bool ReadBool() => m_File.ReadBoolean();
+        public IPAddress ReadIPAddress() => new IPAddress(ReadLong());
 
         public Point3D ReadPoint3D() => new Point3D(ReadInt(), ReadInt(), ReadInt());
 
@@ -259,15 +307,17 @@ namespace Server
 
         public Race ReadRace() => Race.Races[ReadByte()];
 
-        public bool End() => m_File.PeekChar() == -1;
-
-        public int Read(Span<byte> buffer) => m_File.Read(buffer);
-
-        public void Close()
+        public int Read(Span<byte> buffer)
         {
-            m_File.Close();
-        }
+            var length = buffer.Length;
+            if (length > _segment.Count - Position)
+            {
+                throw new OutOfMemoryException();
+            }
 
-        public long Seek(long offset, SeekOrigin origin) => m_File.BaseStream.Seek(offset, origin);
+            _segment.AsSpan(Position, length).CopyTo(buffer);
+            Position += length;
+            return length;
+        }
     }
 }
