@@ -337,30 +337,31 @@ namespace Server
             }
 
             using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var fileBuffer = new byte[bin.Length];
-            bin.Read(fileBuffer);
+            var buffer = new byte[bin.Length];
+            bin.Read(buffer);
             bin.Close();
 
-            int position = 0;
+            var br = new BufferReader(buffer);
 
             foreach (var entry in entities)
             {
                 T t = entry.Entity;
 
+                // Skip this entry
                 if (t == null)
                 {
+                    br.Seek(entry.Length, SeekOrigin.Current);
                     continue;
                 }
 
-                var segment = new ArraySegment<byte>(fileBuffer, position, entry.Length);
-                var bufferReader = new BufferReader(segment);
-                t.Deserialize(bufferReader);
+                t.Deserialize(br);
+                var end = entry.Position + entry.Length;
 
-                if (bufferReader.Position != entry.Length)
+                if (br.Position != end)
                 {
                     Console.WriteLine($"***** Bad deserialize on {t.GetType()} *****");
                     Console.WriteLine(
-                        $"Serialized object was {entry.Length} bytes, but {bufferReader.Position - entry.Position} bytes deserialized"
+                        $"Serialized object was {entry.Length} bytes, but {br.Position - entry.Position} bytes deserialized"
                     );
 
                     Console.WriteLine("Delete the object and continue? (y/n)");
@@ -370,10 +371,9 @@ namespace Server
                         throw new Exception("Deserialization failed.");
                     }
                     t.Delete();
+
+                    br.Seek((int)end, SeekOrigin.Begin);
                 }
-
-
-                position += entry.Length;
             }
         }
 
