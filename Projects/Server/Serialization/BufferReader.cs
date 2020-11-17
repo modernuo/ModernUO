@@ -16,6 +16,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text;
 using Server.Guilds;
@@ -25,12 +26,12 @@ namespace Server
     public class BufferReader : IGenericReader
     {
         private readonly Encoding _encoding;
-        private ArraySegment<byte> _segment;
+        private byte[] _buffer;
         public int Position { get; private set; }
 
-        public BufferReader(ArraySegment<byte> segment)
+        public BufferReader(byte[] buffer)
         {
-            _segment = segment;
+            _buffer = buffer;
             _encoding = Utility.UTF8;
         }
 
@@ -42,7 +43,7 @@ namespace Server
             }
 
             var length = ReadEncodedInt();
-            var s = length == 0 ? "" : _encoding.GetString(_segment.AsSpan(Position, length));
+            var s = length == 0 ? "" : _encoding.GetString(_buffer.AsSpan(Position, length));
             Position += length;
             return s;
         }
@@ -82,65 +83,65 @@ namespace Server
 
         public long ReadLong()
         {
-            var v = BinaryPrimitives.ReadInt64LittleEndian(_segment.AsSpan(Position, 8));
+            var v = BinaryPrimitives.ReadInt64LittleEndian(_buffer.AsSpan(Position, 8));
             Position += 8;
             return v;
         }
 
         public ulong ReadULong()
         {
-            var v = BinaryPrimitives.ReadUInt64LittleEndian(_segment.AsSpan(Position, 8));
+            var v = BinaryPrimitives.ReadUInt64LittleEndian(_buffer.AsSpan(Position, 8));
             Position += 8;
             return v;
         }
 
         public int ReadInt()
         {
-            var v = BinaryPrimitives.ReadInt32LittleEndian(_segment.AsSpan(Position, 4));
+            var v = BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(Position, 4));
             Position += 4;
             return v;
         }
 
         public uint ReadUInt()
         {
-            var v = BinaryPrimitives.ReadUInt32LittleEndian(_segment.AsSpan(Position, 4));
+            var v = BinaryPrimitives.ReadUInt32LittleEndian(_buffer.AsSpan(Position, 4));
             Position += 4;
             return v;
         }
 
         public short ReadShort()
         {
-            var v = BinaryPrimitives.ReadInt16LittleEndian(_segment.AsSpan(Position, 2));
+            var v = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(Position, 2));
             Position += 2;
             return v;
         }
 
         public ushort ReadUShort()
         {
-            var v = BinaryPrimitives.ReadUInt16LittleEndian(_segment.AsSpan(Position, 2));
+            var v = BinaryPrimitives.ReadUInt16LittleEndian(_buffer.AsSpan(Position, 2));
             Position += 2;
             return v;
         }
 
         public double ReadDouble()
         {
-            var v = BinaryPrimitives.ReadDoubleLittleEndian(_segment.AsSpan(Position, 8));
+            var v = BinaryPrimitives.ReadDoubleLittleEndian(_buffer.AsSpan(Position, 8));
             Position += 8;
             return v;
         }
 
         public float ReadFloat()
         {
-            var v = BinaryPrimitives.ReadSingleLittleEndian(_segment.AsSpan(Position, 4));
+            var v = BinaryPrimitives.ReadSingleLittleEndian(_buffer.AsSpan(Position, 4));
             Position += 4;
             return v;
         }
 
-        public byte ReadByte() => _segment[Position++];
+        public byte ReadByte() => _buffer[Position++];
 
-        public sbyte ReadSByte() => (sbyte)_segment[Position++];
+        public sbyte ReadSByte() => (sbyte)_buffer[Position++];
 
-        public bool ReadBool() => _segment[Position++] != 0;
+        public bool ReadBool() => _buffer[Position++] != 0;
 
         public int ReadEncodedInt()
         {
@@ -310,14 +311,25 @@ namespace Server
         public int Read(Span<byte> buffer)
         {
             var length = buffer.Length;
-            if (length > _segment.Count - Position)
+            if (length > _buffer.Length - Position)
             {
                 throw new OutOfMemoryException();
             }
 
-            _segment.AsSpan(Position, length).CopyTo(buffer);
+            _buffer.AsSpan(Position, length).CopyTo(buffer);
             Position += length;
             return length;
+        }
+
+        public virtual int Seek(int offset, SeekOrigin origin)
+        {
+            return origin switch
+            {
+                SeekOrigin.Begin   => Position = offset,
+                SeekOrigin.Current => Position += offset,
+                SeekOrigin.End     => Position = _buffer.Length - offset,
+                _                  => Position
+            };
         }
     }
 }
