@@ -36,7 +36,6 @@ namespace Server
         ushort ReadUShort();
         double ReadDouble();
         float ReadFloat();
-        char ReadChar();
         byte ReadByte();
         sbyte ReadSByte();
         bool ReadBool();
@@ -67,7 +66,6 @@ namespace Server
         HashSet<BaseGuild> ReadGuildSet();
         HashSet<T> ReadGuildSet<T>() where T : BaseGuild;
         Race ReadRace();
-        bool End();
         int Read(Span<byte> buffer);
     }
 }

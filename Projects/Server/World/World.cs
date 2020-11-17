@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,6 +32,7 @@ namespace Server
     {
         Initial,
         Loading,
+        WritingLoadBuffers,
         Running,
         Saving,
         WritingSave
@@ -294,6 +296,35 @@ namespace Server
             return map;
         }
 
+        private static void SaveBuffers<I, T>(IIndexInfo<I> indexInfo, List<EntityIndex<T>> entities) where T : ISerializable
+        {
+            var indexType = indexInfo.TypeName;
+
+            string dataPath = Path.Combine("Saves", indexType, $"{indexType}.bin");
+
+            if (!File.Exists(dataPath))
+            {
+                return;
+            }
+
+            using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            BinaryReader reader = new BinaryReader(bin);
+
+            foreach (var entry in entities)
+            {
+                T t = entry.Entity;
+
+                if (t == null || t is IEntity entity && entity.Deleted)
+                {
+                    continue;
+                }
+
+                byte[] saveBuffer = new byte[entry.Length];
+                reader.Read(saveBuffer, 0, entry.Length);
+                t.SaveBuffer = new BufferWriter(saveBuffer, true);
+            }
+        }
+
         private static void LoadData<I, T>(IIndexInfo<I> indexInfo, List<EntityIndex<T>> entities) where T : ISerializable
         {
             var indexType = indexInfo.TypeName;
@@ -306,7 +337,11 @@ namespace Server
             }
 
             using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            BinaryFileReader reader = new BinaryFileReader(new BinaryReader(bin));
+            var fileBuffer = new byte[bin.Length];
+            bin.Read(fileBuffer);
+            bin.Close();
+
+            int position = 0;
 
             foreach (var entry in entities)
             {
@@ -317,15 +352,15 @@ namespace Server
                     continue;
                 }
 
-                reader.Seek(entry.Position, SeekOrigin.Begin);
+                var segment = new ArraySegment<byte>(fileBuffer, position, entry.Length);
+                var bufferReader = new BufferReader(segment);
+                t.Deserialize(bufferReader);
 
-                t.Deserialize(reader);
-
-                if (reader.Position != entry.Position + entry.Length)
+                if (bufferReader.Position != entry.Length)
                 {
                     Console.WriteLine($"***** Bad deserialize on {t.GetType()} *****");
                     Console.WriteLine(
-                        $"Serialized object was {entry.Length} bytes, but {reader.Position - entry.Position} bytes deserialized"
+                        $"Serialized object was {entry.Length} bytes, but {bufferReader.Position - entry.Position} bytes deserialized"
                     );
 
                     Console.WriteLine("Delete the object and continue? (y/n)");
@@ -337,13 +372,9 @@ namespace Server
                     t.Delete();
                 }
 
-                reader.Seek(entry.Position, SeekOrigin.Begin);
 
-                t.SaveBuffer = new BufferWriter(new byte[entry.Length], true);
-                reader.Read(t.SaveBuffer.Buffer);
+                position += entry.Length;
             }
-
-            reader.Close();
         }
 
         public static void Load()
@@ -377,7 +408,7 @@ namespace Server
 
             EventSink.InvokeWorldLoad();
 
-            WorldState = WorldState.Running;
+            WorldState = WorldState.WritingLoadBuffers;
 
             ProcessSafetyQueues();
 
@@ -406,6 +437,16 @@ namespace Server
                 watch.Elapsed.TotalSeconds,
                 Items.Count,
                 Mobiles.Count
+            );
+
+            // Async save buffers
+            ThreadPool.QueueUserWorkItem(state =>
+                {
+                    SaveBuffers(mobileIndexInfo, mobiles);
+                    SaveBuffers(itemIndexInfo, items);
+                    SaveBuffers(guildIndexInfo, guilds);
+                    WorldState = WorldState.Running;
+                }
             );
         }
 
@@ -457,7 +498,6 @@ namespace Server
 
         public static void WriteFiles(object state)
         {
-            Console.Write("Closing Save Files...");
             var watch = Stopwatch.StartNew();
 
             IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
@@ -472,7 +512,7 @@ namespace Server
 
             m_DiskWriteHandle.Set();
 
-            Console.WriteLine("done {0:F1} seconds.", watch.Elapsed.TotalSeconds);
+            Console.WriteLine("World: Writing snapshot took {0:F1} seconds.", watch.Elapsed.TotalSeconds);
 
             Timer.DelayCall(FinishWorldSave);
         }
@@ -626,6 +666,7 @@ namespace Server
 
                         goto case WorldState.Running;
                     }
+                case WorldState.WritingLoadBuffers:
                 case WorldState.Running:
                     {
                         if (serial.IsItem)
@@ -654,7 +695,6 @@ namespace Server
 
         public static BaseGuild FindGuild(Serial serial) => Guilds.TryGetValue(serial, out var guild) ? guild : null;
 
-
         public static void AddEntity<T>(T entity) where T : class, IEntity
         {
             switch (WorldState)
@@ -680,6 +720,7 @@ namespace Server
                         _pendingAdd[entity.Serial] = entity;
                         break;
                     }
+                case WorldState.WritingLoadBuffers:
                 case WorldState.Running:
                     {
                         if (entity.Serial.IsItem)
@@ -718,6 +759,7 @@ namespace Server
                         _pendingDelete[entity.Serial] = entity;
                         break;
                     }
+                case WorldState.WritingLoadBuffers:
                 case WorldState.Running:
                     {
                         if (entity.Serial.IsItem)
