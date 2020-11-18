@@ -303,14 +303,11 @@ namespace Server.Network
         {
             state.SendLoginConfirmation(m);
 
-            if (m.Map != null)
-            {
-                state.Send(new MapChange(m.Map));
-            }
+            state.SendMapChange(m.Map);
 
             if (!Core.SE && state.ProtocolChanges < ProtocolChanges.Version6000)
             {
-                state.Send(new MapPatches());
+                state.SendMapPatches();
             }
 
             state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
@@ -392,10 +389,7 @@ namespace Server.Network
             state.SendLoginComplete();
             state.Send(new CurrentTime());
             state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
-            if (m.Map != null)
-            {
-                state.Send(new MapChange(m.Map));
-            }
+            state.SendMapChange(m.Map);
 
             EventSink.InvokeLogin(m);
 
