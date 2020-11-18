@@ -12,20 +12,25 @@ namespace Server.Tests.Network
 {
     internal class ContextMenuItem : Item
     {
-        public ContextMenuItem(Serial serial) : base(serial)
-        {
-        }
+        private bool _requiresNewPacket;
+        public ContextMenuItem(Serial serial, bool requiresNewPacket) : base(serial) =>
+            _requiresNewPacket = requiresNewPacket;
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
         {
             base.GetContextMenuEntries(from, list);
 
-            list.Add(new ContextMenuEntry(500000));
-            list.Add(new ContextMenuEntry(500001));
-            list.Add(new ContextMenuEntry(500002));
+            list.Add(new ContextMenuEntry(3000001));
+            list.Add(new ContextMenuEntry(3000002));
+            list.Add(new ContextMenuEntry(3000003));
+            if (_requiresNewPacket)
+            {
+                list.Add(new ContextMenuEntry(500000));
+            }
         }
     }
 
+    [Collection("Sequential Tests")]
     public class MenuPacketTests : IClassFixture<ServerFixture>
     {
         [Fact]
@@ -41,45 +46,13 @@ namespace Server.Tests.Network
                 }
             );
 
-            var data = new DisplayItemListMenu(menu).Compile();
+            var expected = new DisplayItemListMenu(menu).Compile();
 
-            var question = menu.Question;
-            var questionLength = Math.Min(255, question.Length);
-            var entriesCount = 0;
-            var length = 11 + questionLength;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendDisplayItemListMenu(menu);
 
-            foreach (var entry in menu.Entries)
-            {
-                length += 5 + entry.Name.Length;
-                if (entriesCount == 255)
-                {
-                    break;
-                }
-
-                entriesCount++;
-            }
-
-            Span<byte> expectedData = stackalloc byte[length];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0x7C); // Packet ID
-            expectedData.Write(ref pos, (ushort)length);
-            expectedData.Write(ref pos, menu.Serial);
-            expectedData.Write(ref pos, (ushort)0x00);
-            expectedData.Write(ref pos, (byte)questionLength);
-            expectedData.WriteAscii(ref pos, question, 255);
-            expectedData.Write(ref pos, (byte)entriesCount);
-            for (var i = 0; i < entriesCount; i++)
-            {
-                var entry = menu.Entries[i];
-                expectedData.Write(ref pos, (ushort)entry.ItemID);
-                expectedData.Write(ref pos, (ushort)entry.Hue);
-                var name = entry.Name?.Trim() ?? "";
-                expectedData.Write(ref pos, (byte)Math.Min(255, name.Length));
-                expectedData.WriteAscii(ref pos, name, 255);
-            }
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -95,162 +68,40 @@ namespace Server.Tests.Network
                 }
             );
 
-            var data = new DisplayQuestionMenu(menu).Compile();
+            var expected = new DisplayQuestionMenu(menu).Compile();
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendDisplayQuestionMenu(menu);
 
-            var question = menu.Question;
-            var questionLength = Math.Min(255, question.Length);
-            var answersCount = 0;
-            var length = 11 + questionLength;
-
-            foreach (var answer in menu.Answers)
-            {
-                length += 5 + answer.Length;
-                if (answersCount == 255)
-                {
-                    break;
-                }
-
-                answersCount++;
-            }
-
-            Span<byte> expectedData = stackalloc byte[length];
-
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0x7C); // Packet ID
-            expectedData.Write(ref pos, (ushort)length);
-            expectedData.Write(ref pos, menu.Serial);
-            expectedData.Write(ref pos, (ushort)0x00);
-            expectedData.Write(ref pos, (byte)question.Length);
-            expectedData.WriteAscii(ref pos, question, 255);
-            expectedData.Write(ref pos, (byte)answersCount);
-            for (var i = 0; i < answersCount; i++)
-            {
-                var answer = menu.Answers[i];
-#if NO_LOCAL_INIT
-                expectedData.Write(ref pos, 0);
-#else
-                pos += 4;
-#endif
-                expectedData.Write(ref pos, (byte)Math.Min(255, answer.Length));
-                expectedData.WriteAscii(ref pos, answer, 255);
-            }
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestDisplayContextMenu()
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void TestDisplayContextMenu(bool newHaven, bool newPacket)
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var item = new ContextMenuItem(World.NewItem);
+            var item = new ContextMenuItem(World.NewItem, newPacket);
             var menu = new ContextMenu(m, item);
 
-            var data = new DisplayContextMenu(menu).Compile();
+            var packet = newHaven && newPacket ? (Packet)new DisplayContextMenu(menu) : new DisplayContextMenuOld(menu);
+            var expected = packet.Compile();
 
-            var length = 12 + menu.Entries.Length * 8;
-
-            Span<byte> expectedData = stackalloc byte[length];
-
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0xBF);     // Packet ID
-            expectedData.Write(ref pos, (ushort)length); // Length
-            expectedData.Write(ref pos, (ushort)0x14);   // Command
-            expectedData.Write(ref pos, (ushort)0x02);   // Subcommand
-            expectedData.Write(ref pos, menu.Target.Serial);
-            var entries = menu.Entries;
-
-            expectedData.Write(ref pos, (byte)entries.Length);
-
-            for (var i = 0; i < entries.Length; i++)
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            if (newHaven)
             {
-                var entry = entries[i];
-                expectedData.Write(ref pos, entry.Number);
-                expectedData.Write(ref pos, (ushort)i);
-
-                var flags = entry.Flags;
-
-                var range = entry.Range;
-
-                if (range == -1)
-                {
-                    range = 18;
-                }
-
-                if (!(entry.Enabled && menu.From.InRange(item.GetWorldLocation(), range)))
-                {
-                    flags |= CMEFlags.Disabled;
-                }
-
-                expectedData.Write(ref pos, (ushort)flags);
+                ns.ProtocolChanges |= ProtocolChanges.NewHaven;
             }
 
-            AssertThat.Equal(data, expectedData);
-        }
+            ns.SendDisplayContextMenu(menu);
 
-        [Fact]
-        public void TestDisplayContextMenuOld()
-        {
-            var m = new Mobile(0x1);
-            m.DefaultMobileInit();
-
-            var item = new ContextMenuItem(World.NewItem);
-            var menu = new ContextMenu(m, item);
-
-            var data = new DisplayContextMenuOld(menu).Compile();
-
-            var length = 12 + menu.Entries.Sum(entry => 6 + ((entry.Color & 0xFFFF) != 0xFFFF ? 2 : 0));
-
-            Span<byte> expectedData = stackalloc byte[length];
-
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0xBF);     // Packet ID
-            expectedData.Write(ref pos, (ushort)length); // Length
-            expectedData.Write(ref pos, (ushort)0x14);   // Command
-            expectedData.Write(ref pos, (ushort)0x01);   // Subcommand
-            expectedData.Write(ref pos, menu.Target.Serial);
-            var entries = menu.Entries;
-
-            expectedData.Write(ref pos, (byte)entries.Length);
-
-            for (var i = 0; i < entries.Length; i++)
-            {
-                var entry = entries[i];
-                expectedData.Write(ref pos, (ushort)i);
-                expectedData.Write(ref pos, (ushort)(entry.Number - 3000000));
-
-                var flags = entry.Flags;
-
-                var color = entry.Color & 0xFFFF;
-
-                if (color != 0xFFFF)
-                {
-                    flags |= CMEFlags.Colored;
-                }
-
-                var range = entry.Range;
-
-                if (range == -1)
-                {
-                    range = 18;
-                }
-
-                if (!(entry.Enabled && menu.From.InRange(item.GetWorldLocation(), range)))
-                {
-                    flags |= CMEFlags.Disabled;
-                }
-
-                expectedData.Write(ref pos, (ushort)flags);
-
-                if ((flags & CMEFlags.Colored) != 0)
-                {
-                    expectedData.Write(ref pos, (ushort)color);
-                }
-            }
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 }

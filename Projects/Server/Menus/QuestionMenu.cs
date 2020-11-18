@@ -37,7 +37,7 @@ namespace Server.Menus.Questions
         public void SendTo(NetState state)
         {
             state.AddMenu(this);
-            state.Send(new DisplayQuestionMenu(this));
+            state.SendDisplayQuestionMenu(this);
         }
     }
 }
