@@ -90,37 +90,35 @@ namespace Server.Engines.MLQuests.Mobiles
         {
             base.OnThink();
 
-            if (m_NextShout <= DateTime.UtcNow)
+            if (m_NextShout > DateTime.UtcNow)
             {
-                Packet shoutPacket = null;
-
-                foreach (var state in GetClientsInRange(12))
-                {
-                    var m = state.Mobile;
-
-                    if (m.CanSee(this) && m.InLOS(this) && m.CanBeginAction(this))
-                    {
-                        shoutPacket ??= Packet.Acquire(
-                            new MessageLocalized(
-                                Serial,
-                                Body,
-                                MessageType.Regular,
-                                946,
-                                3,
-                                1078099,
-                                Name,
-                                ""
-                            )
-                        ); // Double Click On Me For Help!
-
-                        state.Send(shoutPacket);
-                    }
-                }
-
-                Packet.Release(shoutPacket);
-
-                m_NextShout = DateTime.UtcNow + m_ShoutDelay;
+                return;
             }
+
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength("")];
+            var packetCreated = false;
+
+            foreach (var state in GetClientsInRange(12))
+            {
+                var m = state.Mobile;
+
+                if (m.CanSee(this) && m.InLOS(this) && m.CanBeginAction(this))
+                {
+                    if (!packetCreated)
+                    {
+                        // Double Click On Me For Help!
+                        var length = OutgoingMessagePackets.CreateMessageLocalized(
+                            ref buffer,
+                            Serial, Body, MessageType.Regular, 946, 3, 1078099, Name
+                        );
+                        packetCreated = true;
+                    }
+
+                    state.Send(buffer);
+                }
+            }
+
+            m_NextShout = DateTime.UtcNow + m_ShoutDelay;
         }
 
         private void EndLock(Mobile m)

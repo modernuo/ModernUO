@@ -192,9 +192,7 @@ namespace Server.Factions
 
         public void PrivateOverheadLocalizedMessage(Mobile to, int number, int hue, string name, string args)
         {
-            var ns = to?.NetState;
-
-            ns?.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, hue, 3, number, name, args));
+            to?.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Regular, hue, 3, number, name, args);
         }
 
         public virtual bool CheckDecay()

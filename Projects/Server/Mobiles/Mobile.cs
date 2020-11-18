@@ -6121,13 +6121,13 @@ namespace Server
                     ref regBuffer,
                     Serial, Body, type, hue, 3, m_Language, Name, text
                 );
-                regBuffer = regBuffer.Slice(0, length); // Adjust to actual length
+                regBuffer = regBuffer.Slice(0, length); // Adjust to the actual size
 
                 length = OutgoingMessagePackets.CreateUnicodeMessage(
                     ref mutBuffer,
                     Serial, Body, type, hue, 3, m_Language, Name, mutatedText
                 );
-                mutBuffer = mutBuffer.Slice(0, length); // Adjust to actual length
+                mutBuffer = mutBuffer.Slice(0, length); // Adjust to the actual size
 
                 // TODO: Should this be sorted like onSpeech is below?
                 for (var i = 0; i < hears.Count; ++i)
@@ -9619,7 +9619,7 @@ namespace Server
                 ref buffer,
                 Serial, Body, type, hue, 3, number, Name, args
             );
-            buffer = buffer.Slice(0, length); // Adjust to actual length
+            buffer = buffer.Slice(0, length); // Adjust to the actual size
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -9650,7 +9650,7 @@ namespace Server
                 ref buffer,
                 Serial, Body, type, hue, 3, number, Name, affixType, affix, args
             );
-            buffer = buffer.Slice(0, length); // Adjust to actual length
+            buffer = buffer.Slice(0, length); // Adjust to the actual size
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -9723,7 +9723,7 @@ namespace Server
                 ref buffer,
                 Serial, Body, type, hue, 3, number, Name, args
             );
-            buffer = buffer.Slice(0, length); // Adjust to actual length
+            buffer = buffer.Slice(0, length); // Adjust to the actual size
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
