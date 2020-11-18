@@ -1075,19 +1075,7 @@ namespace Server
             set
             {
                 m_ContextMenu = value;
-
-                if (m_ContextMenu != null && m_NetState != null)
-                {
-                    // Old packet is preferred until assistants catch up
-                    if (m_NetState.NewHaven && m_ContextMenu.RequiresNewPacket)
-                    {
-                        Send(new DisplayContextMenu(m_ContextMenu));
-                    }
-                    else
-                    {
-                        Send(new DisplayContextMenuOld(m_ContextMenu));
-                    }
-                }
+                m_NetState.SendDisplayContextMenu(m_ContextMenu);
             }
         }
 

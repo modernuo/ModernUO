@@ -1,19 +1,3 @@
-/*************************************************************************
- * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
- * Email: hi@modernuo.com                                                *
- * File: MenuPackets.cs                                                  *
- *                                                                       *
- * This program is free software: you can redistribute it and/or modify  *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- *                                                                       *
- * You should have received a copy of the GNU General Public License     *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
- *************************************************************************/
-
-using System;
 using Server.ContextMenus;
 using Server.Menus;
 using Server.Menus.ItemLists;
@@ -21,16 +5,6 @@ using Server.Menus.Questions;
 
 namespace Server.Network
 {
-    [Flags]
-    public enum CMEFlags
-    {
-        None = 0x00,
-        Disabled = 0x01,
-        Arrow = 0x02,
-        Highlighted = 0x04,
-        Colored = 0x20
-    }
-
     public sealed class DisplayItemListMenu : Packet
     {
         public DisplayItemListMenu(ItemListMenu menu) : base(0x7C)
@@ -167,7 +141,7 @@ namespace Server.Network
 
                 if (range == -1)
                 {
-                    range = 18;
+                    range = Core.GlobalUpdateRange;
                 }
 
                 var flags = e.Flags;
@@ -218,7 +192,7 @@ namespace Server.Network
 
                 if (range == -1)
                 {
-                    range = 18;
+                    range = Core.GlobalUpdateRange;
                 }
 
                 var flags = e.Flags;

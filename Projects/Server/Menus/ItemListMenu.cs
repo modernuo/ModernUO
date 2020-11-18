@@ -55,7 +55,7 @@ namespace Server.Menus.ItemLists
         public void SendTo(NetState state)
         {
             state.AddMenu(this);
-            state.Send(new DisplayItemListMenu(this));
+            state.SendDisplayItemListMenu(this);
         }
     }
 }
