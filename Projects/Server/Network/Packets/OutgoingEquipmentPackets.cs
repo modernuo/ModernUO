@@ -36,11 +36,7 @@ namespace Server.Network
     {
         public static void SendDisplayEquipmentInfo(
             this NetState ns,
-            Serial serial,
-            int number,
-            string crafterName,
-            bool unidentified,
-            List<EquipInfoAttribute> attrs
+            Serial serial, int number, string crafterName, bool unidentified, List<EquipInfoAttribute> attrs
         )
         {
             if (ns == null || !ns.GetSendBuffer(out var buffer))

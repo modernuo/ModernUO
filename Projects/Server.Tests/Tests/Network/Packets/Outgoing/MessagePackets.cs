@@ -1,30 +1,7 @@
-/*************************************************************************
- * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
- * Email: hi@modernuo.com                                                *
- * File: MessagePackets.cs                                               *
- *                                                                       *
- * This program is free software: you can redistribute it and/or modify  *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- *                                                                       *
- * You should have received a copy of the GNU General Public License     *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
- *************************************************************************/
-
 using System;
 
 namespace Server.Network
 {
-    [Flags]
-    public enum AffixType : byte
-    {
-        Append = 0x00,
-        Prepend = 0x01,
-        System = 0x02
-    }
-
     public sealed class MessageLocalized : Packet
     {
         private static readonly MessageLocalized[] m_Cache_IntLoc = new MessageLocalized[15000];
@@ -53,56 +30,6 @@ namespace Server.Network
             Stream.Write(number);
             Stream.WriteAsciiFixed(name, 30);
             Stream.WriteLittleUniNull(args);
-        }
-
-        public static MessageLocalized InstantiateGeneric(int number)
-        {
-            MessageLocalized[] cache = null;
-            var index = 0;
-
-            if (number >= 3000000)
-            {
-                cache = m_Cache_IntLoc;
-                index = number - 3000000;
-            }
-            else if (number >= 1000000)
-            {
-                cache = m_Cache_CliLoc;
-                index = number - 1000000;
-            }
-            else if (number >= 500000)
-            {
-                cache = m_Cache_CliLocCmp;
-                index = number - 500000;
-            }
-
-            MessageLocalized p;
-
-            if (cache != null && index < cache.Length)
-            {
-                p = cache[index];
-
-                if (p == null)
-                {
-                    cache[index] = p = new MessageLocalized(
-                        Serial.MinusOne,
-                        -1,
-                        MessageType.Regular,
-                        0x3B2,
-                        3,
-                        number,
-                        "System",
-                        ""
-                    );
-                    p.SetStatic();
-                }
-            }
-            else
-            {
-                p = new MessageLocalized(Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, number, "System", "");
-            }
-
-            return p;
         }
     }
 
