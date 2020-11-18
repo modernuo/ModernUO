@@ -249,14 +249,14 @@ namespace Server.Items
             {
                 desc = "(blank)";
             }
-            else if ((desc = m_Description) == null || (desc = desc.Trim()).Length <= 0)
+            else
             {
-                desc = "";
+                desc = m_Description?.Trim() ?? "";
             }
 
             if (desc.Length > 0)
             {
-                from.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", "", desc));
+                from.NetState.SendUnicodeMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", "", desc);
             }
         }
 

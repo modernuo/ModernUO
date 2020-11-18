@@ -61,10 +61,8 @@ namespace Server.Items
         public override void OnSingleClick(Mobile from)
         {
             var number = Amount == 1 ? 1049122 : 1049121;
-
-            from.Send(
-                new MessageLocalized(Serial, ItemID, MessageType.Label, 0x3B2, 3, number, "", (Amount * 50).ToString())
-            );
+            var amount = (Amount * 50).ToString();
+            from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Label, 0x3B2, 3, number, "", amount);
         }
     }
 }

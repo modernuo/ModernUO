@@ -1168,7 +1168,7 @@ namespace Server.Items
 
             if (opl.Header > 0)
             {
-                from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, opl.Header, Name, opl.HeaderArgs));
+                from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, opl.Header, Name, opl.HeaderArgs);
             }
         }
 
@@ -1180,16 +1180,16 @@ namespace Server.Items
             {
                 if (m_CorpseName != null)
                 {
-                    from.Send(new AsciiMessage(Serial, ItemID, MessageType.Label, hue, 3, "", m_CorpseName));
+                    from.NetState.SendAsciiMessage(Serial, ItemID, MessageType.Label, hue, 3, "", m_CorpseName);
                 }
                 else
                 {
-                    from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name));
+                    from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name);
                 }
             }
             else // Bone form
             {
-                from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name));
+                from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name);
             }
         }
 

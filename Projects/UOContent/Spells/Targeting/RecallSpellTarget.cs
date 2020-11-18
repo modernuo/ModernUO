@@ -51,17 +51,14 @@ namespace Server.Spells
                 }
                 else
                 {
-                    from.Send(
-                        new MessageLocalized(
-                            from.Serial,
-                            from.Body,
-                            MessageType.Regular,
-                            0x3B2,
-                            3,
-                            502357,
-                            from.Name,
-                            ""
-                        )
+                    from.NetState.SendMessageLocalized(
+                        from.Serial,
+                        from.Body,
+                        MessageType.Regular,
+                        0x3B2,
+                        3,
+                        502357,
+                        from.Name
                     ); // I can not recall from that object.
                 }
             }
@@ -71,17 +68,14 @@ namespace Server.Spells
             }
             else
             {
-                from.Send(
-                    new MessageLocalized(
-                        from.Serial,
-                        from.Body,
-                        MessageType.Regular,
-                        0x3B2,
-                        3,
-                        502357,
-                        from.Name,
-                        ""
-                    )
+                from.NetState.SendMessageLocalized(
+                    from.Serial,
+                    from.Body,
+                    MessageType.Regular,
+                    0x3B2,
+                    3,
+                    502357,
+                    from.Name
                 ); // I can not recall from that object.
             }
         }

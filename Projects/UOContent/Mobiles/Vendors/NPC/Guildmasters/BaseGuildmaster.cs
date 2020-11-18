@@ -48,19 +48,16 @@ namespace Server.Mobiles
 
         public virtual void SayPriceTo(Mobile m)
         {
-            m.Send(
-                new MessageLocalizedAffix(
-                    Serial,
-                    Body,
-                    MessageType.Regular,
-                    SpeechHue,
-                    3,
-                    1008052,
-                    Name,
-                    AffixType.Append,
-                    JoinCost.ToString(),
-                    ""
-                )
+            m.NetState.SendMessageLocalizedAffix(
+                Serial,
+                Body,
+                MessageType.Regular,
+                SpeechHue,
+                3,
+                1008052,
+                Name,
+                AffixType.Append,
+                JoinCost.ToString()
             );
         }
 

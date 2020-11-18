@@ -127,32 +127,26 @@ namespace Server.Engines.Quests.Haven
 
             if (ItemID == 0x2006) // Corpse form
             {
-                from.Send(
-                    new MessageLocalized(
-                        Serial,
-                        ItemID,
-                        MessageType.Label,
-                        hue,
-                        3,
-                        1049318,
-                        "",
-                        Name
-                    )
+                from.NetState.SendMessageLocalized(
+                    Serial,
+                    ItemID,
+                    MessageType.Label,
+                    hue,
+                    3,
+                    1049318,
+                    "",
+                    Name
                 ); // the remains of ~1_NAME~ the militia fighter
             }
             else
             {
-                from.Send(
-                    new MessageLocalized(
-                        Serial,
-                        ItemID,
-                        MessageType.Label,
-                        hue,
-                        3,
-                        1049319,
-                        "",
-                        ""
-                    )
+                from.NetState.SendMessageLocalized(
+                    Serial,
+                    ItemID,
+                    MessageType.Label,
+                    hue,
+                    3,
+                    1049319
                 ); // the remains of a militia fighter
             }
         }

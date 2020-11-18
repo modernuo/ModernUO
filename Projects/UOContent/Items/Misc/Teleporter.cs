@@ -429,32 +429,27 @@ namespace Server.Items
                 {
                     if (m_MessageString != null)
                     {
-                        m.Send(
-                            new UnicodeMessage(
-                                Serial,
-                                ItemID,
-                                MessageType.Regular,
-                                0x3B2,
-                                3,
-                                "ENU",
-                                null,
-                                m_MessageString
-                            )
+                        m.NetState.SendUnicodeMessage(
+                            Serial,
+                            ItemID,
+                            MessageType.Regular,
+                            0x3B2,
+                            3,
+                            "ENU",
+                            null,
+                            m_MessageString
                         );
                     }
                     else if (m_MessageNumber != 0)
                     {
-                        m.Send(
-                            new MessageLocalized(
-                                Serial,
-                                ItemID,
-                                MessageType.Regular,
-                                0x3B2,
-                                3,
-                                m_MessageNumber,
-                                null,
-                                ""
-                            )
+                        m.NetState.SendMessageLocalized(
+                            Serial,
+                            ItemID,
+                            MessageType.Regular,
+                            0x3B2,
+                            3,
+                            m_MessageNumber,
+                            null
                         );
                     }
 

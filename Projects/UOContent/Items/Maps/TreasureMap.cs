@@ -519,7 +519,7 @@ namespace Server.Items
 
             if (m_Completed)
             {
-                list.Add(1041507, m_CompletedBy == null ? "someone" : m_CompletedBy.Name); // completed by ~1_val~
+                list.Add(1041507, m_CompletedBy?.RawName ?? "someone"); // completed by ~1_val~
             }
         }
 
@@ -527,19 +527,16 @@ namespace Server.Items
         {
             if (m_Completed)
             {
-                from.Send(
-                    new MessageLocalizedAffix(
-                        Serial,
-                        ItemID,
-                        MessageType.Label,
-                        0x3B2,
-                        3,
-                        1048030,
-                        "",
-                        AffixType.Append,
-                        $" completed by {(m_CompletedBy == null ? "someone" : m_CompletedBy.Name)}",
-                        ""
-                    )
+                from.NetState.SendMessageLocalizedAffix(
+                    Serial,
+                    ItemID,
+                    MessageType.Label,
+                    0x3B2,
+                    3,
+                    1048030,
+                    "",
+                    AffixType.Append,
+                    $" completed by {m_CompletedBy?.RawName ?? "someone"}"
                 );
             }
             else if (m_Decoder != null)

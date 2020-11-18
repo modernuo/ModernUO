@@ -26,17 +26,14 @@ namespace Server.Spells.Sixth
         {
             if (!(item is RecallRune rune))
             {
-                Caster.Send(
-                    new MessageLocalized(
-                        Caster.Serial,
-                        Caster.Body,
-                        MessageType.Regular,
-                        0x3B2,
-                        3,
-                        501797,
-                        Caster.Name,
-                        ""
-                    )
+                Caster.NetState.SendMessageLocalized(
+                    Caster.Serial,
+                    Caster.Body,
+                    MessageType.Regular,
+                    0x3B2,
+                    3,
+                    501797,
+                    Caster.Name
                 ); // I cannot mark that object.
             }
             else if (!Caster.CanSee(rune))

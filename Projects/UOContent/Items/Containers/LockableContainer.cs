@@ -279,7 +279,7 @@ namespace Server.Items
                     inaccessible = true;
                 }
 
-                from.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", ""));
+                from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number);
             }
 
             return inaccessible;

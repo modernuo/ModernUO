@@ -226,16 +226,14 @@ namespace Server.Items
             else if (from.Map == Map.Ilshenar || from.Region.IsPartOf<DungeonRegion>() ||
                      from.Region.IsPartOf<JailRegion>() || from.Region.IsPartOf<SafeZone>())
             {
-                from.Send(
-                    new AsciiMessage(
-                        Serial,
-                        ItemID,
-                        MessageType.Regular,
-                        0x22,
-                        3,
-                        "",
-                        "You cannot summon your pet to this location."
-                    )
+                from.NetState.SendAsciiMessage(
+                    Serial,
+                    ItemID,
+                    MessageType.Regular,
+                    0x22,
+                    3,
+                    "",
+                    "You cannot summon your pet to this location."
                 );
             }
             else if (Core.ML && from is PlayerMobile mobile && DateTime.UtcNow < mobile.LastPetBallTime.AddSeconds(15.0))
