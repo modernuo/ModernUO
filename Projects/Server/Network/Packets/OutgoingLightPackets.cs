@@ -31,7 +31,7 @@ namespace Server.Network
             writer.Write(serial);
             writer.Write((byte)level);
 
-            ns.Send(ref buffer, 6);
+            ns.Send(ref buffer, writer.Position);
         }
 
         public static void SendGlobalLightLevel(this NetState ns, int level = 0)

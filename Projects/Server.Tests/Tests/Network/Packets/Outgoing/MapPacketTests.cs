@@ -9,54 +9,40 @@ namespace Server.Tests.Network
         [Fact]
         public void TestMapPatches()
         {
-            var data = new MapPatches().Compile();
+            var expected = new MapPatches().Compile();
 
-            Span<byte> expectedData = stackalloc byte[]
-            {
-                0xBF,                   // Packet ID
-                0x00, 0x29,             // Length
-                0x00, 0x18,             // Sub-packet
-                0x00, 0x00, 0x00, 0x04, // 4 maps
-                0x00, 0x00, 0x00, 0x00, // Felucca
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00, // Trammel
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00, // Ilshenar
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00, // Malas
-                0x00, 0x00, 0x00, 0x00
-            };
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMapPatches();
 
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
         public void TestInvalidMapEnable()
         {
-            var data = new InvalidMapEnable().Compile();
+            var expected = new InvalidMapEnable().Compile();
 
-            Span<byte> expectedData = stackalloc byte[]
-            {
-                0xC6 // Packet ID
-            };
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendInvalidMap();
 
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestMapChange()
+        [Theory]
+        [InlineData("Felucca")]
+        [InlineData("Malas")]
+        public void TestMapChange(string mapName)
         {
-            var data = new MapChange(Map.Felucca).Compile();
+            var map = Map.Parse(mapName);
+            var expected = new MapChange(map).Compile();
 
-            Span<byte> expectedData = stackalloc byte[]
-            {
-                0xBF,       // Packet ID
-                0x00, 0x06, // Length
-                0x00, 0x08, // Sub-packet
-                0x00        // Felucca
-            };
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMapChange(map);
 
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 }

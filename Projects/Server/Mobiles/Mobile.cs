@@ -2856,14 +2856,11 @@ namespace Server
                     if (ns != null && m_Map != null)
                     {
                         ns.Sequence = 0;
-                        if (Map != null)
-                        {
-                            ns.Send(new MapChange(Map));
-                        }
+                        ns.SendMapChange(Map);
 
                         if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
                         {
-                            ns.Send(new MapPatches());
+                            ns.SendMapPatches();
                         }
 
                         ns.Send(SeasonChange.Instantiate(GetSeason(), true));
@@ -2995,14 +2992,11 @@ namespace Server
                 if (ns != null && m_Map != null)
                 {
                     ns.Sequence = 0;
-                    if (Map != null)
-                    {
-                        ns.Send(new MapChange(Map));
-                    }
+                    ns.SendMapChange(Map);
 
                     if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
                     {
-                        ns.Send(new MapPatches());
+                        ns.SendMapPatches();
                     }
 
                     ns.Send(SeasonChange.Instantiate(GetSeason(), true));
