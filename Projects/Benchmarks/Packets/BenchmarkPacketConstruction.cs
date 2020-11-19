@@ -8,7 +8,7 @@ using Server.Network;
 
 namespace Benchmarks
 {
-    [MemoryDiagnoser, SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [MemoryDiagnoser, SimpleJob(RuntimeMoniker.NetCoreApp50)]
     public class BenchmarkPacketConstruction
     {
         public List<BuyItemState> m_States;
