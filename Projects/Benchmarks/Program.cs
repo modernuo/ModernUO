@@ -4,10 +4,11 @@ namespace Benchmarks
 {
     public static class Program
     {
-        public static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var featureFlags = BenchmarkRunner.Run<BenchmarkFeatureFlags>();
-            var packetConstruction = BenchmarkRunner.Run<BenchmarkPacketConstruction>();
+            // var featureFlags = BenchmarkRunner.Run<BenchmarkFeatureFlags>();
+            // var packetConstruction = BenchmarkRunner.Run<BenchmarkPacketConstruction>();
+            var broadcast = BenchmarkRunner.Run<BenchmarkPacketBroadcast>();
         }
     }
 }
