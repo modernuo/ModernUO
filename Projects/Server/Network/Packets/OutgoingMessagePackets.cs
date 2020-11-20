@@ -36,32 +36,18 @@ namespace Server.Network
             Serial serial, int graphic, MessageType type, int hue, int font, int number, string name = "", string args = ""
         )
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            name = name?.Trim() ?? "";
-            args = args?.Trim() ?? "";
+            Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedLength(args)];
+            var length = CreateMessageLocalized(
+                ref buffer,
+                serial, graphic, type, hue, font, number, name, args
+            );
 
-            if (hue == 0)
-            {
-                hue = 0x3B2;
-            }
-
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0xC1);
-            writer.Write((ushort)(50 + args.Length * 2));
-            writer.Write(serial);
-            writer.Write((short)graphic);
-            writer.Write((byte)type);
-            writer.Write((short)hue);
-            writer.Write((short)font);
-            writer.Write(number);
-            writer.WriteAscii(name, 30);
-            writer.WriteLittleUniNull(args);
-
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(buffer.Slice(0, length));
         }
 
         public static int GetMaxMessageLocalizedLength(string args) => 50 + (args?.Length ?? 0) * 2;
@@ -81,7 +67,7 @@ namespace Server.Network
 
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xC1);
-            writer.Write((ushort)(50 + args.Length * 2));
+            writer.Seek(2, SeekOrigin.Current);
             writer.Write(serial);
             writer.Write((short)graphic);
             writer.Write((byte)type);
@@ -90,6 +76,8 @@ namespace Server.Network
             writer.Write(number);
             writer.WriteAscii(name, 30);
             writer.WriteLittleUniNull(args);
+
+            writer.WritePacketLength();
 
             return writer.Position;
         }
@@ -97,44 +85,30 @@ namespace Server.Network
         public static void SendMessageLocalizedAffix(
             this NetState ns,
             Serial serial, int graphic, MessageType type, int hue, int font, int number, string name,
-            AffixType affixType, string affix, string args = ""
+            AffixType affixType, string affix = "", string args = ""
         )
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            name = name?.Trim() ?? "";
-            affix = affix?.Trim() ?? "";
-            args = args?.Trim() ?? "";
+            Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedAffixLength(affix, args)];
+            var length = CreateMessageLocalizedAffix(
+                ref buffer,
+                serial, graphic, type, hue, font, number, name, affixType, affix, args
+            );
 
-            if (hue == 0)
-            {
-                hue = 0x3B2;
-            }
-
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0xC1);
-            writer.Write((ushort)(52 + affix.Length + args.Length * 2));
-            writer.Write(serial);
-            writer.Write((short)graphic);
-            writer.Write((byte)type);
-            writer.Write((short)hue);
-            writer.Write((short)font);
-            writer.Write(number);
-            writer.Write((byte)affixType);
-            writer.WriteAscii(name, 30);
-            writer.WriteAsciiNull(affix);
-            writer.WriteLittleUniNull(args);
-
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(buffer.Slice(0, length));
         }
+
+        public static int GetMaxMessageLocalizedAffixLength(string affix, string args) =>
+            52 + (affix?.Length ?? 0) + (args?.Length ?? 0) * 2;
 
         public static int CreateMessageLocalizedAffix(
             ref Span<byte> buffer,
             Serial serial, int graphic, MessageType type, int hue, int font, int number, string name,
-            AffixType affixType, string affix, string args = ""
+            AffixType affixType, string affix = "", string args = ""
         )
         {
             name = name?.Trim() ?? "";
@@ -147,8 +121,8 @@ namespace Server.Network
             }
 
             var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xC1);
-            writer.Write((ushort)(52 + affix.Length + args.Length * 2));
+            writer.Write((byte)0xCC);
+            writer.Seek(2, SeekOrigin.Current);
             writer.Write(serial);
             writer.Write((short)graphic);
             writer.Write((byte)type);
@@ -160,11 +134,10 @@ namespace Server.Network
             writer.WriteAsciiNull(affix);
             writer.WriteLittleUniNull(args);
 
+            writer.WritePacketLength();
+
             return writer.Position;
         }
-
-        public static int GetMaxMessageLocalizedAffixLength(string affix, string args) =>
-            52 + (affix?.Length ?? 0) + (args?.Length ?? 0) * 2;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SendMessage(
@@ -221,7 +194,7 @@ namespace Server.Network
 
             var writer = new SpanWriter(buffer);
             writer.Write((byte)(ascii ? 0x1C : 0xAE)); // Packet ID
-            writer.Seek(2, SeekOrigin.Current); // Length
+            writer.Seek(2, SeekOrigin.Current);
             writer.Write(serial);
             writer.Write((short)graphic);
             writer.Write((byte)type);
