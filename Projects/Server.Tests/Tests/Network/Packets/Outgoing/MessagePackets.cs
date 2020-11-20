@@ -1,13 +1,7 @@
-using System;
-
 namespace Server.Network
 {
     public sealed class MessageLocalized : Packet
     {
-        private static readonly MessageLocalized[] m_Cache_IntLoc = new MessageLocalized[15000];
-        private static readonly MessageLocalized[] m_Cache_CliLoc = new MessageLocalized[100000];
-        private static readonly MessageLocalized[] m_Cache_CliLocCmp = new MessageLocalized[5000];
-
         public MessageLocalized(
             Serial serial, int graphic, MessageType type, int hue, int font, int number, string name, string args
         ) : base(0xC1)

@@ -132,7 +132,7 @@ namespace Server.Network
             writer.Write((byte)affixType);
             writer.WriteAscii(name, 30);
             writer.WriteAsciiNull(affix);
-            writer.WriteLittleUniNull(args);
+            writer.WriteBigUniNull(args);
 
             writer.WritePacketLength();
 
@@ -202,19 +202,34 @@ namespace Server.Network
             writer.Write((short)font);
             if (ascii)
             {
-                writer.WriteAscii(lang, 4);
                 writer.WriteAscii(name, 30);
-                writer.WriteBigUniNull(text);
+                writer.WriteAsciiNull(text);
             }
             else
             {
+                writer.WriteAscii(lang, 4);
                 writer.WriteAscii(name, 30);
-                writer.WriteAsciiNull(text);
+                writer.WriteBigUniNull(text);
             }
 
             writer.WritePacketLength();
 
             return writer.Position;
+        }
+
+        public static void SendFollowMessage(this NetState ns, Serial s1, Serial s2)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0x15); // Packet ID
+            writer.Write(s1);
+            writer.Write(s2);
+
+            ns.Send(ref buffer, 9);
         }
     }
 }
