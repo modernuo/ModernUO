@@ -487,12 +487,14 @@ namespace Server.Engines.Doom
 
         public static void PlayerSendASCII(Mobile player, int index)
         {
-            player.NetState.SendAsciiMessage(
+            player.NetState.SendMessage(
                 Serial.MinusOne,
                 0xFFFF,
                 MessageType.Label,
                 MsgParams[index][0],
                 MsgParams[index][1],
+                true,
+                null,
                 null,
                 Msgs[index]
             );
@@ -501,15 +503,17 @@ namespace Server.Engines.Doom
         /* I cant find any better way to send "speech" using fonts other than default */
         public static void POHMessage(Mobile from, int index)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxAsciiMessageLength(Msgs[index])];
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(Msgs[index])];
 
-            var length = OutgoingMessagePackets.CreateAsciiMessage(
+            var length = OutgoingMessagePackets.CreateMessage(
                 ref buffer,
                 from.Serial,
                 from.Body,
                 MessageType.Regular,
                 MsgParams[index][0],
                 MsgParams[index][1],
+                true,
+                null,
                 from.Name,
                 Msgs[index]
             );

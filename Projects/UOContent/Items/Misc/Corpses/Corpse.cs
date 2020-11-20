@@ -1180,7 +1180,7 @@ namespace Server.Items
             {
                 if (m_CorpseName != null)
                 {
-                    from.NetState.SendAsciiMessage(Serial, ItemID, MessageType.Label, hue, 3, "", m_CorpseName);
+                    from.NetState.SendMessage(Serial, ItemID, MessageType.Label, hue, 3, true, null, "", m_CorpseName);
                 }
                 else
                 {

@@ -226,12 +226,14 @@ namespace Server.Items
             else if (from.Map == Map.Ilshenar || from.Region.IsPartOf<DungeonRegion>() ||
                      from.Region.IsPartOf<JailRegion>() || from.Region.IsPartOf<SafeZone>())
             {
-                from.NetState.SendAsciiMessage(
+                from.NetState.SendMessage(
                     Serial,
                     ItemID,
                     MessageType.Regular,
                     0x22,
                     3,
+                    true,
+                    null,
                     "",
                     "You cannot summon your pet to this location."
                 );

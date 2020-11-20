@@ -15,6 +15,9 @@
 
 using System;
 using System.Buffers;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Server.Network
 {
@@ -163,106 +166,48 @@ namespace Server.Network
         public static int GetMaxMessageLocalizedAffixLength(string affix, string args) =>
             52 + (affix?.Length ?? 0) + (args?.Length ?? 0) * 2;
 
-        public static void SendAsciiMessage(
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendMessage(
             this NetState ns,
-            Serial serial, int graphic, MessageType type, int hue, int font, string name, string text
+            Serial serial, int graphic, MessageType type, int hue, int font, bool ascii, string lang, string name, string text
         )
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            name = name?.Trim() ?? "";
-            text = text?.Trim() ?? "";
+            Span<byte> buffer = stackalloc byte[GetMaxMessageLength(text)];
+            var length = CreateMessage(
+                ref buffer,
+                serial,
+                graphic,
+                type,
+                hue,
+                font,
+                ascii,
+                lang,
+                name,
+                text
+            );
 
-            if (hue == 0)
-            {
-                hue = 0x3B2;
-            }
-
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0x1C);
-            writer.Write((ushort)(45 + text.Length));
-            writer.Write(serial);
-            writer.Write((short)graphic);
-            writer.Write((byte)type);
-            writer.Write((short)hue);
-            writer.Write((short)font);
-            writer.WriteAscii(name, 30);
-            writer.WriteAsciiNull(text);
-
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(buffer.Slice(0, length));
         }
 
-        public static void SendUnicodeMessage(
-            this NetState ns,
-            Serial serial, int graphic, MessageType type, int hue, int font, string lang, string name, string text
-        )
-        {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
-            {
-                return;
-            }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetMaxMessageLength(string text) => 50 + (text?.Length ?? 0) * 2;
 
-            name = name?.Trim() ?? "";
-            text = text?.Trim() ?? "";
-            lang = lang?.Trim() ?? "ENU";
-
-            if (hue == 0)
-            {
-                hue = 0x3B2;
-            }
-
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0xAE);
-            writer.Write((ushort)(50 + text.Length * 2));
-            writer.Write(serial);
-            writer.Write((short)graphic);
-            writer.Write((byte)type);
-            writer.Write((short)hue);
-            writer.Write((short)font);
-            writer.WriteAscii(lang, 4);
-            writer.WriteAscii(name, 30);
-            writer.WriteBigUniNull(text);
-
-            ns.Send(ref buffer, writer.Position);
-        }
-
-        public static int GetMaxAsciiMessageLength(string text) => 45 + text?.Length ?? 0;
-
-        public static int CreateAsciiMessage(
+        public static int CreateMessage(
             ref Span<byte> buffer,
-            Serial serial, int graphic, MessageType type, int hue, int font, string name, string text
-        )
-        {
-            name = name?.Trim() ?? "";
-            text = text?.Trim() ?? "";
-
-            if (hue == 0)
-            {
-                hue = 0x3B2;
-            }
-
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0x1C);
-            writer.Write((ushort)(45 + text.Length));
-            writer.Write(serial);
-            writer.Write((short)graphic);
-            writer.Write((byte)type);
-            writer.Write((short)hue);
-            writer.Write((short)font);
-            writer.WriteAscii(name, 30);
-            writer.WriteAsciiNull(text);
-
-            return writer.Position;
-        }
-
-        public static int GetMaxUnicodeMessageLength(string text) => 50 + (text?.Length ?? 0) * 2;
-
-        public static int CreateUnicodeMessage(
-            ref Span<byte> buffer,
-            Serial serial, int graphic, MessageType type, int hue, int font, string lang, string name, string text
+            Serial serial,
+            int graphic,
+            MessageType type,
+            int hue,
+            int font,
+            bool ascii,
+            string lang,
+            string name,
+            string text
         )
         {
             name = name?.Trim() ?? "";
@@ -275,16 +220,26 @@ namespace Server.Network
             }
 
             var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xAE);
-            writer.Write((ushort)(50 + text.Length * 2));
+            writer.Write((byte)(ascii ? 0x1C : 0xAE)); // Packet ID
+            writer.Seek(2, SeekOrigin.Current); // Length
             writer.Write(serial);
             writer.Write((short)graphic);
             writer.Write((byte)type);
             writer.Write((short)hue);
             writer.Write((short)font);
-            writer.WriteAscii(lang, 4);
-            writer.WriteAscii(name, 30);
-            writer.WriteBigUniNull(text);
+            if (ascii)
+            {
+                writer.WriteAscii(lang, 4);
+                writer.WriteAscii(name, 30);
+                writer.WriteBigUniNull(text);
+            }
+            else
+            {
+                writer.WriteAscii(name, 30);
+                writer.WriteAsciiNull(text);
+            }
+
+            writer.WritePacketLength();
 
             return writer.Position;
         }

@@ -282,12 +282,14 @@ namespace Server.Engines.Quests.Collector
                             targObsidian.StatueName = RandomName(from);
                         }
 
-                        from.NetState.SendAsciiMessage(
+                        from.NetState.SendMessage(
                             targObsidian.Serial,
                             targObsidian.ItemID,
                             MessageType.Regular,
                             0x59,
                             3,
+                            true,
+                            null,
                             m_Obsidian.Name,
                             "Something Happened."
                         );

@@ -152,25 +152,13 @@ namespace Server
 
         public static void Broadcast(int hue, bool ascii, string text)
         {
-            var length = ascii
-                ? OutgoingMessagePackets.GetMaxAsciiMessageLength(text)
-                : OutgoingMessagePackets.GetMaxUnicodeMessageLength(text);
+            var length = OutgoingMessagePackets.GetMaxMessageLength(text);
 
             Span<byte> buffer = stackalloc byte[length];
-            if (ascii)
-            {
-                length = OutgoingMessagePackets.CreateAsciiMessage(
-                    ref buffer,
-                    Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text
-                );
-            }
-            else
-            {
-                length = OutgoingMessagePackets.CreateUnicodeMessage(
-                    ref buffer,
-                    Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text
-                );
-            }
+            length = OutgoingMessagePackets.CreateMessage(
+                ref buffer,
+                Serial.MinusOne, -1, MessageType.Regular, hue, 3, ascii, "ENU", "System", text
+            );
 
             buffer = buffer.Slice(0, length); // Adjust to the actual size
 

@@ -343,14 +343,15 @@ namespace Server.Guilds
 
         public void AllianceChat(Mobile from, int hue, string text)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxUnicodeMessageLength(text)];
-            var length = OutgoingMessagePackets.CreateUnicodeMessage(
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
+            var length = OutgoingMessagePackets.CreateMessage(
                 ref buffer,
                 from.Serial,
                 from.Body,
                 MessageType.Alliance,
                 hue,
                 3,
+                false,
                 from.Language,
                 from.Name,
                 text
@@ -1504,10 +1505,10 @@ namespace Server.Guilds
 
         public void GuildChat(Mobile from, int hue, string text)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxUnicodeMessageLength(text)];
-            var length = OutgoingMessagePackets.CreateUnicodeMessage(
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
+            var length = OutgoingMessagePackets.CreateMessage(
                 ref buffer,
-                from.Serial, from.Body, MessageType.Guild, hue, 3, from.Language, from.Name, text
+                from.Serial, from.Body, MessageType.Guild, hue, 3, false, from.Language, from.Name, text
             );
 
             buffer = buffer.Slice(0, length); // Adjust to the actual size

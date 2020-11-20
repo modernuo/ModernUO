@@ -429,12 +429,13 @@ namespace Server.Items
                 {
                     if (m_MessageString != null)
                     {
-                        m.NetState.SendUnicodeMessage(
+                        m.NetState.SendMessage(
                             Serial,
                             ItemID,
                             MessageType.Regular,
                             0x3B2,
                             3,
+                            false,
                             "ENU",
                             null,
                             m_MessageString

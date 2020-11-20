@@ -226,12 +226,14 @@ namespace Server.Misc
 
                                 if (sb.Length + 1 + v.Length >= 256)
                                 {
-                                    sender.SendAsciiMessage(
+                                    sender.SendMessage(
                                         Server.Serial.MinusOne,
                                         -1,
                                         MessageType.Label,
                                         0x35,
                                         3,
+                                        true,
+                                        null,
                                         "System",
                                         sb.ToString()
                                     );
@@ -248,12 +250,14 @@ namespace Server.Misc
 
                             if (sb.Length > 0)
                             {
-                                sender.SendAsciiMessage(
+                                sender.SendMessage(
                                     Server.Serial.MinusOne,
                                     -1,
                                     MessageType.Label,
                                     0x35,
                                     3,
+                                    true,
+                                    null,
                                     "System",
                                     sb.ToString()
                                 );

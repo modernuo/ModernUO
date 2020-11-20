@@ -291,12 +291,13 @@ namespace Server.Engines.ConPVP
                 {
                     if (Location == m_TeamInfo.Origin && Map == m_TeamInfo.Game.Facet)
                     {
-                        from.NetState.SendUnicodeMessage(
+                        from.NetState.SendMessage(
                             Serial,
                             ItemID,
                             MessageType.Regular,
                             0x3B2,
                             3,
+                            false,
                             "ENU",
                             Name,
                             "Touch me not for I am chaste."

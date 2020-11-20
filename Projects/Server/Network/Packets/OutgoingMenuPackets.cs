@@ -72,11 +72,9 @@ namespace Server.Network
                 }
             }
 
-            var length = writer.Position;
-            writer.Seek(1, SeekOrigin.Begin);
-            writer.Write((ushort)length);
+            writer.WritePacketLength();
 
-            ns.Send(ref buffer, length);
+            ns.Send(ref buffer, writer.Position);
         }
 
         public static void SendDisplayQuestionMenu(this NetState ns, QuestionMenu menu)
@@ -129,11 +127,9 @@ namespace Server.Network
                 }
             }
 
-            var length = writer.Position;
-            writer.Seek(1, SeekOrigin.Begin);
-            writer.Write((ushort)length);
+            writer.WritePacketLength();
 
-            ns.Send(ref buffer, length);
+            ns.Send(ref buffer, writer.Position);
         }
 
         public static void SendDisplayContextMenu(this NetState ns, ContextMenu menu)
@@ -209,11 +205,9 @@ namespace Server.Network
                 }
             }
 
-            var length = writer.Position;
-            writer.Seek(1, SeekOrigin.Begin);
-            writer.Write((ushort)length);
+            writer.WritePacketLength();
 
-            ns.Send(ref buffer, length);
+            ns.Send(ref buffer, writer.Position);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
@@ -150,7 +151,7 @@ namespace Benchmarks
                 w.Write((ushort)buyState.Hue);
             }
 
-            return w.Pos;
+            return w.Position;
         }
     }
 }

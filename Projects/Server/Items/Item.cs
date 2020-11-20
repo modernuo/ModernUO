@@ -2339,7 +2339,7 @@ namespace Server
 
         public void LabelTo(Mobile to, string text)
         {
-            to.NetState.SendUnicodeMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", text);
+            to.NetState.SendMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, false, "ENU", "", text);
         }
 
         public void LabelTo(Mobile to, string format, params object[] args)
@@ -3426,25 +3426,13 @@ namespace Server
             var worldLoc = GetWorldLocation();
             var eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
-            var length = ascii
-                ? OutgoingMessagePackets.GetMaxAsciiMessageLength(text)
-                : OutgoingMessagePackets.GetMaxUnicodeMessageLength(text);
+            var length = OutgoingMessagePackets.GetMaxMessageLength(text);
 
             Span<byte> buffer = stackalloc byte[length];
-            if (ascii)
-            {
-                length = OutgoingMessagePackets.CreateAsciiMessage(
-                    ref buffer,
-                    Serial, m_ItemID, type, hue, 3, Name, text
-                );
-            }
-            else
-            {
-                length = OutgoingMessagePackets.CreateUnicodeMessage(
-                    ref buffer,
-                    Serial, m_ItemID, type, hue, 3, "ENU", Name, text
-                );
-            }
+            length = OutgoingMessagePackets.CreateMessage(
+                ref buffer,
+                Serial, m_ItemID, type, hue, 3, ascii, "ENU", Name, text
+            );
 
             buffer = buffer.Slice(0, length); // Adjust to the actual size
 
@@ -4289,12 +4277,13 @@ namespace Server
             }
             else
             {
-                ns.SendUnicodeMessage(
+                ns.SendMessage(
                     Serial,
                     m_ItemID,
                     MessageType.Label,
                     0x3B2,
                     3,
+                    false,
                     "ENU",
                     "",
                     $"{Name}{(m_Amount > 1 ? $" : {m_Amount}" : "")}"

@@ -16,7 +16,7 @@ namespace Server
 
         public static void SendMessageTo(Item from, Mobile to, string text, int hue)
         {
-            to.NetState.SendUnicodeMessage(from.Serial, from.ItemID, MessageType.Regular, hue, 3, "ENU", "", text);
+            to.NetState.SendMessage(from.Serial, from.ItemID, MessageType.Regular, hue, 3, false, "ENU", "", text);
         }
     }
 }

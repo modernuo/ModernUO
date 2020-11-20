@@ -1434,7 +1434,7 @@ namespace Server
                     m_Warmode = value;
                     Delta(MobileDelta.Flags);
 
-                    m_NetState?.SendSetWarMode(value);
+                    m_NetState.SendSetWarMode(value);
 
                     if (!m_Warmode)
                     {
@@ -6114,18 +6114,18 @@ namespace Server
 
                 ProcessDelta();
 
-                Span<byte> regBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxUnicodeMessageLength(text)];
-                Span<byte> mutBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxUnicodeMessageLength(mutatedText)];
+                Span<byte> regBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
+                Span<byte> mutBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(mutatedText)];
 
-                var length = OutgoingMessagePackets.CreateUnicodeMessage(
+                var length = OutgoingMessagePackets.CreateMessage(
                     ref regBuffer,
-                    Serial, Body, type, hue, 3, m_Language, Name, text
+                    Serial, Body, type, hue, 3, false, m_Language, Name, text
                 );
                 regBuffer = regBuffer.Slice(0, length); // Adjust to the actual size
 
-                length = OutgoingMessagePackets.CreateUnicodeMessage(
+                length = OutgoingMessagePackets.CreateMessage(
                     ref mutBuffer,
-                    Serial, Body, type, hue, 3, m_Language, Name, mutatedText
+                    Serial, Body, type, hue, 3, false, m_Language, Name, mutatedText
                 );
                 mutBuffer = mutBuffer.Slice(0, length); // Adjust to the actual size
 
@@ -6449,7 +6449,7 @@ namespace Server
 
             if (amount > 0)
             {
-                ourState?.SendDamage(Serial, amount);
+                ourState.SendDamage(Serial, amount);
 
                 if (theirState != null && theirState != ourState)
                 {
@@ -6524,7 +6524,7 @@ namespace Server
             {
                 if (damaged.CanSeeVisibleDamage)
                 {
-                    ourState?.SendDamage(Serial, amount);
+                    ourState.SendDamage(Serial, amount);
                 }
 
                 if (theirState != null && theirState != ourState && damager.CanSeeVisibleDamage)
@@ -6559,7 +6559,7 @@ namespace Server
 
             if (message && amount > 0)
             {
-                m_NetState?.SendMessageLocalizedAffix(
+                m_NetState.SendMessageLocalizedAffix(
                     Serial.MinusOne,
                     -1,
                     MessageType.Label,
@@ -7278,13 +7278,13 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SendSound(int soundID)
         {
-            m_NetState?.SendSoundEffect(soundID, this);
+            m_NetState.SendSoundEffect(soundID, this);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SendSound(int soundID, IPoint3D p)
         {
-            m_NetState?.SendSoundEffect(soundID, p);
+            m_NetState.SendSoundEffect(soundID, p);
         }
 
         /**
@@ -9571,25 +9571,13 @@ namespace Server
                 return;
             }
 
-            var length = ascii
-                ? OutgoingMessagePackets.GetMaxAsciiMessageLength(text)
-                : OutgoingMessagePackets.GetMaxUnicodeMessageLength(text);
+            var length = OutgoingMessagePackets.GetMaxMessageLength(text);
 
             Span<byte> buffer = stackalloc byte[length];
-            if (ascii)
-            {
-                length = OutgoingMessagePackets.CreateAsciiMessage(
-                    ref buffer,
-                    Serial, Body, type, hue, 3, Name, text
-                );
-            }
-            else
-            {
-                length = OutgoingMessagePackets.CreateUnicodeMessage(
-                    ref buffer,
-                    Serial, Body, type, hue, 3, Language, Name, text
-                );
-            }
+            length = OutgoingMessagePackets.CreateMessage(
+                ref buffer,
+                Serial, Body, type, hue, 3, ascii, Language, Name, text
+            );
 
             buffer = buffer.Slice(0, length); // Adjust to the actual size
 
@@ -9667,48 +9655,20 @@ namespace Server
 
         public void PrivateOverheadMessage(MessageType type, int hue, bool ascii, string text, NetState state)
         {
-            if (state == null)
-            {
-                return;
-            }
-
-            if (ascii)
-            {
-                state.SendAsciiMessage(Serial, Body, type, hue, 3, Name, text);
-            }
-            else
-            {
-                state.SendUnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text);
-            }
+            state.SendMessage(Serial, Body, type, hue, 3, ascii, m_Language, Name, text);
         }
 
         public void PrivateOverheadMessage(MessageType type, int hue, int number, NetState state) =>
             PrivateOverheadMessage(type, hue, number, "", state);
 
         public void PrivateOverheadMessage(MessageType type, int hue, int number, string args, NetState state) =>
-            state?.SendMessageLocalized(Serial, Body, type, hue, 3, number, Name, args);
+            state.SendMessageLocalized(Serial, Body, type, hue, 3, number, Name, args);
 
-        public void LocalOverheadMessage(MessageType type, int hue, bool ascii, string text)
-        {
-            var ns = m_NetState;
-
-            if (ns == null)
-            {
-                return;
-            }
-
-            if (ascii)
-            {
-                ns.SendAsciiMessage(Serial, Body, type, hue, 3, Name, text);
-            }
-            else
-            {
-                ns.SendUnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text);
-            }
-        }
+        public void LocalOverheadMessage(MessageType type, int hue, bool ascii, string text) =>
+            m_NetState.SendMessage(Serial, Body, type, hue, 3, ascii, m_Language, Name, text);
 
         public void LocalOverheadMessage(MessageType type, int hue, int number, string args = "") =>
-            m_NetState?.SendMessageLocalized(Serial, Body, type, hue, 3, number, Name, args);
+            m_NetState.SendMessageLocalized(Serial, Body, type, hue, 3, number, Name, args);
 
         public void NonlocalOverheadMessage(MessageType type, int hue, int number, string args = "")
         {
@@ -9745,25 +9705,13 @@ namespace Server
                 return;
             }
 
-            var length = ascii
-                ? OutgoingMessagePackets.GetMaxAsciiMessageLength(text)
-                : OutgoingMessagePackets.GetMaxUnicodeMessageLength(text);
+            var length = OutgoingMessagePackets.GetMaxMessageLength(text);
 
             Span<byte> buffer = stackalloc byte[length];
-            if (ascii)
-            {
-                length = OutgoingMessagePackets.CreateAsciiMessage(
-                    ref buffer,
-                    Serial, Body, type, hue, 3, Name, text
-                );
-            }
-            else
-            {
-                length = OutgoingMessagePackets.CreateUnicodeMessage(
-                    ref buffer,
-                    Serial, Body, type, hue, 3, Language, Name, text
-                );
-            }
+            length = OutgoingMessagePackets.CreateMessage(
+                ref buffer,
+                Serial, Body, type, hue, 3, ascii, Language, Name, text
+            );
 
             buffer = buffer.Slice(0, length); // Adjust to the actual size
 
@@ -9780,13 +9728,11 @@ namespace Server
             eable.Free();
         }
 
-        public void SendLocalizedMessage(int number, string args = "", int hue = 0x3B2)
-        {
-            m_NetState?.SendMessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args);
-        }
+        public void SendLocalizedMessage(int number, string args = "", int hue = 0x3B2) =>
+            m_NetState.SendMessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args);
 
         public void SendLocalizedMessage(int number, bool append, string affix, string args = "", int hue = 0x3B2) =>
-            m_NetState?.SendMessageLocalizedAffix(
+            m_NetState.SendMessageLocalizedAffix(
                 Serial.MinusOne,
                 -1,
                 MessageType.Regular,
@@ -9805,7 +9751,7 @@ namespace Server
             SendMessage(0x3B2, string.Format(format, args));
 
         public void SendMessage(int hue, string text) =>
-            m_NetState?.SendUnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text);
+            m_NetState.SendMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, false, "ENU", "System", text);
 
         public void SendMessage(int hue, string format, params object[] args) =>
             SendMessage(hue, string.Format(format, args));
@@ -9816,7 +9762,7 @@ namespace Server
             SendAsciiMessage(0x3B2, string.Format(format, args));
 
         public void SendAsciiMessage(int hue, string text) =>
-            m_NetState?.SendAsciiMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text);
+            m_NetState.SendMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, true, null, "System", text);
 
         public void SendAsciiMessage(int hue, string format, params object[] args) =>
             SendAsciiMessage(hue, string.Format(format, args));

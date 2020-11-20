@@ -260,12 +260,14 @@ namespace Server.Items
                     }
                     else if (item is BagOfSending || item is Container)
                     {
-                        from.NetState.SendAsciiMessage(
+                        from.NetState.SendMessage(
                             m_Bag.Serial,
                             m_Bag.ItemID,
                             MessageType.Regular,
                             0x3B2,
                             3,
+                            true,
+                            null,
                             "",
                             "You cannot send a container through the bag of sending."
                         );

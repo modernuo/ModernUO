@@ -48,7 +48,7 @@ namespace Server.Engines.Quests.Hag
         {
             var hue = Notoriety.GetHue(NotorietyHandlers.CorpseNotoriety(from, this));
 
-            from.NetState.SendAsciiMessage(Serial, ItemID, MessageType.Label, hue, 3, "", "a charred corpse");
+            from.NetState.SendMessage(Serial, ItemID, MessageType.Label, hue, 3, true, null, "", "a charred corpse");
         }
 
         public override void Open(Mobile from, bool checkSelfLoot)

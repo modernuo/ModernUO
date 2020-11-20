@@ -216,13 +216,14 @@ namespace Server.Items
 
         public void DoDamage(Mobile to)
         {
-            to.NetState.SendUnicodeMessage(
+            to.NetState.SendMessage(
                 Serial,
                 ItemID,
                 MessageType.Regular,
                 0x3B2,
                 3,
-                "",
+                false,
+                "ENU",
                 "",
                 "The generator shoots an arc of electricity at you!"
             );

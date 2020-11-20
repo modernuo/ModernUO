@@ -256,7 +256,7 @@ namespace Server.Items
 
             if (desc.Length > 0)
             {
-                from.NetState.SendUnicodeMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", "", desc);
+                from.NetState.SendMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, false, "ENU", "", desc);
             }
         }
 

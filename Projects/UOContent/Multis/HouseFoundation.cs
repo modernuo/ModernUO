@@ -1980,7 +1980,7 @@ namespace Server.Multis
 
         public void SendGeneralInfoTo(NetState state)
         {
-            state?.Send(new DesignStateGeneral(Foundation, this));
+            state.Send(new DesignStateGeneral(Foundation, this));
         }
 
         public void SendDetailedInfoTo(NetState state)

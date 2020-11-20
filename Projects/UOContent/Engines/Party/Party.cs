@@ -428,14 +428,15 @@ namespace Server.Engines.PartySystem
 
         private void SendToStaffMessage(Mobile from, string text)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxUnicodeMessageLength(text)];
-            var length = OutgoingMessagePackets.CreateUnicodeMessage(
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
+            var length = OutgoingMessagePackets.CreateMessage(
                 ref buffer,
                 from.Serial,
                 from.Body,
                 MessageType.Regular,
                 from.SpeechHue,
                 3,
+                false,
                 from.Language,
                 from.Name,
                 text
