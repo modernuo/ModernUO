@@ -25,6 +25,19 @@ namespace Server.Network
         public const int HuedEffectLength = 36;
         public const int BoltEffectLength = 36;
 
+        public static void SendSoundEffect(this NetState ns, int soundID, IPoint3D target)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> buffer = stackalloc byte[SoundPacketLength];
+            CreateSoundEffect(ref buffer, soundID, target);
+
+            ns.Send(buffer);
+        }
+
         public static void CreateSoundEffect(ref Span<byte> buffer, int soundID, IPoint3D target)
         {
             var writer = new SpanWriter(buffer);
@@ -35,25 +48,6 @@ namespace Server.Network
             writer.Write((short)target.X);
             writer.Write((short)target.Y);
             writer.Write((short)target.Z);
-        }
-
-        public static void SendSoundEffect(this NetState ns, int soundID, IPoint3D target)
-        {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
-            {
-                return;
-            }
-
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0x54); // Packet ID
-            writer.Write((byte)1); // flags
-            writer.Write((short)soundID);
-            writer.Write((short)0); // volume
-            writer.Write((short)target.X);
-            writer.Write((short)target.Y);
-            writer.Write((short)target.Z);
-
-            ns.Send(ref buffer, writer.Position);
         }
 
         public static void CreateParticleEffect(
