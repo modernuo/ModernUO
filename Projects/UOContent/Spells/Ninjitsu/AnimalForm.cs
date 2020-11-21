@@ -72,7 +72,7 @@ namespace Server.Spells.Ninjitsu
         {
             if (GetContext(m)?.SpeedBoost == true)
             {
-                m.Send(SpeedControl.MountSpeed);
+                m.NetState.SendSpeedControl(SpeedControlSetting.Mount);
             }
         }
 
@@ -243,7 +243,7 @@ namespace Server.Spells.Ninjitsu
 
             if (entry.SpeedBoost)
             {
-                m.Send(SpeedControl.MountSpeed);
+                m.NetState.SendSpeedControl(SpeedControlSetting.Mount);
             }
 
             SkillMod mod = null;
@@ -296,7 +296,7 @@ namespace Server.Spells.Ninjitsu
 
             if (context.SpeedBoost)
             {
-                m.Send(SpeedControl.Disable);
+                m.NetState.SendSpeedControl(SpeedControlSetting.Disable);
             }
 
             var mod = context.Mod;

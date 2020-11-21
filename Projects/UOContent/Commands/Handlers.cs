@@ -85,12 +85,12 @@ namespace Server.Commands
             {
                 if (e.Length == 1 && !e.GetBoolean(0))
                 {
-                    from.Send(SpeedControl.Disable);
+                    from.NetState.SendSpeedControl(SpeedControlSetting.Disable);
                     from.SendMessage("Speed boost has been disabled.");
                 }
                 else
                 {
-                    from.Send(SpeedControl.MountSpeed);
+                    from.NetState.SendSpeedControl(SpeedControlSetting.Mount);
                     from.SendMessage("Speed boost has been enabled.");
                 }
             }

@@ -4766,12 +4766,7 @@ namespace Server
                 DisruptiveAction();
             }
 
-            m_NetState?.Send(
-                MovementAck.Instantiate(
-                    m_NetState.Sequence,
-                    this
-                )
-            );
+            m_NetState.SendMovementAck(m_NetState.Sequence, this);
 
             SetLocation(newLocation, false);
             SetDirection(d);

@@ -38,7 +38,7 @@ namespace Server.Spells.Spellweaving
 
             if (context?.Type == typeof(ReaperFormSpell))
             {
-                m.Send(SpeedControl.WalkSpeed);
+                m.NetState.SendSpeedControl(SpeedControlSetting.Walk);
             }
         }
 
@@ -46,12 +46,12 @@ namespace Server.Spells.Spellweaving
         {
             m.PlaySound(0x1BA);
 
-            m.Send(SpeedControl.WalkSpeed);
+            m.NetState.SendSpeedControl(SpeedControlSetting.Walk);
         }
 
         public override void RemoveEffect(Mobile m)
         {
-            m.Send(SpeedControl.Disable);
+            m.NetState.SendSpeedControl(SpeedControlSetting.Disable);
         }
     }
 }

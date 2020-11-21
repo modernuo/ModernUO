@@ -520,7 +520,7 @@ namespace Server.Network
 
             if (state.Sequence == 0 && seq != 0 || !from.Move(dir))
             {
-                state.Send(new MovementRej(seq, from));
+                state.SendMovementRej(seq, from);
                 state.Sequence = 0;
 
                 from.ClearFastwalkStack();
