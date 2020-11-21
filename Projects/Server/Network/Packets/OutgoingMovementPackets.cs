@@ -90,9 +90,7 @@ namespace Server.Network
             ns.Send(ref buffer, 8);
         }
 
-        public static void SendInitialFaswalkStack(
-            this NetState ns, int k1 = 0, int k2 = 0, int k3 = 0, int k4 = 0, int k5 = 0, int k6 = 0
-        )
+        public static void SendInitialFaswalkStack(this NetState ns, uint[] keys)
         {
             if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
@@ -102,15 +100,15 @@ namespace Server.Network
             var writer = new CircularBufferWriter(buffer);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)0x1); // Subpacket
-            writer.Write(k1);
-            writer.Write(k2);
-            writer.Write(k3);
-            writer.Write(k4);
-            writer.Write(k5);
-            writer.Write(k6);
+            writer.Write(keys[0]);
+            writer.Write(keys[1]);
+            writer.Write(keys[2]);
+            writer.Write(keys[3]);
+            writer.Write(keys[4]);
+            writer.Write(keys[5]);
         }
 
-        public static void SendAddToFastwalkStack(this NetState ns, int k1 = 0)
+        public static void SendFastwalkStackKey(this NetState ns, uint key = 0)
         {
             if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
@@ -120,7 +118,7 @@ namespace Server.Network
             var writer = new CircularBufferWriter(buffer);
             writer.Write((byte)0xBF);  // Packet ID
             writer.Write((ushort)0x2); // Subpacket
-            writer.Write(k1);
+            writer.Write(key);
         }
     }
 }
