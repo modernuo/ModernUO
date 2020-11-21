@@ -4557,12 +4557,7 @@ namespace Server
 
             var map = m_Map;
 
-            if (map == null)
-            {
-                return false;
-            }
-
-            if (!Region.CanMove(this, d, newLocation, oldLocation, m_Map))
+            if (map == null || !Region.CanMove(this, d, newLocation, oldLocation, map))
             {
                 return false;
             }
