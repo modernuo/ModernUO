@@ -152,28 +152,23 @@ namespace Server
 
         public static void Broadcast(int hue, bool ascii, string text)
         {
-            Packet p;
+            var length = OutgoingMessagePackets.GetMaxMessageLength(text);
 
-            if (ascii)
-            {
-                p = new AsciiMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text);
-            }
-            else
-            {
-                p = new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text);
-            }
+            Span<byte> buffer = stackalloc byte[length];
+            length = OutgoingMessagePackets.CreateMessage(
+                ref buffer,
+                Serial.MinusOne, -1, MessageType.Regular, hue, 3, ascii, "ENU", "System", text
+            );
 
-            p.Acquire();
+            buffer = buffer.Slice(0, length); // Adjust to the actual size
 
             foreach (var ns in TcpServer.Instances)
             {
                 if (ns.Mobile != null)
                 {
-                    ns.Send(p);
+                    ns.Send(buffer);
                 }
             }
-
-            p.Release();
         }
 
         public static void Broadcast(int hue, bool ascii, string format, params object[] args)

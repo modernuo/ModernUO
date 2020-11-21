@@ -35,7 +35,7 @@ namespace Server
                 return;
             }
 
-            Mobile.NetState?.SendSetArrow(x, y, Target.Serial);
+            Mobile.NetState.SendSetArrow(x, y, Target.Serial);
         }
 
         public void Stop()
@@ -51,7 +51,7 @@ namespace Server
             }
 
             Mobile.ClearQuestArrow();
-            Mobile.NetState?.SendCancelArrow(x, y, Target.Serial);
+            Mobile.NetState.SendCancelArrow(x, y, Target.Serial);
 
             Running = false;
             OnStop();

@@ -51,7 +51,7 @@ namespace Server.Items
                 return;
             }
 
-            to.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, hue, 3, number, "", ""));
+            to.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Regular, hue, 3, number);
         }
 
         private void SendMessageTo(Mobile to, string text, int hue)
@@ -61,7 +61,7 @@ namespace Server.Items
                 return;
             }
 
-            to.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, hue, 3, "ENU", "", text));
+            to.NetState.SendMessage(Serial, ItemID, MessageType.Regular, hue, 3, false, "ENU", "", text);
         }
 
         public virtual bool ExecuteTrap(Mobile from)

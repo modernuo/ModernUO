@@ -268,7 +268,7 @@ namespace Server.Items
                 return;
             }
 
-            from.NetState?.SendDisplayEquipmentInfo(Serial, number, Crafter?.RawName, false, attrs);
+            from.NetState.SendDisplayEquipmentInfo(Serial, number, Crafter?.RawName, false, attrs);
         }
 
         public void Cast(Spell spell)

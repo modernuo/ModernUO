@@ -2332,19 +2332,14 @@ namespace Server
             MoveToWorld(location, m_Map);
         }
 
-        public void LabelTo(Mobile to, int number)
+        public void LabelTo(Mobile to, int number, string args = "")
         {
-            to.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", ""));
-        }
-
-        public void LabelTo(Mobile to, int number, string args)
-        {
-            to.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", args));
+            to.NetState.SendMessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", args);
         }
 
         public void LabelTo(Mobile to, string text)
         {
-            to.Send(new UnicodeMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", text));
+            to.NetState.SendMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, false, "ENU", "", text);
         }
 
         public void LabelTo(Mobile to, string format, params object[] args)
@@ -2352,14 +2347,9 @@ namespace Server
             LabelTo(to, string.Format(format, args));
         }
 
-        public void LabelToAffix(Mobile to, int number, AffixType type, string affix)
+        public void LabelToAffix(Mobile to, int number, AffixType type, string affix, string args = "")
         {
-            to.Send(new MessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, ""));
-        }
-
-        public void LabelToAffix(Mobile to, int number, AffixType type, string affix, string args)
-        {
-            to.Send(new MessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, args));
+            to.NetState.SendMessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, args);
         }
 
         public virtual void LabelLootTypeTo(Mobile to)
@@ -3433,10 +3423,18 @@ namespace Server
                 return;
             }
 
-            Packet p = null;
             var worldLoc = GetWorldLocation();
-
             var eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
+
+            var length = OutgoingMessagePackets.GetMaxMessageLength(text);
+
+            Span<byte> buffer = stackalloc byte[length];
+            length = OutgoingMessagePackets.CreateMessage(
+                ref buffer,
+                Serial, m_ItemID, type, hue, 3, ascii, "ENU", Name, text
+            );
+
+            buffer = buffer.Slice(0, length); // Adjust to the actual size
 
             foreach (var state in eable)
             {
@@ -3444,45 +3442,31 @@ namespace Server
 
                 if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
                 {
-                    if (p == null)
-                    {
-                        if (ascii)
-                        {
-                            p = new AsciiMessage(Serial, m_ItemID, type, hue, 3, Name, text);
-                        }
-                        else
-                        {
-                            p = new UnicodeMessage(Serial, m_ItemID, type, hue, 3, "ENU", Name, text);
-                        }
-
-                        p.Acquire();
-                    }
-
-                    state.Send(p);
+                    state.Send(buffer);
                 }
             }
-
-            Packet.Release(p);
 
             eable.Free();
         }
 
-        public void PublicOverheadMessage(MessageType type, int hue, int number)
-        {
-            PublicOverheadMessage(type, hue, number, "");
-        }
-
-        public void PublicOverheadMessage(MessageType type, int hue, int number, string args)
+        public void PublicOverheadMessage(MessageType type, int hue, int number, string args = "")
         {
             if (m_Map == null)
             {
                 return;
             }
 
-            Packet p = null;
             var worldLoc = GetWorldLocation();
-
             var eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
+
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)];
+
+            var length = OutgoingMessagePackets.CreateMessageLocalized(
+                ref buffer,
+                Serial, m_ItemID, type, hue, 3, number, Name, args
+            );
+
+            buffer = buffer.Slice(0, length); // Adjust to the actual size
 
             foreach (var state in eable)
             {
@@ -3490,13 +3474,9 @@ namespace Server
 
                 if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
                 {
-                    p ??= Packet.Acquire(new MessageLocalized(Serial, m_ItemID, type, hue, 3, number, Name, args));
-
-                    state.Send(p);
+                    state.Send(buffer);
                 }
             }
-
-            Packet.Release(p);
 
             eable.Free();
         }
@@ -3994,24 +3974,14 @@ namespace Server
         public Point3D GetWorldTop() => RootParent?.Location ??
                                         new Point3D(m_Location.m_X, m_Location.m_Y, m_Location.m_Z + ItemData.CalcHeight);
 
-        public void SendLocalizedMessageTo(Mobile to, int number)
+        public void SendLocalizedMessageTo(Mobile to, int number, string args = "")
         {
             if (Deleted || !to.CanSee(this))
             {
                 return;
             }
 
-            to.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", ""));
-        }
-
-        public void SendLocalizedMessageTo(Mobile to, int number, string args)
-        {
-            if (Deleted || !to.CanSee(this))
-            {
-                return;
-            }
-
-            to.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", args));
+            to.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", args);
         }
 
         public void SendLocalizedMessageTo(Mobile to, int number, AffixType affixType, string affix, string args)
@@ -4021,19 +3991,17 @@ namespace Server
                 return;
             }
 
-            to.Send(
-                new MessageLocalizedAffix(
-                    Serial,
-                    ItemID,
-                    MessageType.Regular,
-                    0x3B2,
-                    3,
-                    number,
-                    "",
-                    affixType,
-                    affix,
-                    args
-                )
+            to.NetState.SendMessageLocalizedAffix(
+                Serial,
+                ItemID,
+                MessageType.Regular,
+                0x3B2,
+                3,
+                number,
+                "",
+                affixType,
+                affix,
+                args
             );
         }
 
@@ -4254,17 +4222,15 @@ namespace Server
 
             if (opl.Header > 0)
             {
-                from.Send(
-                    new MessageLocalized(
-                        Serial,
-                        m_ItemID,
-                        MessageType.Label,
-                        0x3B2,
-                        3,
-                        opl.Header,
-                        Name,
-                        opl.HeaderArgs
-                    )
+                from.NetState.SendMessageLocalized(
+                    Serial,
+                    m_ItemID,
+                    MessageType.Label,
+                    0x3B2,
+                    3,
+                    opl.Header,
+                    Name,
+                    opl.HeaderArgs
                 );
             }
         }
@@ -4292,39 +4258,35 @@ namespace Server
             {
                 if (m_Amount <= 1)
                 {
-                    ns.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", ""));
+                    ns.SendMessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber);
                 }
                 else
                 {
-                    ns.Send(
-                        new MessageLocalizedAffix(
-                            Serial,
-                            m_ItemID,
-                            MessageType.Label,
-                            0x3B2,
-                            3,
-                            LabelNumber,
-                            "",
-                            AffixType.Append,
-                            $" : {m_Amount}",
-                            ""
-                        )
-                    );
-                }
-            }
-            else
-            {
-                ns.Send(
-                    new UnicodeMessage(
+                    ns.SendMessageLocalizedAffix(
                         Serial,
                         m_ItemID,
                         MessageType.Label,
                         0x3B2,
                         3,
-                        "ENU",
+                        LabelNumber,
                         "",
-                        Name + (m_Amount > 1 ? $" : {m_Amount}" : "")
-                    )
+                        AffixType.Append,
+                        $" : {m_Amount}"
+                    );
+                }
+            }
+            else
+            {
+                ns.SendMessage(
+                    Serial,
+                    m_ItemID,
+                    MessageType.Label,
+                    0x3B2,
+                    3,
+                    false,
+                    "ENU",
+                    "",
+                    $"{Name}{(m_Amount > 1 ? $" : {m_Amount}" : "")}"
                 );
             }
         }

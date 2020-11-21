@@ -239,21 +239,24 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            // : joined the party.
-            SendToAll(
-                new MessageLocalizedAffix(
-                    Serial.MinusOne,
-                    -1,
-                    MessageType.Label,
-                    0x3B2,
-                    3,
-                    1008094,
-                    "",
-                    AffixType.Prepend | AffixType.System,
-                    from.Name,
-                    ""
-                )
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(from.Name, "")];
+            var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
+                ref buffer,
+                Serial.MinusOne,
+                -1,
+                MessageType.Label,
+                0x3B2,
+                3,
+                1008094,
+                "",
+                AffixType.Prepend | AffixType.System,
+                from.Name
             );
+
+            buffer = buffer.Slice(0, length); // Adjust to the actual size
+
+            // : joined the party.
+            SendToAll(ref buffer, true);
 
             from.SendLocalizedMessage(1005445); // You have been added to the party.
 
@@ -288,32 +291,31 @@ namespace Server.Engines.PartySystem
             if (m == Leader)
             {
                 Disband();
+                return;
             }
-            else
+
+            for (var i = 0; i < Members.Count; ++i)
             {
-                for (var i = 0; i < Members.Count; ++i)
+                if (Members[i].Mobile == m)
                 {
-                    if (Members[i].Mobile == m)
-                    {
-                        Members.RemoveAt(i);
+                    Members.RemoveAt(i);
 
-                        m.Party = null;
-                        m.Send(new PartyEmptyList(m));
+                    m.Party = null;
+                    m.Send(new PartyEmptyList(m));
 
-                        m.SendLocalizedMessage(1005451); // You have been removed from the party.
+                    m.SendLocalizedMessage(1005451); // You have been removed from the party.
 
-                        SendToAll(new PartyRemoveMember(m, this));
-                        SendToAll(1005452); // A player has been removed from your party.
+                    SendToAll(new PartyRemoveMember(m, this));
+                    SendToAll(1005452); // A player has been removed from your party.
 
-                        break;
-                    }
+                    break;
                 }
+            }
 
-                if (Members.Count == 1)
-                {
-                    SendToAll(1005450); // The last person has left the party...
-                    Disband();
-                }
+            if (Members.Count == 1)
+            {
+                SendToAll(1005450); // The last person has left the party...
+                Disband();
             }
         }
 
@@ -357,19 +359,16 @@ namespace Server.Engines.PartySystem
             }
 
             // : You are invited to join the party. Type /accept to join or /decline to decline the offer.
-            target.Send(
-                new MessageLocalizedAffix(
-                    Serial.MinusOne,
-                    -1,
-                    MessageType.Label,
-                    0x3B2,
-                    3,
-                    1008089,
-                    "",
-                    AffixType.Prepend | AffixType.System,
-                    from.Name,
-                    ""
-                )
+            target.NetState.SendMessageLocalizedAffix(
+                Serial.MinusOne,
+                -1,
+                MessageType.Label,
+                0x3B2,
+                3,
+                1008089,
+                "",
+                AffixType.Prepend | AffixType.System,
+                from.Name
             );
 
             from.SendLocalizedMessage(1008090); // You have invited them to join the party.
@@ -380,19 +379,17 @@ namespace Server.Engines.PartySystem
             DeclineTimer.Start(target, from);
         }
 
-        public void SendToAll(int number)
+        public void SendToAll(int number, string args = "", int hue = 0x3B2)
         {
-            SendToAll(number, "", 0x3B2);
-        }
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)];
+            var length = OutgoingMessagePackets.CreateMessageLocalized(
+                ref buffer,
+                Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args
+            );
 
-        public void SendToAll(int number, string args)
-        {
-            SendToAll(number, args, 0x3B2);
-        }
+            buffer = buffer.Slice(0, length); // Adjust to the actual size
 
-        public void SendToAll(int number, string args, int hue)
-        {
-            SendToAll(new MessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args));
+            SendToAll(ref buffer, true);
         }
 
         public void SendPublicMessage(Mobile from, string text)
@@ -431,7 +428,20 @@ namespace Server.Engines.PartySystem
 
         private void SendToStaffMessage(Mobile from, string text)
         {
-            Packet p = null;
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
+            var length = OutgoingMessagePackets.CreateMessage(
+                ref buffer,
+                from.Serial,
+                from.Body,
+                MessageType.Regular,
+                from.SpeechHue,
+                3,
+                false,
+                from.Language,
+                from.Name,
+                text
+            );
+            buffer = buffer.Slice(0, length); // Adjust to the actual size
 
             foreach (var ns in from.GetClientsInRange(8))
             {
@@ -440,27 +450,9 @@ namespace Server.Engines.PartySystem
                 if (mob?.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel &&
                     mob.Party != this && !m_Listeners.Contains(mob))
                 {
-                    if (p == null)
-                    {
-                        p = Packet.Acquire(
-                            new UnicodeMessage(
-                                from.Serial,
-                                from.Body,
-                                MessageType.Regular,
-                                from.SpeechHue,
-                                3,
-                                from.Language,
-                                from.Name,
-                                text
-                            )
-                        );
-                    }
-
-                    ns.Send(p);
+                    ns.Send(buffer);
                 }
             }
-
-            Packet.Release(p);
         }
 
         private void SendToStaffMessage(Mobile from, string format, params object[] args)
@@ -477,7 +469,17 @@ namespace Server.Engines.PartySystem
                 Members[i].Mobile.Send(p);
             }
 
-            if (p is MessageLocalized || p is MessageLocalizedAffix || p is UnicodeMessage || p is AsciiMessage)
+            p.Release();
+        }
+
+        public void SendToAll(ref Span<byte> span, bool isSpeech)
+        {
+            for (var i = 0; i < Members.Count; ++i)
+            {
+                Members[i].Mobile.NetState?.Send(span);
+            }
+
+            if (isSpeech)
             {
                 for (var i = 0; i < m_Listeners.Count; ++i)
                 {
@@ -485,12 +487,10 @@ namespace Server.Engines.PartySystem
 
                     if (mob.Party != this)
                     {
-                        mob.Send(p);
+                        mob.NetState?.Send(span);
                     }
                 }
             }
-
-            p.Release();
         }
 
         private class RejoinTimer : Timer
@@ -511,20 +511,22 @@ namespace Server.Engines.PartySystem
                 m_Mobile.SendLocalizedMessage(1005437); // You have rejoined the party.
                 m_Mobile.Send(new PartyMemberList(p));
 
-                var message = Packet.Acquire(
-                    new MessageLocalizedAffix(
-                        Serial.MinusOne,
-                        -1,
-                        MessageType.Label,
-                        0x3B2,
-                        3,
-                        1008087,
-                        "",
-                        AffixType.Prepend | AffixType.System,
-                        m_Mobile.Name,
-                        ""
-                    )
+                Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")];
+                var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
+                    ref buffer,
+                    Serial.MinusOne,
+                    -1,
+                    MessageType.Label,
+                    0x3B2,
+                    3,
+                    1008087,
+                    "",
+                    AffixType.Prepend | AffixType.System,
+                    m_Mobile.Name
                 );
+
+                buffer = buffer.Slice(0, length); // Adjust to the actual size
+
                 var attrs = Packet.Acquire(new MobileAttributesN(m_Mobile));
 
                 foreach (var mi in p.Members)
@@ -533,7 +535,7 @@ namespace Server.Engines.PartySystem
 
                     if (m != m_Mobile)
                     {
-                        m.Send(message);
+                        m.NetState?.Send(buffer);
                         m.Send(new MobileStatusCompact(m_Mobile.CanBeRenamedBy(m), m_Mobile));
                         m.Send(attrs);
                         m_Mobile.Send(new MobileStatusCompact(m.CanBeRenamedBy(m_Mobile), m));
@@ -541,7 +543,6 @@ namespace Server.Engines.PartySystem
                     }
                 }
 
-                Packet.Release(message);
                 Packet.Release(attrs);
             }
         }

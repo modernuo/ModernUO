@@ -19,7 +19,7 @@ namespace Server.Tests.Network
             var name = "Stuff";
             var args = "Arguments";
 
-            var data = new MessageLocalized(
+            var expected = new MessageLocalized(
                 serial,
                 graphic,
                 messageType,
@@ -30,21 +30,20 @@ namespace Server.Tests.Network
                 args
             ).Compile();
 
-            Span<byte> expectedData = stackalloc byte[50 + args.Length * 2];
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0xC1);                  // Packet ID
-            expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMessageLocalized(
+                serial,
+                graphic,
+                messageType,
+                hue,
+                font,
+                number,
+                name,
+                args
+            );
 
-            expectedData.Write(ref pos, serial);
-            expectedData.Write(ref pos, (ushort)graphic);
-            expectedData.Write(ref pos, (byte)messageType);
-            expectedData.Write(ref pos, (ushort)hue);
-            expectedData.Write(ref pos, (ushort)font);
-            expectedData.Write(ref pos, number);
-            expectedData.WriteAsciiFixed(ref pos, name, 30);
-            expectedData.WriteLittleUniNull(ref pos, args);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -61,7 +60,7 @@ namespace Server.Tests.Network
             var affixType = AffixType.System;
             var affix = "Affix";
 
-            var data = new MessageLocalizedAffix(
+            var expected = new MessageLocalizedAffix(
                 serial,
                 graphic,
                 messageType,
@@ -74,23 +73,22 @@ namespace Server.Tests.Network
                 args
             ).Compile();
 
-            Span<byte> expectedData = stackalloc byte[52 + affix.Length + args.Length * 2];
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0xCC);                  // Packet ID
-            expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMessageLocalizedAffix(
+                serial,
+                graphic,
+                messageType,
+                hue,
+                font,
+                number,
+                name,
+                affixType,
+                affix,
+                args
+            );
 
-            expectedData.Write(ref pos, serial);
-            expectedData.Write(ref pos, (ushort)graphic);
-            expectedData.Write(ref pos, (byte)messageType);
-            expectedData.Write(ref pos, (ushort)hue);
-            expectedData.Write(ref pos, (ushort)font);
-            expectedData.Write(ref pos, number);
-            expectedData.Write(ref pos, (byte)affixType);
-            expectedData.WriteAsciiFixed(ref pos, name, 30);
-            expectedData.WriteAsciiNull(ref pos, affix);
-            expectedData.WriteBigUniNull(ref pos, args);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -104,7 +102,7 @@ namespace Server.Tests.Network
             var name = "Stuff";
             var text = "Some Text";
 
-            var data = new AsciiMessage(
+            var expected = new AsciiMessage(
                 serial,
                 graphic,
                 messageType,
@@ -114,20 +112,21 @@ namespace Server.Tests.Network
                 text
             ).Compile();
 
-            Span<byte> expectedData = stackalloc byte[45 + text.Length];
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0x1C);                  // Packet ID
-            expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMessage(
+                serial,
+                graphic,
+                messageType,
+                hue,
+                font,
+                true,
+                null,
+                name,
+                text
+            );
 
-            expectedData.Write(ref pos, serial);
-            expectedData.Write(ref pos, (ushort)graphic);
-            expectedData.Write(ref pos, (byte)messageType);
-            expectedData.Write(ref pos, (ushort)hue);
-            expectedData.Write(ref pos, (ushort)font);
-            expectedData.WriteAsciiFixed(ref pos, name, 30);
-            expectedData.WriteAsciiNull(ref pos, text);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -142,7 +141,7 @@ namespace Server.Tests.Network
             var name = "Stuff";
             var text = "Some Text";
 
-            var data = new UnicodeMessage(
+            var expected = new UnicodeMessage(
                 serial,
                 graphic,
                 messageType,
@@ -153,21 +152,21 @@ namespace Server.Tests.Network
                 text
             ).Compile();
 
-            Span<byte> expectedData = stackalloc byte[50 + text.Length * 2];
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0xAE);                  // Packet ID
-            expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMessage(
+                serial,
+                graphic,
+                messageType,
+                hue,
+                font,
+                false,
+                lang,
+                name,
+                text
+            );
 
-            expectedData.Write(ref pos, serial);
-            expectedData.Write(ref pos, (ushort)graphic);
-            expectedData.Write(ref pos, (byte)messageType);
-            expectedData.Write(ref pos, (ushort)hue);
-            expectedData.Write(ref pos, (ushort)font);
-            expectedData.WriteAsciiFixed(ref pos, lang, 4);
-            expectedData.WriteAsciiFixed(ref pos, name, 30);
-            expectedData.WriteBigUniNull(ref pos, text);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -176,16 +175,13 @@ namespace Server.Tests.Network
             Serial serial = 0x1;
             Serial serial2 = 0x2;
 
-            var data = new FollowMessage(serial, serial2).Compile();
+            var expected = new FollowMessage(serial, serial2).Compile();
 
-            Span<byte> expectedData = stackalloc byte[9];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendFollowMessage(serial, serial2);
 
-            expectedData.Write(ref pos, (byte)0x15); // Packet ID
-            expectedData.Write(ref pos, serial);
-            expectedData.Write(ref pos, serial2);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 }

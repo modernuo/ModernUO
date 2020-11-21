@@ -343,38 +343,31 @@ namespace Server.Guilds
 
         public void AllianceChat(Mobile from, int hue, string text)
         {
-            Packet p = null;
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
+            var length = OutgoingMessagePackets.CreateMessage(
+                ref buffer,
+                from.Serial,
+                from.Body,
+                MessageType.Alliance,
+                hue,
+                3,
+                false,
+                from.Language,
+                from.Name,
+                text
+            );
+
+            buffer = buffer.Slice(0, length); // Adjust to the actual size
+
             for (var i = 0; i < m_Members.Count; i++)
             {
                 var g = m_Members[i];
 
                 for (var j = 0; j < g.Members.Count; j++)
                 {
-                    var m = g.Members[j];
-
-                    var state = m.NetState;
-
-                    if (state != null)
-                    {
-                        p ??= Packet.Acquire(
-                            new UnicodeMessage(
-                                from.Serial,
-                                from.Body,
-                                MessageType.Alliance,
-                                hue,
-                                3,
-                                from.Language,
-                                from.Name,
-                                text
-                            )
-                        );
-
-                        state.Send(p);
-                    }
+                    g.Members[j].NetState?.Send(buffer);
                 }
             }
-
-            Packet.Release(p);
         }
 
         public void AllianceChat(Mobile from, string text)
@@ -1512,24 +1505,18 @@ namespace Server.Guilds
 
         public void GuildChat(Mobile from, int hue, string text)
         {
-            Packet p = null;
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
+            var length = OutgoingMessagePackets.CreateMessage(
+                ref buffer,
+                from.Serial, from.Body, MessageType.Guild, hue, 3, false, from.Language, from.Name, text
+            );
+
+            buffer = buffer.Slice(0, length); // Adjust to the actual size
+
             for (var i = 0; i < Members.Count; i++)
             {
-                var m = Members[i];
-
-                var state = m.NetState;
-
-                if (state != null)
-                {
-                    p ??= Packet.Acquire(
-                        new UnicodeMessage(from.Serial, from.Body, MessageType.Guild, hue, 3, from.Language, from.Name, text)
-                    );
-
-                    state.Send(p);
-                }
+                Members[i].NetState?.Send(buffer);
             }
-
-            Packet.Release(p);
         }
 
         public void GuildChat(Mobile from, string text)

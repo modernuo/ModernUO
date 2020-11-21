@@ -11,12 +11,12 @@ namespace Server
 
         public static void SendLocalizedMessageTo(Item from, Mobile to, int number, string args, int hue)
         {
-            to.Send(new MessageLocalized(from.Serial, from.ItemID, MessageType.Regular, hue, 3, number, "", args));
+            to.NetState.SendMessageLocalized(from.Serial, from.ItemID, MessageType.Regular, hue, 3, number, "", args);
         }
 
         public static void SendMessageTo(Item from, Mobile to, string text, int hue)
         {
-            to.Send(new UnicodeMessage(from.Serial, from.ItemID, MessageType.Regular, hue, 3, "ENU", "", text));
+            to.NetState.SendMessage(from.Serial, from.ItemID, MessageType.Regular, hue, 3, false, "ENU", "", text);
         }
     }
 }

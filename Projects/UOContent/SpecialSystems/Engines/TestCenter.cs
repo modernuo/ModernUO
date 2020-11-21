@@ -226,17 +226,18 @@ namespace Server.Misc
 
                                 if (sb.Length + 1 + v.Length >= 256)
                                 {
-                                    sender.Send(
-                                        new AsciiMessage(
-                                            Server.Serial.MinusOne,
-                                            -1,
-                                            MessageType.Label,
-                                            0x35,
-                                            3,
-                                            "System",
-                                            sb.ToString()
-                                        )
+                                    sender.SendMessage(
+                                        Server.Serial.MinusOne,
+                                        -1,
+                                        MessageType.Label,
+                                        0x35,
+                                        3,
+                                        true,
+                                        null,
+                                        "System",
+                                        sb.ToString()
                                     );
+
                                     sb = new StringBuilder();
                                     sb.Append(v);
                                 }
@@ -249,16 +250,16 @@ namespace Server.Misc
 
                             if (sb.Length > 0)
                             {
-                                sender.Send(
-                                    new AsciiMessage(
-                                        Server.Serial.MinusOne,
-                                        -1,
-                                        MessageType.Label,
-                                        0x35,
-                                        3,
-                                        "System",
-                                        sb.ToString()
-                                    )
+                                sender.SendMessage(
+                                    Server.Serial.MinusOne,
+                                    -1,
+                                    MessageType.Label,
+                                    0x35,
+                                    3,
+                                    true,
+                                    null,
+                                    "System",
+                                    sb.ToString()
                                 );
                             }
 

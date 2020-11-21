@@ -15,12 +15,23 @@
 
 using System.Buffers;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace Server.Network
 {
     public static class PacketUtilities
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WritePacketLength(this CircularBufferWriter writer)
+        {
+            var length = writer.Position;
+            writer.Seek(1, SeekOrigin.Begin);
+            writer.Write((ushort)length);
+            writer.Seek(length, SeekOrigin.Begin);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WritePacketLength(this SpanWriter writer)
         {
             var length = writer.Position;
             writer.Seek(1, SeekOrigin.Begin);

@@ -276,17 +276,13 @@ namespace Server.Items
             }
             else if (from.AccessLevel < AccessLevel.GameMaster && !Guild.IsMember(from))
             {
-                from.Send(
-                    new MessageLocalized(
-                        Serial,
-                        ItemID,
-                        MessageType.Regular,
-                        0x3B2,
-                        3,
-                        501158,
-                        "",
-                        ""
-                    )
+                from.NetState.SendMessageLocalized(
+                    Serial,
+                    ItemID,
+                    MessageType.Regular,
+                    0x3B2,
+                    3,
+                    501158
                 ); // You are not a member ...
             }
             else

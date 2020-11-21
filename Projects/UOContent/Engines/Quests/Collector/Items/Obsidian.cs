@@ -189,17 +189,13 @@ namespace Server.Engines.Quests.Collector
             {
                 if (!IsChildOf(from.Backpack))
                 {
-                    from.Send(
-                        new MessageLocalized(
-                            Serial,
-                            ItemID,
-                            MessageType.Regular,
-                            0x2C,
-                            3,
-                            500309,
-                            "",
-                            ""
-                        )
+                    from.NetState.SendMessageLocalized(
+                        Serial,
+                        ItemID,
+                        MessageType.Regular,
+                        0x2C,
+                        3,
+                        500309
                     ); // Nothing Happens.
                 }
                 else
@@ -286,33 +282,30 @@ namespace Server.Engines.Quests.Collector
                             targObsidian.StatueName = RandomName(from);
                         }
 
-                        from.Send(
-                            new AsciiMessage(
-                                targObsidian.Serial,
-                                targObsidian.ItemID,
-                                MessageType.Regular,
-                                0x59,
-                                3,
-                                m_Obsidian.Name,
-                                "Something Happened."
-                            )
+                        from.NetState.SendMessage(
+                            targObsidian.Serial,
+                            targObsidian.ItemID,
+                            MessageType.Regular,
+                            0x59,
+                            3,
+                            true,
+                            null,
+                            m_Obsidian.Name,
+                            "Something Happened."
                         );
 
                         return;
                     }
                 }
 
-                from.Send(
-                    new MessageLocalized(
-                        m_Obsidian.Serial,
-                        m_Obsidian.ItemID,
-                        MessageType.Regular,
-                        0x2C,
-                        3,
-                        500309,
-                        m_Obsidian.Name,
-                        ""
-                    )
+                from.NetState.SendMessageLocalized(
+                    m_Obsidian.Serial,
+                    m_Obsidian.ItemID,
+                    MessageType.Regular,
+                    0x2C,
+                    3,
+                    500309,
+                    m_Obsidian.Name
                 ); // Nothing Happens.
             }
         }

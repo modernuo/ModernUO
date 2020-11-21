@@ -2036,7 +2036,7 @@ namespace Server.Items
                 return;
             }
 
-            from.NetState?.SendDisplayEquipmentInfo(Serial, number, m_Crafter?.RawName, false, attrs);
+            from.NetState.SendDisplayEquipmentInfo(Serial, number, m_Crafter?.RawName, false, attrs);
         }
 
         [Flags]
