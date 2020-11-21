@@ -4494,6 +4494,179 @@ namespace Server
 
         public virtual bool CheckMovement(Direction d, out int newZ) => Movement.Movement.CheckMovement(this, d, out newZ);
 
+        private bool CanMove(Direction d, Point3D oldLocation, Point3D newLocation)
+        {
+            if (m_Spell?.OnCasterMoving(d) == false)
+            {
+                return false;
+            }
+
+            if (m_Paralyzed || m_Frozen)
+            {
+                SendLocalizedMessage(500111); // You are frozen and can not move.
+
+                return false;
+            }
+
+            if (!CheckMovement(d, out var newZ))
+            {
+                return false;
+            }
+
+            int x = oldLocation.m_X, y = oldLocation.m_Y;
+            int oldX = x, oldY = y;
+            var oldZ = oldLocation.m_Z;
+
+            switch (d & Direction.Mask)
+            {
+                case Direction.North:
+                    --y;
+                    break;
+                case Direction.Right:
+                    ++x;
+                    --y;
+                    break;
+                case Direction.East:
+                    ++x;
+                    break;
+                case Direction.Down:
+                    ++x;
+                    ++y;
+                    break;
+                case Direction.South:
+                    ++y;
+                    break;
+                case Direction.Left:
+                    --x;
+                    ++y;
+                    break;
+                case Direction.West:
+                    --x;
+                    break;
+                case Direction.Up:
+                    --x;
+                    --y;
+                    break;
+            }
+
+            newLocation.m_X = x;
+            newLocation.m_Y = y;
+            newLocation.m_Z = newZ;
+
+            Pushing = false;
+
+            var map = m_Map;
+
+            if (map == null)
+            {
+                return false;
+            }
+
+            if (!Region.CanMove(this, d, newLocation, oldLocation, m_Map))
+            {
+                return false;
+            }
+
+            var oldSector = map.GetSector(oldX, oldY);
+            var newSector = map.GetSector(x, y);
+
+            if (oldSector != newSector)
+            {
+                for (var i = 0; i < oldSector.Mobiles.Count; ++i)
+                {
+                    var m = oldSector.Mobiles[i];
+
+                    if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
+                        !m.OnMoveOff(this))
+                    {
+                        return false;
+                    }
+                }
+
+                for (var i = 0; i < oldSector.Items.Count; ++i)
+                {
+                    var item = oldSector.Items[i];
+
+                    if (item.AtWorldPoint(oldX, oldY) &&
+                        (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
+                        !item.OnMoveOff(this))
+                    {
+                        return false;
+                    }
+                }
+
+                for (var i = 0; i < newSector.Mobiles.Count; ++i)
+                {
+                    var m = newSector.Mobiles[i];
+
+                    if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))
+                    {
+                        return false;
+                    }
+                }
+
+                for (var i = 0; i < newSector.Items.Count; ++i)
+                {
+                    var item = newSector.Items[i];
+
+                    if (item.AtWorldPoint(x, y) &&
+                        (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
+                        !item.OnMoveOver(this))
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                for (var i = 0; i < oldSector.Mobiles.Count; ++i)
+                {
+                    var m = oldSector.Mobiles[i];
+
+                    if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
+                        !m.OnMoveOff(this))
+                    {
+                        return false;
+                    }
+
+                    if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))
+                    {
+                        return false;
+                    }
+                }
+
+                for (var i = 0; i < oldSector.Items.Count; ++i)
+                {
+                    var item = oldSector.Items[i];
+
+                    if (item.AtWorldPoint(oldX, oldY) &&
+                        (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
+                        !item.OnMoveOff(this))
+                    {
+                        return false;
+                    }
+
+                    if (item.AtWorldPoint(x, y) &&
+                        (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
+                        !item.OnMoveOver(this))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if (!InternalOnMove(d))
+            {
+                return false;
+            }
+
+            // TODO: Fastwalk
+
+            LastMoveTime = Core.TickCount;
+
+            return true;
+        }
+
         public virtual bool Move(Direction d)
         {
             if (Deleted)
@@ -4514,173 +4687,7 @@ namespace Server
             if ((m_Direction & Direction.Mask) == (d & Direction.Mask))
             {
                 // We are actually moving (not just a direction change)
-
-                if (m_Spell?.OnCasterMoving(d) == false)
-                {
-                    return false;
-                }
-
-                if (m_Paralyzed || m_Frozen)
-                {
-                    SendLocalizedMessage(500111); // You are frozen and can not move.
-
-                    return false;
-                }
-
-                if (CheckMovement(d, out var newZ))
-                {
-                    int x = oldLocation.m_X, y = oldLocation.m_Y;
-                    int oldX = x, oldY = y;
-                    var oldZ = oldLocation.m_Z;
-
-                    switch (d & Direction.Mask)
-                    {
-                        case Direction.North:
-                            --y;
-                            break;
-                        case Direction.Right:
-                            ++x;
-                            --y;
-                            break;
-                        case Direction.East:
-                            ++x;
-                            break;
-                        case Direction.Down:
-                            ++x;
-                            ++y;
-                            break;
-                        case Direction.South:
-                            ++y;
-                            break;
-                        case Direction.Left:
-                            --x;
-                            ++y;
-                            break;
-                        case Direction.West:
-                            --x;
-                            break;
-                        case Direction.Up:
-                            --x;
-                            --y;
-                            break;
-                    }
-
-                    newLocation.m_X = x;
-                    newLocation.m_Y = y;
-                    newLocation.m_Z = newZ;
-
-                    Pushing = false;
-
-                    var map = m_Map;
-
-                    if (map == null)
-                    {
-                        return false;
-                    }
-
-                    if (!Region.CanMove(this, d, newLocation, oldLocation, m_Map))
-                    {
-                        return false;
-                    }
-
-                    var oldSector = map.GetSector(oldX, oldY);
-                    var newSector = map.GetSector(x, y);
-
-                    if (oldSector != newSector)
-                    {
-                        for (var i = 0; i < oldSector.Mobiles.Count; ++i)
-                        {
-                            var m = oldSector.Mobiles[i];
-
-                            if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
-                                !m.OnMoveOff(this))
-                            {
-                                return false;
-                            }
-                        }
-
-                        for (var i = 0; i < oldSector.Items.Count; ++i)
-                        {
-                            var item = oldSector.Items[i];
-
-                            if (item.AtWorldPoint(oldX, oldY) &&
-                                (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
-                                !item.OnMoveOff(this))
-                            {
-                                return false;
-                            }
-                        }
-
-                        for (var i = 0; i < newSector.Mobiles.Count; ++i)
-                        {
-                            var m = newSector.Mobiles[i];
-
-                            if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))
-                            {
-                                return false;
-                            }
-                        }
-
-                        for (var i = 0; i < newSector.Items.Count; ++i)
-                        {
-                            var item = newSector.Items[i];
-
-                            if (item.AtWorldPoint(x, y) &&
-                                (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
-                                !item.OnMoveOver(this))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (var i = 0; i < oldSector.Mobiles.Count; ++i)
-                        {
-                            var m = oldSector.Mobiles[i];
-
-                            if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
-                                !m.OnMoveOff(this))
-                            {
-                                return false;
-                            }
-
-                            if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))
-                            {
-                                return false;
-                            }
-                        }
-
-                        for (var i = 0; i < oldSector.Items.Count; ++i)
-                        {
-                            var item = oldSector.Items[i];
-
-                            if (item.AtWorldPoint(oldX, oldY) &&
-                                (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
-                                !item.OnMoveOff(this))
-                            {
-                                return false;
-                            }
-
-                            if (item.AtWorldPoint(x, y) &&
-                                (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
-                                !item.OnMoveOver(this))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-
-                    if (!InternalOnMove(d))
-                    {
-                        return false;
-                    }
-
-                    // TODO: Fastwalk
-
-                    LastMoveTime = Core.TickCount;
-                }
-                else
+                if (!CanMove(d, oldLocation, newLocation))
                 {
                     return false;
                 }
@@ -4805,18 +4812,12 @@ namespace Server
 
         public virtual int ComputeMovementSpeed(Direction dir, bool checkTurning = true)
         {
-            int delay;
-
             if (Mounted)
             {
-                delay = (dir & Direction.Running) != 0 ? RunMount : WalkMount;
-            }
-            else
-            {
-                delay = (dir & Direction.Running) != 0 ? RunFoot : WalkFoot;
+                return (dir & Direction.Running) != 0 ? RunMount : WalkMount;
             }
 
-            return delay;
+            return (dir & Direction.Running) != 0 ? RunFoot : WalkFoot;
         }
 
         /// <summary>
