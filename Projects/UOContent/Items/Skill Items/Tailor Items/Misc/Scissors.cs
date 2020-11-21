@@ -79,9 +79,8 @@ namespace Server.Items
                 else if (Core.SE && Utility.RandomDouble() > .20 && (from.Direction & Direction.Running) != 0 &&
                          Core.TickCount - from.LastMoveTime < from.ComputeMovementSpeed(from.Direction))
                 {
-                    from.SendLocalizedMessage(
-                        1063305
-                    ); // Didn't your parents ever tell you not to run with scissors in your hand?!
+                    // Didn't your parents ever tell you not to run with scissors in your hand?!
+                    from.SendLocalizedMessage(1063305);
                 }
                 else if (targeted is Item item && !item.Movable)
                 {

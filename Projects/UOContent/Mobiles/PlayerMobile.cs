@@ -96,9 +96,6 @@ namespace Server.Mobiles
     {
         private static bool m_NoRecursion;
 
-        private static readonly bool FastwalkPrevention = true; // Is fastwalk prevention enabled?
-        private static readonly int FastwalkThreshold = 400;    // Fastwalk prevention will become active after 0.4 seconds
-
         private static readonly Point3D[] m_TrammelDeathDestinations =
         {
             new Point3D(1481, 1612, 20),
@@ -166,7 +163,6 @@ namespace Server.Mobiles
         private RankDefinition m_GuildRank;
 
         private int m_HairModID = -1, m_HairModHue;
-        private bool m_HasMoved;
 
         public DateTime m_hontime;
 
@@ -715,8 +711,6 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public SolenFriendship SolenFriendship { get; set; }
 
-        public virtual bool UsesFastwalkPrevention => AccessLevel < AccessLevel.Counselor;
-
         public Type EnemyOfOneType
         {
             get => m_EnemyOfOneType;
@@ -1031,11 +1025,6 @@ namespace Server.Mobiles
 
         public static void Initialize()
         {
-            if (FastwalkPrevention)
-            {
-                IncomingPackets.RegisterThrottler(0x02, MovementThrottle_Callback);
-            }
-
             EventSink.Login += OnLogin;
             EventSink.Logout += OnLogout;
             EventSink.Connected += EventSink_Connected;
@@ -4264,7 +4253,7 @@ namespace Server.Mobiles
             SentHonorContext?.Cancel();
         }
 
-        public override int ComputeMovementSpeed(Direction dir, bool checkTurning)
+        public override int ComputeMovementSpeed(Direction dir, bool checkTurning = true)
         {
             if (checkTurning && (dir & Direction.Mask) != (Direction & Direction.Mask))
             {
@@ -4290,33 +4279,6 @@ namespace Server.Mobiles
             }
 
             return running ? RunFoot : WalkFoot;
-        }
-
-        public static TimeSpan MovementThrottle_Callback(NetState ns)
-        {
-            if (!(ns.Mobile is PlayerMobile pm) || !pm.UsesFastwalkPrevention)
-            {
-                return TimeSpan.Zero;
-            }
-
-            if (!pm.m_HasMoved)
-            {
-                // has not yet moved
-                pm.m_NextMovementTime = Core.TickCount;
-                pm.m_HasMoved = true;
-                return TimeSpan.Zero;
-            }
-
-            var ts = pm.m_NextMovementTime - Core.TickCount;
-
-            if (ts < 0)
-            {
-                // been a while since we've last moved
-                pm.m_NextMovementTime = Core.TickCount;
-                return TimeSpan.Zero;
-            }
-
-            return ts < FastwalkThreshold ? TimeSpan.Zero : TimeSpan.FromTicks(ts);
         }
 
         private void DeltaEnemies(Type oldType, Type newType)

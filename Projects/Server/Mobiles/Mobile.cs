@@ -502,7 +502,6 @@ namespace Server
         private Direction m_Direction;
         private bool m_DisplayGuildTitle;
 
-        private long m_EndQueue;
         private Timer m_ExpireAggrTimer;
         private Timer m_ExpireCombatant;
         private Timer m_ExpireCriminal;
@@ -550,7 +549,6 @@ namespace Server
          */
 
         private Item m_MountItem;
-        private Queue<MovementRecord> m_MoveRecords;
         private string m_Name;
 
         private string m_NameMod;
@@ -1088,14 +1086,6 @@ namespace Server
         public static int WalkMount { get; set; } = 200;
 
         public static int RunMount { get; set; } = 100;
-
-        public static AccessLevel FwdAccessOverride { get; set; } = AccessLevel.Counselor;
-
-        public static bool FwdEnabled { get; set; } = true;
-
-        public static bool FwdUOTDOverride { get; set; }
-
-        public static int FwdMaxSteps { get; set; } = 4;
 
         public virtual bool IsDeadBondedPet => false;
 
@@ -2861,8 +2851,6 @@ namespace Server
                         {
                             ns.Send(new MobileUpdateOld(this));
                         }
-
-                        ClearFastwalkStack();
                     }
 
                     if (ns != null)
@@ -2873,7 +2861,6 @@ namespace Server
                         }
 
                         ns.Sequence = 0;
-                        ClearFastwalkStack();
 
                         ns.Send(MobileIncoming.Create(ns, this, this));
 
@@ -2897,7 +2884,6 @@ namespace Server
                     if (ns != null)
                     {
                         ns.Sequence = 0;
-                        ClearFastwalkStack();
 
                         ns.Send(MobileIncoming.Create(ns, this, this));
 
@@ -2997,8 +2983,6 @@ namespace Server
                     {
                         ns.Send(new MobileUpdateOld(this));
                     }
-
-                    ClearFastwalkStack();
                 }
             }
             else
@@ -3014,7 +2998,6 @@ namespace Server
                 }
 
                 ns.Sequence = 0;
-                ClearFastwalkStack();
 
                 ns.Send(MobileIncoming.Create(ns, this, this));
 
@@ -3038,7 +3021,6 @@ namespace Server
             if (ns != null)
             {
                 ns.Sequence = 0;
-                ClearFastwalkStack();
 
                 ns.Send(MobileIncoming.Create(ns, this, this));
 
@@ -3228,8 +3210,6 @@ namespace Server
                     {
                         ourState.Send(new MobileUpdateOld(m));
                     }
-
-                    ClearFastwalkStack();
                 }
 
                 if (sendIncoming)
@@ -4512,16 +4492,6 @@ namespace Server
             return true;
         }
 
-        public virtual void ClearFastwalkStack()
-        {
-            if (m_MoveRecords != null && m_MoveRecords.Count > 0)
-            {
-                m_MoveRecords.Clear();
-            }
-
-            m_EndQueue = Core.TickCount;
-        }
-
         public virtual bool CheckMovement(Direction d, out int newZ) => Movement.Movement.CheckMovement(this, d, out newZ);
 
         public virtual bool Move(Direction d)
@@ -4603,104 +4573,102 @@ namespace Server
 
                     var map = m_Map;
 
-                    if (map != null)
+                    if (map == null)
                     {
-                        var oldSector = map.GetSector(oldX, oldY);
-                        var newSector = map.GetSector(x, y);
+                        return false;
+                    }
 
-                        if (oldSector != newSector)
+                    if (!Region.CanMove(this, d, newLocation, oldLocation, m_Map))
+                    {
+                        return false;
+                    }
+
+                    var oldSector = map.GetSector(oldX, oldY);
+                    var newSector = map.GetSector(x, y);
+
+                    if (oldSector != newSector)
+                    {
+                        for (var i = 0; i < oldSector.Mobiles.Count; ++i)
                         {
-                            for (var i = 0; i < oldSector.Mobiles.Count; ++i)
+                            var m = oldSector.Mobiles[i];
+
+                            if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
+                                !m.OnMoveOff(this))
                             {
-                                var m = oldSector.Mobiles[i];
-
-                                if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
-                                    !m.OnMoveOff(this))
-                                {
-                                    return false;
-                                }
-                            }
-
-                            for (var i = 0; i < oldSector.Items.Count; ++i)
-                            {
-                                var item = oldSector.Items[i];
-
-                                if (item.AtWorldPoint(oldX, oldY) &&
-                                    (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
-                                    !item.OnMoveOff(this))
-                                {
-                                    return false;
-                                }
-                            }
-
-                            for (var i = 0; i < newSector.Mobiles.Count; ++i)
-                            {
-                                var m = newSector.Mobiles[i];
-
-                                if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))
-                                {
-                                    return false;
-                                }
-                            }
-
-                            for (var i = 0; i < newSector.Items.Count; ++i)
-                            {
-                                var item = newSector.Items[i];
-
-                                if (item.AtWorldPoint(x, y) &&
-                                    (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
-                                    !item.OnMoveOver(this))
-                                {
-                                    return false;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            for (var i = 0; i < oldSector.Mobiles.Count; ++i)
-                            {
-                                var m = oldSector.Mobiles[i];
-
-                                if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
-                                    !m.OnMoveOff(this))
-                                {
-                                    return false;
-                                }
-
-                                if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))
-                                {
-                                    return false;
-                                }
-                            }
-
-                            for (var i = 0; i < oldSector.Items.Count; ++i)
-                            {
-                                var item = oldSector.Items[i];
-
-                                if (item.AtWorldPoint(oldX, oldY) &&
-                                    (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
-                                    !item.OnMoveOff(this))
-                                {
-                                    return false;
-                                }
-
-                                if (item.AtWorldPoint(x, y) &&
-                                    (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
-                                    !item.OnMoveOver(this))
-                                {
-                                    return false;
-                                }
+                                return false;
                             }
                         }
 
-                        if (!Region.CanMove(this, d, newLocation, oldLocation, m_Map))
+                        for (var i = 0; i < oldSector.Items.Count; ++i)
                         {
-                            return false;
+                            var item = oldSector.Items[i];
+
+                            if (item.AtWorldPoint(oldX, oldY) &&
+                                (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
+                                !item.OnMoveOff(this))
+                            {
+                                return false;
+                            }
+                        }
+
+                        for (var i = 0; i < newSector.Mobiles.Count; ++i)
+                        {
+                            var m = newSector.Mobiles[i];
+
+                            if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))
+                            {
+                                return false;
+                            }
+                        }
+
+                        for (var i = 0; i < newSector.Items.Count; ++i)
+                        {
+                            var item = newSector.Items[i];
+
+                            if (item.AtWorldPoint(x, y) &&
+                                (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
+                                !item.OnMoveOver(this))
+                            {
+                                return false;
+                            }
                         }
                     }
                     else
                     {
-                        return false;
+                        for (var i = 0; i < oldSector.Mobiles.Count; ++i)
+                        {
+                            var m = oldSector.Mobiles[i];
+
+                            if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
+                                !m.OnMoveOff(this))
+                            {
+                                return false;
+                            }
+
+                            if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))
+                            {
+                                return false;
+                            }
+                        }
+
+                        for (var i = 0; i < oldSector.Items.Count; ++i)
+                        {
+                            var item = oldSector.Items[i];
+
+                            if (item.AtWorldPoint(oldX, oldY) &&
+                                (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
+                                !item.OnMoveOff(this))
+                            {
+                                return false;
+                            }
+
+                            if (item.AtWorldPoint(x, y) &&
+                                (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
+                                !item.OnMoveOver(this))
+                            {
+                                return false;
+                            }
+                        }
                     }
 
                     if (!InternalOnMove(d))
@@ -4708,53 +4676,7 @@ namespace Server
                         return false;
                     }
 
-                    if (FwdEnabled && m_NetState != null && m_AccessLevel < FwdAccessOverride &&
-                        (!FwdUOTDOverride || !m_NetState.IsUOTDClient))
-                    {
-                        m_MoveRecords ??= new Queue<MovementRecord>(6);
-
-                        while (m_MoveRecords.Count > 0)
-                        {
-                            var r = m_MoveRecords.Peek();
-
-                            if (r.Expired())
-                            {
-                                m_MoveRecords.Dequeue();
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-
-                        if (m_MoveRecords.Count >= FwdMaxSteps)
-                        {
-                            var fw = new FastWalkEventArgs(m_NetState);
-                            EventSink.InvokeFastWalk(fw);
-
-                            if (fw.Blocked)
-                            {
-                                return false;
-                            }
-                        }
-
-                        var delay = ComputeMovementSpeed(d);
-
-                        long end;
-
-                        if (m_MoveRecords.Count > 0)
-                        {
-                            end = m_EndQueue + delay;
-                        }
-                        else
-                        {
-                            end = Core.TickCount + delay;
-                        }
-
-                        m_MoveRecords.Enqueue(MovementRecord.NewInstance(end));
-
-                        m_EndQueue = end;
-                    }
+                    // TODO: Fastwalk
 
                     LastMoveTime = Core.TickCount;
                 }
@@ -4881,9 +4803,7 @@ namespace Server
 
         public int ComputeMovementSpeed() => ComputeMovementSpeed(Direction, false);
 
-        public int ComputeMovementSpeed(Direction dir) => ComputeMovementSpeed(dir, true);
-
-        public virtual int ComputeMovementSpeed(Direction dir, bool checkTurning)
+        public virtual int ComputeMovementSpeed(Direction dir, bool checkTurning = true)
         {
             int delay;
 
@@ -7851,8 +7771,6 @@ namespace Server
                 {
                     m_NetState.Send(new MobileUpdateOld(this));
                 }
-
-                ClearFastwalkStack();
             }
 
             var map = m_Map;
