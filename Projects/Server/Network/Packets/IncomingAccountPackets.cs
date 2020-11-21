@@ -392,8 +392,6 @@ namespace Server.Network
             state.SendMapChange(m.Map);
 
             EventSink.InvokeLogin(m);
-
-            m.ClearFastwalkStack();
         }
 
         private static int GenerateAuthID(this NetState state)

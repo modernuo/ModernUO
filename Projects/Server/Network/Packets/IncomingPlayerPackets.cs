@@ -490,8 +490,6 @@ namespace Server.Network
             from.SendEverything();
 
             state.Sequence = 0;
-
-            from.ClearFastwalkStack();
         }
 
         public static void PingReq(NetState state, CircularBufferReader reader)
@@ -522,8 +520,6 @@ namespace Server.Network
             {
                 state.SendMovementRej(seq, from);
                 state.Sequence = 0;
-
-                from.ClearFastwalkStack();
             }
             else
             {
