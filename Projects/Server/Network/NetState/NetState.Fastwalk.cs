@@ -29,7 +29,6 @@ namespace Server.Network
                 return false;
             }
 
-            WriteConsole($"Refilling {Fastwalk.RefillAmount - _tokenCount} tokens");
             _tokenCount = Fastwalk.RefillAmount;
             _nextRefill = Core.TickCount + Fastwalk.RefillDelay;
             return true;
@@ -42,7 +41,6 @@ namespace Server.Network
                 return false;
             }
 
-            WriteConsole("Removing token");
             _tokenCount--;
             return true;
         }
