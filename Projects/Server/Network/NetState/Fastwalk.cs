@@ -34,7 +34,8 @@ namespace Server.Network
             ExemptionLevel = ServerConfiguration.GetOrUpdateSetting("netstate.fastwalk.exemptionLevel", ExemptionLevel);
             RefillAmount = ServerConfiguration.GetOrUpdateSetting("netstate.fastwalk.refillAmount", RefillAmount);
             RefillDelay = ServerConfiguration.GetOrUpdateSetting("netstate.fastwalk.refillDelay", _refillDelay);
-            ExemptionLevel = (AccessLevel)((int)AccessLevel.Owner + 1); // Testing
+            // Testing
+            // ExemptionLevel = (AccessLevel)((int)AccessLevel.Owner + 1);
         }
     }
 }
