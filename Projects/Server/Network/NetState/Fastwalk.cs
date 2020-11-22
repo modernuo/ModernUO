@@ -19,7 +19,10 @@ namespace Server.Network
 {
     public static class Fastwalk
     {
-        private static long _refillDelay = 540; // 6 keys / X milliseconds
+        public static AccessLevel ExemptionLevel { get; private set; } = AccessLevel.Counselor;
+        public static int RefillAmount { get; private set; } = 6;
+        private static long _refillDelay = 540; // milliseconds
+
         public static long RefillDelay
         {
             get => _refillDelay;
@@ -28,7 +31,10 @@ namespace Server.Network
 
         public static void Configure()
         {
+            ExemptionLevel = ServerConfiguration.GetOrUpdateSetting("netstate.fastwalk.exemptionLevel", ExemptionLevel);
+            RefillAmount = ServerConfiguration.GetOrUpdateSetting("netstate.fastwalk.refillAmount", RefillAmount);
             RefillDelay = ServerConfiguration.GetOrUpdateSetting("netstate.fastwalk.refillDelay", _refillDelay);
+            ExemptionLevel = (AccessLevel)((int)AccessLevel.Owner + 1); // Testing
         }
     }
 }

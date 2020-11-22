@@ -660,7 +660,6 @@ namespace Server.Network
         {
             foreach (var ns in TcpServer.Instances)
             {
-                ns.RefillKeys();
                 ns.Flush();
             }
         }

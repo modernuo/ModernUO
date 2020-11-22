@@ -4494,7 +4494,7 @@ namespace Server
 
         public virtual bool CheckMovement(Direction d, out int newZ) => Movement.Movement.CheckMovement(this, d, out newZ);
 
-        private bool CanMove(Direction d, Point3D oldLocation, Point3D newLocation)
+        private bool CanMove(Direction d, Point3D oldLocation, ref Point3D newLocation)
         {
             if (m_Spell?.OnCasterMoving(d) == false)
             {
@@ -4655,7 +4655,10 @@ namespace Server
                 return false;
             }
 
-            // TODO: Fastwalk
+            if (AccessLevel < Fastwalk.ExemptionLevel && m_NetState?.RemoveFastwalkToken() == false)
+            {
+                return false;
+            }
 
             LastMoveTime = Core.TickCount;
 
@@ -4676,13 +4679,13 @@ namespace Server
                 box.Close();
             }
 
-            var newLocation = m_Location;
-            var oldLocation = newLocation;
+            var oldLocation = m_Location;
+            Point3D newLocation = oldLocation;
 
             if ((m_Direction & Direction.Mask) == (d & Direction.Mask))
             {
                 // We are actually moving (not just a direction change)
-                if (!CanMove(d, oldLocation, newLocation))
+                if (!CanMove(d, oldLocation, ref newLocation))
                 {
                     return false;
                 }
@@ -4690,7 +4693,7 @@ namespace Server
                 DisruptiveAction();
             }
 
-            m_NetState.SendMovementAck(m_NetState.Sequence, this);
+            m_NetState?.SendMovementAck(m_NetState.Sequence, this);
 
             SetLocation(newLocation, false);
             SetDirection(d);

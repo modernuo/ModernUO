@@ -33,8 +33,9 @@ namespace Server.Network
 
             var dir = (Direction)reader.ReadByte();
             int seq = reader.ReadByte();
+            var key = reader.ReadUInt32();
 
-            if (!state.RemoveKey(reader.ReadUInt32()) || state.Sequence == 0 && seq != 0 || !from.Move(dir))
+            if (state.Sequence == 0 && seq != 0 || !from.Move(dir))
             {
                 state.SendMovementRej(seq, from);
                 state.Sequence = 0;

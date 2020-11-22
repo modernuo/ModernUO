@@ -35,7 +35,7 @@ namespace Server.Network
         ExtendedStatus = 0x00000800,
         NewMobileIncoming = 0x00001000,
         NewSecureTrading = 0x00002000,
-        UltimaStore = 0x00004000,
+        UltimaStore = 0x00004000, // New Movement
         EndlessJourney = 0x00008000,
 
         Version400a = NewSpellbook,

@@ -8,7 +8,7 @@ namespace Server.Misc
 
         public static void Initialize()
         {
-            IncomingPackets.Register(0xF0, 0, false, DecodeBundledPacket);
+            // IncomingPackets.Register(0xF0, 0, false, DecodeBundledPacket);
         }
 
         public static void Register(int packetID, bool ingame, OnPacketReceive onReceive)
