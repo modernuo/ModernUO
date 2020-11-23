@@ -24,6 +24,8 @@ namespace Server.Movement
         public static int RunFootDelay { get; set; } = 220;
         public static int WalkMountDelay { get; set; } = 220;
         public static int RunMountDelay { get; set; } = 110;
+
+        public static bool EnableFastwalkPrevention { get; set; } = true;
         public static AccessLevel FastwalkExemptionLevel { get; set; } = AccessLevel.Counselor;
 
         // If this is changed during runtime, then the steps array needs resizing.
@@ -31,6 +33,7 @@ namespace Server.Movement
 
         public static void Configure()
         {
+            EnableFastwalkPrevention = ServerConfiguration.GetOrUpdateSetting("movement.enableFastWalkPrevention", EnableFastwalkPrevention);
             MaxSteps = ServerConfiguration.GetOrUpdateSetting("movement.maxSteps", MaxSteps);
             FastwalkExemptionLevel = ServerConfiguration.GetOrUpdateSetting("movement.exemptionLevel", FastwalkExemptionLevel);
             WalkFootDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.walkFoot", WalkFootDelay);

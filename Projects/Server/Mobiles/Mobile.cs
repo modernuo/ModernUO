@@ -4648,7 +4648,11 @@ namespace Server
                 return false;
             }
 
-            if (AccessLevel < CalcMoves.FastwalkExemptionLevel && m_NetState?.AddStep(d) == false)
+            if (
+                CalcMoves.EnableFastwalkPrevention &&
+                AccessLevel < CalcMoves.FastwalkExemptionLevel &&
+                m_NetState?.AddStep(d) == false
+            )
             {
                 return false;
             }
