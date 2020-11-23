@@ -34,6 +34,7 @@ using Server.Spells.Spellweaving;
 using Server.Targeting;
 using Server.Utilities;
 using BaseQuestGump = Server.Engines.MLQuests.Gumps.BaseQuestGump;
+using CalcMoves = Server.Movement.Movement;
 using QuestOfferGump = Server.Engines.MLQuests.Gumps.QuestOfferGump;
 using RankDefinition = Server.Guilds.RankDefinition;
 
@@ -184,7 +185,7 @@ namespace Server.Mobiles
 
         private DateTime m_NextJustAward;
 
-        private long m_NextMovementTime;
+        private int m_NextMovementTime;
         private int m_NextProtectionCheck = 10;
         private DateTime m_NextSmithBulkOrder;
         private DateTime m_NextTailorBulkOrder;
@@ -4257,14 +4258,14 @@ namespace Server.Mobiles
         {
             if (checkTurning && (dir & Direction.Mask) != (Direction & Direction.Mask))
             {
-                return RunMount; // We are NOT actually moving (just a direction change)
+                return CalcMoves.RunMountDelay; // We are NOT actually moving (just a direction change)
             }
 
             var context = TransformationSpellHelper.GetContext(this);
 
             if (context?.Type == typeof(ReaperFormSpell))
             {
-                return WalkFoot;
+                return CalcMoves.WalkFootDelay;
             }
 
             var running = (dir & Direction.Running) != 0;
@@ -4275,10 +4276,10 @@ namespace Server.Mobiles
 
             if (onHorse || animalContext?.SpeedBoost == true)
             {
-                return running ? RunMount : WalkMount;
+                return running ? CalcMoves.RunMountDelay : CalcMoves.WalkMountDelay;
             }
 
-            return running ? RunFoot : WalkFoot;
+            return running ? CalcMoves.RunFootDelay : CalcMoves.WalkFootDelay;
         }
 
         private void DeltaEnemies(Type oldType, Type newType)

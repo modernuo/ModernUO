@@ -13,35 +13,61 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using CalcMoves = Server.Movement.Movement;
+
 namespace Server.Network
 {
     public partial class NetState
     {
-        private long _nextRefill = -1;
-        private long _tokenCount = Fastwalk.RefillAmount;
+        private int _stepIndex;
+        private int _stepCount;
+        private long[] _stepDelays;
 
-        public int Sequence { get; set; }
-
-        public bool RefillFastwalkTokens()
+        public bool AddStep(Direction d)
         {
-            if (Core.TickCount < _nextRefill || _tokenCount >= Fastwalk.RefillAmount)
+            if (Mobile == null)
             {
                 return false;
             }
 
-            _tokenCount = Fastwalk.RefillAmount;
-            _nextRefill = Core.TickCount + Fastwalk.RefillDelay;
-            return true;
-        }
+            var maxSteps = CalcMoves.MaxSteps;
 
-        public bool RemoveFastwalkToken()
-        {
-            if (_tokenCount <= 0 && !RefillFastwalkTokens())
+            _stepDelays ??= new long[maxSteps];
+            var length = _stepDelays.Length;
+
+            var index = _stepIndex - _stepCount;
+            if (index < 0)
+            {
+                index += maxSteps;
+            }
+
+            var now = Core.TickCount;
+            var lastMove = Mobile.LastMoveTime;
+
+            while (index < _stepIndex)
+            {
+                var step = _stepDelays[index++];
+                if (lastMove + step < now)
+                {
+                    _stepCount--;
+                }
+
+                if (index > length)
+                {
+                    index = 0;
+                }
+            }
+
+            if (_stepCount >= maxSteps)
             {
                 return false;
             }
 
-            _tokenCount--;
+            var delay = Mobile.ComputeMovementSpeed(d);
+            index = _stepIndex++;
+            _stepDelays[index > length ? 0 : index] = delay;
+            _stepCount++;
+
             return true;
         }
     }

@@ -145,6 +145,8 @@ namespace Server.Network
 
         public bool CompressionEnabled { get; set; }
 
+        public int Sequence { get; set; }
+
         public List<Gump> Gumps { get; private set; }
 
         public List<HuePicker> HuePickers { get; private set; }

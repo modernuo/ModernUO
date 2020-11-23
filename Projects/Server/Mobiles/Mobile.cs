@@ -18,6 +18,7 @@ using Server.Network;
 using Server.Prompts;
 using Server.Targeting;
 using Server.Utilities;
+using CalcMoves = Server.Movement.Movement;
 
 namespace Server
 {
@@ -1078,14 +1079,6 @@ namespace Server
         }
 
         public bool Pushing { get; set; }
-
-        public static int WalkFoot { get; set; } = 400;
-
-        public static int RunFoot { get; set; } = 200;
-
-        public static int WalkMount { get; set; } = 200;
-
-        public static int RunMount { get; set; } = 100;
 
         public virtual bool IsDeadBondedPet => false;
 
@@ -4655,7 +4648,7 @@ namespace Server
                 return false;
             }
 
-            if (AccessLevel < Fastwalk.ExemptionLevel && m_NetState?.RemoveFastwalkToken() == false)
+            if (AccessLevel < CalcMoves.FastwalkExemptionLevel && m_NetState?.AddStep(d) == false)
             {
                 return false;
             }
@@ -4812,10 +4805,10 @@ namespace Server
         {
             if (Mounted)
             {
-                return (dir & Direction.Running) != 0 ? RunMount : WalkMount;
+                return (dir & Direction.Running) != 0 ? CalcMoves.RunMountDelay : CalcMoves.WalkMountDelay;
             }
 
-            return (dir & Direction.Running) != 0 ? RunFoot : WalkFoot;
+            return (dir & Direction.Running) != 0 ? CalcMoves.RunFootDelay : CalcMoves.WalkFootDelay;
         }
 
         /// <summary>
