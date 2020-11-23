@@ -4654,7 +4654,13 @@ namespace Server
                 m_NetState?.AddStep(d) == false
             )
             {
-                return false;
+                var fw = new FastWalkEventArgs(m_NetState);
+                EventSink.InvokeFastWalk(fw);
+
+                if (fw.Blocked)
+                {
+                    return false;
+                }
             }
 
             LastMoveTime = Core.TickCount;
