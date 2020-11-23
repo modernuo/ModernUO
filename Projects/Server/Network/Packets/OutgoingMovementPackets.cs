@@ -90,7 +90,7 @@ namespace Server.Network
             ns.Send(ref buffer, 8);
         }
 
-        public static void SendInitialFaswalkStack(this NetState ns, uint[] keys)
+        public static void SendInitialFastwalkStack(this NetState ns, uint[] keys)
         {
             if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
@@ -106,6 +106,8 @@ namespace Server.Network
             writer.Write(keys[3]);
             writer.Write(keys[4]);
             writer.Write(keys[5]);
+
+            ns.Send(ref buffer, writer.Position);
         }
 
         public static void SendFastwalkStackKey(this NetState ns, uint key = 0)
@@ -119,6 +121,25 @@ namespace Server.Network
             writer.Write((byte)0xBF);  // Packet ID
             writer.Write((ushort)0x2); // Subpacket
             writer.Write(key);
+
+            ns.Send(ref buffer, writer.Position);
+        }
+
+        public static void SendTimeSyncResponse(this NetState ns)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0xF2); // Packet ID
+
+            writer.Write(Core.TickCount); // ??
+            writer.Write(Core.TickCount); // ??
+            writer.Write(Core.TickCount); // ??
+
+            ns.Send(ref buffer, writer.Position);
         }
     }
 }

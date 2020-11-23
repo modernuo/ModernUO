@@ -20,6 +20,61 @@ namespace Server.Network
         public static void Configure()
         {
             IncomingPackets.Register(0x02, 7, true, MovementReq);
+            IncomingPackets.Register(0xF0, 0, true, NewMovementReq);
+            IncomingPackets.Register(0xF1, 9, true, TimeSyncReq);
+        }
+
+        public static void NewMovementReq(NetState ns, CircularBufferReader reader)
+        {
+            var from = ns.Mobile;
+
+            if (from == null)
+            {
+                return;
+            }
+
+            var steps = reader.ReadByte();
+            for (int i = 0; i < steps; i++)
+            {
+                var t1 = reader.ReadUInt64(); // start time?
+                var t2 = reader.ReadUInt64(); // end time?
+                int seq = reader.ReadByte();
+                var dir = (Direction)reader.ReadByte();
+                var mode = reader.ReadInt32(); // 1 = walk, 2 = run
+                if (mode == 2)
+                {
+                    dir |= Direction.Running;
+                }
+
+                // Location
+                reader.ReadInt32(); // x
+                reader.ReadInt32(); // y
+                reader.ReadInt32(); // z
+
+                if (ns.Sequence == 0 && seq != 0 || !from.Move(dir))
+                {
+                    ns.SendMovementRej(seq, from);
+                    ns.Sequence = 0;
+                }
+                else
+                {
+                    ++seq;
+
+                    if (seq == 256)
+                    {
+                        seq = 1;
+                    }
+
+                    ns.Sequence = seq;
+                }
+            }
+        }
+
+        public static void TimeSyncReq(NetState ns, CircularBufferReader reader)
+        {
+            reader.ReadUInt64(); // Client Time?
+
+            ns.SendTimeSyncResponse();
         }
 
         public static void MovementReq(NetState state, CircularBufferReader reader)
@@ -34,6 +89,15 @@ namespace Server.Network
             var dir = (Direction)reader.ReadByte();
             int seq = reader.ReadByte();
             var key = reader.ReadUInt32();
+
+            if (key != 0)
+            {
+                state.WriteConsole("OldMove w/ Key {0}", key);
+            }
+            else
+            {
+                state.WriteConsole("Old Movement!");
+            }
 
             if (state.Sequence == 0 && seq != 0 || !from.Move(dir))
             {

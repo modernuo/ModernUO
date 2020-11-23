@@ -19,7 +19,6 @@ namespace Server.Movement
     {
         // Movement implementation algorithm
         public static IMovementImpl Impl { get; set; }
-
         public static int WalkFootDelay { get; set; } = 440;
         public static int RunFootDelay { get; set; } = 220;
         public static int WalkMountDelay { get; set; } = 220;
@@ -35,7 +34,7 @@ namespace Server.Movement
         {
             EnableFastwalkPrevention = ServerConfiguration.GetOrUpdateSetting("movement.enableFastWalkPrevention", EnableFastwalkPrevention);
             MaxSteps = ServerConfiguration.GetOrUpdateSetting("movement.maxSteps", MaxSteps);
-            FastwalkExemptionLevel = ServerConfiguration.GetOrUpdateSetting("movement.exemptionLevel", FastwalkExemptionLevel);
+            FastwalkExemptionLevel = ServerConfiguration.GetOrUpdateSetting("movement.fastwalkExemptionLevel", FastwalkExemptionLevel);
             WalkFootDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.walkFoot", WalkFootDelay);
             RunFootDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.runFoot", RunFootDelay);
             WalkMountDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.walkMount", WalkMountDelay);

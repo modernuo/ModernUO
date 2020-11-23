@@ -94,7 +94,7 @@ namespace Server
         Unk3 = 0x00000800,
         SeventhCharacterSlot = 0x00001000,
         Unk4 = 0x00002000,
-        NewMovementSystem = 0x00004000,
+        NewMovementSystem = 0x00004000, // Doesn't seem to be used on OSI
         NewFeluccaAreas = 0x00008000,
 
         ExpansionNone = ContextMenus,
