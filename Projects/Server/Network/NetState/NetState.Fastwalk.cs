@@ -51,11 +51,9 @@ namespace Server.Network
                 var step = _stepDelays[index++];
                 if (now - last < step)
                 {
-                    WriteConsole("Cannot discard step! {0} - {1} - {2} > {3}", last, now, step, now - last);
                     break;
                 }
 
-                WriteConsole("Discarded delay {0} - {1} - {2} < {3}", last, now, step, now - last);
                 last += step;
                 _stepCount--;
                 if (index >= length)
@@ -69,14 +67,12 @@ namespace Server.Network
             // If we are out of steps, fail
             if (_stepCount >= maxSteps)
             {
-                WriteConsole("Too fast! {0}", _stepCount);
                 return false;
             }
 
             var delay = Mobile.ComputeMovementSpeed(d);
 
             // Add the delay
-            WriteConsole("Adding Delay: {0} ({1})", delay, _stepCount);
             _stepDelays[_stepIndex++] = delay;
 
             if (_stepIndex >= length)
