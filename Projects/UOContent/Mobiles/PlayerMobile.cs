@@ -4272,9 +4272,7 @@ namespace Server.Mobiles
 
             var onHorse = Mount != null;
 
-            var animalContext = AnimalForm.GetContext(this);
-
-            if (onHorse || animalContext?.SpeedBoost == true)
+            if (onHorse || AnimalForm.GetContext(this)?.SpeedBoost == true)
             {
                 return running ? CalcMoves.RunMountDelay : CalcMoves.WalkMountDelay;
             }

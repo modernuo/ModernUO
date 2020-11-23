@@ -20,14 +20,14 @@ namespace Server.Movement
         // Movement implementation algorithm
         public static IMovementImpl Impl { get; set; }
 
-        public static int WalkFootDelay { get; set; } = 360;
-        public static int RunFootDelay { get; set; } = 180;
-        public static int WalkMountDelay { get; set; } = 180;
-        public static int RunMountDelay { get; set; } = 90;
+        public static int WalkFootDelay { get; set; } = 440;
+        public static int RunFootDelay { get; set; } = 220;
+        public static int WalkMountDelay { get; set; } = 220;
+        public static int RunMountDelay { get; set; } = 110;
         public static AccessLevel FastwalkExemptionLevel { get; set; } = AccessLevel.Counselor;
 
         // If this is changed during runtime, then the steps array needs resizing.
-        public static int MaxSteps { get; private set; } = 6;
+        public static int MaxSteps { get; private set; } = 4;
 
         public static void Configure()
         {
@@ -39,7 +39,7 @@ namespace Server.Movement
             RunMountDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.runMount", RunMountDelay);
 
             // Testing
-            // ExemptionLevel = (AccessLevel)((int)AccessLevel.Owner + 1);
+            FastwalkExemptionLevel = (AccessLevel)((int)AccessLevel.Owner + 1);
         }
 
         public static bool CheckMovement(Mobile m, Direction d, out int newZ)

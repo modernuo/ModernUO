@@ -21,6 +21,7 @@ namespace Server.Network
     {
         private int _stepIndex;
         private int _stepCount;
+        private long _startDelay;
         private long[] _stepDelays;
 
         public bool AddStep(Direction d)
@@ -38,34 +39,55 @@ namespace Server.Network
             var index = _stepIndex - _stepCount;
             if (index < 0)
             {
-                index += maxSteps;
+                index += length;
             }
 
             var now = Core.TickCount;
-            var lastMove = Mobile.LastMoveTime;
+            var last = _startDelay;
 
-            while (index < _stepIndex)
+            // Discard old steps by decrementing the step counter
+            while (index != _stepIndex || _stepCount >= maxSteps)
             {
                 var step = _stepDelays[index++];
-                if (lastMove + step < now)
+                if (now - last < step)
                 {
-                    _stepCount--;
+                    WriteConsole("Cannot discard step! {0} - {1} - {2} > {3}", last, now, step, now - last);
+                    break;
                 }
 
-                if (index > length)
+                WriteConsole("Discarded delay {0} - {1} - {2} < {3}", last, now, step, now - last);
+                last += step;
+                _stepCount--;
+                if (index >= length)
                 {
                     index = 0;
                 }
             }
 
+            _startDelay = last;
+
+            // If we are out of steps, fail
             if (_stepCount >= maxSteps)
             {
+                WriteConsole("Too fast! {0}", _stepCount);
                 return false;
             }
 
             var delay = Mobile.ComputeMovementSpeed(d);
-            index = _stepIndex++;
-            _stepDelays[index > length ? 0 : index] = delay;
+
+            // Add the delay
+            WriteConsole("Adding Delay: {0} ({1})", delay, _stepCount);
+            _stepDelays[_stepIndex++] = delay;
+
+            if (_stepIndex >= length)
+            {
+                _stepIndex = 0;
+            }
+
+            if (_stepCount == 0)
+            {
+                _startDelay = now;
+            }
             _stepCount++;
 
             return true;
