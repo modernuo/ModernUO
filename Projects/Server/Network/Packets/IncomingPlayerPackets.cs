@@ -23,7 +23,6 @@ namespace Server.Network
         public static void Configure()
         {
             IncomingPackets.Register(0x01, 5, false, Disconnect);
-            IncomingPackets.Register(0x02, 7, true, MovementReq);
             IncomingPackets.Register(0x05, 5, true, AttackReq);
             IncomingPackets.Register(0x12, 0, true, TextCommand);
             IncomingPackets.Register(0x22, 3, true, Resynchronize);
@@ -490,8 +489,6 @@ namespace Server.Network
             from.SendEverything();
 
             state.Sequence = 0;
-
-            from.ClearFastwalkStack();
         }
 
         public static void PingReq(NetState state, CircularBufferReader reader)
@@ -502,40 +499,6 @@ namespace Server.Network
         public static void SetUpdateRange(NetState state, CircularBufferReader reader)
         {
             state.Send(ChangeUpdateRange.Instantiate(18));
-        }
-
-        // TODO: Change to OSI fastwalk stack
-        public static void MovementReq(NetState state, CircularBufferReader reader)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            var dir = (Direction)reader.ReadByte();
-            int seq = reader.ReadByte();
-            var key = reader.ReadInt32(); // Fastwalk stack key
-
-            if (state.Sequence == 0 && seq != 0 || !from.Move(dir))
-            {
-                state.Send(new MovementRej(seq, from));
-                state.Sequence = 0;
-
-                from.ClearFastwalkStack();
-            }
-            else
-            {
-                ++seq;
-
-                if (seq == 256)
-                {
-                    seq = 1;
-                }
-
-                state.Sequence = seq;
-            }
         }
 
         public static void MobileQuery(NetState state, CircularBufferReader reader)

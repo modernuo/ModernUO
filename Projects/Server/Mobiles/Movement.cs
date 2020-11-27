@@ -1,8 +1,48 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: Movement.cs                                                     *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 namespace Server.Movement
 {
     public static class Movement
     {
+        // Movement implementation algorithm
         public static IMovementImpl Impl { get; set; }
+        public static int WalkFootDelay { get; set; } = 440;
+        public static int RunFootDelay { get; set; } = 220;
+        public static int WalkMountDelay { get; set; } = 220;
+        public static int RunMountDelay { get; set; } = 110;
+
+        public static bool EnableFastwalkPrevention { get; set; } = true;
+        public static AccessLevel FastwalkExemptionLevel { get; set; } = AccessLevel.Counselor;
+
+        // If this is changed during runtime, then the steps array needs resizing.
+        public static int MaxSteps { get; private set; } = 4;
+
+        public static void Configure()
+        {
+            EnableFastwalkPrevention = ServerConfiguration.GetOrUpdateSetting("movement.enableFastWalkPrevention", EnableFastwalkPrevention);
+            MaxSteps = ServerConfiguration.GetOrUpdateSetting("movement.maxSteps", MaxSteps);
+            FastwalkExemptionLevel = ServerConfiguration.GetOrUpdateSetting("movement.fastwalkExemptionLevel", FastwalkExemptionLevel);
+            WalkFootDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.walkFoot", WalkFootDelay);
+            RunFootDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.runFoot", RunFootDelay);
+            WalkMountDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.walkMount", WalkMountDelay);
+            RunMountDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.runMount", RunMountDelay);
+
+            // Testing
+            FastwalkExemptionLevel = (AccessLevel)((int)AccessLevel.Owner + 1);
+        }
 
         public static bool CheckMovement(Mobile m, Direction d, out int newZ)
         {

@@ -220,6 +220,76 @@ namespace System.Buffers
             }
         }
 
+        /// <summary>
+        /// Writes a 8-byte signed integer value to the underlying stream.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Write(long value)
+        {
+            if (Position < _first.Length)
+            {
+                if (!BinaryPrimitives.TryWriteInt64BigEndian(_first.Slice(Position), value))
+                {
+                    // Not enough space. Split the spans
+                    Write((byte)(value >> 56));
+                    Write((byte)(value >> 48));
+                    Write((byte)(value >> 40));
+                    Write((byte)(value >> 32));
+                    Write((byte)(value >> 24));
+                    Write((byte)(value >> 16));
+                    Write((byte)(value >> 8));
+                    Write((byte)value);
+                }
+                else
+                {
+                    Position += 8;
+                }
+            }
+            else if (BinaryPrimitives.TryWriteInt64BigEndian(_second.Slice(Position - _first.Length), value))
+            {
+                Position += 8;
+            }
+            else
+            {
+                throw new OutOfMemoryException();
+            }
+        }
+
+        /// <summary>
+        /// Writes a 8-byte unsigned integer value to the underlying stream.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Write(ulong value)
+        {
+            if (Position < _first.Length)
+            {
+                if (!BinaryPrimitives.TryWriteUInt64BigEndian(_first.Slice(Position), value))
+                {
+                    // Not enough space. Split the spans
+                    Write((byte)(value >> 56));
+                    Write((byte)(value >> 48));
+                    Write((byte)(value >> 40));
+                    Write((byte)(value >> 32));
+                    Write((byte)(value >> 24));
+                    Write((byte)(value >> 16));
+                    Write((byte)(value >> 8));
+                    Write((byte)value);
+                }
+                else
+                {
+                    Position += 8;
+                }
+            }
+            else if (BinaryPrimitives.TryWriteUInt64BigEndian(_second.Slice(Position - _first.Length), value))
+            {
+                Position += 8;
+            }
+            else
+            {
+                throw new OutOfMemoryException();
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(ReadOnlySpan<byte> buffer)
         {

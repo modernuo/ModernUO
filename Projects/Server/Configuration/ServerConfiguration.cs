@@ -45,6 +45,12 @@ namespace Server
             return int.TryParse(strValue, out var value) ? value : defaultValue;
         }
 
+        public static long GetSetting(string key, long defaultValue)
+        {
+            m_Settings.settings.TryGetValue(key, out var strValue);
+            return long.TryParse(strValue, out var value) ? value : defaultValue;
+        }
+
         public static bool GetSetting(string key, bool defaultValue)
         {
             m_Settings.settings.TryGetValue(key, out var strValue);
@@ -75,6 +81,22 @@ namespace Server
             if (m_Settings.settings.TryGetValue(key, out var strValue))
             {
                 value = int.TryParse(strValue, out value) ? value : defaultValue;
+            }
+            else
+            {
+                SetSetting(key, (value = defaultValue).ToString());
+            }
+
+            return value;
+        }
+
+        public static long GetOrUpdateSetting(string key, long defaultValue)
+        {
+            long value;
+
+            if (m_Settings.settings.TryGetValue(key, out var strValue))
+            {
+                value = long.TryParse(strValue, out value) ? value : defaultValue;
             }
             else
             {

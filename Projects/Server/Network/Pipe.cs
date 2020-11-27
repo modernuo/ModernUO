@@ -59,7 +59,7 @@ namespace Server.Network
                     return;
                 }
 
-                for (int i = 0; i < Buffer.Length; i++)
+                for (int i = 0; i < 2; i++)
                 {
                     var buffer = Buffer[i];
                     var sz = Math.Min(remaining, buffer.Count);

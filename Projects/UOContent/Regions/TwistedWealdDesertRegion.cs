@@ -23,7 +23,7 @@ namespace Server.Regions
             if (ns != null && !TransformationSpellHelper.UnderTransformation(m, typeof(AnimalForm)) &&
                 m.AccessLevel == AccessLevel.Player)
             {
-                ns.Send(SpeedControl.WalkSpeed);
+                ns.SendSpeedControl(SpeedControlSetting.Walk);
             }
         }
 
@@ -32,7 +32,7 @@ namespace Server.Regions
             var ns = m.NetState;
             if (ns != null && !TransformationSpellHelper.UnderTransformation(m, typeof(AnimalForm)))
             {
-                ns.Send(SpeedControl.Disable);
+                ns.SendSpeedControl(SpeedControlSetting.Disable);
             }
         }
 
@@ -40,7 +40,7 @@ namespace Server.Regions
         {
             if (m.Region.IsPartOf<TwistedWealdDesertRegion>() && m.AccessLevel == AccessLevel.Player)
             {
-                m.NetState.Send(SpeedControl.WalkSpeed);
+                m.NetState.SendSpeedControl(SpeedControlSetting.Walk);
             }
         }
     }

@@ -183,6 +183,64 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public long ReadInt64()
+        {
+            long value;
+
+            if (Position < _first.Length)
+            {
+                if (!BinaryPrimitives.TryReadInt64BigEndian(_first.Slice(Position), out value))
+                {
+                    // Not enough space. Split the spans
+                    return ((long)ReadByte() >> 56) |
+                           ((long)ReadByte() >> 48) |
+                           ((long)ReadByte() >> 40) |
+                           ((long)ReadByte() >> 32) |
+                           ((long)ReadByte() >> 24) |
+                           ((long)ReadByte() >> 16) |
+                           ((long)ReadByte() >> 8) |
+                           ReadByte();
+                }
+            }
+            else if (!BinaryPrimitives.TryReadInt64BigEndian(_second.Slice(Position - _first.Length), out value))
+            {
+                throw new OutOfMemoryException();
+            }
+
+            Position += 8;
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ulong ReadUInt64()
+        {
+            ulong value;
+
+            if (Position < _first.Length)
+            {
+                if (!BinaryPrimitives.TryReadUInt64BigEndian(_first.Slice(Position), out value))
+                {
+                    // Not enough space. Split the spans
+                    return ((ulong)ReadByte() >> 56) |
+                           ((ulong)ReadByte() >> 48) |
+                           ((ulong)ReadByte() >> 40) |
+                           ((ulong)ReadByte() >> 32) |
+                           ((ulong)ReadByte() >> 24) |
+                           ((ulong)ReadByte() >> 16) |
+                           ((ulong)ReadByte() >> 8) |
+                           ReadByte();
+                }
+            }
+            else if (!BinaryPrimitives.TryReadUInt64BigEndian(_second.Slice(Position - _first.Length), out value))
+            {
+                throw new OutOfMemoryException();
+            }
+
+            Position += 8;
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string ReadString(Encoding encoding, bool safeString = false, int fixedLength = -1)
         {
             int sizeT = Utility.GetByteLengthForEncoding(encoding);
