@@ -3681,7 +3681,7 @@ namespace Server.Gumps
                                 {
                                     index -= 4;
 
-                                    if (m_List != null && index < m_List.Count)
+                                    if (index < m_List?.Count)
                                     {
                                         from.SendGump(
                                             new AdminGump(from, AdminGumpPage.FirewallInfo, 0, null, null, m_List[index])
@@ -3889,7 +3889,7 @@ namespace Server.Gumps
                     }
                 case 8:
                     {
-                        if (m_List != null && index < m_List.Count)
+                        if (index < m_List?.Count)
                         {
                             if (!(m_State is Account a))
                             {
@@ -3933,7 +3933,7 @@ namespace Server.Gumps
                     }
                 case 9:
                     {
-                        if (m_List != null && index < m_List.Count)
+                        if (index < m_List?.Count)
                         {
                             if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
                             {
@@ -3984,7 +3984,7 @@ namespace Server.Gumps
                     }
                 case 10:
                     {
-                        if (m_List != null && index < m_List.Count)
+                        if (index < m_List?.Count)
                         {
                             if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
                             {

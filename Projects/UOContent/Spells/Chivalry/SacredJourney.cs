@@ -79,7 +79,7 @@ namespace Server.Spells.Chivalry
             {
                 Caster.SendLocalizedMessage(501942); // That location is blocked.
             }
-            else if (m_Book != null && m_Book.CurCharges <= 0)
+            else if (m_Book?.CurCharges <= 0)
             {
                 Caster.SendLocalizedMessage(502412); // There are no charges left on that item.
             }

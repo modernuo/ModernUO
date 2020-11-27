@@ -923,7 +923,7 @@ namespace Server
                 flags |= SaveFlag.Parent;
             }
 
-            if (items != null && items.Count > 0)
+            if (items?.Count > 0)
             {
                 flags |= SaveFlag.Items;
             }

@@ -2317,7 +2317,7 @@ namespace Server.Multis
 
             var fixtures = foundation.Fixtures;
 
-            for (var i = 0; fixtures != null && i < fixtures.Count; ++i)
+            for (var i = 0; i < fixtures?.Count; ++i)
             {
                 var item = fixtures[i];
 
@@ -2367,7 +2367,7 @@ namespace Server.Multis
 
             var fixtures = context.Foundation.Fixtures;
 
-            for (var i = 0; fixtures != null && i < fixtures.Count; ++i)
+            for (var i = 0; i < fixtures?.Count; ++i)
             {
                 var item = fixtures[i];
 

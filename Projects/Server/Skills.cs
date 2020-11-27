@@ -621,7 +621,7 @@ namespace Server
                     {
                         var sk = m_Skills[i];
 
-                        if (sk != null && sk.BaseFixedPoint > value)
+                        if (sk?.BaseFixedPoint > value)
                         {
                             value = sk.BaseFixedPoint;
                             highest = sk;

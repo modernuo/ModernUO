@@ -1942,7 +1942,7 @@ namespace Server.Multis
                 return;
             }
 
-            for (var i = 0; Doors != null && i < Doors.Count; ++i)
+            for (var i = 0; i < Doors?.Count; ++i)
             {
                 var door = Doors[i];
                 var p = door.Location;
@@ -2513,7 +2513,7 @@ namespace Server.Multis
                 }
             }
 
-            for (var i = 0; Doors != null && i < Doors.Count; ++i)
+            for (var i = 0; i < Doors?.Count; ++i)
             {
                 var door = Doors[i];
                 var p = door.Location;

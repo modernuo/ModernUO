@@ -69,7 +69,7 @@ namespace Server
         public bool Equals(Point3D other) => m_X == other.m_X && m_Y == other.m_Y && m_Z == other.m_Z;
 
         public bool Equals(IPoint3D other) =>
-            !ReferenceEquals(other, null) && m_X == other.X && m_Y == other.Y && m_Z == other.Z;
+            m_X == other?.X && m_Y == other.Y && m_Z == other.Z;
 
         public override bool Equals(object obj) => obj is Point3D other && Equals(other);
 

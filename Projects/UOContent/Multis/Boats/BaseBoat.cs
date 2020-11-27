@@ -723,7 +723,7 @@ namespace Server.Multis
                 return DryDockResult.NotAnchored;
             }
 
-            if (Hold != null && Hold.Items.Count > 0)
+            if (Hold?.Items.Count > 0)
             {
                 return DryDockResult.Hold;
             }

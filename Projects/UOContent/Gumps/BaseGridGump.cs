@@ -101,14 +101,14 @@ namespace Server.Gumps
 
             width = CurrentX + BorderSize;
 
-            if (m_Background != null && width > m_Background.Width)
+            if (width > m_Background?.Width)
             {
                 m_Background.Width = width;
             }
 
             width = CurrentX - BorderSize;
 
-            if (m_Offset != null && width > m_Offset.Width)
+            if (width > m_Offset?.Width)
             {
                 m_Offset.Width = width;
             }

@@ -1538,7 +1538,7 @@ namespace Server.Guilds
 
             var votingMembers = 0;
 
-            for (var i = 0; Members != null && i < Members.Count; ++i)
+            for (var i = 0; i < Members?.Count; ++i)
             {
                 var memb = Members[i];
 

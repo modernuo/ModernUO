@@ -89,7 +89,7 @@ namespace Server.Items
         {
             if (!Deleted)
             {
-                if (targeted != null && targeted is Mobile to)
+                if (targeted is Mobile to)
                 {
                     if (to is PlayerMobile)
                     {

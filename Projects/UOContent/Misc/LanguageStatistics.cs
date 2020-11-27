@@ -166,7 +166,7 @@ namespace Server.Misc
 
         private static string GetFormattedInfo(string code)
         {
-            if (code == null || code.Length != 3)
+            if (code?.Length != 3)
             {
                 return $"Unknown code {code}";
             }
