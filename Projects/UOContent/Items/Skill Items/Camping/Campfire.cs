@@ -16,7 +16,7 @@ namespace Server.Items
     {
         public static readonly int SecureRange = 7;
 
-        private static readonly Dictionary<Mobile, CampfireEntry> m_Table = new Dictionary<Mobile, CampfireEntry>();
+        private static readonly Dictionary<Mobile, CampfireEntry> m_Table = new();
 
         private readonly List<CampfireEntry> m_Entries;
 

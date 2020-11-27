@@ -320,7 +320,7 @@ namespace Server.Gumps
     {
         private static readonly CustomCategory[] Categories =
         {
-            new CustomCategory(
+            new(
                 Layer.InnerTorso,
                 1011357,
                 true,
@@ -335,7 +335,7 @@ namespace Server.Gumps
                 }
             ),
 
-            new CustomCategory(
+            new(
                 Layer.MiddleTorso,
                 1011371,
                 true,
@@ -352,7 +352,7 @@ namespace Server.Gumps
                 }
             ),
 
-            new CustomCategory(
+            new(
                 Layer.Shoes,
                 1011388,
                 true,
@@ -366,7 +366,7 @@ namespace Server.Gumps
                 }
             ),
 
-            new CustomCategory(
+            new(
                 Layer.Helm,
                 1011375,
                 true,
@@ -382,7 +382,7 @@ namespace Server.Gumps
                 }
             ),
 
-            new CustomCategory(
+            new(
                 Layer.Helm,
                 1015319,
                 true,
@@ -398,7 +398,7 @@ namespace Server.Gumps
                 }
             ),
 
-            new CustomCategory(
+            new(
                 Layer.Pants,
                 1011367,
                 true,
@@ -411,7 +411,7 @@ namespace Server.Gumps
                 }
             ),
 
-            new CustomCategory(
+            new(
                 Layer.Cloak,
                 1011393,
                 true,
@@ -422,7 +422,7 @@ namespace Server.Gumps
                 }
             ),
 
-            new CustomCategory(
+            new(
                 Layer.Hair,
                 1011395,
                 true,
@@ -441,7 +441,7 @@ namespace Server.Gumps
                 }
             ),
 
-            new CustomCategory(
+            new(
                 Layer.FacialHair,
                 1015320,
                 true,
@@ -458,7 +458,7 @@ namespace Server.Gumps
                 }
             ),
 
-            new CustomCategory(
+            new(
                 Layer.FirstValid,
                 1011397,
                 false,
@@ -477,7 +477,7 @@ namespace Server.Gumps
                 }
             ),
 
-            new CustomCategory(
+            new(
                 Layer.FirstValid,
                 1015325,
                 false,
@@ -906,26 +906,26 @@ namespace Server.Gumps
     {
         private static readonly HairOrBeard[] m_HairStyles =
         {
-            new HairOrBeard(0x203B, 1011052), // Short
-            new HairOrBeard(0x203C, 1011053), // Long
-            new HairOrBeard(0x203D, 1011054), // Ponytail
-            new HairOrBeard(0x2044, 1011055), // Mohawk
-            new HairOrBeard(0x2045, 1011047), // Pageboy
-            new HairOrBeard(0x204A, 1011050), // Topknot
-            new HairOrBeard(0x2047, 1011396), // Curly
-            new HairOrBeard(0x2048, 1011048), // Receding
-            new HairOrBeard(0x2049, 1011049)  // 2-tails
+            new(0x203B, 1011052), // Short
+            new(0x203C, 1011053), // Long
+            new(0x203D, 1011054), // Ponytail
+            new(0x2044, 1011055), // Mohawk
+            new(0x2045, 1011047), // Pageboy
+            new(0x204A, 1011050), // Topknot
+            new(0x2047, 1011396), // Curly
+            new(0x2048, 1011048), // Receding
+            new(0x2049, 1011049)  // 2-tails
         };
 
         private static readonly HairOrBeard[] m_BeardStyles =
         {
-            new HairOrBeard(0x2041, 1011062), // Mustache
-            new HairOrBeard(0x203F, 1011060), // Short beard
-            new HairOrBeard(0x204B, 1015321), // Short Beard & Moustache
-            new HairOrBeard(0x203E, 1011061), // Long beard
-            new HairOrBeard(0x204C, 1015322), // Long Beard & Moustache
-            new HairOrBeard(0x2040, 1015323), // Goatee
-            new HairOrBeard(0x204D, 1011401)  // Vandyke
+            new(0x2041, 1011062), // Mustache
+            new(0x203F, 1011060), // Short beard
+            new(0x204B, 1015321), // Short Beard & Moustache
+            new(0x203E, 1011061), // Long beard
+            new(0x204C, 1015322), // Long Beard & Moustache
+            new(0x2040, 1015323), // Goatee
+            new(0x204D, 1011401)  // Vandyke
         };
 
         private readonly PlayerVendor m_Vendor;

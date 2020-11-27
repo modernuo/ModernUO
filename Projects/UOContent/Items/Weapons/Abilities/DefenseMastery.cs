@@ -10,7 +10,7 @@ namespace Server.Items
     public class DefenseMastery : WeaponAbility
     {
         private static readonly Dictionary<Mobile, DefenseMasteryInfo>
-            m_Table = new Dictionary<Mobile, DefenseMasteryInfo>();
+            m_Table = new();
 
         public override int BaseMana => 30;
 

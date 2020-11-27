@@ -15,7 +15,7 @@ namespace Server
         private static readonly SpeedInfo[] m_Speeds =
         {
             /* Slow */
-            new SpeedInfo(
+            new(
                 0.3,
                 0.6,
                 new[]
@@ -34,7 +34,7 @@ namespace Server
                 }
             ),
             /* Fast */
-            new SpeedInfo(
+            new(
                 0.2,
                 0.4,
                 new[]
@@ -61,7 +61,7 @@ namespace Server
                 }
             ),
             /* Very Fast */
-            new SpeedInfo(
+            new(
                 0.175,
                 0.350,
                 new[]
@@ -78,7 +78,7 @@ namespace Server
                 }
             ),
             /* Medium */
-            new SpeedInfo(
+            new(
                 0.25,
                 0.5,
                 new[]

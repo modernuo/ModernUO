@@ -5,7 +5,7 @@ namespace Server.Spells.Fifth
 {
     public class MindBlastSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Mind Blast",
             "Por Corp Wis",
             218,

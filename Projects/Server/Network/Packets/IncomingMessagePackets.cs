@@ -38,7 +38,7 @@ namespace Server.Network
 
     public static class IncomingMessagePackets
     {
-        private static readonly KeywordList m_KeywordList = new KeywordList();
+        private static readonly KeywordList m_KeywordList = new();
 
         public static void Configure()
         {

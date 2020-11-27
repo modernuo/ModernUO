@@ -24,7 +24,7 @@ namespace Server.Engines.Craft
             LargestRecipeID = Math.Max(id, LargestRecipeID);
         }
 
-        public static Dictionary<int, Recipe> Recipes { get; } = new Dictionary<int, Recipe>();
+        public static Dictionary<int, Recipe> Recipes { get; } = new();
 
         public static int LargestRecipeID { get; private set; }
 

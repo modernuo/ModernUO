@@ -8,7 +8,7 @@ namespace Server.Spells.Fourth
 {
     public class ArchCureSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Arch Cure",
             "Vas An Nox",
             215,

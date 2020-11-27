@@ -4,7 +4,7 @@ namespace Server.Spells.First
 {
     public class MagicArrowSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Magic Arrow",
             "In Por Ylem",
             212,

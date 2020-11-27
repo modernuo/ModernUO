@@ -20,7 +20,7 @@ namespace Server
 {
     public class MovementEventArgs : EventArgs
     {
-        private static readonly Queue<MovementEventArgs> m_Pool = new Queue<MovementEventArgs>();
+        private static readonly Queue<MovementEventArgs> m_Pool = new();
 
         public MovementEventArgs(Mobile mobile, Direction dir)
         {

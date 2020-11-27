@@ -170,7 +170,7 @@ namespace Server.Items
     {
         private static readonly TilesAndEffect[] m_Table =
         {
-            new TilesAndEffect(
+            new(
                 new[]
                 {
                     0x71, 0x7C,
@@ -209,7 +209,7 @@ namespace Server.Items
                 typeof(DirtGreenThornsEffect)
             ),
 
-            new TilesAndEffect(
+            new(
                 new[]
                 {
                     0x9, 0x15,
@@ -218,7 +218,7 @@ namespace Server.Items
                 typeof(FurrowsGreenThornsEffect)
             ),
 
-            new TilesAndEffect(
+            new(
                 new[]
                 {
                     0x9C4, 0x9EB,
@@ -232,7 +232,7 @@ namespace Server.Items
                 typeof(SwampGreenThornsEffect)
             ),
 
-            new TilesAndEffect(
+            new(
                 new[]
                 {
                     0x10C, 0x10F,
@@ -253,7 +253,7 @@ namespace Server.Items
                 typeof(SnowGreenThornsEffect)
             ),
 
-            new TilesAndEffect(
+            new(
                 new[]
                 {
                     0x16, 0x3A,
@@ -746,7 +746,7 @@ namespace Server.Items
 
     public class GreenThornsSHTeleporter : Item
     {
-        public static readonly Point3D Destination = new Point3D(5738, 1856, 0);
+        public static readonly Point3D Destination = new(5738, 1856, 0);
 
         private GreenThornsSHTeleporter() : base(0x913)
         {

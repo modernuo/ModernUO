@@ -206,7 +206,7 @@ namespace Server.Engines.BulkOrders
         private static readonly ConstructCallback PowerScroll = CreatePowerScroll;
         private static readonly ConstructCallback ColoredAnvil = CreateColoredAnvil;
         private static readonly ConstructCallback AncientHammer = CreateAncientHammer;
-        public static readonly SmithRewardCalculator Instance = new SmithRewardCalculator();
+        public static readonly SmithRewardCalculator Instance = new();
 
         private static readonly int[][][] m_GoldTable =
         {
@@ -299,9 +299,9 @@ namespace Server.Engines.BulkOrders
         private readonly RewardType[] m_Types =
         {
             // Armors
-            new RewardType(200, typeof(RingmailGloves), typeof(RingmailChest), typeof(RingmailArms), typeof(RingmailLegs)),
-            new RewardType(300, typeof(ChainCoif), typeof(ChainLegs), typeof(ChainChest)),
-            new RewardType(
+            new(200, typeof(RingmailGloves), typeof(RingmailChest), typeof(RingmailArms), typeof(RingmailLegs)),
+            new(300, typeof(ChainCoif), typeof(ChainLegs), typeof(ChainChest)),
+            new(
                 400,
                 typeof(PlateArms),
                 typeof(PlateLegs),
@@ -312,8 +312,8 @@ namespace Server.Engines.BulkOrders
             ),
 
             // Weapons
-            new RewardType(200, typeof(Bardiche), typeof(Halberd)),
-            new RewardType(
+            new(200, typeof(Bardiche), typeof(Halberd)),
+            new(
                 300,
                 typeof(Dagger),
                 typeof(ShortSpear),
@@ -321,7 +321,7 @@ namespace Server.Engines.BulkOrders
                 typeof(WarFork),
                 typeof(Kryss)
             ), // OSI put the dagger in there.  Odd, ain't it.
-            new RewardType(
+            new(
                 350,
                 typeof(Axe),
                 typeof(BattleAxe),
@@ -330,7 +330,7 @@ namespace Server.Engines.BulkOrders
                 typeof(LargeBattleAxe),
                 typeof(TwoHandedAxe)
             ),
-            new RewardType(
+            new(
                 350,
                 typeof(Broadsword),
                 typeof(Cutlass),
@@ -339,7 +339,7 @@ namespace Server.Engines.BulkOrders
                 typeof(Scimitar), /*typeof( ThinLongsword ),*/
                 typeof(VikingSword)
             ),
-            new RewardType(
+            new(
                 350,
                 typeof(WarAxe),
                 typeof(HammerPick),
@@ -564,7 +564,7 @@ namespace Server.Engines.BulkOrders
         private static readonly ConstructCallback PowerScroll = CreatePowerScroll;
         private static readonly ConstructCallback BearRug = CreateBearRug;
         private static readonly ConstructCallback ClothingBlessDeed = CreateCBD;
-        public static readonly TailorRewardCalculator Instance = new TailorRewardCalculator();
+        public static readonly TailorRewardCalculator Instance = new();
 
         private static readonly int[][][] m_AosGoldTable =
         {

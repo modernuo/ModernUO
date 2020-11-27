@@ -5,7 +5,7 @@ namespace Server.Spells.Eighth
 {
     public class AirElementalSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Air Elemental",
             "Kal Vas Xen Hur",
             269,

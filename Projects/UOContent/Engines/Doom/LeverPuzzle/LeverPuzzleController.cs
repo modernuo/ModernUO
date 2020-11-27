@@ -56,16 +56,16 @@ namespace Server.Engines.Doom
 
         /* Exit & Enter locations for the lamp room */
 
-        public static Point3D lr_Exit = new Point3D(353, 172, -1);
-        public static Point3D lr_Enter = new Point3D(467, 96, -1);
+        public static Point3D lr_Exit = new(353, 172, -1);
+        public static Point3D lr_Enter = new(467, 96, -1);
 
         /* "Center" location in puzzle */
 
-        public static Point3D lp_Center = new Point3D(324, 64, -1);
+        public static Point3D lp_Center = new(324, 64, -1);
 
         /* Lamp Room Area */
 
-        public static Rectangle2D lr_Rect = new Rectangle2D(465, 92, 10, 10);
+        public static Rectangle2D lr_Rect = new(465, 92, 10, 10);
 
         /* Lamp Room area Poison message data */
 
@@ -465,7 +465,7 @@ namespace Server.Engines.Doom
             RandomPointIn(rect.X, rect.Y, rect.Height, rect.Width, z);
 
         public static Point3D RandomPointIn(int x, int y, int x2, int y2, int z) =>
-            new Point3D(Utility.Random(x, x2), Utility.Random(y, y2), z);
+            new(Utility.Random(x, x2), Utility.Random(y, y2), z);
 
         public static void PlaySounds(Point3D location, int[] sounds)
         {

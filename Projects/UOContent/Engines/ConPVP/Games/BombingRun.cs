@@ -16,7 +16,7 @@ namespace Server.Engines.ConPVP
 
         private readonly List<Mobile> m_Helpers;
 
-        private readonly Point3DList m_Path = new Point3DList();
+        private readonly Point3DList m_Path = new();
         private readonly EffectTimer m_Timer;
         private bool m_Flying;
         private int m_PathIdx;
@@ -449,7 +449,7 @@ namespace Server.Engines.ConPVP
                     MoveToWorld(m_Path[m_PathIdx - 1]);
                 }
 
-                Point3D pTop = new Point3D(GetWorldLocation()), pBottom = new Point3D(m_Path[pathCheckEnd - 1]);
+                Point3D pTop = new(GetWorldLocation()), pBottom = new(m_Path[pathCheckEnd - 1]);
                 Utility.FixPoints(ref pTop, ref pBottom);
 
                 for (var i = m_PathIdx; i < pathCheckEnd; i++)

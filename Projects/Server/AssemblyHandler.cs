@@ -24,7 +24,7 @@ namespace Server
 {
     public static class AssemblyHandler
     {
-        private static readonly Dictionary<Assembly, TypeCache> m_TypeCaches = new Dictionary<Assembly, TypeCache>();
+        private static readonly Dictionary<Assembly, TypeCache> m_TypeCaches = new();
         private static TypeCache m_NullCache;
         public static Assembly[] Assemblies { get; set; }
 
@@ -158,7 +158,7 @@ namespace Server
 
     public class TypeCache
     {
-        private readonly Dictionary<string, int[]> m_NameMap = new Dictionary<string, int[]>();
+        private readonly Dictionary<string, int[]> m_NameMap = new();
         private readonly Type[] m_Types;
 
         public TypeCache(Assembly asm)

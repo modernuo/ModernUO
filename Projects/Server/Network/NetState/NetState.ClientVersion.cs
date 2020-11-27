@@ -19,22 +19,22 @@ namespace Server.Network
 {
     public partial class NetState
     {
-        private static readonly ClientVersion m_Version400a = new ClientVersion("4.0.0a");
-        private static readonly ClientVersion m_Version407a = new ClientVersion("4.0.7a");
-        private static readonly ClientVersion m_Version500a = new ClientVersion("5.0.0a");
-        private static readonly ClientVersion m_Version502b = new ClientVersion("5.0.2b");
-        private static readonly ClientVersion m_Version6000 = new ClientVersion("6.0.0.0");
-        private static readonly ClientVersion m_Version6017 = new ClientVersion("6.0.1.7");
-        private static readonly ClientVersion m_Version60142 = new ClientVersion("6.0.14.2");
-        private static readonly ClientVersion m_Version7000 = new ClientVersion("7.0.0.0");
-        private static readonly ClientVersion m_Version7090 = new ClientVersion("7.0.9.0");
-        private static readonly ClientVersion m_Version70130 = new ClientVersion("7.0.13.0");
-        private static readonly ClientVersion m_Version70160 = new ClientVersion("7.0.16.0");
-        private static readonly ClientVersion m_Version70300 = new ClientVersion("7.0.30.0");
-        private static readonly ClientVersion m_Version70331 = new ClientVersion("7.0.33.1");
-        private static readonly ClientVersion m_Version704565 = new ClientVersion("7.0.45.65");
-        private static readonly ClientVersion m_Version70500 = new ClientVersion("7.0.50.0");
-        private static readonly ClientVersion m_Version70610 = new ClientVersion("7.0.61.0");
+        private static readonly ClientVersion m_Version400a = new("4.0.0a");
+        private static readonly ClientVersion m_Version407a = new("4.0.7a");
+        private static readonly ClientVersion m_Version500a = new("5.0.0a");
+        private static readonly ClientVersion m_Version502b = new("5.0.2b");
+        private static readonly ClientVersion m_Version6000 = new("6.0.0.0");
+        private static readonly ClientVersion m_Version6017 = new("6.0.1.7");
+        private static readonly ClientVersion m_Version60142 = new("6.0.14.2");
+        private static readonly ClientVersion m_Version7000 = new("7.0.0.0");
+        private static readonly ClientVersion m_Version7090 = new("7.0.9.0");
+        private static readonly ClientVersion m_Version70130 = new("7.0.13.0");
+        private static readonly ClientVersion m_Version70160 = new("7.0.16.0");
+        private static readonly ClientVersion m_Version70300 = new("7.0.30.0");
+        private static readonly ClientVersion m_Version70331 = new("7.0.33.1");
+        private static readonly ClientVersion m_Version704565 = new("7.0.45.65");
+        private static readonly ClientVersion m_Version70500 = new("7.0.50.0");
+        private static readonly ClientVersion m_Version70610 = new("7.0.61.0");
 
         public ProtocolChanges ProtocolChanges { get; set; }
         public ClientFlags Flags { get; set; }

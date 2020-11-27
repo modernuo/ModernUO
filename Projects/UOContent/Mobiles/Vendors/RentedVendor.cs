@@ -12,10 +12,10 @@ namespace Server.Mobiles
     {
         public static readonly VendorRentalDuration[] Instances =
         {
-            new VendorRentalDuration(TimeSpan.FromDays(7.0), 1062361),  // 1 Week
-            new VendorRentalDuration(TimeSpan.FromDays(14.0), 1062362), // 2 Weeks
-            new VendorRentalDuration(TimeSpan.FromDays(21.0), 1062363), // 3 Weeks
-            new VendorRentalDuration(TimeSpan.FromDays(28.0), 1062364)  // 1 Month
+            new(TimeSpan.FromDays(7.0), 1062361),  // 1 Week
+            new(TimeSpan.FromDays(14.0), 1062362), // 2 Weeks
+            new(TimeSpan.FromDays(21.0), 1062363), // 3 Weeks
+            new(TimeSpan.FromDays(28.0), 1062364)  // 1 Month
         };
 
         private VendorRentalDuration(TimeSpan duration, int name)

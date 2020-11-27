@@ -65,7 +65,7 @@ namespace Server.Items
           };
         */
 
-        private static readonly List<SkillName> _Skills = new List<SkillName>();
+        private static readonly List<SkillName> _Skills = new();
 
         [Constructible]
         public PowerScroll(SkillName skill = SkillName.Alchemy, double value = 0.0) : base(skill, value)

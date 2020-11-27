@@ -17,7 +17,7 @@ using System;
 
 namespace Server
 {
-    public class ServerCrashedEventArgs : EventArgs
+    public class ServerCrashedEventArgs
     {
         public ServerCrashedEventArgs(Exception e) => Exception = e;
 

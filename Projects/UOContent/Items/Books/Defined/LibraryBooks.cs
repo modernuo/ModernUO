@@ -2,7 +2,7 @@ namespace Server.Items
 {
     public class GrammarOfOrcish : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "A Grammar of Orcish",
             "Yorick of Yew",
             new BookPageInfo(
@@ -265,7 +265,7 @@ namespace Server.Items
 
     public class CallToAnarchy : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "A Politic Call to Anarchy",
             "Lord Blackthorn",
             new BookPageInfo(
@@ -443,7 +443,7 @@ namespace Server.Items
 
     public class ArmsAndWeaponsPrimer : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "A Primer on Arms and Weapons",
             "Martin",
             new BookPageInfo(
@@ -631,7 +631,7 @@ namespace Server.Items
 
     public class SongOfSamlethe : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "A Song of Samlethe",
             "Sandra",
             new BookPageInfo(
@@ -717,7 +717,7 @@ namespace Server.Items
 
     public class TaleOfThreeTribes : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "A Tale of Three Tribes",
             "Janet, Scribe",
             new BookPageInfo(
@@ -846,7 +846,7 @@ namespace Server.Items
 
     public class GuideToGuilds : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Beltran's Guide to Guilds",
             "Beltran",
             new BookPageInfo(
@@ -1051,7 +1051,7 @@ namespace Server.Items
 
     public class BirdsOfBritannia : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Birds of Britannia",
             "Thom the Heathen",
             new BookPageInfo(
@@ -1358,7 +1358,7 @@ namespace Server.Items
 
     public class BritannianFlora : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Britannian Flora: A Casual Guide",
             "Herbert the Lost",
             new BookPageInfo(
@@ -1570,7 +1570,7 @@ namespace Server.Items
 
     public class ChildrenTalesVol2 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Classic Children's Tales, Volume 2",
             "Guilhem, Editor",
             new BookPageInfo(
@@ -1694,7 +1694,7 @@ namespace Server.Items
 
     public class TalesOfVesperVol1 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Classic Tales of Vesper, Volume 1",
             "Clarke's Printery",
             new BookPageInfo(
@@ -1932,7 +1932,7 @@ namespace Server.Items
 
     public class DeceitDungeonOfHorror : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Deceit: A Dungeon of Horrors",
             "Mercenary Justin",
             new BookPageInfo(
@@ -2081,7 +2081,7 @@ namespace Server.Items
 
     public class DimensionalTravel : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Dimensional Travel, a Monograph",
             "Dryus Doost, Mage",
             new BookPageInfo(
@@ -2294,7 +2294,7 @@ namespace Server.Items
 
     public class EthicalHedonism : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Ethical Hedonism: An Introduction",
             "Richard Garriott",
             new BookPageInfo(
@@ -2572,7 +2572,7 @@ namespace Server.Items
 
     public class MyStory : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "My Story",
             "Sherry the Mouse",
             new BookPageInfo(
@@ -3091,7 +3091,7 @@ namespace Server.Items
 
     public class DiversityOfOurLand : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "On the Diversity of Our Land",
             "Lord Blackthorn",
             new BookPageInfo(
@@ -3271,7 +3271,7 @@ namespace Server.Items
 
     public class QuestOfVirtues : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Quest of the Virtues",
             "Autenil",
             new BookPageInfo(
@@ -3681,7 +3681,7 @@ namespace Server.Items
 
     public class RegardingLlamas : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Regarding Llamas",
             "Simon",
             new BookPageInfo(
@@ -3752,7 +3752,7 @@ namespace Server.Items
 
     public class TalkingToWisps : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Talking to Wisps",
             "Yorick ofMoonglow",
             new BookPageInfo(
@@ -3869,7 +3869,7 @@ namespace Server.Items
 
     public class TamingDragons : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Taming Dragons",
             "Wyrd Beastmaster",
             new BookPageInfo(
@@ -3976,7 +3976,7 @@ namespace Server.Items
 
     public class BoldStranger : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The Bold Stranger",
             "Old Fabio the Poor",
             new BookPageInfo(
@@ -4146,7 +4146,7 @@ namespace Server.Items
 
     public class BurningOfTrinsic : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The Burning of Trinsic",
             "Japheth of Trinsic",
             new BookPageInfo(
@@ -4407,7 +4407,7 @@ namespace Server.Items
 
     public class TheFight : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The Fight",
             "M. de la Garza",
             new BookPageInfo(
@@ -4566,7 +4566,7 @@ namespace Server.Items
 
     public class LifeOfATravellingMinstrel : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The Life of a Travelling Minstrel",
             "Sarah of Yew",
             new BookPageInfo(
@@ -4772,7 +4772,7 @@ namespace Server.Items
 
     public class MajorTradeAssociation : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The Major Trade Associations",
             "Pieter of Vesper",
             new BookPageInfo(
@@ -4979,7 +4979,7 @@ namespace Server.Items
 
     public class RankingsOfTrades : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The Rankings of Trades",
             "Lord Higginbotham",
             new BookPageInfo(
@@ -5097,7 +5097,7 @@ namespace Server.Items
 
     public class WildGirlOfTheForest : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The Wild Girl of the Forest",
             "Horace the Trader",
             new BookPageInfo(
@@ -5288,7 +5288,7 @@ namespace Server.Items
 
     public class TreatiseOnAlchemy : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Treatise on Alchemy",
             "Felicia Hierophant",
             new BookPageInfo(
@@ -5434,7 +5434,7 @@ namespace Server.Items
 
     public class VirtueBook : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Virtue",
             "Lord British",
             new BookPageInfo(

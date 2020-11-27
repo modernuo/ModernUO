@@ -38,7 +38,7 @@ namespace Server.Items
         public override bool ShareHue => false;
 
         private static AddonComponent GetComponent(int itemID, int hue) =>
-            new AddonComponent(itemID)
+            new(itemID)
             {
                 Hue = hue,
                 Name = "jack-o-lantern"

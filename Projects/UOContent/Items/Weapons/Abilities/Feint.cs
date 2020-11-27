@@ -8,7 +8,7 @@ namespace Server.Items
     /// </summary>
     public class Feint : WeaponAbility
     {
-        public static Dictionary<Mobile, FeintTimer> Registry { get; } = new Dictionary<Mobile, FeintTimer>();
+        public static Dictionary<Mobile, FeintTimer> Registry { get; } = new();
 
         public override int BaseMana => 30;
 

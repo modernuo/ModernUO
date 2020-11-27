@@ -6,7 +6,7 @@ namespace Server.Spells.Chivalry
 {
     public class CleanseByFireSpell : PaladinSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Cleanse By Fire",
             "Expor Flamus",
             -1,

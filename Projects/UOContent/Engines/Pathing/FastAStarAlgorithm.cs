@@ -26,8 +26,8 @@ namespace Server.PathAlgorithms.FastAStar
 
         private static readonly Direction[] m_Path = new Direction[AreaSize * AreaSize];
         private static readonly PathNode[] m_Nodes = new PathNode[NodeCount];
-        private static readonly BitArray m_Touched = new BitArray(NodeCount);
-        private static readonly BitArray m_OnOpen = new BitArray(NodeCount);
+        private static readonly BitArray m_Touched = new(NodeCount);
+        private static readonly BitArray m_OnOpen = new(NodeCount);
         private static readonly int[] m_Successors = new int[8];
 
         private static int m_xOffset, m_yOffset;

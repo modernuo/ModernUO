@@ -4,7 +4,7 @@ namespace Server.Spells.Spellweaving
 {
     public class EtherealVoyageSpell : ArcaneForm
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Ethereal Voyage",
             "Orlavdra",
             -1

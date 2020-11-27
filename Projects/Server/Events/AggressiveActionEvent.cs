@@ -20,7 +20,7 @@ namespace Server
 {
     public class AggressiveActionEventArgs : EventArgs
     {
-        private static readonly Queue<AggressiveActionEventArgs> m_Pool = new Queue<AggressiveActionEventArgs>();
+        private static readonly Queue<AggressiveActionEventArgs> m_Pool = new();
 
         private AggressiveActionEventArgs(Mobile aggressed, Mobile aggressor, bool criminal)
         {

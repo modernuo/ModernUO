@@ -8,7 +8,7 @@ namespace Server.Items
     /// </summary>
     public class TalonStrike : WeaponAbility
     {
-        private static readonly HashSet<Mobile> m_Table = new HashSet<Mobile>();
+        private static readonly HashSet<Mobile> m_Table = new();
 
         public override int BaseMana => 30;
         public override double DamageScalar => 1.2;

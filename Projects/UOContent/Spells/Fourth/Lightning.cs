@@ -4,7 +4,7 @@ namespace Server.Spells.Fourth
 {
     public class LightningSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Lightning",
             "Por Ort Grav",
             239,

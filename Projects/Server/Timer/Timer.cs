@@ -21,7 +21,7 @@ namespace Server
 
     public partial class Timer
     {
-        private static readonly Queue<Timer> m_Queue = new Queue<Timer>();
+        private static readonly Queue<Timer> m_Queue = new();
 
         private static int m_QueueCountAtSlice;
         private readonly int m_Count;
@@ -253,7 +253,7 @@ namespace Server
         public class TimerThread
         {
             private static readonly Dictionary<Timer, TimerChangeEntry>
-                m_Changed = new Dictionary<Timer, TimerChangeEntry>();
+                m_Changed = new();
 
             private static readonly long[] m_NextPriorities = new long[8];
 
@@ -271,17 +271,17 @@ namespace Server
 
             private static readonly List<Timer>[] m_Timers =
             {
-                new List<Timer>(),
-                new List<Timer>(),
-                new List<Timer>(),
-                new List<Timer>(),
-                new List<Timer>(),
-                new List<Timer>(),
-                new List<Timer>(),
-                new List<Timer>()
+                new(),
+                new(),
+                new(),
+                new(),
+                new(),
+                new(),
+                new(),
+                new()
             };
 
-            private static readonly AutoResetEvent m_Signal = new AutoResetEvent(false);
+            private static readonly AutoResetEvent m_Signal = new(false);
 
             public static void DumpInfo(TextWriter tw)
             {
@@ -443,7 +443,7 @@ namespace Server
 
             private class TimerChangeEntry
             {
-                private static readonly Queue<TimerChangeEntry> m_InstancePool = new Queue<TimerChangeEntry>();
+                private static readonly Queue<TimerChangeEntry> m_InstancePool = new();
                 public bool m_IsAdd;
                 public int m_NewIndex;
                 public Timer m_Timer;

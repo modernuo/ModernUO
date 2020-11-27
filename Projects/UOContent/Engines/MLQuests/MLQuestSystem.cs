@@ -21,8 +21,8 @@ namespace Server.Engines.MLQuests
         public static readonly bool AutoGenerateNew = true;
         public static readonly bool Debug = false;
 
-        public static readonly List<MLQuest> EmptyList = new List<MLQuest>();
-        private static readonly List<MLQuest> m_EligiblePool = new List<MLQuest>();
+        public static readonly List<MLQuest> EmptyList = new();
+        private static readonly List<MLQuest> m_EligiblePool = new();
 
         static MLQuestSystem()
         {

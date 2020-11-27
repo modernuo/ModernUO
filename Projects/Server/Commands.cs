@@ -6,7 +6,7 @@ namespace Server
 {
     public delegate void CommandEventHandler(CommandEventArgs e);
 
-    public class CommandEventArgs : EventArgs
+    public class CommandEventArgs
     {
         public CommandEventArgs(Mobile mobile, string command, string argString, string[] arguments)
         {
@@ -116,7 +116,7 @@ namespace Server
         public static string Prefix { get; set; } = "[";
 
         public static Dictionary<string, CommandEntry> Entries { get; } =
-            new Dictionary<string, CommandEntry>(StringComparer.OrdinalIgnoreCase);
+            new(StringComparer.OrdinalIgnoreCase);
 
         public static AccessLevel BadCommandIgnoreLevel { get; set; } = AccessLevel.Player;
 

@@ -29,7 +29,7 @@ namespace Server.Engines.ConPVP
         private static readonly TimeSpan CombatDelay = TimeSpan.FromSeconds(30.0);
         private static readonly TimeSpan AutoTieDelay = TimeSpan.FromMinutes(15.0);
 
-        private readonly List<Item> m_Walls = new List<Item>();
+        private readonly List<Item> m_Walls = new();
 
         private Timer m_AutoTieTimer;
 

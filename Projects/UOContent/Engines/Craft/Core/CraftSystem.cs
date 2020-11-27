@@ -13,7 +13,7 @@ namespace Server.Engines.Craft
 
     public abstract class CraftSystem
     {
-        private readonly Dictionary<Mobile, CraftContext> m_ContextTable = new Dictionary<Mobile, CraftContext>();
+        private readonly Dictionary<Mobile, CraftContext> m_ContextTable = new();
         private readonly List<int> m_RareRecipes;
         private readonly List<int> m_Recipes;
 

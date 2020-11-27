@@ -24,7 +24,7 @@ namespace Server.Menus.Questions
         private static readonly StuckMenuEntry[] m_Entries =
         {
             // Britain
-            new StuckMenuEntry(
+            new(
                 1011028,
                 new[]
                 {
@@ -37,7 +37,7 @@ namespace Server.Menus.Questions
             ),
 
             // Trinsic
-            new StuckMenuEntry(
+            new(
                 1011029,
                 new[]
                 {
@@ -50,7 +50,7 @@ namespace Server.Menus.Questions
             ),
 
             // Vesper
-            new StuckMenuEntry(
+            new(
                 1011030,
                 new[]
                 {
@@ -63,7 +63,7 @@ namespace Server.Menus.Questions
             ),
 
             // Minoc
-            new StuckMenuEntry(
+            new(
                 1011031,
                 new[]
                 {
@@ -76,7 +76,7 @@ namespace Server.Menus.Questions
             ),
 
             // Yew
-            new StuckMenuEntry(
+            new(
                 1011032,
                 new[]
                 {
@@ -89,7 +89,7 @@ namespace Server.Menus.Questions
             ),
 
             // Cove
-            new StuckMenuEntry(
+            new(
                 1011033,
                 new[]
                 {
@@ -105,7 +105,7 @@ namespace Server.Menus.Questions
         private static readonly StuckMenuEntry[] m_T2AEntries =
         {
             // Papua
-            new StuckMenuEntry(
+            new(
                 1011057,
                 new[]
                 {
@@ -118,7 +118,7 @@ namespace Server.Menus.Questions
             ),
 
             // Delucia
-            new StuckMenuEntry(
+            new(
                 1011058,
                 new[]
                 {

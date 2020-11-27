@@ -2,7 +2,7 @@ namespace Server.Items
 {
     public class KaburJournal : RedBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Journal",
             "Kabur",
             new BookPageInfo(

@@ -48,11 +48,11 @@ namespace Server
             return s;
         }
 
-        public DateTime ReadDateTime() => new DateTime(ReadLong());
+        public DateTime ReadDateTime() => new(ReadLong());
 
-        public DateTimeOffset ReadDateTimeOffset() => new DateTimeOffset(ReadLong(), ReadTimeSpan());
+        public DateTimeOffset ReadDateTimeOffset() => new(ReadLong(), ReadTimeSpan());
 
-        public TimeSpan ReadTimeSpan() => new TimeSpan(ReadLong());
+        public TimeSpan ReadTimeSpan() => new(ReadLong());
 
         public DateTime ReadDeltaTime()
         {
@@ -79,7 +79,7 @@ namespace Server
             }
         }
 
-        public decimal ReadDecimal() => new decimal(new[] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });
+        public decimal ReadDecimal() => new(new[] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });
 
         public long ReadLong()
         {
@@ -158,15 +158,15 @@ namespace Server
             return v;
         }
 
-        public IPAddress ReadIPAddress() => new IPAddress(ReadLong());
+        public IPAddress ReadIPAddress() => new(ReadLong());
 
-        public Point3D ReadPoint3D() => new Point3D(ReadInt(), ReadInt(), ReadInt());
+        public Point3D ReadPoint3D() => new(ReadInt(), ReadInt(), ReadInt());
 
-        public Point2D ReadPoint2D() => new Point2D(ReadInt(), ReadInt());
+        public Point2D ReadPoint2D() => new(ReadInt(), ReadInt());
 
-        public Rectangle2D ReadRect2D() => new Rectangle2D(ReadPoint2D(), ReadPoint2D());
+        public Rectangle2D ReadRect2D() => new(ReadPoint2D(), ReadPoint2D());
 
-        public Rectangle3D ReadRect3D() => new Rectangle3D(ReadPoint3D(), ReadPoint3D());
+        public Rectangle3D ReadRect3D() => new(ReadPoint3D(), ReadPoint3D());
 
         public Map ReadMap() => Map.Maps[ReadByte()];
 

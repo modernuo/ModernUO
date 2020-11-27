@@ -83,7 +83,7 @@ namespace Server.Items
         public static readonly WeaponAbility Disrobe = Abilities[30];
 
         private static readonly Dictionary<Mobile, WeaponAbilityContext> m_PlayersTable =
-            new Dictionary<Mobile, WeaponAbilityContext>();
+            new();
 
         public virtual int BaseMana => 0;
 
@@ -92,7 +92,7 @@ namespace Server.Items
 
         public virtual bool RequiresSE => false;
 
-        public static Dictionary<Mobile, WeaponAbility> Table { get; } = new Dictionary<Mobile, WeaponAbility>();
+        public static Dictionary<Mobile, WeaponAbility> Table { get; } = new();
 
         public virtual bool ValidatesDuringHit => true;
 

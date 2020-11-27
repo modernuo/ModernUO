@@ -6,7 +6,7 @@ namespace Server.Mobiles
 {
     public class GenericSellInfo : IShopSellInfo
     {
-        private readonly Dictionary<Type, int> m_Table = new Dictionary<Type, int>();
+        private readonly Dictionary<Type, int> m_Table = new();
         private Type[] m_Types;
 
         public int GetSellPriceFor(Item item)

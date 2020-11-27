@@ -16,8 +16,8 @@ namespace Server.Items
 
     public class Container : Item
     {
-        private static readonly QueuePool m_QueuePool = new QueuePool(QueueRef<Container>.Generate, 2, 5);
-        private static readonly List<Item> m_FindItemsList = new List<Item>();
+        private static readonly QueuePool m_QueuePool = new(QueueRef<Container>.Generate, 2, 5);
+        private static readonly List<Item> m_FindItemsList = new();
 
         private ContainerData m_ContainerData;
 

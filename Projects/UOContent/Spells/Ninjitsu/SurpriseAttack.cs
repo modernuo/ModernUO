@@ -7,12 +7,12 @@ namespace Server.Spells.Ninjitsu
     public class SurpriseAttack : NinjaMove
     {
         private static readonly Dictionary<Mobile, SurpriseAttackInfo>
-            m_Table = new Dictionary<Mobile, SurpriseAttackInfo>();
+            m_Table = new();
 
         public override int BaseMana => 20;
         public override double RequiredSkill => Core.ML ? 60.0 : 30.0;
 
-        public override TextDefinition AbilityMessage => new TextDefinition(1063128); // You prepare to surprise your prey.
+        public override TextDefinition AbilityMessage => new(1063128); // You prepare to surprise your prey.
 
         public override bool ValidatesDuringHit => false;
 

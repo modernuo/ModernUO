@@ -49,7 +49,7 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public Point3D TelePoint
         {
-            get => new Point3D(Location.X + TeleOffset.X, Location.Y + TeleOffset.Y, Location.Z + TeleOffset.Z);
+            get => new(Location.X + TeleOffset.X, Location.Y + TeleOffset.Y, Location.Z + TeleOffset.Z);
             set => TeleOffset = new Point3D(value.X - Location.X, value.Y - Location.Y, value.Z - Location.Z);
         }
 

@@ -27,11 +27,11 @@ namespace Server
     public class Sector
     {
         // TODO: Can we avoid this?
-        private static readonly List<Mobile> m_DefaultMobileList = new List<Mobile>();
-        private static readonly List<Item> m_DefaultItemList = new List<Item>();
-        private static readonly List<NetState> m_DefaultClientList = new List<NetState>();
-        private static readonly List<BaseMulti> m_DefaultMultiList = new List<BaseMulti>();
-        private static readonly List<RegionRect> m_DefaultRectList = new List<RegionRect>();
+        private static readonly List<Mobile> m_DefaultMobileList = new();
+        private static readonly List<Item> m_DefaultItemList = new();
+        private static readonly List<NetState> m_DefaultClientList = new();
+        private static readonly List<BaseMulti> m_DefaultMultiList = new();
+        private static readonly List<RegionRect> m_DefaultRectList = new();
         private bool m_Active;
         private List<NetState> m_Clients;
         private List<Item> m_Items;

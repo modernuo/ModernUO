@@ -18,7 +18,7 @@ namespace Server.Commands.Generic
         }
 
         public static Dictionary<string, ExtensionInfo> Table { get; } =
-            new Dictionary<string, ExtensionInfo>(StringComparer.InvariantCultureIgnoreCase);
+            new(StringComparer.InvariantCultureIgnoreCase);
 
         public int Order { get; }
 

@@ -8,7 +8,7 @@ namespace Server.Spells.Fourth
 {
     public class RecallSpell : MagerySpell, IRecallSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Recall",
             "Kal Ort Por",
             239,

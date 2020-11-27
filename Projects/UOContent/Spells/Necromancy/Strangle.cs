@@ -6,7 +6,7 @@ namespace Server.Spells.Necromancy
 {
     public class StrangleSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Strangle",
             "In Bal Nox",
             209,
@@ -15,7 +15,7 @@ namespace Server.Spells.Necromancy
             Reagent.NoxCrystal
         );
 
-        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
+        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new();
 
         public StrangleSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {

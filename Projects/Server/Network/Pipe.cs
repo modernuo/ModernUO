@@ -88,7 +88,7 @@ namespace Server.Network
         {
             private readonly Pipe<T> _pipe;
 
-            private Result _result = new Result(2);
+            private Result _result = new(2);
 
             internal PipeWriter(Pipe<T> pipe) => _pipe = pipe;
 
@@ -273,7 +273,7 @@ namespace Server.Network
         {
             private readonly Pipe<T> _pipe;
 
-            private Result _result = new Result(2);
+            private Result _result = new(2);
 
             internal PipeReader(Pipe<T> pipe) => _pipe = pipe;
 

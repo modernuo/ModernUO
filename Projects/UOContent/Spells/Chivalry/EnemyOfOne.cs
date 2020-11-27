@@ -6,14 +6,14 @@ namespace Server.Spells.Chivalry
 {
     public class EnemyOfOneSpell : PaladinSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Enemy of One",
             "Forul Solum",
             -1,
             9002
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+        private static readonly Dictionary<Mobile, Timer> m_Table = new();
 
         public EnemyOfOneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {

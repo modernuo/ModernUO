@@ -70,7 +70,7 @@ namespace Server.Factions
             }
         }
 
-        public static List<BaseMonolith> Monoliths { get; set; } = new List<BaseMonolith>();
+        public static List<BaseMonolith> Monoliths { get; set; } = new();
 
         public override void OnLocationChange(Point3D oldLocation)
         {

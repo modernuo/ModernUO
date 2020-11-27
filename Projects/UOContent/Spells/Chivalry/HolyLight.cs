@@ -6,7 +6,7 @@ namespace Server.Spells.Chivalry
 {
     public class HolyLightSpell : PaladinSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Holy Light",
             "Augus Luminos",
             -1,

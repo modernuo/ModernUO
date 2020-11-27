@@ -6,7 +6,7 @@ namespace Server.Spells.Eighth
 {
     public class ResurrectionSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Resurrection",
             "An Corp",
             245,

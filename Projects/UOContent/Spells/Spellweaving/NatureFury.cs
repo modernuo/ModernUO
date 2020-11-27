@@ -7,7 +7,7 @@ namespace Server.Spells.Spellweaving
 {
     public class NatureFurySpell : ArcanistSpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Nature's Fury",
             "Rauvvrae",
             -1,

@@ -31,7 +31,7 @@ namespace Server.Engines.ConPVP
 
         public override string DefaultName => "arena controller";
 
-        public static List<ArenaController> Instances { get; set; } = new List<ArenaController>();
+        public static List<ArenaController> Instances { get; set; } = new();
 
         public override void OnDelete()
         {
@@ -184,16 +184,16 @@ namespace Server.Engines.ConPVP
              *       \/\/\
              *        \/\/
              */
-            new Point2D(0, 0),
-            new Point2D(0, -1),
-            new Point2D(0, +1),
-            new Point2D(1, 0),
-            new Point2D(1, -1),
-            new Point2D(1, +1),
-            new Point2D(2, 0),
-            new Point2D(2, -1),
-            new Point2D(2, +1),
-            new Point2D(3, 0)
+            new(0, 0),
+            new(0, -1),
+            new(0, +1),
+            new(1, 0),
+            new(1, -1),
+            new(1, +1),
+            new(2, 0),
+            new(2, -1),
+            new(2, +1),
+            new(3, 0)
         };
 
         // nw corner
@@ -206,16 +206,16 @@ namespace Server.Engines.ConPVP
              *      /\/\/\/\
              *      \/\/\/\/
              */
-            new Point2D(0, 0),
-            new Point2D(0, 1),
-            new Point2D(1, 0),
-            new Point2D(1, 1),
-            new Point2D(0, 2),
-            new Point2D(2, 0),
-            new Point2D(2, 1),
-            new Point2D(1, 2),
-            new Point2D(0, 3),
-            new Point2D(3, 0)
+            new(0, 0),
+            new(0, 1),
+            new(1, 0),
+            new(1, 1),
+            new(0, 2),
+            new(2, 0),
+            new(2, 1),
+            new(1, 2),
+            new(0, 3),
+            new(3, 0)
         };
 
         private static readonly int[][,] m_Rotate =
@@ -520,7 +520,7 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public static List<Arena> Arenas { get; } = new List<Arena>();
+        public static List<Arena> Arenas { get; } = new();
 
         public int CompareTo(Arena c) => string.CompareOrdinal(m_Name, c?.m_Name);
 

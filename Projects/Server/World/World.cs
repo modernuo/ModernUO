@@ -40,10 +40,10 @@ namespace Server
 
     public static class World
     {
-        private static readonly ManualResetEvent m_DiskWriteHandle = new ManualResetEvent(true);
-        private static readonly Dictionary<Serial, IEntity> _pendingAdd = new Dictionary<Serial, IEntity>();
-        private static readonly Dictionary<Serial, IEntity> _pendingDelete = new Dictionary<Serial, IEntity>();
-        private static readonly ConcurrentQueue<Item> _decayQueue = new ConcurrentQueue<Item>();
+        private static readonly ManualResetEvent m_DiskWriteHandle = new(true);
+        private static readonly Dictionary<Serial, IEntity> _pendingAdd = new();
+        private static readonly Dictionary<Serial, IEntity> _pendingDelete = new();
+        private static readonly ConcurrentQueue<Item> _decayQueue = new();
 
         public const uint ItemOffset = 0x40000000;
         public const uint MaxItemSerial = 0x7FFFFFFF;
@@ -121,9 +121,9 @@ namespace Server
         private static void OutOfMemory(string message) => throw new OutOfMemoryException(message);
 
         internal static int _Saves;
-        internal static List<Type> ItemTypes { get; } = new List<Type>();
-        internal static List<Type> MobileTypes { get; } = new List<Type>();
-        internal static List<Type> GuildTypes { get; } = new List<Type>();
+        internal static List<Type> ItemTypes { get; } = new();
+        internal static List<Type> MobileTypes { get; } = new();
+        internal static List<Type> GuildTypes { get; } = new();
 
         public static WorldState WorldState { get; private set; }
         public static bool Saving => WorldState == WorldState.Saving;

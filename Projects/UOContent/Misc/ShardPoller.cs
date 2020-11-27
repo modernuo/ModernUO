@@ -10,7 +10,7 @@ namespace Server.Misc
 {
     public class ShardPoller : Item
     {
-        private static readonly List<ShardPoller> m_ActivePollers = new List<ShardPoller>();
+        private static readonly List<ShardPoller> m_ActivePollers = new();
 
         private bool m_Active;
         private string m_Title;
@@ -621,7 +621,7 @@ namespace Server.Misc
     public class ShardPollPrompt : Prompt
     {
         private static readonly Regex m_UrlRegex =
-            new Regex(@"\[url(?:=(.*?))?\](.*?)\[/url\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            new(@"\[url(?:=(.*?))?\](.*?)\[/url\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private readonly ShardPollOption m_Option;
         private readonly ShardPoller m_Poller;

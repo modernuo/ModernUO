@@ -18,7 +18,7 @@ using Server.Network;
 
 namespace Server
 {
-    public class GameLoginEventArgs : EventArgs
+    public class GameLoginEventArgs
     {
         public GameLoginEventArgs(NetState state, string un, string pw)
         {

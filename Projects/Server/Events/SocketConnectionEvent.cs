@@ -18,7 +18,7 @@ using System.Net.Sockets;
 
 namespace Server
 {
-    public class SocketConnectEventArgs : EventArgs
+    public class SocketConnectEventArgs
     {
         public SocketConnectEventArgs(Socket c)
         {

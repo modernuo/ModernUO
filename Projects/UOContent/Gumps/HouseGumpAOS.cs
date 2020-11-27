@@ -67,7 +67,7 @@ namespace Server.Gumps
             974, 982
         };
 
-        private static readonly List<int> _HouseSigns = new List<int>();
+        private static readonly List<int> _HouseSigns = new();
         private readonly BaseHouse m_House;
         private readonly HouseGumpPageAOS m_Page;
 

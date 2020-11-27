@@ -7,7 +7,7 @@ namespace Server.Spells.Third
 {
     public class WallOfStoneSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Wall of Stone",
             "In Sanct Ylem",
             227,

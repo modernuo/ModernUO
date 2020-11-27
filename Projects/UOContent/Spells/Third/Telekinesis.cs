@@ -5,7 +5,7 @@ namespace Server.Spells.Third
 {
     public class TelekinesisSpell : MagerySpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Telekinesis",
             "Ort Por Ylem",
             203,

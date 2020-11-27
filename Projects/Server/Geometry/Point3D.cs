@@ -26,7 +26,7 @@ namespace Server
         internal int m_Y;
         internal int m_Z;
 
-        public static readonly Point3D Zero = new Point3D(0, 0, 0);
+        public static readonly Point3D Zero = new(0, 0, 0);
 
         [CommandProperty(AccessLevel.Counselor)]
         public int X

@@ -9,7 +9,7 @@ namespace Server.Spells.Fifth
 {
     public class PoisonFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Poison Field",
             "In Nox Grav",
             230,
@@ -220,7 +220,7 @@ namespace Server.Spells.Fifth
 
             private class InternalTimer : Timer
             {
-                private static readonly Queue<Mobile> m_Queue = new Queue<Mobile>();
+                private static readonly Queue<Mobile> m_Queue = new();
                 private readonly bool m_CanFit;
                 private readonly bool m_InLOS;
                 private readonly InternalItem m_Item;

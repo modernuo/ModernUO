@@ -525,7 +525,7 @@ namespace Server.Gumps
 
         public static SkillsGumpGroup[] Groups { get; } =
         {
-            new SkillsGumpGroup(
+            new(
                 "Crafting",
                 new[]
                 {
@@ -541,7 +541,7 @@ namespace Server.Gumps
                     SkillName.Imbuing
                 }
             ),
-            new SkillsGumpGroup(
+            new(
                 "Bardic",
                 new[]
                 {
@@ -551,7 +551,7 @@ namespace Server.Gumps
                     SkillName.Provocation
                 }
             ),
-            new SkillsGumpGroup(
+            new(
                 "Magical",
                 new[]
                 {
@@ -568,7 +568,7 @@ namespace Server.Gumps
                     SkillName.Mysticism
                 }
             ),
-            new SkillsGumpGroup(
+            new(
                 "Miscellaneous",
                 new[]
                 {
@@ -584,7 +584,7 @@ namespace Server.Gumps
                     SkillName.Veterinary
                 }
             ),
-            new SkillsGumpGroup(
+            new(
                 "Combat Ratings",
                 new[]
                 {
@@ -598,7 +598,7 @@ namespace Server.Gumps
                     SkillName.Throwing
                 }
             ),
-            new SkillsGumpGroup(
+            new(
                 "Actions",
                 new[]
                 {
@@ -613,7 +613,7 @@ namespace Server.Gumps
                     SkillName.Tracking
                 }
             ),
-            new SkillsGumpGroup(
+            new(
                 "Lore & Knowledge",
                 new[]
                 {

@@ -203,7 +203,7 @@ namespace Server.Items
         public readonly TimeSpan CleanupTime = TimeSpan.FromHours(1.0);
 
         private readonly Dictionary<Mobile, PuzzleChestSolutionAndTime> m_Guesses =
-            new Dictionary<Mobile, PuzzleChestSolutionAndTime>();
+            new();
 
         private PuzzleChestSolution m_Solution;
 

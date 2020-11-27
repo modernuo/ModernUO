@@ -22,7 +22,7 @@ namespace Server.Accounting.Security
     public class SHA2PasswordProtection : IPasswordProtection
     {
         public static IPasswordProtection Instance = new SHA2PasswordProtection();
-        private readonly SHA512CryptoServiceProvider m_SHA2HashProvider = new SHA512CryptoServiceProvider();
+        private readonly SHA512CryptoServiceProvider m_SHA2HashProvider = new();
 
         public string EncryptPassword(string plainPassword)
         {

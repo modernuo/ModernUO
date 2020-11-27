@@ -9,7 +9,7 @@ namespace Server.Spells.Seventh
 {
     public class GateTravelSpell : MagerySpell, IRecallSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Gate Travel",
             "Vas Rel Por",
             263,

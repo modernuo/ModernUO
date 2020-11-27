@@ -31,9 +31,9 @@ namespace Server.Events.Halloween
         };
 
         public static DateTime StartHalloween // YY MM DD
-            => new DateTime(2012, 10, 24);
+            => new(2012, 10, 24);
 
-        public static DateTime FinishHalloween => new DateTime(2012, 11, 15);
+        public static DateTime FinishHalloween => new(2012, 11, 15);
 
         public static Item RandomGMBeggerItem =>
             m_GMBeggarTreats.RandomElement().CreateInstance<Item>();

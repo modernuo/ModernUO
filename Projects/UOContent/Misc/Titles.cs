@@ -35,7 +35,7 @@ namespace Server.Misc
 
         private static readonly FameEntry[] m_FameEntries =
         {
-            new FameEntry(
+            new(
                 1249,
                 new[]
                 {
@@ -52,7 +52,7 @@ namespace Server.Misc
                     new KarmaEntry(10000, "The Trustworthy {0}")
                 }
             ),
-            new FameEntry(
+            new(
                 2499,
                 new[]
                 {
@@ -69,7 +69,7 @@ namespace Server.Misc
                     new KarmaEntry(10000, "The Estimable {0}")
                 }
             ),
-            new FameEntry(
+            new(
                 4999,
                 new[]
                 {
@@ -86,7 +86,7 @@ namespace Server.Misc
                     new KarmaEntry(10000, "The Great {0}")
                 }
             ),
-            new FameEntry(
+            new(
                 9999,
                 new[]
                 {
@@ -103,7 +103,7 @@ namespace Server.Misc
                     new KarmaEntry(10000, "The Glorious {0}")
                 }
             ),
-            new FameEntry(
+            new(
                 10000,
                 new[]
                 {

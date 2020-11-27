@@ -5,7 +5,7 @@ namespace Server.Spells.Second
 {
     public class CunningSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Cunning",
             "Uus Wis",
             212,

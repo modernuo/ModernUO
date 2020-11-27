@@ -4,7 +4,7 @@ namespace Server.Spells.First
 {
     public class ClumsySpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Clumsy",
             "Uus Jux",
             212,

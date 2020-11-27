@@ -6,7 +6,7 @@ namespace Server.Spells.Necromancy
 {
     public class CurseWeaponSpell : NecromancerSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Curse Weapon",
             "An Sanct Gra Char",
             203,
@@ -14,7 +14,7 @@ namespace Server.Spells.Necromancy
             Reagent.PigIron
         );
 
-        private static readonly Dictionary<BaseWeapon, ExpireTimer> m_Table = new Dictionary<BaseWeapon, ExpireTimer>();
+        private static readonly Dictionary<BaseWeapon, ExpireTimer> m_Table = new();
 
         public CurseWeaponSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {

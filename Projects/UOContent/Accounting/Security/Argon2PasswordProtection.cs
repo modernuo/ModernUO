@@ -22,7 +22,7 @@ namespace Server.Accounting.Security
     {
         public static IPasswordProtection Instance = new Argon2PasswordProtection();
 
-        private readonly Argon2PasswordHasher m_PasswordHasher = new Argon2PasswordHasher(
+        private readonly Argon2PasswordHasher m_PasswordHasher = new(
             rng: (RandomSources.SecureSource as SecureRandom)?.Generator
         );
 

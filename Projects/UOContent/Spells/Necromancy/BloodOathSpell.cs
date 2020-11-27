@@ -7,7 +7,7 @@ namespace Server.Spells.Necromancy
 {
     public class BloodOathSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Blood Oath",
             "In Jux Mani Xen",
             203,
@@ -15,8 +15,8 @@ namespace Server.Spells.Necromancy
             Reagent.DaemonBlood
         );
 
-        private static readonly Dictionary<Mobile, Mobile> m_OathTable = new Dictionary<Mobile, Mobile>();
-        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+        private static readonly Dictionary<Mobile, Mobile> m_OathTable = new();
+        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
         public BloodOathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {

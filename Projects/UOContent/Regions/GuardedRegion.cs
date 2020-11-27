@@ -12,7 +12,7 @@ namespace Server.Regions
     {
         private static readonly object[] m_GuardParams = new object[1];
 
-        private readonly Dictionary<Mobile, GuardTimer> m_GuardCandidates = new Dictionary<Mobile, GuardTimer>();
+        private readonly Dictionary<Mobile, GuardTimer> m_GuardCandidates = new();
         private readonly Type m_GuardType;
 
         public GuardedRegion(string name, Map map, int priority, params Rectangle3D[] area) :

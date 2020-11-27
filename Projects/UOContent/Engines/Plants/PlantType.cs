@@ -63,26 +63,26 @@ namespace Server.Engines.Plants
     {
         private static readonly PlantTypeInfo[] m_Table =
         {
-            new PlantTypeInfo(0xC83, 0, 0, PlantType.CampionFlowers, false, true, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xC86, 0, 0, PlantType.Poppies, false, true, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xC88, 0, 10, PlantType.Snowdrops, false, true, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xC94, -15, 0, PlantType.Bulrushes, false, true, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xC8B, 0, 0, PlantType.Lilies, false, true, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xCA5, -8, 0, PlantType.PampasGrass, false, true, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xCA7, -10, 0, PlantType.Rushes, false, true, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xC97, -20, 0, PlantType.ElephantEarPlant, true, false, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xC9F, -20, 0, PlantType.Fern, false, false, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xCA6, -16, -5, PlantType.PonytailPalm, false, false, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xC9C, -5, -10, PlantType.SmallPalm, false, false, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xD31, 0, -27, PlantType.CenturyPlant, true, false, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xD04, 0, 10, PlantType.WaterPlant, true, false, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xCA9, 0, 0, PlantType.SnakePlant, true, false, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xD2C, 0, 10, PlantType.PricklyPearCactus, false, false, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xD26, 0, 10, PlantType.BarrelCactus, false, false, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0xD27, 0, 10, PlantType.TribarrelCactus, false, false, true, true, PlantCategory.Default),
-            new PlantTypeInfo(0x28DC, -5, 5, PlantType.CommonGreenBonsai, true, false, false, false, PlantCategory.Common),
-            new PlantTypeInfo(0x28DF, -5, 5, PlantType.CommonPinkBonsai, true, false, false, false, PlantCategory.Common),
-            new PlantTypeInfo(
+            new(0xC83, 0, 0, PlantType.CampionFlowers, false, true, true, true, PlantCategory.Default),
+            new(0xC86, 0, 0, PlantType.Poppies, false, true, true, true, PlantCategory.Default),
+            new(0xC88, 0, 10, PlantType.Snowdrops, false, true, true, true, PlantCategory.Default),
+            new(0xC94, -15, 0, PlantType.Bulrushes, false, true, true, true, PlantCategory.Default),
+            new(0xC8B, 0, 0, PlantType.Lilies, false, true, true, true, PlantCategory.Default),
+            new(0xCA5, -8, 0, PlantType.PampasGrass, false, true, true, true, PlantCategory.Default),
+            new(0xCA7, -10, 0, PlantType.Rushes, false, true, true, true, PlantCategory.Default),
+            new(0xC97, -20, 0, PlantType.ElephantEarPlant, true, false, true, true, PlantCategory.Default),
+            new(0xC9F, -20, 0, PlantType.Fern, false, false, true, true, PlantCategory.Default),
+            new(0xCA6, -16, -5, PlantType.PonytailPalm, false, false, true, true, PlantCategory.Default),
+            new(0xC9C, -5, -10, PlantType.SmallPalm, false, false, true, true, PlantCategory.Default),
+            new(0xD31, 0, -27, PlantType.CenturyPlant, true, false, true, true, PlantCategory.Default),
+            new(0xD04, 0, 10, PlantType.WaterPlant, true, false, true, true, PlantCategory.Default),
+            new(0xCA9, 0, 0, PlantType.SnakePlant, true, false, true, true, PlantCategory.Default),
+            new(0xD2C, 0, 10, PlantType.PricklyPearCactus, false, false, true, true, PlantCategory.Default),
+            new(0xD26, 0, 10, PlantType.BarrelCactus, false, false, true, true, PlantCategory.Default),
+            new(0xD27, 0, 10, PlantType.TribarrelCactus, false, false, true, true, PlantCategory.Default),
+            new(0x28DC, -5, 5, PlantType.CommonGreenBonsai, true, false, false, false, PlantCategory.Common),
+            new(0x28DF, -5, 5, PlantType.CommonPinkBonsai, true, false, false, false, PlantCategory.Common),
+            new(
                 0x28DD,
                 -5,
                 5,
@@ -93,7 +93,7 @@ namespace Server.Engines.Plants
                 false,
                 PlantCategory.Uncommon
             ),
-            new PlantTypeInfo(
+            new(
                 0x28E0,
                 -5,
                 5,
@@ -104,9 +104,9 @@ namespace Server.Engines.Plants
                 false,
                 PlantCategory.Uncommon
             ),
-            new PlantTypeInfo(0x28DE, -5, 5, PlantType.RareGreenBonsai, true, false, false, false, PlantCategory.Rare),
-            new PlantTypeInfo(0x28E1, -5, 5, PlantType.RarePinkBonsai, true, false, false, false, PlantCategory.Rare),
-            new PlantTypeInfo(
+            new(0x28DE, -5, 5, PlantType.RareGreenBonsai, true, false, false, false, PlantCategory.Rare),
+            new(0x28E1, -5, 5, PlantType.RarePinkBonsai, true, false, false, false, PlantCategory.Rare),
+            new(
                 0x28E2,
                 -5,
                 5,
@@ -117,13 +117,13 @@ namespace Server.Engines.Plants
                 false,
                 PlantCategory.Exceptional
             ),
-            new PlantTypeInfo(0x28E3, -5, 5, PlantType.ExoticBonsai, true, false, false, false, PlantCategory.Exotic),
-            new PlantTypeInfo(0x0D25, 0, 0, PlantType.Cactus, false, false, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(0x1A9A, 5, 10, PlantType.FlaxFlowers, false, true, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(0x0C84, 0, 0, PlantType.FoxgloveFlowers, false, true, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(0x1A9F, 5, -25, PlantType.HopsEast, false, false, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(0x0CC1, 0, 0, PlantType.OrfluerFlowers, false, true, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(
+            new(0x28E3, -5, 5, PlantType.ExoticBonsai, true, false, false, false, PlantCategory.Exotic),
+            new(0x0D25, 0, 0, PlantType.Cactus, false, false, false, false, PlantCategory.Peculiar),
+            new(0x1A9A, 5, 10, PlantType.FlaxFlowers, false, true, false, false, PlantCategory.Peculiar),
+            new(0x0C84, 0, 0, PlantType.FoxgloveFlowers, false, true, false, false, PlantCategory.Peculiar),
+            new(0x1A9F, 5, -25, PlantType.HopsEast, false, false, false, false, PlantCategory.Peculiar),
+            new(0x0CC1, 0, 0, PlantType.OrfluerFlowers, false, true, false, false, PlantCategory.Peculiar),
+            new(
                 0x0CFE,
                 -45,
                 -30,
@@ -134,14 +134,14 @@ namespace Server.Engines.Plants
                 false,
                 PlantCategory.Peculiar
             ),
-            new PlantTypeInfo(0x0C8F, 0, 0, PlantType.HedgeShort, false, false, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(0x0CC8, 0, 0, PlantType.JuniperBush, true, false, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(0x0C8E, -20, 0, PlantType.SnowdropPatch, false, true, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(0x0CB7, 0, 0, PlantType.Cattails, false, false, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(0x0CBE, -20, 0, PlantType.PoppyPatch, false, true, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(0x0CC9, 0, 0, PlantType.SpiderTree, false, false, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(0x0DC1, -5, 15, PlantType.WaterLily, false, true, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(
+            new(0x0C8F, 0, 0, PlantType.HedgeShort, false, false, false, false, PlantCategory.Peculiar),
+            new(0x0CC8, 0, 0, PlantType.JuniperBush, true, false, false, false, PlantCategory.Peculiar),
+            new(0x0C8E, -20, 0, PlantType.SnowdropPatch, false, true, false, false, PlantCategory.Peculiar),
+            new(0x0CB7, 0, 0, PlantType.Cattails, false, false, false, false, PlantCategory.Peculiar),
+            new(0x0CBE, -20, 0, PlantType.PoppyPatch, false, true, false, false, PlantCategory.Peculiar),
+            new(0x0CC9, 0, 0, PlantType.SpiderTree, false, false, false, false, PlantCategory.Peculiar),
+            new(0x0DC1, -5, 15, PlantType.WaterLily, false, true, false, false, PlantCategory.Peculiar),
+            new(
                 0x0CFB,
                 -45,
                 -30,
@@ -152,9 +152,9 @@ namespace Server.Engines.Plants
                 false,
                 PlantCategory.Peculiar
             ),
-            new PlantTypeInfo(0x0DB8, 0, -20, PlantType.HedgeTall, false, false, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(0x1AA1, 10, -25, PlantType.HopsSouth, false, false, false, false, PlantCategory.Peculiar),
-            new PlantTypeInfo(
+            new(0x0DB8, 0, -20, PlantType.HedgeTall, false, false, false, false, PlantCategory.Peculiar),
+            new(0x1AA1, 10, -25, PlantType.HopsSouth, false, false, false, false, PlantCategory.Peculiar),
+            new(
                 0x246C,
                 -25,
                 -20,
@@ -171,7 +171,7 @@ namespace Server.Engines.Plants
                 1095221,
                 1113715
             ),
-            new PlantTypeInfo(
+            new(
                 0xC9E,
                 -40,
                 -30,

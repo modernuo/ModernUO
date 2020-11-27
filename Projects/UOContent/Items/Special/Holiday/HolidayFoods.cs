@@ -5,7 +5,7 @@ namespace Server.Items
 {
     public class CandyCane : Food
     {
-        private static readonly Dictionary<Mobile, CandyCaneTimer> m_ToothAches = new Dictionary<Mobile, CandyCaneTimer>();
+        private static readonly Dictionary<Mobile, CandyCaneTimer> m_ToothAches = new();
 
         [Constructible]
         public CandyCane()

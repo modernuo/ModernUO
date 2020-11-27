@@ -10,7 +10,7 @@ namespace Server.Items
 {
     public class TreasureMapChest : LockableContainer
     {
-        private List<Item> m_Lifted = new List<Item>();
+        private List<Item> m_Lifted = new();
 
         private Timer m_Timer;
 

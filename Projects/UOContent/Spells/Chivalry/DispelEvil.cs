@@ -8,7 +8,7 @@ namespace Server.Spells.Chivalry
 {
     public class DispelEvilSpell : PaladinSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Dispel Evil",
             "Dispiro Malas",
             -1,

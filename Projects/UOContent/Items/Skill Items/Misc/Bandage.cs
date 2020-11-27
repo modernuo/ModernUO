@@ -157,7 +157,7 @@ namespace Server.Items
 
     public class BandageContext
     {
-        private static readonly Dictionary<Mobile, BandageContext> m_Table = new Dictionary<Mobile, BandageContext>();
+        private static readonly Dictionary<Mobile, BandageContext> m_Table = new();
 
         public BandageContext(Mobile healer, Mobile patient, TimeSpan delay)
         {

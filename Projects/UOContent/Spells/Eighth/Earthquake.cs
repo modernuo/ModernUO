@@ -5,7 +5,7 @@ namespace Server.Spells.Eighth
 {
     public class EarthquakeSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Earthquake",
             "In Vas Por",
             233,

@@ -25,7 +25,7 @@ namespace Server.Network
         private static readonly EncodedPacketHandler[] m_EncodedHandlersLow = new EncodedPacketHandler[0x100];
 
         private static readonly Dictionary<int, EncodedPacketHandler> m_EncodedHandlersHigh =
-            new Dictionary<int, EncodedPacketHandler>();
+            new();
 
         public static PacketHandler[] Handlers { get; } = new PacketHandler[0x100];
 

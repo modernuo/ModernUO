@@ -21,7 +21,7 @@ namespace Server.Network
     public static class IncomingExtendedCommandPackets
     {
         private static readonly PacketHandler[] m_ExtendedHandlersLow = new PacketHandler[0x100];
-        private static readonly Dictionary<int, PacketHandler> m_ExtendedHandlersHigh = new Dictionary<int, PacketHandler>();
+        private static readonly Dictionary<int, PacketHandler> m_ExtendedHandlersHigh = new();
 
         // TODO: Change to outside configuration
         public static int[] ValidAnimations { get; set; } =

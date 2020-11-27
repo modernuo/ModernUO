@@ -9,14 +9,14 @@ namespace Server.Items
     {
         public static readonly CrystalRechargeInfo[] Table =
         {
-            new CrystalRechargeInfo(typeof(Citrine), 500),
-            new CrystalRechargeInfo(typeof(Amber), 500),
-            new CrystalRechargeInfo(typeof(Tourmaline), 750),
-            new CrystalRechargeInfo(typeof(Emerald), 1000),
-            new CrystalRechargeInfo(typeof(Sapphire), 1000),
-            new CrystalRechargeInfo(typeof(Amethyst), 1000),
-            new CrystalRechargeInfo(typeof(StarSapphire), 1250),
-            new CrystalRechargeInfo(typeof(Diamond), 2000)
+            new(typeof(Citrine), 500),
+            new(typeof(Amber), 500),
+            new(typeof(Tourmaline), 750),
+            new(typeof(Emerald), 1000),
+            new(typeof(Sapphire), 1000),
+            new(typeof(Amethyst), 1000),
+            new(typeof(StarSapphire), 1250),
+            new(typeof(Diamond), 2000)
         };
 
         private CrystalRechargeInfo(Type type, int amount)

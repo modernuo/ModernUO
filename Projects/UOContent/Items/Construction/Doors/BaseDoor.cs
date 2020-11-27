@@ -9,19 +9,19 @@ namespace Server.Items
     {
         private static readonly Point3D[] m_Offsets =
         {
-            new Point3D(-1, 1, 0),
-            new Point3D(1, 1, 0),
-            new Point3D(-1, 0, 0),
-            new Point3D(1, -1, 0),
-            new Point3D(1, 1, 0),
-            new Point3D(1, -1, 0),
-            new Point3D(0, 0, 0),
-            new Point3D(0, -1, 0),
+            new(-1, 1, 0),
+            new(1, 1, 0),
+            new(-1, 0, 0),
+            new(1, -1, 0),
+            new(1, 1, 0),
+            new(1, -1, 0),
+            new(0, 0, 0),
+            new(0, -1, 0),
 
-            new Point3D(0, 0, 0),
-            new Point3D(0, 0, 0),
-            new Point3D(0, 0, 0),
-            new Point3D(0, 0, 0)
+            new(0, 0, 0),
+            new(0, 0, 0),
+            new(0, 0, 0),
+            new(0, 0, 0)
         };
 
         private BaseDoor m_Link;

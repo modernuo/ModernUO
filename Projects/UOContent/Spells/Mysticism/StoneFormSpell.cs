@@ -9,7 +9,7 @@ namespace Server.Spells.Mysticism
 {
     public class StoneFormSpell : MysticSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Stone Form",
             "In Rel Ylem",
             -1,
@@ -19,7 +19,7 @@ namespace Server.Spells.Mysticism
             Reagent.Garlic
         );
 
-        private static readonly Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
+        private static readonly Dictionary<Mobile, ResistanceMod[]> m_Table = new();
 
         public StoneFormSpell(Mobile caster, Item scroll = null)
             : base(caster, scroll, m_Info)

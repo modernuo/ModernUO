@@ -9,7 +9,7 @@ namespace Server.Spells.Chivalry
 {
     public class CloseWoundsSpell : PaladinSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Close Wounds",
             "Obsu Vulni",
             -1,

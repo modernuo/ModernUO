@@ -94,7 +94,7 @@ namespace Server.Mobiles
             SkillName.Meditation
         };
 
-        private static readonly Queue<Item> m_Obstacles = new Queue<Item>();
+        private static readonly Queue<Item> m_Obstacles = new();
         protected ActionType m_Action;
 
         public BaseCreature m_Mobile;

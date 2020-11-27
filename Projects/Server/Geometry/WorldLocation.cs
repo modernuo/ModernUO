@@ -25,7 +25,7 @@ namespace Server
         internal Point3D m_Loc;
         internal Map m_Map;
 
-        public static readonly WorldLocation Zero = new WorldLocation(0, 0, 0, Map.Internal);
+        public static readonly WorldLocation Zero = new(0, 0, 0, Map.Internal);
 
         [CommandProperty(AccessLevel.Counselor)]
         public Point3D Location

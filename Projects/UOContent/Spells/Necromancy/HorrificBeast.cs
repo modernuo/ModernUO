@@ -4,7 +4,7 @@ namespace Server.Spells.Necromancy
 {
     public class HorrificBeastSpell : TransformationSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Horrific Beast",
             "Rel Xen Vas Bal",
             203,

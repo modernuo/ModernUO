@@ -2,7 +2,7 @@ namespace Server.Items
 {
     public class LysanderNotebook1 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Lysander's Notebook",
             "L. Gathenwale",
             new BookPageInfo(
@@ -58,7 +58,7 @@ namespace Server.Items
 
     public class LysanderNotebook2 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Lysander's Notebook",
             "L. Gathenwale",
             new BookPageInfo(
@@ -147,7 +147,7 @@ namespace Server.Items
 
     public class LysanderNotebook3 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Lysander's Notebook",
             "L. Gathenwale",
             new BookPageInfo(
@@ -230,7 +230,7 @@ namespace Server.Items
 
     public class LysanderNotebook7 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Lysander's Notebook",
             "L. Gathenwale",
             new BookPageInfo(
@@ -328,7 +328,7 @@ namespace Server.Items
 
     public class LysanderNotebook8 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Lysander's Notebook",
             "L. Gathenwale",
             new BookPageInfo(
@@ -417,7 +417,7 @@ namespace Server.Items
 
     public class LysanderNotebook11 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Lysander's Notebook",
             "L. Gathenwale",
             new BookPageInfo(

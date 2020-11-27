@@ -460,7 +460,7 @@ namespace Server.Items
 
         private class PetSummoningSpell : Spell
         {
-            private static readonly SpellInfo m_Info = new SpellInfo("Ball Of Summoning", "", 230);
+            private static readonly SpellInfo m_Info = new("Ball Of Summoning", "", 230);
 
             private readonly BallOfSummoning m_Ball;
             private readonly Mobile m_Caster;

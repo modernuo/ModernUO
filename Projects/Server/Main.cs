@@ -135,7 +135,7 @@ namespace Server
             }
         }
 
-        public static CancellationTokenSource ClosingTokenSource { get; } = new CancellationTokenSource();
+        public static CancellationTokenSource ClosingTokenSource { get; } = new();
 
         public static bool Closing => ClosingTokenSource.IsCancellationRequested;
 

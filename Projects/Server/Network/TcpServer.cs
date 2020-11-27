@@ -39,9 +39,9 @@ namespace Server.Network
 
         public static IPEndPoint[] ListeningAddresses { get; private set; }
         public static TcpListener[] Listeners { get; private set; }
-        public static HashSet<NetState> Instances { get; } = new HashSet<NetState>(128);
+        public static HashSet<NetState> Instances { get; } = new(128);
 
-        public static ConcurrentQueue<NetState> m_ConnectedQueue = new ConcurrentQueue<NetState>();
+        public static ConcurrentQueue<NetState> m_ConnectedQueue = new();
 
         public static void Configure()
         {

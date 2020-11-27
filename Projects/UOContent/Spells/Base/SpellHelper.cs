@@ -1225,7 +1225,7 @@ namespace Server.Spells
 
     public static class TransformationSpellHelper
     {
-        private static readonly Dictionary<Mobile, TransformContext> m_Table = new Dictionary<Mobile, TransformContext>();
+        private static readonly Dictionary<Mobile, TransformContext> m_Table = new();
 
         public static bool CheckCast(Mobile caster, Spell spell)
         {

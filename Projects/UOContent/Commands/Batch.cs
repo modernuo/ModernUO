@@ -19,7 +19,7 @@ namespace Server.Commands
 
         public string Condition { get; set; } = "";
 
-        public List<BatchCommand> BatchCommands { get; } = new List<BatchCommand>();
+        public List<BatchCommand> BatchCommands { get; } = new();
 
         public override void ExecuteList(CommandEventArgs e, List<object> list)
         {

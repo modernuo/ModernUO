@@ -31,7 +31,7 @@ namespace Server.Items
             $"<basefont color=#FFFFFF>Scroll of Transcendence ({Value} Skill):</basefont>";
 
         public static ScrollofTranscendence CreateRandom(int min, int max) =>
-            new ScrollofTranscendence(Utility.RandomSkill(), Utility.RandomMinMax(min, max) * 0.1);
+            new(Utility.RandomSkill(), Utility.RandomMinMax(min, max) * 0.1);
 
         public override void GetProperties(ObjectPropertyList list)
         {

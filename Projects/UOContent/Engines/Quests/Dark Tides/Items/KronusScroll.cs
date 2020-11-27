@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Necro
 {
     public class KronusScroll : QuestItem
     {
-        private static readonly Rectangle2D m_WellOfTearsArea = new Rectangle2D(2080, 1346, 10, 10);
+        private static readonly Rectangle2D m_WellOfTearsArea = new(2080, 1346, 10, 10);
         private static readonly Map m_WellOfTearsMap = Map.Malas;
 
         [Constructible]

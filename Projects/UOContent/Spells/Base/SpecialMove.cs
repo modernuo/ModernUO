@@ -12,7 +12,7 @@ namespace Server.Spells
     public abstract class SpecialMove
     {
         private static readonly Dictionary<Mobile, SpecialMoveContext> m_PlayersTable =
-            new Dictionary<Mobile, SpecialMoveContext>();
+            new();
 
         public virtual int BaseMana => 0;
 
@@ -24,7 +24,7 @@ namespace Server.Spells
         public virtual bool BlockedByAnimalForm => true;
         public virtual bool DelayedContext => false;
 
-        public static Dictionary<Mobile, SpecialMove> Table { get; } = new Dictionary<Mobile, SpecialMove>();
+        public static Dictionary<Mobile, SpecialMove> Table { get; } = new();
 
         public virtual bool ValidatesDuringHit => true;
 

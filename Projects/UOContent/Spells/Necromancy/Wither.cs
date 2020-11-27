@@ -7,7 +7,7 @@ namespace Server.Spells.Necromancy
 {
     public class WitherSpell : NecromancerSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Wither",
             "Kal Vas An Flam",
             203,

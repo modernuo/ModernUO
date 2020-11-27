@@ -53,7 +53,7 @@ namespace Server.Engines.Quests.Collector
 
     public class SitOnTheStoolObjective : QuestObjective
     {
-        private static readonly Point3D m_StoolLocation = new Point3D(2899, 706, 0);
+        private static readonly Point3D m_StoolLocation = new(2899, 706, 0);
         private static readonly Map m_StoolMap = Map.Trammel;
 
         private DateTime m_Begin;

@@ -13,7 +13,7 @@ namespace Server.Items
 
         public static readonly TimeSpan FreezeDelayDuration = TimeSpan.FromSeconds(8.0);
 
-        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
+        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new();
 
         public override int BaseMana => 30;
 

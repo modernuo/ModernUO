@@ -6,14 +6,14 @@ namespace Server.Spells.Chivalry
 {
     public class ConsecrateWeaponSpell : PaladinSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Consecrate Weapon",
             "Consecrus Arma",
             -1,
             9002
         );
 
-        private static readonly Dictionary<BaseWeapon, ExpireTimer> m_Table = new Dictionary<BaseWeapon, ExpireTimer>();
+        private static readonly Dictionary<BaseWeapon, ExpireTimer> m_Table = new();
 
         public ConsecrateWeaponSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {

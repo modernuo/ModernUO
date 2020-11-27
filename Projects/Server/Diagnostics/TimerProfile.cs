@@ -5,7 +5,7 @@ namespace Server.Diagnostics
 {
     public class TimerProfile : BaseProfile
     {
-        private static readonly Dictionary<string, TimerProfile> _profiles = new Dictionary<string, TimerProfile>();
+        private static readonly Dictionary<string, TimerProfile> _profiles = new();
 
         public TimerProfile(string name)
             : base(name)

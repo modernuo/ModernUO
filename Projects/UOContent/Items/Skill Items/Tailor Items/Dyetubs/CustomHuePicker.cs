@@ -26,7 +26,7 @@ namespace Server.Items
 
     public class CustomHuePicker
     {
-        public static readonly CustomHuePicker SpecialDyeTub = new CustomHuePicker(
+        public static readonly CustomHuePicker SpecialDyeTub = new(
             new[]
             {
                 /* Violet */
@@ -50,7 +50,7 @@ namespace Server.Items
             1018344
         );
 
-        public static readonly CustomHuePicker LeatherDyeTub = new CustomHuePicker(
+        public static readonly CustomHuePicker LeatherDyeTub = new(
             new[]
             {
                 /* Dull Copper */

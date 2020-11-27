@@ -79,7 +79,7 @@ namespace Server.SkillHandlers
 
         private class SpiritSpeakSpell : Spell
         {
-            private static readonly SpellInfo m_Info = new SpellInfo("Spirit Speak", "", 269);
+            private static readonly SpellInfo m_Info = new("Spirit Speak", "", 269);
 
             public SpiritSpeakSpell(Mobile caster) : base(caster, null, m_Info)
             {

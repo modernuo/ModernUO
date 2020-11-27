@@ -5,7 +5,7 @@ namespace Server.Spells.Mysticism
 {
     public class AnimatedWeaponSpell : MysticSpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Animated Weapon",
             "In Jux Por Ylem",
             -1,

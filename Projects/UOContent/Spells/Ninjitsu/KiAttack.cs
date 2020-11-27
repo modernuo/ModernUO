@@ -6,13 +6,13 @@ namespace Server.Spells.Ninjitsu
 {
     public class KiAttack : NinjaMove
     {
-        private static readonly Dictionary<Mobile, KiAttackInfo> m_Table = new Dictionary<Mobile, KiAttackInfo>();
+        private static readonly Dictionary<Mobile, KiAttackInfo> m_Table = new();
 
         public override int BaseMana => 25;
         public override double RequiredSkill => 80.0;
 
         public override TextDefinition AbilityMessage =>
-            new TextDefinition(1063099); // Your Ki Attack must be complete within 2 seconds for the damage bonus!
+            new(1063099); // Your Ki Attack must be complete within 2 seconds for the damage bonus!
 
         public override void OnUse(Mobile from)
         {

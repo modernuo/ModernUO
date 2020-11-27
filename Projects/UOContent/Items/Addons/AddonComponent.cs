@@ -110,7 +110,7 @@ namespace Server.Items
     {
         private static readonly LightEntry[] m_Entries =
         {
-            new LightEntry(
+            new(
                 LightType.WestSmall,
                 1122,
                 1123,
@@ -135,7 +135,7 @@ namespace Server.Items
                 2391,
                 2392
             ),
-            new LightEntry(
+            new(
                 LightType.NorthSmall,
                 1131,
                 1133,
@@ -160,8 +160,8 @@ namespace Server.Items
                 2405,
                 2406
             ),
-            new LightEntry(LightType.Circle300, 6526, 6538, 6571),
-            new LightEntry(LightType.Circle150, 5703, 6587)
+            new(LightType.Circle300, 6526, 6538, 6571),
+            new(LightType.Circle150, 5703, 6587)
         };
 
         [Constructible]

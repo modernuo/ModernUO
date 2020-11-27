@@ -9,7 +9,7 @@ namespace Server.Spells.Fourth
 {
     public class ArchProtectionSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Arch Protection",
             "Vas Uus Sanct",
             Core.AOS ? 239 : 215,
@@ -20,7 +20,7 @@ namespace Server.Spells.Fourth
             Reagent.SulfurousAsh
         );
 
-        private static readonly Dictionary<Mobile, int> _Table = new Dictionary<Mobile, int>();
+        private static readonly Dictionary<Mobile, int> _Table = new();
 
         public ArchProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {

@@ -9,7 +9,7 @@ namespace Server
     public class NameList
     {
         private static readonly Dictionary<string, NameList> m_Table =
-            new Dictionary<string, NameList>(StringComparer.OrdinalIgnoreCase);
+            new(StringComparer.OrdinalIgnoreCase);
 
         [JsonPropertyName("type")] public string Type { get; set; }
 

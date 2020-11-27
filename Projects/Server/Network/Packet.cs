@@ -119,7 +119,7 @@ namespace Server.Network
             }
         }
 
-        private readonly object _object = new object();
+        private readonly object _object = new();
 
         public byte[] Compile(bool compress, out int length)
         {

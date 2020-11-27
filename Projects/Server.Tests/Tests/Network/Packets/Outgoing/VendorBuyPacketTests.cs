@@ -17,9 +17,9 @@ namespace Server.Tests.Network
 
             var buyStates = new List<BuyItemState>
             {
-                new BuyItemState("First Item", cont.Serial, World.NewItem, 10, 1, 0x01, 0),
-                new BuyItemState("Second Item", cont.Serial, World.NewItem, 20, 2, 0x0A, 0),
-                new BuyItemState("Third Item", cont.Serial, World.NewItem, 30, 10, 0x0F, 0)
+                new("First Item", cont.Serial, World.NewItem, 10, 1, 0x01, 0),
+                new("Second Item", cont.Serial, World.NewItem, 20, 2, 0x0A, 0),
+                new("Third Item", cont.Serial, World.NewItem, 30, 10, 0x0F, 0)
             };
 
             var data = new VendorBuyContent(buyStates).Compile();
@@ -56,9 +56,9 @@ namespace Server.Tests.Network
 
             var buyStates = new List<BuyItemState>
             {
-                new BuyItemState("First Item", cont.Serial, World.NewItem, 10, 1, 0x01, 0),
-                new BuyItemState("Second Item", cont.Serial, World.NewItem, 20, 2, 0x0A, 0),
-                new BuyItemState("Third Item", cont.Serial, World.NewItem, 30, 10, 0x0F, 0)
+                new("First Item", cont.Serial, World.NewItem, 10, 1, 0x01, 0),
+                new("Second Item", cont.Serial, World.NewItem, 20, 2, 0x0A, 0),
+                new("Third Item", cont.Serial, World.NewItem, 30, 10, 0x0F, 0)
             };
 
             var data = new VendorBuyContent6017(buyStates).Compile();
@@ -143,9 +143,9 @@ namespace Server.Tests.Network
 
             var buyStates = new List<BuyItemState>
             {
-                new BuyItemState("First Item", cont.Serial, World.NewItem, 10, 1, 0x01, 0),
-                new BuyItemState("Second Item", cont.Serial, World.NewItem, 20, 2, 0x0A, 0),
-                new BuyItemState("Third Item", cont.Serial, World.NewItem, 30, 10, 0x0F, 0)
+                new("First Item", cont.Serial, World.NewItem, 10, 1, 0x01, 0),
+                new("Second Item", cont.Serial, World.NewItem, 20, 2, 0x0A, 0),
+                new("Third Item", cont.Serial, World.NewItem, 30, 10, 0x0F, 0)
             };
 
             var data = new VendorBuyList(vendor, buyStates).Compile();

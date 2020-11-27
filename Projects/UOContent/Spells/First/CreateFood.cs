@@ -6,7 +6,7 @@ namespace Server.Spells.First
 {
     public class CreateFoodSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Create Food",
             "In Mani Ylem",
             224,
@@ -18,16 +18,16 @@ namespace Server.Spells.First
 
         private static readonly FoodInfo[] m_Food =
         {
-            new FoodInfo(typeof(Grapes), "a grape bunch"),
-            new FoodInfo(typeof(Ham), "a ham"),
-            new FoodInfo(typeof(CheeseWedge), "a wedge of cheese"),
-            new FoodInfo(typeof(Muffins), "muffins"),
-            new FoodInfo(typeof(FishSteak), "a fish steak"),
-            new FoodInfo(typeof(Ribs), "cut of ribs"),
-            new FoodInfo(typeof(CookedBird), "a cooked bird"),
-            new FoodInfo(typeof(Sausage), "sausage"),
-            new FoodInfo(typeof(Apple), "an apple"),
-            new FoodInfo(typeof(Peach), "a peach")
+            new(typeof(Grapes), "a grape bunch"),
+            new(typeof(Ham), "a ham"),
+            new(typeof(CheeseWedge), "a wedge of cheese"),
+            new(typeof(Muffins), "muffins"),
+            new(typeof(FishSteak), "a fish steak"),
+            new(typeof(Ribs), "cut of ribs"),
+            new(typeof(CookedBird), "a cooked bird"),
+            new(typeof(Sausage), "sausage"),
+            new(typeof(Apple), "an apple"),
+            new(typeof(Peach), "a peach")
         };
 
         public CreateFoodSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)

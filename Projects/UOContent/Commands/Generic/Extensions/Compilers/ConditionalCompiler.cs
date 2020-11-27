@@ -22,7 +22,7 @@ namespace Server.Commands.Generic
 
     public sealed class TypeCondition : ICondition
     {
-        public static TypeCondition Default = new TypeCondition();
+        public static TypeCondition Default = new();
 
         void ICondition.Construct(TypeBuilder typeBuilder, ILGenerator il, int index)
         {

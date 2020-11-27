@@ -25,7 +25,7 @@ namespace Server
         internal int m_X;
         internal int m_Y;
 
-        public static readonly Point2D Zero = new Point2D(0, 0);
+        public static readonly Point2D Zero = new(0, 0);
 
         [CommandProperty(AccessLevel.Counselor)]
         public int X

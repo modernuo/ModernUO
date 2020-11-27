@@ -9,6 +9,6 @@ namespace Server.Tests.Network
             p.Compile(false, out var length).AsSpan(0, length);
 
         public static NetState CreateTestNetState() =>
-            new NetState(new MockSocket());
+            new(new MockSocket());
     }
 }

@@ -5,7 +5,7 @@ namespace Server.Engines.MLQuests.Items
 {
     public class BedlamTeleporter : Item
     {
-        private static readonly Point3D PointDest = new Point3D(120, 1682, 0);
+        private static readonly Point3D PointDest = new(120, 1682, 0);
         private static readonly Map MapDest = Map.Malas;
 
         public BedlamTeleporter()

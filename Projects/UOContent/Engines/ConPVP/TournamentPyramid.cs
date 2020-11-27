@@ -209,7 +209,7 @@ namespace Server.Engines.ConPVP
 
     public class PyramidLevel
     {
-        public List<TourneyMatch> Matches { get; set; } = new List<TourneyMatch>();
+        public List<TourneyMatch> Matches { get; set; } = new();
         public TourneyParticipant FreeAdvance { get; set; }
     }
 }

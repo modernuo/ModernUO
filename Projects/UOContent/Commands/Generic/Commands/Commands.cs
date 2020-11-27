@@ -14,7 +14,7 @@ namespace Server.Commands.Generic
 {
     public static class TargetCommands
     {
-        public static List<BaseCommand> AllCommands { get; } = new List<BaseCommand>();
+        public static List<BaseCommand> AllCommands { get; } = new();
 
         public static void Initialize()
         {

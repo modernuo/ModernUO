@@ -12,7 +12,7 @@ namespace Server.Engines.ConPVP
         private const int BlackColor32 = 0x000008;
 
         private static readonly Dictionary<Mobile, List<IgnoreEntry>> m_IgnoreLists =
-            new Dictionary<Mobile, List<IgnoreEntry>>();
+            new();
 
         private readonly Mobile m_Challenged;
         private readonly Mobile m_Challenger;

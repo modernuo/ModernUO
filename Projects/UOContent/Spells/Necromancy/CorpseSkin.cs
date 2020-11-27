@@ -6,7 +6,7 @@ namespace Server.Spells.Necromancy
 {
     public class CorpseSkinSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Corpse Skin",
             "In Agle Corp Ylem",
             203,
@@ -15,7 +15,7 @@ namespace Server.Spells.Necromancy
             Reagent.GraveDust
         );
 
-        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
         public CorpseSkinSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {

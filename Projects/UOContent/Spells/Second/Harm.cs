@@ -4,7 +4,7 @@ namespace Server.Spells.Second
 {
     public class HarmSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Harm",
             "An Mani",
             212,

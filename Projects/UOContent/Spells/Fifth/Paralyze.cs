@@ -7,7 +7,7 @@ namespace Server.Spells.Fifth
 {
     public class ParalyzeSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Paralyze",
             "An Ex Por",
             218,

@@ -8,7 +8,7 @@ namespace Server.Spells.Sixth
 {
     public class ParalyzeFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Paralyze Field",
             "In Ex Grav",
             230,

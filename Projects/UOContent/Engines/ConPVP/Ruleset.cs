@@ -19,7 +19,7 @@ namespace Server.Engines.ConPVP
 
         public Ruleset Base { get; private set; }
 
-        public List<Ruleset> Flavors { get; } = new List<Ruleset>();
+        public List<Ruleset> Flavors { get; } = new();
 
         public bool Changed { get; set; }
 

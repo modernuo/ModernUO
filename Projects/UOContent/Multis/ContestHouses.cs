@@ -31,7 +31,7 @@ namespace Server.Multis
 
         public virtual int SignPostID => 9;
 
-        public override Point3D BaseBanLocation => new Point3D(
+        public override Point3D BaseBanLocation => new(
             Components.Min.X,
             Components.Height - 1 - Components.Center.Y,
             0
@@ -249,8 +249,8 @@ namespace Server.Multis
     {
         public static Rectangle2D[] AreaArray =
         {
-            new Rectangle2D(-11, -11, 23, 23), new Rectangle2D(-10, 13, 6, 1),
-            new Rectangle2D(-2, 13, 6, 1), new Rectangle2D(6, 13, 7, 1)
+            new(-11, -11, 23, 23), new(-10, 13, 6, 1),
+            new(-2, 13, 6, 1), new(6, 13, 7, 1)
         };
 
         public TrinsicKeep(Mobile owner)
@@ -282,10 +282,10 @@ namespace Server.Multis
     {
         public static Rectangle2D[] AreaArray =
         {
-            new Rectangle2D(-15, -15, 31, 31),
-            new Rectangle2D(-14, 16, 11, 1),
-            new Rectangle2D(-2, 16, 6, 1),
-            new Rectangle2D(5, 16, 11, 1)
+            new(-15, -15, 31, 31),
+            new(-14, 16, 11, 1),
+            new(-2, 16, 6, 1),
+            new(5, 16, 11, 1)
         };
 
         public GothicRoseCastle(Mobile owner)
@@ -390,10 +390,10 @@ namespace Server.Multis
     {
         public static Rectangle2D[] AreaArray =
         {
-            new Rectangle2D(-15, -15, 31, 31),
-            new Rectangle2D(5, 16, 1, 1),
-            new Rectangle2D(7, 16, 4, 1),
-            new Rectangle2D(12, 16, 1, 1)
+            new(-15, -15, 31, 31),
+            new(5, 16, 1, 1),
+            new(7, 16, 4, 1),
+            new(12, 16, 1, 1)
         };
 
         public FeudalCastle(Mobile owner)
@@ -450,10 +450,10 @@ namespace Server.Multis
     {
         public static Rectangle2D[] AreaArray =
         {
-            new Rectangle2D(-11, -11, 23, 23),
-            new Rectangle2D(-10, 13, 6, 1),
-            new Rectangle2D(-2, 13, 6, 1),
-            new Rectangle2D(6, 13, 7, 1)
+            new(-11, -11, 23, 23),
+            new(-10, 13, 6, 1),
+            new(-2, 13, 6, 1),
+            new(6, 13, 7, 1)
         };
 
         public TraditionalKeep(Mobile owner)
@@ -662,10 +662,10 @@ namespace Server.Multis
     {
         public static Rectangle2D[] AreaArray =
         {
-            new Rectangle2D(-15, -15, 31, 31),
-            new Rectangle2D(-14, 16, 6, 1),
-            new Rectangle2D(-7, 16, 8, 1),
-            new Rectangle2D(10, 16, 5, 1)
+            new(-15, -15, 31, 31),
+            new(-14, 16, 6, 1),
+            new(-7, 16, 8, 1),
+            new(10, 16, 5, 1)
         };
 
         public OkinawaSweetDreamCastle(Mobile owner)
@@ -722,10 +722,10 @@ namespace Server.Multis
     {
         public static Rectangle2D[] AreaArray =
         {
-            new Rectangle2D(-15, -15, 31, 31),
-            new Rectangle2D(-14, 16, 9, 1),
-            new Rectangle2D(-3, 16, 8, 1),
-            new Rectangle2D(7, 16, 9, 1)
+            new(-15, -15, 31, 31),
+            new(-14, 16, 9, 1),
+            new(-3, 16, 8, 1),
+            new(7, 16, 9, 1)
         };
 
         public GrimswindSisters(Mobile owner)

@@ -116,10 +116,10 @@ namespace Server.Engines.Help
 
     public static class PageQueue
     {
-        private static readonly Dictionary<Mobile, PageEntry> m_KeyedByHandler = new Dictionary<Mobile, PageEntry>();
-        private static readonly Dictionary<Mobile, PageEntry> m_KeyedBySender = new Dictionary<Mobile, PageEntry>();
+        private static readonly Dictionary<Mobile, PageEntry> m_KeyedByHandler = new();
+        private static readonly Dictionary<Mobile, PageEntry> m_KeyedBySender = new();
 
-        public static List<PageEntry> List { get; } = new List<PageEntry>();
+        public static List<PageEntry> List { get; } = new();
 
         public static void Initialize()
         {

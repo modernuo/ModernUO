@@ -6,7 +6,7 @@ namespace Server.Spells.Sixth
 {
     public class DispelSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Dispel",
             "An Ort",
             218,

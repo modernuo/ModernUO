@@ -5,15 +5,15 @@ namespace Server.Spells.Bushido
 {
     public class Confidence : SamuraiSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Confidence",
             null,
             -1,
             9002
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
-        private static readonly Dictionary<Mobile, Timer> m_RegenTable = new Dictionary<Mobile, Timer>();
+        private static readonly Dictionary<Mobile, Timer> m_Table = new();
+        private static readonly Dictionary<Mobile, Timer> m_RegenTable = new();
 
         public Confidence(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
         {

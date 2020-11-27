@@ -19,7 +19,7 @@ using Server.Network;
 
 namespace Server
 {
-    public class CharacterCreatedEventArgs : EventArgs
+    public class CharacterCreatedEventArgs
     {
         public CharacterCreatedEventArgs(
             NetState state, IAccount a, string name, bool female, int hue, int str, int dex,

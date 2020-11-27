@@ -21,7 +21,7 @@ using Server.Network;
 
 namespace Server
 {
-    public class ServerListEventArgs : EventArgs
+    public class ServerListEventArgs
     {
         public ServerListEventArgs(NetState state, IAccount account)
         {

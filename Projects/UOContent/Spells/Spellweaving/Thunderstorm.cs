@@ -5,13 +5,13 @@ namespace Server.Spells.Spellweaving
 {
     public class ThunderstormSpell : ArcanistSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Thunderstorm",
             "Erelonia",
             -1
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+        private static readonly Dictionary<Mobile, Timer> m_Table = new();
 
         public ThunderstormSpell(Mobile caster, Item scroll = null)
             : base(caster, scroll, m_Info)

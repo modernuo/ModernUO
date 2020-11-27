@@ -36,7 +36,7 @@ namespace Server.Engines.CannedEvil
 
         public static ChampionSpawnInfo[] Table { get; } =
         {
-            new ChampionSpawnInfo(
+            new(
                 "Abyss",
                 typeof(Semidar),
                 new[] { "Foe", "Assassin", "Conqueror" },
@@ -49,7 +49,7 @@ namespace Server.Engines.CannedEvil
                     new[] { typeof(Daemon), typeof(Succubus) }             // Level 4
                 }
             ),
-            new ChampionSpawnInfo(
+            new(
                 "Arachnid",
                 typeof(Mephitis),
                 new[] { "Bane", "Killer", "Vanquisher" },
@@ -62,7 +62,7 @@ namespace Server.Engines.CannedEvil
                     new[] { typeof(PoisonElemental), typeof(TerathanAvenger) } // Level 4
                 }
             ),
-            new ChampionSpawnInfo(
+            new(
                 "Cold Blood",
                 typeof(Rikktor),
                 new[] { "Blight", "Slayer", "Destroyer" },
@@ -75,7 +75,7 @@ namespace Server.Engines.CannedEvil
                     new[] { typeof(Dragon), typeof(OphidianKnight) }       // Level 4
                 }
             ),
-            new ChampionSpawnInfo(
+            new(
                 "Forest Lord",
                 typeof(LordOaks),
                 new[] { "Enemy", "Curse", "Slaughterer" },
@@ -88,7 +88,7 @@ namespace Server.Engines.CannedEvil
                     new[] { typeof(EtherealWarrior), typeof(SerpentineDragon) } // Level 4
                 }
             ),
-            new ChampionSpawnInfo(
+            new(
                 "Vermin Horde",
                 typeof(Barracoon),
                 new[] { "Adversary", "Subjugator", "Eradicator" },
@@ -101,7 +101,7 @@ namespace Server.Engines.CannedEvil
                     new[] { typeof(RatmanArcher), typeof(SilverSerpent) } // Level 4
                 }
             ),
-            new ChampionSpawnInfo(
+            new(
                 "Unholy Terror",
                 typeof(Neira),
                 new[] { "Scourge", "Punisher", "Nemesis" },
@@ -120,7 +120,7 @@ namespace Server.Engines.CannedEvil
                     new[] { typeof(LichLord), typeof(RottingCorpse) }                   // Level 4
                 }
             ),
-            new ChampionSpawnInfo(
+            new(
                 "Sleeping Dragon",
                 typeof(Serado),
                 new[] { "Rival", "Challenger", "Antagonist" },
@@ -133,7 +133,7 @@ namespace Server.Engines.CannedEvil
                     new[] { typeof(Hiryu), typeof(Oni) }
                 }
             ),
-            new ChampionSpawnInfo(
+            new(
                 "Glade",
                 typeof(Twaulo),
                 new[] { "Banisher", "Enforcer", "Eradicator" },
@@ -146,7 +146,7 @@ namespace Server.Engines.CannedEvil
                     new[] { typeof(FeralTreefellow), typeof(RagingGrizzlyBear) }
                 }
             ),
-            new ChampionSpawnInfo(
+            new(
                 "The Corrupt",
                 typeof(Ilhenir),
                 new[] { "Cleanser", "Expunger", "Depurator" },

@@ -13,7 +13,7 @@ namespace Server.Items
         public override int BaseMana => 30;
 
         public static Dictionary<Mobile, FrenziedWirlwindTimer> Registry { get; } =
-            new Dictionary<Mobile, FrenziedWirlwindTimer>();
+            new();
 
         public override bool CheckSkills(Mobile from)
         {

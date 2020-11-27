@@ -5,9 +5,9 @@ namespace Server.Spells.Spellweaving
 {
     public class EssenceOfWindSpell : ArcanistSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo("Essence of Wind", "Anathrae", -1);
+        private static readonly SpellInfo m_Info = new("Essence of Wind", "Anathrae", -1);
 
-        private static readonly Dictionary<Mobile, EssenceOfWindInfo> m_Table = new Dictionary<Mobile, EssenceOfWindInfo>();
+        private static readonly Dictionary<Mobile, EssenceOfWindInfo> m_Table = new();
 
         public EssenceOfWindSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {

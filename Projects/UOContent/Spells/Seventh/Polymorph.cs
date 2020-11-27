@@ -9,7 +9,7 @@ namespace Server.Spells.Seventh
 {
     public class PolymorphSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Polymorph",
             "Vas Ylem Rel",
             221,
@@ -19,7 +19,7 @@ namespace Server.Spells.Seventh
             Reagent.MandrakeRoot
         );
 
-        private static readonly Dictionary<Mobile, InternalTimer> m_Timers = new Dictionary<Mobile, InternalTimer>();
+        private static readonly Dictionary<Mobile, InternalTimer> m_Timers = new();
 
         private readonly int m_NewBody;
 

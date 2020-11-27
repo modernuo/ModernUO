@@ -5,7 +5,7 @@ namespace Server.Spells.First
 {
     public class NightSightSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Night Sight",
             "In Lor",
             236,

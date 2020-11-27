@@ -4,7 +4,7 @@ namespace Server.Spells
 {
     public class FlySpell : Spell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo("Gargoyle Flight", null, -1, 9002);
+        private static readonly SpellInfo m_Info = new("Gargoyle Flight", null, -1, 9002);
         private bool m_Stop;
 
         public FlySpell(Mobile caster)

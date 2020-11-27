@@ -850,7 +850,7 @@ namespace Server.Gumps
 
         private class PropertySorter : IComparer<PropertyInfo>
         {
-            public static readonly PropertySorter Instance = new PropertySorter();
+            public static readonly PropertySorter Instance = new();
 
             private PropertySorter()
             {
