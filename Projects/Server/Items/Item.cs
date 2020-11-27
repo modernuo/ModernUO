@@ -194,9 +194,9 @@ namespace Server
     public class Item : IHued, IComparable<Item>, ISpawnable, IPropertyListObject
     {
         public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
-        public static readonly List<Item> EmptyItems = new List<Item>();
+        public static readonly List<Item> EmptyItems = new();
 
-        private static readonly List<Item> m_DeltaQueue = new List<Item>();
+        private static readonly List<Item> m_DeltaQueue = new();
 
         private static bool _processing;
 
@@ -923,7 +923,7 @@ namespace Server
                 flags |= SaveFlag.Parent;
             }
 
-            if (items != null && items.Count > 0)
+            if (items?.Count > 0)
             {
                 flags |= SaveFlag.Items;
             }

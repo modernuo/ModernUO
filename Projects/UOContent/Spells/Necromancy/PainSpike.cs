@@ -7,7 +7,7 @@ namespace Server.Spells.Necromancy
 {
     public class PainSpikeSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Pain Spike",
             "In Sar",
             203,
@@ -16,7 +16,7 @@ namespace Server.Spells.Necromancy
             Reagent.PigIron
         );
 
-        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
+        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new();
 
         public PainSpikeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {

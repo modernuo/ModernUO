@@ -19,15 +19,15 @@ namespace Server.Engines.MLQuests
     {
         public static readonly TextDefinition
             CompletionNoticeDefault =
-                new TextDefinition(1072273); // You've completed a quest!  Don't forget to collect your reward.
+                new(1072273); // You've completed a quest!  Don't forget to collect your reward.
 
-        public static readonly TextDefinition CompletionNoticeShort = new TextDefinition(1046258); // Your quest is complete.
-
-        public static readonly TextDefinition
-            CompletionNoticeShortReturn = new TextDefinition(1073775); // Your quest is complete. Return for your reward.
+        public static readonly TextDefinition CompletionNoticeShort = new(1046258); // Your quest is complete.
 
         public static readonly TextDefinition
-            CompletionNoticeCraft = new TextDefinition(1073967); // You obtained what you seek, now receive your reward.
+            CompletionNoticeShortReturn = new(1073775); // Your quest is complete. Return for your reward.
+
+        public static readonly TextDefinition
+            CompletionNoticeCraft = new(1073967); // You obtained what you seek, now receive your reward.
 
         public MLQuest()
         {
@@ -109,7 +109,7 @@ namespace Server.Engines.MLQuests
         }
 
         public MLQuestInstance CreateInstance(IQuestGiver quester, PlayerMobile pm) =>
-            new MLQuestInstance(this, quester, pm);
+            new(this, quester, pm);
 
         public bool CanOffer(IQuestGiver quester, PlayerMobile pm, bool message) =>
             CanOffer(quester, pm, MLQuestSystem.GetContext(pm), message);

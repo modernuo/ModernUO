@@ -26,7 +26,7 @@ namespace Server.Engines.Craft
 
     public class CraftItem
     {
-        private static readonly Dictionary<Type, int> _itemIds = new Dictionary<Type, int>();
+        private static readonly Dictionary<Type, int> _itemIds = new();
 
         private static readonly int[] m_HeatSources =
         {

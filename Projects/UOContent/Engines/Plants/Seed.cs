@@ -70,7 +70,7 @@ namespace Server.Engines.Plants
 
         public static Seed RandomBonsaiSeed() => RandomBonsaiSeed(0.5);
 
-        public static Seed RandomBonsaiSeed(double increaseRatio) => new Seed(
+        public static Seed RandomBonsaiSeed(double increaseRatio) => new(
             PlantTypeInfo.RandomBonsai(increaseRatio),
             PlantHue.Plain
         );

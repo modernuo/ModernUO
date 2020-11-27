@@ -8,7 +8,7 @@ namespace Server.Spells.Fourth
 {
     public class RecallSpell : MagerySpell, IRecallSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Recall",
             "Kal Ort Por",
             239,
@@ -78,7 +78,7 @@ namespace Server.Spells.Fourth
             {
                 Caster.SendLocalizedMessage(501942); // That location is blocked.
             }
-            else if (m_Book != null && m_Book.CurCharges <= 0)
+            else if (m_Book?.CurCharges <= 0)
             {
                 Caster.SendLocalizedMessage(502412); // There are no charges left on that item.
             }

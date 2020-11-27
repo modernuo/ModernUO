@@ -57,7 +57,7 @@ namespace Server.Items
     {
         private static readonly TimeSpan m_UseTimeout = TimeSpan.FromMinutes(2.0);
 
-        private readonly HashSet<Mobile> m_DamageTable = new HashSet<Mobile>();
+        private readonly HashSet<Mobile> m_DamageTable = new();
         private DateTime m_LastUse;
 
         private int m_SideLength;

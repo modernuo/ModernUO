@@ -8,7 +8,7 @@ namespace Server.Items
     /// </summary>
     public class Block : WeaponAbility
     {
-        private static readonly Dictionary<Mobile, BlockInfo> m_Table = new Dictionary<Mobile, BlockInfo>();
+        private static readonly Dictionary<Mobile, BlockInfo> m_Table = new();
 
         public override int BaseMana => 30;
 

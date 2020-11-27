@@ -9,7 +9,7 @@ namespace Server.Spells.Sixth
 {
     public class InvisibilitySpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Invisibility",
             "An Lor Xen",
             206,
@@ -18,7 +18,7 @@ namespace Server.Spells.Sixth
             Reagent.Nightshade
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+        private static readonly Dictionary<Mobile, Timer> m_Table = new();
 
         public InvisibilitySpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {

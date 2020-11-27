@@ -7,7 +7,7 @@ namespace Server.Commands
 {
     public static class SignParser
     {
-        private static readonly Queue<Item> m_ToDelete = new Queue<Item>();
+        private static readonly Queue<Item> m_ToDelete = new();
 
         public static void Initialize()
         {

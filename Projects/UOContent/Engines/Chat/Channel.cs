@@ -64,7 +64,7 @@ namespace Server.Engines.Chat
 
         public bool AlwaysAvailable { get; set; }
 
-        public static List<Channel> Channels { get; } = new List<Channel>();
+        public static List<Channel> Channels { get; } = new();
 
         public bool Contains(ChatUser user) => m_Users.Contains(user);
 

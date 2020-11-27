@@ -6,7 +6,7 @@ namespace Server.Spells.Mysticism
 {
     public class HailStormSpell : MysticSpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Hail Storm",
             "Kal Des Ylem",
             -1,

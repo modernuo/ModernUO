@@ -5,7 +5,7 @@ namespace Server.Spells.Eighth
 {
     public class SummonDaemonSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Summon Daemon",
             "Kal Vas Xen Corp",
             269,

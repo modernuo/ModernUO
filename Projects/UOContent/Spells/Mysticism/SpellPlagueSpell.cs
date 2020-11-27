@@ -6,7 +6,7 @@ namespace Server.Spells.Mysticism
 {
     public class SpellPlagueSpell : MysticSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Spell Plague",
             "Vas Rel Jux Ort",
             -1,
@@ -18,7 +18,7 @@ namespace Server.Spells.Mysticism
         );
 
         private static readonly Dictionary<Mobile, SpellPlagueContext>
-            m_Table = new Dictionary<Mobile, SpellPlagueContext>();
+            m_Table = new();
 
         public SpellPlagueSpell(Mobile caster, Item scroll = null)
             : base(caster, scroll, m_Info)

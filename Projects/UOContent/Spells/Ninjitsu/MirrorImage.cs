@@ -10,9 +10,9 @@ namespace Server.Spells.Ninjitsu
 {
     public class MirrorImage : NinjaSpell
     {
-        private static readonly Dictionary<Mobile, int> m_CloneCount = new Dictionary<Mobile, int>();
+        private static readonly Dictionary<Mobile, int> m_CloneCount = new();
 
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Mirror Image",
             null,
             -1,

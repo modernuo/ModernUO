@@ -48,7 +48,7 @@ namespace Server.Factions
 
     public class SpellCombo
     {
-        public static readonly SpellCombo Simple = new SpellCombo(
+        public static readonly SpellCombo Simple = new(
             50,
             new ComboEntry(typeof(ParalyzeSpell), 20),
             new ComboEntry(typeof(ExplosionSpell), 100, TimeSpan.FromSeconds(2.8)),
@@ -56,7 +56,7 @@ namespace Server.Factions
             new ComboEntry(typeof(EnergyBoltSpell))
         );
 
-        public static readonly SpellCombo Strong = new SpellCombo(
+        public static readonly SpellCombo Strong = new(
             90,
             new ComboEntry(typeof(ParalyzeSpell), 20),
             new ComboEntry(typeof(ExplosionSpell), 50, TimeSpan.FromSeconds(2.8)),

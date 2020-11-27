@@ -100,7 +100,7 @@ namespace Server
             SkillName.Tinkering
         };
 
-        private static readonly Stack<ConsoleColor> m_ConsoleColors = new Stack<ConsoleColor>();
+        private static readonly Stack<ConsoleColor> m_ConsoleColors = new();
 
         public static Encoding UTF8 => m_UTF8 ??= new UTF8Encoding(false, false);
         public static Encoding UTF8WithEncoding => m_UTF8WithEncoding ??= new UTF8Encoding(true, false);

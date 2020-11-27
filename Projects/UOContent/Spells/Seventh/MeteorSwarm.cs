@@ -6,7 +6,7 @@ namespace Server.Spells.Seventh
 {
     public class MeteorSwarmSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Meteor Swarm",
             "Flam Kal Des Ylem",
             233,

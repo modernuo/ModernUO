@@ -39,42 +39,42 @@ namespace Server.Factions
     {
         public static MerchantTitleInfo[] Info { get; } =
         {
-            new MerchantTitleInfo(
+            new(
                 SkillName.Inscribe,
                 90.0,
                 new TextDefinition(1060773, "Scribe"),
                 new TextDefinition(1011468, "SCRIBE"),
                 new TextDefinition(1010121, "You now have the faction title of scribe")
             ),
-            new MerchantTitleInfo(
+            new(
                 SkillName.Carpentry,
                 90.0,
                 new TextDefinition(1060774, "Carpenter"),
                 new TextDefinition(1011469, "CARPENTER"),
                 new TextDefinition(1010122, "You now have the faction title of carpenter")
             ),
-            new MerchantTitleInfo(
+            new(
                 SkillName.Tinkering,
                 90.0,
                 new TextDefinition(1022984, "Tinker"),
                 new TextDefinition(1011470, "TINKER"),
                 new TextDefinition(1010123, "You now have the faction title of tinker")
             ),
-            new MerchantTitleInfo(
+            new(
                 SkillName.Blacksmith,
                 90.0,
                 new TextDefinition(1023016, "Blacksmith"),
                 new TextDefinition(1011471, "BLACKSMITH"),
                 new TextDefinition(1010124, "You now have the faction title of blacksmith")
             ),
-            new MerchantTitleInfo(
+            new(
                 SkillName.Fletching,
                 90.0,
                 new TextDefinition(1023022, "Bowyer"),
                 new TextDefinition(1011472, "BOWYER"),
                 new TextDefinition(1010125, "You now have the faction title of Bowyer")
             ),
-            new MerchantTitleInfo(
+            new(
                 SkillName.Tailoring,
                 90.0,
                 new TextDefinition(1022982, "Tailor"),

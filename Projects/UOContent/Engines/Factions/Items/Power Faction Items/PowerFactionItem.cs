@@ -11,11 +11,11 @@ namespace Server
     {
         private static readonly WeightedItem[] _items =
         {
-            new WeightedItem(30, typeof(GemOfEmpowerment)),
-            new WeightedItem(25, typeof(BloodRose)),
-            new WeightedItem(20, typeof(ClarityPotion)),
-            new WeightedItem(15, typeof(UrnOfAscension)),
-            new WeightedItem(10, typeof(StormsEye))
+            new(30, typeof(GemOfEmpowerment)),
+            new(25, typeof(BloodRose)),
+            new(20, typeof(ClarityPotion)),
+            new(15, typeof(UrnOfAscension)),
+            new(10, typeof(StormsEye))
         };
 
         public PowerFactionItem(int itemId)

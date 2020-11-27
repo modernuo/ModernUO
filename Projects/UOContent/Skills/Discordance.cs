@@ -8,7 +8,7 @@ namespace Server.SkillHandlers
 {
     public static class Discordance
     {
-        private static readonly Dictionary<Mobile, DiscordanceInfo> m_Table = new Dictionary<Mobile, DiscordanceInfo>();
+        private static readonly Dictionary<Mobile, DiscordanceInfo> m_Table = new();
 
         public static void Initialize()
         {

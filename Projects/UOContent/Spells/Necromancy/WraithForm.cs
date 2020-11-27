@@ -5,7 +5,7 @@ namespace Server.Spells.Necromancy
 {
     public class WraithFormSpell : TransformationSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Wraith Form",
             "Rel Xen Um",
             203,

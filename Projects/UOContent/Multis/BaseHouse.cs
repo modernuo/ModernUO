@@ -24,7 +24,7 @@ namespace Server.Multis
 
         public const int MaximumBarkeepCount = 2;
 
-        private static readonly Dictionary<Mobile, List<BaseHouse>> m_Table = new Dictionary<Mobile, List<BaseHouse>>();
+        private static readonly Dictionary<Mobile, List<BaseHouse>> m_Table = new();
 
         private DecayLevel m_CurrentStage;
 
@@ -300,7 +300,7 @@ namespace Server.Multis
             }
         }
 
-        public static List<BaseHouse> AllHouses { get; } = new List<BaseHouse>();
+        public static List<BaseHouse> AllHouses { get; } = new();
 
         public abstract Rectangle2D[] Area { get; }
         public abstract Point3D BaseBanLocation { get; }
@@ -482,15 +482,15 @@ namespace Server.Multis
 
         public HouseSign Sign { get; set; }
 
-        public List<PlayerVendor> PlayerVendors { get; } = new List<PlayerVendor>();
+        public List<PlayerVendor> PlayerVendors { get; } = new();
 
-        public List<PlayerBarkeeper> PlayerBarkeepers { get; } = new List<PlayerBarkeeper>();
+        public List<PlayerBarkeeper> PlayerBarkeepers { get; } = new();
 
         public List<VendorRentalContract> VendorRentalContracts { get; private set; }
 
-        public List<VendorInventory> VendorInventories { get; } = new List<VendorInventory>();
+        public List<VendorInventory> VendorInventories { get; } = new();
 
-        public List<RelocatedEntity> RelocatedEntities { get; } = new List<RelocatedEntity>();
+        public List<RelocatedEntity> RelocatedEntities { get; } = new();
 
         public MovingCrate MovingCrate { get; set; }
 
@@ -1942,7 +1942,7 @@ namespace Server.Multis
                 return;
             }
 
-            for (var i = 0; Doors != null && i < Doors.Count; ++i)
+            for (var i = 0; i < Doors?.Count; ++i)
             {
                 var door = Doors[i];
                 var p = door.Location;
@@ -2404,7 +2404,7 @@ namespace Server.Multis
         public virtual bool IsCombatRestricted(Mobile m)
         {
             if (m?.Player != true || m.AccessLevel >= AccessLevel.GameMaster || !IsAosRules ||
-                m_Owner != null && m_Owner.AccessLevel >= AccessLevel.GameMaster)
+                m_Owner?.AccessLevel >= AccessLevel.GameMaster)
             {
                 return false;
             }
@@ -2513,7 +2513,7 @@ namespace Server.Multis
                 }
             }
 
-            for (var i = 0; Doors != null && i < Doors.Count; ++i)
+            for (var i = 0; i < Doors?.Count; ++i)
             {
                 var door = Doors[i];
                 var p = door.Location;
@@ -4276,7 +4276,7 @@ namespace Server.Multis
             {
                 var list = house.Secures;
 
-                for (var i = 0; sec == null && list != null && i < list.Count; ++i)
+                for (var i = 0; sec == null && i < list?.Count; ++i)
                 {
                     var si = list[i];
 

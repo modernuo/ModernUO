@@ -5,7 +5,7 @@ namespace Server.Spells.Necromancy
 {
     public class VampiricEmbraceSpell : TransformationSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Vampiric Embrace",
             "Rel Xen An Sanct",
             203,

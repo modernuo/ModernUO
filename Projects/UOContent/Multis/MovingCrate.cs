@@ -297,7 +297,7 @@ namespace Server.Multis
         public override int DefaultGumpID => 0x4B;
         public override int DefaultDropSound => 0x42;
 
-        public override Rectangle2D Bounds => new Rectangle2D(16, 51, 168, 73);
+        public override Rectangle2D Bounds => new(16, 51, 168, 73);
 
         public override int DefaultMaxItems => 0;
         public override int DefaultMaxWeight => 0;

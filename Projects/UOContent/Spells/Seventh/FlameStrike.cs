@@ -4,7 +4,7 @@ namespace Server.Spells.Seventh
 {
     public class FlameStrikeSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Flame Strike",
             "Kal Vas Flam",
             245,

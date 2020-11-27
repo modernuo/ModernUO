@@ -9,82 +9,82 @@ namespace Server
     {
         public static readonly LootPackItem[] Gold =
         {
-            new LootPackItem(typeof(Gold), 1)
+            new(typeof(Gold), 1)
         };
 
         public static readonly LootPackItem[] Instruments =
         {
-            new LootPackItem(typeof(BaseInstrument), 1)
+            new(typeof(BaseInstrument), 1)
         };
 
         public static readonly LootPackItem[] LowScrollItems =
         {
-            new LootPackItem(typeof(ClumsyScroll), 1)
+            new(typeof(ClumsyScroll), 1)
         };
 
         public static readonly LootPackItem[] MedScrollItems =
         {
-            new LootPackItem(typeof(ArchCureScroll), 1)
+            new(typeof(ArchCureScroll), 1)
         };
 
         public static readonly LootPackItem[] HighScrollItems =
         {
-            new LootPackItem(typeof(SummonAirElementalScroll), 1)
+            new(typeof(SummonAirElementalScroll), 1)
         };
 
         public static readonly LootPackItem[] GemItems =
         {
-            new LootPackItem(typeof(Amber), 1)
+            new(typeof(Amber), 1)
         };
 
         public static readonly LootPackItem[] PotionItems =
         {
-            new LootPackItem(typeof(AgilityPotion), 1),
-            new LootPackItem(typeof(StrengthPotion), 1),
-            new LootPackItem(typeof(RefreshPotion), 1),
-            new LootPackItem(typeof(LesserCurePotion), 1),
-            new LootPackItem(typeof(LesserHealPotion), 1),
-            new LootPackItem(typeof(LesserPoisonPotion), 1)
+            new(typeof(AgilityPotion), 1),
+            new(typeof(StrengthPotion), 1),
+            new(typeof(RefreshPotion), 1),
+            new(typeof(LesserCurePotion), 1),
+            new(typeof(LesserHealPotion), 1),
+            new(typeof(LesserPoisonPotion), 1)
         };
 
         public static readonly LootPackItem[] OldMagicItems =
         {
-            new LootPackItem(typeof(BaseJewel), 1),
-            new LootPackItem(typeof(BaseArmor), 4),
-            new LootPackItem(typeof(BaseWeapon), 3),
-            new LootPackItem(typeof(BaseRanged), 1),
-            new LootPackItem(typeof(BaseShield), 1)
+            new(typeof(BaseJewel), 1),
+            new(typeof(BaseArmor), 4),
+            new(typeof(BaseWeapon), 3),
+            new(typeof(BaseRanged), 1),
+            new(typeof(BaseShield), 1)
         };
 
-        public static readonly LootPack LowScrolls = new LootPack(
+        public static readonly LootPack LowScrolls = new(
             new[]
             {
                 new LootPackEntry(false, LowScrollItems, 100.00, 1)
             }
         );
 
-        public static readonly LootPack MedScrolls = new LootPack(
+        public static readonly LootPack MedScrolls = new(
             new[]
             {
                 new LootPackEntry(false, MedScrollItems, 100.00, 1)
             }
         );
 
-        public static readonly LootPack HighScrolls = new LootPack(
+        public static readonly LootPack HighScrolls = new(
             new[]
             {
                 new LootPackEntry(false, HighScrollItems, 100.00, 1)
             }
         );
 
-        public static readonly LootPack Gems = new LootPack(
+        public static readonly LootPack Gems = new(
             new[]
             {
                 new LootPackEntry(false, GemItems, 100.00, 1)
             }
         );
 
-        public static readonly LootPack Potions = new LootPack(
+        public static readonly LootPack Potions = new(
             new[]
             {
                 new LootPackEntry(false, PotionItems, 100.00, 1)
@@ -193,14 +193,14 @@ namespace Server
 
         public static readonly LootPackItem[] AosMagicItemsRichType1 =
         {
-            new LootPackItem(typeof(BaseWeapon), 211),
-            new LootPackItem(typeof(BaseRanged), 53),
-            new LootPackItem(typeof(BaseArmor), 303),
-            new LootPackItem(typeof(BaseShield), 39),
-            new LootPackItem(typeof(BaseJewel), 158)
+            new(typeof(BaseWeapon), 211),
+            new(typeof(BaseRanged), 53),
+            new(typeof(BaseArmor), 303),
+            new(typeof(BaseShield), 39),
+            new(typeof(BaseJewel), 158)
         };
 
-        public static readonly LootPack MlRich = new LootPack(
+        public static readonly LootPack MlRich = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "4d50+450"),
@@ -213,86 +213,86 @@ namespace Server
 
         public static readonly LootPackItem[] AosMagicItemsPoor =
         {
-            new LootPackItem(typeof(BaseWeapon), 3),
-            new LootPackItem(typeof(BaseRanged), 1),
-            new LootPackItem(typeof(BaseArmor), 4),
-            new LootPackItem(typeof(BaseShield), 1),
-            new LootPackItem(typeof(BaseJewel), 2)
+            new(typeof(BaseWeapon), 3),
+            new(typeof(BaseRanged), 1),
+            new(typeof(BaseArmor), 4),
+            new(typeof(BaseShield), 1),
+            new(typeof(BaseJewel), 2)
         };
 
         public static readonly LootPackItem[] AosMagicItemsMeagerType1 =
         {
-            new LootPackItem(typeof(BaseWeapon), 56),
-            new LootPackItem(typeof(BaseRanged), 14),
-            new LootPackItem(typeof(BaseArmor), 81),
-            new LootPackItem(typeof(BaseShield), 11),
-            new LootPackItem(typeof(BaseJewel), 42)
+            new(typeof(BaseWeapon), 56),
+            new(typeof(BaseRanged), 14),
+            new(typeof(BaseArmor), 81),
+            new(typeof(BaseShield), 11),
+            new(typeof(BaseJewel), 42)
         };
 
         public static readonly LootPackItem[] AosMagicItemsMeagerType2 =
         {
-            new LootPackItem(typeof(BaseWeapon), 28),
-            new LootPackItem(typeof(BaseRanged), 7),
-            new LootPackItem(typeof(BaseArmor), 40),
-            new LootPackItem(typeof(BaseShield), 5),
-            new LootPackItem(typeof(BaseJewel), 21)
+            new(typeof(BaseWeapon), 28),
+            new(typeof(BaseRanged), 7),
+            new(typeof(BaseArmor), 40),
+            new(typeof(BaseShield), 5),
+            new(typeof(BaseJewel), 21)
         };
 
         public static readonly LootPackItem[] AosMagicItemsAverageType1 =
         {
-            new LootPackItem(typeof(BaseWeapon), 90),
-            new LootPackItem(typeof(BaseRanged), 23),
-            new LootPackItem(typeof(BaseArmor), 130),
-            new LootPackItem(typeof(BaseShield), 17),
-            new LootPackItem(typeof(BaseJewel), 68)
+            new(typeof(BaseWeapon), 90),
+            new(typeof(BaseRanged), 23),
+            new(typeof(BaseArmor), 130),
+            new(typeof(BaseShield), 17),
+            new(typeof(BaseJewel), 68)
         };
 
         public static readonly LootPackItem[] AosMagicItemsAverageType2 =
         {
-            new LootPackItem(typeof(BaseWeapon), 54),
-            new LootPackItem(typeof(BaseRanged), 13),
-            new LootPackItem(typeof(BaseArmor), 77),
-            new LootPackItem(typeof(BaseShield), 10),
-            new LootPackItem(typeof(BaseJewel), 40)
+            new(typeof(BaseWeapon), 54),
+            new(typeof(BaseRanged), 13),
+            new(typeof(BaseArmor), 77),
+            new(typeof(BaseShield), 10),
+            new(typeof(BaseJewel), 40)
         };
 
         public static readonly LootPackItem[] AosMagicItemsRichType2 =
         {
-            new LootPackItem(typeof(BaseWeapon), 170),
-            new LootPackItem(typeof(BaseRanged), 43),
-            new LootPackItem(typeof(BaseArmor), 245),
-            new LootPackItem(typeof(BaseShield), 32),
-            new LootPackItem(typeof(BaseJewel), 128)
+            new(typeof(BaseWeapon), 170),
+            new(typeof(BaseRanged), 43),
+            new(typeof(BaseArmor), 245),
+            new(typeof(BaseShield), 32),
+            new(typeof(BaseJewel), 128)
         };
 
         public static readonly LootPackItem[] AosMagicItemsFilthyRichType1 =
         {
-            new LootPackItem(typeof(BaseWeapon), 219),
-            new LootPackItem(typeof(BaseRanged), 55),
-            new LootPackItem(typeof(BaseArmor), 315),
-            new LootPackItem(typeof(BaseShield), 41),
-            new LootPackItem(typeof(BaseJewel), 164)
+            new(typeof(BaseWeapon), 219),
+            new(typeof(BaseRanged), 55),
+            new(typeof(BaseArmor), 315),
+            new(typeof(BaseShield), 41),
+            new(typeof(BaseJewel), 164)
         };
 
         public static readonly LootPackItem[] AosMagicItemsFilthyRichType2 =
         {
-            new LootPackItem(typeof(BaseWeapon), 239),
-            new LootPackItem(typeof(BaseRanged), 60),
-            new LootPackItem(typeof(BaseArmor), 343),
-            new LootPackItem(typeof(BaseShield), 90),
-            new LootPackItem(typeof(BaseJewel), 45)
+            new(typeof(BaseWeapon), 239),
+            new(typeof(BaseRanged), 60),
+            new(typeof(BaseArmor), 343),
+            new(typeof(BaseShield), 90),
+            new(typeof(BaseJewel), 45)
         };
 
         public static readonly LootPackItem[] AosMagicItemsUltraRich =
         {
-            new LootPackItem(typeof(BaseWeapon), 276),
-            new LootPackItem(typeof(BaseRanged), 69),
-            new LootPackItem(typeof(BaseArmor), 397),
-            new LootPackItem(typeof(BaseShield), 52),
-            new LootPackItem(typeof(BaseJewel), 207)
+            new(typeof(BaseWeapon), 276),
+            new(typeof(BaseRanged), 69),
+            new(typeof(BaseArmor), 397),
+            new(typeof(BaseShield), 52),
+            new(typeof(BaseJewel), 207)
         };
 
-        public static readonly LootPack SePoor = new LootPack(
+        public static readonly LootPack SePoor = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "2d10+20"),
@@ -301,7 +301,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack SeMeager = new LootPack(
+        public static readonly LootPack SeMeager = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "4d10+40"),
@@ -311,7 +311,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack SeAverage = new LootPack(
+        public static readonly LootPack SeAverage = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "8d10+100"),
@@ -322,7 +322,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack SeRich = new LootPack(
+        public static readonly LootPack SeRich = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "15d10+225"),
@@ -333,7 +333,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack SeFilthyRich = new LootPack(
+        public static readonly LootPack SeFilthyRich = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "3d100+400"),
@@ -344,7 +344,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack SeUltraRich = new LootPack(
+        public static readonly LootPack SeUltraRich = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "6d100+600"),
@@ -358,7 +358,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack SeSuperBoss = new LootPack(
+        public static readonly LootPack SeSuperBoss = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "10d100+800"),
@@ -376,7 +376,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack AosPoor = new LootPack(
+        public static readonly LootPack AosPoor = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "1d10+10"),
@@ -385,7 +385,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack AosMeager = new LootPack(
+        public static readonly LootPack AosMeager = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "3d10+20"),
@@ -395,7 +395,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack AosAverage = new LootPack(
+        public static readonly LootPack AosAverage = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "5d10+50"),
@@ -406,7 +406,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack AosRich = new LootPack(
+        public static readonly LootPack AosRich = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "10d10+150"),
@@ -417,7 +417,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack AosFilthyRich = new LootPack(
+        public static readonly LootPack AosFilthyRich = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "2d100+200"),
@@ -429,7 +429,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack AosUltraRich = new LootPack(
+        public static readonly LootPack AosUltraRich = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "5d100+500"),
@@ -443,7 +443,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack AosSuperBoss = new LootPack(
+        public static readonly LootPack AosSuperBoss = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "5d100+500"),
@@ -461,7 +461,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack OldPoor = new LootPack(
+        public static readonly LootPack OldPoor = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "1d25"),
@@ -469,7 +469,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack OldMeager = new LootPack(
+        public static readonly LootPack OldMeager = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "5d10+25"),
@@ -479,7 +479,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack OldAverage = new LootPack(
+        public static readonly LootPack OldAverage = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "10d10+50"),
@@ -490,7 +490,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack OldRich = new LootPack(
+        public static readonly LootPack OldRich = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "10d10+250"),
@@ -501,7 +501,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack OldFilthyRich = new LootPack(
+        public static readonly LootPack OldFilthyRich = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "2d125+400"),
@@ -513,7 +513,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack OldUltraRich = new LootPack(
+        public static readonly LootPack OldUltraRich = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "5d100+500"),
@@ -527,7 +527,7 @@ namespace Server
             }
         );
 
-        public static readonly LootPack OldSuperBoss = new LootPack(
+        public static readonly LootPack OldSuperBoss = new(
             new[]
             {
                 new LootPackEntry(true, Gold, 100.00, "5d100+500"),

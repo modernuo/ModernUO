@@ -30,7 +30,7 @@ namespace Server
                                                    "It is strongly recommended that you make backup of the data files mentioned above.  " +
                                                    "Do you wish to proceed?";
 
-        private static readonly Point3D NullP3D = new Point3D(int.MinValue, int.MinValue, int.MinValue);
+        private static readonly Point3D NullP3D = new(int.MinValue, int.MinValue, int.MinValue);
 
         private static byte[] m_Buffer;
 

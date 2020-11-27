@@ -349,7 +349,7 @@ namespace Server.Mobiles
 
         private class EtherealSpell : Spell
         {
-            private static readonly SpellInfo m_Info = new SpellInfo("Ethereal Mount", "", 230);
+            private static readonly SpellInfo m_Info = new("Ethereal Mount", "", 230);
 
             private readonly EtherealMount m_Mount;
             private readonly Mobile m_Rider;

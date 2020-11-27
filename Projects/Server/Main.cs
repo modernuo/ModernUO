@@ -95,9 +95,7 @@ namespace Server
         public static Assembly Assembly { get; set; }
 
         // Assembly file version
-        public static Version Version => Version.Parse(
-            FileVersionInfo.GetVersionInfo(Assembly.Location).FileVersion
-        );
+        public static Version Version => new(ThisAssembly.AssemblyFileVersion);
 
         public static Process Process { get; private set; }
 
@@ -135,7 +133,7 @@ namespace Server
             }
         }
 
-        public static CancellationTokenSource ClosingTokenSource { get; } = new CancellationTokenSource();
+        public static CancellationTokenSource ClosingTokenSource { get; } = new();
 
         public static bool Closing => ClosingTokenSource.IsCancellationRequested;
 

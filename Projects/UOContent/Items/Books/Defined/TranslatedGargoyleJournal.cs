@@ -2,7 +2,7 @@ namespace Server.Items
 {
     public class TranslatedGargoyleJournal : BlueBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "Translated Journal",
             "Velis",
             new BookPageInfo(

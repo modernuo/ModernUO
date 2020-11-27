@@ -188,7 +188,7 @@ namespace Server.Factions
                     _                   => faction.Definition.GuardAttack // ReactionType.Attack
                 };
 
-                if (def != null && def.Number > 0)
+                if (def?.Number > 0)
                 {
                     Say(def.Number);
                 }

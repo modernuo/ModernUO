@@ -36,7 +36,7 @@ namespace Server
         public static Race Elf => Races[1];
         public static Race Gargoyle => Races[2];
 
-        public static List<Race> AllRaces { get; } = new List<Race>();
+        public static List<Race> AllRaces { get; } = new();
 
         public Expansion RequiredExpansion { get; }
 

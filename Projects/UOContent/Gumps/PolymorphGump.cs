@@ -6,24 +6,24 @@ namespace Server.Gumps
 {
     public class PolymorphEntry
     {
-        public static readonly PolymorphEntry Chicken = new PolymorphEntry(8401, 0xD0, 1015236, 15, 10);
-        public static readonly PolymorphEntry Dog = new PolymorphEntry(8405, 0xD9, 1015237, 17, 10);
-        public static readonly PolymorphEntry Wolf = new PolymorphEntry(8426, 0xE1, 1015238, 18, 10);
-        public static readonly PolymorphEntry Panther = new PolymorphEntry(8473, 0xD6, 1015239, 20, 14);
-        public static readonly PolymorphEntry Gorilla = new PolymorphEntry(8437, 0x1D, 1015240, 23, 10);
-        public static readonly PolymorphEntry BlackBear = new PolymorphEntry(8399, 0xD3, 1015241, 22, 10);
-        public static readonly PolymorphEntry GrizzlyBear = new PolymorphEntry(8411, 0xD4, 1015242, 22, 12);
-        public static readonly PolymorphEntry PolarBear = new PolymorphEntry(8417, 0xD5, 1015243, 26, 10);
-        public static readonly PolymorphEntry HumanMale = new PolymorphEntry(8397, 0x190, 1015244, 29, 8);
-        public static readonly PolymorphEntry HumanFemale = new PolymorphEntry(8398, 0x191, 1015254, 29, 10);
-        public static readonly PolymorphEntry Slime = new PolymorphEntry(8424, 0x33, 1015246, 5, 10);
-        public static readonly PolymorphEntry Orc = new PolymorphEntry(8416, 0x11, 1015247, 29, 10);
-        public static readonly PolymorphEntry LizardMan = new PolymorphEntry(8414, 0x21, 1015248, 26, 10);
-        public static readonly PolymorphEntry Gargoyle = new PolymorphEntry(8409, 0x04, 1015249, 22, 10);
-        public static readonly PolymorphEntry Ogre = new PolymorphEntry(8415, 0x01, 1015250, 24, 9);
-        public static readonly PolymorphEntry Troll = new PolymorphEntry(8425, 0x36, 1015251, 25, 9);
-        public static readonly PolymorphEntry Ettin = new PolymorphEntry(8408, 0x02, 1015252, 25, 8);
-        public static readonly PolymorphEntry Daemon = new PolymorphEntry(8403, 0x09, 1015253, 25, 8);
+        public static readonly PolymorphEntry Chicken = new(8401, 0xD0, 1015236, 15, 10);
+        public static readonly PolymorphEntry Dog = new(8405, 0xD9, 1015237, 17, 10);
+        public static readonly PolymorphEntry Wolf = new(8426, 0xE1, 1015238, 18, 10);
+        public static readonly PolymorphEntry Panther = new(8473, 0xD6, 1015239, 20, 14);
+        public static readonly PolymorphEntry Gorilla = new(8437, 0x1D, 1015240, 23, 10);
+        public static readonly PolymorphEntry BlackBear = new(8399, 0xD3, 1015241, 22, 10);
+        public static readonly PolymorphEntry GrizzlyBear = new(8411, 0xD4, 1015242, 22, 12);
+        public static readonly PolymorphEntry PolarBear = new(8417, 0xD5, 1015243, 26, 10);
+        public static readonly PolymorphEntry HumanMale = new(8397, 0x190, 1015244, 29, 8);
+        public static readonly PolymorphEntry HumanFemale = new(8398, 0x191, 1015254, 29, 10);
+        public static readonly PolymorphEntry Slime = new(8424, 0x33, 1015246, 5, 10);
+        public static readonly PolymorphEntry Orc = new(8416, 0x11, 1015247, 29, 10);
+        public static readonly PolymorphEntry LizardMan = new(8414, 0x21, 1015248, 26, 10);
+        public static readonly PolymorphEntry Gargoyle = new(8409, 0x04, 1015249, 22, 10);
+        public static readonly PolymorphEntry Ogre = new(8415, 0x01, 1015250, 24, 9);
+        public static readonly PolymorphEntry Troll = new(8425, 0x36, 1015251, 25, 9);
+        public static readonly PolymorphEntry Ettin = new(8408, 0x02, 1015252, 25, 8);
+        public static readonly PolymorphEntry Daemon = new(8403, 0x09, 1015253, 25, 8);
 
         private PolymorphEntry(int art, int body, int locNum, int x, int y)
         {
@@ -49,7 +49,7 @@ namespace Server.Gumps
     {
         private static readonly PolymorphCategory[] Categories =
         {
-            new PolymorphCategory(
+            new(
                 1015235, // Animals
                 PolymorphEntry.Chicken,
                 PolymorphEntry.Dog,
@@ -62,7 +62,7 @@ namespace Server.Gumps
                 PolymorphEntry.HumanMale
             ),
 
-            new PolymorphCategory(
+            new(
                 1015245, // Monsters
                 PolymorphEntry.Slime,
                 PolymorphEntry.Orc,

@@ -421,7 +421,7 @@ namespace Server.SkillHandlers
     {
         public static readonly TimeSpan StealTime = TimeSpan.FromMinutes(2.0);
 
-        private static readonly Queue<StolenItem> m_Queue = new Queue<StolenItem>();
+        private static readonly Queue<StolenItem> m_Queue = new();
 
         public StolenItem(Item stolen, Mobile thief, Mobile victim)
         {

@@ -8,11 +8,11 @@ namespace Server.Gumps
     {
         public static DoorInfo[] m_Types =
         {
-            new DoorInfo(typeof(MetalDoor), 0x675),
-            new DoorInfo(typeof(RattanDoor), 0x695),
-            new DoorInfo(typeof(DarkWoodDoor), 0x6A5),
-            new DoorInfo(typeof(LightWoodDoor), 0x6D5),
-            new DoorInfo(typeof(StrongWoodDoor), 0x6E5)
+            new(typeof(MetalDoor), 0x675),
+            new(typeof(RattanDoor), 0x695),
+            new(typeof(DarkWoodDoor), 0x6A5),
+            new(typeof(LightWoodDoor), 0x6D5),
+            new(typeof(StrongWoodDoor), 0x6E5)
         };
 
         private readonly int m_Type;

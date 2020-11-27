@@ -24,7 +24,7 @@ namespace Server.Network
     {
         private const int m_AuthIDWindowSize = 128;
         private static readonly Dictionary<int, AuthIDPersistence> m_AuthIDWindow =
-            new Dictionary<int, AuthIDPersistence>(m_AuthIDWindowSize);
+            new(m_AuthIDWindowSize);
 
         internal struct AuthIDPersistence
         {

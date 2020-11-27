@@ -8,7 +8,7 @@ namespace Server.SkillHandlers
 {
     public static class Inscribe
     {
-        private static readonly Dictionary<BaseBook, Mobile> m_UseTable = new Dictionary<BaseBook, Mobile>();
+        private static readonly Dictionary<BaseBook, Mobile> m_UseTable = new();
 
         public static void Initialize()
         {

@@ -19,10 +19,10 @@ namespace Server.Multis
         public override int HoldDistance => 5;
         public override int TillerManDistance => -5;
 
-        public override Point2D StarboardOffset => new Point2D(2, -1);
-        public override Point2D PortOffset => new Point2D(-2, -1);
+        public override Point2D StarboardOffset => new(2, -1);
+        public override Point2D PortOffset => new(-2, -1);
 
-        public override Point3D MarkOffset => new Point3D(0, 0, 3);
+        public override Point3D MarkOffset => new(0, 0, 3);
 
         public override BaseDockedBoat DockedBoat => new LargeDockedDragonBoat(this);
 

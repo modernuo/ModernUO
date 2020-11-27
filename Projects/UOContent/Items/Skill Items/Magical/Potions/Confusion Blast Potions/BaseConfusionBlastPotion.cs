@@ -9,8 +9,8 @@ namespace Server.Items
 {
     public abstract class BaseConfusionBlastPotion : BasePotion
     {
-        private static readonly Dictionary<Mobile, Timer> m_Delay = new Dictionary<Mobile, Timer>();
-        private readonly List<Mobile> m_Users = new List<Mobile>();
+        private static readonly Dictionary<Mobile, Timer> m_Delay = new();
+        private readonly List<Mobile> m_Users = new();
 
         public BaseConfusionBlastPotion(PotionEffect effect) : base(0xF06, effect) => Hue = 0x48D;
 

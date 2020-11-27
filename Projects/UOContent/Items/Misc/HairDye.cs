@@ -46,18 +46,18 @@ namespace Server.Items
     {
         private static readonly HairDyeEntry[] m_Entries =
         {
-            new HairDyeEntry("*****", 1602, 26),
-            new HairDyeEntry("*****", 1628, 27),
-            new HairDyeEntry("*****", 1502, 32),
-            new HairDyeEntry("*****", 1302, 32),
-            new HairDyeEntry("*****", 1402, 32),
-            new HairDyeEntry("*****", 1202, 24),
-            new HairDyeEntry("*****", 2402, 29),
-            new HairDyeEntry("*****", 2213, 6),
-            new HairDyeEntry("*****", 1102, 8),
-            new HairDyeEntry("*****", 1110, 8),
-            new HairDyeEntry("*****", 1118, 16),
-            new HairDyeEntry("*****", 1134, 16)
+            new("*****", 1602, 26),
+            new("*****", 1628, 27),
+            new("*****", 1502, 32),
+            new("*****", 1302, 32),
+            new("*****", 1402, 32),
+            new("*****", 1202, 24),
+            new("*****", 2402, 29),
+            new("*****", 2213, 6),
+            new("*****", 1102, 8),
+            new("*****", 1110, 8),
+            new("*****", 1118, 16),
+            new("*****", 1134, 16)
         };
 
         private readonly HairDye m_HairDye;

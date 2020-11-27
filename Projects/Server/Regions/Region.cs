@@ -176,7 +176,7 @@ namespace Server
             Music = json.GetEnumProperty("music", options, out MusicName music) ? music : DefaultMusic;
         }
 
-        public static List<Region> Regions { get; } = new List<Region>();
+        public static List<Region> Regions { get; } = new();
 
         public static Type DefaultRegionType { get; set; } = typeof(Region);
 
@@ -190,7 +190,7 @@ namespace Server
 
         public Region Parent { get; }
 
-        public List<Region> Children { get; } = new List<Region>();
+        public List<Region> Children { get; } = new();
 
         public Rectangle3D[] Area { get; }
 
@@ -297,7 +297,7 @@ namespace Server
         }
 
         public static Rectangle3D ConvertTo3D(Rectangle2D rect) =>
-            new Rectangle3D(new Point3D(rect.Start, MinZ), new Point3D(rect.End, MaxZ));
+            new(new Point3D(rect.Start, MinZ), new Point3D(rect.End, MaxZ));
 
         public static Rectangle3D[] ConvertTo3D(Rectangle2D[] rects)
         {

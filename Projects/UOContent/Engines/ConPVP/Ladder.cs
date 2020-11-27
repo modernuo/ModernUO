@@ -164,7 +164,7 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public List<LadderEntry> Entries { get; } = new List<LadderEntry>();
+        public List<LadderEntry> Entries { get; } = new();
 
         public static Ladder Instance { get; set; }
 

@@ -8,7 +8,7 @@ namespace Server.Items
     /// </summary>
     public class DualWield : WeaponAbility
     {
-        public static Dictionary<Mobile, DualWieldTimer> Registry { get; } = new Dictionary<Mobile, DualWieldTimer>();
+        public static Dictionary<Mobile, DualWieldTimer> Registry { get; } = new();
 
         public override int BaseMana => 30;
 

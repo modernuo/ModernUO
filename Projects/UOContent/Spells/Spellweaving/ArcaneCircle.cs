@@ -8,7 +8,7 @@ namespace Server.Spells.Spellweaving
 {
     public class ArcaneCircleSpell : ArcanistSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Arcane Circle",
             "Myrshalee",
             -1

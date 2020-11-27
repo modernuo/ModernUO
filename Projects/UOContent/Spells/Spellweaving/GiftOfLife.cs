@@ -8,13 +8,13 @@ namespace Server.Spells.Spellweaving
 {
     public class GiftOfLifeSpell : ArcanistSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Gift of Life",
             "Illorae",
             -1
         );
 
-        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
         public GiftOfLifeSpell(Mobile caster, Item scroll = null)
             : base(caster, scroll, m_Info)
@@ -121,7 +121,7 @@ namespace Server.Spells.Spellweaving
                 {
                     var friends = pet.Friends;
 
-                    for (var i = 0; friends != null && i < friends.Count; i++)
+                    for (var i = 0; i < friends?.Count; i++)
                     {
                         var friend = friends[i];
 

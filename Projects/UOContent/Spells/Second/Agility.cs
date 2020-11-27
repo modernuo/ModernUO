@@ -5,7 +5,7 @@ namespace Server.Spells.Second
 {
     public class AgilitySpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Agility",
             "Ex Uus",
             212,

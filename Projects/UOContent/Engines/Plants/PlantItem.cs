@@ -169,7 +169,7 @@ namespace Server.Engines.Plants
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Reproduces => PlantHueInfo.CanReproduce(PlantHue) && PlantTypeInfo.CanReproduce(PlantType);
 
-        public static List<PlantItem> Plants { get; } = new List<PlantItem>();
+        public static List<PlantItem> Plants { get; } = new();
 
         [CommandProperty(AccessLevel.GameMaster)]
         public SecureLevel Level { get; set; }

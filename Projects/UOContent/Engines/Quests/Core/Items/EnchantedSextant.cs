@@ -11,60 +11,60 @@ namespace Server.Items
         // TODO: Trammel/Haven
         private static readonly Point2D[] m_TrammelBanks =
         {
-            new Point2D(652, 820),
-            new Point2D(1813, 2825),
-            new Point2D(3734, 2149),
-            new Point2D(2503, 552),
-            new Point2D(3764, 1317),
-            new Point2D(587, 2146),
-            new Point2D(1655, 1606),
-            new Point2D(1425, 1690),
-            new Point2D(4471, 1156),
-            new Point2D(1317, 3773),
-            new Point2D(2881, 684),
-            new Point2D(2731, 2192),
-            new Point2D(3620, 2617),
-            new Point2D(2880, 3472),
-            new Point2D(1897, 2684),
-            new Point2D(5346, 74),
-            new Point2D(5275, 3977),
-            new Point2D(5669, 3131)
+            new(652, 820),
+            new(1813, 2825),
+            new(3734, 2149),
+            new(2503, 552),
+            new(3764, 1317),
+            new(587, 2146),
+            new(1655, 1606),
+            new(1425, 1690),
+            new(4471, 1156),
+            new(1317, 3773),
+            new(2881, 684),
+            new(2731, 2192),
+            new(3620, 2617),
+            new(2880, 3472),
+            new(1897, 2684),
+            new(5346, 74),
+            new(5275, 3977),
+            new(5669, 3131)
         };
 
         private static readonly Point2D[] m_FeluccaBanks =
         {
-            new Point2D(652, 820),
-            new Point2D(1813, 2825),
-            new Point2D(3734, 2149),
-            new Point2D(2503, 552),
-            new Point2D(3764, 1317),
-            new Point2D(3695, 2511),
-            new Point2D(587, 2146),
-            new Point2D(1655, 1606),
-            new Point2D(1425, 1690),
-            new Point2D(4471, 1156),
-            new Point2D(1317, 3773),
-            new Point2D(2881, 684),
-            new Point2D(2731, 2192),
-            new Point2D(2880, 3472),
-            new Point2D(1897, 2684),
-            new Point2D(5346, 74),
-            new Point2D(5275, 3977),
-            new Point2D(5669, 3131)
+            new(652, 820),
+            new(1813, 2825),
+            new(3734, 2149),
+            new(2503, 552),
+            new(3764, 1317),
+            new(3695, 2511),
+            new(587, 2146),
+            new(1655, 1606),
+            new(1425, 1690),
+            new(4471, 1156),
+            new(1317, 3773),
+            new(2881, 684),
+            new(2731, 2192),
+            new(2880, 3472),
+            new(1897, 2684),
+            new(5346, 74),
+            new(5275, 3977),
+            new(5669, 3131)
         };
 
         private static readonly Point2D[] m_IlshenarBanks =
         {
-            new Point2D(854, 680),
-            new Point2D(855, 603),
-            new Point2D(1226, 554),
-            new Point2D(1610, 556)
+            new(854, 680),
+            new(855, 603),
+            new(1226, 554),
+            new(1610, 556)
         };
 
         private static readonly Point2D[] m_MalasBanks =
         {
-            new Point2D(996, 519),
-            new Point2D(2048, 1345)
+            new(996, 519),
+            new(2048, 1345)
         };
 
         [Constructible]

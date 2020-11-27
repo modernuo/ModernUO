@@ -11,7 +11,7 @@ namespace Server.Spells.Third
 {
     public class TeleportSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Teleport",
             "Rel Por",
             215,

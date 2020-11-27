@@ -5,7 +5,7 @@ namespace Server.Spells.Second
 {
     public class MagicTrapSpell : MagerySpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Magic Trap",
             "In Jux",
             212,

@@ -4,7 +4,7 @@ namespace Server.Spells.Sixth
 {
     public class EnergyBoltSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Energy Bolt",
             "Corp Por",
             230,

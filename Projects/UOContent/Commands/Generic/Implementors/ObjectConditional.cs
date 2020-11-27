@@ -8,7 +8,7 @@ namespace Server.Commands.Generic
         private static readonly Type typeofItem = typeof(Item);
         private static readonly Type typeofMobile = typeof(Mobile);
 
-        public static readonly ObjectConditional Empty = new ObjectConditional(null, null);
+        public static readonly ObjectConditional Empty = new(null, null);
 
         private readonly ICondition[][] m_Conditions;
 

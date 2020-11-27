@@ -9,7 +9,7 @@ namespace Server.Spells.Necromancy
 {
     public class PoisonStrikeSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Poison Strike",
             "In Vas Nox",
             203,

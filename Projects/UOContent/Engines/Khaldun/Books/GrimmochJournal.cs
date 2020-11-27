@@ -2,7 +2,7 @@ namespace Server.Items
 {
     public class GrimmochJournal1 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The daily journal of Grimmoch Drummel",
             "Grimmoch",
             new BookPageInfo(
@@ -85,7 +85,7 @@ namespace Server.Items
 
     public class GrimmochJournal2 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The daily journal of Grimmoch Drummel",
             "Grimmoch",
             new BookPageInfo(
@@ -185,7 +185,7 @@ namespace Server.Items
 
     public class GrimmochJournal3 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The daily journal of Grimmoch Drummel",
             "Grimmoch",
             new BookPageInfo(
@@ -282,7 +282,7 @@ namespace Server.Items
 
     public class GrimmochJournal6 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The daily journal of Grimmoch Drummel",
             "Grimmoch",
             new BookPageInfo(
@@ -375,7 +375,7 @@ namespace Server.Items
 
     public class GrimmochJournal7 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The daily journal of Grimmoch Drummel",
             "Grimmoch",
             new BookPageInfo(
@@ -457,7 +457,7 @@ namespace Server.Items
 
     public class GrimmochJournal11 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The daily journal of Grimmoch Drummel",
             "Grimmoch",
             new BookPageInfo(
@@ -523,7 +523,7 @@ namespace Server.Items
 
     public class GrimmochJournal14 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The daily journal of Grimmoch Drummel",
             "Grimmoch",
             new BookPageInfo(
@@ -605,7 +605,7 @@ namespace Server.Items
 
     public class GrimmochJournal17 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The daily journal of Grimmoch Drummel",
             "Grimmoch",
             new BookPageInfo(
@@ -691,7 +691,7 @@ namespace Server.Items
 
     public class GrimmochJournal23 : BaseBook
     {
-        public static readonly BookContent Content = new BookContent(
+        public static readonly BookContent Content = new(
             "The daily journal of Grimmoch Drummel",
             "Grimmoch",
             new BookPageInfo(

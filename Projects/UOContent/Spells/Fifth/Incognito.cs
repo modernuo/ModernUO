@@ -9,7 +9,7 @@ namespace Server.Spells.Fifth
 {
     public class IncognitoSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Incognito",
             "Kal In Ex",
             206,
@@ -19,7 +19,7 @@ namespace Server.Spells.Fifth
             Reagent.Nightshade
         );
 
-        private static readonly Dictionary<Mobile, InternalTimer> m_Timers = new Dictionary<Mobile, InternalTimer>();
+        private static readonly Dictionary<Mobile, InternalTimer> m_Timers = new();
 
         public IncognitoSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {

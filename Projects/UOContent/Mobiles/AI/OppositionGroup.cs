@@ -9,7 +9,7 @@ namespace Server
 
         public OppositionGroup(Type[][] types) => m_Types = types;
 
-        public static OppositionGroup TerathansAndOphidians { get; } = new OppositionGroup(
+        public static OppositionGroup TerathansAndOphidians { get; } = new(
             new[]
             {
                 new[]
@@ -30,7 +30,7 @@ namespace Server
             }
         );
 
-        public static OppositionGroup SavagesAndOrcs { get; } = new OppositionGroup(
+        public static OppositionGroup SavagesAndOrcs { get; } = new(
             new[]
             {
                 new[]
@@ -53,7 +53,7 @@ namespace Server
             }
         );
 
-        public static OppositionGroup FeyAndUndead { get; } = new OppositionGroup(
+        public static OppositionGroup FeyAndUndead { get; } = new(
             new[]
             {
                 new[]

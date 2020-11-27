@@ -5,7 +5,7 @@ namespace Server.Spells.Third
 {
     public class BlessSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Bless",
             "Rel Sanct",
             203,

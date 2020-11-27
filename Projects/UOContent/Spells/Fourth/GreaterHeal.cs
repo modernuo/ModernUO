@@ -8,7 +8,7 @@ namespace Server.Spells.Fourth
 {
     public class GreaterHealSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Greater Heal",
             "In Vas Mani",
             204,

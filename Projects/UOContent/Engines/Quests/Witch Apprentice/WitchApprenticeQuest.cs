@@ -33,26 +33,26 @@ namespace Server.Engines.Quests.Hag
 
         private static readonly Point3D[] m_ZeefzorpulLocations =
         {
-            new Point3D(1226, 1573, 0),
-            new Point3D(1929, 1148, 0),
-            new Point3D(1366, 2723, 0),
-            new Point3D(1675, 2984, 0),
-            new Point3D(2177, 3367, 10),
-            new Point3D(1171, 3594, 0),
-            new Point3D(1010, 2667, 5),
-            new Point3D(1591, 2156, 5),
-            new Point3D(2592, 464, 60),
-            new Point3D(474, 1654, 0),
-            new Point3D(897, 2411, 0),
-            new Point3D(1471, 2505, 5),
-            new Point3D(1257, 872, 16),
-            new Point3D(2581, 1118, 0),
-            new Point3D(2513, 1102, 0),
-            new Point3D(1608, 3371, 0),
-            new Point3D(4687, 1179, 0),
-            new Point3D(3704, 2196, 20),
-            new Point3D(3346, 572, 0),
-            new Point3D(569, 1309, 0)
+            new(1226, 1573, 0),
+            new(1929, 1148, 0),
+            new(1366, 2723, 0),
+            new(1675, 2984, 0),
+            new(2177, 3367, 10),
+            new(1171, 3594, 0),
+            new(1010, 2667, 5),
+            new(1591, 2156, 5),
+            new(2592, 464, 60),
+            new(474, 1654, 0),
+            new(897, 2411, 0),
+            new(1471, 2505, 5),
+            new(1257, 872, 16),
+            new(2581, 1118, 0),
+            new(2513, 1102, 0),
+            new(1608, 3371, 0),
+            new(4687, 1179, 0),
+            new(3704, 2196, 20),
+            new(3346, 572, 0),
+            new(569, 1309, 0)
         };
 
         public WitchApprenticeQuest(PlayerMobile from) : base(from)

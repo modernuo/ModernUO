@@ -8,11 +8,11 @@ namespace Server.Engines.Quests.Hag
     {
         private static readonly Point3D[] m_CorpseLocations =
         {
-            new Point3D(778, 1158, 0),
-            new Point3D(698, 1443, 0),
-            new Point3D(785, 1548, 0),
-            new Point3D(734, 1504, 0),
-            new Point3D(819, 1266, 0)
+            new(778, 1158, 0),
+            new(698, 1443, 0),
+            new(785, 1548, 0),
+            new(734, 1504, 0),
+            new(819, 1266, 0)
         };
 
         private Point3D m_CorpseLocation;

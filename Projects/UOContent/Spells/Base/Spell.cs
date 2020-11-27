@@ -25,7 +25,7 @@ namespace Server.Spells
         // of course, two MA's won't.
 
         private static readonly Dictionary<Type, DelayedDamageContextWrapper> m_ContextTable =
-            new Dictionary<Type, DelayedDamageContextWrapper>();
+            new();
 
         private AnimTimer m_AnimTimer;
 
@@ -834,7 +834,7 @@ namespace Server.Spells
 
         private class DelayedDamageContextWrapper
         {
-            private readonly Dictionary<Mobile, Timer> m_Contexts = new Dictionary<Mobile, Timer>();
+            private readonly Dictionary<Mobile, Timer> m_Contexts = new();
 
             public void Add(Mobile m, Timer t)
             {

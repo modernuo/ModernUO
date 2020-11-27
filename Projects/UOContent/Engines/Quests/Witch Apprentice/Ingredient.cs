@@ -27,35 +27,35 @@ namespace Server.Engines.Quests.Hag
         private static readonly IngredientInfo[] m_Table =
         {
             // sheep liver
-            new IngredientInfo(1055020, 5, typeof(Sheep)),
+            new(1055020, 5, typeof(Sheep)),
             // rabbit's foot
-            new IngredientInfo(1055021, 5, typeof(Rabbit), typeof(JackRabbit)),
+            new(1055021, 5, typeof(Rabbit), typeof(JackRabbit)),
             // mongbat wing
-            new IngredientInfo(1055022, 5, typeof(Mongbat), typeof(GreaterMongbat)),
+            new(1055022, 5, typeof(Mongbat), typeof(GreaterMongbat)),
             // chicken gizzard
-            new IngredientInfo(1055023, 5, typeof(Chicken)),
+            new(1055023, 5, typeof(Chicken)),
             // rat tail
-            new IngredientInfo(1055024, 5, typeof(Rat), typeof(GiantRat), typeof(SewerRat)),
+            new(1055024, 5, typeof(Rat), typeof(GiantRat), typeof(SewerRat)),
             // frog's leg
-            new IngredientInfo(1055025, 5, typeof(BullFrog)),
+            new(1055025, 5, typeof(BullFrog)),
             // deer heart
-            new IngredientInfo(1055026, 5, typeof(Hind), typeof(GreatHart)),
+            new(1055026, 5, typeof(Hind), typeof(GreatHart)),
             // lizard tongue
-            new IngredientInfo(1055027, 5, typeof(LavaLizard), typeof(Lizardman)),
+            new(1055027, 5, typeof(LavaLizard), typeof(Lizardman)),
             // slime ooze
-            new IngredientInfo(1055028, 5, typeof(Slime)),
+            new(1055028, 5, typeof(Slime)),
             // spirit essence
-            new IngredientInfo(1055029, 5, typeof(Ghoul), typeof(Spectre), typeof(Shade), typeof(Wraith), typeof(Bogle)),
+            new(1055029, 5, typeof(Ghoul), typeof(Spectre), typeof(Shade), typeof(Wraith), typeof(Bogle)),
             // Swamp Water
-            new IngredientInfo(1055030, 1),
+            new(1055030, 1),
             // Freshly Cut Red Mushrooms
-            new IngredientInfo(1055031, 1),
+            new(1055031, 1),
             // Bones Buried In Hallowed Ground
-            new IngredientInfo(1055032, 1),
+            new(1055032, 1),
             // Star Chart
-            new IngredientInfo(1055033, 1),
+            new(1055033, 1),
             // Captain Blackheart's Whiskey
-            new IngredientInfo(1055034, 1)
+            new(1055034, 1)
         };
 
         private IngredientInfo(int name, int quantity, params Type[] creatures)

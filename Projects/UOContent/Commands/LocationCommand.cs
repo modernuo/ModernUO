@@ -7,7 +7,7 @@ namespace Server.Commands
 {
     public class LocationCommand : BaseCommand
     {
-        private static readonly List<int> m_DefaultGraphics = new List<int> { 0x17AF, 0x17B0, 0x17B1, 0x17B2 };
+        private static readonly List<int> m_DefaultGraphics = new() { 0x17AF, 0x17B0, 0x17B1, 0x17B2 };
 
         public LocationCommand()
         {

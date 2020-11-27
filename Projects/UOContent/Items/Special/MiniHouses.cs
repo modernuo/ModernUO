@@ -183,19 +183,19 @@ namespace Server.Items
     {
         private static readonly MiniHouseInfo[] m_Info =
         {
-            /* Stone and plaster house           */ new MiniHouseInfo(0x22C4, 1, 1011303),
-            /* Field stone house                 */ new MiniHouseInfo(0x22DE, 1, 1011304),
-            /* Small brick house                 */ new MiniHouseInfo(0x22DF, 1, 1011305),
-            /* Wooden house                      */ new MiniHouseInfo(0x22C9, 1, 1011306),
-            /* Wood and plaster house            */ new MiniHouseInfo(0x22E0, 1, 1011307),
-            /* Thatched-roof cottage             */ new MiniHouseInfo(0x22E1, 1, 1011308),
-            /* Brick house                       */ new MiniHouseInfo(1011309, 0x22CD, 0x22CB, 0x22CC, 0x22CA),
-            /* Two-story wood and plaster house  */ new MiniHouseInfo(1011310, 0x2301, 0x2302, 0x2304, 0x2303),
-            /* Two-story stone and plaster house */ new MiniHouseInfo(1011311, 0x22FC, 0x22FD, 0x22FF, 0x22FE),
-            /* Tower                             */ new MiniHouseInfo(1011312, 0x22F7, 0x22F8, 0x22FA, 0x22F9),
-            /* Small stone keep                  */ new MiniHouseInfo(0x22E6, 9, 1011313),
+            /* Stone and plaster house           */ new(0x22C4, 1, 1011303),
+            /* Field stone house                 */ new(0x22DE, 1, 1011304),
+            /* Small brick house                 */ new(0x22DF, 1, 1011305),
+            /* Wooden house                      */ new(0x22C9, 1, 1011306),
+            /* Wood and plaster house            */ new(0x22E0, 1, 1011307),
+            /* Thatched-roof cottage             */ new(0x22E1, 1, 1011308),
+            /* Brick house                       */ new(1011309, 0x22CD, 0x22CB, 0x22CC, 0x22CA),
+            /* Two-story wood and plaster house  */ new(1011310, 0x2301, 0x2302, 0x2304, 0x2303),
+            /* Two-story stone and plaster house */ new(1011311, 0x22FC, 0x22FD, 0x22FF, 0x22FE),
+            /* Tower                             */ new(1011312, 0x22F7, 0x22F8, 0x22FA, 0x22F9),
+            /* Small stone keep                  */ new(0x22E6, 9, 1011313),
             /* Castle                            */
-            new MiniHouseInfo(
+            new(
                 1011314,
                 0x22CE,
                 0x22D0,
@@ -214,16 +214,16 @@ namespace Server.Items
                 0x22DC,
                 0x22DD
             ),
-            /* Large house with patio            */ new MiniHouseInfo(0x22E2, 4, 1011315),
-            /* Marble house with patio           */ new MiniHouseInfo(0x22EF, 4, 1011316),
-            /* Small stone tower                 */ new MiniHouseInfo(0x22F5, 1, 1011317),
-            /* Two-story log cabin               */ new MiniHouseInfo(0x22FB, 1, 1011318),
-            /* Two-story villa                   */ new MiniHouseInfo(0x2300, 1, 1011319),
-            /* Sandstone house with patio        */ new MiniHouseInfo(0x22F3, 1, 1011320),
-            /* Small stone workshop              */ new MiniHouseInfo(0x22F6, 1, 1011321),
-            /* Small marble workshop             */ new MiniHouseInfo(0x22F4, 1, 1011322),
-            /* Malas Mountain Pass               */ new MiniHouseInfo(1062692, 0x2316, 0x2315, 0x2314, 0x2313),
-            /* Church At Night                   */ new MiniHouseInfo(1072215, 0x2318, 0x2317, 0x2319, 0x1)
+            /* Large house with patio            */ new(0x22E2, 4, 1011315),
+            /* Marble house with patio           */ new(0x22EF, 4, 1011316),
+            /* Small stone tower                 */ new(0x22F5, 1, 1011317),
+            /* Two-story log cabin               */ new(0x22FB, 1, 1011318),
+            /* Two-story villa                   */ new(0x2300, 1, 1011319),
+            /* Sandstone house with patio        */ new(0x22F3, 1, 1011320),
+            /* Small stone workshop              */ new(0x22F6, 1, 1011321),
+            /* Small marble workshop             */ new(0x22F4, 1, 1011322),
+            /* Malas Mountain Pass               */ new(1062692, 0x2316, 0x2315, 0x2314, 0x2313),
+            /* Church At Night                   */ new(1072215, 0x2318, 0x2317, 0x2319, 0x1)
         };
 
         public MiniHouseInfo(int start, int count, int labelNumber)

@@ -5,7 +5,7 @@ namespace Server.Spells.Sixth
 {
     public class ExplosionSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Explosion",
             "Vas Ort Flam",
             230,

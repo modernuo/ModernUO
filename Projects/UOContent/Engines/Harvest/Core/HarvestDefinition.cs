@@ -79,7 +79,7 @@ namespace Server.Engines.Harvest
         public uint VeinWeights { get; private set; }
 
         public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks { get; }
-            = new Dictionary<Map, Dictionary<Point2D, HarvestBank>>();
+            = new();
 
         public void SendMessageTo(Mobile from, TextDefinition message)
         {

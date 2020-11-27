@@ -5,13 +5,13 @@ namespace Server.Spells.Spellweaving
 {
     public class AttuneWeaponSpell : ArcanistSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Attune Weapon",
             "Haeldril",
             -1
         );
 
-        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
         public AttuneWeaponSpell(Mobile caster, Item scroll = null)
             : base(caster, scroll, m_Info)

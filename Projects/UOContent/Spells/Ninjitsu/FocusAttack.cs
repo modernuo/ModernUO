@@ -8,7 +8,7 @@ namespace Server.Spells.Ninjitsu
         public override double RequiredSkill => Core.ML ? 30.0 : 60;
 
         public override TextDefinition AbilityMessage =>
-            new TextDefinition(1063095); // You prepare to focus all of your abilities into your next strike.
+            new(1063095); // You prepare to focus all of your abilities into your next strike.
 
         public override bool Validate(Mobile from)
         {

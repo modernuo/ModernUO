@@ -21,9 +21,9 @@ namespace Server.Tests.Network
 
             var sellStates = new List<SellItemState>
             {
-                new SellItemState(item1, 100, "Item 1"),
-                new SellItemState(item2, 100000, "Item 2"),
-                new SellItemState(item3, 1, "Item 3")
+                new(item1, 100, "Item 1"),
+                new(item2, 100000, "Item 2"),
+                new(item3, 1, "Item 3")
             };
 
             var data = new VendorSellList(vendor, sellStates).Compile();

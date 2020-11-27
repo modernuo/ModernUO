@@ -9,9 +9,9 @@ namespace Server.Mobiles
 {
     public class CustomHairstylist : BaseVendor
     {
-        public static readonly object From = new object();
-        public static readonly object Vendor = new object();
-        public static readonly object Price = new object();
+        public static readonly object From = new();
+        public static readonly object Vendor = new();
+        public static readonly object Price = new();
 
         private static readonly HairstylistBuyInfo[] m_SellList =
         {
@@ -286,30 +286,30 @@ namespace Server.Mobiles
     {
         public static readonly ChangeHairHueEntry[] BrightEntries =
         {
-            new ChangeHairHueEntry("*****", 12, 10),
-            new ChangeHairHueEntry("*****", 32, 5),
-            new ChangeHairHueEntry("*****", 38, 8),
-            new ChangeHairHueEntry("*****", 54, 3),
-            new ChangeHairHueEntry("*****", 62, 10),
-            new ChangeHairHueEntry("*****", 81, 2),
-            new ChangeHairHueEntry("*****", 89, 2),
-            new ChangeHairHueEntry("*****", 1153, 2)
+            new("*****", 12, 10),
+            new("*****", 32, 5),
+            new("*****", 38, 8),
+            new("*****", 54, 3),
+            new("*****", 62, 10),
+            new("*****", 81, 2),
+            new("*****", 89, 2),
+            new("*****", 1153, 2)
         };
 
         public static readonly ChangeHairHueEntry[] RegularEntries =
         {
-            new ChangeHairHueEntry("*****", 1602, 26),
-            new ChangeHairHueEntry("*****", 1628, 27),
-            new ChangeHairHueEntry("*****", 1502, 32),
-            new ChangeHairHueEntry("*****", 1302, 32),
-            new ChangeHairHueEntry("*****", 1402, 32),
-            new ChangeHairHueEntry("*****", 1202, 24),
-            new ChangeHairHueEntry("*****", 2402, 29),
-            new ChangeHairHueEntry("*****", 2213, 6),
-            new ChangeHairHueEntry("*****", 1102, 8),
-            new ChangeHairHueEntry("*****", 1110, 8),
-            new ChangeHairHueEntry("*****", 1118, 16),
-            new ChangeHairHueEntry("*****", 1134, 16)
+            new("*****", 1602, 26),
+            new("*****", 1628, 27),
+            new("*****", 1502, 32),
+            new("*****", 1302, 32),
+            new("*****", 1402, 32),
+            new("*****", 1202, 24),
+            new("*****", 2402, 29),
+            new("*****", 2213, 6),
+            new("*****", 1102, 8),
+            new("*****", 1110, 8),
+            new("*****", 1118, 16),
+            new("*****", 1134, 16)
         };
 
         public ChangeHairHueEntry(string name, int[] hues)
@@ -464,28 +464,28 @@ namespace Server.Mobiles
     {
         public static readonly ChangeHairstyleEntry[] HairEntries =
         {
-            new ChangeHairstyleEntry(50700, 70 - 137, 20 - 60, 0x203B),
-            new ChangeHairstyleEntry(60710, 193 - 260, 18 - 60, 0x2045),
-            new ChangeHairstyleEntry(50703, 316 - 383, 25 - 60, 0x2044),
-            new ChangeHairstyleEntry(60708, 70 - 137, 75 - 125, 0x203C),
-            new ChangeHairstyleEntry(60900, 193 - 260, 85 - 125, 0x2047),
-            new ChangeHairstyleEntry(60713, 320 - 383, 85 - 125, 0x204A),
-            new ChangeHairstyleEntry(60702, 70 - 137, 140 - 190, 0x203D),
-            new ChangeHairstyleEntry(60707, 193 - 260, 140 - 190, 0x2049),
-            new ChangeHairstyleEntry(60901, 315 - 383, 150 - 190, 0x2048),
-            new ChangeHairstyleEntry(0, 0, 0, 0)
+            new(50700, 70 - 137, 20 - 60, 0x203B),
+            new(60710, 193 - 260, 18 - 60, 0x2045),
+            new(50703, 316 - 383, 25 - 60, 0x2044),
+            new(60708, 70 - 137, 75 - 125, 0x203C),
+            new(60900, 193 - 260, 85 - 125, 0x2047),
+            new(60713, 320 - 383, 85 - 125, 0x204A),
+            new(60702, 70 - 137, 140 - 190, 0x203D),
+            new(60707, 193 - 260, 140 - 190, 0x2049),
+            new(60901, 315 - 383, 150 - 190, 0x2048),
+            new(0, 0, 0, 0)
         };
 
         public static readonly ChangeHairstyleEntry[] BeardEntries =
         {
-            new ChangeHairstyleEntry(50800, 120 - 187, 30 - 80, 0x2040),
-            new ChangeHairstyleEntry(50904, 243 - 310, 33 - 80, 0x204B),
-            new ChangeHairstyleEntry(50906, 120 - 187, 100 - 150, 0x204D),
-            new ChangeHairstyleEntry(50801, 243 - 310, 95 - 150, 0x203E),
-            new ChangeHairstyleEntry(50802, 120 - 187, 173 - 220, 0x203F),
-            new ChangeHairstyleEntry(50905, 243 - 310, 165 - 220, 0x204C),
-            new ChangeHairstyleEntry(50808, 120 - 187, 242 - 290, 0x2041),
-            new ChangeHairstyleEntry(0, 0, 0, 0)
+            new(50800, 120 - 187, 30 - 80, 0x2040),
+            new(50904, 243 - 310, 33 - 80, 0x204B),
+            new(50906, 120 - 187, 100 - 150, 0x204D),
+            new(50801, 243 - 310, 95 - 150, 0x203E),
+            new(50802, 120 - 187, 173 - 220, 0x203F),
+            new(50905, 243 - 310, 165 - 220, 0x204C),
+            new(50808, 120 - 187, 242 - 290, 0x2041),
+            new(0, 0, 0, 0)
         };
 
         public ChangeHairstyleEntry(int gumpID, int x, int y, int itemID)

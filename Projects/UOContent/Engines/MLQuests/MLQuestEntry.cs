@@ -563,7 +563,7 @@ namespace Server.Engines.MLQuests
                 BaseObjectiveInstance.Deserialize(
                     reader,
                     version,
-                    instance != null && i < instance.Objectives.Length ? instance.Objectives[i] : null
+                    i < instance?.Objectives.Length ? instance.Objectives[i] : null
                 );
             }
 

@@ -21,7 +21,7 @@ namespace Server.Collections
 {
     public class ArraySet<T> : IList<T>
     {
-        private readonly List<T> m_List = new List<T>();
+        private readonly List<T> m_List = new();
 
         public T this[int index]
         {

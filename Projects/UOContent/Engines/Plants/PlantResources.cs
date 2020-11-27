@@ -8,15 +8,15 @@ namespace Server.Engines.Plants
     {
         private static readonly PlantResourceInfo[] m_ResourceList =
         {
-            new PlantResourceInfo(PlantType.ElephantEarPlant, PlantHue.BrightRed, typeof(RedLeaves)),
-            new PlantResourceInfo(PlantType.PonytailPalm, PlantHue.BrightRed, typeof(RedLeaves)),
-            new PlantResourceInfo(PlantType.CenturyPlant, PlantHue.BrightRed, typeof(RedLeaves)),
-            new PlantResourceInfo(PlantType.Poppies, PlantHue.BrightOrange, typeof(OrangePetals)),
-            new PlantResourceInfo(PlantType.Bulrushes, PlantHue.BrightOrange, typeof(OrangePetals)),
-            new PlantResourceInfo(PlantType.PampasGrass, PlantHue.BrightOrange, typeof(OrangePetals)),
-            new PlantResourceInfo(PlantType.SnakePlant, PlantHue.BrightGreen, typeof(GreenThorns)),
-            new PlantResourceInfo(PlantType.BarrelCactus, PlantHue.BrightGreen, typeof(GreenThorns)),
-            new PlantResourceInfo(PlantType.CocoaTree, PlantHue.Plain, typeof(CocoaPulp))
+            new(PlantType.ElephantEarPlant, PlantHue.BrightRed, typeof(RedLeaves)),
+            new(PlantType.PonytailPalm, PlantHue.BrightRed, typeof(RedLeaves)),
+            new(PlantType.CenturyPlant, PlantHue.BrightRed, typeof(RedLeaves)),
+            new(PlantType.Poppies, PlantHue.BrightOrange, typeof(OrangePetals)),
+            new(PlantType.Bulrushes, PlantHue.BrightOrange, typeof(OrangePetals)),
+            new(PlantType.PampasGrass, PlantHue.BrightOrange, typeof(OrangePetals)),
+            new(PlantType.SnakePlant, PlantHue.BrightGreen, typeof(GreenThorns)),
+            new(PlantType.BarrelCactus, PlantHue.BrightGreen, typeof(GreenThorns)),
+            new(PlantType.CocoaTree, PlantHue.Plain, typeof(CocoaPulp))
         };
 
         private PlantResourceInfo(PlantType plantType, PlantHue plantHue, Type resourceType)

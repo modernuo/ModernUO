@@ -6,24 +6,24 @@ namespace Server.Engines.Quests.Naturalist
     {
         private static readonly NestArea[] m_Areas =
         {
-            new NestArea(false, new Rectangle2D(5861, 1787, 26, 25)),
+            new(false, new Rectangle2D(5861, 1787, 26, 25)),
 
-            new NestArea(
+            new(
                 false,
                 new Rectangle2D(5734, 1788, 14, 50),
                 new Rectangle2D(5748, 1800, 3, 34),
                 new Rectangle2D(5751, 1808, 2, 20)
             ),
 
-            new NestArea(false, new Rectangle2D(5907, 1908, 19, 43)),
+            new(false, new Rectangle2D(5907, 1908, 19, 43)),
 
-            new NestArea(
+            new(
                 false,
                 new Rectangle2D(5721, 1926, 24, 29),
                 new Rectangle2D(5745, 1935, 7, 22)
             ),
 
-            new NestArea(
+            new(
                 true,
                 new Rectangle2D(5651, 1853, 21, 32),
                 new Rectangle2D(5672, 1857, 6, 20)

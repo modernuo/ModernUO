@@ -187,7 +187,7 @@ namespace Server.Items
     public class PMList
     {
         public static readonly PMList Trammel =
-            new PMList(
+            new(
                 1012000,
                 1012012,
                 Map.Trammel,
@@ -207,7 +207,7 @@ namespace Server.Items
             );
 
         public static readonly PMList Felucca =
-            new PMList(
+            new(
                 1012001,
                 1012013,
                 Map.Felucca,
@@ -227,7 +227,7 @@ namespace Server.Items
             );
 
         public static readonly PMList Ilshenar =
-            new PMList(
+            new(
                 1012002,
                 1012014,
                 Map.Ilshenar,
@@ -246,7 +246,7 @@ namespace Server.Items
             );
 
         public static readonly PMList Malas =
-            new PMList(
+            new(
                 1060643,
                 1062039,
                 Map.Malas,
@@ -258,7 +258,7 @@ namespace Server.Items
             );
 
         public static readonly PMList Tokuno =
-            new PMList(
+            new(
                 1063258,
                 1063415,
                 Map.Tokuno,

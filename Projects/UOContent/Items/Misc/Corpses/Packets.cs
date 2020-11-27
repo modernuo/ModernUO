@@ -64,7 +64,7 @@ namespace Server.Network
                 count++;
             }
 
-            if (beheld.FacialHair != null && beheld.FacialHair.ItemID > 0)
+            if (beheld.FacialHair?.ItemID > 0)
             {
                 count++;
             }
@@ -110,7 +110,7 @@ namespace Server.Network
                 ++written;
             }
 
-            if (beheld.FacialHair != null && beheld.FacialHair.ItemID > 0)
+            if (beheld.FacialHair?.ItemID > 0)
             {
                 Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner) - 2);
                 Stream.Write((ushort)beheld.FacialHair.ItemID);

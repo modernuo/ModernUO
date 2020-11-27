@@ -13,7 +13,7 @@ namespace Server.Items
         public static readonly TimeSpan PlayerDuration = TimeSpan.FromSeconds(6.0);
         public static readonly TimeSpan NPCDuration = TimeSpan.FromSeconds(12.0);
 
-        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
+        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new();
 
         public override int BaseMana => 30;
 

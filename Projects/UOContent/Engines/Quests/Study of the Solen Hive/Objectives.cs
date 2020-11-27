@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Naturalist
 {
     public class StudyNestsObjective : QuestObjective
     {
-        private readonly List<NestArea> m_StudiedNests = new List<NestArea>();
+        private readonly List<NestArea> m_StudiedNests = new();
         private NestArea m_CurrentNest;
         private DateTime m_StudyBegin;
         private StudyState m_StudyState;

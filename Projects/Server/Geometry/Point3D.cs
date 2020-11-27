@@ -26,7 +26,7 @@ namespace Server
         internal int m_Y;
         internal int m_Z;
 
-        public static readonly Point3D Zero = new Point3D(0, 0, 0);
+        public static readonly Point3D Zero = new(0, 0, 0);
 
         [CommandProperty(AccessLevel.Counselor)]
         public int X
@@ -69,7 +69,7 @@ namespace Server
         public bool Equals(Point3D other) => m_X == other.m_X && m_Y == other.m_Y && m_Z == other.m_Z;
 
         public bool Equals(IPoint3D other) =>
-            !ReferenceEquals(other, null) && m_X == other.X && m_Y == other.Y && m_Z == other.Z;
+            m_X == other?.X && m_Y == other.Y && m_Z == other.Z;
 
         public override bool Equals(object obj) => obj is Point3D other && Equals(other);
 

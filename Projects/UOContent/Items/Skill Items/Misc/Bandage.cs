@@ -157,7 +157,7 @@ namespace Server.Items
 
     public class BandageContext
     {
-        private static readonly Dictionary<Mobile, BandageContext> m_Table = new Dictionary<Mobile, BandageContext>();
+        private static readonly Dictionary<Mobile, BandageContext> m_Table = new();
 
         public BandageContext(Mobile healer, Mobile patient, TimeSpan delay)
         {
@@ -295,7 +295,7 @@ namespace Server.Items
 
                                 var friends = petPatient.Friends;
 
-                                for (var i = 0; friends != null && i < friends.Count; ++i)
+                                for (var i = 0; i < friends?.Count; ++i)
                                 {
                                     var friend = friends[i];
 

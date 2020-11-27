@@ -5,7 +5,7 @@ namespace Server.Spells.Eighth
 {
     public class EnergyVortexSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Energy Vortex",
             "Vas Corp Por",
             260,

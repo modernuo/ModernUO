@@ -42,7 +42,7 @@ namespace Server.Network
         private static int HuePickerCap = 512;
         private static int MenuCap = 512;
 
-        private static readonly ConcurrentQueue<NetState> m_Disposed = new ConcurrentQueue<NetState>();
+        private static readonly ConcurrentQueue<NetState> m_Disposed = new();
         private static NetworkState m_NetworkState = NetworkState.ResumeState;
 
         public static NetStateCreatedCallback CreatedCallback { get; set; }

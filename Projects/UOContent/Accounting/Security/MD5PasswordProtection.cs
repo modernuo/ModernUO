@@ -23,7 +23,7 @@ namespace Server.Accounting.Security
     {
         public static IPasswordProtection Instance = new MD5PasswordProtection();
 #pragma warning disable CA5351
-        private readonly MD5CryptoServiceProvider m_MD5HashProvider = new MD5CryptoServiceProvider();
+        private readonly MD5CryptoServiceProvider m_MD5HashProvider = new();
 #pragma warning restore CA5351
 
         public string EncryptPassword(string plainPassword)

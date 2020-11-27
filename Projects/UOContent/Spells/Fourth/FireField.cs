@@ -9,7 +9,7 @@ namespace Server.Spells.Fourth
 {
     public class FireFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Fire Field",
             "In Flam Grav",
             215,
@@ -216,7 +216,7 @@ namespace Server.Spells.Fourth
 
             private class InternalTimer : Timer
             {
-                private static readonly Queue m_Queue = new Queue();
+                private static readonly Queue m_Queue = new();
                 private readonly bool m_CanFit;
                 private readonly bool m_InLOS;
                 private readonly FireFieldItem m_Item;

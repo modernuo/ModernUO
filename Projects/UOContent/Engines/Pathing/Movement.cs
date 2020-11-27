@@ -14,11 +14,11 @@ namespace Server.Movement
 
         private static Point3D m_Goal;
 
-        private readonly List<Mobile>[] m_MobPools = { new List<Mobile>(), new List<Mobile>(), new List<Mobile>() };
+        private readonly List<Mobile>[] m_MobPools = { new(), new(), new() };
 
-        private readonly List<Item>[] m_Pools = { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() };
+        private readonly List<Item>[] m_Pools = { new(), new(), new(), new() };
 
-        private readonly List<Sector> m_Sectors = new List<Sector>();
+        private readonly List<Sector> m_Sectors = new();
 
         private MovementImpl()
         {

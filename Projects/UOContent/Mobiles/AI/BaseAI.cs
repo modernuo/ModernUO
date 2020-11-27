@@ -94,7 +94,7 @@ namespace Server.Mobiles
             SkillName.Meditation
         };
 
-        private static readonly Queue<Item> m_Obstacles = new Queue<Item>();
+        private static readonly Queue<Item> m_Obstacles = new();
         protected ActionType m_Action;
 
         public BaseCreature m_Mobile;
@@ -380,8 +380,7 @@ namespace Server.Mobiles
                             var skill = ourSkills[i];
                             var theirSkill = theirSkills[i];
 
-                            if (skill != null && skill.Base >= 60.0 &&
-                                m_Mobile.CheckTeach(skill.SkillName, e.Mobile))
+                            if (skill?.Base >= 60.0 && m_Mobile.CheckTeach(skill.SkillName, e.Mobile))
                             {
                                 var toTeach = skill.Base / 3.0;
 

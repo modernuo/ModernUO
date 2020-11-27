@@ -9,7 +9,7 @@ namespace Server.Spells.Necromancy
 {
     public class SummonFamiliarSpell : NecromancerSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Summon Familiar",
             "Kal Xen Bal",
             203,
@@ -28,15 +28,15 @@ namespace Server.Spells.Necromancy
         public override double RequiredSkill => 30.0;
         public override int RequiredMana => 17;
 
-        public static Dictionary<Mobile, BaseCreature> Table { get; } = new Dictionary<Mobile, BaseCreature>();
+        public static Dictionary<Mobile, BaseCreature> Table { get; } = new();
 
         public static SummonFamiliarEntry[] Entries { get; } =
         {
-            new SummonFamiliarEntry(typeof(HordeMinionFamiliar), 1060146, 30.0, 30.0), // Horde Minion
-            new SummonFamiliarEntry(typeof(ShadowWispFamiliar), 1060142, 50.0, 50.0),  // Shadow Wisp
-            new SummonFamiliarEntry(typeof(DarkWolfFamiliar), 1060143, 60.0, 60.0),    // Dark Wolf
-            new SummonFamiliarEntry(typeof(DeathAdder), 1060145, 80.0, 80.0),          // Death Adder
-            new SummonFamiliarEntry(typeof(VampireBatFamiliar), 1060144, 100.0, 100.0) // Vampire Bat
+            new(typeof(HordeMinionFamiliar), 1060146, 30.0, 30.0), // Horde Minion
+            new(typeof(ShadowWispFamiliar), 1060142, 50.0, 50.0),  // Shadow Wisp
+            new(typeof(DarkWolfFamiliar), 1060143, 60.0, 60.0),    // Dark Wolf
+            new(typeof(DeathAdder), 1060145, 80.0, 80.0),          // Death Adder
+            new(typeof(VampireBatFamiliar), 1060144, 100.0, 100.0) // Vampire Bat
         };
 
         public override bool CheckCast()

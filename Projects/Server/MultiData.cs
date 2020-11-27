@@ -66,7 +66,7 @@ namespace Server
             bin.Close();
         }
 
-        public static Dictionary<int, MultiComponentList> Components { get; } = new Dictionary<int, MultiComponentList>();
+        public static Dictionary<int, MultiComponentList> Components { get; } = new();
 
         public static MultiComponentList GetComponents(int multiID)
         {
@@ -251,7 +251,7 @@ namespace Server
 
     public sealed class MultiComponentList
     {
-        public static readonly MultiComponentList Empty = new MultiComponentList();
+        public static readonly MultiComponentList Empty = new();
 
         private Point2D m_Min, m_Max;
 

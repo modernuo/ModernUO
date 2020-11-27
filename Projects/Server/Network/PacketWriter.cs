@@ -10,7 +10,7 @@ namespace Server.Network
     /// </summary>
     public class PacketWriter
     {
-        private static readonly ConcurrentQueue<PacketWriter> m_Pool = new ConcurrentQueue<PacketWriter>();
+        private static readonly ConcurrentQueue<PacketWriter> m_Pool = new();
 
         /// <summary>
         ///     Internal format buffer.

@@ -9,7 +9,7 @@ namespace Server.Spells
         private static readonly Type[] m_Types = new Type[700];
         private static int m_Count;
 
-        private static readonly Dictionary<Type, int> m_IDsFromTypes = new Dictionary<Type, int>(m_Types.Length);
+        private static readonly Dictionary<Type, int> m_IDsFromTypes = new(m_Types.Length);
 
         private static readonly object[] m_Params = new object[2];
 
@@ -61,7 +61,7 @@ namespace Server.Spells
             }
         }
 
-        public static Dictionary<int, SpecialMove> SpecialMoves { get; } = new Dictionary<int, SpecialMove>();
+        public static Dictionary<int, SpecialMove> SpecialMoves { get; } = new();
 
         public static int GetRegistryNumber(ISpell s) => GetRegistryNumber(s.GetType());
 

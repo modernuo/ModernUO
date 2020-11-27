@@ -6,7 +6,7 @@ namespace Server.Spells.Necromancy
 {
     public class VengefulSpiritSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Vengeful Spirit",
             "Kal Xen Bal Beh",
             203,

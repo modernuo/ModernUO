@@ -751,7 +751,7 @@ namespace Server.Items
 
     public class FillableContent
     {
-        public static FillableContent Alchemist = new FillableContent(
+        public static FillableContent Alchemist = new(
             1,
             new[]
             {
@@ -771,7 +771,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Armorer = new FillableContent(
+        public static FillableContent Armorer = new(
             2,
             new[]
             {
@@ -790,7 +790,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent ArtisanGuild = new FillableContent(
+        public static FillableContent ArtisanGuild = new(
             1,
             Array.Empty<Type>(),
             new[]
@@ -818,7 +818,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Baker = new FillableContent(
+        public static FillableContent Baker = new(
             1,
             new[]
             {
@@ -833,7 +833,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Bard = new FillableContent(
+        public static FillableContent Bard = new(
             1,
             new[]
             {
@@ -850,7 +850,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Blacksmith = new FillableContent(
+        public static FillableContent Blacksmith = new(
             2,
             new[]
             {
@@ -873,7 +873,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Bowyer = new FillableContent(
+        public static FillableContent Bowyer = new(
             2,
             new[]
             {
@@ -887,7 +887,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Butcher = new FillableContent(
+        public static FillableContent Butcher = new(
             1,
             new[]
             {
@@ -913,7 +913,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Carpenter = new FillableContent(
+        public static FillableContent Carpenter = new(
             1,
             new[]
             {
@@ -940,7 +940,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Clothier = new FillableContent(
+        public static FillableContent Clothier = new(
             1,
             new[]
             {
@@ -966,7 +966,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Cobbler = new FillableContent(
+        public static FillableContent Cobbler = new(
             1,
             new[]
             {
@@ -981,7 +981,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Docks = new FillableContent(
+        public static FillableContent Docks = new(
             1,
             new[]
             {
@@ -998,7 +998,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Farm = new FillableContent(
+        public static FillableContent Farm = new(
             1,
             new[]
             {
@@ -1028,7 +1028,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent FighterGuild = new FillableContent(
+        public static FillableContent FighterGuild = new(
             3,
             new[]
             {
@@ -1043,7 +1043,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Guard = new FillableContent(
+        public static FillableContent Guard = new(
             3,
             Array.Empty<Type>(),
             new[]
@@ -1055,7 +1055,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Healer = new FillableContent(
+        public static FillableContent Healer = new(
             1,
             new[]
             {
@@ -1070,7 +1070,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Herbalist = new FillableContent(
+        public static FillableContent Herbalist = new(
             1,
             new[]
             {
@@ -1089,7 +1089,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Inn = new FillableContent(
+        public static FillableContent Inn = new(
             1,
             Array.Empty<Type>(),
             new[]
@@ -1100,7 +1100,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Jeweler = new FillableContent(
+        public static FillableContent Jeweler = new(
             2,
             new[]
             {
@@ -1119,7 +1119,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Library = new FillableContent(
+        public static FillableContent Library = new(
             1,
             new[]
             {
@@ -1133,7 +1133,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Mage = new FillableContent(
+        public static FillableContent Mage = new(
             2,
             new[]
             {
@@ -1156,7 +1156,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Merchant = new FillableContent(
+        public static FillableContent Merchant = new(
             1,
             new[]
             {
@@ -1215,7 +1215,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Mill = new FillableContent(
+        public static FillableContent Mill = new(
             1,
             Array.Empty<Type>(),
             new[]
@@ -1224,7 +1224,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Mine = new FillableContent(
+        public static FillableContent Mine = new(
             1,
             new[]
             {
@@ -1240,7 +1240,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Observatory = new FillableContent(
+        public static FillableContent Observatory = new(
             1,
             Array.Empty<Type>(),
             new[]
@@ -1251,7 +1251,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Painter = new FillableContent(
+        public static FillableContent Painter = new(
             1,
             Array.Empty<Type>(),
             new[]
@@ -1261,7 +1261,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Provisioner = new FillableContent(
+        public static FillableContent Provisioner = new(
             1,
             new[]
             {
@@ -1327,7 +1327,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Ranger = new FillableContent(
+        public static FillableContent Ranger = new(
             2,
             new[]
             {
@@ -1366,7 +1366,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Stables = new FillableContent(
+        public static FillableContent Stables = new(
             1,
             new[]
             {
@@ -1380,7 +1380,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Tanner = new FillableContent(
+        public static FillableContent Tanner = new(
             2,
             new[]
             {
@@ -1400,7 +1400,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Tavern = new FillableContent(
+        public static FillableContent Tavern = new(
             1,
             new[]
             {
@@ -1418,7 +1418,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent ThiefGuild = new FillableContent(
+        public static FillableContent ThiefGuild = new(
             1,
             new[]
             {
@@ -1436,7 +1436,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Tinker = new FillableContent(
+        public static FillableContent Tinker = new(
             1,
             new[]
             {
@@ -1465,7 +1465,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Veterinarian = new FillableContent(
+        public static FillableContent Veterinarian = new(
             1,
             new[]
             {
@@ -1481,7 +1481,7 @@ namespace Server.Items
             }
         );
 
-        public static FillableContent Weaponsmith = new FillableContent(
+        public static FillableContent Weaponsmith = new(
             2,
             new[]
             {

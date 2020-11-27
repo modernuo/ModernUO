@@ -303,13 +303,13 @@ namespace Server
         internal class ServerSettings
         {
             [JsonPropertyName("dataDirectories")]
-            public List<string> dataDirectories { get; set; } = new List<string>();
+            public List<string> dataDirectories { get; set; } = new();
 
             [JsonPropertyName("listeners")]
-            public List<IPEndPoint> listeners { get; set; } = new List<IPEndPoint>();
+            public List<IPEndPoint> listeners { get; set; } = new();
 
             [JsonPropertyName("settings")]
-            public SortedDictionary<string, string> settings { get; set; } = new SortedDictionary<string, string>();
+            public SortedDictionary<string, string> settings { get; set; } = new();
         }
     }
 }

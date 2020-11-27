@@ -7,7 +7,7 @@ namespace Server.Items
     public class OrangePetals : Item
     {
         private static readonly Dictionary<Mobile, OrangePetalsContext> m_Table =
-            new Dictionary<Mobile, OrangePetalsContext>();
+            new();
 
         [Constructible]
         public OrangePetals(int amount = 1) : base(0x1021)

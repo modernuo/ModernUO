@@ -126,7 +126,7 @@ namespace Server
 
         public static implicit operator int(Body a) => a.BodyID;
 
-        public static implicit operator Body(int a) => new Body(a);
+        public static implicit operator Body(int a) => new(a);
 
         public override string ToString() => $"0x{BodyID:X}";
 

@@ -298,7 +298,7 @@ namespace Server.Mobiles
                 var entries = m_Owner.Entries;
                 var index = info.ButtonID - 2;
 
-                if (entries != null && index < entries.Count)
+                if (index < entries?.Count)
                 {
                     var tce = entries[index];
                     var ts = tce.ExpireTime - DateTime.UtcNow;

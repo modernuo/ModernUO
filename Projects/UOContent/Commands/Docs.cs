@@ -520,9 +520,9 @@ namespace Server.Commands
         }
 
         private static StreamWriter GetWriter(string root, string name) =>
-            new StreamWriter(Path.Combine(Path.Combine(m_RootDirectory, root), name));
+            new(Path.Combine(Path.Combine(m_RootDirectory, root), name));
 
-        private static StreamWriter GetWriter(string path) => new StreamWriter(Path.Combine(m_RootDirectory, path));
+        private static StreamWriter GetWriter(string path) => new(Path.Combine(m_RootDirectory, path));
 
         public static string GetPair(Type varType, string name, bool ignoreRef)
         {

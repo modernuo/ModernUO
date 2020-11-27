@@ -87,7 +87,7 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public int MaxCharges { get; set; }
 
-        public List<Mobile> Openers { get; set; } = new List<Mobile>();
+        public List<Mobile> Openers { get; set; } = new();
 
         public override int LabelNumber => 1041267; // runebook
 

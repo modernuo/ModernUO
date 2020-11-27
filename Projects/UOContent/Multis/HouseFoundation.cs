@@ -183,7 +183,7 @@ namespace Server.Multis
         }
 
         public override Point3D BaseBanLocation =>
-            new Point3D(Components.Min.X, Components.Height - 1 - Components.Center.Y, 0);
+            new(Components.Min.X, Components.Height - 1 - Components.Center.Y, 0);
 
         public override int DefaultPrice => m_DefaultPrice;
 
@@ -2262,7 +2262,7 @@ namespace Server.Multis
 
         public int MaxLevels => Foundation.MaxLevels;
 
-        public static Dictionary<Mobile, DesignContext> Table { get; } = new Dictionary<Mobile, DesignContext>();
+        public static Dictionary<Mobile, DesignContext> Table { get; } = new();
 
         public static DesignContext Find(Mobile from)
         {
@@ -2317,7 +2317,7 @@ namespace Server.Multis
 
             var fixtures = foundation.Fixtures;
 
-            for (var i = 0; fixtures != null && i < fixtures.Count; ++i)
+            for (var i = 0; i < fixtures?.Count; ++i)
             {
                 var item = fixtures[i];
 
@@ -2367,7 +2367,7 @@ namespace Server.Multis
 
             var fixtures = context.Foundation.Fixtures;
 
-            for (var i = 0; fixtures != null && i < fixtures.Count; ++i)
+            for (var i = 0; i < fixtures?.Count; ++i)
             {
                 var item = fixtures[i];
 

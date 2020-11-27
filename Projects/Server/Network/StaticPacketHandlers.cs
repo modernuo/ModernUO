@@ -20,19 +20,19 @@ namespace Server.Network
     public static class StaticPacketHandlers
     {
         private static readonly ConcurrentDictionary<IPropertyListObject, OPLInfo> OPLInfoPackets =
-            new ConcurrentDictionary<IPropertyListObject, OPLInfo>();
+            new();
 
         private static readonly ConcurrentDictionary<IEntity, RemoveEntity> RemoveEntityPackets =
-            new ConcurrentDictionary<IEntity, RemoveEntity>();
+            new();
 
         private static readonly ConcurrentDictionary<Item, WorldItem> WorldItemPackets =
-            new ConcurrentDictionary<Item, WorldItem>();
+            new();
 
         private static readonly ConcurrentDictionary<Item, WorldItemSA> WorldItemSAPackets =
-            new ConcurrentDictionary<Item, WorldItemSA>();
+            new();
 
         private static readonly ConcurrentDictionary<Item, WorldItemHS> WorldItemHSPackets =
-            new ConcurrentDictionary<Item, WorldItemHS>();
+            new();
 
         public static OPLInfo GetOPLInfoPacket(IPropertyListObject obj)
         {

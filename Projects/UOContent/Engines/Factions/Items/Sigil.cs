@@ -121,7 +121,7 @@ namespace Server.Factions
             }
         }
 
-        public static List<Sigil> Sigils { get; } = new List<Sigil>();
+        public static List<Sigil> Sigils { get; } = new();
 
         public void Update()
         {

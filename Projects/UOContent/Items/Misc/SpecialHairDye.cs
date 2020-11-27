@@ -50,14 +50,14 @@ namespace Server.Items
     {
         private static readonly SpecialHairDyeEntry[] m_Entries =
         {
-            new SpecialHairDyeEntry("*****", 12, 10),
-            new SpecialHairDyeEntry("*****", 32, 5),
-            new SpecialHairDyeEntry("*****", 38, 8),
-            new SpecialHairDyeEntry("*****", 54, 3),
-            new SpecialHairDyeEntry("*****", 62, 10),
-            new SpecialHairDyeEntry("*****", 81, 2),
-            new SpecialHairDyeEntry("*****", 89, 2),
-            new SpecialHairDyeEntry("*****", 1153, 2)
+            new("*****", 12, 10),
+            new("*****", 32, 5),
+            new("*****", 38, 8),
+            new("*****", 54, 3),
+            new("*****", 62, 10),
+            new("*****", 81, 2),
+            new("*****", 89, 2),
+            new("*****", 1153, 2)
         };
 
         private readonly SpecialHairDye m_SpecialHairDye;

@@ -270,9 +270,9 @@ namespace Server
         public const int SectorShift = 4;
         public static readonly int SectorActiveRange = 2;
 
-        private static readonly Queue<List<Item>> m_FixPool = new Queue<List<Item>>(128);
+        private static readonly Queue<List<Item>> m_FixPool = new(128);
 
-        private static readonly List<Item> m_EmptyFixItems = new List<Item>();
+        private static readonly List<Item> m_EmptyFixItems = new();
 
         private readonly int m_FileIndex;
         private readonly Sector[][] m_Sectors;
@@ -280,7 +280,7 @@ namespace Server
 
         private readonly int m_SectorsWidth;
 
-        private readonly object tileLock = new object();
+        private readonly object tileLock = new();
         private Region m_DefaultRegion;
 
         private string m_Name;
@@ -314,7 +314,7 @@ namespace Server
         public static Map TerMur => Maps[5];
         public static Map Internal => Maps[0x7F];
 
-        public static List<Map> AllMaps { get; } = new List<Map>();
+        public static List<Map> AllMaps { get; } = new();
 
         public int Season { get; set; }
 
@@ -1546,7 +1546,7 @@ namespace Server
 
         public class NullEnumerable<T> : IPooledEnumerable<T>
         {
-            public static readonly NullEnumerable<T> Instance = new NullEnumerable<T>();
+            public static readonly NullEnumerable<T> Instance = new();
 
             private readonly IEnumerable<T> m_Empty;
 
@@ -1563,11 +1563,11 @@ namespace Server
 
         public sealed class PooledEnumerable<T> : IPooledEnumerable<T>, IDisposable
         {
-            private static readonly Queue<PooledEnumerable<T>> _Buffer = new Queue<PooledEnumerable<T>>(0x400);
+            private static readonly Queue<PooledEnumerable<T>> _Buffer = new(0x400);
 
             private bool m_IsDisposed;
 
-            private List<T> m_Pool = new List<T>(0x40);
+            private List<T> m_Pool = new(0x40);
 
             public PooledEnumerable(IEnumerable<T> pool)
             {

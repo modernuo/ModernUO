@@ -9,10 +9,10 @@ namespace Server
 {
     public class TileMatrix
     {
-        private static readonly List<TileMatrix> m_Instances = new List<TileMatrix>();
+        private static readonly List<TileMatrix> m_Instances = new();
 
         private readonly int m_FileIndex;
-        private readonly List<TileMatrix> m_FileShare = new List<TileMatrix>();
+        private readonly List<TileMatrix> m_FileShare = new();
 
         private readonly BinaryReader m_IndexReader;
 
@@ -29,7 +29,7 @@ namespace Server
         private readonly int[][] m_StaticPatches;
         private readonly StaticTile[][][][][] m_StaticTiles;
 
-        private readonly TileList m_TilesList = new TileList();
+        private readonly TileList m_TilesList = new();
 
         private TileList[][] m_Lists;
         private DateTime m_NextLandWarning;

@@ -8,7 +8,7 @@ namespace Server.Spells.Chivalry
 {
     public class SacredJourneySpell : PaladinSpell, IRecallSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Sacred Journey",
             "Sanctum Viatas",
             -1,
@@ -79,7 +79,7 @@ namespace Server.Spells.Chivalry
             {
                 Caster.SendLocalizedMessage(501942); // That location is blocked.
             }
-            else if (m_Book != null && m_Book.CurCharges <= 0)
+            else if (m_Book?.CurCharges <= 0)
             {
                 Caster.SendLocalizedMessage(502412); // There are no charges left on that item.
             }

@@ -12,7 +12,7 @@ namespace Server.Misc
 
     public static class GiftGiving
     {
-        private static readonly List<GiftGiver> m_Givers = new List<GiftGiver>();
+        private static readonly List<GiftGiver> m_Givers = new();
 
         public static void Register(GiftGiver giver)
         {

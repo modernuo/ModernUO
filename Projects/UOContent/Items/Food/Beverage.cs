@@ -572,7 +572,7 @@ namespace Server.Items
             0x3FFC, 0x3FFE
         };
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+        private static readonly Dictionary<Mobile, Timer> m_Table = new();
 
         private BeverageType m_Content;
         private int m_Quantity;

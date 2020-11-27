@@ -30,7 +30,7 @@ namespace Server.Items
 
     public class Spellbook : Item, ICraftable, ISlayer
     {
-        private static readonly Dictionary<Mobile, List<Spellbook>> m_Table = new Dictionary<Mobile, List<Spellbook>>();
+        private static readonly Dictionary<Mobile, List<Spellbook>> m_Table = new();
 
         private static readonly int[] m_LegendPropertyCounts =
         {

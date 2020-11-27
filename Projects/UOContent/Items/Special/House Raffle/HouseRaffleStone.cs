@@ -77,7 +77,7 @@ namespace Server.Items
         public static readonly TimeSpan DefaultDuration = TimeSpan.FromDays(7.0);
         public static readonly TimeSpan ExpirationTime = TimeSpan.FromDays(30.0);
 
-        private static readonly List<HouseRaffleStone> m_AllStones = new List<HouseRaffleStone>();
+        private static readonly List<HouseRaffleStone> m_AllStones = new();
         private Rectangle2D m_Bounds;
         private TimeSpan m_Duration;
         private Map m_Facet;

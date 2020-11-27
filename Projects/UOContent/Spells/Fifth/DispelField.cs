@@ -6,7 +6,7 @@ namespace Server.Spells.Fifth
 {
     public class DispelFieldSpell : MagerySpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Dispel Field",
             "An Grav",
             206,

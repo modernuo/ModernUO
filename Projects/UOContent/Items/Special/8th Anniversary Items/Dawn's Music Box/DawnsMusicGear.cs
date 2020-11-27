@@ -22,12 +22,12 @@ namespace Server.Items
         {
         }
 
-        public static DawnsMusicGear RandomCommon => new DawnsMusicGear(DawnsMusicBox.RandomTrack(DawnsMusicRarity.Common));
+        public static DawnsMusicGear RandomCommon => new(DawnsMusicBox.RandomTrack(DawnsMusicRarity.Common));
 
         public static DawnsMusicGear RandomUncommon =>
-            new DawnsMusicGear(DawnsMusicBox.RandomTrack(DawnsMusicRarity.Uncommon));
+            new(DawnsMusicBox.RandomTrack(DawnsMusicRarity.Uncommon));
 
-        public static DawnsMusicGear RandomRare => new DawnsMusicGear(DawnsMusicBox.RandomTrack(DawnsMusicRarity.Rare));
+        public static DawnsMusicGear RandomRare => new(DawnsMusicBox.RandomTrack(DawnsMusicRarity.Rare));
 
         [CommandProperty(AccessLevel.GameMaster)]
         public MusicName Music { get; set; }

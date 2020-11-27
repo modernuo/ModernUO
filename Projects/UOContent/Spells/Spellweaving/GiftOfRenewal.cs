@@ -6,13 +6,13 @@ namespace Server.Spells.Spellweaving
 {
     public class GiftOfRenewalSpell : ArcanistSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Gift of Renewal",
             "Olorisstra",
             -1
         );
 
-        private static readonly Dictionary<Mobile, GiftOfRenewalInfo> m_Table = new Dictionary<Mobile, GiftOfRenewalInfo>();
+        private static readonly Dictionary<Mobile, GiftOfRenewalInfo> m_Table = new();
 
         public GiftOfRenewalSpell(Mobile caster, Item scroll = null)
             : base(caster, scroll, m_Info)

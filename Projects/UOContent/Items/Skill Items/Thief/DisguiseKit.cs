@@ -44,7 +44,7 @@ namespace Server.Items
             {
                 from.SendLocalizedMessage(1042001);
             }
-            else if (pm == null || pm.NpcGuild != NpcGuild.ThievesGuild)
+            else if (pm?.NpcGuild != NpcGuild.ThievesGuild)
             {
                 from.SendLocalizedMessage(501702);
             }
@@ -93,28 +93,28 @@ namespace Server.Items
     {
         private static readonly DisguiseEntry[] m_HairEntries =
         {
-            new DisguiseEntry(8251, 50700, 0, 5, 1011052),  // Short
-            new DisguiseEntry(8261, 60710, 0, 3, 1011047),  // Pageboy
-            new DisguiseEntry(8252, 60708, 0, -5, 1011053), // Long
-            new DisguiseEntry(8264, 60901, 0, 5, 1011048),  // Receding
-            new DisguiseEntry(8253, 60702, 0, -5, 1011054), // Ponytail
-            new DisguiseEntry(8265, 60707, 0, -5, 1011049), // 2-tails
-            new DisguiseEntry(8260, 50703, 0, 5, 1011055),  // Mohawk
-            new DisguiseEntry(8266, 60713, 0, 10, 1011050), // Topknot
+            new(8251, 50700, 0, 5, 1011052),  // Short
+            new(8261, 60710, 0, 3, 1011047),  // Pageboy
+            new(8252, 60708, 0, -5, 1011053), // Long
+            new(8264, 60901, 0, 5, 1011048),  // Receding
+            new(8253, 60702, 0, -5, 1011054), // Ponytail
+            new(8265, 60707, 0, -5, 1011049), // 2-tails
+            new(8260, 50703, 0, 5, 1011055),  // Mohawk
+            new(8266, 60713, 0, 10, 1011050), // Topknot
             null,
-            new DisguiseEntry(0, 0, 0, 0, 1011051) // None
+            new(0, 0, 0, 0, 1011051) // None
         };
 
         private static readonly DisguiseEntry[] m_BeardEntries =
         {
-            new DisguiseEntry(8269, 50906, 0, 0, 1011401),   // Vandyke
-            new DisguiseEntry(8257, 50808, 0, -2, 1011062),  // Mustache
-            new DisguiseEntry(8255, 50802, 0, 0, 1011060),   // Short beard
-            new DisguiseEntry(8268, 50905, 0, -10, 1011061), // Long beard
-            new DisguiseEntry(8267, 50904, 0, 0, 1011060),   // Short beard
-            new DisguiseEntry(8254, 50801, 0, -10, 1011061), // Long beard
+            new(8269, 50906, 0, 0, 1011401),   // Vandyke
+            new(8257, 50808, 0, -2, 1011062),  // Mustache
+            new(8255, 50802, 0, 0, 1011060),   // Short beard
+            new(8268, 50905, 0, -10, 1011061), // Long beard
+            new(8267, 50904, 0, 0, 1011060),   // Short beard
+            new(8254, 50801, 0, -10, 1011061), // Long beard
             null,
-            new DisguiseEntry(0, 0, 0, 0, 1011051) // None
+            new(0, 0, 0, 0, 1011051) // None
         };
 
         private readonly Mobile m_From;
@@ -285,7 +285,7 @@ namespace Server.Items
 
     public static class DisguiseTimers
     {
-        public static Dictionary<Mobile, Timer> Timers { get; } = new Dictionary<Mobile, Timer>();
+        public static Dictionary<Mobile, Timer> Timers { get; } = new();
 
         public static void Initialize()
         {

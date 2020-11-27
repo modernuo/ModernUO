@@ -5,7 +5,7 @@ namespace Server.Items
 {
     public class InvisibilityPotion : BasePotion
     {
-        private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+        private static readonly Dictionary<Mobile, Timer> m_Table = new();
 
         [Constructible]
         public InvisibilityPotion() : base(0xF0A, PotionEffect.Invisibility) => Hue = 0x48D;

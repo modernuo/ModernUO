@@ -18,7 +18,7 @@ namespace Server.Items
 
     public abstract class BaseInstrument : Item, ICraftable, ISlayer
     {
-        private static readonly Dictionary<Mobile, BaseInstrument> m_Instruments = new Dictionary<Mobile, BaseInstrument>();
+        private static readonly Dictionary<Mobile, BaseInstrument> m_Instruments = new();
         private Mobile m_Crafter;
 
         private DateTime m_LastReplenished;

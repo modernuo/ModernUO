@@ -17,7 +17,7 @@ namespace Server
         public static Poison Deadly => GetPoison("Deadly");
         public static Poison Lethal => GetPoison("Lethal");
 
-        public static List<Poison> Poisons { get; } = new List<Poison>();
+        public static List<Poison> Poisons { get; } = new();
 
         public abstract Timer ConstructTimer(Mobile m);
         /*public abstract void OnDamage( Mobile m, ref object state );*/

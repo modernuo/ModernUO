@@ -8,7 +8,7 @@ namespace Server.Spells.Bushido
         public override double RequiredSkill => 70.0;
 
         public override TextDefinition AbilityMessage =>
-            new TextDefinition(1070757); // You prepare to strike two enemies with one blow.
+            new(1070757); // You prepare to strike two enemies with one blow.
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {

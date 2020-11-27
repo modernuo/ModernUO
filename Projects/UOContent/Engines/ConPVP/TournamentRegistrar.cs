@@ -41,8 +41,7 @@ namespace Server.Engines.ConPVP
 
             var tourney = Tournament?.Tournament;
 
-            if (InRange(m, 4) && !InRange(oldLocation, 4) && tourney != null && tourney.Stage == TournamentStage.Signup &&
-                m.CanBeginAction(this))
+            if (InRange(m, 4) && !InRange(oldLocation, 4) && tourney?.Stage == TournamentStage.Signup && m.CanBeginAction(this))
             {
                 var ladder = Ladder.Instance;
 

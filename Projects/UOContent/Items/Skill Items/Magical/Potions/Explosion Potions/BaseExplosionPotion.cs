@@ -191,7 +191,7 @@ namespace Server.Items
 
             Consume();
 
-            for (var i = 0; Users != null && i < Users.Count; ++i)
+            for (var i = 0; i < Users?.Count; ++i)
             {
                 var m = Users[i];
 

@@ -51,7 +51,7 @@ namespace Server.Items
             SkillName.MagicResist
         };
 
-        private static readonly BitArray m_Props = new BitArray(MaxProperties);
+        private static readonly BitArray m_Props = new(MaxProperties);
         private static readonly int[] m_Possible = new int[MaxProperties];
         private CraftResource m_Resource;
 

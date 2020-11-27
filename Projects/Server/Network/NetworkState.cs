@@ -20,8 +20,8 @@ namespace Server.Network
 {
     public class NetworkState
     {
-        public static readonly NetworkState PauseState = new NetworkState(true);
-        public static readonly NetworkState ResumeState = new NetworkState(false);
+        public static readonly NetworkState PauseState = new(true);
+        public static readonly NetworkState ResumeState = new(false);
 
         public bool Paused { get; }
 

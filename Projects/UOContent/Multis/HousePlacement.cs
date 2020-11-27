@@ -84,7 +84,7 @@ namespace Server.Multis
             var mobiles = new List<Mobile>();
 
             // These are also storage lists. They hold location values indicating the yard and border locations.
-            List<Point2D> yard = new List<Point2D>(), borders = new List<Point2D>();
+            List<Point2D> yard = new(), borders = new();
 
             /* RULES:
              *

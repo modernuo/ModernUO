@@ -6,7 +6,7 @@ namespace Server.Spells.Seventh
 {
     public class ChainLightningSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Chain Lightning",
             "Vas Ort Grav",
             209,

@@ -6,7 +6,7 @@ namespace Server.Commands.Generic
     public sealed class DistinctExtension : BaseExtension
     {
         public static ExtensionInfo ExtInfo =
-            new ExtensionInfo(30, "Distinct", -1, () => new DistinctExtension());
+            new(30, "Distinct", -1, () => new DistinctExtension());
 
         private readonly List<Property> m_Properties;
 

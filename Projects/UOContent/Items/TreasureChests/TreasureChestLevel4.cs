@@ -130,7 +130,7 @@ namespace Server.Items
 
         public override int DefaultDropSound => 0x42;
 
-        public override Rectangle2D Bounds => new Rectangle2D(18, 105, 144, 73);
+        public override Rectangle2D Bounds => new(18, 105, 144, 73);
 
         private void SetChestAppearance()
         {

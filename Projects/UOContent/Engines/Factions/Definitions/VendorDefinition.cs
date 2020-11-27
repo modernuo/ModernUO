@@ -36,7 +36,7 @@ namespace Server.Factions
 
         public static VendorDefinition[] Definitions { get; } =
         {
-            new VendorDefinition(
+            new(
                 typeof(FactionBottleVendor),
                 0xF0E,
                 5000,
@@ -45,7 +45,7 @@ namespace Server.Factions
                 new TextDefinition(1011549, "POTION BOTTLE VENDOR"),
                 new TextDefinition(1011544, "Buy Potion Bottle Vendor")
             ),
-            new VendorDefinition(
+            new(
                 typeof(FactionBoardVendor),
                 0x1BD7,
                 3000,
@@ -54,7 +54,7 @@ namespace Server.Factions
                 new TextDefinition(1011552, "WOOD VENDOR"),
                 new TextDefinition(1011545, "Buy Wooden Board Vendor")
             ),
-            new VendorDefinition(
+            new(
                 typeof(FactionOreVendor),
                 0x19B8,
                 3000,
@@ -63,7 +63,7 @@ namespace Server.Factions
                 new TextDefinition(1011553, "IRON ORE VENDOR"),
                 new TextDefinition(1011546, "Buy Iron Ore Vendor")
             ),
-            new VendorDefinition(
+            new(
                 typeof(FactionReagentVendor),
                 0xF86,
                 5000,
@@ -72,7 +72,7 @@ namespace Server.Factions
                 new TextDefinition(1011554, "REAGENT VENDOR"),
                 new TextDefinition(1011547, "Buy Reagent Vendor")
             ),
-            new VendorDefinition(
+            new(
                 typeof(FactionHorseVendor),
                 0x20DD,
                 5000,

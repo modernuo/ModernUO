@@ -83,9 +83,9 @@ namespace Server
             }
         }
 
-        public static implicit operator TextDefinition(int v) => new TextDefinition(v);
+        public static implicit operator TextDefinition(int v) => new(v);
 
-        public static implicit operator TextDefinition(string s) => new TextDefinition(s);
+        public static implicit operator TextDefinition(string s) => new(s);
 
         public static implicit operator int(TextDefinition m) => m?.Number ?? 0;
 

@@ -25,7 +25,7 @@ namespace Server
         internal int m_X;
         internal int m_Y;
 
-        public static readonly Point2D Zero = new Point2D(0, 0);
+        public static readonly Point2D Zero = new(0, 0);
 
         [CommandProperty(AccessLevel.Counselor)]
         public int X
@@ -71,7 +71,7 @@ namespace Server
         public bool Equals(Point2D other) => m_X == other.m_X && m_Y == other.m_Y;
 
         public bool Equals(IPoint2D other) =>
-            !ReferenceEquals(other, null) && m_X == other.X && m_Y == other.Y;
+            m_X == other?.X && m_Y == other.Y;
 
         public override bool Equals(object obj) => obj is Point2D other && Equals(other);
 

@@ -117,8 +117,8 @@ namespace Server.Engines.Harvest
 
             HarvestResource[] res =
             {
-                new HarvestResource(00.0, 00.0, 100.0, 1007072, typeof(IronOre), typeof(Granite)),
-                new HarvestResource(
+                new(00.0, 00.0, 100.0, 1007072, typeof(IronOre), typeof(Granite)),
+                new(
                     65.0,
                     25.0,
                     105.0,
@@ -127,7 +127,7 @@ namespace Server.Engines.Harvest
                     typeof(DullCopperGranite),
                     typeof(DullCopperElemental)
                 ),
-                new HarvestResource(
+                new(
                     70.0,
                     30.0,
                     110.0,
@@ -136,7 +136,7 @@ namespace Server.Engines.Harvest
                     typeof(ShadowIronGranite),
                     typeof(ShadowIronElemental)
                 ),
-                new HarvestResource(
+                new(
                     75.0,
                     35.0,
                     115.0,
@@ -145,7 +145,7 @@ namespace Server.Engines.Harvest
                     typeof(CopperGranite),
                     typeof(CopperElemental)
                 ),
-                new HarvestResource(
+                new(
                     80.0,
                     40.0,
                     120.0,
@@ -154,7 +154,7 @@ namespace Server.Engines.Harvest
                     typeof(BronzeGranite),
                     typeof(BronzeElemental)
                 ),
-                new HarvestResource(
+                new(
                     85.0,
                     45.0,
                     125.0,
@@ -163,7 +163,7 @@ namespace Server.Engines.Harvest
                     typeof(GoldGranite),
                     typeof(GoldenElemental)
                 ),
-                new HarvestResource(
+                new(
                     90.0,
                     50.0,
                     130.0,
@@ -172,7 +172,7 @@ namespace Server.Engines.Harvest
                     typeof(AgapiteGranite),
                     typeof(AgapiteElemental)
                 ),
-                new HarvestResource(
+                new(
                     95.0,
                     55.0,
                     135.0,
@@ -181,7 +181,7 @@ namespace Server.Engines.Harvest
                     typeof(VeriteGranite),
                     typeof(VeriteElemental)
                 ),
-                new HarvestResource(
+                new(
                     99.0,
                     59.0,
                     139.0,
@@ -194,15 +194,15 @@ namespace Server.Engines.Harvest
 
             HarvestVein[] veins =
             {
-                new HarvestVein(496, 0.0, res[0], null),   // Iron
-                new HarvestVein(112, 0.5, res[1], res[0]), // Dull Copper
-                new HarvestVein(098, 0.5, res[2], res[0]), // Shadow Iron
-                new HarvestVein(084, 0.5, res[3], res[0]), // Copper
-                new HarvestVein(070, 0.5, res[4], res[0]), // Bronze
-                new HarvestVein(056, 0.5, res[5], res[0]), // Gold
-                new HarvestVein(042, 0.5, res[6], res[0]), // Agapite
-                new HarvestVein(028, 0.5, res[7], res[0]), // Verite
-                new HarvestVein(014, 0.5, res[8], res[0])  // Valorite
+                new(496, 0.0, res[0], null),   // Iron
+                new(112, 0.5, res[1], res[0]), // Dull Copper
+                new(098, 0.5, res[2], res[0]), // Shadow Iron
+                new(084, 0.5, res[3], res[0]), // Copper
+                new(070, 0.5, res[4], res[0]), // Bronze
+                new(056, 0.5, res[5], res[0]), // Gold
+                new(042, 0.5, res[6], res[0]), // Agapite
+                new(028, 0.5, res[7], res[0]), // Verite
+                new(014, 0.5, res[8], res[0])  // Valorite
             };
 
             OreAndStone.Resources = res;

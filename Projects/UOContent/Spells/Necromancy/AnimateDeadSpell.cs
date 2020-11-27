@@ -11,7 +11,7 @@ namespace Server.Spells.Necromancy
 {
     public class AnimateDeadSpell : NecromancerSpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Animate Dead",
             "Uus Corp",
             203,
@@ -23,9 +23,9 @@ namespace Server.Spells.Necromancy
         private static readonly CreatureGroup[] m_Groups =
         {
             // Undead group--empty
-            new CreatureGroup(SlayerGroup.GetEntryByName(SlayerName.Silver).Types, Array.Empty<SummonEntry>()),
+            new(SlayerGroup.GetEntryByName(SlayerName.Silver).Types, Array.Empty<SummonEntry>()),
             // Insects
-            new CreatureGroup(
+            new(
                 new[]
                 {
                     typeof(DreadSpider), typeof(FrostSpider), typeof(GiantSpider), typeof(GiantBlackWidow),
@@ -43,7 +43,7 @@ namespace Server.Spells.Necromancy
                 }
             ),
             // Mounts
-            new CreatureGroup(
+            new(
                 new[]
                 {
                     typeof(Horse), typeof(Nightmare), typeof(FireSteed),
@@ -56,7 +56,7 @@ namespace Server.Spells.Necromancy
                 }
             ),
             // Elementals
-            new CreatureGroup(
+            new(
                 new[]
                 {
                     typeof(BloodElemental), typeof(EarthElemental), typeof(SummonedEarthElemental),
@@ -74,7 +74,7 @@ namespace Server.Spells.Necromancy
                 }
             ),
             // Dragons
-            new CreatureGroup(
+            new(
                 new[]
                 {
                     typeof(AncientWyrm), typeof(Dragon), typeof(GreaterDragon), typeof(SerpentineDragon),
@@ -93,7 +93,7 @@ namespace Server.Spells.Necromancy
                 }
             ),
             // Default group
-            new CreatureGroup(
+            new(
                 Array.Empty<Type>(),
                 new[]
                 {
@@ -108,7 +108,7 @@ namespace Server.Spells.Necromancy
             )
         };
 
-        private static readonly Dictionary<Mobile, List<Mobile>> m_Table = new Dictionary<Mobile, List<Mobile>>();
+        private static readonly Dictionary<Mobile, List<Mobile>> m_Table = new();
 
         public AnimateDeadSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {
@@ -157,7 +157,7 @@ namespace Server.Spells.Necromancy
                 }
 
                 if (c.ItemID != 0x2006 || c.Animated || type == typeof(PlayerMobile) || type == null ||
-                    c.Owner != null && c.Owner.Fame < 100 ||
+                    c.Owner?.Fame < 100 ||
                     c.Owner is BaseCreature creature && (creature.Summoned || creature.IsBonded))
                 {
                     Caster.SendLocalizedMessage(1061085); // There's not enough life force there to animate.

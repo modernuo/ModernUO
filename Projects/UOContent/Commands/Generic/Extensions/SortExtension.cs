@@ -5,7 +5,7 @@ namespace Server.Commands.Generic
 {
     public sealed class SortExtension : BaseExtension
     {
-        public static ExtensionInfo ExtInfo = new ExtensionInfo(40, "Order", -1, () => new SortExtension());
+        public static ExtensionInfo ExtInfo = new(40, "Order", -1, () => new SortExtension());
 
         private readonly List<OrderInfo> m_Orders;
 

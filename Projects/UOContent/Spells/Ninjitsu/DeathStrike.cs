@@ -7,13 +7,13 @@ namespace Server.Spells.Ninjitsu
 {
     public class DeathStrike : NinjaMove
     {
-        private static readonly Dictionary<Mobile, DeathStrikeInfo> m_Table = new Dictionary<Mobile, DeathStrikeInfo>();
+        private static readonly Dictionary<Mobile, DeathStrikeInfo> m_Table = new();
 
         public override int BaseMana => 30;
         public override double RequiredSkill => 85.0;
 
         public override TextDefinition AbilityMessage =>
-            new TextDefinition(1063091); // You prepare to hit your opponent with a Death Strike.
+            new(1063091); // You prepare to hit your opponent with a Death Strike.
 
         public override double GetDamageScalar(Mobile attacker, Mobile defender) => 0.5;
 

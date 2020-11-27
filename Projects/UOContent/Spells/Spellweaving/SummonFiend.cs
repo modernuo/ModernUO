@@ -6,7 +6,7 @@ namespace Server.Spells.Spellweaving
 {
     public class SummonFiendSpell : ArcaneSummon<ArcaneFiend>
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Summon Fiend",
             "Nylisstra",
             -1

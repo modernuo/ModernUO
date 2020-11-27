@@ -27,7 +27,7 @@ namespace Server.Factions
         public static readonly TimeSpan SkillLossPeriod = TimeSpan.FromMinutes(20.0);
 
         private static readonly Dictionary<Mobile, SkillLossContext>
-            m_SkillLoss = new Dictionary<Mobile, SkillLossContext>();
+            m_SkillLoss = new();
 
         private FactionDefinition m_Definition;
         public int ZeroRankOffset;
@@ -573,7 +573,7 @@ namespace Server.Factions
             }
         }
 
-        public bool IsCommander(Mobile mob) => mob != null && mob.AccessLevel >= AccessLevel.GameMaster || mob == Commander;
+        public bool IsCommander(Mobile mob) => mob?.AccessLevel >= AccessLevel.GameMaster || mob == Commander;
 
         public override string ToString() => m_Definition.FriendlyName;
 

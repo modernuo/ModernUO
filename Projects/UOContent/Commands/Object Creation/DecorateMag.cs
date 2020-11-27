@@ -71,7 +71,7 @@ namespace Server.Commands
         private static readonly Type typeofCannon = typeof(Cannon);
         private static readonly Type typeofSerpentPillar = typeof(SerpentPillar);
 
-        private static readonly Queue m_DeleteQueue = new Queue();
+        private static readonly Queue m_DeleteQueue = new();
 
         private static readonly string[] m_EmptyParams = Array.Empty<string>();
         private List<DecorationEntryMag> m_Entries;

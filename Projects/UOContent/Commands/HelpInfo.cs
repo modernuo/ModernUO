@@ -11,9 +11,9 @@ namespace Server.Commands
 {
     public static class HelpInfo
     {
-        public static Dictionary<string, CommandInfo> HelpInfos { get; } = new Dictionary<string, CommandInfo>();
+        public static Dictionary<string, CommandInfo> HelpInfos { get; } = new();
 
-        public static List<CommandInfo> SortedHelpInfo { get; private set; } = new List<CommandInfo>();
+        public static List<CommandInfo> SortedHelpInfo { get; private set; } = new();
 
         [CallPriority(100)]
         public static void Initialize()

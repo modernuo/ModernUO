@@ -17,7 +17,7 @@ namespace Server.Misc
         private static string _StatusPage = string.Empty;
         private static byte[] _StatusBuffer = Array.Empty<byte>();
 
-        private static readonly object _StatusLock = new object();
+        private static readonly object _StatusLock = new();
 
         public StatusPage()
             : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(60.0)) =>

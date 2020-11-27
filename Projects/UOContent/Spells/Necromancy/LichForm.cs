@@ -4,7 +4,7 @@ namespace Server.Spells.Necromancy
 {
     public class LichFormSpell : TransformationSpell
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Lich Form",
             "Rel Xen Corp Ort",
             203,

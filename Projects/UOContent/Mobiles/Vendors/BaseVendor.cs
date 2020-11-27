@@ -1312,12 +1312,12 @@ namespace Server.Mobiles
 
             var sbInfos = SBInfos;
 
-            for (var i = 0; sbInfos != null && i < sbInfos.Count; ++i)
+            for (var i = 0; i < sbInfos?.Count; ++i)
             {
                 var sbInfo = sbInfos[i];
                 var buyInfo = sbInfo.BuyInfo;
 
-                for (var j = 0; buyInfo != null && j < buyInfo.Count; ++j)
+                for (var j = 0; j < buyInfo?.Count; ++j)
                 {
                     var gbi = buyInfo[j];
 

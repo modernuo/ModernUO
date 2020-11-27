@@ -7,7 +7,7 @@ namespace Server.Engines.ConPVP
 {
     public class TournamentController : Item
     {
-        private static readonly List<TournamentController> m_Instances = new List<TournamentController>();
+        private static readonly List<TournamentController> m_Instances = new();
 
         [Constructible]
         public TournamentController() : base(0x1B7A)

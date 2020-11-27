@@ -40,7 +40,7 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public Map Facet { get; set; }
 
-        public List<Point2D> Pins { get; } = new List<Point2D>();
+        public List<Point2D> Pins { get; } = new();
 
         public int OnCraft(
             int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,

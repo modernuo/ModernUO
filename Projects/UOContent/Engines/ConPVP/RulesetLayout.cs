@@ -66,7 +66,7 @@ namespace Server.Engines.ConPVP
 
                 var entries = new List<RulesetLayout>
                 {
-                    new RulesetLayout(
+                    new(
                         "Spells",
                         new[]
                         {

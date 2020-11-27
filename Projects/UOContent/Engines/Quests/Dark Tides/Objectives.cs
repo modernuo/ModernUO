@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Necro
     {
         private static readonly QuestItemInfo[] m_Info =
         {
-            new QuestItemInfo(1023643, 8787) // spellbook
+            new(1023643, 8787) // spellbook
         };
 
         public override object Message => 1060102;
@@ -99,7 +99,7 @@ namespace Server.Engines.Quests.Necro
     {
         private static readonly QuestItemInfo[] m_Info =
         {
-            new QuestItemInfo(1023676, 3679) // glowing rune
+            new(1023676, 3679) // glowing rune
         };
 
         public override object Message => 1060109;
@@ -169,7 +169,7 @@ namespace Server.Engines.Quests.Necro
     {
         private static readonly QuestItemInfo[] m_Info =
         {
-            new QuestItemInfo(1026153, 6178) // teleporter
+            new(1026153, 6178) // teleporter
         };
 
         public override object Message => 1060115;
@@ -269,7 +269,7 @@ namespace Server.Engines.Quests.Necro
 
     public class FindWellOfTearsObjective : QuestObjective
     {
-        private static readonly Rectangle2D m_WellOfTearsArea = new Rectangle2D(2080, 1346, 10, 10);
+        private static readonly Rectangle2D m_WellOfTearsArea = new(2080, 1346, 10, 10);
 
         private bool m_Inside;
 

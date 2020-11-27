@@ -6,13 +6,13 @@ namespace Server.Spells.Bushido
     public class HonorableExecution : SamuraiMove
     {
         private static readonly Dictionary<Mobile, HonorableExecutionInfo> m_Table =
-            new Dictionary<Mobile, HonorableExecutionInfo>();
+            new();
 
         public override int BaseMana => 0;
         public override double RequiredSkill => 25.0;
 
         public override TextDefinition AbilityMessage =>
-            new TextDefinition(1063122); // You better kill your enemy with your next hit or you'll be rather sorry...
+            new(1063122); // You better kill your enemy with your next hit or you'll be rather sorry...
 
         public override double GetDamageScalar(Mobile attacker, Mobile defender)
         {

@@ -30,7 +30,7 @@ namespace Server.Factions
 
         public virtual void AssignName(TextDefinition name)
         {
-            if (name != null && name.Number > 0)
+            if (name?.Number > 0)
             {
                 m_LabelNumber = name.Number;
                 Name = null;

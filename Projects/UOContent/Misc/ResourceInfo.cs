@@ -417,7 +417,7 @@ namespace Server.Items
     {
         private static readonly CraftResourceInfo[] m_MetalInfo =
         {
-            new CraftResourceInfo(
+            new(
                 0x000,
                 1053109,
                 "Iron",
@@ -427,7 +427,7 @@ namespace Server.Items
                 typeof(IronOre),
                 typeof(Granite)
             ),
-            new CraftResourceInfo(
+            new(
                 0x973,
                 1053108,
                 "Dull Copper",
@@ -437,7 +437,7 @@ namespace Server.Items
                 typeof(DullCopperOre),
                 typeof(DullCopperGranite)
             ),
-            new CraftResourceInfo(
+            new(
                 0x966,
                 1053107,
                 "Shadow Iron",
@@ -447,7 +447,7 @@ namespace Server.Items
                 typeof(ShadowIronOre),
                 typeof(ShadowIronGranite)
             ),
-            new CraftResourceInfo(
+            new(
                 0x96D,
                 1053106,
                 "Copper",
@@ -457,7 +457,7 @@ namespace Server.Items
                 typeof(CopperOre),
                 typeof(CopperGranite)
             ),
-            new CraftResourceInfo(
+            new(
                 0x972,
                 1053105,
                 "Bronze",
@@ -467,7 +467,7 @@ namespace Server.Items
                 typeof(BronzeOre),
                 typeof(BronzeGranite)
             ),
-            new CraftResourceInfo(
+            new(
                 0x8A5,
                 1053104,
                 "Gold",
@@ -477,7 +477,7 @@ namespace Server.Items
                 typeof(GoldOre),
                 typeof(GoldGranite)
             ),
-            new CraftResourceInfo(
+            new(
                 0x979,
                 1053103,
                 "Agapite",
@@ -487,7 +487,7 @@ namespace Server.Items
                 typeof(AgapiteOre),
                 typeof(AgapiteGranite)
             ),
-            new CraftResourceInfo(
+            new(
                 0x89F,
                 1053102,
                 "Verite",
@@ -497,7 +497,7 @@ namespace Server.Items
                 typeof(VeriteOre),
                 typeof(VeriteGranite)
             ),
-            new CraftResourceInfo(
+            new(
                 0x8AB,
                 1053101,
                 "Valorite",
@@ -511,7 +511,7 @@ namespace Server.Items
 
         private static readonly CraftResourceInfo[] m_ScaleInfo =
         {
-            new CraftResourceInfo(
+            new(
                 0x66D,
                 1053129,
                 "Red Scales",
@@ -519,7 +519,7 @@ namespace Server.Items
                 CraftResource.RedScales,
                 typeof(RedScales)
             ),
-            new CraftResourceInfo(
+            new(
                 0x8A8,
                 1053130,
                 "Yellow Scales",
@@ -527,7 +527,7 @@ namespace Server.Items
                 CraftResource.YellowScales,
                 typeof(YellowScales)
             ),
-            new CraftResourceInfo(
+            new(
                 0x455,
                 1053131,
                 "Black Scales",
@@ -535,7 +535,7 @@ namespace Server.Items
                 CraftResource.BlackScales,
                 typeof(BlackScales)
             ),
-            new CraftResourceInfo(
+            new(
                 0x851,
                 1053132,
                 "Green Scales",
@@ -543,7 +543,7 @@ namespace Server.Items
                 CraftResource.GreenScales,
                 typeof(GreenScales)
             ),
-            new CraftResourceInfo(
+            new(
                 0x8FD,
                 1053133,
                 "White Scales",
@@ -551,7 +551,7 @@ namespace Server.Items
                 CraftResource.WhiteScales,
                 typeof(WhiteScales)
             ),
-            new CraftResourceInfo(
+            new(
                 0x8B0,
                 1053134,
                 "Blue Scales",
@@ -563,7 +563,7 @@ namespace Server.Items
 
         private static readonly CraftResourceInfo[] m_LeatherInfo =
         {
-            new CraftResourceInfo(
+            new(
                 0x000,
                 1049353,
                 "Normal",
@@ -572,7 +572,7 @@ namespace Server.Items
                 typeof(Leather),
                 typeof(Hides)
             ),
-            new CraftResourceInfo(
+            new(
                 0x283,
                 1049354,
                 "Spined",
@@ -581,7 +581,7 @@ namespace Server.Items
                 typeof(SpinedLeather),
                 typeof(SpinedHides)
             ),
-            new CraftResourceInfo(
+            new(
                 0x227,
                 1049355,
                 "Horned",
@@ -590,7 +590,7 @@ namespace Server.Items
                 typeof(HornedLeather),
                 typeof(HornedHides)
             ),
-            new CraftResourceInfo(
+            new(
                 0x1C1,
                 1049356,
                 "Barbed",
@@ -603,7 +603,7 @@ namespace Server.Items
 
         private static readonly CraftResourceInfo[] m_AOSLeatherInfo =
         {
-            new CraftResourceInfo(
+            new(
                 0x000,
                 1049353,
                 "Normal",
@@ -612,7 +612,7 @@ namespace Server.Items
                 typeof(Leather),
                 typeof(Hides)
             ),
-            new CraftResourceInfo(
+            new(
                 0x8AC,
                 1049354,
                 "Spined",
@@ -621,7 +621,7 @@ namespace Server.Items
                 typeof(SpinedLeather),
                 typeof(SpinedHides)
             ),
-            new CraftResourceInfo(
+            new(
                 0x845,
                 1049355,
                 "Horned",
@@ -630,7 +630,7 @@ namespace Server.Items
                 typeof(HornedLeather),
                 typeof(HornedHides)
             ),
-            new CraftResourceInfo(
+            new(
                 0x851,
                 1049356,
                 "Barbed",
@@ -643,7 +643,7 @@ namespace Server.Items
 
         private static readonly CraftResourceInfo[] m_WoodInfo =
         {
-            new CraftResourceInfo(
+            new(
                 0x000,
                 1011542,
                 "Normal",
@@ -652,7 +652,7 @@ namespace Server.Items
                 typeof(Log),
                 typeof(Board)
             ),
-            new CraftResourceInfo(
+            new(
                 0x7DA,
                 1072533,
                 "Oak",
@@ -661,7 +661,7 @@ namespace Server.Items
                 typeof(OakLog),
                 typeof(OakBoard)
             ),
-            new CraftResourceInfo(
+            new(
                 0x4A7,
                 1072534,
                 "Ash",
@@ -670,7 +670,7 @@ namespace Server.Items
                 typeof(AshLog),
                 typeof(AshBoard)
             ),
-            new CraftResourceInfo(
+            new(
                 0x4A8,
                 1072535,
                 "Yew",
@@ -679,7 +679,7 @@ namespace Server.Items
                 typeof(YewLog),
                 typeof(YewBoard)
             ),
-            new CraftResourceInfo(
+            new(
                 0x4A9,
                 1072536,
                 "Heartwood",
@@ -688,7 +688,7 @@ namespace Server.Items
                 typeof(HeartwoodLog),
                 typeof(HeartwoodBoard)
             ),
-            new CraftResourceInfo(
+            new(
                 0x4AA,
                 1072538,
                 "Bloodwood",
@@ -697,7 +697,7 @@ namespace Server.Items
                 typeof(BloodwoodLog),
                 typeof(BloodwoodBoard)
             ),
-            new CraftResourceInfo(
+            new(
                 0x47F,
                 1072539,
                 "Frostwood",
@@ -934,15 +934,15 @@ namespace Server.Items
     // No changes to it should be required for custom resources.
     public class OreInfo
     {
-        public static readonly OreInfo Iron = new OreInfo(0, 0x000, "Iron");
-        public static readonly OreInfo DullCopper = new OreInfo(1, 0x973, "Dull Copper");
-        public static readonly OreInfo ShadowIron = new OreInfo(2, 0x966, "Shadow Iron");
-        public static readonly OreInfo Copper = new OreInfo(3, 0x96D, "Copper");
-        public static readonly OreInfo Bronze = new OreInfo(4, 0x972, "Bronze");
-        public static readonly OreInfo Gold = new OreInfo(5, 0x8A5, "Gold");
-        public static readonly OreInfo Agapite = new OreInfo(6, 0x979, "Agapite");
-        public static readonly OreInfo Verite = new OreInfo(7, 0x89F, "Verite");
-        public static readonly OreInfo Valorite = new OreInfo(8, 0x8AB, "Valorite");
+        public static readonly OreInfo Iron = new(0, 0x000, "Iron");
+        public static readonly OreInfo DullCopper = new(1, 0x973, "Dull Copper");
+        public static readonly OreInfo ShadowIron = new(2, 0x966, "Shadow Iron");
+        public static readonly OreInfo Copper = new(3, 0x96D, "Copper");
+        public static readonly OreInfo Bronze = new(4, 0x972, "Bronze");
+        public static readonly OreInfo Gold = new(5, 0x8A5, "Gold");
+        public static readonly OreInfo Agapite = new(6, 0x979, "Agapite");
+        public static readonly OreInfo Verite = new(7, 0x89F, "Verite");
+        public static readonly OreInfo Valorite = new(8, 0x8AB, "Valorite");
 
         public OreInfo(int level, int hue, string name)
         {

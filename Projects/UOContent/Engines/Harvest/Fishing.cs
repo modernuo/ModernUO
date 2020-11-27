@@ -14,11 +14,11 @@ namespace Server.Engines.Harvest
 
         private static readonly MutateEntry[] m_MutateTable =
         {
-            new MutateEntry(80.0, 80.0, 4080.0, true, typeof(SpecialFishingNet)),
-            new MutateEntry(80.0, 80.0, 4080.0, true, typeof(BigFish)),
-            new MutateEntry(90.0, 80.0, 4080.0, true, typeof(TreasureMap)),
-            new MutateEntry(100.0, 80.0, 4080.0, true, typeof(MessageInABottle)),
-            new MutateEntry(
+            new(80.0, 80.0, 4080.0, true, typeof(SpecialFishingNet)),
+            new(80.0, 80.0, 4080.0, true, typeof(BigFish)),
+            new(90.0, 80.0, 4080.0, true, typeof(TreasureMap)),
+            new(100.0, 80.0, 4080.0, true, typeof(MessageInABottle)),
+            new(
                 0.0,
                 125.0,
                 -2375.0,
@@ -28,8 +28,8 @@ namespace Server.Engines.Harvest
                 typeof(TrulyRareFish),
                 typeof(PeculiarFish)
             ),
-            new MutateEntry(0.0, 105.0, -420.0, false, typeof(Boots), typeof(Shoes), typeof(Sandals), typeof(ThighBoots)),
-            new MutateEntry(0.0, 200.0, -200.0, false, new Type[] { null })
+            new(0.0, 105.0, -420.0, false, typeof(Boots), typeof(Shoes), typeof(Sandals), typeof(ThighBoots)),
+            new(0.0, 200.0, -200.0, false, new Type[] { null })
         };
 
         private static readonly int[] m_WaterTiles =
@@ -73,12 +73,12 @@ namespace Server.Engines.Harvest
 
             HarvestResource[] res =
             {
-                new HarvestResource(00.0, 00.0, 100.0, 1043297, typeof(Fish))
+                new(00.0, 00.0, 100.0, 1043297, typeof(Fish))
             };
 
             HarvestVein[] veins =
             {
-                new HarvestVein(1000, 0.0, res[0], null)
+                new(1000, 0.0, res[0], null)
             };
 
             fish.Resources = res;

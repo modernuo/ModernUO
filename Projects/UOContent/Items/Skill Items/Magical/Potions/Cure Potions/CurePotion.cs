@@ -4,19 +4,19 @@ namespace Server.Items
     {
         private static readonly CureLevelInfo[] m_OldLevelInfo =
         {
-            new CureLevelInfo(Poison.Lesser, 1.00),  // 100% chance to cure lesser poison
-            new CureLevelInfo(Poison.Regular, 0.75), //  75% chance to cure regular poison
-            new CureLevelInfo(Poison.Greater, 0.50), //  50% chance to cure greater poison
-            new CureLevelInfo(Poison.Deadly, 0.15)   //  15% chance to cure deadly poison
+            new(Poison.Lesser, 1.00),  // 100% chance to cure lesser poison
+            new(Poison.Regular, 0.75), //  75% chance to cure regular poison
+            new(Poison.Greater, 0.50), //  50% chance to cure greater poison
+            new(Poison.Deadly, 0.15)   //  15% chance to cure deadly poison
         };
 
         private static readonly CureLevelInfo[] m_AosLevelInfo =
         {
-            new CureLevelInfo(Poison.Lesser, 1.00),
-            new CureLevelInfo(Poison.Regular, 0.95),
-            new CureLevelInfo(Poison.Greater, 0.75),
-            new CureLevelInfo(Poison.Deadly, 0.50),
-            new CureLevelInfo(Poison.Lethal, 0.25)
+            new(Poison.Lesser, 1.00),
+            new(Poison.Regular, 0.95),
+            new(Poison.Greater, 0.75),
+            new(Poison.Deadly, 0.50),
+            new(Poison.Lethal, 0.25)
         };
 
         [Constructible]

@@ -10,13 +10,13 @@ namespace Server.Items
     {
         private static readonly TrophyInfo[] m_Table =
         {
-            new TrophyInfo(typeof(BrownBear), 0x1E60, 1041093, 1041107),
-            new TrophyInfo(typeof(GreatHart), 0x1E61, 1041095, 1041109),
-            new TrophyInfo(typeof(BigFish), 0x1E62, 1041096, 1041110),
-            new TrophyInfo(typeof(Gorilla), 0x1E63, 1041091, 1041105),
-            new TrophyInfo(typeof(Orc), 0x1E64, 1041090, 1041104),
-            new TrophyInfo(typeof(PolarBear), 0x1E65, 1041094, 1041108),
-            new TrophyInfo(typeof(Troll), 0x1E66, 1041092, 1041106)
+            new(typeof(BrownBear), 0x1E60, 1041093, 1041107),
+            new(typeof(GreatHart), 0x1E61, 1041095, 1041109),
+            new(typeof(BigFish), 0x1E62, 1041096, 1041110),
+            new(typeof(Gorilla), 0x1E63, 1041091, 1041105),
+            new(typeof(Orc), 0x1E64, 1041090, 1041104),
+            new(typeof(PolarBear), 0x1E65, 1041094, 1041108),
+            new(typeof(Troll), 0x1E66, 1041092, 1041106)
         };
 
         [Constructible]

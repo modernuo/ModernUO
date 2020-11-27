@@ -60,7 +60,7 @@ namespace Server.Utilities
         public const int DEFAULT_RESOURCE_RETENTION = 10;
         private readonly Generator m_Generator;
 
-        private readonly Stack<TRef> m_Resources = new Stack<TRef>();
+        private readonly Stack<TRef> m_Resources = new();
         private int m_MaxRefrenceRetention;
 
         /// <param name="generator">The generator function for creating new resources.</param>

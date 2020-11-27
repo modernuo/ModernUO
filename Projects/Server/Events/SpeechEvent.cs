@@ -18,7 +18,7 @@ using Server.Network;
 
 namespace Server
 {
-    public class SpeechEventArgs : EventArgs
+    public class SpeechEventArgs
     {
         public SpeechEventArgs(Mobile mobile, string speech, MessageType type, int hue, int[] keywords)
         {

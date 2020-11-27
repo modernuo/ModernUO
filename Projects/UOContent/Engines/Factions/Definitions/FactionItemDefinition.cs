@@ -6,12 +6,12 @@ namespace Server.Factions
 {
     public class FactionItemDefinition
     {
-        private static readonly FactionItemDefinition m_MetalArmor = new FactionItemDefinition(1000, typeof(Blacksmith));
-        private static readonly FactionItemDefinition m_Weapon = new FactionItemDefinition(1000, typeof(Blacksmith));
-        private static readonly FactionItemDefinition m_RangedWeapon = new FactionItemDefinition(1000, typeof(Bowyer));
-        private static readonly FactionItemDefinition m_LeatherArmor = new FactionItemDefinition(750, typeof(Tailor));
-        private static readonly FactionItemDefinition m_Clothing = new FactionItemDefinition(200, typeof(Tailor));
-        private static readonly FactionItemDefinition m_Scroll = new FactionItemDefinition(500, typeof(Mage));
+        private static readonly FactionItemDefinition m_MetalArmor = new(1000, typeof(Blacksmith));
+        private static readonly FactionItemDefinition m_Weapon = new(1000, typeof(Blacksmith));
+        private static readonly FactionItemDefinition m_RangedWeapon = new(1000, typeof(Bowyer));
+        private static readonly FactionItemDefinition m_LeatherArmor = new(750, typeof(Tailor));
+        private static readonly FactionItemDefinition m_Clothing = new(200, typeof(Tailor));
+        private static readonly FactionItemDefinition m_Scroll = new(500, typeof(Mage));
 
         public FactionItemDefinition(int silverCost, Type vendorType)
         {

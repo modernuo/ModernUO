@@ -20,23 +20,23 @@ namespace Server.Engines.Events
 
         private static readonly Rectangle2D[] m_Cemetaries =
         {
-            new Rectangle2D(1272, 3712, 30, 20), // Jhelom
-            new Rectangle2D(1337, 1444, 48, 52), // Britain
-            new Rectangle2D(2424, 1098, 20, 28), // Trinsic
-            new Rectangle2D(2728, 840, 54, 54),  // Vesper
-            new Rectangle2D(4528, 1314, 20, 28), // Moonglow
-            new Rectangle2D(712, 1104, 30, 22),  // Yew
-            new Rectangle2D(5824, 1464, 22, 6),  // Fire Dungeon
-            new Rectangle2D(5224, 3655, 14, 5),  // T2A
+            new(1272, 3712, 30, 20), // Jhelom
+            new(1337, 1444, 48, 52), // Britain
+            new(2424, 1098, 20, 28), // Trinsic
+            new(2728, 840, 54, 54),  // Vesper
+            new(4528, 1314, 20, 28), // Moonglow
+            new(712, 1104, 30, 22),  // Yew
+            new(5824, 1464, 22, 6),  // Fire Dungeon
+            new(5224, 3655, 14, 5),  // T2A
 
-            new Rectangle2D(1272, 3712, 20, 30), // Jhelom
-            new Rectangle2D(1337, 1444, 52, 48), // Britain
-            new Rectangle2D(2424, 1098, 28, 20), // Trinsic
-            new Rectangle2D(2728, 840, 54, 54),  // Vesper
-            new Rectangle2D(4528, 1314, 28, 20), // Moonglow
-            new Rectangle2D(712, 1104, 22, 30),  // Yew
-            new Rectangle2D(5824, 1464, 6, 22),  // Fire Dungeon
-            new Rectangle2D(5224, 3655, 5, 14)   // T2A
+            new(1272, 3712, 20, 30), // Jhelom
+            new(1337, 1444, 52, 48), // Britain
+            new(2424, 1098, 28, 20), // Trinsic
+            new(2728, 840, 54, 54),  // Vesper
+            new(4528, 1314, 28, 20), // Moonglow
+            new(712, 1104, 22, 30),  // Yew
+            new(5824, 1464, 6, 22),  // Fire Dungeon
+            new(5224, 3655, 5, 14)   // T2A
         };
 
         public static Dictionary<PlayerMobile, ZombieSkeleton> ReAnimated { get; set; }

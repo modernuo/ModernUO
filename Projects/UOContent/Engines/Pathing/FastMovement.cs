@@ -635,8 +635,8 @@ namespace Server.Movement
 
         private static class MovementPool
         {
-            private static readonly object _MovePoolLock = new object();
-            private static readonly Queue<List<Item>> _MoveCachePool = new Queue<List<Item>>(0x400);
+            private static readonly object _MovePoolLock = new();
+            private static readonly Queue<List<Item>> _MoveCachePool = new(0x400);
 
             public static void AcquireMoveCache(ref List<Item> cache, IEnumerable<Item> items)
             {

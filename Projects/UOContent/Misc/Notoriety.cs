@@ -365,7 +365,7 @@ namespace Server.Misc
                 return Notoriety.Murderer;
             }
 
-            if (target.Criminal && target.Map != null && (target.Map.Rules & MapRules.HarmfulRestrictions) == 0)
+            if (target.Criminal && (target.Map?.Rules & MapRules.HarmfulRestrictions) == 0)
             {
                 return Notoriety.Criminal;
             }

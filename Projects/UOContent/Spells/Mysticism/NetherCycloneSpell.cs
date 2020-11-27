@@ -6,7 +6,7 @@ namespace Server.Spells.Mysticism
 {
     public class NetherCycloneSpell : MysticSpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new SpellInfo(
+        private static readonly SpellInfo m_Info = new(
             "Nether Cyclone",
             "Grav Hur",
             -1,

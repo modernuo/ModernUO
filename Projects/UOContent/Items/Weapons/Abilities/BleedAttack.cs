@@ -14,7 +14,7 @@ namespace Server.Items
     /// </summary>
     public class BleedAttack : WeaponAbility
     {
-        private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+        private static readonly Dictionary<Mobile, Timer> m_Table = new();
 
         public override int BaseMana => 30;
 

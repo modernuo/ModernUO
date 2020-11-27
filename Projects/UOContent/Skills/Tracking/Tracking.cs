@@ -11,7 +11,7 @@ namespace Server.SkillHandlers
 {
     public static class Tracking
     {
-        private static readonly Dictionary<Mobile, TrackingInfo> m_Table = new Dictionary<Mobile, TrackingInfo>();
+        private static readonly Dictionary<Mobile, TrackingInfo> m_Table = new();
 
         public static void Configure()
         {
