@@ -230,7 +230,7 @@ namespace Server.Network
 
             var p = from.Prompt;
 
-            if (p != null && p.Serial == serial && p.Serial == prompt)
+            if (p?.Serial == serial && p.Serial == prompt)
             {
                 from.Prompt = null;
 
@@ -267,7 +267,7 @@ namespace Server.Network
 
             var p = from.Prompt;
 
-            if (p != null && p.Serial == serial && p.Serial == prompt)
+            if (p?.Serial == serial && p.Serial == prompt)
             {
                 from.Prompt = null;
 

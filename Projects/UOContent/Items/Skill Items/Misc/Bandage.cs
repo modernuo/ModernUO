@@ -295,7 +295,7 @@ namespace Server.Items
 
                                 var friends = petPatient.Friends;
 
-                                for (var i = 0; friends != null && i < friends.Count; ++i)
+                                for (var i = 0; i < friends?.Count; ++i)
                                 {
                                     var friend = friends[i];
 

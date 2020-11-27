@@ -573,7 +573,7 @@ namespace Server.Factions
             }
         }
 
-        public bool IsCommander(Mobile mob) => mob != null && mob.AccessLevel >= AccessLevel.GameMaster || mob == Commander;
+        public bool IsCommander(Mobile mob) => mob?.AccessLevel >= AccessLevel.GameMaster || mob == Commander;
 
         public override string ToString() => m_Definition.FriendlyName;
 

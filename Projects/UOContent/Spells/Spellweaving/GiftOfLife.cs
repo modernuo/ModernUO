@@ -121,7 +121,7 @@ namespace Server.Spells.Spellweaving
                 {
                     var friends = pet.Friends;
 
-                    for (var i = 0; friends != null && i < friends.Count; i++)
+                    for (var i = 0; i < friends?.Count; i++)
                     {
                         var friend = friends[i];
 

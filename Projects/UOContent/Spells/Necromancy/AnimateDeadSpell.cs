@@ -157,7 +157,7 @@ namespace Server.Spells.Necromancy
                 }
 
                 if (c.ItemID != 0x2006 || c.Animated || type == typeof(PlayerMobile) || type == null ||
-                    c.Owner != null && c.Owner.Fame < 100 ||
+                    c.Owner?.Fame < 100 ||
                     c.Owner is BaseCreature creature && (creature.Summoned || creature.IsBonded))
                 {
                     Caster.SendLocalizedMessage(1061085); // There's not enough life force there to animate.

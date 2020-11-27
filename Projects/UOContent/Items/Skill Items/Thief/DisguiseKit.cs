@@ -44,7 +44,7 @@ namespace Server.Items
             {
                 from.SendLocalizedMessage(1042001);
             }
-            else if (pm == null || pm.NpcGuild != NpcGuild.ThievesGuild)
+            else if (pm?.NpcGuild != NpcGuild.ThievesGuild)
             {
                 from.SendLocalizedMessage(501702);
             }

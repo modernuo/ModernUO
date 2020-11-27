@@ -2404,7 +2404,7 @@ namespace Server.Multis
         public virtual bool IsCombatRestricted(Mobile m)
         {
             if (m?.Player != true || m.AccessLevel >= AccessLevel.GameMaster || !IsAosRules ||
-                m_Owner != null && m_Owner.AccessLevel >= AccessLevel.GameMaster)
+                m_Owner?.AccessLevel >= AccessLevel.GameMaster)
             {
                 return false;
             }
@@ -4276,7 +4276,7 @@ namespace Server.Multis
             {
                 var list = house.Secures;
 
-                for (var i = 0; sec == null && list != null && i < list.Count; ++i)
+                for (var i = 0; sec == null && i < list?.Count; ++i)
                 {
                     var si = list[i];
 

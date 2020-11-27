@@ -3611,7 +3611,7 @@ namespace Server
             Resistances[3] += BasePoisonResistance;
             Resistances[4] += BaseEnergyResistance;
 
-            for (var i = 0; ResistanceMods != null && i < ResistanceMods.Count; ++i)
+            for (var i = 0; i < ResistanceMods?.Count; ++i)
             {
                 var mod = ResistanceMods[i];
                 var v = (int)mod.Type;

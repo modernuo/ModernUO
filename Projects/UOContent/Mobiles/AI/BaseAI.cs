@@ -380,8 +380,7 @@ namespace Server.Mobiles
                             var skill = ourSkills[i];
                             var theirSkill = theirSkills[i];
 
-                            if (skill != null && skill.Base >= 60.0 &&
-                                m_Mobile.CheckTeach(skill.SkillName, e.Mobile))
+                            if (skill?.Base >= 60.0 && m_Mobile.CheckTeach(skill.SkillName, e.Mobile))
                             {
                                 var toTeach = skill.Base / 3.0;
 
