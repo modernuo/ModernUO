@@ -18,7 +18,7 @@ using Server.Network;
 
 namespace Server
 {
-    public class FastWalkEventArgs : EventArgs
+    public class FastWalkEventArgs
     {
         public FastWalkEventArgs(NetState state) => NetState = state;
 
