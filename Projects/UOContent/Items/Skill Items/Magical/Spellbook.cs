@@ -679,7 +679,7 @@ namespace Server.Items
 
             if (Parent == null)
             {
-                to.Send(WorldPacket);
+                SendWorldPacketTo(to.NetState);
             }
             else if (Parent is Item)
             {

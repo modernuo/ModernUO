@@ -20,18 +20,13 @@ namespace Server.Misc
                 )
             );
 
-            if (ObjectPropertyList.Enabled)
+            for (var i = 0; i < beheld.Items.Count; ++i)
             {
-                var items = beheld.Items;
-
-                for (var i = 0; i < items.Count; ++i)
-                {
-                    beholder.Send(items[i].OPLPacket);
-                }
-
-                // NOTE: OSI sends MobileUpdate when opening your own paperdoll.
-                // It has a very bad rubber-banding affect. What positive affects does it have?
+                beheld.Items[i].SendOPLPacketTo(beholder.NetState);
             }
+
+            // NOTE: OSI sends MobileUpdate when opening your own paperdoll.
+            // It has a very bad rubber-banding affect. What positive affects does it have?
         }
     }
 }

@@ -69,16 +69,16 @@ namespace Benchmarks
             return writer.Position;
         }
 
-        private Pipe<byte>[] _pipes = new Pipe<byte>[512];
-        private IntPtr[] _pointers = new IntPtr[512];
+        private Pipe<byte>[] _pipes = new Pipe<byte>[25000];
+        // private IntPtr[] _pointers = new IntPtr[512];
 
         [IterationSetup]
         public void SetUp()
         {
             for (var i = 0; i < _pipes.Length; i++)
             {
-                _pipes[i] = new Pipe<byte>(new byte[8192]);
-                _pointers[i] = Marshal.AllocHGlobal(8192);
+                _pipes[i] = new Pipe<byte>(new byte[4096]);
+                // _pointers[i] = Marshal.AllocHGlobal(25000);
             }
         }
 
@@ -88,7 +88,7 @@ namespace Benchmarks
             for (var i = 0; i < _pipes.Length; i++)
             {
                 _pipes[i] = null;
-                Marshal.FreeHGlobal(_pointers[i]);
+                // Marshal.FreeHGlobal(_pointers[i]);
             }
         }
 
@@ -151,33 +151,60 @@ namespace Benchmarks
             return _pipes.Length;
         }
 
+        private static void SendUnicodeMessageWithSpan(Pipe<byte> pipe, string text)
+        {
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
+            var length = CreateUnicodeMessage(
+                ref buffer,
+                Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, "ENU", "System", text
+            );
+
+            buffer = buffer.Slice(0, length);
+            var result = pipe.Writer.TryGetMemory();
+            result.CopyFrom(buffer);
+            pipe.Writer.Advance((uint)buffer.Length);
+        }
+
         [Benchmark]
-        public int TestSpanWriterAllocH()
+        public int TestSpanWriterLooped()
         {
             var text = "This is some really long text that we want to handle. It should take a little bit to encode this.";
 
-            foreach (var pointer in _pointers)
+            foreach (var pipe in _pipes)
             {
-                Span<byte> buffer;
-                unsafe
-                {
-                    buffer = new Span<byte>(pointer.ToPointer(), 8192);
-                }
-
-                CreateUnicodeMessage(
-                    ref buffer,
-                    Serial.MinusOne,
-                    -1,
-                    MessageType.Regular,
-                    0x3B2,
-                    3,
-                    "ENU",
-                    "System",
-                    text
-                );
+                SendUnicodeMessageWithSpan(pipe, text);
             }
 
             return _pipes.Length;
         }
+
+        // [Benchmark]
+        // public int TestSpanWriterAllocH()
+        // {
+        //     var text = "This is some really long text that we want to handle. It should take a little bit to encode this.";
+        //
+        //     foreach (var pointer in _pointers)
+        //     {
+        //         Span<byte> buffer;
+        //         unsafe
+        //         {
+        //             buffer = new Span<byte>(pointer.ToPointer(), 8192);
+        //         }
+        //
+        //         CreateUnicodeMessage(
+        //             ref buffer,
+        //             Serial.MinusOne,
+        //             -1,
+        //             MessageType.Regular,
+        //             0x3B2,
+        //             3,
+        //             "ENU",
+        //             "System",
+        //             text
+        //         );
+        //     }
+        //
+        //     return _pipes.Length;
+        // }
     }
 }

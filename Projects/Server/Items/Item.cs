@@ -353,19 +353,6 @@ namespace Server
             set => SetFlag(ImplFlag.Stackable, value);
         }
 
-        public Packet RemovePacket => StaticPacketHandlers.GetRemoveEntityPacket(this);
-
-        // World packets need to be invalidated when any of the following changes:
-        //  - ItemID
-        //  - Amount
-        //  - Location
-        //  - Hue
-        //  - Packet Flags
-        //  - Direction
-        public Packet WorldPacket => StaticPacketHandlers.GetWorldItemPacket(this);
-        public Packet WorldPacketSA => StaticPacketHandlers.GetWorldItemSAPacket(this);
-        public Packet WorldPacketHS => StaticPacketHandlers.GetWorldItemHSPacket(this);
-
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Visible
         {
@@ -375,7 +362,6 @@ namespace Server
                 if (GetFlag(ImplFlag.Visible) != value)
                 {
                     SetFlag(ImplFlag.Visible, value);
-                    ReleaseWorldPackets();
 
                     if (m_Map != null)
                     {
@@ -383,13 +369,16 @@ namespace Server
 
                         var eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
+                        Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
+                        OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+
                         foreach (var state in eable)
                         {
                             var m = state.Mobile;
 
                             if (!m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
                             {
-                                state.Send(RemovePacket);
+                                state.Send(removeEntity);
                             }
                         }
 
@@ -410,7 +399,7 @@ namespace Server
                 if (GetFlag(ImplFlag.Movable) != value)
                 {
                     SetFlag(ImplFlag.Movable, value);
-                    ReleaseWorldPackets();
+
                     Delta(ItemDelta.Update);
                 }
             }
@@ -533,7 +522,6 @@ namespace Server
                 if (m_Hue != value)
                 {
                     m_Hue = value;
-                    ReleaseWorldPackets();
 
                     Delta(ItemDelta.Update);
                 }
@@ -599,7 +587,6 @@ namespace Server
                     var oldPileWeight = PileWeight;
 
                     m_ItemID = value;
-                    ReleaseWorldPackets();
 
                     var newPileWeight = PileWeight;
 
@@ -673,8 +660,6 @@ namespace Server
                 if ((LightType)m_Direction != value)
                 {
                     m_Direction = (Direction)value;
-                    ReleaseWorldPackets();
-
                     Delta(ItemDelta.Update);
                 }
             }
@@ -689,8 +674,6 @@ namespace Server
                 if (m_Direction != value)
                 {
                     m_Direction = value;
-                    ReleaseWorldPackets();
-
                     Delta(ItemDelta.Update);
                 }
             }
@@ -709,7 +692,6 @@ namespace Server
                     var oldPileWeight = PileWeight;
 
                     m_Amount = value;
-                    ReleaseWorldPackets();
 
                     var newPileWeight = PileWeight;
 
@@ -757,11 +739,7 @@ namespace Server
             set
             {
                 SetFlag(ImplFlag.QuestItem, value);
-
                 InvalidateProperties();
-
-                ReleaseWorldPackets();
-
                 Delta(ItemDelta.Update);
             }
         }
@@ -803,7 +781,6 @@ namespace Server
         public int CompareTo(Item other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
         public virtual int HuedItemID => m_ItemID;
-        public OPLInfo OPLPacket => StaticPacketHandlers.GetOPLInfoPacket(this);
         public ObjectPropertyList PropertyList => m_PropertyList ??= NewObjectPropertyList();
 
         /// <summary>
@@ -1151,26 +1128,12 @@ namespace Server
 
                     if (oldLocation.m_X != 0)
                     {
-                        var eable = m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange());
-
-                        foreach (var state in eable)
-                        {
-                            var m = state.Mobile;
-
-                            if (m.InRange(oldLocation, GetUpdateRange(m)))
-                            {
-                                state.Send(RemovePacket);
-                            }
-                        }
-
-                        eable.Free();
+                        SendRemovePacket(oldLocation);
                     }
                 }
 
                 m_Location = location;
                 OnLocationChange(oldRealLocation);
-
-                ReleaseWorldPackets();
 
                 var items = LookupItems();
 
@@ -1189,6 +1152,19 @@ namespace Server
 
                 if (m_Map != null)
                 {
+                    Span<byte> oldWorldItem = stackalloc byte[OutgoingItemPackets.OldWorldItemPacketLength];
+                    var length = OutgoingItemPackets.CreateWorldItem(ref oldWorldItem, this);
+                    oldWorldItem = oldWorldItem.Slice(0, length);
+                    Span<byte> newWorldItem = stackalloc byte[OutgoingItemPackets.NewWorldItemPacketLength];
+                    OutgoingItemPackets.CreateWorldItemNew(ref newWorldItem, this);
+                    Span<byte> saWorldItem = newWorldItem.Slice(0, OutgoingItemPackets.SAWorldItemPacketLength);
+
+                    Span<byte> opl = ObjectPropertyList.Enabled ? stackalloc byte[OutgoingEntityPackets.OPLPacketLength] : null;
+                    if (opl != null)
+                    {
+                        OutgoingEntityPackets.CreateOPLInfo(ref opl, this);
+                    }
+
                     var eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
 
                     foreach (var state in eable)
@@ -1197,7 +1173,18 @@ namespace Server
 
                         if (m.CanSee(this) && m.InRange(m_Location, GetUpdateRange(m)))
                         {
-                            SendInfoTo(state);
+                            if (state.HighSeas)
+                            {
+                                SendInfoTo(state, newWorldItem, opl);
+                            }
+                            else if (state.StygianAbyss)
+                            {
+                                SendInfoTo(state, saWorldItem, opl);
+                            }
+                            else
+                            {
+                                SendInfoTo(state, oldWorldItem, opl);
+                            }
                         }
                     }
 
@@ -1219,13 +1206,16 @@ namespace Server
                 {
                     eable = m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange());
 
+                    Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
+                    OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+
                     foreach (var state in eable)
                     {
                         var m = state.Mobile;
 
                         if (!m.InRange(location, GetUpdateRange(m)))
                         {
-                            state.Send(RemovePacket);
+                            state.Send(removeEntity);
                         }
                     }
 
@@ -1236,8 +1226,6 @@ namespace Server
 
                 m_Location = location;
                 OnLocationChange(oldRealLocation);
-
-                ReleaseWorldPackets();
 
                 eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
 
@@ -1351,10 +1339,7 @@ namespace Server
                             ns.Send(new ContainerContentUpdate(this));
                         }
 
-                        if (ObjectPropertyList.Enabled)
-                        {
-                            ns.Send(OPLPacket);
-                        }
+                        SendOPLPacketTo(ns);
                     }
                 }
 
@@ -1389,10 +1374,7 @@ namespace Server
                             ns.Send(new ContainerContentUpdate(this));
                         }
 
-                        if (ObjectPropertyList.Enabled)
-                        {
-                            ns.Send(OPLPacket);
-                        }
+                        SendOPLPacketTo(ns);
                     }
                 }
 
@@ -1432,10 +1414,7 @@ namespace Server
                                         ns.Send(new ContainerContentUpdate(this));
                                     }
 
-                                    if (ObjectPropertyList.Enabled)
-                                    {
-                                        ns.Send(OPLPacket);
-                                    }
+                                    SendOPLPacketTo(ns);
                                 }
                             }
                         }
@@ -1465,7 +1444,7 @@ namespace Server
                 {
                     if (m_Parent == null)
                     {
-                        SendInfoTo(state, ObjectPropertyList.Enabled);
+                        SendInfoTo(state);
                     }
                     else
                     {
@@ -1486,24 +1465,17 @@ namespace Server
                             state.SendEquipUpdate(this);
                         }
 
-                        if (ObjectPropertyList.Enabled)
-                        {
-                            state.Send(OPLPacket);
-                        }
+                        SendOPLPacketTo(state);
                     }
                 }
                 else if ((flags & ItemDelta.EquipOnly) != 0 && m_Parent is Mobile)
                 {
                     state.SendEquipUpdate(this);
-
-                    if (ObjectPropertyList.Enabled)
-                    {
-                        state.Send(OPLPacket);
-                    }
+                    SendOPLPacketTo(state);
                 }
                 else if (ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0)
                 {
-                    state.Send(OPLPacket);
+                    SendOPLPacketTo(state);
                 }
             }
 
@@ -1611,13 +1583,16 @@ namespace Server
                         {
                             eable = m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange());
 
+                            Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
+                            OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+
                             foreach (var state in eable)
                             {
                                 var m = state.Mobile;
 
                                 if (!m.InRange(value, GetUpdateRange(m)))
                                 {
-                                    state.Send(RemovePacket);
+                                    state.Send(removeEntity);
                                 }
                             }
 
@@ -1626,7 +1601,6 @@ namespace Server
 
                         var oldLoc = m_Location;
                         m_Location = value;
-                        ReleaseWorldPackets();
 
                         SetLastMoved();
 
@@ -1648,17 +1622,13 @@ namespace Server
 
                         RemDelta(ItemDelta.Update);
                     }
-                    else if (m_Parent is Item)
-                    {
-                        m_Location = value;
-                        ReleaseWorldPackets();
-
-                        Delta(ItemDelta.Update);
-                    }
                     else
                     {
                         m_Location = value;
-                        ReleaseWorldPackets();
+                        if (m_Parent is Item)
+                        {
+                            Delta(ItemDelta.Update);
+                        }
                     }
 
                     if (m_Parent == null)
@@ -1669,7 +1639,6 @@ namespace Server
                 else
                 {
                     m_Location = value;
-                    ReleaseWorldPackets();
                 }
 
                 OnLocationChange(oldLocation);
@@ -2506,7 +2475,6 @@ namespace Server
         public void ClearProperties()
         {
             ReleaseOPLPacket();
-            StaticPacketHandlers.FreeOPLInfoPacket(this);
         }
 
         public void InvalidateProperties()
@@ -2523,7 +2491,6 @@ namespace Server
 
                 if (oldList != null && oldList.Hash != PropertyList.Hash)
                 {
-                    StaticPacketHandlers.FreeOPLInfoPacket(this);
                     Delta(ItemDelta.Properties);
                 }
             }
@@ -2531,11 +2498,6 @@ namespace Server
             {
                 ClearProperties();
             }
-        }
-
-        public void ReleaseWorldPackets()
-        {
-            StaticPacketHandlers.FreeWorldItemPackets(this);
         }
 
         public virtual int GetPacketFlags()
@@ -3163,35 +3125,41 @@ namespace Server
 
         public virtual int GetUpdateRange(Mobile m) => 18;
 
-        public void SendInfoTo(NetState state)
+        public virtual void SendInfoTo(NetState ns, ReadOnlySpan<byte> world, ReadOnlySpan<byte> opl = default)
         {
-            SendInfoTo(state, ObjectPropertyList.Enabled);
+            SendWorldPacketTo(ns, world);
+            SendOPLPacketTo(ns, opl);
         }
 
-        public virtual void SendInfoTo(NetState state, bool sendOplPacket)
-        {
-            state.Send(GetWorldPacketFor(state));
+        public void SendInfoTo(NetState ns) => SendInfoTo(ns, ObjectPropertyList.Enabled);
 
+        protected virtual void SendInfoTo(NetState ns, bool sendOplPacket)
+        {
+            SendWorldPacketTo(ns);
+            SendOPLPacketTo(ns, sendOplPacket);
+        }
+
+        public void SendOPLPacketTo(NetState ns) => SendOPLPacketTo(ns, ObjectPropertyList.Enabled);
+
+        protected virtual void SendOPLPacketTo(NetState ns, bool sendOplPacket)
+        {
             if (sendOplPacket)
             {
-                state.Send(OPLPacket);
+                ns.SendOPLInfo(this);
             }
         }
 
-        protected virtual Packet GetWorldPacketFor(NetState state)
+        public virtual void SendOPLPacketTo(NetState ns, ReadOnlySpan<byte> opl)
         {
-            if (state.HighSeas)
+            if (opl != null)
             {
-                return WorldPacketHS;
+                ns?.Send(opl);
             }
-
-            if (state.StygianAbyss)
-            {
-                return WorldPacketSA;
-            }
-
-            return WorldPacket;
         }
+
+        protected virtual void SendWorldPacketTo(NetState ns) => ns.SendWorldItem(this);
+
+        public virtual void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world) => ns.Send(world);
 
         public virtual int GetTotal(TotalType type) => 0;
 
@@ -3410,9 +3378,6 @@ namespace Server
 
         public virtual void FreeCache()
         {
-            ReleaseWorldPackets();
-            StaticPacketHandlers.FreeRemoveItemPacket(this);
-            StaticPacketHandlers.FreeOPLInfoPacket(this);
             ReleaseOPLPacket();
         }
 
@@ -3915,16 +3880,19 @@ namespace Server
             return true;
         }
 
-        public void SendRemovePacket()
+        public void SendRemovePacket() => SendRemovePacket(GetWorldLocation());
+
+        public void SendRemovePacket(Point3D worldLoc)
         {
             if (Deleted || m_Map == null)
             {
                 return;
             }
 
-            var worldLoc = GetWorldLocation();
-
             var eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
+
+            Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
+            OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
 
             foreach (var state in eable)
             {
@@ -3932,7 +3900,7 @@ namespace Server
 
                 if (m.InRange(worldLoc, GetUpdateRange(m)))
                 {
-                    state.Send(RemovePacket);
+                    state.Send(removeEntity);
                 }
             }
 

@@ -880,7 +880,7 @@ namespace Server.Multis
             DesignState.SendDetailedInfoTo(ns);
         }
 
-        public override void SendInfoTo(NetState state, bool sendOplPacket)
+        protected override void SendInfoTo(NetState state, bool sendOplPacket)
         {
             base.SendInfoTo(state, sendOplPacket);
 
@@ -2321,22 +2321,22 @@ namespace Server.Multis
             {
                 var item = fixtures[i];
 
-                state.Send(item.RemovePacket);
+                state.SendRemoveEntity(item.Serial);
             }
 
             if (foundation.Signpost != null)
             {
-                state.Send(foundation.Signpost.RemovePacket);
+                state.SendRemoveEntity(foundation.Signpost.Serial);
             }
 
             if (foundation.SignHanger != null)
             {
-                state.Send(foundation.SignHanger.RemovePacket);
+                state.SendRemoveEntity(foundation.SignHanger.Serial);
             }
 
             if (foundation.Sign != null)
             {
-                state.Send(foundation.Sign.RemovePacket);
+                state.SendRemoveEntity(foundation.Sign.Serial);
             }
         }
 

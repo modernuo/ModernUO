@@ -8,7 +8,6 @@ namespace Server
     public interface IPropertyListObject : IEntity
     {
         ObjectPropertyList PropertyList { get; }
-        OPLInfo OPLPacket { get; }
 
         void GetProperties(ObjectPropertyList list);
     }
@@ -162,24 +161,6 @@ namespace Server
         public void Add(string format, params object[] args)
         {
             Add(GetStringNumber(), string.Format(format, args));
-        }
-    }
-
-    public sealed class OPLInfo : Packet
-    {
-        /*public OPLInfo( ObjectPropertyList list ) : base( 0xBF )
-        {
-          EnsureCapacity( 13 );
-
-          m_Stream.Write( (short) 0x10 );
-          m_Stream.Write( (int) list.Entity.Serial );
-          m_Stream.Write( (int) list.Hash );
-        }*/
-
-        public OPLInfo(Serial serial, int hash) : base(0xDC, 9)
-        {
-            Stream.Write(serial);
-            Stream.Write(hash);
         }
     }
 }
