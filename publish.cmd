@@ -47,7 +47,7 @@ IF "%~1" == "" or "%~1" == "release" (
 IF "%~2" == "" (
   SET os=-r win-x64
 ) ELSE (
-  SET os=-r %~1-x64
+  SET os=-r %~2-x64
 )
 
 echo dotnet restore --force-evaluate
