@@ -24,7 +24,7 @@ namespace Server
 
         private int _hash;
         private int _strings;
-        private byte[] _buffer;
+        private byte[] _buffer = new byte[256];
         private int _position;
 
         public ObjectPropertyList(IEntity e)
@@ -75,7 +75,7 @@ namespace Server
                 HeaderArgs = "";
             }
 
-            if (_position + 6 < _buffer.Length)
+            if (_position + 6 > _buffer.Length)
             {
                 Flush();
             }
@@ -134,7 +134,7 @@ namespace Server
 
             int strLength = m_Encoding.GetByteCount(arguments);
             int length = _position + 6 + strLength;
-            if (length < _buffer.Length)
+            if (length > _buffer.Length)
             {
                 Flush();
             }
@@ -142,7 +142,7 @@ namespace Server
             BinaryPrimitives.WriteInt32BigEndian(_buffer.AsSpan(_position, 4), number);
             BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_position + 4, 2), (ushort)strLength);
             m_Encoding.GetBytes(arguments, _buffer.AsSpan(_position + 6));
-            _position += length;
+            _position += strLength;
         }
 
         public void Add(int number, string format, object arg0)
