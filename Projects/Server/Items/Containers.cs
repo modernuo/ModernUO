@@ -89,7 +89,7 @@ namespace Server.Items
 
             if (SendDeleteOnClose)
             {
-                Owner?.Send(RemovePacket);
+                Owner?.NetState.SendRemoveEntity(Serial);
             }
         }
 

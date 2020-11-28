@@ -34,87 +34,13 @@ namespace Server.Tests.Network
                 Direction = Direction.Left
             };
 
-            var data = new WorldItem(item).Compile();
+            var expected = new WorldItem(item).Compile();
 
-            Span<byte> expectedData = stackalloc byte[20]; // Max size
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendWorldItem(item);
 
-            expectedData.Write(ref pos, (byte)0x1A);
-            pos += 2; // Length
-
-            if (item.Amount != 0)
-            {
-                expectedData.Write(ref pos, serial | 0x80000000);
-            }
-            else
-            {
-                expectedData.Write(ref pos, serial & 0x7FFFFFFF);
-            }
-
-            if (item is BaseMulti)
-            {
-                expectedData.Write(ref pos, (ushort)(item.ItemID | 0x4000));
-            }
-            else
-            {
-                expectedData.Write(ref pos, (ushort)item.ItemID);
-            }
-
-            if (item.Amount != 0)
-            {
-                expectedData.Write(ref pos, (ushort)item.Amount);
-            }
-
-            var direction = (byte)item.Direction;
-            var x = (ushort)(item.X & 0x7FFF);
-
-            if (direction != 0)
-            {
-                x |= 0x8000;
-            }
-
-            expectedData.Write(ref pos, x);
-
-            var hue = item.Hue;
-            var flags = item.GetPacketFlags();
-            var y = (ushort)(item.Y & 0x3FFF);
-
-            if (hue != 0)
-            {
-                y |= 0x8000;
-            }
-
-            if (flags != 0)
-            {
-                y |= 0x4000;
-            }
-
-            expectedData.Write(ref pos, y);
-
-            if (direction != 0)
-            {
-                expectedData.Write(ref pos, direction);
-            }
-
-            expectedData.Write(ref pos, (byte)item.Z);
-
-            if (hue != 0)
-            {
-                expectedData.Write(ref pos, (ushort)hue);
-            }
-
-            if (flags != 0)
-            {
-                expectedData.Write(ref pos, (byte)flags);
-            }
-
-            // Length
-            expectedData.Slice(1, 2).Write((ushort)pos);
-
-            // Slice the data to match in size
-            data = data.Slice(0, pos);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -142,34 +68,14 @@ namespace Server.Tests.Network
                 Location = new Point3D(1000, 100, -10)
             };
 
-            var loc = item.Location;
-            var isMulti = item is BaseMulti;
+            var expected = new WorldItemSA(item).Compile();
 
-            var data = new WorldItemSA(item).Compile();
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = ns.ProtocolChanges | ProtocolChanges.StygianAbyss;
+            ns.SendWorldItem(item);
 
-            Span<byte> expectedData = stackalloc byte[24];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0xF3); // Packet ID
-            expectedData.Write(ref pos, (ushort)0x1);
-            expectedData.Write(ref pos, (byte)(isMulti ? 0x2 : 0x00)); // Item Type (Regular, or Multi)
-            expectedData.Write(ref pos, item.Serial);
-            expectedData.Write(ref pos, (ushort)(item.ItemID & (isMulti ? 0x3FFF : 0xFFFF)));
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0)
-#else
-            pos++;
-#endif
-
-            expectedData.Write(ref pos, (ushort)item.Amount);         // Amount (min?)
-            expectedData.Write(ref pos, (ushort)item.Amount);         // Amount (max?)
-            expectedData.Write(ref pos, loc);                         // X, Y, Z
-            expectedData.Write(ref pos, (byte)item.Light);            // Light
-            expectedData.Write(ref pos, (ushort)item.Hue);            // Hue
-            expectedData.Write(ref pos, (byte)item.GetPacketFlags()); // Flags
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -197,38 +103,14 @@ namespace Server.Tests.Network
                 Location = new Point3D(1000, 100, -10)
             };
 
-            var loc = item.Location;
-            var isMulti = item is BaseMulti;
+            var expected = new WorldItemHS(item).Compile();
 
-            var data = new WorldItemHS(item).Compile();
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = ns.ProtocolChanges | ProtocolChanges.StygianAbyss | ProtocolChanges.HighSeas;
+            ns.SendWorldItem(item);
 
-            Span<byte> expectedData = stackalloc byte[26];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0xF3); // Packet ID
-            expectedData.Write(ref pos, (ushort)0x1);
-            expectedData.Write(ref pos, (byte)(isMulti ? 0x2 : 0x00)); // Item Type (Regular, or Multi)
-            expectedData.Write(ref pos, item.Serial);
-            expectedData.Write(ref pos, (ushort)(item.ItemID & (isMulti ? 0x3FFF : 0xFFFF)));
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0);
-#else
-            pos++;
-#endif
-
-            expectedData.Write(ref pos, (ushort)item.Amount);         // Amount (min?)
-            expectedData.Write(ref pos, (ushort)item.Amount);         // Amount (max?)
-            expectedData.Write(ref pos, loc);                         // X, Y, Z
-            expectedData.Write(ref pos, (byte)item.Light);            // Light
-            expectedData.Write(ref pos, (ushort)item.Hue);            // Hue
-            expectedData.Write(ref pos, (byte)item.GetPacketFlags()); // Flags
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (ushort)0); // ??
-#endif
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]

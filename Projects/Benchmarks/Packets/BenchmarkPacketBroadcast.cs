@@ -1,6 +1,5 @@
 using System;
 using System.Buffers;
-using System.Runtime.InteropServices;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Server;
@@ -70,7 +69,6 @@ namespace Benchmarks
         }
 
         private Pipe<byte>[] _pipes = new Pipe<byte>[25000];
-        // private IntPtr[] _pointers = new IntPtr[512];
 
         [IterationSetup]
         public void SetUp()
@@ -78,7 +76,6 @@ namespace Benchmarks
             for (var i = 0; i < _pipes.Length; i++)
             {
                 _pipes[i] = new Pipe<byte>(new byte[4096]);
-                // _pointers[i] = Marshal.AllocHGlobal(25000);
             }
         }
 
@@ -88,7 +85,6 @@ namespace Benchmarks
             for (var i = 0; i < _pipes.Length; i++)
             {
                 _pipes[i] = null;
-                // Marshal.FreeHGlobal(_pointers[i]);
             }
         }
 
@@ -177,34 +173,5 @@ namespace Benchmarks
 
             return _pipes.Length;
         }
-
-        // [Benchmark]
-        // public int TestSpanWriterAllocH()
-        // {
-        //     var text = "This is some really long text that we want to handle. It should take a little bit to encode this.";
-        //
-        //     foreach (var pointer in _pointers)
-        //     {
-        //         Span<byte> buffer;
-        //         unsafe
-        //         {
-        //             buffer = new Span<byte>(pointer.ToPointer(), 8192);
-        //         }
-        //
-        //         CreateUnicodeMessage(
-        //             ref buffer,
-        //             Serial.MinusOne,
-        //             -1,
-        //             MessageType.Regular,
-        //             0x3B2,
-        //             3,
-        //             "ENU",
-        //             "System",
-        //             text
-        //         );
-        //     }
-        //
-        //     return _pipes.Length;
-        // }
     }
 }
