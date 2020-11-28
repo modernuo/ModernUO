@@ -1533,7 +1533,7 @@ namespace Server
 
             OnAfterDelete();
 
-            FreeCache();
+            m_PropertyList = null;
         }
 
         public ISpawner Spawner
@@ -1683,17 +1683,6 @@ namespace Server
             && p.X <= Location.m_X + range
             && p.Y >= Location.m_Y - range
             && p.Y <= Location.m_Y + range;
-
-        public void ReleaseOPLPacket()
-        {
-            if (m_PropertyList == null)
-            {
-                return;
-            }
-
-            Packet.Release(m_PropertyList);
-            m_PropertyList = null;
-        }
 
         public ExpandFlag GetExpandFlags()
         {
@@ -1906,7 +1895,7 @@ namespace Server
         /// </summary>
         public virtual void SendPropertiesTo(Mobile from)
         {
-            from.Send(PropertyList);
+            from.NetState?.Send(PropertyList.Buffer);
         }
 
         /// <summary>
@@ -2468,13 +2457,12 @@ namespace Server
             AppendChildProperties(list);
 
             list.Terminate();
-            list.SetStatic();
             return list;
         }
 
         public void ClearProperties()
         {
-            ReleaseOPLPacket();
+            PropertyList.Reset();
         }
 
         public void InvalidateProperties()
@@ -3374,11 +3362,6 @@ namespace Server
         public virtual void OnParentDeleted(IEntity parent)
         {
             Delete();
-        }
-
-        public virtual void FreeCache()
-        {
-            ReleaseOPLPacket();
         }
 
         public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text)

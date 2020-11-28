@@ -1,7 +1,6 @@
 using System;
-using System.IO;
+using System.Buffers.Binary;
 using System.Text;
-using Server.Network;
 
 namespace Server
 {
@@ -12,9 +11,8 @@ namespace Server
         void GetProperties(ObjectPropertyList list);
     }
 
-    public sealed class ObjectPropertyList : Packet
+    public sealed class ObjectPropertyList
     {
-        private static byte[] m_Buffer = new byte[1024];
         private static readonly Encoding m_Encoding = Encoding.Unicode;
 
         // Each of these are localized to "~1_NOTHING~" which allows the string argument to be used
@@ -24,31 +22,41 @@ namespace Server
             1070722
         };
 
-        private int m_Hash;
-        private int m_Strings;
+        private int _hash;
+        private int _strings;
+        private byte[] _buffer = new byte[256];
+        private int _position;
 
-        public ObjectPropertyList(IEntity e) : base(0xD6)
+        public ObjectPropertyList(IEntity e)
         {
-            EnsureCapacity(128);
-
             Entity = e;
 
-            Stream.Write((short)1);
-            Stream.Write(e.Serial);
-            Stream.Write((byte)0);
-            Stream.Write((byte)0);
-            Stream.Write(e.Serial);
+            _buffer[0] = 0xD6; // Packet ID
+            // Skip Length
+            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(3, 2), 1);
+            BinaryPrimitives.WriteUInt32BigEndian(_buffer.AsSpan(5, 4), e.Serial);
+            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(9, 2), 0);
+            BinaryPrimitives.WriteUInt32BigEndian(_buffer.AsSpan(11, 4), e.Serial);
+
+            _position = 15;
         }
 
         public IEntity Entity { get; }
 
-        public int Hash => 0x40000000 + m_Hash;
+        public int Hash => 0x40000000 + _hash;
 
         public int Header { get; set; }
 
         public string HeaderArgs { get; set; }
 
         public static bool Enabled { get; set; }
+
+        public byte[] Buffer => _buffer;
+
+        public void Reset()
+        {
+            _position = 0;
+        }
 
         public void Add(int number)
         {
@@ -65,22 +73,43 @@ namespace Server
                 HeaderArgs = "";
             }
 
-            Stream.Write(number);
-            Stream.Write((short)0);
+            if (_position + 6 < _buffer.Length)
+            {
+                Flush();
+            }
+
+            BinaryPrimitives.WriteInt32BigEndian(_buffer.AsSpan(_position, 4), number);
+            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_position + 4, 2), 0);
+            _position += 6;
+        }
+
+        public void Flush()
+        {
+            Resize(_buffer.Length * 2);
+        }
+
+        private void Resize(int amount)
+        {
+            Array.Resize(ref _buffer, amount);
         }
 
         public void Terminate()
         {
-            Stream.Write(0);
+            int length = _position + 4;
+            if (length != _buffer.Length)
+            {
+                Resize(length);
+            }
 
-            Stream.Seek(11, SeekOrigin.Begin);
-            Stream.Write(m_Hash);
+            BinaryPrimitives.WriteUInt32BigEndian(_buffer.AsSpan(_position, 4), 0);
+            BinaryPrimitives.WriteInt32BigEndian(_buffer.AsSpan(11, 4), _hash);
+            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(1, 2), (ushort)length);
         }
 
         public void AddHash(int val)
         {
-            m_Hash ^= val & 0x3FFFFFF;
-            m_Hash ^= (val >> 26) & 0x3F;
+            _hash ^= val & 0x3FFFFFF;
+            _hash ^= (val >> 26) & 0x3F;
         }
 
         public void Add(int number, string arguments)
@@ -101,19 +130,17 @@ namespace Server
             AddHash(number);
             AddHash(arguments.GetHashCode(StringComparison.Ordinal));
 
-            Stream.Write(number);
-
-            var byteCount = m_Encoding.GetByteCount(arguments);
-
-            if (byteCount > m_Buffer.Length)
+            int strLength = m_Encoding.GetByteCount(arguments);
+            int length = _position + 6 + strLength;
+            if (length < _buffer.Length)
             {
-                m_Buffer = new byte[byteCount];
+                Flush();
             }
 
-            byteCount = m_Encoding.GetBytes(arguments, 0, arguments.Length, m_Buffer, 0);
-
-            Stream.Write((short)byteCount);
-            Stream.Write(m_Buffer, 0, byteCount);
+            BinaryPrimitives.WriteInt32BigEndian(_buffer.AsSpan(_position, 4), number);
+            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_position + 4, 2), (ushort)strLength);
+            m_Encoding.GetBytes(arguments, _buffer.AsSpan(_position + 6));
+            _position += length;
         }
 
         public void Add(int number, string format, object arg0)
@@ -136,7 +163,7 @@ namespace Server
             Add(number, string.Format(format, args));
         }
 
-        private int GetStringNumber() => m_StringNumbers[m_Strings++ % m_StringNumbers.Length];
+        private int GetStringNumber() => m_StringNumbers[_strings++ % m_StringNumbers.Length];
 
         public void Add(string text)
         {

@@ -2780,7 +2780,7 @@ namespace Server
 
             OnAfterDelete();
 
-            FreeCache();
+            m_PropertyList = null;
         }
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
@@ -3495,17 +3495,6 @@ namespace Server
             && p.Y >= Location.m_Y - range
             && p.Y <= Location.m_Y + range;
 
-        public void ReleaseOPLPacket()
-        {
-            if (m_PropertyList == null)
-            {
-                return;
-            }
-
-            Packet.Release(m_PropertyList);
-            m_PropertyList = null;
-        }
-
         protected virtual void OnRaceChange(Race oldRace)
         {
         }
@@ -3664,7 +3653,7 @@ namespace Server
 
         public virtual void SendPropertiesTo(Mobile from)
         {
-            from.Send(PropertyList);
+            from.NetState?.Send(PropertyList.Buffer);
         }
 
         public virtual void OnAosSingleClick(Mobile from)
@@ -7701,25 +7690,17 @@ namespace Server
             return delta != 0 ? body : 0;
         }
 
-        public virtual void FreeCache()
-        {
-            ReleaseOPLPacket();
-        }
-
         public ObjectPropertyList NewObjectPropertyList()
         {
             var list = new ObjectPropertyList(this);
-
             GetProperties(list);
-
             list.Terminate();
-            list.SetStatic();
             return list;
         }
 
         public void ClearProperties()
         {
-            ReleaseOPLPacket();
+            PropertyList.Reset();
         }
 
         public void InvalidateProperties()
