@@ -1152,6 +1152,7 @@ namespace Server
 
                 if (m_Map != null)
                 {
+                    Console.WriteLine("Got here!");
                     Span<byte> oldWorldItem = stackalloc byte[OutgoingItemPackets.OldWorldItemPacketLength];
                     var length = OutgoingItemPackets.CreateWorldItem(ref oldWorldItem, this);
                     oldWorldItem = oldWorldItem.Slice(0, length);
@@ -2471,24 +2472,17 @@ namespace Server
 
             if (m_Map != null && m_Map != Map.Internal && !World.Loading)
             {
-                int oldHash;
-                int newHash;
-                if (m_PropertyList == null)
+                if (m_PropertyList != null)
                 {
-                    oldHash = 0;
-                    newHash = PropertyList.Hash;
-                }
-                else
-                {
-                    oldHash = m_PropertyList.Hash;
+                    var oldHash = m_PropertyList.Hash;
                     m_PropertyList.Reset();
                     InitializePropertyList(m_PropertyList);
-                    newHash = m_PropertyList.Hash;
-                }
+                    var newHash = PropertyList.Hash;
 
-                if (oldHash == 0 || oldHash != newHash)
-                {
-                    Delta(ItemDelta.Properties);
+                    if (oldHash != newHash)
+                    {
+                        Delta(ItemDelta.Properties);
+                    }
                 }
             }
             else
@@ -3156,7 +3150,7 @@ namespace Server
 
         protected virtual void SendWorldPacketTo(NetState ns) => ns.SendWorldItem(this);
 
-        public virtual void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world) => ns.Send(world);
+        public virtual void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world) => ns?.Send(world);
 
         public virtual int GetTotal(TotalType type) => 0;
 

@@ -7711,24 +7711,17 @@ namespace Server
 
             if (m_Map != null && m_Map != Map.Internal && !World.Loading)
             {
-                int oldHash;
-                int newHash;
-                if (m_PropertyList == null)
+                if (m_PropertyList != null)
                 {
-                    oldHash = 0;
-                    newHash = PropertyList.Hash;
-                }
-                else
-                {
-                    oldHash = m_PropertyList.Hash;
+                    var oldHash = m_PropertyList.Hash;
                     m_PropertyList.Reset();
                     InitializePropertyList(m_PropertyList);
-                    newHash = m_PropertyList.Hash;
-                }
+                    var newHash = PropertyList.Hash;
 
-                if (oldHash == 0 || oldHash != newHash)
-                {
-                    Delta(MobileDelta.Properties);
+                    if (oldHash != newHash)
+                    {
+                        Delta(MobileDelta.Properties);
+                    }
                 }
             }
             else

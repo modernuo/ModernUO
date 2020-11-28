@@ -1,5 +1,5 @@
 using System;
-using System.Buffers.Binary;
+using System.Buffers;
 using System.Text;
 
 namespace Server
@@ -30,15 +30,13 @@ namespace Server
         public ObjectPropertyList(IEntity e)
         {
             Entity = e;
-            _buffer[0] = 0xD6; // Packet ID
-            // Skip Length
-
-            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(3, 2), 1);
-            BinaryPrimitives.WriteUInt32BigEndian(_buffer.AsSpan(5, 4), e.Serial);
-            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(9, 2), 0);
-            BinaryPrimitives.WriteUInt32BigEndian(_buffer.AsSpan(11, 4), e.Serial);
-
-            _position = 15;
+            Span<byte> buffer = _buffer;
+            buffer.Write(ref _position, (byte)0xD6); // Packet ID
+            _position += 2; // Length
+            buffer.Write(ref _position, (ushort)1);
+            buffer.Write(ref _position, e.Serial);
+            buffer.Write(ref _position, (ushort)0);
+            _position += 4; // Hash
         }
 
         public IEntity Entity { get; }
@@ -60,31 +58,6 @@ namespace Server
             _strings = 0;
         }
 
-        public void Add(int number)
-        {
-            if (number == 0)
-            {
-                return;
-            }
-
-            AddHash(number);
-
-            if (Header == 0)
-            {
-                Header = number;
-                HeaderArgs = "";
-            }
-
-            if (_position + 6 > _buffer.Length)
-            {
-                Flush();
-            }
-
-            BinaryPrimitives.WriteInt32BigEndian(_buffer.AsSpan(_position, 4), number);
-            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_position + 4, 2), 0);
-            _position += 6;
-        }
-
         public void Flush()
         {
             Resize(_buffer.Length * 2);
@@ -103,9 +76,10 @@ namespace Server
                 Resize(length);
             }
 
-            BinaryPrimitives.WriteUInt32BigEndian(_buffer.AsSpan(_position, 4), 0);
-            BinaryPrimitives.WriteInt32BigEndian(_buffer.AsSpan(11, 4), _hash);
-            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(1, 2), (ushort)length);
+            Span<byte> buffer = _buffer;
+            buffer.Write(ref _position, 0);
+            buffer.Slice(11, 4).Write(_hash);
+            buffer.Slice(1, 2).Write((ushort)_position);
         }
 
         public void AddHash(int val)
@@ -114,7 +88,7 @@ namespace Server
             _hash ^= (val >> 26) & 0x3F;
         }
 
-        public void Add(int number, string arguments)
+        public void Add(int number, string arguments = null)
         {
             if (number == 0)
             {
@@ -132,17 +106,21 @@ namespace Server
             AddHash(number);
             AddHash(arguments.GetHashCode(StringComparison.Ordinal));
 
-            int strLength = m_Encoding.GetByteCount(arguments);
+            int strLength = arguments.Length > 0 ? m_Encoding.GetByteCount(arguments) : 0;
             int length = _position + 6 + strLength;
             if (length > _buffer.Length)
             {
                 Flush();
             }
 
-            BinaryPrimitives.WriteInt32BigEndian(_buffer.AsSpan(_position, 4), number);
-            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_position + 4, 2), (ushort)strLength);
-            m_Encoding.GetBytes(arguments, _buffer.AsSpan(_position + 6));
-            _position += strLength;
+            Span<byte> buffer = _buffer;
+            buffer.Write(ref _position, number);
+            buffer.Write(ref _position, (ushort)strLength);
+            if (strLength > 0)
+            {
+                m_Encoding.GetBytes(arguments, buffer.Slice(_position));
+                _position += strLength;
+            }
         }
 
         public void Add(int number, string format, object arg0)
