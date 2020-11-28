@@ -7229,10 +7229,7 @@ namespace Server
 
         public virtual void SendOPLPacketTo(NetState ns, ReadOnlySpan<byte> opl)
         {
-            if (opl != null)
-            {
-                ns?.Send(opl);
-            }
+            ns?.Send(opl);
         }
 
         public virtual void OnAccessLevelChanged(AccessLevel oldLevel)

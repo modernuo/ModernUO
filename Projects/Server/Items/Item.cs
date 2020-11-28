@@ -1152,7 +1152,6 @@ namespace Server
 
                 if (m_Map != null)
                 {
-                    Console.WriteLine("Got here!");
                     Span<byte> oldWorldItem = stackalloc byte[OutgoingItemPackets.OldWorldItemPacketLength];
                     var length = OutgoingItemPackets.CreateWorldItem(ref oldWorldItem, this);
                     oldWorldItem = oldWorldItem.Slice(0, length);
@@ -3142,10 +3141,7 @@ namespace Server
 
         public virtual void SendOPLPacketTo(NetState ns, ReadOnlySpan<byte> opl)
         {
-            if (opl != null)
-            {
-                ns?.Send(opl);
-            }
+            ns?.Send(opl);
         }
 
         protected virtual void SendWorldPacketTo(NetState ns) => ns.SendWorldItem(this);
