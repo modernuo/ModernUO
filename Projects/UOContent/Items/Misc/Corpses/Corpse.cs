@@ -816,7 +816,7 @@ namespace Server.Items
             ns.Send(new CorpseEquip(ns.Mobile, this));
         }
 
-        protected override void SendInfoTo(NetState ns, bool sendOplPacket)
+        public override void SendInfoTo(NetState ns, bool sendOplPacket)
         {
             base.SendInfoTo(ns, sendOplPacket);
 

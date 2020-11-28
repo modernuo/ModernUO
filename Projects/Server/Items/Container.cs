@@ -706,9 +706,12 @@ namespace Server.Items
 
                 SendContentTo(ns);
 
-                for (var i = 0; i < Items.Count; ++i)
+                if (ObjectPropertyList.Enabled)
                 {
-                    Items[i].SendOPLPacketTo(to.NetState);
+                    for (var i = 0; i < Items.Count; ++i)
+                    {
+                        Items[i].SendOPLPacketTo(to.NetState, true);
+                    }
                 }
             }
         }

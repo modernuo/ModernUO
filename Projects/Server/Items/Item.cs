@@ -3133,7 +3133,7 @@ namespace Server
 
         public void SendInfoTo(NetState ns) => SendInfoTo(ns, ObjectPropertyList.Enabled);
 
-        protected virtual void SendInfoTo(NetState ns, bool sendOplPacket)
+        public virtual void SendInfoTo(NetState ns, bool sendOplPacket)
         {
             SendWorldPacketTo(ns);
             SendOPLPacketTo(ns, sendOplPacket);
@@ -3141,7 +3141,7 @@ namespace Server
 
         public void SendOPLPacketTo(NetState ns) => SendOPLPacketTo(ns, ObjectPropertyList.Enabled);
 
-        protected virtual void SendOPLPacketTo(NetState ns, bool sendOplPacket)
+        public virtual void SendOPLPacketTo(NetState ns, bool sendOplPacket)
         {
             if (sendOplPacket)
             {
