@@ -781,7 +781,7 @@ namespace Server
         public int CompareTo(Item other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
         public virtual int HuedItemID => m_ItemID;
-        public ObjectPropertyList PropertyList => m_PropertyList ??= NewObjectPropertyList();
+        public ObjectPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
 
         /// <summary>
         ///     Overridable. Fills an <see cref="ObjectPropertyList" /> with everything applicable. By default, this invokes
@@ -2449,20 +2449,17 @@ namespace Server
             }
         }
 
-        public ObjectPropertyList NewObjectPropertyList()
+        private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
         {
-            var list = new ObjectPropertyList(this);
-
             GetProperties(list);
             AppendChildProperties(list);
-
             list.Terminate();
             return list;
         }
 
         public void ClearProperties()
         {
-            PropertyList.Reset();
+            m_PropertyList = null;
         }
 
         public void InvalidateProperties()
@@ -2474,10 +2471,22 @@ namespace Server
 
             if (m_Map != null && m_Map != Map.Internal && !World.Loading)
             {
-                var oldList = m_PropertyList;
-                m_PropertyList = null;
+                int oldHash;
+                int newHash;
+                if (m_PropertyList == null)
+                {
+                    oldHash = 0;
+                    newHash = PropertyList.Hash;
+                }
+                else
+                {
+                    oldHash = m_PropertyList.Hash;
+                    m_PropertyList.Reset();
+                    InitializePropertyList(m_PropertyList);
+                    newHash = m_PropertyList.Hash;
+                }
 
-                if (oldList != null && oldList.Hash != PropertyList.Hash)
+                if (oldHash == 0 || oldHash != newHash)
                 {
                     Delta(ItemDelta.Properties);
                 }

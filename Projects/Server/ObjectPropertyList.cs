@@ -24,15 +24,15 @@ namespace Server
 
         private int _hash;
         private int _strings;
-        private byte[] _buffer = new byte[256];
+        private byte[] _buffer;
         private int _position;
 
         public ObjectPropertyList(IEntity e)
         {
             Entity = e;
-
             _buffer[0] = 0xD6; // Packet ID
             // Skip Length
+
             BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(3, 2), 1);
             BinaryPrimitives.WriteUInt32BigEndian(_buffer.AsSpan(5, 4), e.Serial);
             BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(9, 2), 0);
@@ -55,7 +55,9 @@ namespace Server
 
         public void Reset()
         {
-            _position = 0;
+            _position = 15;
+            _hash = 0;
+            _strings = 0;
         }
 
         public void Add(int number)
