@@ -920,7 +920,6 @@ namespace Server.Mobiles
                 {
                     if (m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player))
                     {
-                        Console.WriteLine("Trying to drop on a level above/below you!");
                         mobiles.Free();
                         return false;
                     }

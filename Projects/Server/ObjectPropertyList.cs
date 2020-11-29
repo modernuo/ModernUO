@@ -24,7 +24,7 @@ namespace Server
 
         private int _hash;
         private int _strings;
-        private byte[] _buffer = new byte[256];
+        private byte[] _buffer = new byte[64];
         private int _position;
 
         public ObjectPropertyList(IEntity e)
