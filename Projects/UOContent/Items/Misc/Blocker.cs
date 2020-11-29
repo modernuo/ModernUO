@@ -44,14 +44,14 @@ namespace Server.Items
         private void SendGMItem(NetState ns)
         {
             // GM Packet
-            Span<byte> buffer = stackalloc byte[OutgoingItemPackets.NewWorldItemPacketLength];
+            Span<byte> buffer = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength];
+
             int length;
 
             if (ns.StygianAbyss)
             {
-                OutgoingItemPackets.CreateWorldItemNew(ref buffer, this);
+                length = OutgoingItemPackets.CreateWorldItemNew(ref buffer, this, ns.HighSeas);
                 BinaryPrimitives.WriteUInt16BigEndian(buffer.Slice(8, 2), GMItemId);
-                length = ns.HighSeas ? OutgoingItemPackets.NewWorldItemPacketLength : OutgoingItemPackets.SAWorldItemPacketLength;
             }
             else
             {

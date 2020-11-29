@@ -1118,8 +1118,11 @@ namespace Server
                 item.RemoveItem(this);
             }
 
+            Console.WriteLine("Finished removing from parent {0} ({1})", Name ?? ItemData.Name, Serial);
+
             if (m_Map != map)
             {
+                Console.WriteLine("Changing from map {2} to map {3} for {0} ({1})", Name ?? ItemData.Name, Serial, m_Map, map);
                 var old = m_Map;
 
                 if (m_Map != null)
@@ -1152,12 +1155,19 @@ namespace Server
 
                 if (m_Map != null)
                 {
-                    Span<byte> oldWorldItem = stackalloc byte[OutgoingItemPackets.OldWorldItemPacketLength];
+                    Console.WriteLine("Creating/Sending new world packet for {0} ({1})", Name ?? ItemData.Name, Serial);
+
+                    Span<byte> oldWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength];
                     var length = OutgoingItemPackets.CreateWorldItem(ref oldWorldItem, this);
                     oldWorldItem = oldWorldItem.Slice(0, length);
-                    Span<byte> newWorldItem = stackalloc byte[OutgoingItemPackets.NewWorldItemPacketLength];
-                    OutgoingItemPackets.CreateWorldItemNew(ref newWorldItem, this);
-                    Span<byte> saWorldItem = newWorldItem.Slice(0, OutgoingItemPackets.SAWorldItemPacketLength);
+
+                    Span<byte> saWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength];
+                    length = OutgoingItemPackets.CreateWorldItemNew(ref saWorldItem, this, false);
+                    saWorldItem = saWorldItem.Slice(0, length);
+
+                    Span<byte> hsWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength];
+                    length = OutgoingItemPackets.CreateWorldItemNew(ref hsWorldItem, this, false);
+                    hsWorldItem = hsWorldItem.Slice(0, length);
 
                     Span<byte> opl = ObjectPropertyList.Enabled ? stackalloc byte[OutgoingEntityPackets.OPLPacketLength] : null;
                     if (opl != null)
@@ -1170,25 +1180,31 @@ namespace Server
                     foreach (var state in eable)
                     {
                         var m = state.Mobile;
+                        Console.WriteLine("Mobile can see object? {0} - {1} ({2})", m.Name, Name ?? ItemData.Name, Serial);
 
                         if (m.CanSee(this) && m.InRange(m_Location, GetUpdateRange(m)))
                         {
                             if (state.HighSeas)
                             {
-                                SendInfoTo(state, newWorldItem, opl);
+                                Console.WriteLine("Sending HS Packet {0} ({1})", Name ?? ItemData.Name, Serial);
+                                SendInfoTo(state, hsWorldItem, opl);
                             }
                             else if (state.StygianAbyss)
                             {
+                                Console.WriteLine("Sending SA Packet {0} ({1})", Name ?? ItemData.Name, Serial);
                                 SendInfoTo(state, saWorldItem, opl);
                             }
                             else
                             {
+                                Console.WriteLine("Sending Old Packet {0} ({1})", Name ?? ItemData.Name, Serial);
                                 SendInfoTo(state, oldWorldItem, opl);
                             }
                         }
                     }
 
                     eable.Free();
+
+                    Console.WriteLine("Completed Sending world packets for {0} ({1})", Name ?? ItemData.Name, Serial);
                 }
 
                 RemDelta(ItemDelta.Update);
@@ -1235,6 +1251,7 @@ namespace Server
 
                     if (m.CanSee(this) && m.InRange(m_Location, GetUpdateRange(m)))
                     {
+                        Console.WriteLine("Sending Info for {0} ({1})", Name ?? ItemData.Name, Serial);
                         SendInfoTo(state);
                     }
                 }
@@ -1247,6 +1264,7 @@ namespace Server
             }
             else
             {
+                Console.WriteLine("Moving to Map is null {0} ({1})", Name ?? ItemData.Name, Serial);
                 Map = map;
                 Location = location;
             }
@@ -3603,6 +3621,8 @@ namespace Server
                 return false;
             }
 
+            Console.WriteLine("Dropping to world! {0}", from.RawName);
+
             if (!from.InRange(p, 2))
             {
                 return false;
@@ -3659,28 +3679,27 @@ namespace Server
             var eable = map.GetItemsInRange(p, 0);
 
             var items = eable.Where(
-                    item =>
+                item =>
+                {
+                    if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
                     {
-                        if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
-                        {
-                            return false;
-                        }
-
-                        var id = item.ItemData;
-
-                        if (id.Surface)
-                        {
-                            var top = item.Z + id.CalcHeight;
-                            if (top <= maxZ && top >= z)
-                            {
-                                z = top;
-                            }
-                        }
-
-                        return true;
+                        return false;
                     }
-                )
-                .ToList();
+
+                    var id = item.ItemData;
+
+                    if (id.Surface)
+                    {
+                        var top = item.Z + id.CalcHeight;
+                        if (top <= maxZ && top >= z)
+                        {
+                            z = top;
+                        }
+                    }
+
+                    return true;
+                }
+            ).ToList();
 
             eable.Free();
 
@@ -3838,24 +3857,34 @@ namespace Server
 
             p = new Point3D(x, y, z);
 
+            Console.WriteLine("Drop world at location {1}! {0}", from.RawName, p);
+
             if (!from.InLOS(new Point3D(x, y, z + 1)))
             {
                 return false;
             }
+
+            Console.WriteLine("Dropping in LOS {1}! {0}", from.RawName, p);
 
             if (!from.OnDroppedItemToWorld(this, p))
             {
                 return false;
             }
 
+            Console.WriteLine("Passed drop item world check (item) {1}! {0}", from.RawName, p);
+
             if (!OnDroppedToWorld(from, p))
             {
                 return false;
             }
 
+            Console.WriteLine("Dropping {0} to the world ({1})", Name ?? ItemData.Name, Serial);
+
             var soundID = GetDropSound();
 
             MoveToWorld(p, from.Map);
+
+            Console.WriteLine("Sending Sound {0} ({1})", Name ?? ItemData.Name, Serial);
 
             from.SendSound(soundID == -1 ? 0x42 : soundID, GetWorldLocation());
 

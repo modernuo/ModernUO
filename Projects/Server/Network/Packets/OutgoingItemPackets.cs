@@ -21,9 +21,7 @@ namespace Server.Network
 {
     public static class OutgoingItemPackets
     {
-        public const int OldWorldItemPacketLength = 20;
-        public const int NewWorldItemPacketLength = 26;
-        public const int SAWorldItemPacketLength = 24; // For slicing
+        public const int MaxWorldItemPacketLength = 26;
 
         public static int CreateWorldItem(ref Span<byte> buffer, Item item)
         {
@@ -86,23 +84,16 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[NewWorldItemPacketLength];
-            int length;
+            Span<byte> buffer = stackalloc byte[MaxWorldItemPacketLength];
 
-            if (ns.StygianAbyss)
-            {
-                CreateWorldItemNew(ref buffer, item);
-                length = ns.HighSeas ? NewWorldItemPacketLength : SAWorldItemPacketLength;
-            }
-            else
-            {
-                length = CreateWorldItem(ref buffer, item);
-            }
+            var length = ns.StygianAbyss ?
+                CreateWorldItemNew(ref buffer, item, ns.HighSeas) :
+                CreateWorldItem(ref buffer, item);
 
             ns.Send(buffer.Slice(0, length));
         }
 
-        public static void CreateWorldItemNew(ref Span<byte> buffer, Item item)
+        public static int CreateWorldItemNew(ref Span<byte> buffer, Item item, bool isHS)
         {
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xF3); // Packet ID
@@ -112,22 +103,22 @@ namespace Server.Network
 
             if (item is BaseMulti)
             {
-                writer.Write((byte)0x02);
+                writer.Write((byte)2);
                 writer.Write(item.Serial);
                 writer.Write((short)(itemID & 0x3FFF));
                 writer.Write((byte)0);
             }
             else
             {
-                writer.Write((byte)0x00);
+                writer.Write((byte)0);
                 writer.Write(item.Serial);
-                writer.Write((short)(itemID & 0x7FFF));
+                writer.Write((short)(itemID & (isHS ? 0xFFFF : 0x7FFF)));
                 writer.Write((byte)0);
             }
 
             var amount = item.Amount;
-            writer.Write((short)amount);
-            writer.Write((short)amount);
+            writer.Write((short)amount); // Min
+            writer.Write((short)amount); // Max
 
             var loc = item.Location;
             writer.Write((short)loc.X);
@@ -138,7 +129,12 @@ namespace Server.Network
             writer.Write((short)item.Hue);
             writer.Write((byte)item.GetPacketFlags());
 
-            writer.Write((short)0); // HS Only
+            if (isHS)
+            {
+                writer.Write((short)0);
+            }
+
+            return writer.Position;
         }
     }
 }
