@@ -5584,17 +5584,19 @@ namespace Server
                     {
                         state.Send(new ContainerContentUpdate(item));
                     }
-
-                    item.SendOPLPacketTo(state);
                 }
                 else if (item.Parent is Mobile)
                 {
                     state.SendEquipUpdate(item);
-                    item.SendOPLPacketTo(state);
                 }
                 else
                 {
                     item.SendInfoTo(state);
+                }
+
+                if (item.Parent != null)
+                {
+                    item.SendOPLPacketTo(state);
                 }
             }
         }

@@ -1166,7 +1166,7 @@ namespace Server
                     saWorldItem = saWorldItem.Slice(0, length);
 
                     Span<byte> hsWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength];
-                    length = OutgoingItemPackets.CreateWorldItemNew(ref hsWorldItem, this, false);
+                    length = OutgoingItemPackets.CreateWorldItemNew(ref hsWorldItem, this, true);
                     hsWorldItem = hsWorldItem.Slice(0, length);
 
                     Span<byte> opl = ObjectPropertyList.Enabled ? stackalloc byte[OutgoingEntityPackets.OPLPacketLength] : null;
@@ -3868,6 +3868,7 @@ namespace Server
 
             if (!from.OnDroppedItemToWorld(this, p))
             {
+                Console.WriteLine("Failed to drop to world! {1}! {0}", from.RawName, p);
                 return false;
             }
 
