@@ -118,7 +118,7 @@ namespace Server.Network
             var writer = new CircularBufferWriter(buffer);
             writer.Write((byte)0x24); // Packet ID
             writer.Write(cont);
-            writer.Write(gumpId);
+            writer.Write((ushort)gumpId);
             if (ns.HighSeas)
             {
                 writer.Write((short)0x7D);
