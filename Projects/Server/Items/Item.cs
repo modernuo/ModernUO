@@ -900,7 +900,7 @@ namespace Server
                 flags |= SaveFlag.Parent;
             }
 
-            if (items?.Count > 0)
+            if (items.Count > 0)
             {
                 flags |= SaveFlag.Items;
             }
@@ -1118,11 +1118,8 @@ namespace Server
                 item.RemoveItem(this);
             }
 
-            Console.WriteLine("Finished removing from parent {0} ({1})", Name ?? ItemData.Name, Serial);
-
             if (m_Map != map)
             {
-                Console.WriteLine("Changing from map {2} to map {3} for {0} ({1})", Name ?? ItemData.Name, Serial, m_Map, map);
                 var old = m_Map;
 
                 if (m_Map != null)
@@ -1140,12 +1137,9 @@ namespace Server
 
                 var items = LookupItems();
 
-                if (items != null)
+                for (var i = 0; i < items.Count; ++i)
                 {
-                    for (var i = 0; i < items.Count; ++i)
-                    {
-                        items[i].Map = map;
-                    }
+                    items[i].Map = map;
                 }
 
                 m_Map = map;
@@ -1155,8 +1149,6 @@ namespace Server
 
                 if (m_Map != null)
                 {
-                    Console.WriteLine("Creating/Sending new world packet for {0} ({1})", Name ?? ItemData.Name, Serial);
-
                     Span<byte> oldWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength];
                     var length = OutgoingItemPackets.CreateWorldItem(ref oldWorldItem, this);
                     oldWorldItem = oldWorldItem.Slice(0, length);
@@ -1180,31 +1172,25 @@ namespace Server
                     foreach (var state in eable)
                     {
                         var m = state.Mobile;
-                        Console.WriteLine("Mobile can see object? {0} - {1} ({2})", m.Name, Name ?? ItemData.Name, Serial);
 
                         if (m.CanSee(this) && m.InRange(m_Location, GetUpdateRange(m)))
                         {
                             if (state.HighSeas)
                             {
-                                Console.WriteLine("Sending HS Packet {0} ({1})", Name ?? ItemData.Name, Serial);
                                 SendInfoTo(state, hsWorldItem, opl);
                             }
                             else if (state.StygianAbyss)
                             {
-                                Console.WriteLine("Sending SA Packet {0} ({1})", Name ?? ItemData.Name, Serial);
                                 SendInfoTo(state, saWorldItem, opl);
                             }
                             else
                             {
-                                Console.WriteLine("Sending Old Packet {0} ({1})", Name ?? ItemData.Name, Serial);
                                 SendInfoTo(state, oldWorldItem, opl);
                             }
                         }
                     }
 
                     eable.Free();
-
-                    Console.WriteLine("Completed Sending world packets for {0} ({1})", Name ?? ItemData.Name, Serial);
                 }
 
                 RemDelta(ItemDelta.Update);
@@ -1251,7 +1237,6 @@ namespace Server
 
                     if (m.CanSee(this) && m.InRange(m_Location, GetUpdateRange(m)))
                     {
-                        Console.WriteLine("Sending Info for {0} ({1})", Name ?? ItemData.Name, Serial);
                         SendInfoTo(state);
                     }
                 }
@@ -1264,7 +1249,6 @@ namespace Server
             }
             else
             {
-                Console.WriteLine("Moving to Map is null {0} ({1})", Name ?? ItemData.Name, Serial);
                 Map = map;
                 Location = location;
             }
@@ -1293,12 +1277,9 @@ namespace Server
 
                     var items = LookupItems();
 
-                    if (items != null)
+                    for (var i = 0; i < items.Count; ++i)
                     {
-                        for (var i = 0; i < items.Count; ++i)
-                        {
-                            items[i].Map = value;
-                        }
+                        items[i].Map = value;
                     }
 
                     m_Map = value;
@@ -1511,14 +1492,11 @@ namespace Server
 
             var items = LookupItems();
 
-            if (items != null)
+            for (var i = items.Count - 1; i >= 0; --i)
             {
-                for (var i = items.Count - 1; i >= 0; --i)
+                if (i < items.Count)
                 {
-                    if (i < items.Count)
-                    {
-                        items[i].OnParentDeleted(this);
-                    }
+                    items[i].OnParentDeleted(this);
                 }
             }
 
@@ -1793,15 +1771,7 @@ namespace Server
             }
         }
 
-        public List<Item> LookupItems()
-        {
-            if (this is Container container)
-            {
-                return container.m_Items;
-            }
-
-            return LookupCompactInfo()?.m_Items;
-        }
+        public List<Item> LookupItems() => (this is Container container ? container.m_Items : LookupCompactInfo()?.m_Items) ?? EmptyItems;
 
         public List<Item> AcquireItems()
         {
@@ -2140,8 +2110,7 @@ namespace Server
 
         public void Bounce(Mobile from)
         {
-            m_Parent.RemoveItem(this);
-
+            m_Parent?.RemoveItem(this);
             m_Parent = null;
 
             var bounce = GetBounce();
@@ -3454,11 +3423,9 @@ namespace Server
         {
             var items = LookupItems();
 
-            if (items?.Contains(item) == true)
+            if (items.Remove(item))
             {
                 item.SendRemovePacket();
-
-                items.Remove(item);
 
                 if (!item.IsVirtualItem)
                 {
@@ -3620,8 +3587,6 @@ namespace Server
             {
                 return false;
             }
-
-            Console.WriteLine("Dropping to world! {0}", from.RawName);
 
             if (!from.InRange(p, 2))
             {
@@ -3857,35 +3822,24 @@ namespace Server
 
             p = new Point3D(x, y, z);
 
-            Console.WriteLine("Drop world at location {1}! {0}", from.RawName, p);
-
             if (!from.InLOS(new Point3D(x, y, z + 1)))
             {
                 return false;
             }
 
-            Console.WriteLine("Dropping in LOS {1}! {0}", from.RawName, p);
-
             if (!from.OnDroppedItemToWorld(this, p))
             {
-                Console.WriteLine("Failed to drop to world! {1}! {0}", from.RawName, p);
                 return false;
             }
-
-            Console.WriteLine("Passed drop item world check (item) {1}! {0}", from.RawName, p);
 
             if (!OnDroppedToWorld(from, p))
             {
                 return false;
             }
 
-            Console.WriteLine("Dropping {0} to the world ({1})", Name ?? ItemData.Name, Serial);
-
             var soundID = GetDropSound();
 
             MoveToWorld(p, from.Map);
-
-            Console.WriteLine("Sending Sound {0} ({1})", Name ?? ItemData.Name, Serial);
 
             from.SendSound(soundID == -1 ? 0x42 : soundID, GetWorldLocation());
 

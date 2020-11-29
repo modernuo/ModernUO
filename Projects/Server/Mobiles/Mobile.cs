@@ -7051,13 +7051,9 @@ namespace Server
                 return;
             }
 
-            if (Items.Contains(item))
+            if (Items.Remove(item))
             {
                 item.SendRemovePacket();
-
-                // int oldCount = m_Items.Count;
-
-                Items.Remove(item);
 
                 if (!item.IsVirtualItem)
                 {
