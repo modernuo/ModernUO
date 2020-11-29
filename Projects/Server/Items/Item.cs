@@ -1329,15 +1329,7 @@ namespace Server
 
                     if (ns != null && rootParent.CanSee(this) && rootParent.InRange(worldLoc, GetUpdateRange(rootParent)))
                     {
-                        if (ns.ContainerGridLines)
-                        {
-                            ns.Send(new ContainerContentUpdate6017(this));
-                        }
-                        else
-                        {
-                            ns.Send(new ContainerContentUpdate(this));
-                        }
-
+                        ns.SendContainerContentUpdate(this);
                         SendOPLPacketTo(ns);
                     }
                 }
@@ -1364,15 +1356,7 @@ namespace Server
 
                     if (ns != null && tradeRecip.CanSee(this) && tradeRecip.InRange(worldLoc, GetUpdateRange(tradeRecip)))
                     {
-                        if (ns.ContainerGridLines)
-                        {
-                            ns.Send(new ContainerContentUpdate6017(this));
-                        }
-                        else
-                        {
-                            ns.Send(new ContainerContentUpdate(this));
-                        }
-
+                        ns.SendContainerContentUpdate(this);
                         SendOPLPacketTo(ns);
                     }
                 }
@@ -1404,15 +1388,7 @@ namespace Server
 
                                 if (ns != null && mob.CanSee(this))
                                 {
-                                    if (ns.ContainerGridLines)
-                                    {
-                                        ns.Send(new ContainerContentUpdate6017(this));
-                                    }
-                                    else
-                                    {
-                                        ns.Send(new ContainerContentUpdate(this));
-                                    }
-
+                                    ns.SendContainerContentUpdate(this);
                                     SendOPLPacketTo(ns);
                                 }
                             }
@@ -1449,14 +1425,8 @@ namespace Server
                     {
                         if (m_Parent is Item)
                         {
-                            if (state.ContainerGridLines)
-                            {
-                                state.Send(new ContainerContentUpdate6017(this));
-                            }
-                            else
-                            {
-                                state.Send(new ContainerContentUpdate(this));
-                            }
+                            // TODO: Optimize by writing once?
+                            state.SendContainerContentUpdate(this);
                         }
                         else if (m_Parent is Mobile)
                         {

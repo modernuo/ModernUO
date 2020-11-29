@@ -167,14 +167,7 @@ namespace Server.Items
                 var state = from.NetState;
 
                 state.Send(new BBDisplayBoard(this));
-                if (state.ContainerGridLines)
-                {
-                    state.Send(new ContainerContent6017(from, this));
-                }
-                else
-                {
-                    state.Send(new ContainerContent(from, this));
-                }
+                state.SendContainerContent(from, this);
             }
             else
             {

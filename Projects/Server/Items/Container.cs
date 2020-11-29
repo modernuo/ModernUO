@@ -695,14 +695,7 @@ namespace Server.Items
 
             if (ns != null)
             {
-                if (ns.HighSeas)
-                {
-                    to.Send(new ContainerDisplayHS(Serial, GumpID));
-                }
-                else
-                {
-                    to.Send(new ContainerDisplay(Serial, GumpID));
-                }
+                ns.SendDisplayContainer(Serial, GumpID);
 
                 SendContentTo(ns);
 
@@ -762,22 +755,7 @@ namespace Server.Items
             }
         }
 
-        public virtual void SendContentTo(NetState state)
-        {
-            if (state == null)
-            {
-                return;
-            }
-
-            if (state.ContainerGridLines)
-            {
-                state.Send(new ContainerContent6017(state.Mobile, this));
-            }
-            else
-            {
-                state.Send(new ContainerContent(state.Mobile, this));
-            }
-        }
+        public virtual void SendContentTo(NetState state) => state.SendContainerContent(state.Mobile, this);
 
         public override void GetProperties(ObjectPropertyList list)
         {

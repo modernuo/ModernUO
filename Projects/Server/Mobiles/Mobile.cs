@@ -5576,14 +5576,7 @@ namespace Server
 
                 if (item.Parent is Item)
                 {
-                    if (state.ContainerGridLines)
-                    {
-                        state.Send(new ContainerContentUpdate6017(item));
-                    }
-                    else
-                    {
-                        state.Send(new ContainerContentUpdate(item));
-                    }
+                    state.SendContainerContentUpdate(item);
                 }
                 else if (item.Parent is Mobile)
                 {
