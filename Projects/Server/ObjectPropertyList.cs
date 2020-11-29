@@ -104,9 +104,13 @@ namespace Server
             }
 
             AddHash(number);
-            AddHash(arguments.GetHashCode(StringComparison.Ordinal));
+            if (arguments.Length > 0)
+            {
+                AddHash(arguments.GetHashCode(StringComparison.Ordinal));
+            }
 
-            int strLength = arguments.Length > 0 ? m_Encoding.GetByteCount(arguments) : 0;
+            int strLength = m_Encoding.GetByteCount(arguments);
+
             int length = _position + 6 + strLength;
             if (length > _buffer.Length)
             {

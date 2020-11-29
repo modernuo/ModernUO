@@ -2458,17 +2458,24 @@ namespace Server
 
             if (m_Map != null && m_Map != Map.Internal && !World.Loading)
             {
+                int? oldHash;
+                int newHash;
                 if (m_PropertyList != null)
                 {
-                    var oldHash = m_PropertyList.Hash;
+                    oldHash = m_PropertyList.Hash;
                     m_PropertyList.Reset();
                     InitializePropertyList(m_PropertyList);
-                    var newHash = PropertyList.Hash;
+                    newHash = m_PropertyList.Hash;
+                }
+                else
+                {
+                    oldHash = null;
+                    newHash = PropertyList.Hash;
+                }
 
-                    if (oldHash != newHash)
-                    {
-                        Delta(ItemDelta.Properties);
-                    }
+                if (oldHash != newHash)
+                {
+                    Delta(ItemDelta.Properties);
                 }
             }
             else
