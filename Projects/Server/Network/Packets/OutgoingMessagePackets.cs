@@ -57,8 +57,8 @@ namespace Server.Network
             Serial serial, int graphic, MessageType type, int hue, int font, int number, string name = "", string args = ""
         )
         {
-            name = name?.Trim() ?? "";
-            args = args?.Trim() ?? "";
+            name ??= "";
+            args ??= "";
 
             if (hue == 0)
             {
@@ -111,9 +111,9 @@ namespace Server.Network
             AffixType affixType, string affix = "", string args = ""
         )
         {
-            name = name?.Trim() ?? "";
-            affix = affix?.Trim() ?? "";
-            args = args?.Trim() ?? "";
+            name ??= "";
+            affix ??= "";
+            args ??= "";
 
             if (hue == 0)
             {
@@ -183,9 +183,9 @@ namespace Server.Network
             string text
         )
         {
-            name = name?.Trim() ?? "";
-            text = text?.Trim() ?? "";
-            lang = lang?.Trim() ?? "ENU";
+            name ??= "";
+            text ??= "";
+            lang ??= "ENU";
 
             if (hue == 0)
             {

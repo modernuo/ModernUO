@@ -90,15 +90,6 @@ namespace Server.Network
             int seq = reader.ReadByte();
             var key = reader.ReadUInt32();
 
-            if (key != 0)
-            {
-                state.WriteConsole("OldMove w/ Key {0}", key);
-            }
-            else
-            {
-                state.WriteConsole("Old Movement!");
-            }
-
             if (state.Sequence == 0 && seq != 0 || !from.Move(dir))
             {
                 state.SendMovementRej(seq, from);
