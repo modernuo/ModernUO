@@ -379,6 +379,11 @@ namespace Server.Network
 
         public void Send(ReadOnlySpan<byte> span)
         {
+            if (span == null)
+            {
+                return;
+            }
+
             var length = span.Length;
             if (Connection == null || BlockAllPackets || length <= 0 || !GetSendBuffer(out var buffer))
             {

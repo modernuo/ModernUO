@@ -916,16 +916,13 @@ namespace Server.Mobiles
             {
                 var mobiles = Map.GetMobilesInRange(location, 0);
 
-                var found = mobiles.Any(
-                    m =>
-                        m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player)
-                );
-
-                mobiles.Free();
-
-                if (found)
+                foreach (Mobile m in mobiles)
                 {
-                    return false;
+                    if (m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player))
+                    {
+                        mobiles.Free();
+                        return false;
+                    }
                 }
 
                 mobiles.Free();
@@ -933,51 +930,51 @@ namespace Server.Mobiles
 
             var bi = item.GetBounce();
 
-            if (bi != null)
+            if (bi == null)
             {
-                var type = item.GetType();
+                return true;
+            }
 
-                if (type.IsDefined(typeof(FurnitureAttribute), true) ||
-                    type.IsDefined(typeof(DynamicFlipingAttribute), true))
+            var type = item.GetType();
+
+            if (type.IsDefined(typeof(FurnitureAttribute), true) ||
+                type.IsDefined(typeof(DynamicFlipingAttribute), true))
+            {
+                var objs = type.GetCustomAttributes(typeof(FlippableAttribute), true);
+
+                if (objs.Length > 0)
                 {
-                    var objs = type.GetCustomAttributes(typeof(FlippableAttribute), true);
-
-                    if (objs.Length > 0)
+                    if (objs[0] is FlippableAttribute fp)
                     {
-                        if (objs[0] is FlippableAttribute fp)
+                        var itemIDs = fp.ItemIDs;
+
+                        var oldWorldLoc = bi.WorldLoc;
+                        var newWorldLoc = location;
+
+                        if (oldWorldLoc.X != newWorldLoc.X || oldWorldLoc.Y != newWorldLoc.Y)
                         {
-                            var itemIDs = fp.ItemIDs;
+                            var dir = GetDirection4(oldWorldLoc, newWorldLoc);
 
-                            var oldWorldLoc = bi.WorldLoc;
-                            var newWorldLoc = location;
-
-                            if (oldWorldLoc.X != newWorldLoc.X || oldWorldLoc.Y != newWorldLoc.Y)
+                            item.ItemID = itemIDs.Length switch
                             {
-                                var dir = GetDirection4(oldWorldLoc, newWorldLoc);
-
-                                if (itemIDs.Length == 2)
+                                2 => dir switch
                                 {
-                                    item.ItemID = dir switch
-                                    {
-                                        Direction.North => itemIDs[0],
-                                        Direction.South => itemIDs[0],
-                                        Direction.East  => itemIDs[1],
-                                        Direction.West  => itemIDs[1],
-                                        _               => item.ItemID
-                                    };
-                                }
-                                else if (itemIDs.Length == 4)
+                                    Direction.North => itemIDs[0],
+                                    Direction.South => itemIDs[0],
+                                    Direction.East  => itemIDs[1],
+                                    Direction.West  => itemIDs[1],
+                                    _               => item.ItemID
+                                },
+                                4 => dir switch
                                 {
-                                    item.ItemID = dir switch
-                                    {
-                                        Direction.South => itemIDs[0],
-                                        Direction.East  => itemIDs[1],
-                                        Direction.North => itemIDs[2],
-                                        Direction.West  => itemIDs[3],
-                                        _               => item.ItemID
-                                    };
-                                }
-                            }
+                                    Direction.South => itemIDs[0],
+                                    Direction.East  => itemIDs[1],
+                                    Direction.North => itemIDs[2],
+                                    Direction.West  => itemIDs[3],
+                                    _               => item.ItemID
+                                },
+                                _ => item.ItemID
+                            };
                         }
                     }
                 }

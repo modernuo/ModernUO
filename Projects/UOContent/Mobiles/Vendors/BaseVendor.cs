@@ -1005,7 +1005,7 @@ namespace Server.Mobiles
 
             for (var i = 0; i < opls.Count; ++i)
             {
-                from.Send(opls[i]);
+                from.NetState?.Send(opls[i].Buffer);
             }
 
             SayTo(from, 500186); // Greetings.  Have a look around.

@@ -669,7 +669,6 @@ namespace Server.Items
         public void DisplayTo(Mobile to)
         {
             // The client must know about the spellbook or it will crash!
-
             var ns = to.NetState;
 
             if (ns == null)
@@ -679,64 +678,19 @@ namespace Server.Items
 
             if (Parent == null)
             {
-                to.Send(WorldPacket);
+                SendWorldPacketTo(to.NetState);
             }
             else if (Parent is Item)
             {
-                // What will happen if the client doesn't know about our parent?
-                if (ns.ContainerGridLines)
-                {
-                    to.Send(new ContainerContentUpdate6017(this));
-                }
-                else
-                {
-                    to.Send(new ContainerContentUpdate(this));
-                }
+                to.NetState.SendContainerContentUpdate(this);
             }
             else if (Parent is Mobile)
             {
-                // What will happen if the client doesn't know about our parent?
                 to.NetState.SendEquipUpdate(this);
             }
 
-            if (ns.HighSeas)
-            {
-                to.Send(new DisplaySpellbookHS(Serial));
-            }
-            else
-            {
-                to.Send(new DisplaySpellbook(Serial));
-            }
-
-            if (ObjectPropertyList.Enabled)
-            {
-                if (ns.NewSpellbook)
-                {
-                    to.Send(new NewSpellbookContent(Serial, ItemID, BookOffset + 1, m_Content));
-                }
-                else
-                {
-                    if (ns.ContainerGridLines)
-                    {
-                        to.Send(new SpellbookContent6017(Serial, BookOffset + 1, m_Content));
-                    }
-                    else
-                    {
-                        to.Send(new SpellbookContent(Serial, BookOffset + 1, m_Content));
-                    }
-                }
-            }
-            else
-            {
-                if (ns.ContainerGridLines)
-                {
-                    to.Send(new SpellbookContent6017(Serial, BookOffset + 1, m_Content));
-                }
-                else
-                {
-                    to.Send(new SpellbookContent(Serial, BookOffset + 1, m_Content));
-                }
-            }
+            to.NetState.SendDisplaySpellbook(Serial);
+            to.NetState.SendSpellbookContent(Serial, ItemID, BookOffset + 1, m_Content);
         }
 
         public override void GetProperties(ObjectPropertyList list)

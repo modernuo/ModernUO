@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.Mobiles;
 using Server.Network;
@@ -66,13 +67,19 @@ namespace Server.Commands
                 pm.VisibilityList.Clear();
                 pm.SendMessage("Your visibility list has been cleared.");
 
-                for (var i = 0; i < list.Count; ++i)
+                if (list.Count > 0)
                 {
-                    var m = list[i];
+                    Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
+                    OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, pm.Serial);
 
-                    if (!m.CanSee(pm) && Utility.InUpdateRange(m, pm))
+                    for (var i = 0; i < list.Count; ++i)
                     {
-                        m.Send(pm.RemovePacket);
+                        var m = list[i];
+
+                        if (!m.CanSee(pm) && Utility.InUpdateRange(m, pm))
+                        {
+                            m.NetState?.Send(removeEntity);
+                        }
                     }
                 }
             }
@@ -113,19 +120,16 @@ namespace Server.Commands
                                 {
                                     ns.Send(MobileIncoming.Create(ns, targ, pm));
 
-                                    if (ObjectPropertyList.Enabled)
-                                    {
-                                        ns.Send(pm.OPLPacket);
+                                    pm.SendOPLPacketTo(ns);
 
-                                        foreach (var item in pm.Items)
-                                        {
-                                            ns.Send(item.OPLPacket);
-                                        }
+                                    foreach (var item in pm.Items)
+                                    {
+                                        item.SendOPLPacketTo(ns);
                                     }
                                 }
                                 else
                                 {
-                                    ns.Send(pm.RemovePacket);
+                                    ns.SendRemoveEntity(pm.Serial);
                                 }
                             }
                         }

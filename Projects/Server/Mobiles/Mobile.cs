@@ -1787,8 +1787,6 @@ namespace Server
 
         public Region Region => m_Region ?? (Map == null ? Map.Internal.DefaultRegion : Map.DefaultRegion);
 
-        public Packet RemovePacket => StaticPacketHandlers.GetRemoveEntityPacket(this);
-
         [CommandProperty(AccessLevel.GameMaster)]
         public int SolidHueOverride
         {
@@ -2566,8 +2564,7 @@ namespace Server
         public int CompareTo(Mobile other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
         public virtual int HuedItemID => m_Female ? 0x2107 : 0x2106;
-        public OPLInfo OPLPacket => StaticPacketHandlers.GetOPLInfoPacket(this);
-        public ObjectPropertyList PropertyList => m_PropertyList ??= NewObjectPropertyList();
+        public ObjectPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
 
         public virtual void GetProperties(ObjectPropertyList list)
         {
@@ -2783,7 +2780,7 @@ namespace Server
 
             OnAfterDelete();
 
-            FreeCache();
+            m_PropertyList = null;
         }
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
@@ -3305,7 +3302,7 @@ namespace Server
 
                 if (sendOPLUpdate)
                 {
-                    ourState.Send(OPLPacket);
+                    SendOPLPacketTo(ourState);
                 }
             }
 
@@ -3332,6 +3329,9 @@ namespace Server
 
                 var eable = m.Map.GetClientsInRange(m.m_Location);
 
+                Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
+                OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+
                 foreach (var state in eable)
                 {
                     beholder = state.Mobile;
@@ -3340,7 +3340,7 @@ namespace Server
                     {
                         if (sendRemove)
                         {
-                            state.Send(RemovePacket);
+                            state.Send(removeEntity);
                         }
 
                         if (sendIncoming)
@@ -3440,10 +3440,7 @@ namespace Server
                             state.Send(facialhairPacket);
                         }
 
-                        if (sendOPLUpdate)
-                        {
-                            state.Send(OPLPacket);
-                        }
+                        SendOPLPacketTo(state);
                     }
                 }
 
@@ -3497,17 +3494,6 @@ namespace Server
             && p.X <= Location.m_X + range
             && p.Y >= Location.m_Y - range
             && p.Y <= Location.m_Y + range;
-
-        public void ReleaseOPLPacket()
-        {
-            if (m_PropertyList == null)
-            {
-                return;
-            }
-
-            Packet.Release(m_PropertyList);
-            m_PropertyList = null;
-        }
 
         protected virtual void OnRaceChange(Race oldRace)
         {
@@ -3667,7 +3653,7 @@ namespace Server
 
         public virtual void SendPropertiesTo(Mobile from)
         {
-            from.Send(PropertyList);
+            from.NetState?.Send(PropertyList.Buffer);
         }
 
         public virtual void OnAosSingleClick(Mobile from)
@@ -5230,6 +5216,9 @@ namespace Server
                 var eable = m_Map.GetClientsInRange(m_Location);
                 var corpseSerial = c?.Serial ?? Serial.Zero;
 
+                Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
+                OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+
                 foreach (var state in eable)
                 {
                     if (state != m_NetState)
@@ -5240,7 +5229,7 @@ namespace Server
 
                         if (!state.Mobile.CanSee(this))
                         {
-                            state.Send(RemovePacket);
+                            state.Send(removeEntity);
                         }
                     }
                 }
@@ -5587,14 +5576,7 @@ namespace Server
 
                 if (item.Parent is Item)
                 {
-                    if (state.ContainerGridLines)
-                    {
-                        state.Send(new ContainerContentUpdate6017(item));
-                    }
-                    else
-                    {
-                        state.Send(new ContainerContentUpdate(item));
-                    }
+                    state.SendContainerContentUpdate(item);
                 }
                 else if (item.Parent is Mobile)
                 {
@@ -5605,9 +5587,9 @@ namespace Server
                     item.SendInfoTo(state);
                 }
 
-                if (ObjectPropertyList.Enabled && item.Parent != null)
+                if (item.Parent != null)
                 {
-                    state.Send(item.OPLPacket);
+                    item.SendOPLPacketTo(state);
                 }
             }
         }
@@ -7062,13 +7044,9 @@ namespace Server
                 return;
             }
 
-            if (Items.Contains(item))
+            if (Items.Remove(item))
             {
                 item.SendRemovePacket();
-
-                // int oldCount = m_Items.Count;
-
-                Items.Remove(item);
 
                 if (!item.IsVirtualItem)
                 {
@@ -7230,6 +7208,21 @@ namespace Server
             eable.Free();
         }
 
+        public void SendOPLPacketTo(NetState state) => SendOPLPacketTo(state, ObjectPropertyList.Enabled);
+
+        protected virtual void SendOPLPacketTo(NetState ns, bool sendOplPacket)
+        {
+            if (sendOplPacket)
+            {
+                ns.SendOPLInfo(this);
+            }
+        }
+
+        public virtual void SendOPLPacketTo(NetState ns, ReadOnlySpan<byte> opl)
+        {
+            ns?.Send(opl);
+        }
+
         public virtual void OnAccessLevelChanged(AccessLevel oldLevel)
         {
         }
@@ -7262,11 +7255,14 @@ namespace Server
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
+            Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
+            OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+
             foreach (var state in eable)
             {
                 if (state != m_NetState && (everyone || !state.Mobile.CanSee(this)))
                 {
-                    state.Send(RemovePacket);
+                    state.Send(removeEntity);
                 }
             }
 
@@ -7288,14 +7284,14 @@ namespace Server
                 {
                     if (m != this && Utility.InUpdateRange(m_Location, m.m_Location))
                     {
-                        m_NetState.Send(m.RemovePacket);
+                        m_NetState.SendRemoveEntity(m.Serial);
                     }
                 }
                 else if (o is Item item)
                 {
                     if (InRange(item.Location, item.GetUpdateRange(this)))
                     {
-                        m_NetState.Send(item.RemovePacket);
+                        m_NetState.SendRemoveEntity(item.Serial);
                     }
                 }
             }
@@ -7399,10 +7395,7 @@ namespace Server
                                 ns.SendBondedStatus(m.Serial, true);
                             }
 
-                            if (ObjectPropertyList.Enabled)
-                            {
-                                ns.Send(m.OPLPacket);
-                            }
+                            m.SendOPLPacketTo(ns);
                         }
                     }
                 }
@@ -7544,11 +7537,14 @@ namespace Server
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
+            Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
+            OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+
             foreach (var state in eable)
             {
                 if (!state.Mobile.CanSee(this))
                 {
-                    state.Send(RemovePacket);
+                    state.Send(removeEntity);
                 }
                 else
                 {
@@ -7559,10 +7555,7 @@ namespace Server
                         state.SendBondedStatus(Serial, true);
                     }
 
-                    if (ObjectPropertyList.Enabled)
-                    {
-                        state.Send(OPLPacket);
-                    }
+                    SendOPLPacketTo(state);
                 }
             }
 
@@ -7685,28 +7678,16 @@ namespace Server
             return delta != 0 ? body : 0;
         }
 
-        public virtual void FreeCache()
+        private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
         {
-            StaticPacketHandlers.FreeRemoveItemPacket(this);
-            StaticPacketHandlers.FreeOPLInfoPacket(this);
-            ReleaseOPLPacket();
-        }
-
-        public ObjectPropertyList NewObjectPropertyList()
-        {
-            var list = new ObjectPropertyList(this);
-
             GetProperties(list);
-
             list.Terminate();
-            list.SetStatic();
             return list;
         }
 
         public void ClearProperties()
         {
-            ReleaseOPLPacket();
-            StaticPacketHandlers.FreeOPLInfoPacket(this);
+            m_PropertyList = null;
         }
 
         public void InvalidateProperties()
@@ -7718,12 +7699,23 @@ namespace Server
 
             if (m_Map != null && m_Map != Map.Internal && !World.Loading)
             {
-                var oldList = m_PropertyList;
-                m_PropertyList = null;
-
-                if (oldList != null && oldList.Hash != PropertyList.Hash)
+                int? oldHash;
+                int newHash;
+                if (m_PropertyList != null)
                 {
-                    StaticPacketHandlers.FreeOPLInfoPacket(this);
+                    oldHash = m_PropertyList.Hash;
+                    m_PropertyList.Reset();
+                    InitializePropertyList(m_PropertyList);
+                    newHash = m_PropertyList.Hash;
+                }
+                else
+                {
+                    oldHash = null;
+                    newHash = PropertyList.Hash;
+                }
+
+                if (oldHash != newHash)
+                {
                     Delta(MobileDelta.Properties);
                 }
             }
@@ -7783,11 +7775,14 @@ namespace Server
 
                 var eable = map.GetClientsInRange(oldLocation);
 
+                Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
+                OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+
                 foreach (var ns in eable)
                 {
                     if (ns != m_NetState && !Utility.InUpdateRange(newLocation, ns.Mobile.Location))
                     {
-                        ns.Send(RemovePacket);
+                        ns.Send(removeEntity);
                     }
                 }
 
@@ -7843,10 +7838,7 @@ namespace Server
                                     m.m_NetState.SendBondedStatus(Serial, true);
                                 }
 
-                                if (ObjectPropertyList.Enabled)
-                                {
-                                    m.m_NetState.Send(OPLPacket);
-                                }
+                                SendOPLPacketTo(m.m_NetState);
                             }
 
                             if (inOldRange || !CanSee(m))
@@ -7870,10 +7862,7 @@ namespace Server
                                 ourState.SendBondedStatus(m.Serial, true);
                             }
 
-                            if (ObjectPropertyList.Enabled)
-                            {
-                                ourState.Send(m.OPLPacket);
-                            }
+                            m.SendOPLPacketTo(ourState);
                         }
                     }
 
@@ -7905,10 +7894,7 @@ namespace Server
                                 ns.SendBondedStatus(Serial, true);
                             }
 
-                            if (ObjectPropertyList.Enabled)
-                            {
-                                ns.Send(OPLPacket);
-                            }
+                            SendOPLPacketTo(ns);
                         }
                     }
 
@@ -7993,10 +7979,7 @@ namespace Server
                         state.SendBondedStatus(Serial, true);
                     }
 
-                    if (ObjectPropertyList.Enabled)
-                    {
-                        state.Send(OPLPacket);
-                    }
+                    SendOPLPacketTo(state);
                 }
             }
 
