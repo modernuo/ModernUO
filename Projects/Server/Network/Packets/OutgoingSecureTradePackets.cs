@@ -38,8 +38,6 @@ namespace Server.Network
                 return;
             }
 
-            name ??= "";
-
             var writer = new CircularBufferWriter(buffer);
             writer.Write((byte)0x6F); // Packet ID
             writer.Write((ushort)47); // Length
@@ -49,7 +47,7 @@ namespace Server.Network
             writer.Write(second.Serial);
             writer.Write(true);
 
-            writer.WriteAscii(name, 30);
+            writer.WriteAscii(name ?? "", 30);
 
             ns.Send(ref buffer, writer.Position);
         }
