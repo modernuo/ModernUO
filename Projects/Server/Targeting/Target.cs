@@ -37,7 +37,7 @@ namespace Server.Targeting
 
         public static void Cancel(Mobile m)
         {
-            m.NetState?.Send(CancelTarget.Instance);
+            m.NetState.SendCancelTarget();
             m.Target?.OnTargetCancel(m, TargetCancelType.Canceled);
         }
 
@@ -68,7 +68,7 @@ namespace Server.Targeting
             OnTargetFinish(from);
         }
 
-        public virtual Packet GetPacketFor(NetState ns) => new TargetReq(this);
+        public virtual void SendTargetTo(NetState ns) => ns.SendTargetReq(this);
 
         public void Cancel(Mobile from, TargetCancelType type)
         {

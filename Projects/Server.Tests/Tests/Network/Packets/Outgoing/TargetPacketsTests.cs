@@ -39,37 +39,14 @@ namespace Server.Tests.Network
             var p = new Point3D(1000, 100, 10);
             MultiTarget t = new TestMultiTarget(multiID, p);
 
-            var data = new MultiTargetReqHS(t).Compile();
+            var expected = new MultiTargetReqHS(t).Compile();
 
-            Span<byte> expectedData = stackalloc byte[30];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges |= ProtocolChanges.HighSeas;
+            ns.SendMultiTargetReq(t);
 
-            expectedData.Write(ref pos, (byte)0x99); // Packet ID
-            expectedData.Write(ref pos, t.AllowGround);
-            expectedData.Write(ref pos, t.TargetID);
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, 0);
-            expectedData.Write(ref pos, (ushort)0);
-            expectedData.Write(ref pos, (ushort)0);
-            expectedData.Write(ref pos, (byte)0);
-            expectedData.Write(ref pos, (byte)0);
-            expectedData.Write(ref pos, (ushort)0);
-#else
-            pos += 12;
-#endif
-
-            expectedData.Write(ref pos, (short)t.MultiID);
-            expectedData.Write(ref pos, (ushort)t.Offset.X);
-            expectedData.Write(ref pos, (ushort)t.Offset.Y);
-            expectedData.Write(ref pos, (short)t.Offset.Z);
-
-#if NO_LOCAL_INIT
-            // Hue (4 bytes)
-            expectedData.Write(ref pos, 0);
-#endif
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -79,83 +56,37 @@ namespace Server.Tests.Network
             var p = new Point3D(1000, 100, 10);
             MultiTarget t = new TestMultiTarget(multiID, p);
 
-            var data = new MultiTargetReq(t).Compile();
+            var expected = new MultiTargetReq(t).Compile();
 
-            Span<byte> expectedData = stackalloc byte[26];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMultiTargetReq(t);
 
-            expectedData.Write(ref pos, (byte)0x99); // Packet ID
-            expectedData.Write(ref pos, t.AllowGround);
-            expectedData.Write(ref pos, t.TargetID);
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, 0);
-            expectedData.Write(ref pos, (ushort)0);
-            expectedData.Write(ref pos, (ushort)0);
-            expectedData.Write(ref pos, (byte)0);
-            expectedData.Write(ref pos, (byte)0);
-            expectedData.Write(ref pos, (ushort)0);
-#else
-            pos += 12;
-#endif
-
-            expectedData.Write(ref pos, (short)t.MultiID);
-            expectedData.Write(ref pos, (ushort)t.Offset.X);
-            expectedData.Write(ref pos, (ushort)t.Offset.Y);
-            expectedData.Write(ref pos, (short)t.Offset.Z);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
         public void TestCancelTarget()
         {
-            var data = new CancelTarget().Compile();
+            var expected = new CancelTarget().Compile();
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendCancelTarget();
 
-            Span<byte> expectedData = stackalloc byte[19];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0x6C); // Packet ID
-            expectedData.Write(ref pos, (byte)0);
-            expectedData.Write(ref pos, 0);
-            expectedData.Write(ref pos, (byte)3); // Beneficial / Harmful
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, 0);
-            expectedData.Write(ref pos, (ushort)0);
-            expectedData.Write(ref pos, (ushort)0);
-            expectedData.Write(ref pos, (byte)0);
-            expectedData.Write(ref pos, (byte)0);
-            expectedData.Write(ref pos, (ushort)0);
-#endif
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
         public void TestTargetReq()
         {
             var t = new TestTarget(10, true, TargetFlags.Beneficial);
-            var data = new TargetReq(t).Compile();
+            var expected = new TargetReq(t).Compile();
 
-            Span<byte> expectedData = stackalloc byte[19];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendTargetReq(t);
 
-            expectedData.Write(ref pos, (byte)0x6C); // Packet ID
-            expectedData.Write(ref pos, t.AllowGround);
-            expectedData.Write(ref pos, t.TargetID);
-            expectedData.Write(ref pos, (byte)t.Flags);
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, 0);
-            expectedData.Write(ref pos, (ushort)0);
-            expectedData.Write(ref pos, (ushort)0);
-            expectedData.Write(ref pos, (byte)0);
-            expectedData.Write(ref pos, (byte)0);
-            expectedData.Write(ref pos, (ushort)0);
-#endif
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 }
