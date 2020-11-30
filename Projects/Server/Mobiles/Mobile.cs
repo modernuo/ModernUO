@@ -1059,9 +1059,9 @@ namespace Server
 
                 m_Target = newTarget;
 
-                if (newTarget != null && m_NetState != null && !TargetLocked)
+                if (newTarget != null && !TargetLocked)
                 {
-                    m_NetState.Send(newTarget.GetPacketFor(m_NetState));
+                    newTarget.SendTargetTo(m_NetState);
                 }
 
                 OnTargetChange();
