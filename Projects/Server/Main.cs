@@ -466,7 +466,7 @@ namespace Server
         {
             try
             {
-                long last = TickCount;
+                long now, last = TickCount;
 
                 const int sampleInterval = 100;
                 const float ticksPerSecond = 1000.0f * sampleInterval;
@@ -495,7 +495,7 @@ namespace Server
                         continue;
                     }
 
-                    var now = TickCount;
+                    now = TickCount;
                     m_CyclesPerSecond[m_CycleIndex % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
                     m_CycleIndex = Math.Max(m_CycleIndex + 1, 0);
                     last = now;

@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
     public class KhaldunRevenant : BaseCreature
     {
-        private static readonly HashSet<Mobile> m_Set = new HashSet<Mobile>();
+        private static readonly HashSet<Mobile> m_Set = new();
         private readonly DateTime m_ExpireTime;
 
         private readonly Mobile m_Target;

@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
     public class TavernKeeper : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
+        private readonly List<SBInfo> m_SBInfos = new();
 
         [Constructible]
         public TavernKeeper() : base("the tavern keeper")

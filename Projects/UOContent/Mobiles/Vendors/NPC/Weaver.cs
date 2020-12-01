@@ -6,7 +6,7 @@ namespace Server.Mobiles
 {
     public class Weaver : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
+        private readonly List<SBInfo> m_SBInfos = new();
 
         [Constructible]
         public Weaver() : base("the weaver")

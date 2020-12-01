@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
     public class Kappa : BaseCreature
     {
-        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
+        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new();
 
         [Constructible]
         public Kappa() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)

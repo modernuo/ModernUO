@@ -10,21 +10,21 @@ namespace Server.Mobiles
     {
         private static readonly SpawnEntry[] m_Entries =
         {
-            new SpawnEntry(new Point3D(5242, 945, -40), new Point3D(1176, 2638, 0)),  // Destard
-            new SpawnEntry(new Point3D(5225, 798, 0), new Point3D(1176, 2638, 0)),    // Destard
-            new SpawnEntry(new Point3D(5556, 886, 30), new Point3D(1298, 1080, 0)),   // Despise
-            new SpawnEntry(new Point3D(5187, 615, 0), new Point3D(4111, 432, 5)),     // Deceit
-            new SpawnEntry(new Point3D(5319, 583, 0), new Point3D(4111, 432, 5)),     // Deceit
-            new SpawnEntry(new Point3D(5713, 1334, -1), new Point3D(2923, 3407, 8)),  // Fire
-            new SpawnEntry(new Point3D(5860, 1460, -2), new Point3D(2923, 3407, 8)),  // Fire
-            new SpawnEntry(new Point3D(5328, 1620, 0), new Point3D(5451, 3143, -60)), // Terathan Keep
-            new SpawnEntry(new Point3D(5690, 538, 0), new Point3D(2042, 224, 14)),    // Wrong
-            new SpawnEntry(new Point3D(5609, 195, 0), new Point3D(514, 1561, 0)),     // Shame
-            new SpawnEntry(new Point3D(5475, 187, 0), new Point3D(514, 1561, 0)),     // Shame
-            new SpawnEntry(new Point3D(6085, 179, 0), new Point3D(4721, 3822, 0)),    // Hythloth
-            new SpawnEntry(new Point3D(6084, 66, 0), new Point3D(4721, 3822, 0)),     // Hythloth
-            new SpawnEntry(new Point3D(5499, 2003, 0), new Point3D(2499, 919, 0)),    // Covetous
-            new SpawnEntry(new Point3D(5579, 1858, 0), new Point3D(2499, 919, 0))     // Covetous
+            new(new Point3D(5242, 945, -40), new Point3D(1176, 2638, 0)),  // Destard
+            new(new Point3D(5225, 798, 0), new Point3D(1176, 2638, 0)),    // Destard
+            new(new Point3D(5556, 886, 30), new Point3D(1298, 1080, 0)),   // Despise
+            new(new Point3D(5187, 615, 0), new Point3D(4111, 432, 5)),     // Deceit
+            new(new Point3D(5319, 583, 0), new Point3D(4111, 432, 5)),     // Deceit
+            new(new Point3D(5713, 1334, -1), new Point3D(2923, 3407, 8)),  // Fire
+            new(new Point3D(5860, 1460, -2), new Point3D(2923, 3407, 8)),  // Fire
+            new(new Point3D(5328, 1620, 0), new Point3D(5451, 3143, -60)), // Terathan Keep
+            new(new Point3D(5690, 538, 0), new Point3D(2042, 224, 14)),    // Wrong
+            new(new Point3D(5609, 195, 0), new Point3D(514, 1561, 0)),     // Shame
+            new(new Point3D(5475, 187, 0), new Point3D(514, 1561, 0)),     // Shame
+            new(new Point3D(6085, 179, 0), new Point3D(4721, 3822, 0)),    // Hythloth
+            new(new Point3D(6084, 66, 0), new Point3D(4721, 3822, 0)),     // Hythloth
+            new(new Point3D(5499, 2003, 0), new Point3D(2499, 919, 0)),    // Covetous
+            new(new Point3D(5579, 1858, 0), new Point3D(2499, 919, 0))     // Covetous
         };
 
         private static readonly double[] m_Offsets =
@@ -93,7 +93,7 @@ namespace Server.Mobiles
         public Type[] SharedList => new[] { typeof(TheRobeOfBritanniaAri) };
         public Type[] DecorativeList => new[] { typeof(EvilIdolSkull), typeof(SkullPole) };
 
-        public static List<Harrower> Instances { get; } = new List<Harrower>();
+        public static List<Harrower> Instances { get; } = new();
 
         public static bool CanSpawn => Instances.Count == 0;
 

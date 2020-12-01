@@ -205,7 +205,7 @@ namespace Server.Mobiles
 {
     public class IharaSoko : BaseVendor
     {
-        protected List<SBInfo> m_SBInfos = new List<SBInfo>();
+        protected List<SBInfo> m_SBInfos = new();
 
         [Constructible]
         public IharaSoko() : base("the Imperial Minister of Trade")

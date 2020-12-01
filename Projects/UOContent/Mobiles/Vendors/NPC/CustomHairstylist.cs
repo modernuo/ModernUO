@@ -15,7 +15,7 @@ namespace Server.Mobiles
 
         private static readonly HairstylistBuyInfo[] m_SellList =
         {
-            new HairstylistBuyInfo(
+            new(
                 1018357,
                 50000,
                 false,
@@ -23,7 +23,7 @@ namespace Server.Mobiles
                 new[]
                     { From, Vendor, Price, false, ChangeHairstyleEntry.HairEntries }
             ),
-            new HairstylistBuyInfo(
+            new(
                 1018358,
                 50000,
                 true,
@@ -31,7 +31,7 @@ namespace Server.Mobiles
                 new[]
                     { From, Vendor, Price, true, ChangeHairstyleEntry.BeardEntries }
             ),
-            new HairstylistBuyInfo(
+            new(
                 1018359,
                 50,
                 false,
@@ -39,7 +39,7 @@ namespace Server.Mobiles
                 new[]
                     { From, Vendor, Price, true, true, ChangeHairHueEntry.RegularEntries }
             ),
-            new HairstylistBuyInfo(
+            new(
                 1018360,
                 500000,
                 false,
@@ -47,7 +47,7 @@ namespace Server.Mobiles
                 new[]
                     { From, Vendor, Price, true, true, ChangeHairHueEntry.BrightEntries }
             ),
-            new HairstylistBuyInfo(
+            new(
                 1018361,
                 30000,
                 false,
@@ -55,7 +55,7 @@ namespace Server.Mobiles
                 new[]
                     { From, Vendor, Price, true, false, ChangeHairHueEntry.RegularEntries }
             ),
-            new HairstylistBuyInfo(
+            new(
                 1018362,
                 30000,
                 true,
@@ -63,7 +63,7 @@ namespace Server.Mobiles
                 new[]
                     { From, Vendor, Price, false, true, ChangeHairHueEntry.RegularEntries }
             ),
-            new HairstylistBuyInfo(
+            new(
                 1018363,
                 500000,
                 false,
@@ -71,7 +71,7 @@ namespace Server.Mobiles
                 new[]
                     { From, Vendor, Price, true, false, ChangeHairHueEntry.BrightEntries }
             ),
-            new HairstylistBuyInfo(
+            new(
                 1018364,
                 500000,
                 true,
@@ -90,7 +90,7 @@ namespace Server.Mobiles
         {
         }
 
-        protected override List<SBInfo> SBInfos { get; } = new List<SBInfo>();
+        protected override List<SBInfo> SBInfos { get; } = new();
 
         public override bool ClickTitle => false;
 
