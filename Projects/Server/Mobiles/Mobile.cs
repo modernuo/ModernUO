@@ -2064,17 +2064,14 @@ namespace Server
 
                 m_Prompt = null;
 
+                // TODO: Cancel the prompt anyway?
                 if (newPrompt != null)
                 {
                     oldPrompt?.OnCancel(this);
                 }
 
                 m_Prompt = newPrompt;
-
-                if (newPrompt != null)
-                {
-                    Send(new UnicodePrompt(newPrompt));
-                }
+                NetState.SendPrompt(newPrompt);
             }
         }
 

@@ -1,5 +1,7 @@
 using System;
+using System.Buffers;
 using Server.Network;
+using Server.Prompts;
 using Xunit;
 
 namespace Server.Tests.Network
@@ -181,6 +183,27 @@ namespace Server.Tests.Network
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        }
+
+        internal class TestPrompt : Prompt
+        {
+        }
+
+        public class UnicodePromptTests
+        {
+            [Fact]
+            public void TestUnicodePrompt()
+            {
+                var prompt = new TestPrompt();
+                var expected = new UnicodePrompt(prompt).Compile();
+
+                using var ns = PacketTestUtilities.CreateTestNetState();
+                ns.SendPrompt(prompt);
+
+                var result = ns.SendPipe.Reader.TryRead();
+                AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+
+            }
         }
     }
 }

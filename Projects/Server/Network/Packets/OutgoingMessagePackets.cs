@@ -17,6 +17,7 @@ using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
+using Server.Prompts;
 
 namespace Server.Network
 {
@@ -229,6 +230,24 @@ namespace Server.Network
             writer.Write(s2);
 
             ns.Send(ref buffer, 9);
+        }
+
+        public static void SendPrompt(this NetState ns, Prompt prompt)
+        {
+            if (ns == null || prompt == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0xC2); // Packet ID
+            writer.Write((ushort)21);
+            writer.Write(prompt.Serial);
+            writer.Write(prompt.Serial);
+            writer.Write((long)0);
+            writer.Write((short)0);
+
+            ns.Send(ref buffer, writer.Position);
         }
     }
 }
