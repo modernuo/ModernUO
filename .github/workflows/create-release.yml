@@ -10,6 +10,8 @@ jobs:
     name: Create Release
     if: "contains(github.event.head_commit.message, 'Release') || contains(github.event.head_commit.message, 'release')"
     runs-on: ubuntu-latest
+    outputs:
+      skipped: ${{ steps.changelog.outputs.skipped }}
     steps:
     - uses: actions/checkout@v2
       with:
@@ -20,10 +22,20 @@ jobs:
         dotnet-version: 5.0.100
     - uses: dotnet/nbgv@master
       id: nbgv
+    - name: Conventional Changelog
+      id: changelog
+      uses: TriPSs/conventional-changelog-action@v3
+      with:
+        github-token: ${{ secrets.github_token }}
+        output-file: false
+        skip-version-file: true
+        skip-commit: true
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
+      if: ${{ steps.changelog.outputs.skipped == 'false' }}
       with:
+        body: ${{ steps.changelog.outputs.clean_changelog }}
         tag_name: ${{ steps.nbgv.outputs.Version }}
         release_name: ${{ steps.nbgv.outputs.Version }}
         draft: false
@@ -31,8 +43,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Output Release URL File
+      if: ${{ steps.changelog.outputs.skipped == 'false' }}
       run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
     - name: Save Release URL file
+      if: ${{ steps.changelog.outputs.skipped == 'false' }}
       uses: actions/upload-artifact@v1
       with:
         name: release_url
@@ -40,7 +54,7 @@ jobs:
 
   publish:
     name: Publish Release Asset
-    if: "contains(github.event.head_commit.message, 'Release')"
+    if: "(contains(github.event.head_commit.message, 'Release') || contains(github.event.head_commit.message, 'release')) && ${{ needs.release.outputs.skipped == 'false' }}"
     needs: [release]
     runs-on: ubuntu-latest
     strategy:
