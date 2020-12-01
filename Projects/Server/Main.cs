@@ -41,7 +41,7 @@ namespace Server
         private static bool? m_IsRunningFromXUnit;
 
         private static long m_CycleIndex;
-        private static readonly float[] m_CyclesPerSecond = new float[128];
+        private static readonly float[] m_CyclesPerSecond = new float[127]; // Divisible by long.MaxValue
 
         // private static readonly AutoResetEvent m_Signal = new AutoResetEvent(true);
 
