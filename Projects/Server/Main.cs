@@ -40,7 +40,7 @@ namespace Server
         private static TimeSpan m_ProfileTime;
         private static bool? m_IsRunningFromXUnit;
 
-        private static int m_CycleIndex = 1;
+        private static long m_CycleIndex;
         private static readonly float[] m_CyclesPerSecond = new float[100];
 
         // private static readonly AutoResetEvent m_Signal = new AutoResetEvent(true);
@@ -137,9 +137,24 @@ namespace Server
 
         public static bool Closing => ClosingTokenSource.IsCancellationRequested;
 
-        public static float CyclesPerSecond => m_CyclesPerSecond[(m_CycleIndex - 1) % m_CyclesPerSecond.Length];
+        public static float CyclesPerSecond => m_CyclesPerSecond[m_CycleIndex % m_CyclesPerSecond.Length];
 
-        public static float AverageCPS => m_CyclesPerSecond.Take(m_CycleIndex).Average();
+        public static float AverageCPS
+        {
+            get
+            {
+                float total = 0.0f;
+                int count = 1;
+                var length = Math.Min(m_CycleIndex + 1, m_CyclesPerSecond.Length);
+
+                for (int i = 0; i < length; i++, count++)
+                {
+                    total += m_CyclesPerSecond[i];
+                }
+
+                return total / count;
+            }
+        }
 
         public static string Arguments
         {
@@ -482,7 +497,8 @@ namespace Server
                     }
 
                     var now = TickCount;
-                    m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
+                    m_CyclesPerSecond[m_CycleIndex % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
+                    m_CycleIndex = Math.Max(m_CycleIndex, 0);
                     last = now;
                 }
             }
