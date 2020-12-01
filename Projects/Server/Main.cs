@@ -143,11 +143,10 @@ namespace Server
         {
             get
             {
-                float total = 0.0f;
-                int count = 1;
-                var length = Math.Min(m_CycleIndex + 1, m_CyclesPerSecond.Length);
+                var total = 0.0f;
+                var count = Math.Min(m_CycleIndex + 1, m_CyclesPerSecond.Length);
 
-                for (int i = 0; i < length; i++, count++)
+                for (int i = 0; i < count; i++)
                 {
                     total += m_CyclesPerSecond[i];
                 }
