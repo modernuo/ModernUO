@@ -41,7 +41,7 @@ namespace Server
         private static bool? m_IsRunningFromXUnit;
 
         private static long m_CycleIndex;
-        private static readonly float[] m_CyclesPerSecond = new float[100];
+        private static readonly float[] m_CyclesPerSecond = new float[128];
 
         // private static readonly AutoResetEvent m_Signal = new AutoResetEvent(true);
 
@@ -497,7 +497,7 @@ namespace Server
 
                     now = TickCount;
                     m_CyclesPerSecond[m_CycleIndex % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
-                    m_CycleIndex = Math.Max(m_CycleIndex + 1, 0);
+                    m_CycleIndex = Math.Max(unchecked(m_CycleIndex + 1), 0);
                     last = now;
                 }
             }
