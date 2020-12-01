@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
     public class Blacksmith : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
+        private readonly List<SBInfo> m_SBInfos = new();
 
         [Constructible]
         public Blacksmith() : base("the blacksmith")

@@ -432,7 +432,6 @@ namespace Server
         private static readonly TimeSpan WarmodeSpamCatch = TimeSpan.FromSeconds(Core.SE ? 1.0 : 0.5);
         private static readonly TimeSpan WarmodeSpamDelay = TimeSpan.FromSeconds(Core.SE ? 4.0 : 2.0);
         private static readonly TimeSpan ExpireCombatantDelay = TimeSpan.FromMinutes(1.0);
-        private static readonly TimeSpan LogoutDelay = TimeSpan.FromDays(1.0);
         private static readonly TimeSpan ExpireAggressorsDelay = TimeSpan.FromSeconds(5.0);
 
         private static readonly Packet[][] m_MovingPacketCache =
@@ -441,13 +440,13 @@ namespace Server
             new Packet[8]
         };
 
-        private static readonly List<IEntity> m_MoveList = new List<IEntity>();
-        private static readonly List<Mobile> m_MoveClientList = new List<Mobile>();
+        private static readonly List<IEntity> m_MoveList = new();
+        private static readonly List<Mobile> m_MoveClientList = new();
 
-        private static readonly object m_GhostMutateContext = new object();
+        private static readonly object m_GhostMutateContext = new();
 
-        private static readonly List<Mobile> m_Hears = new List<Mobile>();
-        private static readonly List<IEntity> m_OnSpeech = new List<IEntity>();
+        private static readonly List<Mobile> m_Hears = new();
+        private static readonly List<IEntity> m_OnSpeech = new();
 
         private static readonly string[] m_AccessLevelNames =
         {
@@ -469,8 +468,8 @@ namespace Server
             198
         };
 
-        private static readonly Queue<Mobile> m_DeltaQueue = new Queue<Mobile>();
-        private static readonly Queue<Mobile> m_DeltaQueueR = new Queue<Mobile>();
+        private static readonly Queue<Mobile> m_DeltaQueue = new();
+        private static readonly Queue<Mobile> m_DeltaQueueR = new();
 
         private static bool _processing;
 
@@ -1496,15 +1495,14 @@ namespace Server
                         // Disconnected, start the logout timer
                         if (m_LogoutTimer == null)
                         {
-                            m_LogoutTimer = Timer.DelayCall(LogoutDelay, Logout);
+                            m_LogoutTimer = Timer.DelayCall(GetLogoutDelay(), Logout);
                         }
                         else
                         {
                             m_LogoutTimer.Stop();
+                            m_LogoutTimer.Delay = GetLogoutDelay();
+                            m_LogoutTimer.Start();
                         }
-
-                        m_LogoutTimer.Delay = GetLogoutDelay();
-                        m_LogoutTimer.Start();
                     }
                     else
                     {

@@ -127,7 +127,7 @@ namespace Server.Mobiles
             }
         }
 
-        public static Dictionary<Mobile, BaseEscortable> EscortTable { get; } = new Dictionary<Mobile, BaseEscortable>();
+        public static Dictionary<Mobile, BaseEscortable> EscortTable { get; } = new();
 
         protected override List<MLQuest> ConstructQuestList()
         {

@@ -5,10 +5,10 @@ namespace Server.Mobiles
 {
     public class KazeKemono : BaseCreature
     {
-        private static readonly Dictionary<Mobile, ExpireTimer> m_FlurryOfTwigsTable = new Dictionary<Mobile, ExpireTimer>();
+        private static readonly Dictionary<Mobile, ExpireTimer> m_FlurryOfTwigsTable = new();
 
         private static readonly Dictionary<Mobile, ExpireTimer> m_ChlorophylBlastTable =
-            new Dictionary<Mobile, ExpireTimer>();
+            new();
 
         [Constructible]
         public KazeKemono()

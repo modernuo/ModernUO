@@ -24,7 +24,7 @@ namespace Server.Engines.Quests
 
     public abstract class BaseQuester : BaseVendor
     {
-        protected List<SBInfo> m_SBInfos = new List<SBInfo>();
+        protected List<SBInfo> m_SBInfos = new();
 
         public BaseQuester(string title = null) : base(title)
         {

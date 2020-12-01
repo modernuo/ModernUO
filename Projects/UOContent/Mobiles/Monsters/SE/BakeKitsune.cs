@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
     public class BakeKitsune : BaseCreature
     {
-        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
         private Timer m_DisguiseTimer;
 

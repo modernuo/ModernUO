@@ -234,40 +234,40 @@ namespace Server.Engines.Events
     {
         private static readonly Point3D[] Felucca_Locations =
         {
-            new Point3D(4467, 1283, 5),                                  // Moonglow
-            new Point3D(1336, 1997, 5),                                  // Britain
-            new Point3D(1499, 3771, 5),                                  // Jhelom
-            new Point3D(771, 752, 5),                                    // Yew
-            new Point3D(2701, 692, 5),                                   // Minoc
-            new Point3D(1828, 2948, -20),                                // Trinsic
-            new Point3D(643, 2067, 5),                                   // Skara Brae
-            new Point3D(3563, 2139, Map.Trammel.GetAverageZ(3563, 2139)) // (New) Magincia
+            new(4467, 1283, 5),                                  // Moonglow
+            new(1336, 1997, 5),                                  // Britain
+            new(1499, 3771, 5),                                  // Jhelom
+            new(771, 752, 5),                                    // Yew
+            new(2701, 692, 5),                                   // Minoc
+            new(1828, 2948, -20),                                // Trinsic
+            new(643, 2067, 5),                                   // Skara Brae
+            new(3563, 2139, Map.Trammel.GetAverageZ(3563, 2139)) // (New) Magincia
         };
 
         private static readonly Point3D[] Malas_Locations =
         {
-            new Point3D(1015, 527, -65), // Luna
-            new Point3D(1997, 1386, -85) // Umbra
+            new(1015, 527, -65), // Luna
+            new(1997, 1386, -85) // Umbra
         };
 
         private static readonly Point3D[] Ilshenar_Locations =
         {
-            new Point3D(1215, 467, -13),  // Compassion
-            new Point3D(722, 1366, -60),  // Honesty
-            new Point3D(744, 724, -28),   // Honor
-            new Point3D(281, 1016, 0),    // Humility
-            new Point3D(987, 1011, -32),  // Justice
-            new Point3D(1174, 1286, -30), // Sacrifice
-            new Point3D(1532, 1340, -3),  // Spirituality
-            new Point3D(528, 216, -45),   // Valor
-            new Point3D(1721, 218, 96)    // Chaos
+            new(1215, 467, -13),  // Compassion
+            new(722, 1366, -60),  // Honesty
+            new(744, 724, -28),   // Honor
+            new(281, 1016, 0),    // Humility
+            new(987, 1011, -32),  // Justice
+            new(1174, 1286, -30), // Sacrifice
+            new(1532, 1340, -3),  // Spirituality
+            new(528, 216, -45),   // Valor
+            new(1721, 218, 96)    // Chaos
         };
 
         private static readonly Point3D[] Tokuno_Locations =
         {
-            new Point3D(1169, 998, 41), // Isamu-Jima
-            new Point3D(802, 1204, 25), // Makoto-Jima
-            new Point3D(270, 628, 15)   // Homare-Jima
+            new(1169, 998, 41), // Isamu-Jima
+            new(802, 1204, 25), // Makoto-Jima
+            new(270, 628, 15)   // Homare-Jima
         };
 
         private readonly Mobile m_From;

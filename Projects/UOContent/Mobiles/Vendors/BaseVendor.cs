@@ -26,8 +26,8 @@ namespace Server.Mobiles
 
         private static readonly TimeSpan InventoryDecayTime = TimeSpan.FromHours(1.0);
 
-        private readonly List<IBuyItemInfo> m_ArmorBuyInfo = new List<IBuyItemInfo>();
-        private readonly List<IShopSellInfo> m_ArmorSellInfo = new List<IShopSellInfo>();
+        private readonly List<IBuyItemInfo> m_ArmorBuyInfo = new();
+        private readonly List<IShopSellInfo> m_ArmorSellInfo = new();
 
         public BaseVendor(string title = null)
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)

@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
     public class Armorer : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
+        private readonly List<SBInfo> m_SBInfos = new();
 
         [Constructible]
         public Armorer() : base("the armorer")

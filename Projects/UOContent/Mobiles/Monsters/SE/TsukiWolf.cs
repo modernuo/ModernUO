@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
     public class TsukiWolf : BaseCreature
     {
-        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
         [Constructible]
         public TsukiWolf()

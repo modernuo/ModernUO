@@ -8,7 +8,7 @@ namespace Server.Mobiles
     public class Scribe : BaseVendor
     {
         public static readonly TimeSpan ShushDelay = TimeSpan.FromMinutes(1);
-        private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
+        private readonly List<SBInfo> m_SBInfos = new();
 
         private DateTime m_NextShush;
 
