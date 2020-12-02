@@ -4198,7 +4198,7 @@ namespace Server.Mobiles
             EndFleeTime = DateTime.UtcNow + maxDuration;
         }
 
-        public virtual bool IsPetFriend(Mobile m) => Friends.Contains(m);
+        public virtual bool IsPetFriend(Mobile m) => Friends != null && Friends.Contains(m);
 
         public virtual void AddPetFriend(Mobile m)
         {
