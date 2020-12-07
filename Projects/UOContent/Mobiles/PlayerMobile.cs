@@ -99,47 +99,47 @@ namespace Server.Mobiles
 
         private static readonly Point3D[] m_TrammelDeathDestinations =
         {
-            new Point3D(1481, 1612, 20),
-            new Point3D(2708, 2153, 0),
-            new Point3D(2249, 1230, 0),
-            new Point3D(5197, 3994, 37),
-            new Point3D(1412, 3793, 0),
-            new Point3D(3688, 2232, 20),
-            new Point3D(2578, 604, 0),
-            new Point3D(4397, 1089, 0),
-            new Point3D(5741, 3218, -2),
-            new Point3D(2996, 3441, 15),
-            new Point3D(624, 2225, 0),
-            new Point3D(1916, 2814, 0),
-            new Point3D(2929, 854, 0),
-            new Point3D(545, 967, 0),
-            new Point3D(3665, 2587, 0)
+            new(1481, 1612, 20),
+            new(2708, 2153, 0),
+            new(2249, 1230, 0),
+            new(5197, 3994, 37),
+            new(1412, 3793, 0),
+            new(3688, 2232, 20),
+            new(2578, 604, 0),
+            new(4397, 1089, 0),
+            new(5741, 3218, -2),
+            new(2996, 3441, 15),
+            new(624, 2225, 0),
+            new(1916, 2814, 0),
+            new(2929, 854, 0),
+            new(545, 967, 0),
+            new(3665, 2587, 0)
         };
 
         private static readonly Point3D[] m_IlshenarDeathDestinations =
         {
-            new Point3D(1216, 468, -13),
-            new Point3D(723, 1367, -60),
-            new Point3D(745, 725, -28),
-            new Point3D(281, 1017, 0),
-            new Point3D(986, 1011, -32),
-            new Point3D(1175, 1287, -30),
-            new Point3D(1533, 1341, -3),
-            new Point3D(529, 217, -44),
-            new Point3D(1722, 219, 96)
+            new(1216, 468, -13),
+            new(723, 1367, -60),
+            new(745, 725, -28),
+            new(281, 1017, 0),
+            new(986, 1011, -32),
+            new(1175, 1287, -30),
+            new(1533, 1341, -3),
+            new(529, 217, -44),
+            new(1722, 219, 96)
         };
 
         private static readonly Point3D[] m_MalasDeathDestinations =
         {
-            new Point3D(2079, 1376, -70),
-            new Point3D(944, 519, -71)
+            new(2079, 1376, -70),
+            new(944, 519, -71)
         };
 
         private static readonly Point3D[] m_TokunoDeathDestinations =
         {
-            new Point3D(1166, 801, 27),
-            new Point3D(782, 1228, 25),
-            new Point3D(268, 624, 15)
+            new(1166, 801, 27),
+            new(782, 1228, 25),
+            new(268, 624, 15)
         };
 
         private readonly Dictionary<Skill, Dictionary<object, CountAndTimeStamp>> m_AntiMacroTable;
@@ -590,7 +590,7 @@ namespace Server.Mobiles
             set => SetFlag(PlayerFlag.RefuseTrades, value);
         }
 
-        public Dictionary<Type, int> RecoverableAmmo { get; } = new Dictionary<Type, int>();
+        public Dictionary<Type, int> RecoverableAmmo { get; } = new();
 
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime AcceleratedStart { get; set; }
@@ -916,16 +916,13 @@ namespace Server.Mobiles
             {
                 var mobiles = Map.GetMobilesInRange(location, 0);
 
-                var found = mobiles.Any(
-                    m =>
-                        m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player)
-                );
-
-                mobiles.Free();
-
-                if (found)
+                foreach (Mobile m in mobiles)
                 {
-                    return false;
+                    if (m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player))
+                    {
+                        mobiles.Free();
+                        return false;
+                    }
                 }
 
                 mobiles.Free();
@@ -933,51 +930,51 @@ namespace Server.Mobiles
 
             var bi = item.GetBounce();
 
-            if (bi != null)
+            if (bi == null)
             {
-                var type = item.GetType();
+                return true;
+            }
 
-                if (type.IsDefined(typeof(FurnitureAttribute), true) ||
-                    type.IsDefined(typeof(DynamicFlipingAttribute), true))
+            var type = item.GetType();
+
+            if (type.IsDefined(typeof(FurnitureAttribute), true) ||
+                type.IsDefined(typeof(DynamicFlipingAttribute), true))
+            {
+                var objs = type.GetCustomAttributes(typeof(FlippableAttribute), true);
+
+                if (objs.Length > 0)
                 {
-                    var objs = type.GetCustomAttributes(typeof(FlippableAttribute), true);
-
-                    if (objs.Length > 0)
+                    if (objs[0] is FlippableAttribute fp)
                     {
-                        if (objs[0] is FlippableAttribute fp)
+                        var itemIDs = fp.ItemIDs;
+
+                        var oldWorldLoc = bi.WorldLoc;
+                        var newWorldLoc = location;
+
+                        if (oldWorldLoc.X != newWorldLoc.X || oldWorldLoc.Y != newWorldLoc.Y)
                         {
-                            var itemIDs = fp.ItemIDs;
+                            var dir = GetDirection4(oldWorldLoc, newWorldLoc);
 
-                            var oldWorldLoc = bi.WorldLoc;
-                            var newWorldLoc = location;
-
-                            if (oldWorldLoc.X != newWorldLoc.X || oldWorldLoc.Y != newWorldLoc.Y)
+                            item.ItemID = itemIDs.Length switch
                             {
-                                var dir = GetDirection4(oldWorldLoc, newWorldLoc);
-
-                                if (itemIDs.Length == 2)
+                                2 => dir switch
                                 {
-                                    item.ItemID = dir switch
-                                    {
-                                        Direction.North => itemIDs[0],
-                                        Direction.South => itemIDs[0],
-                                        Direction.East  => itemIDs[1],
-                                        Direction.West  => itemIDs[1],
-                                        _               => item.ItemID
-                                    };
-                                }
-                                else if (itemIDs.Length == 4)
+                                    Direction.North => itemIDs[0],
+                                    Direction.South => itemIDs[0],
+                                    Direction.East  => itemIDs[1],
+                                    Direction.West  => itemIDs[1],
+                                    _               => item.ItemID
+                                },
+                                4 => dir switch
                                 {
-                                    item.ItemID = dir switch
-                                    {
-                                        Direction.South => itemIDs[0],
-                                        Direction.East  => itemIDs[1],
-                                        Direction.North => itemIDs[2],
-                                        Direction.West  => itemIDs[3],
-                                        _               => item.ItemID
-                                    };
-                                }
-                            }
+                                    Direction.South => itemIDs[0],
+                                    Direction.East  => itemIDs[1],
+                                    Direction.North => itemIDs[2],
+                                    Direction.West  => itemIDs[3],
+                                    _               => item.ItemID
+                                },
+                                _ => item.ItemID
+                            };
                         }
                     }
                 }
@@ -4898,7 +4895,7 @@ namespace Server.Mobiles
                 }
             }
 
-            public ItemInsuranceMenuGump NewInstance() => new ItemInsuranceMenuGump(m_From, m_Items, m_Insure, m_Page);
+            public ItemInsuranceMenuGump NewInstance() => new(m_From, m_Items, m_Insure, m_Page);
 
             public override void OnResponse(NetState sender, RelayInfo info)
             {

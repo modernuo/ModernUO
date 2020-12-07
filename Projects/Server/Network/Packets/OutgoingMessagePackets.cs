@@ -16,8 +16,8 @@
 using System;
 using System.Buffers;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
+using Server.Prompts;
 
 namespace Server.Network
 {
@@ -57,8 +57,8 @@ namespace Server.Network
             Serial serial, int graphic, MessageType type, int hue, int font, int number, string name = "", string args = ""
         )
         {
-            name = name?.Trim() ?? "";
-            args = args?.Trim() ?? "";
+            name ??= "";
+            args ??= "";
 
             if (hue == 0)
             {
@@ -111,9 +111,9 @@ namespace Server.Network
             AffixType affixType, string affix = "", string args = ""
         )
         {
-            name = name?.Trim() ?? "";
-            affix = affix?.Trim() ?? "";
-            args = args?.Trim() ?? "";
+            name ??= "";
+            affix ??= "";
+            args ??= "";
 
             if (hue == 0)
             {
@@ -183,9 +183,9 @@ namespace Server.Network
             string text
         )
         {
-            name = name?.Trim() ?? "";
-            text = text?.Trim() ?? "";
-            lang = lang?.Trim() ?? "ENU";
+            name ??= "";
+            text ??= "";
+            lang ??= "ENU";
 
             if (hue == 0)
             {
@@ -230,6 +230,24 @@ namespace Server.Network
             writer.Write(s2);
 
             ns.Send(ref buffer, 9);
+        }
+
+        public static void SendPrompt(this NetState ns, Prompt prompt)
+        {
+            if (ns == null || prompt == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0xC2); // Packet ID
+            writer.Write((ushort)21);
+            writer.Write(prompt.Serial);
+            writer.Write(prompt.Serial);
+            writer.Write((long)0);
+            writer.Write((short)0);
+
+            ns.Send(ref buffer, writer.Position);
         }
     }
 }

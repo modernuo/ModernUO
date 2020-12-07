@@ -9,7 +9,7 @@ namespace Server.Mobiles
 {
     public class Ilhenir : BaseChampion
     {
-        private static readonly HashSet<Mobile> m_Table = new HashSet<Mobile>();
+        private static readonly HashSet<Mobile> m_Table = new();
 
         [Constructible]
         public Ilhenir()

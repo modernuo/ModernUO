@@ -126,7 +126,7 @@ namespace Server.Engines.ConPVP
                         {
                             if (!mob.CanSee(view))
                             {
-                                mob.Send(view.RemovePacket);
+                                mob.NetState.SendRemoveEntity(view.Serial);
                             }
                         }
 

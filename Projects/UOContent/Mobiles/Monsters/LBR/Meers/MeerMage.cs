@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
     public class MeerMage : BaseCreature
     {
-        private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+        private static readonly Dictionary<Mobile, Timer> m_Table = new();
 
         private DateTime m_NextAbilityTime;
 

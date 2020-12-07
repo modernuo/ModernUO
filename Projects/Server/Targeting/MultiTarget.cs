@@ -18,14 +18,6 @@ namespace Server.Targeting
 
         public Point3D Offset { get; set; }
 
-        public override Packet GetPacketFor(NetState ns)
-        {
-            if (ns.HighSeas)
-            {
-                return new MultiTargetReqHS(this);
-            }
-
-            return new MultiTargetReq(this);
-        }
+        public override void SendTargetTo(NetState ns) => ns.SendMultiTargetReq(this);
     }
 }

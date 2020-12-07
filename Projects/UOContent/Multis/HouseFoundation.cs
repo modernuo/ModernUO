@@ -880,12 +880,20 @@ namespace Server.Multis
             DesignState.SendDetailedInfoTo(ns);
         }
 
-        public override void SendInfoTo(NetState state, bool sendOplPacket)
+        public override void SendInfoTo(NetState ns, bool sendOplPacket)
         {
-            base.SendInfoTo(state, sendOplPacket);
+            base.SendInfoTo(ns, sendOplPacket);
 
-            var stateToSend = DesignContext.Find(state.Mobile)?.Foundation == this ? DesignState : CurrentState;
-            stateToSend.SendGeneralInfoTo(state);
+            var stateToSend = DesignContext.Find(ns.Mobile)?.Foundation == this ? DesignState : CurrentState;
+            stateToSend.SendGeneralInfoTo(ns);
+        }
+
+        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world, ReadOnlySpan<byte> opl = default)
+        {
+            base.SendInfoTo(ns, world, opl);
+
+            var stateToSend = DesignContext.Find(ns.Mobile)?.Foundation == this ? DesignState : CurrentState;
+            stateToSend.SendGeneralInfoTo(ns);
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2321,22 +2329,22 @@ namespace Server.Multis
             {
                 var item = fixtures[i];
 
-                state.Send(item.RemovePacket);
+                state.SendRemoveEntity(item.Serial);
             }
 
             if (foundation.Signpost != null)
             {
-                state.Send(foundation.Signpost.RemovePacket);
+                state.SendRemoveEntity(foundation.Signpost.Serial);
             }
 
             if (foundation.SignHanger != null)
             {
-                state.Send(foundation.SignHanger.RemovePacket);
+                state.SendRemoveEntity(foundation.SignHanger.Serial);
             }
 
             if (foundation.Sign != null)
             {
-                state.Send(foundation.Sign.RemovePacket);
+                state.SendRemoveEntity(foundation.Sign.Serial);
             }
         }
 

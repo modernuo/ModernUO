@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
     public class Satyr : BaseCreature
     {
-        private static readonly Dictionary<Mobile, Timer> m_Suppressed = new Dictionary<Mobile, Timer>();
+        private static readonly Dictionary<Mobile, Timer> m_Suppressed = new();
 
         private DateTime m_NextPeace;
 

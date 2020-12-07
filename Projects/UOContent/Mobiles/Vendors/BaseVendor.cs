@@ -26,8 +26,8 @@ namespace Server.Mobiles
 
         private static readonly TimeSpan InventoryDecayTime = TimeSpan.FromHours(1.0);
 
-        private readonly List<IBuyItemInfo> m_ArmorBuyInfo = new List<IBuyItemInfo>();
-        private readonly List<IShopSellInfo> m_ArmorSellInfo = new List<IShopSellInfo>();
+        private readonly List<IBuyItemInfo> m_ArmorBuyInfo = new();
+        private readonly List<IShopSellInfo> m_ArmorSellInfo = new();
 
         public BaseVendor(string title = null)
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
@@ -1005,7 +1005,7 @@ namespace Server.Mobiles
 
             for (var i = 0; i < opls.Count; ++i)
             {
-                from.Send(opls[i]);
+                from.NetState?.Send(opls[i].Buffer);
             }
 
             SayTo(from, 500186); // Greetings.  Have a look around.

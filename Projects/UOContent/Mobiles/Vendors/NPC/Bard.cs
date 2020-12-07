@@ -4,7 +4,7 @@ namespace Server.Mobiles
 {
     public class Bard : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
+        private readonly List<SBInfo> m_SBInfos = new();
 
         [Constructible]
         public Bard() : base("the bard")

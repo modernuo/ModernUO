@@ -1,18 +1,3 @@
-/*************************************************************************
- * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
- * Email: hi@modernuo.com                                                *
- * File: SecureTradePackets.cs                                           *
- *                                                                       *
- * This program is free software: you can redistribute it and/or modify  *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- *                                                                       *
- * You should have received a copy of the GNU General Public License     *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
- *************************************************************************/
-
 using Server.Items;
 
 namespace Server.Network
@@ -46,15 +31,6 @@ namespace Server.Network
             Stream.Write((byte)1); // Close
             Stream.Write(cont.Serial);
         }
-    }
-
-    public enum TradeFlag : byte
-    {
-        Display = 0x0,
-        Close = 0x1,
-        Update = 0x2,
-        UpdateGold = 0x3,
-        UpdateLedger = 0x4
     }
 
     public sealed class UpdateSecureTrade : Packet

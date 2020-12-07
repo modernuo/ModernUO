@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
     public class Farmer : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
+        private readonly List<SBInfo> m_SBInfos = new();
 
         [Constructible]
         public Farmer() : base("the farmer")

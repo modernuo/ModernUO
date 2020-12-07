@@ -1,21 +1,18 @@
 using System;
-using System.IO;
+using System.Buffers;
 using System.Text;
-using Server.Network;
 
 namespace Server
 {
     public interface IPropertyListObject : IEntity
     {
         ObjectPropertyList PropertyList { get; }
-        OPLInfo OPLPacket { get; }
 
         void GetProperties(ObjectPropertyList list);
     }
 
-    public sealed class ObjectPropertyList : Packet
+    public sealed class ObjectPropertyList
     {
-        private static byte[] m_Buffer = new byte[1024];
         private static readonly Encoding m_Encoding = Encoding.Unicode;
 
         // Each of these are localized to "~1_NOTHING~" which allows the string argument to be used
@@ -25,25 +22,26 @@ namespace Server
             1070722
         };
 
-        private int m_Hash;
-        private int m_Strings;
+        private int _hash;
+        private int _strings;
+        private byte[] _buffer = new byte[64];
+        private int _position;
 
-        public ObjectPropertyList(IEntity e) : base(0xD6)
+        public ObjectPropertyList(IEntity e)
         {
-            EnsureCapacity(128);
-
             Entity = e;
-
-            Stream.Write((short)1);
-            Stream.Write(e.Serial);
-            Stream.Write((byte)0);
-            Stream.Write((byte)0);
-            Stream.Write(e.Serial);
+            Span<byte> buffer = _buffer;
+            buffer.Write(ref _position, (byte)0xD6); // Packet ID
+            _position += 2; // Length
+            buffer.Write(ref _position, (ushort)1);
+            buffer.Write(ref _position, e.Serial);
+            buffer.Write(ref _position, (ushort)0);
+            _position += 4; // Hash
         }
 
         public IEntity Entity { get; }
 
-        public int Hash => 0x40000000 + m_Hash;
+        public int Hash => 0x40000000 + _hash;
 
         public int Header { get; set; }
 
@@ -51,40 +49,46 @@ namespace Server
 
         public static bool Enabled { get; set; }
 
-        public void Add(int number)
+        public byte[] Buffer => _buffer;
+
+        public void Reset()
         {
-            if (number == 0)
-            {
-                return;
-            }
+            _position = 15;
+            _hash = 0;
+            _strings = 0;
+        }
 
-            AddHash(number);
+        public void Flush()
+        {
+            Resize(_buffer.Length * 2);
+        }
 
-            if (Header == 0)
-            {
-                Header = number;
-                HeaderArgs = "";
-            }
-
-            Stream.Write(number);
-            Stream.Write((short)0);
+        private void Resize(int amount)
+        {
+            Array.Resize(ref _buffer, amount);
         }
 
         public void Terminate()
         {
-            Stream.Write(0);
+            int length = _position + 4;
+            if (length != _buffer.Length)
+            {
+                Resize(length);
+            }
 
-            Stream.Seek(11, SeekOrigin.Begin);
-            Stream.Write(m_Hash);
+            Span<byte> buffer = _buffer;
+            buffer.Write(ref _position, 0);
+            buffer.Slice(11, 4).Write(_hash);
+            buffer.Slice(1, 2).Write((ushort)_position);
         }
 
         public void AddHash(int val)
         {
-            m_Hash ^= val & 0x3FFFFFF;
-            m_Hash ^= (val >> 26) & 0x3F;
+            _hash ^= val & 0x3FFFFFF;
+            _hash ^= (val >> 26) & 0x3F;
         }
 
-        public void Add(int number, string arguments)
+        public void Add(int number, string arguments = null)
         {
             if (number == 0)
             {
@@ -100,21 +104,27 @@ namespace Server
             }
 
             AddHash(number);
-            AddHash(arguments.GetHashCode(StringComparison.Ordinal));
-
-            Stream.Write(number);
-
-            var byteCount = m_Encoding.GetByteCount(arguments);
-
-            if (byteCount > m_Buffer.Length)
+            if (arguments.Length > 0)
             {
-                m_Buffer = new byte[byteCount];
+                AddHash(arguments.GetHashCode(StringComparison.Ordinal));
             }
 
-            byteCount = m_Encoding.GetBytes(arguments, 0, arguments.Length, m_Buffer, 0);
+            int strLength = m_Encoding.GetByteCount(arguments);
 
-            Stream.Write((short)byteCount);
-            Stream.Write(m_Buffer, 0, byteCount);
+            int length = _position + 6 + strLength;
+            if (length > _buffer.Length)
+            {
+                Flush();
+            }
+
+            Span<byte> buffer = _buffer;
+            buffer.Write(ref _position, number);
+            buffer.Write(ref _position, (ushort)strLength);
+            if (strLength > 0)
+            {
+                m_Encoding.GetBytes(arguments, buffer.Slice(_position));
+                _position += strLength;
+            }
         }
 
         public void Add(int number, string format, object arg0)
@@ -137,7 +147,7 @@ namespace Server
             Add(number, string.Format(format, args));
         }
 
-        private int GetStringNumber() => m_StringNumbers[m_Strings++ % m_StringNumbers.Length];
+        private int GetStringNumber() => m_StringNumbers[_strings++ % m_StringNumbers.Length];
 
         public void Add(string text)
         {
@@ -162,24 +172,6 @@ namespace Server
         public void Add(string format, params object[] args)
         {
             Add(GetStringNumber(), string.Format(format, args));
-        }
-    }
-
-    public sealed class OPLInfo : Packet
-    {
-        /*public OPLInfo( ObjectPropertyList list ) : base( 0xBF )
-        {
-          EnsureCapacity( 13 );
-
-          m_Stream.Write( (short) 0x10 );
-          m_Stream.Write( (int) list.Entity.Serial );
-          m_Stream.Write( (int) list.Hash );
-        }*/
-
-        public OPLInfo(Serial serial, int hash) : base(0xDC, 9)
-        {
-            Stream.Write(serial);
-            Stream.Write(hash);
         }
     }
 }

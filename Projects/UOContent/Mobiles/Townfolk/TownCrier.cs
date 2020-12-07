@@ -379,7 +379,7 @@ namespace Server.Mobiles
             Instances.Add(this);
         }
 
-        public static List<TownCrier> Instances { get; } = new List<TownCrier>();
+        public static List<TownCrier> Instances { get; } = new();
 
         public List<TownCrierEntry> Entries { get; private set; }
 

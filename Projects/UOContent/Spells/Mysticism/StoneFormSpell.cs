@@ -106,11 +106,11 @@ namespace Server.Spells.Mysticism
 
                     ResistanceMod[] mods =
                     {
-                        new ResistanceMod(ResistanceType.Physical, offset),
-                        new ResistanceMod(ResistanceType.Fire, offset),
-                        new ResistanceMod(ResistanceType.Cold, offset),
-                        new ResistanceMod(ResistanceType.Poison, offset),
-                        new ResistanceMod(ResistanceType.Energy, offset)
+                        new(ResistanceType.Physical, offset),
+                        new(ResistanceType.Fire, offset),
+                        new(ResistanceType.Cold, offset),
+                        new(ResistanceType.Poison, offset),
+                        new(ResistanceType.Energy, offset)
                     };
 
                     for (var i = 0; i < mods.Length; ++i)

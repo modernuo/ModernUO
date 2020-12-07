@@ -14,85 +14,46 @@ namespace Server
             From = new SecureTradeInfo(this, from, new SecureTradeContainer(this));
             To = new SecureTradeInfo(this, to, new SecureTradeContainer(this));
 
-            var from6017 = from.NetState?.ContainerGridLines == true;
-            var to6017 = to.NetState?.ContainerGridLines == true;
-
             var from704565 = from.NetState?.NewSecureTrading == true;
             var to704565 = to.NetState?.NewSecureTrading == true;
 
             from.Send(new MobileStatus(from, to));
-            from.Send(new UpdateSecureTrade(From.Container, false, false));
+            from.NetState.SendUpdateSecureTrade(From.Container, false, false);
+            from.NetState.SendSecureTradeEquip(To.Container, to);
 
-            if (from6017)
-            {
-                from.Send(new SecureTradeEquip6017(To.Container, to));
-            }
-            else
-            {
-                from.Send(new SecureTradeEquip(To.Container, to));
-            }
+            from.NetState.SendUpdateSecureTrade(From.Container, false, false);
+            from.NetState.SendSecureTradeEquip(From.Container, from);
 
-            from.Send(new UpdateSecureTrade(From.Container, false, false));
-
-            if (from6017)
-            {
-                from.Send(new SecureTradeEquip6017(From.Container, from));
-            }
-            else
-            {
-                from.Send(new SecureTradeEquip(From.Container, from));
-            }
-
-            from.Send(new DisplaySecureTrade(to, From.Container, To.Container, to.Name));
-            from.Send(new UpdateSecureTrade(From.Container, false, false));
+            from.NetState.SendDisplaySecureTrade(to, From.Container, To.Container, to.Name);
+            from.NetState.SendUpdateSecureTrade(From.Container, false, false);
 
             if (from.Account != null && from704565)
             {
-                from.Send(
-                    new UpdateSecureTrade(
-                        From.Container,
-                        TradeFlag.UpdateLedger,
-                        from.Account.TotalGold,
-                        from.Account.TotalPlat
-                    )
+                from.NetState.SendUpdateSecureTrade(
+                    From.Container,
+                    TradeFlag.UpdateLedger,
+                    from.Account.TotalGold,
+                    from.Account.TotalPlat
                 );
             }
 
             to.Send(new MobileStatus(to, from));
-            to.Send(new UpdateSecureTrade(To.Container, false, false));
+            to.NetState.SendUpdateSecureTrade(To.Container, false, false);
+            to.NetState.SendSecureTradeEquip(From.Container, from);
 
-            if (to6017)
-            {
-                to.Send(new SecureTradeEquip6017(From.Container, from));
-            }
-            else
-            {
-                to.Send(new SecureTradeEquip(From.Container, from));
-            }
+            to.NetState.SendUpdateSecureTrade(To.Container, false, false);
+            to.NetState.SendSecureTradeEquip(To.Container, to);
 
-            to.Send(new UpdateSecureTrade(To.Container, false, false));
-
-            if (to6017)
-            {
-                to.Send(new SecureTradeEquip6017(To.Container, to));
-            }
-            else
-            {
-                to.Send(new SecureTradeEquip(To.Container, to));
-            }
-
-            to.Send(new DisplaySecureTrade(from, To.Container, From.Container, from.Name));
-            to.Send(new UpdateSecureTrade(To.Container, false, false));
+            to.NetState.SendDisplaySecureTrade(from, To.Container, From.Container, from.Name);
+            to.NetState.SendUpdateSecureTrade(To.Container, false, false);
 
             if (to.Account != null && to704565)
             {
-                to.Send(
-                    new UpdateSecureTrade(
-                        To.Container,
-                        TradeFlag.UpdateLedger,
-                        to.Account.TotalGold,
-                        to.Account.TotalPlat
-                    )
+                to.NetState.SendUpdateSecureTrade(
+                    To.Container,
+                    TradeFlag.UpdateLedger,
+                    to.Account.TotalGold,
+                    to.Account.TotalPlat
                 );
             }
         }
@@ -164,8 +125,8 @@ namespace Server
                 return;
             }
 
-            From.Mobile.Send(new CloseSecureTrade(From.Container));
-            To.Mobile.Send(new CloseSecureTrade(To.Container));
+            From.Mobile.NetState.SendCloseSecureTrade(From.Container);
+            To.Mobile.NetState.SendCloseSecureTrade(To.Container);
 
             Valid = false;
 
@@ -198,12 +159,12 @@ namespace Server
                 var plat = left.Mobile.Account.TotalPlat;
                 var gold = left.Mobile.Account.TotalGold;
 
-                left.Mobile.Send(new UpdateSecureTrade(left.Container, TradeFlag.UpdateLedger, gold, plat));
+                left.Mobile.NetState.SendUpdateSecureTrade(left.Container, TradeFlag.UpdateLedger, gold, plat);
             }
 
             if (right.Mobile.NetState?.NewSecureTrading == true)
             {
-                right.Mobile.Send(new UpdateSecureTrade(right.Container, TradeFlag.UpdateGold, left.Gold, left.Plat));
+                right.Mobile.NetState.SendUpdateSecureTrade(right.Container, TradeFlag.UpdateGold, left.Gold, left.Plat);
             }
         }
 
@@ -290,8 +251,8 @@ namespace Server
                     From.Accepted = false;
                     To.Accepted = false;
 
-                    From.Mobile.Send(new UpdateSecureTrade(From.Container, From.Accepted, To.Accepted));
-                    To.Mobile.Send(new UpdateSecureTrade(To.Container, To.Accepted, From.Accepted));
+                    From.Mobile.NetState.SendUpdateSecureTrade(From.Container, From.Accepted, To.Accepted);
+                    To.Mobile.NetState.SendUpdateSecureTrade(To.Container, To.Accepted, From.Accepted);
 
                     return;
                 }
@@ -349,8 +310,8 @@ namespace Server
             }
             else if (!From.IsDisposed && !To.IsDisposed)
             {
-                From.Mobile.Send(new UpdateSecureTrade(From.Container, From.Accepted, To.Accepted));
-                To.Mobile.Send(new UpdateSecureTrade(To.Container, To.Accepted, From.Accepted));
+                From.Mobile.NetState.SendUpdateSecureTrade(From.Container, From.Accepted, To.Accepted);
+                To.Mobile.NetState.SendUpdateSecureTrade(To.Container, To.Accepted, From.Accepted);
             }
         }
 

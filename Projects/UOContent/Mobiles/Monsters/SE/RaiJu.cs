@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
     public class RaiJu : BaseCreature
     {
-        private static readonly HashSet<Mobile> m_Table = new HashSet<Mobile>();
+        private static readonly HashSet<Mobile> m_Table = new();
 
         [Constructible]
         public RaiJu() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)

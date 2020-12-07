@@ -40,8 +40,8 @@ namespace Server
         private static TimeSpan m_ProfileTime;
         private static bool? m_IsRunningFromXUnit;
 
-        private static int m_CycleIndex = 1;
-        private static readonly float[] m_CyclesPerSecond = new float[100];
+        private static long m_CycleIndex;
+        private static readonly float[] m_CyclesPerSecond = new float[127]; // Divisible by long.MaxValue
 
         // private static readonly AutoResetEvent m_Signal = new AutoResetEvent(true);
 
@@ -137,9 +137,23 @@ namespace Server
 
         public static bool Closing => ClosingTokenSource.IsCancellationRequested;
 
-        public static float CyclesPerSecond => m_CyclesPerSecond[(m_CycleIndex - 1) % m_CyclesPerSecond.Length];
+        public static float CyclesPerSecond => m_CyclesPerSecond[m_CycleIndex % m_CyclesPerSecond.Length];
 
-        public static float AverageCPS => m_CyclesPerSecond.Take(m_CycleIndex).Average();
+        public static float AverageCPS
+        {
+            get
+            {
+                var total = 0.0f;
+                var count = Math.Min(m_CycleIndex + 1, m_CyclesPerSecond.Length);
+
+                for (int i = 0; i < count; i++)
+                {
+                    total += m_CyclesPerSecond[i];
+                }
+
+                return total / count;
+            }
+        }
 
         public static string Arguments
         {
@@ -452,7 +466,7 @@ namespace Server
         {
             try
             {
-                long last = TickCount;
+                long now, last = TickCount;
 
                 const int sampleInterval = 100;
                 const float ticksPerSecond = 1000.0f * sampleInterval;
@@ -481,8 +495,9 @@ namespace Server
                         continue;
                     }
 
-                    var now = TickCount;
-                    m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
+                    now = TickCount;
+                    m_CyclesPerSecond[m_CycleIndex % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
+                    m_CycleIndex = Math.Max(unchecked(m_CycleIndex + 1), 0);
                     last = now;
                 }
             }

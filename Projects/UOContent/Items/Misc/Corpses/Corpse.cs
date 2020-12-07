@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Server.ContextMenus;
 using Server.Engines.PartySystem;
 using Server.Engines.Quests.Doom;
@@ -799,25 +800,39 @@ namespace Server.Items
             return m_Devourer.Devour(this); // Devour the corpse if it hasn't
         }
 
-        public override void SendInfoTo(NetState state, bool sendOplPacket)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void SendCorpseContent(NetState ns)
         {
-            base.SendInfoTo(state, sendOplPacket);
-
-            if (!(((Body)Amount).IsHuman && ItemID == 0x2006))
+            if (ns.ContainerGridLines)
             {
-                return;
-            }
-
-            if (state.ContainerGridLines)
-            {
-                state.Send(new CorpseContent6017(state.Mobile, this));
+                ns.Send(new CorpseContent6017(ns.Mobile, this));
             }
             else
             {
-                state.Send(new CorpseContent(state.Mobile, this));
+                ns.Send(new CorpseContent(ns.Mobile, this));
             }
 
-            state.Send(new CorpseEquip(state.Mobile, this));
+            ns.Send(new CorpseEquip(ns.Mobile, this));
+        }
+
+        public override void SendInfoTo(NetState ns, bool sendOplPacket)
+        {
+            base.SendInfoTo(ns, sendOplPacket);
+
+            if (((Body)Amount).IsHuman && ItemID == 0x2006)
+            {
+                SendCorpseContent(ns);
+            }
+        }
+
+        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world, ReadOnlySpan<byte> opl = default)
+        {
+            base.SendInfoTo(ns, world, opl);
+
+            if (((Body)Amount).IsHuman && ItemID == 0x2006)
+            {
+                SendCorpseContent(ns);
+            }
         }
 
         public bool IsCriminalAction(Mobile from)
