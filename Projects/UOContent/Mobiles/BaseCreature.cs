@@ -1791,10 +1791,12 @@ namespace Server.Mobiles
             // Version 12
             writer.Write(m_Paragon);
 
-            // Version 13
-            writer.Write(Friends?.Count > 0);
+            var friendCount = Friends?.Count > 0;
 
-            if (Friends?.Count > 0)
+            // Version 13
+            writer.Write(hasFriends);
+
+            if (hasFriends)
             {
                 writer.Write(Friends, true);
             }
@@ -4198,7 +4200,7 @@ namespace Server.Mobiles
             EndFleeTime = DateTime.UtcNow + maxDuration;
         }
 
-        public virtual bool IsPetFriend(Mobile m) => Friends.Contains(m);
+        public virtual bool IsPetFriend(Mobile m) => Friends?.Contains(m);
 
         public virtual void AddPetFriend(Mobile m)
         {
@@ -4207,10 +4209,7 @@ namespace Server.Mobiles
             Friends.Add(m);
         }
 
-        public virtual void RemovePetFriend(Mobile m)
-        {
-            Friends?.Remove(m);
-        }
+        public virtual void RemovePetFriend(Mobile m) => Friends?.Remove(m);
 
         public virtual bool IsFriend(Mobile m) =>
             OppositionGroup?.IsEnemy(this, m) != true && m is BaseCreature c && m_Team == c.m_Team
