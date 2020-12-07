@@ -1791,7 +1791,7 @@ namespace Server.Mobiles
             // Version 12
             writer.Write(m_Paragon);
 
-            var friendCount = Friends?.Count > 0;
+            var hasFriends = Friends?.Count > 0;
 
             // Version 13
             writer.Write(hasFriends);
