@@ -434,12 +434,6 @@ namespace Server
         private static readonly TimeSpan ExpireCombatantDelay = TimeSpan.FromMinutes(1.0);
         private static readonly TimeSpan ExpireAggressorsDelay = TimeSpan.FromSeconds(5.0);
 
-        private static readonly Packet[][] m_MovingPacketCache =
-        {
-            new Packet[8],
-            new Packet[8]
-        };
-
         private static readonly List<IEntity> m_MoveList = new();
         private static readonly List<Mobile> m_MoveClientList = new();
 
@@ -2789,105 +2783,31 @@ namespace Server
                     return;
                 }
 
-                if (m_Map != value)
+                if (m_Map == value)
                 {
-                    m_NetState?.ValidateAllTrades();
-
-                    var oldMap = m_Map;
-
-                    if (m_Map != null)
-                    {
-                        m_Map.OnLeave(this);
-
-                        ClearScreen();
-                        SendRemovePacket();
-                    }
-
-                    for (var i = 0; i < Items.Count; ++i)
-                    {
-                        Items[i].Map = value;
-                    }
-
-                    m_Map = value;
-
-                    UpdateRegion();
-
-                    m_Map?.OnEnter(this);
-
-                    var ns = m_NetState;
-
-                    if (ns != null && m_Map != null)
-                    {
-                        ns.Sequence = 0;
-                        ns.SendMapChange(Map);
-
-                        if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
-                        {
-                            ns.SendMapPatches();
-                        }
-
-                        ns.Send(SeasonChange.Instantiate(GetSeason(), true));
-
-                        if (ns.StygianAbyss)
-                        {
-                            ns.Send(new MobileUpdate(this));
-                        }
-                        else
-                        {
-                            ns.Send(new MobileUpdateOld(this));
-                        }
-                    }
-
-                    if (ns != null)
-                    {
-                        if (m_Map != null)
-                        {
-                            ns.Send(new ServerChange(m_Location, m_Map));
-                        }
-
-                        ns.Sequence = 0;
-
-                        ns.Send(MobileIncoming.Create(ns, this, this));
-
-                        if (ns.StygianAbyss)
-                        {
-                            ns.Send(new MobileUpdate(this));
-                            CheckLightLevels(true);
-                            ns.Send(new MobileUpdate(this));
-                        }
-                        else
-                        {
-                            ns.Send(new MobileUpdateOld(this));
-                            CheckLightLevels(true);
-                            ns.Send(new MobileUpdateOld(this));
-                        }
-                    }
-
-                    SendEverything();
-                    SendIncomingPacket();
-
-                    if (ns != null)
-                    {
-                        ns.Sequence = 0;
-
-                        ns.Send(MobileIncoming.Create(ns, this, this));
-
-                        if (ns.StygianAbyss)
-                        {
-                            ns.SendSupportedFeature();
-                            ns.Send(new MobileUpdate(this));
-                            ns.Send(new MobileAttributes(this));
-                        }
-                        else
-                        {
-                            ns.SendSupportedFeature();
-                            ns.Send(new MobileUpdateOld(this));
-                            ns.Send(new MobileAttributes(this));
-                        }
-                    }
-
-                    OnMapChange(oldMap);
+                    return;
                 }
+
+                m_NetState?.ValidateAllTrades();
+
+                var oldMap = m_Map;
+
+                if (m_Map != null)
+                {
+                    m_Map.OnLeave(this);
+
+                    ClearScreen();
+                    SendRemovePacket();
+                }
+
+                for (var i = 0; i < Items.Count; ++i)
+                {
+                    Items[i].Map = value;
+                }
+
+                m_Map = value;
+
+                InternalMapChange(oldMap);
             }
         }
 
@@ -2898,81 +2818,33 @@ namespace Server
             set => SetLocation(value, true);
         }
 
-        public virtual void MoveToWorld(Point3D newLocation, Map map)
+        private void InternalMapChange(Map oldMap)
         {
-            if (Deleted)
-            {
-                return;
-            }
-
-            if (m_Map == map)
-            {
-                SetLocation(newLocation, true);
-                return;
-            }
-
-            var box = FindBankNoCreate();
-
-            if (box?.Opened == true)
-            {
-                box.Close();
-            }
-
-            var oldLocation = m_Location;
-            var oldMap = m_Map;
-
-            var oldRegion = m_Region;
-
-            if (oldMap != null)
-            {
-                oldMap.OnLeave(this);
-
-                ClearScreen();
-                SendRemovePacket();
-            }
-
-            for (var i = 0; i < Items.Count; ++i)
-            {
-                Items[i].Map = map;
-            }
-
-            m_Map = map;
-
-            m_Location = newLocation;
-
             var ns = m_NetState;
 
-            if (m_Map != null)
+            m_Map?.OnEnter(this);
+            UpdateRegion();
+
+            if (ns != null && m_Map != null)
             {
-                m_Map.OnEnter(this);
+                ns.Sequence = 0;
+                ns.SendMapChange(Map);
 
-                UpdateRegion();
-
-                if (ns != null && m_Map != null)
+                if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
                 {
-                    ns.Sequence = 0;
-                    ns.SendMapChange(Map);
-
-                    if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
-                    {
-                        ns.SendMapPatches();
-                    }
-
-                    ns.Send(SeasonChange.Instantiate(GetSeason(), true));
-
-                    if (ns.StygianAbyss)
-                    {
-                        ns.Send(new MobileUpdate(this));
-                    }
-                    else
-                    {
-                        ns.Send(new MobileUpdateOld(this));
-                    }
+                    ns.SendMapPatches();
                 }
-            }
-            else
-            {
-                UpdateRegion();
+
+                ns.Send(SeasonChange.Instantiate(GetSeason(), true));
+
+                if (ns.StygianAbyss)
+                {
+                    ns.Send(new MobileUpdate(this));
+                }
+                else
+                {
+                    ns.Send(new MobileUpdateOld(this));
+                }
             }
 
             if (ns != null)
@@ -3008,22 +2880,66 @@ namespace Server
                 ns.Sequence = 0;
 
                 ns.Send(MobileIncoming.Create(ns, this, this));
+                ns.SendSupportedFeature();
 
                 if (ns.StygianAbyss)
                 {
-                    ns.SendSupportedFeature();
                     ns.Send(new MobileUpdate(this));
-                    ns.Send(new MobileAttributes(this));
                 }
                 else
                 {
-                    ns.SendSupportedFeature();
                     ns.Send(new MobileUpdateOld(this));
-                    ns.Send(new MobileAttributes(this));
                 }
+
+                Span<byte> attributesPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength];
+                OutgoingMobilePackets.CreateMobileAttributes(ref attributesPacket, this);
+                ns.Send(attributesPacket);
             }
 
             OnMapChange(oldMap);
+        }
+
+        public virtual void MoveToWorld(Point3D newLocation, Map map)
+        {
+            if (Deleted)
+            {
+                return;
+            }
+
+            if (m_Map == map)
+            {
+                SetLocation(newLocation, true);
+                return;
+            }
+
+            var box = FindBankNoCreate();
+
+            if (box?.Opened == true)
+            {
+                box.Close();
+            }
+
+            var oldLocation = m_Location;
+            var oldMap = m_Map;
+
+            if (oldMap != null)
+            {
+                oldMap.OnLeave(this);
+
+                ClearScreen();
+                SendRemovePacket();
+            }
+
+            for (var i = 0; i < Items.Count; ++i)
+            {
+                Items[i].Map = map;
+            }
+
+            m_Map = map;
+
+            m_Location = newLocation;
+
+            InternalMapChange(oldMap);
             OnLocationChange(oldLocation);
 
             m_Region?.OnLocationChanged(this, oldLocation);
@@ -3177,7 +3093,9 @@ namespace Server
                 sendFacialHair = true;
             }
 
-            var cache = new[] { new Packet[8], new Packet[8] };
+            // One packet for each notoriety, and old/new clients
+            const int playerMovingPacketLength = OutgoingMobilePackets.MobileMovingPacketLength;
+            Span<byte> playerMovingPackets = stackalloc byte[playerMovingPacketLength * 16];
 
             var ourState = m.m_NetState;
 
@@ -3202,13 +3120,17 @@ namespace Server
                     ourState.Send(MobileIncoming.Create(ourState, m, m));
                 }
 
+                if (sendMoving || !ourState.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
+                {
+                    var noto = Notoriety.Compute(m, m);
+                    var startIndex = (noto * 2 + (ourState.StygianAbyss ? 1 : 0)) * playerMovingPacketLength;
+                    var buffer = playerMovingPackets.Slice(startIndex, playerMovingPacketLength);
+                    OutgoingMobilePackets.CreateMobileMoving(ref buffer, m, noto);
+                    ourState.Send(buffer);
+                }
+
                 if (ourState.StygianAbyss)
                 {
-                    if (sendMoving)
-                    {
-                        var noto = Notoriety.Compute(m, m);
-                        ourState.Send(cache[0][noto] = Packet.Acquire(new MobileMoving(m, noto)));
-                    }
 
                     if (sendHealthbarPoison)
                     {
@@ -3220,14 +3142,6 @@ namespace Server
                         ourState.Send(new HealthbarYellow(m));
                     }
                 }
-                else
-                {
-                    if (sendMoving || sendHealthbarPoison || sendHealthbarYellow)
-                    {
-                        var noto = Notoriety.Compute(m, m);
-                        ourState.Send(cache[1][noto] = Packet.Acquire(new MobileMovingOld(m, noto)));
-                    }
-                }
 
                 if (sendPublicStats || sendPrivateStats)
                 {
@@ -3235,23 +3149,30 @@ namespace Server
                 }
                 else if (sendAll)
                 {
-                    ourState.Send(new MobileAttributes(m));
+                    Span<byte> attributesPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength];
+                    OutgoingMobilePackets.CreateMobileAttributes(ref attributesPacket, m);
+                    ourState.Send(attributesPacket);
                 }
                 else if (sendAny)
                 {
+                    Span<byte> statsPacket = stackalloc byte[OutgoingMobilePackets.MobileStatsPacketLength];
+
                     if (sendHits)
                     {
-                        ourState.Send(new MobileHits(m));
+                        OutgoingMobilePackets.CreateMobileHits(ref statsPacket, m);
+                        ourState.Send(statsPacket);
                     }
 
                     if (sendStam)
                     {
-                        ourState.Send(new MobileStam(m));
+                        OutgoingMobilePackets.CreateMobileStam(ref statsPacket, m);
+                        ourState.Send(statsPacket);
                     }
 
                     if (sendMana)
                     {
-                        ourState.Send(new MobileMana(m));
+                        OutgoingMobilePackets.CreateMobileMana(ref statsPacket, m);
+                        ourState.Send(statsPacket);
                     }
                 }
 
@@ -3311,13 +3232,14 @@ namespace Server
             {
                 Mobile beholder;
 
-                Packet hitsPacket = null;
                 Packet statPacketTrue = null;
                 Packet statPacketFalse = null;
                 Packet hairPacket = null;
                 Packet facialhairPacket = null;
                 Packet hbpPacket = null;
                 Packet hbyPacket = null;
+
+                Span<byte> statsPacket = stackalloc byte[OutgoingMobilePackets.MobileStatsPacketLength];
 
                 Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
                 OutgoingMobilePackets.CreateBondedStatus(ref deadBuffer, m.Serial, true);
@@ -3348,22 +3270,24 @@ namespace Server
                             }
                         }
 
-                        if (state.StygianAbyss)
+                        if (sendMoving || !state.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
                         {
-                            if (sendMoving)
+                            var noto = Notoriety.Compute(beholder, m);
+                            var stygianAbyss = state.StygianAbyss;
+                            var startIndex = (noto * 2 + (stygianAbyss ? 1 : 0)) * playerMovingPacketLength;
+                            var buffer = playerMovingPackets.Slice(startIndex, playerMovingPacketLength);
+
+                            // Not created yet
+                            if (buffer[0] == 0)
                             {
-                                var noto = Notoriety.Compute(beholder, m);
-
-                                var p = cache[0][noto];
-
-                                if (p == null)
-                                {
-                                    cache[0][noto] = p = Packet.Acquire(new MobileMoving(m, noto));
-                                }
-
-                                state.Send(p);
+                                OutgoingMobilePackets.CreateMobileMoving(ref buffer, m, noto, stygianAbyss);
                             }
 
+                            state.Send(buffer);
+                        }
+
+                        if (state.StygianAbyss)
+                        {
                             if (sendHealthbarPoison)
                             {
                                 hbpPacket ??= Packet.Acquire(new HealthbarPoison(m));
@@ -3376,22 +3300,6 @@ namespace Server
                                 hbyPacket ??= Packet.Acquire(new HealthbarYellow(m));
 
                                 state.Send(hbyPacket);
-                            }
-                        }
-                        else
-                        {
-                            if (sendMoving || sendHealthbarPoison || sendHealthbarYellow)
-                            {
-                                var noto = Notoriety.Compute(beholder, m);
-
-                                var p = cache[1][noto];
-
-                                if (p == null)
-                                {
-                                    cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(m, noto));
-                                }
-
-                                state.Send(p);
                             }
                         }
 
@@ -3412,9 +3320,12 @@ namespace Server
                         }
                         else if (sendHits)
                         {
-                            hitsPacket ??= Packet.Acquire(new MobileHitsN(m));
+                            if (statsPacket[0] == 0)
+                            {
+                                OutgoingMobilePackets.CreateMobileHits(ref statsPacket, m, true);
+                            }
 
-                            state.Send(hitsPacket);
+                            state.Send(statsPacket);
                         }
 
                         if (sendHair)
@@ -3439,7 +3350,6 @@ namespace Server
                     }
                 }
 
-                Packet.Release(hitsPacket);
                 Packet.Release(statPacketTrue);
                 Packet.Release(statPacketFalse);
                 Packet.Release(hairPacket);
@@ -3448,17 +3358,6 @@ namespace Server
                 Packet.Release(hbyPacket);
 
                 eable.Free();
-            }
-
-            if (sendMoving || sendNonlocalMoving || sendHealthbarPoison || sendHealthbarYellow)
-            {
-                for (var i = 0; i < cache.Length; ++i)
-                {
-                    for (var j = 0; j < cache[i].Length; ++j)
-                    {
-                        Packet.Release(ref cache[i][j]);
-                    }
-                }
             }
         }
 
@@ -4710,11 +4609,9 @@ namespace Server
 
                 eable.Free();
 
-                var cache = m_MovingPacketCache;
-
-                /*for( int i = 0; i < cache.Length; ++i )
-                  for( int j = 0; j < cache[i].Length; ++j )
-                    Packet.Release( ref cache[i][j] );*/
+                // One packet for each notoriety, and old/new clients
+                const int playerMovingPacketLength = OutgoingMobilePackets.MobileMovingPacketLength;
+                Span<byte> playerMovingPackets = stackalloc byte[playerMovingPacketLength * 16];
 
                 foreach (var m in m_MoveClientList)
                 {
@@ -4722,38 +4619,18 @@ namespace Server
 
                     if (ns != null && Utility.InUpdateRange(m_Location, m.m_Location) && m.CanSee(this))
                     {
-                        if (ns.StygianAbyss)
+                        var stygianAbyss = ns.StygianAbyss;
+                        var noto = Notoriety.Compute(m, this);
+                        var startIndex = (noto * 2 + (stygianAbyss ? 1 : 0)) * playerMovingPacketLength;
+                        var buffer = playerMovingPackets.Slice(startIndex, playerMovingPacketLength);
+
+                        // Not created yet
+                        if (buffer[0] == 0)
                         {
-                            var noto = Notoriety.Compute(m, this);
-                            var p = cache[0][noto];
-
-                            if (p == null)
-                            {
-                                cache[0][noto] = p = Packet.Acquire(new MobileMoving(this, noto));
-                            }
-
-                            ns.Send(p);
+                            OutgoingMobilePackets.CreateMobileMoving(ref buffer, m, noto, stygianAbyss);
                         }
-                        else
-                        {
-                            var noto = Notoriety.Compute(m, this);
-                            var p = cache[1][noto];
 
-                            if (p == null)
-                            {
-                                cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(this, noto));
-                            }
-
-                            ns.Send(p);
-                        }
-                    }
-                }
-
-                for (var i = 0; i < cache.Length; ++i)
-                {
-                    for (var j = 0; j < cache[i].Length; ++j)
-                    {
-                        Packet.Release(ref cache[i][j]);
+                        ns.Send(buffer);
                     }
                 }
 
@@ -5213,13 +5090,13 @@ namespace Server
 
                 Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
                 OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+                Span<byte> animPacket = stackalloc byte[OutgoingMobilePackets.DeathAnimationPacketLength];
+                OutgoingMobilePackets.CreateDeathAnimation(Serial, corpseSerial);
 
                 foreach (var state in eable)
                 {
                     if (state != m_NetState)
                     {
-                        animPacket ??= Packet.Acquire(new DeathAnimation(Serial, corpseSerial));
-
                         state.Send(animPacket);
 
                         if (!state.Mobile.CanSee(this))
@@ -5228,8 +5105,6 @@ namespace Server
                         }
                     }
                 }
-
-                Packet.Release(animPacket);
 
                 eable.Free();
             }
@@ -7074,93 +6949,58 @@ namespace Server
 
             ProcessDelta();
 
-            Packet p = null;
-            // Packet pNew = null;
+            Span<byte> buffer = stackalloc byte[OutgoingMobilePackets.MobileAnimationLength];
 
             var eable = map.GetClientsInRange(m_Location);
 
             foreach (var state in eable)
             {
-                if (state.Mobile.CanSee(this))
+                if (!state.Mobile.CanSee(this))
                 {
-                    state.Mobile.ProcessDelta();
+                    continue;
+                }
 
-                    // if (state.StygianAbyss) {
-                    // if (pNew == null)
-                    // pNew = Packet.Acquire(new NewMobileAnimation(this.Serial, action, frameCount, delay));
+                state.Mobile.ProcessDelta();
 
-                    // state.Send(pNew);
-                    // } else {
-                    if (p == null)
+                if (buffer[0] == 0)
+                {
+                    if (Body.IsGargoyle)
                     {
-                        if (Body.IsGargoyle)
+                        frameCount = 10;
+
+                        if (Flying)
                         {
-                            frameCount = 10;
-
-                            if (Flying)
+                            action = action switch
                             {
-                                if (action >= 9 && action <= 11)
-                                {
-                                    action = 71;
-                                }
-                                else if (action >= 12 && action <= 14)
-                                {
-                                    action = 72;
-                                }
-                                else if (action == 20)
-                                {
-                                    action = 77;
-                                }
-                                else if (action == 31)
-                                {
-                                    action = 71;
-                                }
-                                else if (action == 34)
-                                {
-                                    action = 78;
-                                }
-                                else if (action >= 200 && action <= 259)
-                                {
-                                    action = 75;
-                                }
-                                else if (action >= 260 && action <= 270)
-                                {
-                                    action = 75;
-                                }
-                            }
-                            else
-                            {
-                                if (action >= 200 && action <= 259)
-                                {
-                                    action = 17;
-                                }
-                                else if (action >= 260 && action <= 270)
-                                {
-                                    action = 16;
-                                }
-                            }
+                                >= 9 and <= 11    => 71,
+                                >= 12 and <= 14   => 72,
+                                20                => 77,
+                                31                => 71,
+                                34                => 78,
+                                >= 200 and <= 259 => 75,
+                                >= 260 and <= 270 => 75,
+                                _                 => action
+                            };
                         }
-
-                        p = Packet.Acquire(
-                            new MobileAnimation(
-                                Serial,
-                                action,
-                                frameCount,
-                                repeatCount,
-                                forward,
-                                repeat,
-                                delay
-                            )
-                        );
+                        else
+                        {
+                            action = action switch
+                            {
+                                >= 200 and <= 259 => 17,
+                                >= 260 and <= 270 => 16,
+                                _                 => action
+                            };
+                        }
                     }
 
-                    state.Send(p);
-                    // }
+                    OutgoingMobilePackets.CreateMobileAnimation(
+                        ref buffer,
+                        Serial, action, frameCount, repeatCount, forward, repeat, delay
+                    );
                 }
-            }
 
-            Packet.Release(p);
-            // Packet.Release( pNew );
+                state.Send(buffer);
+            }
 
             eable.Free();
         }
@@ -7353,50 +7193,52 @@ namespace Server
         {
             var ns = m_NetState;
 
-            if (m_Map != null && ns != null)
+            if (m_Map == null || ns == null)
             {
-                var eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
+                return;
+            }
 
-                foreach (var o in eable)
+            var eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
+
+            foreach (var o in eable)
+            {
+                if (o is Item item)
                 {
-                    if (o is Item item)
+                    if (CanSee(item) && InRange(item.Location, item.GetUpdateRange(this)))
                     {
-                        if (CanSee(item) && InRange(item.Location, item.GetUpdateRange(this)))
-                        {
-                            item.SendInfoTo(ns);
-                        }
-                    }
-                    else if (o is Mobile m)
-                    {
-                        if (CanSee(m) && Utility.InUpdateRange(m_Location, m.m_Location))
-                        {
-                            ns.Send(MobileIncoming.Create(ns, this, m));
-
-                            if (ns.StygianAbyss)
-                            {
-                                if (m.Poisoned)
-                                {
-                                    ns.Send(new HealthbarPoison(m));
-                                }
-
-                                if (m.Blessed || m.YellowHealthbar)
-                                {
-                                    ns.Send(new HealthbarYellow(m));
-                                }
-                            }
-
-                            if (m.IsDeadBondedPet)
-                            {
-                                ns.SendBondedStatus(m.Serial, true);
-                            }
-
-                            m.SendOPLPacketTo(ns);
-                        }
+                        item.SendInfoTo(ns);
                     }
                 }
+                else if (o is Mobile m)
+                {
+                    if (CanSee(m) && Utility.InUpdateRange(m_Location, m.m_Location))
+                    {
+                        ns.Send(MobileIncoming.Create(ns, this, m));
 
-                eable.Free();
+                        if (ns.StygianAbyss)
+                        {
+                            if (m.Poisoned)
+                            {
+                                ns.Send(new HealthbarPoison(m));
+                            }
+
+                            if (m.Blessed || m.YellowHealthbar)
+                            {
+                                ns.Send(new HealthbarYellow(m));
+                            }
+                        }
+
+                        if (m.IsDeadBondedPet)
+                        {
+                            ns.SendBondedStatus(m.Serial, true);
+                        }
+
+                        m.SendOPLPacketTo(ns);
+                    }
+                }
             }
+
+            eable.Free();
         }
 
         public void UpdateRegion()
@@ -7431,7 +7273,7 @@ namespace Server
 
         public virtual int GetSeason() => m_Map?.Season ?? 1;
 
-        public virtual int GetPacketFlags()
+        public virtual int GetPacketFlags(bool stygianAbyss)
         {
             var flags = 0x0;
 
@@ -7445,45 +7287,14 @@ namespace Server
                 flags |= 0x02;
             }
 
-            if (m_Flying)
+            if (stygianAbyss)
             {
-                flags |= 0x04;
+                if (m_Flying)
+                {
+                    flags |= 0x04;
+                }
             }
-
-            if (m_Blessed || m_YellowHealthbar)
-            {
-                flags |= 0x08;
-            }
-
-            if (m_Warmode)
-            {
-                flags |= 0x40;
-            }
-
-            if (m_Hidden)
-            {
-                flags |= 0x80;
-            }
-
-            return flags;
-        }
-
-        // Pre-7.0.0.0 Packet Flags
-        public virtual int GetOldPacketFlags()
-        {
-            var flags = 0x0;
-
-            if (m_Paralyzed || m_Frozen)
-            {
-                flags |= 0x01;
-            }
-
-            if (m_Female)
-            {
-                flags |= 0x02;
-            }
-
-            if (m_Poison != null)
+            else if (m_Poison != null)
             {
                 flags |= 0x04;
             }

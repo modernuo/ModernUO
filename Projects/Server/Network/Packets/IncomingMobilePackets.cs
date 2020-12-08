@@ -44,7 +44,7 @@ namespace Server.Network
 
             if (m != null && Utility.InUpdateRange(state.Mobile, m) && state.Mobile.CanSee(m))
             {
-                state.Send(new MobileName(m));
+                state.SendMobileName(m.Serial, m.Name);
             }
         }
 

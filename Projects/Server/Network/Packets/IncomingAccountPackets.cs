@@ -326,7 +326,6 @@ namespace Server.Network
                 state.Send(new MobileUpdate(m));
 
                 state.Send(new MobileIncoming(m, m));
-                // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
                 state.SendSetWarMode(m.Warmode);
 
@@ -334,7 +333,6 @@ namespace Server.Network
 
                 state.SendSupportedFeature();
                 state.Send(new MobileUpdate(m));
-                // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
                 state.SendSetWarMode(m.Warmode);
                 state.Send(new MobileIncoming(m, m));
@@ -349,7 +347,6 @@ namespace Server.Network
                 state.Send(new MobileUpdate(m));
 
                 state.Send(new MobileIncomingSA(m, m));
-                // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
                 state.SendSetWarMode(m.Warmode);
 
@@ -357,7 +354,6 @@ namespace Server.Network
 
                 state.SendSupportedFeature();
                 state.Send(new MobileUpdate(m));
-                // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
                 state.SendSetWarMode(m.Warmode);
                 state.Send(new MobileIncomingSA(m, m));
@@ -372,7 +368,6 @@ namespace Server.Network
                 state.Send(new MobileUpdateOld(m));
 
                 state.Send(new MobileIncomingOld(m, m));
-                // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
                 state.SendSetWarMode(m.Warmode);
 
@@ -380,7 +375,6 @@ namespace Server.Network
 
                 state.SendSupportedFeature();
                 state.Send(new MobileUpdateOld(m));
-                // state.Send( new MobileAttributes( m ) );
                 state.Send(new MobileStatus(m, m));
                 state.SendSetWarMode(m.Warmode);
                 state.Send(new MobileIncomingOld(m, m));
