@@ -141,4 +141,15 @@ namespace Server.Network
             Stream.Write((short)0);
         }
     }
+
+    public sealed class ObjectHelpResponse : Packet
+    {
+        public ObjectHelpResponse(Serial e, string text) : base(0xB7)
+        {
+            EnsureCapacity(9 + text.Length * 2);
+
+            Stream.Write(e);
+            Stream.WriteBigUniNull(text);
+        }
+    }
 }
