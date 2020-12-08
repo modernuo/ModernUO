@@ -249,5 +249,23 @@ namespace Server.Network
 
             ns.Send(ref buffer, writer.Position);
         }
+
+        public static void SendHelpResponse(this NetState ns, Serial s, string text)
+        {
+            text = text?.Trim() ?? "";
+
+            if (ns == null || text.Length == 0 || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0xB7);
+            writer.Write((ushort)(9 + text.Length * 2));
+            writer.Write(s);
+            writer.WriteBigUniNull(text);
+
+            ns.Send(ref buffer, writer.Position);
+        }
     }
 }
