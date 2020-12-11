@@ -494,8 +494,12 @@ namespace Server.Network
         private static readonly ThreadLocal<int[]> m_DupedLayersTL = new(() => new int[256]);
         private static readonly ThreadLocal<int> m_VersionTL = new();
 
-        public MobileIncoming(Mobile beholder, Mobile beheld) : base(0x78)
+        public MobileIncoming(NetState ns, Mobile beholder, Mobile beheld) : base(0x78)
         {
+            var sa = ns.StygianAbyss;
+            var newPacket = ns.NewMobileIncoming;
+            var itemIdMask = newPacket ? 0xFFFF : 0x7FFF;
+
             var m_Version = ++m_VersionTL.Value;
             var m_DupedLayers = m_DupedLayersTL.Value;
 
@@ -528,7 +532,7 @@ namespace Server.Network
             Stream.Write((sbyte)beheld.Z);
             Stream.Write((byte)beheld.Direction);
             Stream.Write((short)hue);
-            Stream.Write((byte)beheld.GetPacketFlags(true));
+            Stream.Write((byte)beheld.GetPacketFlags(sa));
             Stream.Write((byte)Notoriety.Compute(beholder, beheld));
 
             for (var i = 0; i < eq.Count; ++i)
@@ -548,132 +552,10 @@ namespace Server.Network
                         hue = beheld.SolidHueOverride;
                     }
 
-                    var itemID = item.ItemID & 0xFFFF;
+                    var itemID = item.ItemID & itemIdMask;
+                    var writeHue = newPacket || hue != 0;
 
-                    Stream.Write(item.Serial);
-                    Stream.Write((ushort)itemID);
-                    Stream.Write(layer);
-
-                    Stream.Write((short)hue);
-                }
-            }
-
-            if (beheld.HairItemID > 0)
-            {
-                if (m_DupedLayers[(int)Layer.Hair] != m_Version)
-                {
-                    m_DupedLayers[(int)Layer.Hair] = m_Version;
-                    hue = beheld.HairHue;
-
-                    if (beheld.SolidHueOverride >= 0)
-                    {
-                        hue = beheld.SolidHueOverride;
-                    }
-
-                    var itemID = beheld.HairItemID & 0xFFFF;
-
-                    Stream.Write(HairInfo.FakeSerial(beheld));
-                    Stream.Write((ushort)itemID);
-                    Stream.Write((byte)Layer.Hair);
-
-                    Stream.Write((short)hue);
-                }
-            }
-
-            if (beheld.FacialHairItemID > 0)
-            {
-                if (m_DupedLayers[(int)Layer.FacialHair] != m_Version)
-                {
-                    m_DupedLayers[(int)Layer.FacialHair] = m_Version;
-                    hue = beheld.FacialHairHue;
-
-                    if (beheld.SolidHueOverride >= 0)
-                    {
-                        hue = beheld.SolidHueOverride;
-                    }
-
-                    var itemID = beheld.FacialHairItemID & 0xFFFF;
-
-                    Stream.Write(FacialHairInfo.FakeSerial(beheld));
-                    Stream.Write((ushort)itemID);
-                    Stream.Write((byte)Layer.FacialHair);
-
-                    Stream.Write((short)hue);
-                }
-            }
-
-            Stream.Write(0); // terminate
-        }
-
-        public static Packet Create(NetState ns, Mobile beholder, Mobile beheld) =>
-            ns.NewMobileIncoming
-                ? (Packet)new MobileIncoming(beholder, beheld)
-                : new MobileIncomingOld(beholder, beheld, ns.StygianAbyss);
-    }
-
-    public sealed class MobileIncomingOld : Packet
-    {
-        private static readonly ThreadLocal<int[]> m_DupedLayersTL = new(() => new int[256]);
-        private static readonly ThreadLocal<int> m_VersionTL = new();
-
-        public MobileIncomingOld(Mobile beholder, Mobile beheld, bool stygianAbyss) : base(0x78)
-        {
-            var m_Version = ++m_VersionTL.Value;
-            var m_DupedLayers = m_DupedLayersTL.Value;
-
-            var eq = beheld.Items;
-            var count = eq.Count;
-
-            if (beheld.HairItemID > 0)
-            {
-                count++;
-            }
-
-            if (beheld.FacialHairItemID > 0)
-            {
-                count++;
-            }
-
-            EnsureCapacity(23 + count * 9);
-
-            var hue = beheld.Hue;
-
-            if (beheld.SolidHueOverride >= 0)
-            {
-                hue = beheld.SolidHueOverride;
-            }
-
-            Stream.Write(beheld.Serial);
-            Stream.Write((short)beheld.Body);
-            Stream.Write((short)beheld.X);
-            Stream.Write((short)beheld.Y);
-            Stream.Write((sbyte)beheld.Z);
-            Stream.Write((byte)beheld.Direction);
-            Stream.Write((short)hue);
-            Stream.Write((byte)beheld.GetPacketFlags(stygianAbyss));
-            Stream.Write((byte)Notoriety.Compute(beholder, beheld));
-
-            for (var i = 0; i < eq.Count; ++i)
-            {
-                var item = eq[i];
-
-                var layer = (byte)item.Layer;
-
-                if (!item.Deleted && beholder.CanSee(item) && m_DupedLayers[layer] != m_Version)
-                {
-                    m_DupedLayers[layer] = m_Version;
-
-                    hue = item.Hue;
-
-                    if (beheld.SolidHueOverride >= 0)
-                    {
-                        hue = beheld.SolidHueOverride;
-                    }
-
-                    var itemID = item.ItemID & 0x7FFF;
-                    var writeHue = hue != 0;
-
-                    if (writeHue)
+                    if (!newPacket)
                     {
                         itemID |= 0x8000;
                     }
@@ -701,11 +583,10 @@ namespace Server.Network
                         hue = beheld.SolidHueOverride;
                     }
 
-                    var itemID = beheld.HairItemID & 0x7FFF;
+                    var itemID = beheld.HairItemID & itemIdMask;
+                    var writeHue = newPacket || hue != 0;
 
-                    var writeHue = hue != 0;
-
-                    if (writeHue)
+                    if (!newPacket)
                     {
                         itemID |= 0x8000;
                     }
@@ -733,11 +614,10 @@ namespace Server.Network
                         hue = beheld.SolidHueOverride;
                     }
 
-                    var itemID = beheld.FacialHairItemID & 0x7FFF;
+                    var itemID = beheld.FacialHairItemID & itemIdMask;
+                    var writeHue = newPacket || hue != 0;
 
-                    var writeHue = hue != 0;
-
-                    if (writeHue)
+                    if (!newPacket)
                     {
                         itemID |= 0x8000;
                     }

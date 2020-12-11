@@ -2846,7 +2846,7 @@ namespace Server
                     Send(new ServerChange(m_Location, m_Map));
                 }
 
-                ns.Send(MobileIncoming.Create(ns, this, this));
+                ns.Send(new MobileIncoming(ns, this, this));
 
                 ns.Send(new MobileUpdate(this, ns.StygianAbyss));
                 CheckLightLevels(true);
@@ -2858,7 +2858,7 @@ namespace Server
 
             if (ns != null)
             {
-                ns.Send(MobileIncoming.Create(ns, this, this));
+                ns.Send(new MobileIncoming(ns, this, this));
                 ns.SendSupportedFeature();
                 ns.Send(new MobileUpdate(this, ns.StygianAbyss));
                 ns.Send(new MobileAttributes(this));
@@ -3074,7 +3074,7 @@ namespace Server
 
                 if (sendIncoming)
                 {
-                    ourState.Send(MobileIncoming.Create(ourState, m, m));
+                    ourState.Send(new MobileIncoming(ourState, m, m));
                 }
 
                 if (ourState.StygianAbyss)
@@ -3215,7 +3215,7 @@ namespace Server
 
                         if (sendIncoming)
                         {
-                            state.Send(MobileIncoming.Create(state, beholder, m));
+                            state.Send(new MobileIncoming(state, beholder, m));
 
                             if (m.IsDeadBondedPet)
                             {
@@ -3672,7 +3672,7 @@ namespace Server
 
                     if (m_NetState != null && CanSee(attacker) && Utility.InUpdateRange(m_Location, attacker.m_Location))
                     {
-                        m_NetState.Send(MobileIncoming.Create(m_NetState, this, attacker));
+                        m_NetState.Send(new MobileIncoming(m_NetState, this, attacker));
                     }
                 }
             }
@@ -3696,7 +3696,7 @@ namespace Server
 
                     if (m_NetState != null && CanSee(defender) && Utility.InUpdateRange(m_Location, defender.m_Location))
                     {
-                        m_NetState.Send(MobileIncoming.Create(m_NetState, this, defender));
+                        m_NetState.Send(new MobileIncoming(m_NetState, this, defender));
                     }
                 }
             }
@@ -4109,7 +4109,7 @@ namespace Server
 
                 if (CanSee(aggressor))
                 {
-                    m_NetState?.Send(MobileIncoming.Create(m_NetState, this, aggressor));
+                    m_NetState?.Send(new MobileIncoming(m_NetState, this, aggressor));
                 }
 
                 if (Combatant == null)
@@ -4132,7 +4132,7 @@ namespace Server
 
                 if (CanSee(aggressor))
                 {
-                    m_NetState?.Send(MobileIncoming.Create(m_NetState, this, aggressor));
+                    m_NetState?.Send(new MobileIncoming(m_NetState, this, aggressor));
                 }
 
                 if (Combatant == null)
@@ -4171,7 +4171,7 @@ namespace Server
 
                     if (m_NetState != null && CanSee(aggressed))
                     {
-                        m_NetState.Send(MobileIncoming.Create(m_NetState, this, aggressed));
+                        m_NetState.Send(new MobileIncoming(m_NetState, this, aggressed));
                     }
 
                     break;
@@ -4201,7 +4201,7 @@ namespace Server
 
                     if (m_NetState != null && CanSee(aggressor))
                     {
-                        m_NetState.Send(MobileIncoming.Create(m_NetState, this, aggressor));
+                        m_NetState.Send(new MobileIncoming(m_NetState, this, aggressor));
                     }
 
                     break;
@@ -7221,7 +7221,7 @@ namespace Server
                 {
                     if (CanSee(m) && Utility.InUpdateRange(m_Location, m.m_Location))
                     {
-                        ns.Send(MobileIncoming.Create(ns, this, m));
+                        ns.Send(new MobileIncoming(ns, this, m));
 
                         if (ns.StygianAbyss)
                         {
@@ -7365,7 +7365,7 @@ namespace Server
                 }
                 else
                 {
-                    state.Send(MobileIncoming.Create(state, state.Mobile, this));
+                    state.Send(new MobileIncoming(state, state.Mobile, this));
 
                     if (IsDeadBondedPet)
                     {
@@ -7631,7 +7631,7 @@ namespace Server
                             if (m.m_NetState != null &&
                                 (isTeleport && (!m.m_NetState.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
                             {
-                                m.m_NetState.Send(MobileIncoming.Create(m.m_NetState, m, this));
+                                m.m_NetState.Send(new MobileIncoming(m.m_NetState, m, this));
 
                                 if (m.m_NetState.StygianAbyss)
                                 {
@@ -7655,7 +7655,7 @@ namespace Server
                                 continue;
                             }
 
-                            ourState.Send(MobileIncoming.Create(ourState, this, m));
+                            ourState.Send(new MobileIncoming(ourState, this, m));
 
                             if (ourState.StygianAbyss)
                             {
@@ -7687,7 +7687,7 @@ namespace Server
                         if ((isTeleport && (!ns.HighSeas || !NoMoveHS) ||
                              !Utility.InUpdateRange(oldLocation, ns.Mobile.Location)) && ns.Mobile.CanSee(this))
                         {
-                            ns.Send(MobileIncoming.Create(ns, ns.Mobile, this));
+                            ns.Send(new MobileIncoming(ns, ns.Mobile, this));
 
                             if (ns.StygianAbyss)
                             {
@@ -7768,7 +7768,7 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this))
                 {
-                    state.Send(MobileIncoming.Create(state, state.Mobile, this));
+                    state.Send(new MobileIncoming(state, state.Mobile, this));
 
                     if (state.StygianAbyss)
                     {

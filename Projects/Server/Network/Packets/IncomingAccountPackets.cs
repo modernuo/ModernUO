@@ -323,7 +323,7 @@ namespace Server.Network
 
             state.Send(new MobileUpdate(m, state.StygianAbyss));
 
-            state.Send(MobileIncoming.Create(state, m, m));
+            state.Send(new MobileIncoming(state, m, m));
             // state.Send( new MobileAttributes( m ) );
             state.Send(new MobileStatus(m, m));
             state.SendSetWarMode(m.Warmode);
@@ -335,7 +335,7 @@ namespace Server.Network
             // state.Send( new MobileAttributes( m ) );
             state.Send(new MobileStatus(m, m));
             state.SendSetWarMode(m.Warmode);
-            state.Send(MobileIncoming.Create(state, m, m));
+            state.Send(new MobileIncoming(state, m, m));
 
             state.SendLoginComplete();
             state.Send(new CurrentTime());

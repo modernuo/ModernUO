@@ -477,7 +477,7 @@ namespace Server.Network
 
             state.Send(new MobileUpdate(from, state.StygianAbyss));
 
-            state.Send(MobileIncoming.Create(state, from, from));
+            state.Send(new MobileIncoming(state, from, from));
 
             from.SendEverything();
 

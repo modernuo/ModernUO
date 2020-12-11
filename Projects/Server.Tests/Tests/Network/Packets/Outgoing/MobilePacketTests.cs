@@ -455,8 +455,13 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory, InlineData(0, 0, 0, 0), InlineData(10, 1024, 0, 0), InlineData(10, 1024, 11, 2048)]
-        public void TestMobileIncoming(int hairItemId, int hairHue, int facialHairItemId, int facialHairHue)
+        [Theory]
+        [InlineData(ProtocolChanges.Version70331, 0, 0, 0, 0)]
+        [InlineData(ProtocolChanges.Version70331, 10, 1024, 0, 0)]
+        [InlineData(ProtocolChanges.Version70331, 10, 1024, 11, 2048)]
+        public void TestMobileIncoming(
+            ProtocolChanges protocolChanges, int hairItemId, int hairHue, int facialHairItemId, int facialHairHue
+        )
         {
             var beholder = new Mobile(0x1)
             {
@@ -489,7 +494,12 @@ namespace Server.Tests.Network
             beheld.FacialHairItemID = facialHairItemId;
             beheld.FacialHairHue = facialHairHue;
 
-            var data = new MobileIncoming(beholder, beheld).Compile();
+            var ns = new NetState(null)
+            {
+                ProtocolChanges = protocolChanges
+            };
+
+            var data = new MobileIncoming(ns, beholder, beheld).Compile();
 
             Span<bool> layers = stackalloc bool[256];
 #if NO_LOCAL_INIT
@@ -582,11 +592,13 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory, InlineData(ProtocolChanges.Version6000, 0, 0, 0, 0),
-         InlineData(ProtocolChanges.Version6000, 10, 1024, 0, 0),
-         InlineData(ProtocolChanges.Version6000, 10, 1024, 11, 2048), InlineData(ProtocolChanges.Version7000, 0, 0, 0, 0),
-         InlineData(ProtocolChanges.Version7000, 10, 1024, 0, 0),
-         InlineData(ProtocolChanges.Version7000, 10, 1024, 11, 2048)]
+        [Theory]
+        [InlineData(ProtocolChanges.Version6000, 0, 0, 0, 0)]
+        [InlineData(ProtocolChanges.Version6000, 10, 1024, 0, 0)]
+        [InlineData(ProtocolChanges.Version6000, 10, 1024, 11, 2048)]
+        [InlineData(ProtocolChanges.Version7000, 0, 0, 0, 0)]
+        [InlineData(ProtocolChanges.Version7000, 10, 1024, 0, 0)]
+        [InlineData(ProtocolChanges.Version7000, 10, 1024, 11, 2048)]
         public void TestMobileIncomingOld(
             ProtocolChanges protocolChanges, int hairItemId, int hairHue, int facialHairItemId, int facialHairHue
         )
@@ -627,7 +639,7 @@ namespace Server.Tests.Network
                 ProtocolChanges = protocolChanges
             };
 
-            var data = new MobileIncomingOld(beholder, beheld, ns.StygianAbyss).Compile();
+            var data = new MobileIncoming(ns, beholder, beheld).Compile();
 
             Span<bool> layers = stackalloc bool[256];
 #if NO_LOCAL_INIT
