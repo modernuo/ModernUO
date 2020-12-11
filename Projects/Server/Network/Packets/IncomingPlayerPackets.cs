@@ -475,14 +475,7 @@ namespace Server.Network
                 return;
             }
 
-            if (state.StygianAbyss)
-            {
-                state.Send(new MobileUpdate(from));
-            }
-            else
-            {
-                state.Send(new MobileUpdateOld(from));
-            }
+            state.Send(new MobileUpdate(from, state.StygianAbyss));
 
             state.Send(MobileIncoming.Create(state, from, from));
 

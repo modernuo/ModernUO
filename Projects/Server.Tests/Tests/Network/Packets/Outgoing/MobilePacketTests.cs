@@ -63,7 +63,7 @@ namespace Server.Tests.Network
 
             var noto = 10;
 
-            var data = new MobileMoving(m, noto).Compile();
+            var data = new MobileMoving(m, noto, true).Compile();
 
             Span<byte> expectedData = stackalloc byte[17];
             var pos = 0;
@@ -74,7 +74,7 @@ namespace Server.Tests.Network
             expectedData.Write(ref pos, m.Location);
             expectedData.Write(ref pos, (byte)m.Direction);
             expectedData.Write(ref pos, (ushort)m.Hue);
-            expectedData.Write(ref pos, (byte)m.GetPacketFlags());
+            expectedData.Write(ref pos, (byte)m.GetPacketFlags(true));
             expectedData.Write(ref pos, (byte)noto);
 
             AssertThat.Equal(data, expectedData);
@@ -88,7 +88,7 @@ namespace Server.Tests.Network
 
             var noto = 10;
 
-            var data = new MobileMoving(m, noto).Compile();
+            var data = new MobileMoving(m, noto, false).Compile();
 
             Span<byte> expectedData = stackalloc byte[17];
             var pos = 0;
@@ -99,7 +99,7 @@ namespace Server.Tests.Network
             expectedData.Write(ref pos, m.Location);
             expectedData.Write(ref pos, (byte)m.Direction);
             expectedData.Write(ref pos, (ushort)m.Hue);
-            expectedData.Write(ref pos, (byte)m.GetOldPacketFlags());
+            expectedData.Write(ref pos, (byte)m.GetPacketFlags(false));
             expectedData.Write(ref pos, (byte)noto);
 
             AssertThat.Equal(data, expectedData);
@@ -389,7 +389,7 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var data = new MobileUpdate(m).Compile();
+            var data = new MobileUpdate(m, true).Compile();
 
             Span<byte> expectedData = stackalloc byte[19];
             var pos = 0;
@@ -405,7 +405,7 @@ namespace Server.Tests.Network
             pos++;
 #endif
             expectedData.Write(ref pos, (ushort)hue);
-            expectedData.Write(ref pos, (byte)m.GetPacketFlags());
+            expectedData.Write(ref pos, (byte)m.GetPacketFlags(true));
             expectedData.Write(ref pos, (ushort)m.X);
             expectedData.Write(ref pos, (ushort)m.Y);
 #if NO_LOCAL_INIT
@@ -425,7 +425,7 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var data = new MobileUpdateOld(m).Compile();
+            var data = new MobileUpdate(m, false).Compile();
 
             Span<byte> expectedData = stackalloc byte[19];
             var pos = 0;
@@ -441,7 +441,7 @@ namespace Server.Tests.Network
             pos++;
 #endif
             expectedData.Write(ref pos, (ushort)hue);
-            expectedData.Write(ref pos, (byte)m.GetOldPacketFlags());
+            expectedData.Write(ref pos, (byte)m.GetPacketFlags(false));
             expectedData.Write(ref pos, (ushort)m.X);
             expectedData.Write(ref pos, (ushort)m.Y);
 #if NO_LOCAL_INIT
@@ -526,7 +526,7 @@ namespace Server.Tests.Network
             expectedData.Write(ref pos, (byte)beheld.Z);
             expectedData.Write(ref pos, (byte)beheld.Direction);
             expectedData.Write(ref pos, (ushort)(isSolidHue ? beheld.SolidHueOverride : beheld.Hue));
-            expectedData.Write(ref pos, (byte)beheld.GetPacketFlags());
+            expectedData.Write(ref pos, (byte)beheld.GetPacketFlags(true));
             expectedData.Write(ref pos, (byte)Notoriety.Compute(beholder, beheld));
 
             byte layer;
@@ -627,10 +627,7 @@ namespace Server.Tests.Network
                 ProtocolChanges = protocolChanges
             };
 
-            var data = (ns.StygianAbyss
-                    ? (Packet)new MobileIncomingSA(beholder, beheld)
-                    : new MobileIncomingOld(beholder, beheld))
-                .Compile();
+            var data = new MobileIncomingOld(beholder, beheld, ns.StygianAbyss).Compile();
 
             Span<bool> layers = stackalloc bool[256];
 #if NO_LOCAL_INIT
@@ -667,7 +664,7 @@ namespace Server.Tests.Network
             expectedData.Write(ref pos, (byte)beheld.Z);
             expectedData.Write(ref pos, (byte)beheld.Direction);
             expectedData.Write(ref pos, (ushort)(isSolidHue ? beheld.SolidHueOverride : beheld.Hue));
-            expectedData.Write(ref pos, (byte)(ns.StygianAbyss ? beheld.GetOldPacketFlags() : beheld.GetPacketFlags()));
+            expectedData.Write(ref pos, (byte)beheld.GetPacketFlags(ns.StygianAbyss));
             expectedData.Write(ref pos, (byte)Notoriety.Compute(beholder, beheld));
 
             byte layer;

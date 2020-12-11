@@ -2196,7 +2196,7 @@ namespace Server.Multis
 
                         Stream.Write((byte)m.Direction);
                         Stream.Write((short)m.Hue);
-                        Stream.Write((byte)m.GetPacketFlags());
+                        Stream.Write((byte)m.GetPacketFlags(true));
                     }
                     else if (ent is Item item)
                     {
