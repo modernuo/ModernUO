@@ -38,10 +38,14 @@ exit $?
 
 :CMDSCRIPT
 
-IF "%~1" == "" or "%~1" == "release" (
+IF "%~1" == "" (
   SET config=-c Release
 ) ELSE (
-  SET config=-c Debug
+  IF "%~1" == "release" (
+    SET config=-c Release
+  ) ELSE (
+    SET config=-c Debug
+  )
 )
 
 IF "%~2" == "" (
