@@ -2809,84 +2809,7 @@ namespace Server
                     }
 
                     m_Map = value;
-
-                    UpdateRegion();
-
-                    m_Map?.OnEnter(this);
-
-                    var ns = m_NetState;
-
-                    if (ns != null && m_Map != null)
-                    {
-                        ns.Sequence = 0;
-                        ns.SendMapChange(Map);
-
-                        if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
-                        {
-                            ns.SendMapPatches();
-                        }
-
-                        ns.Send(SeasonChange.Instantiate(GetSeason(), true));
-
-                        if (ns.StygianAbyss)
-                        {
-                            ns.Send(new MobileUpdate(this));
-                        }
-                        else
-                        {
-                            ns.Send(new MobileUpdateOld(this));
-                        }
-                    }
-
-                    if (ns != null)
-                    {
-                        if (m_Map != null)
-                        {
-                            ns.Send(new ServerChange(m_Location, m_Map));
-                        }
-
-                        ns.Sequence = 0;
-
-                        ns.Send(MobileIncoming.Create(ns, this, this));
-
-                        if (ns.StygianAbyss)
-                        {
-                            ns.Send(new MobileUpdate(this));
-                            CheckLightLevels(true);
-                            ns.Send(new MobileUpdate(this));
-                        }
-                        else
-                        {
-                            ns.Send(new MobileUpdateOld(this));
-                            CheckLightLevels(true);
-                            ns.Send(new MobileUpdateOld(this));
-                        }
-                    }
-
-                    SendEverything();
-                    SendIncomingPacket();
-
-                    if (ns != null)
-                    {
-                        ns.Sequence = 0;
-
-                        ns.Send(MobileIncoming.Create(ns, this, this));
-
-                        if (ns.StygianAbyss)
-                        {
-                            ns.SendSupportedFeature();
-                            ns.Send(new MobileUpdate(this));
-                            ns.Send(new MobileAttributes(this));
-                        }
-                        else
-                        {
-                            ns.SendSupportedFeature();
-                            ns.Send(new MobileUpdateOld(this));
-                            ns.Send(new MobileAttributes(this));
-                        }
-                    }
-
-                    OnMapChange(oldMap);
+                    InternalMapChange(oldMap);
                 }
             }
         }
@@ -2896,6 +2819,52 @@ namespace Server
         {
             get => m_Location;
             set => SetLocation(value, true);
+        }
+
+        private void InternalMapChange(Map oldMap)
+        {
+            var ns = m_NetState;
+            m_Map?.OnEnter(this);
+            UpdateRegion();
+
+            if (ns != null)
+            {
+                ns.Sequence = 0;
+
+                if (m_Map != null)
+                {
+                    ns.SendMapChange(Map);
+
+                    if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
+                    {
+                        ns.SendMapPatches();
+                    }
+
+                    ns.Send(SeasonChange.Instantiate(GetSeason(), true));
+
+                    ns.Send(new MobileUpdate(this, ns.StygianAbyss));
+                    Send(new ServerChange(m_Location, m_Map));
+                }
+
+                ns.Send(new MobileIncoming(ns, this, this));
+
+                ns.Send(new MobileUpdate(this, ns.StygianAbyss));
+                CheckLightLevels(true);
+                ns.Send(new MobileUpdate(this, ns.StygianAbyss));
+            }
+
+            SendEverything();
+            SendIncomingPacket();
+
+            if (ns != null)
+            {
+                ns.Send(new MobileIncoming(ns, this, this));
+                ns.SendSupportedFeature();
+                ns.Send(new MobileUpdate(this, ns.StygianAbyss));
+                ns.Send(new MobileAttributes(this));
+            }
+
+            OnMapChange(oldMap);
         }
 
         public virtual void MoveToWorld(Point3D newLocation, Map map)
@@ -2921,8 +2890,6 @@ namespace Server
             var oldLocation = m_Location;
             var oldMap = m_Map;
 
-            var oldRegion = m_Region;
-
             if (oldMap != null)
             {
                 oldMap.OnLeave(this);
@@ -2939,91 +2906,7 @@ namespace Server
             m_Map = map;
 
             m_Location = newLocation;
-
-            var ns = m_NetState;
-
-            if (m_Map != null)
-            {
-                m_Map.OnEnter(this);
-
-                UpdateRegion();
-
-                if (ns != null && m_Map != null)
-                {
-                    ns.Sequence = 0;
-                    ns.SendMapChange(Map);
-
-                    if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
-                    {
-                        ns.SendMapPatches();
-                    }
-
-                    ns.Send(SeasonChange.Instantiate(GetSeason(), true));
-
-                    if (ns.StygianAbyss)
-                    {
-                        ns.Send(new MobileUpdate(this));
-                    }
-                    else
-                    {
-                        ns.Send(new MobileUpdateOld(this));
-                    }
-                }
-            }
-            else
-            {
-                UpdateRegion();
-            }
-
-            if (ns != null)
-            {
-                if (m_Map != null)
-                {
-                    Send(new ServerChange(m_Location, m_Map));
-                }
-
-                ns.Sequence = 0;
-
-                ns.Send(MobileIncoming.Create(ns, this, this));
-
-                if (ns.StygianAbyss)
-                {
-                    ns.Send(new MobileUpdate(this));
-                    CheckLightLevels(true);
-                    ns.Send(new MobileUpdate(this));
-                }
-                else
-                {
-                    ns.Send(new MobileUpdateOld(this));
-                    CheckLightLevels(true);
-                    ns.Send(new MobileUpdateOld(this));
-                }
-            }
-
-            SendEverything();
-            SendIncomingPacket();
-
-            if (ns != null)
-            {
-                ns.Sequence = 0;
-
-                ns.Send(MobileIncoming.Create(ns, this, this));
-
-                if (ns.StygianAbyss)
-                {
-                    ns.SendSupportedFeature();
-                    ns.Send(new MobileUpdate(this));
-                    ns.Send(new MobileAttributes(this));
-                }
-                else
-                {
-                    ns.SendSupportedFeature();
-                    ns.Send(new MobileUpdateOld(this));
-                    ns.Send(new MobileAttributes(this));
-                }
-            }
-
-            OnMapChange(oldMap);
+            InternalMapChange(oldMap);
             OnLocationChange(oldLocation);
 
             m_Region?.OnLocationChanged(this, oldLocation);
@@ -3186,20 +3069,12 @@ namespace Server
                 if (sendUpdate)
                 {
                     ourState.Sequence = 0;
-
-                    if (ourState.StygianAbyss)
-                    {
-                        ourState.Send(new MobileUpdate(m));
-                    }
-                    else
-                    {
-                        ourState.Send(new MobileUpdateOld(m));
-                    }
+                    ourState.Send(new MobileUpdate(m, ourState.StygianAbyss));
                 }
 
                 if (sendIncoming)
                 {
-                    ourState.Send(MobileIncoming.Create(ourState, m, m));
+                    ourState.Send(new MobileIncoming(ourState, m, m));
                 }
 
                 if (ourState.StygianAbyss)
@@ -3207,7 +3082,7 @@ namespace Server
                     if (sendMoving)
                     {
                         var noto = Notoriety.Compute(m, m);
-                        ourState.Send(cache[0][noto] = Packet.Acquire(new MobileMoving(m, noto)));
+                        ourState.Send(cache[0][noto] = Packet.Acquire(new MobileMoving(m, noto, true)));
                     }
 
                     if (sendHealthbarPoison)
@@ -3225,7 +3100,7 @@ namespace Server
                     if (sendMoving || sendHealthbarPoison || sendHealthbarYellow)
                     {
                         var noto = Notoriety.Compute(m, m);
-                        ourState.Send(cache[1][noto] = Packet.Acquire(new MobileMovingOld(m, noto)));
+                        ourState.Send(cache[1][noto] = Packet.Acquire(new MobileMoving(m, noto, false)));
                     }
                 }
 
@@ -3340,7 +3215,7 @@ namespace Server
 
                         if (sendIncoming)
                         {
-                            state.Send(MobileIncoming.Create(state, beholder, m));
+                            state.Send(new MobileIncoming(state, beholder, m));
 
                             if (m.IsDeadBondedPet)
                             {
@@ -3358,7 +3233,7 @@ namespace Server
 
                                 if (p == null)
                                 {
-                                    cache[0][noto] = p = Packet.Acquire(new MobileMoving(m, noto));
+                                    cache[0][noto] = p = Packet.Acquire(new MobileMoving(m, noto, true));
                                 }
 
                                 state.Send(p);
@@ -3388,7 +3263,7 @@ namespace Server
 
                                 if (p == null)
                                 {
-                                    cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(m, noto));
+                                    cache[1][noto] = p = Packet.Acquire(new MobileMoving(m, noto, false));
                                 }
 
                                 state.Send(p);
@@ -3797,7 +3672,7 @@ namespace Server
 
                     if (m_NetState != null && CanSee(attacker) && Utility.InUpdateRange(m_Location, attacker.m_Location))
                     {
-                        m_NetState.Send(MobileIncoming.Create(m_NetState, this, attacker));
+                        m_NetState.Send(new MobileIncoming(m_NetState, this, attacker));
                     }
                 }
             }
@@ -3821,7 +3696,7 @@ namespace Server
 
                     if (m_NetState != null && CanSee(defender) && Utility.InUpdateRange(m_Location, defender.m_Location))
                     {
-                        m_NetState.Send(MobileIncoming.Create(m_NetState, this, defender));
+                        m_NetState.Send(new MobileIncoming(m_NetState, this, defender));
                     }
                 }
             }
@@ -4234,7 +4109,7 @@ namespace Server
 
                 if (CanSee(aggressor))
                 {
-                    m_NetState?.Send(MobileIncoming.Create(m_NetState, this, aggressor));
+                    m_NetState?.Send(new MobileIncoming(m_NetState, this, aggressor));
                 }
 
                 if (Combatant == null)
@@ -4257,7 +4132,7 @@ namespace Server
 
                 if (CanSee(aggressor))
                 {
-                    m_NetState?.Send(MobileIncoming.Create(m_NetState, this, aggressor));
+                    m_NetState?.Send(new MobileIncoming(m_NetState, this, aggressor));
                 }
 
                 if (Combatant == null)
@@ -4296,7 +4171,7 @@ namespace Server
 
                     if (m_NetState != null && CanSee(aggressed))
                     {
-                        m_NetState.Send(MobileIncoming.Create(m_NetState, this, aggressed));
+                        m_NetState.Send(new MobileIncoming(m_NetState, this, aggressed));
                     }
 
                     break;
@@ -4326,7 +4201,7 @@ namespace Server
 
                     if (m_NetState != null && CanSee(aggressor))
                     {
-                        m_NetState.Send(MobileIncoming.Create(m_NetState, this, aggressor));
+                        m_NetState.Send(new MobileIncoming(m_NetState, this, aggressor));
                     }
 
                     break;
@@ -4729,7 +4604,7 @@ namespace Server
 
                             if (p == null)
                             {
-                                cache[0][noto] = p = Packet.Acquire(new MobileMoving(this, noto));
+                                cache[0][noto] = p = Packet.Acquire(new MobileMoving(this, noto, true));
                             }
 
                             ns.Send(p);
@@ -4741,7 +4616,7 @@ namespace Server
 
                             if (p == null)
                             {
-                                cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(this, noto));
+                                cache[1][noto] = p = Packet.Acquire(new MobileMoving(this, noto, false));
                             }
 
                             ns.Send(p);
@@ -7085,12 +6960,6 @@ namespace Server
                 {
                     state.Mobile.ProcessDelta();
 
-                    // if (state.StygianAbyss) {
-                    // if (pNew == null)
-                    // pNew = Packet.Acquire(new NewMobileAnimation(this.Serial, action, frameCount, delay));
-
-                    // state.Send(pNew);
-                    // } else {
                     if (p == null)
                     {
                         if (Body.IsGargoyle)
@@ -7099,45 +6968,26 @@ namespace Server
 
                             if (Flying)
                             {
-                                if (action >= 9 && action <= 11)
+                                action = action switch
                                 {
-                                    action = 71;
-                                }
-                                else if (action >= 12 && action <= 14)
-                                {
-                                    action = 72;
-                                }
-                                else if (action == 20)
-                                {
-                                    action = 77;
-                                }
-                                else if (action == 31)
-                                {
-                                    action = 71;
-                                }
-                                else if (action == 34)
-                                {
-                                    action = 78;
-                                }
-                                else if (action >= 200 && action <= 259)
-                                {
-                                    action = 75;
-                                }
-                                else if (action >= 260 && action <= 270)
-                                {
-                                    action = 75;
-                                }
+                                    >= 9 and <= 11    => 71,
+                                    >= 12 and <= 14   => 72,
+                                    20                => 77,
+                                    31                => 71,
+                                    34                => 78,
+                                    >= 200 and <= 259 => 75,
+                                    >= 260 and <= 270 => 75,
+                                    _                 => action
+                                };
                             }
                             else
                             {
-                                if (action >= 200 && action <= 259)
+                                action = action switch
                                 {
-                                    action = 17;
-                                }
-                                else if (action >= 260 && action <= 270)
-                                {
-                                    action = 16;
-                                }
+                                    >= 200 and <= 259 => 17,
+                                    >= 260 and <= 270 => 16,
+                                    _                 => action
+                                };
                             }
                         }
 
@@ -7155,12 +7005,10 @@ namespace Server
                     }
 
                     state.Send(p);
-                    // }
                 }
             }
 
             Packet.Release(p);
-            // Packet.Release( pNew );
 
             eable.Free();
         }
@@ -7353,50 +7201,52 @@ namespace Server
         {
             var ns = m_NetState;
 
-            if (m_Map != null && ns != null)
+            if (m_Map == null || ns == null)
             {
-                var eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
+                return;
+            }
 
-                foreach (var o in eable)
+            var eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
+
+            foreach (var o in eable)
+            {
+                if (o is Item item)
                 {
-                    if (o is Item item)
+                    if (CanSee(item) && InRange(item.Location, item.GetUpdateRange(this)))
                     {
-                        if (CanSee(item) && InRange(item.Location, item.GetUpdateRange(this)))
-                        {
-                            item.SendInfoTo(ns);
-                        }
-                    }
-                    else if (o is Mobile m)
-                    {
-                        if (CanSee(m) && Utility.InUpdateRange(m_Location, m.m_Location))
-                        {
-                            ns.Send(MobileIncoming.Create(ns, this, m));
-
-                            if (ns.StygianAbyss)
-                            {
-                                if (m.Poisoned)
-                                {
-                                    ns.Send(new HealthbarPoison(m));
-                                }
-
-                                if (m.Blessed || m.YellowHealthbar)
-                                {
-                                    ns.Send(new HealthbarYellow(m));
-                                }
-                            }
-
-                            if (m.IsDeadBondedPet)
-                            {
-                                ns.SendBondedStatus(m.Serial, true);
-                            }
-
-                            m.SendOPLPacketTo(ns);
-                        }
+                        item.SendInfoTo(ns);
                     }
                 }
+                else if (o is Mobile m)
+                {
+                    if (CanSee(m) && Utility.InUpdateRange(m_Location, m.m_Location))
+                    {
+                        ns.Send(new MobileIncoming(ns, this, m));
 
-                eable.Free();
+                        if (ns.StygianAbyss)
+                        {
+                            if (m.Poisoned)
+                            {
+                                ns.Send(new HealthbarPoison(m));
+                            }
+
+                            if (m.Blessed || m.YellowHealthbar)
+                            {
+                                ns.Send(new HealthbarYellow(m));
+                            }
+                        }
+
+                        if (m.IsDeadBondedPet)
+                        {
+                            ns.SendBondedStatus(m.Serial, true);
+                        }
+
+                        m.SendOPLPacketTo(ns);
+                    }
+                }
             }
+
+            eable.Free();
         }
 
         public void UpdateRegion()
@@ -7431,7 +7281,7 @@ namespace Server
 
         public virtual int GetSeason() => m_Map?.Season ?? 1;
 
-        public virtual int GetPacketFlags()
+        public virtual int GetPacketFlags(bool stygianAbyss)
         {
             var flags = 0x0;
 
@@ -7445,47 +7295,19 @@ namespace Server
                 flags |= 0x02;
             }
 
-            if (m_Flying)
+            if (stygianAbyss)
             {
-                flags |= 0x04;
+                if (m_Flying)
+                {
+                    flags |= 0x04;
+                }
             }
-
-            if (m_Blessed || m_YellowHealthbar)
+            else
             {
-                flags |= 0x08;
-            }
-
-            if (m_Warmode)
-            {
-                flags |= 0x40;
-            }
-
-            if (m_Hidden)
-            {
-                flags |= 0x80;
-            }
-
-            return flags;
-        }
-
-        // Pre-7.0.0.0 Packet Flags
-        public virtual int GetOldPacketFlags()
-        {
-            var flags = 0x0;
-
-            if (m_Paralyzed || m_Frozen)
-            {
-                flags |= 0x01;
-            }
-
-            if (m_Female)
-            {
-                flags |= 0x02;
-            }
-
-            if (m_Poison != null)
-            {
-                flags |= 0x04;
+                if (m_Poison != null)
+                {
+                    flags |= 0x04;
+                }
             }
 
             if (m_Blessed || m_YellowHealthbar)
@@ -7543,7 +7365,7 @@ namespace Server
                 }
                 else
                 {
-                    state.Send(MobileIncoming.Create(state, state.Mobile, this));
+                    state.Send(new MobileIncoming(state, state.Mobile, this));
 
                     if (IsDeadBondedPet)
                     {
@@ -7751,15 +7573,7 @@ namespace Server
             if (isTeleport && m_NetState != null && (!m_NetState.HighSeas || !NoMoveHS))
             {
                 m_NetState.Sequence = 0;
-
-                if (m_NetState.StygianAbyss)
-                {
-                    m_NetState.Send(new MobileUpdate(this));
-                }
-                else
-                {
-                    m_NetState.Send(new MobileUpdateOld(this));
-                }
+                m_NetState.Send(new MobileUpdate(this, m_NetState.StygianAbyss));
             }
 
             var map = m_Map;
@@ -7817,7 +7631,7 @@ namespace Server
                             if (m.m_NetState != null &&
                                 (isTeleport && (!m.m_NetState.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
                             {
-                                m.m_NetState.Send(MobileIncoming.Create(m.m_NetState, m, this));
+                                m.m_NetState.Send(new MobileIncoming(m.m_NetState, m, this));
 
                                 if (m.m_NetState.StygianAbyss)
                                 {
@@ -7841,7 +7655,7 @@ namespace Server
                                 continue;
                             }
 
-                            ourState.Send(MobileIncoming.Create(ourState, this, m));
+                            ourState.Send(new MobileIncoming(ourState, this, m));
 
                             if (ourState.StygianAbyss)
                             {
@@ -7873,7 +7687,7 @@ namespace Server
                         if ((isTeleport && (!ns.HighSeas || !NoMoveHS) ||
                              !Utility.InUpdateRange(oldLocation, ns.Mobile.Location)) && ns.Mobile.CanSee(this))
                         {
-                            ns.Send(MobileIncoming.Create(ns, ns.Mobile, this));
+                            ns.Send(new MobileIncoming(ns, ns.Mobile, this));
 
                             if (ns.StygianAbyss)
                             {
@@ -7954,7 +7768,7 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this))
                 {
-                    state.Send(MobileIncoming.Create(state, state.Mobile, this));
+                    state.Send(new MobileIncoming(state, state.Mobile, this));
 
                     if (state.StygianAbyss)
                     {

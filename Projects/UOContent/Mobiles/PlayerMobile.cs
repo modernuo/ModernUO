@@ -983,21 +983,9 @@ namespace Server.Mobiles
             return true;
         }
 
-        public override int GetPacketFlags()
+        public override int GetPacketFlags(bool stygianAbyss)
         {
-            var flags = base.GetPacketFlags();
-
-            if (m_IgnoreMobiles)
-            {
-                flags |= 0x10;
-            }
-
-            return flags;
-        }
-
-        public override int GetOldPacketFlags()
-        {
-            var flags = base.GetOldPacketFlags();
+            var flags = base.GetPacketFlags(stygianAbyss);
 
             if (m_IgnoreMobiles)
             {
@@ -4287,17 +4275,7 @@ namespace Server.Mobiles
                 {
                     var ns = NetState;
 
-                    if (ns != null)
-                    {
-                        if (ns.StygianAbyss)
-                        {
-                            ns.Send(new MobileMoving(m, Notoriety.Compute(this, m)));
-                        }
-                        else
-                        {
-                            ns.Send(new MobileMovingOld(m, Notoriety.Compute(this, m)));
-                        }
-                    }
+                    ns?.Send(new MobileMoving(m, Notoriety.Compute(this, m), ns.StygianAbyss));
                 }
             }
         }

@@ -63,7 +63,7 @@ namespace Server.Tests.Network
 
             var noto = 10;
 
-            var data = new MobileMoving(m, noto).Compile();
+            var data = new MobileMoving(m, noto, true).Compile();
 
             Span<byte> expectedData = stackalloc byte[17];
             var pos = 0;
@@ -74,7 +74,7 @@ namespace Server.Tests.Network
             expectedData.Write(ref pos, m.Location);
             expectedData.Write(ref pos, (byte)m.Direction);
             expectedData.Write(ref pos, (ushort)m.Hue);
-            expectedData.Write(ref pos, (byte)m.GetPacketFlags());
+            expectedData.Write(ref pos, (byte)m.GetPacketFlags(true));
             expectedData.Write(ref pos, (byte)noto);
 
             AssertThat.Equal(data, expectedData);
@@ -88,7 +88,7 @@ namespace Server.Tests.Network
 
             var noto = 10;
 
-            var data = new MobileMoving(m, noto).Compile();
+            var data = new MobileMoving(m, noto, false).Compile();
 
             Span<byte> expectedData = stackalloc byte[17];
             var pos = 0;
@@ -99,7 +99,7 @@ namespace Server.Tests.Network
             expectedData.Write(ref pos, m.Location);
             expectedData.Write(ref pos, (byte)m.Direction);
             expectedData.Write(ref pos, (ushort)m.Hue);
-            expectedData.Write(ref pos, (byte)m.GetOldPacketFlags());
+            expectedData.Write(ref pos, (byte)m.GetPacketFlags(false));
             expectedData.Write(ref pos, (byte)noto);
 
             AssertThat.Equal(data, expectedData);
@@ -389,7 +389,7 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var data = new MobileUpdate(m).Compile();
+            var data = new MobileUpdate(m, true).Compile();
 
             Span<byte> expectedData = stackalloc byte[19];
             var pos = 0;
@@ -405,7 +405,7 @@ namespace Server.Tests.Network
             pos++;
 #endif
             expectedData.Write(ref pos, (ushort)hue);
-            expectedData.Write(ref pos, (byte)m.GetPacketFlags());
+            expectedData.Write(ref pos, (byte)m.GetPacketFlags(true));
             expectedData.Write(ref pos, (ushort)m.X);
             expectedData.Write(ref pos, (ushort)m.Y);
 #if NO_LOCAL_INIT
@@ -425,7 +425,7 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var data = new MobileUpdateOld(m).Compile();
+            var data = new MobileUpdate(m, false).Compile();
 
             Span<byte> expectedData = stackalloc byte[19];
             var pos = 0;
@@ -441,7 +441,7 @@ namespace Server.Tests.Network
             pos++;
 #endif
             expectedData.Write(ref pos, (ushort)hue);
-            expectedData.Write(ref pos, (byte)m.GetOldPacketFlags());
+            expectedData.Write(ref pos, (byte)m.GetPacketFlags(false));
             expectedData.Write(ref pos, (ushort)m.X);
             expectedData.Write(ref pos, (ushort)m.Y);
 #if NO_LOCAL_INIT
@@ -455,139 +455,17 @@ namespace Server.Tests.Network
             AssertThat.Equal(data, expectedData);
         }
 
-        [Theory, InlineData(0, 0, 0, 0), InlineData(10, 1024, 0, 0), InlineData(10, 1024, 11, 2048)]
-        public void TestMobileIncoming(int hairItemId, int hairHue, int facialHairItemId, int facialHairHue)
-        {
-            var beholder = new Mobile(0x1)
-            {
-                Name = "Random Mobile 1"
-            };
-            beholder.DefaultMobileInit();
-
-            var beheld = new Mobile(0x2)
-            {
-                Name = "Random Mobile 2"
-            };
-            beheld.DefaultMobileInit();
-            beheld.AddItem(
-                new Item((Serial)0x1000)
-                {
-                    Layer = Layer.OneHanded
-                }
-            );
-
-            // Test Dupe
-            beheld.AddItem(
-                new Item((Serial)0x1001)
-                {
-                    Layer = Layer.OneHanded
-                }
-            );
-
-            beheld.HairItemID = hairItemId;
-            beheld.HairHue = hairHue;
-            beheld.FacialHairItemID = facialHairItemId;
-            beheld.FacialHairHue = facialHairHue;
-
-            var data = new MobileIncoming(beholder, beheld).Compile();
-
-            Span<bool> layers = stackalloc bool[256];
-#if NO_LOCAL_INIT
-            layers.Clear();
-#endif
-
-            var items = beheld.Items;
-            var count = items.Count;
-
-            if (beheld.HairItemID > 0)
-            {
-                count++;
-            }
-
-            if (beheld.FacialHairItemID > 0)
-            {
-                count++;
-            }
-
-            var length = 23 + count * 9; // Max Size
-
-            Span<byte> expectedData = stackalloc byte[length];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0x78);
-            pos += 2; // Length
-
-            var isSolidHue = beheld.SolidHueOverride >= 0;
-
-            expectedData.Write(ref pos, beheld.Serial);
-            expectedData.Write(ref pos, (ushort)beheld.Body);
-            expectedData.Write(ref pos, (ushort)beheld.X);
-            expectedData.Write(ref pos, (ushort)beheld.Y);
-            expectedData.Write(ref pos, (byte)beheld.Z);
-            expectedData.Write(ref pos, (byte)beheld.Direction);
-            expectedData.Write(ref pos, (ushort)(isSolidHue ? beheld.SolidHueOverride : beheld.Hue));
-            expectedData.Write(ref pos, (byte)beheld.GetPacketFlags());
-            expectedData.Write(ref pos, (byte)Notoriety.Compute(beholder, beheld));
-
-            byte layer;
-
-            for (var i = 0; i < items.Count; i++)
-            {
-                var item = items[i];
-
-                layer = (byte)item.Layer;
-
-                if (!item.Deleted && !layers[layer] && beholder.CanSee(item))
-                {
-                    layers[layer] = true;
-
-                    expectedData.Write(ref pos, item.Serial);
-                    expectedData.Write(ref pos, (ushort)(item.ItemID & 0xFFFF));
-                    expectedData.Write(ref pos, layer);
-                    expectedData.Write(ref pos, (ushort)(isSolidHue ? beheld.SolidHueOverride : item.Hue));
-                }
-            }
-
-            layer = (byte)Layer.Hair;
-            var itemId = beheld.HairItemID & 0xFFFF;
-
-            if (itemId > 0 && !layers[layer])
-            {
-                expectedData.Write(ref pos, HairInfo.FakeSerial(beheld));
-                expectedData.Write(ref pos, (ushort)itemId);
-                expectedData.Write(ref pos, layer);
-                expectedData.Write(ref pos, (ushort)(isSolidHue ? beheld.SolidHueOverride : beheld.HairHue));
-            }
-
-            layer = (byte)Layer.FacialHair;
-            itemId = beheld.FacialHairItemID & 0xFFFF;
-
-            if (itemId > 0 && !layers[layer])
-            {
-                expectedData.Write(ref pos, FacialHairInfo.FakeSerial(beheld));
-                expectedData.Write(ref pos, (ushort)itemId);
-                expectedData.Write(ref pos, layer);
-                expectedData.Write(ref pos, (ushort)(isSolidHue ? beheld.SolidHueOverride : beheld.FacialHairHue));
-            }
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, 0); // Zero serial, terminate list
-#else
-            pos += 4;
-#endif
-
-            expectedData.Slice(1, 2).Write((ushort)pos); // Length
-            expectedData = expectedData.Slice(0, pos);
-
-            AssertThat.Equal(data, expectedData);
-        }
-
-        [Theory, InlineData(ProtocolChanges.Version6000, 0, 0, 0, 0),
-         InlineData(ProtocolChanges.Version6000, 10, 1024, 0, 0),
-         InlineData(ProtocolChanges.Version6000, 10, 1024, 11, 2048), InlineData(ProtocolChanges.Version7000, 0, 0, 0, 0),
-         InlineData(ProtocolChanges.Version7000, 10, 1024, 0, 0),
-         InlineData(ProtocolChanges.Version7000, 10, 1024, 11, 2048)]
-        public void TestMobileIncomingOld(
+        [Theory]
+        [InlineData(ProtocolChanges.Version70331, 0, 0, 0, 0)]
+        [InlineData(ProtocolChanges.Version70331, 10, 1024, 0, 0)]
+        [InlineData(ProtocolChanges.Version70331, 10, 1024, 11, 2048)]
+        [InlineData(ProtocolChanges.Version6000, 0, 0, 0, 0)]
+        [InlineData(ProtocolChanges.Version6000, 10, 1024, 0, 0)]
+        [InlineData(ProtocolChanges.Version6000, 10, 1024, 11, 2048)]
+        [InlineData(ProtocolChanges.Version7000, 0, 0, 0, 0)]
+        [InlineData(ProtocolChanges.Version7000, 10, 1024, 0, 0)]
+        [InlineData(ProtocolChanges.Version7000, 10, 1024, 11, 2048)]
+        public void TestMobileIncoming(
             ProtocolChanges protocolChanges, int hairItemId, int hairHue, int facialHairItemId, int facialHairHue
         )
         {
@@ -627,10 +505,11 @@ namespace Server.Tests.Network
                 ProtocolChanges = protocolChanges
             };
 
-            var data = (ns.StygianAbyss
-                    ? (Packet)new MobileIncomingSA(beholder, beheld)
-                    : new MobileIncomingOld(beholder, beheld))
-                .Compile();
+            var data = new MobileIncoming(ns, beholder, beheld).Compile();
+
+            var sa = ns.StygianAbyss;
+            var newPacket = ns.NewMobileIncoming;
+            var itemIdMask = newPacket ? 0xFFFF : 0x7FFF;
 
             Span<bool> layers = stackalloc bool[256];
 #if NO_LOCAL_INIT
@@ -667,12 +546,10 @@ namespace Server.Tests.Network
             expectedData.Write(ref pos, (byte)beheld.Z);
             expectedData.Write(ref pos, (byte)beheld.Direction);
             expectedData.Write(ref pos, (ushort)(isSolidHue ? beheld.SolidHueOverride : beheld.Hue));
-            expectedData.Write(ref pos, (byte)(ns.StygianAbyss ? beheld.GetOldPacketFlags() : beheld.GetPacketFlags()));
+            expectedData.Write(ref pos, (byte)beheld.GetPacketFlags(sa));
             expectedData.Write(ref pos, (byte)Notoriety.Compute(beholder, beheld));
 
             byte layer;
-            int itemId;
-            int hue;
 
             for (var i = 0; i < items.Count; i++)
             {
@@ -683,55 +560,71 @@ namespace Server.Tests.Network
                 if (!item.Deleted && !layers[layer] && beholder.CanSee(item))
                 {
                     layers[layer] = true;
-                    itemId = item.ItemID & 0x7FFF;
-                    hue = isSolidHue ? beheld.SolidHueOverride : item.Hue;
-
-                    if (hue != 0)
-                    {
-                        itemId |= 0x8000;
-                    }
 
                     expectedData.Write(ref pos, item.Serial);
-                    expectedData.Write(ref pos, (ushort)itemId);
+
+                    var hue = isSolidHue ? beheld.SolidHueOverride : item.Hue;
+                    var itemID = item.ItemID & itemIdMask;
+                    var writeHue = newPacket || hue != 0;
+
+                    if (!newPacket)
+                    {
+                        itemID |= 0x8000;
+                    }
+
+                    expectedData.Write(ref pos, (ushort)itemID);
                     expectedData.Write(ref pos, layer);
-                    expectedData.Write(ref pos, (ushort)hue);
+                    if (writeHue)
+                    {
+                        expectedData.Write(ref pos, (ushort)hue);
+                    }
                 }
             }
 
             layer = (byte)Layer.Hair;
-            itemId = beheld.HairItemID & 0x7FFF;
+            var itemId = beheld.HairItemID;
 
             if (itemId > 0 && !layers[layer])
             {
-                hue = isSolidHue ? beheld.SolidHueOverride : beheld.HairHue;
+                expectedData.Write(ref pos, HairInfo.FakeSerial(beheld));
+                var hue = isSolidHue ? beheld.SolidHueOverride : beheld.HairHue;
+                itemId &= itemIdMask;
+                var writeHue = newPacket || hue != 0;
 
-                if (hue != 0)
+                if (!newPacket)
                 {
                     itemId |= 0x8000;
                 }
 
-                expectedData.Write(ref pos, HairInfo.FakeSerial(beheld));
                 expectedData.Write(ref pos, (ushort)itemId);
                 expectedData.Write(ref pos, layer);
-                expectedData.Write(ref pos, (ushort)hue);
+                if (writeHue)
+                {
+                    expectedData.Write(ref pos, (ushort)hue);
+                }
             }
 
             layer = (byte)Layer.FacialHair;
-            itemId = beheld.FacialHairItemID & 0x7FFF;
+            itemId = beheld.FacialHairItemID;
 
             if (itemId > 0 && !layers[layer])
             {
-                hue = isSolidHue ? beheld.SolidHueOverride : beheld.FacialHairHue;
+                expectedData.Write(ref pos, FacialHairInfo.FakeSerial(beheld));
+                var hue = isSolidHue ? beheld.SolidHueOverride : beheld.FacialHairHue;
+                itemId &= itemIdMask;
+                var writeHue = newPacket || hue != 0;
 
-                if (hue != 0)
+                if (!newPacket)
                 {
                     itemId |= 0x8000;
                 }
 
-                expectedData.Write(ref pos, FacialHairInfo.FakeSerial(beheld));
                 expectedData.Write(ref pos, (ushort)itemId);
                 expectedData.Write(ref pos, layer);
-                expectedData.Write(ref pos, (ushort)hue);
+                if (writeHue)
+                {
+                    expectedData.Write(ref pos, (ushort)hue);
+                }
             }
 
 #if NO_LOCAL_INIT

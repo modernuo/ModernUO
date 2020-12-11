@@ -316,75 +316,26 @@ namespace Server.Network
 
             state.Sequence = 0;
 
-            if (state.NewMobileIncoming)
-            {
-                state.Send(new MobileUpdate(m));
-                state.Send(new MobileUpdate(m));
+            state.Send(new MobileUpdate(m, state.StygianAbyss));
+            state.Send(new MobileUpdate(m, state.StygianAbyss));
 
-                m.CheckLightLevels(true);
+            m.CheckLightLevels(true);
 
-                state.Send(new MobileUpdate(m));
+            state.Send(new MobileUpdate(m, state.StygianAbyss));
 
-                state.Send(new MobileIncoming(m, m));
-                // state.Send( new MobileAttributes( m ) );
-                state.Send(new MobileStatus(m, m));
-                state.SendSetWarMode(m.Warmode);
+            state.Send(new MobileIncoming(state, m, m));
+            // state.Send( new MobileAttributes( m ) );
+            state.Send(new MobileStatus(m, m));
+            state.SendSetWarMode(m.Warmode);
 
-                m.SendEverything();
+            m.SendEverything();
 
-                state.SendSupportedFeature();
-                state.Send(new MobileUpdate(m));
-                // state.Send( new MobileAttributes( m ) );
-                state.Send(new MobileStatus(m, m));
-                state.SendSetWarMode(m.Warmode);
-                state.Send(new MobileIncoming(m, m));
-            }
-            else if (state.StygianAbyss)
-            {
-                state.Send(new MobileUpdate(m));
-                state.Send(new MobileUpdate(m));
-
-                m.CheckLightLevels(true);
-
-                state.Send(new MobileUpdate(m));
-
-                state.Send(new MobileIncomingSA(m, m));
-                // state.Send( new MobileAttributes( m ) );
-                state.Send(new MobileStatus(m, m));
-                state.SendSetWarMode(m.Warmode);
-
-                m.SendEverything();
-
-                state.SendSupportedFeature();
-                state.Send(new MobileUpdate(m));
-                // state.Send( new MobileAttributes( m ) );
-                state.Send(new MobileStatus(m, m));
-                state.SendSetWarMode(m.Warmode);
-                state.Send(new MobileIncomingSA(m, m));
-            }
-            else
-            {
-                state.Send(new MobileUpdateOld(m));
-                state.Send(new MobileUpdateOld(m));
-
-                m.CheckLightLevels(true);
-
-                state.Send(new MobileUpdateOld(m));
-
-                state.Send(new MobileIncomingOld(m, m));
-                // state.Send( new MobileAttributes( m ) );
-                state.Send(new MobileStatus(m, m));
-                state.SendSetWarMode(m.Warmode);
-
-                m.SendEverything();
-
-                state.SendSupportedFeature();
-                state.Send(new MobileUpdateOld(m));
-                // state.Send( new MobileAttributes( m ) );
-                state.Send(new MobileStatus(m, m));
-                state.SendSetWarMode(m.Warmode);
-                state.Send(new MobileIncomingOld(m, m));
-            }
+            state.SendSupportedFeature();
+            state.Send(new MobileUpdate(m, state.StygianAbyss));
+            // state.Send( new MobileAttributes( m ) );
+            state.Send(new MobileStatus(m, m));
+            state.SendSetWarMode(m.Warmode);
+            state.Send(new MobileIncoming(state, m, m));
 
             state.SendLoginComplete();
             state.Send(new CurrentTime());
