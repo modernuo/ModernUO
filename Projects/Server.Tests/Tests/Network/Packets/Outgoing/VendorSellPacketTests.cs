@@ -63,7 +63,7 @@ namespace Server.Tests.Network
             var vendor = new Mobile(0x1);
             vendor.DefaultMobileInit();
 
-            var data = new EndVendorBuy(vendor).Compile();
+            var data = new EndVendorBuy(vendor.Serial).Compile();
 
             Span<byte> expectedData = stackalloc byte[8];
             var pos = 0;

@@ -102,41 +102,11 @@ namespace Server.Mobiles
             }
         }
 
-        public string GetNameFor(Item item)
-        {
-            if (item.Name != null)
-            {
-                return item.Name;
-            }
+        public string GetNameFor(Item item) => item.Name ?? item.LabelNumber.ToString();
 
-            return item.LabelNumber.ToString();
-        }
+        public bool IsSellable(Item item) => !item.Nontransferable && IsInList(item.GetType());
 
-        public bool IsSellable(Item item)
-        {
-            if (item.Nontransferable)
-            {
-                return false;
-            }
-
-            // if (item.Hue != 0)
-            // return false;
-
-            return IsInList(item.GetType());
-        }
-
-        public bool IsResellable(Item item)
-        {
-            if (item.Nontransferable)
-            {
-                return false;
-            }
-
-            // if (item.Hue != 0)
-            // return false;
-
-            return IsInList(item.GetType());
-        }
+        public bool IsResellable(Item item) => !item.Nontransferable && IsInList(item.GetType());
 
         public void Add(Type type, int price)
         {
