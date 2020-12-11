@@ -610,7 +610,7 @@ namespace Server.Tests.Network
             if (itemId > 0 && !layers[layer])
             {
                 expectedData.Write(ref pos, FacialHairInfo.FakeSerial(beheld));
-                var hue = isSolidHue ? beheld.SolidHueOverride : beheld.HairHue;
+                var hue = isSolidHue ? beheld.SolidHueOverride : beheld.FacialHairHue;
                 itemId &= itemIdMask;
                 var writeHue = newPacket || hue != 0;
 
