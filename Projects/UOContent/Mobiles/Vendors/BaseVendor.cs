@@ -127,7 +127,6 @@ namespace Server.Mobiles
 
             UpdateBuyInfo();
 
-            // IBuyItemInfo[] buyInfo = this.GetBuyInfo();
             var info = GetSellInfo();
             var totalCost = 0;
             var validBuy = new List<BuyItemResponse>(list.Count);
@@ -910,13 +909,9 @@ namespace Server.Mobiles
                     )
                 );
 
-                if (disp is Item item)
+                if (disp is IPropertyListObject obj)
                 {
-                    opls.Add(item.PropertyList);
-                }
-                else if (disp is Mobile mobile)
-                {
-                    opls.Add(mobile.PropertyList);
+                    opls.Add(obj.PropertyList);
                 }
             }
 
@@ -981,25 +976,9 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (ns.ContainerGridLines)
-            {
-                from.Send(new VendorBuyContent6017(list));
-            }
-            else
-            {
-                from.Send(new VendorBuyContent(list));
-            }
-
-            from.Send(new VendorBuyList(this, list));
-
-            if (ns.HighSeas)
-            {
-                from.Send(new DisplayBuyListHS(this));
-            }
-            else
-            {
-                from.Send(new DisplayBuyList(this));
-            }
+            from.NetState.SendVendorBuyContent(list);
+            from.NetState.SendVendorBuyList(this, list);
+            from.NetState.SendDisplayBuyList(Serial);
 
             from.Send(new MobileStatusExtended(from)); // make sure their gold amount is sent
 

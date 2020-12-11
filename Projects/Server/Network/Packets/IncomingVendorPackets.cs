@@ -28,20 +28,15 @@ namespace Server.Network
         public static void VendorBuyReply(NetState state, CircularBufferReader reader)
         {
             var vendor = World.FindMobile(reader.ReadUInt32());
-            var flag = reader.ReadByte();
 
             if (vendor == null)
             {
                 return;
             }
 
-            if (vendor.Deleted || !Utility.RangeCheck(vendor.Location, state.Mobile.Location, 10))
-            {
-                state.Send(new EndVendorBuy(vendor));
-                return;
-            }
+            var flag = reader.ReadByte();
 
-            if (flag == 0x02)
+            if (!vendor.Deleted && Utility.RangeCheck(vendor.Location, state.Mobile.Location, 10) && flag == 0x02)
             {
                 var msgSize = reader.Remaining;
 
@@ -61,15 +56,13 @@ namespace Server.Network
                     msgSize -= 7;
                 }
 
-                if (buyList.Count > 0 && vendor is IVendor v && v.OnBuyItems(state.Mobile, buyList))
+                if (buyList.Count <= 0 || (vendor as IVendor)?.OnBuyItems(state.Mobile, buyList) != true)
                 {
-                    state.Send(new EndVendorBuy(vendor));
+                    return;
                 }
             }
-            else
-            {
-                state.Send(new EndVendorBuy(vendor));
-            }
+
+            state.SendEndVendorBuy(vendor.Serial);
         }
 
         public static void VendorSellReply(NetState state, CircularBufferReader reader)

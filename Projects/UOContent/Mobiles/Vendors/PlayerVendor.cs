@@ -36,18 +36,8 @@ namespace Server.Mobiles
 
         public int Price { get; }
 
-        public string FormattedPrice
-        {
-            get
-            {
-                if (Core.ML)
-                {
-                    return Price.ToString("N0", CultureInfo.GetCultureInfo("en-US"));
-                }
-
-                return Price.ToString();
-            }
-        }
+        public string FormattedPrice =>
+            Core.ML ? Price.ToString("N0", CultureInfo.GetCultureInfo("en-US")) : Price.ToString();
 
         public string Description
         {
@@ -1473,27 +1463,13 @@ namespace Server.Mobiles
                 string firstWord;
 
                 var sep = text.IndexOfAny(new[] { ' ', ',' });
-                if (sep >= 0)
-                {
-                    firstWord = text.Substring(0, sep);
-                }
-                else
-                {
-                    firstWord = text;
-                }
+                firstWord = sep >= 0 ? text.Substring(0, sep) : text;
 
                 string description;
 
                 if (int.TryParse(firstWord, out var price))
                 {
-                    if (sep >= 0)
-                    {
-                        description = text.Substring(sep + 1).Trim();
-                    }
-                    else
-                    {
-                        description = "";
-                    }
+                    description = sep >= 0 ? text.Substring(sep + 1).Trim() : "";
                 }
                 else
                 {

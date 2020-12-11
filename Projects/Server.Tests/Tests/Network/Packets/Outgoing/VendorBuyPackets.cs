@@ -1,18 +1,3 @@
-/*************************************************************************
- * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
- * Email: hi@modernuo.com                                                *
- * File: VendorBuyPackets.cs                                             *
- *                                                                       *
- * This program is free software: you can redistribute it and/or modify  *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- *                                                                       *
- * You should have received a copy of the GNU General Public License     *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
- *************************************************************************/
-
 using System.Collections.Generic;
 using Server.Items;
 
@@ -69,18 +54,18 @@ namespace Server.Network
 
     public sealed class DisplayBuyList : Packet
     {
-        public DisplayBuyList(Mobile vendor) : base(0x24, 7)
+        public DisplayBuyList(Serial vendor) : base(0x24, 7)
         {
-            Stream.Write(vendor.Serial);
+            Stream.Write(vendor);
             Stream.Write((short)0x30); // buy window id?
         }
     }
 
     public sealed class DisplayBuyListHS : Packet
     {
-        public DisplayBuyListHS(Mobile vendor) : base(0x24, 9)
+        public DisplayBuyListHS(Serial vendor) : base(0x24, 9)
         {
-            Stream.Write(vendor.Serial);
+            Stream.Write(vendor);
             Stream.Write((short)0x30); // buy window id?
             Stream.Write((short)0x00);
         }
@@ -113,10 +98,10 @@ namespace Server.Network
 
     public sealed class EndVendorBuy : Packet
     {
-        public EndVendorBuy(Mobile vendor) : base(0x3B, 8)
+        public EndVendorBuy(Serial vendor) : base(0x3B, 8)
         {
             Stream.Write((ushort)8); // length
-            Stream.Write(vendor.Serial);
+            Stream.Write(vendor);
             Stream.Write((byte)0);
         }
     }
