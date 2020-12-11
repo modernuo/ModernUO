@@ -5,7 +5,7 @@ namespace Server.Network
 {
     public sealed class VendorBuyContent : Packet
     {
-        public VendorBuyContent(List<BuyItemState> list) : base(0x3C)
+        public VendorBuyContent(List<BuyItemState> list, bool containerGridLines) : base(0x3C)
         {
             EnsureCapacity(list.Count * 19 + 5);
 
@@ -21,31 +21,10 @@ namespace Server.Network
                 Stream.Write((ushort)bis.Amount);
                 Stream.Write((short)(i + 1)); // x
                 Stream.Write((short)1);       // y
-                Stream.Write(bis.ContainerSerial);
-                Stream.Write((ushort)bis.Hue);
-            }
-        }
-    }
-
-    public sealed class VendorBuyContent6017 : Packet
-    {
-        public VendorBuyContent6017(List<BuyItemState> list) : base(0x3C)
-        {
-            EnsureCapacity(list.Count * 20 + 5);
-
-            Stream.Write((short)list.Count);
-
-            for (var i = list.Count - 1; i >= 0; --i)
-            {
-                var bis = list[i];
-
-                Stream.Write(bis.MySerial);
-                Stream.Write((ushort)bis.ItemID);
-                Stream.Write((byte)0); // itemID offset
-                Stream.Write((ushort)bis.Amount);
-                Stream.Write((short)(i + 1)); // x
-                Stream.Write((short)1);       // y
-                Stream.Write((byte)0);        // Grid Location?
+                if (containerGridLines)
+                {
+                    Stream.Write((byte)0); // Grid Location?
+                }
                 Stream.Write(bis.ContainerSerial);
                 Stream.Write((ushort)bis.Hue);
             }
@@ -54,20 +33,14 @@ namespace Server.Network
 
     public sealed class DisplayBuyList : Packet
     {
-        public DisplayBuyList(Serial vendor) : base(0x24, 7)
+        public DisplayBuyList(Serial vendor, bool highSeas) : base(0x24, highSeas ? 9 : 7)
         {
             Stream.Write(vendor);
             Stream.Write((short)0x30); // buy window id?
-        }
-    }
-
-    public sealed class DisplayBuyListHS : Packet
-    {
-        public DisplayBuyListHS(Serial vendor) : base(0x24, 9)
-        {
-            Stream.Write(vendor);
-            Stream.Write((short)0x30); // buy window id?
-            Stream.Write((short)0x00);
+            if (highSeas)
+            {
+                Stream.Write((short)0x00);
+            }
         }
     }
 
@@ -89,9 +62,8 @@ namespace Server.Network
 
                 var desc = bis.Description ?? "";
 
-                // TODO: Test if this is actually WriteAsciiFixed and the extra null doesn't matter.
-                Stream.Write((byte)(desc.Length + 1));
-                Stream.WriteAsciiNull(desc);
+                Stream.Write((byte)desc.Length);
+                Stream.WriteAsciiFixed(desc, desc.Length);
             }
         }
     }

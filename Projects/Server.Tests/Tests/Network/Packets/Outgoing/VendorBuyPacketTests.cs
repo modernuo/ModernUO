@@ -25,10 +25,11 @@ namespace Server.Tests.Network
                 new("Third Item", cont.Serial, World.NewItem, 30, 10, 0x0F, 0)
             };
 
-            var expected = new VendorBuyContent(buyStates).Compile();
-
             using var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = protocolChanges;
+
+            var expected = new VendorBuyContent(buyStates, ns.ContainerGridLines).Compile();
+
             ns.SendVendorBuyContent(buyStates);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -43,10 +44,11 @@ namespace Server.Tests.Network
             var vendor = new Mobile(0x1);
             vendor.DefaultMobileInit();
 
-            var expected = new DisplayBuyList(vendor.Serial).Compile();
-
             using var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = protocolChanges;
+
+            var expected = new DisplayBuyList(vendor.Serial, ns.HighSeas).Compile();
+
             ns.SendDisplayBuyList(vendor.Serial);
 
             var result = ns.SendPipe.Reader.TryRead();
