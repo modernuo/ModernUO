@@ -42,7 +42,7 @@ namespace System.Buffers
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
-                return index < _first.Length ? _first[index] : _second[_first.Length - index];
+                return index < _first.Length ? _first[index] : _second[index - _first.Length];
             }
             set
             {
@@ -57,7 +57,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    _second[_first.Length - index] = value;
+                    _second[index - _first.Length] = value;
                 }
             }
         }
