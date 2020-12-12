@@ -53,9 +53,7 @@ namespace Server.Items
 
         public void Unlink()
         {
-            var se = Spawner;
-
-            if (se != null)
+            if (Spawner != null)
             {
                 Spawner.Remove(this);
                 Spawner = null;
