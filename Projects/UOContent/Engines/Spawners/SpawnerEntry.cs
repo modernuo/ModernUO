@@ -31,8 +31,6 @@ namespace Server.Engines.Spawners
             Spawned = new List<ISpawnable>(count);
 
             for (var i = 0; i < count; ++i)
-                // IEntity e = World.FindEntity( reader.ReadInt() );
-
             {
                 if (reader.ReadEntity() is ISpawnable e)
                 {
@@ -49,19 +47,26 @@ namespace Server.Engines.Spawners
             }
         }
 
-        [JsonPropertyName("probability")] public int SpawnedProbability { get; set; }
+        [JsonPropertyName("probability")]
+        public int SpawnedProbability { get; set; }
 
-        [JsonPropertyName("maxCount")] public int SpawnedMaxCount { get; set; }
+        [JsonPropertyName("maxCount")]
+        public int SpawnedMaxCount { get; set; }
 
-        [JsonPropertyName("name")] public string SpawnedName { get; set; }
+        [JsonPropertyName("name")]
+        public string SpawnedName { get; set; }
 
-        [JsonPropertyName("properties")] public string Properties { get; set; }
+        [JsonPropertyName("properties")]
+        public string Properties { get; set; }
 
-        [JsonPropertyName("parameters")] public string Parameters { get; set; }
+        [JsonPropertyName("parameters")]
+        public string Parameters { get; set; }
 
-        [JsonIgnore] public EntryFlags Valid { get; set; }
+        [JsonIgnore]
+        public EntryFlags Valid { get; set; }
 
-        [JsonIgnore] public List<ISpawnable> Spawned { get; }
+        [JsonIgnore]
+        public List<ISpawnable> Spawned { get; }
 
         public bool IsFull => Spawned.Count >= SpawnedMaxCount;
 
@@ -106,7 +111,6 @@ namespace Server.Engines.Spawners
                 if (parent.OnDefragSpawn(spawned, false))
                 {
                     Spawned.RemoveAt(i--);
-                    parent.Spawned.Remove(spawned);
                 }
             }
         }

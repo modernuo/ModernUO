@@ -323,12 +323,11 @@ namespace Server.Engines.Spawners
             {
                 list.Add(1060742); // active
 
-                list.Add(1060656, m_Count.ToString());                    // amount to make: ~1_val~
-                list.Add(1061169, m_HomeRange.ToString());                // range ~1_val~
+                list.Add(1060656, m_Count.ToString()); // amount to make: ~1_val~
+                list.Add(1061169, m_HomeRange.ToString()); // range ~1_val~
                 list.Add(1050039, "walking range:\t{0}", m_WalkingRange); // ~1_NUMBER~ ~2_ITEMNAME~
-
-                list.Add(1053099, "group:\t{0}", m_Group);                       // ~1_oretype~: ~2_armortype~
-                list.Add(1060847, "team:\t{0}", m_Team);                         // ~1_val~ ~2_val~
+                list.Add(1053099, "group:\t{0}", m_Group); // ~1_oretype~: ~2_armortype~
+                list.Add(1060847, "team:\t{0}", m_Team); // ~1_val~ ~2_val~
                 list.Add(1063483, "delay:\t{0} to {1}", m_MinDelay, m_MaxDelay); // ~1_MATERIAL~: ~2_ITEMNAME~
 
                 GetSpawnerProperties(list);
@@ -439,7 +438,15 @@ namespace Server.Engines.Spawners
                 return;
             }
 
-            var probsum = Entries.Where(t => !t.IsFull).Sum(t => t.SpawnedProbability);
+            var probsum = 0;
+
+            foreach (var spawnerEntry in Entries)
+            {
+                if (!spawnerEntry.IsFull)
+                {
+                    probsum += spawnerEntry.SpawnedProbability;
+                }
+            }
 
             if (probsum <= 0)
             {
@@ -572,10 +579,8 @@ namespace Server.Engines.Spawners
             try
             {
                 IEntity entity = null;
-                string[] paramargs;
-                string[] propargs;
 
-                propargs = string.IsNullOrEmpty(entry.Properties)
+                var propargs = string.IsNullOrEmpty(entry.Properties)
                     ? Array.Empty<string>()
                     : CommandSystem.Split(entry.Properties.Trim());
 
@@ -589,7 +594,7 @@ namespace Server.Engines.Spawners
                     return false;
                 }
 
-                paramargs = string.IsNullOrEmpty(entry.Parameters)
+                var paramargs = string.IsNullOrEmpty(entry.Parameters)
                     ? Array.Empty<string>()
                     : entry.Parameters.Trim().Split(' ');
 
@@ -666,8 +671,6 @@ namespace Server.Engines.Spawners
                     var loc = m is BaseVendor ? Location : GetSpawnPosition(m, map);
 
                     m.OnBeforeSpawn(loc, map);
-                    InvalidateProperties();
-
                     m.MoveToWorld(loc, map);
 
                     if (m is BaseCreature c)
@@ -717,7 +720,7 @@ namespace Server.Engines.Spawners
                 return false;
             }
 
-            InvalidateProperties();
+            ClearProperties();
             return true;
         }
 
@@ -748,9 +751,16 @@ namespace Server.Engines.Spawners
 
             End = DateTime.UtcNow + delay;
 
-            m_Timer?.Stop();
+            if (m_Timer == null)
+            {
+                m_Timer = new InternalTimer(this, delay);
+            }
+            else
+            {
+                m_Timer?.Stop();
+                m_Timer.Delay = delay;
+            }
 
-            m_Timer = new InternalTimer(this, delay);
             if (!IsFull)
             {
                 m_Timer.Start();
@@ -803,7 +813,6 @@ namespace Server.Engines.Spawners
                 {
                     entry.Spawned.RemoveAt(i);
                     Spawned.Remove(e);
-
                     e.Delete();
                 }
             }
@@ -1071,26 +1080,16 @@ namespace Server.Engines.Spawners
 
             public InternalTimer(BaseSpawner spawner, TimeSpan delay) : base(delay)
             {
-                if (spawner.IsFull)
-                {
-                    Priority = TimerPriority.FiveSeconds;
-                }
-                else
-                {
-                    Priority = TimerPriority.OneSecond;
-                }
+                Priority = spawner.IsFull ? TimerPriority.FiveSeconds : TimerPriority.OneSecond;
 
                 m_Spawner = spawner;
             }
 
             protected override void OnTick()
             {
-                if (m_Spawner != null)
+                if (m_Spawner?.Deleted == false)
                 {
-                    if (!m_Spawner.Deleted)
-                    {
-                        m_Spawner.OnTick();
-                    }
+                    m_Spawner.OnTick();
                 }
             }
         }

@@ -3459,8 +3459,7 @@ namespace Server.Mobiles
             }
             else
             {
-                var se = Spawner;
-                if (se?.UnlinkOnTaming == true)
+                if (Spawner?.UnlinkOnTaming == true)
                 {
                     Spawner.Remove(this);
                     Spawner = null;
@@ -3882,7 +3881,7 @@ namespace Server.Mobiles
         private bool IsSpawnerBound() =>
             Map != null && Map != Map.Internal &&
             FightMode != FightMode.None && RangeHome >= 0 &&
-            !Controlled && !Summoned && Spawner is Spawner spawner && spawner.Map == Map;
+            !Controlled && !Summoned && (Spawner as Spawner)?.Map == Map;
 
         public override void OnSectorDeactivate()
         {
