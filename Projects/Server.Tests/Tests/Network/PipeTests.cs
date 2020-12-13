@@ -10,7 +10,7 @@ namespace Server.Tests.Network
     {
         private async void DelayedExecute(Action action)
         {
-            await Task.Delay(5);
+            await Task.Delay(5).ConfigureAwait(false);
 
             action();
         }

@@ -170,26 +170,6 @@ namespace Server
             }
 
             return false;
-            /*
-            bool contains = false;
-
-            for ( int i = 0; !contains && i < m_Blocked.Count; ++i )
-            {
-              if (m_Blocked[i] is IPAddress)
-                contains = ip.Equals( m_Blocked[i] );
-                      else if (m_Blocked[i] is String)
-                      {
-                          string s = (string)m_Blocked[i];
-
-                          contains = Utility.IPMatchCIDR( s, ip );
-
-                          if (!contains)
-                              contains = Utility.IPMatch( s, ip );
-                      }
-            }
-
-            return contains;
-             * */
         }
 
         public interface IFirewallEntry

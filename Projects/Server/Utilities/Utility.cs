@@ -235,20 +235,122 @@ namespace Server
             return (IPv4ToAddress(ip1) & 0xFFFFFF) == (IPv4ToAddress(ip2) & 0xFFFFFF);
         }
 
-        public static bool IPMatchCIDR(IPAddress cidrAddress, IPAddress address, int mask)
+        public static bool IPMatchCIDR(IPAddress cidrAddress, IPAddress address, int cidrLength)
         {
-            if (address.IsIPv4MappedToIPv6)
+            if (cidrAddress.AddressFamily == AddressFamily.InterNetworkV6 && !cidrAddress.IsIPv4MappedToIPv6 ||
+                address.AddressFamily == AddressFamily.InterNetworkV6 && !address.IsIPv4MappedToIPv6)
             {
-                address = address.MapToIPv4();
+                cidrAddress = cidrAddress.MapToIPv6();
+                address = address.MapToIPv6();
+                return IPMatchCIDR(cidrAddress, address, true, cidrLength);
             }
 
-            if (cidrAddress.AddressFamily != address.AddressFamily)
+            if (cidrAddress.IsIPv4MappedToIPv6)
             {
-                return false;
+                if (cidrLength <= 96)
+                {
+                    return true;
+                }
+
+                cidrLength = 128 - cidrLength;
             }
 
-            var netmask = IPNetwork.ToNetmask((byte)mask, address.AddressFamily);
-            return IPNetwork.Parse(cidrAddress, netmask).Contains(address);
+            cidrAddress = cidrAddress.MapToIPv4();
+            address = address.MapToIPv4();
+            return IPMatchCIDR(cidrAddress, address, false, cidrLength);
+        }
+
+        private static bool IPMatchCIDR(IPAddress cidrAddress, IPAddress address, bool isIPv6, int cidrLength)
+        {
+            int byteLength = isIPv6 ? 16 : 4;
+            int bitLength = byteLength * 8;
+
+            cidrLength = Math.Clamp(cidrLength, 0, bitLength);
+
+            Span<byte> cidrBytes = stackalloc byte[byteLength];
+            cidrAddress.TryWriteBytes(cidrBytes, out var _);
+
+            Span<byte> addrBytes = stackalloc byte[byteLength];
+            address.TryWriteBytes(addrBytes, out var _);
+
+            var index = Math.DivRem(cidrLength, 8, out var offset);
+            if (index > 0)
+            {
+                var i = 0;
+                while (i < index)
+                {
+                    switch (index - i)
+                    {
+                        default:
+                            {
+                                if (cidrBytes[i] != addrBytes[i])
+                                {
+                                    return false;
+                                }
+
+                                ++i;
+                                break;
+                            }
+                        case 2:
+                            {
+                                if (
+                                    !MemoryMarshal.TryRead(cidrBytes.Slice(i, 2), out short c) ||
+                                    !MemoryMarshal.TryRead(addrBytes.Slice(i, 2), out short a) ||
+                                    c != a
+                                )
+                                {
+                                    return false;
+                                }
+
+                                i += 2;
+                                break;
+                            }
+
+                        case 4:
+                            {
+                                if (
+                                    !MemoryMarshal.TryRead(cidrBytes.Slice(i, 4), out int c) ||
+                                    !MemoryMarshal.TryRead(addrBytes.Slice(i, 4), out int a) ||
+                                    c != a
+                                )
+                                {
+                                    return false;
+                                }
+
+                                i += 4;
+                                break;
+                            }
+
+                        case 8:
+                            {
+                                if (
+                                    !MemoryMarshal.TryRead(cidrBytes.Slice(i, 8), out long c) ||
+                                    !MemoryMarshal.TryRead(addrBytes.Slice(i, 8), out long a) ||
+                                    c != a
+                                )
+                                {
+                                    return false;
+                                }
+
+                                i += 8;
+                                break;
+                            }
+                    }
+                }
+            }
+
+            if (offset == 0)
+            {
+                return true;
+            }
+
+            var cv = cidrBytes[index];
+            var mask = (1 << (8 - offset)) - 1;
+            var min = ~mask & 0xFF & cv;
+            var max = cv | mask;
+            var v = addrBytes[index];
+
+            return v >= min && v <= max;
         }
 
         public static bool IsValidIP(string val) => IPAddress.TryParse(val, out _);
@@ -479,7 +581,13 @@ namespace Server
                             }
                             else
                             {
-                                if (section >= 6)
+                                byteIndex += 2;
+                                num = BinaryPrimitives.ReadUInt16BigEndian(ip.Slice(byteIndex, 2));
+
+                                match = match && (isRange ? num <= number : number == num);
+
+                                // IPv4 matching at the end
+                                if (section == 6 && num == 0xFFFF)
                                 {
                                     var ipv4 = val.Slice(i + 1);
                                     if (ipv4.Contains('.'))
@@ -488,10 +596,6 @@ namespace Server
                                     }
                                 }
 
-                                byteIndex += 2;
-                                num = BinaryPrimitives.ReadUInt16BigEndian(ip.Slice(byteIndex, 2));
-
-                                match = match && (isRange ? num <= number : number == num);
                                 ++section;
                                 --i;
                             }
