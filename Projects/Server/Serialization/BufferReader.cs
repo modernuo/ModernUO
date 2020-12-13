@@ -158,7 +158,14 @@ namespace Server
             return v;
         }
 
-        public IPAddress ReadIPAddress() => new(ReadLong());
+        public IPAddress ReadIPAddress()
+        {
+            byte length = ReadByte();
+            // Either 2 ushorts, or 8 ushorts
+            Span<byte> integer = stackalloc byte[length];
+            Read(integer);
+            return new IPAddress(integer);
+        }
 
         public Point3D ReadPoint3D() => new(ReadInt(), ReadInt(), ReadInt());
 

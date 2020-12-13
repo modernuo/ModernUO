@@ -14,12 +14,15 @@
  *************************************************************************/
 
 using System;
+using System.Buffers.Binary;
 using System.Net;
 
 namespace Server.Network
 {
     public sealed class ServerInfo
     {
+        private IPEndPoint m_Address;
+
         public ServerInfo(string name, int fullPercent, TimeZoneInfo tz, IPEndPoint address)
         {
             Name = name;
@@ -34,6 +37,24 @@ namespace Server.Network
 
         public int TimeZone { get; set; }
 
-        public IPEndPoint Address { get; set; }
+        public IPEndPoint Address
+        {
+            get => m_Address;
+            set
+            {
+                m_Address = value;
+                Span<byte> integer = stackalloc byte[4];
+                value.Address.MapToIPv4().TryWriteBytes(integer, out var bytesWritten);
+                if (bytesWritten != 4)
+                {
+                    throw new InvalidOperationException("IP Address could not be serialized to an integer");
+                }
+
+                RawAddress = BinaryPrimitives.ReadUInt32LittleEndian(integer);
+            }
+        }
+
+        // UO doesn't support IPv6 servers
+        public uint RawAddress { get; private set; }
     }
 }

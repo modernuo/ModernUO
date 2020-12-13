@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -9,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
+using Microsoft.Toolkit.HighPerformance.Extensions;
 using Server.Random;
 
 namespace Server
@@ -199,14 +201,312 @@ namespace Server
             ipAddress = Intern(ipAddress);
         }
 
-        public static bool IsValidIP(string text)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint IPv4ToAddress(IPAddress ip)
         {
-            IPMatch(text, IPAddress.None, out var valid);
-
-            return valid;
+            Span<byte> integer = stackalloc byte[4];
+            ip.TryWriteBytes(integer, out var bytesWritten);
+            return bytesWritten != 4 ? 0 : BinaryPrimitives.ReadUInt32LittleEndian(integer);
         }
 
+        public static bool IPMatchClassC(IPAddress ip1, IPAddress ip2)
+        {
+            if (ip1.IsIPv4MappedToIPv6)
+            {
+                ip1 = ip1.MapToIPv4();
+            }
+
+            if (ip2.IsIPv4MappedToIPv6)
+            {
+                ip2 = ip2.MapToIPv4();
+            }
+
+            if (ip1.AddressFamily != ip2.AddressFamily)
+            {
+                return false;
+            }
+
+            // This is only an IPv4 concept, so we will return true if IPv6 and equal
+            if (ip1.AddressFamily != AddressFamily.InterNetwork)
+            {
+                return ip1.Equals(ip2);
+            }
+
+            return (IPv4ToAddress(ip1) & 0xFFFFFF) == (IPv4ToAddress(ip2) & 0xFFFFFF);
+        }
+
+        public static bool IPMatchCIDR(IPAddress cidrAddress, IPAddress address, int mask)
+        {
+            if (address.IsIPv4MappedToIPv6)
+            {
+                address = address.MapToIPv4();
+            }
+
+            if (cidrAddress.AddressFamily != address.AddressFamily)
+            {
+                return false;
+            }
+
+            var netmask = IPNetwork.ToNetmask((byte)mask, address.AddressFamily);
+            return IPNetwork.Parse(cidrAddress, netmask).Contains(address);
+        }
+
+        public static bool IsValidIP(string val) => IPAddress.TryParse(val, out _);
+
         public static bool IPMatch(string val, IPAddress ip) => IPMatch(val, ip, out _);
+
+        public static bool IPMatch(string val, IPAddress ip, out bool valid)
+        {
+            var family = ip.AddressFamily;
+            var useIPv6 = family == AddressFamily.InterNetworkV6 || val.Contains(':', StringComparison.Ordinal);
+
+            ip = useIPv6 ? ip.MapToIPv6() : ip.MapToIPv4();
+
+            Span<byte> ipBytes = stackalloc byte[useIPv6 ? 16 : 4];
+            ip.TryWriteBytes(ipBytes, out _);
+
+            return useIPv6 ? IPv6Match(val, ipBytes, out valid) : IPv4Match(val, ipBytes, out valid);
+        }
+
+        public static bool IPv4Match(ReadOnlySpan<char> val, ReadOnlySpan<byte> ip, out bool valid)
+        {
+            var match = true;
+            valid = true;
+            var end = val.Length;
+            var byteIndex = 0;
+            var section = 0;
+            var number = 0;
+            var sequenceStart = 0;
+            var isRange = false;
+            var intBase = 10;
+
+            var num = ip[byteIndex];
+
+            for (var i = 0; i < end; i++)
+            {
+                var chr = val[i];
+                if (section > 4)
+                {
+                    valid = false;
+                    return false;
+                }
+
+                switch (chr)
+                {
+                    default:
+                        {
+                            if (!Uri.IsHexDigit(chr))
+                            {
+                                valid = false;
+                                return false;
+                            }
+
+                            number = number * intBase + Uri.FromHex(chr);
+                            break;
+                        }
+                    case 'x':
+                    case 'X':
+                        {
+                            // To indicate hex, must be first letter in the section
+                            if (sequenceStart < i)
+                            {
+                                valid = false;
+                                return false;
+                            }
+
+                            intBase = 16;
+                            break;
+                        }
+                    case '-':
+                        {
+                            // Only allows a single range in a section
+                            if (isRange)
+                            {
+                                valid = false;
+                                return false;
+                            }
+
+                            isRange = true;
+                            match = match && num > number;
+                            number = 0;
+                            break;
+                        }
+                    case '*':
+                        {
+                            // We will allow anything in this section, but it has to be by itself
+                            if (sequenceStart < i)
+                            {
+                                valid = false;
+                                return false;
+                            }
+
+                            byteIndex++;
+                            break;
+                        }
+                    case '.':
+                        {
+                            match = match && (isRange ? num <= number : number == num);
+                            ++section;
+                            sequenceStart = i + 1;
+                            intBase = 10;
+                            number = 0;
+                            break;
+                        }
+                }
+            }
+
+            return match;
+        }
+
+        public static bool IPv6Match(ReadOnlySpan<char> val, ReadOnlySpan<byte> ip, out bool valid)
+        {
+            valid = true;
+
+            // Start must be two `::` or a number
+            if (val[0] == ':' && val[1] != ':')
+            {
+                valid = false;
+                return false;
+            }
+
+            var match = true;
+            var section = 0;
+            var hasCompressor = false;
+            var byteIndex = 0;
+            var end = val.Length;
+            var sequenceStart = 0;
+            bool isRange = false;
+            var number = 0;
+
+            var num = BinaryPrimitives.ReadUInt16BigEndian(ip.Slice(byteIndex, 2));
+
+            for (int i = 0; i < end; i++)
+            {
+                if (section > 7)
+                {
+                    valid = false;
+                    return false;
+                }
+
+                var chr = val[i];
+                // We are starting a new sequence, check the previous one then continue
+                switch (chr)
+                {
+                    default:
+                        {
+                            if (!Uri.IsHexDigit(chr))
+                            {
+                                valid = false;
+                                return false;
+                            }
+
+                            number = number * 16 + Uri.FromHex(chr);
+                            break;
+                        }
+                    case '?':
+                        {
+                            Console.WriteLine("IP Match with '?' is not supported. Skipping character");
+                            break;
+                        }
+                    // Range
+                    case '-':
+                        {
+                            // Only allows a single range in a section
+                            if (isRange)
+                            {
+                                valid = false;
+                                return false;
+                            }
+
+                            isRange = true;
+
+                            // Check low part of the range
+                            match = match && num >= number;
+                            number = 0;
+                            break;
+                        }
+                    // Wild section
+                    case '*':
+                        {
+                            // We will allow anything in this section, but it has to be by itself
+                            if (sequenceStart < i)
+                            {
+                                valid = false;
+                                return false;
+                            }
+
+                            byteIndex += 2;
+                            ++section;
+                            break;
+                        }
+                    case ':':
+                        {
+                            ++i;
+                            if (i < end && val[i] == ':')
+                            {
+                                if (hasCompressor)
+                                {
+                                    valid = false;
+                                    return false;
+                                }
+
+                                var remainingColons = val.Slice(i + 1).Count(':');
+                                // double colon represents at least 2 sections
+                                // we need at least 1 section remaining out of 8
+                                // This means 8 - 2 would be 6 sections (5 colons)
+                                var newSection = section + 2 + (5 - remainingColons);
+                                if (newSection > 7)
+                                {
+                                    valid = false;
+                                    return false;
+                                }
+
+                                for (var zeroEnd = byteIndex + newSection * 2; byteIndex < zeroEnd; byteIndex += 2)
+                                {
+                                    var read = BinaryPrimitives.TryReadUInt16BigEndian(
+                                        ip.Slice(byteIndex, 2),
+                                        out var value
+                                    );
+
+                                    if (!read || value != 0)
+                                    {
+                                        match = false;
+                                    }
+                                }
+
+                                section = newSection;
+                                hasCompressor = true;
+                            }
+                            else
+                            {
+                                if (section >= 6)
+                                {
+                                    var ipv4 = val.Slice(i + 1);
+                                    if (ipv4.Contains('.'))
+                                    {
+                                        return IPv4Match(ipv4, ip.Slice(ip.Length - 4), out valid);
+                                    }
+                                }
+
+                                byteIndex += 2;
+                                num = BinaryPrimitives.ReadUInt16BigEndian(ip.Slice(byteIndex, 2));
+
+                                match = match && (isRange ? num <= number : number == num);
+                                ++section;
+                                --i;
+                            }
+
+                            // Reset
+                            sequenceStart = i + 1;
+                            number = 0;
+                            isRange = false;
+                            break;
+                        }
+                }
+            }
+
+            return match;
+        }
 
         public static string FixHtml(string str)
         {
@@ -243,311 +543,6 @@ namespace Server
 
             return sb.ToString();
         }
-
-        public static bool IPMatchCIDR(string cidr, IPAddress ip)
-        {
-            if (ip == null || ip.AddressFamily == AddressFamily.InterNetworkV6)
-            {
-                return false; // Just worry about IPv4 for now
-            }
-
-            var bytes = new byte[4];
-            var split = cidr.Split('.');
-            var cidrBits = false;
-            var cidrLength = 0;
-
-            for (var i = 0; i < 4; i++)
-            {
-                var part = 0;
-
-                var partBase = 10;
-
-                var pattern = split[i];
-
-                for (var j = 0; j < pattern.Length; j++)
-                {
-                    var c = pattern[j];
-
-                    if (c == 'x' || c == 'X')
-                    {
-                        partBase = 16;
-                    }
-                    else if (c >= '0' && c <= '9')
-                    {
-                        var offset = c - '0';
-
-                        if (cidrBits)
-                        {
-                            cidrLength *= partBase;
-                            cidrLength += offset;
-                        }
-                        else
-                        {
-                            part *= partBase;
-                            part += offset;
-                        }
-                    }
-                    else if (c >= 'a' && c <= 'f')
-                    {
-                        var offset = 10 + (c - 'a');
-
-                        if (cidrBits)
-                        {
-                            cidrLength *= partBase;
-                            cidrLength += offset;
-                        }
-                        else
-                        {
-                            part *= partBase;
-                            part += offset;
-                        }
-                    }
-                    else if (c >= 'A' && c <= 'F')
-                    {
-                        var offset = 10 + (c - 'A');
-
-                        if (cidrBits)
-                        {
-                            cidrLength *= partBase;
-                            cidrLength += offset;
-                        }
-                        else
-                        {
-                            part *= partBase;
-                            part += offset;
-                        }
-                    }
-                    else if (c == '/')
-                    {
-                        if (cidrBits || i != 3) // If there's two '/' or the '/' isn't in the last byte
-                        {
-                            return false;
-                        }
-
-                        partBase = 10;
-                        cidrBits = true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-
-                bytes[i] = (byte)part;
-            }
-
-            return IPMatchCIDR(OrderedAddressValue(bytes), ip, cidrLength);
-        }
-
-        public static bool IPMatchCIDR(IPAddress cidrPrefix, IPAddress ip, int cidrLength)
-        {
-            // Ignore IPv6 for now
-            if (cidrPrefix == null || ip == null || cidrPrefix.AddressFamily == AddressFamily.InterNetworkV6)
-            {
-                return false;
-            }
-
-            var cidrValue = SwapUnsignedInt((uint)GetLongAddressValue(cidrPrefix));
-            var ipValue = SwapUnsignedInt((uint)GetLongAddressValue(ip));
-
-            return IPMatchCIDR(cidrValue, ipValue, cidrLength);
-        }
-
-        public static bool IPMatchCIDR(uint cidrPrefixValue, IPAddress ip, int cidrLength)
-        {
-            if (ip == null || ip.AddressFamily == AddressFamily.InterNetworkV6)
-            {
-                return false;
-            }
-
-            var ipValue = SwapUnsignedInt((uint)GetLongAddressValue(ip));
-
-            return IPMatchCIDR(cidrPrefixValue, ipValue, cidrLength);
-        }
-
-        public static bool IPMatchCIDR(uint cidrPrefixValue, uint ipValue, int cidrLength)
-        {
-            if (cidrLength <= 0 || cidrLength >= 32) // if invalid cidr Length, just compare IPs
-            {
-                return cidrPrefixValue == ipValue;
-            }
-
-            var mask = uint.MaxValue << (32 - cidrLength);
-
-            return (cidrPrefixValue & mask) == (ipValue & mask);
-        }
-
-        private static uint OrderedAddressValue(byte[] bytes)
-        {
-            if (bytes.Length != 4)
-            {
-                return 0;
-            }
-
-            return (uint)((bytes[0] << 0x18) | (bytes[1] << 0x10) | (bytes[2] << 8) | bytes[3]) & 0xffffffff;
-        }
-
-        private static uint SwapUnsignedInt(uint source) =>
-            ((source & 0x000000FF) << 0x18)
-            | ((source & 0x0000FF00) << 8)
-            | ((source & 0x00FF0000) >> 8)
-            | ((source & 0xFF000000) >> 0x18);
-
-        public static bool TryConvertIPv6toIPv4(ref IPAddress address)
-        {
-            if (!Socket.OSSupportsIPv6 || address.AddressFamily == AddressFamily.InterNetwork)
-            {
-                return true;
-            }
-
-            var addr = address.GetAddressBytes();
-            if (addr.Length == 16) // sanity 0 - 15 //10 11 //12 13 14 15
-            {
-                if (addr[10] != 0xFF || addr[11] != 0xFF)
-                {
-                    return false;
-                }
-
-                for (var i = 0; i < 10; i++)
-                {
-                    if (addr[i] != 0)
-                    {
-                        return false;
-                    }
-                }
-
-                var v4Addr = new byte[4];
-
-                for (var i = 0; i < 4; i++)
-                {
-                    v4Addr[i] = addr[12 + i];
-                }
-
-                address = new IPAddress(v4Addr);
-                return true;
-            }
-
-            return false;
-        }
-
-        public static bool IPMatch(string val, IPAddress ip, out bool valid)
-        {
-            valid = true;
-
-            var split = val.Split('.');
-
-            for (var i = 0; i < 4; ++i)
-            {
-                int lowPart, highPart;
-
-                if (i >= split.Length)
-                {
-                    lowPart = 0;
-                    highPart = 255;
-                }
-                else
-                {
-                    var pattern = split[i];
-
-                    if (pattern == "*")
-                    {
-                        lowPart = 0;
-                        highPart = 255;
-                    }
-                    else
-                    {
-                        lowPart = 0;
-                        highPart = 0;
-
-                        var highOnly = false;
-                        var lowBase = 10;
-                        var highBase = 10;
-
-                        for (var j = 0; j < pattern.Length; ++j)
-                        {
-                            var c = pattern[j];
-
-                            if (c == '?')
-                            {
-                                if (!highOnly)
-                                {
-                                    lowPart *= lowBase;
-                                    lowPart += 0;
-                                }
-
-                                highPart *= highBase;
-                                highPart += highBase - 1;
-                            }
-                            else if (c == '-')
-                            {
-                                highOnly = true;
-                                highPart = 0;
-                            }
-                            else if (c == 'x' || c == 'X')
-                            {
-                                lowBase = 16;
-                                highBase = 16;
-                            }
-                            else if (c >= '0' && c <= '9')
-                            {
-                                var offset = c - '0';
-
-                                if (!highOnly)
-                                {
-                                    lowPart *= lowBase;
-                                    lowPart += offset;
-                                }
-
-                                highPart *= highBase;
-                                highPart += offset;
-                            }
-                            else if (c >= 'a' && c <= 'f')
-                            {
-                                var offset = 10 + (c - 'a');
-
-                                if (!highOnly)
-                                {
-                                    lowPart *= lowBase;
-                                    lowPart += offset;
-                                }
-
-                                highPart *= highBase;
-                                highPart += offset;
-                            }
-                            else if (c >= 'A' && c <= 'F')
-                            {
-                                var offset = 10 + (c - 'A');
-
-                                if (!highOnly)
-                                {
-                                    lowPart *= lowBase;
-                                    lowPart += offset;
-                                }
-
-                                highPart *= highBase;
-                                highPart += offset;
-                            }
-                            else
-                            {
-                                valid = false; // high & lowp art would be 0 if it got to here.
-                            }
-                        }
-                    }
-                }
-
-                int b = (byte)(GetAddressValue(ip) >> (i * 8));
-
-                if (b < lowPart || b > highPart)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public static bool IPMatchClassC(IPAddress ip1, IPAddress ip2) =>
-            (GetAddressValue(ip1) & 0xFFFFFF) == (GetAddressValue(ip2) & 0xFFFFFF);
 
         public static int InsensitiveCompare(string first, string second) => Insensitive.Compare(first, second);
 
@@ -1054,10 +1049,6 @@ namespace Server
             node?.Attributes[attributeName]?.Value ?? defaultValue;
 
         public static string GetText(XmlElement node, string defaultValue) => node?.InnerText ?? defaultValue;
-
-        public static int GetAddressValue(IPAddress address) => BitConverter.ToInt32(address.GetAddressBytes(), 0);
-
-        public static long GetLongAddressValue(IPAddress address) => BitConverter.ToInt64(address.GetAddressBytes(), 0);
 
         public static bool InRange(Point3D p1, Point3D p2, int range) =>
             p1.m_X >= p2.m_X - range

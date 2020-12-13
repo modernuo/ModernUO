@@ -79,6 +79,16 @@ namespace Server
             Index = 0;
         }
 
+        public void Write(ReadOnlySpan<byte> bytes)
+        {
+            if (Index + bytes.Length > Buffer.Length)
+            {
+                Flush();
+            }
+
+            bytes.CopyTo(Buffer.AsSpan((int)Index));
+        }
+
         public virtual long Seek(long offset, SeekOrigin origin)
         {
             return origin switch
@@ -176,7 +186,9 @@ namespace Server
 
         public void Write(IPAddress value)
         {
-            Write(Utility.GetLongAddressValue(value));
+            var bytes = value.GetAddressBytes();
+            Write((byte)bytes.Length);
+            Write(bytes);
         }
 
         public void Write(TimeSpan value)

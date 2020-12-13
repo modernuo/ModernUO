@@ -1004,7 +1004,7 @@ namespace Server.Accounting
 
             for (var i = 0; !accessAllowed && i < IPRestrictions.Length; ++i)
             {
-                accessAllowed = Utility.IPMatch(IPRestrictions[i], ipAddress);
+                accessAllowed = IPAddress.Parse(IPRestrictions[i]).Equals(ipAddress);
             }
 
             return accessAllowed;

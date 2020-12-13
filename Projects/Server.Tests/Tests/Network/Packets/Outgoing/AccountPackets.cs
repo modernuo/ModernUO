@@ -338,7 +338,8 @@ namespace Server.Tests.Network
                 Stream.WriteAsciiFixed(si.Name, 32);
                 Stream.Write((byte)si.FullPercent);
                 Stream.Write((sbyte)si.TimeZone);
-                Stream.Write(Utility.GetAddressValue(si.Address.Address));
+                // UO Doesn't support IPv6
+                Stream.Write(si.RawAddress);
             }
         }
     }
@@ -347,7 +348,7 @@ namespace Server.Tests.Network
     {
         public PlayServerAck(ServerInfo si, int authId) : base(0x8C, 11)
         {
-            var addr = Utility.GetAddressValue(si.Address.Address);
+            var addr = si.RawAddress;
 
             Stream.Write((byte)addr);
             Stream.Write((byte)(addr >> 8));
