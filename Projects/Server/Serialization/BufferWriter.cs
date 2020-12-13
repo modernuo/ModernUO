@@ -69,13 +69,13 @@ namespace Server
 
         public virtual void Flush()
         {
-            Resize(Buffer.Length * 2);
+            Resize(_buffer.Length * 2);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void FlushIfNeeded(int amount)
         {
-            while (Index + amount > Buffer.Length)
+            while (Index + amount > _buffer.Length)
             {
                 Flush();
             }
@@ -88,11 +88,7 @@ namespace Server
 
         public void Write(ReadOnlySpan<byte> bytes)
         {
-            if (Index + bytes.Length > Buffer.Length)
-            {
-                Flush();
-            }
-
+            FlushIfNeeded(bytes.Length);
             bytes.CopyTo(Buffer.AsSpan((int)Index));
         }
 
@@ -197,14 +193,14 @@ namespace Server
         {
             FlushIfNeeded(8);
 
-            Buffer[Index] = (byte)value;
-            Buffer[Index + 1] = (byte)(value >> 8);
-            Buffer[Index + 2] = (byte)(value >> 16);
-            Buffer[Index + 3] = (byte)(value >> 24);
-            Buffer[Index + 4] = (byte)(value >> 32);
-            Buffer[Index + 5] = (byte)(value >> 40);
-            Buffer[Index + 6] = (byte)(value >> 48);
-            Buffer[Index + 7] = (byte)(value >> 56);
+            _buffer[Index] = (byte)value;
+            _buffer[Index + 1] = (byte)(value >> 8);
+            _buffer[Index + 2] = (byte)(value >> 16);
+            _buffer[Index + 3] = (byte)(value >> 24);
+            _buffer[Index + 4] = (byte)(value >> 32);
+            _buffer[Index + 5] = (byte)(value >> 40);
+            _buffer[Index + 6] = (byte)(value >> 48);
+            _buffer[Index + 7] = (byte)(value >> 56);
             Index += 8;
         }
 
@@ -212,14 +208,14 @@ namespace Server
         {
             FlushIfNeeded(8);
 
-            Buffer[Index] = (byte)value;
-            Buffer[Index + 1] = (byte)(value >> 8);
-            Buffer[Index + 2] = (byte)(value >> 16);
-            Buffer[Index + 3] = (byte)(value >> 24);
-            Buffer[Index + 4] = (byte)(value >> 32);
-            Buffer[Index + 5] = (byte)(value >> 40);
-            Buffer[Index + 6] = (byte)(value >> 48);
-            Buffer[Index + 7] = (byte)(value >> 56);
+            _buffer[Index] = (byte)value;
+            _buffer[Index + 1] = (byte)(value >> 8);
+            _buffer[Index + 2] = (byte)(value >> 16);
+            _buffer[Index + 3] = (byte)(value >> 24);
+            _buffer[Index + 4] = (byte)(value >> 32);
+            _buffer[Index + 5] = (byte)(value >> 40);
+            _buffer[Index + 6] = (byte)(value >> 48);
+            _buffer[Index + 7] = (byte)(value >> 56);
             Index += 8;
         }
 
@@ -227,10 +223,10 @@ namespace Server
         {
             FlushIfNeeded(4);
 
-            Buffer[Index] = (byte)value;
-            Buffer[Index + 1] = (byte)(value >> 8);
-            Buffer[Index + 2] = (byte)(value >> 16);
-            Buffer[Index + 3] = (byte)(value >> 24);
+            _buffer[Index] = (byte)value;
+            _buffer[Index + 1] = (byte)(value >> 8);
+            _buffer[Index + 2] = (byte)(value >> 16);
+            _buffer[Index + 3] = (byte)(value >> 24);
             Index += 4;
         }
 
@@ -238,10 +234,10 @@ namespace Server
         {
             FlushIfNeeded(4);
 
-            Buffer[Index] = (byte)value;
-            Buffer[Index + 1] = (byte)(value >> 8);
-            Buffer[Index + 2] = (byte)(value >> 16);
-            Buffer[Index + 3] = (byte)(value >> 24);
+            _buffer[Index] = (byte)value;
+            _buffer[Index + 1] = (byte)(value >> 8);
+            _buffer[Index + 2] = (byte)(value >> 16);
+            _buffer[Index + 3] = (byte)(value >> 24);
             Index += 4;
         }
 
@@ -249,8 +245,8 @@ namespace Server
         {
             FlushIfNeeded(2);
 
-            Buffer[Index] = (byte)value;
-            Buffer[Index + 1] = (byte)(value >> 8);
+            _buffer[Index] = (byte)value;
+            _buffer[Index + 1] = (byte)(value >> 8);
             Index += 2;
         }
 
@@ -258,8 +254,8 @@ namespace Server
         {
             FlushIfNeeded(2);
 
-            Buffer[Index] = (byte)value;
-            Buffer[Index + 1] = (byte)(value >> 8);
+            _buffer[Index] = (byte)value;
+            _buffer[Index + 1] = (byte)(value >> 8);
             Index += 2;
         }
 
@@ -267,7 +263,7 @@ namespace Server
         {
             FlushIfNeeded(8);
 
-            fixed (byte* pBuffer = Buffer)
+            fixed (byte* pBuffer = _buffer)
             {
                 *(double*)(pBuffer + Index) = value;
             }
@@ -279,7 +275,7 @@ namespace Server
         {
             FlushIfNeeded(4);
 
-            fixed (byte* pBuffer = Buffer)
+            fixed (byte* pBuffer = _buffer)
             {
                 *(float*)(pBuffer + Index) = value;
             }
@@ -291,7 +287,7 @@ namespace Server
         public void Write(byte value)
         {
             FlushIfNeeded(1);
-            Buffer[Index++] = value;
+            _buffer[Index++] = value;
         }
 
         public void Write(byte[] value, int length)
@@ -301,9 +297,8 @@ namespace Server
 
             while (remaining > 0)
             {
-                int size = Math.Min(Buffer.Length - (int)Index, remaining);
-                System.Buffer.BlockCopy(value, idx, Buffer, (int)Index, size);
-                // value.Slice(idx).CopyTo(m_Buffer.AsSpan(m_Index, size));
+                int size = Math.Min(_buffer.Length - (int)Index, remaining);
+                System.Buffer.BlockCopy(value, idx, _buffer, (int)Index, size);
 
                 remaining -= size;
                 Index += size;
@@ -316,13 +311,13 @@ namespace Server
         public void Write(sbyte value)
         {
             FlushIfNeeded(1);
-            Buffer[Index++] = (byte)value;
+            _buffer[Index++] = (byte)value;
         }
 
         public void Write(bool value)
         {
             FlushIfNeeded(1);
-            Buffer[Index++] = value ? 1 : 0;
+            _buffer[Index++] = value ? 1 : 0;
         }
 
         public void Write(Point3D value)
@@ -699,7 +694,7 @@ namespace Server
 
                     FlushIfNeeded(byteLength);
 
-                    System.Buffer.BlockCopy(m_CharacterBuffer, 0, Buffer, (int)Index, byteLength);
+                    System.Buffer.BlockCopy(m_CharacterBuffer, 0, _buffer, (int)Index, byteLength);
                     Index += byteLength;
 
                     current += charCount;
@@ -711,7 +706,7 @@ namespace Server
                 var byteLength = m_Encoding.GetBytes(value, 0, value.Length, m_CharacterBuffer, 0);
                 FlushIfNeeded(byteLength);
 
-                System.Buffer.BlockCopy(m_CharacterBuffer, 0, Buffer, (int)Index, byteLength);
+                System.Buffer.BlockCopy(m_CharacterBuffer, 0, _buffer, (int)Index, byteLength);
                 Index += byteLength;
             }
         }
