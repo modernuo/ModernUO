@@ -58,6 +58,12 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Resize(int size)
         {
+            // We shouldn't ever resize to a 0 length buffer. That is dangerous
+            if (size <= 0)
+            {
+                size = BufferSize;
+            }
+
             Array.Resize(ref _buffer, size);
         }
 
