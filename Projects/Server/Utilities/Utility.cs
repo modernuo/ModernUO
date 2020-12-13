@@ -237,40 +237,25 @@ namespace Server
 
         public static bool IPMatchCIDR(IPAddress cidrAddress, IPAddress address, int cidrLength)
         {
-            if (cidrAddress.AddressFamily == AddressFamily.InterNetworkV6 && !cidrAddress.IsIPv4MappedToIPv6 ||
-                address.AddressFamily == AddressFamily.InterNetworkV6 && !address.IsIPv4MappedToIPv6)
+            if (cidrAddress.AddressFamily == AddressFamily.InterNetwork)
             {
-                cidrAddress = cidrAddress.MapToIPv6();
-                address = address.MapToIPv6();
-                return IPMatchCIDR(cidrAddress, address, true, cidrLength);
-            }
-
-            if (cidrAddress.IsIPv4MappedToIPv6)
-            {
-                if (cidrLength <= 96)
+                if (address.AddressFamily == AddressFamily.InterNetworkV6)
                 {
-                    return true;
+                    return false;
                 }
 
-                cidrLength = 128 - cidrLength;
+                cidrLength += 96;
             }
 
-            cidrAddress = cidrAddress.MapToIPv4();
-            address = address.MapToIPv4();
-            return IPMatchCIDR(cidrAddress, address, false, cidrLength);
-        }
+            cidrAddress = cidrAddress.MapToIPv6();
+            address = address.MapToIPv6();
 
-        private static bool IPMatchCIDR(IPAddress cidrAddress, IPAddress address, bool isIPv6, int cidrLength)
-        {
-            int byteLength = isIPv6 ? 16 : 4;
-            int bitLength = byteLength * 8;
+            cidrLength = Math.Clamp(cidrLength, 0, 128);
 
-            cidrLength = Math.Clamp(cidrLength, 0, bitLength);
-
-            Span<byte> cidrBytes = stackalloc byte[byteLength];
+            Span<byte> cidrBytes = stackalloc byte[16];
             cidrAddress.TryWriteBytes(cidrBytes, out var _);
 
-            Span<byte> addrBytes = stackalloc byte[byteLength];
+            Span<byte> addrBytes = stackalloc byte[16];
             address.TryWriteBytes(addrBytes, out var _);
 
             var i = 0;

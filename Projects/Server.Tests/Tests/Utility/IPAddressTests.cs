@@ -22,7 +22,8 @@ namespace Server.Tests
 
         [Theory]
         [InlineData("::ffff:192.168.100.254", "192.168.100.1", 112, true)]
-        [InlineData("::ffff:192.168.100.254", "192.168.50.1", 104, false)]
+        [InlineData("::ffff:192.168.100.254", "192.168.50.1", 104, true)]
+        [InlineData("::ffff:192.168.100.254", "192.168.50.1", 120, false)]
         public void TestIPv4MixedCIDR(string cidr, string addr, int cidrLength, bool shouldMatch)
         {
             var cidrAddress = IPAddress.Parse(cidr);

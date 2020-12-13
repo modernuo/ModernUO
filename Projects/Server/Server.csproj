@@ -17,6 +17,7 @@
         <Delete Files="..\..\Distribution\libz.dylib" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\libz.so" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\ZLib.Bindings.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.Toolkit.HighPerformance.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).dll.config" ContinueOnError="true" />
