@@ -206,31 +206,19 @@ namespace Server
         {
             Span<byte> integer = stackalloc byte[4];
             ip.TryWriteBytes(integer, out var bytesWritten);
-            return bytesWritten != 4 ? 0 : BinaryPrimitives.ReadUInt32LittleEndian(integer);
+            return bytesWritten != 4 ? 0 : BinaryPrimitives.ReadUInt32BigEndian(integer);
         }
 
         public static bool IPMatchClassC(IPAddress ip1, IPAddress ip2)
         {
-            if (ip1.IsIPv4MappedToIPv6)
-            {
-                ip1 = ip1.MapToIPv4();
-            }
-
-            if (ip2.IsIPv4MappedToIPv6)
-            {
-                ip2 = ip2.MapToIPv4();
-            }
-
-            if (ip1.AddressFamily != ip2.AddressFamily)
-            {
-                return false;
-            }
-
             // This is only an IPv4 concept, so we will return true if IPv6 and equal
-            if (ip1.AddressFamily != AddressFamily.InterNetwork)
+            if (ip1.AddressFamily != AddressFamily.InterNetwork || ip1.AddressFamily != AddressFamily.InterNetwork)
             {
                 return ip1.Equals(ip2);
             }
+
+            ip1 = ip1.MapToIPv4();
+            ip2 = ip2.MapToIPv4();
 
             return (IPv4ToAddress(ip1) & 0xFFFFFF) == (IPv4ToAddress(ip2) & 0xFFFFFF);
         }
@@ -323,16 +311,17 @@ namespace Server
             var byteIndex = 0;
             var section = 0;
             var number = 0;
-            var sequenceStart = 0;
             var isRange = false;
             var intBase = 10;
+            var endOfSection = false;
+            var sectionStart = 0;
 
-            var num = ip[byteIndex];
+            var num = ip[byteIndex++];
 
             for (var i = 0; i < end; i++)
             {
                 var chr = val[i];
-                if (section > 4)
+                if (section >= 4)
                 {
                     valid = false;
                     return false;
@@ -354,18 +343,23 @@ namespace Server
                     case 'x':
                     case 'X':
                         {
-                            // To indicate hex, must be first letter in the section
-                            if (sequenceStart < i)
+                            if (i == sectionStart)
+                            {
+                                intBase = 16;
+                                break;
+                            }
+
+                            valid = false;
+                            return false;
+                        }
+                    case '-':
+                        {
+                            if (i == sectionStart || i + 1 == end || val[i + 1] == '.')
                             {
                                 valid = false;
                                 return false;
                             }
 
-                            intBase = 16;
-                            break;
-                        }
-                    case '-':
-                        {
                             // Only allows a single range in a section
                             if (isRange)
                             {
@@ -380,25 +374,36 @@ namespace Server
                         }
                     case '*':
                         {
-                            // We will allow anything in this section, but it has to be by itself
-                            if (sequenceStart < i)
-                            {
-                                valid = false;
-                                return false;
-                            }
-
-                            byteIndex++;
+                            isRange = true;
+                            number = 255;
                             break;
                         }
                     case '.':
                         {
-                            match = match && (isRange ? num <= number : number == num);
-                            ++section;
-                            sequenceStart = i + 1;
-                            intBase = 10;
-                            number = 0;
+                            endOfSection = true;
                             break;
                         }
+                }
+
+                if (endOfSection || i + 1 == end)
+                {
+                    if (number < 0 || number > 255)
+                    {
+                        valid = false;
+                        return false;
+                    }
+
+                    match = match && (isRange ? num <= number : number == num);
+
+                    if (++section < 4)
+                    {
+                        num = ip[byteIndex++];
+                    }
+
+                    intBase = 10;
+                    number = 0;
+                    endOfSection = false;
+                    sectionStart = i + 1;
                 }
             }
 

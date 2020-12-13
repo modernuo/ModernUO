@@ -47,5 +47,14 @@ namespace Server.Tests
 
             Assert.Equal(shouldMatch, Utility.IPMatchCIDR(cidrAddress, address, cidrLength));
         }
+
+        [Theory]
+        [InlineData("192.168.1.*", "192.168.1.1", true)]
+        public void TestIPv4Match(string val, string addr, bool shouldMatch)
+        {
+            var address = IPAddress.Parse(addr);
+
+            Assert.Equal(shouldMatch, Utility.IPMatch(val, address));
+        }
     }
 }
