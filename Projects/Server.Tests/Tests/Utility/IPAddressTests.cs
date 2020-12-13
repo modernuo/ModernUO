@@ -49,12 +49,23 @@ namespace Server.Tests
         }
 
         [Theory]
-        [InlineData("192.168.1.*", "192.168.1.1", true)]
-        public void TestIPv4Match(string val, string addr, bool shouldMatch)
+        [InlineData("192.168.1.*", "192.168.1.1", true, true)]
+        [InlineData("192.168.1.100", "192.168.1.1", false, true)]
+        [InlineData("192.168.*.100", "192.168.1.100", true, true)]
+        [InlineData("192.168.20-60.100", "192.168.37.100", true, true)]
+        [InlineData("192.168.20-60.100", "192.168.85.100", false, true)]
+        [InlineData("192.168.-.100", "192.168.85.100", false, false)]
+        [InlineData("192.168.x-.100", "192.168.85.100", false, false)]
+        [InlineData("192.168.x*.100", "192.168.85.100", false, false)]
+        [InlineData("192.168.**.100", "192.168.85.100", false, false)]
+        [InlineData("::1234:*", "::1234:5678", true, true)]
+        public void TestIPv4Match(string val, string addr, bool shouldMatch, bool shouldBeValid)
         {
             var address = IPAddress.Parse(addr);
+            bool match = Utility.IPMatch(val, address, out var valid);
 
-            Assert.Equal(shouldMatch, Utility.IPMatch(val, address));
+            Assert.Equal(shouldMatch, match);
+            Assert.Equal(shouldBeValid, valid);
         }
     }
 }
