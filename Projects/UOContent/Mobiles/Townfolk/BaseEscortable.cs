@@ -735,7 +735,7 @@ namespace Server.Mobiles
 
         public bool Contains(Point3D p) => Region.Contains(p);
 
-        public static void LoadTable()
+        public static void Initialize()
         {
             ICollection list = Map.Felucca.Regions.Values;
 
@@ -757,11 +757,6 @@ namespace Server.Mobiles
 
         public static EDI Find(string name)
         {
-            if (m_Table == null)
-            {
-                LoadTable();
-            }
-
             if (name == null || m_Table == null)
             {
                 return null;
