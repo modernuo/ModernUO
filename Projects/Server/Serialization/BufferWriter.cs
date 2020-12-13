@@ -25,53 +25,60 @@ namespace Server
 {
     public class BufferWriter : IGenericWriter
     {
-        private const int LargeByteBufferSize = 256;
-
         private readonly Encoding m_Encoding;
         private readonly bool m_PrefixStrings;
 
         protected long Index { get; set; }
-
-        private byte[] m_CharacterBuffer;
-
-        private int m_MaxBufferChars;
+        private byte[] _buffer;
 
         public BufferWriter(byte[] buffer, bool prefixStr)
         {
             m_PrefixStrings = prefixStr;
             m_Encoding = Utility.UTF8;
-            Buffer = buffer;
+            _buffer = buffer;
         }
 
         public BufferWriter(bool prefixStr)
         {
             m_PrefixStrings = prefixStr;
             m_Encoding = Utility.UTF8;
-            Buffer = new byte[BufferSize];
+            _buffer = new byte[BufferSize];
         }
 
         public virtual long Position => Index;
 
         protected virtual int BufferSize => 256;
 
-        public byte[] Buffer { get; protected set; }
+        public byte[] Buffer => _buffer;
 
         public virtual void Close()
         {
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Resize(int size)
         {
-            var copy = new byte[size];
-            System.Buffer.BlockCopy(Buffer, 0, copy, 0, Math.Min(size, Buffer.Length));
-            Buffer = copy;
+            // We shouldn't ever resize to a 0 length buffer. That is dangerous
+            if (size <= 0)
+            {
+                size = BufferSize;
+            }
+
+            Array.Resize(ref _buffer, size);
         }
 
         public virtual void Flush()
         {
-            Resize(Buffer.Length * 2);
+            Resize(_buffer.Length * 2);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void FlushIfNeeded(int amount)
+        {
+            if (Index + amount > _buffer.Length)
+            {
+                Flush();
+            }
         }
 
         public void Reset()
@@ -81,12 +88,19 @@ namespace Server
 
         public void Write(ReadOnlySpan<byte> bytes)
         {
-            if (Index + bytes.Length > Buffer.Length)
-            {
-                Flush();
-            }
+            var remaining = bytes.Length;
+            var idx = 0;
 
-            bytes.CopyTo(Buffer.AsSpan((int)Index));
+            while (remaining > 0)
+            {
+                FlushIfNeeded(remaining);
+                var count = Math.Min((int)(_buffer.Length - Index), remaining);
+                bytes.Slice(idx, count).CopyTo(_buffer.AsSpan((int)Index, count));
+
+                idx += count;
+                Index += count;
+                remaining -= count;
+            }
         }
 
         public virtual long Seek(long offset, SeekOrigin origin)
@@ -106,21 +120,11 @@ namespace Server
 
             while (v >= 0x80)
             {
-                if (Index + 1 > Buffer.Length)
-                {
-                    Flush();
-                }
-
-                Buffer[Index++] = (byte)(v | 0x80);
+                Write((byte)(v | 0x80));
                 v >>= 7;
             }
 
-            if (Index + 1 > Buffer.Length)
-            {
-                Flush();
-            }
-
-            Buffer[Index++] = (byte)v;
+            Write((byte)v);
         }
 
         public void Write(string value)
@@ -129,22 +133,11 @@ namespace Server
             {
                 if (value == null)
                 {
-                    if (Index + 1 > Buffer.Length)
-                    {
-                        Flush();
-                    }
-
-                    Buffer[Index++] = 0;
+                    Write((byte)0);
                 }
                 else
                 {
-                    if (Index + 1 > Buffer.Length)
-                    {
-                        Flush();
-                    }
-
-                    Buffer[Index++] = 1;
-
+                    Write((byte)1);
                     InternalWriteString(value);
                 }
             }
@@ -209,100 +202,79 @@ namespace Server
 
         public void Write(long value)
         {
-            if (Index + 8 > Buffer.Length)
-            {
-                Flush();
-            }
+            FlushIfNeeded(8);
 
-            Buffer[Index] = (byte)value;
-            Buffer[Index + 1] = (byte)(value >> 8);
-            Buffer[Index + 2] = (byte)(value >> 16);
-            Buffer[Index + 3] = (byte)(value >> 24);
-            Buffer[Index + 4] = (byte)(value >> 32);
-            Buffer[Index + 5] = (byte)(value >> 40);
-            Buffer[Index + 6] = (byte)(value >> 48);
-            Buffer[Index + 7] = (byte)(value >> 56);
+            _buffer[Index] = (byte)value;
+            _buffer[Index + 1] = (byte)(value >> 8);
+            _buffer[Index + 2] = (byte)(value >> 16);
+            _buffer[Index + 3] = (byte)(value >> 24);
+            _buffer[Index + 4] = (byte)(value >> 32);
+            _buffer[Index + 5] = (byte)(value >> 40);
+            _buffer[Index + 6] = (byte)(value >> 48);
+            _buffer[Index + 7] = (byte)(value >> 56);
             Index += 8;
         }
 
         public void Write(ulong value)
         {
-            if (Index + 8 > Buffer.Length)
-            {
-                Flush();
-            }
+            FlushIfNeeded(8);
 
-            Buffer[Index] = (byte)value;
-            Buffer[Index + 1] = (byte)(value >> 8);
-            Buffer[Index + 2] = (byte)(value >> 16);
-            Buffer[Index + 3] = (byte)(value >> 24);
-            Buffer[Index + 4] = (byte)(value >> 32);
-            Buffer[Index + 5] = (byte)(value >> 40);
-            Buffer[Index + 6] = (byte)(value >> 48);
-            Buffer[Index + 7] = (byte)(value >> 56);
+            _buffer[Index] = (byte)value;
+            _buffer[Index + 1] = (byte)(value >> 8);
+            _buffer[Index + 2] = (byte)(value >> 16);
+            _buffer[Index + 3] = (byte)(value >> 24);
+            _buffer[Index + 4] = (byte)(value >> 32);
+            _buffer[Index + 5] = (byte)(value >> 40);
+            _buffer[Index + 6] = (byte)(value >> 48);
+            _buffer[Index + 7] = (byte)(value >> 56);
             Index += 8;
         }
 
         public void Write(int value)
         {
-            if (Index + 4 > Buffer.Length)
-            {
-                Flush();
-            }
+            FlushIfNeeded(4);
 
-            Buffer[Index] = (byte)value;
-            Buffer[Index + 1] = (byte)(value >> 8);
-            Buffer[Index + 2] = (byte)(value >> 16);
-            Buffer[Index + 3] = (byte)(value >> 24);
+            _buffer[Index] = (byte)value;
+            _buffer[Index + 1] = (byte)(value >> 8);
+            _buffer[Index + 2] = (byte)(value >> 16);
+            _buffer[Index + 3] = (byte)(value >> 24);
             Index += 4;
         }
 
         public void Write(uint value)
         {
-            if (Index + 4 > Buffer.Length)
-            {
-                Flush();
-            }
+            FlushIfNeeded(4);
 
-            Buffer[Index] = (byte)value;
-            Buffer[Index + 1] = (byte)(value >> 8);
-            Buffer[Index + 2] = (byte)(value >> 16);
-            Buffer[Index + 3] = (byte)(value >> 24);
+            _buffer[Index] = (byte)value;
+            _buffer[Index + 1] = (byte)(value >> 8);
+            _buffer[Index + 2] = (byte)(value >> 16);
+            _buffer[Index + 3] = (byte)(value >> 24);
             Index += 4;
         }
 
         public void Write(short value)
         {
-            if (Index + 2 > Buffer.Length)
-            {
-                Flush();
-            }
+            FlushIfNeeded(2);
 
-            Buffer[Index] = (byte)value;
-            Buffer[Index + 1] = (byte)(value >> 8);
+            _buffer[Index] = (byte)value;
+            _buffer[Index + 1] = (byte)(value >> 8);
             Index += 2;
         }
 
         public void Write(ushort value)
         {
-            if (Index + 2 > Buffer.Length)
-            {
-                Flush();
-            }
+            FlushIfNeeded(2);
 
-            Buffer[Index] = (byte)value;
-            Buffer[Index + 1] = (byte)(value >> 8);
+            _buffer[Index] = (byte)value;
+            _buffer[Index + 1] = (byte)(value >> 8);
             Index += 2;
         }
 
         public unsafe void Write(double value)
         {
-            if (Index + 8 > Buffer.Length)
-            {
-                Flush();
-            }
+            FlushIfNeeded(8);
 
-            fixed (byte* pBuffer = Buffer)
+            fixed (byte* pBuffer = _buffer)
             {
                 *(double*)(pBuffer + Index) = value;
             }
@@ -312,12 +284,9 @@ namespace Server
 
         public unsafe void Write(float value)
         {
-            if (Index + 4 > Buffer.Length)
-            {
-                Flush();
-            }
+            FlushIfNeeded(4);
 
-            fixed (byte* pBuffer = Buffer)
+            fixed (byte* pBuffer = _buffer)
             {
                 *(float*)(pBuffer + Index) = value;
             }
@@ -325,56 +294,23 @@ namespace Server
             Index += 4;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(byte value)
         {
-            if (Index + 1 > Buffer.Length)
-            {
-                Flush();
-            }
-
-            Buffer[Index++] = value;
-        }
-
-        public void Write(byte[] value, int length)
-        {
-            var remaining = length;
-            var idx = 0;
-
-            while (remaining > 0)
-            {
-                int size = Math.Min(Buffer.Length - (int)Index, remaining);
-                System.Buffer.BlockCopy(value, idx, Buffer, (int)Index, size);
-                // value.Slice(idx).CopyTo(m_Buffer.AsSpan(m_Index, size));
-
-                remaining -= size;
-                Index += size;
-                idx += size;
-
-                if (Index == Buffer.Length)
-                {
-                    Flush();
-                }
-            }
+            FlushIfNeeded(1);
+            _buffer[Index++] = value;
         }
 
         public void Write(sbyte value)
         {
-            if (Index + 1 > Buffer.Length)
-            {
-                Flush();
-            }
-
-            Buffer[Index++] = (byte)value;
+            FlushIfNeeded(1);
+            _buffer[Index++] = (byte)value;
         }
 
         public void Write(bool value)
         {
-            if (Index + 1 > Buffer.Length)
-            {
-                Flush();
-            }
-
-            Buffer[Index++] = (byte)(value ? 1 : 0);
+            FlushIfNeeded(1);
+            _buffer[Index++] = value ? 1 : 0;
         }
 
         public void Write(Point3D value)
@@ -404,26 +340,12 @@ namespace Server
 
         public void Write(Map value)
         {
-            if (value != null)
-            {
-                Write((byte)value.MapIndex);
-            }
-            else
-            {
-                Write((byte)0xFF);
-            }
+            Write((byte)(value?.MapIndex ?? 0xFF));
         }
 
         public void Write(Race value)
         {
-            if (value != null)
-            {
-                Write((byte)value.RaceIndex);
-            }
-            else
-            {
-                Write((byte)0xFF);
-            }
+            Write((byte)(value?.RaceIndex ?? 0xFF));
         }
 
         public void WriteEntity(IEntity value)
@@ -443,14 +365,7 @@ namespace Server
 
         public void Write(BaseGuild value)
         {
-            if (value == null)
-            {
-                Write(0);
-            }
-            else
-            {
-                Write(value.Serial);
-            }
+            Write(value?.Serial ?? 0);
         }
 
         public void WriteItem<T>(T value) where T : Item
@@ -750,49 +665,29 @@ namespace Server
 
         internal void InternalWriteString(string value)
         {
-            var length = m_Encoding.GetByteCount(value);
+            var remaining = m_Encoding.GetByteCount(value);
 
-            WriteEncodedInt(length);
-
-            if (m_CharacterBuffer == null)
+            WriteEncodedInt(remaining);
+            if (remaining == 0)
             {
-                m_CharacterBuffer = new byte[LargeByteBufferSize];
-                m_MaxBufferChars = LargeByteBufferSize / m_Encoding.GetMaxByteCount(1);
+                return;
             }
 
-            if (length > LargeByteBufferSize)
+            // It is much faster to encode to stack buffer, then copy to the real buffer
+            Span<byte> span = stackalloc byte[Math.Min(BufferSize, 256)];
+            var maxChars = span.Length / m_Encoding.GetMaxByteCount(1);
+            var charsLeft = value.Length;
+            var current = 0;
+
+            while (charsLeft > 0)
             {
-                var current = 0;
-                var charsLeft = value.Length;
+                var charCount = Math.Min(charsLeft, maxChars);
+                var bytesWritten = m_Encoding.GetBytes(value.AsSpan(current, charCount), span);
+                remaining -= bytesWritten;
+                charsLeft -= charCount;
+                current += charCount;
 
-                while (charsLeft > 0)
-                {
-                    var charCount = Math.Min(charsLeft, m_MaxBufferChars);
-                    var byteLength = m_Encoding.GetBytes(value, current, charCount, m_CharacterBuffer, 0);
-
-                    if (Index + byteLength > Buffer.Length)
-                    {
-                        Flush();
-                    }
-
-                    System.Buffer.BlockCopy(m_CharacterBuffer, 0, Buffer, (int)Index, byteLength);
-                    Index += byteLength;
-
-                    current += charCount;
-                    charsLeft -= charCount;
-                }
-            }
-            else
-            {
-                var byteLength = m_Encoding.GetBytes(value, 0, value.Length, m_CharacterBuffer, 0);
-
-                if (Index + byteLength > Buffer.Length)
-                {
-                    Flush();
-                }
-
-                System.Buffer.BlockCopy(m_CharacterBuffer, 0, Buffer, (int)Index, byteLength);
-                Index += byteLength;
+                Write(span.Slice(0, bytesWritten));
             }
         }
     }

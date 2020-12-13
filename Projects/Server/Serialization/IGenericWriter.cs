@@ -39,7 +39,6 @@ namespace Server
         void Write(double value);
         void Write(float value);
         void Write(byte value);
-        void Write(byte[] value, int length);
         void Write(sbyte value);
         void Write(bool value);
         void WriteEncodedInt(int value);
