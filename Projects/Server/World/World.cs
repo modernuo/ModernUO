@@ -528,15 +528,15 @@ namespace Server
             var bin = new BinaryFileWriter(binPath, true);
 
             idx.Write(entities.Count);
-            foreach (var mob in entities.Values)
+            foreach (var e in entities.Values)
             {
                 long start = bin.Position;
 
-                idx.Write(mob.TypeRef);
-                idx.Write(mob.Serial);
+                idx.Write(e.TypeRef);
+                idx.Write(e.Serial);
                 idx.Write(start);
 
-                mob.SerializeTo(bin);
+                e.SerializeTo(bin);
 
                 idx.Write((int)(bin.Position - start));
             }
@@ -775,7 +775,7 @@ namespace Server
         public static void SerializeTo(this ISerializable entity, IGenericWriter writer)
         {
             var saveBuffer = entity.SaveBuffer;
-            writer.Write(saveBuffer.Buffer, (int)saveBuffer.Position);
+            writer.Write(saveBuffer.Buffer.AsSpan(0, (int)saveBuffer.Position));
 
             // Resize to exact buffer size
             entity.SaveBuffer.Resize((int)entity.SaveBuffer.Position);

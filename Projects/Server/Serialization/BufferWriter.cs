@@ -25,16 +25,10 @@ namespace Server
 {
     public class BufferWriter : IGenericWriter
     {
-        private const int LargeByteBufferSize = 256;
-
         private readonly Encoding m_Encoding;
         private readonly bool m_PrefixStrings;
 
         protected long Index { get; set; }
-
-        private byte[] m_CharacterBuffer;
-
-        private int m_MaxBufferChars;
         private byte[] _buffer;
 
         public BufferWriter(byte[] buffer, bool prefixStr)
@@ -75,7 +69,7 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void FlushIfNeeded(int amount)
         {
-            while (Index + amount > _buffer.Length)
+            if (Index + amount > _buffer.Length)
             {
                 Flush();
             }
@@ -88,8 +82,19 @@ namespace Server
 
         public void Write(ReadOnlySpan<byte> bytes)
         {
-            FlushIfNeeded(bytes.Length);
-            bytes.CopyTo(Buffer.AsSpan((int)Index));
+            var remaining = bytes.Length;
+            var idx = 0;
+
+            while (remaining > 0)
+            {
+                FlushIfNeeded(remaining);
+                var count = Math.Min((int)(_buffer.Length - Index), remaining);
+                bytes.Slice(idx, count).CopyTo(_buffer.AsSpan((int)Index, count));
+
+                idx += count;
+                Index += count;
+                remaining -= count;
+            }
         }
 
         public virtual long Seek(long offset, SeekOrigin origin)
@@ -288,24 +293,6 @@ namespace Server
         {
             FlushIfNeeded(1);
             _buffer[Index++] = value;
-        }
-
-        public void Write(byte[] value, int length)
-        {
-            var remaining = length;
-            var idx = 0;
-
-            while (remaining > 0)
-            {
-                int size = Math.Min(_buffer.Length - (int)Index, remaining);
-                System.Buffer.BlockCopy(value, idx, _buffer, (int)Index, size);
-
-                remaining -= size;
-                Index += size;
-                idx += size;
-
-                FlushIfNeeded(0);
-            }
         }
 
         public void Write(sbyte value)
@@ -672,42 +659,29 @@ namespace Server
 
         internal void InternalWriteString(string value)
         {
-            var length = m_Encoding.GetByteCount(value);
+            var remaining = m_Encoding.GetByteCount(value);
 
-            WriteEncodedInt(length);
-
-            if (m_CharacterBuffer == null)
+            WriteEncodedInt(remaining);
+            if (remaining == 0)
             {
-                m_CharacterBuffer = new byte[LargeByteBufferSize];
-                m_MaxBufferChars = LargeByteBufferSize / m_Encoding.GetMaxByteCount(1);
+                return;
             }
 
-            if (length > LargeByteBufferSize)
+            // It is much faster to encode to stack buffer, then copy to the real buffer
+            Span<byte> span = stackalloc byte[Math.Min(BufferSize, 256)];
+            var maxChars = span.Length / m_Encoding.GetMaxByteCount(1);
+            var charsLeft = value.Length;
+            var current = 0;
+
+            while (charsLeft > 0)
             {
-                var current = 0;
-                var charsLeft = value.Length;
+                var charCount = Math.Min(charsLeft, maxChars);
+                var bytesWritten = m_Encoding.GetBytes(value.AsSpan(current, charCount), span);
+                remaining -= bytesWritten;
+                charsLeft -= charCount;
+                current += charCount;
 
-                while (charsLeft > 0)
-                {
-                    var charCount = Math.Min(charsLeft, m_MaxBufferChars);
-                    var byteLength = m_Encoding.GetBytes(value, current, charCount, m_CharacterBuffer, 0);
-
-                    FlushIfNeeded(byteLength);
-
-                    System.Buffer.BlockCopy(m_CharacterBuffer, 0, _buffer, (int)Index, byteLength);
-                    Index += byteLength;
-
-                    current += charCount;
-                    charsLeft -= charCount;
-                }
-            }
-            else
-            {
-                var byteLength = m_Encoding.GetBytes(value, 0, value.Length, m_CharacterBuffer, 0);
-                FlushIfNeeded(byteLength);
-
-                System.Buffer.BlockCopy(m_CharacterBuffer, 0, _buffer, (int)Index, byteLength);
-                Index += byteLength;
+                Write(span.Slice(0, bytesWritten));
             }
         }
     }
