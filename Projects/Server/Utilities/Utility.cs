@@ -273,69 +273,28 @@ namespace Server
             Span<byte> addrBytes = stackalloc byte[byteLength];
             address.TryWriteBytes(addrBytes, out var _);
 
-            var index = Math.DivRem(cidrLength, 8, out var offset);
-            if (index > 0)
+            var i = 0;
+            int offset;
+
+            if (cidrLength < 32)
             {
-                var i = 0;
-                while (i < index)
+                offset = cidrLength;
+            }
+            else
+            {
+                var index = Math.DivRem(cidrLength, 32, out offset);
+                while (index > 0)
                 {
-                    switch (index - i)
+                    if (
+                        BinaryPrimitives.ReadUInt32BigEndian(cidrBytes.Slice(i, 4)) !=
+                        BinaryPrimitives.ReadUInt32BigEndian(addrBytes.Slice(i, 4))
+                    )
                     {
-                        default:
-                            {
-                                if (cidrBytes[i] != addrBytes[i])
-                                {
-                                    return false;
-                                }
-
-                                ++i;
-                                break;
-                            }
-                        case 2:
-                            {
-                                if (
-                                    !MemoryMarshal.TryRead(cidrBytes.Slice(i, 2), out short c) ||
-                                    !MemoryMarshal.TryRead(addrBytes.Slice(i, 2), out short a) ||
-                                    c != a
-                                )
-                                {
-                                    return false;
-                                }
-
-                                i += 2;
-                                break;
-                            }
-
-                        case 4:
-                            {
-                                if (
-                                    !MemoryMarshal.TryRead(cidrBytes.Slice(i, 4), out int c) ||
-                                    !MemoryMarshal.TryRead(addrBytes.Slice(i, 4), out int a) ||
-                                    c != a
-                                )
-                                {
-                                    return false;
-                                }
-
-                                i += 4;
-                                break;
-                            }
-
-                        case 8:
-                            {
-                                if (
-                                    !MemoryMarshal.TryRead(cidrBytes.Slice(i, 8), out long c) ||
-                                    !MemoryMarshal.TryRead(addrBytes.Slice(i, 8), out long a) ||
-                                    c != a
-                                )
-                                {
-                                    return false;
-                                }
-
-                                i += 8;
-                                break;
-                            }
+                        return false;
                     }
+
+                    i += 4;
+                    --index;
                 }
             }
 
@@ -344,13 +303,14 @@ namespace Server
                 return true;
             }
 
-            var cv = cidrBytes[index];
-            var mask = (1 << (8 - offset)) - 1;
-            var min = ~mask & 0xFF & cv;
-            var max = cv | mask;
-            var v = addrBytes[index];
+            var c = BinaryPrimitives.ReadUInt32BigEndian(cidrBytes.Slice(i, 4));
+            var a = BinaryPrimitives.ReadUInt32BigEndian(addrBytes.Slice(i, 4));
 
-            return v >= min && v <= max;
+            var mask = (1 << (32 - offset)) - 1;
+            var min = ~mask & c;
+            var max = c | mask;
+
+            return a >= min && a <= max;
         }
 
         public static bool IsValidIP(string val) => IPAddress.TryParse(val, out _);
