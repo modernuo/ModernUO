@@ -552,15 +552,24 @@ namespace Server
                                     return false;
                                 }
 
-                                var remainingColons = val.Slice(i + 1).Count(':');
-                                // double colon represents at least 2 sections
-                                // we need at least 1 section remaining out of 8
-                                // This means 8 - 2 would be 6 sections (5 colons)
-                                var newSection = section + 2 + (5 - remainingColons);
-                                if (newSection > 7)
+                                int newSection;
+
+                                if (i + 1 < end)
                                 {
-                                    valid = false;
-                                    return false;
+                                    var remainingColons = val.Slice(i + 1).Count(':');
+                                    // double colon represents at least 2 sections
+                                    // we need at least 1 section remaining out of 8
+                                    // This means 8 - 2 would be 6 sections (5 colons)
+                                    newSection = section + 2 + (5 - remainingColons);
+                                    if (newSection > 7)
+                                    {
+                                        valid = false;
+                                        return false;
+                                    }
+                                }
+                                else
+                                {
+                                    newSection = 7;
                                 }
 
                                 for (var zeroEnd = byteIndex + newSection * 2; byteIndex < zeroEnd; byteIndex += 2)
