@@ -39,7 +39,6 @@ namespace Server
         void Write(double value);
         void Write(float value);
         void Write(byte value);
-        void Write(byte[] value, int length);
         void Write(sbyte value);
         void Write(bool value);
         void WriteEncodedInt(int value);
@@ -82,6 +81,7 @@ namespace Server
         void Write(HashSet<BaseGuild> list, bool tidy);
         void WriteGuildSet<T>(HashSet<T> set) where T : BaseGuild;
         void WriteGuildSet<T>(HashSet<T> set, bool tidy) where T : BaseGuild;
+        void Write(ReadOnlySpan<byte> bytes);
 
         long Seek(long offset, SeekOrigin origin);
     }

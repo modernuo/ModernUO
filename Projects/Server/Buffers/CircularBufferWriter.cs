@@ -88,7 +88,11 @@ namespace System.Buffers
             {
                 if (!BinaryPrimitives.TryWriteInt16BigEndian(_first.Slice(Position), value))
                 {
-                    // Not enough space. Split the spans
+                    if (BitConverter.IsLittleEndian)
+                    {
+                        value = BinaryPrimitives.ReverseEndianness(value);
+                    }
+
                     Write((byte)(value >> 8));
                     Write((byte)value);
                 }
@@ -114,7 +118,11 @@ namespace System.Buffers
             {
                 if (!BinaryPrimitives.TryWriteUInt16BigEndian(_first.Slice(Position), value))
                 {
-                    // Not enough space. Split the spans
+                    if (BitConverter.IsLittleEndian)
+                    {
+                        value = BinaryPrimitives.ReverseEndianness(value);
+                    }
+
                     Write((byte)(value >> 8));
                     Write((byte)value);
                 }
@@ -140,7 +148,11 @@ namespace System.Buffers
             {
                 if (!BinaryPrimitives.TryWriteInt32BigEndian(_first.Slice(Position), value))
                 {
-                    // Not enough space. Split the spans
+                    if (BitConverter.IsLittleEndian)
+                    {
+                        value = BinaryPrimitives.ReverseEndianness(value);
+                    }
+
                     Write((byte)(value >> 24));
                     Write((byte)(value >> 16));
                     Write((byte)(value >> 8));
@@ -168,7 +180,11 @@ namespace System.Buffers
             {
                 if (!BinaryPrimitives.TryWriteInt32LittleEndian(_first.Slice(Position), value))
                 {
-                    // Not enough space. Split the spans
+                    if (!BitConverter.IsLittleEndian)
+                    {
+                        value = BinaryPrimitives.ReverseEndianness(value);
+                    }
+
                     Write((byte)(value >> 24));
                     Write((byte)(value >> 16));
                     Write((byte)(value >> 8));
@@ -199,7 +215,11 @@ namespace System.Buffers
             {
                 if (!BinaryPrimitives.TryWriteUInt32BigEndian(_first.Slice(Position), value))
                 {
-                    // Not enough space. Split the spans
+                    if (BitConverter.IsLittleEndian)
+                    {
+                        value = BinaryPrimitives.ReverseEndianness(value);
+                    }
+
                     Write((byte)(value >> 24));
                     Write((byte)(value >> 16));
                     Write((byte)(value >> 8));
@@ -220,6 +240,38 @@ namespace System.Buffers
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteLE(uint value)
+        {
+            if (Position < _first.Length)
+            {
+                if (!BinaryPrimitives.TryWriteUInt32LittleEndian(_first.Slice(Position), value))
+                {
+                    if (!BitConverter.IsLittleEndian)
+                    {
+                        value = BinaryPrimitives.ReverseEndianness(value);
+                    }
+
+                    Write((byte)(value >> 24));
+                    Write((byte)(value >> 16));
+                    Write((byte)(value >> 8));
+                    Write((byte)value);
+                }
+                else
+                {
+                    Position += 4;
+                }
+            }
+            else if (BinaryPrimitives.TryWriteUInt32LittleEndian(_second.Slice(Position - _first.Length), value))
+            {
+                Position += 4;
+            }
+            else
+            {
+                throw new OutOfMemoryException();
+            }
+        }
+
         /// <summary>
         /// Writes a 8-byte signed integer value to the underlying stream.
         /// </summary>
@@ -230,7 +282,11 @@ namespace System.Buffers
             {
                 if (!BinaryPrimitives.TryWriteInt64BigEndian(_first.Slice(Position), value))
                 {
-                    // Not enough space. Split the spans
+                    if (BitConverter.IsLittleEndian)
+                    {
+                        value = BinaryPrimitives.ReverseEndianness(value);
+                    }
+
                     Write((byte)(value >> 56));
                     Write((byte)(value >> 48));
                     Write((byte)(value >> 40));
@@ -239,6 +295,7 @@ namespace System.Buffers
                     Write((byte)(value >> 16));
                     Write((byte)(value >> 8));
                     Write((byte)value);
+
                 }
                 else
                 {
@@ -265,7 +322,11 @@ namespace System.Buffers
             {
                 if (!BinaryPrimitives.TryWriteUInt64BigEndian(_first.Slice(Position), value))
                 {
-                    // Not enough space. Split the spans
+                    if (BitConverter.IsLittleEndian)
+                    {
+                        value = BinaryPrimitives.ReverseEndianness(value);
+                    }
+
                     Write((byte)(value >> 56));
                     Write((byte)(value >> 48));
                     Write((byte)(value >> 40));
