@@ -247,7 +247,7 @@ namespace Server
 
         public void Write(short value)
         {
-            FlushIfNeeded(4);
+            FlushIfNeeded(2);
 
             Buffer[Index] = (byte)value;
             Buffer[Index + 1] = (byte)(value >> 8);
