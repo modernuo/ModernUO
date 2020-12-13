@@ -186,9 +186,10 @@ namespace Server
 
         public void Write(IPAddress value)
         {
-            var bytes = value.GetAddressBytes();
-            Write((byte)bytes.Length);
-            Write(bytes);
+            Span<byte> stack = stackalloc byte[16];
+            value.TryWriteBytes(stack, out var bytesWritten);
+            Write((byte)bytesWritten);
+            Write(stack.Slice(0, bytesWritten));
         }
 
         public void Write(TimeSpan value)
