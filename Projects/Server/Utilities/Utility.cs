@@ -185,6 +185,11 @@ namespace Server
                 return null;
             }
 
+            if (ipAddress.IsIPv4MappedToIPv6)
+            {
+                ipAddress = ipAddress.MapToIPv4();
+            }
+
             _ipAddressTable ??= new Dictionary<IPAddress, IPAddress>();
 
             if (!_ipAddressTable.TryGetValue(ipAddress, out var interned))
@@ -202,10 +207,20 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint IPv4ToAddress(IPAddress ip)
+        public static uint IPv4ToAddress(IPAddress ipAddress)
         {
+            if (ipAddress.IsIPv4MappedToIPv6)
+            {
+                ipAddress = ipAddress.MapToIPv4();
+            }
+            else if (ipAddress.AddressFamily == AddressFamily.InterNetworkV6)
+            {
+                Console.WriteLine("Warning: {0} cannot be represented as an IPv4 address", ipAddress);
+                return 0;
+            }
+
             Span<byte> integer = stackalloc byte[4];
-            ip.TryWriteBytes(integer, out var bytesWritten);
+            ipAddress.TryWriteBytes(integer, out var bytesWritten);
             return bytesWritten != 4 ? 0 : BinaryPrimitives.ReadUInt32BigEndian(integer);
         }
 
