@@ -59,7 +59,10 @@ namespace Server.Tests
         [InlineData("192.168.x*.100", "192.168.85.100", false, false)]
         [InlineData("192.168.**.100", "192.168.85.100", false, false)]
         [InlineData("::1234:*", "::1234:5678", true, true)]
-        public void TestIPv4Match(string val, string addr, bool shouldMatch, bool shouldBeValid)
+        [InlineData("::1234-1238:1000", "::1236:1000", true, true)]
+        [InlineData("::1234-1238:1000", "::1239:1000", false, true)]
+        [InlineData("::10:*:1234-1238:1000", "::10:55A1:1235:1000", true, true)]
+        public void TestIPvMatch(string val, string addr, bool shouldMatch, bool shouldBeValid)
         {
             var address = IPAddress.Parse(addr);
             bool match = Utility.IPMatch(val, address, out var valid);

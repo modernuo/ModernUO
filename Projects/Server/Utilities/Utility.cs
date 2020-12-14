@@ -410,6 +410,7 @@ namespace Server
                     number = 0;
                     endOfSection = false;
                     sectionStart = i + 1;
+                    isRange = false;
                 }
             }
 
@@ -588,6 +589,7 @@ namespace Server
                     number = 0;
                     endOfSection = false;
                     sectionStart = i + 1;
+                    isRange = false;
                 }
             }
 
