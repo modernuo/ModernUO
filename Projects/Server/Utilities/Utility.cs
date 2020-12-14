@@ -215,7 +215,6 @@ namespace Server
             }
             else if (ipAddress.AddressFamily == AddressFamily.InterNetworkV6)
             {
-                Console.WriteLine("Warning: {0} cannot be represented as an IPv4 address", ipAddress);
                 return 0;
             }
 
@@ -226,16 +225,10 @@ namespace Server
 
         public static bool IPMatchClassC(IPAddress ip1, IPAddress ip2)
         {
-            // This is only an IPv4 concept, so we will return true if IPv6 and equal
-            if (ip1.AddressFamily != AddressFamily.InterNetwork || ip1.AddressFamily != AddressFamily.InterNetwork)
-            {
-                return ip1.Equals(ip2);
-            }
+            var a = IPv4ToAddress(ip1);
+            var b = IPv4ToAddress(ip2);
 
-            ip1 = ip1.MapToIPv4();
-            ip2 = ip2.MapToIPv4();
-
-            return (IPv4ToAddress(ip1) & 0xFFFFFF) == (IPv4ToAddress(ip2) & 0xFFFFFF);
+            return a == 0 || b == 0 ? ip1.Equals(ip2) : (a & 0xFFFFFF) == (b & 0xFFFFFF);
         }
 
         public static bool IPMatchCIDR(IPAddress cidrAddress, IPAddress address, int cidrLength)
@@ -301,7 +294,7 @@ namespace Server
             return a >= min && a <= max;
         }
 
-        public static bool IsValidIP(string val) => IPAddress.TryParse(val, out _);
+        public static bool IsValidIP(string val) => IPMatch(val, IPAddress.Any, out var valid) || valid;
 
         public static bool IPMatch(string val, IPAddress ip) => IPMatch(val, ip, out _);
 
