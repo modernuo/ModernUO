@@ -259,8 +259,8 @@ namespace Server
                 while (index > 0)
                 {
                     if (
-                        BinaryPrimitives.ReadUInt32BigEndian(cidrBytes.Slice(i, 4)) !=
-                        BinaryPrimitives.ReadUInt32BigEndian(addrBytes.Slice(i, 4))
+                        BinaryPrimitives.ReadInt32BigEndian(cidrBytes.Slice(i, 4)) !=
+                        BinaryPrimitives.ReadInt32BigEndian(addrBytes.Slice(i, 4))
                     )
                     {
                         return false;
@@ -276,8 +276,8 @@ namespace Server
                 return true;
             }
 
-            var c = BinaryPrimitives.ReadUInt32BigEndian(cidrBytes.Slice(i, 4));
-            var a = BinaryPrimitives.ReadUInt32BigEndian(addrBytes.Slice(i, 4));
+            var c = BinaryPrimitives.ReadInt32BigEndian(cidrBytes.Slice(i, 4));
+            var a = BinaryPrimitives.ReadInt32BigEndian(addrBytes.Slice(i, 4));
 
             var mask = (1 << (32 - offset)) - 1;
             var min = ~mask & c;
