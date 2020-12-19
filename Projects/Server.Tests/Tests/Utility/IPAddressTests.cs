@@ -47,7 +47,9 @@ namespace Server.Tests
         [InlineData("::1234-1238:1000", "::1236:1000", true, true)]
         [InlineData("::1234-1238:1000", "::1239:1000", false, true)]
         [InlineData("::10:*:1234-1238:1000", "::10:55A1:1235:1000", true, true)]
-        public void TestIPvMatch(string val, string addr, bool shouldMatch, bool shouldBeValid)
+        [InlineData("1024:*:1234::", "1024:8A13:1234::", true, true)]
+        [InlineData("::1024:*:1234::", "1024:8A13:1234::", false, false)]
+        public void TestIPMatch(string val, string addr, bool shouldMatch, bool shouldBeValid)
         {
             var address = IPAddress.Parse(addr);
             bool match = Utility.IPMatch(val, address, out var valid);

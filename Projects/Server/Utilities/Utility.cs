@@ -519,86 +519,93 @@ namespace Server
                         }
                 }
 
-                if (endOfSection || i + 1 == end)
+                if (!endOfSection && i + 1 != end)
                 {
-                    if (++i < end && val[i] == ':')
+                    continue;
+                }
+
+                if (++i == end || val[i] != ':' || section > 0)
+                {
+                    match = match && (isRange ? num <= number : number == num);
+
+                    // IPv4 matching at the end
+                    if (section == 6 && num == 0xFFFF)
                     {
-                        if (hasCompressor)
+                        var ipv4 = val.Slice(i + 1);
+                        if (ipv4.Contains('.'))
+                        {
+                            return IPv4Match(ipv4, ip.Slice(ip.Length - 4), out valid);
+                        }
+                    }
+
+                    if (i == end)
+                    {
+                        break;
+                    }
+
+
+                    num = BinaryPrimitives.ReadUInt16BigEndian(ip.Slice(byteIndex, 2));
+                    byteIndex += 2;
+
+                    ++section;
+                }
+
+                if (i < end && val[i] == ':')
+                {
+                    if (hasCompressor)
+                    {
+                        valid = false;
+                        return false;
+                    }
+
+                    int newSection;
+
+                    if (i + 1 < end)
+                    {
+                        var remainingColons = val.Slice(i + 1).Count(':');
+                        // double colon must be at least 2 sections
+                        // we need at least 1 section remaining out of 8
+                        // This means 8 - 2 would be 6 sections (5 colons)
+                        newSection = section + 2 + (5 - remainingColons);
+                        if (newSection > 7)
                         {
                             valid = false;
                             return false;
                         }
-
-                        int newSection;
-
-                        if (i + 1 < end)
-                        {
-                            var remainingColons = val.Slice(i + 1).Count(':');
-                            // double colon represents at least 2 sections
-                            // we need at least 1 section remaining out of 8
-                            // This means 8 - 2 would be 6 sections (5 colons)
-                            newSection = section + 2 + (5 - remainingColons);
-                            if (newSection > 7)
-                            {
-                                valid = false;
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            newSection = 7;
-                        }
-
-                        var zeroEnd = byteIndex + newSection * 2;
-                        do
-                        {
-                            if (match)
-                            {
-                                if (num != 0)
-                                {
-                                    match = false;
-                                }
-
-                                num = BinaryPrimitives.ReadUInt16BigEndian(ip.Slice(byteIndex, 2));
-                            }
-
-                            byteIndex += 2;
-                        } while (byteIndex < zeroEnd);
-
-                        section = newSection;
-                        hasCompressor = true;
                     }
                     else
                     {
-                        match = match && (isRange ? num <= number : number == num);
-
-                        // IPv4 matching at the end
-                        if (section == 6 && num == 0xFFFF)
-                        {
-                            var ipv4 = val.Slice(i + 1);
-                            if (ipv4.Contains('.'))
-                            {
-                                return IPv4Match(ipv4, ip.Slice(ip.Length - 4), out valid);
-                            }
-                        }
-
-                        if (i == end)
-                        {
-                            break;
-                        }
-
-                        num = BinaryPrimitives.ReadUInt16BigEndian(ip.Slice(byteIndex, 2));
-                        byteIndex += 2;
-
-                        ++section;
-                        --i;
+                        newSection = 7;
                     }
 
-                    number = 0;
-                    endOfSection = false;
-                    sectionStart = i + 1;
-                    isRange = false;
+                    var zeroEnd = (newSection + 1) * 2;
+                    do
+                    {
+                        if (match)
+                        {
+                            if (num != 0)
+                            {
+                                match = false;
+                            }
+
+                            num = BinaryPrimitives.ReadUInt16BigEndian(ip.Slice(byteIndex, 2));
+                        }
+
+                        byteIndex += 2;
+                    } while (byteIndex < zeroEnd);
+
+                    section = newSection;
+                    hasCompressor = true;
                 }
+                else
+                {
+                    i--;
+                }
+
+                number = 0;
+                endOfSection = false;
+                sectionStart = i + 1;
+                isRange = false;
             }
 
             return match;
