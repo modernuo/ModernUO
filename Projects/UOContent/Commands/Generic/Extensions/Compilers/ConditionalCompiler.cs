@@ -148,7 +148,7 @@ namespace Server.Commands.Generic
                 {
                     var style = NumberStyles.Integer;
 
-                    if (Insensitive.StartsWith(toParse, "0x"))
+                    if (toParse.InsensitiveStartsWith("0x"))
                     {
                         style = NumberStyles.HexNumber;
                         toParse = toParse.Substring(2);

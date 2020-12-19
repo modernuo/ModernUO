@@ -224,7 +224,7 @@ namespace Server.Guilds
                     }
             }
 
-            return !(Insensitive.Contains(g.Name, filter) || Insensitive.Contains(g.Abbreviation, filter));
+            return !(g.Name.InsensitiveContains(filter) || g.Abbreviation.InsensitiveContains(filter));
         }
 
         public override Gump GetResentGump(
@@ -285,7 +285,7 @@ namespace Server.Guilds
                     return 1;
                 }
 
-                return Insensitive.Compare(x.Name, y.Name);
+                return x.Name.InsensitiveCompare(y.Name);
             }
         }
 
@@ -365,7 +365,7 @@ namespace Server.Guilds
                     return 1;
                 }
 
-                return Insensitive.Compare(x.Abbreviation, y.Abbreviation);
+                return x.Abbreviation.InsensitiveCompare(y.Abbreviation);
             }
         }
     }

@@ -4227,7 +4227,7 @@ namespace Server.Gumps
                     return -1;
                 }
 
-                return aMob.AccessLevel < bMob.AccessLevel ? 1 : Insensitive.Compare(aMob.Name, bMob.Name);
+                return aMob.AccessLevel < bMob.AccessLevel ? 1 : aMob.Name.InsensitiveCompare(bMob.Name);
             }
         }
 
@@ -4270,7 +4270,7 @@ namespace Server.Gumps
                     return -1;
                 }
 
-                return aLevel < bLevel ? 1 : Insensitive.Compare(x.Username, y.Username);
+                return aLevel < bLevel ? 1 : x.Username.InsensitiveCompare(y.Username);
             }
         }
     }

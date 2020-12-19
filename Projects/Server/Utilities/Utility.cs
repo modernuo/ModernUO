@@ -648,9 +648,9 @@ namespace Server
             return sb.ToString();
         }
 
-        public static int InsensitiveCompare(string first, string second) => Insensitive.Compare(first, second);
+        public static int InsensitiveCompare(string first, string second) => first.InsensitiveCompare(second);
 
-        public static bool InsensitiveStartsWith(string first, string second) => Insensitive.StartsWith(first, second);
+        public static bool InsensitiveStartsWith(string first, string second) => first.InsensitiveStartsWith(second);
 
         public static Direction GetDirection(IPoint2D from, IPoint2D to)
         {

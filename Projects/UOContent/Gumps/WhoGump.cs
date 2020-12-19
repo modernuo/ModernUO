@@ -330,7 +330,7 @@ namespace Server.Gumps
                     return -1;
                 }
 
-                return x.AccessLevel < y.AccessLevel ? 1 : Insensitive.Compare(x.Name, y.Name);
+                return x.AccessLevel < y.AccessLevel ? 1 : x.Name.InsensitiveCompare(y.Name);
             }
         }
     }

@@ -262,7 +262,7 @@ namespace Server.Gumps
                     return 1;
                 }
 
-                var result = Insensitive.Compare(x.From.Name, y.From.Name);
+                var result = x.From.Name.InsensitiveCompare(y.From.Name);
 
                 return result == 0 ? x.Date.CompareTo(y.Date) : result;
             }
@@ -310,7 +310,7 @@ namespace Server.Gumps
                     return 1;
                 }
 
-                var result = Insensitive.Compare(a.Username, b.Username);
+                var result = a.Username.InsensitiveCompare(b.Username);
 
                 return result == 0 ? x.Date.CompareTo(y.Date) : result;
             }

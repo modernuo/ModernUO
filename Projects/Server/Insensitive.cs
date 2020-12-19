@@ -14,17 +14,18 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Server
 {
     public static class Insensitive
     {
-        public static IComparer<string> Comparer { get; } = StringComparer.OrdinalIgnoreCase;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int InsensitiveCompare(this ReadOnlySpan<char> a, string b) =>
+            a.CompareTo(b, StringComparison.OrdinalIgnoreCase);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Compare(string a, string b) => Comparer.Compare(a, b);
+        public static int InsensitiveCompare(this string a, string b) => StringComparer.OrdinalIgnoreCase.Compare(a, b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool InsensitiveEquals(this ReadOnlySpan<char> a, string b) =>
@@ -35,15 +36,27 @@ namespace Server
             a?.Equals(b, StringComparison.OrdinalIgnoreCase) ?? b == null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool StartsWith(string a, string b) =>
-            a != null && b != null && a.Length >= b.Length && Comparer.Compare(a.Substring(0, b.Length), b) == 0;
+        public static bool InsensitiveStartsWith(this ReadOnlySpan<char> a, string b) =>
+            a.StartsWith(b, StringComparison.OrdinalIgnoreCase);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool EndsWith(string a, string b) =>
-            a != null && b != null && a.Length >= b.Length && Comparer.Compare(a.Substring(a.Length - b.Length), b) == 0;
+        public static bool InsensitiveStartsWith(this string a, string b) =>
+            a?.StartsWith(b, StringComparison.OrdinalIgnoreCase) == true;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Contains(string a, string b) =>
-            a != null && b != null && a.Length >= b.Length && a.Contains(b, StringComparison.Ordinal);
+        public static bool InsensitiveEndsWith(this ReadOnlySpan<char> a, string b) =>
+            a.EndsWith(b, StringComparison.OrdinalIgnoreCase);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InsensitiveEndsWith(this string a, string b) =>
+            a?.EndsWith(b, StringComparison.OrdinalIgnoreCase) == true;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InsensitiveContains(this ReadOnlySpan<char> a, string b) =>
+            a.Contains(b, StringComparison.OrdinalIgnoreCase);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InsensitiveContains(this string a, string b) =>
+            a?.Contains(b, StringComparison.OrdinalIgnoreCase) == true;
     }
 }

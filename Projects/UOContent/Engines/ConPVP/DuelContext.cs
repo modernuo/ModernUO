@@ -1396,7 +1396,7 @@ namespace Server.Engines.ConPVP
                 return;
             }
 
-            if (Insensitive.Contains(e.Speech, "i wish to duel"))
+            if (e.Speech.InsensitiveContains("i wish to duel"))
             {
                 if (!pm.CheckAlive())
                 {
@@ -1509,7 +1509,7 @@ namespace Server.Engines.ConPVP
                     }
                 }
             }
-            else if (Insensitive.Contains(e.Speech, "i yield"))
+            else if (e.Speech.InsensitiveContains("i yield"))
             {
                 if (!pm.CheckAlive())
                 {
