@@ -473,8 +473,9 @@ namespace Server
                         }
                     case '?':
                         {
-                            Console.WriteLine("IP Match with '?' is not supported. Skipping character");
-                            break;
+                            Console.WriteLine("IP Match '?' character is not supported.");
+                            valid = false;
+                            return false;
                         }
                     // Range
                     case '-':

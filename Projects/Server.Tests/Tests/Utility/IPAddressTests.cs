@@ -49,6 +49,11 @@ namespace Server.Tests
         [InlineData("::10:*:1234-1238:1000", "::10:55A1:1235:1000", true, true)]
         [InlineData("1024:*:1234::", "1024:8A13:1234::", true, true)]
         [InlineData("::1024:*:1234::", "1024:8A13:1234::", false, false)]
+        [InlineData("::1024:*:1234:-", "::1024:8A13:1234", false, false)]
+        [InlineData("::1024:*1:1234", "::1024:8A13:1234", false, false)]
+        [InlineData("::1024:*-:1234", "::1024:8A13:1234", false, false)]
+        [InlineData("::1024:?1:1234", "::1024:8A13:1234", false, false)]
+        [InlineData("::1024:1_2:1234", "::1024:8A13:1234", false, false)]
         public void TestIPMatch(string val, string addr, bool shouldMatch, bool shouldBeValid)
         {
             var address = IPAddress.Parse(addr);
