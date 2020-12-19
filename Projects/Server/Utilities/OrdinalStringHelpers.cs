@@ -21,7 +21,7 @@ namespace Server
     public static class OrdinalStringHelpers
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CompareOrdinal(this ReadOnlySpan<char> a, string b) =>
+        public static int CompareOrdinal(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
             a.CompareTo(b, StringComparison.Ordinal);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -36,7 +36,7 @@ namespace Server
             a?.Equals(b, StringComparison.Ordinal) ?? b == null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool StartsWithOrdinal(this ReadOnlySpan<char> a, string b) =>
+        public static bool StartsWithOrdinal(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
             a.StartsWith(b, StringComparison.Ordinal);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44,12 +44,12 @@ namespace Server
             a?.StartsWith(b, StringComparison.Ordinal) == true;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool EndsWithOrdinal(this ReadOnlySpan<char> a, string b) =>
-            a.EndsWith(b, StringComparison.Ordinal);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool EndsWithOrdinal(this string a, string b) =>
             a?.EndsWith(b, StringComparison.Ordinal) == true;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool EndsWithOrdinal(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
+            a.EndsWith(b, StringComparison.Ordinal);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ContainsOrdinal(this ReadOnlySpan<char> a, string b) =>
@@ -57,6 +57,14 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ContainsOrdinal(this string a, string b) =>
+            a?.Contains(b, StringComparison.Ordinal) == true;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsOrdinal(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
+            a.Contains(b, StringComparison.Ordinal);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsOrdinal(this string a, char b) =>
             a?.Contains(b, StringComparison.Ordinal) == true;
     }
 }

@@ -230,9 +230,13 @@ namespace Server.Commands.Generic
         Equal,
         NotEqual,
 
+        NotContains,
         Contains,
 
+        NotStartsWith,
         StartsWith,
+
+        NotEndsWith,
         EndsWith
     }
 
@@ -260,48 +264,97 @@ namespace Server.Commands.Generic
         {
             var inverse = false;
 
+            Type type;
             string methodName;
 
             switch (m_Operator)
             {
-                case StringOperator.Equal:
-                    methodName = "Equals";
-                    break;
-
                 case StringOperator.NotEqual:
-                    methodName = "Equals";
-                    inverse = true;
-                    break;
+                    {
+                        inverse = true;
+                        goto case StringOperator.Equal;
+                    }
+                case StringOperator.Equal:
+                    {
+                        if (m_IgnoreCase)
+                        {
+                            type = typeof(InsensitiveStringHelpers);
+                            methodName = "InsensitiveEquals";
+                        }
+                        else
+                        {
+                            type = typeof(OrdinalStringHelpers);
+                            methodName = "EqualsOrdinal";
+                        }
+                        break;
+                    }
 
+                case StringOperator.NotContains:
+                    {
+                        inverse = true;
+                        goto case StringOperator.Contains;
+                    }
                 case StringOperator.Contains:
-                    methodName = "Contains";
-                    break;
+                    {
+                        if (m_IgnoreCase)
+                        {
+                            type = typeof(InsensitiveStringHelpers);
+                            methodName = "InsensitiveContains";
+                        }
+                        else
+                        {
+                            type = typeof(OrdinalStringHelpers);
+                            methodName = "ContainsOrdinal";
+                        }
+                        break;
+                    }
 
+                case StringOperator.NotStartsWith:
+                    {
+                        inverse = true;
+                        goto case StringOperator.StartsWith;
+                    }
                 case StringOperator.StartsWith:
-                    methodName = "StartsWith";
-                    break;
+                    {
+                        if (m_IgnoreCase)
+                        {
+                            type = typeof(InsensitiveStringHelpers);
+                            methodName = "InsensitiveStartsWith";
+                        }
+                        else
+                        {
+                            type = typeof(OrdinalStringHelpers);
+                            methodName = "StartsWithOrdinal";
+                        }
+                        break;
+                    }
 
+                case StringOperator.NotEndsWith:
+                    {
+                        inverse = true;
+                        goto case StringOperator.EndsWith;
+                    }
                 case StringOperator.EndsWith:
-                    methodName = "EndsWith";
-                    break;
+                    {
+                        if (m_IgnoreCase)
+                        {
+                            type = typeof(InsensitiveStringHelpers);
+                            methodName = "InsensitiveEndsWith";
+                        }
+                        else
+                        {
+                            type = typeof(OrdinalStringHelpers);
+                            methodName = "EndsWithOrdinal";
+                        }
+                        break;
+                    }
 
                 default:
                     throw new InvalidOperationException("Invalid string comparison operator.");
             }
 
-            if (m_IgnoreCase || methodName == "Equals")
+            if (m_Operator == StringOperator.Equal || m_Operator == StringOperator.NotEqual)
             {
-                Type type;
-                if (m_IgnoreCase)
-                {
-                    type = typeof(InsensitiveStringHelpers);
-                    methodName = "InsensitiveEquals";
-                }
-                else
-                {
-                    type = typeof(string);
-                }
-
                 emitter.BeginCall(
                     type.GetMethod(
                         methodName,
@@ -343,7 +396,7 @@ namespace Server.Commands.Generic
                 emitter.LoadLocal(temp);
 
                 emitter.BeginCall(
-                    typeof(string).GetMethod(
+                    type.GetMethod(
                         methodName,
                         BindingFlags.Public | BindingFlags.Instance,
                         null,

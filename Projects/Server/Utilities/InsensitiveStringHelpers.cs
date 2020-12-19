@@ -21,11 +21,11 @@ namespace Server
     public static class InsensitiveStringHelpers
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int InsensitiveCompare(this ReadOnlySpan<char> a, string b) =>
+        public static int InsensitiveCompare(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
             a.CompareTo(b, StringComparison.OrdinalIgnoreCase);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int InsensitiveCompare(this string a, string b) => StringComparer.OrdinalIgnoreCase.Compare(a, b);
+        public static int InsensitiveCompare(this string a, string b) => StringComparer.Ordinal.Compare(a, b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool InsensitiveEquals(this ReadOnlySpan<char> a, string b) =>
@@ -36,7 +36,7 @@ namespace Server
             a?.Equals(b, StringComparison.OrdinalIgnoreCase) ?? b == null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool InsensitiveStartsWith(this ReadOnlySpan<char> a, string b) =>
+        public static bool InsensitiveStartsWith(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
             a.StartsWith(b, StringComparison.OrdinalIgnoreCase);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44,12 +44,12 @@ namespace Server
             a?.StartsWith(b, StringComparison.OrdinalIgnoreCase) == true;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool InsensitiveEndsWith(this ReadOnlySpan<char> a, string b) =>
-            a.EndsWith(b, StringComparison.OrdinalIgnoreCase);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool InsensitiveEndsWith(this string a, string b) =>
             a?.EndsWith(b, StringComparison.OrdinalIgnoreCase) == true;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InsensitiveEndsWith(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
+            a.EndsWith(b, StringComparison.OrdinalIgnoreCase);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool InsensitiveContains(this ReadOnlySpan<char> a, string b) =>
@@ -57,6 +57,14 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool InsensitiveContains(this string a, string b) =>
+            a?.Contains(b, StringComparison.OrdinalIgnoreCase) == true;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InsensitiveContains(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
+            a.Contains(b, StringComparison.OrdinalIgnoreCase);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InsensitiveContains(this string a, char b) =>
             a?.Contains(b, StringComparison.OrdinalIgnoreCase) == true;
     }
 }
