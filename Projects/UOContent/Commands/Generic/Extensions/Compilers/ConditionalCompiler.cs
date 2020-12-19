@@ -264,7 +264,7 @@ namespace Server.Commands.Generic
         {
             var inverse = false;
 
-            Type type;
+            Type type = m_IgnoreCase ? typeof(InsensitiveStringHelpers) : typeof(OrdinalStringHelpers);
             string methodName;
 
             switch (m_Operator)
@@ -278,12 +278,10 @@ namespace Server.Commands.Generic
                     {
                         if (m_IgnoreCase)
                         {
-                            type = typeof(InsensitiveStringHelpers);
                             methodName = "InsensitiveEquals";
                         }
                         else
                         {
-                            type = typeof(OrdinalStringHelpers);
                             methodName = "EqualsOrdinal";
                         }
                         break;
@@ -298,12 +296,10 @@ namespace Server.Commands.Generic
                     {
                         if (m_IgnoreCase)
                         {
-                            type = typeof(InsensitiveStringHelpers);
                             methodName = "InsensitiveContains";
                         }
                         else
                         {
-                            type = typeof(OrdinalStringHelpers);
                             methodName = "ContainsOrdinal";
                         }
                         break;
@@ -318,12 +314,10 @@ namespace Server.Commands.Generic
                     {
                         if (m_IgnoreCase)
                         {
-                            type = typeof(InsensitiveStringHelpers);
                             methodName = "InsensitiveStartsWith";
                         }
                         else
                         {
-                            type = typeof(OrdinalStringHelpers);
                             methodName = "StartsWithOrdinal";
                         }
                         break;
@@ -338,12 +332,10 @@ namespace Server.Commands.Generic
                     {
                         if (m_IgnoreCase)
                         {
-                            type = typeof(InsensitiveStringHelpers);
                             methodName = "InsensitiveEndsWith";
                         }
                         else
                         {
-                            type = typeof(OrdinalStringHelpers);
                             methodName = "EndsWithOrdinal";
                         }
                         break;
