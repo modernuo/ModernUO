@@ -1090,7 +1090,7 @@ namespace Server
             uint i;
 
 #pragma warning disable CA1806 // Do not ignore method results
-            if (value.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            if (value.InsensitiveStartsWith("0x"))
             {
                 uint.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i);
             }
@@ -1104,12 +1104,12 @@ namespace Server
         }
 
         public static bool ToInt32(ReadOnlySpan<char> value, out int i) =>
-            value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
+            value.InsensitiveStartsWith("0x")
                 ? int.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i)
                 : int.TryParse(value, out i);
 
         public static bool ToUInt32(ReadOnlySpan<char> value, out uint i) =>
-            value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
+            value.InsensitiveStartsWith("0x")
                 ? uint.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i)
                 : uint.TryParse(value, out i);
 

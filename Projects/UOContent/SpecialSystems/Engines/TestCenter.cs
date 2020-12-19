@@ -32,7 +32,7 @@ namespace Server.Misc
                 return;
             }
 
-            if (args.Speech.StartsWith("set", StringComparison.OrdinalIgnoreCase))
+            if (args.Speech.InsensitiveStartsWith("set"))
             {
                 var from = args.Mobile;
 
