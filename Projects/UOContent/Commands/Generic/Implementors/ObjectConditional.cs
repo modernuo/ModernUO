@@ -191,21 +191,12 @@ namespace Server.Commands.Generic
                     "starts"     => new StringCondition(prop, inverse, StringOperator.StartsWith, val, false),
                     "starts~"    => new StringCondition(prop, inverse, StringOperator.StartsWith, val, true),
                     "~starts"    => new StringCondition(prop, inverse, StringOperator.StartsWith, val, true),
-                    "!starts"    => new StringCondition(prop, inverse, StringOperator.NotStartsWith, val, false),
-                    "!starts~"   => new StringCondition(prop, inverse, StringOperator.NotStartsWith, val, true),
-                    "~!starts"   => new StringCondition(prop, inverse, StringOperator.NotStartsWith, val, true),
                     "ends"       => new StringCondition(prop, inverse, StringOperator.EndsWith, val, false),
                     "ends~"      => new StringCondition(prop, inverse, StringOperator.EndsWith, val, true),
                     "~ends"      => new StringCondition(prop, inverse, StringOperator.EndsWith, val, true),
-                    "!ends"      => new StringCondition(prop, inverse, StringOperator.NotEndsWith, val, false),
-                    "!ends~"     => new StringCondition(prop, inverse, StringOperator.NotEndsWith, val, true),
-                    "~!ends"     => new StringCondition(prop, inverse, StringOperator.NotEndsWith, val, true),
                     "contains"   => new StringCondition(prop, inverse, StringOperator.Contains, val, false),
                     "contains~"  => new StringCondition(prop, inverse, StringOperator.Contains, val, true),
                     "~contains"  => new StringCondition(prop, inverse, StringOperator.Contains, val, true),
-                    "!contains"  => new StringCondition(prop, inverse, StringOperator.NotContains, val, false),
-                    "!contains~" => new StringCondition(prop, inverse, StringOperator.NotContains, val, true),
-                    "~!contains" => new StringCondition(prop, inverse, StringOperator.NotContains, val, true),
                     _            => null
                 };
 

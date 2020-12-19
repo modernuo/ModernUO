@@ -230,13 +230,8 @@ namespace Server.Commands.Generic
         Equal,
         NotEqual,
 
-        NotContains,
         Contains,
-
-        NotStartsWith,
         StartsWith,
-
-        NotEndsWith,
         EndsWith
     }
 
@@ -287,11 +282,6 @@ namespace Server.Commands.Generic
                         break;
                     }
 
-                case StringOperator.NotContains:
-                    {
-                        inverse = true;
-                        goto case StringOperator.Contains;
-                    }
                 case StringOperator.Contains:
                     {
                         if (m_IgnoreCase)
@@ -305,11 +295,6 @@ namespace Server.Commands.Generic
                         break;
                     }
 
-                case StringOperator.NotStartsWith:
-                    {
-                        inverse = true;
-                        goto case StringOperator.StartsWith;
-                    }
                 case StringOperator.StartsWith:
                     {
                         if (m_IgnoreCase)
@@ -323,11 +308,6 @@ namespace Server.Commands.Generic
                         break;
                     }
 
-                case StringOperator.NotEndsWith:
-                    {
-                        inverse = true;
-                        goto case StringOperator.EndsWith;
-                    }
                 case StringOperator.EndsWith:
                     {
                         if (m_IgnoreCase)
