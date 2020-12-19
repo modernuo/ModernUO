@@ -277,7 +277,7 @@ namespace Server.Guilds
             }
             else
             {
-                if (Insensitive.Equals(title, "none"))
+                if (title.InsensitiveEquals("none"))
                 {
                     m_Member.GuildTitle = null;
                 }

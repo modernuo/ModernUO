@@ -216,7 +216,7 @@ namespace Server.Factions
 
             if (!e.Handled && InRange(from, ListenRange) && from.Alive)
             {
-                if (e.HasKeyword(0xE6) && (Insensitive.Equals(e.Speech, "orders") || WasNamed(e.Speech))) // *orders*
+                if (e.HasKeyword(0xE6) && (e.Speech.InsensitiveEquals("orders") || WasNamed(e.Speech))) // *orders*
                 {
                     if (m_Town?.IsSheriff(from) != true)
                     {

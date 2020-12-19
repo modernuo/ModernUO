@@ -245,7 +245,7 @@ namespace Server.Movement
             {
                 itemData = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
-                if (m.Flying && Insensitive.Equals(itemData.Name, "hover over"))
+                if (m.Flying && itemData.Name.InsensitiveEquals("hover over"))
                 {
                     newZ = tile.Z;
                     return true;
@@ -350,7 +350,7 @@ namespace Server.Movement
                 itemData = item.ItemData;
                 flags = itemData.Flags;
 
-                if (m.Flying && Insensitive.Equals(itemData.Name, "hover over"))
+                if (m.Flying && itemData.Name.InsensitiveEquals("hover over"))
                 {
                     newZ = item.Z;
                     return true;

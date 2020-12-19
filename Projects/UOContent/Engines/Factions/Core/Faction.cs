@@ -1277,7 +1277,7 @@ namespace Server.Factions
             {
                 var faction = factions[i];
 
-                if (Insensitive.Equals(faction.Definition.FriendlyName, name))
+                if (faction.Definition.FriendlyName.InsensitiveEquals(name))
                 {
                     return faction;
                 }

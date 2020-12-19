@@ -308,7 +308,7 @@ namespace Server.Mobiles
 
                 ++stabled;
 
-                if (claimByName && !Insensitive.Equals(pet.Name, petName))
+                if (claimByName && !pet.Name.InsensitiveEquals(petName))
                 {
                     continue;
                 }

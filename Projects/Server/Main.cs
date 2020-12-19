@@ -346,7 +346,7 @@ namespace Server
 
             foreach (var a in args)
             {
-                if (Insensitive.Equals(a, "-profile"))
+                if (a.InsensitiveEquals("-profile"))
                 {
                     Profiling = true;
                 }

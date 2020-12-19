@@ -151,7 +151,7 @@ namespace Server.Ethics
                         continue;
                     }
 
-                    if (!Insensitive.Equals(ethic.Definition.JoinPhrase.String, e.Speech))
+                    if (!ethic.Definition.JoinPhrase.String.InsensitiveEquals(e.Speech))
                     {
                         continue;
                     }
@@ -185,7 +185,7 @@ namespace Server.Ethics
                 {
                     var power = ethic.Definition.Powers[i];
 
-                    if (!Insensitive.Equals(power.Definition.Phrase.String, e.Speech))
+                    if (!power.Definition.Phrase.String.InsensitiveEquals(e.Speech))
                     {
                         continue;
                     }

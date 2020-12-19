@@ -297,7 +297,7 @@ namespace Server.Mobiles
                         continue;
                     }
 
-                    if (Insensitive.Equals(keyword, e.Speech))
+                    if (keyword.InsensitiveEquals(e.Speech))
                     {
                         var message = rumor.Message;
 

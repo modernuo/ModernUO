@@ -397,7 +397,7 @@ namespace Server
                 return null;
             }
 
-            if (Insensitive.Equals(value, "Internal"))
+            if (value.InsensitiveEquals("Internal"))
             {
                 return Internal;
             }
@@ -419,7 +419,7 @@ namespace Server
                     continue;
                 }
 
-                if (index >= 0 && map.MapIndex == index || Insensitive.Equals(map.Name, value))
+                if (index >= 0 && map.MapIndex == index || map.Name.InsensitiveEquals(value))
                 {
                     return map;
                 }

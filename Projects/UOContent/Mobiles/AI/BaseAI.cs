@@ -786,7 +786,7 @@ namespace Server.Mobiles
                         {
                             var word = str[i];
 
-                            if (Insensitive.Equals(word, "obey"))
+                            if (word.InsensitiveEquals("obey"))
                             {
                                 m_Mobile.SetControlMaster(e.Mobile);
 

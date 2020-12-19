@@ -1432,7 +1432,7 @@ namespace Server.Engines.ConPVP
                     e.Handled = true;
                 }
             }
-            else if (Insensitive.Equals(e.Speech, "change arena preferences"))
+            else if (e.Speech.InsensitiveEquals("change arena preferences"))
             {
                 if (!pm.CheckAlive())
                 {
@@ -1448,7 +1448,7 @@ namespace Server.Engines.ConPVP
                     }
                 }
             }
-            else if (Insensitive.Equals(e.Speech, "showladder"))
+            else if (e.Speech.InsensitiveEquals("showladder"))
             {
                 e.Blocked = true;
                 if (!pm.CheckAlive())
@@ -1487,7 +1487,7 @@ namespace Server.Engines.ConPVP
                     }
                 }
             }
-            else if (Insensitive.Equals(e.Speech, "viewladder"))
+            else if (e.Speech.InsensitiveEquals("viewladder"))
             {
                 e.Blocked = true;
 

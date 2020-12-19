@@ -236,7 +236,7 @@ namespace Server.Regions
                 return;
             }
 
-            if (Core.ML && Insensitive.Equals(e.Speech, "I wish to resize my house"))
+            if (Core.ML && e.Speech.InsensitiveEquals("I wish to resize my house"))
             {
                 if (from.Map != sign.Map || !from.InRange(sign, 0))
                 {

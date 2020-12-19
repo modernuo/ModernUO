@@ -582,7 +582,7 @@ namespace Server.Commands
                                 continue;
                             }
 
-                            if (Insensitive.Equals(name, map.Name))
+                            if (name.InsensitiveEquals(map.Name))
                             {
                                 from.Map = map;
                                 return;
@@ -595,7 +595,7 @@ namespace Server.Commands
                         {
                             var r = kvp.Value;
 
-                            if (Insensitive.Equals(r.Name, name))
+                            if (r.Name.InsensitiveEquals(name))
                             {
                                 from.Location = new Point3D(r.GoLocation);
                                 return;
@@ -613,7 +613,7 @@ namespace Server.Commands
 
                             foreach (var r in map.Regions.Values)
                             {
-                                if (Insensitive.Equals(r.Name, name))
+                                if (r.Name.InsensitiveEquals(name))
                                 {
                                     from.MoveToWorld(r.GoLocation, map);
                                     return;
@@ -676,8 +676,8 @@ namespace Server.Commands
                         e.GetInt32(0),
                         e.GetInt32(4),
                         e.GetInt32(1),
-                        Insensitive.Equals(e.GetString(5), "E"),
-                        Insensitive.Equals(e.GetString(2), "S")
+                        e.GetString(5).InsensitiveEquals("E"),
+                        e.GetString(2).InsensitiveEquals("S")
                     );
 
                     if (p != Point3D.Zero)

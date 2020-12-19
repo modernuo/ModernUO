@@ -76,7 +76,7 @@ namespace Server.Commands
             }
         }
 
-        private static bool CIEqual(string l, string r) => Insensitive.Equals(l, r);
+        private static bool CIEqual(string l, string r) => l.InsensitiveEquals(r);
 
         public static CPA GetCPA(PropertyInfo p)
         {

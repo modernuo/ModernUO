@@ -782,7 +782,7 @@ namespace Server.Mobiles
 
             for (var i = 0; i < split.Length; ++i)
             {
-                if (Insensitive.Equals(split[i], "the"))
+                if (split[i].InsensitiveEquals("the"))
                 {
                     continue;
                 }
