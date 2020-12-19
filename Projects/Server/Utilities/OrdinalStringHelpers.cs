@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Runtime.CompilerServices;
 
 namespace Server
@@ -84,5 +85,17 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ReplaceOrdinal(this string a, string o, string n) =>
             a?.Replace(o, n, StringComparison.Ordinal);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string RemoveOrdinal(this string a, string b) =>
+            a?.Replace(b, "", StringComparison.Ordinal);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RemoveOrdinal(this ReadOnlySpan<char> a, ReadOnlySpan<char> b, Span<char> buffer, out int size) =>
+            a.Remove(b, StringComparison.Ordinal, buffer, out size);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string RemoveOrdinal(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
+            a.Remove(b, StringComparison.Ordinal);
     }
 }

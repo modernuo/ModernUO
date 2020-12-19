@@ -86,5 +86,17 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string InsensitiveReplace(this string a, string o, string n) =>
             a?.Replace(o, n, StringComparison.OrdinalIgnoreCase);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InsensitiveRemove(
+            this ReadOnlySpan<char> a,
+            ReadOnlySpan<char> b,
+            Span<char> buffer,
+            out int size
+        ) => a.Remove(b, StringComparison.OrdinalIgnoreCase, buffer, out size);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string InsensitiveRemove(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
+            a.Remove(b, StringComparison.OrdinalIgnoreCase);
     }
 }
