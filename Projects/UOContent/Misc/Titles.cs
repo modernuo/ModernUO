@@ -395,7 +395,7 @@ namespace Server.Misc
                 var skillLevel = GetSkillLevel(highest);
                 var skillTitle = highest.Info.Title;
 
-                if (mob.Female && skillTitle.EndsWith("man", StringComparison.Ordinal))
+                if (mob.Female && skillTitle.EndsWithOrdinal("man"))
                 {
                     skillTitle = $"{skillTitle.Substring(0, skillTitle.Length - 3)}woman";
                 }

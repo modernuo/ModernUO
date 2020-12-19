@@ -196,8 +196,8 @@ namespace Server.Gumps
                         AddLabel(20, 350, LabelHue, "Operating System: ");
                         var os = Environment.OSVersion.ToString();
 
-                        os = os.Replace("Microsoft", "MSFT", StringComparison.Ordinal);
-                        os = os.Replace("Service Pack", "SP", StringComparison.Ordinal);
+                        os = os.ReplaceOrdinal("Microsoft", "MSFT");
+                        os = os.ReplaceOrdinal("Service Pack", "SP");
 
                         AddLabel(150, 350, LabelHue, os);
 
@@ -2458,12 +2458,12 @@ namespace Server.Gumps
                                                 var m = ns.Mobile;
                                                 var a = ns.Account;
 
-                                                isMatch = m?.Name.ToLower().Contains(match, StringComparison.Ordinal) == true
-                                                          || a?.Username.ToLower().Contains(match, StringComparison.Ordinal) == true;
+                                                isMatch = m?.Name.InsensitiveContains(match) == true
+                                                          || a?.Username.InsensitiveContains(match) == true;
                                             }
                                             else
                                             {
-                                                isMatch = ns.ToString().Contains(match, StringComparison.Ordinal);
+                                                isMatch = ns.ToString().ContainsOrdinal(match);
                                             }
 
                                             if (isMatch)
@@ -2720,8 +2720,7 @@ namespace Server.Gumps
                                     else
                                     {
                                         results = Accounts.GetAccounts()
-                                            .Where(acct =>
-                                                acct.Username.ToLower().Contains(match, StringComparison.Ordinal))
+                                            .Where(acct => acct.Username.InsensitiveContains(match))
                                             .ToList();
                                         results.Sort(AccountComparer.Instance);
                                     }
@@ -3534,7 +3533,7 @@ namespace Server.Gumps
                                         {
                                             var checkStr = check.ToString();
 
-                                            if (checkStr?.Contains(match, StringComparison.Ordinal) == true)
+                                            if (checkStr.ContainsOrdinal(match))
                                             {
                                                 results.Add(check);
                                             }

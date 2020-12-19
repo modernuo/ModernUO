@@ -120,7 +120,7 @@ namespace Server.Guilds
 
             for (var i = 0; i < disallowed.Length; i++)
             {
-                if (s.IndexOf(disallowed[i], StringComparison.Ordinal) != -1)
+                if (s.IndexOfOrdinal(disallowed[i]) != -1)
                 {
                     return false;
                 }

@@ -870,22 +870,22 @@ namespace Server.Items
         /// </summary>
         public static CraftResource GetFromOreInfo(OreInfo info)
         {
-            if (info.Name.Contains("Spined", StringComparison.Ordinal))
+            if (info.Name.ContainsOrdinal("Spined"))
             {
                 return CraftResource.SpinedLeather;
             }
 
-            if (info.Name.Contains("Horned", StringComparison.Ordinal))
+            if (info.Name.ContainsOrdinal("Horned"))
             {
                 return CraftResource.HornedLeather;
             }
 
-            if (info.Name.Contains("Barbed", StringComparison.Ordinal))
+            if (info.Name.ContainsOrdinal("Barbed"))
             {
                 return CraftResource.BarbedLeather;
             }
 
-            if (info.Name.Contains("Leather", StringComparison.Ordinal))
+            if (info.Name.ContainsOrdinal("Leather"))
             {
                 return CraftResource.RegularLeather;
             }

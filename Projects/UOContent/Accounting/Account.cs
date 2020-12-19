@@ -775,7 +775,7 @@ namespace Server.Accounting
             }
 
             m_PasswordAlgorithm = algorithm;
-            Password = password.Replace("-", string.Empty, StringComparison.Ordinal);
+            Password = password.ReplaceOrdinal("-", string.Empty);
             return true;
         }
 

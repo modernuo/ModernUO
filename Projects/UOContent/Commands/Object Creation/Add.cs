@@ -300,7 +300,7 @@ namespace Server.Commands
 
                 object obj = value;
 
-                if (value?.StartsWith("0x", StringComparison.Ordinal) == true)
+                if (value.StartsWithOrdinal("0x"))
                 {
                     if (IsSignedNumeric(type))
                     {

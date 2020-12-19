@@ -28,7 +28,7 @@ namespace Server
 
                 while ((line = ip.ReadLine()) != null)
                 {
-                    if (line.Length == 0 || line.StartsWith("#", StringComparison.Ordinal))
+                    if (line.Length == 0 || line.StartsWithOrdinal("#"))
                     {
                         continue;
                     }

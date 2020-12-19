@@ -114,7 +114,7 @@ namespace Server.Commands
 
             for (var i = 0; isSafe && i < m_NotSafe.Length; ++i)
             {
-                isSafe = !ip.Contains(m_NotSafe[i], StringComparison.Ordinal);
+                isSafe = !ip.ContainsOrdinal(m_NotSafe[i]);
             }
 
             if (isSafe)

@@ -134,7 +134,7 @@ namespace Server.Gumps
                 var t = types[i];
 
                 if ((typeofMobile.IsAssignableFrom(t) || typeofItem.IsAssignableFrom(t)) &&
-                    t.Name.ToLower().Contains(match, StringComparison.Ordinal) && !results.Contains(t))
+                    t.Name.InsensitiveContains(match) && !results.Contains(t))
                 {
                     var ctors = t.GetConstructors();
 

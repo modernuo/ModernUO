@@ -301,7 +301,7 @@ namespace Server
         public static bool IPMatch(string val, IPAddress ip, out bool valid)
         {
             var family = ip.AddressFamily;
-            var useIPv6 = family == AddressFamily.InterNetworkV6 || val.Contains(':', StringComparison.Ordinal);
+            var useIPv6 = family == AddressFamily.InterNetworkV6 || val.ContainsOrdinal(':');
 
             ip = useIPv6 ? ip.MapToIPv6() : ip.MapToIPv4();
 
@@ -619,9 +619,9 @@ namespace Server
                 return "";
             }
 
-            var hasOpen = str.Contains('<', StringComparison.Ordinal);
-            var hasClose = str.Contains('>', StringComparison.Ordinal);
-            var hasPound = str.Contains('#', StringComparison.Ordinal);
+            var hasOpen = str.ContainsOrdinal('<');
+            var hasClose = str.ContainsOrdinal('>');
+            var hasPound = str.ContainsOrdinal('#');
 
             if (!hasOpen && !hasClose && !hasPound)
             {
@@ -1072,7 +1072,7 @@ namespace Server
             int i;
 
 #pragma warning disable CA1806 // Do not ignore method results
-            if (value.StartsWith("0x", StringComparison.Ordinal))
+            if (value.StartsWithOrdinal("0x"))
             {
                 int.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i);
             }

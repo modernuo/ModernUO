@@ -44,7 +44,7 @@ namespace Server.Engines.MLQuests
                 {
                     line = line.Trim();
 
-                    if (line.Length == 0 || line.StartsWith("#", StringComparison.Ordinal))
+                    if (line.Length == 0 || line.StartsWithOrdinal("#"))
                     {
                         continue;
                     }

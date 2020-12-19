@@ -194,7 +194,7 @@ namespace Server.Commands.Generic
                     sb.Append(' ');
                 }
 
-                if (args[i].Contains(' ', StringComparison.Ordinal))
+                if (args[i].ContainsOrdinal(' '))
                 {
                     sb.Append('"');
                     sb.Append(args[i]);

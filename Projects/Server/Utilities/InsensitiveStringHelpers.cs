@@ -66,5 +66,25 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool InsensitiveContains(this string a, char b) =>
             a?.Contains(b, StringComparison.OrdinalIgnoreCase) == true;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int InsensitiveIndexOf(this string a, char b) =>
+            a?.IndexOf(b, StringComparison.OrdinalIgnoreCase) ?? -1;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int InsensitiveIndexOf(this string a, string b) =>
+            a?.IndexOf(b, StringComparison.OrdinalIgnoreCase) ?? -1;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int InsensitiveIndexOf(this string a, string b, int startIndex) =>
+            a?.IndexOf(b, startIndex, StringComparison.OrdinalIgnoreCase) ?? -1;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int InsensitiveIndexOf(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
+            a.IndexOf(b, StringComparison.OrdinalIgnoreCase);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string InsensitiveReplace(this string a, string o, string n) =>
+            a?.Replace(o, n, StringComparison.OrdinalIgnoreCase);
     }
 }

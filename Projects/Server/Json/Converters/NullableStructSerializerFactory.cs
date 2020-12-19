@@ -13,6 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server;
+
 namespace System.Text.Json.Serialization
 {
     public class NullableStructSerializerFactory : JsonConverterFactory
@@ -26,8 +28,7 @@ namespace System.Text.Json.Serialization
 
             var structType = typeToConvert.GenericTypeArguments[0];
             return !structType.IsPrimitive &&
-                   structType.Namespace?.StartsWith(nameof(System), StringComparison.Ordinal) != true &&
-                   !structType.IsEnum;
+                   structType.Namespace.StartsWithOrdinal(nameof(System)) && !structType.IsEnum;
         }
 
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>

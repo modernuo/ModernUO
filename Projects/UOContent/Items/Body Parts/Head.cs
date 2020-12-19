@@ -81,17 +81,17 @@ namespace Server.Items
 
                     if (format != null)
                     {
-                        if (format.StartsWith("the head of ", StringComparison.Ordinal))
+                        if (format.StartsWithOrdinal("the head of "))
                         {
                             format = format.Substring(14); // "the head of|..."
                         }
 
-                        if (format.EndsWith(", taken in a duel", StringComparison.Ordinal))
+                        if (format.EndsWithOrdinal(", taken in a duel"))
                         {
                             format = format.Substring(0, format.Length - ", taken in a duel".Length);
                             HeadType = HeadType.Duel;
                         }
-                        else if (format.EndsWith(", taken in a tournament", StringComparison.Ordinal))
+                        else if (format.EndsWithOrdinal(", taken in a tournament"))
                         {
                             format = format.Substring(0, format.Length - ", taken in a tournament".Length);
                             HeadType = HeadType.Tournament;

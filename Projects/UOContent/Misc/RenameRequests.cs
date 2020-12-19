@@ -34,7 +34,7 @@ namespace Server.Misc
 
                         for (var i = 0; i < disallowed.Length; i++)
                         {
-                            if (name.IndexOf(disallowed[i], StringComparison.Ordinal) != -1)
+                            if (name.IndexOfOrdinal(disallowed[i]) != -1)
                             {
                                 from.SendLocalizedMessage(1072622); // That name isn't very polite.
                                 return;

@@ -66,5 +66,23 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ContainsOrdinal(this string a, char b) =>
             a?.Contains(b, StringComparison.Ordinal) == true;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfOrdinal(this string a, char b) => a?.IndexOf(b, StringComparison.Ordinal) ?? -1;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfOrdinal(this string a, string b) => a?.IndexOf(b, StringComparison.Ordinal) ?? -1;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfOrdinal(this string a, string b, int startIndex) =>
+            a?.IndexOf(b, startIndex, StringComparison.Ordinal) ?? -1;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfOrdinal(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
+            a.IndexOf(b, StringComparison.Ordinal);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ReplaceOrdinal(this string a, string o, string n) =>
+            a?.Replace(o, n, StringComparison.Ordinal);
     }
 }

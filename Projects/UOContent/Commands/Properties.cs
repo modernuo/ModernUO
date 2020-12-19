@@ -254,7 +254,7 @@ namespace Server.Commands
                 {
                     var valueString = args[1 + i * 2];
 
-                    if (valueString.StartsWith("0x", StringComparison.Ordinal))
+                    if (valueString.StartsWithOrdinal("0x"))
                     {
                         realValues[i] = Convert.ToInt32(valueString.Substring(2), 16);
                     }
@@ -483,7 +483,7 @@ namespace Server.Commands
             {
                 toSet = null;
             }
-            else if (value.StartsWith("0x", StringComparison.Ordinal) && IsNumeric(type))
+            else if (value.StartsWithOrdinal("0x") && IsNumeric(type))
             {
                 try
                 {

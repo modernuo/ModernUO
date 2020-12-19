@@ -64,7 +64,7 @@ namespace Server.Guilds
             {
                 var name = g.Name.ToLower();
 
-                if (words.All(t => name.IndexOf(t, StringComparison.Ordinal) != -1))
+                if (words.All(t => name.IndexOfOrdinal(t) != -1))
                 {
                     results.Add(g);
                 }

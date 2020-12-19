@@ -788,7 +788,7 @@ namespace Server.Commands.Generic
                     var result = Properties.GetValue(e.Mobile, obj, e.GetString(i));
 
                     if (result == "Property not found." || result == "Property is write only." ||
-                        result.StartsWith("Getting this property", StringComparison.Ordinal))
+                        result.StartsWithOrdinal("Getting this property"))
                     {
                         LogFailure(result);
                     }

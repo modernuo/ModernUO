@@ -61,9 +61,7 @@ namespace Server
         public static bool IsRunningFromXUnit =>
             m_IsRunningFromXUnit ??= AppDomain.CurrentDomain.GetAssemblies()
                 .Any(
-                    a => a.FullName?
-                        .ToUpperInvariant()
-                        .StartsWith("XUNIT", StringComparison.Ordinal) ?? false
+                    a => a.FullName.InsensitiveStartsWith("XUNIT")
                 );
 
         public static bool Profiling
