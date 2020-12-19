@@ -2,20 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using Microsoft.Toolkit.HighPerformance.Extensions;
 
 namespace Server
 {
     public static class Firewall
     {
+        private const string firewallConfigPath = "firewall.cfg";
+
         static Firewall()
         {
-            List = new List<IFirewallEntry>();
+            Set = new HashSet<IFirewallEntry>();
 
-            var path = "firewall.cfg";
-
-            if (File.Exists(path))
+            if (File.Exists(firewallConfigPath))
             {
-                using var ip = new StreamReader(path);
+                using var ip = new StreamReader(firewallConfigPath);
                 string line;
 
                 while ((line = ip.ReadLine()) != null)
@@ -27,24 +28,12 @@ namespace Server
                         continue;
                     }
 
-                    List.Add(ToFirewallEntry(line));
-
-                    /*
-                      object toAdd;
-
-                      IPAddress addr;
-                      if (IPAddress.TryParse( line, out addr ))
-                        toAdd = addr;
-                      else
-                        toAdd = line;
-
-                      m_Blocked.Add( toAdd.ToString() );
-                       * */
+                    Set.Add(ToFirewallEntry(line));
                 }
             }
         }
 
-        public static List<IFirewallEntry> List { get; }
+        public static HashSet<IFirewallEntry> Set { get; }
 
         public static IFirewallEntry ToFirewallEntry(object entry)
         {
@@ -59,32 +48,31 @@ namespace Server
 
         public static IFirewallEntry ToFirewallEntry(string entry)
         {
+            if (entry == null)
+            {
+                return null;
+            }
+
             if (IPAddress.TryParse(entry, out var addr))
             {
                 return new IPFirewallEntry(addr);
             }
 
             // Try CIDR parse
-            var str = entry?.Split('/');
+            var tokenizer = entry.Tokenize('/');
+            var ip = tokenizer.Current;
+            var length = tokenizer.MoveNext() ? tokenizer.Current : null;
 
-            if (str?.Length == 2)
+            if (
+                length != null &&
+                IPAddress.TryParse(ip, out var cidrPrefix) &&
+                int.TryParse(length, out var cidrLength)
+            )
             {
-                if (IPAddress.TryParse(str[0], out var cidrPrefix))
-                {
-                    if (int.TryParse(str[1], out var cidrLength))
-                    {
-                        return new CIDRFirewallEntry(cidrPrefix, cidrLength);
-                    }
-                }
+                return new CIDRFirewallEntry(cidrPrefix, cidrLength);
             }
 
             return new WildcardIPFirewallEntry(entry);
-        }
-
-        public static void RemoveAt(int index)
-        {
-            List.RemoveAt(index);
-            Save();
         }
 
         public static void Remove(object obj)
@@ -93,77 +81,46 @@ namespace Server
 
             if (entry != null)
             {
-                List.Remove(entry);
+                Set.Remove(entry);
                 Save();
             }
         }
 
         public static void Add(object obj)
         {
-            if (obj is IPAddress address)
-            {
-                Add(address);
-            }
-            else if (obj is string s)
-            {
-                Add(s);
-            }
-            else if (obj is IFirewallEntry entry)
-            {
-                Add(entry);
-            }
+            Add(ToFirewallEntry(obj));
         }
 
         public static void Add(IFirewallEntry entry)
         {
-            if (!List.Contains(entry))
-            {
-                List.Add(entry);
-            }
-
+            Set.Add(entry);
             Save();
         }
 
         public static void Add(string pattern)
         {
-            var entry = ToFirewallEntry(pattern);
-
-            if (!List.Contains(entry))
-            {
-                List.Add(entry);
-            }
-
-            Save();
+            Add(ToFirewallEntry(pattern));
         }
 
         public static void Add(IPAddress ip)
         {
-            IFirewallEntry entry = new IPFirewallEntry(ip);
-
-            if (!List.Contains(entry))
-            {
-                List.Add(entry);
-            }
-
-            Save();
+            Add(ToFirewallEntry(ip));
         }
 
         public static void Save()
         {
-            var path = "firewall.cfg";
-
-            using var op = new StreamWriter(path);
-            for (var i = 0; i < List.Count; ++i)
+            using var op = new StreamWriter(firewallConfigPath);
+            foreach (var entry in Set)
             {
-                op.WriteLine(List[i]);
+                op.WriteLine(entry);
             }
         }
 
         public static bool IsBlocked(IPAddress ip)
         {
-            for (var i = 0; i < List.Count; i++)
+            foreach (var entry in Set)
             {
-                if (List[i].IsBlocked(ip))
+                if (entry.IsBlocked(ip))
                 {
                     return true;
                 }
@@ -189,24 +146,13 @@ namespace Server
 
             public override bool Equals(object obj)
             {
-                if (obj is IPAddress)
+                return obj switch
                 {
-                    return obj.Equals(m_Address);
-                }
-
-                if (obj is string s)
-                {
-                    if (IPAddress.TryParse(s, out var otherAddress))
-                    {
-                        return otherAddress.Equals(m_Address);
-                    }
-                }
-                else if (obj is IPFirewallEntry entry)
-                {
-                    return m_Address.Equals(entry.m_Address);
-                }
-
-                return false;
+                    IPAddress                                                 => obj.Equals(m_Address),
+                    string s when IPAddress.TryParse(s, out var otherAddress) => otherAddress.Equals(m_Address),
+                    IPFirewallEntry entry                                     => m_Address.Equals(entry.m_Address),
+                    _                                                         => false
+                };
             }
 
             public override int GetHashCode() => m_Address.GetHashCode();

@@ -1014,6 +1014,18 @@ namespace Server
             return outputList;
         }
 
+        public static HashSet<TOutput> CastSetCovariant<TInput, TOutput>(this IReadOnlyCollection<TInput> coll)
+            where TOutput : TInput
+        {
+            var outputList = new HashSet<TOutput>();
+            foreach (var entry in coll)
+            {
+                outputList.Add((TOutput)entry);
+            }
+
+            return outputList;
+        }
+
         public static List<TOutput> SafeConvertList<TInput, TOutput>(this IReadOnlyCollection<TInput> coll) where TOutput : class
         {
             var outputList = new List<TOutput>();
@@ -1055,14 +1067,14 @@ namespace Server
             return t;
         }
 
-        public static int ToInt32(string value)
+        public static int ToInt32(ReadOnlySpan<char> value)
         {
             int i;
 
 #pragma warning disable CA1806 // Do not ignore method results
             if (value.StartsWith("0x", StringComparison.Ordinal))
             {
-                int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
+                int.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i);
             }
             else
             {
@@ -1073,14 +1085,14 @@ namespace Server
             return i;
         }
 
-        public static uint ToUInt32(string value)
+        public static uint ToUInt32(ReadOnlySpan<char> value)
         {
             uint i;
 
 #pragma warning disable CA1806 // Do not ignore method results
             if (value.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
             {
-                uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
+                uint.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i);
             }
             else
             {
@@ -1091,14 +1103,14 @@ namespace Server
             return i;
         }
 
-        public static bool ToInt32(string value, out int i) =>
+        public static bool ToInt32(ReadOnlySpan<char> value, out int i) =>
             value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
-                ? int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i)
+                ? int.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i)
                 : int.TryParse(value, out i);
 
-        public static bool ToUInt32(string value, out uint i) =>
+        public static bool ToUInt32(ReadOnlySpan<char> value, out uint i) =>
             value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
-                ? uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i)
+                ? uint.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i)
                 : uint.TryParse(value, out i);
 
         public static int GetXMLInt32(string intString, int defaultValue)

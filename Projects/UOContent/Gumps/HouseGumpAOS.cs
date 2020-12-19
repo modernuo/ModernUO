@@ -1740,7 +1740,81 @@ namespace Server.Gumps
             }
         }
 
-        private List<string> Wrap(string value)
+        private static List<string> Wrap(string value)
+        {
+            if ((value = value?.Trim() ?? "").Length <= 0)
+            {
+                return null;
+            }
+
+            var span = value.AsSpan();
+            var list = new List<string>(6);
+            var lineLength = 0;
+            var lineStartIndex = 0;
+            var index = 0;
+
+            while (index < value.Length)
+            {
+                var spaceIndex = span.Slice(index).IndexOf(' ');
+                if (spaceIndex == -1)
+                {
+                    spaceIndex = value.Length; // End of the string
+                }
+
+                var length = spaceIndex - index;
+                var newLineLength = lineLength + length;
+
+                if (newLineLength < 10)
+                {
+                    lineLength = newLineLength;
+                    index = spaceIndex + 1;
+                    continue;
+                }
+
+                if (newLineLength == 10)
+                {
+                    list.Add(span.Slice(lineStartIndex, 10).ToString());
+                    if (list.Count == 6)
+                    {
+                        break;
+                    }
+
+                    lineLength = 0;
+                }
+                else if (lineLength > 0 && lineLength <= 10)
+                {
+                    list.Add(span.Slice(lineStartIndex, lineLength).ToString());
+                    if (list.Count == 6)
+                    {
+                        break;
+                    }
+
+                    lineLength = length;
+                }
+                else
+                {
+                    lineLength = newLineLength;
+
+                    while (lineLength > 10)
+                    {
+                        list.Add(span.Slice(lineStartIndex, 10).ToString());
+                        if (list.Count == 6)
+                        {
+                            break;
+                        }
+
+                        lineLength -= 10;
+                    }
+                }
+
+                lineStartIndex = index;
+                index = spaceIndex + 1;
+            }
+
+            return list;
+        }
+
+        private static List<string> OldWrap(string value)
         {
             if (value == null || (value = value.Trim()).Length <= 0)
             {

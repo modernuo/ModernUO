@@ -167,7 +167,7 @@ namespace Server.Gumps
                         AddLabel(150, 150, LabelHue, banned.ToString());
 
                         AddLabel(20, 170, LabelHue, "Firewalled:");
-                        AddLabel(150, 170, LabelHue, Firewall.List.Count.ToString());
+                        AddLabel(150, 170, LabelHue, Firewall.Set.Count.ToString());
 
                         AddLabel(20, 190, LabelHue, "Clients:");
                         AddLabel(150, 190, LabelHue, TcpServer.Instances.Count.ToString());
@@ -1260,16 +1260,16 @@ namespace Server.Gumps
                     {
                         AddFirewallHeader();
 
-                        List<Firewall.IFirewallEntry> firewallEntries;
+                        HashSet<Firewall.IFirewallEntry> firewallEntries;
 
                         if (m_List == null)
                         {
-                            firewallEntries = Firewall.List;
+                            firewallEntries = Firewall.Set;
                             m_List = firewallEntries.CastListContravariant<Firewall.IFirewallEntry, object>();
                         }
                         else
                         {
-                            firewallEntries = m_List.CastListCovariant<object, Firewall.IFirewallEntry>();
+                            firewallEntries = m_List.CastSetCovariant<object, Firewall.IFirewallEntry>();
                         }
 
                         AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
@@ -1296,17 +1296,22 @@ namespace Server.Gumps
                         {
                             AddLabel(12, 140, LabelHue, "The firewall list is empty.");
                         }
-
-                        for (int i = 0, index = listPage * 12;
-                            i < 12 && index >= 0 && index < firewallEntries.Count;
-                            ++i, ++index)
+                        else
                         {
-                            var firewallEntry = firewallEntries[index];
+                            var i = 0;
+                            var index = listPage * 12;
+                            foreach (var firewallEntry in firewallEntries)
+                            {
+                                if (i >= 12)
+                                {
+                                    break;
+                                }
 
-                            var offset = 140 + i * 20;
+                                var offset = 140 + i++ * 20;
 
-                            AddLabelCropped(12, offset, 358, 20, LabelHue, firewallEntry.ToString());
-                            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(6, index + 4));
+                                AddLabelCropped(12, offset, 358, 20, LabelHue, firewallEntry.ToString());
+                                AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(6, index++ + 4));
+                            }
                         }
 
                         break;
@@ -3525,13 +3530,13 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        for (var i = 0; i < Firewall.List.Count; ++i)
+                                        foreach (var check in Firewall.Set)
                                         {
-                                            var check = Firewall.List[i].ToString();
+                                            var checkStr = check.ToString();
 
-                                            if (check?.Contains(match, StringComparison.Ordinal) == true)
+                                            if (checkStr?.Contains(match, StringComparison.Ordinal) == true)
                                             {
-                                                results.Add(Firewall.List[i]);
+                                                results.Add(check);
                                             }
                                         }
                                     }
