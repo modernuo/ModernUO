@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace Server.Tests.Accounting
+namespace Server.Tests
 {
     public class HexStringConverterTest
     {

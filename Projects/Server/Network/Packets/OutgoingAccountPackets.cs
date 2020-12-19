@@ -454,7 +454,8 @@ namespace Server.Network
                 writer.WriteAscii(si.Name, 32);
                 writer.Write((byte)si.FullPercent);
                 writer.Write((sbyte)si.TimeZone);
-                writer.Write(Utility.GetAddressValue(si.Address.Address));
+                // UO only supports IPv4
+                writer.Write(si.RawAddress);
             }
 
             writer.WritePacketLength();
@@ -477,8 +478,7 @@ namespace Server.Network
             var writer = new CircularBufferWriter(buffer);
             writer.Write((byte)0x8C); // Packet ID
 
-            var addr = Utility.GetAddressValue(si.Address.Address);
-            writer.WriteLE(addr);
+            writer.WriteLE(si.RawAddress);
             writer.Write((short)si.Address.Port);
             writer.Write(authId);
 
