@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: Insensitive.cs                                                  *
+ * File: InsensitiveStringHelpers.cs                                     *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,7 +18,7 @@ using System.Runtime.CompilerServices;
 
 namespace Server
 {
-    public static class Insensitive
+    public static class InsensitiveStringHelpers
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int InsensitiveCompare(this ReadOnlySpan<char> a, string b) =>
