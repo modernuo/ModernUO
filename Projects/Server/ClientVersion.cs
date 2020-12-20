@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Server.Buffers;
 
 namespace Server
 {
@@ -178,13 +179,13 @@ namespace Server
 
         private string ToStringImpl()
         {
-            var builder = new StringBuilder(16);
+            using var builder = new ValueStringBuilder(stackalloc char[32]);
 
-            builder.Append(Major);
+            builder.Append(Major.ToString());
             builder.Append('.');
-            builder.Append(Minor);
+            builder.Append(Minor.ToString());
             builder.Append('.');
-            builder.Append(Revision);
+            builder.Append(Revision.ToString());
 
             if (Major <= 5 && Minor <= 0 && Revision <= 6) // Anything before 5.0.7
             {
@@ -196,7 +197,7 @@ namespace Server
             else
             {
                 builder.Append('.');
-                builder.Append(Patch);
+                builder.Append(Patch.ToString());
             }
 
             if (Type != ClientType.Regular)

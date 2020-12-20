@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
 using Microsoft.Toolkit.HighPerformance.Extensions;
+using Server.Buffers;
 using Server.Random;
 
 namespace Server
@@ -144,18 +145,20 @@ namespace Server
 
             ReadOnlySpan<char> chars = s.AsSpan();
 
-            StringBuilder stringBuilder = null;
+            using ValueStringBuilder sb = new ValueStringBuilder(stackalloc char[256]);
+            var hasDoneAnyReplacements = false;
 
             for (int i = 0, last = 0; i < chars.Length; i++)
             {
-                if (!IsSafeChar(chars[i]) || stringBuilder != null && i == chars.Length - 1)
+                if (!IsSafeChar(chars[i]) && i == chars.Length - 1)
                 {
-                    (stringBuilder ??= new StringBuilder()).Append(chars.Slice(last, i - last));
+                    hasDoneAnyReplacements = true;
+                    sb.Append(chars.Slice(last, i - last));
                     last = i + 1; // Skip the unsafe char
                 }
             }
 
-            return stringBuilder?.ToString() ?? s;
+            return !hasDoneAnyReplacements ? s : sb.ToString();
         }
 
         public static void Separate(StringBuilder sb, string value, string separator)

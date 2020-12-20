@@ -6,6 +6,7 @@
         <PlatformTarget>x64</PlatformTarget>
         <LangVersion>9</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <SkipLocalsInitiAttribute>true</SkipLocalsInitiAttribute>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />

@@ -13,7 +13,7 @@ using Server.Items;
 
 namespace Benchmarks
 {
-    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp50)]
     public class BenchmarkFeatureFlags
     {
         public Dictionary<Type, FeatureFlag<Item>> m_Dictionary;

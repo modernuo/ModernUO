@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Server.Buffers;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Multis;
@@ -119,7 +120,7 @@ namespace Server.Items
         {
             get
             {
-                var sb = new StringBuilder();
+                using var sb = new ValueStringBuilder(stackalloc char[256]);
 
                 foreach (var bpi in Pages)
                 {

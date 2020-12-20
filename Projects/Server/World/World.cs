@@ -313,7 +313,7 @@ namespace Server
                     continue;
                 }
 
-                byte[] saveBuffer = new byte[entry.Length];
+                byte[] saveBuffer = GC.AllocateUninitializedArray<byte>(entry.Length);
                 reader.Read(saveBuffer, 0, entry.Length);
                 t.SaveBuffer = new BufferWriter(saveBuffer, true);
             }
@@ -331,7 +331,7 @@ namespace Server
             }
 
             using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var buffer = new byte[bin.Length];
+            var buffer = bin.Length <= int.MaxValue ? GC.AllocateUninitializedArray<byte>((int)bin.Length) : new byte[bin.Length];
             bin.Read(buffer);
             bin.Close();
 

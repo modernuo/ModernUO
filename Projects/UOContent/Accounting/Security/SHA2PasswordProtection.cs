@@ -27,7 +27,7 @@ namespace Server.Accounting.Security
         public string EncryptPassword(string plainPassword)
         {
             var password = plainPassword.AsSpan(0, Math.Min(256, plainPassword.Length));
-            var bytes = new byte[Encoding.ASCII.GetByteCount(password)];
+            var bytes = GC.AllocateUninitializedArray<byte>(Encoding.ASCII.GetByteCount(password));
             Encoding.ASCII.GetBytes(password, bytes);
 
             return m_SHA2HashProvider.ComputeHash(bytes).ToHexString();

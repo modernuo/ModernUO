@@ -152,7 +152,7 @@ namespace Server
 
                     stream.Seek(offset + headerSize, SeekOrigin.Begin);
 
-                    Span<byte> sourceData = new byte[compressedSize];
+                    Span<byte> sourceData = GC.AllocateUninitializedArray<byte>(compressedSize);
 
                     if (stream.Read(sourceData) != compressedSize)
                     {
@@ -163,7 +163,7 @@ namespace Server
 
                     if (compressionMethod == 1)
                     {
-                        data = new byte[decompressedSize];
+                        data = GC.AllocateUninitializedArray<byte>(decompressedSize);
                         Zlib.Unpack(data, ref decompressedSize, sourceData, compressedSize);
                     }
                     else

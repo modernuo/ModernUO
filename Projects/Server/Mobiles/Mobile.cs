@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
 using Server.Accounting;
+using Server.Buffers;
 using Server.ContextMenus;
 using Server.Guilds;
 using Server.Gumps;
@@ -5674,8 +5675,7 @@ namespace Server
                 return false;
             }
 
-            var sb = new StringBuilder(text.Length, text.Length);
-
+            using var sb = new ValueStringBuilder(stackalloc char[Math.Min(text.Length, 256)]);
             for (var i = 0; i < text.Length; ++i)
             {
                 sb.Append(text[i] != ' ' ? GhostChars.RandomElement() : ' ');

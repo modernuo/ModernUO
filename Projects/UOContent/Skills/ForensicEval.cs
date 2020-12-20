@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Server.Buffers;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
@@ -75,12 +76,12 @@ namespace Server.SkillHandlers
 
                         if (c.Looters.Count > 0)
                         {
-                            var sb = new StringBuilder();
+                            using var sb = new ValueStringBuilder(stackalloc char[128]);
                             for (var i = 0; i < c.Looters.Count; i++)
                             {
                                 if (i > 0)
                                 {
-                                    sb.Append(", ");
+                                    sb.Append(i == c.Looters.Count - 1 ? ", and " : ", ");
                                 }
 
                                 sb.Append(c.Looters[i].Name);
@@ -89,7 +90,7 @@ namespace Server.SkillHandlers
                             from.SendLocalizedMessage(
                                 1042752,
                                 sb.ToString()
-                            ); // This body has been distrubed by ~1_PLAYER_NAMES~
+                            ); // This body has been disturbed by ~1_PLAYER_NAMES~
                         }
                         else
                         {

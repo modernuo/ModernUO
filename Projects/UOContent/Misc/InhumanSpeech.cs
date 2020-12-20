@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Server.Buffers;
 
 namespace Server.Misc
 {
@@ -316,9 +317,10 @@ namespace Server.Misc
             return string.Concat(syllables);
         }
 
-        public string ConstructSentance(int wordCount)
+        // TODO: Should be changed a preset table that is built
+        public string ConstructSentence(int wordCount)
         {
-            var sentence = new StringBuilder();
+            using var sentence = new ValueStringBuilder(stackalloc char[256]);
 
             var needUpperCase = true;
 
@@ -417,31 +419,38 @@ namespace Server.Misc
 
                 var secondResponseWord = GetRandomResponseWord(keywordsFound);
 
-                var response = new StringBuilder();
+                using var response = new ValueStringBuilder(stackalloc char[256]);
 
                 switch (Utility.Random(6))
                 {
                     default:
                     case 0:
                         {
-                            response.Append("Me ").Append(responseWord).Append('?');
+                            response.Append("Me ");
+                            response.Append(responseWord);
+                            response.Append('?');
                             break;
                         }
                     case 1:
                         {
-                            response.Append(responseWord).Append(" thee!");
+                            response.Append(responseWord);
+                            response.Append(" thee!");
                             response.Replace(responseWord[0], char.ToUpper(responseWord[0]), 0, 1);
                             break;
                         }
                     case 2:
                         {
-                            response.Append(responseWord).Append('?');
+                            response.Append(responseWord);
+                            response.Append('?');
                             response.Replace(responseWord[0], char.ToUpper(responseWord[0]), 0, 1);
                             break;
                         }
                     case 3:
                         {
-                            response.Append(responseWord).Append("! ").Append(secondResponseWord).Append('.');
+                            response.Append(responseWord);
+                            response.Append("! ");
+                            response.Append(secondResponseWord);
+                            response.Append('.');
                             response.Replace(responseWord[0], char.ToUpper(responseWord[0]), 0, 1);
                             response.Replace(
                                 secondResponseWord[0],
@@ -453,13 +462,17 @@ namespace Server.Misc
                         }
                     case 4:
                         {
-                            response.Append(responseWord).Append('.');
+                            response.Append(responseWord);
+                            response.Append('.');
                             response.Replace(responseWord[0], char.ToUpper(responseWord[0]), 0, 1);
                             break;
                         }
                     case 5:
                         {
-                            response.Append(responseWord).Append("? ").Append(secondResponseWord).Append('.');
+                            response.Append(responseWord);
+                            response.Append("? ");
+                            response.Append(secondResponseWord);
+                            response.Append('.');
                             response.Replace(responseWord[0], char.ToUpper(responseWord[0]), 0, 1);
                             response.Replace(
                                 secondResponseWord[0],
@@ -577,7 +590,7 @@ namespace Server.Misc
 
         public void SaySentance(Mobile mob, int wordCount)
         {
-            mob.Say(ConstructSentance(wordCount));
+            mob.Say(ConstructSentence(wordCount));
             mob.PlaySound(Sound);
         }
     }
