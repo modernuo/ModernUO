@@ -15,6 +15,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Server
@@ -164,6 +165,81 @@ namespace Server
             }
 
             return str;
+        }
+
+        public static List<string> Wrap(this string value, int perLine, int maxLines)
+        {
+            if ((value = value?.Trim() ?? "").Length <= 0)
+            {
+                return null;
+            }
+
+            var span = value.AsSpan();
+            var list = new List<string>(maxLines);
+            var lineLength = 0;
+
+            while (span.Length > 0)
+            {
+                var spaceIndex = span.Slice(lineLength).IndexOf(' ');
+                if (spaceIndex == -1)
+                {
+                    spaceIndex = span.Length; // End of the string
+                }
+
+                var newLineLength = lineLength + spaceIndex;
+
+                if (newLineLength == perLine || newLineLength == span.Length - 1)
+                {
+                    // Could be the end of the string
+                    var length = span[newLineLength] == ' ' ? newLineLength - 1 : newLineLength;
+                    list.Add(span.Slice(0, length).ToString());
+                    if (list.Count == maxLines)
+                    {
+                        break;
+                    }
+
+                    span = span.Slice(newLineLength);
+                    lineLength = 0;
+                }
+                else if (newLineLength < perLine)
+                {
+                    lineLength = newLineLength + 1;
+                }
+                else if (lineLength > 0 && lineLength <= perLine)
+                {
+                    list.Add(span.Slice(0, lineLength - 1).ToString());
+                    if (list.Count == maxLines)
+                    {
+                        break;
+                    }
+
+                    span = span.Slice(lineLength);
+                    lineLength = spaceIndex;
+                }
+                else
+                {
+                    lineLength = newLineLength;
+                    var index = 0;
+
+                    while (index < lineLength)
+                    {
+                        lineLength -= perLine;
+
+                        var length = perLine - (span[index] == ' ' ? 1 : 0);
+                        list.Add(span.Slice(index, length).ToString());
+                        if (list.Count == maxLines)
+                        {
+                            break;
+                        }
+
+                        index += perLine;
+                    }
+
+                    span = span.Slice(lineLength);
+                }
+            }
+
+            return list;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Server.Tests
@@ -38,6 +39,86 @@ namespace Server.Tests
             var actual = original.AsSpan().Remove(separator, comparison);
 
             Assert.Equal(removed, actual);
+        }
+
+        [Theory]
+        [InlineData("this is a sentence that will probably wrap around a few times because it is long", 10, 6)]
+        public void TestWrap(string sentence, int perLine, int maxLines)
+        {
+            var expected = OldWrap(sentence, perLine, maxLines);
+            var actual = sentence.Wrap(perLine, maxLines);
+
+            Assert.Equal(expected, actual);
+        }
+
+        // The old wrap function from HouseGump/HouseGumpAOS
+        private static List<string> OldWrap(string value, int startIndex, int maxLines)
+        {
+            if (value == null || (value = value.Trim()).Length <= 0)
+            {
+                return null;
+            }
+
+            var values = value.Split(' ');
+            var list = new List<string>();
+            var current = "";
+
+            for (var i = 0; i < values.Length; ++i)
+            {
+                var val = values[i];
+
+                var v = current.Length == 0 ? val : $"{current} {val}";
+
+                if (v.Length < startIndex)
+                {
+                    current = v;
+                }
+                else if (v.Length == startIndex)
+                {
+                    list.Add(v);
+
+                    if (list.Count == maxLines)
+                    {
+                        return list;
+                    }
+
+                    current = "";
+                }
+                else if (val.Length <= startIndex)
+                {
+                    list.Add(current);
+
+                    if (list.Count == maxLines)
+                    {
+                        return list;
+                    }
+
+                    current = val;
+                }
+                else
+                {
+                    while (v.Length >= startIndex)
+                    {
+                        list.Add(v.Substring(0, startIndex));
+
+                        if (list.Count == maxLines)
+                        {
+                            return list;
+                        }
+
+                        v = v.Substring(startIndex);
+                    }
+
+                    current = v;
+                }
+            }
+
+            if (current.Length > 0)
+            {
+                list.Add(current);
+            }
+
+            return list;
         }
     }
 }
