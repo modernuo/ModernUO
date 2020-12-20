@@ -318,7 +318,7 @@ namespace Server.Misc
 
         public string ConstructSentance(int wordCount)
         {
-            var sentance = new StringBuilder();
+            var sentence = new StringBuilder();
 
             var needUpperCase = true;
 
@@ -330,56 +330,33 @@ namespace Server.Misc
 
                     if (random < 11)
                     {
-                        sentance.Append(' ');
+                        sentence.Append(' ');
                     }
                     else
                     {
                         needUpperCase = true;
 
-                        if (random > 13)
-                        {
-                            sentance.Append("! ");
-                        }
-                        else
-                        {
-                            sentance.Append(". ");
-                        }
+                        sentence.Append(random > 13 ? "! " : ". ");
                     }
                 }
 
-                int syllableCount;
-
-                if (Utility.Random(100) < 30)
-                {
-                    syllableCount = Utility.Random(1, 5);
-                }
-                else
-                {
-                    syllableCount = Utility.Random(1, 3);
-                }
+                var syllableCount = Utility.Random(1, Utility.Random(100) < 30 ? 5 : 3);
 
                 var word = ConstructWord(syllableCount);
 
-                sentance.Append(word);
+                sentence.Append(word);
 
                 if (needUpperCase)
                 {
-                    sentance.Replace(word[0], char.ToUpper(word[0]), sentance.Length - word.Length, 1);
+                    sentence.Replace(word[0], char.ToUpper(word[0]), sentence.Length - word.Length, 1);
                 }
 
                 needUpperCase = false;
             }
 
-            if (Utility.RandomMinMax(1, 5) == 1)
-            {
-                sentance.Append('!');
-            }
-            else
-            {
-                sentance.Append('.');
-            }
+            sentence.Append(Utility.RandomMinMax(1, 5) == 1 ? '!' : '.');
 
-            return sentance.ToString();
+            return sentence.ToString();
         }
 
         public void SayRandomTranslate(Mobile mob, params string[] sentancesInEnglish)
@@ -435,16 +412,8 @@ namespace Server.Misc
 
             if (keywordsFound.Count > 0)
             {
-                string responseWord;
-
-                if (Utility.RandomBool())
-                {
-                    responseWord = GetRandomResponseWord(keywordsFound);
-                }
-                else
-                {
-                    responseWord = keywordsFound.RandomElement();
-                }
+                var responseWord = Utility.RandomBool() ?
+                    GetRandomResponseWord(keywordsFound) : keywordsFound.RandomElement();
 
                 var secondResponseWord = GetRandomResponseWord(keywordsFound);
 
@@ -502,16 +471,7 @@ namespace Server.Misc
                         }
                 }
 
-                var maxWords = split.Length / 2 + 1;
-
-                if (maxWords < 2)
-                {
-                    maxWords = 2;
-                }
-                else if (maxWords > 6)
-                {
-                    maxWords = 6;
-                }
+                var maxWords = Math.Clamp(split.Length / 2 + 1, 2, 6);
 
                 SaySentance(mob, Utility.RandomMinMax(2, maxWords));
                 mob.Say(response.ToString());

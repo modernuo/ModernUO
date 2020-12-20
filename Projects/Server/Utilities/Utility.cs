@@ -175,9 +175,6 @@ namespace Server
             str = Intern(str);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string DefaultIfNullOrEmpty(this string value, string def) => value?.Trim().Length > 0 ? value : def;
-
         public static IPAddress Intern(IPAddress ipAddress)
         {
             if (ipAddress == null)

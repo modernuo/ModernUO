@@ -22,6 +22,9 @@ namespace Server
     public static class StringHelpers
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string DefaultIfNullOrEmpty(this string value, string def) => value?.Trim().Length > 0 ? value : def;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Remove(
             this ReadOnlySpan<char> a,
             ReadOnlySpan<char> b,
@@ -31,7 +34,7 @@ namespace Server
         )
         {
             size = 0;
-            if (a.Length == 0)
+            if (a == null || a.Length == 0)
             {
                 return;
             }
@@ -52,19 +55,25 @@ namespace Server
                 }
 
                 sliced.Slice(0, indexOf).CopyTo(buffer.Slice(size));
+                size += indexOf;
+
                 if (indexOf == sliced.Length)
                 {
                     break;
                 }
 
-                size += indexOf;
-                sliced = a.Slice(indexOf);
+                sliced = sliced.Slice(indexOf + 1);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Remove(this ReadOnlySpan<char> a, ReadOnlySpan<char> b, StringComparison comparison)
         {
+            if (a == null)
+            {
+                return null;
+            }
+
             if (a.Length == 0)
             {
                 return "";
@@ -85,6 +94,69 @@ namespace Server
             a.Remove(b, comparison, span, out var size);
 
             var str = span.Slice(0, size).ToString();
+
+            if (chrs != null)
+            {
+                ArrayPool<char>.Shared.Return(chrs);
+            }
+
+            return str;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string Capitalize(this string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+
+            Span<char> span = value.Length < 1024 ? stackalloc char[value.Length] : null;
+            char[] chrs;
+            if (span == null)
+            {
+                chrs = ArrayPool<char>.Shared.Rent(value.Length);
+                span = chrs.AsSpan();
+            }
+            else
+            {
+                chrs = null;
+            }
+
+            var sliced = value.AsSpan();
+            // Copy over the previous span
+            sliced.CopyTo(span);
+
+            var index = 0;
+
+            while (true)
+            {
+                // Special case for titles - words that don't get capitalized
+                if (sliced.InsensitiveStartsWith("the "))
+                {
+                    sliced = sliced.Slice(4);
+                    index += 4;
+                    continue;
+                }
+
+                var indexOf = sliced.IndexOf(' ');
+                span[index] = char.ToUpperInvariant(sliced[0]);
+
+                if (indexOf == -1)
+                {
+                    break;
+                }
+
+                if (indexOf == sliced.Length - 1)
+                {
+                    break;
+                }
+
+                sliced = sliced.Slice(indexOf + 1);
+                index += indexOf + 1;
+            }
+
+            var str = span.ToString();
 
             if (chrs != null)
             {
