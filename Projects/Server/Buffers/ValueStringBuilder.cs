@@ -346,19 +346,17 @@ namespace Server.Buffers
             if (startIndex == 0)
             {
                 _chars = _chars.Slice(length);
-                Length -= length;
-                return;
             }
-
-            if (startIndex + length == Length)
+            else if (startIndex + length == Length)
             {
                 _chars = _chars.Slice(0, startIndex);
-                Length -= length;
-                return;
+            }
+            else
+            {
+                // Somewhere in the middle, this will be slow
+                _chars.Slice(startIndex + length).CopyTo(_chars.Slice(startIndex));
             }
 
-            // Somewhere in the middle, this will be slow
-            _chars.Slice(startIndex + length).CopyTo(_chars.Slice(startIndex));
             Length -= length;
         }
     }
