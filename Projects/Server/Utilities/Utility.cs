@@ -1,5 +1,6 @@
 using System;
 using System.Buffers.Binary;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -992,24 +993,16 @@ namespace Server
 
         // Using this instead of Linq Cast<> means we can ditch the yield and enforce contravariance
         public static HashSet<TOutput> SafeConvertSet<TInput, TOutput>(this IEnumerable<TInput> coll)
-            where TOutput : TInput
-        {
-            var outputList = new HashSet<TOutput>();
-            foreach (var entry in coll)
-            {
-                if (entry is TOutput outEntry)
-                {
-                    outputList.Add(outEntry);
-                }
-            }
-
-            return outputList;
-        }
+            where TOutput : TInput => coll.SafeConvert<HashSet<TOutput>, TInput, TOutput>();
 
         public static List<TOutput> SafeConvertList<TInput, TOutput>(this IEnumerable<TInput> coll)
-            where TOutput : TInput
+            where TOutput : TInput => coll.SafeConvert<List<TOutput>, TInput, TOutput>();
+
+        public static TColl SafeConvert<TColl, TInput, TOutput>(this IEnumerable<TInput> coll)
+            where TOutput : TInput where TColl : ICollection<TOutput>, new()
         {
-            var outputList = new List<TOutput>();
+            var outputList = new TColl();
+
             foreach (var entry in coll)
             {
                 if (entry is TOutput outEntry)
