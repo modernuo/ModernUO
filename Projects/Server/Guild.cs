@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -55,16 +54,26 @@ namespace Server.Guilds
         public static BaseGuild FindByAbbrev(string abbr) =>
             World.Guilds.Values.FirstOrDefault(g => g.Abbreviation == abbr);
 
-        public static List<BaseGuild> Search(string find)
+        public static HashSet<BaseGuild> Search(string find)
         {
             var words = find.ToLower().Split(' ');
-            var results = new List<BaseGuild>();
+            var results = new HashSet<BaseGuild>();
 
             foreach (var g in World.Guilds.Values)
             {
-                var name = g.Name.ToLower();
+                var name = g.Name;
 
-                if (words.All(t => name.IndexOfOrdinal(t) != -1))
+                bool all = true;
+                foreach (var t in words)
+                {
+                    if (name.InsensitiveIndexOf(t) == -1)
+                    {
+                        all = false;
+                        break;
+                    }
+                }
+
+                if (all)
                 {
                     results.Add(g);
                 }

@@ -990,43 +990,24 @@ namespace Server
             }
         }
 
-        public static List<TOutput> CastListContravariant<TInput, TOutput>(this IReadOnlyCollection<TInput> coll)
-            where TInput : TOutput
-        {
-            var outputList = new List<TOutput>();
-            foreach (var entry in coll)
-            {
-                outputList.Add(entry);
-            }
-
-            return outputList;
-        }
-
-        public static List<TOutput> CastListCovariant<TInput, TOutput>(this IReadOnlyCollection<TInput> coll)
-            where TOutput : TInput
-        {
-            var outputList = new List<TOutput>();
-            foreach (var entry in coll)
-            {
-                outputList.Add((TOutput)entry);
-            }
-
-            return outputList;
-        }
-
-        public static HashSet<TOutput> CastSetCovariant<TInput, TOutput>(this IReadOnlyCollection<TInput> coll)
+        // Using this instead of Linq Cast<> means we can ditch the yield and enforce contravariance
+        public static HashSet<TOutput> SafeConvertSet<TInput, TOutput>(this IEnumerable<TInput> coll)
             where TOutput : TInput
         {
             var outputList = new HashSet<TOutput>();
             foreach (var entry in coll)
             {
-                outputList.Add((TOutput)entry);
+                if (entry is TOutput outEntry)
+                {
+                    outputList.Add(outEntry);
+                }
             }
 
             return outputList;
         }
 
-        public static List<TOutput> SafeConvertList<TInput, TOutput>(this IReadOnlyCollection<TInput> coll) where TOutput : class
+        public static List<TOutput> SafeConvertList<TInput, TOutput>(this IEnumerable<TInput> coll)
+            where TOutput : TInput
         {
             var outputList = new List<TOutput>();
             foreach (var entry in coll)

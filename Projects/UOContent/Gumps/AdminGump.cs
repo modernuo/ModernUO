@@ -612,11 +612,12 @@ namespace Server.Gumps
                         if (m_List == null)
                         {
                             sharedAccounts = GetAllSharedAccounts();
-                            m_List = sharedAccounts.CastListContravariant<KeyValuePair<IPAddress, List<Account>>, object>();
+                            // TODO: Find a better way, don't use KVPs?
+                            m_List = sharedAccounts.ConvertAll(kvp => (object)kvp);
                         }
                         else
                         {
-                            sharedAccounts = m_List.CastListCovariant<object, KeyValuePair<IPAddress, List<Account>>>();
+                            sharedAccounts = m_List.SafeConvertList<object, KeyValuePair<IPAddress, List<Account>>>();
                         }
 
                         AddLabelCropped(12, 120, 60, 20, LabelHue, "Count");
@@ -1004,11 +1005,11 @@ namespace Server.Gumps
                         if (m_List == null)
                         {
                             ipAddresses = a.LoginIPs.ToList();
-                            m_List = ipAddresses.CastListContravariant<IPAddress, object>();
+                            m_List = ipAddresses.ToList<object>();
                         }
                         else
                         {
-                            ipAddresses = m_List.CastListCovariant<object, IPAddress>();
+                            ipAddresses = m_List.SafeConvertList<object, IPAddress>();
                         }
 
                         AddHtml(10, 195, 400, 20, Color(Center("Client Addresses"), LabelColor32));
@@ -1076,11 +1077,11 @@ namespace Server.Gumps
                         if (m_List == null)
                         {
                             ipRestrictions = a.IPRestrictions.ToList();
-                            m_List = ipRestrictions.CastListContravariant<string, object>();
+                            m_List = ipRestrictions.ToList<object>();
                         }
                         else
                         {
-                            ipRestrictions = m_List.CastListCovariant<object, string>();
+                            ipRestrictions = m_List.SafeConvertList<object, string>();
                         }
 
                         AddHtml(10, 195, 400, 20, Color(Center("Address Restrictions"), LabelColor32));
@@ -1265,11 +1266,11 @@ namespace Server.Gumps
                         if (m_List == null)
                         {
                             firewallEntries = Firewall.Set;
-                            m_List = firewallEntries.CastListContravariant<Firewall.IFirewallEntry, object>();
+                            m_List = firewallEntries.ToList<object>();
                         }
                         else
                         {
-                            firewallEntries = m_List.CastSetCovariant<object, Firewall.IFirewallEntry>();
+                            firewallEntries = m_List.SafeConvertSet<object, Firewall.IFirewallEntry>();
                         }
 
                         AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
@@ -1356,11 +1357,11 @@ namespace Server.Gumps
                             }
 
                             blockedAccts.Sort(AccountComparer.Instance);
-                            m_List = blockedAccts.CastListContravariant<Account, object>();
+                            m_List = blockedAccts.ToList<object>();
                         }
                         else
                         {
-                            blockedAccts = m_List.CastListCovariant<object, Account>();
+                            blockedAccts = m_List.SafeConvertList<object, Account>();
                         }
 
                         if (listPage > 0)
@@ -1973,7 +1974,7 @@ namespace Server.Gumps
 
             if (m_PageType == AdminGumpPage.Accounts)
             {
-                var list = m_List.CastListCovariant<object, Account>();
+                var list = m_List.SafeConvertList<object, Account>();
 
                 if (list != null && m_State is List<Account> rads)
                 {
@@ -2513,7 +2514,7 @@ namespace Server.Gumps
                                                     from,
                                                     AdminGumpPage.Clients,
                                                     0,
-                                                    results.CastListContravariant<NetState, object>(),
+                                                    results.ToList<object>(),
                                                     "One match found."
                                                 )
                                             );
@@ -2526,7 +2527,7 @@ namespace Server.Gumps
                                                 from,
                                                 AdminGumpPage.Clients,
                                                 0,
-                                                results.CastListContravariant<NetState, object>(),
+                                                results.ToList<object>(),
                                                 notice ?? (results.Count == 0 ? "Nothing matched your search terms." : null)
                                             )
                                         );
@@ -2745,7 +2746,7 @@ namespace Server.Gumps
                                                 from,
                                                 AdminGumpPage.Accounts,
                                                 0,
-                                                results.CastListContravariant<IAccount, object>(),
+                                                results.ToList<object>(),
                                                 results.Count == 0 ? "Nothing matched your search terms." : null,
                                                 new List<object>()
                                             )
@@ -2873,7 +2874,7 @@ namespace Server.Gumps
                                                 from,
                                                 AdminGumpPage.Accounts,
                                                 0,
-                                                list.CastListContravariant<Account, object>(),
+                                                list.ToList<object>(),
                                                 null,
                                                 new List<object>()
                                             )
@@ -3496,7 +3497,7 @@ namespace Server.Gumps
                                                         from,
                                                         AdminGumpPage.Accounts,
                                                         0,
-                                                        kvp.Value.CastListContravariant<Account, object>(),
+                                                        kvp.Value.ToList<object>(),
                                                         null,
                                                         new List<object>()
                                                     )
@@ -3962,7 +3963,7 @@ namespace Server.Gumps
                                             from,
                                             AdminGumpPage.Accounts,
                                             0,
-                                            list.CastListContravariant<Account, object>(),
+                                            list.ToList<object>(),
                                             null,
                                             new List<object>()
                                         )

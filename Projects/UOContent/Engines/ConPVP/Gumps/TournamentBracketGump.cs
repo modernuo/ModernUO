@@ -279,7 +279,7 @@ namespace Server.Engines.ConPVP
                         AddPage(0);
                         AddBackground(0, 0, 300, 300, 9380);
 
-                        var pList = m_List?.CastListCovariant<object, TourneyParticipant>()
+                        var pList = m_List?.SafeConvertList<object, TourneyParticipant>()
                                     ?? new List<TourneyParticipant>(tourney.Participants);
 
                         AddLeftArrow(25, 11, ToButtonID(0, 0));
@@ -412,10 +412,6 @@ namespace Server.Engines.ConPVP
                         AddLeftArrow(25, 11, ToButtonID(0, 0));
                         AddHtml(25, 35, 250, 20, Center("Rounds"));
 
-                        // List<PyramidLevel> levelsList = m_List != null
-                        //            ? Utility.CastListCovariant<object, PyramidLevel>(m_List)
-                        //            : new List<PyramidLevel>(tourney.Pyramid.Levels);
-
                         StartPage(out var index, out var count, out var y, 12);
 
                         for (var i = 0; i < count; ++i, y += 18)
@@ -439,7 +435,7 @@ namespace Server.Engines.ConPVP
                         }
 
                         var matchesList = m_List != null
-                            ? m_List.CastListCovariant<object, TourneyMatch>()
+                            ? m_List.SafeConvertList<object, TourneyMatch>()
                             : new List<TourneyMatch>(level.Matches);
 
                         AddRightArrow(
