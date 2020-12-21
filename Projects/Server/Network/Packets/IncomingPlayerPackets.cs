@@ -134,7 +134,8 @@ namespace Server.Network
                     }
                 case 0x24: // Use skill
                     {
-                        if (!int.TryParse(command.Tokenize(' ').Current, out var skillIndex))
+                        var tokenizer = command.Tokenize(' ');
+                        if (!tokenizer.MoveNext() || !int.TryParse(tokenizer.Current, out var skillIndex))
                         {
                             break;
                         }
@@ -157,7 +158,7 @@ namespace Server.Network
                 case 0x27: // Cast spell from book
                     {
                         var tokenizer = command.Tokenize(' ');
-                        var spellID = Utility.ToInt32(tokenizer.Current) - 1;
+                        var spellID = (tokenizer.MoveNext() ? Utility.ToInt32(tokenizer.Current) : 0) - 1;
                         var serial = tokenizer.MoveNext() ? Utility.ToUInt32(tokenizer.Current) : (uint)Serial.MinusOne;
 
                         EventSink.InvokeCastSpellRequest(from, spellID, World.FindItem(serial));

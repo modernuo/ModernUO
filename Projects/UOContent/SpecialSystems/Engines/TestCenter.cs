@@ -42,7 +42,7 @@ namespace Server.Misc
                     return;
                 }
 
-                var name = tokenizer.Current;
+                var name = tokenizer.MoveNext() ? tokenizer.Current : null;
                 var valueStr = tokenizer.MoveNext() ? tokenizer.Current : null;
                 if (valueStr == null)
                 {

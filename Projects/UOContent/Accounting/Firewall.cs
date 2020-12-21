@@ -60,7 +60,7 @@ namespace Server
 
             // Try CIDR parse
             var tokenizer = entry.Tokenize('/');
-            var ip = tokenizer.Current;
+            var ip = tokenizer.MoveNext() ? tokenizer.Current : null;
             var length = tokenizer.MoveNext() ? tokenizer.Current : null;
 
             if (
@@ -205,21 +205,11 @@ namespace Server
         {
             private readonly string m_Entry;
 
-            private bool m_Valid;
+            private bool m_Valid = true;
 
             public WildcardIPFirewallEntry(string entry) => m_Entry = entry;
 
-            public bool IsBlocked(IPAddress address)
-            {
-                if (!m_Valid)
-                {
-                    return false; // Why process if it's invalid?  it'll return false anyway after processing it.
-                }
-
-                var matched = Utility.IPMatch(m_Entry, address, out var valid);
-                m_Valid = valid;
-                return matched;
-            }
+            public bool IsBlocked(IPAddress address) => m_Valid && Utility.IPMatch(m_Entry, address, out m_Valid);
 
             public override string ToString() => m_Entry;
 
