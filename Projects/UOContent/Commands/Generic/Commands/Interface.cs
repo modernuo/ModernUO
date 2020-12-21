@@ -28,7 +28,7 @@ namespace Server.Commands.Generic
                 {
                     var offset = 0;
 
-                    if (Insensitive.Equals(e.GetString(0), "view"))
+                    if (e.GetString(0).InsensitiveEquals("view"))
                     {
                         ++offset;
                     }

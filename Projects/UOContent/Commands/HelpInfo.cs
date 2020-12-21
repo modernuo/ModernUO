@@ -94,8 +94,8 @@ namespace Server.Commands
                 var aliases = attrs.Length == 0 ? null : attrs[0] as AliasesAttribute;
 
                 var descString = desc.Description
-                    .Replace("<", "(", StringComparison.Ordinal)
-                    .Replace(">", ")", StringComparison.Ordinal);
+                    .ReplaceOrdinal("<", "(")
+                    .ReplaceOrdinal(">", ")");
 
                 if (aliases == null)
                 {
@@ -140,8 +140,8 @@ namespace Server.Commands
                 }
 
                 desc = desc
-                    .Replace("<", "(", StringComparison.Ordinal)
-                    .Replace(">", ")", StringComparison.Ordinal);
+                    .ReplaceOrdinal("<", "(")
+                    .ReplaceOrdinal(">", ")");
 
                 if (command.Supports != CommandSupport.Single)
                 {
@@ -229,8 +229,8 @@ namespace Server.Commands
                 }
 
                 desc = desc
-                    .Replace("<", ")", StringComparison.Ordinal)
-                    .Replace(">", ")", StringComparison.Ordinal);
+                    .ReplaceOrdinal("<", ")")
+                    .ReplaceOrdinal(">", ")");
 
                 list.Add(new CommandInfo(command.AccessLevel, cmd, aliases, usage, desc));
 
@@ -413,8 +413,8 @@ namespace Server.Commands
 
                 sb.Append("Usage: ");
                 var usage = info.Usage
-                    .Replace("<", "(", StringComparison.Ordinal)
-                    .Replace(">", ")", StringComparison.Ordinal);
+                    .ReplaceOrdinal("<", "(")
+                    .ReplaceOrdinal(">", ")");
                 sb.Append(usage);
                 sb.Append("<BR>");
 

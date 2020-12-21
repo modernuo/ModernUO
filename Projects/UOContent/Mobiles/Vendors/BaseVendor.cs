@@ -771,33 +771,7 @@ namespace Server.Mobiles
 
         public virtual void CapitalizeTitle()
         {
-            var title = Title;
-
-            if (title == null)
-            {
-                return;
-            }
-
-            var split = title.Split(' ');
-
-            for (var i = 0; i < split.Length; ++i)
-            {
-                if (Insensitive.Equals(split[i], "the"))
-                {
-                    continue;
-                }
-
-                if (split[i].Length > 1)
-                {
-                    split[i] = char.ToUpper(split[i][0]) + split[i].Substring(1);
-                }
-                else if (split[i].Length > 0)
-                {
-                    split[i] = char.ToUpper(split[i][0]).ToString();
-                }
-            }
-
-            Title = string.Join(" ", split);
+            Title = Title.Capitalize();
         }
 
         public virtual int GetHairHue() => Race.RandomHairHue();

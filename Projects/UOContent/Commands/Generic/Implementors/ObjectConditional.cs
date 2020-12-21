@@ -71,7 +71,7 @@ namespace Server.Commands.Generic
 
             for (var i = 0; i < args.Length; ++i)
             {
-                if (Insensitive.Equals(args[i], "where"))
+                if (args[i].InsensitiveEquals("where"))
                 {
                     var origArgs = args;
 
@@ -111,9 +111,7 @@ namespace Server.Commands.Generic
             }
 
             var conditions = new List<ICondition[]>();
-            var current = new List<ICondition>();
-
-            current.Add(TypeCondition.Default);
+            var current = new List<ICondition> { TypeCondition.Default };
 
             var index = 1;
 
@@ -123,7 +121,7 @@ namespace Server.Commands.Generic
 
                 var inverse = false;
 
-                if (Insensitive.Equals(cur, "not") || cur == "!")
+                if (cur.InsensitiveEquals("not") || cur == "!")
                 {
                     inverse = true;
                     ++index;
@@ -133,7 +131,7 @@ namespace Server.Commands.Generic
                         throw new Exception("Improperly formatted object conditional.");
                     }
                 }
-                else if (Insensitive.Equals(cur, "or") || cur == "||")
+                else if (cur.InsensitiveEquals("or") || cur == "||")
                 {
                     if (current.Count > 1)
                     {
@@ -199,7 +197,7 @@ namespace Server.Commands.Generic
                     "contains"  => new StringCondition(prop, inverse, StringOperator.Contains, val, false),
                     "contains~" => new StringCondition(prop, inverse, StringOperator.Contains, val, true),
                     "~contains" => new StringCondition(prop, inverse, StringOperator.Contains, val, true),
-                    _           => null
+                    _            => null
                 };
 
                 if (condition == null)

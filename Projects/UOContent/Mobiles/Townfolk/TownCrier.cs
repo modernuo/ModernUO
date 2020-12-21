@@ -238,7 +238,7 @@ namespace Server.Mobiles
             }
             else
             {
-                for (var i = 0; i < entries.Count; ++i)
+                for (var i = 0; i < entries!.Count; ++i)
                 {
                     var tce = entries[i];
 

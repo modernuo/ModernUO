@@ -536,7 +536,7 @@ namespace Server.Factions
             {
                 var town = towns[i];
 
-                if (Insensitive.Equals(town.Definition.FriendlyName, name))
+                if (town.Definition.FriendlyName.InsensitiveEquals(name))
                 {
                     return town;
                 }

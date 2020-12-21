@@ -168,7 +168,7 @@ namespace Server.Misc
             {
                 var info = new DirectoryInfo(paths[i]);
 
-                if (info.Name.StartsWith(match, StringComparison.Ordinal))
+                if (info.Name.StartsWithOrdinal(match))
                 {
                     return info;
                 }
@@ -182,7 +182,7 @@ namespace Server.Misc
 
         private static string FindTimeStamp(string input)
         {
-            var start = input.IndexOf('(', StringComparison.Ordinal);
+            var start = input.IndexOfOrdinal('(');
 
             if (start >= 0)
             {

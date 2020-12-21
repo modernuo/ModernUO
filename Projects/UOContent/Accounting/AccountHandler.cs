@@ -176,7 +176,7 @@ namespace Server.Misc
 
                     if (entry != null)
                     {
-                        if (entry.Message.StartsWith("[Automated: Change Password]", StringComparison.Ordinal))
+                        if (entry.Message.StartsWithOrdinal("[Automated: Change Password]"))
                         {
                             from.SendMessage("You already have a password change request in the help system queue.");
                         }
@@ -288,9 +288,9 @@ namespace Server.Misc
                 return null;
             }
 
-            var isSafe = !(un.StartsWith(" ", StringComparison.Ordinal) ||
-                           un.EndsWith(" ", StringComparison.Ordinal) ||
-                           un.EndsWith(".", StringComparison.Ordinal));
+            var isSafe = !(un.StartsWithOrdinal(" ") ||
+                           un.EndsWithOrdinal(" ") ||
+                           un.EndsWithOrdinal("."));
 
             for (var i = 0; isSafe && i < un.Length; ++i)
             {

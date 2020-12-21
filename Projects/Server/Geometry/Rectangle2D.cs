@@ -49,7 +49,7 @@ namespace Server
 
         public static Rectangle2D Parse(string value)
         {
-            var start = value.IndexOf('(', StringComparison.Ordinal);
+            var start = value.IndexOfOrdinal('(');
             var end = value.IndexOf(',', start + 1);
 
             Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var x);

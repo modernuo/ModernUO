@@ -76,7 +76,7 @@ namespace Server.Engines.Chat
 
         public bool IsVoiced(ChatUser user) => m_Voices.Contains(user);
 
-        public bool ValidatePassword(string password) => m_Password == null || Insensitive.Equals(m_Password, password);
+        public bool ValidatePassword(string password) => m_Password == null || m_Password.InsensitiveEquals(password);
 
         public bool ValidateModerator(ChatUser user)
         {

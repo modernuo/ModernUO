@@ -23,7 +23,7 @@ namespace Server.Engines.Events
 
         private static void EventSink_Speech(SpeechEventArgs e)
         {
-            if (Insensitive.Contains(e.Speech, "trick or treat"))
+            if (e.Speech.InsensitiveContains("trick or treat"))
             {
                 e.Mobile.Target = new TrickOrTreatTarget();
 

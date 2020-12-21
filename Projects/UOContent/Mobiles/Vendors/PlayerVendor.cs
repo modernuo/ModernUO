@@ -1249,7 +1249,7 @@ namespace Server.Mobiles
 
         public override bool HandlesOnSpeech(Mobile from) => from.Alive && from.GetDistanceToSqrt(this) <= 3;
 
-        public bool WasNamed(string speech) => Name != null && Insensitive.StartsWith(speech, Name);
+        public bool WasNamed(string speech) => Name != null && speech.InsensitiveStartsWith(Name);
 
         public override void OnSpeech(SpeechEventArgs e)
         {

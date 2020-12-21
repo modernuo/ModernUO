@@ -331,7 +331,7 @@ namespace Server.Commands
 
             if (type.IsGenericType)
             {
-                var index = type.Name.IndexOf('`', StringComparison.Ordinal);
+                var index = type.Name.IndexOfOrdinal('`');
 
                 if (index > 0)
                 {
@@ -406,19 +406,14 @@ namespace Server.Commands
 
         public static string SanitizeType(string name)
         {
-            var anonymousType = name.Contains('<', StringComparison.Ordinal);
+            var anonymousType = name.ContainsOrdinal('<');
             var sb = new StringBuilder(name);
             for (var i = 0; i < ReplaceChars.Length; ++i)
             {
                 sb.Replace(ReplaceChars[i], '-');
             }
 
-            if (anonymousType)
-            {
-                return $"(Anonymous-Type){sb}";
-            }
-
-            return sb.ToString();
+            return anonymousType ? $"(Anonymous-Type){sb}" : sb.ToString();
         }
 
         public static string AliasForName(string name)
@@ -465,7 +460,7 @@ namespace Server.Commands
                 return true;
             }
 
-            if (type.Namespace.StartsWith("Server", StringComparison.Ordinal))
+            if (type.Namespace.StartsWithOrdinal("Server"))
             {
                 return false;
             }
@@ -604,7 +599,7 @@ namespace Server.Commands
                 if (realType?.IsGenericType == true)
                 {
                     FormatGeneric(realType, out _, out _, out var linkName);
-                    aliased = linkName.Replace("@directory@", null, StringComparison.Ordinal);
+                    aliased = linkName.ReplaceOrdinal("@directory@", null);
                 }
                 else
                 {
@@ -1719,7 +1714,7 @@ namespace Server.Commands
                 {
                     line = line.Trim();
 
-                    if (line.Length == 0 || line.StartsWith("#", StringComparison.Ordinal))
+                    if (line.Length == 0 || line.StartsWithOrdinal("#"))
                     {
                         continue;
                     }
@@ -2030,8 +2025,8 @@ namespace Server.Commands
                 var aliases = attrs.Length == 0 ? null : attrs[0] as AliasesAttribute;
 
                 var descString = desc.Description
-                    .Replace("<", "&lt;", StringComparison.Ordinal)
-                    .Replace(">", "&gt;", StringComparison.Ordinal);
+                    .ReplaceOrdinal("<", "&lt;")
+                    .ReplaceOrdinal(">", "&gt;");
 
                 list.Add(new DocCommandEntry(e.AccessLevel, e.Command, aliases?.Aliases, usage.Usage, descString));
             }
@@ -2058,8 +2053,8 @@ namespace Server.Commands
                 }
 
                 desc = desc
-                    .Replace("<", "&lt;", StringComparison.Ordinal)
-                    .Replace(">", "&gt;", StringComparison.Ordinal);
+                    .ReplaceOrdinal("<", "&lt;")
+                    .ReplaceOrdinal(">", "&gt;");
 
                 if (command.Supports != CommandSupport.Single)
                 {
@@ -2136,8 +2131,8 @@ namespace Server.Commands
                 }
 
                 desc = desc
-                    .Replace("<", "&lt;", StringComparison.Ordinal)
-                    .Replace(">", "&gt;", StringComparison.Ordinal);
+                    .ReplaceOrdinal("<", "&lt;")
+                    .ReplaceOrdinal(">", "&gt;");
 
                 list.Add(new DocCommandEntry(command.AccessLevel, cmd, aliases, usage, desc));
             }
@@ -2237,8 +2232,8 @@ namespace Server.Commands
                 html.Write(
                     "<td class=\"rentry\"><b>Usage: {0}</b><br>{1}</td>",
                     usage
-                        .Replace("<", "&lt;", StringComparison.Ordinal)
-                        .Replace(">", "&gt;", StringComparison.Ordinal),
+                        .ReplaceOrdinal("<", "&lt;")
+                        .ReplaceOrdinal(">", "&gt;"),
                     desc
                 );
             }
@@ -2247,8 +2242,8 @@ namespace Server.Commands
                 html.Write(
                     "<td class=\"rentry\"><b>Usage: {0}</b><br>Alias{1}: ",
                     usage
-                        .Replace("<", "&lt;", StringComparison.Ordinal)
-                        .Replace(">", "&gt;", StringComparison.Ordinal),
+                        .ReplaceOrdinal("<", "&lt;")
+                        .ReplaceOrdinal(">", "&gt;"),
                     aliases.Length == 1 ? "" : "es"
                 );
 
@@ -2567,7 +2562,7 @@ namespace Server.Commands
                     if (ifaceInfo == null)
                     {
                         FormatGeneric(iface, out _, out _, out var linkName);
-                        typeHtml.Write($"<!-- DBG-2.1 -->{linkName.Replace("@directory@", null, StringComparison.Ordinal)}");
+                        typeHtml.Write($"<!-- DBG-2.1 -->{linkName.ReplaceOrdinal("@directory@", null)}");
                     }
                     else
                     {
@@ -2913,7 +2908,7 @@ namespace Server.Commands
             public string FileName => m_FileName;
             public string TypeName => m_TypeName;
 
-            public string LinkName(string dirRoot) => m_LinkName.Replace("@directory@", dirRoot, StringComparison.Ordinal);
+            public string LinkName(string dirRoot) => m_LinkName.ReplaceOrdinal("@directory@", dirRoot);
         }
 
         private class SpeechEntry

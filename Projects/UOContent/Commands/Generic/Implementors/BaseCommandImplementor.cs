@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Server.Buffers;
 
 namespace Server.Commands.Generic
 {
@@ -185,7 +186,7 @@ namespace Server.Commands.Generic
 
             // NOTE: this does not preserve the case where quotation marks are used on a single word
 
-            var sb = new StringBuilder();
+            using var sb = new ValueStringBuilder(stackalloc char[64]);
 
             for (var i = 0; i < args.Length; ++i)
             {
@@ -194,7 +195,7 @@ namespace Server.Commands.Generic
                     sb.Append(' ');
                 }
 
-                if (args[i].Contains(' ', StringComparison.Ordinal))
+                if (args[i].ContainsOrdinal(' '))
                 {
                     sb.Append('"');
                     sb.Append(args[i]);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Server.Commands;
@@ -715,7 +716,7 @@ namespace Server
 
                     if (m_Buffer == null || length > m_Buffer.Length)
                     {
-                        m_Buffer = new byte[length];
+                        m_Buffer = GC.AllocateUninitializedArray<byte>(length);
                     }
 
                     mulStream.Read(m_Buffer, 0, length);

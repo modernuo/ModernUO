@@ -519,7 +519,7 @@ namespace Server.Engines.Spawners
 
                     for (var j = 0; thisProp == null && j < allProps.Length; ++j)
                     {
-                        if (Insensitive.Equals(propName, allProps[j].Name))
+                        if (propName.InsensitiveEquals(allProps[j].Name))
                         {
                             thisProp = allProps[j];
                         }

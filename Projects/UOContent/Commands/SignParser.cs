@@ -108,7 +108,7 @@ namespace Server.Commands
 
             Item sign;
 
-            if (name.StartsWith("#", StringComparison.Ordinal))
+            if (name.StartsWithOrdinal("#"))
             {
                 sign = new LocalizedSign(itemID, Utility.ToInt32(name.Substring(1)));
             }

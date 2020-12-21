@@ -100,9 +100,9 @@ namespace Server.Commands
 
                     for (var i = 0; i < m_Params.Length; ++i)
                     {
-                        if (m_Params[i].StartsWith("LabelNumber", StringComparison.Ordinal))
+                        if (m_Params[i].StartsWithOrdinal("LabelNumber"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
@@ -120,9 +120,9 @@ namespace Server.Commands
 
                     for (var i = 0; i < m_Params.Length; ++i)
                     {
-                        if (m_Params[i].StartsWith("LabelNumber", StringComparison.Ordinal))
+                        if (m_Params[i].StartsWithOrdinal("LabelNumber"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
@@ -168,9 +168,9 @@ namespace Server.Commands
                         {
                             locked = true;
                         }
-                        else if (m_Params[i].StartsWith("TargetMap", StringComparison.Ordinal))
+                        else if (m_Params[i].StartsWithOrdinal("TargetMap"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
@@ -197,54 +197,54 @@ namespace Server.Commands
 
                     for (var i = 0; i < m_Params.Length; ++i)
                     {
-                        if (m_Params[i].StartsWith("Range", StringComparison.Ordinal))
+                        if (m_Params[i].StartsWithOrdinal("Range"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
                                 range = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                             }
                         }
-                        else if (m_Params[i].StartsWith("WarningString", StringComparison.Ordinal))
+                        else if (m_Params[i].StartsWithOrdinal("WarningString"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
                                 messageString = m_Params[i].Substring(++indexOf);
                             }
                         }
-                        else if (m_Params[i].StartsWith("WarningNumber", StringComparison.Ordinal))
+                        else if (m_Params[i].StartsWithOrdinal("WarningNumber"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
                                 messageNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                             }
                         }
-                        else if (m_Params[i].StartsWith("HintString", StringComparison.Ordinal))
+                        else if (m_Params[i].StartsWithOrdinal("HintString"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
                                 hintString = m_Params[i].Substring(++indexOf);
                             }
                         }
-                        else if (m_Params[i].StartsWith("HintNumber", StringComparison.Ordinal))
+                        else if (m_Params[i].StartsWithOrdinal("HintNumber"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
                                 hintNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                             }
                         }
-                        else if (m_Params[i].StartsWith("ResetDelay", StringComparison.Ordinal))
+                        else if (m_Params[i].StartsWithOrdinal("ResetDelay"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
@@ -270,36 +270,36 @@ namespace Server.Commands
 
                     for (var i = 0; i < m_Params.Length; ++i)
                     {
-                        if (m_Params[i].StartsWith("Range", StringComparison.Ordinal))
+                        if (m_Params[i].StartsWithOrdinal("Range"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
                                 range = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                             }
                         }
-                        else if (m_Params[i].StartsWith("WarningString", StringComparison.Ordinal))
+                        else if (m_Params[i].StartsWithOrdinal("WarningString"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
                                 messageString = m_Params[i].Substring(++indexOf);
                             }
                         }
-                        else if (m_Params[i].StartsWith("WarningNumber", StringComparison.Ordinal))
+                        else if (m_Params[i].StartsWithOrdinal("WarningNumber"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
                                 messageNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                             }
                         }
-                        else if (m_Params[i].StartsWith("ResetDelay", StringComparison.Ordinal))
+                        else if (m_Params[i].StartsWithOrdinal("ResetDelay"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
@@ -321,9 +321,9 @@ namespace Server.Commands
 
                     for (var i = 0; i < m_Params.Length; ++i)
                     {
-                        if (m_Params[i].StartsWith("CannonDirection", StringComparison.Ordinal))
+                        if (m_Params[i].StartsWithOrdinal("CannonDirection"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
@@ -345,27 +345,27 @@ namespace Server.Commands
 
                     for (var i = 0; i < m_Params.Length; ++i)
                     {
-                        if (m_Params[i].StartsWith("Word", StringComparison.Ordinal))
+                        if (m_Params[i].StartsWithOrdinal("Word"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
                                 word = m_Params[i].Substring(++indexOf);
                             }
                         }
-                        else if (m_Params[i].StartsWith("DestStart", StringComparison.Ordinal))
+                        else if (m_Params[i].StartsWithOrdinal("DestStart"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
                                 destination.Start = Point2D.Parse(m_Params[i].Substring(++indexOf));
                             }
                         }
-                        else if (m_Params[i].StartsWith("DestEnd", StringComparison.Ordinal))
+                        else if (m_Params[i].StartsWithOrdinal("DestEnd"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
@@ -383,9 +383,9 @@ namespace Server.Commands
 
                     for (var i = 0; !fill && i < m_Params.Length; ++i)
                     {
-                        if (m_Params[i].StartsWith("Content", StringComparison.Ordinal))
+                        if (m_Params[i].StartsWithOrdinal("Content"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
@@ -414,9 +414,9 @@ namespace Server.Commands
 
                     for (var i = 0; i < m_Params.Length; ++i)
                     {
-                        if (m_Params[i].StartsWith("Facing", StringComparison.Ordinal))
+                        if (m_Params[i].StartsWithOrdinal("Facing"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
@@ -444,9 +444,9 @@ namespace Server.Commands
                 {
                     for (var i = 0; i < m_Params.Length; ++i)
                     {
-                        if (m_Params[i].StartsWith("SpawnLocation", StringComparison.Ordinal))
+                        if (m_Params[i].StartsWithOrdinal("SpawnLocation"))
                         {
-                            var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                            var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                             if (indexOf >= 0)
                             {
@@ -512,45 +512,45 @@ namespace Server.Commands
 
                 for (var i = 0; i < m_Params.Length; ++i)
                 {
-                    if (m_Params[i].StartsWith("Spawn", StringComparison.Ordinal))
+                    if (m_Params[i].StartsWithOrdinal("Spawn"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             sp.AddEntry(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("MinDelay", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("MinDelay"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             sp.MinDelay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("MaxDelay", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("MaxDelay"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             sp.MaxDelay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("NextSpawn", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("NextSpawn"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             sp.NextSpawn = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("Count", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Count"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
@@ -561,36 +561,36 @@ namespace Server.Commands
                             }
                         }
                     }
-                    else if (m_Params[i].StartsWith("Team", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Team"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             sp.Team = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("HomeRange", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("HomeRange"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             sp.HomeRange = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("Running", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Running"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             sp.Running = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("Group", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Group"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
@@ -603,36 +603,36 @@ namespace Server.Commands
             {
                 for (var i = 0; i < m_Params.Length; ++i)
                 {
-                    if (m_Params[i].StartsWith("Description", StringComparison.Ordinal))
+                    if (m_Params[i].StartsWithOrdinal("Description"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             rune.Description = m_Params[i].Substring(++indexOf);
                         }
                     }
-                    else if (m_Params[i].StartsWith("Marked", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Marked"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             rune.Marked = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("TargetMap", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("TargetMap"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             rune.TargetMap = Map.Parse(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("Target", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Target"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
@@ -645,108 +645,108 @@ namespace Server.Commands
             {
                 for (var i = 0; i < m_Params.Length; ++i)
                 {
-                    if (m_Params[i].StartsWith("Skill", StringComparison.Ordinal))
+                    if (m_Params[i].StartsWithOrdinal("Skill"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             st.Skill = (SkillName)Enum.Parse(typeof(SkillName), m_Params[i].Substring(++indexOf), true);
                         }
                     }
-                    else if (m_Params[i].StartsWith("RequiredFixedPoint", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("RequiredFixedPoint"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             st.Required = Utility.ToInt32(m_Params[i].Substring(++indexOf)) * 0.1;
                         }
                     }
-                    else if (m_Params[i].StartsWith("Required", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Required"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             st.Required = Utility.ToDouble(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("MessageString", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("MessageString"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             st.MessageString = m_Params[i].Substring(++indexOf);
                         }
                     }
-                    else if (m_Params[i].StartsWith("MessageNumber", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("MessageNumber"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             st.MessageNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("PointDest", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("PointDest"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             st.PointDest = Point3D.Parse(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("MapDest", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("MapDest"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             st.MapDest = Map.Parse(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("Creatures", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Creatures"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             st.Creatures = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("SourceEffect", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("SourceEffect"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             st.SourceEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("DestEffect", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("DestEffect"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             st.DestEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("SoundID", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("SoundID"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             st.SoundID = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("Delay", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Delay"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
@@ -764,90 +764,90 @@ namespace Server.Commands
             {
                 for (var i = 0; i < m_Params.Length; ++i)
                 {
-                    if (m_Params[i].StartsWith("Substring", StringComparison.Ordinal))
+                    if (m_Params[i].StartsWithOrdinal("Substring"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             kt.Substring = m_Params[i].Substring(++indexOf);
                         }
                     }
-                    else if (m_Params[i].StartsWith("Keyword", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Keyword"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             kt.Keyword = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("Range", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Range"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             kt.Range = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("PointDest", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("PointDest"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             kt.PointDest = Point3D.Parse(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("MapDest", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("MapDest"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             kt.MapDest = Map.Parse(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("Creatures", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Creatures"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             kt.Creatures = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("SourceEffect", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("SourceEffect"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             kt.SourceEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("DestEffect", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("DestEffect"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             kt.DestEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("SoundID", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("SoundID"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             kt.SoundID = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("Delay", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Delay"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
@@ -865,63 +865,63 @@ namespace Server.Commands
             {
                 for (var i = 0; i < m_Params.Length; ++i)
                 {
-                    if (m_Params[i].StartsWith("PointDest", StringComparison.Ordinal))
+                    if (m_Params[i].StartsWithOrdinal("PointDest"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             tp.PointDest = Point3D.Parse(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("MapDest", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("MapDest"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             tp.MapDest = Map.Parse(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("Creatures", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Creatures"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             tp.Creatures = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("SourceEffect", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("SourceEffect"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             tp.SourceEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("DestEffect", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("DestEffect"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             tp.DestEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("SoundID", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("SoundID"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
                             tp.SoundID = Utility.ToInt32(m_Params[i].Substring(++indexOf));
                         }
                     }
-                    else if (m_Params[i].StartsWith("Delay", StringComparison.Ordinal))
+                    else if (m_Params[i].StartsWithOrdinal("Delay"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
@@ -939,9 +939,9 @@ namespace Server.Commands
             {
                 for (var i = 0; i < m_Params.Length; ++i)
                 {
-                    if (m_Params[i].StartsWith("ContentType", StringComparison.Ordinal))
+                    if (m_Params[i].StartsWithOrdinal("ContentType"))
                     {
-                        var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                         if (indexOf >= 0)
                         {
@@ -968,18 +968,18 @@ namespace Server.Commands
 
             for (var i = 0; i < m_Params.Length; ++i)
             {
-                if (m_Params[i].StartsWith("Light", StringComparison.Ordinal))
+                if (m_Params[i].StartsWithOrdinal("Light"))
                 {
-                    var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                    var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                     if (indexOf >= 0)
                     {
                         item.Light = (LightType)Enum.Parse(typeof(LightType), m_Params[i].Substring(++indexOf), true);
                     }
                 }
-                else if (m_Params[i].StartsWith("Hue", StringComparison.Ordinal))
+                else if (m_Params[i].StartsWithOrdinal("Hue"))
                 {
-                    var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                    var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                     if (indexOf >= 0)
                     {
@@ -995,18 +995,18 @@ namespace Server.Commands
                         }
                     }
                 }
-                else if (m_Params[i].StartsWith("Name", StringComparison.Ordinal))
+                else if (m_Params[i].StartsWithOrdinal("Name"))
                 {
-                    var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                    var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                     if (indexOf >= 0)
                     {
                         item.Name = m_Params[i].Substring(++indexOf);
                     }
                 }
-                else if (m_Params[i].StartsWith("Amount", StringComparison.Ordinal))
+                else if (m_Params[i].StartsWithOrdinal("Amount"))
                 {
-                    var indexOf = m_Params[i].IndexOf('=', StringComparison.Ordinal);
+                    var indexOf = m_Params[i].IndexOfOrdinal('=');
 
                     if (indexOf >= 0)
                     {
@@ -1235,7 +1235,7 @@ namespace Server.Commands
             {
                 line = line.Trim();
 
-                if (line.Length > 0 && !line.StartsWith("#", StringComparison.Ordinal))
+                if (line.Length > 0 && !line.StartsWithOrdinal("#"))
                 {
                     break;
                 }
@@ -1248,7 +1248,7 @@ namespace Server.Commands
 
             var list = new DecorationListMag();
 
-            var indexOf = line.IndexOf(' ', StringComparison.Ordinal);
+            var indexOf = line.IndexOfOrdinal(' ');
 
             list.m_Type = AssemblyHandler.FindFirstTypeForName(line.Substring(0, indexOf++), true);
 
@@ -1258,14 +1258,14 @@ namespace Server.Commands
             }
 
             line = line.Substring(indexOf);
-            indexOf = line.IndexOf('(', StringComparison.Ordinal);
+            indexOf = line.IndexOfOrdinal('(');
             if (indexOf >= 0)
             {
                 list.m_ItemID = Utility.ToInt32(line.Substring(0, indexOf - 1));
 
                 var parms = line.Substring(++indexOf);
 
-                if (line.EndsWith(")", StringComparison.Ordinal))
+                if (line.EndsWithOrdinal(")"))
                 {
                     parms = parms.Substring(0, parms.Length - 1);
                 }
@@ -1294,7 +1294,7 @@ namespace Server.Commands
                     break;
                 }
 
-                if (line.StartsWith("#", StringComparison.Ordinal))
+                if (line.StartsWithOrdinal("#"))
                 {
                     continue;
                 }
@@ -1324,7 +1324,7 @@ namespace Server.Commands
 
         public void Pop(out string v, ref string line)
         {
-            var space = line.IndexOf(' ', StringComparison.Ordinal);
+            var space = line.IndexOfOrdinal(' ');
 
             if (space >= 0)
             {

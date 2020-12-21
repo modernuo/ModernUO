@@ -22,7 +22,7 @@ namespace Server.Gumps
 
             Design();
 
-            m_List = new List<Guild>(list);
+            m_List = list;
 
             for (var i = 0; i < m_List.Count; ++i)
             {

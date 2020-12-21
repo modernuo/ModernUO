@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Microsoft.Toolkit.HighPerformance.Extensions;
 using Server.Commands;
 using Server.Gumps;
 using Server.Network;
@@ -31,43 +32,50 @@ namespace Server.Misc
                 return;
             }
 
-            if (Insensitive.StartsWith(args.Speech, "set"))
+            if (args.Speech.InsensitiveStartsWith("set"))
             {
                 var from = args.Mobile;
 
-                var split = args.Speech.Split(' ');
-
-                if (split.Length == 3)
+                var tokenizer = args.Speech.Tokenize(' ');
+                if (!tokenizer.MoveNext())
                 {
-                    try
-                    {
-                        var name = split[1];
-                        var value = Convert.ToDouble(split[2]);
+                    return;
+                }
 
-                        if (Insensitive.Equals(name, "str"))
-                        {
-                            ChangeStrength(from, (int)value);
-                        }
-                        else if (Insensitive.Equals(name, "dex"))
-                        {
-                            ChangeDexterity(from, (int)value);
-                        }
-                        else if (Insensitive.Equals(name, "int"))
-                        {
-                            ChangeIntelligence(from, (int)value);
-                        }
-                        else
-                        {
-                            ChangeSkill(from, name, value);
-                        }
-                    }
-                    catch
+                var name = tokenizer.MoveNext() ? tokenizer.Current : null;
+                var valueStr = tokenizer.MoveNext() ? tokenizer.Current : null;
+                if (valueStr == null)
+                {
+                    return;
+                }
+
+                var value = double.Parse(valueStr);
+
+                try
+                {
+                    if (name.InsensitiveEquals("str"))
                     {
-                        // ignored
+                        ChangeStrength(from, (int)value);
+                    }
+                    else if (name.InsensitiveEquals("dex"))
+                    {
+                        ChangeDexterity(from, (int)value);
+                    }
+                    else if (name.InsensitiveEquals("int"))
+                    {
+                        ChangeIntelligence(from, (int)value);
+                    }
+                    else
+                    {
+                        ChangeSkill(from, name.ToString(), value);
                     }
                 }
+                catch
+                {
+                    // ignored
+                }
             }
-            else if (Insensitive.Equals(args.Speech, "help"))
+            else if (args.Speech.InsensitiveEquals("help"))
             {
                 args.Mobile.SendGump(new TCHelpGump());
                 args.Handled = true;

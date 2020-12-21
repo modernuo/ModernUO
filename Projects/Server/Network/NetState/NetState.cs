@@ -84,9 +84,9 @@ namespace Server.Network
             HuePickers = new List<HuePicker>();
             Menus = new List<IMenu>();
             Trades = new List<SecureTrade>();
-            _recvBuffer = new byte[RecvPipeSize];
+            _recvBuffer = GC.AllocateUninitializedArray<byte>(RecvPipeSize);
             RecvPipe = new Pipe<byte>(_recvBuffer);
-            _sendBuffer = new byte[SendPipeSize];
+            _sendBuffer = GC.AllocateUninitializedArray<byte>(SendPipeSize);
             SendPipe = new Pipe<byte>(_sendBuffer);
             m_NextCheckActivity = Core.TickCount + 30000;
 

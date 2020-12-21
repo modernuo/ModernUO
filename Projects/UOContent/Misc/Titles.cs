@@ -143,14 +143,12 @@ namespace Server.Misc
                 offset = Math.Min(offset - m.Fame / 100, 0);
             }
 
-            if (m.Fame + offset > MaxFame)
+            offset = (m.Fame + offset) switch
             {
-                offset = MaxFame - m.Fame;
-            }
-            else if (m.Fame + offset < MinFame)
-            {
-                offset = MinFame - m.Fame;
-            }
+                > MaxFame => MaxFame - m.Fame,
+                < MinFame => MinFame - m.Fame,
+                _         => offset
+            };
 
             m.Fame += offset;
 
@@ -219,14 +217,12 @@ namespace Server.Misc
                 offset = Math.Min(offset - m.Karma / 100, 0);
             }
 
-            if (m.Karma + offset > MaxKarma)
+            offset = (m.Karma + offset) switch
             {
-                offset = MaxKarma - m.Karma;
-            }
-            else if (m.Karma + offset < MinKarma)
-            {
-                offset = MinKarma - m.Karma;
-            }
+                > MaxKarma => MaxKarma - m.Karma,
+                < MinKarma => MinKarma - m.Karma,
+                _          => offset
+            };
 
             var wasPositiveKarma = m.Karma >= 0;
 
@@ -288,11 +284,6 @@ namespace Server.Misc
 
             var showSkillTitle = beheld.ShowFameTitle && (beholder == beheld || fame >= 5000);
 
-            /*if (beheld.Kills >= 5)
-            {
-              title.AppendFormat( beheld.Fame >= 10000 ? "The Murderer {1} {0}" : "The Murderer {0}", beheld.Name, beheld.Female ? "Lady" : "Lord" );
-            }
-            else*/
             if (beheld.ShowFameTitle || beholder == beheld)
             {
                 for (var i = 0; i < m_FameEntries.Length; ++i)
@@ -345,15 +336,12 @@ namespace Server.Misc
                         }
                     }
 
-                    var offset = 0;
-                    if (highestValue > 800)
+                    var offset = highestValue switch
                     {
-                        offset = 3;
-                    }
-                    else if (highestValue > 300)
-                    {
-                        offset = highestValue / 300;
-                    }
+                        > 800 => 3,
+                        > 300 => highestValue / 300,
+                        _     => 0
+                    };
 
                     if (offset > 0)
                     {
@@ -369,7 +357,7 @@ namespace Server.Misc
 
             var customTitle = beheld.Title;
 
-            if (customTitle != null && (customTitle = customTitle.Trim()).Length > 0)
+            if ((customTitle = customTitle?.Trim())?.Length > 0)
             {
                 title.AppendFormat(" {0}", customTitle);
             }
@@ -395,7 +383,7 @@ namespace Server.Misc
                 var skillLevel = GetSkillLevel(highest);
                 var skillTitle = highest.Info.Title;
 
-                if (mob.Female && skillTitle.EndsWith("man", StringComparison.Ordinal))
+                if (mob.Female && skillTitle.EndsWithOrdinal("man"))
                 {
                     skillTitle = $"{skillTitle.Substring(0, skillTitle.Length - 3)}woman";
                 }

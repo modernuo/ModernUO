@@ -65,7 +65,7 @@ namespace Server.Mobiles
         {
             var name = Name;
 
-            return name != null && Insensitive.StartsWith(speech, name);
+            return name != null && speech.InsensitiveStartsWith(name);
         }
 
         public override bool HandlesOnSpeech(Mobile from)

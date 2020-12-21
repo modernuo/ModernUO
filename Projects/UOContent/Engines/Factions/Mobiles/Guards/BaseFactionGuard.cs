@@ -205,7 +205,7 @@ namespace Server.Factions
         {
             var name = Name;
 
-            return name != null && Insensitive.StartsWith(speech, name);
+            return name != null && speech.InsensitiveStartsWith(name);
         }
 
         public override void OnSpeech(SpeechEventArgs e)
@@ -216,7 +216,7 @@ namespace Server.Factions
 
             if (!e.Handled && InRange(from, ListenRange) && from.Alive)
             {
-                if (e.HasKeyword(0xE6) && (Insensitive.Equals(e.Speech, "orders") || WasNamed(e.Speech))) // *orders*
+                if (e.HasKeyword(0xE6) && (e.Speech.InsensitiveEquals("orders") || WasNamed(e.Speech))) // *orders*
                 {
                     if (m_Town?.IsSheriff(from) != true)
                     {
@@ -240,15 +240,15 @@ namespace Server.Factions
                     var understood = true;
                     ReactionType newType = 0;
 
-                    if (Insensitive.Contains(e.Speech, "attack"))
+                    if (e.Speech.InsensitiveContains("attack"))
                     {
                         newType = ReactionType.Attack;
                     }
-                    else if (Insensitive.Contains(e.Speech, "warn"))
+                    else if (e.Speech.InsensitiveContains("warn"))
                     {
                         newType = ReactionType.Warn;
                     }
-                    else if (Insensitive.Contains(e.Speech, "ignore"))
+                    else if (e.Speech.InsensitiveContains("ignore"))
                     {
                         newType = ReactionType.Ignore;
                     }
@@ -261,7 +261,7 @@ namespace Server.Factions
                     {
                         understood = false;
 
-                        if (Insensitive.Contains(e.Speech, "civil"))
+                        if (e.Speech.InsensitiveContains("civil"))
                         {
                             ChangeReaction(null, newType);
                             understood = true;
@@ -273,14 +273,14 @@ namespace Server.Factions
                         {
                             var faction = factions[i];
 
-                            if (faction != m_Faction && Insensitive.Contains(e.Speech, faction.Definition.Keyword))
+                            if (faction != m_Faction && e.Speech.InsensitiveContains(faction.Definition.Keyword))
                             {
                                 ChangeReaction(faction, newType);
                                 understood = true;
                             }
                         }
                     }
-                    else if (Insensitive.Contains(e.Speech, "patrol"))
+                    else if (e.Speech.InsensitiveContains("patrol"))
                     {
                         Home = Location;
                         RangeHome = 6;
@@ -289,7 +289,7 @@ namespace Server.Factions
                         Say(1005146); // This spot looks like it needs protection!  I shall guard it with my life.
                         understood = true;
                     }
-                    else if (Insensitive.Contains(e.Speech, "follow"))
+                    else if (e.Speech.InsensitiveContains("follow"))
                     {
                         Home = Location;
                         RangeHome = 6;

@@ -74,7 +74,7 @@ namespace Server
 
             for (var i = 0; i < m_RaceNames.Length; ++i)
             {
-                if (Insensitive.Equals(m_RaceNames[i], value))
+                if (m_RaceNames[i].InsensitiveEquals(value))
                 {
                     return m_RaceValues[i];
                 }

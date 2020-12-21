@@ -304,7 +304,7 @@ namespace Server.Commands
 
             var text = lines[index].Text;
 
-            var start = text.IndexOf('(', StringComparison.Ordinal);
+            var start = text.IndexOfOrdinal('(');
 
             if (start < 0)
             {

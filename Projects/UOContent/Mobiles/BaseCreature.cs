@@ -3775,12 +3775,12 @@ namespace Server.Mobiles
                 {
                     var word = wordsString[i];
 
-                    if (Insensitive.Equals(word, wordName))
+                    if (word.InsensitiveEquals(wordName))
                     {
                         bFound = true;
                     }
 
-                    if (bWithAll && Insensitive.Equals(word, "all"))
+                    if (bWithAll && word.InsensitiveEquals("all"))
                     {
                         return true;
                     }

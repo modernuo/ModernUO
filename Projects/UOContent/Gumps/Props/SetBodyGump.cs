@@ -310,7 +310,7 @@ namespace Server.Gumps
 
                 for (var i = 0; i < m_GroupNames.Length; ++i)
                 {
-                    if (DisplayName.StartsWith(m_GroupNames[i], StringComparison.Ordinal))
+                    if (DisplayName.StartsWithOrdinal(m_GroupNames[i]))
                     {
                         DisplayName = DisplayName.Substring(m_GroupNames[i].Length);
                         break;

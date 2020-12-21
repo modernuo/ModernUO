@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Microsoft.Toolkit.HighPerformance.Extensions;
 using Server.Diagnostics;
 using Server.Gumps;
 
@@ -133,7 +134,8 @@ namespace Server.Network
                     }
                 case 0x24: // Use skill
                     {
-                        if (!int.TryParse(command.Split(' ')[0], out var skillIndex))
+                        var tokenizer = command.Tokenize(' ');
+                        if (!tokenizer.MoveNext() || !int.TryParse(tokenizer.Current, out var skillIndex))
                         {
                             break;
                         }
@@ -155,15 +157,11 @@ namespace Server.Network
                     }
                 case 0x27: // Cast spell from book
                     {
-                        var split = command.Split(' ');
+                        var tokenizer = command.Tokenize(' ');
+                        var spellID = (tokenizer.MoveNext() ? Utility.ToInt32(tokenizer.Current) : 0) - 1;
+                        var serial = tokenizer.MoveNext() ? Utility.ToUInt32(tokenizer.Current) : (uint)Serial.MinusOne;
 
-                        if (split.Length > 0)
-                        {
-                            var spellID = Utility.ToInt32(split[0]) - 1;
-                            var serial = split.Length > 1 ? Utility.ToUInt32(split[1]) : (uint)Serial.MinusOne;
-
-                            EventSink.InvokeCastSpellRequest(from, spellID, World.FindItem(serial));
-                        }
+                        EventSink.InvokeCastSpellRequest(from, spellID, World.FindItem(serial));
 
                         break;
                     }

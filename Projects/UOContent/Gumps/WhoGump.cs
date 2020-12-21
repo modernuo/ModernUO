@@ -103,7 +103,7 @@ namespace Server.Gumps
                 if (m != null && (m == owner || !m.Hidden || owner.AccessLevel >= m.AccessLevel ||
                                   m is PlayerMobile mobile && mobile.VisibilityList.Contains(owner)))
                 {
-                    if (filter != null && m.Name?.ToLower().Contains(filter, StringComparison.Ordinal) != true)
+                    if (filter != null && !m.Name.InsensitiveContains(filter))
                     {
                         continue;
                     }
@@ -330,7 +330,7 @@ namespace Server.Gumps
                     return -1;
                 }
 
-                return x.AccessLevel < y.AccessLevel ? 1 : Insensitive.Compare(x.Name, y.Name);
+                return x.AccessLevel < y.AccessLevel ? 1 : x.Name.InsensitiveCompare(y.Name);
             }
         }
     }

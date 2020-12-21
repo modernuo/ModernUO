@@ -1,3 +1,4 @@
+using System.Linq;
 using Server.Guilds;
 using Server.Prompts;
 
@@ -36,7 +37,7 @@ namespace Server.Gumps
 
             if (text.Length >= 3)
             {
-                var guilds = BaseGuild.Search(text).CastListCovariant<BaseGuild, Guild>();
+                var guilds = BaseGuild.Search(text).SafeConvertList<BaseGuild, Guild>();
 
                 GuildGump.EnsureClosed(m_Mobile);
 

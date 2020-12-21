@@ -122,7 +122,10 @@ namespace Server.Engines.ConPVP
             {
                 for (var i = 0; i < entries.Count; ++i)
                 {
-                    var teamInfo = entries[i] as DDTeamInfo;
+                    if (entries[i] is not DDTeamInfo teamInfo)
+                    {
+                        continue;
+                    }
 
                     AddImage(30, 70 + i * 75, 10152);
                     AddImage(30, 85 + i * 75, 10151);
@@ -884,7 +887,7 @@ namespace Server.Engines.ConPVP
                     }
                 }
 
-                if (i == winner.TeamID)
+                if (i == winner?.TeamID)
                 {
                     continue;
                 }
@@ -898,7 +901,10 @@ namespace Server.Engines.ConPVP
                 }
             }
 
-            m_Context.Finish(m_Context.Participants[winner.TeamID]);
+            if (winner != null)
+            {
+                m_Context.Finish(m_Context.Participants[winner.TeamID]);
+            }
         }
 
         public override void OnStop()

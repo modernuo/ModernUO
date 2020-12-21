@@ -42,7 +42,7 @@ namespace Server
         {
             m_PrefixStrings = prefixStr;
             m_Encoding = Utility.UTF8;
-            _buffer = new byte[BufferSize];
+            _buffer = GC.AllocateUninitializedArray<byte>(BufferSize);
         }
 
         public virtual long Position => Index;

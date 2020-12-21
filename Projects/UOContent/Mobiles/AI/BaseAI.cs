@@ -156,7 +156,7 @@ namespace Server.Mobiles
         {
             var name = m_Mobile.Name;
 
-            return name != null && Insensitive.StartsWith(speech, name);
+            return name != null && speech.InsensitiveStartsWith(name);
         }
 
         public virtual void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -786,7 +786,7 @@ namespace Server.Mobiles
                         {
                             var word = str[i];
 
-                            if (Insensitive.Equals(word, "obey"))
+                            if (word.InsensitiveEquals("obey"))
                             {
                                 m_Mobile.SetControlMaster(e.Mobile);
 

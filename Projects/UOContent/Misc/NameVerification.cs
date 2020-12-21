@@ -201,7 +201,7 @@ namespace Server.Misc
 
             for (var i = 0; i < disallowed.Length; ++i)
             {
-                var indexOf = name.IndexOf(disallowed[i], StringComparison.Ordinal);
+                var indexOf = name.IndexOfOrdinal(disallowed[i]);
 
                 if (indexOf == -1)
                 {
@@ -235,7 +235,7 @@ namespace Server.Misc
 
             for (var i = 0; i < startDisallowed.Length; ++i)
             {
-                if (name.StartsWith(startDisallowed[i], StringComparison.Ordinal))
+                if (name.StartsWithOrdinal(startDisallowed[i]))
                 {
                     return false;
                 }

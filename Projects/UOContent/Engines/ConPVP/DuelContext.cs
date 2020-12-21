@@ -1396,7 +1396,7 @@ namespace Server.Engines.ConPVP
                 return;
             }
 
-            if (Insensitive.Contains(e.Speech, "i wish to duel"))
+            if (e.Speech.InsensitiveContains("i wish to duel"))
             {
                 if (!pm.CheckAlive())
                 {
@@ -1432,7 +1432,7 @@ namespace Server.Engines.ConPVP
                     e.Handled = true;
                 }
             }
-            else if (Insensitive.Equals(e.Speech, "change arena preferences"))
+            else if (e.Speech.InsensitiveEquals("change arena preferences"))
             {
                 if (!pm.CheckAlive())
                 {
@@ -1448,7 +1448,7 @@ namespace Server.Engines.ConPVP
                     }
                 }
             }
-            else if (Insensitive.Equals(e.Speech, "showladder"))
+            else if (e.Speech.InsensitiveEquals("showladder"))
             {
                 e.Blocked = true;
                 if (!pm.CheckAlive())
@@ -1487,7 +1487,7 @@ namespace Server.Engines.ConPVP
                     }
                 }
             }
-            else if (Insensitive.Equals(e.Speech, "viewladder"))
+            else if (e.Speech.InsensitiveEquals("viewladder"))
             {
                 e.Blocked = true;
 
@@ -1509,7 +1509,7 @@ namespace Server.Engines.ConPVP
                     }
                 }
             }
-            else if (Insensitive.Contains(e.Speech, "i yield"))
+            else if (e.Speech.InsensitiveContains("i yield"))
             {
                 if (!pm.CheckAlive())
                 {

@@ -148,7 +148,7 @@ namespace Server.Commands.Generic
                 {
                     var style = NumberStyles.Integer;
 
-                    if (Insensitive.StartsWith(toParse, "0x"))
+                    if (toParse.InsensitiveStartsWith("0x"))
                     {
                         style = NumberStyles.HexNumber;
                         toParse = toParse.Substring(2);
@@ -231,7 +231,6 @@ namespace Server.Commands.Generic
         NotEqual,
 
         Contains,
-
         StartsWith,
         EndsWith
     }
@@ -260,39 +259,74 @@ namespace Server.Commands.Generic
         {
             var inverse = false;
 
+            Type type = m_IgnoreCase ? typeof(InsensitiveStringHelpers) : typeof(OrdinalStringHelpers);
             string methodName;
 
             switch (m_Operator)
             {
-                case StringOperator.Equal:
-                    methodName = "Equals";
-                    break;
-
                 case StringOperator.NotEqual:
-                    methodName = "Equals";
-                    inverse = true;
-                    break;
+                    {
+                        inverse = true;
+                        goto case StringOperator.Equal;
+                    }
+                case StringOperator.Equal:
+                    {
+                        if (m_IgnoreCase)
+                        {
+                            methodName = "InsensitiveEquals";
+                        }
+                        else
+                        {
+                            methodName = "EqualsOrdinal";
+                        }
+                        break;
+                    }
 
                 case StringOperator.Contains:
-                    methodName = "Contains";
-                    break;
+                    {
+                        if (m_IgnoreCase)
+                        {
+                            methodName = "InsensitiveContains";
+                        }
+                        else
+                        {
+                            methodName = "ContainsOrdinal";
+                        }
+                        break;
+                    }
 
                 case StringOperator.StartsWith:
-                    methodName = "StartsWith";
-                    break;
+                    {
+                        if (m_IgnoreCase)
+                        {
+                            methodName = "InsensitiveStartsWith";
+                        }
+                        else
+                        {
+                            methodName = "StartsWithOrdinal";
+                        }
+                        break;
+                    }
 
                 case StringOperator.EndsWith:
-                    methodName = "EndsWith";
-                    break;
+                    {
+                        if (m_IgnoreCase)
+                        {
+                            methodName = "InsensitiveEndsWith";
+                        }
+                        else
+                        {
+                            methodName = "EndsWithOrdinal";
+                        }
+                        break;
+                    }
 
                 default:
                     throw new InvalidOperationException("Invalid string comparison operator.");
             }
 
-            if (m_IgnoreCase || methodName == "Equals")
+            if (m_Operator == StringOperator.Equal || m_Operator == StringOperator.NotEqual)
             {
-                var type = m_IgnoreCase ? typeof(Insensitive) : typeof(string);
-
                 emitter.BeginCall(
                     type.GetMethod(
                         methodName,
@@ -334,7 +368,7 @@ namespace Server.Commands.Generic
                 emitter.LoadLocal(temp);
 
                 emitter.BeginCall(
-                    typeof(string).GetMethod(
+                    type.GetMethod(
                         methodName,
                         BindingFlags.Public | BindingFlags.Instance,
                         null,

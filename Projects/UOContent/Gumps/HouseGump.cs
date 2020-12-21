@@ -242,7 +242,7 @@ namespace Server.Gumps
 
             if (m_House.Sign != null)
             {
-                var lines = Wrap(m_House.Sign.GetName());
+                var lines = m_House.Sign.GetName().Wrap(10, 6);
 
                 for (int i = 0, y = (101 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
                 {
@@ -400,75 +400,6 @@ namespace Server.Gumps
                 AddHtmlLocalized(200, 340, 355, 30, 1011277); // Okay that is fine.
                 AddButton(350, 340, 4005, 4007, 18);
             }
-        }
-
-        private List<string> Wrap(string value)
-        {
-            if (value == null || (value = value.Trim()).Length <= 0)
-            {
-                return null;
-            }
-
-            var values = value.Split(' ');
-            var list = new List<string>();
-            var current = "";
-
-            for (var i = 0; i < values.Length; ++i)
-            {
-                var val = values[i];
-
-                var v = current.Length == 0 ? val : $"{current} {val}";
-
-                if (v.Length < 10)
-                {
-                    current = v;
-                }
-                else if (v.Length == 10)
-                {
-                    list.Add(v);
-
-                    if (list.Count == 6)
-                    {
-                        return list;
-                    }
-
-                    current = "";
-                }
-                else if (val.Length <= 10)
-                {
-                    list.Add(current);
-
-                    if (list.Count == 6)
-                    {
-                        return list;
-                    }
-
-                    current = val;
-                }
-                else
-                {
-                    while (v.Length >= 10)
-                    {
-                        list.Add(v.Substring(0, 10));
-
-                        if (list.Count == 6)
-                        {
-                            return list;
-                        }
-
-                        v = v.Substring(10);
-                    }
-
-                    current = v;
-                }
-            }
-
-            if (current.Length > 0)
-            {
-                list.Add(current);
-            }
-
-            return list;
         }
 
         private string GetOwnerName()

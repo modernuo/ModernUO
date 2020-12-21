@@ -208,7 +208,7 @@ namespace Server.Commands
 
         public void GetDetails(out string command, out string argString, out string[] args)
         {
-            var indexOf = Command.IndexOf(' ', StringComparison.Ordinal);
+            var indexOf = Command.IndexOfOrdinal(' ');
 
             if (indexOf >= 0)
             {

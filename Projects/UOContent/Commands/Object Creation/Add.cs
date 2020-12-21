@@ -89,7 +89,7 @@ namespace Server.Commands
 
             for (var i = 0; i < args.Length; ++i)
             {
-                if (Insensitive.Equals(args[i], "set"))
+                if (args[i].InsensitiveEquals("set"))
                 {
                     var remains = args.Length - i - 1;
 
@@ -179,7 +179,7 @@ namespace Server.Commands
 
                     for (var j = 0; thisProp == null && j < allProps.Length; ++j)
                     {
-                        if (Insensitive.Equals(propName, allProps[j].Name))
+                        if (propName.InsensitiveEquals(allProps[j].Name))
                         {
                             thisProp = allProps[j];
                         }
@@ -300,7 +300,7 @@ namespace Server.Commands
 
                 object obj = value;
 
-                if (value?.StartsWith("0x", StringComparison.Ordinal) == true)
+                if (value.StartsWithOrdinal("0x"))
                 {
                     if (IsSignedNumeric(type))
                     {

@@ -308,7 +308,7 @@ namespace Server.Mobiles
 
                 ++stabled;
 
-                if (claimByName && !Insensitive.Equals(pet.Name, petName))
+                if (claimByName && !pet.Name.InsensitiveEquals(petName))
                 {
                     continue;
                 }
@@ -387,7 +387,7 @@ namespace Server.Mobiles
 
                 CloseClaimList(e.Mobile);
 
-                var index = e.Speech.IndexOf(' ', StringComparison.Ordinal);
+                var index = e.Speech.IndexOfOrdinal(' ');
 
                 if (index != -1)
                 {

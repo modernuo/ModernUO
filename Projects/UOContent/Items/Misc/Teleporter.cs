@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Server.Buffers;
 using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
@@ -594,7 +595,7 @@ namespace Server.Items
                 {
                     isMatch = true;
                 }
-                else if (m_Substring != null && e.Speech.ToLower().Contains(m_Substring.ToLower(), StringComparison.Ordinal))
+                else if (m_Substring != null && e.Speech.InsensitiveContains(m_Substring))
                 {
                     isMatch = true;
                 }
@@ -1189,7 +1190,7 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            var props = new StringBuilder();
+            using var props = new ValueStringBuilder(stackalloc char[128]);
 
             if (GetFlag(ConditionFlag.DenyMounted))
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Buffers.Binary;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -11,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
 using Microsoft.Toolkit.HighPerformance.Extensions;
+using Server.Buffers;
 using Server.Random;
 
 namespace Server
@@ -144,18 +146,20 @@ namespace Server
 
             ReadOnlySpan<char> chars = s.AsSpan();
 
-            StringBuilder stringBuilder = null;
+            using ValueStringBuilder sb = new ValueStringBuilder(stackalloc char[256]);
+            var hasDoneAnyReplacements = false;
 
             for (int i = 0, last = 0; i < chars.Length; i++)
             {
-                if (!IsSafeChar(chars[i]) || stringBuilder != null && i == chars.Length - 1)
+                if (!IsSafeChar(chars[i]) && i == chars.Length - 1)
                 {
-                    (stringBuilder ??= new StringBuilder()).Append(chars.Slice(last, i - last));
+                    hasDoneAnyReplacements = true;
+                    sb.Append(chars.Slice(last, i - last));
                     last = i + 1; // Skip the unsafe char
                 }
             }
 
-            return stringBuilder?.ToString() ?? s;
+            return !hasDoneAnyReplacements ? s : sb.ToString();
         }
 
         public static void Separate(StringBuilder sb, string value, string separator)
@@ -174,9 +178,6 @@ namespace Server
         {
             str = Intern(str);
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string DefaultIfNullOrEmpty(this string value, string def) => value?.Trim().Length > 0 ? value : def;
 
         public static IPAddress Intern(IPAddress ipAddress)
         {
@@ -301,7 +302,7 @@ namespace Server
         public static bool IPMatch(string val, IPAddress ip, out bool valid)
         {
             var family = ip.AddressFamily;
-            var useIPv6 = family == AddressFamily.InterNetworkV6 || val.Contains(':', StringComparison.Ordinal);
+            var useIPv6 = family == AddressFamily.InterNetworkV6 || val.ContainsOrdinal(':');
 
             ip = useIPv6 ? ip.MapToIPv6() : ip.MapToIPv4();
 
@@ -619,9 +620,9 @@ namespace Server
                 return "";
             }
 
-            var hasOpen = str.Contains('<', StringComparison.Ordinal);
-            var hasClose = str.Contains('>', StringComparison.Ordinal);
-            var hasPound = str.Contains('#', StringComparison.Ordinal);
+            var hasOpen = str.ContainsOrdinal('<');
+            var hasClose = str.ContainsOrdinal('>');
+            var hasPound = str.ContainsOrdinal('#');
 
             if (!hasOpen && !hasClose && !hasPound)
             {
@@ -648,9 +649,9 @@ namespace Server
             return sb.ToString();
         }
 
-        public static int InsensitiveCompare(string first, string second) => Insensitive.Compare(first, second);
+        public static int InsensitiveCompare(string first, string second) => first.InsensitiveCompare(second);
 
-        public static bool InsensitiveStartsWith(string first, string second) => Insensitive.StartsWith(first, second);
+        public static bool InsensitiveStartsWith(string first, string second) => first.InsensitiveStartsWith(second);
 
         public static Direction GetDirection(IPoint2D from, IPoint2D to)
         {
@@ -990,33 +991,18 @@ namespace Server
             }
         }
 
-        public static List<TOutput> CastListContravariant<TInput, TOutput>(this IReadOnlyCollection<TInput> coll)
-            where TInput : TOutput
+        // Using this instead of Linq Cast<> means we can ditch the yield and enforce contravariance
+        public static HashSet<TOutput> SafeConvertSet<TInput, TOutput>(this IEnumerable<TInput> coll)
+            where TOutput : TInput => coll.SafeConvert<HashSet<TOutput>, TInput, TOutput>();
+
+        public static List<TOutput> SafeConvertList<TInput, TOutput>(this IEnumerable<TInput> coll)
+            where TOutput : TInput => coll.SafeConvert<List<TOutput>, TInput, TOutput>();
+
+        public static TColl SafeConvert<TColl, TInput, TOutput>(this IEnumerable<TInput> coll)
+            where TOutput : TInput where TColl : ICollection<TOutput>, new()
         {
-            var outputList = new List<TOutput>();
-            foreach (var entry in coll)
-            {
-                outputList.Add(entry);
-            }
+            var outputList = new TColl();
 
-            return outputList;
-        }
-
-        public static List<TOutput> CastListCovariant<TInput, TOutput>(this IReadOnlyCollection<TInput> coll)
-            where TOutput : TInput
-        {
-            var outputList = new List<TOutput>();
-            foreach (var entry in coll)
-            {
-                outputList.Add((TOutput)entry);
-            }
-
-            return outputList;
-        }
-
-        public static List<TOutput> SafeConvertList<TInput, TOutput>(this IReadOnlyCollection<TInput> coll) where TOutput : class
-        {
-            var outputList = new List<TOutput>();
             foreach (var entry in coll)
             {
                 if (entry is TOutput outEntry)
@@ -1055,14 +1041,14 @@ namespace Server
             return t;
         }
 
-        public static int ToInt32(string value)
+        public static int ToInt32(ReadOnlySpan<char> value)
         {
             int i;
 
 #pragma warning disable CA1806 // Do not ignore method results
-            if (value.StartsWith("0x", StringComparison.Ordinal))
+            if (value.StartsWithOrdinal("0x"))
             {
-                int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
+                int.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i);
             }
             else
             {
@@ -1073,14 +1059,14 @@ namespace Server
             return i;
         }
 
-        public static uint ToUInt32(string value)
+        public static uint ToUInt32(ReadOnlySpan<char> value)
         {
             uint i;
 
 #pragma warning disable CA1806 // Do not ignore method results
-            if (value.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            if (value.InsensitiveStartsWith("0x"))
             {
-                uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
+                uint.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i);
             }
             else
             {
@@ -1091,14 +1077,14 @@ namespace Server
             return i;
         }
 
-        public static bool ToInt32(string value, out int i) =>
-            value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
-                ? int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i)
+        public static bool ToInt32(ReadOnlySpan<char> value, out int i) =>
+            value.InsensitiveStartsWith("0x")
+                ? int.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i)
                 : int.TryParse(value, out i);
 
-        public static bool ToUInt32(string value, out uint i) =>
-            value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
-                ? uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i)
+        public static bool ToUInt32(ReadOnlySpan<char> value, out uint i) =>
+            value.InsensitiveStartsWith("0x")
+                ? uint.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i)
                 : uint.TryParse(value, out i);
 
         public static int GetXMLInt32(string intString, int defaultValue)

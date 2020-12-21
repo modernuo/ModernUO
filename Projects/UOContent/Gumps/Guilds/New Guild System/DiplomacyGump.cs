@@ -26,7 +26,7 @@ namespace Server.Guilds
                 "",
                 0,
                 GuildDisplayType.All,
-                World.Guilds.Values.CastListCovariant<BaseGuild, Guild>(),
+                World.Guilds.Values.SafeConvertList<BaseGuild, Guild>(),
                 1063136 + (int)GuildDisplayType.All
             )
         {
@@ -44,7 +44,7 @@ namespace Server.Guilds
                 filter,
                 startNumber,
                 display,
-                World.Guilds.Values.CastListCovariant<BaseGuild, Guild>(),
+                World.Guilds.Values.SafeConvertList<BaseGuild, Guild>(),
                 1063136 + (int)display
             )
         {
@@ -224,7 +224,7 @@ namespace Server.Guilds
                     }
             }
 
-            return !(Insensitive.Contains(g.Name, filter) || Insensitive.Contains(g.Abbreviation, filter));
+            return !(g.Name.InsensitiveContains(filter) || g.Abbreviation.InsensitiveContains(filter));
         }
 
         public override Gump GetResentGump(
@@ -285,7 +285,7 @@ namespace Server.Guilds
                     return 1;
                 }
 
-                return Insensitive.Compare(x.Name, y.Name);
+                return x.Name.InsensitiveCompare(y.Name);
             }
         }
 
@@ -365,7 +365,7 @@ namespace Server.Guilds
                     return 1;
                 }
 
-                return Insensitive.Compare(x.Abbreviation, y.Abbreviation);
+                return x.Abbreviation.InsensitiveCompare(y.Abbreviation);
             }
         }
     }
