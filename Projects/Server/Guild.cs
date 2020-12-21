@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Server.Guilds
@@ -40,7 +41,7 @@ namespace Server.Guilds
         public void Serialize()
         {
             SaveBuffer ??= new BufferWriter(true);
-            SaveBuffer.Reset();
+            SaveBuffer.Seek(0, SeekOrigin.Current);
             Serialize(SaveBuffer);
         }
 

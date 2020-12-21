@@ -47,7 +47,7 @@ namespace Server
 
         public virtual long Position => Index;
 
-        protected virtual int BufferSize => 256;
+        protected virtual int BufferSize => 128;
 
         public byte[] Buffer => _buffer;
 
@@ -69,7 +69,10 @@ namespace Server
 
         public virtual void Flush()
         {
-            Resize(_buffer.Length * 2);
+            // Need to avoid buffer.Length = 2, buffer * 2 is 4, but we need 8 or 16bytes, causing an exception.
+            // The least we need is 16bytes + Index, but we use BufferSize since it should always be big enough for a single
+            // non-dynamic field.
+            Resize(Math.Max(BufferSize, _buffer.Length * 2));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -79,11 +82,6 @@ namespace Server
             {
                 Flush();
             }
-        }
-
-        public void Reset()
-        {
-            Index = 0;
         }
 
         public void Write(ReadOnlySpan<byte> bytes)

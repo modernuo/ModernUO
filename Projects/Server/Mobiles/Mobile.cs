@@ -2577,7 +2577,7 @@ namespace Server
         public void Serialize()
         {
             SaveBuffer ??= new BufferWriter(true);
-            SaveBuffer.Reset();
+            SaveBuffer.Seek(0, SeekOrigin.Current);
             Serialize(SaveBuffer);
         }
 
