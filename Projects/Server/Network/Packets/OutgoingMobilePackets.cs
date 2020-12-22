@@ -21,6 +21,7 @@ namespace Server.Network
     public static class OutgoingMobilePackets
     {
         public const int BondedStatusPacketLength = 11;
+        public const int DeathAnimationPacketLength = 13;
 
         public static void CreateBondedStatus(ref Span<byte> buffer, Serial serial, bool bonded)
         {
@@ -41,14 +42,35 @@ namespace Server.Network
             }
 
             var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0xBF);   // Packet ID
-            writer.Write((ushort)11);   // Length
+            writer.Write((byte)0xBF); // Packet ID
+            writer.Write((ushort)11); // Length
             writer.Write((ushort)0x19); // Subpacket ID
-            writer.Write((byte)0);      // Command
+            writer.Write((byte)0); // Command
             writer.Write(serial);
             writer.Write(bonded);
 
             ns.Send(ref buffer, writer.Position);
+        }
+
+        public static void CreateDeathAnimation(ref Span<byte> buffer, Serial killed, Serial corpse)
+        {
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0xAF); // Packet ID
+            writer.Write(killed);
+            writer.Write(corpse);
+            writer.Write(0); // ??
+        }
+
+        public static void SendDeathAnimation(this NetState ns, Serial killed, Serial corpse)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> span = stackalloc byte[DeathAnimationPacketLength];
+            CreateDeathAnimation(ref span, killed, corpse);
+            ns.Send(span);
         }
     }
 }

@@ -13,19 +13,13 @@ namespace Server.Tests.Network
             Serial killed = 0x1;
             Serial corpse = 0x1000;
 
-            var data = new DeathAnimation(killed, corpse).Compile();
+            var expected = new DeathAnimation(killed, corpse).Compile();
 
-            Span<byte> expectedData = stackalloc byte[13];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendDeathAnimation(killed, corpse);
 
-            expectedData.Write(ref pos, (byte)0xAF); // Packet ID
-            expectedData.Write(ref pos, killed);
-            expectedData.Write(ref pos, corpse);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, 0);
-#endif
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
