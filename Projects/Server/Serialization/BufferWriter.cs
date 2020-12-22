@@ -47,7 +47,7 @@ namespace Server
 
         public virtual long Position => Index;
 
-        protected virtual int BufferSize => 128;
+        protected virtual int BufferSize => 256;
 
         public byte[] Buffer => _buffer;
 
@@ -76,12 +76,15 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void FlushIfNeeded(int amount)
+        private bool FlushIfNeeded(int amount)
         {
             if (Index + amount > _buffer.Length)
             {
                 Flush();
+                return true;
             }
+
+            return false;
         }
 
         public void Write(ReadOnlySpan<byte> bytes)
@@ -91,7 +94,11 @@ namespace Server
 
             while (remaining > 0)
             {
-                FlushIfNeeded(remaining);
+                // In case the length of the bytes is too long, and we loop in case doubling is not enough
+                while (FlushIfNeeded(remaining))
+                {
+                }
+
                 var count = Math.Min((int)(_buffer.Length - Index), remaining);
                 bytes.Slice(idx, count).CopyTo(_buffer.AsSpan((int)Index, count));
 
@@ -202,70 +209,64 @@ namespace Server
         {
             FlushIfNeeded(8);
 
-            _buffer[Index] = (byte)value;
-            _buffer[Index + 1] = (byte)(value >> 8);
-            _buffer[Index + 2] = (byte)(value >> 16);
-            _buffer[Index + 3] = (byte)(value >> 24);
-            _buffer[Index + 4] = (byte)(value >> 32);
-            _buffer[Index + 5] = (byte)(value >> 40);
-            _buffer[Index + 6] = (byte)(value >> 48);
-            _buffer[Index + 7] = (byte)(value >> 56);
-            Index += 8;
+            _buffer[Index++] = (byte)value;
+            _buffer[Index] = (byte)(value >> 8);
+            _buffer[Index] = (byte)(value >> 16);
+            _buffer[Index] = (byte)(value >> 24);
+            _buffer[Index] = (byte)(value >> 32);
+            _buffer[Index] = (byte)(value >> 40);
+            _buffer[Index] = (byte)(value >> 48);
+            _buffer[Index] = (byte)(value >> 56);
         }
 
         public void Write(ulong value)
         {
             FlushIfNeeded(8);
 
-            _buffer[Index] = (byte)value;
-            _buffer[Index + 1] = (byte)(value >> 8);
-            _buffer[Index + 2] = (byte)(value >> 16);
-            _buffer[Index + 3] = (byte)(value >> 24);
-            _buffer[Index + 4] = (byte)(value >> 32);
-            _buffer[Index + 5] = (byte)(value >> 40);
-            _buffer[Index + 6] = (byte)(value >> 48);
-            _buffer[Index + 7] = (byte)(value >> 56);
-            Index += 8;
+            _buffer[Index++] = (byte)value;
+            _buffer[Index++] = (byte)(value >> 8);
+            _buffer[Index++] = (byte)(value >> 16);
+            _buffer[Index++] = (byte)(value >> 24);
+            _buffer[Index++] = (byte)(value >> 32);
+            _buffer[Index++] = (byte)(value >> 40);
+            _buffer[Index++] = (byte)(value >> 48);
+            _buffer[Index++] = (byte)(value >> 56);
         }
 
         public void Write(int value)
         {
             FlushIfNeeded(4);
 
-            _buffer[Index] = (byte)value;
-            _buffer[Index + 1] = (byte)(value >> 8);
-            _buffer[Index + 2] = (byte)(value >> 16);
-            _buffer[Index + 3] = (byte)(value >> 24);
-            Index += 4;
+            _buffer[Index++] = (byte)value;
+            _buffer[Index++] = (byte)(value >> 8);
+            _buffer[Index++] = (byte)(value >> 16);
+            _buffer[Index++] = (byte)(value >> 24);
         }
 
         public void Write(uint value)
         {
             FlushIfNeeded(4);
 
-            _buffer[Index] = (byte)value;
-            _buffer[Index + 1] = (byte)(value >> 8);
-            _buffer[Index + 2] = (byte)(value >> 16);
-            _buffer[Index + 3] = (byte)(value >> 24);
-            Index += 4;
+            _buffer[Index++] = (byte)value;
+            _buffer[Index++] = (byte)(value >> 8);
+            _buffer[Index++] = (byte)(value >> 16);
+            _buffer[Index++] = (byte)(value >> 24);
         }
 
         public void Write(short value)
         {
             FlushIfNeeded(2);
 
-            _buffer[Index] = (byte)value;
-            _buffer[Index + 1] = (byte)(value >> 8);
-            Index += 2;
+            _buffer[Index++] = (byte)value;
+            _buffer[Index++] = (byte)(value >> 8);
         }
 
         public void Write(ushort value)
         {
             FlushIfNeeded(2);
 
-            _buffer[Index] = (byte)value;
-            _buffer[Index + 1] = (byte)(value >> 8);
-            Index += 2;
+            _buffer[Index++] = (byte)value;
+            _buffer[Index++] = (byte)(value >> 8);
         }
 
         public unsafe void Write(double value)
@@ -666,6 +667,7 @@ namespace Server
             var remaining = m_Encoding.GetByteCount(value);
 
             WriteEncodedInt(remaining);
+
             if (remaining == 0)
             {
                 return;
