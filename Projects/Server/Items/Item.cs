@@ -805,7 +805,7 @@ namespace Server
         public void Serialize()
         {
             SaveBuffer ??= new BufferWriter(true);
-            SaveBuffer.Seek(0, SeekOrigin.Current);
+            SaveBuffer.Seek(0, SeekOrigin.Begin);
             Serialize(SaveBuffer);
         }
 
