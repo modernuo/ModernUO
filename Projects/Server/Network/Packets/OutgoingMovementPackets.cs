@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Buffers;
+using System.IO;
 
 namespace Server.Network
 {
@@ -99,6 +100,7 @@ namespace Server.Network
 
             var writer = new CircularBufferWriter(buffer);
             writer.Write((byte)0xBF); // Packet ID
+            writer.Seek(2, SeekOrigin.Current);
             writer.Write((ushort)0x1); // Subpacket
             writer.Write(keys[0]);
             writer.Write(keys[1]);
@@ -107,6 +109,7 @@ namespace Server.Network
             writer.Write(keys[4]);
             writer.Write(keys[5]);
 
+            writer.WritePacketLength();
             ns.Send(ref buffer, writer.Position);
         }
 
