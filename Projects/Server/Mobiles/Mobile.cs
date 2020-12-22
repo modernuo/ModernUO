@@ -5072,21 +5072,13 @@ namespace Server
 
             var c = CreateCorpseHandler?.Invoke(this, hair, facialhair, content, equip);
 
-            /*m_Corpse = c;
-
-            for ( int i = 0; c != null && i < content.Count; ++i )
-              c.DropItem( (Item)content[i] );
-
-            if (c != null)
-              c.MoveToWorld( this.Location, this.Map );*/
-
             if (m_Map != null)
             {
-                Packet animPacket = null;
-
                 var eable = m_Map.GetClientsInRange(m_Location);
                 var corpseSerial = c?.Serial ?? Serial.Zero;
 
+                Span<byte> deathAnimation = stackalloc byte[OutgoingMobilePackets.DeathAnimationPacketLength];
+                OutgoingMobilePackets.CreateDeathAnimation(ref deathAnimation, Serial, corpseSerial);
                 Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
                 OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
 
@@ -5094,9 +5086,7 @@ namespace Server
                 {
                     if (state != m_NetState)
                     {
-                        animPacket ??= Packet.Acquire(new DeathAnimation(Serial, corpseSerial));
-
-                        state.Send(animPacket);
+                        state.Send(deathAnimation);
 
                         if (!state.Mobile.CanSee(this))
                         {
@@ -5104,8 +5094,6 @@ namespace Server
                         }
                     }
                 }
-
-                Packet.Release(animPacket);
 
                 eable.Free();
             }
