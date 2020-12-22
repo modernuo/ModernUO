@@ -94,7 +94,6 @@ namespace Server
 
             while (remaining > 0)
             {
-                // In case the length of the bytes is too long, and we loop in case doubling is not enough
                 FlushIfNeeded(remaining);
 
                 var count = Math.Min((int)(_buffer.Length - Index), remaining);
