@@ -112,7 +112,7 @@ namespace Server
             int strLength = m_Encoding.GetByteCount(arguments);
 
             int length = _position + 6 + strLength;
-            if (length > _buffer.Length)
+            while (length > _buffer.Length)
             {
                 Flush();
             }
