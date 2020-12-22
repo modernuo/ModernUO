@@ -210,13 +210,13 @@ namespace Server
             FlushIfNeeded(8);
 
             _buffer[Index++] = (byte)value;
-            _buffer[Index] = (byte)(value >> 8);
-            _buffer[Index] = (byte)(value >> 16);
-            _buffer[Index] = (byte)(value >> 24);
-            _buffer[Index] = (byte)(value >> 32);
-            _buffer[Index] = (byte)(value >> 40);
-            _buffer[Index] = (byte)(value >> 48);
-            _buffer[Index] = (byte)(value >> 56);
+            _buffer[Index++] = (byte)(value >> 8);
+            _buffer[Index++] = (byte)(value >> 16);
+            _buffer[Index++] = (byte)(value >> 24);
+            _buffer[Index++] = (byte)(value >> 32);
+            _buffer[Index++] = (byte)(value >> 40);
+            _buffer[Index++] = (byte)(value >> 48);
+            _buffer[Index++] = (byte)(value >> 56);
         }
 
         public void Write(ulong value)
