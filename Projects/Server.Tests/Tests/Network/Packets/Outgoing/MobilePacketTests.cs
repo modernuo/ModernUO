@@ -26,52 +26,35 @@ namespace Server.Tests.Network
         public void TestBondStatus()
         {
             Serial petSerial = 0x1;
-            var bonded = true;
+            const bool bonded = true;
 
-            var data = new BondedStatus(petSerial, bonded).Compile();
+            var expected = new BondedStatus(petSerial, bonded).Compile();
 
-            Span<byte> expectedData = stackalloc byte[11];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendBondedStatus(petSerial, bonded);
 
-            expectedData.Write(ref pos, (byte)0xBF);   // Packet ID
-            expectedData.Write(ref pos, (ushort)0x0B); // Length
-            expectedData.Write(ref pos, (ushort)0x19); // Sub-packet
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0); // Command
-#else
-            pos++;
-#endif
-
-            expectedData.Write(ref pos, petSerial);
-            expectedData.Write(ref pos, bonded);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestMobileMoving()
+        [Theory]
+        [InlineData(ProtocolChanges.StygianAbyss)]
+        [InlineData(ProtocolChanges.None)]
+        public void TestMobileMoving(ProtocolChanges protocolChanges)
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
             var noto = 10;
 
-            var data = new MobileMoving(m, noto, true).Compile();
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = protocolChanges;
+            var expected = new MobileMoving(m, noto, ns.StygianAbyss).Compile();
 
-            Span<byte> expectedData = stackalloc byte[17];
-            var pos = 0;
+            ns.SendMobileMoving(m, noto);
 
-            expectedData.Write(ref pos, (byte)0x77); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.Write(ref pos, (ushort)m.Body);
-            expectedData.Write(ref pos, m.Location);
-            expectedData.Write(ref pos, (byte)m.Direction);
-            expectedData.Write(ref pos, (ushort)m.Hue);
-            expectedData.Write(ref pos, (byte)m.GetPacketFlags(true));
-            expectedData.Write(ref pos, (byte)noto);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]

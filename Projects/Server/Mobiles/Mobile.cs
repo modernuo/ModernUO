@@ -435,12 +435,6 @@ namespace Server
         private static readonly TimeSpan ExpireCombatantDelay = TimeSpan.FromMinutes(1.0);
         private static readonly TimeSpan ExpireAggressorsDelay = TimeSpan.FromSeconds(5.0);
 
-        private static readonly Packet[][] m_MovingPacketCache =
-        {
-            new Packet[8],
-            new Packet[8]
-        };
-
         private static readonly List<IEntity> m_MoveList = new();
         private static readonly List<Mobile> m_MoveClientList = new();
 
@@ -3061,7 +3055,15 @@ namespace Server
                 sendFacialHair = true;
             }
 
-            var cache = new[] { new Packet[8], new Packet[8] };
+            const int mobileMovingLength = OutgoingMobilePackets.MobileMovingPacketLength;
+            Span<byte> mobileMovingPackets = stackalloc byte[mobileMovingLength * 16]; // 272 bytes
+            // If localinit is off, we need to make sure the first byte of each packet is 0 so we can check to see if it was set
+#if NO_LOCAL_INIT
+			for (int i = 0; i < 16; i++)
+			{
+				mobileMovingPackets[i * mobileMovingLength] = 0;
+			}
+#endif
 
             var ourState = m.m_NetState;
 
@@ -3078,14 +3080,13 @@ namespace Server
                     ourState.Send(new MobileIncoming(ourState, m, m));
                 }
 
+                if (sendMoving || !ourState.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
+                {
+                    ourState.SendMobileMovingUsingCache(mobileMovingPackets, m, Notoriety.Compute(m, m));
+                }
+
                 if (ourState.StygianAbyss)
                 {
-                    if (sendMoving)
-                    {
-                        var noto = Notoriety.Compute(m, m);
-                        ourState.Send(cache[0][noto] = Packet.Acquire(new MobileMoving(m, noto, true)));
-                    }
-
                     if (sendHealthbarPoison)
                     {
                         ourState.Send(new HealthbarPoison(m));
@@ -3094,14 +3095,6 @@ namespace Server
                     if (sendHealthbarYellow)
                     {
                         ourState.Send(new HealthbarYellow(m));
-                    }
-                }
-                else
-                {
-                    if (sendMoving || sendHealthbarPoison || sendHealthbarYellow)
-                    {
-                        var noto = Notoriety.Compute(m, m);
-                        ourState.Send(cache[1][noto] = Packet.Acquire(new MobileMoving(m, noto, false)));
                     }
                 }
 
@@ -3224,22 +3217,13 @@ namespace Server
                             }
                         }
 
+                        if (sendMoving || !ourState.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
+                        {
+                            ourState.SendMobileMovingUsingCache(mobileMovingPackets, m, Notoriety.Compute(beholder, m));
+                        }
+
                         if (state.StygianAbyss)
                         {
-                            if (sendMoving)
-                            {
-                                var noto = Notoriety.Compute(beholder, m);
-
-                                var p = cache[0][noto];
-
-                                if (p == null)
-                                {
-                                    cache[0][noto] = p = Packet.Acquire(new MobileMoving(m, noto, true));
-                                }
-
-                                state.Send(p);
-                            }
-
                             if (sendHealthbarPoison)
                             {
                                 hbpPacket ??= Packet.Acquire(new HealthbarPoison(m));
@@ -3252,22 +3236,6 @@ namespace Server
                                 hbyPacket ??= Packet.Acquire(new HealthbarYellow(m));
 
                                 state.Send(hbyPacket);
-                            }
-                        }
-                        else
-                        {
-                            if (sendMoving || sendHealthbarPoison || sendHealthbarYellow)
-                            {
-                                var noto = Notoriety.Compute(beholder, m);
-
-                                var p = cache[1][noto];
-
-                                if (p == null)
-                                {
-                                    cache[1][noto] = p = Packet.Acquire(new MobileMoving(m, noto, false));
-                                }
-
-                                state.Send(p);
                             }
                         }
 
@@ -3324,17 +3292,6 @@ namespace Server
                 Packet.Release(hbyPacket);
 
                 eable.Free();
-            }
-
-            if (sendMoving || sendNonlocalMoving || sendHealthbarPoison || sendHealthbarYellow)
-            {
-                for (var i = 0; i < cache.Length; ++i)
-                {
-                    for (var j = 0; j < cache[i].Length; ++j)
-                    {
-                        Packet.Release(ref cache[i][j]);
-                    }
-                }
             }
         }
 
@@ -4586,11 +4543,15 @@ namespace Server
 
                 eable.Free();
 
-                var cache = m_MovingPacketCache;
-
-                /*for( int i = 0; i < cache.Length; ++i )
-                  for( int j = 0; j < cache[i].Length; ++j )
-                    Packet.Release( ref cache[i][j] );*/
+                const int mobileMovingLength = OutgoingMobilePackets.MobileMovingPacketLength;
+                Span<byte> mobileMovingPackets = stackalloc byte[mobileMovingLength * 16]; // 272 bytes
+                // If localinit is off, we need to make sure the first byte of each packet is 0 so we can check to see if it was set
+#if NO_LOCAL_INIT
+			for (int i = 0; i < 16; i++)
+			{
+				mobileMovingPackets[i * mobileMovingLength] = 0;
+			}
+#endif
 
                 foreach (var m in m_MoveClientList)
                 {
@@ -4598,38 +4559,7 @@ namespace Server
 
                     if (ns != null && Utility.InUpdateRange(m_Location, m.m_Location) && m.CanSee(this))
                     {
-                        if (ns.StygianAbyss)
-                        {
-                            var noto = Notoriety.Compute(m, this);
-                            var p = cache[0][noto];
-
-                            if (p == null)
-                            {
-                                cache[0][noto] = p = Packet.Acquire(new MobileMoving(this, noto, true));
-                            }
-
-                            ns.Send(p);
-                        }
-                        else
-                        {
-                            var noto = Notoriety.Compute(m, this);
-                            var p = cache[1][noto];
-
-                            if (p == null)
-                            {
-                                cache[1][noto] = p = Packet.Acquire(new MobileMoving(this, noto, false));
-                            }
-
-                            ns.Send(p);
-                        }
-                    }
-                }
-
-                for (var i = 0; i < cache.Length; ++i)
-                {
-                    for (var j = 0; j < cache[i].Length; ++j)
-                    {
-                        Packet.Release(ref cache[i][j]);
+                        ns.SendMobileMovingUsingCache(mobileMovingPackets, m, Notoriety.Compute(m, this));
                     }
                 }
 

@@ -15,6 +15,7 @@
 
 using System;
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace Server.Network
 {
@@ -22,6 +23,7 @@ namespace Server.Network
     {
         public const int BondedStatusPacketLength = 11;
         public const int DeathAnimationPacketLength = 13;
+        public const int MobileMovingPacketLength = 17;
 
         public static void CreateBondedStatus(ref Span<byte> buffer, Serial serial, bool bonded)
         {
@@ -71,6 +73,54 @@ namespace Server.Network
             Span<byte> span = stackalloc byte[DeathAnimationPacketLength];
             CreateDeathAnimation(ref span, killed, corpse);
             ns.Send(span);
+        }
+
+        public static void CreateMobileMoving(ref Span<byte> buffer, Mobile m, int noto, bool stygianAbyss)
+        {
+            var loc = m.Location;
+            var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
+
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0x77); // Packet ID
+            writer.Write(m.Serial);
+            writer.Write((short)m.Body);
+            writer.Write((short)loc.m_X);
+            writer.Write((short)loc.m_Y);
+            writer.Write((sbyte)loc.m_Z);
+            writer.Write((byte)m.Direction);
+            writer.Write((short)hue);
+            writer.Write((byte)m.GetPacketFlags(stygianAbyss));
+            writer.Write((byte)noto);
+        }
+
+        public static void SendMobileMoving(this NetState ns, Mobile m, int noto)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> span = stackalloc byte[MobileMovingPacketLength];
+            CreateMobileMoving(ref span, m, noto, ns.StygianAbyss);
+            ns.Send(span);
+        }
+
+        // Requires a buffer of 16 packets, 17bytes per packet (272 bytes).
+        // Requires cache to have the first byte of each packet zeroed.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile m, int noto)
+        {
+            var stygianAbyss = ns.StygianAbyss;
+            var startIndex = (noto * 2 + (stygianAbyss ? 1 : 0)) * MobileMovingPacketLength;
+            var buffer = cache.Slice(startIndex, MobileMovingPacketLength);
+
+            // Packet not created yet
+            if (buffer[0] == 0)
+            {
+                CreateMobileMoving(ref buffer, m, noto, stygianAbyss);
+            }
+
+            ns.Send(buffer);
         }
     }
 }
