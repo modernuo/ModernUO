@@ -13,17 +13,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.IO;
+
 namespace Server
 {
     public interface ISerializable
     {
-        BufferWriter SaveBuffer { get; set; }
+        BufferWriter SaveBuffer { get; protected internal set; }
         int TypeRef { get; }
         Serial Serial { get; }
-        void Serialize();
         void Deserialize(IGenericReader reader);
         void Serialize(IGenericWriter writer);
         void Delete();
         bool Deleted { get; }
+
+        public void InitializeSaveBuffer(byte[] buffer)
+        {
+            SaveBuffer = new BufferWriter(buffer, true);
+        }
+
+        public void Serialize()
+        {
+            SaveBuffer ??= new BufferWriter(true);
+            SaveBuffer.Seek(0, SeekOrigin.Begin);
+            Serialize(SaveBuffer);
+        }
     }
 }

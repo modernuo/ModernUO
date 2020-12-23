@@ -33,19 +33,12 @@ namespace Server.Guilds
 
         public bool Deleted => Disbanded;
 
-        public BufferWriter SaveBuffer { get; set; }
-
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
-        public int TypeRef => 0;
+        BufferWriter ISerializable.SaveBuffer { get; set; }
 
-        public void Serialize()
-        {
-            SaveBuffer ??= new BufferWriter(true);
-            SaveBuffer.Seek(0, SeekOrigin.Begin);
-            Serialize(SaveBuffer);
-        }
+        public int TypeRef => 0;
 
         public abstract void Serialize(IGenericWriter writer);
         public abstract void Deserialize(IGenericReader reader);

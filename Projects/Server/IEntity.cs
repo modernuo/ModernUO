@@ -45,8 +45,10 @@ namespace Server
             Deleted = false;
         }
 
-        public BufferWriter SaveBuffer { get; set; }
+        BufferWriter ISerializable.SaveBuffer { get; set; }
+
         public int TypeRef { get; } = -1;
+
         public Serial Serial { get; }
 
         public Point3D Location { get; private set; }
@@ -96,10 +98,6 @@ namespace Server
             && p.X <= Location.m_X + range
             && p.Y >= Location.m_Y - range
             && p.Y <= Location.m_Y + range;
-
-        public void Serialize()
-        {
-        }
 
         public void Deserialize(IGenericReader reader)
         {

@@ -795,19 +795,12 @@ namespace Server
             AddNameProperties(list);
         }
 
-        public BufferWriter SaveBuffer { get; set; }
+        BufferWriter ISerializable.SaveBuffer { get; set; }
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
         public int TypeRef { get; }
-
-        public void Serialize()
-        {
-            SaveBuffer ??= new BufferWriter(true);
-            SaveBuffer.Seek(0, SeekOrigin.Begin);
-            Serialize(SaveBuffer);
-        }
 
         public virtual void Serialize(IGenericWriter writer)
         {

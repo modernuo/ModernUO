@@ -44,6 +44,13 @@ namespace Server
             _buffer = GC.AllocateUninitializedArray<byte>(BufferSize);
         }
 
+        public BufferWriter(int count, bool prefixStr)
+        {
+            m_PrefixStrings = prefixStr;
+            m_Encoding = Utility.UTF8;
+            _buffer = GC.AllocateUninitializedArray<byte>(count);
+        }
+
         public virtual long Position => Index;
 
         protected virtual int BufferSize => 256;

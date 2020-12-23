@@ -290,7 +290,7 @@ namespace Server
             return map;
         }
 
-        private static void SaveBuffers<I, T>(IIndexInfo<I> indexInfo, List<EntityIndex<T>> entities) where T : ISerializable
+        private static void SaveBuffers<I, T>(IIndexInfo<I> indexInfo, List<EntityIndex<T>> entities) where T : class, ISerializable
         {
             var indexType = indexInfo.TypeName;
 
@@ -306,20 +306,20 @@ namespace Server
 
             foreach (var entry in entities)
             {
-                T t = entry.Entity;
+                T e = entry.Entity;
 
-                if (t == null || t is IEntity entity && entity.Deleted)
+                if (e == null || e is IEntity entity && entity.Deleted)
                 {
                     continue;
                 }
 
                 byte[] saveBuffer = GC.AllocateUninitializedArray<byte>(entry.Length);
                 reader.Read(saveBuffer, 0, entry.Length);
-                t.SaveBuffer = new BufferWriter(saveBuffer, true);
+                e.InitializeSaveBuffer(saveBuffer);
             }
         }
 
-        private static void LoadData<I, T>(IIndexInfo<I> indexInfo, List<EntityIndex<T>> entities) where T : ISerializable
+        private static void LoadData<I, T>(IIndexInfo<I> indexInfo, List<EntityIndex<T>> entities) where T : class, ISerializable
         {
             var indexType = indexInfo.TypeName;
 
@@ -772,7 +772,7 @@ namespace Server
 
         public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
 
-        public static void SerializeTo(this ISerializable entity, IGenericWriter writer)
+        private static void SerializeTo(this ISerializable entity, IGenericWriter writer)
         {
             var saveBuffer = entity.SaveBuffer;
             writer.Write(saveBuffer.Buffer.AsSpan(0, (int)saveBuffer.Position));
