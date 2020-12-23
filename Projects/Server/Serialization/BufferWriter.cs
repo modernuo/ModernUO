@@ -117,7 +117,7 @@ namespace Server
             {
                 SeekOrigin.Current => Index += offset,
                 SeekOrigin.End     => Index = _buffer.Length - offset,
-                SeekOrigin.Begin   => Index = offset // Begin
+                _   => Index = offset // Begin
             };
         }
 

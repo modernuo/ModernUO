@@ -225,9 +225,9 @@ namespace Server
         {
             return origin switch
             {
-                SeekOrigin.Begin   => Position = offset,
                 SeekOrigin.Current => Position += offset,
-                SeekOrigin.End     => Position = _buffer.Length - offset
+                SeekOrigin.End     => Position = _buffer.Length - offset,
+                _                  => Position = offset // Begin
             };
         }
     }
