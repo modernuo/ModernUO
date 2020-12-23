@@ -135,11 +135,11 @@ namespace Server
             {
                 if (value == null)
                 {
-                    Write((byte)0);
+                    Write(false);
                 }
                 else
                 {
-                    Write((byte)1);
+                    Write(true);
                     InternalWriteString(value);
                 }
             }
@@ -292,16 +292,18 @@ namespace Server
             _buffer[Index++] = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(sbyte value)
         {
             FlushIfNeeded(1);
             _buffer[Index++] = (byte)value;
         }
 
-        public void Write(bool value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void Write(bool value)
         {
             FlushIfNeeded(1);
-            _buffer[Index++] = value ? 1 : 0;
+            _buffer[Index++] = *(byte*)&value; // up to 30% faster to dereference the raw value on the stack
         }
 
         public void Write(Point3D value)
