@@ -260,7 +260,7 @@ namespace Server.Items
                 case 1:
                 case 0:
                     {
-                        Addon = reader.ReadItem() as BaseAddon;
+                        Addon = reader.ReadEntity<BaseAddon>();
                         Offset = reader.ReadPoint3D();
 
                         Addon?.OnComponentLoaded(this);

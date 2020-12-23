@@ -311,7 +311,7 @@ namespace Server.Engines.ConPVP
             {
                 case 0:
                     {
-                        Board = ip.ReadItem() as DDBoard;
+                        Board = ip.ReadEntity<DDBoard>();
                         TeamName = ip.ReadString();
                         Color = ip.ReadEncodedInt();
                         Origin = ip.ReadPoint3D();
@@ -481,8 +481,8 @@ namespace Server.Engines.ConPVP
                             TeamInfo[i] = new DDTeamInfo(i, reader);
                         }
 
-                        PointA = reader.ReadItem() as DDWayPoint;
-                        PointB = reader.ReadItem() as DDWayPoint;
+                        PointA = reader.ReadEntity<DDWayPoint>();
+                        PointB = reader.ReadEntity<DDWayPoint>();
 
                         break;
                     }

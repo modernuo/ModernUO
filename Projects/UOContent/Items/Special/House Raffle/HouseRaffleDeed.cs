@@ -148,7 +148,7 @@ namespace Server.Items
             {
                 case 1:
                     {
-                        m_Stone = reader.ReadItem<HouseRaffleStone>();
+                        m_Stone = reader.ReadEntity<HouseRaffleStone>();
 
                         goto case 0;
                     }
@@ -156,7 +156,7 @@ namespace Server.Items
                     {
                         m_PlotLocation = reader.ReadPoint3D();
                         m_Facet = reader.ReadMap();
-                        m_AwardedTo = reader.ReadMobile();
+                        m_AwardedTo = reader.ReadEntity<Mobile>();
 
                         break;
                     }

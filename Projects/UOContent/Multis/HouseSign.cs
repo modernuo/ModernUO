@@ -216,8 +216,8 @@ namespace Server.Multis
             {
                 case 0:
                     {
-                        Owner = reader.ReadItem() as BaseHouse;
-                        OriginalOwner = reader.ReadMobile();
+                        Owner = reader.ReadEntity<BaseHouse>();
+                        OriginalOwner = reader.ReadEntity<Mobile>();
 
                         break;
                     }

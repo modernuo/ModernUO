@@ -3005,7 +3005,7 @@ namespace Server.Mobiles
                     }
                 case 26:
                     {
-                        AutoStabled = reader.ReadStrongMobileList();
+                        AutoStabled = reader.ReadEntityList<Mobile>();
 
                         goto case 25;
                     }
@@ -3139,7 +3139,7 @@ namespace Server.Mobiles
                     {
                         if (version < 13)
                         {
-                            var paid = reader.ReadStrongItemList();
+                            var paid = reader.ReadEntityList<Item>();
 
                             for (var i = 0; i < paid.Count; ++i)
                             {
@@ -3182,7 +3182,7 @@ namespace Server.Mobiles
                     }
                 case 7:
                     {
-                        PermaFlags = reader.ReadStrongMobileList();
+                        PermaFlags = reader.ReadEntityList<Mobile>();
                         goto case 6;
                     }
                 case 6:
@@ -3198,7 +3198,7 @@ namespace Server.Mobiles
                 case 4:
                     {
                         LastJusticeLoss = reader.ReadDeltaTime();
-                        JusticeProtectors = reader.ReadStrongMobileList();
+                        JusticeProtectors = reader.ReadEntityList<Mobile>();
                         goto case 3;
                     }
                 case 3:
@@ -3318,7 +3318,8 @@ namespace Server.Mobiles
 
             writer.Write(PeacedUntil);
             writer.Write(AnkhNextUse);
-            writer.Write(AutoStabled, true);
+            AutoStabled.Tidy();
+            writer.Write(AutoStabled);
 
             if (m_AcquiredRecipes == null)
             {
@@ -3401,14 +3402,16 @@ namespace Server.Mobiles
             writer.Write(NpcGuildJoinTime);
             writer.Write(NpcGuildGameTime);
 
-            writer.Write(PermaFlags, true);
+            PermaFlags.Tidy();
+            writer.Write(PermaFlags);
 
             writer.Write(NextTailorBulkOrder);
 
             writer.Write(NextSmithBulkOrder);
 
             writer.WriteDeltaTime(LastJusticeLoss);
-            writer.Write(JusticeProtectors, true);
+            JusticeProtectors.Tidy();
+            writer.Write(JusticeProtectors);
 
             writer.WriteDeltaTime(LastSacrificeGain);
             writer.WriteDeltaTime(LastSacrificeLoss);

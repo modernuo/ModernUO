@@ -19,7 +19,6 @@ using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Server.Guilds;
 
 namespace Server
 {
@@ -43,6 +42,13 @@ namespace Server
             m_PrefixStrings = prefixStr;
             m_Encoding = Utility.UTF8;
             _buffer = GC.AllocateUninitializedArray<byte>(BufferSize);
+        }
+
+        public BufferWriter(int count, bool prefixStr)
+        {
+            m_PrefixStrings = prefixStr;
+            m_Encoding = Utility.UTF8;
+            _buffer = GC.AllocateUninitializedArray<byte>(count);
         }
 
         public virtual long Position => Index;
@@ -69,21 +75,22 @@ namespace Server
 
         public virtual void Flush()
         {
-            Resize(_buffer.Length * 2);
+            // Need to avoid buffer.Length = 2, buffer * 2 is 4, but we need 8 or 16bytes, causing an exception.
+            // The least we need is 16bytes + Index, but we use BufferSize since it should always be big enough for a single
+            // non-dynamic field.
+            Resize(Math.Max(BufferSize, _buffer.Length * 2));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void FlushIfNeeded(int amount)
+        private bool FlushIfNeeded(int amount)
         {
             if (Index + amount > _buffer.Length)
             {
                 Flush();
+                return true;
             }
-        }
 
-        public void Reset()
-        {
-            Index = 0;
+            return false;
         }
 
         public void Write(ReadOnlySpan<byte> bytes)
@@ -94,6 +101,7 @@ namespace Server
             while (remaining > 0)
             {
                 FlushIfNeeded(remaining);
+
                 var count = Math.Min((int)(_buffer.Length - Index), remaining);
                 bytes.Slice(idx, count).CopyTo(_buffer.AsSpan((int)Index, count));
 
@@ -107,10 +115,9 @@ namespace Server
         {
             return origin switch
             {
-                SeekOrigin.Begin   => Index = offset,
                 SeekOrigin.Current => Index += offset,
-                SeekOrigin.End     => Index = BufferSize - offset,
-                _                  => Index
+                SeekOrigin.End     => Index = _buffer.Length - offset,
+                _   => Index = offset // Begin
             };
         }
 
@@ -133,11 +140,11 @@ namespace Server
             {
                 if (value == null)
                 {
-                    Write((byte)0);
+                    Write(false);
                 }
                 else
                 {
-                    Write((byte)1);
+                    Write(true);
                     InternalWriteString(value);
                 }
             }
@@ -149,32 +156,27 @@ namespace Server
 
         public void Write(DateTime value)
         {
-            Write(value.Ticks);
-        }
+            var ticks = (value.Kind switch
+            {
+                DateTimeKind.Local       => value.ToUniversalTime(),
+                DateTimeKind.Unspecified => value.ToLocalTime().ToUniversalTime(),
+                _                        => value
+            }).Ticks;
 
-        public void Write(DateTimeOffset value)
-        {
-            Write(value.Ticks);
-            Write(value.Offset.Ticks);
+            Write(ticks);
         }
 
         public void WriteDeltaTime(DateTime value)
         {
-            var ticks = value.Ticks;
-            var now = DateTime.UtcNow.Ticks;
-
-            TimeSpan d;
-
-            try
+            var ticks = (value.Kind switch
             {
-                d = new TimeSpan(ticks - now);
-            }
-            catch
-            {
-                d = TimeSpan.MaxValue;
-            }
+                DateTimeKind.Local       => value.ToUniversalTime(),
+                DateTimeKind.Unspecified => value.ToLocalTime().ToUniversalTime(),
+                _                        => value
+            }).Ticks;
 
-            Write(d);
+            // Technically supports negative deltas for times in the past
+            Write(ticks - DateTime.UtcNow.Ticks);
         }
 
         public void Write(IPAddress value)
@@ -204,70 +206,64 @@ namespace Server
         {
             FlushIfNeeded(8);
 
-            _buffer[Index] = (byte)value;
-            _buffer[Index + 1] = (byte)(value >> 8);
-            _buffer[Index + 2] = (byte)(value >> 16);
-            _buffer[Index + 3] = (byte)(value >> 24);
-            _buffer[Index + 4] = (byte)(value >> 32);
-            _buffer[Index + 5] = (byte)(value >> 40);
-            _buffer[Index + 6] = (byte)(value >> 48);
-            _buffer[Index + 7] = (byte)(value >> 56);
-            Index += 8;
+            _buffer[Index++] = (byte)value;
+            _buffer[Index++] = (byte)(value >> 8);
+            _buffer[Index++] = (byte)(value >> 16);
+            _buffer[Index++] = (byte)(value >> 24);
+            _buffer[Index++] = (byte)(value >> 32);
+            _buffer[Index++] = (byte)(value >> 40);
+            _buffer[Index++] = (byte)(value >> 48);
+            _buffer[Index++] = (byte)(value >> 56);
         }
 
         public void Write(ulong value)
         {
             FlushIfNeeded(8);
 
-            _buffer[Index] = (byte)value;
-            _buffer[Index + 1] = (byte)(value >> 8);
-            _buffer[Index + 2] = (byte)(value >> 16);
-            _buffer[Index + 3] = (byte)(value >> 24);
-            _buffer[Index + 4] = (byte)(value >> 32);
-            _buffer[Index + 5] = (byte)(value >> 40);
-            _buffer[Index + 6] = (byte)(value >> 48);
-            _buffer[Index + 7] = (byte)(value >> 56);
-            Index += 8;
+            _buffer[Index++] = (byte)value;
+            _buffer[Index++] = (byte)(value >> 8);
+            _buffer[Index++] = (byte)(value >> 16);
+            _buffer[Index++] = (byte)(value >> 24);
+            _buffer[Index++] = (byte)(value >> 32);
+            _buffer[Index++] = (byte)(value >> 40);
+            _buffer[Index++] = (byte)(value >> 48);
+            _buffer[Index++] = (byte)(value >> 56);
         }
 
         public void Write(int value)
         {
             FlushIfNeeded(4);
 
-            _buffer[Index] = (byte)value;
-            _buffer[Index + 1] = (byte)(value >> 8);
-            _buffer[Index + 2] = (byte)(value >> 16);
-            _buffer[Index + 3] = (byte)(value >> 24);
-            Index += 4;
+            _buffer[Index++] = (byte)value;
+            _buffer[Index++] = (byte)(value >> 8);
+            _buffer[Index++] = (byte)(value >> 16);
+            _buffer[Index++] = (byte)(value >> 24);
         }
 
         public void Write(uint value)
         {
             FlushIfNeeded(4);
 
-            _buffer[Index] = (byte)value;
-            _buffer[Index + 1] = (byte)(value >> 8);
-            _buffer[Index + 2] = (byte)(value >> 16);
-            _buffer[Index + 3] = (byte)(value >> 24);
-            Index += 4;
+            _buffer[Index++] = (byte)value;
+            _buffer[Index++] = (byte)(value >> 8);
+            _buffer[Index++] = (byte)(value >> 16);
+            _buffer[Index++] = (byte)(value >> 24);
         }
 
         public void Write(short value)
         {
             FlushIfNeeded(2);
 
-            _buffer[Index] = (byte)value;
-            _buffer[Index + 1] = (byte)(value >> 8);
-            Index += 2;
+            _buffer[Index++] = (byte)value;
+            _buffer[Index++] = (byte)(value >> 8);
         }
 
         public void Write(ushort value)
         {
             FlushIfNeeded(2);
 
-            _buffer[Index] = (byte)value;
-            _buffer[Index + 1] = (byte)(value >> 8);
-            Index += 2;
+            _buffer[Index++] = (byte)value;
+            _buffer[Index++] = (byte)(value >> 8);
         }
 
         public unsafe void Write(double value)
@@ -301,16 +297,18 @@ namespace Server
             _buffer[Index++] = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(sbyte value)
         {
             FlushIfNeeded(1);
             _buffer[Index++] = (byte)value;
         }
 
-        public void Write(bool value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void Write(bool value)
         {
             FlushIfNeeded(1);
-            _buffer[Index++] = value ? 1 : 0;
+            _buffer[Index++] = *(byte*)&value; // up to 30% faster to dereference the raw value on the stack
         }
 
         public void Write(Point3D value)
@@ -348,318 +346,32 @@ namespace Server
             Write((byte)(value?.RaceIndex ?? 0xFF));
         }
 
-        public void WriteEntity(IEntity value)
+        public void Write(ISerializable value)
         {
             Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
         }
 
-        public void Write(Item value)
+        public void Write<T>(ICollection<T> coll) where T : class, ISerializable
         {
-            Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
-        }
-
-        public void Write(Mobile value)
-        {
-            Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
-        }
-
-        public void Write(BaseGuild value)
-        {
-            Write(value?.Serial ?? 0);
-        }
-
-        public void WriteItem<T>(T value) where T : Item
-        {
-            Write(value);
-        }
-
-        public void WriteMobile<T>(T value) where T : Mobile
-        {
-            Write(value);
-        }
-
-        public void WriteGuild<T>(T value) where T : BaseGuild
-        {
-            Write(value);
-        }
-
-        public void Write(List<Item> list)
-        {
-            WriteItemList(list);
-        }
-
-        public void Write(List<Item> list, bool tidy)
-        {
-            WriteItemList(list, tidy);
-        }
-
-        public void WriteItemList<T>(List<T> list) where T : Item
-        {
-            WriteItemList(list, false);
-        }
-
-        public void WriteItemList<T>(List<T> list, bool tidy) where T : Item
-        {
-            if (tidy)
+            Write(coll.Count);
+            foreach (var entry in coll)
             {
-                for (var i = 0; i < list.Count;)
-                {
-                    if (list[i].Deleted)
-                    {
-                        list.RemoveAt(i);
-                    }
-                    else
-                    {
-                        ++i;
-                    }
-                }
-            }
-
-            Write(list.Count);
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                Write(list[i]);
+                Write(entry);
             }
         }
 
-        public void Write(HashSet<Item> set)
+        public void Write<T>(ICollection<T> coll, Action<IGenericWriter, T> action) where T : class, ISerializable
         {
-            Write(set, false);
-        }
-
-        public void Write(HashSet<Item> set, bool tidy)
-        {
-            if (tidy)
+            if (coll == null)
             {
-                set.RemoveWhere(item => item.Deleted);
+                Write(0);
+                return;
             }
 
-            Write(set.Count);
-
-            foreach (var item in set)
+            Write(coll.Count);
+            foreach (var entry in coll)
             {
-                Write(item);
-            }
-        }
-
-        public void WriteItemSet<T>(HashSet<T> set) where T : Item
-        {
-            WriteItemSet(set, false);
-        }
-
-        public void WriteItemSet<T>(HashSet<T> set, bool tidy) where T : Item
-        {
-            if (tidy)
-            {
-                set.RemoveWhere(item => item.Deleted);
-            }
-
-            Write(set.Count);
-
-            foreach (var item in set)
-            {
-                Write(item);
-            }
-        }
-
-        public void Write(List<Mobile> list)
-        {
-            Write(list, false);
-        }
-
-        public void Write(List<Mobile> list, bool tidy)
-        {
-            if (tidy)
-            {
-                for (var i = 0; i < list.Count;)
-                {
-                    if (list[i].Deleted)
-                    {
-                        list.RemoveAt(i);
-                    }
-                    else
-                    {
-                        ++i;
-                    }
-                }
-            }
-
-            Write(list.Count);
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                Write(list[i]);
-            }
-        }
-
-        public void WriteMobileList<T>(List<T> list) where T : Mobile
-        {
-            WriteMobileList(list, false);
-        }
-
-        public void WriteMobileList<T>(List<T> list, bool tidy) where T : Mobile
-        {
-            if (tidy)
-            {
-                for (var i = 0; i < list.Count;)
-                {
-                    if (list[i].Deleted)
-                    {
-                        list.RemoveAt(i);
-                    }
-                    else
-                    {
-                        ++i;
-                    }
-                }
-            }
-
-            Write(list.Count);
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                Write(list[i]);
-            }
-        }
-
-        public void Write(HashSet<Mobile> set)
-        {
-            Write(set, false);
-        }
-
-        public void Write(HashSet<Mobile> set, bool tidy)
-        {
-            if (tidy)
-            {
-                set.RemoveWhere(mobile => mobile.Deleted);
-            }
-
-            Write(set.Count);
-
-            foreach (var mob in set)
-            {
-                Write(mob);
-            }
-        }
-
-        public void WriteMobileSet<T>(HashSet<T> set) where T : Mobile
-        {
-            WriteMobileSet(set, false);
-        }
-
-        public void WriteMobileSet<T>(HashSet<T> set, bool tidy) where T : Mobile
-        {
-            if (tidy)
-            {
-                set.RemoveWhere(mob => mob.Deleted);
-            }
-
-            Write(set.Count);
-
-            foreach (var mob in set)
-            {
-                Write(mob);
-            }
-        }
-
-        public void Write(List<BaseGuild> list)
-        {
-            Write(list, false);
-        }
-
-        public void Write(List<BaseGuild> list, bool tidy)
-        {
-            if (tidy)
-            {
-                for (var i = 0; i < list.Count;)
-                {
-                    if (list[i].Disbanded)
-                    {
-                        list.RemoveAt(i);
-                    }
-                    else
-                    {
-                        ++i;
-                    }
-                }
-            }
-
-            Write(list.Count);
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                Write(list[i]);
-            }
-        }
-
-        public void WriteGuildList<T>(List<T> list) where T : BaseGuild
-        {
-            WriteGuildList(list, false);
-        }
-
-        public void WriteGuildList<T>(List<T> list, bool tidy) where T : BaseGuild
-        {
-            if (tidy)
-            {
-                for (var i = 0; i < list.Count;)
-                {
-                    if (list[i].Disbanded)
-                    {
-                        list.RemoveAt(i);
-                    }
-                    else
-                    {
-                        ++i;
-                    }
-                }
-            }
-
-            Write(list.Count);
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                Write(list[i]);
-            }
-        }
-
-        public void Write(HashSet<BaseGuild> set)
-        {
-            Write(set, false);
-        }
-
-        public void Write(HashSet<BaseGuild> set, bool tidy)
-        {
-            if (tidy)
-            {
-                set.RemoveWhere(guild => guild.Disbanded);
-            }
-
-            Write(set.Count);
-
-            foreach (var guild in set)
-            {
-                Write(guild);
-            }
-        }
-
-        public void WriteGuildSet<T>(HashSet<T> set) where T : BaseGuild
-        {
-            WriteGuildSet(set, false);
-        }
-
-        public void WriteGuildSet<T>(HashSet<T> set, bool tidy) where T : BaseGuild
-        {
-            if (tidy)
-            {
-                set.RemoveWhere(guild => guild.Disbanded);
-            }
-
-            Write(set.Count);
-
-            foreach (var guild in set)
-            {
-                Write(guild);
+                action(this, entry);
             }
         }
 
@@ -668,6 +380,7 @@ namespace Server
             var remaining = m_Encoding.GetByteCount(value);
 
             WriteEncodedInt(remaining);
+
             if (remaining == 0)
             {
                 return;

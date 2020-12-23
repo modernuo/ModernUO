@@ -665,7 +665,7 @@ namespace Server.Engines.ConPVP
             {
                 case 2:
                     {
-                        Board = ip.ReadItem() as CTFBoard;
+                        Board = ip.ReadEntity<CTFBoard>();
 
                         goto case 1;
                     }
@@ -679,7 +679,7 @@ namespace Server.Engines.ConPVP
                     {
                         Color = ip.ReadEncodedInt();
 
-                        Flag = ip.ReadItem() as CTFFlag;
+                        Flag = ip.ReadEntity<CTFFlag>();
                         Origin = ip.ReadPoint3D();
                         break;
                     }

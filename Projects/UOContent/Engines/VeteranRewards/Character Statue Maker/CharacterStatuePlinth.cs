@@ -97,7 +97,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            m_Statue = reader.ReadMobile() as CharacterStatue;
+            m_Statue = reader.ReadEntity<CharacterStatue>();
 
             if (m_Statue?.SculptedBy == null || Map == Map.Internal)
             {

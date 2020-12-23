@@ -262,7 +262,7 @@ namespace Server.Engines.Events
             base.Serialize(writer);
             writer.Write(0);
 
-            writer.WriteMobile(m_DeadPlayer);
+            writer.Write(m_DeadPlayer);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -270,7 +270,7 @@ namespace Server.Engines.Events
             base.Deserialize(reader);
             var version = reader.ReadInt();
 
-            m_DeadPlayer = reader.ReadMobile<PlayerMobile>();
+            m_DeadPlayer = reader.ReadEntity<PlayerMobile>();
         }
     }
 }

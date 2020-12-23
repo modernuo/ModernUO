@@ -70,8 +70,8 @@ namespace Server.Items
             {
                 case 0:
                     {
-                        m_Owner = reader.ReadMobile();
-                        m_House = reader.ReadItem() as BaseHouse;
+                        m_Owner = reader.ReadEntity<Mobile>();
+                        m_House = reader.ReadEntity<BaseHouse>();
 
                         break;
                     }

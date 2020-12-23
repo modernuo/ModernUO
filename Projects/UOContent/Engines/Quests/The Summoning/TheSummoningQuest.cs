@@ -105,7 +105,7 @@ namespace Server.Engines.Quests.Doom
         {
             var version = reader.ReadEncodedInt();
 
-            Victoria = reader.ReadMobile() as Victoria;
+            Victoria = reader.ReadEntity<Victoria>();
             WaitForSummon = reader.ReadBool();
         }
 

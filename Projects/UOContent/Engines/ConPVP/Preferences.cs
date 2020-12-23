@@ -149,7 +149,7 @@ namespace Server.Engines.ConPVP
             {
                 case 0:
                     {
-                        Mobile = reader.ReadMobile();
+                        Mobile = reader.ReadEntity<Mobile>();
 
                         var count = reader.ReadEncodedInt();
 

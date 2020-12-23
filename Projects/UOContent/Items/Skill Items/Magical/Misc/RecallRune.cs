@@ -119,7 +119,7 @@ namespace Server.Items
             {
                 case 1:
                     {
-                        m_House = reader.ReadItem() as BaseHouse;
+                        m_House = reader.ReadEntity<BaseHouse>();
                         goto case 0;
                     }
                 case 0:

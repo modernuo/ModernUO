@@ -128,7 +128,7 @@ namespace Server.Factions
                     {
                         Town = Town.ReadReference(reader);
                         Faction = Faction.ReadReference(reader);
-                        m_Sigil = reader.ReadItem() as Sigil;
+                        m_Sigil = reader.ReadEntity<Sigil>();
                         break;
                     }
             }

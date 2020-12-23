@@ -462,12 +462,12 @@ namespace Server.Items
                 case 1:
                 case 0:
                     {
-                        Poster = reader.ReadMobile();
+                        Poster = reader.ReadEntity<Mobile>();
                         Subject = reader.ReadString();
                         Time = reader.ReadDateTime();
                         LastPostTime = reader.ReadDateTime();
                         var hasThread = reader.ReadBool();
-                        Thread = reader.ReadItem() as BulletinMessage;
+                        Thread = reader.ReadEntity<BulletinMessage>();
                         PostedName = reader.ReadString();
                         PostedBody = reader.ReadInt();
                         PostedHue = reader.ReadInt();

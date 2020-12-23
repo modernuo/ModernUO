@@ -90,7 +90,7 @@ namespace Server.Items
                     }
                 case 0:
                     {
-                        Target = reader.ReadItem();
+                        Target = reader.ReadEntity<Item>();
 
                         if (version < 1)
                         {

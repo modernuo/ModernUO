@@ -329,7 +329,7 @@ namespace Server.Multis
             {
                 case 3:
                     {
-                        MapItem = (MapItem)reader.ReadItem();
+                        MapItem = (MapItem)reader.ReadEntity<Item>();
                         NextNavPoint = reader.ReadInt();
 
                         goto case 2;
@@ -373,11 +373,11 @@ namespace Server.Multis
                             }
                         }
 
-                        Owner = reader.ReadMobile();
-                        PPlank = reader.ReadItem() as Plank;
-                        SPlank = reader.ReadItem() as Plank;
-                        TillerMan = reader.ReadItem() as TillerMan;
-                        Hold = reader.ReadItem() as Hold;
+                        Owner = reader.ReadEntity<Mobile>();
+                        PPlank = reader.ReadEntity<Plank>();
+                        SPlank = reader.ReadEntity<Plank>();
+                        TillerMan = reader.ReadEntity<TillerMan>();
+                        Hold = reader.ReadEntity<Hold>();
                         Anchored = reader.ReadBool();
                         m_ShipName = reader.ReadString();
 

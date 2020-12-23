@@ -2747,7 +2747,7 @@ namespace Server.Engines.ConPVP
 
                             for (var i = 0; i < count; ++i)
                             {
-                                var mob = reader.ReadMobile();
+                                var mob = reader.ReadEntity<Mobile>();
                                 var loc = reader.ReadPoint3D();
                                 var map = reader.ReadMap();
 

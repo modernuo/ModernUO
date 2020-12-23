@@ -196,7 +196,7 @@ namespace Server.Mobiles
                 case 1:
                     {
                         m_BardingExceptional = reader.ReadBool();
-                        m_BardingCrafter = reader.ReadMobile();
+                        m_BardingCrafter = reader.ReadEntity<Mobile>();
                         m_HasBarding = reader.ReadBool();
                         m_BardingHP = reader.ReadInt();
                         m_BardingResource = (CraftResource)reader.ReadInt();

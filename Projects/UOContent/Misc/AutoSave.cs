@@ -84,7 +84,7 @@ namespace Server.Misc
 
         public static void Save()
         {
-            if (AutoRestart.Restarting || !World.Running)
+            if (AutoRestart.Restarting || World.WorldState != WorldState.Running)
             {
                 return;
             }

@@ -588,7 +588,7 @@ namespace Server.Items
             {
                 case 1:
                     {
-                        m_CompletedBy = reader.ReadMobile();
+                        m_CompletedBy = reader.ReadEntity<Mobile>();
 
                         goto case 0;
                     }
@@ -596,7 +596,7 @@ namespace Server.Items
                     {
                         m_Level = reader.ReadInt();
                         m_Completed = reader.ReadBool();
-                        m_Decoder = reader.ReadMobile();
+                        m_Decoder = reader.ReadEntity<Mobile>();
                         m_Map = reader.ReadMap();
                         ChestLocation = reader.ReadPoint2D();
 

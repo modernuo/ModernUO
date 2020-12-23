@@ -249,7 +249,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                From = reader.ReadMobile();
+                From = reader.ReadEntity<Mobile>();
                 m_End = reader.ReadDateTime();
                 m_MinDamage = reader.ReadInt();
                 m_MaxDamage = reader.ReadInt();

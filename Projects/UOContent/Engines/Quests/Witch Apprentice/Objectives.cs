@@ -90,7 +90,7 @@ namespace Server.Engines.Quests.Hag
                     }
                 case 0:
                     {
-                        Corpse = (Corpse)reader.ReadItem();
+                        Corpse = (Corpse)reader.ReadEntity<Item>();
                         break;
                     }
             }

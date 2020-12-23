@@ -428,13 +428,13 @@ namespace Server.Mobiles
                         newVendorSystem = reader.ReadBool();
                         m_ShopName = reader.ReadString();
                         NextPayTime = reader.ReadDeltaTime();
-                        House = (BaseHouse)reader.ReadItem();
+                        House = (BaseHouse)reader.ReadEntity<Item>();
 
                         goto case 0;
                     }
                 case 0:
                     {
-                        Owner = reader.ReadMobile();
+                        Owner = reader.ReadEntity<Mobile>();
                         BankAccount = reader.ReadInt();
                         HoldGold = reader.ReadInt();
 
@@ -444,7 +444,7 @@ namespace Server.Mobiles
 
                         for (var i = 0; i < count; i++)
                         {
-                            var item = reader.ReadItem();
+                            var item = reader.ReadEntity<Item>();
 
                             var price = reader.ReadInt();
                             if (price > 100000000)
@@ -1714,7 +1714,7 @@ namespace Server.Mobiles
 
             var version = reader.ReadEncodedInt();
 
-            Vendor = (PlayerVendor)reader.ReadMobile();
+            Vendor = (PlayerVendor)reader.ReadEntity<Mobile>();
 
             Timer.DelayCall(Delete);
         }

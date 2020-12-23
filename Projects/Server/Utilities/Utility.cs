@@ -1437,5 +1437,24 @@ namespace Server
 
             return string.Join(lineSeparator, parts);
         }
+
+        public static void Tidy<T>(this List<T> list) where T : ISerializable
+        {
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                var entry = list[i];
+                if (entry?.Deleted != false)
+                {
+                    list.RemoveAt(i);
+                }
+            }
+
+            list.TrimExcess();
+        }
+
+        public static void Tidy<T>(this HashSet<T> set) where T : ISerializable
+        {
+            set.RemoveWhere(entry => entry?.Deleted != false);
+        }
     }
 }

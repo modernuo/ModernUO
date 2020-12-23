@@ -170,7 +170,7 @@ namespace Server.Mobiles
             {
                 case 0:
                     {
-                        m_Focus = reader.ReadMobile();
+                        m_Focus = reader.ReadEntity<Mobile>();
 
                         if (m_Focus != null)
                         {
@@ -309,7 +309,7 @@ namespace Server.Mobiles
                 else if (!m_Owner.CanSee( target ))
                 {
                   m_Shooting = false;
-        
+
                   if (!m_Owner.InRange( target, 2 ))
                   {
                     if (!m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ) && OutOfMaxDistance( target ))
@@ -327,7 +327,7 @@ namespace Server.Mobiles
                     m_Shooting = false;
                   else if (!m_Shooting && InMinDistance( target ))
                     m_Shooting = true;
-        
+
                   if (!m_Shooting)
                   {
                     if (m_Owner.InRange( target, 1 ))

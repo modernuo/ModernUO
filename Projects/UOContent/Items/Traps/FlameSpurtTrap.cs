@@ -162,7 +162,7 @@ namespace Server.Items
             {
                 case 0:
                     {
-                        var item = reader.ReadItem();
+                        var item = reader.ReadEntity<Item>();
 
                         item?.Delete();
 

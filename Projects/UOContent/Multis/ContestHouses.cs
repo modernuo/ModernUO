@@ -221,7 +221,8 @@ namespace Server.Multis
 
             if (Fixtures != null)
             {
-                writer.WriteItemList(Fixtures, true);
+                Fixtures.Tidy();
+                writer.Write(Fixtures);
             }
             else
             {
@@ -240,7 +241,7 @@ namespace Server.Multis
 
             for (var i = 0; i < count; i++)
             {
-                AddFixture(reader.ReadItem());
+                AddFixture(reader.ReadEntity<Item>());
             }
         }
     }

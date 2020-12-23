@@ -43,7 +43,7 @@ namespace Server.Factions
                     }
                 case 0:
                     {
-                        Mobile = reader.ReadMobile();
+                        Mobile = reader.ReadEntity<Mobile>();
 
                         m_KillPoints = reader.ReadEncodedInt();
                         m_MerchantTitle = (MerchantTitle)reader.ReadEncodedInt();

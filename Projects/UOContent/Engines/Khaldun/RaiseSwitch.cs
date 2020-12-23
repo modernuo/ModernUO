@@ -119,7 +119,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            RaisableItem = (RaisableItem)reader.ReadItem();
+            RaisableItem = (RaisableItem)reader.ReadEntity<Item>();
 
             Reset();
         }

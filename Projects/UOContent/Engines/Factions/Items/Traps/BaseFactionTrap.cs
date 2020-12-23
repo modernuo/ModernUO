@@ -255,7 +255,7 @@ namespace Server.Factions
             var version = reader.ReadInt();
 
             Faction = Faction.ReadReference(reader);
-            Placer = reader.ReadMobile();
+            Placer = reader.ReadEntity<Mobile>();
             TimeOfPlacement = reader.ReadDateTime();
 
             if (Visible)

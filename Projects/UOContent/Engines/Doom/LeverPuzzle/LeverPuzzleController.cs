@@ -534,9 +534,16 @@ namespace Server.Engines.Doom
         {
             base.Serialize(writer);
             writer.Write(0); // version
-            writer.WriteItemList(m_Levers, true);
-            writer.WriteItemList(m_Statues, true);
-            writer.WriteItemList(m_Teles, true);
+
+            m_Levers.Tidy();
+            writer.Write(m_Levers);
+
+            m_Statues.Tidy();
+            writer.Write(m_Statues);
+
+            m_Teles.Tidy();
+            writer.Write(m_Teles);
+
             writer.Write(m_Box);
         }
 
@@ -546,11 +553,11 @@ namespace Server.Engines.Doom
 
             var version = reader.ReadInt();
 
-            m_Levers = reader.ReadStrongItemList();
-            m_Statues = reader.ReadStrongItemList();
-            m_Teles = reader.ReadStrongItemList();
+            m_Levers = reader.ReadEntityList<Item>();
+            m_Statues = reader.ReadEntityList<Item>();
+            m_Teles = reader.ReadEntityList<Item>();
 
-            m_Box = reader.ReadItem() as LampRoomBox;
+            m_Box = reader.ReadEntity<LampRoomBox>();
 
             m_Tiles = new List<LeverPuzzleRegion>();
             for (var i = 4; i < 9; i++)

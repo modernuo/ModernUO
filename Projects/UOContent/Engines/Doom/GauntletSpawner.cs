@@ -405,14 +405,14 @@ namespace Server.Engines.Doom
 
             writer.Write(RegionBounds);
 
-            writer.WriteItemList(Traps, false);
+            writer.Write(Traps);
 
-            writer.Write(Creatures, false);
+            writer.Write(Creatures);
 
             writer.Write(TypeName);
-            writer.WriteItem(Door);
-            writer.WriteItem(Addon);
-            writer.WriteItem(Sequence);
+            writer.Write(Door);
+            writer.Write(Addon);
+            writer.Write(Sequence);
 
             writer.Write((int)m_State);
         }
@@ -428,7 +428,7 @@ namespace Server.Engines.Doom
                 case 1:
                     {
                         RegionBounds = reader.ReadRect2D();
-                        Traps = reader.ReadStrongItemList<BaseTrap>();
+                        Traps = reader.ReadEntityList<BaseTrap>();
 
                         goto case 0;
                     }
@@ -440,12 +440,12 @@ namespace Server.Engines.Doom
                             RegionBounds = new Rectangle2D(X - 40, Y - 40, 80, 80);
                         }
 
-                        Creatures = reader.ReadStrongMobileList();
+                        Creatures = reader.ReadEntityList<Mobile>();
 
                         TypeName = reader.ReadString();
-                        Door = reader.ReadItem<BaseDoor>();
-                        Addon = reader.ReadItem<BaseAddon>();
-                        Sequence = reader.ReadItem<GauntletSpawner>();
+                        Door = reader.ReadEntity<BaseDoor>();
+                        Addon = reader.ReadEntity<BaseAddon>();
+                        Sequence = reader.ReadEntity<GauntletSpawner>();
 
                         State = (GauntletSpawnerState)reader.ReadInt();
 

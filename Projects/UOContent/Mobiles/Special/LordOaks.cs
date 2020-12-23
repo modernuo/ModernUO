@@ -203,7 +203,7 @@ namespace Server.Mobiles
             {
                 case 0:
                     {
-                        m_Queen = reader.ReadMobile<BaseCreature>();
+                        m_Queen = reader.ReadEntity<BaseCreature>();
                         m_SpawnedQueen = reader.ReadBool();
 
                         break;

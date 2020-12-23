@@ -154,7 +154,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -210,7 +210,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as DecorativeSwordNorth;
+                m_Item = reader.ReadEntity<DecorativeSwordNorth>();
             }
         }
     }
@@ -269,7 +269,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -325,7 +325,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as DecorativeSwordWest;
+                m_Item = reader.ReadEntity<DecorativeSwordWest>();
             }
         }
     }
@@ -384,7 +384,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -440,7 +440,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as DecorativeDAxeNorth;
+                m_Item = reader.ReadEntity<DecorativeDAxeNorth>();
             }
         }
     }
@@ -499,7 +499,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -555,7 +555,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as DecorativeDAxeWest;
+                m_Item = reader.ReadEntity<DecorativeDAxeWest>();
             }
         }
     }

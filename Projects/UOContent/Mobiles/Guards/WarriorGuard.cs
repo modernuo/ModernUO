@@ -188,7 +188,7 @@ namespace Server.Mobiles
             {
                 case 0:
                     {
-                        m_Focus = reader.ReadMobile();
+                        m_Focus = reader.ReadEntity<Mobile>();
 
                         if (m_Focus != null)
                         {

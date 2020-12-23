@@ -201,7 +201,7 @@ namespace Server.Items
                     }
                 case 2:
                     {
-                        m_Crafter = reader.ReadMobile();
+                        m_Crafter = reader.ReadEntity<Mobile>();
                         goto case 1;
                     }
                 case 1:
@@ -476,7 +476,7 @@ namespace Server.Items
             {
                 case 1:
                     {
-                        House = reader.ReadItem() as BaseHouse;
+                        House = reader.ReadEntity<BaseHouse>();
                         goto case 0;
                     }
                 case 0:

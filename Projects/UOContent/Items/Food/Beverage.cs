@@ -1128,7 +1128,7 @@ namespace Server.Items
             {
                 case 1:
                     {
-                        Poisoner = reader.ReadMobile();
+                        Poisoner = reader.ReadEntity<Mobile>();
                         goto case 0;
                     }
                 case 0:

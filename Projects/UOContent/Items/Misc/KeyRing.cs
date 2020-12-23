@@ -155,7 +155,7 @@ namespace Server.Items
 
             writer.WriteEncodedInt(0); // version
 
-            writer.WriteItemList(Keys);
+            writer.Write(Keys);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -164,7 +164,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            Keys = reader.ReadStrongItemList<Key>();
+            Keys = reader.ReadEntityList<Key>();
         }
 
         private class InternalTarget : Target

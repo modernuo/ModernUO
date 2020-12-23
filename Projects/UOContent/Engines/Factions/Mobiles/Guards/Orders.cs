@@ -74,7 +74,7 @@ namespace Server.Factions.AI
             {
                 case 1:
                     {
-                        Follow = reader.ReadMobile();
+                        Follow = reader.ReadEntity<Mobile>();
                         goto case 0;
                     }
                 case 0:

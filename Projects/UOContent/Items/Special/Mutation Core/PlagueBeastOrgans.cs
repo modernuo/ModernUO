@@ -90,7 +90,7 @@ namespace Server.Items
 
             writer.WriteEncodedInt(0); // version
 
-            writer.WriteItemList(Components);
+            writer.Write(Components);
             writer.Write(BrainHue);
             writer.Write(Opened);
         }
@@ -101,7 +101,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            Components = reader.ReadStrongItemList<PlagueBeastComponent>();
+            Components = reader.ReadEntityList<PlagueBeastComponent>();
             BrainHue = reader.ReadInt();
             Opened = reader.ReadBool();
         }
@@ -466,7 +466,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            m_Gland = reader.ReadItem();
+            m_Gland = reader.ReadEntity<Item>();
         }
     }
 

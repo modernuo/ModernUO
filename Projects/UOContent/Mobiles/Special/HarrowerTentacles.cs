@@ -107,7 +107,7 @@ namespace Server.Mobiles
             {
                 case 0:
                     {
-                        Harrower = reader.ReadMobile();
+                        Harrower = reader.ReadEntity<Mobile>();
 
                         m_Timer = new DrainTimer(this);
                         m_Timer.Start();

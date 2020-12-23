@@ -517,7 +517,7 @@ namespace Server.Items
                     }
                 case 2:
                     {
-                        m_Crafter = reader.ReadMobile();
+                        m_Crafter = reader.ReadEntity<Mobile>();
 
                         m_Quality = (InstrumentQuality)reader.ReadEncodedInt();
                         m_Slayer = (SlayerName)reader.ReadEncodedInt();
@@ -532,7 +532,7 @@ namespace Server.Items
                     }
                 case 1:
                     {
-                        m_Crafter = reader.ReadMobile();
+                        m_Crafter = reader.ReadEntity<Mobile>();
 
                         m_Quality = (InstrumentQuality)reader.ReadEncodedInt();
                         m_Slayer = (SlayerName)reader.ReadEncodedInt();

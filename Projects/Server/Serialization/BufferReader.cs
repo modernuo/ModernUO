@@ -43,41 +43,21 @@ namespace Server
             }
 
             var length = ReadEncodedInt();
-            var s = length == 0 ? "" : _encoding.GetString(_buffer.AsSpan(Position, length));
+            if (length <= 0)
+            {
+                return "";
+            }
+
+            var s = _encoding.GetString(_buffer.AsSpan(Position, length));
             Position += length;
             return s;
         }
 
-        public DateTime ReadDateTime() => new(ReadLong());
-
-        public DateTimeOffset ReadDateTimeOffset() => new(ReadLong(), ReadTimeSpan());
+        public DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);
 
         public TimeSpan ReadTimeSpan() => new(ReadLong());
 
-        public DateTime ReadDeltaTime()
-        {
-            var ticks = ReadLong();
-            var now = DateTime.UtcNow.Ticks;
-
-            if (ticks > 0 && ticks + now < 0)
-            {
-                return DateTime.MaxValue;
-            }
-
-            if (ticks < 0 && ticks + now < 0)
-            {
-                return DateTime.MinValue;
-            }
-
-            try
-            {
-                return new DateTime(now + ticks);
-            }
-            catch
-            {
-                return ticks > 0 ? DateTime.MaxValue : DateTime.MinValue;
-            }
-        }
+        public DateTime ReadDeltaTime() => new(ReadLong() + DateTime.UtcNow.Ticks, DateTimeKind.Utc);
 
         public decimal ReadDecimal() => new(new[] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });
 
@@ -177,27 +157,20 @@ namespace Server
 
         public Map ReadMap() => Map.Maps[ReadByte()];
 
-        public IEntity ReadEntity()
+        public T ReadEntity<T>() where T : class, ISerializable
         {
             Serial serial = ReadUInt();
-            return World.FindEntity(serial) ?? new Entity(serial, new Point3D(0, 0, 0), Map.Internal);
+
+            // Special case for now:
+            if (typeof(T).IsAssignableTo(typeof(BaseGuild)))
+            {
+                return World.FindGuild(serial) as T;
+            }
+
+            return World.FindEntity(serial) as T;
         }
 
-        public Item ReadItem() => World.FindItem(ReadUInt());
-
-        public Mobile ReadMobile() => World.FindMobile(ReadUInt());
-
-        public BaseGuild ReadGuild() => World.FindGuild(ReadUInt());
-
-        public T ReadItem<T>() where T : Item => ReadItem() as T;
-
-        public T ReadMobile<T>() where T : Mobile => ReadMobile() as T;
-
-        public T ReadGuild<T>() where T : BaseGuild => ReadGuild() as T;
-
-        public List<Item> ReadStrongItemList() => ReadStrongItemList<Item>();
-
-        public List<T> ReadStrongItemList<T>() where T : Item
+        public List<T> ReadEntityList<T>() where T : class, ISerializable
         {
             var count = ReadInt();
 
@@ -205,108 +178,28 @@ namespace Server
 
             for (var i = 0; i < count; ++i)
             {
-                if (ReadItem() is T item)
+                var entity = ReadEntity<T>();
+                if (entity != null)
                 {
-                    list.Add(item);
+                    list.Add(entity);
                 }
             }
 
             return list;
         }
 
-        public HashSet<Item> ReadItemSet() => ReadItemSet<Item>();
-
-        public HashSet<T> ReadItemSet<T>() where T : Item
+        public HashSet<T> ReadEntitySet<T>() where T : class, ISerializable
         {
             var count = ReadInt();
 
-            var set = new HashSet<T>();
+            var set = new HashSet<T>(count);
 
             for (var i = 0; i < count; ++i)
             {
-                if (ReadItem() is T item)
+                var entity = ReadEntity<T>();
+                if (entity != null)
                 {
-                    set.Add(item);
-                }
-            }
-
-            return set;
-        }
-
-        public List<Mobile> ReadStrongMobileList() => ReadStrongMobileList<Mobile>();
-
-        public List<T> ReadStrongMobileList<T>() where T : Mobile
-        {
-            var count = ReadInt();
-
-            var list = new List<T>(count);
-
-            for (var i = 0; i < count; ++i)
-            {
-                if (ReadMobile() is T m)
-                {
-                    list.Add(m);
-                }
-            }
-
-            return list;
-        }
-
-        public HashSet<Mobile> ReadMobileSet() => ReadMobileSet<Mobile>();
-
-        public HashSet<T> ReadMobileSet<T>() where T : Mobile
-        {
-            var count = ReadInt();
-            var set = new HashSet<T>();
-
-            for (var i = 0; i < count; ++i)
-            {
-                if (ReadMobile() is T item)
-                {
-                    set.Add(item);
-                }
-            }
-
-            return set;
-        }
-
-        public List<BaseGuild> ReadStrongGuildList() => ReadStrongGuildList<BaseGuild>();
-
-        public List<T> ReadStrongGuildList<T>() where T : BaseGuild
-        {
-            var count = ReadInt();
-            var list = new List<T>(count);
-
-            if (count > 0)
-            {
-                for (var i = 0; i < count; ++i)
-                {
-                    if (ReadGuild() is T g)
-                    {
-                        list.Add(g);
-                    }
-                }
-            }
-
-            return list;
-        }
-
-        public HashSet<BaseGuild> ReadGuildSet() => ReadGuildSet<BaseGuild>();
-
-        public HashSet<T> ReadGuildSet<T>() where T : BaseGuild
-        {
-            var count = ReadInt();
-
-            var set = new HashSet<T>();
-
-            if (count > 0)
-            {
-                for (var i = 0; i < count; ++i)
-                {
-                    if (ReadGuild() is T item)
-                    {
-                        set.Add(item);
-                    }
+                    set.Add(entity);
                 }
             }
 
@@ -332,10 +225,9 @@ namespace Server
         {
             return origin switch
             {
-                SeekOrigin.Begin   => Position = offset,
                 SeekOrigin.Current => Position += offset,
                 SeekOrigin.End     => Position = _buffer.Length - offset,
-                _                  => Position
+                _                  => Position = offset // Begin
             };
         }
     }

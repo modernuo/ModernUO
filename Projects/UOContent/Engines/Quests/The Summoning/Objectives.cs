@@ -173,8 +173,8 @@ namespace Server.Engines.Quests.Doom
         {
             var version = reader.ReadEncodedInt();
 
-            m_Daemon = reader.ReadMobile() as BoneDemon;
-            CorpseWithSkull = reader.ReadItem() as Corpse;
+            m_Daemon = reader.ReadEntity<BoneDemon>();
+            CorpseWithSkull = reader.ReadEntity<Corpse>();
         }
 
         public override void ChildSerialize(IGenericWriter writer)

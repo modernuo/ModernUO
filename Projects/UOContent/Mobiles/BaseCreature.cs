@@ -1777,7 +1777,8 @@ namespace Server.Mobiles
             writer.Write(EnergyDamage);
 
             // Version 8
-            writer.Write(Owners, true);
+            Owners.Tidy();
+            writer.Write(Owners);
 
             // Version 10
             writer.Write(IsDeadPet);
@@ -1798,7 +1799,8 @@ namespace Server.Mobiles
 
             if (hasFriends)
             {
-                writer.Write(Friends, true);
+                Friends.Tidy();
+                writer.Write(Friends);
             }
 
             // Version 14
@@ -1887,8 +1889,8 @@ namespace Server.Mobiles
                 FightMode = (FightMode)reader.ReadInt();
 
                 m_Controlled = reader.ReadBool();
-                m_ControlMaster = reader.ReadMobile();
-                ControlTarget = reader.ReadMobile();
+                m_ControlMaster = reader.ReadEntity<Mobile>();
+                ControlTarget = reader.ReadEntity<Mobile>();
                 ControlDest = reader.ReadPoint3D();
                 m_ControlOrder = (OrderType)reader.ReadInt();
 
@@ -1931,12 +1933,12 @@ namespace Server.Mobiles
 
             if (version >= 4)
             {
-                CurrentWayPoint = reader.ReadItem() as WayPoint;
+                CurrentWayPoint = reader.ReadEntity<WayPoint>();
             }
 
             if (version >= 5)
             {
-                m_SummonMaster = reader.ReadMobile();
+                m_SummonMaster = reader.ReadEntity<Mobile>();
             }
 
             if (version >= 6)
@@ -1968,7 +1970,7 @@ namespace Server.Mobiles
 
             if (version >= 8)
             {
-                Owners = reader.ReadStrongMobileList();
+                Owners = reader.ReadEntityList<Mobile>();
             }
             else
             {
@@ -2003,7 +2005,7 @@ namespace Server.Mobiles
 
             if (version >= 13 && reader.ReadBool())
             {
-                Friends = reader.ReadStrongMobileList();
+                Friends = reader.ReadEntityList<Mobile>();
             }
             else if (version < 13 && m_ControlOrder >= OrderType.Unfriend)
             {

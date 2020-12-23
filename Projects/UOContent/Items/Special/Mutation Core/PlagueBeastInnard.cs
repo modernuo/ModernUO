@@ -151,7 +151,7 @@ namespace Server.Items
 
             writer.WriteEncodedInt(0); // version
 
-            writer.WriteItem(Organ);
+            writer.Write(Organ);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -160,7 +160,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            Organ = reader.ReadItem<PlagueBeastOrgan>();
+            Organ = reader.ReadEntity<PlagueBeastOrgan>();
         }
     }
 }

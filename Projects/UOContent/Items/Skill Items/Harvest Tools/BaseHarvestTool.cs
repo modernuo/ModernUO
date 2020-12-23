@@ -203,7 +203,7 @@ namespace Server.Items
             {
                 case 1:
                     {
-                        m_Crafter = reader.ReadMobile();
+                        m_Crafter = reader.ReadEntity<Mobile>();
                         m_Quality = (ToolQuality)reader.ReadInt();
                         goto case 0;
                     }

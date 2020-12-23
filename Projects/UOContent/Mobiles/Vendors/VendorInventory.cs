@@ -30,11 +30,11 @@ namespace Server.Mobiles
 
             var version = reader.ReadEncodedInt();
 
-            Owner = reader.ReadMobile();
+            Owner = reader.ReadEntity<Mobile>();
             VendorName = reader.ReadString();
             ShopName = reader.ReadString();
 
-            Items = reader.ReadStrongItemList();
+            Items = reader.ReadEntityList<Item>();
             Gold = reader.ReadInt();
 
             ExpireTime = reader.ReadDeltaTime();
@@ -94,7 +94,8 @@ namespace Server.Mobiles
             writer.Write(VendorName);
             writer.Write(ShopName);
 
-            writer.Write(Items, true);
+            Items.Tidy();
+            writer.Write(Items);
             writer.Write(Gold);
 
             writer.WriteDeltaTime(ExpireTime);

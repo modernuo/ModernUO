@@ -293,7 +293,7 @@ namespace Server.Items
             {
                 case 1:
                     {
-                        m_Hunter = reader.ReadMobile();
+                        m_Hunter = reader.ReadEntity<Mobile>();
                         m_AnimalWeight = reader.ReadInt();
                         goto case 0;
                     }
@@ -468,7 +468,7 @@ namespace Server.Items
             {
                 case 1:
                     {
-                        m_Hunter = reader.ReadMobile();
+                        m_Hunter = reader.ReadEntity<Mobile>();
                         m_AnimalWeight = reader.ReadInt();
                         goto case 0;
                     }

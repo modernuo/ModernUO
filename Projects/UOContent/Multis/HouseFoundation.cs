@@ -908,7 +908,8 @@ namespace Server.Multis
             writer.Write(SignHanger);
 
             writer.Write(LastRevision);
-            writer.Write(Fixtures, true);
+            Fixtures.Tidy();
+            writer.Write(Fixtures);
 
             CurrentState.Serialize(writer);
             DesignState.Serialize(writer);
@@ -926,7 +927,7 @@ namespace Server.Multis
                 case 5:
                 case 4:
                     {
-                        Signpost = reader.ReadItem();
+                        Signpost = reader.ReadEntity<Item>();
                         SignpostGraphic = reader.ReadInt();
 
                         goto case 3;
@@ -939,7 +940,7 @@ namespace Server.Multis
                     }
                 case 2:
                     {
-                        SignHanger = reader.ReadItem();
+                        SignHanger = reader.ReadEntity<Item>();
 
                         goto case 1;
                     }
@@ -965,7 +966,7 @@ namespace Server.Multis
                         }
 
                         LastRevision = reader.ReadInt();
-                        Fixtures = reader.ReadStrongItemList();
+                        Fixtures = reader.ReadEntityList<Item>();
 
                         m_Current = new DesignState(this, reader);
                         m_Design = new DesignState(this, reader);

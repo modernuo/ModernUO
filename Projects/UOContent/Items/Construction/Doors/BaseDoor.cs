@@ -543,7 +543,7 @@ namespace Server.Items
                         OpenedSound = reader.ReadInt();
                         ClosedSound = reader.ReadInt();
                         Offset = reader.ReadPoint3D();
-                        m_Link = reader.ReadItem() as BaseDoor;
+                        m_Link = reader.ReadEntity<BaseDoor>();
 
                         m_Timer = new InternalTimer(this);
 

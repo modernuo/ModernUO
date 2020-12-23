@@ -361,7 +361,7 @@ namespace Server.Items
                     {
                         m_Charges = Math.Min(reader.ReadEncodedInt(), MaxCharges);
                         m_Inscription = reader.ReadString();
-                        Bound = (BraceletOfBinding)reader.ReadItem();
+                        Bound = (BraceletOfBinding)reader.ReadEntity<Item>();
                         break;
                     }
             }

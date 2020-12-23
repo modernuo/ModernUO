@@ -115,7 +115,7 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             m_Active = reader.ReadBool();
-            m_TeleDest = reader.ReadItem() as SHTeleComponent;
+            m_TeleDest = reader.ReadEntity<SHTeleComponent>();
             TeleOffset = reader.ReadPoint3D();
         }
     }
@@ -302,10 +302,10 @@ namespace Server.Items
 
             External = reader.ReadBool();
 
-            UpTele = (SHTeleComponent)reader.ReadItem();
-            RightTele = (SHTeleComponent)reader.ReadItem();
-            DownTele = (SHTeleComponent)reader.ReadItem();
-            LeftTele = (SHTeleComponent)reader.ReadItem();
+            UpTele = (SHTeleComponent)reader.ReadEntity<Item>();
+            RightTele = (SHTeleComponent)reader.ReadEntity<Item>();
+            DownTele = (SHTeleComponent)reader.ReadEntity<Item>();
+            LeftTele = (SHTeleComponent)reader.ReadEntity<Item>();
         }
 
         public class SHTeleporterCreator

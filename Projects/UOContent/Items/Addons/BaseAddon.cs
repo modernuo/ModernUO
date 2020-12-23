@@ -283,7 +283,7 @@ namespace Server.Items
 
             writer.Write(1); // version
 
-            writer.WriteItemList(Components);
+            writer.Write(Components);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -297,7 +297,7 @@ namespace Server.Items
                 case 1:
                 case 0:
                     {
-                        Components = reader.ReadStrongItemList<AddonComponent>();
+                        Components = reader.ReadEntityList<AddonComponent>();
                         break;
                     }
             }

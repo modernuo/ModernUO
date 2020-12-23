@@ -201,7 +201,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -292,7 +292,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as AnkhWest;
+                m_Item = reader.ReadEntity<AnkhWest>();
             }
         }
     }
@@ -388,7 +388,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         [TypeAlias("Server.Items.AnkhEast+InternalItem")]
@@ -481,7 +481,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as AnkhNorth;
+                m_Item = reader.ReadEntity<AnkhNorth>();
             }
         }
     }

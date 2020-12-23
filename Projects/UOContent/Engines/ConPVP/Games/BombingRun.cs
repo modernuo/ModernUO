@@ -1380,10 +1380,10 @@ namespace Server.Engines.ConPVP
             {
                 case 0:
                     {
-                        Board = ip.ReadItem() as BRBoard;
+                        Board = ip.ReadEntity<BRBoard>();
                         TeamName = ip.ReadString();
                         Color = ip.ReadEncodedInt();
-                        m_Goal = ip.ReadItem() as BRGoal;
+                        m_Goal = ip.ReadEntity<BRGoal>();
                         break;
                     }
             }

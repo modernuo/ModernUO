@@ -414,14 +414,16 @@ namespace Server.Items
 
             writer.Write(2); // version
 
-            writer.Write(Guardians, true);
+            Guardians.Tidy();
+            writer.Write(Guardians);
             writer.Write(Temporary);
 
             writer.Write(Owner);
 
             writer.Write(Level);
             writer.WriteDeltaTime(DeleteTime);
-            writer.Write(m_Lifted, true);
+            m_Lifted.Tidy();
+            writer.Write(m_Lifted);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -434,14 +436,14 @@ namespace Server.Items
             {
                 case 2:
                     {
-                        Guardians = reader.ReadStrongMobileList();
+                        Guardians = reader.ReadEntityList<Mobile>();
                         Temporary = reader.ReadBool();
 
                         goto case 1;
                     }
                 case 1:
                     {
-                        Owner = reader.ReadMobile();
+                        Owner = reader.ReadEntity<Mobile>();
 
                         goto case 0;
                     }
@@ -449,7 +451,7 @@ namespace Server.Items
                     {
                         Level = reader.ReadInt();
                         DeleteTime = reader.ReadDeltaTime();
-                        m_Lifted = reader.ReadStrongItemList();
+                        m_Lifted = reader.ReadEntityList<Item>();
 
                         if (version < 2)
                         {
