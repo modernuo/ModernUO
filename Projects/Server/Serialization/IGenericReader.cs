@@ -24,7 +24,6 @@ namespace Server
     {
         string ReadString();
         DateTime ReadDateTime();
-        DateTimeOffset ReadDateTimeOffset();
         TimeSpan ReadTimeSpan();
         DateTime ReadDeltaTime();
         decimal ReadDecimal();

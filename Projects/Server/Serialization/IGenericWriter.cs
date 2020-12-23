@@ -27,7 +27,6 @@ namespace Server
         void Close();
         void Write(string value);
         void Write(DateTime value);
-        void Write(DateTimeOffset value);
         void Write(TimeSpan value);
         void Write(decimal value);
         void Write(long value);

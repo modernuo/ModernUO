@@ -151,32 +151,27 @@ namespace Server
 
         public void Write(DateTime value)
         {
-            Write(value.Ticks);
-        }
+            var ticks = (value.Kind switch
+            {
+                DateTimeKind.Local       => value.ToUniversalTime(),
+                DateTimeKind.Unspecified => value.ToLocalTime().ToUniversalTime(),
+                _                        => value
+            }).Ticks;
 
-        public void Write(DateTimeOffset value)
-        {
-            Write(value.Ticks);
-            Write(value.Offset.Ticks);
+            Write(ticks);
         }
 
         public void WriteDeltaTime(DateTime value)
         {
-            var ticks = value.Ticks;
-            var now = DateTime.UtcNow.Ticks;
-
-            TimeSpan d;
-
-            try
+            var ticks = (value.Kind switch
             {
-                d = new TimeSpan(ticks - now);
-            }
-            catch
-            {
-                d = TimeSpan.MaxValue;
-            }
+                DateTimeKind.Local       => value.ToUniversalTime(),
+                DateTimeKind.Unspecified => value.ToLocalTime().ToUniversalTime(),
+                _                        => value
+            }).Ticks;
 
-            Write(d);
+            // Technically supports negative deltas for times in the past
+            Write(ticks - DateTime.UtcNow.Ticks);
         }
 
         public void Write(IPAddress value)

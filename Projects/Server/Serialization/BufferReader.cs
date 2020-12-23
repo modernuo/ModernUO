@@ -43,41 +43,21 @@ namespace Server
             }
 
             var length = ReadEncodedInt();
-            var s = length == 0 ? "" : _encoding.GetString(_buffer.AsSpan(Position, length));
+            if (length <= 0)
+            {
+                return "";
+            }
+
+            var s = _encoding.GetString(_buffer.AsSpan(Position, length));
             Position += length;
             return s;
         }
 
-        public DateTime ReadDateTime() => new(ReadLong());
-
-        public DateTimeOffset ReadDateTimeOffset() => new(ReadLong(), ReadTimeSpan());
+        public DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);
 
         public TimeSpan ReadTimeSpan() => new(ReadLong());
 
-        public DateTime ReadDeltaTime()
-        {
-            var ticks = ReadLong();
-            var now = DateTime.UtcNow.Ticks;
-
-            if (ticks > 0 && ticks + now < 0)
-            {
-                return DateTime.MaxValue;
-            }
-
-            if (ticks < 0 && ticks + now < 0)
-            {
-                return DateTime.MinValue;
-            }
-
-            try
-            {
-                return new DateTime(now + ticks);
-            }
-            catch
-            {
-                return ticks > 0 ? DateTime.MaxValue : DateTime.MinValue;
-            }
-        }
+        public DateTime ReadDeltaTime() => new(ReadLong() + DateTime.UtcNow.Ticks, DateTimeKind.Utc);
 
         public decimal ReadDecimal() => new(new[] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });
 
