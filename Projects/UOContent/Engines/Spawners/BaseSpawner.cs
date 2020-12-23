@@ -981,7 +981,7 @@ namespace Server.Engines.Spawners
                 case 3:
                 case 2:
                     {
-                        WayPoint = reader.ReadItem() as WayPoint;
+                        WayPoint = reader.ReadEntity<WayPoint>();
 
                         goto case 1;
                     }
@@ -1040,23 +1040,27 @@ namespace Server.Engines.Spawners
 
                             for (var i = 0; i < count; ++i)
                             {
-                                if (reader.ReadEntity() is ISpawnable e)
+                                var e = reader.ReadEntity<ISpawnable>();
+
+                                if (e == null)
                                 {
-                                    if (e is BaseCreature creature)
-                                    {
-                                        creature.RemoveIfUntamed = true;
-                                    }
+                                    continue;
+                                }
 
-                                    e.Spawner = this;
+                                if (e is BaseCreature creature)
+                                {
+                                    creature.RemoveIfUntamed = true;
+                                }
 
-                                    for (var j = 0; j < Entries.Count; j++)
+                                e.Spawner = this;
+
+                                for (var j = 0; j < Entries.Count; j++)
+                                {
+                                    if (AssemblyHandler.FindFirstTypeForName(Entries[j].SpawnedName) == e.GetType())
                                     {
-                                        if (AssemblyHandler.FindFirstTypeForName(Entries[j].SpawnedName) == e.GetType())
-                                        {
-                                            Entries[j].Spawned.Add(e);
-                                            Spawned.Add(e, Entries[j]);
-                                            break;
-                                        }
+                                        Entries[j].Spawned.Add(e);
+                                        Spawned.Add(e, Entries[j]);
+                                        break;
                                     }
                                 }
                             }

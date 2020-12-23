@@ -205,7 +205,7 @@ namespace Server.Engines.Quests.Haven
 
             var version = reader.ReadInt();
 
-            m_Lantern = (Lantern)reader.ReadItem();
+            m_Lantern = (Lantern)reader.ReadEntity<Item>();
         }
     }
 }

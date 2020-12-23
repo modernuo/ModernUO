@@ -358,7 +358,7 @@ namespace Server.Items
                 case 0:
                     {
                         m_Charges = Math.Min(reader.ReadEncodedInt(), MaxCharges);
-                        Pet = (BaseCreature)reader.ReadMobile();
+                        Pet = (BaseCreature)reader.ReadEntity<Mobile>();
                         PetName = reader.ReadString();
                         break;
                     }

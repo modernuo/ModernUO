@@ -426,7 +426,7 @@ namespace Server.Factions
             {
                 case 0:
                     {
-                        From = reader.ReadMobile();
+                        From = reader.ReadEntity<Mobile>();
                         Address = Utility.Intern(reader.ReadIPAddress());
                         Time = reader.ReadDateTime();
 
@@ -498,7 +498,7 @@ namespace Server.Factions
             {
                 case 1:
                     {
-                        Mobile = reader.ReadMobile();
+                        Mobile = reader.ReadEntity<Mobile>();
 
                         var count = reader.ReadEncodedInt();
                         Voters = new List<Voter>(count);
@@ -517,9 +517,9 @@ namespace Server.Factions
                     }
                 case 0:
                     {
-                        Mobile = reader.ReadMobile();
+                        Mobile = reader.ReadEntity<Mobile>();
 
-                        var mobs = reader.ReadStrongMobileList();
+                        var mobs = reader.ReadEntityList<Mobile>();
                         Voters = new List<Voter>(mobs.Count);
 
                         for (var i = 0; i < mobs.Count; ++i)

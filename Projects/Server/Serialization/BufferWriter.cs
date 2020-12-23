@@ -19,7 +19,6 @@ using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Server.Guilds;
 
 namespace Server
 {
@@ -109,10 +108,9 @@ namespace Server
         {
             return origin switch
             {
-                SeekOrigin.Begin   => Index = offset,
                 SeekOrigin.Current => Index += offset,
-                SeekOrigin.End     => Index = BufferSize - offset,
-                _                  => Index
+                SeekOrigin.End     => Index = _buffer.Length - offset,
+                SeekOrigin.Begin   => Index = offset // Begin
             };
         }
 
@@ -341,318 +339,32 @@ namespace Server
             Write((byte)(value?.RaceIndex ?? 0xFF));
         }
 
-        public void WriteEntity(IEntity value)
+        public void Write(ISerializable value)
         {
             Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
         }
 
-        public void Write(Item value)
+        public void Write<T>(ICollection<T> coll) where T : class, ISerializable
         {
-            Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
-        }
-
-        public void Write(Mobile value)
-        {
-            Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
-        }
-
-        public void Write(BaseGuild value)
-        {
-            Write(value?.Serial ?? 0);
-        }
-
-        public void WriteItem<T>(T value) where T : Item
-        {
-            Write(value);
-        }
-
-        public void WriteMobile<T>(T value) where T : Mobile
-        {
-            Write(value);
-        }
-
-        public void WriteGuild<T>(T value) where T : BaseGuild
-        {
-            Write(value);
-        }
-
-        public void Write(List<Item> list)
-        {
-            WriteItemList(list);
-        }
-
-        public void Write(List<Item> list, bool tidy)
-        {
-            WriteItemList(list, tidy);
-        }
-
-        public void WriteItemList<T>(List<T> list) where T : Item
-        {
-            WriteItemList(list, false);
-        }
-
-        public void WriteItemList<T>(List<T> list, bool tidy) where T : Item
-        {
-            if (tidy)
+            Write(coll.Count);
+            foreach (var entry in coll)
             {
-                for (var i = 0; i < list.Count;)
-                {
-                    if (list[i].Deleted)
-                    {
-                        list.RemoveAt(i);
-                    }
-                    else
-                    {
-                        ++i;
-                    }
-                }
-            }
-
-            Write(list.Count);
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                Write(list[i]);
+                Write(entry);
             }
         }
 
-        public void Write(HashSet<Item> set)
+        public void Write<T>(ICollection<T> coll, Action<IGenericWriter, T> action) where T : class, ISerializable
         {
-            Write(set, false);
-        }
-
-        public void Write(HashSet<Item> set, bool tidy)
-        {
-            if (tidy)
+            if (coll == null)
             {
-                set.RemoveWhere(item => item.Deleted);
+                Write(0);
+                return;
             }
 
-            Write(set.Count);
-
-            foreach (var item in set)
+            Write(coll.Count);
+            foreach (var entry in coll)
             {
-                Write(item);
-            }
-        }
-
-        public void WriteItemSet<T>(HashSet<T> set) where T : Item
-        {
-            WriteItemSet(set, false);
-        }
-
-        public void WriteItemSet<T>(HashSet<T> set, bool tidy) where T : Item
-        {
-            if (tidy)
-            {
-                set.RemoveWhere(item => item.Deleted);
-            }
-
-            Write(set.Count);
-
-            foreach (var item in set)
-            {
-                Write(item);
-            }
-        }
-
-        public void Write(List<Mobile> list)
-        {
-            Write(list, false);
-        }
-
-        public void Write(List<Mobile> list, bool tidy)
-        {
-            if (tidy)
-            {
-                for (var i = 0; i < list.Count;)
-                {
-                    if (list[i].Deleted)
-                    {
-                        list.RemoveAt(i);
-                    }
-                    else
-                    {
-                        ++i;
-                    }
-                }
-            }
-
-            Write(list.Count);
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                Write(list[i]);
-            }
-        }
-
-        public void WriteMobileList<T>(List<T> list) where T : Mobile
-        {
-            WriteMobileList(list, false);
-        }
-
-        public void WriteMobileList<T>(List<T> list, bool tidy) where T : Mobile
-        {
-            if (tidy)
-            {
-                for (var i = 0; i < list.Count;)
-                {
-                    if (list[i].Deleted)
-                    {
-                        list.RemoveAt(i);
-                    }
-                    else
-                    {
-                        ++i;
-                    }
-                }
-            }
-
-            Write(list.Count);
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                Write(list[i]);
-            }
-        }
-
-        public void Write(HashSet<Mobile> set)
-        {
-            Write(set, false);
-        }
-
-        public void Write(HashSet<Mobile> set, bool tidy)
-        {
-            if (tidy)
-            {
-                set.RemoveWhere(mobile => mobile.Deleted);
-            }
-
-            Write(set.Count);
-
-            foreach (var mob in set)
-            {
-                Write(mob);
-            }
-        }
-
-        public void WriteMobileSet<T>(HashSet<T> set) where T : Mobile
-        {
-            WriteMobileSet(set, false);
-        }
-
-        public void WriteMobileSet<T>(HashSet<T> set, bool tidy) where T : Mobile
-        {
-            if (tidy)
-            {
-                set.RemoveWhere(mob => mob.Deleted);
-            }
-
-            Write(set.Count);
-
-            foreach (var mob in set)
-            {
-                Write(mob);
-            }
-        }
-
-        public void Write(List<BaseGuild> list)
-        {
-            Write(list, false);
-        }
-
-        public void Write(List<BaseGuild> list, bool tidy)
-        {
-            if (tidy)
-            {
-                for (var i = 0; i < list.Count;)
-                {
-                    if (list[i].Disbanded)
-                    {
-                        list.RemoveAt(i);
-                    }
-                    else
-                    {
-                        ++i;
-                    }
-                }
-            }
-
-            Write(list.Count);
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                Write(list[i]);
-            }
-        }
-
-        public void WriteGuildList<T>(List<T> list) where T : BaseGuild
-        {
-            WriteGuildList(list, false);
-        }
-
-        public void WriteGuildList<T>(List<T> list, bool tidy) where T : BaseGuild
-        {
-            if (tidy)
-            {
-                for (var i = 0; i < list.Count;)
-                {
-                    if (list[i].Disbanded)
-                    {
-                        list.RemoveAt(i);
-                    }
-                    else
-                    {
-                        ++i;
-                    }
-                }
-            }
-
-            Write(list.Count);
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                Write(list[i]);
-            }
-        }
-
-        public void Write(HashSet<BaseGuild> set)
-        {
-            Write(set, false);
-        }
-
-        public void Write(HashSet<BaseGuild> set, bool tidy)
-        {
-            if (tidy)
-            {
-                set.RemoveWhere(guild => guild.Disbanded);
-            }
-
-            Write(set.Count);
-
-            foreach (var guild in set)
-            {
-                Write(guild);
-            }
-        }
-
-        public void WriteGuildSet<T>(HashSet<T> set) where T : BaseGuild
-        {
-            WriteGuildSet(set, false);
-        }
-
-        public void WriteGuildSet<T>(HashSet<T> set, bool tidy) where T : BaseGuild
-        {
-            if (tidy)
-            {
-                set.RemoveWhere(guild => guild.Disbanded);
-            }
-
-            Write(set.Count);
-
-            foreach (var guild in set)
-            {
-                Write(guild);
+                action(this, entry);
             }
         }
 

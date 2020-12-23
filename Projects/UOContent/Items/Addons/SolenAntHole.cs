@@ -179,7 +179,7 @@ namespace Server.Items
 
             writer.WriteEncodedInt(0); // version
 
-            writer.WriteMobileList(m_Spawned);
+            writer.Write(m_Spawned);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -188,7 +188,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            m_Spawned = reader.ReadStrongMobileList<Mobile>();
+            m_Spawned = reader.ReadEntityList<Mobile>();
         }
     }
 }

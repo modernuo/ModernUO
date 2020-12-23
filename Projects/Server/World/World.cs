@@ -126,7 +126,7 @@ namespace Server
 
         public static WorldState WorldState { get; private set; }
         public static bool Saving => WorldState == WorldState.Saving;
-        public static bool Running => WorldState == WorldState.Running;
+        public static bool Running => WorldState != WorldState.Loading && WorldState != WorldState.Initial;
         public static bool Loading => WorldState == WorldState.Loading;
 
         public static Dictionary<Serial, Mobile> Mobiles { get; private set; }

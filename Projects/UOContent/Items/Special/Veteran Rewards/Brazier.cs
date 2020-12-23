@@ -134,7 +134,7 @@ namespace Server.Items
             var version = reader.ReadEncodedInt();
 
             m_IsRewardItem = reader.ReadBool();
-            m_Fire = reader.ReadItem();
+            m_Fire = reader.ReadEntity<Item>();
         }
     }
 

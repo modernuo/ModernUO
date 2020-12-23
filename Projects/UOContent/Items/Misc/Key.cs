@@ -172,7 +172,7 @@ namespace Server.Items
                     }
                 case 1:
                     {
-                        Link = reader.ReadItem();
+                        Link = reader.ReadEntity<Item>();
 
                         goto case 0;
                     }

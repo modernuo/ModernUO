@@ -31,6 +31,8 @@ namespace Server.Guilds
         public abstract bool Disbanded { get; }
         public abstract void Delete();
 
+        public bool Deleted => Disbanded;
+
         public BufferWriter SaveBuffer { get; set; }
 
         [CommandProperty(AccessLevel.Counselor)]

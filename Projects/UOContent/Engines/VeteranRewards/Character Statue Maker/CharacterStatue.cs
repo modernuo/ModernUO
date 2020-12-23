@@ -233,10 +233,10 @@ namespace Server.Mobiles
             m_Pose = (StatuePose)reader.ReadInt();
             m_Material = (StatueMaterial)reader.ReadInt();
 
-            m_SculptedBy = reader.ReadMobile();
+            m_SculptedBy = reader.ReadEntity<Mobile>();
             SculptedOn = reader.ReadDateTime();
 
-            Plinth = reader.ReadItem() as CharacterStatuePlinth;
+            Plinth = reader.ReadEntity<CharacterStatuePlinth>();
             IsRewardItem = reader.ReadBool();
 
             InvalidatePose();
@@ -581,7 +581,7 @@ namespace Server.Mobiles
                 m_Type = (StatueType)reader.ReadInt();
             }
 
-            Statue = reader.ReadMobile() as CharacterStatue;
+            Statue = reader.ReadEntity<CharacterStatue>();
             m_IsRewardItem = reader.ReadBool();
         }
     }

@@ -337,7 +337,7 @@ namespace Server.Engines.ConPVP
                 case 1:
                 case 0:
                     {
-                        Mobile = reader.ReadMobile();
+                        Mobile = reader.ReadEntity<Mobile>();
                         m_Experience = reader.ReadEncodedInt();
                         Wins = reader.ReadEncodedInt();
                         Losses = reader.ReadEncodedInt();

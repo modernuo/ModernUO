@@ -24,5 +24,6 @@ namespace Server
         void Deserialize(IGenericReader reader);
         void Serialize(IGenericWriter writer);
         void Delete();
+        bool Deleted { get; }
     }
 }

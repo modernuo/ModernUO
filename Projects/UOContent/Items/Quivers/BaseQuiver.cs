@@ -532,7 +532,7 @@ namespace Server.Items
 
             if (GetSaveFlag(flags, SaveFlag.Crafter))
             {
-                m_Crafter = reader.ReadMobile();
+                m_Crafter = reader.ReadEntity<Mobile>();
             }
 
             if (GetSaveFlag(flags, SaveFlag.Quality))

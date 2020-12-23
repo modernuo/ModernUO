@@ -133,7 +133,7 @@ namespace Server.Engines.Quests.Haven
             var version = reader.ReadInt();
 
             CannonDirection = (CannonDirection)reader.ReadEncodedInt();
-            Canoneer = (MilitiaCanoneer)reader.ReadMobile();
+            Canoneer = (MilitiaCanoneer)reader.ReadEntity<Mobile>();
         }
     }
 

@@ -112,7 +112,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            Addon = reader.ReadItem() as BaseAddonContainer;
+            Addon = reader.ReadEntity<BaseAddonContainer>();
             Offset = reader.ReadPoint3D();
 
             Addon?.OnComponentLoaded(this);

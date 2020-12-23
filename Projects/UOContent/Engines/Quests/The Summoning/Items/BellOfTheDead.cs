@@ -126,8 +126,8 @@ namespace Server.Engines.Quests.Doom
 
             var version = reader.ReadInt();
 
-            Chyloth = reader.ReadMobile() as Chyloth;
-            Dragon = reader.ReadMobile() as SkeletalDragon;
+            Chyloth = reader.ReadEntity<Chyloth>();
+            Dragon = reader.ReadEntity<SkeletalDragon>();
 
             Chyloth?.Delete();
         }

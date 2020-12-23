@@ -30,7 +30,7 @@ namespace Server.Items
                 case 1:
                 case 0:
                     {
-                        From = reader.ReadMobile();
+                        From = reader.ReadEntity<Mobile>();
                         Address = Utility.Intern(reader.ReadIPAddress());
                         Date = reader.ReadDateTime();
 
@@ -640,7 +640,7 @@ namespace Server.Items
                     }
                 case 1:
                     {
-                        Deed = reader.ReadItem<HouseRaffleDeed>();
+                        Deed = reader.ReadEntity<HouseRaffleDeed>();
 
                         goto case 0;
                     }
@@ -651,7 +651,7 @@ namespace Server.Items
                         m_Bounds = reader.ReadRect2D();
                         m_Facet = reader.ReadMap();
 
-                        m_Winner = reader.ReadMobile();
+                        m_Winner = reader.ReadEntity<Mobile>();
 
                         m_TicketPrice = reader.ReadInt();
                         m_Started = reader.ReadDateTime();

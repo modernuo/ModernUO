@@ -589,7 +589,7 @@ namespace Server.Items
             var guesses = reader.ReadEncodedInt();
             for (var i = 0; i < guesses; i++)
             {
-                var m = reader.ReadMobile();
+                var m = reader.ReadEntity<Mobile>();
                 var sol = new PuzzleChestSolutionAndTime(reader);
 
                 m_Guesses[m] = sol;

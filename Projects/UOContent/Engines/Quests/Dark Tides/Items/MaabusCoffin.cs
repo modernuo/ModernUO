@@ -100,7 +100,7 @@ namespace Server.Engines.Quests.Necro
 
             var version = reader.ReadInt();
 
-            Maabus = reader.ReadMobile() as Maabus;
+            Maabus = reader.ReadEntity<Maabus>();
             SpawnLocation = reader.ReadPoint3D();
 
             Sleep();

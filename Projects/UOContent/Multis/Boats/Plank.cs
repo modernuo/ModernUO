@@ -71,7 +71,7 @@ namespace Server.Items
             {
                 case 0:
                     {
-                        Boat = reader.ReadItem() as BaseBoat;
+                        Boat = reader.ReadEntity<BaseBoat>();
                         Side = (PlankSide)reader.ReadInt();
                         Locked = reader.ReadBool();
                         KeyValue = reader.ReadUInt();

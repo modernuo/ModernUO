@@ -151,7 +151,7 @@ namespace Server.Items
             {
                 case 1:
                     {
-                        Placer = reader.ReadMobile();
+                        Placer = reader.ReadEntity<Mobile>();
 
                         goto case 0;
                     }
@@ -163,7 +163,7 @@ namespace Server.Items
 
                         for (var i = 0; i < count; ++i)
                         {
-                            var item = reader.ReadItem();
+                            var item = reader.ReadEntity<Item>();
 
                             if (item != null)
                             {
@@ -288,7 +288,7 @@ namespace Server.Items
                 {
                     case 0:
                         {
-                            m_Tree = reader.ReadItem() as HolidayTree;
+                            m_Tree = reader.ReadEntity<HolidayTree>();
 
                             if (m_Tree == null)
                             {

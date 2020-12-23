@@ -70,7 +70,7 @@ namespace Server.Items
 
             Title = reader.ReadString();
             m_Rank = (TrophyRank)reader.ReadInt();
-            Owner = reader.ReadMobile();
+            Owner = reader.ReadEntity<Mobile>();
             Date = reader.ReadDateTime();
 
             if (version == 0)

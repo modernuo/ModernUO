@@ -628,7 +628,7 @@ namespace Server.Items
                     {
                         if (reader.ReadBool())
                         {
-                            RestoreEquip = reader.ReadStrongItemList();
+                            RestoreEquip = reader.ReadEntityList<Item>();
                         }
 
                         goto case 11;
@@ -644,7 +644,7 @@ namespace Server.Items
 
                         for (var i = 0; i < count; ++i)
                         {
-                            var item = reader.ReadItem();
+                            var item = reader.ReadEntity<Item>();
 
                             if (reader.ReadBool())
                             {
@@ -661,11 +661,11 @@ namespace Server.Items
                             BeginDecay(reader.ReadDeltaTime() - DateTime.UtcNow);
                         }
 
-                        Looters = reader.ReadStrongMobileList();
-                        Killer = reader.ReadMobile();
+                        Looters = reader.ReadEntityList<Mobile>();
+                        Killer = reader.ReadEntity<Mobile>();
 
-                        Aggressors = reader.ReadStrongMobileList();
-                        Owner = reader.ReadMobile();
+                        Aggressors = reader.ReadEntityList<Mobile>();
+                        Owner = reader.ReadEntity<Mobile>();
 
                         m_CorpseName = reader.ReadString();
 
@@ -673,7 +673,7 @@ namespace Server.Items
                         reader.ReadInt(); // guild reserve
                         Kills = reader.ReadInt();
 
-                        EquipItems = reader.ReadStrongItemList();
+                        EquipItems = reader.ReadEntityList<Item>();
                         break;
                     }
                 case 10:
@@ -688,7 +688,7 @@ namespace Server.Items
 
                         for (var i = 0; i < count; ++i)
                         {
-                            var item = reader.ReadItem();
+                            var item = reader.ReadEntity<Item>();
 
                             if (reader.ReadBool())
                             {
@@ -719,8 +719,8 @@ namespace Server.Items
                     }
                 case 6:
                     {
-                        Looters = reader.ReadStrongMobileList();
-                        Killer = reader.ReadMobile();
+                        Looters = reader.ReadEntityList<Mobile>();
+                        Killer = reader.ReadEntity<Mobile>();
 
                         goto case 5;
                     }
@@ -732,13 +732,13 @@ namespace Server.Items
                     }
                 case 4:
                     {
-                        Aggressors = reader.ReadStrongMobileList();
+                        Aggressors = reader.ReadEntityList<Mobile>();
 
                         goto case 3;
                     }
                 case 3:
                     {
-                        Owner = reader.ReadMobile();
+                        Owner = reader.ReadEntity<Mobile>();
 
                         goto case 2;
                     }
@@ -781,7 +781,7 @@ namespace Server.Items
                         Kills = reader.ReadInt();
                         SetFlag(CorpseFlag.Criminal, reader.ReadBool());
 
-                        EquipItems = reader.ReadStrongItemList();
+                        EquipItems = reader.ReadEntityList<Item>();
 
                         break;
                     }

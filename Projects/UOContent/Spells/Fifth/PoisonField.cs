@@ -142,7 +142,7 @@ namespace Server.Spells.Fifth
                 {
                     case 1:
                         {
-                            m_Caster = reader.ReadMobile();
+                            m_Caster = reader.ReadEntity<Mobile>();
 
                             goto case 0;
                         }

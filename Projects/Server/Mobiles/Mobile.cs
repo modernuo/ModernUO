@@ -2628,7 +2628,8 @@ namespace Server
 
             writer.Write(CreationTime);
 
-            writer.Write(Stabled, true);
+            Stabled.Tidy();
+            writer.Write(Stabled);
 
             writer.Write(CantWalk);
 
@@ -6393,7 +6394,7 @@ namespace Server
                 case 25:
                 case 24:
                     {
-                        Corpse = reader.ReadItem() as Container;
+                        Corpse = reader.ReadEntity<Container>();
 
                         goto case 23;
                     }
@@ -6406,7 +6407,7 @@ namespace Server
                 case 22: // Just removed followers
                 case 21:
                     {
-                        Stabled = reader.ReadStrongMobileList();
+                        Stabled = reader.ReadEntityList<Mobile>();
 
                         goto case 20;
                     }
@@ -6461,13 +6462,13 @@ namespace Server
                     }
                 case 13:
                     {
-                        GuildFealty = reader.ReadMobile();
+                        GuildFealty = reader.ReadEntity<Mobile>();
 
                         goto case 12;
                     }
                 case 12:
                     {
-                        m_Guild = reader.ReadGuild();
+                        m_Guild = reader.ReadEntity<Guild>();
 
                         goto case 11;
                     }
@@ -6491,7 +6492,7 @@ namespace Server
                     }
                 case 8:
                     {
-                        m_Holding = reader.ReadItem();
+                        m_Holding = reader.ReadEntity<Item>();
 
                         goto case 7;
                     }
@@ -6599,7 +6600,7 @@ namespace Server
 
                         Skills = new Skills(this, reader);
 
-                        Items = reader.ReadStrongItemList();
+                        Items = reader.ReadEntityList<Item>();
 
                         m_Player = reader.ReadBool();
                         m_Title = reader.ReadString();

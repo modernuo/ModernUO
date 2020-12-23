@@ -53,7 +53,7 @@ namespace Server.Engines.ConPVP
             {
                 case 0:
                     {
-                        Tournament = reader.ReadItem() as TournamentController;
+                        Tournament = reader.ReadEntity<TournamentController>();
                         break;
                     }
             }

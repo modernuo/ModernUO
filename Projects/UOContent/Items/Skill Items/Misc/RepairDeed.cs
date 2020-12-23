@@ -218,7 +218,7 @@ namespace Server.Items
                     {
                         m_Skill = (RepairSkillType)reader.ReadInt();
                         m_SkillLevel = reader.ReadDouble();
-                        m_Crafter = reader.ReadMobile();
+                        m_Crafter = reader.ReadEntity<Mobile>();
 
                         break;
                     }

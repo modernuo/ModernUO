@@ -40,7 +40,7 @@ namespace Server.Items
             {
                 case 0:
                     {
-                        m_Harrower = reader.ReadMobile();
+                        m_Harrower = reader.ReadEntity<Mobile>();
 
                         if (m_Harrower == null)
                         {

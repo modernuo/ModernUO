@@ -41,7 +41,7 @@ namespace Server.Engines.Mahjong
 
             for (var i = 0; i < seats; i++)
             {
-                m_Players[i] = reader.ReadMobile();
+                m_Players[i] = reader.ReadEntity<Mobile>();
                 m_PublicHand[i] = reader.ReadBool();
                 m_Scores[i] = reader.ReadInt();
             }

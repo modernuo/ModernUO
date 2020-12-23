@@ -263,14 +263,14 @@ namespace Server.Engines.ConPVP
                     }
                 case 6:
                     {
-                        Ladder = reader.ReadItem() as LadderController;
+                        Ladder = reader.ReadEntity<LadderController>();
 
                         goto case 5;
                     }
                 case 5:
                     {
-                        m_Tournament = reader.ReadItem() as TournamentController;
-                        Announcer = reader.ReadMobile();
+                        m_Tournament = reader.ReadEntity<TournamentController>();
+                        Announcer = reader.ReadEntity<Mobile>();
 
                         goto case 4;
                     }
@@ -290,13 +290,13 @@ namespace Server.Engines.ConPVP
                     {
                         GateIn = reader.ReadPoint3D();
                         m_GateOut = reader.ReadPoint3D();
-                        Teleporter = reader.ReadItem();
+                        Teleporter = reader.ReadEntity<Item>();
 
                         goto case 1;
                     }
                 case 1:
                     {
-                        Players = reader.ReadStrongMobileList();
+                        Players = reader.ReadEntityList<Mobile>();
 
                         goto case 0;
                     }

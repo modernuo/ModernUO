@@ -159,8 +159,10 @@ namespace Server.Multis
 
             writer.Write(0); // version
 
-            writer.Write(m_Items, true);
-            writer.Write(m_Mobiles, true);
+            m_Items.Tidy();
+            writer.Write(m_Items);
+            m_Mobiles.Tidy();
+            writer.Write(m_Mobiles);
             writer.WriteDeltaTime(m_DecayTime);
         }
 
@@ -174,8 +176,8 @@ namespace Server.Multis
             {
                 case 0:
                     {
-                        m_Items = reader.ReadStrongItemList();
-                        m_Mobiles = reader.ReadStrongMobileList();
+                        m_Items = reader.ReadEntityList<Item>();
+                        m_Mobiles = reader.ReadEntityList<Mobile>();
                         m_DecayTime = reader.ReadDeltaTime();
 
                         RefreshDecay(false);

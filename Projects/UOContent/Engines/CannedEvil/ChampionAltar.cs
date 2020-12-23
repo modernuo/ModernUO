@@ -38,7 +38,7 @@ namespace Server.Engines.CannedEvil
             {
                 case 0:
                     {
-                        m_Spawn = reader.ReadItem() as ChampionSpawn;
+                        m_Spawn = reader.ReadEntity<ChampionSpawn>();
 
                         if (m_Spawn == null)
                         {

@@ -32,7 +32,9 @@ namespace Server.Engines.Spawners
 
             for (var i = 0; i < count; ++i)
             {
-                if (reader.ReadEntity() is ISpawnable e)
+                var e = reader.ReadEntity<ISpawnable>();
+
+                if (e != null)
                 {
                     e.Spawner = parent;
 

@@ -256,7 +256,7 @@ namespace Server.Mobiles
                     {
                         m_MountedID = reader.ReadInt();
                         m_RegularID = reader.ReadInt();
-                        m_Rider = reader.ReadMobile();
+                        m_Rider = reader.ReadEntity<Mobile>();
 
                         if (m_MountedID == 0x3EA2)
                         {

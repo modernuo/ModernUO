@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using Server.Guilds;
 
 namespace Server
 {
@@ -48,38 +47,9 @@ namespace Server
         void Write(Rectangle2D value);
         void Write(Rectangle3D value);
         void Write(Map value);
-        void WriteEntity(IEntity value);
-        void Write(Item value);
-        void Write(Mobile value);
-        void Write(BaseGuild value);
-        void WriteItem<T>(T value) where T : Item;
-        void WriteMobile<T>(T value) where T : Mobile;
-        void WriteGuild<T>(T value) where T : BaseGuild;
+        void Write(ISerializable value);
         void Write(Race value);
-        void Write(List<Item> list);
-        void Write(List<Item> list, bool tidy);
-        void WriteItemList<T>(List<T> list) where T : Item;
-        void WriteItemList<T>(List<T> list, bool tidy) where T : Item;
-        void Write(HashSet<Item> list);
-        void Write(HashSet<Item> list, bool tidy);
-        void WriteItemSet<T>(HashSet<T> set) where T : Item;
-        void WriteItemSet<T>(HashSet<T> set, bool tidy) where T : Item;
-        void Write(List<Mobile> list);
-        void Write(List<Mobile> list, bool tidy);
-        void WriteMobileList<T>(List<T> list) where T : Mobile;
-        void WriteMobileList<T>(List<T> list, bool tidy) where T : Mobile;
-        void Write(HashSet<Mobile> list);
-        void Write(HashSet<Mobile> list, bool tidy);
-        void WriteMobileSet<T>(HashSet<T> set) where T : Mobile;
-        void WriteMobileSet<T>(HashSet<T> set, bool tidy) where T : Mobile;
-        void Write(List<BaseGuild> list);
-        void Write(List<BaseGuild> list, bool tidy);
-        void WriteGuildList<T>(List<T> list) where T : BaseGuild;
-        void WriteGuildList<T>(List<T> list, bool tidy) where T : BaseGuild;
-        void Write(HashSet<BaseGuild> list);
-        void Write(HashSet<BaseGuild> list, bool tidy);
-        void WriteGuildSet<T>(HashSet<T> set) where T : BaseGuild;
-        void WriteGuildSet<T>(HashSet<T> set, bool tidy) where T : BaseGuild;
+        void Write<T>(ICollection<T> list) where T : class, ISerializable;
         void Write(ReadOnlySpan<byte> bytes);
 
         long Seek(long offset, SeekOrigin origin);

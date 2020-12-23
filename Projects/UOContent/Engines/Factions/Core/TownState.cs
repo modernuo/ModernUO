@@ -39,8 +39,8 @@ namespace Server.Factions
                         Town = Town.ReadReference(reader);
                         Owner = Faction.ReadReference(reader);
 
-                        m_Sheriff = reader.ReadMobile();
-                        m_Finance = reader.ReadMobile();
+                        m_Sheriff = reader.ReadEntity<Mobile>();
+                        m_Finance = reader.ReadEntity<Mobile>();
 
                         Town.State = this;
 

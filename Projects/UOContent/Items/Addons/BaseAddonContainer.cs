@@ -192,7 +192,7 @@ namespace Server.Items
 
             writer.Write(0); // version
 
-            writer.WriteItemList(Components);
+            writer.Write(Components);
             writer.Write((int)m_Resource);
         }
 
@@ -202,7 +202,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            Components = reader.ReadStrongItemList<AddonContainerComponent>();
+            Components = reader.ReadEntityList<AddonContainerComponent>();
             m_Resource = (CraftResource)reader.ReadInt();
 
             AddonComponent.ApplyLightTo(this);

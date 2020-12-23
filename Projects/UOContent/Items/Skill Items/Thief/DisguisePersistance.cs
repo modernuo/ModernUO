@@ -58,7 +58,7 @@ namespace Server.Items
 
                         for (var i = 0; i < count; ++i)
                         {
-                            var m = reader.ReadMobile();
+                            var m = reader.ReadEntity<Mobile>();
                             DisguiseTimers.CreateTimer(m, reader.ReadTimeSpan());
                             m.NameMod = reader.ReadString();
                         }

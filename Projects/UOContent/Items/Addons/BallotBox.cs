@@ -105,8 +105,11 @@ namespace Server.Items
                 writer.Write(Topic[i]);
             }
 
-            writer.Write(Yes, true);
-            writer.Write(No, true);
+            Yes.Tidy();
+            writer.Write(Yes);
+
+            No.Tidy();
+            writer.Write(No);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -122,8 +125,8 @@ namespace Server.Items
                 Topic[i] = reader.ReadString();
             }
 
-            Yes = reader.ReadStrongMobileList();
-            No = reader.ReadStrongMobileList();
+            Yes = reader.ReadEntityList<Mobile>();
+            No = reader.ReadEntityList<Mobile>();
         }
 
         private class InternalGump : Gump

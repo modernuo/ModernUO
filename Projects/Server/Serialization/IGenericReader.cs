@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using Server.Guilds;
 
 namespace Server
 {
@@ -45,25 +44,9 @@ namespace Server
         Rectangle2D ReadRect2D();
         Rectangle3D ReadRect3D();
         Map ReadMap();
-        IEntity ReadEntity();
-        Item ReadItem();
-        Mobile ReadMobile();
-        BaseGuild ReadGuild();
-        T ReadItem<T>() where T : Item;
-        T ReadMobile<T>() where T : Mobile;
-        T ReadGuild<T>() where T : BaseGuild;
-        List<Item> ReadStrongItemList();
-        List<T> ReadStrongItemList<T>() where T : Item;
-        List<Mobile> ReadStrongMobileList();
-        List<T> ReadStrongMobileList<T>() where T : Mobile;
-        List<BaseGuild> ReadStrongGuildList();
-        List<T> ReadStrongGuildList<T>() where T : BaseGuild;
-        HashSet<Item> ReadItemSet();
-        HashSet<T> ReadItemSet<T>() where T : Item;
-        HashSet<Mobile> ReadMobileSet();
-        HashSet<T> ReadMobileSet<T>() where T : Mobile;
-        HashSet<BaseGuild> ReadGuildSet();
-        HashSet<T> ReadGuildSet<T>() where T : BaseGuild;
+        T ReadEntity<T>() where T : class, ISerializable;
+        List<T> ReadEntityList<T>() where T : class, ISerializable;
+        HashSet<T> ReadEntitySet<T>() where T : class, ISerializable;
         Race ReadRace();
         int Read(Span<byte> buffer);
     }

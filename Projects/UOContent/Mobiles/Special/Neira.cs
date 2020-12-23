@@ -270,7 +270,7 @@ namespace Server.Mobiles
 
                 var version = reader.ReadInt();
 
-                Rider = reader.ReadMobile();
+                Rider = reader.ReadEntity<Mobile>();
 
                 if (Rider == null)
                 {

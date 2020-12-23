@@ -41,7 +41,7 @@ namespace Server.Engines.Quests.Naturalist
         {
             var version = reader.ReadEncodedInt();
 
-            Naturalist = (Naturalist)reader.ReadMobile();
+            Naturalist = (Naturalist)reader.ReadEntity<Mobile>();
         }
 
         public override void ChildSerialize(IGenericWriter writer)

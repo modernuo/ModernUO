@@ -83,7 +83,7 @@ namespace Server.Items
             {
                 case 0:
                     {
-                        m_Next = reader.ReadItem() as WayPoint;
+                        m_Next = reader.ReadEntity<WayPoint>();
                         break;
                     }
             }

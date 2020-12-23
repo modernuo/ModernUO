@@ -54,7 +54,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -110,7 +110,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as Tapestry1N;
+                m_Item = reader.ReadEntity<Tapestry1N>();
             }
         }
     }
@@ -169,7 +169,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -225,7 +225,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as Tapestry2N;
+                m_Item = reader.ReadEntity<Tapestry2N>();
             }
         }
     }
@@ -284,7 +284,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -340,7 +340,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as Tapestry2W;
+                m_Item = reader.ReadEntity<Tapestry2W>();
             }
         }
     }
@@ -399,7 +399,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -455,7 +455,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as Tapestry3N;
+                m_Item = reader.ReadEntity<Tapestry3N>();
             }
         }
     }
@@ -514,7 +514,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -570,7 +570,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as Tapestry3W;
+                m_Item = reader.ReadEntity<Tapestry3W>();
             }
         }
     }
@@ -629,7 +629,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -685,7 +685,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as Tapestry4N;
+                m_Item = reader.ReadEntity<Tapestry4N>();
             }
         }
     }
@@ -744,7 +744,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -800,7 +800,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as Tapestry4W;
+                m_Item = reader.ReadEntity<Tapestry4W>();
             }
         }
     }
@@ -859,7 +859,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -915,7 +915,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as Tapestry5N;
+                m_Item = reader.ReadEntity<Tapestry5N>();
             }
         }
     }
@@ -974,7 +974,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -1030,7 +1030,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as Tapestry5W;
+                m_Item = reader.ReadEntity<Tapestry5W>();
             }
         }
     }
@@ -1089,7 +1089,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -1145,7 +1145,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as Tapestry6N;
+                m_Item = reader.ReadEntity<Tapestry6N>();
             }
         }
     }
@@ -1204,7 +1204,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            m_Item = reader.ReadItem() as InternalItem;
+            m_Item = reader.ReadEntity<InternalItem>();
         }
 
         private class InternalItem : Item
@@ -1260,7 +1260,7 @@ namespace Server.Items
 
                 var version = reader.ReadInt();
 
-                m_Item = reader.ReadItem() as Tapestry6W;
+                m_Item = reader.ReadEntity<Tapestry6W>();
             }
         }
     }

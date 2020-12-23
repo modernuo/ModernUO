@@ -929,7 +929,7 @@ namespace Server.Items
                     }
                 case 3:
                     {
-                        m_Crafter = reader.ReadMobile();
+                        m_Crafter = reader.ReadEntity<Mobile>();
                         goto case 2;
                     }
                 case 2:

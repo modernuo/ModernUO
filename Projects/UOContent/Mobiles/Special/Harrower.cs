@@ -221,7 +221,7 @@ namespace Server.Mobiles
 
             writer.Write(m_TrueForm);
             writer.Write(m_GateItem);
-            writer.WriteMobileList(m_Tentacles);
+            writer.Write(m_Tentacles);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -235,8 +235,8 @@ namespace Server.Mobiles
                 case 0:
                     {
                         m_TrueForm = reader.ReadBool();
-                        m_GateItem = reader.ReadItem();
-                        m_Tentacles = reader.ReadStrongMobileList<HarrowerTentacles>();
+                        m_GateItem = reader.ReadEntity<Item>();
+                        m_Tentacles = reader.ReadEntityList<HarrowerTentacles>();
 
                         m_Timer = new TeleportTimer(this);
                         m_Timer.Start();

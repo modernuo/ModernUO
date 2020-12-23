@@ -2844,8 +2844,10 @@ namespace Server.Multis
 
             writer.Write(m_RelativeBanLocation);
 
-            writer.WriteItemList(VendorRentalContracts, true);
-            writer.WriteMobileList(InternalizedVendors, true);
+            VendorRentalContracts.Tidy();
+            writer.Write(VendorRentalContracts);
+            InternalizedVendors.Tidy();
+            writer.Write(InternalizedVendors);
 
             writer.WriteEncodedInt(RelocatedEntities.Count);
             foreach (var relEntity in RelocatedEntities)
@@ -2876,12 +2878,13 @@ namespace Server.Multis
 
             writer.Write(Price);
 
-            writer.WriteMobileList(Access);
+            writer.Write(Access);
 
             writer.Write(BuiltOn);
             writer.Write(LastTraded);
 
-            writer.WriteItemList(Addons, true);
+            Addons.Tidy();
+            writer.Write(Addons);
 
             writer.Write(Secures.Count);
 
@@ -2897,21 +2900,20 @@ namespace Server.Multis
             writer.Write(m_Owner);
 
             // Version 5 no longer serializes region coords
-            /*writer.Write( (int)m_Region.Coords.Count );
-            foreach( Rectangle2D rect in m_Region.Coords )
-            {
-              writer.Write( rect );
-            }*/
-
-            writer.WriteMobileList(CoOwners, true);
-            writer.WriteMobileList(Friends, true);
-            writer.WriteMobileList(Bans, true);
+            CoOwners.Tidy();
+            writer.Write(CoOwners);
+            Friends.Tidy();
+            writer.Write(Friends);
+            Bans.Tidy();
+            writer.Write(Bans);
 
             writer.Write(Sign);
             writer.Write(m_Trash);
 
-            writer.WriteItemList(Doors, true);
-            writer.WriteItemList(LockDowns, true);
+            Doors.Tidy();
+            writer.Write(Doors);
+            LockDowns.Tidy();
+            writer.Write(LockDowns);
             // writer.WriteItemList( m_Secures, true );
 
             writer.Write(MaxLockDowns);
@@ -2971,8 +2973,8 @@ namespace Server.Multis
                 case 13: // removed ban location serialization
                 case 12:
                     {
-                        VendorRentalContracts = reader.ReadStrongItemList<VendorRentalContract>();
-                        InternalizedVendors = reader.ReadStrongMobileList();
+                        VendorRentalContracts = reader.ReadEntityList<VendorRentalContract>();
+                        InternalizedVendors = reader.ReadEntityList<Mobile>();
 
                         var relocatedCount = reader.ReadEncodedInt();
                         for (var i = 0; i < relocatedCount; i++)
@@ -3014,7 +3016,7 @@ namespace Server.Multis
                     }
                 case 7:
                     {
-                        Access = reader.ReadStrongMobileList();
+                        Access = reader.ReadEntityList<Mobile>();
                         goto case 6;
                     }
                 case 6:
@@ -3026,7 +3028,7 @@ namespace Server.Multis
                 case 5: // just removed fields
                 case 4:
                     {
-                        Addons = reader.ReadStrongItemList();
+                        Addons = reader.ReadEntityList<Item>();
                         goto case 3;
                     }
                 case 3:
@@ -3089,7 +3091,7 @@ namespace Server.Multis
                             Price = DefaultPrice;
                         }
 
-                        m_Owner = reader.ReadMobile();
+                        m_Owner = reader.ReadEntity<Mobile>();
 
                         if (version < 5)
                         {
@@ -3103,15 +3105,15 @@ namespace Server.Multis
 
                         UpdateRegion();
 
-                        CoOwners = reader.ReadStrongMobileList();
-                        Friends = reader.ReadStrongMobileList();
-                        Bans = reader.ReadStrongMobileList();
+                        CoOwners = reader.ReadEntityList<Mobile>();
+                        Friends = reader.ReadEntityList<Mobile>();
+                        Bans = reader.ReadEntityList<Mobile>();
 
-                        Sign = reader.ReadItem() as HouseSign;
-                        m_Trash = reader.ReadItem() as TrashBarrel;
+                        Sign = reader.ReadEntity<HouseSign>();
+                        m_Trash = reader.ReadEntity<TrashBarrel>();
 
-                        Doors = reader.ReadStrongItemList<BaseDoor>();
-                        LockDowns = reader.ReadStrongItemList();
+                        Doors = reader.ReadEntityList<BaseDoor>();
+                        LockDowns = reader.ReadEntityList<Item>();
 
                         for (var i = 0; i < LockDowns.Count; ++i)
                         {
@@ -3125,7 +3127,7 @@ namespace Server.Multis
 
                         if (version < 3)
                         {
-                            var items = reader.ReadStrongItemList();
+                            var items = reader.ReadEntityList<Item>();
                             Secures = new List<SecureInfo>(items.Count);
 
                             for (var i = 0; i < items.Count; ++i)
@@ -3849,7 +3851,7 @@ namespace Server.Multis
 
         public SecureInfo(IGenericReader reader)
         {
-            Item = reader.ReadItem() as Container;
+            Item = reader.ReadEntity<Container>();
             Level = (SecureLevel)reader.ReadByte();
         }
 
