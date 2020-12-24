@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -34,6 +35,13 @@ namespace Server
             get => _index;
             set
             {
+                if (value < 0 || value > _buffer.Length)
+                {
+                    // If you are receiving this exception and your value is too large, you may need to use `Resize`
+                    // If you are receiving this exception and your value is negative, you probably used Seek incorrectly.
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+
                 _index = value;
 
                 if (value > _bytesWritten)
@@ -127,21 +135,25 @@ namespace Server
 
         public virtual long Seek(long offset, SeekOrigin origin)
         {
-            var newIndex = Math.Max(0, origin switch
+            Debug.Assert(
+                origin != SeekOrigin.End || offset <= 0 && offset > -_buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.End"
+            );
+            Debug.Assert(
+                origin != SeekOrigin.Begin || offset >= 0 && offset < _buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.Begin"
+            );
+            Debug.Assert(
+                origin != SeekOrigin.Current || Index + offset >= 0 && Index + offset < _buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.Current"
+            );
+
+            return Index = Math.Max(0, origin switch
             {
                 SeekOrigin.Current => Index + offset,
                 SeekOrigin.End     => _bytesWritten + offset,
                 _   => offset // Begin
             });
-
-            Index = newIndex;
-
-            while (Index > _buffer.Length)
-            {
-                FlushIfNeeded(0);
-            }
-
-            return Index;
         }
 
         public void WriteEncodedInt(int value)
