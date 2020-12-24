@@ -26,7 +26,7 @@ namespace Server
     public class BufferReader : IGenericReader
     {
         private readonly Encoding _encoding;
-        private byte[] _buffer;
+        private readonly byte[] _buffer;
         public int Position { get; private set; }
 
         public BufferReader(byte[] buffer)

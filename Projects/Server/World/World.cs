@@ -523,9 +523,9 @@ namespace Server
             string tdbPath = Path.Combine(path, $"{typeName}.tdb");
             string binPath = Path.Combine(path, $"{typeName}.bin");
 
-            var idx = new BinaryFileWriter(idxPath, false);
-            var tdb = new BinaryFileWriter(tdbPath, false);
-            var bin = new BinaryFileWriter(binPath, true);
+            using var idx = new BinaryFileWriter(idxPath, false);
+            using var tdb = new BinaryFileWriter(tdbPath, false);
+            using var bin = new BinaryFileWriter(binPath, true);
 
             idx.Write(entities.Count);
             foreach (var e in entities.Values)
@@ -546,10 +546,6 @@ namespace Server
             {
                 tdb.Write(types[i].FullName);
             }
-
-            idx.Close();
-            tdb.Close();
-            bin.Close();
         }
 
         private static void SaveEntities<T>(IEnumerable<T> list, DateTime serializeStart) where T : class, ISerializable

@@ -13,11 +13,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.IO;
 
 namespace Server
 {
-    public class BinaryFileWriter : BufferWriter
+    public class BinaryFileWriter : BufferWriter, IDisposable
     {
         private readonly Stream _file;
         private long _position;
@@ -35,7 +36,7 @@ namespace Server
         public override long Position => _position + Index;
 
 
-        protected override int BufferSize => 512;
+        protected override int BufferSize => 0x10000;
 
         public override void Flush()
         {
@@ -63,6 +64,11 @@ namespace Server
             Flush();
 
             return _position = _file.Seek(offset, origin);
+        }
+
+        public void Dispose()
+        {
+            Close();
         }
     }
 }
