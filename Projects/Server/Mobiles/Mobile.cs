@@ -3050,14 +3050,7 @@ namespace Server
             }
 
             Span<byte> mobileMovingPackets = stackalloc byte[OutgoingMobilePackets.MobileMovingPacketCacheLength];
-            // If localinit is off, we need to initialize the packet id to 0 as a sentinel
-#if NO_LOCAL_INIT
-            var totals = OutgoingMobilePackets.MobileMovingPacketCacheLength / OutgoingMobilePackets.MobileMovingPacketLength;
-			for (int i = 0; i < totals; i++)
-			{
-				mobileMovingPackets[i * OutgoingMobilePackets.MobileMovingPacketLength] = 0;
-			}
-#endif
+            mobileMovingPackets.InitializeChunks(OutgoingMobilePackets.MobileMovingPacketLength);
 
             var ourState = m.m_NetState;
 
@@ -4538,14 +4531,7 @@ namespace Server
                 eable.Free();
 
                 Span<byte> mobileMovingPackets = stackalloc byte[OutgoingMobilePackets.MobileMovingPacketCacheLength];
-                // If localinit is off, we need to initialize the packet id to 0 as a sentinel
-#if NO_LOCAL_INIT
-            var totals = OutgoingMobilePackets.MobileMovingPacketCacheLength / OutgoingMobilePackets.MobileMovingPacketLength;
-			for (int i = 0; i < totals; i++)
-			{
-				mobileMovingPackets[i * OutgoingMobilePackets.MobileMovingPacketLength] = 0;
-			}
-#endif
+                mobileMovingPackets.InitializeChunks(OutgoingMobilePackets.MobileMovingPacketLength);
 
                 foreach (var m in m_MoveClientList)
                 {
