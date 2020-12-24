@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -26,8 +27,30 @@ namespace Server
     {
         private readonly Encoding m_Encoding;
         private readonly bool m_PrefixStrings;
+        private long _bytesWritten;
+        private long _index;
 
-        protected long Index { get; set; }
+        protected long Index
+        {
+            get => _index;
+            set
+            {
+                if (value < 0 || value > _buffer.Length)
+                {
+                    // If you are receiving this exception and your value is too large, you may need to use `Resize`
+                    // If you are receiving this exception and your value is negative, you probably used Seek incorrectly.
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+
+                _index = value;
+
+                if (value > _bytesWritten)
+                {
+                    _bytesWritten = value;
+                }
+            }
+        }
+
         private byte[] _buffer;
 
         public BufferWriter(byte[] buffer, bool prefixStr)
@@ -37,18 +60,15 @@ namespace Server
             _buffer = buffer;
         }
 
-        public BufferWriter(bool prefixStr)
+        public BufferWriter(bool prefixStr) : this(0, prefixStr)
         {
-            m_PrefixStrings = prefixStr;
-            m_Encoding = Utility.UTF8;
-            _buffer = GC.AllocateUninitializedArray<byte>(BufferSize);
         }
 
         public BufferWriter(int count, bool prefixStr)
         {
             m_PrefixStrings = prefixStr;
             m_Encoding = Utility.UTF8;
-            _buffer = GC.AllocateUninitializedArray<byte>(count);
+            _buffer = GC.AllocateUninitializedArray<byte>(count < 1 ? BufferSize : count);
         }
 
         public virtual long Position => Index;
@@ -70,7 +90,16 @@ namespace Server
                 size = BufferSize;
             }
 
-            Array.Resize(ref _buffer, size);
+            if (size < _buffer.Length)
+            {
+                _bytesWritten = size;
+            }
+
+            var newBuffer = GC.AllocateUninitializedArray<byte>(size);
+            _buffer.AsSpan(0, Math.Min(size, _buffer.Length)).CopyTo(newBuffer);
+            _buffer = newBuffer;
+
+            // Array.Resize(ref _buffer, size);
         }
 
         public virtual void Flush()
@@ -82,15 +111,12 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool FlushIfNeeded(int amount)
+        private void FlushIfNeeded(int amount)
         {
             if (Index + amount > _buffer.Length)
             {
                 Flush();
-                return true;
             }
-
-            return false;
         }
 
         public void Write(ReadOnlySpan<byte> bytes)
@@ -113,12 +139,25 @@ namespace Server
 
         public virtual long Seek(long offset, SeekOrigin origin)
         {
-            return origin switch
+            Debug.Assert(
+                origin != SeekOrigin.End || offset <= 0 && offset > -_buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.End"
+            );
+            Debug.Assert(
+                origin != SeekOrigin.Begin || offset >= 0 && offset < _buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.Begin"
+            );
+            Debug.Assert(
+                origin != SeekOrigin.Current || Index + offset >= 0 && Index + offset < _buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.Current"
+            );
+
+            return Index = Math.Max(0, origin switch
             {
-                SeekOrigin.Current => Index += offset,
-                SeekOrigin.End     => Index = _buffer.Length - offset,
-                _   => Index = offset // Begin
-            };
+                SeekOrigin.Current => Index + offset,
+                SeekOrigin.End     => _bytesWritten + offset,
+                _   => offset // Begin
+            });
         }
 
         public void WriteEncodedInt(int value)

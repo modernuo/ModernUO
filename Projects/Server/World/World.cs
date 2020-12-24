@@ -31,7 +31,6 @@ namespace Server
     {
         Initial,
         Loading,
-        WritingLoadBuffers,
         Running,
         Saving,
         WritingSave
@@ -142,7 +141,7 @@ namespace Server
         {
             if (WorldState != WorldState.Saving)
             {
-                Console.WriteLine("Attempting to queue {0} for decay but the world is not saving", item);
+                WriteConsoleLine($"Attempting to queue {item} for decay but the world is not saving");
                 return;
             }
 
@@ -191,22 +190,20 @@ namespace Server
 
                 if (t?.IsAbstract != false)
                 {
-                    Console.WriteLine("failed");
+                    WriteConsoleLine("failed");
 
-                    Console.WriteLine(
-                        "Error: Type '{0}' was {1}. Delete all of those types? (y/n)",
-                        typeName,
-                        t?.IsAbstract == true ? "marked abstract" : "not found"
-                    );
+                    var issue = t?.IsAbstract == true ? "marked abstract" : "not found";
+
+                    WriteConsoleLine($"Error: Type '{typeName}' was {issue}. Delete all of those types? (y/n)");
 
                     if (Console.ReadKey(true).Key == ConsoleKey.Y)
                     {
                         types.Add(null);
-                        Console.Write("World: Loading...");
+                        WriteConsole("Loading...");
                         continue;
                     }
 
-                    Console.WriteLine("Types will not be deleted. An exception will be thrown.");
+                    WriteConsoleLine("Types will not be deleted. An exception will be thrown.");
 
                     throw new Exception($"Bad type '{typeName}'");
                 }
@@ -290,35 +287,6 @@ namespace Server
             return map;
         }
 
-        private static void SaveBuffers<I, T>(IIndexInfo<I> indexInfo, List<EntityIndex<T>> entities) where T : class, ISerializable
-        {
-            var indexType = indexInfo.TypeName;
-
-            string dataPath = Path.Combine("Saves", indexType, $"{indexType}.bin");
-
-            if (!File.Exists(dataPath))
-            {
-                return;
-            }
-
-            using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            BinaryReader reader = new BinaryReader(bin);
-
-            foreach (var entry in entities)
-            {
-                T e = entry.Entity;
-
-                if (e == null || e is IEntity entity && entity.Deleted)
-                {
-                    continue;
-                }
-
-                byte[] saveBuffer = GC.AllocateUninitializedArray<byte>(entry.Length);
-                reader.Read(saveBuffer, 0, entry.Length);
-                e.InitializeSaveBuffer(saveBuffer);
-            }
-        }
-
         private static void LoadData<I, T>(IIndexInfo<I> indexInfo, List<EntityIndex<T>> entities) where T : class, ISerializable
         {
             var indexType = indexInfo.TypeName;
@@ -331,11 +299,8 @@ namespace Server
             }
 
             using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var buffer = bin.Length <= int.MaxValue ? GC.AllocateUninitializedArray<byte>((int)bin.Length) : new byte[bin.Length];
-            bin.Read(buffer);
-            bin.Close();
 
-            var br = new BufferReader(buffer);
+            BufferReader br = null;
 
             foreach (var entry in entities)
             {
@@ -344,29 +309,42 @@ namespace Server
                 // Skip this entry
                 if (t == null)
                 {
-                    br.Seek(entry.Length, SeekOrigin.Current);
+                    bin.Seek(entry.Length, SeekOrigin.Current);
                     continue;
                 }
 
-                t.Deserialize(br);
-                var end = entry.Position + entry.Length;
-
-                if (br.Position != end)
+                var buffer = GC.AllocateUninitializedArray<byte>(entry.Length);
+                if (br == null)
                 {
-                    Console.WriteLine($"***** Bad deserialize on {t.GetType()} *****");
-                    Console.WriteLine(
-                        $"Serialized object was {entry.Length} bytes, but {br.Position - entry.Position} bytes deserialized"
+                    br = new BufferReader(buffer);
+                }
+                else
+                {
+                    br.SwapBuffers(buffer, out _);
+                }
+
+                bin.Read(buffer.AsSpan());
+
+                t.Deserialize(br);
+
+                if (br.Position != entry.Length)
+                {
+                    WriteConsoleLine($"***** Bad deserialize on {t.GetType()} *****");
+                    WriteConsoleLine(
+                        $"Serialized object was {entry.Length} bytes, but {br.Position} bytes deserialized"
                     );
 
-                    Console.WriteLine("Delete the object and continue? (y/n)");
+                    WriteConsoleLine("Delete the object and continue? (y/n)");
 
                     if (Console.ReadKey(true).Key != ConsoleKey.Y)
                     {
                         throw new Exception("Deserialization failed.");
                     }
                     t.Delete();
-
-                    br.Seek((int)end, SeekOrigin.Begin);
+                }
+                else
+                {
+                    t.InitializeSaveBuffer(buffer);
                 }
             }
         }
@@ -380,8 +358,7 @@ namespace Server
 
             WorldState = WorldState.Loading;
 
-            Console.Write("World: Loading...");
-
+            WriteConsole("Loading...");
             var watch = Stopwatch.StartNew();
 
             List<EntityIndex<Item>> items;
@@ -401,8 +378,6 @@ namespace Server
             LoadData(guildIndexInfo, guilds);
 
             EventSink.InvokeWorldLoad();
-
-            WorldState = WorldState.WritingLoadBuffers;
 
             ProcessSafetyQueues();
 
@@ -433,15 +408,8 @@ namespace Server
                 Mobiles.Count
             );
 
-            // Async save buffers
-            ThreadPool.QueueUserWorkItem(state =>
-                {
-                    SaveBuffers(mobileIndexInfo, mobiles);
-                    SaveBuffers(itemIndexInfo, items);
-                    SaveBuffers(guildIndexInfo, guilds);
-                    WorldState = WorldState.Running;
-                }
-            );
+
+            WorldState = WorldState.Running;
         }
 
         private static void ProcessSafetyQueues()
@@ -467,7 +435,7 @@ namespace Server
             var message =
                 $"Warning: Attempted to {action} {entity} during world save.{Environment.NewLine}This action could cause inconsistent state.{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
 
-            Console.WriteLine(message);
+            WriteConsoleLine(message);
 
             try
             {
@@ -493,6 +461,7 @@ namespace Server
         public static void WriteFiles(object state)
         {
             var watch = Stopwatch.StartNew();
+            WriteConsole("Writing snapshot...");
 
             IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
             IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
@@ -506,7 +475,7 @@ namespace Server
 
             m_DiskWriteHandle.Set();
 
-            Console.WriteLine("World: Writing snapshot took {0:F1} seconds.", watch.Elapsed.TotalSeconds);
+            Console.WriteLine("done ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
 
             Timer.DelayCall(FinishWorldSave);
         }
@@ -523,9 +492,9 @@ namespace Server
             string tdbPath = Path.Combine(path, $"{typeName}.tdb");
             string binPath = Path.Combine(path, $"{typeName}.bin");
 
-            var idx = new BinaryFileWriter(idxPath, false);
-            var tdb = new BinaryFileWriter(tdbPath, false);
-            var bin = new BinaryFileWriter(binPath, true);
+            using var idx = new BinaryFileWriter(idxPath, false);
+            using var tdb = new BinaryFileWriter(tdbPath, false);
+            using var bin = new BinaryFileWriter(binPath, true);
 
             idx.Write(entities.Count);
             foreach (var e in entities.Values)
@@ -546,10 +515,6 @@ namespace Server
             {
                 tdb.Write(types[i].FullName);
             }
-
-            idx.Close();
-            tdb.Close();
-            bin.Close();
         }
 
         private static void SaveEntities<T>(IEnumerable<T> list, DateTime serializeStart) where T : class, ISerializable
@@ -600,7 +565,7 @@ namespace Server
 
             var now = DateTime.UtcNow;
 
-            Console.Write("[{0}] World: Saving...", now.ToLongTimeString());
+            WriteConsole("Saving...");
 
             var watch = Stopwatch.StartNew();
 
@@ -619,19 +584,18 @@ namespace Server
 
             WorldState = WorldState.WritingSave;
 
-            ThreadPool.QueueUserWorkItem(WriteFiles);
-
             watch.Stop();
 
             var duration = watch.Elapsed.TotalSeconds;
-
-            Console.WriteLine("Save done in {0:F2} seconds.", duration);
+            Console.WriteLine("done ({0:F2} seconds)", duration);
 
             // Only broadcast if it took at least 150ms
             if (duration >= 0.15)
             {
-                Broadcast(0x35, true, $"World save completed in {duration:F2} seconds.");
+                Broadcast(0x35, true, $"World Save completed in {duration:F2} seconds.");
             }
+
+            ThreadPool.QueueUserWorkItem(WriteFiles);
 
             NetState.Resume();
         }
@@ -660,7 +624,6 @@ namespace Server
 
                         goto case WorldState.Running;
                     }
-                case WorldState.WritingLoadBuffers:
                 case WorldState.Running:
                     {
                         if (serial.IsItem)
@@ -708,13 +671,12 @@ namespace Server
                         if (_pendingDelete.Remove(entity.Serial))
                         {
                             Utility.PushColor(ConsoleColor.Red);
-                            Console.WriteLine($"Deleted then added {typeof(T).Name} during {WorldState.ToString().ToLower()} state.");
+                            WriteConsoleLine($"Deleted then added {typeof(T).Name} during {WorldState.ToString().ToLower()} state.");
                             Utility.PopColor();
                         }
                         _pendingAdd[entity.Serial] = entity;
                         break;
                     }
-                case WorldState.WritingLoadBuffers:
                 case WorldState.Running:
                     {
                         if (entity.Serial.IsItem)
@@ -753,7 +715,6 @@ namespace Server
                         _pendingDelete[entity.Serial] = entity;
                         break;
                     }
-                case WorldState.WritingLoadBuffers:
                 case WorldState.Running:
                     {
                         if (entity.Serial.IsItem)
@@ -779,6 +740,18 @@ namespace Server
 
             // Resize to exact buffer size
             entity.SaveBuffer.Resize((int)entity.SaveBuffer.Position);
+        }
+
+        private static void WriteConsole(string message)
+        {
+            var now = DateTime.UtcNow;
+            Console.Write("[{0} {1}] World: {2}", now.ToShortDateString(), now.ToLongTimeString(), message);
+        }
+
+        private static void WriteConsoleLine(string message)
+        {
+            var now = DateTime.UtcNow;
+            Console.WriteLine("[{0} {1}] World: {2}", now.ToShortDateString(), now.ToLongTimeString(), message);
         }
     }
 }
