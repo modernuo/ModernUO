@@ -3049,13 +3049,13 @@ namespace Server
                 sendFacialHair = true;
             }
 
-            const int mobileMovingLength = OutgoingMobilePackets.MobileMovingPacketLength;
-            Span<byte> mobileMovingPackets = stackalloc byte[mobileMovingLength * 16]; // 272 bytes
-            // If localinit is off, we need to make sure the first byte of each packet is 0 so we can check to see if it was set
+            Span<byte> mobileMovingPackets = stackalloc byte[OutgoingMobilePackets.MobileMovingPacketCacheLength];
+            // If localinit is off, we need to initialize the packet id to 0 as a sentinel
 #if NO_LOCAL_INIT
-			for (int i = 0; i < 16; i++)
+            var totals = OutgoingMobilePackets.MobileMovingPacketCacheLength / OutgoingMobilePackets.MobileMovingPacketLength;
+			for (int i = 0; i < totals; i++)
 			{
-				mobileMovingPackets[i * mobileMovingLength] = 0;
+				mobileMovingPackets[i * OutgoingMobilePackets.MobileMovingPacketLength] = 0;
 			}
 #endif
 
@@ -3076,7 +3076,7 @@ namespace Server
 
                 if (sendMoving || !ourState.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
                 {
-                    ourState.SendMobileMovingUsingCache(mobileMovingPackets, m, Notoriety.Compute(m, m));
+                    ourState.SendMobileMovingUsingCache(mobileMovingPackets, m, m);
                 }
 
                 if (ourState.StygianAbyss)
@@ -3213,7 +3213,7 @@ namespace Server
 
                         if (sendMoving || !state.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
                         {
-                            state.SendMobileMovingUsingCache(mobileMovingPackets, m, Notoriety.Compute(beholder, m));
+                            state.SendMobileMovingUsingCache(mobileMovingPackets, beholder, m);
                         }
 
                         if (state.StygianAbyss)
@@ -4537,13 +4537,13 @@ namespace Server
 
                 eable.Free();
 
-                const int mobileMovingLength = OutgoingMobilePackets.MobileMovingPacketLength;
-                Span<byte> mobileMovingPackets = stackalloc byte[mobileMovingLength * 16]; // 272 bytes
-                // If localinit is off, we need to make sure the first byte of each packet is 0 so we can check to see if it was set
+                Span<byte> mobileMovingPackets = stackalloc byte[OutgoingMobilePackets.MobileMovingPacketCacheLength];
+                // If localinit is off, we need to initialize the packet id to 0 as a sentinel
 #if NO_LOCAL_INIT
-			for (int i = 0; i < 16; i++)
+            var totals = OutgoingMobilePackets.MobileMovingPacketCacheLength / OutgoingMobilePackets.MobileMovingPacketLength;
+			for (int i = 0; i < totals; i++)
 			{
-				mobileMovingPackets[i * mobileMovingLength] = 0;
+				mobileMovingPackets[i * OutgoingMobilePackets.MobileMovingPacketLength] = 0;
 			}
 #endif
 
@@ -4553,7 +4553,7 @@ namespace Server
 
                     if (ns != null && Utility.InUpdateRange(m_Location, m.m_Location) && m.CanSee(this))
                     {
-                        ns.SendMobileMovingUsingCache(mobileMovingPackets, m, Notoriety.Compute(m, this));
+                        ns.SendMobileMovingUsingCache(mobileMovingPackets, m, this);
                     }
                 }
 

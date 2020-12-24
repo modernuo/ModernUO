@@ -4276,7 +4276,7 @@ namespace Server.Mobiles
 
                 if (t == oldType || t == newType)
                 {
-                    m.NetState.SendMobileMoving(m, Notoriety.Compute(this, m));
+                    m.NetState.SendMobileMoving(this, m);
                 }
             }
         }

@@ -24,6 +24,7 @@ namespace Server.Network
         public const int BondedStatusPacketLength = 11;
         public const int DeathAnimationPacketLength = 13;
         public const int MobileMovingPacketLength = 17;
+        public const int MobileMovingPacketCacheLength = MobileMovingPacketLength * 8 * 2; // 8 notoriety, 2 client versions
 
         public static void CreateBondedStatus(ref Span<byte> buffer, Serial serial, bool bonded)
         {
@@ -93,7 +94,11 @@ namespace Server.Network
             writer.Write((byte)noto);
         }
 
-        public static void SendMobileMoving(this NetState ns, Mobile m, int noto)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendMobileMoving(this NetState ns, Mobile source, Mobile target) =>
+            ns.SendMobileMoving(target, Notoriety.Compute(source, target));
+
+        public static void SendMobileMoving(this NetState ns, Mobile target, int noto)
         {
             if (ns == null)
             {
@@ -101,14 +106,17 @@ namespace Server.Network
             }
 
             Span<byte> span = stackalloc byte[MobileMovingPacketLength];
-            CreateMobileMoving(ref span, m, noto, ns.StygianAbyss);
+            CreateMobileMoving(ref span, target, noto, ns.StygianAbyss);
             ns.Send(span);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile source, Mobile target) =>
+            ns.SendMobileMovingUsingCache(cache, target, Notoriety.Compute(source, target));
+
         // Requires a buffer of 16 packets, 17bytes per packet (272 bytes).
         // Requires cache to have the first byte of each packet zeroed.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile m, int noto)
+        public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile target, int noto)
         {
             if (ns == null)
             {
@@ -122,7 +130,7 @@ namespace Server.Network
             // Packet not created yet
             if (buffer[0] == 0)
             {
-                CreateMobileMoving(ref buffer, m, noto, stygianAbyss);
+                CreateMobileMoving(ref buffer, target, noto, stygianAbyss);
             }
 
             ns.Send(buffer);
