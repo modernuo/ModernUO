@@ -26,8 +26,23 @@ namespace Server
     {
         private readonly Encoding m_Encoding;
         private readonly bool m_PrefixStrings;
+        private long _bytesWritten;
+        private long _index;
 
-        protected long Index { get; set; }
+        protected long Index
+        {
+            get => _index;
+            set
+            {
+                _index = value;
+
+                if (value > _bytesWritten)
+                {
+                    _bytesWritten = value;
+                }
+            }
+        }
+
         private byte[] _buffer;
 
         public BufferWriter(byte[] buffer, bool prefixStr)
@@ -37,18 +52,15 @@ namespace Server
             _buffer = buffer;
         }
 
-        public BufferWriter(bool prefixStr)
+        public BufferWriter(bool prefixStr) : this(0, prefixStr)
         {
-            m_PrefixStrings = prefixStr;
-            m_Encoding = Utility.UTF8;
-            _buffer = GC.AllocateUninitializedArray<byte>(BufferSize);
         }
 
         public BufferWriter(int count, bool prefixStr)
         {
             m_PrefixStrings = prefixStr;
             m_Encoding = Utility.UTF8;
-            _buffer = GC.AllocateUninitializedArray<byte>(count);
+            _buffer = GC.AllocateUninitializedArray<byte>(count < 1 ? BufferSize : count);
         }
 
         public virtual long Position => Index;
@@ -70,6 +82,11 @@ namespace Server
                 size = BufferSize;
             }
 
+            if (size < _buffer.Length)
+            {
+                _bytesWritten = size;
+            }
+
             Array.Resize(ref _buffer, size);
         }
 
@@ -82,15 +99,12 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool FlushIfNeeded(int amount)
+        private void FlushIfNeeded(int amount)
         {
             if (Index + amount > _buffer.Length)
             {
                 Flush();
-                return true;
             }
-
-            return false;
         }
 
         public void Write(ReadOnlySpan<byte> bytes)
@@ -113,12 +127,21 @@ namespace Server
 
         public virtual long Seek(long offset, SeekOrigin origin)
         {
-            return origin switch
+            var newIndex = Math.Max(0, origin switch
             {
-                SeekOrigin.Current => Index += offset,
-                SeekOrigin.End     => Index = _buffer.Length - offset,
-                _   => Index = offset // Begin
-            };
+                SeekOrigin.Current => Index + offset,
+                SeekOrigin.End     => _bytesWritten + offset,
+                _   => offset // Begin
+            });
+
+            Index = newIndex;
+
+            while (Index > _buffer.Length)
+            {
+                FlushIfNeeded(0);
+            }
+
+            return Index;
         }
 
         public void WriteEncodedInt(int value)
