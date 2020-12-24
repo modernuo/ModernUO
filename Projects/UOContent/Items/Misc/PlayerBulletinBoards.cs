@@ -347,7 +347,7 @@ namespace Server.Items
                 case 0:
                     {
                         Time = reader.ReadDateTime();
-                        Poster = reader.ReadMobile();
+                        Poster = reader.ReadEntity<Mobile>();
                         Message = reader.ReadString();
                         break;
                     }

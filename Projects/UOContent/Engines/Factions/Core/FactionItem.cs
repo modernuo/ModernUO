@@ -25,7 +25,7 @@ namespace Server.Factions
             {
                 case 0:
                     {
-                        Item = reader.ReadItem();
+                        Item = reader.ReadEntity<Item>();
                         Expiration = reader.ReadDateTime();
                         break;
                     }

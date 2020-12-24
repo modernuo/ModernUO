@@ -237,7 +237,7 @@ namespace Server.Mobiles
 
             var version = reader.ReadEncodedInt();
 
-            m_Caster = reader.ReadMobile();
+            m_Caster = reader.ReadEntity<Mobile>();
 
             MirrorImage.AddClone(m_Caster);
         }

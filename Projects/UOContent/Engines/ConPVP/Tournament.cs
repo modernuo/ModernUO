@@ -61,7 +61,7 @@ namespace Server.Engines.ConPVP
                     }
                 case 4:
                     {
-                        EventController = reader.ReadItem() as EventController;
+                        EventController = reader.ReadEntity<EventController>();
 
                         goto case 3;
                     }

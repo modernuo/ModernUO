@@ -54,7 +54,7 @@ namespace Server.Engines.Quests.Doom
 
             var version = reader.ReadInt();
 
-            m_Daemon = reader.ReadMobile() as BoneDemon;
+            m_Daemon = reader.ReadEntity<BoneDemon>();
 
             CheckDaemon();
         }

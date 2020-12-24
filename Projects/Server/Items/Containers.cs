@@ -65,7 +65,7 @@ namespace Server.Items
             {
                 case 0:
                     {
-                        Owner = reader.ReadMobile();
+                        Owner = reader.ReadEntity<Mobile>();
                         Opened = reader.ReadBool();
 
                         if (Owner == null)

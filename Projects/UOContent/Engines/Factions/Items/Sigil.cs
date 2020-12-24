@@ -429,7 +429,7 @@ namespace Server.Factions
                         m_Corrupted = Faction.ReadReference(reader);
                         m_Corrupting = Faction.ReadReference(reader);
 
-                        LastMonolith = reader.ReadItem() as BaseMonolith;
+                        LastMonolith = reader.ReadEntity<BaseMonolith>();
 
                         LastStolen = reader.ReadDateTime();
                         GraceStart = reader.ReadDateTime();

@@ -584,13 +584,13 @@ namespace Server.Mobiles
             {
                 case 1:
                     {
-                        House = (BaseHouse)reader.ReadItem();
+                        House = (BaseHouse)reader.ReadEntity<Item>();
 
                         goto case 0;
                     }
                 case 0:
                     {
-                        Owner = reader.ReadMobile();
+                        Owner = reader.ReadEntity<Mobile>();
 
                         Rumors = new BarkeeperRumor[reader.ReadEncodedInt()];
 

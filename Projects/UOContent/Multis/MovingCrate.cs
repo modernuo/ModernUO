@@ -40,7 +40,7 @@ namespace Server.Multis
         public override void AddNameProperties( ObjectPropertyList list )
         {
           base.AddNameProperties( list );
-    
+
           if (House != null && House.InternalizedVendors.Count > 0)
             list.Add( 1061833, House.InternalizedVendors.Count.ToString() ); // This packing crate contains ~1_COUNT~ vendors/barkeepers.
         }
@@ -248,7 +248,7 @@ namespace Server.Multis
 
             var version = reader.ReadEncodedInt();
 
-            House = reader.ReadItem() as BaseHouse;
+            House = reader.ReadEntity<BaseHouse>();
 
             if (House != null)
             {

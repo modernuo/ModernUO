@@ -120,7 +120,7 @@ namespace Server.Multis
             {
                 case 0:
                     {
-                        m_Components = reader.ReadStrongItemList();
+                        m_Components = reader.ReadEntityList<Item>();
 
                         break;
                     }

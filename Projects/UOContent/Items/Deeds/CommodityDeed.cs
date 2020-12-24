@@ -61,7 +61,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            Commodity = reader.ReadItem();
+            Commodity = reader.ReadEntity<Item>();
 
             switch (version)
             {

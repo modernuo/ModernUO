@@ -136,7 +136,7 @@ namespace Server.Items
                     }
                 case 1:
                     {
-                        Guild = reader.ReadGuild() as Guild;
+                        Guild = reader.ReadEntity<Guild>();
 
                         goto case 0;
                     }
@@ -372,7 +372,7 @@ namespace Server.Items
                         m_GuildName = reader.ReadString();
                         m_GuildAbbrev = reader.ReadString();
 
-                        Guild = reader.ReadGuild() as Guild;
+                        Guild = reader.ReadEntity<Guild>();
 
                         break;
                     }

@@ -32,13 +32,13 @@ namespace Server.Ethics
             {
                 case 0:
                     {
-                        Mobile = reader.ReadMobile();
+                        Mobile = reader.ReadEntity<Mobile>();
 
                         Power = reader.ReadEncodedInt();
                         History = reader.ReadEncodedInt();
 
-                        Steed = reader.ReadMobile();
-                        Familiar = reader.ReadMobile();
+                        Steed = reader.ReadEntity<Mobile>();
+                        Familiar = reader.ReadEntity<Mobile>();
 
                         m_Shield = reader.ReadDeltaTime();
 

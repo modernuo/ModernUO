@@ -189,8 +189,8 @@ namespace Server.Mobiles
                     }
                 case 0:
                     {
-                        m_Rider = reader.ReadMobile();
-                        InternalItem = reader.ReadItem();
+                        m_Rider = reader.ReadEntity<Mobile>();
+                        InternalItem = reader.ReadEntity<Item>();
 
                         if (InternalItem == null)
                         {
@@ -382,7 +382,7 @@ namespace Server.Mobiles
             {
                 case 0:
                     {
-                        m_Mount = reader.ReadMobile() as BaseMount;
+                        m_Mount = reader.ReadEntity<BaseMount>();
 
                         if (m_Mount == null)
                         {

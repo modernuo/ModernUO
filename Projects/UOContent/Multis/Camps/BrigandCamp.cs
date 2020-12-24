@@ -176,7 +176,7 @@ namespace Server.Multis
             {
                 case 0:
                     {
-                        m_Prisoner = reader.ReadMobile();
+                        m_Prisoner = reader.ReadEntity<Mobile>();
                         break;
                     }
             }

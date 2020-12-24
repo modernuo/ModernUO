@@ -61,7 +61,7 @@ namespace Server.Factions
                     {
                         m_Faction = Faction.ReadReference(reader);
 
-                        m_Commander = reader.ReadMobile();
+                        m_Commander = reader.ReadEntity<Mobile>();
 
                         if (version < 5)
                         {
@@ -136,7 +136,7 @@ namespace Server.Factions
 
                             for (var i = 0; i < factionTrapCount; ++i)
                             {
-                                if (reader.ReadItem() is BaseFactionTrap trap && !trap.CheckDecay())
+                                if (reader.ReadEntity<Item>() is BaseFactionTrap trap && !trap.CheckDecay())
                                 {
                                     Traps.Add(trap);
                                 }

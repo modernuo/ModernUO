@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Server.Guilds
@@ -30,19 +31,14 @@ namespace Server.Guilds
         public abstract bool Disbanded { get; }
         public abstract void Delete();
 
-        public BufferWriter SaveBuffer { get; set; }
+        public bool Deleted => Disbanded;
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
-        public int TypeRef => 0;
+        BufferWriter ISerializable.SaveBuffer { get; set; }
 
-        public void Serialize()
-        {
-            SaveBuffer ??= new BufferWriter(true);
-            SaveBuffer.Reset();
-            Serialize(SaveBuffer);
-        }
+        public int TypeRef => 0;
 
         public abstract void Serialize(IGenericWriter writer);
         public abstract void Deserialize(IGenericReader reader);

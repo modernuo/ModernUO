@@ -168,7 +168,7 @@ namespace Server.Items
                     }
                 case 4:
                     {
-                        Poisoner = reader.ReadMobile();
+                        Poisoner = reader.ReadEntity<Mobile>();
                         goto case 3;
                     }
             }

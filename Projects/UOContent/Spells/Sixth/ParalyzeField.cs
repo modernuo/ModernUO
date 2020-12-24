@@ -167,7 +167,7 @@ namespace Server.Spells.Sixth
                 {
                     case 0:
                         {
-                            m_Caster = reader.ReadMobile();
+                            m_Caster = reader.ReadEntity<Mobile>();
                             m_End = reader.ReadDeltaTime();
 
                             m_Timer = new InternalTimer(this, m_End - DateTime.UtcNow);

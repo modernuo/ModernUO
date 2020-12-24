@@ -282,7 +282,7 @@ namespace Server.Mobiles
 
                 var version = reader.ReadInt();
 
-                m_Mobiles = reader.ReadStrongMobileList();
+                m_Mobiles = reader.ReadEntityList<Mobile>();
 
                 for (var i = 0; i < m_Mobiles.Count; ++i)
                 {

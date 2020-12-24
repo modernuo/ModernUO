@@ -52,7 +52,7 @@ namespace Server.Items
             {
                 case 0:
                     {
-                        Owner = reader.ReadMobile();
+                        Owner = reader.ReadEntity<Mobile>();
                         break;
                     }
             }

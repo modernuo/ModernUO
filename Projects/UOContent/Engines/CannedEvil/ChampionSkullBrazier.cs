@@ -157,8 +157,8 @@ namespace Server.Engines.CannedEvil
                 case 0:
                     {
                         m_Type = (ChampionSkullType)reader.ReadInt();
-                        Platform = reader.ReadItem() as ChampionSkullPlatform;
-                        m_Skull = reader.ReadItem();
+                        Platform = reader.ReadEntity<ChampionSkullPlatform>();
+                        m_Skull = reader.ReadEntity<Item>();
 
                         if (Platform == null)
                         {

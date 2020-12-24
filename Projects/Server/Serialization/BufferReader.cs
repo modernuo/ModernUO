@@ -16,6 +16,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -27,12 +28,23 @@ namespace Server
     {
         private readonly Encoding _encoding;
         private byte[] _buffer;
-        public int Position { get; private set; }
+        private int _position;
+
+        public int Position => _position;
+
+        public byte[] Buffer => _buffer;
 
         public BufferReader(byte[] buffer)
         {
             _buffer = buffer;
             _encoding = Utility.UTF8;
+        }
+
+        public void SwapBuffers(byte[] newBuffer, out byte[] oldBuffer)
+        {
+            oldBuffer = _buffer;
+            _buffer = newBuffer;
+            _position = 0;
         }
 
         public string ReadString()
@@ -43,105 +55,85 @@ namespace Server
             }
 
             var length = ReadEncodedInt();
-            var s = length == 0 ? "" : _encoding.GetString(_buffer.AsSpan(Position, length));
-            Position += length;
+            if (length <= 0)
+            {
+                return "";
+            }
+
+            var s = _encoding.GetString(_buffer.AsSpan(Position, length));
+            _position += length;
             return s;
         }
 
-        public DateTime ReadDateTime() => new(ReadLong());
-
-        public DateTimeOffset ReadDateTimeOffset() => new(ReadLong(), ReadTimeSpan());
+        public DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);
 
         public TimeSpan ReadTimeSpan() => new(ReadLong());
 
-        public DateTime ReadDeltaTime()
-        {
-            var ticks = ReadLong();
-            var now = DateTime.UtcNow.Ticks;
-
-            if (ticks > 0 && ticks + now < 0)
-            {
-                return DateTime.MaxValue;
-            }
-
-            if (ticks < 0 && ticks + now < 0)
-            {
-                return DateTime.MinValue;
-            }
-
-            try
-            {
-                return new DateTime(now + ticks);
-            }
-            catch
-            {
-                return ticks > 0 ? DateTime.MaxValue : DateTime.MinValue;
-            }
-        }
+        public DateTime ReadDeltaTime() => new(ReadLong() + DateTime.UtcNow.Ticks, DateTimeKind.Utc);
 
         public decimal ReadDecimal() => new(new[] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });
 
         public long ReadLong()
         {
             var v = BinaryPrimitives.ReadInt64LittleEndian(_buffer.AsSpan(Position, 8));
-            Position += 8;
+            _position += 8;
             return v;
         }
 
         public ulong ReadULong()
         {
             var v = BinaryPrimitives.ReadUInt64LittleEndian(_buffer.AsSpan(Position, 8));
-            Position += 8;
+            _position += 8;
             return v;
         }
 
         public int ReadInt()
         {
             var v = BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(Position, 4));
-            Position += 4;
+            _position += 4;
             return v;
         }
 
         public uint ReadUInt()
         {
             var v = BinaryPrimitives.ReadUInt32LittleEndian(_buffer.AsSpan(Position, 4));
-            Position += 4;
+            _position += 4;
             return v;
         }
 
         public short ReadShort()
         {
             var v = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(Position, 2));
-            Position += 2;
+            _position += 2;
             return v;
         }
 
         public ushort ReadUShort()
         {
             var v = BinaryPrimitives.ReadUInt16LittleEndian(_buffer.AsSpan(Position, 2));
-            Position += 2;
+            _position += 2;
             return v;
         }
 
         public double ReadDouble()
         {
             var v = BinaryPrimitives.ReadDoubleLittleEndian(_buffer.AsSpan(Position, 8));
-            Position += 8;
+            _position += 8;
             return v;
         }
 
         public float ReadFloat()
         {
             var v = BinaryPrimitives.ReadSingleLittleEndian(_buffer.AsSpan(Position, 4));
-            Position += 4;
+            _position += 4;
             return v;
         }
 
-        public byte ReadByte() => _buffer[Position++];
+        public byte ReadByte() => _buffer[_position++];
 
-        public sbyte ReadSByte() => (sbyte)_buffer[Position++];
+        public sbyte ReadSByte() => (sbyte)_buffer[_position++];
 
-        public bool ReadBool() => _buffer[Position++] != 0;
+        public bool ReadBool() => _buffer[_position++] != 0;
 
         public int ReadEncodedInt()
         {
@@ -177,27 +169,20 @@ namespace Server
 
         public Map ReadMap() => Map.Maps[ReadByte()];
 
-        public IEntity ReadEntity()
+        public T ReadEntity<T>() where T : class, ISerializable
         {
             Serial serial = ReadUInt();
-            return World.FindEntity(serial) ?? new Entity(serial, new Point3D(0, 0, 0), Map.Internal);
+
+            // Special case for now:
+            if (typeof(T).IsAssignableTo(typeof(BaseGuild)))
+            {
+                return World.FindGuild(serial) as T;
+            }
+
+            return World.FindEntity(serial) as T;
         }
 
-        public Item ReadItem() => World.FindItem(ReadUInt());
-
-        public Mobile ReadMobile() => World.FindMobile(ReadUInt());
-
-        public BaseGuild ReadGuild() => World.FindGuild(ReadUInt());
-
-        public T ReadItem<T>() where T : Item => ReadItem() as T;
-
-        public T ReadMobile<T>() where T : Mobile => ReadMobile() as T;
-
-        public T ReadGuild<T>() where T : BaseGuild => ReadGuild() as T;
-
-        public List<Item> ReadStrongItemList() => ReadStrongItemList<Item>();
-
-        public List<T> ReadStrongItemList<T>() where T : Item
+        public List<T> ReadEntityList<T>() where T : class, ISerializable
         {
             var count = ReadInt();
 
@@ -205,108 +190,28 @@ namespace Server
 
             for (var i = 0; i < count; ++i)
             {
-                if (ReadItem() is T item)
+                var entity = ReadEntity<T>();
+                if (entity != null)
                 {
-                    list.Add(item);
+                    list.Add(entity);
                 }
             }
 
             return list;
         }
 
-        public HashSet<Item> ReadItemSet() => ReadItemSet<Item>();
-
-        public HashSet<T> ReadItemSet<T>() where T : Item
+        public HashSet<T> ReadEntitySet<T>() where T : class, ISerializable
         {
             var count = ReadInt();
 
-            var set = new HashSet<T>();
+            var set = new HashSet<T>(count);
 
             for (var i = 0; i < count; ++i)
             {
-                if (ReadItem() is T item)
+                var entity = ReadEntity<T>();
+                if (entity != null)
                 {
-                    set.Add(item);
-                }
-            }
-
-            return set;
-        }
-
-        public List<Mobile> ReadStrongMobileList() => ReadStrongMobileList<Mobile>();
-
-        public List<T> ReadStrongMobileList<T>() where T : Mobile
-        {
-            var count = ReadInt();
-
-            var list = new List<T>(count);
-
-            for (var i = 0; i < count; ++i)
-            {
-                if (ReadMobile() is T m)
-                {
-                    list.Add(m);
-                }
-            }
-
-            return list;
-        }
-
-        public HashSet<Mobile> ReadMobileSet() => ReadMobileSet<Mobile>();
-
-        public HashSet<T> ReadMobileSet<T>() where T : Mobile
-        {
-            var count = ReadInt();
-            var set = new HashSet<T>();
-
-            for (var i = 0; i < count; ++i)
-            {
-                if (ReadMobile() is T item)
-                {
-                    set.Add(item);
-                }
-            }
-
-            return set;
-        }
-
-        public List<BaseGuild> ReadStrongGuildList() => ReadStrongGuildList<BaseGuild>();
-
-        public List<T> ReadStrongGuildList<T>() where T : BaseGuild
-        {
-            var count = ReadInt();
-            var list = new List<T>(count);
-
-            if (count > 0)
-            {
-                for (var i = 0; i < count; ++i)
-                {
-                    if (ReadGuild() is T g)
-                    {
-                        list.Add(g);
-                    }
-                }
-            }
-
-            return list;
-        }
-
-        public HashSet<BaseGuild> ReadGuildSet() => ReadGuildSet<BaseGuild>();
-
-        public HashSet<T> ReadGuildSet<T>() where T : BaseGuild
-        {
-            var count = ReadInt();
-
-            var set = new HashSet<T>();
-
-            if (count > 0)
-            {
-                for (var i = 0; i < count; ++i)
-                {
-                    if (ReadGuild() is T item)
-                    {
-                        set.Add(item);
-                    }
+                    set.Add(entity);
                 }
             }
 
@@ -324,19 +229,31 @@ namespace Server
             }
 
             _buffer.AsSpan(Position, length).CopyTo(buffer);
-            Position += length;
+            _position += length;
             return length;
         }
 
         public virtual int Seek(int offset, SeekOrigin origin)
         {
-            return origin switch
+            Debug.Assert(
+                origin != SeekOrigin.End || offset <= 0 && offset > -_buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.End"
+            );
+            Debug.Assert(
+                origin != SeekOrigin.Begin || offset >= 0 && offset < _buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.Begin"
+            );
+            Debug.Assert(
+                origin != SeekOrigin.Current || _position + offset >= 0 && _position + offset < _buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.Current"
+            );
+
+            return _position = Math.Max(0, origin switch
             {
-                SeekOrigin.Begin   => Position = offset,
-                SeekOrigin.Current => Position += offset,
-                SeekOrigin.End     => Position = _buffer.Length - offset,
-                _                  => Position
-            };
+                SeekOrigin.Current => _position + offset,
+                SeekOrigin.End     => _buffer.Length + offset,
+                _                  => offset // Begin
+            });
         }
     }
 }

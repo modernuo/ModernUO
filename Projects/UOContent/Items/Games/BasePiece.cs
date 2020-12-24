@@ -32,7 +32,7 @@ namespace Server.Items
             {
                 case 0:
                     {
-                        Board = (BaseBoard)reader.ReadItem();
+                        Board = (BaseBoard)reader.ReadEntity<Item>();
 
                         if (Board == null || Parent == null)
                         {

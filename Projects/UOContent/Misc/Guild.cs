@@ -105,10 +105,10 @@ namespace Server.Guilds
                 case 0:
                     {
                         Name = reader.ReadString();
-                        m_Leader = reader.ReadGuild() as Guild;
+                        m_Leader = reader.ReadEntity<Guild>();
 
-                        m_Members = reader.ReadStrongGuildList<Guild>();
-                        m_PendingMembers = reader.ReadStrongGuildList<Guild>();
+                        m_Members = reader.ReadEntityList<Guild>();
+                        m_PendingMembers = reader.ReadEntityList<Guild>();
 
                         break;
                     }
@@ -160,25 +160,9 @@ namespace Server.Guilds
             }
         }
 
-        public bool IsPendingMember(Guild g)
-        {
-            if (g.Alliance != this)
-            {
-                return false;
-            }
+        public bool IsPendingMember(Guild g) => g.Alliance == this && m_PendingMembers.Contains(g);
 
-            return m_PendingMembers.Contains(g);
-        }
-
-        public bool IsMember(Guild g)
-        {
-            if (g.Alliance != this)
-            {
-                return false;
-            }
-
-            return m_Members.Contains(g);
-        }
+        public bool IsMember(Guild g) => g.Alliance == this && m_Members.Contains(g);
 
         public void Serialize(IGenericWriter writer)
         {
@@ -187,8 +171,11 @@ namespace Server.Guilds
             writer.Write(Name);
             writer.Write(m_Leader);
 
-            writer.WriteGuildList(m_Members, true);
-            writer.WriteGuildList(m_PendingMembers, true);
+            Guild.Tidy(m_Members);
+            writer.Write(m_Members);
+
+            Guild.Tidy(m_PendingMembers);
+            writer.Write(m_PendingMembers);
 
             Alliances.TryAdd(Name.ToLower(), this);
         }
@@ -459,8 +446,8 @@ namespace Server.Guilds
                         WarLength = reader.ReadTimeSpan();
                         WarBeginning = reader.ReadDateTime();
 
-                        Guild = reader.ReadGuild() as Guild;
-                        Opponent = reader.ReadGuild() as Guild;
+                        Guild = reader.ReadEntity<Guild>();
+                        Opponent = reader.ReadEntity<Guild>();
 
                         WarRequester = reader.ReadBool();
 
@@ -1150,6 +1137,20 @@ namespace Server.Guilds
             return guild.FindActiveWar(otherGuild) != null;
         }
 
+        public static void Tidy(List<Guild> list)
+        {
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                var entry = list[i];
+                if (entry?.Disbanded != false)
+                {
+                    list.RemoveAt(i);
+                }
+            }
+
+            list.TrimExcess();
+        }
+
         public override void Serialize(IGenericWriter writer)
         {
             if (LastFealty + TimeSpan.FromDays(1.0) < DateTime.UtcNow)
@@ -1191,8 +1192,10 @@ namespace Server.Guilds
 
             //
 
-            writer.WriteGuildList(AllyDeclarations, true);
-            writer.WriteGuildList(AllyInvitations, true);
+            Tidy(AllyDeclarations);
+            writer.Write(AllyDeclarations);
+            Tidy(AllyInvitations);
+            writer.Write(AllyInvitations);
 
             writer.Write(TypeLastChange);
 
@@ -1204,14 +1207,21 @@ namespace Server.Guilds
             writer.Write(m_Name);
             writer.Write(m_Abbreviation);
 
-            writer.WriteGuildList(Allies, true);
-            writer.WriteGuildList(Enemies, true);
-            writer.WriteGuildList(WarDeclarations, true);
-            writer.WriteGuildList(WarInvitations, true);
+            Tidy(Allies);
+            writer.Write(Allies);
+            Tidy(Enemies);
+            writer.Write(Enemies);
+            Tidy(WarDeclarations);
+            writer.Write(WarDeclarations);
+            Tidy(WarInvitations);
+            writer.Write(WarInvitations);
 
-            writer.Write(Members, true);
-            writer.Write(Candidates, true);
-            writer.Write(Accepted, true);
+            Members.Tidy();
+            writer.Write(Members);
+            Candidates.Tidy();
+            writer.Write(Candidates);
+            Accepted.Tidy();
+            writer.Write(Accepted);
 
             writer.Write(Guildstone);
             writer.Write(Teleporter);
@@ -1256,15 +1266,15 @@ namespace Server.Guilds
                         }
                         else
                         {
-                            m_AllianceLeader = reader.ReadGuild() as Guild;
+                            m_AllianceLeader = reader.ReadEntity<Guild>();;
                         }
 
                         goto case 4;
                     }
                 case 4:
                     {
-                        AllyDeclarations = reader.ReadStrongGuildList<Guild>();
-                        AllyInvitations = reader.ReadStrongGuildList<Guild>();
+                        AllyDeclarations = reader.ReadEntityList<Guild>();
+                        AllyInvitations = reader.ReadEntityList<Guild>();
 
                         goto case 3;
                     }
@@ -1288,7 +1298,7 @@ namespace Server.Guilds
                     }
                 case 0:
                     {
-                        m_Leader = reader.ReadMobile();
+                        m_Leader = reader.ReadEntity<Mobile>();
 
                         if (m_Leader is PlayerMobile mobile)
                         {
@@ -1298,17 +1308,17 @@ namespace Server.Guilds
                         m_Name = reader.ReadString();
                         m_Abbreviation = reader.ReadString();
 
-                        Allies = reader.ReadStrongGuildList<Guild>();
-                        Enemies = reader.ReadStrongGuildList<Guild>();
-                        WarDeclarations = reader.ReadStrongGuildList<Guild>();
-                        WarInvitations = reader.ReadStrongGuildList<Guild>();
+                        Allies = reader.ReadEntityList<Guild>();
+                        Enemies = reader.ReadEntityList<Guild>();
+                        WarDeclarations = reader.ReadEntityList<Guild>();
+                        WarInvitations = reader.ReadEntityList<Guild>();
 
-                        Members = reader.ReadStrongMobileList();
-                        Candidates = reader.ReadStrongMobileList();
-                        Accepted = reader.ReadStrongMobileList();
+                        Members = reader.ReadEntityList<Mobile>();
+                        Candidates = reader.ReadEntityList<Mobile>();
+                        Accepted = reader.ReadEntityList<Mobile>();
 
-                        Guildstone = reader.ReadItem();
-                        Teleporter = reader.ReadItem();
+                        Guildstone = reader.ReadEntity<Item>();
+                        Teleporter = reader.ReadEntity<Item>();
 
                         Charter = reader.ReadString();
                         Website = reader.ReadString();

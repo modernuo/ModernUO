@@ -162,7 +162,7 @@ namespace Server.Items
                 case 0:
                     {
                         m_Exceptional = reader.ReadBool();
-                        m_Crafter = reader.ReadMobile();
+                        m_Crafter = reader.ReadEntity<Mobile>();
 
                         if (version < 1)
                         {

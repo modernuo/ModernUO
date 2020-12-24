@@ -245,7 +245,7 @@ namespace Server.Items
 
                         m_Source = ReadEntity(reader);
                         m_Target = ReadEntity(reader);
-                        Sequence = reader.ReadItem() as EffectController;
+                        Sequence = reader.ReadEntity<EffectController>();
 
                         FixedDirection = reader.ReadBool();
                         Explodes = reader.ReadBool();

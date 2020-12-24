@@ -171,7 +171,7 @@ namespace Server.Items
             writer.WriteEncodedInt(0); // version
 
             writer.WriteEncodedInt(m_Charges);
-            writer.WriteItemList(Receivers);
+            writer.Write(Receivers);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -181,7 +181,7 @@ namespace Server.Items
             var version = reader.ReadEncodedInt();
 
             m_Charges = reader.ReadEncodedInt();
-            Receivers = reader.ReadStrongItemList<ReceiverCrystal>();
+            Receivers = reader.ReadEntityList<ReceiverCrystal>();
         }
 
         private class InternalTarget : Target
@@ -394,7 +394,7 @@ namespace Server.Items
 
             writer.WriteEncodedInt(0); // version
 
-            writer.WriteItem(m_Sender);
+            writer.Write(m_Sender);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -403,7 +403,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            m_Sender = reader.ReadItem<BroadcastCrystal>();
+            m_Sender = reader.ReadEntity<BroadcastCrystal>();
         }
 
         private class InternalTarget : Target

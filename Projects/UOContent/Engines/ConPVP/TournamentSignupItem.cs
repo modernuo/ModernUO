@@ -187,8 +187,8 @@ namespace Server.Engines.ConPVP
             {
                 case 0:
                     {
-                        Tournament = reader.ReadItem() as TournamentController;
-                        Registrar = reader.ReadMobile();
+                        Tournament = reader.ReadEntity<TournamentController>();
+                        Registrar = reader.ReadEntity<Mobile>();
                         break;
                     }
             }

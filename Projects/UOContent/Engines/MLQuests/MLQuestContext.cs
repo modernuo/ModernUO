@@ -31,7 +31,7 @@ namespace Server.Engines.MLQuests
 
         public MLQuestContext(IGenericReader reader, int version)
         {
-            Owner = reader.ReadMobile<PlayerMobile>();
+            Owner = reader.ReadEntity<PlayerMobile>();
             QuestInstances = new List<MLQuestInstance>();
             m_DoneQuests = new List<MLDoneQuestInfo>();
             ChainOffers = new List<MLQuest>();
@@ -234,7 +234,7 @@ namespace Server.Engines.MLQuests
         {
             // Version info is written in MLQuestPersistence.Serialize
 
-            writer.WriteMobile(Owner);
+            writer.Write(Owner);
             writer.Write(QuestInstances.Count);
 
             foreach (var instance in QuestInstances)

@@ -429,7 +429,7 @@ namespace Server.Engines.Quests.Haven
         {
             var version = reader.ReadEncodedInt();
 
-            CorpseWithBone = (Container)reader.ReadItem();
+            CorpseWithBone = (Container)reader.ReadEntity<Item>();
         }
 
         public override void ChildSerialize(IGenericWriter writer)

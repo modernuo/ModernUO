@@ -795,19 +795,12 @@ namespace Server
             AddNameProperties(list);
         }
 
-        public BufferWriter SaveBuffer { get; set; }
+        BufferWriter ISerializable.SaveBuffer { get; set; }
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
         public int TypeRef { get; }
-
-        public void Serialize()
-        {
-            SaveBuffer ??= new BufferWriter(true);
-            SaveBuffer.Reset();
-            Serialize(SaveBuffer);
-        }
 
         public virtual void Serialize(IGenericWriter writer)
         {
@@ -1039,19 +1032,12 @@ namespace Server
 
             if (GetSaveFlag(flags, SaveFlag.Parent))
             {
-                if (m_Parent?.Deleted == false)
-                {
-                    writer.Write(m_Parent.Serial);
-                }
-                else
-                {
-                    writer.Write(Serial.MinusOne);
-                }
+                writer.Write(m_Parent);
             }
 
             if (GetSaveFlag(flags, SaveFlag.Items))
             {
-                writer.Write(items, false);
+                writer.Write(items);
             }
 
             if (GetSaveFlag(flags, SaveFlag.IntWeight))
@@ -2710,7 +2696,7 @@ namespace Server
 
                         if (GetSaveFlag(flags, SaveFlag.Items))
                         {
-                            var items = reader.ReadStrongItemList();
+                            var items = reader.ReadEntityList<Item>();
 
                             if (this is Container)
                             {
@@ -2768,17 +2754,17 @@ namespace Server
                         if (GetSaveFlag(flags, SaveFlag.InsuredFor))
                             /*m_InsuredFor = */
                         {
-                            reader.ReadMobile();
+                            reader.ReadEntity<Mobile>();
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.BlessedFor))
                         {
-                            AcquireCompactInfo().m_BlessedFor = reader.ReadMobile();
+                            AcquireCompactInfo().m_BlessedFor = reader.ReadEntity<Mobile>();
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.HeldBy))
                         {
-                            AcquireCompactInfo().m_HeldBy = reader.ReadMobile();
+                            AcquireCompactInfo().m_HeldBy = reader.ReadEntity<Mobile>();
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.SavedFlags))
@@ -2871,7 +2857,7 @@ namespace Server
 
                         if (GetSaveFlag(flags, SaveFlag.Items))
                         {
-                            var items = reader.ReadStrongItemList();
+                            var items = reader.ReadEntityList<Item>();
 
                             if (this is Container cont)
                             {
@@ -2994,7 +2980,7 @@ namespace Server
 
                             for (var i = 0; i < count; ++i)
                             {
-                                var item = reader.ReadItem();
+                                var item = reader.ReadEntity<Item>();
 
                                 if (item != null)
                                 {

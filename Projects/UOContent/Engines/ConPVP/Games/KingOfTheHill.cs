@@ -354,7 +354,7 @@ namespace Server.Engines.ConPVP
             {
                 case 0:
                     {
-                        m_Controller = reader.ReadItem() as KHController;
+                        m_Controller = reader.ReadEntity<KHController>();
                         break;
                     }
             }
@@ -814,7 +814,8 @@ namespace Server.Engines.ConPVP
             writer.WriteEncodedInt(m_ScoreInterval);
             writer.Write(Duration);
 
-            writer.WriteItemList(Boards, true);
+            Boards.Tidy();
+            writer.Write(Boards);
 
             writer.WriteEncodedInt(Hills.Length);
             for (var i = 0; i < Hills.Length; ++i)
@@ -843,12 +844,12 @@ namespace Server.Engines.ConPVP
 
                         Duration = reader.ReadTimeSpan();
 
-                        Boards = reader.ReadStrongItemList<KHBoard>();
+                        Boards = reader.ReadEntityList<KHBoard>();
 
                         Hills = new HillOfTheKing[reader.ReadEncodedInt()];
                         for (var i = 0; i < Hills.Length; ++i)
                         {
-                            Hills[i] = reader.ReadItem() as HillOfTheKing;
+                            Hills[i] = reader.ReadEntity<HillOfTheKing>();
                         }
 
                         TeamInfo = new KHTeamInfo[reader.ReadEncodedInt()];

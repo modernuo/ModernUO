@@ -38,7 +38,7 @@ namespace Server.Engines.ConPVP
             {
                 case 1:
                     {
-                        Ladder = reader.ReadItem<LadderController>();
+                        Ladder = reader.ReadEntity<LadderController>();
                         break;
                     }
             }

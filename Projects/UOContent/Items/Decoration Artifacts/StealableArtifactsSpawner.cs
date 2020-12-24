@@ -296,7 +296,7 @@ namespace Server.Items
 
             for (var i = 0; i < length; i++)
             {
-                var item = reader.ReadItem();
+                var item = reader.ReadEntity<Item>();
                 var nextRespawn = reader.ReadDeltaTime();
 
                 if (i < m_Artifacts.Length)

@@ -150,7 +150,7 @@ namespace Server.Engines.Quests.Necro
 
             var version = reader.ReadInt();
 
-            m_Necromancer = reader.ReadMobile() as PlayerMobile;
+            m_Necromancer = reader.ReadEntity<PlayerMobile>();
             m_ToDelete = reader.ReadBool();
 
             if (m_ToDelete)

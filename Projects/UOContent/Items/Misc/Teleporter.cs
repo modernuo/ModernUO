@@ -930,7 +930,7 @@ namespace Server.Items
 
             for (var i = 0; i < count; ++i)
             {
-                var m = reader.ReadMobile();
+                var m = reader.ReadEntity<Mobile>();
                 var end = reader.ReadDateTime();
 
                 StartTimer(m, end - DateTime.UtcNow);
@@ -973,7 +973,7 @@ namespace Server.Items
 
             writer.Write(0); // version
 
-            writer.WriteItem(Teleporter);
+            writer.Write(Teleporter);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -982,7 +982,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            Teleporter = reader.ReadItem<TimeoutTeleporter>();
+            Teleporter = reader.ReadEntity<TimeoutTeleporter>();
         }
     }
 

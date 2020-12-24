@@ -309,7 +309,7 @@ namespace Server.Mobiles
 
             var version = reader.ReadEncodedInt();
 
-            OpenedBy = reader.ReadMobile();
+            OpenedBy = reader.ReadEntity<Mobile>();
 
             if (reader.ReadBool())
             {

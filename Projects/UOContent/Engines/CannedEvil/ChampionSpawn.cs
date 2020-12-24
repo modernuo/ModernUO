@@ -1169,7 +1169,7 @@ namespace Server.Engines.CannedEvil
             }
 
             writer.Write(ConfinedRoaming);
-            writer.WriteItem(m_Idol);
+            writer.Write(m_Idol);
             writer.Write(HasBeenAdvanced);
             writer.Write(m_SpawnArea);
 
@@ -1180,11 +1180,14 @@ namespace Server.Engines.CannedEvil
 
             writer.Write(m_Active);
             writer.Write((int)m_Type);
-            writer.Write(m_Creatures, true);
-            writer.Write(m_RedSkulls, true);
-            writer.Write(m_WhiteSkulls, true);
-            writer.WriteItem(m_Platform);
-            writer.WriteItem(m_Altar);
+            m_Creatures.Tidy();
+            writer.Write(m_Creatures);
+            m_RedSkulls.Tidy();
+            writer.Write(m_RedSkulls);
+            m_WhiteSkulls.Tidy();
+            writer.Write(m_WhiteSkulls);
+            writer.Write(m_Platform);
+            writer.Write(m_Altar);
             writer.Write(ExpireDelay);
             writer.WriteDeltaTime(ExpireTime);
             writer.Write(Champion);
@@ -1218,7 +1221,7 @@ namespace Server.Engines.CannedEvil
                         var entries = reader.ReadInt();
                         for (var i = 0; i < entries; ++i)
                         {
-                            var m = reader.ReadMobile();
+                            var m = reader.ReadEntity<Mobile>();
                             var damage = reader.ReadInt();
 
                             if (m == null)
@@ -1234,7 +1237,7 @@ namespace Server.Engines.CannedEvil
                 case 4:
                     {
                         ConfinedRoaming = reader.ReadBool();
-                        m_Idol = reader.ReadItem<IdolOfTheChampion>();
+                        m_Idol = reader.ReadEntity<IdolOfTheChampion>();
                         HasBeenAdvanced = reader.ReadBool();
 
                         goto case 3;
@@ -1277,14 +1280,14 @@ namespace Server.Engines.CannedEvil
 
                         var active = reader.ReadBool();
                         m_Type = (ChampionSpawnType)reader.ReadInt();
-                        m_Creatures = reader.ReadStrongMobileList();
-                        m_RedSkulls = reader.ReadStrongItemList();
-                        m_WhiteSkulls = reader.ReadStrongItemList();
-                        m_Platform = reader.ReadItem<ChampionPlatform>();
-                        m_Altar = reader.ReadItem<ChampionAltar>();
+                        m_Creatures = reader.ReadEntityList<Mobile>();
+                        m_RedSkulls = reader.ReadEntityList<Item>();
+                        m_WhiteSkulls = reader.ReadEntityList<Item>();
+                        m_Platform = reader.ReadEntity<ChampionPlatform>();
+                        m_Altar = reader.ReadEntity<ChampionAltar>();
                         ExpireDelay = reader.ReadTimeSpan();
                         ExpireTime = reader.ReadDeltaTime();
-                        Champion = reader.ReadMobile();
+                        Champion = reader.ReadEntity<Mobile>();
                         RestartDelay = reader.ReadTimeSpan();
 
                         if (reader.ReadBool())
@@ -1384,7 +1387,7 @@ namespace Server.Engines.CannedEvil
             {
                 case 0:
                     {
-                        Spawn = reader.ReadItem() as ChampionSpawn;
+                        Spawn = reader.ReadEntity<ChampionSpawn>();
 
                         if (Spawn == null)
                         {

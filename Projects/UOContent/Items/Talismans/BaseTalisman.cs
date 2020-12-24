@@ -909,7 +909,7 @@ namespace Server.Items
                         // Backward compatibility
                         if (GetSaveFlag(flags, SaveFlag.Owner))
                         {
-                            BlessedFor = reader.ReadMobile();
+                            BlessedFor = reader.ReadEntity<Mobile>();
                         }
 
                         m_Protection = GetSaveFlag(flags, SaveFlag.Protection)

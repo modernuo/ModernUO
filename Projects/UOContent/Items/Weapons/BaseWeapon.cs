@@ -3906,7 +3906,7 @@ namespace Server.Items
 
                         if (GetSaveFlag(flags, SaveFlag.Crafter))
                         {
-                            m_Crafter = reader.ReadMobile();
+                            m_Crafter = reader.ReadEntity<Mobile>();
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.Identified))
@@ -4165,7 +4165,7 @@ namespace Server.Items
                         m_DurabilityLevel = (WeaponDurabilityLevel)reader.ReadInt();
                         m_Quality = (WeaponQuality)reader.ReadInt();
 
-                        m_Crafter = reader.ReadMobile();
+                        m_Crafter = reader.ReadEntity<Mobile>();
 
                         m_Poison = Poison.Deserialize(reader);
                         m_PoisonCharges = reader.ReadInt();

@@ -66,7 +66,7 @@ namespace Server.Engines.Doom
         {
             base.Deserialize(reader);
             var version = reader.ReadInt();
-            m_Controller = reader.ReadItem() as LeverPuzzleController;
+            m_Controller = reader.ReadEntity<LeverPuzzleController>();
         }
     }
 
@@ -104,7 +104,7 @@ namespace Server.Engines.Doom
         {
             base.Deserialize(reader);
             var version = reader.ReadInt();
-            m_Controller = reader.ReadItem() as LeverPuzzleController;
+            m_Controller = reader.ReadEntity<LeverPuzzleController>();
         }
     }
 
@@ -162,7 +162,7 @@ namespace Server.Engines.Doom
             base.Deserialize(reader);
             var version = reader.ReadInt();
             Code = reader.ReadUShort();
-            m_Controller = reader.ReadItem() as LeverPuzzleController;
+            m_Controller = reader.ReadEntity<LeverPuzzleController>();
         }
     }
 
