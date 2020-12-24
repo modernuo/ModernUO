@@ -3211,9 +3211,9 @@ namespace Server
                             }
                         }
 
-                        if (sendMoving || !ourState.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
+                        if (sendMoving || !state.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
                         {
-                            ourState.SendMobileMovingUsingCache(mobileMovingPackets, m, Notoriety.Compute(beholder, m));
+                            state.SendMobileMovingUsingCache(mobileMovingPackets, m, Notoriety.Compute(beholder, m));
                         }
 
                         if (state.StygianAbyss)

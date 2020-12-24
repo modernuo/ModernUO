@@ -110,6 +110,11 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile m, int noto)
         {
+            if (ns == null)
+            {
+                return;
+            }
+
             var stygianAbyss = ns.StygianAbyss;
             var startIndex = (noto * 2 + (stygianAbyss ? 1 : 0)) * MobileMovingPacketLength;
             var buffer = cache.Slice(startIndex, MobileMovingPacketLength);
