@@ -95,7 +95,11 @@ namespace Server
                 _bytesWritten = size;
             }
 
-            Array.Resize(ref _buffer, size);
+            var newBuffer = GC.AllocateUninitializedArray<byte>(size);
+            _buffer.AsSpan(0, Math.Min(size, _buffer.Length)).CopyTo(newBuffer);
+            _buffer = newBuffer;
+
+            // Array.Resize(ref _buffer, size);
         }
 
         public virtual void Flush()

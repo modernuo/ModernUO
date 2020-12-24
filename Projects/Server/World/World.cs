@@ -142,7 +142,7 @@ namespace Server
         {
             if (WorldState != WorldState.Saving)
             {
-                Console.WriteLine("Attempting to queue {0} for decay but the world is not saving", item);
+                WriteConsoleLine($"Attempting to queue {item} for decay but the world is not saving");
                 return;
             }
 
@@ -191,22 +191,20 @@ namespace Server
 
                 if (t?.IsAbstract != false)
                 {
-                    Console.WriteLine("failed");
+                    WriteConsoleLine("failed");
 
-                    Console.WriteLine(
-                        "Error: Type '{0}' was {1}. Delete all of those types? (y/n)",
-                        typeName,
-                        t?.IsAbstract == true ? "marked abstract" : "not found"
-                    );
+                    var issue = t?.IsAbstract == true ? "marked abstract" : "not found";
+
+                    WriteConsoleLine($"Error: Type '{typeName}' was {issue}. Delete all of those types? (y/n)");
 
                     if (Console.ReadKey(true).Key == ConsoleKey.Y)
                     {
                         types.Add(null);
-                        Console.Write("World: Loading...");
+                        WriteConsole("Loading...");
                         continue;
                     }
 
-                    Console.WriteLine("Types will not be deleted. An exception will be thrown.");
+                    WriteConsoleLine("Types will not be deleted. An exception will be thrown.");
 
                     throw new Exception($"Bad type '{typeName}'");
                 }
@@ -353,12 +351,12 @@ namespace Server
 
                 if (br.Position != end)
                 {
-                    Console.WriteLine($"***** Bad deserialize on {t.GetType()} *****");
-                    Console.WriteLine(
+                    WriteConsoleLine($"***** Bad deserialize on {t.GetType()} *****");
+                    WriteConsoleLine(
                         $"Serialized object was {entry.Length} bytes, but {br.Position - entry.Position} bytes deserialized"
                     );
 
-                    Console.WriteLine("Delete the object and continue? (y/n)");
+                    WriteConsoleLine("Delete the object and continue? (y/n)");
 
                     if (Console.ReadKey(true).Key != ConsoleKey.Y)
                     {
@@ -380,8 +378,7 @@ namespace Server
 
             WorldState = WorldState.Loading;
 
-            Console.Write("World: Loading...");
-
+            WriteConsole("Loading...");
             var watch = Stopwatch.StartNew();
 
             List<EntityIndex<Item>> items;
@@ -426,19 +423,21 @@ namespace Server
 
             watch.Stop();
 
-            Console.WriteLine(
-                "done ({1} items, {2} mobiles) ({0:F2} seconds)",
-                watch.Elapsed.TotalSeconds,
-                Items.Count,
-                Mobiles.Count
-            );
+            WriteConsoleLine($"done ({watch.Elapsed.TotalSeconds} items, {Items.Count} mobiles) ({Mobiles.Count:F2} seconds)");
 
             // Async save buffers
             ThreadPool.QueueUserWorkItem(state =>
                 {
+                    WriteConsole("Creating save buffers...");
+                    var watch = Stopwatch.StartNew();
+
                     SaveBuffers(mobileIndexInfo, mobiles);
                     SaveBuffers(itemIndexInfo, items);
                     SaveBuffers(guildIndexInfo, guilds);
+
+                    watch.Stop();
+                    WriteConsoleLine($"done ({watch.Elapsed.TotalSeconds}");
+
                     WorldState = WorldState.Running;
                 }
             );
@@ -467,7 +466,7 @@ namespace Server
             var message =
                 $"Warning: Attempted to {action} {entity} during world save.{Environment.NewLine}This action could cause inconsistent state.{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
 
-            Console.WriteLine(message);
+            WriteConsoleLine(message);
 
             try
             {
@@ -506,7 +505,7 @@ namespace Server
 
             m_DiskWriteHandle.Set();
 
-            Console.WriteLine("World: Writing snapshot took {0:F1} seconds.", watch.Elapsed.TotalSeconds);
+            WriteConsoleLine($"Writing snapshot took {watch.Elapsed.TotalSeconds:F1} seconds.");
 
             Timer.DelayCall(FinishWorldSave);
         }
@@ -596,7 +595,7 @@ namespace Server
 
             var now = DateTime.UtcNow;
 
-            Console.Write("[{0}] World: Saving...", now.ToLongTimeString());
+            WriteConsole("Saving...");
 
             var watch = Stopwatch.StartNew();
 
@@ -620,13 +619,14 @@ namespace Server
             watch.Stop();
 
             var duration = watch.Elapsed.TotalSeconds;
+            var saveMessage = $"World Save completed in {duration:F2} seconds.";
 
-            Console.WriteLine("Save done in {0:F2} seconds.", duration);
+            WriteConsoleLine(saveMessage);
 
             // Only broadcast if it took at least 150ms
             if (duration >= 0.15)
             {
-                Broadcast(0x35, true, $"World save completed in {duration:F2} seconds.");
+                Broadcast(0x35, true, saveMessage);
             }
 
             NetState.Resume();
@@ -704,7 +704,7 @@ namespace Server
                         if (_pendingDelete.Remove(entity.Serial))
                         {
                             Utility.PushColor(ConsoleColor.Red);
-                            Console.WriteLine($"Deleted then added {typeof(T).Name} during {WorldState.ToString().ToLower()} state.");
+                            WriteConsoleLine($"Deleted then added {typeof(T).Name} during {WorldState.ToString().ToLower()} state.");
                             Utility.PopColor();
                         }
                         _pendingAdd[entity.Serial] = entity;
@@ -775,6 +775,18 @@ namespace Server
 
             // Resize to exact buffer size
             entity.SaveBuffer.Resize((int)entity.SaveBuffer.Position);
+        }
+
+        private static void WriteConsole(string message)
+        {
+            var now = DateTime.UtcNow;
+            Console.Write("[{0} {1}] World: {2}", now.ToLongDateString(), now.ToLongTimeString(), message);
+        }
+
+        private static void WriteConsoleLine(string message)
+        {
+            var now = DateTime.UtcNow;
+            Console.WriteLine("[{0} {1}] World: {2}", now.ToLongDateString(), now.ToLongTimeString(), message);
         }
     }
 }

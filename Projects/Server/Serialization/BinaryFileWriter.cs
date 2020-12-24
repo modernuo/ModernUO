@@ -36,7 +36,7 @@ namespace Server
         public override long Position => _position + Index;
 
 
-        protected override int BufferSize => 0x1000000; // 1MB
+        protected override int BufferSize => 81920;
 
         public override void Flush()
         {
