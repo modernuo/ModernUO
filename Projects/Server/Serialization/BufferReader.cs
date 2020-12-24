@@ -16,6 +16,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -26,13 +27,24 @@ namespace Server
     public class BufferReader : IGenericReader
     {
         private readonly Encoding _encoding;
-        private readonly byte[] _buffer;
-        public int Position { get; private set; }
+        private byte[] _buffer;
+        private int _position;
+
+        public int Position => _position;
+
+        public byte[] Buffer => _buffer;
 
         public BufferReader(byte[] buffer)
         {
             _buffer = buffer;
             _encoding = Utility.UTF8;
+        }
+
+        public void SwapBuffers(byte[] newBuffer, out byte[] oldBuffer)
+        {
+            oldBuffer = _buffer;
+            _buffer = newBuffer;
+            _position = 0;
         }
 
         public string ReadString()
@@ -49,7 +61,7 @@ namespace Server
             }
 
             var s = _encoding.GetString(_buffer.AsSpan(Position, length));
-            Position += length;
+            _position += length;
             return s;
         }
 
@@ -64,64 +76,64 @@ namespace Server
         public long ReadLong()
         {
             var v = BinaryPrimitives.ReadInt64LittleEndian(_buffer.AsSpan(Position, 8));
-            Position += 8;
+            _position += 8;
             return v;
         }
 
         public ulong ReadULong()
         {
             var v = BinaryPrimitives.ReadUInt64LittleEndian(_buffer.AsSpan(Position, 8));
-            Position += 8;
+            _position += 8;
             return v;
         }
 
         public int ReadInt()
         {
             var v = BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(Position, 4));
-            Position += 4;
+            _position += 4;
             return v;
         }
 
         public uint ReadUInt()
         {
             var v = BinaryPrimitives.ReadUInt32LittleEndian(_buffer.AsSpan(Position, 4));
-            Position += 4;
+            _position += 4;
             return v;
         }
 
         public short ReadShort()
         {
             var v = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(Position, 2));
-            Position += 2;
+            _position += 2;
             return v;
         }
 
         public ushort ReadUShort()
         {
             var v = BinaryPrimitives.ReadUInt16LittleEndian(_buffer.AsSpan(Position, 2));
-            Position += 2;
+            _position += 2;
             return v;
         }
 
         public double ReadDouble()
         {
             var v = BinaryPrimitives.ReadDoubleLittleEndian(_buffer.AsSpan(Position, 8));
-            Position += 8;
+            _position += 8;
             return v;
         }
 
         public float ReadFloat()
         {
             var v = BinaryPrimitives.ReadSingleLittleEndian(_buffer.AsSpan(Position, 4));
-            Position += 4;
+            _position += 4;
             return v;
         }
 
-        public byte ReadByte() => _buffer[Position++];
+        public byte ReadByte() => _buffer[_position++];
 
-        public sbyte ReadSByte() => (sbyte)_buffer[Position++];
+        public sbyte ReadSByte() => (sbyte)_buffer[_position++];
 
-        public bool ReadBool() => _buffer[Position++] != 0;
+        public bool ReadBool() => _buffer[_position++] != 0;
 
         public int ReadEncodedInt()
         {
@@ -217,18 +229,31 @@ namespace Server
             }
 
             _buffer.AsSpan(Position, length).CopyTo(buffer);
-            Position += length;
+            _position += length;
             return length;
         }
 
         public virtual int Seek(int offset, SeekOrigin origin)
         {
-            return origin switch
+            Debug.Assert(
+                origin != SeekOrigin.End || offset <= 0 && offset > -_buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.End"
+            );
+            Debug.Assert(
+                origin != SeekOrigin.Begin || offset >= 0 && offset < _buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.Begin"
+            );
+            Debug.Assert(
+                origin != SeekOrigin.Current || _position + offset >= 0 && _position + offset < _buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.Current"
+            );
+
+            return _position = Math.Max(0, origin switch
             {
-                SeekOrigin.Current => Position += offset,
-                SeekOrigin.End     => Position = _buffer.Length - offset,
-                _                  => Position = offset // Begin
-            };
+                SeekOrigin.Current => _position + offset,
+                SeekOrigin.End     => _buffer.Length + offset,
+                _                  => offset // Begin
+            });
         }
     }
 }

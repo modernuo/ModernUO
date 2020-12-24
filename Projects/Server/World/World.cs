@@ -31,7 +31,6 @@ namespace Server
     {
         Initial,
         Loading,
-        WritingLoadBuffers,
         Running,
         Saving,
         WritingSave
@@ -288,35 +287,6 @@ namespace Server
             return map;
         }
 
-        private static void SaveBuffers<I, T>(IIndexInfo<I> indexInfo, List<EntityIndex<T>> entities) where T : class, ISerializable
-        {
-            var indexType = indexInfo.TypeName;
-
-            string dataPath = Path.Combine("Saves", indexType, $"{indexType}.bin");
-
-            if (!File.Exists(dataPath))
-            {
-                return;
-            }
-
-            using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            BinaryReader reader = new BinaryReader(bin);
-
-            foreach (var entry in entities)
-            {
-                T e = entry.Entity;
-
-                if (e == null || e is IEntity entity && entity.Deleted)
-                {
-                    continue;
-                }
-
-                byte[] saveBuffer = GC.AllocateUninitializedArray<byte>(entry.Length);
-                reader.Read(saveBuffer, 0, entry.Length);
-                e.InitializeSaveBuffer(saveBuffer);
-            }
-        }
-
         private static void LoadData<I, T>(IIndexInfo<I> indexInfo, List<EntityIndex<T>> entities) where T : class, ISerializable
         {
             var indexType = indexInfo.TypeName;
@@ -329,11 +299,8 @@ namespace Server
             }
 
             using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var buffer = bin.Length <= int.MaxValue ? GC.AllocateUninitializedArray<byte>((int)bin.Length) : new byte[bin.Length];
-            bin.Read(buffer);
-            bin.Close();
 
-            var br = new BufferReader(buffer);
+            BufferReader br = null;
 
             foreach (var entry in entities)
             {
@@ -342,18 +309,29 @@ namespace Server
                 // Skip this entry
                 if (t == null)
                 {
-                    br.Seek(entry.Length, SeekOrigin.Current);
+                    bin.Seek(entry.Length, SeekOrigin.Current);
                     continue;
                 }
 
-                t.Deserialize(br);
-                var end = entry.Position + entry.Length;
+                var buffer = GC.AllocateUninitializedArray<byte>(entry.Length);
+                if (br == null)
+                {
+                    br = new BufferReader(buffer);
+                }
+                else
+                {
+                    br.SwapBuffers(buffer, out _);
+                }
 
-                if (br.Position != end)
+                bin.Read(buffer.AsSpan());
+
+                t.Deserialize(br);
+
+                if (br.Position != entry.Length)
                 {
                     WriteConsoleLine($"***** Bad deserialize on {t.GetType()} *****");
                     WriteConsoleLine(
-                        $"Serialized object was {entry.Length} bytes, but {br.Position - entry.Position} bytes deserialized"
+                        $"Serialized object was {entry.Length} bytes, but {br.Position} bytes deserialized"
                     );
 
                     WriteConsoleLine("Delete the object and continue? (y/n)");
@@ -363,8 +341,10 @@ namespace Server
                         throw new Exception("Deserialization failed.");
                     }
                     t.Delete();
-
-                    br.Seek((int)end, SeekOrigin.Begin);
+                }
+                else
+                {
+                    t.InitializeSaveBuffer(buffer);
                 }
             }
         }
@@ -399,8 +379,6 @@ namespace Server
 
             EventSink.InvokeWorldLoad();
 
-            WorldState = WorldState.WritingLoadBuffers;
-
             ProcessSafetyQueues();
 
             foreach (var item in Items.Values)
@@ -423,24 +401,15 @@ namespace Server
 
             watch.Stop();
 
-            WriteConsoleLine($"done ({watch.Elapsed.TotalSeconds} items, {Items.Count} mobiles) ({Mobiles.Count:F2} seconds)");
-
-            // Async save buffers
-            ThreadPool.QueueUserWorkItem(state =>
-                {
-                    WriteConsole("Creating save buffers...");
-                    var watch = Stopwatch.StartNew();
-
-                    SaveBuffers(mobileIndexInfo, mobiles);
-                    SaveBuffers(itemIndexInfo, items);
-                    SaveBuffers(guildIndexInfo, guilds);
-
-                    watch.Stop();
-                    WriteConsoleLine($"done ({watch.Elapsed.TotalSeconds}");
-
-                    WorldState = WorldState.Running;
-                }
+            Console.WriteLine(
+                "done ({1} items, {2} mobiles) ({0:F2} seconds)",
+                watch.Elapsed.TotalSeconds,
+                Items.Count,
+                Mobiles.Count
             );
+
+
+            WorldState = WorldState.Running;
         }
 
         private static void ProcessSafetyQueues()
@@ -492,6 +461,7 @@ namespace Server
         public static void WriteFiles(object state)
         {
             var watch = Stopwatch.StartNew();
+            WriteConsole("Writing snapshot...");
 
             IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
             IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
@@ -505,7 +475,7 @@ namespace Server
 
             m_DiskWriteHandle.Set();
 
-            WriteConsoleLine($"Writing snapshot took {watch.Elapsed.TotalSeconds:F1} seconds.");
+            Console.WriteLine("done ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
 
             Timer.DelayCall(FinishWorldSave);
         }
@@ -614,20 +584,18 @@ namespace Server
 
             WorldState = WorldState.WritingSave;
 
-            ThreadPool.QueueUserWorkItem(WriteFiles);
-
             watch.Stop();
 
             var duration = watch.Elapsed.TotalSeconds;
-            var saveMessage = $"World Save completed in {duration:F2} seconds.";
-
-            WriteConsoleLine(saveMessage);
+            Console.WriteLine("done ({0:F2} seconds)", duration);
 
             // Only broadcast if it took at least 150ms
             if (duration >= 0.15)
             {
-                Broadcast(0x35, true, saveMessage);
+                Broadcast(0x35, true, $"World Save completed in {duration:F2} seconds.");
             }
+
+            ThreadPool.QueueUserWorkItem(WriteFiles);
 
             NetState.Resume();
         }
@@ -656,7 +624,6 @@ namespace Server
 
                         goto case WorldState.Running;
                     }
-                case WorldState.WritingLoadBuffers:
                 case WorldState.Running:
                     {
                         if (serial.IsItem)
@@ -710,7 +677,6 @@ namespace Server
                         _pendingAdd[entity.Serial] = entity;
                         break;
                     }
-                case WorldState.WritingLoadBuffers:
                 case WorldState.Running:
                     {
                         if (entity.Serial.IsItem)
@@ -749,7 +715,6 @@ namespace Server
                         _pendingDelete[entity.Serial] = entity;
                         break;
                     }
-                case WorldState.WritingLoadBuffers:
                 case WorldState.Running:
                     {
                         if (entity.Serial.IsItem)
@@ -780,13 +745,13 @@ namespace Server
         private static void WriteConsole(string message)
         {
             var now = DateTime.UtcNow;
-            Console.Write("[{0} {1}] World: {2}", now.ToLongDateString(), now.ToLongTimeString(), message);
+            Console.Write("[{0} {1}] World: {2}", now.ToShortDateString(), now.ToLongTimeString(), message);
         }
 
         private static void WriteConsoleLine(string message)
         {
             var now = DateTime.UtcNow;
-            Console.WriteLine("[{0} {1}] World: {2}", now.ToLongDateString(), now.ToLongTimeString(), message);
+            Console.WriteLine("[{0} {1}] World: {2}", now.ToShortDateString(), now.ToLongTimeString(), message);
         }
     }
 }
