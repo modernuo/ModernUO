@@ -25,6 +25,9 @@ namespace Server.Network
         public const int DeathAnimationPacketLength = 13;
         public const int MobileMovingPacketLength = 17;
         public const int MobileMovingPacketCacheLength = MobileMovingPacketLength * 8 * 2; // 8 notoriety, 2 client versions
+        public const int AttributeMaximum = 25;
+        public const int MobileAttributePacketLength = 9;
+        public const int MobileAttributesPacketLength = 17;
 
         public static void CreateBondedStatus(ref Span<byte> buffer, Serial serial, bool bonded)
         {
@@ -134,6 +137,119 @@ namespace Server.Network
             }
 
             ns.Send(buffer);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void WriteAttribute(this SpanWriter writer, int cur, int max, bool normalize = false, bool reverse = false)
+        {
+            if (normalize && max != 0)
+            {
+                if (reverse)
+                {
+                    writer.Write((short)(cur * AttributeMaximum / max));
+                    writer.Write((short)AttributeMaximum);
+                }
+                else
+                {
+                    writer.Write((short)AttributeMaximum);
+                    writer.Write((short)(cur * AttributeMaximum / max));
+                }
+            }
+            else
+            {
+                if (reverse)
+                {
+                    writer.Write((short)cur);
+                    writer.Write((short)max);
+                }
+                else
+                {
+                    writer.Write((short)max);
+                    writer.Write((short)cur);
+                }
+            }
+        }
+
+        public static void SendMobileHits(this NetState ns, Mobile m, bool normalize = false)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> span = stackalloc byte[MobileAttributePacketLength];
+            CreateMobileHits(ref span, m, normalize);
+            ns.Send(span);
+        }
+
+        public static void CreateMobileHits(ref Span<byte> buffer, Mobile m, bool normalize = false)
+        {
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0xA1); // Packet ID
+            writer.Write(m.Serial);
+            writer.WriteAttribute(m.HitsMax, m.Hits, normalize);
+        }
+
+        public static void SendMobileMana(this NetState ns, Mobile m, bool normalize = false)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> span = stackalloc byte[MobileAttributePacketLength];
+            CreateMobileMana(ref span, m, normalize);
+            ns.Send(span);
+        }
+
+        public static void CreateMobileMana(ref Span<byte> buffer, Mobile m, bool normalize = false)
+        {
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0xA2); // Packet ID
+            writer.Write(m.Serial);
+            writer.WriteAttribute(m.ManaMax, m.Mana, normalize);
+        }
+
+        public static void SendMobileStam(this NetState ns, Mobile m, bool normalize = false)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> span = stackalloc byte[MobileAttributePacketLength];
+            CreateMobileStam(ref span, m, normalize);
+            ns.Send(span);
+        }
+
+        public static void CreateMobileStam(ref Span<byte> buffer, Mobile m, bool normalize = false)
+        {
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0xA3); // Packet ID
+            writer.Write(m.Serial);
+            writer.WriteAttribute(m.StamMax, m.Stam, normalize);
+        }
+
+        public static void SendMobileAttributes(this NetState ns, Mobile m, bool normalize = false)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> span = stackalloc byte[MobileAttributesPacketLength];
+            CreateMobileAttributes(ref span, m, normalize);
+            ns.Send(span);
+        }
+
+        public static void CreateMobileAttributes(ref Span<byte> buffer, Mobile m, bool normalize = false)
+        {
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0x2D); // Packet ID
+            writer.Write(m.Serial);
+            writer.WriteAttribute(m.HitsMax, m.Hits, normalize);
+            writer.WriteAttribute(m.ManaMax, m.Mana, normalize);
+            writer.WriteAttribute(m.StamMax, m.Stam, normalize);
         }
     }
 }

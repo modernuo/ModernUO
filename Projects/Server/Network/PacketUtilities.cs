@@ -43,6 +43,7 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void InitializePackets(this Span<byte> buffer, int chunkLength)
         {
+#if NO_LOCAL_INIT
             var index = 0;
 
             while (index < buffer.Length)
@@ -50,6 +51,7 @@ namespace Server.Network
                 buffer[index] = 0;
                 index += chunkLength;
             }
+#endif
         }
     }
 }

@@ -626,16 +626,13 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var data = new MobileHits(m).Compile();
+            var expected = new MobileHits(m).Compile();
 
-            Span<byte> expectedData = stackalloc byte[9];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileHits(m);
 
-            expectedData.Write(ref pos, (byte)0xA1); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.WriteAttribute(ref pos, m.Hits, m.HitsMax, false);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -644,16 +641,13 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var data = new MobileHitsN(m).Compile();
+            var expected = new MobileHitsN(m).Compile();
 
-            Span<byte> expectedData = stackalloc byte[9];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileHits(m, true);
 
-            expectedData.Write(ref pos, (byte)0xA1); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.WriteAttribute(ref pos, m.Hits, m.HitsMax, true);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -662,16 +656,13 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var data = new MobileMana(m).Compile();
+            var expected = new MobileMana(m).Compile();
 
-            Span<byte> expectedData = stackalloc byte[9];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileMana(m);
 
-            expectedData.Write(ref pos, (byte)0xA2); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.WriteAttribute(ref pos, m.Mana, m.ManaMax, false);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -680,16 +671,13 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var data = new MobileManaN(m).Compile();
+            var expected = new MobileManaN(m).Compile();
 
-            Span<byte> expectedData = stackalloc byte[9];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileMana(m, true);
 
-            expectedData.Write(ref pos, (byte)0xA2); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.WriteAttribute(ref pos, m.Mana, m.ManaMax, true);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -698,16 +686,13 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var data = new MobileStam(m).Compile();
+            var expected = new MobileStam(m).Compile();
 
-            Span<byte> expectedData = stackalloc byte[9];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileStam(m);
 
-            expectedData.Write(ref pos, (byte)0xA3); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.WriteAttribute(ref pos, m.Stam, m.StamMax, false);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -716,16 +701,13 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var data = new MobileStamN(m).Compile();
+            var expected = new MobileStamN(m).Compile();
 
-            Span<byte> expectedData = stackalloc byte[9];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileStam(m, true);
 
-            expectedData.Write(ref pos, (byte)0xA3); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.WriteAttribute(ref pos, m.Stam, m.StamMax, true);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -734,18 +716,13 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var data = new MobileAttributes(m).Compile();
+            var expected = new MobileAttributes(m).Compile();
 
-            Span<byte> expectedData = stackalloc byte[17];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileAttributes(m);
 
-            expectedData.Write(ref pos, (byte)0x2D); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.WriteAttribute(ref pos, m.Hits, m.HitsMax, false);
-            expectedData.WriteAttribute(ref pos, m.Mana, m.ManaMax, false);
-            expectedData.WriteAttribute(ref pos, m.Stam, m.StamMax, false);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -754,18 +731,13 @@ namespace Server.Tests.Network
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var data = new MobileAttributesN(m).Compile();
+            var expected = new MobileAttributesN(m).Compile();
 
-            Span<byte> expectedData = stackalloc byte[17];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileAttributes(m, true);
 
-            expectedData.Write(ref pos, (byte)0x2D); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.WriteAttribute(ref pos, m.Hits, m.HitsMax, true);
-            expectedData.WriteAttribute(ref pos, m.Mana, m.ManaMax, true);
-            expectedData.WriteAttribute(ref pos, m.Stam, m.StamMax, true);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 }

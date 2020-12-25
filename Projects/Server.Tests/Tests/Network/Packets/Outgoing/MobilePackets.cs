@@ -49,4 +49,90 @@ namespace Server.Tests.Network
             Stream.Write((byte)noto);
         }
     }
+
+    public sealed class MobileHits : Packet
+    {
+        public MobileHits(Mobile m) : base(0xA1, 9)
+        {
+            Stream.Write(m.Serial);
+            Stream.Write((short)m.HitsMax);
+            Stream.Write((short)m.Hits);
+        }
+    }
+
+    public sealed class MobileHitsN : Packet
+    {
+        public MobileHitsN(Mobile m) : base(0xA1, 9)
+        {
+            Stream.Write(m.Serial);
+            AttributeNormalizer.Write(Stream, m.Hits, m.HitsMax);
+        }
+    }
+
+    public sealed class MobileMana : Packet
+    {
+        public MobileMana(Mobile m) : base(0xA2, 9)
+        {
+            Stream.Write(m.Serial);
+            Stream.Write((short)m.ManaMax);
+            Stream.Write((short)m.Mana);
+        }
+    }
+
+    public sealed class MobileManaN : Packet
+    {
+        public MobileManaN(Mobile m) : base(0xA2, 9)
+        {
+            Stream.Write(m.Serial);
+            AttributeNormalizer.Write(Stream, m.Mana, m.ManaMax);
+        }
+    }
+
+    public sealed class MobileStam : Packet
+    {
+        public MobileStam(Mobile m) : base(0xA3, 9)
+        {
+            Stream.Write(m.Serial);
+            Stream.Write((short)m.StamMax);
+            Stream.Write((short)m.Stam);
+        }
+    }
+
+    public sealed class MobileStamN : Packet
+    {
+        public MobileStamN(Mobile m) : base(0xA3, 9)
+        {
+            Stream.Write(m.Serial);
+            AttributeNormalizer.Write(Stream, m.Stam, m.StamMax);
+        }
+    }
+
+    public sealed class MobileAttributes : Packet
+    {
+        public MobileAttributes(Mobile m) : base(0x2D, 17)
+        {
+            Stream.Write(m.Serial);
+
+            Stream.Write((short)m.HitsMax);
+            Stream.Write((short)m.Hits);
+
+            Stream.Write((short)m.ManaMax);
+            Stream.Write((short)m.Mana);
+
+            Stream.Write((short)m.StamMax);
+            Stream.Write((short)m.Stam);
+        }
+    }
+
+    public sealed class MobileAttributesN : Packet
+    {
+        public MobileAttributesN(Mobile m) : base(0x2D, 17)
+        {
+            Stream.Write(m.Serial);
+
+            AttributeNormalizer.Write(Stream, m.Hits, m.HitsMax);
+            AttributeNormalizer.Write(Stream, m.Mana, m.ManaMax);
+            AttributeNormalizer.Write(Stream, m.Stam, m.StamMax);
+        }
+    }
 }
