@@ -625,6 +625,8 @@ namespace Server.Tests.Network
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
+            m.Str = 100;
+            m.Hits = 100;
 
             var expected = new MobileHits(m).Compile();
 
@@ -640,6 +642,8 @@ namespace Server.Tests.Network
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
+            m.Str = 100;
+            m.Hits = 100;
 
             var expected = new MobileHitsN(m).Compile();
 
@@ -655,6 +659,8 @@ namespace Server.Tests.Network
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
+            m.Int = 75;
+            m.Mana = 100;
 
             var expected = new MobileMana(m).Compile();
 
@@ -670,6 +676,8 @@ namespace Server.Tests.Network
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
+            m.Int = 75;
+            m.Mana = 100;
 
             var expected = new MobileManaN(m).Compile();
 
@@ -685,6 +693,8 @@ namespace Server.Tests.Network
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
+            m.Dex = 75;
+            m.Stam = 100;
 
             var expected = new MobileStam(m).Compile();
 
@@ -700,6 +710,8 @@ namespace Server.Tests.Network
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
+            m.Dex = 75;
+            m.Stam = 100;
 
             var expected = new MobileStamN(m).Compile();
 
@@ -715,6 +727,12 @@ namespace Server.Tests.Network
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
+            m.Str = 50;
+            m.Hits = 100;
+            m.Int = 75;
+            m.Mana = 100;
+            m.Dex = 25;
+            m.Stam = 100;
 
             var expected = new MobileAttributes(m).Compile();
 
@@ -730,6 +748,12 @@ namespace Server.Tests.Network
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
+            m.Str = 50;
+            m.Hits = 100;
+            m.Int = 75;
+            m.Mana = 100;
+            m.Dex = 25;
+            m.Stam = 100;
 
             var expected = new MobileAttributesN(m).Compile();
 

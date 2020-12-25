@@ -140,7 +140,7 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WriteAttribute(this SpanWriter writer, int max, int cur, bool normalize = false, bool reverse = false)
+        private static void WriteAttribute(this ref SpanWriter writer, int max, int cur, bool normalize = false, bool reverse = false)
         {
             if (normalize && max != 0)
             {
@@ -247,6 +247,7 @@ namespace Server.Network
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x2D); // Packet ID
             writer.Write(m.Serial);
+
             writer.WriteAttribute(m.HitsMax, m.Hits, normalize);
             writer.WriteAttribute(m.ManaMax, m.Mana, normalize);
             writer.WriteAttribute(m.StamMax, m.Stam, normalize);
