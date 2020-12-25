@@ -235,7 +235,7 @@ namespace Server
                         index += perLine;
                     }
 
-                    span = span.Slice(lineLength);
+                    span = span.Slice(newLineLength - lineLength);
                 }
             }
 
