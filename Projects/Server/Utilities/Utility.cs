@@ -1438,6 +1438,7 @@ namespace Server
             return string.Join(lineSeparator, parts);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Tidy<T>(this List<T> list) where T : ISerializable
         {
             for (int i = list.Count - 1; i >= 0; i--)
@@ -1452,6 +1453,7 @@ namespace Server
             list.TrimExcess();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Tidy<T>(this HashSet<T> set) where T : ISerializable
         {
             set.RemoveWhere(entry => entry?.Deleted != false);

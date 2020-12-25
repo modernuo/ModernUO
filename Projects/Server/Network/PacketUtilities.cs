@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -37,6 +38,18 @@ namespace Server.Network
             writer.Seek(1, SeekOrigin.Begin);
             writer.Write((ushort)length);
             writer.Seek(length, SeekOrigin.Begin);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InitializePackets(this Span<byte> buffer, int chunkLength)
+        {
+            var index = 0;
+
+            while (index < buffer.Length)
+            {
+                buffer[index] = 0;
+                index += chunkLength;
+            }
         }
     }
 }

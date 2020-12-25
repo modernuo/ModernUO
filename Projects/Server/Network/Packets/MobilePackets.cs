@@ -17,41 +17,6 @@ using System.Threading;
 
 namespace Server.Network
 {
-    public sealed class DeathAnimation : Packet
-    {
-        public DeathAnimation(Serial killed, Serial corpse) : base(0xAF, 13)
-        {
-            Stream.Write(killed);
-            Stream.Write(corpse);
-            Stream.Write(0);
-        }
-    }
-
-    public sealed class MobileMoving : Packet
-    {
-        public MobileMoving(Mobile m, int noto, bool stygianAbyss) : base(0x77, 17)
-        {
-            var loc = m.Location;
-
-            var hue = m.Hue;
-
-            if (m.SolidHueOverride >= 0)
-            {
-                hue = m.SolidHueOverride;
-            }
-
-            Stream.Write(m.Serial);
-            Stream.Write((short)m.Body);
-            Stream.Write((short)loc.m_X);
-            Stream.Write((short)loc.m_Y);
-            Stream.Write((sbyte)loc.m_Z);
-            Stream.Write((byte)m.Direction);
-            Stream.Write((short)hue);
-            Stream.Write((byte)m.GetPacketFlags(stygianAbyss));
-            Stream.Write((byte)noto);
-        }
-    }
-
     public sealed class MobileHits : Packet
     {
         public MobileHits(Mobile m) : base(0xA1, 9)

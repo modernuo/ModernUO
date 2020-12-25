@@ -15,6 +15,7 @@
 
 using System;
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace Server.Network
 {
@@ -22,6 +23,8 @@ namespace Server.Network
     {
         public const int BondedStatusPacketLength = 11;
         public const int DeathAnimationPacketLength = 13;
+        public const int MobileMovingPacketLength = 17;
+        public const int MobileMovingPacketCacheLength = MobileMovingPacketLength * 8 * 2; // 8 notoriety, 2 client versions
 
         public static void CreateBondedStatus(ref Span<byte> buffer, Serial serial, bool bonded)
         {
@@ -71,6 +74,66 @@ namespace Server.Network
             Span<byte> span = stackalloc byte[DeathAnimationPacketLength];
             CreateDeathAnimation(ref span, killed, corpse);
             ns.Send(span);
+        }
+
+        public static void CreateMobileMoving(ref Span<byte> buffer, Mobile m, int noto, bool stygianAbyss)
+        {
+            var loc = m.Location;
+            var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
+
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0x77); // Packet ID
+            writer.Write(m.Serial);
+            writer.Write((short)m.Body);
+            writer.Write((short)loc.m_X);
+            writer.Write((short)loc.m_Y);
+            writer.Write((sbyte)loc.m_Z);
+            writer.Write((byte)m.Direction);
+            writer.Write((short)hue);
+            writer.Write((byte)m.GetPacketFlags(stygianAbyss));
+            writer.Write((byte)noto);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendMobileMoving(this NetState ns, Mobile source, Mobile target) =>
+            ns.SendMobileMoving(target, Notoriety.Compute(source, target));
+
+        public static void SendMobileMoving(this NetState ns, Mobile target, int noto)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> span = stackalloc byte[MobileMovingPacketLength];
+            CreateMobileMoving(ref span, target, noto, ns.StygianAbyss);
+            ns.Send(span);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile source, Mobile target) =>
+            ns.SendMobileMovingUsingCache(cache, target, Notoriety.Compute(source, target));
+
+        // Requires a buffer of 16 packets, 17bytes per packet (272 bytes).
+        // Requires cache to have the first byte of each packet zeroed.
+        public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile target, int noto)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            var stygianAbyss = ns.StygianAbyss;
+            var startIndex = (noto * 2 + (stygianAbyss ? 1 : 0)) * MobileMovingPacketLength;
+            var buffer = cache.Slice(startIndex, MobileMovingPacketLength);
+
+            // Packet not created yet
+            if (buffer[0] == 0)
+            {
+                CreateMobileMoving(ref buffer, target, noto, stygianAbyss);
+            }
+
+            ns.Send(buffer);
         }
     }
 }

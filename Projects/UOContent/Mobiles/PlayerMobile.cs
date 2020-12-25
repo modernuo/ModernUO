@@ -4276,9 +4276,7 @@ namespace Server.Mobiles
 
                 if (t == oldType || t == newType)
                 {
-                    var ns = NetState;
-
-                    ns?.Send(new MobileMoving(m, Notoriety.Compute(this, m), ns.StygianAbyss));
+                    m.NetState.SendMobileMoving(this, m);
                 }
             }
         }
