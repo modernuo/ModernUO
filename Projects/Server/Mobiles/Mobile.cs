@@ -622,7 +622,7 @@ namespace Server
         [CommandProperty(AccessLevel.GameMaster)]
         public Race Race
         {
-            get => m_Race ?? (m_Race = Race.DefaultRace);
+            get => m_Race ??= Race.DefaultRace;
             set
             {
                 var oldRace = Race;
@@ -2100,7 +2100,6 @@ namespace Server
                     if (Hits < HitsMax)
                     {
                         m_HitsTimer ??= new HitsTimer(this);
-
                         m_HitsTimer.Start();
                     }
                     else if (Hits > HitsMax)
@@ -2290,7 +2289,6 @@ namespace Server
                     if (CanRegenHits)
                     {
                         m_HitsTimer ??= new HitsTimer(this);
-
                         m_HitsTimer.Start();
                     }
                     else
@@ -6624,7 +6622,6 @@ namespace Server
                 if (CanRegenHits)
                 {
                     m_HitsTimer ??= new HitsTimer(this);
-
                     m_HitsTimer.Start();
                 }
                 else
@@ -9467,6 +9464,12 @@ namespace Server
                 {
                     m_Owner.Hits++;
                 }
+
+                Console.WriteLine(
+                    "Regen Rate for {0} is {1}",
+                    m_Owner.Name ?? m_Owner.GetType().Name,
+                    GetHitsRegenRate(m_Owner)
+                );
 
                 Delay = Interval = GetHitsRegenRate(m_Owner);
             }

@@ -2,7 +2,7 @@ namespace Server.Network
 {
     public static class AttributeNormalizer
     {
-        public static int Maximum { get; set; } = 25;
+        public static int Maximum { get; set; } = 100;
 
         public static bool Enabled { get; set; } = true;
 

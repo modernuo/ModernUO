@@ -25,7 +25,7 @@ namespace Server.Network
         public const int DeathAnimationPacketLength = 13;
         public const int MobileMovingPacketLength = 17;
         public const int MobileMovingPacketCacheLength = MobileMovingPacketLength * 8 * 2; // 8 notoriety, 2 client versions
-        public const int AttributeMaximum = 25;
+        public const int AttributeMaximum = 100;
         public const int MobileAttributePacketLength = 9;
         public const int MobileAttributesPacketLength = 17;
 
@@ -140,7 +140,7 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WriteAttribute(this SpanWriter writer, int cur, int max, bool normalize = false, bool reverse = false)
+        private static void WriteAttribute(this SpanWriter writer, int max, int cur, bool normalize = false, bool reverse = false)
         {
             if (normalize && max != 0)
             {
