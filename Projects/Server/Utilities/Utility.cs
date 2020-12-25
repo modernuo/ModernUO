@@ -1458,17 +1458,5 @@ namespace Server
         {
             set.RemoveWhere(entry => entry?.Deleted != false);
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InitializeChunks(this Span<byte> buffer, int chunkLength)
-        {
-            var index = 0;
-
-            while (index < buffer.Length)
-            {
-                buffer[index] = 0;
-                index += chunkLength;
-            }
-        }
     }
 }

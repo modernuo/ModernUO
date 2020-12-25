@@ -3050,7 +3050,7 @@ namespace Server
             }
 
             Span<byte> mobileMovingPackets = stackalloc byte[OutgoingMobilePackets.MobileMovingPacketCacheLength];
-            mobileMovingPackets.InitializeChunks(OutgoingMobilePackets.MobileMovingPacketLength);
+            mobileMovingPackets.InitializePackets(OutgoingMobilePackets.MobileMovingPacketLength);
 
             var ourState = m.m_NetState;
 
@@ -4531,7 +4531,7 @@ namespace Server
                 eable.Free();
 
                 Span<byte> mobileMovingPackets = stackalloc byte[OutgoingMobilePackets.MobileMovingPacketCacheLength];
-                mobileMovingPackets.InitializeChunks(OutgoingMobilePackets.MobileMovingPacketLength);
+                mobileMovingPackets.InitializePackets(OutgoingMobilePackets.MobileMovingPacketLength);
 
                 foreach (var m in m_MoveClientList)
                 {
