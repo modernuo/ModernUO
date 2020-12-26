@@ -43,8 +43,7 @@ namespace Server.Network
 
             Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedLength(args)];
             var length = CreateMessageLocalized(
-                ref buffer,
-                serial, graphic, type, hue, font, number, name, args
+                buffer, serial, graphic, type, hue, font, number, name, args
             );
 
             ns.Send(buffer.Slice(0, length));
@@ -53,7 +52,7 @@ namespace Server.Network
         public static int GetMaxMessageLocalizedLength(string args) => 50 + (args?.Length ?? 0) * 2;
 
         public static int CreateMessageLocalized(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             Serial serial, int graphic, MessageType type, int hue, int font, int number, string name = "", string args = ""
         )
         {
@@ -95,8 +94,7 @@ namespace Server.Network
 
             Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedAffixLength(affix, args)];
             var length = CreateMessageLocalizedAffix(
-                ref buffer,
-                serial, graphic, type, hue, font, number, name, affixType, affix, args
+                buffer, serial, graphic, type, hue, font, number, name, affixType, affix, args
             );
 
             ns.Send(buffer.Slice(0, length));
@@ -106,7 +104,7 @@ namespace Server.Network
             52 + (affix?.Length ?? 0) + (args?.Length ?? 0) * 2;
 
         public static int CreateMessageLocalizedAffix(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             Serial serial, int graphic, MessageType type, int hue, int font, int number, string name,
             AffixType affixType, string affix = "", string args = ""
         )
@@ -152,7 +150,7 @@ namespace Server.Network
 
             Span<byte> buffer = stackalloc byte[GetMaxMessageLength(text)];
             var length = CreateMessage(
-                ref buffer,
+                buffer,
                 serial,
                 graphic,
                 type,
@@ -171,7 +169,7 @@ namespace Server.Network
         public static int GetMaxMessageLength(string text) => 50 + (text?.Length ?? 0) * 2;
 
         public static int CreateMessage(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             Serial serial,
             int graphic,
             MessageType type,

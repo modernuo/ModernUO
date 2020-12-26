@@ -3844,8 +3844,8 @@ namespace Server.Mobiles
             IsDeadPet = false;
 
             Span<byte> buffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
-            OutgoingMobilePackets.CreateBondedStatus(ref buffer, Serial, false);
-            Effects.SendPacket(Location, Map, ref buffer);
+            OutgoingMobilePackets.CreateBondedStatus(buffer, Serial, false);
+            Effects.SendPacket(Location, Map, buffer);
 
             SendIncomingPacket();
             SendIncomingPacket();

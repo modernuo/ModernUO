@@ -29,7 +29,7 @@ namespace Server.Network
         public const int MobileAttributePacketLength = 9;
         public const int MobileAttributesPacketLength = 17;
 
-        public static void CreateBondedStatus(ref Span<byte> buffer, Serial serial, bool bonded)
+        public static void CreateBondedStatus(Span<byte> buffer, Serial serial, bool bonded)
         {
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xBF); // Packet ID
@@ -58,7 +58,7 @@ namespace Server.Network
             ns.Send(ref buffer, writer.Position);
         }
 
-        public static void CreateDeathAnimation(ref Span<byte> buffer, Serial killed, Serial corpse)
+        public static void CreateDeathAnimation(Span<byte> buffer, Serial killed, Serial corpse)
         {
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xAF); // Packet ID
@@ -75,11 +75,11 @@ namespace Server.Network
             }
 
             Span<byte> span = stackalloc byte[DeathAnimationPacketLength];
-            CreateDeathAnimation(ref span, killed, corpse);
+            CreateDeathAnimation(span, killed, corpse);
             ns.Send(span);
         }
 
-        public static void CreateMobileMoving(ref Span<byte> buffer, Mobile m, int noto, bool stygianAbyss)
+        public static void CreateMobileMoving(Span<byte> buffer, Mobile m, int noto, bool stygianAbyss)
         {
             var loc = m.Location;
             var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
@@ -109,7 +109,7 @@ namespace Server.Network
             }
 
             Span<byte> span = stackalloc byte[MobileMovingPacketLength];
-            CreateMobileMoving(ref span, target, noto, ns.StygianAbyss);
+            CreateMobileMoving(span, target, noto, ns.StygianAbyss);
             ns.Send(span);
         }
 
@@ -133,7 +133,7 @@ namespace Server.Network
             // Packet not created yet
             if (buffer[0] == 0)
             {
-                CreateMobileMoving(ref buffer, target, noto, stygianAbyss);
+                CreateMobileMoving(buffer, target, noto, stygianAbyss);
             }
 
             ns.Send(buffer);

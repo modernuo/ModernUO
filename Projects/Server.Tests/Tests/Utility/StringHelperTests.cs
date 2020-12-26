@@ -43,6 +43,8 @@ namespace Server.Tests
 
         [Theory]
         [InlineData("this is a sentence that will probably wrap around a few times because it is long", 10, 6)]
+        [InlineData("An Unnamed House", 10, 6)]
+        [InlineData("Batville", 10, 6)]
         public void TestWrap(string sentence, int perLine, int maxLines)
         {
             var expected = OldWrap(sentence, perLine, maxLines);

@@ -40,6 +40,16 @@ namespace Server.Network
             writer.Seek(length, SeekOrigin.Begin);
         }
 
+        // If LOCAL INIT is off, then stack/heap allocations have garbage data
+        // Initializes the first byte (Packet ID) so it can be used as a flag.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InitializePacket(this Span<byte> buffer)
+        {
+#if NO_LOCAL_INIT
+            buffer[0] = 0;
+#endif
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void InitializePackets(this Span<byte> buffer, int chunkLength)
         {

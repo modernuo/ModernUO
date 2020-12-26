@@ -2827,20 +2827,7 @@ namespace Server.Mobiles
         private static void SendToStaffMessage(Mobile from, string text)
         {
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
-            var length = OutgoingMessagePackets.CreateMessage(
-                ref buffer,
-                from.Serial,
-                from.Body,
-                MessageType.Regular,
-                from.SpeechHue,
-                3,
-                false,
-                from.Language,
-                from.Name,
-                text
-            );
-
-            buffer = buffer.Slice(0, length); // Adjust to the actual size
+            buffer.InitializePacket();
 
             foreach (var ns in from.GetClientsInRange(8))
             {
@@ -2848,6 +2835,24 @@ namespace Server.Mobiles
 
                 if (mob?.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel)
                 {
+                    if (buffer[0] == 0)
+                    {
+                        var length = OutgoingMessagePackets.CreateMessage(
+                            buffer,
+                            from.Serial,
+                            from.Body,
+                            MessageType.Regular,
+                            from.SpeechHue,
+                            3,
+                            false,
+                            from.Language,
+                            from.Name,
+                            text
+                        );
+
+                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                    }
+
                     ns.Send(buffer);
                 }
             }

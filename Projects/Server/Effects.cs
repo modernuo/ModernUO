@@ -73,13 +73,19 @@ namespace Server
             if (map != null)
             {
                 Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
-                OutgoingEffectPackets.CreateSoundEffect(ref buffer, soundID, p);
+                buffer.InitializePacket();
 
                 var eable = map.GetClientsInRange(new Point3D(p));
 
                 foreach (var state in eable)
                 {
                     state.Mobile.ProcessDelta();
+
+                    if (buffer[0] == 0)
+                    {
+                        OutgoingEffectPackets.CreateSoundEffect(buffer, soundID, p);
+                    }
+
                     state.Send(buffer);
                 }
 
@@ -99,18 +105,14 @@ namespace Server
             e.ProcessDelta();
 
             Span<byte> preEffect = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
-            OutgoingEffectPackets.CreateTargetParticleEffect(
-                ref preEffect,
-                e, 0, 10, 5, 0, 0, 5031, 3, 0
-            );
-
+            preEffect.InitializePacket();
             Span<byte> boltEffect = stackalloc byte[OutgoingEffectPackets.BoltEffectLength];
-            OutgoingEffectPackets.CreateBoltEffect(ref boltEffect, e, hue);
+            boltEffect.InitializePacket();
 
             Span<byte> soundEffect = sound ? stackalloc byte[OutgoingEffectPackets.SoundPacketLength] : null;
             if (sound)
             {
-                OutgoingEffectPackets.CreateSoundEffect(ref soundEffect, 0x29, e);
+                soundEffect.InitializePacket();
             }
 
             var eable = map.GetClientsInRange(e.Location);
@@ -121,13 +123,31 @@ namespace Server
                 {
                     if (SendParticlesTo(state))
                     {
+                        if (preEffect[0] == 0)
+                        {
+                            OutgoingEffectPackets.CreateTargetParticleEffect(
+                                preEffect,
+                                e, 0, 10, 5, 0, 0, 5031, 3, 0
+                            );
+                        }
+
                         state.Send(preEffect);
+                    }
+
+                    if (boltEffect[0] == 0)
+                    {
+                        OutgoingEffectPackets.CreateBoltEffect(boltEffect, e, hue);
                     }
 
                     state.Send(boltEffect);
 
                     if (sound)
                     {
+                        if (soundEffect[0] == 0)
+                        {
+                            OutgoingEffectPackets.CreateSoundEffect(soundEffect, 0x29, e);
+                        }
+
                         state.Send(soundEffect);
                     }
                 }
@@ -146,11 +166,11 @@ namespace Server
         {
             Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
             OutgoingEffectPackets.CreateLocationHuedEffect(
-                ref effect,
+                effect,
                 p, itemID, speed, duration, hue, renderMode
             );
 
-            SendPacket(p, map, ref effect);
+            SendPacket(p, map, effect);
         }
 
         public static void SendLocationParticles(IEntity e, int itemID, int speed, int duration, int effect)
@@ -175,18 +195,12 @@ namespace Server
             }
 
             Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
-            OutgoingEffectPackets.CreateLocationParticleEffect(
-                ref particles,
-                e, itemID, speed, duration, hue, renderMode, effect, unknown
-            );
+            particles.InitializePacket();
 
             Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength] : null;
             if (itemID != 0)
             {
-                OutgoingEffectPackets.CreateLocationHuedEffect(
-                    ref regular,
-                    e.Location, itemID, speed, duration, hue, renderMode
-                );
+                regular.InitializePacket();
             }
 
             var eable = map.GetClientsInRange(e.Location);
@@ -197,10 +211,26 @@ namespace Server
 
                 if (SendParticlesTo(state))
                 {
+                    if (particles[0] == 0)
+                    {
+                        OutgoingEffectPackets.CreateLocationParticleEffect(
+                            particles,
+                            e, itemID, speed, duration, hue, renderMode, effect, unknown
+                        );
+                    }
+
                     state.Send(particles);
                 }
                 else if (itemID != 0)
                 {
+                    if (regular[0] == 0)
+                    {
+                        OutgoingEffectPackets.CreateLocationHuedEffect(
+                            regular,
+                            e.Location, itemID, speed, duration, hue, renderMode
+                        );
+                    }
+
                     state.Send(regular);
                 }
             }
@@ -214,11 +244,11 @@ namespace Server
 
             Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
             OutgoingEffectPackets.CreateTargetHuedEffect(
-                ref effect,
+                effect,
                 target, itemID, speed, duration, hue, renderMode
             );
 
-            SendPacket(target.Location, target.Map, ref effect);
+            SendPacket(target.Location, target.Map, effect);
         }
 
         public static void SendTargetParticles(
@@ -244,15 +274,12 @@ namespace Server
             }
 
             Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
-            OutgoingEffectPackets.CreateTargetParticleEffect(
-                ref particles,
-                target, itemID, speed, duration, hue, renderMode, effect, (int)layer, unknown
-            );
+            particles.InitializePacket();
 
             Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength] : null;
             if (itemID != 0)
             {
-                OutgoingEffectPackets.CreateTargetHuedEffect(ref regular, target, itemID, speed, duration, hue, renderMode);
+                regular.InitializePacket();
             }
 
             var eable = map.GetClientsInRange(target.Location);
@@ -263,10 +290,23 @@ namespace Server
 
                 if (SendParticlesTo(state))
                 {
+                    if (particles[0] == 0)
+                    {
+                        OutgoingEffectPackets.CreateTargetParticleEffect(
+                            particles,
+                            target, itemID, speed, duration, hue, renderMode, effect, (int)layer, unknown
+                        );
+                    }
+
                     state.Send(particles);
                 }
                 else if (itemID != 0)
                 {
+                    if (regular[0] == 0)
+                    {
+                        OutgoingEffectPackets.CreateTargetHuedEffect(regular, target, itemID, speed, duration, hue, renderMode);
+                    }
+
                     state.Send(regular);
                 }
             }
@@ -393,12 +433,12 @@ namespace Server
         {
             Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
             OutgoingEffectPackets.CreateMovingHuedEffect(
-                ref effect,
+                effect,
                 from, to, itemID, fromLocation, toLocation, speed, duration, fixedDirection,
                 explodes, hue, renderMode
             );
 
-            SendPacket(origin, map, ref effect);
+            SendPacket(origin, map, effect);
         }
 
         public static void SendMovingParticles(
@@ -464,19 +504,12 @@ namespace Server
             }
 
             Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
-            OutgoingEffectPackets.CreateMovingParticleEffect(
-                ref particles,
-                from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode, effect,
-                explodeEffect, explodeSound, layer, unknown
-            );
+            particles.InitializePacket();
 
             Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength] : null;
             if (itemID != 0)
             {
-                OutgoingEffectPackets.CreateMovingHuedEffect(
-                    ref regular,
-                    from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode
-                );
+                regular.InitializePacket();
             }
 
             var eable = map.GetClientsInRange(from.Location);
@@ -487,10 +520,27 @@ namespace Server
 
                 if (SendParticlesTo(state))
                 {
+                    if (particles[0] == 0)
+                    {
+                        OutgoingEffectPackets.CreateMovingParticleEffect(
+                            particles,
+                            from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode, effect,
+                            explodeEffect, explodeSound, layer, unknown
+                        );
+                    }
+
                     state.Send(particles);
                 }
                 else if (itemID > 1)
                 {
+                    if (regular[0] == 0)
+                    {
+                        OutgoingEffectPackets.CreateMovingHuedEffect(
+                            regular,
+                            from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode
+                        );
+                    }
+
                     state.Send(regular);
                 }
             }
@@ -498,7 +548,7 @@ namespace Server
             eable.Free();
         }
 
-        public static void SendPacket(Point3D origin, Map map, ref Span<byte> effectBuffer)
+        public static void SendPacket(Point3D origin, Map map, Span<byte> effectBuffer)
         {
             if (map == null)
             {

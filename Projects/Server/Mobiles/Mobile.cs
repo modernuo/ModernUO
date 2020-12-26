@@ -3170,13 +3170,13 @@ namespace Server
                 Packet hbpPacket = null;
                 Packet hbyPacket = null;
 
-                Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
-                OutgoingMobilePackets.CreateBondedStatus(ref deadBuffer, m.Serial, true);
-
                 var eable = m.Map.GetClientsInRange(m.m_Location);
 
+                Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
+                deadBuffer.InitializePacket();
+
                 Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+                removeEntity.InitializePacket();
 
                 Span<byte> hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
                 OutgoingMobilePackets.CreateMobileHits(ref hitsPacket, m, true);
@@ -3192,6 +3192,11 @@ namespace Server
 
                     if (sendRemove)
                     {
+                        if (removeEntity[0] == 0)
+                        {
+                            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                        }
+
                         state.Send(removeEntity);
                     }
 
@@ -3201,6 +3206,11 @@ namespace Server
 
                         if (m.IsDeadBondedPet)
                         {
+                            if (deadBuffer[0] == 0)
+                            {
+                                OutgoingMobilePackets.CreateBondedStatus(deadBuffer, m.Serial, true);
+                            }
+
                             state.Send(deadBuffer);
                         }
                     }
@@ -4985,18 +4995,29 @@ namespace Server
                 var corpseSerial = c?.Serial ?? Serial.Zero;
 
                 Span<byte> deathAnimation = stackalloc byte[OutgoingMobilePackets.DeathAnimationPacketLength];
-                OutgoingMobilePackets.CreateDeathAnimation(ref deathAnimation, Serial, corpseSerial);
+                deathAnimation.InitializePacket();
+
                 Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+                removeEntity.InitializePacket();
 
                 foreach (var state in eable)
                 {
                     if (state != m_NetState)
                     {
+                        if (deathAnimation[0] == 0)
+                        {
+                            OutgoingMobilePackets.CreateDeathAnimation(deathAnimation, Serial, corpseSerial);
+                        }
+
                         state.Send(deathAnimation);
 
                         if (!state.Mobile.CanSee(this))
                         {
+                            if (removeEntity[0] == 0)
+                            {
+                                OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                            }
+
                             state.Send(removeEntity);
                         }
                     }
@@ -5779,19 +5800,9 @@ namespace Server
                 ProcessDelta();
 
                 Span<byte> regBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
+                regBuffer.InitializePacket();
                 Span<byte> mutBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(mutatedText)];
-
-                var length = OutgoingMessagePackets.CreateMessage(
-                    ref regBuffer,
-                    Serial, Body, type, hue, 3, false, m_Language, Name, text
-                );
-                regBuffer = regBuffer.Slice(0, length); // Adjust to the actual size
-
-                length = OutgoingMessagePackets.CreateMessage(
-                    ref mutBuffer,
-                    Serial, Body, type, hue, 3, false, m_Language, Name, mutatedText
-                );
-                mutBuffer = mutBuffer.Slice(0, length); // Adjust to the actual size
+                mutBuffer.InitializePacket();
 
                 // TODO: Should this be sorted like onSpeech is below?
                 for (var i = 0; i < hears.Count; ++i)
@@ -5800,11 +5811,27 @@ namespace Server
 
                     if (mutatedArgs == null || !CheckHearsMutatedSpeech(heard, mutateContext))
                     {
+                        if (regBuffer[0] == 0)
+                        {
+                            var length = OutgoingMessagePackets.CreateMessage(
+                                regBuffer, Serial, Body, type, hue, 3, false, m_Language, Name, text
+                            );
+                            regBuffer = regBuffer.Slice(0, length); // Adjust to the actual size
+                        }
+
                         heard.OnSpeech(regArgs);
                         heard.NetState?.Send(regBuffer);
                     }
                     else
                     {
+                        if (mutBuffer[0] == 0)
+                        {
+                            var length = OutgoingMessagePackets.CreateMessage(
+                                mutBuffer, Serial, Body, type, hue, 3, false, m_Language, Name, mutatedText
+                            );
+                            mutBuffer = mutBuffer.Slice(0, length); // Adjust to the actual size
+                        }
+
                         heard.OnSpeech(mutatedArgs);
                         heard.NetState?.Send(mutBuffer);
                     }
@@ -6930,7 +6957,7 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
-            OutgoingEffectPackets.CreateSoundEffect(ref buffer, soundID, this);
+            buffer.InitializePacket();
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -6938,6 +6965,11 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this))
                 {
+                    if (buffer[0] == 0)
+                    {
+                        OutgoingEffectPackets.CreateSoundEffect(buffer, soundID, this);
+                    }
+
                     state.Send(buffer);
                 }
             }
@@ -6993,12 +7025,17 @@ namespace Server
             var eable = m_Map.GetClientsInRange(m_Location);
 
             Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-            OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+            removeEntity.InitializePacket();
 
             foreach (var state in eable)
             {
                 if (state != m_NetState && (everyone || !state.Mobile.CanSee(this)))
                 {
+                    if (removeEntity[0] == 0)
+                    {
+                        OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                    }
+
                     state.Send(removeEntity);
                 }
             }
@@ -7249,12 +7286,17 @@ namespace Server
             var eable = m_Map.GetClientsInRange(m_Location);
 
             Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-            OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+            removeEntity.InitializePacket();
 
             foreach (var state in eable)
             {
                 if (!state.Mobile.CanSee(this))
                 {
+                    if (removeEntity[0] == 0)
+                    {
+                        OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                    }
+
                     state.Send(removeEntity);
                 }
                 else
@@ -7479,12 +7521,17 @@ namespace Server
                 var eable = map.GetClientsInRange(oldLocation);
 
                 Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+                removeEntity.InitializePacket();
 
                 foreach (var ns in eable)
                 {
                     if (ns != m_NetState && !Utility.InUpdateRange(newLocation, ns.Mobile.Location))
                     {
+                        if (removeEntity[0] == 0)
+                        {
+                            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                        }
+
                         ns.Send(removeEntity);
                     }
                 }
@@ -9172,15 +9219,8 @@ namespace Server
                 return;
             }
 
-            var length = OutgoingMessagePackets.GetMaxMessageLength(text);
-
-            Span<byte> buffer = stackalloc byte[length];
-            length = OutgoingMessagePackets.CreateMessage(
-                ref buffer,
-                Serial, Body, type, hue, 3, ascii, Language, Name, text
-            );
-
-            buffer = buffer.Slice(0, length); // Adjust to the actual size
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
+            buffer.InitializePacket();
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -9188,6 +9228,15 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
                 {
+                    if (buffer[0] == 0)
+                    {
+                        var length = OutgoingMessagePackets.CreateMessage(
+                            buffer, Serial, Body, type, hue, 3, ascii, Language, Name, text
+                        );
+
+                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                    }
+
                     state.Send(buffer);
                 }
             }
@@ -9203,12 +9252,7 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)];
-
-            var length = OutgoingMessagePackets.CreateMessageLocalized(
-                ref buffer,
-                Serial, Body, type, hue, 3, number, Name, args
-            );
-            buffer = buffer.Slice(0, length); // Adjust to the actual size
+            buffer.InitializePacket();
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -9216,6 +9260,14 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
                 {
+                    if (buffer[0] == 0)
+                    {
+                        var length = OutgoingMessagePackets.CreateMessageLocalized(
+                            buffer, Serial, Body, type, hue, 3, number, Name, args
+                        );
+                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                    }
+
                     state.Send(buffer);
                 }
             }
@@ -9234,12 +9286,7 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)];
-
-            var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
-                ref buffer,
-                Serial, Body, type, hue, 3, number, Name, affixType, affix, args
-            );
-            buffer = buffer.Slice(0, length); // Adjust to the actual size
+            buffer.InitializePacket();
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -9247,6 +9294,14 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
                 {
+                    if (buffer[0] == 0)
+                    {
+                        var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
+                            buffer, Serial, Body, type, hue, 3, number, Name, affixType, affix, args
+                        );
+                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                    }
+
                     state.Send(buffer);
                 }
             }
@@ -9279,12 +9334,7 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)];
-
-            var length = OutgoingMessagePackets.CreateMessageLocalized(
-                ref buffer,
-                Serial, Body, type, hue, 3, number, Name, args
-            );
-            buffer = buffer.Slice(0, length); // Adjust to the actual size
+            buffer.InitializePacket();
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -9292,6 +9342,14 @@ namespace Server
             {
                 if (state != m_NetState && state.Mobile.CanSee(this))
                 {
+                    if (buffer[0] == 0)
+                    {
+                        var length = OutgoingMessagePackets.CreateMessageLocalized(
+                            buffer, Serial, Body, type, hue, 3, number, Name, args
+                        );
+                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                    }
+
                     state.Send(buffer);
                 }
             }
@@ -9306,15 +9364,8 @@ namespace Server
                 return;
             }
 
-            var length = OutgoingMessagePackets.GetMaxMessageLength(text);
-
-            Span<byte> buffer = stackalloc byte[length];
-            length = OutgoingMessagePackets.CreateMessage(
-                ref buffer,
-                Serial, Body, type, hue, 3, ascii, Language, Name, text
-            );
-
-            buffer = buffer.Slice(0, length); // Adjust to the actual size
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
+            buffer.InitializePacket();
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -9322,6 +9373,15 @@ namespace Server
             {
                 if (state != m_NetState && state.Mobile.CanSee(this))
                 {
+                    if (buffer[0] == 0)
+                    {
+                        var length = OutgoingMessagePackets.CreateMessage(
+                            buffer, Serial, Body, type, hue, 3, ascii, Language, Name, text
+                        );
+
+                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                    }
+
                     state.Send(buffer);
                 }
             }
