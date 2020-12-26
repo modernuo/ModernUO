@@ -3175,13 +3175,13 @@ namespace Server
                 Packet hbpPacket = null;
                 Packet hbyPacket = null;
 
-                Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
-                OutgoingMobilePackets.CreateBondedStatus(deadBuffer, m.Serial, true);
-
                 var eable = m.Map.GetClientsInRange(m.m_Location);
 
+                Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
+                deadBuffer.InitializePackets(deadBuffer.Length);
+
                 Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                removeEntity.InitializePackets(removeEntity.Length);
 
                 foreach (var state in eable)
                 {
@@ -3191,6 +3191,11 @@ namespace Server
                     {
                         if (sendRemove)
                         {
+                            if (removeEntity[0] == 0)
+                            {
+                                OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                            }
+
                             state.Send(removeEntity);
                         }
 
@@ -3200,6 +3205,11 @@ namespace Server
 
                             if (m.IsDeadBondedPet)
                             {
+                                if (deadBuffer[0] == 0)
+                                {
+                                    OutgoingMobilePackets.CreateBondedStatus(deadBuffer, m.Serial, true);
+                                }
+
                                 state.Send(deadBuffer);
                             }
                         }
@@ -4988,18 +4998,29 @@ namespace Server
                 var corpseSerial = c?.Serial ?? Serial.Zero;
 
                 Span<byte> deathAnimation = stackalloc byte[OutgoingMobilePackets.DeathAnimationPacketLength];
-                OutgoingMobilePackets.CreateDeathAnimation(deathAnimation, Serial, corpseSerial);
+                deathAnimation.InitializePackets(deathAnimation.Length);
+
                 Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                removeEntity.InitializePackets(removeEntity.Length);
 
                 foreach (var state in eable)
                 {
                     if (state != m_NetState)
                     {
+                        if (deathAnimation[0] == 0)
+                        {
+                            OutgoingMobilePackets.CreateDeathAnimation(deathAnimation, Serial, corpseSerial);
+                        }
+
                         state.Send(deathAnimation);
 
                         if (!state.Mobile.CanSee(this))
                         {
+                            if (removeEntity[0] == 0)
+                            {
+                                OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                            }
+
                             state.Send(removeEntity);
                         }
                     }
@@ -6940,7 +6961,7 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
-            OutgoingEffectPackets.CreateSoundEffect(buffer, soundID, this);
+            buffer.InitializePackets(buffer.Length);
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -6948,6 +6969,11 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this))
                 {
+                    if (buffer[0] == 0)
+                    {
+                        OutgoingEffectPackets.CreateSoundEffect(buffer, soundID, this);
+                    }
+
                     state.Send(buffer);
                 }
             }
@@ -7003,12 +7029,17 @@ namespace Server
             var eable = m_Map.GetClientsInRange(m_Location);
 
             Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+            removeEntity.InitializePackets(removeEntity.Length);
 
             foreach (var state in eable)
             {
                 if (state != m_NetState && (everyone || !state.Mobile.CanSee(this)))
                 {
+                    if (removeEntity[0] == 0)
+                    {
+                        OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                    }
+
                     state.Send(removeEntity);
                 }
             }
@@ -7259,12 +7290,17 @@ namespace Server
             var eable = m_Map.GetClientsInRange(m_Location);
 
             Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+            removeEntity.InitializePackets(removeEntity.Length);
 
             foreach (var state in eable)
             {
                 if (!state.Mobile.CanSee(this))
                 {
+                    if (removeEntity[0] == 0)
+                    {
+                        OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                    }
+
                     state.Send(removeEntity);
                 }
                 else
@@ -7489,12 +7525,17 @@ namespace Server
                 var eable = map.GetClientsInRange(oldLocation);
 
                 Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                removeEntity.InitializePackets(removeEntity.Length);
 
                 foreach (var ns in eable)
                 {
                     if (ns != m_NetState && !Utility.InUpdateRange(newLocation, ns.Mobile.Location))
                     {
+                        if (removeEntity[0] == 0)
+                        {
+                            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                        }
+
                         ns.Send(removeEntity);
                     }
                 }

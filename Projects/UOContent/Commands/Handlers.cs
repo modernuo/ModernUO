@@ -417,12 +417,17 @@ namespace Server.Commands
             );
 
             Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
-            OutgoingEffectPackets.CreateSoundEffect(buffer, index, m);
+            buffer.InitializePackets(buffer.Length);
 
             foreach (var state in m.GetClientsInRange(12))
             {
                 if (toAll || state.Mobile.CanSee(m))
                 {
+                    if (buffer[0] == 0)
+                    {
+                        OutgoingEffectPackets.CreateSoundEffect(buffer, index, m);
+                    }
+
                     state.Send(buffer);
                 }
             }

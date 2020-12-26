@@ -70,7 +70,7 @@ namespace Server.Commands
                 if (list.Count > 0)
                 {
                     Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                    OutgoingEntityPackets.CreateRemoveEntity(removeEntity, pm.Serial);
+                    removeEntity.InitializePackets(removeEntity.Length);
 
                     for (var i = 0; i < list.Count; ++i)
                     {
@@ -78,6 +78,11 @@ namespace Server.Commands
 
                         if (!m.CanSee(pm) && Utility.InUpdateRange(m, pm))
                         {
+                            if (removeEntity[0] == 0)
+                            {
+                                OutgoingEntityPackets.CreateRemoveEntity(removeEntity, pm.Serial);
+                            }
+
                             m.NetState?.Send(removeEntity);
                         }
                     }

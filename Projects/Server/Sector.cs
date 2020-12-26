@@ -96,7 +96,7 @@ namespace Server
 
                 if (index >= 0)
                 {
-                    list[index] = newValue;
+                    list![index] = newValue;
                 }
                 else
                 {
