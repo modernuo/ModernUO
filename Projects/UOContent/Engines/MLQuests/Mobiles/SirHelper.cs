@@ -96,7 +96,7 @@ namespace Server.Engines.MLQuests.Mobiles
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength("")];
-            var packetCreated = false;
+            buffer.InitializePackets(buffer.Length);
 
             foreach (var state in GetClientsInRange(12))
             {
@@ -104,14 +104,14 @@ namespace Server.Engines.MLQuests.Mobiles
 
                 if (m.CanSee(this) && m.InLOS(this) && m.CanBeginAction(this))
                 {
-                    if (!packetCreated)
+                    if (buffer[0] == 0)
                     {
                         // Double Click On Me For Help!
                         var length = OutgoingMessagePackets.CreateMessageLocalized(
-                            ref buffer,
-                            Serial, Body, MessageType.Regular, 946, 3, 1078099, Name
+                            buffer, Serial, Body, MessageType.Regular, 946, 3, 1078099, Name
                         );
-                        packetCreated = true;
+
+                        buffer = buffer.Slice(0, length);
                     }
 
                     state.Send(buffer);

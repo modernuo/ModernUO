@@ -73,7 +73,7 @@ namespace Server
             if (map != null)
             {
                 Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
-                OutgoingEffectPackets.CreateSoundEffect(ref buffer, soundID, p);
+                OutgoingEffectPackets.CreateSoundEffect(buffer, soundID, p);
 
                 var eable = map.GetClientsInRange(new Point3D(p));
 
@@ -100,17 +100,17 @@ namespace Server
 
             Span<byte> preEffect = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
             OutgoingEffectPackets.CreateTargetParticleEffect(
-                ref preEffect,
+                preEffect,
                 e, 0, 10, 5, 0, 0, 5031, 3, 0
             );
 
             Span<byte> boltEffect = stackalloc byte[OutgoingEffectPackets.BoltEffectLength];
-            OutgoingEffectPackets.CreateBoltEffect(ref boltEffect, e, hue);
+            OutgoingEffectPackets.CreateBoltEffect(boltEffect, e, hue);
 
             Span<byte> soundEffect = sound ? stackalloc byte[OutgoingEffectPackets.SoundPacketLength] : null;
             if (sound)
             {
-                OutgoingEffectPackets.CreateSoundEffect(ref soundEffect, 0x29, e);
+                OutgoingEffectPackets.CreateSoundEffect(soundEffect, 0x29, e);
             }
 
             var eable = map.GetClientsInRange(e.Location);
@@ -146,11 +146,11 @@ namespace Server
         {
             Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
             OutgoingEffectPackets.CreateLocationHuedEffect(
-                ref effect,
+                effect,
                 p, itemID, speed, duration, hue, renderMode
             );
 
-            SendPacket(p, map, ref effect);
+            SendPacket(p, map, effect);
         }
 
         public static void SendLocationParticles(IEntity e, int itemID, int speed, int duration, int effect)
@@ -176,7 +176,7 @@ namespace Server
 
             Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
             OutgoingEffectPackets.CreateLocationParticleEffect(
-                ref particles,
+                particles,
                 e, itemID, speed, duration, hue, renderMode, effect, unknown
             );
 
@@ -184,7 +184,7 @@ namespace Server
             if (itemID != 0)
             {
                 OutgoingEffectPackets.CreateLocationHuedEffect(
-                    ref regular,
+                    regular,
                     e.Location, itemID, speed, duration, hue, renderMode
                 );
             }
@@ -214,11 +214,11 @@ namespace Server
 
             Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
             OutgoingEffectPackets.CreateTargetHuedEffect(
-                ref effect,
+                effect,
                 target, itemID, speed, duration, hue, renderMode
             );
 
-            SendPacket(target.Location, target.Map, ref effect);
+            SendPacket(target.Location, target.Map, effect);
         }
 
         public static void SendTargetParticles(
@@ -245,14 +245,14 @@ namespace Server
 
             Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
             OutgoingEffectPackets.CreateTargetParticleEffect(
-                ref particles,
+                particles,
                 target, itemID, speed, duration, hue, renderMode, effect, (int)layer, unknown
             );
 
             Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength] : null;
             if (itemID != 0)
             {
-                OutgoingEffectPackets.CreateTargetHuedEffect(ref regular, target, itemID, speed, duration, hue, renderMode);
+                OutgoingEffectPackets.CreateTargetHuedEffect(regular, target, itemID, speed, duration, hue, renderMode);
             }
 
             var eable = map.GetClientsInRange(target.Location);
@@ -393,12 +393,12 @@ namespace Server
         {
             Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
             OutgoingEffectPackets.CreateMovingHuedEffect(
-                ref effect,
+                effect,
                 from, to, itemID, fromLocation, toLocation, speed, duration, fixedDirection,
                 explodes, hue, renderMode
             );
 
-            SendPacket(origin, map, ref effect);
+            SendPacket(origin, map, effect);
         }
 
         public static void SendMovingParticles(
@@ -465,7 +465,7 @@ namespace Server
 
             Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
             OutgoingEffectPackets.CreateMovingParticleEffect(
-                ref particles,
+                particles,
                 from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode, effect,
                 explodeEffect, explodeSound, layer, unknown
             );
@@ -474,7 +474,7 @@ namespace Server
             if (itemID != 0)
             {
                 OutgoingEffectPackets.CreateMovingHuedEffect(
-                    ref regular,
+                    regular,
                     from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode
                 );
             }
@@ -498,7 +498,7 @@ namespace Server
             eable.Free();
         }
 
-        public static void SendPacket(Point3D origin, Map map, ref Span<byte> effectBuffer)
+        public static void SendPacket(Point3D origin, Map map, Span<byte> effectBuffer)
         {
             if (map == null)
             {

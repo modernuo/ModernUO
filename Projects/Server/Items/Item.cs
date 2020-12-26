@@ -370,7 +370,7 @@ namespace Server
                         var eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
                         Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                        OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+                        OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
 
                         foreach (var state in eable)
                         {
@@ -1136,21 +1136,21 @@ namespace Server
                 if (m_Map != null)
                 {
                     Span<byte> oldWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength];
-                    var length = OutgoingItemPackets.CreateWorldItem(ref oldWorldItem, this);
+                    var length = OutgoingItemPackets.CreateWorldItem(oldWorldItem, this);
                     oldWorldItem = oldWorldItem.Slice(0, length);
 
                     Span<byte> saWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength];
-                    length = OutgoingItemPackets.CreateWorldItemNew(ref saWorldItem, this, false);
+                    length = OutgoingItemPackets.CreateWorldItemNew(saWorldItem, this, false);
                     saWorldItem = saWorldItem.Slice(0, length);
 
                     Span<byte> hsWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength];
-                    length = OutgoingItemPackets.CreateWorldItemNew(ref hsWorldItem, this, true);
+                    length = OutgoingItemPackets.CreateWorldItemNew(hsWorldItem, this, true);
                     hsWorldItem = hsWorldItem.Slice(0, length);
 
                     Span<byte> opl = ObjectPropertyList.Enabled ? stackalloc byte[OutgoingEntityPackets.OPLPacketLength] : null;
                     if (opl != null)
                     {
-                        OutgoingEntityPackets.CreateOPLInfo(ref opl, this);
+                        OutgoingEntityPackets.CreateOPLInfo(opl, this);
                     }
 
                     var eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
@@ -1195,7 +1195,7 @@ namespace Server
                     eable = m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange());
 
                     Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                    OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+                    OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
 
                     foreach (var state in eable)
                     {
@@ -1536,7 +1536,7 @@ namespace Server
                             eable = m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange());
 
                             Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                            OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+                            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
 
                             foreach (var state in eable)
                             {
@@ -3323,15 +3323,8 @@ namespace Server
             var worldLoc = GetWorldLocation();
             var eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
-            var length = OutgoingMessagePackets.GetMaxMessageLength(text);
-
-            Span<byte> buffer = stackalloc byte[length];
-            length = OutgoingMessagePackets.CreateMessage(
-                ref buffer,
-                Serial, m_ItemID, type, hue, 3, ascii, "ENU", Name, text
-            );
-
-            buffer = buffer.Slice(0, length); // Adjust to the actual size
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
+            buffer.InitializePackets(buffer.Length);
 
             foreach (var state in eable)
             {
@@ -3339,6 +3332,15 @@ namespace Server
 
                 if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
                 {
+                    if (buffer[0] == 0)
+                    {
+                        var length = OutgoingMessagePackets.CreateMessage(
+                            buffer, Serial, m_ItemID, type, hue, 3, ascii, "ENU", Name, text
+                        );
+
+                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                    }
+
                     state.Send(buffer);
                 }
             }
@@ -3357,13 +3359,7 @@ namespace Server
             var eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)];
-
-            var length = OutgoingMessagePackets.CreateMessageLocalized(
-                ref buffer,
-                Serial, m_ItemID, type, hue, 3, number, Name, args
-            );
-
-            buffer = buffer.Slice(0, length); // Adjust to the actual size
+            buffer.InitializePackets(buffer.Length);
 
             foreach (var state in eable)
             {
@@ -3371,6 +3367,15 @@ namespace Server
 
                 if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
                 {
+                    if (buffer[0] == 0)
+                    {
+                        var length = OutgoingMessagePackets.CreateMessageLocalized(
+                            buffer, Serial, m_ItemID, type, hue, 3, number, Name, args
+                        );
+
+                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                    }
+
                     state.Send(buffer);
                 }
             }
@@ -3821,7 +3826,7 @@ namespace Server
             var eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
             Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-            OutgoingEntityPackets.CreateRemoveEntity(ref removeEntity, Serial);
+            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
 
             foreach (var state in eable)
             {

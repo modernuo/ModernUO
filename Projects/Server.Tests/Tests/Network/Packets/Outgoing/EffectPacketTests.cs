@@ -50,7 +50,7 @@ namespace Server.Tests.Network
 
             Span<byte> actual = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
             OutgoingEffectPackets.CreateParticleEffect(
-                ref actual,
+                actual,
                 effectType, from, to, itemId, fromPoint, toPoint, speed, duration, direction,
                 explode, hue, renderMode, effect, explodeEffect, explodeSound, serial, layer,
                 unknown
@@ -82,7 +82,7 @@ namespace Server.Tests.Network
 
             Span<byte> actual = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
             OutgoingEffectPackets.CreateHuedEffect(
-                ref actual,
+                actual,
                 effectType, from, to, itemId, fromPoint, toPoint, speed,
                 duration, direction, explode, hue, renderMode
             );
@@ -110,10 +110,7 @@ namespace Server.Tests.Network
             var expected = new BoltEffect(entity, hue).Compile();
 
             Span<byte> actual = stackalloc byte[OutgoingEffectPackets.BoltEffectLength];
-            OutgoingEffectPackets.CreateBoltEffect(
-                ref actual,
-                entity, hue
-            );
+            OutgoingEffectPackets.CreateBoltEffect(actual, entity, hue);
 
             AssertThat.Equal(actual, expected);
         }

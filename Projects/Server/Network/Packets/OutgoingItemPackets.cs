@@ -23,7 +23,7 @@ namespace Server.Network
     {
         public const int MaxWorldItemPacketLength = 26;
 
-        public static int CreateWorldItem(ref Span<byte> buffer, Item item)
+        public static int CreateWorldItem(Span<byte> buffer, Item item)
         {
             var itemID = item is BaseMulti ? item.ItemID | 0x4000 : item.ItemID & 0x3FFF;
             var hasAmount = item.Amount != 0;
@@ -87,13 +87,13 @@ namespace Server.Network
             Span<byte> buffer = stackalloc byte[MaxWorldItemPacketLength];
 
             var length = ns.StygianAbyss ?
-                CreateWorldItemNew(ref buffer, item, ns.HighSeas) :
-                CreateWorldItem(ref buffer, item);
+                CreateWorldItemNew(buffer, item, ns.HighSeas) :
+                CreateWorldItem(buffer, item);
 
             ns.Send(buffer.Slice(0, length));
         }
 
-        public static int CreateWorldItemNew(ref Span<byte> buffer, Item item, bool isHS)
+        public static int CreateWorldItemNew(Span<byte> buffer, Item item, bool isHS)
         {
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xF3); // Packet ID

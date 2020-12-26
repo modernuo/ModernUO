@@ -50,12 +50,12 @@ namespace Server.Items
 
             if (ns.StygianAbyss)
             {
-                length = OutgoingItemPackets.CreateWorldItemNew(ref buffer, this, ns.HighSeas);
+                length = OutgoingItemPackets.CreateWorldItemNew(buffer, this, ns.HighSeas);
                 BinaryPrimitives.WriteUInt16BigEndian(buffer.Slice(8, 2), GMItemId);
             }
             else
             {
-                length = OutgoingItemPackets.CreateWorldItem(ref buffer, this);
+                length = OutgoingItemPackets.CreateWorldItem(buffer, this);
                 BinaryPrimitives.WriteUInt16BigEndian(buffer.Slice(7, 2), GMItemId);
             }
 
