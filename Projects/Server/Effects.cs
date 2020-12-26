@@ -73,7 +73,7 @@ namespace Server
             if (map != null)
             {
                 Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
-                buffer.InitializePackets(buffer.Length);
+                buffer.InitializePacket();
 
                 var eable = map.GetClientsInRange(new Point3D(p));
 
@@ -105,14 +105,14 @@ namespace Server
             e.ProcessDelta();
 
             Span<byte> preEffect = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
-            preEffect.InitializePackets(preEffect.Length);
+            preEffect.InitializePacket();
             Span<byte> boltEffect = stackalloc byte[OutgoingEffectPackets.BoltEffectLength];
-            boltEffect.InitializePackets(boltEffect.Length);
+            boltEffect.InitializePacket();
 
             Span<byte> soundEffect = sound ? stackalloc byte[OutgoingEffectPackets.SoundPacketLength] : null;
             if (sound)
             {
-                soundEffect.InitializePackets(soundEffect.Length);
+                soundEffect.InitializePacket();
             }
 
             var eable = map.GetClientsInRange(e.Location);
@@ -195,12 +195,12 @@ namespace Server
             }
 
             Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
-            particles.InitializePackets(particles.Length);
+            particles.InitializePacket();
 
             Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength] : null;
             if (itemID != 0)
             {
-                regular.InitializePackets(regular.Length);
+                regular.InitializePacket();
             }
 
             var eable = map.GetClientsInRange(e.Location);
@@ -274,12 +274,12 @@ namespace Server
             }
 
             Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
-            particles.InitializePackets(particles.Length);
+            particles.InitializePacket();
 
             Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength] : null;
             if (itemID != 0)
             {
-                regular.InitializePackets(regular.Length);
+                regular.InitializePacket();
             }
 
             var eable = map.GetClientsInRange(target.Location);
@@ -504,12 +504,12 @@ namespace Server
             }
 
             Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength];
-            particles.InitializePackets(particles.Length);
+            particles.InitializePacket();
 
             Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength] : null;
             if (itemID != 0)
             {
-                regular.InitializePackets(regular.Length);
+                regular.InitializePacket();
             }
 
             var eable = map.GetClientsInRange(from.Location);

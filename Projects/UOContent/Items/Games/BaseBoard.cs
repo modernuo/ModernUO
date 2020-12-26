@@ -88,7 +88,7 @@ namespace Server.Items
                 else
                 {
                     Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
-                    buffer.InitializePackets(buffer.Length);
+                    buffer.InitializePacket();
 
                     foreach (var state in GetClientsInRange(2))
                     {

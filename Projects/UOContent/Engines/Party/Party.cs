@@ -425,7 +425,7 @@ namespace Server.Engines.PartySystem
         private void SendToStaffMessage(Mobile from, string text)
         {
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
-            buffer.InitializePackets(buffer.Length);
+            buffer.InitializePacket();
 
             foreach (var ns in from.GetClientsInRange(8))
             {
@@ -514,7 +514,7 @@ namespace Server.Engines.PartySystem
                 m_Mobile.Send(new PartyMemberList(p));
 
                 Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")];
-                buffer.InitializePackets(buffer.Length);
+                buffer.InitializePacket();
 
                 var attrs = Packet.Acquire(new MobileAttributesN(m_Mobile));
 

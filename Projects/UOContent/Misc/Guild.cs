@@ -331,7 +331,7 @@ namespace Server.Guilds
         public void AllianceChat(Mobile from, int hue, string text)
         {
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
-            buffer.InitializePackets(buffer.Length);
+            buffer.InitializePacket();
 
             for (var i = 0; i < m_Members.Count; i++)
             {
@@ -1521,7 +1521,7 @@ namespace Server.Guilds
         public void GuildChat(Mobile from, int hue, string text)
         {
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
-            buffer.InitializePackets(buffer.Length);
+            buffer.InitializePacket();
 
             for (var i = 0; i < Members.Count; i++)
             {

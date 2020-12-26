@@ -504,7 +504,7 @@ namespace Server.Engines.Doom
         public static void POHMessage(Mobile from, int index)
         {
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(Msgs[index])];
-            buffer.InitializePackets(buffer.Length);
+            buffer.InitializePacket();
 
             var eable = from.Map.GetClientsInRange(from.Location);
 

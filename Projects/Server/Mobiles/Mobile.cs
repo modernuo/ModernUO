@@ -3178,10 +3178,10 @@ namespace Server
                 var eable = m.Map.GetClientsInRange(m.m_Location);
 
                 Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
-                deadBuffer.InitializePackets(deadBuffer.Length);
+                deadBuffer.InitializePacket();
 
                 Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                removeEntity.InitializePackets(removeEntity.Length);
+                removeEntity.InitializePacket();
 
                 foreach (var state in eable)
                 {
@@ -4998,10 +4998,10 @@ namespace Server
                 var corpseSerial = c?.Serial ?? Serial.Zero;
 
                 Span<byte> deathAnimation = stackalloc byte[OutgoingMobilePackets.DeathAnimationPacketLength];
-                deathAnimation.InitializePackets(deathAnimation.Length);
+                deathAnimation.InitializePacket();
 
                 Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                removeEntity.InitializePackets(removeEntity.Length);
+                removeEntity.InitializePacket();
 
                 foreach (var state in eable)
                 {
@@ -5803,9 +5803,9 @@ namespace Server
                 ProcessDelta();
 
                 Span<byte> regBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
-                regBuffer.InitializePackets(regBuffer.Length);
+                regBuffer.InitializePacket();
                 Span<byte> mutBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(mutatedText)];
-                mutBuffer.InitializePackets(mutBuffer.Length);
+                mutBuffer.InitializePacket();
 
                 // TODO: Should this be sorted like onSpeech is below?
                 for (var i = 0; i < hears.Count; ++i)
@@ -6961,7 +6961,7 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
-            buffer.InitializePackets(buffer.Length);
+            buffer.InitializePacket();
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -7029,7 +7029,7 @@ namespace Server
             var eable = m_Map.GetClientsInRange(m_Location);
 
             Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-            removeEntity.InitializePackets(removeEntity.Length);
+            removeEntity.InitializePacket();
 
             foreach (var state in eable)
             {
@@ -7290,7 +7290,7 @@ namespace Server
             var eable = m_Map.GetClientsInRange(m_Location);
 
             Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-            removeEntity.InitializePackets(removeEntity.Length);
+            removeEntity.InitializePacket();
 
             foreach (var state in eable)
             {
@@ -7525,7 +7525,7 @@ namespace Server
                 var eable = map.GetClientsInRange(oldLocation);
 
                 Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                removeEntity.InitializePackets(removeEntity.Length);
+                removeEntity.InitializePacket();
 
                 foreach (var ns in eable)
                 {
@@ -9224,7 +9224,7 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
-            buffer.InitializePackets(buffer.Length);
+            buffer.InitializePacket();
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -9256,7 +9256,7 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)];
-            buffer.InitializePackets(buffer.Length);
+            buffer.InitializePacket();
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -9290,7 +9290,7 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)];
-            buffer.InitializePackets(buffer.Length);
+            buffer.InitializePacket();
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -9338,7 +9338,7 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)];
-            buffer.InitializePackets(buffer.Length);
+            buffer.InitializePacket();
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -9369,7 +9369,7 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
-            buffer.InitializePackets(buffer.Length);
+            buffer.InitializePacket();
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
