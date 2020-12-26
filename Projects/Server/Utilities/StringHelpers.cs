@@ -188,17 +188,15 @@ namespace Server
 
                 var newLineLength = lineLength + spaceIndex;
 
-                if (newLineLength == perLine || newLineLength == span.Length - 1)
+                if (newLineLength == perLine || newLineLength == span.Length)
                 {
-                    // Could be the end of the string
-                    var length = span[newLineLength] == ' ' ? newLineLength - 1 : newLineLength;
-                    list.Add(span.Slice(0, length).ToString());
-                    if (list.Count == maxLines)
+                    list.Add(span.Slice(0, newLineLength).ToString());
+                    if (list.Count == maxLines || newLineLength == span.Length)
                     {
                         break;
                     }
 
-                    span = span.Slice(newLineLength);
+                    span = span.Slice(newLineLength + 1);
                     lineLength = 0;
                 }
                 else if (newLineLength < perLine)
