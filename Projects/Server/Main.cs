@@ -153,6 +153,8 @@ namespace Server
             }
         }
 
+        public static bool ConserveCPU { get; private set; }
+
         public static string Arguments
         {
             get
@@ -198,6 +200,11 @@ namespace Server
         public static bool TOL => Expansion >= Expansion.TOL;
 
         public static bool EJ => Expansion >= Expansion.EJ;
+
+        public static void Configure()
+        {
+            ConserveCPU = ServerConfiguration.GetOrUpdateSetting("core.conserveCpu", true);
+        }
 
         public static string FindDataFile(string path, bool throwNotFound = true, bool warnNotFound = false)
         {
@@ -464,7 +471,7 @@ namespace Server
         {
             try
             {
-                long now, last = TickCount;
+                long last = TickCount;
 
                 const int sampleInterval = 100;
                 const float ticksPerSecond = 1000.0f * sampleInterval;
@@ -487,16 +494,21 @@ namespace Server
                     NetState.ProcessDisposedQueue();
 
                     // Execute other stuff
-
                     if (sample++ % sampleInterval != 0)
                     {
                         continue;
                     }
 
-                    now = TickCount;
-                    m_CyclesPerSecond[m_CycleIndex % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
+                    var now = TickCount;
+                    var cyclesPerSecond = ticksPerSecond / (now - last);
+                    m_CyclesPerSecond[m_CycleIndex % m_CyclesPerSecond.Length] = cyclesPerSecond;
                     m_CycleIndex = Math.Max(unchecked(m_CycleIndex + 1), 0);
                     last = now;
+
+                    if (ConserveCPU && cyclesPerSecond >= 100)
+                    {
+                        Thread.Sleep(1);
+                    }
                 }
             }
             catch (Exception e)
