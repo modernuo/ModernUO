@@ -40,7 +40,7 @@ namespace Benchmarks
         }
 
         public static int CreateUnicodeMessage(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             Serial serial, int graphic, MessageType type, int hue, int font, string lang, string name, string text
         )
         {
@@ -116,8 +116,7 @@ namespace Benchmarks
                 Span<byte> buffer = result.Buffer[0];
 
                 var length = CreateUnicodeMessage(
-                    ref buffer,
-                    Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, "ENU", "System", text
+                    buffer, Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, "ENU", "System", text
                 );
                 pipe.Writer.Advance((uint)length);
             }
@@ -131,8 +130,7 @@ namespace Benchmarks
             var text = "This is some really long text that we want to handle. It should take a little bit to encode this.";
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
             var length = CreateUnicodeMessage(
-                ref buffer,
-                Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, "ENU", "System", text
+                buffer, Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, "ENU", "System", text
             );
 
             buffer = buffer.Slice(0, length);
@@ -151,8 +149,7 @@ namespace Benchmarks
         {
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
             var length = CreateUnicodeMessage(
-                ref buffer,
-                Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, "ENU", "System", text
+                buffer, Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, "ENU", "System", text
             );
 
             buffer = buffer.Slice(0, length);

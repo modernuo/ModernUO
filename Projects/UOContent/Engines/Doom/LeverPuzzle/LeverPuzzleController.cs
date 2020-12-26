@@ -504,26 +504,30 @@ namespace Server.Engines.Doom
         public static void POHMessage(Mobile from, int index)
         {
             Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(Msgs[index])];
-
-            var length = OutgoingMessagePackets.CreateMessage(
-                ref buffer,
-                from.Serial,
-                from.Body,
-                MessageType.Regular,
-                MsgParams[index][0],
-                MsgParams[index][1],
-                true,
-                null,
-                from.Name,
-                Msgs[index]
-            );
-
-            buffer = buffer.Slice(0, length); // Adjust to the actual size
+            buffer.InitializePacket();
 
             var eable = from.Map.GetClientsInRange(from.Location);
 
             foreach (var state in eable)
             {
+                if (buffer[0] == 0)
+                {
+                    var length = OutgoingMessagePackets.CreateMessage(
+                        buffer,
+                        from.Serial,
+                        from.Body,
+                        MessageType.Regular,
+                        MsgParams[index][0],
+                        MsgParams[index][1],
+                        true,
+                        null,
+                        from.Name,
+                        Msgs[index]
+                    );
+
+                    buffer = buffer.Slice(0, length); // Adjust to the actual size
+                }
+
                 state.Send(buffer);
             }
 

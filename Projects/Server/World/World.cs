@@ -154,8 +154,7 @@ namespace Server
 
             Span<byte> buffer = stackalloc byte[length];
             length = OutgoingMessagePackets.CreateMessage(
-                ref buffer,
-                Serial.MinusOne, -1, MessageType.Regular, hue, 3, ascii, "ENU", "System", text
+                buffer, Serial.MinusOne, -1, MessageType.Regular, hue, 3, ascii, "ENU", "System", text
             );
 
             buffer = buffer.Slice(0, length); // Adjust to the actual size

@@ -23,10 +23,10 @@ namespace Server.Network
         public const int OPLPacketLength = 9;
         public const int RemoveEntityLength = 5;
 
-        public static void CreateOPLInfo(ref Span<byte> buffer, Item item) =>
-            CreateOPLInfo(ref buffer, item.Serial, item.PropertyList.Hash);
+        public static void CreateOPLInfo(Span<byte> buffer, Item item) =>
+            CreateOPLInfo(buffer, item.Serial, item.PropertyList.Hash);
 
-        public static void CreateOPLInfo(ref Span<byte> buffer, Serial serial, int hash)
+        public static void CreateOPLInfo(Span<byte> buffer, Serial serial, int hash)
         {
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xDC); // Packet ID
@@ -45,12 +45,12 @@ namespace Server.Network
             }
 
             Span<byte> buffer = stackalloc byte[OPLPacketLength];
-            CreateOPLInfo(ref buffer, serial, hash);
+            CreateOPLInfo(buffer, serial, hash);
 
             ns.Send(buffer);
         }
 
-        public static void CreateRemoveEntity(ref Span<byte> buffer, Serial serial)
+        public static void CreateRemoveEntity(Span<byte> buffer, Serial serial)
         {
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x1D); // Packet ID
@@ -65,7 +65,7 @@ namespace Server.Network
             }
 
             Span<byte> buffer = stackalloc byte[RemoveEntityLength];
-            CreateRemoveEntity(ref buffer, serial);
+            CreateRemoveEntity(buffer, serial);
 
             ns.Send(buffer);
         }

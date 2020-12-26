@@ -33,12 +33,12 @@ namespace Server.Network
             }
 
             Span<byte> buffer = stackalloc byte[SoundPacketLength];
-            CreateSoundEffect(ref buffer, soundID, target);
+            CreateSoundEffect(buffer, soundID, target);
 
             ns.Send(buffer);
         }
 
-        public static void CreateSoundEffect(ref Span<byte> buffer, int soundID, IPoint3D target)
+        public static void CreateSoundEffect(Span<byte> buffer, int soundID, IPoint3D target)
         {
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x54); // Packet ID
@@ -51,7 +51,7 @@ namespace Server.Network
         }
 
         public static void CreateParticleEffect(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             EffectType type, Serial from, Serial to, int itemID, IPoint3D fromPoint, IPoint3D toPoint,
             int speed, int duration, bool fixedDirection, bool explode, int hue, int renderMode, int effect,
             int explodeEffect, int explodeSound, Serial serial, int layer, int unknown
@@ -86,10 +86,10 @@ namespace Server.Network
         }
 
         public static void CreateTargetParticleEffect(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             IEntity e, int itemID, int speed, int duration, int hue, int renderMode, int effect, int layer, int unknown
         ) => CreateParticleEffect(
-            ref buffer,
+            buffer,
             EffectType.FixedFrom,
             e.Serial,
             Serial.Zero,
@@ -111,10 +111,10 @@ namespace Server.Network
         );
 
         public static void CreateLocationParticleEffect(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             IEntity e, int itemID, int speed, int duration, int hue, int renderMode, int effect, int unknown
         ) => CreateParticleEffect(
-            ref buffer,
+            buffer,
             EffectType.FixedXYZ,
             e.Serial,
             Serial.Zero,
@@ -136,12 +136,12 @@ namespace Server.Network
         );
 
         public static void CreateMovingParticleEffect(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             IEntity from, IEntity to, int itemID, int speed, int duration, bool fixedDirection,
             bool explodes, int hue, int renderMode, int effect, int explodeEffect, int explodeSound, EffectLayer layer,
             int unknown
         ) => CreateParticleEffect(
-            ref buffer,
+            buffer,
             EffectType.Moving,
             from.Serial,
             to.Serial,
@@ -163,7 +163,7 @@ namespace Server.Network
         );
 
         public static void CreateHuedEffect(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             EffectType type, Serial from, Serial to, int itemID, Point3D fromPoint, Point3D toPoint,
             int speed, int duration, bool fixedDirection, bool explode, int hue, int renderMode
         )
@@ -191,10 +191,10 @@ namespace Server.Network
         }
 
         public static void CreateTargetHuedEffect(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             IEntity e, int itemID, int speed, int duration, int hue, int renderMode
         ) => CreateHuedEffect(
-            ref buffer,
+            buffer,
             EffectType.FixedFrom,
             e.Serial,
             Serial.Zero,
@@ -210,10 +210,10 @@ namespace Server.Network
         );
 
         public static void CreateLocationHuedEffect(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             Point3D p, int itemID, int speed, int duration, int hue, int renderMode
         ) => CreateHuedEffect(
-            ref buffer,
+            buffer,
             EffectType.FixedXYZ,
             Serial.Zero,
             Serial.Zero,
@@ -229,11 +229,11 @@ namespace Server.Network
         );
 
         public static void CreateMovingHuedEffect(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             IEntity from, IEntity to, int itemID, int speed, int duration, bool fixedDirection,
             bool explodes, int hue, int renderMode
         ) => CreateHuedEffect(
-            ref  buffer,
+            buffer,
             EffectType.Moving,
             from.Serial,
             to.Serial,
@@ -249,11 +249,11 @@ namespace Server.Network
         );
 
         public static void CreateMovingHuedEffect(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             int itemID, Point3D fromLocation, Point3D toLocation, int speed, int duration,
             bool fixedDirection, bool explodes, int hue, int renderMode
         ) => CreateHuedEffect(
-            ref  buffer,
+            buffer,
             EffectType.Moving,
             Serial.Zero,
             Serial.Zero,
@@ -269,11 +269,11 @@ namespace Server.Network
         );
 
         public static void CreateMovingHuedEffect(
-            ref Span<byte> buffer,
+            Span<byte> buffer,
             Serial from, Serial to, int itemID, Point3D fromLocation, Point3D toLocation, int speed, int duration,
             bool fixedDirection, bool explodes, int hue, int renderMode
         ) => CreateHuedEffect(
-            ref  buffer,
+            buffer,
             EffectType.Moving,
             from,
             to,
@@ -288,8 +288,8 @@ namespace Server.Network
             renderMode
         );
 
-        public static void CreateBoltEffect(ref Span<byte> buffer, IEntity target, int hue) => CreateHuedEffect(
-            ref buffer,
+        public static void CreateBoltEffect(Span<byte> buffer, IEntity target, int hue) => CreateHuedEffect(
+            buffer,
             EffectType.Lightning,
             target.Serial,
             Serial.Zero,
