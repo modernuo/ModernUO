@@ -3254,7 +3254,7 @@ namespace Server
                     }
                     else if (sendHits)
                     {
-                        if (buffer[0] == 0
+                        if (hitsPacket[0] == 0)
                         {
                             OutgoingMobilePackets.CreateMobileHits(ref hitsPacket, m, true);
                         }
@@ -9529,12 +9529,6 @@ namespace Server
                 {
                     m_Owner.Hits++;
                 }
-
-                Console.WriteLine(
-                    "Regen Rate for {0} is {1}",
-                    m_Owner.Name ?? m_Owner.GetType().Name,
-                    GetHitsRegenRate(m_Owner)
-                );
 
                 Delay = Interval = GetHitsRegenRate(m_Owner);
             }
