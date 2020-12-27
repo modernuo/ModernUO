@@ -3179,7 +3179,7 @@ namespace Server
                 removeEntity.InitializePacket();
 
                 Span<byte> hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
-                OutgoingMobilePackets.CreateMobileHits(ref hitsPacket, m, true);
+                hitsPacket.InitializePacket();
 
                 foreach (var state in eable)
                 {
@@ -3254,6 +3254,11 @@ namespace Server
                     }
                     else if (sendHits)
                     {
+                        if (buffer[0] == 0
+                        {
+                            OutgoingMobilePackets.CreateMobileHits(ref hitsPacket, m, true);
+                        }
+
                         state.Send(hitsPacket);
                     }
 
