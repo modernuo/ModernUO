@@ -50,46 +50,36 @@ namespace Server.Engines.PartySystem
 
         public void OnStamChanged(Mobile m)
         {
-            Packet p = null;
+            Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
+            OutgoingMobilePackets.CreateMobileStam(ref p, m, true);
 
             for (var i = 0; i < Members.Count; ++i)
             {
                 var c = Members[i].Mobile;
+                var ns = c.NetState;
 
-                if (c != m && m.Map == c.Map && Utility.InUpdateRange(c, m) && c.CanSee(m))
+                if (c != m && ns != null && m.Map == c.Map && Utility.InUpdateRange(c, m) && c.CanSee(m))
                 {
-                    if (p == null)
-                    {
-                        p = Packet.Acquire(new MobileStamN(m));
-                    }
-
-                    c.Send(p);
+                    ns.Send(p);
                 }
             }
-
-            Packet.Release(p);
         }
 
         public void OnManaChanged(Mobile m)
         {
-            Packet p = null;
+            Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
+            OutgoingMobilePackets.CreateMobileMana(ref p, m, true);
 
             for (var i = 0; i < Members.Count; ++i)
             {
                 var c = Members[i].Mobile;
+                var ns = c.NetState;
 
-                if (c != m && m.Map == c.Map && Utility.InUpdateRange(c, m) && c.CanSee(m))
+                if (c != m && ns != null && m.Map == c.Map && Utility.InUpdateRange(c, m) && c.CanSee(m))
                 {
-                    if (p == null)
-                    {
-                        p = Packet.Acquire(new MobileManaN(m));
-                    }
-
-                    c.Send(p);
+                    ns.Send(p);
                 }
             }
-
-            Packet.Release(p);
         }
 
         public void OnStatsQuery(Mobile beholder, Mobile beheld)
@@ -102,7 +92,7 @@ namespace Server.Engines.PartySystem
                     beholder.Send(new MobileStatusCompact(beheld.CanBeRenamedBy(beholder), beheld));
                 }
 
-                beholder.Send(new MobileAttributesN(beheld));
+                beholder.NetState.SendMobileAttributes(beheld, true);
             }
         }
 
@@ -198,11 +188,13 @@ namespace Server.Engines.PartySystem
 
             if (mi == null)
             {
+                var ns = m.NetState;
                 Members.Add(new PartyMemberInfo(m));
                 m.Party = this;
 
                 var memberList = Packet.Acquire(new PartyMemberList(this));
-                var attrs = Packet.Acquire(new MobileAttributesN(m));
+                Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength];
+                OutgoingMobilePackets.CreateMobileAttributes(ref attrsPacket, m, true);
 
                 for (var i = 0; i < Members.Count; ++i)
                 {
@@ -213,14 +205,13 @@ namespace Server.Engines.PartySystem
                     if (f != m)
                     {
                         f.Send(new MobileStatusCompact(m.CanBeRenamedBy(f), m));
-                        f.Send(attrs);
+                        f.NetState?.Send(attrsPacket);
                         m.Send(new MobileStatusCompact(f.CanBeRenamedBy(m), f));
-                        m.Send(new MobileAttributesN(f));
+                        ns.SendMobileAttributes(f, true);
                     }
                 }
 
                 Packet.Release(memberList);
-                Packet.Release(attrs);
             }
         }
 
@@ -516,7 +507,10 @@ namespace Server.Engines.PartySystem
                 Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")];
                 buffer.InitializePacket();
 
-                var attrs = Packet.Acquire(new MobileAttributesN(m_Mobile));
+                Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength];
+                OutgoingMobilePackets.CreateMobileAttributes(ref attrsPacket, m_Mobile, true);
+
+                var ns = m_Mobile.NetState;
 
                 foreach (var mi in p.Members)
                 {
@@ -544,13 +538,11 @@ namespace Server.Engines.PartySystem
 
                         m.NetState?.Send(buffer);
                         m.Send(new MobileStatusCompact(m_Mobile.CanBeRenamedBy(m), m_Mobile));
-                        m.Send(attrs);
+                        m.NetState?.Send(attrsPacket);
                         m_Mobile.Send(new MobileStatusCompact(m.CanBeRenamedBy(m_Mobile), m));
-                        m_Mobile.Send(new MobileAttributesN(m));
+                        ns.SendMobileAttributes(m, true);
                     }
                 }
-
-                Packet.Release(attrs);
             }
         }
     }

@@ -622,7 +622,7 @@ namespace Server
         [CommandProperty(AccessLevel.GameMaster)]
         public Race Race
         {
-            get => m_Race ?? (m_Race = Race.DefaultRace);
+            get => m_Race ??= Race.DefaultRace;
             set
             {
                 var oldRace = Race;
@@ -1322,15 +1322,7 @@ namespace Server
         [Hue, CommandProperty(AccessLevel.GameMaster)]
         public virtual int Hue
         {
-            get
-            {
-                if (m_HueMod != -1)
-                {
-                    return m_HueMod;
-                }
-
-                return m_Hue;
-            }
+            get => m_HueMod != -1 ? m_HueMod : m_Hue;
             set
             {
                 var oldHue = m_Hue;
@@ -2100,7 +2092,6 @@ namespace Server
                     if (Hits < HitsMax)
                     {
                         m_HitsTimer ??= new HitsTimer(this);
-
                         m_HitsTimer.Start();
                     }
                     else if (Hits > HitsMax)
@@ -2290,7 +2281,6 @@ namespace Server
                     if (CanRegenHits)
                     {
                         m_HitsTimer ??= new HitsTimer(this);
-
                         m_HitsTimer.Start();
                     }
                     else
@@ -2850,7 +2840,7 @@ namespace Server
                 ns.Send(new MobileIncoming(ns, this, this));
                 ns.SendSupportedFeature();
                 ns.Send(new MobileUpdate(this, ns.StygianAbyss));
-                ns.Send(new MobileAttributes(this));
+                ns.SendMobileAttributes(this);
             }
 
             OnMapChange(oldMap);
@@ -3091,23 +3081,23 @@ namespace Server
                 }
                 else if (sendAll)
                 {
-                    ourState.Send(new MobileAttributes(m));
+                    ourState.SendMobileAttributes(m);
                 }
                 else if (sendAny)
                 {
                     if (sendHits)
                     {
-                        ourState.Send(new MobileHits(m));
-                    }
-
-                    if (sendStam)
-                    {
-                        ourState.Send(new MobileStam(m));
+                        ourState.SendMobileHits(m);
                     }
 
                     if (sendMana)
                     {
-                        ourState.Send(new MobileMana(m));
+                        ourState.SendMobileMana(m);
+                    }
+
+                    if (sendStam)
+                    {
+                        ourState.SendMobileStam(m);
                     }
                 }
 
@@ -3115,14 +3105,14 @@ namespace Server
                 {
                     if (Party is IParty ip)
                     {
-                        if (sendStam)
-                        {
-                            ip.OnStamChanged(this);
-                        }
-
                         if (sendMana)
                         {
                             ip.OnManaChanged(this);
+                        }
+
+                        if (sendStam)
+                        {
+                            ip.OnStamChanged(this);
                         }
                     }
                 }
@@ -3165,9 +3155,6 @@ namespace Server
                                     sendOPLUpdate || sendHair || sendFacialHair || sendHealthbarPoison ||
                                     sendHealthbarYellow))
             {
-                Mobile beholder;
-
-                Packet hitsPacket = null;
                 Packet statPacketTrue = null;
                 Packet statPacketFalse = null;
                 Packet hairPacket = null;
@@ -3183,104 +3170,111 @@ namespace Server
                 Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
                 removeEntity.InitializePacket();
 
+                Span<byte> hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
+                hitsPacket.InitializePacket();
+
                 foreach (var state in eable)
                 {
-                    beholder = state.Mobile;
+                    var beholder = state.Mobile;
 
-                    if (beholder != m && beholder.CanSee(m))
+                    if (beholder == m || !beholder.CanSee(m))
                     {
-                        if (sendRemove)
-                        {
-                            if (removeEntity[0] == 0)
-                            {
-                                OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
-                            }
-
-                            state.Send(removeEntity);
-                        }
-
-                        if (sendIncoming)
-                        {
-                            state.Send(new MobileIncoming(state, beholder, m));
-
-                            if (m.IsDeadBondedPet)
-                            {
-                                if (deadBuffer[0] == 0)
-                                {
-                                    OutgoingMobilePackets.CreateBondedStatus(deadBuffer, m.Serial, true);
-                                }
-
-                                state.Send(deadBuffer);
-                            }
-                        }
-
-                        if (sendMoving || !state.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
-                        {
-                            state.SendMobileMovingUsingCache(mobileMovingPackets, beholder, m);
-                        }
-
-                        if (state.StygianAbyss)
-                        {
-                            if (sendHealthbarPoison)
-                            {
-                                hbpPacket ??= Packet.Acquire(new HealthbarPoison(m));
-
-                                state.Send(hbpPacket);
-                            }
-
-                            if (sendHealthbarYellow)
-                            {
-                                hbyPacket ??= Packet.Acquire(new HealthbarYellow(m));
-
-                                state.Send(hbyPacket);
-                            }
-                        }
-
-                        if (sendPublicStats)
-                        {
-                            if (m.CanBeRenamedBy(beholder))
-                            {
-                                statPacketTrue ??= Packet.Acquire(new MobileStatusCompact(true, m));
-
-                                state.Send(statPacketTrue);
-                            }
-                            else
-                            {
-                                statPacketFalse ??= Packet.Acquire(new MobileStatusCompact(false, m));
-
-                                state.Send(statPacketFalse);
-                            }
-                        }
-                        else if (sendHits)
-                        {
-                            hitsPacket ??= Packet.Acquire(new MobileHitsN(m));
-
-                            state.Send(hitsPacket);
-                        }
-
-                        if (sendHair)
-                        {
-                            hairPacket ??= removeHair
-                                ? Packet.Acquire(new RemoveHair(m))
-                                : Packet.Acquire(new HairEquipUpdate(m));
-
-                            state.Send(hairPacket);
-                        }
-
-                        if (sendFacialHair)
-                        {
-                            facialhairPacket ??= removeFacialHair
-                                ? Packet.Acquire(new RemoveFacialHair(m))
-                                : Packet.Acquire(new FacialHairEquipUpdate(m));
-
-                            state.Send(facialhairPacket);
-                        }
-
-                        SendOPLPacketTo(state);
+                        continue;
                     }
+
+                    if (sendRemove)
+                    {
+                        if (removeEntity[0] == 0)
+                        {
+                            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                        }
+
+                        state.Send(removeEntity);
+                    }
+
+                    if (sendIncoming)
+                    {
+                        state.Send(new MobileIncoming(state, beholder, m));
+
+                        if (m.IsDeadBondedPet)
+                        {
+                            if (deadBuffer[0] == 0)
+                            {
+                                OutgoingMobilePackets.CreateBondedStatus(deadBuffer, m.Serial, true);
+                            }
+
+                            state.Send(deadBuffer);
+                        }
+                    }
+
+                    if (sendMoving || !state.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
+                    {
+                        state.SendMobileMovingUsingCache(mobileMovingPackets, beholder, m);
+                    }
+
+                    if (state.StygianAbyss)
+                    {
+                        if (sendHealthbarPoison)
+                        {
+                            hbpPacket ??= Packet.Acquire(new HealthbarPoison(m));
+
+                            state.Send(hbpPacket);
+                        }
+
+                        if (sendHealthbarYellow)
+                        {
+                            hbyPacket ??= Packet.Acquire(new HealthbarYellow(m));
+
+                            state.Send(hbyPacket);
+                        }
+                    }
+
+                    if (sendPublicStats)
+                    {
+                        if (m.CanBeRenamedBy(beholder))
+                        {
+                            statPacketTrue ??= Packet.Acquire(new MobileStatusCompact(true, m));
+
+                            state.Send(statPacketTrue);
+                        }
+                        else
+                        {
+                            statPacketFalse ??= Packet.Acquire(new MobileStatusCompact(false, m));
+
+                            state.Send(statPacketFalse);
+                        }
+                    }
+                    else if (sendHits)
+                    {
+                        if (hitsPacket[0] == 0)
+                        {
+                            OutgoingMobilePackets.CreateMobileHits(ref hitsPacket, m, true);
+                        }
+
+                        state.Send(hitsPacket);
+                    }
+
+                    if (sendHair)
+                    {
+                        hairPacket ??= removeHair
+                            ? Packet.Acquire(new RemoveHair(m))
+                            : Packet.Acquire(new HairEquipUpdate(m));
+
+                        state.Send(hairPacket);
+                    }
+
+                    if (sendFacialHair)
+                    {
+                        facialhairPacket ??= removeFacialHair
+                            ? Packet.Acquire(new RemoveFacialHair(m))
+                            : Packet.Acquire(new FacialHairEquipUpdate(m));
+
+                        state.Send(facialhairPacket);
+                    }
+
+                    SendOPLPacketTo(state);
                 }
 
-                Packet.Release(hitsPacket);
                 Packet.Release(statPacketTrue);
                 Packet.Release(statPacketFalse);
                 Packet.Release(hairPacket);
@@ -6652,7 +6646,6 @@ namespace Server
                 if (CanRegenHits)
                 {
                     m_HitsTimer ??= new HitsTimer(this);
-
                     m_HitsTimer.Start();
                 }
                 else

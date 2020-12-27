@@ -913,7 +913,7 @@ namespace Server.Mobiles
         public virtual TimeSpan BondingDelay => TimeSpan.FromDays(7.0);
         public virtual TimeSpan BondingAbandonDelay => TimeSpan.FromDays(1.0);
 
-        public override bool CanRegenHits => !IsDeadPet && base.CanRegenHits;
+        public override bool CanRegenHits => !IsDeadPet && !Summoned && base.CanRegenHits;
         public override bool CanRegenStam => !IsParagon && !IsDeadPet && base.CanRegenStam;
         public override bool CanRegenMana => !IsDeadPet && base.CanRegenMana;
 

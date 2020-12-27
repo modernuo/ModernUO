@@ -61,19 +61,19 @@ namespace Server.Misc
                 points += 40;
             }
 
-            if (Core.ML && from.Race == Race.Human) // Is this affected by the cap?
+            if (Core.ML && from is PlayerMobile) // does racial bonus go before/after?
             {
-                points += 2;
+                if (from.Race == Race.Human)
+                {
+                    points += 2;
+                }
+
+                points = Math.Min(points, 18);
             }
 
             if (points < 0)
             {
                 points = 0;
-            }
-
-            if (Core.ML && from is PlayerMobile) // does racial bonus go before/after?
-            {
-                points = Math.Min(points, 18);
             }
 
             if (CheckTransform(from, typeof(HorrificBeastSpell)))
@@ -86,7 +86,7 @@ namespace Server.Misc
                 points += from.Skills.Ninjitsu.Fixed / 30;
             }
 
-            return TimeSpan.FromSeconds(1.0 / (0.1 * (1 + points)));
+            return TimeSpan.FromSeconds(10.0 / (1 + points));
         }
 
         private static TimeSpan Mobile_StamRegenRate(Mobile from)
