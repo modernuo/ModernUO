@@ -1322,15 +1322,7 @@ namespace Server
         [Hue, CommandProperty(AccessLevel.GameMaster)]
         public virtual int Hue
         {
-            get
-            {
-                if (m_HueMod != -1)
-                {
-                    return m_HueMod;
-                }
-
-                return m_Hue;
-            }
+            get => m_HueMod != -1 ? m_HueMod : m_Hue;
             set
             {
                 var oldHue = m_Hue;
