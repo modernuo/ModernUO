@@ -51,7 +51,7 @@ namespace Server.Engines.PartySystem
         public void OnStamChanged(Mobile m)
         {
             Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
-            OutgoingMobilePackets.CreateMobileStam(ref p, m, true);
+            OutgoingMobilePackets.CreateMobileStam(p, m, true);
 
             for (var i = 0; i < Members.Count; ++i)
             {
@@ -68,7 +68,7 @@ namespace Server.Engines.PartySystem
         public void OnManaChanged(Mobile m)
         {
             Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
-            OutgoingMobilePackets.CreateMobileMana(ref p, m, true);
+            OutgoingMobilePackets.CreateMobileMana(p, m, true);
 
             for (var i = 0; i < Members.Count; ++i)
             {
@@ -194,7 +194,7 @@ namespace Server.Engines.PartySystem
 
                 var memberList = Packet.Acquire(new PartyMemberList(this));
                 Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength];
-                OutgoingMobilePackets.CreateMobileAttributes(ref attrsPacket, m, true);
+                OutgoingMobilePackets.CreateMobileAttributes(attrsPacket, m, true);
 
                 for (var i = 0; i < Members.Count; ++i)
                 {
@@ -508,7 +508,7 @@ namespace Server.Engines.PartySystem
                 buffer.InitializePacket();
 
                 Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength];
-                OutgoingMobilePackets.CreateMobileAttributes(ref attrsPacket, m_Mobile, true);
+                OutgoingMobilePackets.CreateMobileAttributes(attrsPacket, m_Mobile, true);
 
                 var ns = m_Mobile.NetState;
 

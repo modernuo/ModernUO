@@ -3248,7 +3248,7 @@ namespace Server
                     {
                         if (hitsPacket[0] == 0)
                         {
-                            OutgoingMobilePackets.CreateMobileHits(ref hitsPacket, m, true);
+                            OutgoingMobilePackets.CreateMobileHits(hitsPacket, m, true);
                         }
 
                         state.Send(hitsPacket);
@@ -6867,10 +6867,10 @@ namespace Server
 
             ProcessDelta();
 
-            Packet p = null;
-            // Packet pNew = null;
-
             var eable = map.GetClientsInRange(m_Location);
+
+            Span<byte> buffer = stackalloc byte[OutgoingMobilePackets.MobileAnimationPacketLength];
+            buffer.InitializePacket();
 
             foreach (var state in eable)
             {
@@ -6878,55 +6878,52 @@ namespace Server
                 {
                     state.Mobile.ProcessDelta();
 
-                    if (p == null)
+                    if (Body.IsGargoyle)
                     {
-                        if (Body.IsGargoyle)
+                        frameCount = 10;
+
+                        if (Flying)
                         {
-                            frameCount = 10;
-
-                            if (Flying)
+                            action = action switch
                             {
-                                action = action switch
-                                {
-                                    >= 9 and <= 11    => 71,
-                                    >= 12 and <= 14   => 72,
-                                    20                => 77,
-                                    31                => 71,
-                                    34                => 78,
-                                    >= 200 and <= 259 => 75,
-                                    >= 260 and <= 270 => 75,
-                                    _                 => action
-                                };
-                            }
-                            else
-                            {
-                                action = action switch
-                                {
-                                    >= 200 and <= 259 => 17,
-                                    >= 260 and <= 270 => 16,
-                                    _                 => action
-                                };
-                            }
+                                >= 9 and <= 11    => 71,
+                                >= 12 and <= 14   => 72,
+                                20                => 77,
+                                31                => 71,
+                                34                => 78,
+                                >= 200 and <= 259 => 75,
+                                >= 260 and <= 270 => 75,
+                                _                 => action
+                            };
                         }
+                        else
+                        {
+                            action = action switch
+                            {
+                                >= 200 and <= 259 => 17,
+                                >= 260 and <= 270 => 16,
+                                _                 => action
+                            };
+                        }
+                    }
 
-                        p = Packet.Acquire(
-                            new MobileAnimation(
-                                Serial,
-                                action,
-                                frameCount,
-                                repeatCount,
-                                forward,
-                                repeat,
-                                delay
-                            )
+                    if (buffer[0] == 0)
+                    {
+                        OutgoingMobilePackets.CreateMobileAnimation(
+                            buffer,
+                            Serial,
+                            action,
+                            frameCount,
+                            repeatCount,
+                            forward,
+                            repeat,
+                            delay
                         );
                     }
 
-                    state.Send(p);
+                    state.Send(buffer);
                 }
             }
-
-            Packet.Release(p);
 
             eable.Free();
         }
