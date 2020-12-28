@@ -28,6 +28,8 @@ namespace Server.Network
         public const int AttributeMaximum = 100;
         public const int MobileAttributePacketLength = 9;
         public const int MobileAttributesPacketLength = 17;
+        public const int MobileAnimationPacketLength = 14;
+        public const int NewMobileAnimationPacketLength = 10;
 
         public static void CreateBondedStatus(Span<byte> buffer, Serial serial, bool bonded)
         {
@@ -178,11 +180,11 @@ namespace Server.Network
             }
 
             Span<byte> span = stackalloc byte[MobileAttributePacketLength];
-            CreateMobileHits(ref span, m, normalize);
+            CreateMobileHits(span, m, normalize);
             ns.Send(span);
         }
 
-        public static void CreateMobileHits(ref Span<byte> buffer, Mobile m, bool normalize = false)
+        public static void CreateMobileHits(Span<byte> buffer, Mobile m, bool normalize = false)
         {
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xA1); // Packet ID
@@ -198,11 +200,11 @@ namespace Server.Network
             }
 
             Span<byte> span = stackalloc byte[MobileAttributePacketLength];
-            CreateMobileMana(ref span, m, normalize);
+            CreateMobileMana(span, m, normalize);
             ns.Send(span);
         }
 
-        public static void CreateMobileMana(ref Span<byte> buffer, Mobile m, bool normalize = false)
+        public static void CreateMobileMana(Span<byte> buffer, Mobile m, bool normalize = false)
         {
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xA2); // Packet ID
@@ -218,11 +220,11 @@ namespace Server.Network
             }
 
             Span<byte> span = stackalloc byte[MobileAttributePacketLength];
-            CreateMobileStam(ref span, m, normalize);
+            CreateMobileStam(span, m, normalize);
             ns.Send(span);
         }
 
-        public static void CreateMobileStam(ref Span<byte> buffer, Mobile m, bool normalize = false)
+        public static void CreateMobileStam(Span<byte> buffer, Mobile m, bool normalize = false)
         {
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xA3); // Packet ID
@@ -238,11 +240,11 @@ namespace Server.Network
             }
 
             Span<byte> span = stackalloc byte[MobileAttributesPacketLength];
-            CreateMobileAttributes(ref span, m, normalize);
+            CreateMobileAttributes(span, m, normalize);
             ns.Send(span);
         }
 
-        public static void CreateMobileAttributes(ref Span<byte> buffer, Mobile m, bool normalize = false)
+        public static void CreateMobileAttributes(Span<byte> buffer, Mobile m, bool normalize = false)
         {
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x2D); // Packet ID
@@ -251,6 +253,51 @@ namespace Server.Network
             writer.WriteAttribute(m.HitsMax, m.Hits, normalize);
             writer.WriteAttribute(m.ManaMax, m.Mana, normalize);
             writer.WriteAttribute(m.StamMax, m.Stam, normalize);
+        }
+
+        public static void SendMobileName(this NetState ns, Mobile m)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0x98); // Packet ID
+            writer.Write(m.Serial);
+            writer.WriteAscii(m.Name ?? "", 29);
+            writer.Write((byte)0); // Null terminator
+
+            ns.Send(ref buffer, writer.Position);
+        }
+
+        public static void CreateMobileAnimation(
+            Span<byte> buffer,
+            Serial mobile, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay
+        )
+        {
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0x6E); // Packet ID
+            writer.Write(mobile);
+            writer.Write((short)action);
+            writer.Write((short)frameCount);
+            writer.Write((short)repeatCount);
+            writer.Write(!forward); // protocol has really "reverse" but I find this more intuitive
+            writer.Write(repeat);
+            writer.Write((byte)delay);
+        }
+
+        public static void CreateNewMobileAnimation(
+            Span<byte> buffer,
+            Serial mobile, int action, int frameCount, int delay
+        )
+        {
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0xE2); // Packet ID
+            writer.Write(mobile);
+            writer.Write((short)action);
+            writer.Write((short)frameCount);
+            writer.Write((byte)delay);
         }
     }
 }

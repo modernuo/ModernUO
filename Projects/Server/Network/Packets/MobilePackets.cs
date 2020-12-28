@@ -17,45 +17,6 @@ using System.Threading;
 
 namespace Server.Network
 {
-    public sealed class MobileName : Packet
-    {
-        public MobileName(Mobile m) : base(0x98)
-        {
-            EnsureCapacity(37);
-
-            Stream.Write(m.Serial);
-            Stream.WriteAsciiFixed(m.Name ?? "", 29);
-            Stream.Write((byte)0); // Null terminator
-        }
-    }
-
-    public sealed class MobileAnimation : Packet
-    {
-        public MobileAnimation(
-            Serial mobile, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay
-        ) : base(0x6E, 14)
-        {
-            Stream.Write(mobile);
-            Stream.Write((short)action);
-            Stream.Write((short)frameCount);
-            Stream.Write((short)repeatCount);
-            Stream.Write(!forward); // protocol has really "reverse" but I find this more intuitive
-            Stream.Write(repeat);
-            Stream.Write((byte)delay);
-        }
-    }
-
-    public sealed class NewMobileAnimation : Packet
-    {
-        public NewMobileAnimation(Serial mobile, int action, int frameCount, int delay) : base(0xE2, 10)
-        {
-            Stream.Write(mobile);
-            Stream.Write((short)action);
-            Stream.Write((short)frameCount);
-            Stream.Write((byte)delay);
-        }
-    }
-
     public sealed class MobileStatusCompact : Packet
     {
         public MobileStatusCompact(bool canBeRenamed, Mobile m) : base(0x11)
