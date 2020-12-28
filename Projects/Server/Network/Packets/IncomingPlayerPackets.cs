@@ -474,7 +474,7 @@ namespace Server.Network
             }
 
             state.SendMobileUpdate(from);
-            state.Send(new MobileIncoming(state, from, from));
+            state.SendMobileIncoming(from, from);
 
             from.SendEverything();
 

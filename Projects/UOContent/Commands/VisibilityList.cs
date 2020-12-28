@@ -123,7 +123,7 @@ namespace Server.Commands
                             {
                                 if (targ.CanSee(pm))
                                 {
-                                    ns.Send(new MobileIncoming(ns, targ, pm));
+                                    ns.SendMobileIncoming(targ, pm);
 
                                     pm.SendOPLPacketTo(ns);
 
