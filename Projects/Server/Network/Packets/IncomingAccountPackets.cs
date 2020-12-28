@@ -316,12 +316,12 @@ namespace Server.Network
 
             state.Sequence = 0;
 
-            state.Send(new MobileUpdate(m, state.StygianAbyss));
-            state.Send(new MobileUpdate(m, state.StygianAbyss));
+            state.SendMobileUpdate(m);
+            state.SendMobileUpdate(m);
 
             m.CheckLightLevels(true);
 
-            state.Send(new MobileUpdate(m, state.StygianAbyss));
+            state.SendMobileUpdate(m);
 
             state.Send(new MobileIncoming(state, m, m));
 
@@ -331,7 +331,7 @@ namespace Server.Network
             m.SendEverything();
 
             state.SendSupportedFeature();
-            state.Send(new MobileUpdate(m, state.StygianAbyss));
+            state.SendMobileUpdate(m);
 
             state.SendMobileStatus(m);
             state.SendSetWarMode(m.Warmode);

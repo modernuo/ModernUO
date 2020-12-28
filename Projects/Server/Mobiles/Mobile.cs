@@ -2827,27 +2827,24 @@ namespace Server
 
                     ns.Send(SeasonChange.Instantiate(GetSeason(), true));
 
-                    ns.Send(new MobileUpdate(this, ns.StygianAbyss));
+                    ns.SendMobileUpdate(this);
                     Send(new ServerChange(m_Location, m_Map));
                 }
 
                 ns.Send(new MobileIncoming(ns, this, this));
 
-                ns.Send(new MobileUpdate(this, ns.StygianAbyss));
+                ns.SendMobileUpdate(this);
                 CheckLightLevels(true);
-                ns.Send(new MobileUpdate(this, ns.StygianAbyss));
+                ns.SendMobileUpdate(this);
             }
 
             SendEverything();
             SendIncomingPacket();
 
-            if (ns != null)
-            {
-                ns.Send(new MobileIncoming(ns, this, this));
-                ns.SendSupportedFeature();
-                ns.Send(new MobileUpdate(this, ns.StygianAbyss));
-                ns.SendMobileAttributes(this);
-            }
+            ns?.Send(new MobileIncoming(ns, this, this));
+            ns.SendSupportedFeature();
+            ns.SendMobileUpdate(this);
+            ns.SendMobileAttributes(this);
 
             OnMapChange(oldMap);
         }
@@ -3042,7 +3039,7 @@ namespace Server
                 if (sendUpdate)
                 {
                     ourState.Sequence = 0;
-                    ourState.Send(new MobileUpdate(this, ourState.StygianAbyss));
+                    ourState.SendMobileUpdate(this);
                 }
 
                 if (sendIncoming)
@@ -7513,7 +7510,7 @@ namespace Server
             if (isTeleport && m_NetState != null && (!m_NetState.HighSeas || !NoMoveHS))
             {
                 m_NetState.Sequence = 0;
-                m_NetState.Send(new MobileUpdate(this, m_NetState.StygianAbyss));
+                m_NetState.SendMobileUpdate(this);
             }
 
             var map = m_Map;
