@@ -536,5 +536,121 @@ namespace Server.Network
 
             ns.Send(ref buffer, writer.Position);
         }
+
+        public static void SendMobileIncoming(this NetState ns, Mobile beholder, Mobile beheld)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            Span<bool> layers = stackalloc bool[256];
+#if NO_LOCAL_INIT
+            layers.Clear();
+#endif
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0x78); // Packet ID
+            writer.Seek(2, SeekOrigin.Current);
+
+            var sa = ns.StygianAbyss;
+            var newPacket = ns.NewMobileIncoming;
+            var itemIdMask = newPacket ? 0xFFFF : 0x7FFF;
+
+            var hue = beheld.SolidHueOverride >= 0 ? beheld.SolidHueOverride : beheld.Hue;
+
+            writer.Write(beheld.Serial);
+            writer.Write((short)beheld.Body);
+            writer.Write((short)beheld.X);
+            writer.Write((short)beheld.Y);
+            writer.Write((sbyte)beheld.Z);
+            writer.Write((byte)beheld.Direction);
+            writer.Write((short)hue);
+            writer.Write((byte)beheld.GetPacketFlags(sa));
+            writer.Write((byte)Notoriety.Compute(beholder, beheld));
+
+            var eq = beheld.Items;
+            for (var i = 0; i < eq.Count; ++i)
+            {
+                var item = eq[i];
+                var layer = (byte)item.Layer;
+
+                if (item.Deleted || !beholder.CanSee(item) || layers[layer])
+                {
+                    continue;
+                }
+
+                layers[layer] = true;
+                hue = beheld.SolidHueOverride >= 0 ? beheld.SolidHueOverride : item.Hue;
+
+                var itemID = item.ItemID & itemIdMask;
+                var writeHue = newPacket || hue != 0;
+
+                if (!newPacket)
+                {
+                    itemID |= 0x8000;
+                }
+
+                writer.Write(item.Serial);
+                writer.Write((ushort)itemID);
+                writer.Write(layer);
+
+                if (writeHue)
+                {
+                    writer.Write((short)hue);
+                }
+            }
+
+            if (beheld.HairItemID > 0 && !layers[(int)Layer.Hair])
+            {
+                layers[(int)Layer.Hair] = true;
+                hue = beheld.SolidHueOverride >= 0 ? beheld.SolidHueOverride : beheld.HairHue;
+
+                var itemID = beheld.HairItemID & itemIdMask;
+                var writeHue = newPacket || hue != 0;
+
+                if (!newPacket)
+                {
+                    itemID |= 0x8000;
+                }
+
+                writer.Write(HairInfo.FakeSerial(beheld));
+                writer.Write((ushort)itemID);
+                writer.Write((byte)Layer.Hair);
+
+                if (writeHue)
+                {
+                    writer.Write((short)hue);
+                }
+            }
+
+            if (beheld.FacialHairItemID > 0 && !layers[(int)Layer.FacialHair])
+            {
+                layers[(int)Layer.FacialHair] = true;
+                hue = beheld.SolidHueOverride >= 0 ? beheld.SolidHueOverride : beheld.FacialHairHue;
+
+                var itemID = beheld.FacialHairItemID & itemIdMask;
+                var writeHue = newPacket || hue != 0;
+
+                if (!newPacket)
+                {
+                    itemID |= 0x8000;
+                }
+
+                writer.Write(FacialHairInfo.FakeSerial(beheld));
+                writer.Write((ushort)itemID);
+                writer.Write((byte)Layer.FacialHair);
+
+                if (writeHue)
+                {
+                    writer.Write((short)hue);
+                }
+            }
+
+            writer.Write(0); // terminate
+
+            writer.WritePacketLength();
+            ns.Send(ref buffer, writer.Position);
+        }
     }
 }

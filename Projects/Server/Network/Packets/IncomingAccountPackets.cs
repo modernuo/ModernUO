@@ -323,7 +323,7 @@ namespace Server.Network
 
             state.SendMobileUpdate(m);
 
-            state.Send(new MobileIncoming(state, m, m));
+            state.SendMobileIncoming(m, m);
 
             state.SendMobileStatus(m);
             state.SendSetWarMode(m.Warmode);
@@ -335,7 +335,7 @@ namespace Server.Network
 
             state.SendMobileStatus(m);
             state.SendSetWarMode(m.Warmode);
-            state.Send(new MobileIncoming(state, m, m));
+            state.SendMobileIncoming(m, m);
 
             state.SendLoginComplete();
             state.Send(new CurrentTime());

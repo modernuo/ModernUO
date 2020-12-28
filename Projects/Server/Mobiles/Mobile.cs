@@ -1177,9 +1177,6 @@ namespace Server
                     m_LightLevel = value;
 
                     CheckLightLevels(false);
-
-                    /*if (m_NetState != null)
-                      m_NetState.Send( new PersonalLightLevel( this ) );*/
                 }
             }
         }
@@ -2474,9 +2471,6 @@ namespace Server
             }
         }
 
-        // [CommandProperty( AccessLevel.GameMaster )]
-        // public int HairSerial { get { return HairInfo.FakeSerial( this ); } }
-
         [CommandProperty(AccessLevel.GameMaster)]
         public int FacialHairItemID
         {
@@ -2499,9 +2493,6 @@ namespace Server
                 Delta(MobileDelta.FacialHair);
             }
         }
-
-        // [CommandProperty( AccessLevel.GameMaster )]
-        // public int FacialHairSerial { get { return FacialHairInfo.FakeSerial( this ); } }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int HairHue
@@ -2831,7 +2822,7 @@ namespace Server
                     Send(new ServerChange(m_Location, m_Map));
                 }
 
-                ns.Send(new MobileIncoming(ns, this, this));
+                ns.SendMobileIncoming(this, this);
 
                 ns.SendMobileUpdate(this);
                 CheckLightLevels(true);
@@ -2841,7 +2832,7 @@ namespace Server
             SendEverything();
             SendIncomingPacket();
 
-            ns?.Send(new MobileIncoming(ns, this, this));
+            ns.SendMobileIncoming(this, this);
             ns.SendSupportedFeature();
             ns.SendMobileUpdate(this);
             ns.SendMobileAttributes(this);
@@ -3044,7 +3035,7 @@ namespace Server
 
                 if (sendIncoming)
                 {
-                    ourState.Send(new MobileIncoming(ourState, this, this));
+                    ourState.SendMobileIncoming(this, this);
                 }
 
                 if (sendMoving || !ourState.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
@@ -3201,7 +3192,7 @@ namespace Server
 
                 if (sendIncoming)
                 {
-                    state.Send(new MobileIncoming(state, beholder, this));
+                    state.SendMobileIncoming(beholder, this);
 
                     if (IsDeadBondedPet)
                     {
@@ -3635,7 +3626,7 @@ namespace Server
 
                     if (m_NetState != null && CanSee(attacker) && Utility.InUpdateRange(m_Location, attacker.m_Location))
                     {
-                        m_NetState.Send(new MobileIncoming(m_NetState, this, attacker));
+                        m_NetState.SendMobileIncoming(this, attacker);
                     }
                 }
             }
@@ -3659,7 +3650,7 @@ namespace Server
 
                     if (m_NetState != null && CanSee(defender) && Utility.InUpdateRange(m_Location, defender.m_Location))
                     {
-                        m_NetState.Send(new MobileIncoming(m_NetState, this, defender));
+                        m_NetState.SendMobileIncoming(this, defender);
                     }
                 }
             }
@@ -4072,7 +4063,7 @@ namespace Server
 
                 if (CanSee(aggressor))
                 {
-                    m_NetState?.Send(new MobileIncoming(m_NetState, this, aggressor));
+                    m_NetState.SendMobileIncoming(this, aggressor);
                 }
 
                 if (Combatant == null)
@@ -4095,7 +4086,7 @@ namespace Server
 
                 if (CanSee(aggressor))
                 {
-                    m_NetState?.Send(new MobileIncoming(m_NetState, this, aggressor));
+                    m_NetState.SendMobileIncoming(this, aggressor);
                 }
 
                 if (Combatant == null)
@@ -4134,7 +4125,7 @@ namespace Server
 
                     if (m_NetState != null && CanSee(aggressed))
                     {
-                        m_NetState.Send(new MobileIncoming(m_NetState, this, aggressed));
+                        m_NetState.SendMobileIncoming(this, aggressed);
                     }
 
                     break;
@@ -4164,7 +4155,7 @@ namespace Server
 
                     if (m_NetState != null && CanSee(aggressor))
                     {
-                        m_NetState.Send(new MobileIncoming(m_NetState, this, aggressor));
+                        m_NetState.SendMobileIncoming(this, aggressor);
                     }
 
                     break;
@@ -7160,7 +7151,7 @@ namespace Server
                 {
                     if (CanSee(m) && Utility.InUpdateRange(m_Location, m.m_Location))
                     {
-                        ns.Send(new MobileIncoming(ns, this, m));
+                        ns.SendMobileIncoming(this, m);
 
                         if (ns.StygianAbyss)
                         {
@@ -7291,7 +7282,8 @@ namespace Server
 
             foreach (var state in eable)
             {
-                if (!state.Mobile.CanSee(this))
+                var m = state.Mobile;
+                if (!m.CanSee(this))
                 {
                     if (removeEntity[0] == 0)
                     {
@@ -7302,7 +7294,7 @@ namespace Server
                 }
                 else
                 {
-                    state.Send(new MobileIncoming(state, state.Mobile, this));
+                    state.SendMobileIncoming(m, this);
 
                     if (IsDeadBondedPet)
                     {
@@ -7574,7 +7566,7 @@ namespace Server
                             if (ns != null &&
                                 (isTeleport && (!ns.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
                             {
-                                ns.Send(new MobileIncoming(m.m_NetState, m, this));
+                                ns.SendMobileIncoming( m, this);
 
                                 if (ns.StygianAbyss)
                                 {
@@ -7595,7 +7587,7 @@ namespace Server
                                 continue;
                             }
 
-                            ourState.Send(new MobileIncoming(ourState, this, m));
+                            ourState.SendMobileIncoming(this, m);
 
                             if (ourState.StygianAbyss)
                             {
@@ -7621,10 +7613,11 @@ namespace Server
                     // We're not attached to a client, so simply send an Incoming
                     foreach (var ns in eable)
                     {
-                        if ((isTeleport && (!ns.HighSeas || !NoMoveHS) ||
-                             !Utility.InUpdateRange(oldLocation, ns.Mobile.Location)) && ns.Mobile.CanSee(this))
+                        var m = ns.Mobile;
+                        if ((isTeleport && (!ns.HighSeas || !NoMoveHS) || !Utility.InUpdateRange(oldLocation, m.Location)) &&
+                            m.CanSee(this))
                         {
-                            ns.Send(new MobileIncoming(ns, ns.Mobile, this));
+                            ns.SendMobileIncoming(m, this);
 
                             if (ns.StygianAbyss)
                             {
@@ -7700,9 +7693,10 @@ namespace Server
 
             foreach (var state in eable)
             {
-                if (state.Mobile.CanSee(this))
+                var m = state.Mobile;
+                if (m.CanSee(this))
                 {
-                    state.Send(new MobileIncoming(state, state.Mobile, this));
+                    state.SendMobileIncoming(m, this);
 
                     if (state.StygianAbyss)
                     {
@@ -8628,9 +8622,7 @@ namespace Server
             }
 
             // TODO: Pets
-            if ( /*m_Player &&*/
-                !Region.AllowHarmful(this, target)
-            ) // (target.m_Player || target.Body.IsHuman) && !Region.AllowHarmful( this, target )  )
+            if (!Region.AllowHarmful(this, target))
             {
                 if (message)
                 {
