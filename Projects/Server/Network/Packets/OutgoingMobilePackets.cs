@@ -264,6 +264,7 @@ namespace Server.Network
 
             var writer = new CircularBufferWriter(buffer);
             writer.Write((byte)0x98); // Packet ID
+            writer.Write((ushort)37);
             writer.Write(m.Serial);
             writer.WriteAscii(m.Name ?? "", 29);
             writer.Write((byte)0); // Null terminator
