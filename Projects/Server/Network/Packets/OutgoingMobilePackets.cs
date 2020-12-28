@@ -380,7 +380,7 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CreateMobileStatusCompact(Span<byte> buffer, Mobile m, bool canBeRenamed) =>
+        public static void CreateMobileStatusCompact(Span<byte> buffer, Mobile m, bool canBeRenamed) =>
             CreateMobileStatus(buffer, null, m, 0, canBeRenamed);
 
         public static void SendMobileStatusCompact(this NetState ns, Mobile m, bool canBeRenamed)
@@ -391,8 +391,7 @@ namespace Server.Network
             }
 
             Span<byte> buffer = stackalloc byte[MobileStatusCompactLength];
-            int length = CreateMobileStatusCompact(buffer, m, canBeRenamed);
-            buffer = buffer.Slice(0, length);
+            CreateMobileStatusCompact(buffer, m, canBeRenamed);
 
             ns.Send(buffer);
         }

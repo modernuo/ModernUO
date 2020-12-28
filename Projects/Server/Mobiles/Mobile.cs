@@ -3162,10 +3162,10 @@ namespace Server
 
             var eable = Map.GetClientsInRange(m_Location);
 
-            Span<byte> statBufferTrue = stackalloc byte[OutgoingMobilePackets.MobileStatusMaxLength];
+            Span<byte> statBufferTrue = stackalloc byte[OutgoingMobilePackets.MobileStatusCompactLength];
             statBufferTrue.InitializePacket();
 
-            Span<byte> statBufferFalse = stackalloc byte[OutgoingMobilePackets.MobileStatusMaxLength];
+            Span<byte> statBufferFalse = stackalloc byte[OutgoingMobilePackets.MobileStatusCompactLength];
             statBufferFalse.InitializePacket();
 
             Span<byte> hbpBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength];
