@@ -201,7 +201,7 @@ namespace Server.Tests.Network
         [InlineData(ProtocolChanges.Version70610)]
         [InlineData(ProtocolChanges.Version400a)]
         [InlineData(ProtocolChanges.Version502b)]
-        public void TestMobileStatusExtended(ProtocolChanges changes)
+        public void TestMobileStatus(ProtocolChanges changes)
         {
             var beholder = new Mobile(0x1) { Name = "Random Mobile 1" };
             beholder.DefaultMobileInit();
@@ -226,6 +226,31 @@ namespace Server.Tests.Network
 
             var expected = new MobileStatus(beholder, beheld, ns).Compile();
             ns.SendMobileStatus(beholder, beheld);
+
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        }
+
+        [Theory]
+        [InlineData(ProtocolChanges.Version70610)]
+        [InlineData(ProtocolChanges.Version400a)]
+        [InlineData(ProtocolChanges.Version502b)]
+        public void TestMobileStatusExtendedSelf(ProtocolChanges changes)
+        {
+            var m = new Mobile(0x1) { Name = "Random Mobile 1" };
+            m.DefaultMobileInit();
+            m.Str = 50;
+            m.Hits = 100;
+            m.Int = 75;
+            m.Mana = 100;
+            m.Dex = 25;
+            m.Stam = 100;
+
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = changes;
+
+            var expected = new MobileStatusExtended(m, ns).Compile();
+            ns.SendMobileStatus(m, m);
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);

@@ -15,6 +15,7 @@
 
 using System;
 using System.Buffers;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Server.Network
@@ -438,7 +439,7 @@ namespace Server.Network
 
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x11); // Packet ID
-            writer.Write((ushort)43);
+            writer.Seek(2, SeekOrigin.Current);
 
             writer.Write(beheld.Serial);
 
@@ -452,6 +453,7 @@ namespace Server.Network
 
             if (version <= 0)
             {
+                writer.WritePacketLength();
                 return writer.Position;
             }
 
@@ -473,7 +475,7 @@ namespace Server.Network
             if (version >= 5)
             {
                 writer.Write((short)beheld.MaxWeight);
-                writer.Write((byte)(beheld.Race.RaceID + 1)); // Would be 0x00 if it's a non-ML enabled account but...
+                writer.Write((byte)(beheld.Race?.RaceID + 1 ?? 0)); // Would be 0x00 if it's a non-ML enabled account but...
             }
 
             writer.Write((short)beheld.StatCap);
@@ -507,6 +509,7 @@ namespace Server.Network
                 }
             }
 
+            writer.WritePacketLength();
 
             return writer.Position;
         }

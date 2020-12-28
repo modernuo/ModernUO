@@ -295,7 +295,7 @@ namespace Server.Tests.Network
             if (type >= 5)
             {
                 Stream.Write((short)m.MaxWeight);
-                Stream.Write((byte)(m.Race.RaceID + 1)); // Would be 0x00 if it's a non-ML enabled account but...
+                Stream.Write((byte)(m.Race?.RaceID + 1 ?? 0)); // Would be 0x00 if it's a non-ML enabled account but...
             }
 
             Stream.Write((short)m.StatCap);
