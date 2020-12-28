@@ -15,6 +15,7 @@
 
 using System;
 using System.Buffers;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Server.Network
@@ -31,6 +32,8 @@ namespace Server.Network
         public const int MobileAnimationPacketLength = 14;
         public const int NewMobileAnimationPacketLength = 10;
         public const int MobileHealthbarPacketLength = 12;
+        public const int MobileStatusCompactLength = 43;
+        public const int MobileStatusMaxLength = 121;
 
         public static void CreateBondedStatus(Span<byte> buffer, Serial serial, bool bonded)
         {
@@ -143,7 +146,9 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WriteAttribute(this ref SpanWriter writer, int max, int cur, bool normalize = false, bool reverse = false)
+        private static void WriteAttribute(
+            this ref SpanWriter writer, int max, int cur, bool normalize = false, bool reverse = false
+        )
         {
             if (normalize && max != 0)
             {
@@ -373,6 +378,140 @@ namespace Server.Network
             writer.Write((short)1); // Show bar
             writer.Write((short)healthbar);
             writer.Write((byte)level); // 0 is off for that bar type
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void CreateMobileStatusCompact(Span<byte> buffer, Mobile m, bool canBeRenamed) =>
+            CreateMobileStatus(buffer, null, m, 0, canBeRenamed);
+
+        public static void SendMobileStatusCompact(this NetState ns, Mobile m, bool canBeRenamed)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> buffer = stackalloc byte[MobileStatusCompactLength];
+            CreateMobileStatusCompact(buffer, m, canBeRenamed);
+
+            ns.Send(buffer);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendMobileStatus(this NetState ns, Mobile m) => ns.SendMobileStatus(m, m);
+
+        public static void SendMobileStatus(this NetState ns, Mobile beholder, Mobile beheld)
+        {
+            if (ns == null || beheld == null)
+            {
+                return;
+            }
+
+            Span<byte> buffer = stackalloc byte[MobileStatusMaxLength];
+            int version;
+
+            if (beholder != beheld)
+            {
+                version = 0;
+            }
+            else if (Core.HS && ns.ExtendedStatus)
+            {
+                version = 6;
+            }
+            else if (Core.ML && ns.SupportsExpansion(Expansion.ML))
+            {
+                version = 5;
+            }
+            else
+            {
+                version = Core.AOS ? 4 : 3;
+            }
+
+            var length = CreateMobileStatus(buffer, beholder, beheld, version, beheld.CanBeRenamedBy(beholder));
+            ns.Send(buffer.Slice(0, length));
+        }
+
+        public static int CreateMobileStatus(
+            Span<byte> buffer, Mobile beholder, Mobile beheld, int version, bool canBeRenamed
+        )
+        {
+            var name = beheld.Name ?? "";
+
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0x11); // Packet ID
+            writer.Seek(2, SeekOrigin.Current);
+
+            writer.Write(beheld.Serial);
+
+            writer.WriteAscii(name, 30);
+
+            writer.WriteAttribute(beheld.HitsMax, beheld.Hits, version == 0, true);
+
+            writer.Write(canBeRenamed);
+
+            writer.Write((byte)version);
+
+            if (version <= 0)
+            {
+                writer.WritePacketLength();
+                return writer.Position;
+            }
+
+            writer.Write(beheld.Female);
+
+            writer.Write((short)beheld.Str);
+            writer.Write((short)beheld.Dex);
+            writer.Write((short)beheld.Int);
+
+            writer.Write((short)beheld.Stam);
+            writer.Write((short)beheld.StamMax);
+            writer.Write((short)beheld.Mana);
+            writer.Write((short)beheld.ManaMax);
+
+            writer.Write(beheld.TotalGold);
+            writer.Write((short)(Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5)));
+            writer.Write((short)(Mobile.BodyWeight + beheld.TotalWeight));
+
+            if (version >= 5)
+            {
+                writer.Write((short)beheld.MaxWeight);
+                writer.Write((byte)(beheld.Race?.RaceID + 1 ?? 0)); // Would be 0x00 if it's a non-ML enabled account but...
+            }
+
+            writer.Write((short)beheld.StatCap);
+
+            writer.Write((byte)beheld.Followers);
+            writer.Write((byte)beheld.FollowersMax);
+
+            if (version >= 4)
+            {
+                writer.Write((short)beheld.FireResistance);   // Fire
+                writer.Write((short)beheld.ColdResistance);   // Cold
+                writer.Write((short)beheld.PoisonResistance); // Poison
+                writer.Write((short)beheld.EnergyResistance); // Energy
+                writer.Write((short)beheld.Luck);             // Luck
+
+                var weapon = beheld.Weapon;
+
+                int min = 0, max = 0;
+                weapon?.GetStatusDamage(beheld, out min, out max);
+                writer.Write((short)min); // Damage min
+                writer.Write((short)max); // Damage max
+
+                writer.Write(beheld.TithingPoints);
+            }
+
+            if (version >= 6)
+            {
+                for (var i = 0; i < 15; ++i)
+                {
+                    writer.Write((short)beheld.GetAOSStatus(i));
+                }
+            }
+
+            writer.WritePacketLength();
+
+            return writer.Position;
         }
     }
 }

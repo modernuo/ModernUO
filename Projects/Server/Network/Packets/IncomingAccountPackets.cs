@@ -324,16 +324,16 @@ namespace Server.Network
             state.Send(new MobileUpdate(m, state.StygianAbyss));
 
             state.Send(new MobileIncoming(state, m, m));
-            // state.Send( new MobileAttributes( m ) );
-            state.Send(new MobileStatus(m, m));
+
+            state.SendMobileStatus(m);
             state.SendSetWarMode(m.Warmode);
 
             m.SendEverything();
 
             state.SendSupportedFeature();
             state.Send(new MobileUpdate(m, state.StygianAbyss));
-            // state.Send( new MobileAttributes( m ) );
-            state.Send(new MobileStatus(m, m));
+
+            state.SendMobileStatus(m);
             state.SendSetWarMode(m.Warmode);
             state.Send(new MobileIncoming(state, m, m));
 

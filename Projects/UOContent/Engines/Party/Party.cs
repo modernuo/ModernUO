@@ -89,7 +89,7 @@ namespace Server.Engines.PartySystem
             {
                 if (!beholder.CanSee(beheld))
                 {
-                    beholder.Send(new MobileStatusCompact(beheld.CanBeRenamedBy(beholder), beheld));
+                    beholder.NetState.SendMobileStatusCompact(beheld, beheld.CanBeRenamedBy(beholder));
                 }
 
                 beholder.NetState.SendMobileAttributes(beheld, true);
@@ -204,9 +204,9 @@ namespace Server.Engines.PartySystem
 
                     if (f != m)
                     {
-                        f.Send(new MobileStatusCompact(m.CanBeRenamedBy(f), m));
+                        f.NetState.SendMobileStatusCompact(m, m.CanBeRenamedBy(f));
                         f.NetState?.Send(attrsPacket);
-                        m.Send(new MobileStatusCompact(f.CanBeRenamedBy(m), f));
+                        ns.SendMobileStatusCompact(f, f.CanBeRenamedBy(m));
                         ns.SendMobileAttributes(f, true);
                     }
                 }
@@ -537,9 +537,9 @@ namespace Server.Engines.PartySystem
                         }
 
                         m.NetState?.Send(buffer);
-                        m.Send(new MobileStatusCompact(m_Mobile.CanBeRenamedBy(m), m_Mobile));
+                        m.NetState.SendMobileStatusCompact(m_Mobile, m_Mobile.CanBeRenamedBy(m));
                         m.NetState?.Send(attrsPacket);
-                        m_Mobile.Send(new MobileStatusCompact(m.CanBeRenamedBy(m_Mobile), m));
+                        ns.SendMobileStatusCompact(m, m.CanBeRenamedBy(m_Mobile));
                         ns.SendMobileAttributes(m, true);
                     }
                 }
