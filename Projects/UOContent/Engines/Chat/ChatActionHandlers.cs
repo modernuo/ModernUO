@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Engines.Chat
 {
     public static class ChatActionHandlers

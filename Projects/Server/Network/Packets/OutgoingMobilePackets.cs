@@ -30,6 +30,7 @@ namespace Server.Network
         public const int MobileAttributesPacketLength = 17;
         public const int MobileAnimationPacketLength = 14;
         public const int NewMobileAnimationPacketLength = 10;
+        public const int MobileHealthbarPacketLength = 12;
 
         public static void CreateBondedStatus(Span<byte> buffer, Serial serial, bool bonded)
         {
@@ -326,6 +327,52 @@ namespace Server.Network
             Span<byte> span = stackalloc byte[NewMobileAnimationPacketLength];
             CreateNewMobileAnimation(span, mobile, action, frameCount, delay);
             ns.Send(span);
+        }
+
+        public static void SendMobileHealthbar(this NetState ns, Mobile m, Healthbar healthbar)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> span = stackalloc byte[MobileHealthbarPacketLength];
+            CreateMobileHealthbar(span, m, healthbar);
+            ns.Send(span);
+        }
+
+        public static void CreateMobileHealthbar(Span<byte> buffer, Mobile m, Healthbar healthbar)
+        {
+            switch (healthbar)
+            {
+                case Healthbar.Poison:
+                    {
+                        CreateMobileHealthbar(buffer, m.Serial, Healthbar.Poison, m.Poison?.Level + 1 ?? 0);
+                        break;
+                    }
+                case Healthbar.Yellow:
+                    {
+                        CreateMobileHealthbar(buffer, m.Serial, Healthbar.Yellow, m.Blessed || m.YellowHealthbar ? 1 : 0);
+                        break;
+                    }
+                default:
+                    {
+                        Console.WriteLine("Packets: Invalid Healthbar {0} in {1}", healthbar, nameof(CreateMobileHealthbar));
+                        CreateMobileHealthbar(buffer, m.Serial, Healthbar.Normal, 0);
+                        break;
+                    }
+            }
+        }
+
+        public static void CreateMobileHealthbar(Span<byte> buffer, Serial serial, Healthbar healthbar, int level)
+        {
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0x17); // Packet ID
+            writer.Write((ushort)12);
+            writer.Write(serial);
+            writer.Write((short)1); // Show bar
+            writer.Write((short)healthbar);
+            writer.Write((byte)level); // 0 is off for that bar type
         }
     }
 }

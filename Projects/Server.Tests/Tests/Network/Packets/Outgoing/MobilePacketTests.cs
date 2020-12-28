@@ -133,6 +133,47 @@ namespace Server.Tests.Network
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
+        [Theory]
+        [InlineData("None")]
+        [InlineData("Lesser")]
+        [InlineData("Lethal")]
+        public void TestHealthbarPoison(string pName)
+        {
+            var p = Poison.GetPoison(pName);
+            var m = new Mobile(0x1);
+            m.DefaultMobileInit();
+            m.Poison = p;
+
+            var expected = new HealthbarPoison(m).Compile();
+
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileHealthbar(m, Healthbar.Poison);
+
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        }
+
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(true, true)]
+        public void TestYellowBar(bool isBlessed, bool isYellowHealth)
+        {
+            var m = new Mobile(0x1);
+            m.DefaultMobileInit();
+            m.Blessed = isBlessed;
+            m.YellowHealthbar = isYellowHealth;
+
+            var expected = new HealthbarYellow(m).Compile();
+
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileHealthbar(m, Healthbar.Yellow);
+
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        }
+
         [Fact]
         public void TestMobileStatusCompact()
         {
@@ -276,51 +317,6 @@ namespace Server.Tests.Network
             expectedData.Slice(1, 2).Write((ushort)pos); // Length
 
             expectedData = expectedData.Slice(0, pos);
-            AssertThat.Equal(data, expectedData);
-        }
-
-        [Theory, InlineData("None"), InlineData("Lesser"), InlineData("Lethal")]
-        public void TestHealthbarPoison(string pName)
-        {
-            var p = Poison.GetPoison(pName);
-            var m = new Mobile(0x1);
-            m.DefaultMobileInit();
-            m.Poison = p;
-
-            var data = new HealthbarPoison(m).Compile();
-
-            Span<byte> expectedData = stackalloc byte[12];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0x17); // Packet ID
-            expectedData.Write(ref pos, (ushort)12); // Length
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.Write(ref pos, 0x10001); // Show Bar?, Poison Bar
-            expectedData.Write(ref pos, (byte)((p?.Level ?? -1) + 1));
-
-            AssertThat.Equal(data, expectedData);
-            Assert.Equal(p?.Level, m.Poison?.Level);
-        }
-
-        [Theory, InlineData(false, false), InlineData(true, false), InlineData(false, true), InlineData(true, true)]
-        public void TestYellowBar(bool isBlessed, bool isYellowHealth)
-        {
-            var m = new Mobile(0x1);
-            m.DefaultMobileInit();
-            m.Blessed = isBlessed;
-            m.YellowHealthbar = isYellowHealth;
-
-            var data = new HealthbarYellow(m).Compile();
-
-            Span<byte> expectedData = stackalloc byte[12];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0x17); // Packet ID
-            expectedData.Write(ref pos, (ushort)12); // Length
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.Write(ref pos, 0x10002); // Show Bar?, Yellow Bar
-            expectedData.Write(ref pos, isBlessed || isYellowHealth);
-
             AssertThat.Equal(data, expectedData);
         }
 

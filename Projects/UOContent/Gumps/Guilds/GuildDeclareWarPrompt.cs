@@ -1,4 +1,3 @@
-using System.Linq;
 using Server.Guilds;
 using Server.Prompts;
 

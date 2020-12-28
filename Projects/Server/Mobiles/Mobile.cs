@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using System.Text;
 using Server.Accounting;
 using Server.Buffers;
 using Server.ContextMenus;
@@ -343,6 +342,13 @@ namespace Server
         HealthbarPoison = 0x01000000,
 
         Attributes = 0x0000001C
+    }
+
+    public enum Healthbar
+    {
+        Normal,
+        Poison,
+        Yellow
     }
 
     public enum AccessLevel
@@ -2978,17 +2984,6 @@ namespace Server
                 sendIncoming = true;
             }
 
-            /*if ((delta & MobileDelta.Hue) != 0)
-              {
-                sendNonlocalIncoming = true;
-                sendUpdate = true;
-              }
-              else if ((delta & (MobileDelta.Direction | MobileDelta.Body)) != 0)
-              {
-                sendNonlocalMoving = true;
-                sendUpdate = true;
-              }
-              else*/
             if ((delta & (MobileDelta.Flags | MobileDelta.Noto)) != 0)
             {
                 sendMoving = true;
@@ -3066,12 +3061,12 @@ namespace Server
                 {
                     if (sendHealthbarPoison)
                     {
-                        ourState.Send(new HealthbarPoison(m));
+                        ourState.SendMobileHealthbar(m, Healthbar.Poison);
                     }
 
                     if (sendHealthbarYellow)
                     {
-                        ourState.Send(new HealthbarYellow(m));
+                        ourState.SendMobileHealthbar(m, Healthbar.Yellow);
                     }
                 }
 
@@ -3164,6 +3159,12 @@ namespace Server
 
                 var eable = m.Map.GetClientsInRange(m.m_Location);
 
+                Span<byte> hbpBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength];
+                hbpBuffer.InitializePacket();
+
+                Span<byte> hbyBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength];
+                hbyBuffer.InitializePacket();
+
                 Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
                 deadBuffer.InitializePacket();
 
@@ -3216,14 +3217,20 @@ namespace Server
                     {
                         if (sendHealthbarPoison)
                         {
-                            hbpPacket ??= Packet.Acquire(new HealthbarPoison(m));
+                            if (hbpBuffer[0] == 0)
+                            {
+                                OutgoingMobilePackets.CreateMobileHealthbar(hbpBuffer, m, Healthbar.Poison);
+                            }
 
                             state.Send(hbpPacket);
                         }
 
                         if (sendHealthbarYellow)
                         {
-                            hbyPacket ??= Packet.Acquire(new HealthbarYellow(m));
+                            if (hbyBuffer[0] == 0)
+                            {
+                                OutgoingMobilePackets.CreateMobileHealthbar(hbyBuffer, m, Healthbar.Yellow);
+                            }
 
                             state.Send(hbyPacket);
                         }
@@ -7150,15 +7157,8 @@ namespace Server
 
                         if (ns.StygianAbyss)
                         {
-                            if (m.Poisoned)
-                            {
-                                ns.Send(new HealthbarPoison(m));
-                            }
-
-                            if (m.Blessed || m.YellowHealthbar)
-                            {
-                                ns.Send(new HealthbarYellow(m));
-                            }
+                            ns.SendMobileHealthbar(m, Healthbar.Poison);
+                            ns.SendMobileHealthbar(m, Healthbar.Yellow);
                         }
 
                         if (m.IsDeadBondedPet)
@@ -7562,27 +7562,25 @@ namespace Server
                             }
 
                             var inOldRange = Utility.InUpdateRange(oldLocation, m.m_Location);
+                            var ns = m.m_NetState;
 
-                            if (m.m_NetState != null &&
-                                (isTeleport && (!m.m_NetState.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
+                            if (ns != null &&
+                                (isTeleport && (!ns.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
                             {
-                                m.m_NetState.Send(new MobileIncoming(m.m_NetState, m, this));
+                                ns.Send(new MobileIncoming(m.m_NetState, m, this));
 
-                                if (m.m_NetState.StygianAbyss)
+                                if (ns.StygianAbyss)
                                 {
-                                    // if (m_Poison != null)
-                                    m.m_NetState.Send(new HealthbarPoison(this));
-
-                                    // if (m_Blessed || m_YellowHealthbar)
-                                    m.m_NetState.Send(new HealthbarYellow(this));
+                                    ns.SendMobileHealthbar(this, Healthbar.Poison);
+                                    ns.SendMobileHealthbar(this, Healthbar.Yellow);
                                 }
 
                                 if (IsDeadBondedPet)
                                 {
-                                    m.m_NetState.SendBondedStatus(Serial, true);
+                                    ns.SendBondedStatus(Serial, true);
                                 }
 
-                                SendOPLPacketTo(m.m_NetState);
+                                SendOPLPacketTo(ns);
                             }
 
                             if (inOldRange || !CanSee(m))
@@ -7594,11 +7592,8 @@ namespace Server
 
                             if (ourState.StygianAbyss)
                             {
-                                // if (m.Poisoned)
-                                ourState.Send(new HealthbarPoison(m));
-
-                                // if (m.Blessed || m.YellowHealthbar)
-                                ourState.Send(new HealthbarYellow(m));
+                                ourState.SendMobileHealthbar(m, Healthbar.Poison);
+                                ourState.SendMobileHealthbar(m, Healthbar.Yellow);
                             }
 
                             if (m.IsDeadBondedPet)
@@ -7626,11 +7621,8 @@ namespace Server
 
                             if (ns.StygianAbyss)
                             {
-                                // if (m_Poison != null)
-                                ns.Send(new HealthbarPoison(this));
-
-                                // if (m_Blessed || m_YellowHealthbar)
-                                ns.Send(new HealthbarYellow(this));
+                                ns.SendMobileHealthbar(this, Healthbar.Poison);
+                                ns.SendMobileHealthbar(this, Healthbar.Yellow);
                             }
 
                             if (IsDeadBondedPet)
@@ -7707,15 +7699,8 @@ namespace Server
 
                     if (state.StygianAbyss)
                     {
-                        if (m_Poison != null)
-                        {
-                            state.Send(new HealthbarPoison(this));
-                        }
-
-                        if (m_Blessed || m_YellowHealthbar)
-                        {
-                            state.Send(new HealthbarYellow(this));
-                        }
+                        state.SendMobileHealthbar(this, Healthbar.Poison);
+                        state.SendMobileHealthbar(this, Healthbar.Yellow);
                     }
 
                     if (IsDeadBondedPet)

@@ -259,52 +259,6 @@ namespace Server.Network
         }
     }
 
-    public sealed class HealthbarPoison : Packet
-    {
-        public HealthbarPoison(Mobile m) : base(0x17)
-        {
-            EnsureCapacity(12);
-
-            Stream.Write(m.Serial);
-            Stream.Write((short)1); // Show Bar?
-
-            Stream.Write((short)1); // Poison Bar
-
-            var p = m.Poison;
-
-            if (p != null)
-            {
-                Stream.Write((byte)(p.Level + 1));
-            }
-            else
-            {
-                Stream.Write((byte)0);
-            }
-        }
-    }
-
-    public sealed class HealthbarYellow : Packet
-    {
-        public HealthbarYellow(Mobile m) : base(0x17)
-        {
-            EnsureCapacity(12);
-
-            Stream.Write(m.Serial);
-            Stream.Write((short)1);
-
-            Stream.Write((short)2);
-
-            if (m.Blessed || m.YellowHealthbar)
-            {
-                Stream.Write((byte)1);
-            }
-            else
-            {
-                Stream.Write((byte)0);
-            }
-        }
-    }
-
     public sealed class MobileUpdate : Packet
     {
         public MobileUpdate(Mobile m, bool stygianAbyss) : base(0x20, 19)
