@@ -17,30 +17,6 @@ using System.Threading;
 
 namespace Server.Network
 {
-    public sealed class MobileUpdate : Packet
-    {
-        public MobileUpdate(Mobile m, bool stygianAbyss) : base(0x20, 19)
-        {
-            var hue = m.Hue;
-
-            if (m.SolidHueOverride >= 0)
-            {
-                hue = m.SolidHueOverride;
-            }
-
-            Stream.Write(m.Serial);
-            Stream.Write((short)m.Body);
-            Stream.Write((byte)0);
-            Stream.Write((short)hue);
-            Stream.Write((byte)m.GetPacketFlags(stygianAbyss));
-            Stream.Write((short)m.X);
-            Stream.Write((short)m.Y);
-            Stream.Write((short)0);
-            Stream.Write((byte)m.Direction);
-            Stream.Write((sbyte)m.Z);
-        }
-    }
-
     public sealed class MobileIncoming : Packet
     {
         private static readonly ThreadLocal<int[]> m_DupedLayersTL = new(() => new int[256]);

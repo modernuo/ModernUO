@@ -473,8 +473,7 @@ namespace Server.Network
                 return;
             }
 
-            state.Send(new MobileUpdate(from, state.StygianAbyss));
-
+            state.SendMobileUpdate(from);
             state.Send(new MobileIncoming(state, from, from));
 
             from.SendEverything();

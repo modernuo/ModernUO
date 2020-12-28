@@ -513,5 +513,28 @@ namespace Server.Network
 
             return writer.Position;
         }
+
+        public static void SendMobileUpdate(this NetState ns, Mobile m)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0x20); // Packet ID
+            writer.Write(m.Serial);
+            writer.Write((short)m.Body);
+            writer.Write((byte)0);
+            writer.Write((short)(m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue));
+            writer.Write((byte)m.GetPacketFlags(ns.StygianAbyss));
+            writer.Write((short)m.X);
+            writer.Write((short)m.Y);
+            writer.Write((short)0);
+            writer.Write((byte)m.Direction);
+            writer.Write((sbyte)m.Z);
+
+            ns.Send(ref buffer, writer.Position);
+        }
     }
 }

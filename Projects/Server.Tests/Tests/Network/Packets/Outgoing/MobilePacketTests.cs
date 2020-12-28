@@ -256,76 +256,23 @@ namespace Server.Tests.Network
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestMobileUpdate()
+        [Theory]
+        [InlineData(ProtocolChanges.None, 0)]
+        [InlineData(ProtocolChanges.StygianAbyss, 100)]
+        public void TestMobileUpdate(ProtocolChanges changes, int solidHueOverride)
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
+            m.SolidHueOverride = solidHueOverride;
 
-            var data = new MobileUpdate(m, true).Compile();
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = changes;
 
-            Span<byte> expectedData = stackalloc byte[19];
-            var pos = 0;
+            var expected = new MobileUpdate(m, ns.StygianAbyss).Compile();
+            ns.SendMobileUpdate(m);
 
-            var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
-
-            expectedData.Write(ref pos, (byte)0x20); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.Write(ref pos, (ushort)m.Body);
-#if NO_LOCAL_INIT
-             expectedData.Write(ref pos, (byte)0); // Unknown
-#else
-            pos++;
-#endif
-            expectedData.Write(ref pos, (ushort)hue);
-            expectedData.Write(ref pos, (byte)m.GetPacketFlags(true));
-            expectedData.Write(ref pos, (ushort)m.X);
-            expectedData.Write(ref pos, (ushort)m.Y);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (ushort)2); // Unknown
-#else
-            pos += 2;
-#endif
-            expectedData.Write(ref pos, (byte)m.Direction);
-            expectedData.Write(ref pos, (byte)m.Z);
-
-            AssertThat.Equal(data, expectedData);
-        }
-
-        [Fact]
-        public void TestMobileUpdateOld()
-        {
-            var m = new Mobile(0x1);
-            m.DefaultMobileInit();
-
-            var data = new MobileUpdate(m, false).Compile();
-
-            Span<byte> expectedData = stackalloc byte[19];
-            var pos = 0;
-
-            var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
-
-            expectedData.Write(ref pos, (byte)0x20); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.Write(ref pos, (ushort)m.Body);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0); // Unknown
-#else
-            pos++;
-#endif
-            expectedData.Write(ref pos, (ushort)hue);
-            expectedData.Write(ref pos, (byte)m.GetPacketFlags(false));
-            expectedData.Write(ref pos, (ushort)m.X);
-            expectedData.Write(ref pos, (ushort)m.Y);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (ushort)2); // Unknown
-#else
-            pos += 2;
-#endif
-            expectedData.Write(ref pos, (byte)m.Direction);
-            expectedData.Write(ref pos, (byte)m.Z);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Theory]
