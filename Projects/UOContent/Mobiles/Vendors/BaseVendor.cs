@@ -953,8 +953,7 @@ namespace Server.Mobiles
             from.NetState.SendVendorBuyContent(list);
             from.NetState.SendVendorBuyList(this, list);
             from.NetState.SendDisplayBuyList(Serial);
-
-            from.Send(new MobileStatusExtended(from)); // make sure their gold amount is sent
+            from.NetState.SendMobileStatus(from); // make sure their gold amount is sent
 
             for (var i = 0; i < opls.Count; ++i)
             {

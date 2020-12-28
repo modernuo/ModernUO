@@ -17,7 +17,7 @@ namespace Server
             var from704565 = from.NetState?.NewSecureTrading == true;
             var to704565 = to.NetState?.NewSecureTrading == true;
 
-            from.Send(new MobileStatus(from, to));
+            from.NetState.SendMobileStatus(from, to);
             from.NetState.SendUpdateSecureTrade(From.Container, false, false);
             from.NetState.SendSecureTradeEquip(To.Container, to);
 
@@ -37,7 +37,7 @@ namespace Server
                 );
             }
 
-            to.Send(new MobileStatus(to, from));
+            to.NetState.SendMobileStatus(to, from);
             to.NetState.SendUpdateSecureTrade(To.Container, false, false);
             to.NetState.SendSecureTradeEquip(From.Container, from);
 

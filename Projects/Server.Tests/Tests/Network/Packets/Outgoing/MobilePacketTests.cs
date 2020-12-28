@@ -174,37 +174,27 @@ namespace Server.Tests.Network
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestMobileStatusCompact()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestMobileStatusCompact(bool canBeRenamed)
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var canBeRenamed = false;
+            var expected = new MobileStatusCompact(canBeRenamed, m).Compile();
 
-            var data = new MobileStatusCompact(canBeRenamed, m).Compile();
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileStatusCompact(m, canBeRenamed);
 
-            Span<byte> expectedData = stackalloc byte[43];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0x11);                  // Packet ID
-            expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
-
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.WriteAsciiFixed(ref pos, m.Name ?? "", 30);
-
-            expectedData.WriteReverseAttribute(ref pos, m.Hits, m.HitsMax, true);
-            expectedData.Write(ref pos, canBeRenamed);
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0); // type
-#endif
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory, InlineData(ProtocolChanges.Version70610), InlineData(ProtocolChanges.Version400a),
-         InlineData(ProtocolChanges.Version502b)]
+        [Theory]
+        [InlineData(ProtocolChanges.Version70610)]
+        [InlineData(ProtocolChanges.Version400a)]
+        [InlineData(ProtocolChanges.Version502b)]
         public void TestMobileStatusExtended(ProtocolChanges changes)
         {
             var beholder = new Mobile(0x1)
@@ -219,105 +209,14 @@ namespace Server.Tests.Network
             };
             beheld.DefaultMobileInit();
 
-            var ns = new NetState(null)
-            {
-                ProtocolChanges = changes
-            };
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = changes;
 
-            var data = new MobileStatus(beholder, beheld, ns).Compile();
+            var expected = new MobileStatus(beholder, beheld, ns).Compile();
+            ns.SendMobileStatus(beholder, beheld);
 
-            Span<byte> expectedData = stackalloc byte[121]; // Max Size
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0x11);
-            pos += 2; // Length
-
-            int type;
-            var notSelf = beholder != beheld;
-
-            if (notSelf)
-            {
-                type = 0;
-            }
-            else if (Core.HS && ns.ExtendedStatus)
-            {
-                type = 6;
-            }
-            else if (Core.ML && ns.SupportsExpansion(Expansion.ML))
-            {
-                type = 5;
-            }
-            else
-            {
-                type = Core.AOS ? 4 : 3;
-            }
-
-            expectedData.Write(ref pos, beheld.Serial);
-            expectedData.WriteAsciiFixed(ref pos, beheld.Name, 30);
-
-            expectedData.WriteReverseAttribute(ref pos, beheld.Hits, beheld.HitsMax, notSelf);
-
-            expectedData.Write(ref pos, beheld.CanBeRenamedBy(beheld));
-            expectedData.Write(ref pos, (byte)type);
-
-            if (type > 0)
-            {
-                expectedData.Write(ref pos, beheld.Female);
-                expectedData.Write(ref pos, (ushort)beheld.Str);
-                expectedData.Write(ref pos, (ushort)beheld.Dex);
-                expectedData.Write(ref pos, (ushort)beheld.Int);
-
-                expectedData.WriteReverseAttribute(ref pos, beheld.Stam, beheld.StamMax, notSelf);
-                expectedData.WriteReverseAttribute(ref pos, beheld.Mana, beheld.ManaMax, notSelf);
-
-                expectedData.Write(ref pos, beheld.TotalGold);
-                expectedData.Write(
-                    ref pos,
-                    (ushort)(Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5))
-                );
-                expectedData.Write(ref pos, (ushort)(Mobile.BodyWeight + beheld.TotalWeight));
-
-                if (type >= 5)
-                {
-                    expectedData.Write(ref pos, (ushort)beheld.MaxWeight);
-                    expectedData.Write(ref pos, (byte)(beheld.Race.RaceID + 1)); // 0x00 for a non-ML enabled account
-                }
-
-                expectedData.Write(ref pos, (ushort)beheld.StatCap);
-                expectedData.Write(ref pos, (byte)beheld.Followers);
-                expectedData.Write(ref pos, (byte)beheld.FollowersMax);
-
-                if (type >= 4)
-                {
-                    expectedData.Write(ref pos, (ushort)beheld.FireResistance);
-                    expectedData.Write(ref pos, (ushort)beheld.ColdResistance);
-                    expectedData.Write(ref pos, (ushort)beheld.PoisonResistance);
-                    expectedData.Write(ref pos, (ushort)beheld.EnergyResistance);
-                    expectedData.Write(ref pos, (ushort)beheld.Luck);
-                }
-
-                var min = 0;
-                var max = 0;
-                beheld.Weapon?.GetStatusDamage(beheld, out min, out max);
-
-                expectedData.Write(ref pos, (ushort)min);
-                expectedData.Write(ref pos, (ushort)max);
-
-                expectedData.Write(ref pos, beheld.TithingPoints);
-
-                if (type >= 6)
-                {
-                    for (var i = 0; i < 15; ++i)
-                    {
-                        expectedData.Write(ref pos, (ushort)beheld.GetAOSStatus(i));
-                    }
-                }
-            }
-
-            expectedData.Slice(1, 2).Write((ushort)pos); // Length
-
-            expectedData = expectedData.Slice(0, pos);
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]

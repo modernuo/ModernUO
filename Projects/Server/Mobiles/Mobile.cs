@@ -2920,9 +2920,7 @@ namespace Server
 
         public virtual void ProcessDelta()
         {
-            var m = this;
-            var delta = m.m_DeltaFlags;
-
+            var delta = m_DeltaFlags;
             if (delta == MobileDelta.None)
             {
                 return;
@@ -2930,8 +2928,8 @@ namespace Server
 
             var attrs = delta & MobileDelta.Attributes;
 
-            m.m_DeltaFlags = MobileDelta.None;
-            m.m_InDeltaQueue = false;
+            m_DeltaFlags = MobileDelta.None;
+            m_InDeltaQueue = false;
 
             bool sendHits = false, sendStam = false, sendMana = false, sendAll = false, sendAny = false;
             bool sendIncoming = false, sendNonlocalIncoming = false;
@@ -3016,7 +3014,7 @@ namespace Server
 
             if ((delta & MobileDelta.Hair) != 0)
             {
-                if (m.HairItemID <= 0)
+                if (HairItemID <= 0)
                 {
                     removeHair = true;
                 }
@@ -3026,7 +3024,7 @@ namespace Server
 
             if ((delta & MobileDelta.FacialHair) != 0)
             {
-                if (m.FacialHairItemID <= 0)
+                if (FacialHairItemID <= 0)
                 {
                     removeFacialHair = true;
                 }
@@ -3037,62 +3035,62 @@ namespace Server
             Span<byte> mobileMovingPackets = stackalloc byte[OutgoingMobilePackets.MobileMovingPacketCacheLength];
             mobileMovingPackets.InitializePackets(OutgoingMobilePackets.MobileMovingPacketLength);
 
-            var ourState = m.m_NetState;
+            var ourState = m_NetState;
 
             if (ourState != null)
             {
                 if (sendUpdate)
                 {
                     ourState.Sequence = 0;
-                    ourState.Send(new MobileUpdate(m, ourState.StygianAbyss));
+                    ourState.Send(new MobileUpdate(this, ourState.StygianAbyss));
                 }
 
                 if (sendIncoming)
                 {
-                    ourState.Send(new MobileIncoming(ourState, m, m));
+                    ourState.Send(new MobileIncoming(ourState, this, this));
                 }
 
                 if (sendMoving || !ourState.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
                 {
-                    ourState.SendMobileMovingUsingCache(mobileMovingPackets, m, m);
+                    ourState.SendMobileMovingUsingCache(mobileMovingPackets, this, this);
                 }
 
                 if (ourState.StygianAbyss)
                 {
                     if (sendHealthbarPoison)
                     {
-                        ourState.SendMobileHealthbar(m, Healthbar.Poison);
+                        ourState.SendMobileHealthbar(this, Healthbar.Poison);
                     }
 
                     if (sendHealthbarYellow)
                     {
-                        ourState.SendMobileHealthbar(m, Healthbar.Yellow);
+                        ourState.SendMobileHealthbar(this, Healthbar.Yellow);
                     }
                 }
 
                 if (sendPublicStats || sendPrivateStats)
                 {
-                    ourState.Send(new MobileStatusExtended(m, m_NetState));
+                    ourState.SendMobileStatus(this);
                 }
                 else if (sendAll)
                 {
-                    ourState.SendMobileAttributes(m);
+                    ourState.SendMobileAttributes(this);
                 }
                 else if (sendAny)
                 {
                     if (sendHits)
                     {
-                        ourState.SendMobileHits(m);
+                        ourState.SendMobileHits(this);
                     }
 
                     if (sendMana)
                     {
-                        ourState.SendMobileMana(m);
+                        ourState.SendMobileMana(this);
                     }
 
                     if (sendStam)
                     {
-                        ourState.SendMobileStam(m);
+                        ourState.SendMobileStam(this);
                     }
                 }
 
@@ -3116,11 +3114,11 @@ namespace Server
                 {
                     if (removeHair)
                     {
-                        ourState.Send(new RemoveHair(m));
+                        ourState.Send(new RemoveHair(this));
                     }
                     else
                     {
-                        ourState.Send(new HairEquipUpdate(m));
+                        ourState.Send(new HairEquipUpdate(this));
                     }
                 }
 
@@ -3128,11 +3126,11 @@ namespace Server
                 {
                     if (removeFacialHair)
                     {
-                        ourState.Send(new RemoveFacialHair(m));
+                        ourState.Send(new RemoveFacialHair(this));
                     }
                     else
                     {
-                        ourState.Send(new FacialHairEquipUpdate(m));
+                        ourState.Send(new FacialHairEquipUpdate(this));
                     }
                 }
 
@@ -3142,155 +3140,167 @@ namespace Server
                 }
             }
 
+            // TODO: Is it even valid to send packets to our state while we have a null map? Look into failing fast
+            if (m_Map == null)
+            {
+                return;
+            }
+
             sendMoving = sendMoving || sendNonlocalMoving;
             sendIncoming = sendIncoming || sendNonlocalIncoming;
             sendHits = sendHits || sendAll;
 
-            if (m.m_Map != null && (sendRemove || sendIncoming || sendPublicStats || sendHits || sendMoving ||
-                                    sendOPLUpdate || sendHair || sendFacialHair || sendHealthbarPoison ||
-                                    sendHealthbarYellow))
+            if (!(sendRemove || sendIncoming || sendPublicStats || sendHits || sendMoving ||
+                  sendOPLUpdate || sendHair || sendFacialHair || sendHealthbarPoison ||
+                  sendHealthbarYellow))
             {
-                Packet statPacketTrue = null;
-                Packet statPacketFalse = null;
-                Packet hairPacket = null;
-                Packet facialhairPacket = null;
-                Packet hbpPacket = null;
-                Packet hbyPacket = null;
+                return;
+            }
 
-                var eable = m.Map.GetClientsInRange(m.m_Location);
+            Packet hairPacket = null;
+            Packet facialhairPacket = null;
 
-                Span<byte> hbpBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength];
-                hbpBuffer.InitializePacket();
+            var eable = Map.GetClientsInRange(m_Location);
 
-                Span<byte> hbyBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength];
-                hbyBuffer.InitializePacket();
+            Span<byte> statBufferTrue = stackalloc byte[OutgoingMobilePackets.MobileStatusMaxLength];
+            statBufferTrue.InitializePacket();
 
-                Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
-                deadBuffer.InitializePacket();
+            Span<byte> statBufferFalse = stackalloc byte[OutgoingMobilePackets.MobileStatusMaxLength];
+            statBufferFalse.InitializePacket();
 
-                Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                removeEntity.InitializePacket();
+            Span<byte> hbpBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength];
+            hbpBuffer.InitializePacket();
 
-                Span<byte> hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
-                hitsPacket.InitializePacket();
+            Span<byte> hbyBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength];
+            hbyBuffer.InitializePacket();
 
-                foreach (var state in eable)
+            Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
+            deadBuffer.InitializePacket();
+
+            Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
+            removeEntity.InitializePacket();
+
+            Span<byte> hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
+            hitsPacket.InitializePacket();
+
+            foreach (var state in eable)
+            {
+                var beholder = state.Mobile;
+
+                if (beholder == this || !beholder.CanSee(this))
                 {
-                    var beholder = state.Mobile;
-
-                    if (beholder == m || !beholder.CanSee(m))
-                    {
-                        continue;
-                    }
-
-                    if (sendRemove)
-                    {
-                        if (removeEntity[0] == 0)
-                        {
-                            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
-                        }
-
-                        state.Send(removeEntity);
-                    }
-
-                    if (sendIncoming)
-                    {
-                        state.Send(new MobileIncoming(state, beholder, m));
-
-                        if (m.IsDeadBondedPet)
-                        {
-                            if (deadBuffer[0] == 0)
-                            {
-                                OutgoingMobilePackets.CreateBondedStatus(deadBuffer, m.Serial, true);
-                            }
-
-                            state.Send(deadBuffer);
-                        }
-                    }
-
-                    if (sendMoving || !state.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
-                    {
-                        state.SendMobileMovingUsingCache(mobileMovingPackets, beholder, m);
-                    }
-
-                    if (state.StygianAbyss)
-                    {
-                        if (sendHealthbarPoison)
-                        {
-                            if (hbpBuffer[0] == 0)
-                            {
-                                OutgoingMobilePackets.CreateMobileHealthbar(hbpBuffer, m, Healthbar.Poison);
-                            }
-
-                            state.Send(hbpPacket);
-                        }
-
-                        if (sendHealthbarYellow)
-                        {
-                            if (hbyBuffer[0] == 0)
-                            {
-                                OutgoingMobilePackets.CreateMobileHealthbar(hbyBuffer, m, Healthbar.Yellow);
-                            }
-
-                            state.Send(hbyPacket);
-                        }
-                    }
-
-                    if (sendPublicStats)
-                    {
-                        if (m.CanBeRenamedBy(beholder))
-                        {
-                            statPacketTrue ??= Packet.Acquire(new MobileStatusCompact(true, m));
-
-                            state.Send(statPacketTrue);
-                        }
-                        else
-                        {
-                            statPacketFalse ??= Packet.Acquire(new MobileStatusCompact(false, m));
-
-                            state.Send(statPacketFalse);
-                        }
-                    }
-                    else if (sendHits)
-                    {
-                        if (hitsPacket[0] == 0)
-                        {
-                            OutgoingMobilePackets.CreateMobileHits(hitsPacket, m, true);
-                        }
-
-                        state.Send(hitsPacket);
-                    }
-
-                    if (sendHair)
-                    {
-                        hairPacket ??= removeHair
-                            ? Packet.Acquire(new RemoveHair(m))
-                            : Packet.Acquire(new HairEquipUpdate(m));
-
-                        state.Send(hairPacket);
-                    }
-
-                    if (sendFacialHair)
-                    {
-                        facialhairPacket ??= removeFacialHair
-                            ? Packet.Acquire(new RemoveFacialHair(m))
-                            : Packet.Acquire(new FacialHairEquipUpdate(m));
-
-                        state.Send(facialhairPacket);
-                    }
-
-                    SendOPLPacketTo(state);
+                    continue;
                 }
 
-                Packet.Release(statPacketTrue);
-                Packet.Release(statPacketFalse);
-                Packet.Release(hairPacket);
-                Packet.Release(facialhairPacket);
-                Packet.Release(hbpPacket);
-                Packet.Release(hbyPacket);
+                if (sendRemove)
+                {
+                    if (removeEntity[0] == 0)
+                    {
+                        OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+                    }
 
-                eable.Free();
+                    state.Send(removeEntity);
+                }
+
+                if (sendIncoming)
+                {
+                    state.Send(new MobileIncoming(state, beholder, this));
+
+                    if (IsDeadBondedPet)
+                    {
+                        if (deadBuffer[0] == 0)
+                        {
+                            OutgoingMobilePackets.CreateBondedStatus(deadBuffer, Serial, true);
+                        }
+
+                        state.Send(deadBuffer);
+                    }
+                }
+
+                if (sendMoving || !state.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
+                {
+                    state.SendMobileMovingUsingCache(mobileMovingPackets, beholder, this);
+                }
+
+                if (state.StygianAbyss)
+                {
+                    if (sendHealthbarPoison)
+                    {
+                        if (hbpBuffer[0] == 0)
+                        {
+                            OutgoingMobilePackets.CreateMobileHealthbar(hbpBuffer, this, Healthbar.Poison);
+                        }
+
+                        state.Send(hbpBuffer);
+                    }
+
+                    if (sendHealthbarYellow)
+                    {
+                        if (hbyBuffer[0] == 0)
+                        {
+                            OutgoingMobilePackets.CreateMobileHealthbar(hbyBuffer, this, Healthbar.Yellow);
+                        }
+
+                        state.Send(hbyBuffer);
+                    }
+                }
+
+                if (sendPublicStats)
+                {
+                    if (CanBeRenamedBy(beholder))
+                    {
+                        if (statBufferTrue[0] == 0)
+                        {
+                            OutgoingMobilePackets.CreateMobileStatusCompact(statBufferTrue, this, true);
+                        }
+
+                        state.Send(statBufferTrue);
+                    }
+                    else
+                    {
+                        if (statBufferFalse[0] == 0)
+                        {
+                            OutgoingMobilePackets.CreateMobileStatusCompact(statBufferFalse, this, false);
+                        }
+
+                        state.Send(statBufferFalse);
+                    }
+                }
+                else if (sendHits)
+                {
+                    if (hitsPacket[0] == 0)
+                    {
+                        OutgoingMobilePackets.CreateMobileHits(hitsPacket, this, true);
+                    }
+
+                    state.Send(hitsPacket);
+                }
+
+                if (sendHair)
+                {
+                    hairPacket ??= removeHair
+                        ? Packet.Acquire(new RemoveHair(this))
+                        : Packet.Acquire(new HairEquipUpdate(this));
+
+                    state.Send(hairPacket);
+                }
+
+                if (sendFacialHair)
+                {
+                    facialhairPacket ??= removeFacialHair
+                        ? Packet.Acquire(new RemoveFacialHair(this))
+                        : Packet.Acquire(new FacialHairEquipUpdate(this));
+
+                    state.Send(facialhairPacket);
+                }
+
+                SendOPLPacketTo(state);
             }
+
+            Packet.Release(hairPacket);
+            Packet.Release(facialhairPacket);
+
+            eable.Free();
         }
 
         public ISpawner Spawner { get; set; }
@@ -8097,7 +8107,7 @@ namespace Server
         {
             if (from.Map == Map && Utility.InUpdateRange(this, from) && from.CanSee(this))
             {
-                from.Send(new MobileStatus(from, this, m_NetState));
+                from.m_NetState.SendMobileStatus(from, this);
             }
 
             if (from == this)
