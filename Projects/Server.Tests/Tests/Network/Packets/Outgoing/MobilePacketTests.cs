@@ -179,8 +179,14 @@ namespace Server.Tests.Network
         [InlineData(false)]
         public void TestMobileStatusCompact(bool canBeRenamed)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile(0x1) { Name = "Random Mobile 1" };
             m.DefaultMobileInit();
+            m.Str = 50;
+            m.Hits = 100;
+            m.Int = 75;
+            m.Mana = 100;
+            m.Dex = 25;
+            m.Stam = 100;
 
             var expected = new MobileStatusCompact(canBeRenamed, m).Compile();
 
@@ -197,17 +203,23 @@ namespace Server.Tests.Network
         [InlineData(ProtocolChanges.Version502b)]
         public void TestMobileStatusExtended(ProtocolChanges changes)
         {
-            var beholder = new Mobile(0x1)
-            {
-                Name = "Random Mobile 1"
-            };
+            var beholder = new Mobile(0x1) { Name = "Random Mobile 1" };
             beholder.DefaultMobileInit();
+            beholder.Str = 50;
+            beholder.Hits = 100;
+            beholder.Int = 75;
+            beholder.Mana = 100;
+            beholder.Dex = 25;
+            beholder.Stam = 100;
 
-            var beheld = new Mobile(0x2)
-            {
-                Name = "Random Mobile 2"
-            };
+            var beheld = new Mobile(0x2) { Name = "Random Mobile 2" };
             beheld.DefaultMobileInit();
+            beheld.Str = 50;
+            beheld.Hits = 100;
+            beheld.Int = 75;
+            beheld.Mana = 100;
+            beheld.Dex = 25;
+            beheld.Stam = 100;
 
             using var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;

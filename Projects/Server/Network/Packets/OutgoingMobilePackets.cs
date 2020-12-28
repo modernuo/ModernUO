@@ -381,7 +381,7 @@ namespace Server.Network
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CreateMobileStatusCompact(Span<byte> buffer, Mobile m, bool canBeRenamed) =>
-            CreateMobileStatus(buffer, m, m, 0, canBeRenamed);
+            CreateMobileStatus(buffer, null, m, 0, canBeRenamed);
 
         public static void SendMobileStatusCompact(this NetState ns, Mobile m, bool canBeRenamed)
         {
@@ -402,7 +402,7 @@ namespace Server.Network
 
         public static void SendMobileStatus(this NetState ns, Mobile beholder, Mobile beheld)
         {
-            if (ns == null)
+            if (ns == null || beheld == null)
             {
                 return;
             }
@@ -445,10 +445,7 @@ namespace Server.Network
 
             writer.WriteAscii(name, 30);
 
-            var maxHits = beheld.HitsMax;
-            var curHits = beheld.Hits;
-
-            writer.WriteAttribute(maxHits, curHits, beholder != beheld, true);
+            writer.WriteAttribute(beheld.HitsMax, beheld.Hits, beholder != beheld, true);
 
             writer.Write(canBeRenamed);
 
@@ -495,17 +492,10 @@ namespace Server.Network
 
                 var weapon = beheld.Weapon;
 
-                if (weapon != null)
-                {
-                    weapon.GetStatusDamage(beheld, out var min, out var max);
-                    writer.Write((short)min); // Damage min
-                    writer.Write((short)max); // Damage max
-                }
-                else
-                {
-                    writer.Write((short)0); // Damage min
-                    writer.Write((short)0); // Damage max
-                }
+                int min = 0, max = 0;
+                weapon?.GetStatusDamage(beheld, out min, out max);
+                writer.Write((short)min); // Damage min
+                writer.Write((short)max); // Damage max
 
                 writer.Write(beheld.TithingPoints);
             }
