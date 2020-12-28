@@ -7566,7 +7566,7 @@ namespace Server
                             if (ns != null &&
                                 (isTeleport && (!ns.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
                             {
-                                ns.SendMobileIncoming( m, this);
+                                ns.SendMobileIncoming(m, this);
 
                                 if (ns.StygianAbyss)
                                 {
