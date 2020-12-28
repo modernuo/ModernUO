@@ -57,67 +57,32 @@ namespace Server.Tests.Network
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestMobileMovingOld()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("Kamron")]
+        [InlineData("Some Really Long Mobile Name That Gets Cut off")]
+        public void TestMobileName(string name)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile(0x1) { Name = name };
             m.DefaultMobileInit();
 
-            var noto = 10;
+            var expected = new MobileName(m).Compile();
 
-            var data = new MobileMoving(m, noto, false).Compile();
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileName(m);
 
-            Span<byte> expectedData = stackalloc byte[17];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0x77); // Packet ID
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.Write(ref pos, (ushort)m.Body);
-            expectedData.Write(ref pos, m.Location);
-            expectedData.Write(ref pos, (byte)m.Direction);
-            expectedData.Write(ref pos, (ushort)m.Hue);
-            expectedData.Write(ref pos, (byte)m.GetPacketFlags(false));
-            expectedData.Write(ref pos, (byte)noto);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestMobileName()
-        {
-            var m = new Mobile(0x1)
-            {
-                Name = "Some Really Long Mobile Name That Gets Cut off"
-            };
-            m.DefaultMobileInit();
-
-            var data = new MobileName(m).Compile();
-
-            Span<byte> expectedData = stackalloc byte[37];
-            var pos = 0;
-            expectedData.Write(ref pos, (byte)0x98);
-            expectedData.Write(ref pos, (ushort)0x25);
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.WriteAsciiFixed(ref pos, m.Name ?? "", 29);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0);
-#endif
-
-            AssertThat.Equal(data, expectedData);
-        }
-
-        [Fact]
-        public void TestMobileAnimation()
+        [Theory]
+        [InlineData(200, 5, 1, false, false, 5)]
+        [InlineData(10, 100, 25, true, false, 0)]
+        public void TestMobileAnimation(int action, int frameCount, int repeatCount, bool reverse, bool repeat, byte delay)
         {
             Serial mobile = 0x1;
-            var action = 200;
-            var frameCount = 5;
-            var repeatCount = 1;
-            var reverse = false;
-            var repeat = false;
-            byte delay = 5;
 
-            var data = new MobileAnimation(
+            var expected = new MobileAnimation(
                 mobile,
                 action,
                 frameCount,
@@ -127,46 +92,45 @@ namespace Server.Tests.Network
                 delay
             ).Compile();
 
-            Span<byte> expectedData = stackalloc byte[14];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendMobileAnimation(
+                mobile,
+                action,
+                frameCount,
+                repeatCount,
+                !reverse,
+                repeat,
+                delay
+            );
 
-            expectedData.Write(ref pos, (byte)0x6E); // Packet ID
-            expectedData.Write(ref pos, mobile);
-            expectedData.Write(ref pos, (ushort)action);
-            expectedData.Write(ref pos, (ushort)frameCount);
-            expectedData.Write(ref pos, (ushort)repeatCount);
-            expectedData.Write(ref pos, reverse);
-            expectedData.Write(ref pos, repeat);
-            expectedData.Write(ref pos, delay);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestNewMobileAnimation()
+        [Theory]
+        [InlineData(200, 5, 5)]
+        [InlineData(10, 100, 20)]
+        public void TestNewMobileAnimation(int action, int frameCount, byte delay)
         {
             Serial mobile = 0x1;
-            var action = 200;
-            var frameCount = 5;
-            byte delay = 5;
 
-            var data = new NewMobileAnimation(
+            var expected = new NewMobileAnimation(
                 mobile,
                 action,
                 frameCount,
                 delay
             ).Compile();
 
-            Span<byte> expectedData = stackalloc byte[10];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendNewMobileAnimation(
+                mobile,
+                action,
+                frameCount,
+                delay
+            );
 
-            expectedData.Write(ref pos, (byte)0xE2);
-            expectedData.Write(ref pos, mobile);
-            expectedData.Write(ref pos, (ushort)action);
-            expectedData.Write(ref pos, (ushort)frameCount);
-            expectedData.Write(ref pos, delay);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]

@@ -287,6 +287,21 @@ namespace Server.Network
             writer.Write((byte)delay);
         }
 
+        public static void SendMobileAnimation(
+            this NetState ns,
+            Serial mobile, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay
+        )
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> span = stackalloc byte[MobileAnimationPacketLength];
+            CreateMobileAnimation(span, mobile, action, frameCount, repeatCount, forward, repeat, delay);
+            ns.Send(span);
+        }
+
         public static void CreateNewMobileAnimation(
             Span<byte> buffer,
             Serial mobile, int action, int frameCount, int delay
@@ -298,6 +313,18 @@ namespace Server.Network
             writer.Write((short)action);
             writer.Write((short)frameCount);
             writer.Write((byte)delay);
+        }
+
+        public static void SendNewMobileAnimation(this NetState ns, Serial mobile, int action, int frameCount, int delay)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> span = stackalloc byte[NewMobileAnimationPacketLength];
+            CreateNewMobileAnimation(span, mobile, action, frameCount, delay);
+            ns.Send(span);
         }
     }
 }
