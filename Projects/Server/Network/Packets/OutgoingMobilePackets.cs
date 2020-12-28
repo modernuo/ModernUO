@@ -445,7 +445,7 @@ namespace Server.Network
 
             writer.WriteAscii(name, 30);
 
-            writer.WriteAttribute(beheld.HitsMax, beheld.Hits, beholder != beheld, true);
+            writer.WriteAttribute(beheld.HitsMax, beheld.Hits, version == 0, true);
 
             writer.Write(canBeRenamed);
 
