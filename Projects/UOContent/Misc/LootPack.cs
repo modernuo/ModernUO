@@ -841,7 +841,7 @@ namespace Server
                 }
                 else if (item is BaseInstrument instr)
                 {
-                    var slayer = SlayerName.None;
+                    SlayerName slayer;
 
                     if (Core.AOS)
                     {

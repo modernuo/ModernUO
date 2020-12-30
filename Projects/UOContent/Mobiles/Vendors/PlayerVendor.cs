@@ -702,42 +702,22 @@ namespace Server.Mobiles
             {
                 var item = Items[i];
 
-                if (item is BaseHat)
+                item.Layer = item switch
                 {
-                    item.Layer = Layer.Helm;
-                }
-                else if (item is BaseMiddleTorso)
-                {
-                    item.Layer = Layer.MiddleTorso;
-                }
-                else if (item is BaseOuterLegs)
-                {
-                    item.Layer = Layer.OuterLegs;
-                }
-                else if (item is BaseOuterTorso)
-                {
-                    item.Layer = Layer.OuterTorso;
-                }
-                else if (item is BasePants)
-                {
-                    item.Layer = Layer.Pants;
-                }
-                else if (item is BaseShirt)
-                {
-                    item.Layer = Layer.Shirt;
-                }
-                else if (item is BaseWaist)
-                {
-                    item.Layer = Layer.Waist;
-                }
-                else if (item is BaseShoes)
-                {
-                    if (item is Sandals)
-                    {
-                        item.Hue = 0;
-                    }
+                    BaseHat         => Layer.Helm,
+                    BaseMiddleTorso => Layer.MiddleTorso,
+                    BaseOuterLegs   => Layer.OuterLegs,
+                    BaseOuterTorso  => Layer.OuterTorso,
+                    BasePants       => Layer.Pants,
+                    BaseShirt       => Layer.Shirt,
+                    BaseWaist       => Layer.Waist,
+                    BaseShoes       => Layer.Shoes,
+                    _               => item.Layer
+                };
 
-                    item.Layer = Layer.Shoes;
+                if (item is Sandals)
+                {
+                    item.Hue = 0;
                 }
             }
         }

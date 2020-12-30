@@ -210,9 +210,9 @@ namespace Server.Misc
             {
                 switch (info.ButtonID)
                 {
-                    case 1: // RunUO
+                    case 1:
                         {
-                            sender.LaunchBrowser("https://github.com/runuo/");
+                            sender.LaunchBrowser("https://www.modernuo.com");
                             break;
                         }
                     case 2: // List of skills

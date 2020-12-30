@@ -215,26 +215,14 @@ namespace Server.Engines.Doom
 
             var random = Utility.Random(100);
 
-            if (random < 22)
+            trap = random switch
             {
-                trap = new SawTrap(Utility.RandomBool() ? SawTrapType.WestFloor : SawTrapType.NorthFloor);
-            }
-            else if (random < 44)
-            {
-                trap = new SpikeTrap(Utility.RandomBool() ? SpikeTrapType.WestFloor : SpikeTrapType.NorthFloor);
-            }
-            else if (random < 66)
-            {
-                trap = new GasTrap(Utility.RandomBool() ? GasTrapType.NorthWall : GasTrapType.WestWall);
-            }
-            else if (random < 88)
-            {
-                trap = new FireColumnTrap();
-            }
-            else
-            {
-                trap = new MushroomTrap();
-            }
+                < 22 => new SawTrap(Utility.RandomBool() ? SawTrapType.WestFloor : SawTrapType.NorthFloor),
+                < 44 => new SpikeTrap(Utility.RandomBool() ? SpikeTrapType.WestFloor : SpikeTrapType.NorthFloor),
+                < 66 => new GasTrap(Utility.RandomBool() ? GasTrapType.NorthWall : GasTrapType.WestWall),
+                < 88 => new FireColumnTrap(),
+                _    => new MushroomTrap()
+            };
 
             if (trap is FireColumnTrap || trap is MushroomTrap)
             {

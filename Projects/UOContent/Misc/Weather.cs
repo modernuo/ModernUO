@@ -329,16 +329,7 @@ namespace Server.Misc
                 }
                 else
                 {
-                    density = 150 - m_Stage * 5;
-
-                    if (density < 10)
-                    {
-                        density = 10;
-                    }
-                    else if (density > 70)
-                    {
-                        density = 70;
-                    }
+                    density = Math.Clamp(150 - m_Stage * 5, 10, 70);
                 }
 
                 if (density == 0)

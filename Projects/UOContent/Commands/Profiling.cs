@@ -136,7 +136,7 @@ namespace Server.Commands
                 );
             }
 
-            e.Mobile.SendMessage("Object table has been generated. See the file : <runuo root>/objects.log");
+            e.Mobile.SendMessage("Object table has been generated. See the file : objects.log");
         }
 
         [Usage("TraceExpanded"), Description("Generates a log file describing all items using expanded memory.")]

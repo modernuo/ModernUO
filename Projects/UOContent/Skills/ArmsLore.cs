@@ -107,17 +107,7 @@ namespace Server.SkillHandlers
                 {
                     if (from.CheckTargetSkill(SkillName.ArmsLore, pet, 0, 100))
                     {
-                        var perc = 4 * pet.BardingHP / pet.BardingMaxHP;
-
-                        if (perc < 0)
-                        {
-                            perc = 0;
-                        }
-                        else if (perc > 4)
-                        {
-                            perc = 4;
-                        }
-
+                        var perc = Math.Clamp(4 * pet.BardingHP / pet.BardingMaxHP, 0, 4);
                         pet.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1053021 - perc, from.NetState);
                     }
                     else
