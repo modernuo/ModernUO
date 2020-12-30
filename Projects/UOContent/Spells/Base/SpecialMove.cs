@@ -216,7 +216,7 @@ namespace Server.Spells
 
                 if (moveID != -1)
                 {
-                    m.Send(new ToggleSpecialAbility(moveID + 1, false));
+                    m.NetState.SendToggleSpecialAbility(moveID + 1, false);
                 }
             }
         }
@@ -278,7 +278,7 @@ namespace Server.Spells
 
                 if (moveID > 0)
                 {
-                    m.Send(new ToggleSpecialAbility(moveID + 1, true));
+                    m.NetState.SendToggleSpecialAbility(moveID + 1, true);
                 }
 
                 TextDefinition.SendMessageTo(m, move.AbilityMessage);
@@ -297,7 +297,7 @@ namespace Server.Spells
 
                 if (moveID > 0)
                 {
-                    m.Send(new ToggleSpecialAbility(moveID + 1, false));
+                    m.NetState.SendToggleSpecialAbility(moveID + 1, false);
                 }
             }
         }

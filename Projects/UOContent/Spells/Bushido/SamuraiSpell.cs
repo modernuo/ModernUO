@@ -126,7 +126,7 @@ namespace Server.Spells.Bushido
 
             if (spellID > 0)
             {
-                caster.Send(new ToggleSpecialAbility(spellID + 1, true));
+                caster.NetState.SendToggleSpecialAbility(spellID + 1, true);
             }
         }
 
@@ -136,7 +136,7 @@ namespace Server.Spells.Bushido
 
             if (spellID > 0)
             {
-                caster.Send(new ToggleSpecialAbility(spellID + 1, false));
+                caster.NetState.SendToggleSpecialAbility(spellID + 1, false);
             }
         }
     }
