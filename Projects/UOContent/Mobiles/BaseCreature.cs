@@ -1284,30 +1284,30 @@ namespace Server.Mobiles
                 (int)((useBaseSkill ? m.Skills.AnimalTaming.Base : m.Skills.AnimalTaming.Value) * 10);
             var lore =
                 (int)((useBaseSkill ? m.Skills.AnimalLore.Base : m.Skills.AnimalLore.Value) * 10);
-            int bonus, chance = 700;
+            int bonus;
 
             if (Core.ML)
             {
-                var SkillBonus = taming - (int)(dMinTameSkill * 10);
-                var LoreBonus = lore - (int)(dMinTameSkill * 10);
+                var skillBonus = taming - (int)(dMinTameSkill * 10);
+                var loreBonus = lore - (int)(dMinTameSkill * 10);
 
-                var SkillMod = 6;
-                var LoreMod = 6;
+                var skillMod = 6;
+                var loreMod = 6;
 
-                if (SkillBonus < 0)
+                if (skillBonus < 0)
                 {
-                    SkillMod = 28;
+                    skillMod = 28;
                 }
 
-                if (LoreBonus < 0)
+                if (loreBonus < 0)
                 {
-                    LoreMod = 14;
+                    loreMod = 14;
                 }
 
-                SkillBonus *= SkillMod;
-                LoreBonus *= LoreMod;
+                skillBonus *= skillMod;
+                loreBonus *= loreMod;
 
-                bonus = (SkillBonus + LoreBonus) / 2;
+                bonus = (skillBonus + loreBonus) / 2;
             }
             else
             {
@@ -1325,15 +1325,15 @@ namespace Server.Mobiles
                 }
             }
 
-            chance += bonus;
+            var chance = 700 + bonus;
 
-            if (chance >= 0 && chance < 200)
-            {
-                chance = 200;
-            }
-            else if (chance > 990)
+            if (chance > 990)
             {
                 chance = 990;
+            }
+            else if (chance >= 0)
+            {
+                chance = 220;
             }
 
             chance -= (MaxLoyalty - m_Loyalty) * 10;

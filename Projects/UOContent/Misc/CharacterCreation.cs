@@ -865,24 +865,9 @@ namespace Server.Misc
         {
             var vMax = max - 30;
 
-            var vStr = str - 10;
-            var vDex = dex - 10;
-            var vInt = intel - 10;
-
-            if (vStr < 0)
-            {
-                vStr = 0;
-            }
-
-            if (vDex < 0)
-            {
-                vDex = 0;
-            }
-
-            if (vInt < 0)
-            {
-                vInt = 0;
-            }
+            var vStr = Math.Max(str - 10, 0);
+            var vDex = Math.Max(dex - 10, 0);
+            var vInt = Math.Max(intel - 10, 0);
 
             var total = vStr + vDex + vInt;
 
