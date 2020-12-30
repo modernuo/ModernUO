@@ -477,5 +477,18 @@ namespace Server.Tests.Network
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
+
+        [Fact]
+        public void TestRemoveEntity()
+        {
+            Serial e = 0x1000;
+            var expected = new RemoveEntity(e).Compile();
+
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendRemoveEntity(e);
+
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        }
     }
 }

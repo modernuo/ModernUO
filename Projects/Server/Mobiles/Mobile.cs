@@ -856,7 +856,7 @@ namespace Server
                 {
                     m_StrLock = value;
 
-                    m_NetState?.Send(new StatLockInfo(this));
+                    m_NetState.SendStatLockInfo(this);
                 }
             }
         }
@@ -874,7 +874,7 @@ namespace Server
                 {
                     m_DexLock = value;
 
-                    m_NetState?.Send(new StatLockInfo(this));
+                    m_NetState.SendStatLockInfo(this);
                 }
             }
         }
@@ -892,7 +892,7 @@ namespace Server
                 {
                     m_IntLock = value;
 
-                    m_NetState?.Send(new StatLockInfo(this));
+                    m_NetState.SendStatLockInfo(this);
                 }
             }
         }
@@ -4752,8 +4752,6 @@ namespace Server
                 SendIncomingPacket();
 
                 OnAfterResurrect();
-
-                // Send( new DeathStatus( false ) );
             }
         }
 
@@ -5060,7 +5058,7 @@ namespace Server
             }
             else
             {
-                Send(DeathStatus.Instantiate(true));
+                m_NetState.SendDeathStatus(true);
 
                 Warmode = false;
 
@@ -5086,7 +5084,7 @@ namespace Server
 
                 ProcessDeltaQueue();
 
-                Send(DeathStatus.Instantiate(false));
+                m_NetState.SendDeathStatus(false);
 
                 CheckStatTimers();
             }
@@ -5355,7 +5353,7 @@ namespace Server
 
             if (rejected && state != null)
             {
-                state.Send(new LiftRej(reject));
+                state.SendLiftReject(reject);
 
                 if (item.Deleted)
                 {
@@ -8102,7 +8100,7 @@ namespace Server
 
             if (from == this)
             {
-                Send(new StatLockInfo(this));
+                m_NetState.SendStatLockInfo(this);
             }
 
             if (Party is IParty ip)

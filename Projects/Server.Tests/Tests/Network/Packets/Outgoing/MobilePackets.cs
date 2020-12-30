@@ -635,4 +635,12 @@ namespace Server.Tests.Network
             Stream.Write(0); // terminate
         }
     }
+
+    public sealed class RemoveEntity : Packet
+    {
+        public RemoveEntity(Serial entity) : base(0x1D, 5)
+        {
+            Stream.Write(entity);
+        }
+    }
 }

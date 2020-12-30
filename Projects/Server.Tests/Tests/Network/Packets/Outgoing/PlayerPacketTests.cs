@@ -7,158 +7,124 @@ namespace Server.Tests.Network
 {
     public class PlayerPacketTests : IClassFixture<ServerFixture>
     {
-        [Fact]
-        public void TestStatLockInfo()
+        [Theory]
+        [InlineData(StatLockType.Down, StatLockType.Up, StatLockType.Locked)]
+        public void TestStatLockInfo(StatLockType str, StatLockType intel, StatLockType dex)
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
+            m.StrLock = str;
+            m.IntLock = intel;
+            m.DexLock = dex;
 
-            var data = new StatLockInfo(m).Compile();
+            var expected = new StatLockInfo(m).Compile();
 
-            Span<byte> expectedData = stackalloc byte[12];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendStatLockInfo(m);
 
-            expectedData.Write(ref pos, (byte)0xBF);   // Packet ID
-            expectedData.Write(ref pos, (ushort)12);   // Length
-            expectedData.Write(ref pos, (ushort)0x19); // Sub-packet
-            expectedData.Write(ref pos, (byte)2);      // Command
-            expectedData.Write(ref pos, m.Serial);
-            expectedData.Write(ref pos, (ushort)(((int)m.StrLock << 4) | ((int)m.DexLock << 2) | (int)m.IntLock));
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestChangeUpdateRange()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(10)]
+        [InlineData(200)]
+        public void TestChangeUpdateRange(int range)
         {
-            byte range = 10;
-            var data = new ChangeUpdateRange(range).Compile();
+            var expected = new ChangeUpdateRange(range).Compile();
 
-            Span<byte> expectedData = stackalloc byte[2];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendChangeUpdateRange((byte)range);
 
-            expectedData.Write(ref pos, (byte)0xC8); // Packet ID
-            expectedData.Write(ref pos, range);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory, InlineData(false), InlineData(true)]
-        public void TestDeathStatus(bool isDead)
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void TestDeathStatus(bool dead)
         {
-            var data = new DeathStatus(isDead).Compile();
+            var expected = new DeathStatus(dead).Compile();
 
-            Span<byte> expectedData = stackalloc byte[2];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendDeathStatus(dead);
 
-            const byte dead = 0;
-            const byte alive = 2;
-            expectedData.Write(ref pos, (byte)0x2C); // Packet ID
-            expectedData.Write(ref pos, isDead ? dead : alive);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory, InlineData(0, true), InlineData(0, false), InlineData(100, true), InlineData(1000, false)]
+        [Theory]
+        [InlineData(0, true)]
+        [InlineData(0, false)]
+        [InlineData(100, true)]
+        [InlineData(1000, false)]
         public void TestSpecialAbility(int abilityId, bool active)
         {
-            var data = new ToggleSpecialAbility(abilityId, active).Compile();
+            var expected = new ToggleSpecialAbility(abilityId, active).Compile();
 
-            Span<byte> expectedData = stackalloc byte[8];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendToggleSpecialAbility(abilityId, active);
 
-            expectedData.Write(ref pos, (byte)0xBF);   // Packet ID
-            expectedData.Write(ref pos, (ushort)0x8);  // Length
-            expectedData.Write(ref pos, (ushort)0x25); // Sub-packet
-            expectedData.Write(ref pos, (ushort)abilityId);
-            expectedData.Write(ref pos, active);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory, InlineData("This is a header", "This is a body", "This is a footer"), InlineData(null, null, null)]
-        public void TestDisplayProfile(string header, string body, string footer)
+        [Theory]
+        [InlineData(0x1000u, "This is a header", "This is a body", "This is a footer")]
+        [InlineData(0x1000u, null, null, null)]
+        public void TestDisplayProfile(uint serial, string header, string body, string footer)
         {
-            Serial m = 0x1000;
+            Serial m = serial;
+            var expected = new DisplayProfile(m, header, body, footer).Compile();
 
-            var data = new DisplayProfile(m, header, body, footer).Compile();
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendDisplayProfile(m, header, body, footer);
 
-            header ??= "";
-            body ??= "";
-            footer ??= "";
-
-            var length = 12 + header.Length + footer.Length * 2 + body.Length * 2;
-
-            Span<byte> expectedData = stackalloc byte[length];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0xB8);     // Packet ID
-            expectedData.Write(ref pos, (ushort)length); // Length
-            expectedData.Write(ref pos, m);              // Mobile Serial or Serial.Zero
-            expectedData.WriteAsciiNull(ref pos, header);
-            expectedData.WriteBigUniNull(ref pos, footer);
-            expectedData.WriteBigUniNull(ref pos, body);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory, InlineData(LRReason.CannotLift), InlineData(LRReason.TryToSteal)]
+        [Theory]
+        [InlineData(LRReason.CannotLift)]
+        [InlineData(LRReason.TryToSteal)]
         public void TestLiftRej(LRReason reason)
         {
-            var data = new LiftRej(reason).Compile();
+            var expected = new LiftRej(reason).Compile();
 
-            Span<byte> expectedData = stackalloc byte[2];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendLiftReject(reason);
 
-            expectedData.Write(ref pos, (byte)0x27); // Packet ID
-            expectedData.Write(ref pos, (byte)reason);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
         public void TestLogoutAck()
         {
-            var data = new LogoutAck().Compile();
+            var expected = new LogoutAck().Compile();
 
-            Span<byte> expectedData = stackalloc byte[2];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendLogoutAck();
 
-            expectedData.Write(ref pos, (byte)0xD1); // Packet ID
-            expectedData.Write(ref pos, (byte)0x1);  // 1 - Ack
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory, InlineData(1, 2, 3), InlineData(4, 5, 6)]
+        [Theory]
+        [InlineData(1, 2, 3)]
+        [InlineData(4, 5, 6)]
+        [InlineData(0x1234, 0x5678, 0x9ABC)]
         public void TestWeather(int type, int density, int temp)
         {
-            var data = new Weather(type, density, temp).Compile();
+            var expected = new Weather(type, density, temp).Compile();
 
-            Span<byte> expectedData = stackalloc byte[4];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendWeather((byte)type, (byte)density, (byte)temp);
 
-            expectedData.Write(ref pos, (byte)0x65); // Packet ID
-            expectedData.Write(ref pos, (byte)type);
-            expectedData.Write(ref pos, (byte)density);
-            expectedData.Write(ref pos, (byte)temp);
-
-            AssertThat.Equal(data, expectedData);
-        }
-
-        [Fact]
-        public void TestRemoveEntity()
-        {
-            Serial e = 0x1000;
-            var data = new RemoveEntity(e).Compile();
-
-            Span<byte> expectedData = stackalloc byte[5];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0x1D); // Packet ID
-            expectedData.Write(ref pos, e);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]

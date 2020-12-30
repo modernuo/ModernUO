@@ -354,8 +354,6 @@ namespace Server.Misc
                     type = 2;
                 }
 
-                Packet weatherPacket = null;
-
                 foreach (var ns in TcpServer.Instances)
                 {
                     var mob = ns.Mobile;
@@ -377,15 +375,8 @@ namespace Server.Misc
                         continue;
                     }
 
-                    if (weatherPacket == null)
-                    {
-                        weatherPacket = Packet.Acquire(new Network.Weather(type, density, temperature));
-                    }
-
-                    ns.Send(weatherPacket);
+                    ns.SendWeather((byte)type, (byte)density, (byte)temperature);
                 }
-
-                Packet.Release(weatherPacket);
             }
 
             m_Stage++;

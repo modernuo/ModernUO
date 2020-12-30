@@ -321,7 +321,7 @@ namespace Server.Network
 
         public static void LogoutReq(NetState state, CircularBufferReader reader)
         {
-            state.Send(new LogoutAck());
+            state.SendLogoutAck();
         }
 
         public static void ChangeSkillLock(NetState state, CircularBufferReader reader)
@@ -488,7 +488,7 @@ namespace Server.Network
 
         public static void SetUpdateRange(NetState state, CircularBufferReader reader)
         {
-            state.Send(ChangeUpdateRange.Instantiate(18));
+            state.SendChangeUpdateRange(18);
         }
 
         public static void MobileQuery(NetState state, CircularBufferReader reader)

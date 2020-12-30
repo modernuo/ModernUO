@@ -60,7 +60,7 @@ namespace Server.Misc
             var body = beheld.Profile ?? "";
             var serial = beholder != beheld || !beheld.ProfileLocked ? beheld.Serial : Serial.Zero;
 
-            beholder.Send(new DisplayProfile(serial, header, body, footer));
+            beholder.NetState.SendDisplayProfile(serial, header, body, footer);
         }
 
         private static string GetAccountDuration(Mobile m)
