@@ -25,12 +25,12 @@ namespace Server.Tests.Network
 
             DelayedExecute(() =>
             {
-;                // Write some data into the pipe
-                var result = writer.TryGetMemory();
-                Assert.True(result.Buffer[0].Count == 99);
-                result.Buffer[0][0] = 0x1;
-                result.Buffer[0][1] = 0x2;
-                result.Buffer[0][2] = 0x3;
+                // Write some data into the pipe
+                var r = writer.TryGetMemory();
+                Assert.True(r.Buffer[0].Count == 99);
+                r.Buffer[0][0] = 0x1;
+                r.Buffer[0][1] = 0x2;
+                r.Buffer[0][2] = 0x3;
 
                 writer.Advance(3);
                 writer.Flush();
