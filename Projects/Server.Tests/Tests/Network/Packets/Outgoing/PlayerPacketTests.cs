@@ -30,12 +30,12 @@ namespace Server.Tests.Network
         [InlineData(0)]
         [InlineData(10)]
         [InlineData(200)]
-        public void TestChangeUpdateRange(byte range)
+        public void TestChangeUpdateRange(int range)
         {
             var expected = new ChangeUpdateRange(range).Compile();
 
             using var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendChangeUpdateRange(range);
+            ns.SendChangeUpdateRange((byte)range);
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
@@ -74,8 +74,9 @@ namespace Server.Tests.Network
         [Theory]
         [InlineData(0x1000u, "This is a header", "This is a body", "This is a footer")]
         [InlineData(0x1000u, null, null, null)]
-        public void TestDisplayProfile(Serial m, string header, string body, string footer)
+        public void TestDisplayProfile(uint serial, string header, string body, string footer)
         {
+            Serial m = serial;
             var expected = new DisplayProfile(m, header, body, footer).Compile();
 
             using var ns = PacketTestUtilities.CreateTestNetState();
