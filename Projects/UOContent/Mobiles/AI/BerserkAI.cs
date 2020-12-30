@@ -38,13 +38,14 @@ namespace Server.Mobiles
             }
 
             if (
+                m_Mobile.Combatant != null &&
                 !WalkMobileRange(
                     m_Mobile.Combatant,
                     1,
                     true,
                     m_Mobile.RangeFight,
                     m_Mobile.RangeFight
-                ) && m_Mobile.Combatant != null
+                )
             )
             {
                 if (m_Mobile.Debug)

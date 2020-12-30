@@ -43,13 +43,14 @@ namespace Server.Mobiles
             if (Core.TickCount - m_Mobile.LastMoveTime > 1000)
             {
                 if (
+                    m_Mobile.Combatant != null &&
                     !WalkMobileRange(
                         m_Mobile.Combatant,
                         1,
                         true,
                         m_Mobile.RangeFight,
                         m_Mobile.Weapon.MaxRange
-                    ) && m_Mobile.Combatant != null
+                    )
                 )
                 {
                     if (m_Mobile.Debug)
