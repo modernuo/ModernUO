@@ -354,7 +354,7 @@ namespace Server.Network
         public void LaunchBrowser(string url)
         {
             this.SendMessageLocalized(Serial.MinusOne, -1, MessageType.Label, 0x35, 3, 501231);
-            Send(new LaunchBrowser(url));
+            this.SendLaunchBrowser(url);
         }
 
         public override string ToString() => m_ToString;

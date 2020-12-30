@@ -2818,7 +2818,7 @@ namespace Server
                     ns.Send(SeasonChange.Instantiate(GetSeason(), true));
 
                     ns.SendMobileUpdate(this);
-                    Send(new ServerChange(m_Location, m_Map));
+                    ns.SendServerChange(m_Location, m_Map);
                 }
 
                 ns.SendMobileIncoming(this, this);
@@ -8116,7 +8116,7 @@ namespace Server
         {
             if (from == this)
             {
-                Send(new SkillUpdate(Skills));
+                m_NetState.SendSkillsUpdate(Skills);
             }
         }
 

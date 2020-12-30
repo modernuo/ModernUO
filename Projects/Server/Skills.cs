@@ -505,9 +505,6 @@ namespace Server
             var info = SkillInfo.Table;
 
             m_Skills = new Skill[info.Length];
-
-            // for ( int i = 0; i < info.Length; ++i )
-            // m_Skills[i] = new Skill( this, info[i], 0, 1000, SkillLock.Up );
         }
 
         public Skills(Mobile owner, IGenericReader reader)
@@ -897,13 +894,13 @@ namespace Server
             {
                 m_Highest = null;
             }
-            else if (m_Highest != null && skill.BaseFixedPoint > m_Highest.BaseFixedPoint)
+            else if (skill.BaseFixedPoint > m_Highest?.BaseFixedPoint)
             {
                 m_Highest = skill;
             }
 
             Owner.OnSkillInvalidated(skill);
-            Owner.NetState?.Send(new SkillChange(skill));
+            Owner.NetState.SendSkillChange(skill);
         }
     }
 }

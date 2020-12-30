@@ -127,87 +127,60 @@ namespace Server.Tests.Network
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestServerChange()
+        [Theory]
+        [InlineData(100, 1000, 1, 0)]
+        public void TestServerChange(int x, int y, int z, int mapID)
         {
-            var p = new Point3D(100, 1000, 1);
-            var map = Map.Felucca;
-            var data = new ServerChange(p, map).Compile();
+            var p = new Point3D(x, y, z);
+            var map = Map.Maps[mapID];
+            var expected = new ServerChange(p, map).Compile();
 
-            Span<byte> expectedData = stackalloc byte[16];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendServerChange(p, map);
 
-            expectedData.Write(ref pos, (byte)0x76); // Packet ID
-            expectedData.Write(ref pos, (ushort)p.X);
-            expectedData.Write(ref pos, (ushort)p.Y);
-            expectedData.Write(ref pos, (short)p.Z);
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0); // Unknown
-            expectedData.Write(ref pos, 0); // Server X, Server Y
-#else
-            pos += 5;
-#endif
-            expectedData.Write(ref pos, (ushort)map.Width);  // Server Width
-            expectedData.Write(ref pos, (ushort)map.Height); // Server Height
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
-        public void TestSkillUpdate()
+        public void TestSkillsUpdate()
         {
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
             var skills = m.Skills;
-            m.Skills[SkillName.Alchemy].BaseFixedPoint = 1000; // GM Alchemy
+            m.Skills[Utility.RandomSkill()].BaseFixedPoint = 1000;
 
-            var data = new SkillUpdate(skills).Compile();
+            var expected = new SkillUpdate(skills).Compile();
 
-            var length = 6 + skills.Length * 9;
-            Span<byte> expectedData = stackalloc byte[length];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendSkillsUpdate(skills);
 
-            expectedData.Write(ref pos, (byte)0x3A);     // Packet ID
-            expectedData.Write(ref pos, (ushort)length); // Length
-            expectedData.Write(ref pos, (byte)0x02);     // type: absolute, capped
-
-            for (var i = 0; i < skills.Length; i++)
-            {
-                var s = skills[i];
-
-                var v = s.NonRacialValue;
-                var uv = Math.Clamp((int)(v * 10), 0, 0xFFFF);
-
-                expectedData.Write(ref pos, (ushort)(s.Info.SkillID + 1));
-                expectedData.Write(ref pos, (ushort)uv);
-                expectedData.Write(ref pos, (ushort)s.BaseFixedPoint);
-                expectedData.Write(ref pos, (byte)s.Lock);
-                expectedData.Write(ref pos, (ushort)s.CapFixedPoint);
-            }
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory, InlineData(0), InlineData(10), InlineData(255)]
+        [Theory]
+        [InlineData(0)]
+        [InlineData(10)]
+        [InlineData(255)]
         public void TestSequence(byte num)
         {
-            var data = new Sequence(num).Compile();
+            var expected = new Sequence(num).Compile();
 
-            Span<byte> expectedData = stackalloc byte[2];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendSequence(num);
 
-            expectedData.Write(ref pos, (byte)0x7B); // Packet ID
-            expectedData.Write(ref pos, num);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory, InlineData(SkillName.Alchemy, 0, 1), InlineData(SkillName.Archery, 10, 1000),
-         InlineData(SkillName.Begging, 100000, 1000)]
+        [Theory]
+        [InlineData(SkillName.Alchemy, 0, 1)]
+        [InlineData(SkillName.Archery, 10, 1000)]
+        [InlineData(SkillName.Begging, 100000, 1000)]
         public void TestSkillChange(SkillName skillName, int baseFixedPoint, int capFixedPoint)
         {
-            // TODO: Eliminate all of this and just create a Skill directly
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
@@ -215,43 +188,29 @@ namespace Server.Tests.Network
             skill.BaseFixedPoint = baseFixedPoint;
             skill.CapFixedPoint = capFixedPoint;
 
-            var data = new SkillChange(skill).Compile();
+            var expected = new SkillChange(skill).Compile();
 
-            Span<byte> expectedData = stackalloc byte[13];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendSkillChange(skill);
 
-            expectedData.Write(ref pos, (byte)0x3A); // Packet ID
-            expectedData.Write(ref pos, (ushort)13); // Length
-            expectedData.Write(ref pos, (byte)0xDF); // type: delta, capped
-
-            var v = skill.NonRacialValue;
-            var uv = Math.Clamp((int)(v * 10), 0, 0xFFFF);
-
-            expectedData.Write(ref pos, (ushort)skill.Info.SkillID);
-            expectedData.Write(ref pos, (ushort)uv);
-            expectedData.Write(ref pos, (ushort)skill.BaseFixedPoint);
-            expectedData.Write(ref pos, (byte)skill.Lock);
-            expectedData.Write(ref pos, (ushort)skill.CapFixedPoint);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory, InlineData(null), InlineData(""), InlineData("This is a URL, I promise")]
-        public void TestLaunchBrowser(string url)
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("This is a URL, I promise")]
+        [InlineData("https://www.modernuo.com")]
+        public void TestLaunchBrowser(string uri)
         {
-            var data = new LaunchBrowser(url).Compile();
+            var expected = new LaunchBrowser(uri).Compile();
 
-            url ??= "";
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendLaunchBrowser(uri);
 
-            var length = 4 + url.Length;
-            Span<byte> expectedData = stackalloc byte[length];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0xA5);     // Packet ID
-            expectedData.Write(ref pos, (ushort)length); // Length
-            expectedData.WriteAsciiNull(ref pos, url);   // Note: use punycode for unicode URLs
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]

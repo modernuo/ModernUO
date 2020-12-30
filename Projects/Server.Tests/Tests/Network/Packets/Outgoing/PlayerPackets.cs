@@ -1,3 +1,5 @@
+using System;
+
 namespace Server.Network
 {
     public sealed class StatLockInfo : Packet
@@ -107,6 +109,85 @@ namespace Server.Network
             Stream.Write((byte)type);
             Stream.Write((byte)density);
             Stream.Write((byte)temp);
+        }
+    }
+
+    public sealed class ServerChange : Packet
+    {
+        public ServerChange(Point3D p, Map map) : base(0x76, 16)
+        {
+            Stream.Write((short)p.X);
+            Stream.Write((short)p.Y);
+            Stream.Write((short)p.Z);
+            Stream.Write((byte)0);
+            Stream.Write((short)0);
+            Stream.Write((short)0);
+            Stream.Write((short)map.Width);
+            Stream.Write((short)map.Height);
+        }
+    }
+
+    public sealed class SkillUpdate : Packet
+    {
+        public SkillUpdate(Skills skills) : base(0x3A)
+        {
+            EnsureCapacity(6 + skills.Length * 9);
+
+            Stream.Write((byte)0x02); // type: absolute, capped
+
+            for (var i = 0; i < skills.Length; ++i)
+            {
+                var s = skills[i];
+
+                var v = s.NonRacialValue;
+                var uv = Math.Clamp((int)(v * 10), 0, 0xFFFF);
+
+                Stream.Write((ushort)(s.Info.SkillID + 1));
+                Stream.Write((ushort)uv);
+                Stream.Write((ushort)s.BaseFixedPoint);
+                Stream.Write((byte)s.Lock);
+                Stream.Write((ushort)s.CapFixedPoint);
+            }
+
+            Stream.Write((short)0); // terminate
+        }
+    }
+
+    public sealed class Sequence : Packet
+    {
+        public Sequence(int num) : base(0x7B, 2)
+        {
+            Stream.Write((byte)num);
+        }
+    }
+
+    public sealed class SkillChange : Packet
+    {
+        public SkillChange(Skill skill) : base(0x3A)
+        {
+            EnsureCapacity(13);
+
+            var v = skill.NonRacialValue;
+            var uv = Math.Clamp((int)(v * 10), 0, 0xFFFF);
+
+            Stream.Write((byte)0xDF); // type: delta, capped
+            Stream.Write((ushort)skill.Info.SkillID);
+            Stream.Write((ushort)uv);
+            Stream.Write((ushort)skill.BaseFixedPoint);
+            Stream.Write((byte)skill.Lock);
+            Stream.Write((ushort)skill.CapFixedPoint);
+        }
+    }
+
+    public sealed class LaunchBrowser : Packet
+    {
+        public LaunchBrowser(string url) : base(0xA5)
+        {
+            url ??= "";
+
+            EnsureCapacity(4 + url.Length);
+
+            Stream.WriteAsciiNull(url);
         }
     }
 }
