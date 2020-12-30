@@ -37,30 +37,30 @@ namespace Server.Mobiles
                 return true;
             }
 
-            if (WalkMobileRange(m_Mobile.Combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
+            if (
+                !WalkMobileRange(
+                    m_Mobile.Combatant,
+                    1,
+                    true,
+                    m_Mobile.RangeFight,
+                    m_Mobile.RangeFight
+                ) && m_Mobile.Combatant != null
+            )
             {
-                // Be sure to face the combatant
-                m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant.Location);
-            }
-            else
-            {
-                if (m_Mobile.Combatant != null)
+                if (m_Mobile.Debug)
+                {
+                    m_Mobile.DebugSay($"I am still not in range of {m_Mobile.Combatant.Name}");
+                }
+
+                if ((int)m_Mobile.GetDistanceToSqrt(m_Mobile.Combatant) > m_Mobile.RangePerception + 1)
                 {
                     if (m_Mobile.Debug)
                     {
-                        m_Mobile.DebugSay($"I am still not in range of {m_Mobile.Combatant.Name}");
+                        m_Mobile.DebugSay($"I have lost {m_Mobile.Combatant.Name}");
                     }
 
-                    if ((int)m_Mobile.GetDistanceToSqrt(m_Mobile.Combatant) > m_Mobile.RangePerception + 1)
-                    {
-                        if (m_Mobile.Debug)
-                        {
-                            m_Mobile.DebugSay($"I have lost {m_Mobile.Combatant.Name}");
-                        }
-
-                        Action = ActionType.Guard;
-                        return true;
-                    }
+                    Action = ActionType.Guard;
+                    return true;
                 }
             }
 

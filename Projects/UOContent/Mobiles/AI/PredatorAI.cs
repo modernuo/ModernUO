@@ -37,11 +37,7 @@ namespace Server.Mobiles
                 return true;
             }
 
-            if (WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
-            {
-                // m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
-            }
-            else
+            if (!WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
             {
                 if (m_Mobile.GetDistanceToSqrt(combatant) > m_Mobile.RangePerception + 1)
                 {

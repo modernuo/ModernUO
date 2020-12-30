@@ -1203,7 +1203,7 @@ namespace Server.Mobiles
                         !m_Mobile.Combatant.IsDeadBondedPet)
                     {
                         m_Mobile.Warmode = true;
-                        m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
+                        // m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant, bRun);
                     }
                     else
                     {
@@ -1323,7 +1323,7 @@ namespace Server.Mobiles
                             !m_Mobile.Combatant.IsDeadBondedPet)
                         {
                             m_Mobile.Warmode = true;
-                            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
+                            // m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant, bRun);
                         }
                         else
                         {
