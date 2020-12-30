@@ -32,7 +32,7 @@ namespace Server
         public MoveResult Move(Direction d) =>
             Mover?.Invoke(d) ?? (m_From.Move(d) ? MoveResult.Success : MoveResult.Blocked);
 
-        public Point3D GetGoalLocation() => Goal is Item item ? item.GetWorldLocation() : new Point3D(Goal);
+        public Point3D GetGoalLocation() => (Goal as Item)?.GetWorldLocation() ?? new Point3D(Goal);
 
         public void Advance(ref Point3D p, int index)
         {
