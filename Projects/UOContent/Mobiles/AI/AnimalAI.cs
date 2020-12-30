@@ -59,7 +59,7 @@ namespace Server.Mobiles
 
             if (WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
             {
-                m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+                // m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant, true);
             }
             else
             {

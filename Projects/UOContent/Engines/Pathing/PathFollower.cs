@@ -29,25 +29,10 @@ namespace Server
             Enabled = ServerConfiguration.GetOrUpdateSetting("pathfinding.enable", true);
         }
 
-        public MoveResult Move(Direction d)
-        {
-            if (Mover == null)
-            {
-                return m_From.Move(d) ? MoveResult.Success : MoveResult.Blocked;
-            }
+        public MoveResult Move(Direction d) =>
+            Mover?.Invoke(d) ?? (m_From.Move(d) ? MoveResult.Success : MoveResult.Blocked);
 
-            return Mover(d);
-        }
-
-        public Point3D GetGoalLocation()
-        {
-            if (Goal is Item item)
-            {
-                return item.GetWorldLocation();
-            }
-
-            return new Point3D(Goal);
-        }
+        public Point3D GetGoalLocation() => Goal is Item item ? item.GetWorldLocation() : new Point3D(Goal);
 
         public void Advance(ref Point3D p, int index)
         {
@@ -100,7 +85,7 @@ namespace Server
             return true;
         }
 
-        public bool Check(Point3D loc, Point3D goal, int range) =>
+        public static bool Check(Point3D loc, Point3D goal, int range) =>
             Utility.InRange(loc, goal, range) && (range > 1 || Math.Abs(loc.Z - goal.Z) < 16);
 
         public bool Follow(bool run, int range)
@@ -117,28 +102,15 @@ namespace Server
 
             if (!(Enabled && m_Path.Success))
             {
-                d = m_From.GetDirectionTo(goal);
-
-                if (run)
-                {
-                    d |= Direction.Running;
-                }
-
+                d = m_From.GetDirectionTo(goal, run);
                 m_From.SetDirection(d);
                 Move(d);
 
                 return Check(m_From.Location, goal, range);
             }
 
-            d = m_From.GetDirectionTo(m_Next);
-
-            if (run)
-            {
-                d |= Direction.Running;
-            }
-
+            d = m_From.GetDirectionTo(m_Next, run);
             m_From.SetDirection(d);
-
             var res = Move(d);
 
             if (res == MoveResult.Blocked)
@@ -153,31 +125,17 @@ namespace Server
 
                 if (!m_Path.Success)
                 {
-                    d = m_From.GetDirectionTo(goal);
-
-                    if (run)
-                    {
-                        d |= Direction.Running;
-                    }
-
+                    d = m_From.GetDirectionTo(goal, run);
                     m_From.SetDirection(d);
                     Move(d);
 
                     return Check(m_From.Location, goal, range);
                 }
 
-                d = m_From.GetDirectionTo(m_Next);
-
-                if (run)
-                {
-                    d |= Direction.Running;
-                }
-
+                d = m_From.GetDirectionTo(m_Next, run);
                 m_From.SetDirection(d);
 
-                res = Move(d);
-
-                if (res == MoveResult.Blocked)
+                if (Move(d) == MoveResult.Blocked)
                 {
                     return false;
                 }

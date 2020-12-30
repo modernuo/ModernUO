@@ -1644,8 +1644,6 @@ namespace Server.Mobiles
                 m_Mobile.DebugSay("My master told me to stay");
             }
 
-            // m_Mobile.Direction = m_Mobile.GetDirectionTo( m_Mobile.ControlMaster );
-
             return true;
         }
 
@@ -1982,6 +1980,7 @@ namespace Server.Mobiles
             }
 
             // This makes them always move one step, never any direction changes
+            // TODO: This is firing off deltas which aren't needed. Look into replacing/removing this
             m_Mobile.Direction = d;
 
             var delay = (int)(TransformMoveDelay(m_Mobile.CurrentSpeed) * 1000);
@@ -2005,145 +2004,145 @@ namespace Server.Mobiles
                 return v ? MoveResult.Success : MoveResult.Blocked;
             }
 
-            if (!m_Mobile.Move(d))
+            if (m_Mobile.Move(d))
             {
-                var wasPushing = m_Mobile.Pushing;
+                MoveImpl.IgnoreMovableImpassables = false;
+                return MoveResult.Success;
+            }
 
-                var blocked = true;
+            var wasPushing = m_Mobile.Pushing;
 
-                var canOpenDoors = m_Mobile.CanOpenDoors;
-                var canDestroyObstacles = m_Mobile.CanDestroyObstacles;
+            var blocked = true;
 
-                if (canOpenDoors || canDestroyObstacles)
+            var canOpenDoors = m_Mobile.CanOpenDoors;
+            var canDestroyObstacles = m_Mobile.CanDestroyObstacles;
+
+            if (canOpenDoors || canDestroyObstacles)
+            {
+                m_Mobile.DebugSay("My movement was blocked, I will try to clear some obstacles.");
+
+                var map = m_Mobile.Map;
+
+                if (map != null)
                 {
-                    m_Mobile.DebugSay("My movement was blocked, I will try to clear some obstacles.");
+                    int x = m_Mobile.X, y = m_Mobile.Y;
+                    Movement.Movement.Offset(d, ref x, ref y);
 
-                    var map = m_Mobile.Map;
+                    var destroyables = 0;
 
-                    if (map != null)
+                    var eable = map.GetItemsInRange(new Point3D(x, y, m_Mobile.Location.Z), 1);
+
+                    foreach (var item in eable)
                     {
-                        int x = m_Mobile.X, y = m_Mobile.Y;
-                        Movement.Movement.Offset(d, ref x, ref y);
-
-                        var destroyables = 0;
-
-                        var eable = map.GetItemsInRange(new Point3D(x, y, m_Mobile.Location.Z), 1);
-
-                        foreach (var item in eable)
+                        if (canOpenDoors && item is BaseDoor door && door.Z + door.ItemData.Height > m_Mobile.Z &&
+                            m_Mobile.Z + 16 > door.Z)
                         {
-                            if (canOpenDoors && item is BaseDoor door && door.Z + door.ItemData.Height > m_Mobile.Z &&
-                                m_Mobile.Z + 16 > door.Z)
+                            if (door.X != x || door.Y != y)
                             {
-                                if (door.X != x || door.Y != y)
-                                {
-                                    continue;
-                                }
-
-                                if (!door.Locked || !door.UseLocks())
-                                {
-                                    m_Obstacles.Enqueue(door);
-                                }
-
-                                if (!canDestroyObstacles)
-                                {
-                                    break;
-                                }
+                                continue;
                             }
-                            else if (canDestroyObstacles && item.Movable && item.ItemData.Impassable &&
-                                     item.Z + item.ItemData.Height > m_Mobile.Z && m_Mobile.Z + 16 > item.Z)
-                            {
-                                if (!m_Mobile.InRange(item.GetWorldLocation(), 1))
-                                {
-                                    continue;
-                                }
 
-                                m_Obstacles.Enqueue(item);
-                                ++destroyables;
+                            if (!door.Locked || !door.UseLocks())
+                            {
+                                m_Obstacles.Enqueue(door);
+                            }
+
+                            if (!canDestroyObstacles)
+                            {
+                                break;
                             }
                         }
-
-                        eable.Free();
-
-                        if (destroyables > 0)
+                        else if (canDestroyObstacles && item.Movable && item.ItemData.Impassable &&
+                                 item.Z + item.ItemData.Height > m_Mobile.Z && m_Mobile.Z + 16 > item.Z)
                         {
-                            Effects.PlaySound(new Point3D(x, y, m_Mobile.Z), m_Mobile.Map, 0x3B3);
-                        }
-
-                        if (m_Obstacles.Count > 0)
-                        {
-                            blocked = false; // retry movement
-                        }
-
-                        while (m_Obstacles.Count > 0)
-                        {
-                            var item = m_Obstacles.Dequeue();
-
-                            if (item is BaseDoor door)
+                            if (!m_Mobile.InRange(item.GetWorldLocation(), 1))
                             {
-                                m_Mobile.DebugSay(
-                                    "Little do they expect, I've learned how to open doors. Didn't they read the script??"
-                                );
-                                m_Mobile.DebugSay("*twist*");
+                                continue;
+                            }
 
-                                door.Use(m_Mobile);
+                            m_Obstacles.Enqueue(item);
+                            ++destroyables;
+                        }
+                    }
+
+                    eable.Free();
+
+                    if (destroyables > 0)
+                    {
+                        Effects.PlaySound(new Point3D(x, y, m_Mobile.Z), m_Mobile.Map, 0x3B3);
+                    }
+
+                    if (m_Obstacles.Count > 0)
+                    {
+                        blocked = false; // retry movement
+                    }
+
+                    while (m_Obstacles.Count > 0)
+                    {
+                        var item = m_Obstacles.Dequeue();
+
+                        if (item is BaseDoor door)
+                        {
+                            m_Mobile.DebugSay(
+                                "Little do they expect, I've learned how to open doors. Didn't they read the script??"
+                            );
+                            m_Mobile.DebugSay("*twist*");
+
+                            door.Use(m_Mobile);
+                        }
+                        else
+                        {
+                            m_Mobile.DebugSay(
+                                "Ugabooga. I'm so big and tough I can destroy it: {0}",
+                                item.GetType().Name
+                            );
+
+                            if (item is Container cont)
+                            {
+                                for (var i = 0; i < cont.Items.Count; ++i)
+                                {
+                                    var check = cont.Items[i];
+
+                                    if (check.Movable && check.ItemData.Impassable &&
+                                        cont.Z + check.ItemData.Height > m_Mobile.Z)
+                                    {
+                                        m_Obstacles.Enqueue(check);
+                                    }
+                                }
+
+                                cont.Destroy();
                             }
                             else
                             {
-                                m_Mobile.DebugSay(
-                                    "Ugabooga. I'm so big and tough I can destroy it: {0}",
-                                    item.GetType().Name
-                                );
-
-                                if (item is Container cont)
-                                {
-                                    for (var i = 0; i < cont.Items.Count; ++i)
-                                    {
-                                        var check = cont.Items[i];
-
-                                        if (check.Movable && check.ItemData.Impassable &&
-                                            cont.Z + check.ItemData.Height > m_Mobile.Z)
-                                        {
-                                            m_Obstacles.Enqueue(check);
-                                        }
-                                    }
-
-                                    cont.Destroy();
-                                }
-                                else
-                                {
-                                    item.Delete();
-                                }
+                                item.Delete();
                             }
                         }
+                    }
 
-                        if (!blocked)
-                        {
-                            blocked = !m_Mobile.Move(d);
-                        }
+                    if (!blocked)
+                    {
+                        blocked = !m_Mobile.Move(d);
                     }
                 }
+            }
 
-                if (blocked)
+            if (blocked)
+            {
+                var offset = Utility.RandomDouble() >= 0.6 ? 1 : -1;
+
+                for (var i = 0; i < 2; ++i)
                 {
-                    var offset = Utility.RandomDouble() >= 0.6 ? 1 : -1;
+                    m_Mobile.TurnInternal(offset);
 
-                    for (var i = 0; i < 2; ++i)
+                    if (m_Mobile.Move(m_Mobile.Direction))
                     {
-                        m_Mobile.TurnInternal(offset);
-
-                        if (m_Mobile.Move(m_Mobile.Direction))
-                        {
-                            MoveImpl.IgnoreMovableImpassables = false;
-                            return MoveResult.SuccessAutoTurn;
-                        }
+                        MoveImpl.IgnoreMovableImpassables = false;
+                        return MoveResult.SuccessAutoTurn;
                     }
-
-                    MoveImpl.IgnoreMovableImpassables = false;
-                    return wasPushing ? MoveResult.BadState : MoveResult.Blocked;
                 }
 
                 MoveImpl.IgnoreMovableImpassables = false;
-                return MoveResult.Success;
+                return wasPushing ? MoveResult.BadState : MoveResult.Blocked;
             }
 
             MoveImpl.IgnoreMovableImpassables = false;
@@ -2281,10 +2280,9 @@ namespace Server.Mobiles
                     return true;
                 }
             }
-            else if (!DoMove(m_Mobile.GetDirectionTo(m), true))
+            else if (!DoMove(m_Mobile.GetDirectionTo(m, run), true))
             {
-                m_Path = new PathFollower(m_Mobile, m);
-                m_Path.Mover = DoMoveImpl;
+                m_Path = new PathFollower(m_Mobile, m) { Mover = DoMoveImpl };
 
                 if (m_Path.Follow(run, 1))
                 {
@@ -2341,22 +2339,8 @@ namespace Server.Mobiles
                     }
                     else
                     {
-                        Direction dirTo;
-
-                        if (iCurrDist > iWantDistMax)
-                        {
-                            dirTo = m_Mobile.GetDirectionTo(m);
-                        }
-                        else
-                        {
-                            dirTo = m.GetDirectionTo(m_Mobile);
-                        }
-
-                        // Add the run flag
-                        if (bRun)
-                        {
-                            dirTo = dirTo | Direction.Running;
-                        }
+                        var dirTo = iCurrDist > iWantDistMax ?
+                            m_Mobile.GetDirectionTo(m, bRun) : m.GetDirectionTo(m_Mobile, bRun);
 
                         if (!DoMove(dirTo, true) && needCloser)
                         {
@@ -2382,12 +2366,7 @@ namespace Server.Mobiles
             // Get the current distance
             var iNewDist = (int)m_Mobile.GetDistanceToSqrt(m);
 
-            if (iNewDist >= iWantDistMin && iNewDist <= iWantDistMax)
-            {
-                return true;
-            }
-
-            return false;
+            return iNewDist >= iWantDistMin && iNewDist <= iWantDistMax;
         }
 
         /*
