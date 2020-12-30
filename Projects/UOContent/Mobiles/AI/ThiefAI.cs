@@ -42,10 +42,12 @@ namespace Server.Mobiles
                 return true;
             }
 
-            if (WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
+            if (!WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
             {
-                m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
-
+                m_Mobile.DebugSay("I should be closer to {0}", combatant.Name);
+            }
+            else
+            {
                 if (m_toDisarm?.IsChildOf(m_Mobile.Backpack) != false)
                 {
                     m_toDisarm = combatant.FindItemOnLayer(Layer.OneHanded) ?? combatant.FindItemOnLayer(Layer.TwoHanded);
@@ -111,17 +113,13 @@ namespace Server.Mobiles
                     }
                 }
             }
-            else
-            {
-                m_Mobile.DebugSay("I should be closer to {0}", combatant.Name);
-            }
 
             if (m_Mobile.Hits >= m_Mobile.HitsMax * 20 / 100 || !m_Mobile.CanFlee)
             {
                 return true;
             }
-            // We are low on health, should we flee?
 
+            // We are low on health, should we flee?
             bool flee;
 
             if (m_Mobile.Hits < combatant.Hits)

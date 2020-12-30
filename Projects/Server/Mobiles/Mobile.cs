@@ -294,7 +294,8 @@ namespace Server
         Locked
     }
 
-    [CustomEnum(new[] { "North", "Right", "East", "Down", "South", "Left", "West", "Up" }), Flags]
+    [Flags]
+    [CustomEnum(new[] { "North", "Right", "East", "Down", "South", "Left", "West", "Up" })]
     public enum Direction : byte
     {
         North = 0x0,
@@ -1348,9 +1349,7 @@ namespace Server
                 if (m_Direction != value)
                 {
                     m_Direction = value;
-
                     Delta(MobileDelta.Direction);
-                    // ProcessDelta();
                 }
             }
         }
@@ -9144,7 +9143,7 @@ namespace Server
 
         public void BoltEffect(int hue) => Effects.SendBoltEffect(this, true, hue);
 
-        public Direction GetDirectionTo(int x, int y)
+        public Direction GetDirectionTo(int x, int y, bool run = false)
         {
             var dx = m_Location.m_X - x;
             var dy = m_Location.m_Y - y;
@@ -9165,30 +9164,25 @@ namespace Server
             {
                 ret = rx > 0 ? Direction.Left : Direction.Right;
             }
-            else if (rx >= 0 && ry >= 0)
-            {
-                ret = Direction.West;
-            }
-            else if (rx >= 0 && ry < 0)
-            {
-                ret = Direction.South;
-            }
-            else if (rx < 0 && ry < 0)
-            {
-                ret = Direction.East;
-            }
             else
             {
-                ret = Direction.North;
+                ret = rx switch
+                {
+                    >= 0 when ry >= 0 => Direction.West,
+                    >= 0              => Direction.South,
+                    < 0 when ry < 0   => Direction.East,
+                    _                 => Direction.North
+                };
             }
 
-            return ret;
+            return ret | (run ? Direction.Running : 0);
         }
 
-        public Direction GetDirectionTo(Point2D p) => GetDirectionTo(p.m_X, p.m_Y);
-        public Direction GetDirectionTo(Point3D p) => GetDirectionTo(p.m_X, p.m_Y);
+        public Direction GetDirectionTo(Point2D p, bool run = false) => GetDirectionTo(p.m_X, p.m_Y, run);
+        public Direction GetDirectionTo(Point3D p, bool run = false) => GetDirectionTo(p.m_X, p.m_Y, run);
 
-        public Direction GetDirectionTo(IPoint2D p) => p == null ? Direction.North : GetDirectionTo(p.X, p.Y);
+        public Direction GetDirectionTo(IPoint2D p, bool run = false) =>
+            p == null ? Direction.North | (run ? Direction.Running : 0) : GetDirectionTo(p.X, p.Y, run);
 
         public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text, bool noLineOfSight = true)
         {

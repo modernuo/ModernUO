@@ -480,8 +480,6 @@ namespace Server
 
                 while (!Closing)
                 {
-                    // m_Signal.WaitOne();
-
                     Mobile.ProcessDeltaQueue();
                     Item.ProcessDeltaQueue();
 

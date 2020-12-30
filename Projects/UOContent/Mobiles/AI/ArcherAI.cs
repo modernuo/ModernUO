@@ -42,31 +42,32 @@ namespace Server.Mobiles
 
             if (Core.TickCount - m_Mobile.LastMoveTime > 1000)
             {
-                if (WalkMobileRange(m_Mobile.Combatant, 1, true, m_Mobile.RangeFight, m_Mobile.Weapon.MaxRange))
+                if (
+                    m_Mobile.Combatant != null &&
+                    !WalkMobileRange(
+                        m_Mobile.Combatant,
+                        1,
+                        true,
+                        m_Mobile.RangeFight,
+                        m_Mobile.Weapon.MaxRange
+                    )
+                )
                 {
-                    // Be sure to face the combatant
-                    m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant.Location);
-                }
-                else
-                {
-                    if (m_Mobile.Combatant != null)
+                    if (m_Mobile.Debug)
+                    {
+                        m_Mobile.DebugSay("I am still not in range of {0}", m_Mobile.Combatant.Name);
+                    }
+
+                    if ((int)m_Mobile.GetDistanceToSqrt(m_Mobile.Combatant) > m_Mobile.RangePerception + 1)
                     {
                         if (m_Mobile.Debug)
                         {
-                            m_Mobile.DebugSay("I am still not in range of {0}", m_Mobile.Combatant.Name);
+                            m_Mobile.DebugSay("I have lost {0}", m_Mobile.Combatant.Name);
                         }
 
-                        if ((int)m_Mobile.GetDistanceToSqrt(m_Mobile.Combatant) > m_Mobile.RangePerception + 1)
-                        {
-                            if (m_Mobile.Debug)
-                            {
-                                m_Mobile.DebugSay("I have lost {0}", m_Mobile.Combatant.Name);
-                            }
-
-                            m_Mobile.Combatant = null;
-                            Action = ActionType.Guard;
-                            return true;
-                        }
+                        m_Mobile.Combatant = null;
+                        Action = ActionType.Guard;
+                        return true;
                     }
                 }
             }

@@ -105,7 +105,7 @@ namespace Server.Mobiles
                 Warmode = false;
                 FocusMob = Combatant = null;
 
-                CurrentSpeed = .01;
+                CurrentSpeed = 0.01;
             }
         }
 
