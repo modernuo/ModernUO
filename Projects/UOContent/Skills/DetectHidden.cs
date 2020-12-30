@@ -31,23 +31,13 @@ namespace Server.SkillHandlers
             {
                 var foundAnyone = false;
 
-                Point3D p;
-                if (targ is Mobile mobile)
+                Point3D p = targ switch
                 {
-                    p = mobile.Location;
-                }
-                else if (targ is Item item)
-                {
-                    p = item.Location;
-                }
-                else if (targ is IPoint3D d)
-                {
-                    p = new Point3D(d);
-                }
-                else
-                {
-                    p = src.Location;
-                }
+                    Mobile mobile => mobile.Location,
+                    Item item     => item.Location,
+                    IPoint3D d    => new Point3D(d),
+                    _             => src.Location
+                };
 
                 var srcSkill = src.Skills.DetectHidden.Value;
                 var range = (int)(srcSkill / 10.0);

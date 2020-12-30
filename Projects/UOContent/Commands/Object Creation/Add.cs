@@ -336,7 +336,7 @@ namespace Server.Commands
         {
             var built = ctor.Invoke(values);
 
-            if (built != null && realProps != null)
+            if (realProps != null)
             {
                 var hadError = false;
 

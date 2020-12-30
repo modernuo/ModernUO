@@ -1,3 +1,4 @@
+using System;
 using Server.Network;
 
 namespace Server.Items
@@ -149,19 +150,7 @@ namespace Server.Items
             */
             if (owner.CheckSkill(SkillName.Parry, chance))
             {
-                if (weapon.Skill == SkillName.Archery)
-                {
-                    damage -= (int)ar;
-                }
-                else
-                {
-                    damage -= (int)(ar / 2.0);
-                }
-
-                if (damage < 0)
-                {
-                    damage = 0;
-                }
+                damage -= Math.Min(damage, weapon.Skill == SkillName.Archery ? (int)ar : (int)(ar / 2.0));
 
                 owner.FixedEffect(0x37B9, 10, 16);
 

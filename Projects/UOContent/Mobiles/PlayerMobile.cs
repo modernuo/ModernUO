@@ -52,7 +52,6 @@ namespace Server.Mobiles
         KarmaLocked = 0x00000020,
         AutoRenewInsurance = 0x00000040,
         UseOwnFilter = 0x00000080,
-        PublicMyRunUO = 0x00000100,
         PagingSquelched = 0x00000200,
         Young = 0x00000400,
         AcceptGuildInvites = 0x00000800,
@@ -560,13 +559,6 @@ namespace Server.Mobiles
         {
             get => GetFlag(PlayerFlag.UseOwnFilter);
             set => SetFlag(PlayerFlag.UseOwnFilter, value);
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool PublicMyRunUO
-        {
-            get => GetFlag(PlayerFlag.PublicMyRunUO);
-            set => SetFlag(PlayerFlag.PublicMyRunUO, value);
         }
 
         [CommandProperty(AccessLevel.GameMaster)]

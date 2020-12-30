@@ -1,6 +1,3 @@
-using System;
-using Server.HuePickers;
-
 namespace Server.Network
 {
     public sealed class StatLockInfo : Packet

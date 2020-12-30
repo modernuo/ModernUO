@@ -86,20 +86,13 @@ namespace Server.Engines.BulkOrders
             }
 
             var theirSkill = m.Skills.Blacksmith.Base;
-            int amountMax;
 
-            if (theirSkill >= 70.1)
+            int amountMax = theirSkill switch
             {
-                amountMax = Utility.RandomList(10, 15, 20, 20);
-            }
-            else if (theirSkill >= 50.1)
-            {
-                amountMax = Utility.RandomList(10, 15, 15, 20);
-            }
-            else
-            {
-                amountMax = Utility.RandomList(10, 10, 15, 20);
-            }
+                >= 70.1 => Utility.RandomList(10, 15, 20, 20),
+                >= 50.1 => Utility.RandomList(10, 15, 15, 20),
+                _       => Utility.RandomList(10, 10, 15, 20)
+            };
 
             var material = BulkMaterialType.None;
 

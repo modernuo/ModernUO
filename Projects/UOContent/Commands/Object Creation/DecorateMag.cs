@@ -1138,7 +1138,7 @@ namespace Server.Commands
 
             while (m_DeleteQueue.Count > 0)
             {
-                ((Item)m_DeleteQueue.Dequeue()).Delete();
+                ((Item)m_DeleteQueue.Dequeue())?.Delete();
             }
 
             return res;

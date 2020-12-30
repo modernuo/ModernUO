@@ -1489,26 +1489,15 @@ namespace Server.Items
 
                         if (m_Resource == CraftResource.None)
                         {
-                            if (mat == ArmorMaterialType.Studded || mat == ArmorMaterialType.Leather)
+                            m_Resource = mat switch
                             {
-                                m_Resource = CraftResource.RegularLeather;
-                            }
-                            else if (mat == ArmorMaterialType.Spined)
-                            {
-                                m_Resource = CraftResource.SpinedLeather;
-                            }
-                            else if (mat == ArmorMaterialType.Horned)
-                            {
-                                m_Resource = CraftResource.HornedLeather;
-                            }
-                            else if (mat == ArmorMaterialType.Barbed)
-                            {
-                                m_Resource = CraftResource.BarbedLeather;
-                            }
-                            else
-                            {
-                                m_Resource = CraftResource.Iron;
-                            }
+                                ArmorMaterialType.Studded => CraftResource.RegularLeather,
+                                ArmorMaterialType.Leather => CraftResource.RegularLeather,
+                                ArmorMaterialType.Spined  => CraftResource.SpinedLeather,
+                                ArmorMaterialType.Horned  => CraftResource.HornedLeather,
+                                ArmorMaterialType.Barbed  => CraftResource.BarbedLeather,
+                                _                         => CraftResource.Iron
+                            };
                         }
 
                         if (m_MaxHitPoints == 0 && m_HitPoints == 0)

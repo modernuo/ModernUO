@@ -126,66 +126,30 @@ namespace Server.Mobiles
 
         public int ComputePriceFor(HouseDeed deed)
         {
-            var price = 0;
-
-            if (deed is SmallBrickHouseDeed || deed is StonePlasterHouseDeed || deed is FieldStoneHouseDeed ||
-                deed is WoodHouseDeed || deed is WoodPlasterHouseDeed ||
-                deed is ThatchedRoofCottageDeed)
+            var price = deed switch
             {
-                price = 43800;
-            }
-            else if (deed is BrickHouseDeed)
-            {
-                price = 144500;
-            }
-            else if (deed is TwoStoryWoodPlasterHouseDeed || deed is TwoStoryStonePlasterHouseDeed)
-            {
-                price = 192400;
-            }
-            else if (deed is TowerDeed)
-            {
-                price = 433200;
-            }
-            else if (deed is KeepDeed)
-            {
-                price = 665200;
-            }
-            else if (deed is CastleDeed)
-            {
-                price = 1022800;
-            }
-            else if (deed is LargePatioDeed)
-            {
-                price = 152800;
-            }
-            else if (deed is LargeMarbleDeed)
-            {
-                price = 192800;
-            }
-            else if (deed is SmallTowerDeed)
-            {
-                price = 88500;
-            }
-            else if (deed is LogCabinDeed)
-            {
-                price = 97800;
-            }
-            else if (deed is SandstonePatioDeed)
-            {
-                price = 90900;
-            }
-            else if (deed is VillaDeed)
-            {
-                price = 136500;
-            }
-            else if (deed is StoneWorkshopDeed)
-            {
-                price = 60600;
-            }
-            else if (deed is MarbleWorkshopDeed)
-            {
-                price = 60300;
-            }
+                SmallBrickHouseDeed           => 43800,
+                StonePlasterHouseDeed         => 43800,
+                FieldStoneHouseDeed           => 43800,
+                WoodHouseDeed                 => 43800,
+                WoodPlasterHouseDeed          => 43800,
+                ThatchedRoofCottageDeed       => 43800,
+                BrickHouseDeed                => 144500,
+                TwoStoryWoodPlasterHouseDeed  => 192400,
+                TwoStoryStonePlasterHouseDeed => 192400,
+                TowerDeed                     => 433200,
+                KeepDeed                      => 665200,
+                CastleDeed                    => 1022800,
+                LargePatioDeed                => 152800,
+                LargeMarbleDeed               => 192800,
+                SmallTowerDeed                => 88500,
+                LogCabinDeed                  => 97800,
+                SandstonePatioDeed            => 90900,
+                VillaDeed                     => 136500,
+                StoneWorkshopDeed             => 60600,
+                MarbleWorkshopDeed            => 60300,
+                _                             => 0
+            };
 
             return AOS.Scale(price, 80); // refunds 80% of the purchase price
         }

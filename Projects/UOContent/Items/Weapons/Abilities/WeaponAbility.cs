@@ -294,100 +294,33 @@ namespace Server.Items
                 return false;
             }
 
-            string option = null;
-
-            if (this is ArmorIgnore)
+            string option = this switch
             {
-                option = "Armor Ignore";
-            }
-            else if (this is BleedAttack)
-            {
-                option = "Bleed Attack";
-            }
-            else if (this is ConcussionBlow)
-            {
-                option = "Concussion Blow";
-            }
-            else if (this is CrushingBlow)
-            {
-                option = "Crushing Blow";
-            }
-            else if (this is Disarm)
-            {
-                option = "Disarm";
-            }
-            else if (this is Dismount)
-            {
-                option = "Dismount";
-            }
-            else if (this is DoubleStrike)
-            {
-                option = "Double Strike";
-            }
-            else if (this is InfectiousStrike)
-            {
-                option = "Infectious Strike";
-            }
-            else if (this is MortalStrike)
-            {
-                option = "Mortal Strike";
-            }
-            else if (this is MovingShot)
-            {
-                option = "Moving Shot";
-            }
-            else if (this is ParalyzingBlow)
-            {
-                option = "Paralyzing Blow";
-            }
-            else if (this is ShadowStrike)
-            {
-                option = "Shadow Strike";
-            }
-            else if (this is WhirlwindAttack)
-            {
-                option = "Whirlwind Attack";
-            }
-            else if (this is RidingSwipe)
-            {
-                option = "Riding Swipe";
-            }
-            else if (this is FrenziedWhirlwind)
-            {
-                option = "Frenzied Whirlwind";
-            }
-            else if (this is Block)
-            {
-                option = "Block";
-            }
-            else if (this is DefenseMastery)
-            {
-                option = "Defense Mastery";
-            }
-            else if (this is NerveStrike)
-            {
-                option = "Nerve Strike";
-            }
-            else if (this is TalonStrike)
-            {
-                option = "Talon Strike";
-            }
-            else if (this is Feint)
-            {
-                option = "Feint";
-            }
-            else if (this is DualWield)
-            {
-                option = "Dual Wield";
-            }
-            else if (this is DoubleShot)
-            {
-                option = "Double Shot";
-            }
-            else if (this is ArmorPierce)
-            {
-                option = "Armor Pierce";
-            }
+                ArmorIgnore _       => "Armor Ignore",
+                BleedAttack _       => "Bleed Attack",
+                ConcussionBlow _    => "Concussion Blow",
+                CrushingBlow _      => "Crushing Blow",
+                Disarm _            => "Disarm",
+                Dismount _          => "Dismount",
+                DoubleStrike _      => "Double Strike",
+                InfectiousStrike _  => "Infectious Strike",
+                MortalStrike _      => "Mortal Strike",
+                MovingShot _        => "Moving Shot",
+                ParalyzingBlow _    => "Paralyzing Blow",
+                ShadowStrike _      => "Shadow Strike",
+                WhirlwindAttack _   => "Whirlwind Attack",
+                RidingSwipe _       => "Riding Swipe",
+                FrenziedWhirlwind _ => "Frenzied Whirlwind",
+                Block _             => "Block",
+                DefenseMastery _    => "Defense Mastery",
+                NerveStrike _       => "Nerve Strike",
+                TalonStrike _       => "Talon Strike",
+                Feint _             => "Feint",
+                DualWield  _        => "Dual Wield",
+                DoubleShot _        => "Double Shot",
+                ArmorPierce _       => "Armor Pierce",
+                _                   => null
+            };
 
             if (option != null && !DuelContext.AllowSpecialAbility(from, option, true))
             {

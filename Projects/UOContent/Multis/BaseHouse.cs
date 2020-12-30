@@ -1840,12 +1840,14 @@ namespace Server.Multis
             {
                 door = new GenericHouseDoor(GetSADoorFacing(itemID - 0x5142), itemID, 0xF0, 0xEF, false);
             }
+            // TODO: Fix this because the heuristic is broken, or remove the type calculation
             else if (itemID >= 0x9AD7 && itemID <= 0x9AE6)
             {
                 var type = (itemID - 0x9AD7) / 16;
                 var facing = (DoorFacing)((itemID - 0x9AD7) / 2 % 8);
                 door = new GenericHouseDoor(facing, 0x9AD7 + type * 16, 0xED, 0xF4);
             }
+            // TODO: Fix this because the heuristic is broken, or remove the type calculation
             else if (itemID >= 0x9B3C && itemID <= 0x9B4B)
             {
                 var type = (itemID - 0x9B3C) / 16;

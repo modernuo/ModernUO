@@ -15,17 +15,14 @@ namespace Server.Mobiles
 
             if (item is BaseArmor armor)
             {
-                if (armor.Quality == ArmorQuality.Low)
+                price = armor.Quality switch
                 {
-                    price = (int)(price * 0.60);
-                }
-                else if (armor.Quality == ArmorQuality.Exceptional)
-                {
-                    price = (int)(price * 1.25);
-                }
+                    ArmorQuality.Low         => (int)(price * 0.60),
+                    ArmorQuality.Exceptional => (int)(price * 1.25),
+                    _                        => price
+                };
 
                 price += 100 * (int)armor.Durability;
-
                 price += 100 * (int)armor.ProtectionLevel;
 
                 if (price < 1)
@@ -35,17 +32,14 @@ namespace Server.Mobiles
             }
             else if (item is BaseWeapon weapon)
             {
-                if (weapon.Quality == WeaponQuality.Low)
+                price = weapon.Quality switch
                 {
-                    price = (int)(price * 0.60);
-                }
-                else if (weapon.Quality == WeaponQuality.Exceptional)
-                {
-                    price = (int)(price * 1.25);
-                }
+                    WeaponQuality.Low         => (int)(price * 0.60),
+                    WeaponQuality.Exceptional => (int)(price * 1.25),
+                    _                         => price
+                };
 
                 price += 100 * (int)weapon.DurabilityLevel;
-
                 price += 100 * (int)weapon.DamageLevel;
 
                 if (price < 1)
