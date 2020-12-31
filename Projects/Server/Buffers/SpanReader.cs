@@ -181,7 +181,7 @@ namespace System.Buffers
         {
             Debug.Assert(
                 origin != SeekOrigin.End || offset <= 0,
-                "Attempting to seek to a position beyond capacity using SeekOrigin.End without resize"
+                "Attempting to seek to a position beyond capacity using SeekOrigin.End"
             );
 
             Debug.Assert(
@@ -196,7 +196,7 @@ namespace System.Buffers
 
             Debug.Assert(
                 origin != SeekOrigin.Begin || offset <= _buffer.Length,
-                "Attempting to seek to a position beyond the capacity using SeekOrigin.Begin without resize"
+                "Attempting to seek to a position beyond the capacity using SeekOrigin.Begin"
             );
 
             Debug.Assert(
@@ -206,7 +206,7 @@ namespace System.Buffers
 
             Debug.Assert(
                 origin != SeekOrigin.Current || Position + offset <= _buffer.Length,
-                "Attempting to seek to a position beyond the capacity using SeekOrigin.Current without resize"
+                "Attempting to seek to a position beyond the capacity using SeekOrigin.Current"
             );
 
             return Position = Math.Max(0, origin switch
