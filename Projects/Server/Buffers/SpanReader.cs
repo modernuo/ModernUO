@@ -180,16 +180,33 @@ namespace System.Buffers
         public int Seek(int offset, SeekOrigin origin)
         {
             Debug.Assert(
-                origin != SeekOrigin.End || offset <= 0 && offset > -_buffer.Length,
-                "Attempting to seek to an invalid position using SeekOrigin.End"
+                origin != SeekOrigin.End || offset <= 0,
+                "Attempting to seek to a position beyond capacity using SeekOrigin.End without resize"
             );
+
             Debug.Assert(
-                origin != SeekOrigin.Begin || offset >= 0 && offset < _buffer.Length,
-                "Attempting to seek to an invalid position using SeekOrigin.Begin"
+                origin != SeekOrigin.End || offset >= -_buffer.Length,
+                "Attempting to seek to a negative position using SeekOrigin.End"
             );
+
             Debug.Assert(
-                origin != SeekOrigin.Current || Position + offset >= 0 && Position + offset < _buffer.Length,
-                "Attempting to seek to an invalid position using SeekOrigin.Current"
+                origin != SeekOrigin.Begin || offset >= 0,
+                "Attempting to seek to a negative position using SeekOrigin.Begin"
+            );
+
+            Debug.Assert(
+                origin != SeekOrigin.Begin || offset <= _buffer.Length,
+                "Attempting to seek to a position beyond the capacity using SeekOrigin.Begin without resize"
+            );
+
+            Debug.Assert(
+                origin != SeekOrigin.Current || Position + offset >= 0,
+                "Attempting to seek to a negative position using SeekOrigin.Current"
+            );
+
+            Debug.Assert(
+                origin != SeekOrigin.Current || Position + offset <= _buffer.Length,
+                "Attempting to seek to a position beyond the capacity using SeekOrigin.Current without resize"
             );
 
             return Position = Math.Max(0, origin switch

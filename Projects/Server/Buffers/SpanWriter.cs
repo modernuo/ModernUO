@@ -282,31 +282,48 @@ namespace System.Buffers
         public int Seek(int offset, SeekOrigin origin)
         {
             Debug.Assert(
-                origin != SeekOrigin.End || (_resize || offset <= 0) && offset > -_buffer.Length,
-                "Attempting to seek to an invalid position using SeekOrigin.End"
+                origin != SeekOrigin.End || _resize || offset <= 0,
+                "Attempting to seek to a position beyond capacity using SeekOrigin.End without resize"
             );
+
             Debug.Assert(
-                origin != SeekOrigin.Begin || offset >= 0 && (_resize || offset < _buffer.Length),
-                "Attempting to seek to an invalid position using SeekOrigin.Begin"
+                origin != SeekOrigin.End || offset >= -_buffer.Length,
+                "Attempting to seek to a negative position using SeekOrigin.End"
             );
+
             Debug.Assert(
-                origin != SeekOrigin.Current || Position + offset >= 0 && (_resize || Position + offset < _buffer.Length),
-                "Attempting to seek to an invalid position using SeekOrigin.Current"
+                origin != SeekOrigin.Begin || offset >= 0,
+                "Attempting to seek to a negative position using SeekOrigin.Begin"
+            );
+
+            Debug.Assert(
+                origin != SeekOrigin.Begin || _resize || offset <= _buffer.Length,
+                "Attempting to seek to a position beyond the capacity using SeekOrigin.Begin without resize"
+            );
+
+            Debug.Assert(
+                origin != SeekOrigin.Current || _position + offset >= 0,
+                "Attempting to seek to a negative position using SeekOrigin.Current"
+            );
+
+            Debug.Assert(
+                origin != SeekOrigin.Current || _resize || _position + offset <= _buffer.Length,
+                "Attempting to seek to a position beyond the capacity using SeekOrigin.Current without resize"
             );
 
             var newPosition = Math.Max(0, origin switch
             {
-                SeekOrigin.Current => Position + offset,
+                SeekOrigin.Current => _position + offset,
                 SeekOrigin.End     => Length + offset,
                 _                  => offset // Begin
             });
 
-            if (newPosition > _buffer.Length)
+            if (newPosition >= _buffer.Length)
             {
-                Grow(newPosition - _buffer.Length);
+                Grow(newPosition - _buffer.Length + 1);
             }
 
-            return newPosition;
+            return _position = newPosition;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
