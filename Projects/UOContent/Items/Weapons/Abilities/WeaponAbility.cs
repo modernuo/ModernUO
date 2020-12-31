@@ -396,9 +396,9 @@ namespace Server.Items
         {
             Table.Remove(m);
 
-            if (Core.AOS && m.NetState != null)
+            if (Core.AOS)
             {
-                m.Send(ClearWeaponAbility.Instance);
+                m.NetState.SendClearWeaponAbility();
             }
         }
 

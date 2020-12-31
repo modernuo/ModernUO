@@ -121,7 +121,7 @@ namespace Server
 
                         if (m_Page != null)
                         {
-                            state.Send(new LaunchBrowser(m_Page)); // No message about web browser starting on OSI
+                            state.SendLaunchBrowser(m_Page); // No message about web browser starting on OSI
                         }
 
                         break;

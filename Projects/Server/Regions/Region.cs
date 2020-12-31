@@ -774,7 +774,7 @@ namespace Server
 
                 if (oldRegion == null || oldRegion.Music != newRegion.Music)
                 {
-                    m.Send(PlayMusic.GetInstance(newRegion.Music));
+                    m.NetState.SendPlayMusic(newRegion.Music);
                 }
             }
 

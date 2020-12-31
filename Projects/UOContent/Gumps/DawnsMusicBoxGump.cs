@@ -82,7 +82,7 @@ namespace Server.Gumps
                     1061856
                 ); // You must have the item in your backpack or locked down in order to use it.
             }
-            else if (m_Box.IsLockedDown && !m_Box.HasAccces(m))
+            else if (m_Box.IsLockedDown && !m_Box.HasAccess(m))
             {
                 m.SendLocalizedMessage(502691); // You must be the owner to use this.
             }
