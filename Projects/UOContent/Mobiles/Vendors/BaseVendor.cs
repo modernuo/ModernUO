@@ -1042,7 +1042,7 @@ namespace Server.Mobiles
             {
                 SendPacksTo(from);
 
-                from.Send(new VendorSellList(this, list));
+                from.NetState.SendVendorSellList(Serial, list);
             }
             else
             {

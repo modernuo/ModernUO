@@ -12,7 +12,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestVendorSellList()
         {
-            var vendor = new Mobile(0x1);
+            var vendor = new Mobile(0x1024u);
             vendor.DefaultMobileInit();
 
             var item1 = new Item(World.NewItem);
@@ -26,57 +26,28 @@ namespace Server.Tests.Network
                 new(item3, 1, "Item 3")
             };
 
-            var data = new VendorSellList(vendor, sellStates).Compile();
+            var expected = new VendorSellList(vendor, sellStates).Compile();
 
-            var length = 9 + 14 * 3 + sellStates.Sum(
-                state =>
-                    (string.IsNullOrWhiteSpace(state.Item.Name) ? state.Name ?? "" : state.Item.Name.Trim()).Length
-            );
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendVendorSellList(vendor.Serial, sellStates);
 
-            Span<byte> expectedData = stackalloc byte[length];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0x9E); // Packet ID
-            expectedData.Write(ref pos, (ushort)length);
-            expectedData.Write(ref pos, vendor.Serial);
-            expectedData.Write(ref pos, (ushort)sellStates.Count);
-
-            for (var i = 0; i < sellStates.Count; i++)
-            {
-                var state = sellStates[i];
-                expectedData.Write(ref pos, state.Item.Serial);
-                expectedData.Write(ref pos, (ushort)state.Item.ItemID);
-                expectedData.Write(ref pos, (ushort)state.Item.Hue);
-                expectedData.Write(ref pos, (ushort)state.Item.Amount);
-                expectedData.Write(ref pos, (ushort)state.Price);
-                var name = string.IsNullOrWhiteSpace(state.Item.Name) ? state.Name ?? "" : state.Item.Name.Trim();
-                expectedData.Write(ref pos, (ushort)name.Length);
-                expectedData.WriteAscii(ref pos, name);
-            }
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
         public void TestEndVendorSell()
         {
-            var vendor = new Mobile(0x1);
+            var vendor = new Mobile(0x1024u);
             vendor.DefaultMobileInit();
 
-            var data = new EndVendorBuy(vendor.Serial).Compile();
+            var expected = new EndVendorBuy(vendor.Serial).Compile();
 
-            Span<byte> expectedData = stackalloc byte[8];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendEndVendorSell(vendor.Serial);
 
-            expectedData.Write(ref pos, (byte)0x3B);   // Packet ID
-            expectedData.Write(ref pos, (ushort)0x08); // Length
-            expectedData.Write(ref pos, vendor.Serial);
-
-#if NO_LOCAL_INIT
-            expectedData.Write(ref pos, (byte)0);
-#endif
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 }
