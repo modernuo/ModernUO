@@ -15,6 +15,7 @@
 
 using System.Buffers.Binary;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -24,122 +25,171 @@ namespace System.Buffers
 {
     public ref struct SpanWriter
     {
-        private readonly Span<byte> _buffer;
+        private readonly bool _resize;
+        private byte[]? _arrayToReturnToPool;
+        private Span<byte> _buffer;
+        private int _position;
 
-        public int Length => _buffer.Length;
+        public int Length { get; private set; }
+
+        public int Position
+        {
+            get => _position;
+            private set
+            {
+                _position = value;
+
+                if (value > Length)
+                {
+                    Length = value;
+                }
+            }
+        }
+
+        public int Capacity => _buffer.Length;
 
         public ReadOnlySpan<byte> Span => _buffer.Slice(0, Position);
 
-        public int Position { get; private set; }
+        public Span<byte> RawBuffer => _buffer;
 
-        public SpanWriter(Span<byte> span)
+        public SpanWriter(Span<byte> initialBuffer, bool resize = false)
         {
-            _buffer = span;
-            Position = 0;
+            _resize = resize;
+            _buffer = initialBuffer;
+            _position = 0;
+            Length = 0;
+            _arrayToReturnToPool = null;
+        }
+
+        public SpanWriter(int initialCapacity, bool resize = false)
+        {
+            _resize = resize;
+            _arrayToReturnToPool = ArrayPool<byte>.Shared.Rent(initialCapacity);
+            _buffer = _arrayToReturnToPool;
+            _position = 0;
+            Length = 0;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void Grow(int additionalCapacity)
+        {
+            var newSize = Math.Max(Length + additionalCapacity, _buffer.Length * 2);
+            byte[] poolArray = ArrayPool<byte>.Shared.Rent(newSize);
+
+            _buffer.Slice(0, Length).CopyTo(poolArray);
+
+            byte[]? toReturn = _arrayToReturnToPool;
+            _buffer = _arrayToReturnToPool = poolArray;
+            if (toReturn != null)
+            {
+                ArrayPool<byte>.Shared.Return(toReturn);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void GrowIfNeeded(int count)
+        {
+            if (_position + count > _buffer.Length)
+            {
+                if (!_resize)
+                {
+                    throw new OutOfMemoryException();
+                }
+
+                Grow(count);
+            }
+        }
+
+        public void EnsureCapacity(int capacity)
+        {
+            if (capacity > _buffer.Length)
+            {
+                if (!_resize)
+                {
+                    throw new OutOfMemoryException();
+                }
+
+                Grow(capacity - Length);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void Write(bool value)
         {
-            if (Position >= Length)
-            {
-                throw new OutOfMemoryException();
-            }
-
-            _buffer[Position++] = *(byte*) & value;
+            GrowIfNeeded(1);
+            _buffer[Position++] = *(byte*)&value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(byte value)
         {
+            GrowIfNeeded(1);
             _buffer[Position++] = value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(sbyte value)
         {
+            GrowIfNeeded(1);
             _buffer[Position++] = (byte)value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(short value)
         {
-            if (!BinaryPrimitives.TryWriteInt16BigEndian(_buffer.Slice(Position), value))
-            {
-                throw new OutOfMemoryException();
-            }
-
+            GrowIfNeeded(2);
+            BinaryPrimitives.WriteInt16BigEndian(_buffer.Slice(_position), value);
             Position += 2;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(ushort value)
         {
-            if (!BinaryPrimitives.TryWriteUInt16BigEndian(_buffer.Slice(Position), value))
-            {
-                throw new OutOfMemoryException();
-            }
-
+            GrowIfNeeded(2);
+            BinaryPrimitives.WriteUInt16BigEndian(_buffer.Slice(_position), value);
             Position += 2;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(int value)
         {
-            if (!BinaryPrimitives.TryWriteInt32BigEndian(_buffer.Slice(Position), value))
-            {
-                throw new OutOfMemoryException();
-            }
-
+            GrowIfNeeded(4);
+            BinaryPrimitives.WriteInt32BigEndian(_buffer.Slice(_position), value);
             Position += 4;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(uint value)
         {
-            if (!BinaryPrimitives.TryWriteUInt32BigEndian(_buffer.Slice(Position), value))
-            {
-                throw new OutOfMemoryException();
-            }
-
+            GrowIfNeeded(4);
+            BinaryPrimitives.WriteUInt32BigEndian(_buffer.Slice(_position), value);
             Position += 4;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(long value)
         {
-            if (!BinaryPrimitives.TryWriteInt64BigEndian(_buffer.Slice(Position), value))
-            {
-                throw new OutOfMemoryException();
-            }
-
+            GrowIfNeeded(8);
+            BinaryPrimitives.WriteInt64BigEndian(_buffer.Slice(_position), value);
             Position += 8;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(ulong value)
         {
-            if (!BinaryPrimitives.TryWriteUInt64BigEndian(_buffer.Slice(Position), value))
-            {
-                throw new OutOfMemoryException();
-            }
-
+            GrowIfNeeded(8);
+            BinaryPrimitives.WriteUInt64BigEndian(_buffer.Slice(_position), value);
             Position += 8;
         }
 
         public void Write(ReadOnlySpan<byte> buffer)
         {
-            var size = buffer.Length;
-            if (Position + size > Length)
-            {
-                throw new OutOfMemoryException();
-            }
-
-            buffer.Slice(0, size).CopyTo(_buffer.Slice(Position));
-            Position += size;
+            var count = buffer.Length;
+            GrowIfNeeded(count);
+            buffer.CopyTo(_buffer.Slice(_position));
+            Position += count;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteString<T>(string value, Encoding encoding, int fixedLength = -1) where T : struct, IEquatable<T>
         {
             int sizeT = Unsafe.SizeOf<T>();
@@ -156,12 +206,9 @@ namespace System.Buffers
 
             var byteCount = fixedLength > -1 ? fixedLength * sizeT : encoding.GetByteCount(value);
 
-            if (Position + byteCount > Length)
-            {
-                throw new OutOfMemoryException();
-            }
+            GrowIfNeeded(byteCount);
 
-            var bytesWritten = encoding.GetBytes(src, _buffer.Slice(Position));
+            var bytesWritten = encoding.GetBytes(src, _buffer.Slice(_position));
             Position += bytesWritten;
 
             if (fixedLength > -1)
@@ -194,7 +241,7 @@ namespace System.Buffers
         public void WriteBigUniNull(string value)
         {
             WriteString<char>(value, Utility.Unicode);
-            Write((ushort)0);
+            Write((ushort)0); // '\0'
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -207,7 +254,7 @@ namespace System.Buffers
         public void WriteUTF8Null(string value)
         {
             WriteString<byte>(value, Utility.UTF8);
-            Write((byte)0);
+            Write((byte)0); // '\0'
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -217,38 +264,60 @@ namespace System.Buffers
         public void WriteAsciiNull(string value)
         {
             WriteString<byte>(value, Encoding.ASCII);
-            Write((byte)0);
+            Write((byte)0); // '\0'
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteAscii(string value, int fixedLength) => WriteString<byte>(value, Encoding.ASCII, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear()
+        public void Clear(int count)
         {
-            _buffer.Slice(Position).Clear();
-            Position = Length;
+            GrowIfNeeded(count);
+            _buffer.Slice(_position, count).Clear();
+            Position += count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear(int amount)
+        public int Seek(int offset, SeekOrigin origin)
         {
-            if (Position + amount > Length)
+            Debug.Assert(
+                origin != SeekOrigin.End || (_resize || offset <= 0) && offset > -_buffer.Length,
+                "Attempting to seek to an invalid position using SeekOrigin.End"
+            );
+            Debug.Assert(
+                origin != SeekOrigin.Begin || offset >= 0 && (_resize || offset < _buffer.Length),
+                "Attempting to seek to an invalid position using SeekOrigin.Begin"
+            );
+            Debug.Assert(
+                origin != SeekOrigin.Current || Position + offset >= 0 && (_resize || Position + offset < _buffer.Length),
+                "Attempting to seek to an invalid position using SeekOrigin.Current"
+            );
+
+            var newPosition = Math.Max(0, origin switch
             {
-                throw new OutOfMemoryException();
+                SeekOrigin.Current => Position + offset,
+                SeekOrigin.End     => Length + offset,
+                _                  => offset // Begin
+            });
+
+            if (newPosition > _buffer.Length)
+            {
+                Grow(newPosition - _buffer.Length);
             }
 
-            _buffer.Slice(Position, amount).Clear();
-            Position += amount;
+            return newPosition;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Seek(int offset, SeekOrigin origin) =>
-            Position = origin switch
+        public void Dispose()
+        {
+            byte[] toReturn = _arrayToReturnToPool;
+            this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
+            if (toReturn != null)
             {
-                SeekOrigin.Begin => offset,
-                SeekOrigin.End   => Length - offset,
-                _                => Position + offset // Current
-            };
+                ArrayPool<byte>.Shared.Return(toReturn);
+            }
+        }
     }
 }
