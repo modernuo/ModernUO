@@ -8454,8 +8454,7 @@ namespace Server
 
             if (gump != null)
             {
-                // TODO: Recycle CloseGump
-                m_NetState.Send(new CloseGump(gump.TypeID, 0));
+                m_NetState.SendCloseGump(gump.TypeID, 0);
                 m_NetState.RemoveGump(gump);
                 gump.OnServerClose(m_NetState);
             }
@@ -8478,7 +8477,7 @@ namespace Server
 
             foreach (var gump in gumps)
             {
-                ns.Send(new CloseGump(gump.TypeID, 0));
+                ns.SendCloseGump(gump.TypeID, 0);
 
                 gump.OnServerClose(ns);
             }

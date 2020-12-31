@@ -1,3 +1,5 @@
+using System.Buffers;
+using System.Collections.Generic;
 using Server.Network;
 
 namespace Server.Gumps
@@ -24,6 +26,8 @@ namespace Server.Gumps
 
         public override string Compile(NetState ns) => $"{{ checkertrans {X} {Y} {Width} {Height} }}";
 
+        public override string Compile(SortedSet<string> strings) => $"{{ checkertrans {X} {Y} {Width} {Height} }}";
+
         public override void AppendTo(NetState ns, IGumpWriter disp)
         {
             disp.AppendLayout(m_LayoutName);
@@ -31,6 +35,19 @@ namespace Server.Gumps
             disp.AppendLayout(Y);
             disp.AppendLayout(Width);
             disp.AppendLayout(Height);
+        }
+
+        public override void AppendTo(ref SpanWriter writer, SortedSet<string> strings, ref int entries, ref int switches)
+        {
+            writer.Write(m_LayoutName);
+            writer.WriteAscii(X.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Y.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Width.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Height.ToString());
+            writer.Write((ushort)0x207D); // " }"
         }
     }
 }
