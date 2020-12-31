@@ -310,7 +310,7 @@ namespace Server.Network
                 state.SendMapPatches();
             }
 
-            state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
+            state.SendSeasonChange((byte)m.GetSeason(), true);
 
             state.SendSupportedFeature();
 
@@ -338,8 +338,8 @@ namespace Server.Network
             state.SendMobileIncoming(m, m);
 
             state.SendLoginComplete();
-            state.Send(new CurrentTime());
-            state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
+            state.SendCurrentTime();
+            state.SendSeasonChange((byte)m.GetSeason(), true);
             state.SendMapChange(m.Map);
 
             EventSink.InvokeLogin(m);

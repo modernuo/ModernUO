@@ -483,7 +483,7 @@ namespace Server.Network
 
         public static void PingReq(NetState state, CircularBufferReader reader)
         {
-            state.Send(PingAck.Instantiate(reader.ReadByte()));
+            state.SendPingAck(reader.ReadByte());
         }
 
         public static void SetUpdateRange(NetState state, CircularBufferReader reader)

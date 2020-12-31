@@ -2815,7 +2815,7 @@ namespace Server
                         ns.SendMapPatches();
                     }
 
-                    ns.Send(SeasonChange.Instantiate(GetSeason(), true));
+                    ns.SendSeasonChange((byte)GetSeason(), true);
 
                     ns.SendMobileUpdate(this);
                     ns.SendServerChange(m_Location, m_Map);
@@ -5288,30 +5288,33 @@ namespace Server
                             if (DragEffects && map != null && (root == null || root is Item))
                             {
                                 var eable = map.GetClientsInRange(from.Location);
-                                Packet p = null;
                                 var rootItem = root as Item;
+
+                                Span<byte> buffer = stackalloc byte[OutgoingPlayerPackets.DragEffectPacketLength];
+                                buffer.InitializePacket();
 
                                 foreach (var ns in eable)
                                 {
                                     if (ns.Mobile != from && ns.Mobile.CanSee(from) && ns.Mobile.InLOS(from) &&
                                         ns.Mobile.CanSee(root))
                                     {
-                                        if (p == null)
+                                        if (buffer[0] == 0)
                                         {
-                                            IEntity src = new Entity(
+                                            OutgoingPlayerPackets.CreateDragEffect(
+                                                buffer,
                                                 rootItem?.Serial ?? Serial.Zero,
                                                 rootItem?.Location ?? item.Location,
-                                                map
+                                                from.Serial,
+                                                from.Location,
+                                                item.ItemID,
+                                                item.Hue,
+                                                amount
                                             );
-
-                                            p = Packet.Acquire(new DragEffect(src, from, item.ItemID, item.Hue, amount));
                                         }
 
-                                        ns.Send(p);
+                                        ns.Send(buffer);
                                     }
                                 }
-
-                                Packet.Release(p);
 
                                 eable.Free();
                             }
@@ -5430,46 +5433,53 @@ namespace Server
 
         public virtual void SendDropEffect(Item item)
         {
-            if (DragEffects && !item.Deleted)
+            if (!DragEffects || item.Deleted)
             {
-                var map = m_Map;
-                var root = item.RootParent;
+                return;
+            }
 
-                if (map != null && (root == null || root is Item))
+            var map = m_Map;
+            var root = item.RootParent;
+            var rootItem = root as Item;
+
+            if (map == null || root != null && rootItem == null)
+            {
+                return;
+            }
+
+            var eable = map.GetClientsInRange(m_Location);
+
+            Span<byte> buffer = stackalloc byte[OutgoingPlayerPackets.DragEffectPacketLength];
+            buffer.InitializePacket();
+
+            foreach (var ns in eable)
+            {
+                if (ns.StygianAbyss)
                 {
-                    var eable = map.GetClientsInRange(m_Location);
-                    Packet p = null;
-                    var rootItem = root as Item;
+                    continue;
+                }
 
-                    foreach (var ns in eable)
+                if (ns.Mobile != this && ns.Mobile.CanSee(this) && ns.Mobile.InLOS(this) && ns.Mobile.CanSee(root))
+                {
+                    if (buffer[0] == 0)
                     {
-                        if (ns.StygianAbyss)
-                        {
-                            continue;
-                        }
-
-                        if (ns.Mobile != this && ns.Mobile.CanSee(this) && ns.Mobile.InLOS(this) && ns.Mobile.CanSee(root))
-                        {
-                            if (p == null)
-                            {
-                                IEntity trg = new Entity(
-                                    rootItem?.Serial ?? Serial.Zero,
-                                    rootItem?.Location ?? item.Location,
-                                    map
-                                );
-
-                                p = Packet.Acquire(new DragEffect(this, trg, item.ItemID, item.Hue, item.Amount));
-                            }
-
-                            ns.Send(p);
-                        }
+                        OutgoingPlayerPackets.CreateDragEffect(
+                            buffer,
+                            Serial,
+                            Location,
+                            rootItem?.Serial ?? Serial.Zero,
+                            rootItem?.Location ?? item.Location,
+                            item.ItemID,
+                            item.Hue,
+                            item.Amount
+                        );
                     }
 
-                    Packet.Release(p);
-
-                    eable.Free();
+                    ns.Send(buffer);
                 }
             }
+
+            eable.Free();
         }
 
         public virtual bool Drop(Item to, Point3D loc)

@@ -17,6 +17,7 @@ using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
+using Server.HuePickers;
 
 namespace Server.Network
 {
@@ -32,6 +33,8 @@ namespace Server.Network
 
     public static class OutgoingPlayerPackets
     {
+        public const int DragEffectPacketLength = 26;
+
         public static void SendStatLockInfo(this NetState ns, Mobile m)
         {
             if (ns == null || !ns.GetSendBuffer(out var buffer))
@@ -221,6 +224,169 @@ namespace Server.Network
             writer.WriteAsciiNull(uri ?? "");
 
             writer.WritePacketLength();
+
+            ns.Send(ref buffer, writer.Position);
+        }
+
+        public static void CreateDragEffect(
+            Span<byte> buffer,
+            Serial srcSerial, Point3D srcLocation,
+            Serial trgSerial, Point3D trgLocation,
+            int itemID, int hue, int amount
+        )
+        {
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0x23); // Packet ID
+            writer.Write((short)itemID);
+            writer.Write((byte)0);
+            writer.Write((short)hue);
+            writer.Write((short)amount);
+            writer.Write(srcSerial);
+            writer.Write((short)srcLocation.X);
+            writer.Write((short)srcLocation.Y);
+            writer.Write((sbyte)srcLocation.Z);
+            writer.Write(trgSerial);
+            writer.Write((short)trgLocation.X);
+            writer.Write((short)trgLocation.Y);
+            writer.Write((sbyte)trgLocation.Z);
+        }
+
+        public static void SendDragEffect(
+            this NetState ns,
+            Serial srcSerial, Point3D srcLocation,
+            Serial trgSerial, Point3D trgLocation,
+            int itemID, int hue, int amount
+        )
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> span = stackalloc byte[DragEffectPacketLength];
+            CreateDragEffect(span, srcSerial, srcLocation, trgSerial, trgLocation, itemID, hue, amount);
+            ns.Send(span);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void SendSeasonChange(this NetState ns, byte season, bool playSound)
+        {
+            ns?.Send(stackalloc byte[]{ 0xBC, season, *(byte*)&playSound });
+        }
+
+        public static void SendDisplayPaperdoll(this NetState ns, Serial m, string title, bool warmode, bool canLift)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            byte flags = 0x00;
+
+            if (warmode)
+            {
+                flags |= 0x01;
+            }
+
+            if (canLift)
+            {
+                flags |= 0x02;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0x88); // Packet ID
+            writer.Write(m);
+            writer.WriteAscii(title, 60);
+            writer.Write(flags);
+
+            ns.Send(ref buffer, writer.Position);
+        }
+
+        public static void SendPlayMusic(this NetState ns, MusicName music)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0x6D); // Packet ID
+            writer.Write((short)music);
+
+            ns.Send(ref buffer, writer.Position);
+        }
+
+        public static void SendScrollMessage(this NetState ns, int type, int tip, string text)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            text ??= "";
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0xA6); // Packet ID
+            writer.Seek(2, SeekOrigin.Current);
+            writer.Write((byte)type);
+            writer.Write(tip);
+            writer.Write((ushort)text.Length);
+            writer.WriteAscii(text);
+
+            writer.WritePacketLength();
+            ns.Send(ref buffer, writer.Position);
+        }
+
+        // TODO: Use DateTime caching against core loop
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendCurrentTime(this NetState ns) => ns.SendCurrentTime(DateTime.UtcNow);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendCurrentTime(this NetState ns, DateTime date)
+        {
+            ns?.Send(stackalloc byte[] { 0x5B, (byte)date.Hour, (byte)date.Minute, (byte)date.Second });
+        }
+
+        public static void SendPathfindMessage(this NetState ns, Point3D p)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0x38); // Packet ID
+            writer.Write((short)p.X);
+            writer.Write((short)p.Y);
+            writer.Write((short)p.Z);
+
+            ns.Send(ref buffer, writer.Position);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendPingAck(this NetState ns, byte ping)
+        {
+            ns?.Send(stackalloc byte[] { 0x73, ping });
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendClearWeaponAbility(this NetState ns)
+        {
+            ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x5, 0x00, 0x21 });
+        }
+
+        public static void SendDisplayHuePicker(this NetState ns, Serial huePickerSerial, int huePickerItemID)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0x95); // Packet ID
+            writer.Write(huePickerSerial);
+            writer.Write((short)0);
+            writer.Write((short)huePickerItemID);
 
             ns.Send(ref buffer, writer.Position);
         }
