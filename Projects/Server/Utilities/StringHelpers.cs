@@ -23,7 +23,8 @@ namespace Server
     public static class StringHelpers
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string DefaultIfNullOrEmpty(this string value, string def) => value?.Trim().Length > 0 ? value : def;
+        public static string DefaultIfNullOrEmpty(this string value, string def) =>
+            string.IsNullOrWhiteSpace(value) ? def : value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Remove(

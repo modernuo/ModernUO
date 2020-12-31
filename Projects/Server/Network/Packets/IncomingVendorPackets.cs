@@ -77,7 +77,7 @@ namespace Server.Network
 
             if (vendor.Deleted || !Utility.RangeCheck(vendor.Location, state.Mobile.Location, 10))
             {
-                state.Send(new EndVendorSell(vendor));
+                state.SendEndVendorSell(vendor.Serial);
                 return;
             }
 
@@ -103,7 +103,7 @@ namespace Server.Network
 
             if (sellList.Count > 0 && vendor is IVendor v && v.OnSellItems(state.Mobile, sellList))
             {
-                state.Send(new EndVendorSell(vendor));
+                state.SendEndVendorSell(vendor.Serial);
             }
         }
     }
