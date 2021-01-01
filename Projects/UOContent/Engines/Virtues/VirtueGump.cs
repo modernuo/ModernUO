@@ -39,14 +39,14 @@ namespace Server
 
             AddPage(1);
 
-            Add(new InternalEntry(61, 71, 108, GetHueFor(0)));   // Humility
-            Add(new InternalEntry(123, 46, 112, GetHueFor(4)));  // Valor
-            Add(new InternalEntry(187, 70, 107, GetHueFor(5)));  // Honor
-            Add(new InternalEntry(35, 135, 110, GetHueFor(1)));  // Sacrifice
-            Add(new InternalEntry(211, 133, 105, GetHueFor(2))); // Compassion
-            Add(new InternalEntry(61, 195, 111, GetHueFor(3)));  // Spiritulaity
-            Add(new InternalEntry(186, 195, 109, GetHueFor(6))); // Justice
-            Add(new InternalEntry(121, 221, 106, GetHueFor(7))); // Honesty
+            Add(new VirtueGumpItem(61, 71, 108, GetHueFor(0)));   // Humility
+            Add(new VirtueGumpItem(123, 46, 112, GetHueFor(4)));  // Valor
+            Add(new VirtueGumpItem(187, 70, 107, GetHueFor(5)));  // Honor
+            Add(new VirtueGumpItem(35, 135, 110, GetHueFor(1)));  // Sacrifice
+            Add(new VirtueGumpItem(211, 133, 105, GetHueFor(2))); // Compassion
+            Add(new VirtueGumpItem(61, 195, 111, GetHueFor(3)));  // Spiritulaity
+            Add(new VirtueGumpItem(186, 195, 109, GetHueFor(6))); // Justice
+            Add(new VirtueGumpItem(121, 221, 106, GetHueFor(7))); // Honesty
 
             if (m_Beholder == m_Beheld)
             {
@@ -171,21 +171,10 @@ namespace Server
             }
         }
 
-        private class InternalEntry : GumpImage
+        private class VirtueGumpItem : GumpImage
         {
-            private static readonly byte[] m_Class = StringToBuffer(" class=VirtueGumpItem");
-
-            public InternalEntry(int x, int y, int gumpID, int hue) : base(x, y, gumpID, hue)
+            public VirtueGumpItem(int x, int y, int gumpID, int hue) : base(x, y, gumpID, hue, "VirtueGumpItem")
             {
-            }
-
-            public override string Compile(NetState ns) => $"{{ gumppic {X} {Y} {GumpID} hue={Hue} class=VirtueGumpItem }}";
-
-            public override void AppendTo(NetState ns, IGumpWriter disp)
-            {
-                base.AppendTo(ns, disp);
-
-                disp.AppendLayout(m_Class);
             }
         }
     }

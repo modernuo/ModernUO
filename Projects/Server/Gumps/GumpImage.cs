@@ -47,6 +47,12 @@ namespace Server.Gumps
                 disp.AppendLayout(m_HueEquals);
                 disp.AppendLayoutNS(Hue);
             }
+
+            if (!string.IsNullOrEmpty(Class))
+            {
+                disp.AppendLayout(m_ClassEquals);
+                disp.AppendLayoutNS(Class);
+            }
         }
 
         public override void AppendTo(ref SpanWriter writer, IndexList<string> strings, ref int entries, ref int switches)
