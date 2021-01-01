@@ -370,7 +370,7 @@ namespace Server.Network
             Position = origin switch
             {
                 SeekOrigin.Begin => offset,
-                SeekOrigin.End   => Length - offset,
+                SeekOrigin.End   => Length + offset,
                 _                => Position + offset // Current
             };
     }

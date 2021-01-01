@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Buffers.Binary;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -176,12 +177,44 @@ namespace System.Buffers
         public string ReadAscii() => ReadString(Encoding.ASCII);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Seek(int offset, SeekOrigin origin) =>
-            Position = origin switch
+        public int Seek(int offset, SeekOrigin origin)
+        {
+            Debug.Assert(
+                origin != SeekOrigin.End || offset <= 0,
+                "Attempting to seek to a position beyond capacity using SeekOrigin.End"
+            );
+
+            Debug.Assert(
+                origin != SeekOrigin.End || offset >= -_buffer.Length,
+                "Attempting to seek to a negative position using SeekOrigin.End"
+            );
+
+            Debug.Assert(
+                origin != SeekOrigin.Begin || offset >= 0,
+                "Attempting to seek to a negative position using SeekOrigin.Begin"
+            );
+
+            Debug.Assert(
+                origin != SeekOrigin.Begin || offset <= _buffer.Length,
+                "Attempting to seek to a position beyond the capacity using SeekOrigin.Begin"
+            );
+
+            Debug.Assert(
+                origin != SeekOrigin.Current || Position + offset >= 0,
+                "Attempting to seek to a negative position using SeekOrigin.Current"
+            );
+
+            Debug.Assert(
+                origin != SeekOrigin.Current || Position + offset <= _buffer.Length,
+                "Attempting to seek to a position beyond the capacity using SeekOrigin.Current"
+            );
+
+            return Position = Math.Max(0, origin switch
             {
-                SeekOrigin.Begin => offset,
-                SeekOrigin.End   => Length - offset,
-                _                => Position + offset // Current
-            };
+                SeekOrigin.Current => Position + offset,
+                SeekOrigin.End     => _buffer.Length + offset,
+                _                  => offset // Begin
+            });
+        }
     }
 }

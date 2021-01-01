@@ -69,7 +69,7 @@ namespace Server.Gumps
             m_Page = page;
             m_List = list;
 
-            var p = (Point3D)prop.GetValue(o, null);
+            var p = (Point3D)(prop?.GetValue(o, null) ?? new Point3D());
 
             AddPage(0);
 
@@ -86,7 +86,7 @@ namespace Server.Gumps
             var y = BorderSize + OffsetSize;
 
             AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, prop.Name);
+            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, prop?.Name);
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)

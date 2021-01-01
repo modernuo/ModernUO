@@ -103,14 +103,12 @@ namespace Server.Mobiles
 
             foreach (var m in GetMobilesInRange(RangePerception))
             {
-                var p = m as PlayerMobile;
-
-                if (IsValidTarget(p))
+                if (m is PlayerMobile pm && IsValidTarget(pm))
                 {
-                    p.PeacedUntil = DateTime.UtcNow + duration;
-                    p.SendLocalizedMessage(1072065); // You gaze upon the dryad's beauty, and forget to continue battling!
-                    p.FixedParticles(0x376A, 1, 20, 0x7F5, EffectLayer.Waist);
-                    p.Combatant = null;
+                    pm.PeacedUntil = DateTime.UtcNow + duration;
+                    m.SendLocalizedMessage(1072065); // You gaze upon the dryad's beauty, and forget to continue battling!
+                    m.FixedParticles(0x376A, 1, 20, 0x7F5, EffectLayer.Waist);
+                    m.Combatant = null;
                 }
             }
 
