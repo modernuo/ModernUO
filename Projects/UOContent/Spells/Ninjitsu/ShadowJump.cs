@@ -39,9 +39,7 @@ namespace Server.Spells.Ninjitsu
             var from = Caster.Location;
             var to = new Point3D(p);
 
-            var pm = Caster as PlayerMobile; // IsStealthing should be moved to Server.Mobiles
-
-            if (!pm.IsStealthing)
+            if ((Caster as PlayerMobile)?.IsStealthing != true)
             {
                 Caster.SendLocalizedMessage(1063087); // You must be in stealth mode to use this ability.
             }
