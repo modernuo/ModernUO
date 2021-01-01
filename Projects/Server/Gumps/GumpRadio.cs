@@ -65,6 +65,8 @@ namespace Server.Gumps
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(SwitchID.ToString());
             writer.Write((ushort)0x207D); // " }"
+
+            switches++;
         }
     }
 }

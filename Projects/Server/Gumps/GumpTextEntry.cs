@@ -71,6 +71,8 @@ namespace Server.Gumps
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(strings.Add(InitialText).ToString());
             writer.Write((ushort)0x207D); // " }"
+
+            entries++;
         }
     }
 }
