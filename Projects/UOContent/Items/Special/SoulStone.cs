@@ -156,10 +156,6 @@ namespace Server.Items
 
         protected virtual bool CheckUse(Mobile from)
         {
-            // DateTime now = DateTime.UtcNow;
-
-            var pm = from as PlayerMobile;
-
             if (Deleted || !IsAccessibleTo(from))
             {
                 return false;
@@ -235,11 +231,10 @@ namespace Server.Items
                 return false;
             }
 
-            if (pm.AcceleratedStart > DateTime.UtcNow)
+            if ((from as PlayerMobile)?.AcceleratedStart > DateTime.UtcNow)
             {
-                from.SendLocalizedMessage(
-                    1078115
-                ); // You may not use a soulstone while your character is under the effects of a Scroll of Alacrity.
+                // You may not use a soulstone while your character is under the effects of a Scroll of Alacrity.
+                from.SendLocalizedMessage(1078115);
                 return false;
             }
 
@@ -748,8 +743,7 @@ namespace Server.Items
                     return;
                 }
 
-                var pm = from as PlayerMobile;
-                if (pm.AcceleratedStart > DateTime.UtcNow)
+                if ((from as PlayerMobile)?.AcceleratedStart > DateTime.UtcNow)
                 {
                     // <CENTER>Unable to Absorb Selected Skill from Soulstone</CENTER>
 

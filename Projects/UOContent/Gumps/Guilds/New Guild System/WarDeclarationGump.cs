@@ -45,7 +45,7 @@ namespace Server.Guilds
                 return;
             }
 
-            var playerRank = pm.GuildRank;
+            var playerRank = pm!.GuildRank;
 
             switch (info.ButtonID)
             {
