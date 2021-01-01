@@ -289,7 +289,11 @@ namespace Server.Spells.Fourth
 
                         while (m_Queue.Count > 0)
                         {
-                            var m = (Mobile)m_Queue.Dequeue();
+                            var m = m_Queue.Dequeue() as Mobile;
+                            if (m == null)
+                            {
+                                continue;
+                            }
 
                             if (SpellHelper.CanRevealCaster(m))
                             {

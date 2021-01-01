@@ -80,7 +80,7 @@ namespace Server.Items
         {
             if (m_Boat?.Contains(from) != true)
             {
-                m_Boat.TillerMan?.Say(502490); // You must be on the ship to open the hold.
+                m_Boat?.TillerMan?.Say(502490); // You must be on the ship to open the hold.
             }
             else if (m_Boat.IsMoving)
             {
