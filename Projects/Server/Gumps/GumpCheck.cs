@@ -1,5 +1,5 @@
 using System.Buffers;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.Network;
 
 namespace Server.Gumps
@@ -33,7 +33,7 @@ namespace Server.Gumps
         public override string Compile(NetState ns) =>
             $"{{ checkbox {X} {Y} {InactiveID} {ActiveID} {(InitialState ? 1 : 0)} {SwitchID} }}";
 
-        public override string Compile(SortedSet<string> strings) =>
+        public override string Compile(IndexList<string> strings) =>
             $"{{ checkbox {X} {Y} {InactiveID} {ActiveID} {(InitialState ? 1 : 0)} {SwitchID} }}";
 
         public override void AppendTo(NetState ns, IGumpWriter disp)
@@ -49,8 +49,9 @@ namespace Server.Gumps
             disp.Switches++;
         }
 
-        public override void AppendTo(ref SpanWriter writer, SortedSet<string> strings, ref int entries, ref int switches)
+        public override void AppendTo(ref SpanWriter writer, IndexList<string> strings, ref int entries, ref int switches)
         {
+            writer.Write((ushort)0x7B20); // "{ "
             writer.Write(m_LayoutName);
             writer.WriteAscii(X.ToString());
             writer.Write((byte)0x20); // ' '

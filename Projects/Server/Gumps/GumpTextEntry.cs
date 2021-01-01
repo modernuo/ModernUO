@@ -1,3 +1,5 @@
+using System.Buffers;
+using Server.Collections;
 using Server.Network;
 
 namespace Server.Gumps
@@ -34,6 +36,9 @@ namespace Server.Gumps
         public override string Compile(NetState ns) =>
             $"{{ textentry {X} {Y} {Width} {Height} {Hue} {EntryID} {Parent.Intern(InitialText)} }}";
 
+        public override string Compile(IndexList<string> strings) =>
+            $"{{ textentry {X} {Y} {Width} {Height} {Hue} {EntryID} {strings.Add(InitialText)} }}";
+
         public override void AppendTo(NetState ns, IGumpWriter disp)
         {
             disp.AppendLayout(m_LayoutName);
@@ -46,6 +51,26 @@ namespace Server.Gumps
             disp.AppendLayout(Parent.Intern(InitialText));
 
             disp.TextEntries++;
+        }
+
+        public override void AppendTo(ref SpanWriter writer, IndexList<string> strings, ref int entries, ref int switches)
+        {
+            writer.Write((ushort)0x7B20); // "{ "
+            writer.Write(m_LayoutName);
+            writer.WriteAscii(X.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Y.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Width.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Height.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Hue.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(EntryID.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(strings.Add(InitialText).ToString());
+            writer.Write((ushort)0x207D); // " }"
         }
     }
 }

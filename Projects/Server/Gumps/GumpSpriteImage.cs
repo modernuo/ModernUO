@@ -13,6 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Buffers;
+using Server.Collections;
 using Server.Network;
 
 namespace Server.Gumps
@@ -47,6 +49,8 @@ namespace Server.Gumps
         public int SY { get; set; }
 
         public override string Compile(NetState ns) => $"{{ picinpic {X} {Y} {GumpID} {Width} {Height} {SX} {SY} }}";
+        public override string Compile(IndexList<string> strings) =>
+            $"{{ picinpic {X} {Y} {GumpID} {Width} {Height} {SX} {SY} }}";
 
         public override void AppendTo(NetState ns, IGumpWriter disp)
         {
@@ -58,6 +62,26 @@ namespace Server.Gumps
             disp.AppendLayout(Height);
             disp.AppendLayout(SX);
             disp.AppendLayout(SY);
+        }
+
+        public override void AppendTo(ref SpanWriter writer, IndexList<string> strings, ref int entries, ref int switches)
+        {
+            writer.Write((ushort)0x7B20); // "{ "
+            writer.Write(m_LayoutName);
+            writer.WriteAscii(X.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Y.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(GumpID.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Width.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Height.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(SX.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(SY.ToString());
+            writer.Write((ushort)0x207D); // " }"
         }
     }
 }

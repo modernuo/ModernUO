@@ -1,5 +1,5 @@
 using System.Buffers;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.Network;
 
 namespace Server.Gumps
@@ -25,8 +25,8 @@ namespace Server.Gumps
         }
 
         public abstract string Compile(NetState ns);
-        public abstract string Compile(SortedSet<string> strings);
+        public abstract string Compile(IndexList<string> strings);
         public abstract void AppendTo(NetState ns, IGumpWriter disp);
-        public abstract void AppendTo(ref SpanWriter writer, SortedSet<string> strings, ref int entries, ref int switches);
+        public abstract void AppendTo(ref SpanWriter writer, IndexList<string> strings, ref int entries, ref int switches);
     }
 }

@@ -13,6 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Buffers;
+using Server.Collections;
 using Server.Network;
 
 namespace Server.Gumps
@@ -31,13 +33,37 @@ namespace Server.Gumps
 
         public string Args { get; set; }
 
-        public override string Compile(NetState ns) => $"{{ tooltip {Number} @{Args}@ }}";
+        public override string Compile(NetState ns) =>
+            string.IsNullOrEmpty(Args) ? $"{{ tooltip {Number} }}" : $"{{ tooltip {Number} @{Args}@ }}";
+        public override string Compile(IndexList<string> strings) =>
+            string.IsNullOrEmpty(Args) ? $"{{ tooltip {Number} }}" : $"{{ tooltip {Number} @{Args}@ }}";
 
         public override void AppendTo(NetState ns, IGumpWriter disp)
         {
             disp.AppendLayout(m_LayoutName);
             disp.AppendLayout(Number);
-            disp.AppendLayout(Args);
+
+            if (!string.IsNullOrEmpty(Args))
+            {
+                disp.AppendLayout(Args);
+            }
+        }
+
+        public override void AppendTo(ref SpanWriter writer, IndexList<string> strings, ref int entries, ref int switches)
+        {
+            writer.Write((ushort)0x7B20); // "{ "
+            writer.Write(m_LayoutName);
+            writer.WriteAscii(Number.ToString());
+
+            if (!string.IsNullOrEmpty(Args))
+            {
+                writer.Write((byte)0x20); // ' '
+                writer.Write((byte)0x40); // '@'
+                writer.WriteAscii(Args);
+                writer.Write((byte)0x40); // '@'
+            }
+
+            writer.Write((ushort)0x207D); // " }"
         }
     }
 }

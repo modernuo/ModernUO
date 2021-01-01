@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright (C) 2019-2021 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: GumpECHandleInput.cs                                            *
+ * File: IndexList.cs                                                    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,26 +13,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Buffers;
-using Server.Collections;
-using Server.Network;
+using System.Collections.Generic;
 
-namespace Server.Gumps
+namespace Server.Collections
 {
-    public class GumpECHandleInput : GumpEntry
+    public class IndexList<T>
     {
-        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("echandleinput");
-        public override string Compile(NetState ns) => "{ echandleinput }";
-        public override string Compile(IndexList<string> strings) => "{ echandleinput }";
+        private int _index;
+        private Dictionary<T, int> _table;
 
-        public override void AppendTo(NetState ns, IGumpWriter disp)
+        public IndexList() => _table = new Dictionary<T, int>();
+
+        public IndexList(int initialCapacity) => _table = new Dictionary<T, int>(initialCapacity);
+
+        public int Add(T item)
         {
-            disp.AppendLayout(m_LayoutName);
+            if (_table.TryGetValue(item, out var index))
+            {
+                return index;
+            }
+
+            _table.Add(item, _index);
+            return _index++;
         }
 
-        public override void AppendTo(ref SpanWriter writer, IndexList<string> strings, ref int entries, ref int switches)
-        {
-            writer.WriteAscii("{ echandleinput }");
-        }
+        public bool Remove(T item) => _table.Remove(item);
+
+        public int Count => _table.Count;
+
+        public IEnumerator<T> GetEnumerator() => _table.Keys.GetEnumerator();
     }
 }
