@@ -52,14 +52,7 @@
         <AnalysisLevel>latest</AnalysisLevel>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.3.37">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
-    <ItemGroup Condition="'$(Configuration)'=='Analyze'">
-        <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
-            <Version>3.3.1</Version>
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.165-alpha">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

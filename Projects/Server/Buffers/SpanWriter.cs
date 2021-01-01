@@ -18,6 +18,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using Server;
 
@@ -99,6 +100,8 @@ namespace System.Buffers
                 Grow(count);
             }
         }
+
+        public ref byte GetPinnableReference() => ref MemoryMarshal.GetReference(_buffer);
 
         public void EnsureCapacity(int capacity)
         {

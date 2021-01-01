@@ -29,24 +29,22 @@ namespace Server.Items
 
         public override void OnDoubleClick(Mobile from)
         {
-            var pm = from as PlayerMobile;
-
             if (!IsChildOf(from.Backpack))
             {
                 from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
             }
-            else if (pm == null || from.Skills.Mining.Base < 100.0)
+            else if (from is not PlayerMobile pm || from.Skills.Mining.Base < 100.0)
             {
-                pm.SendMessage("Only a Grandmaster Miner can learn from this book.");
+                from.SendMessage("Only a Grandmaster Miner can learn from this book.");
             }
             else if (pm.SandMining)
             {
-                pm.SendMessage("You have already learned this information.");
+                from.SendMessage("You have already learned this information.");
             }
             else
             {
                 pm.SandMining = true;
-                pm.SendMessage(
+                from.SendMessage(
                     "You have learned how to mine fine sand. Target sand areas when mining to look for fine sand."
                 );
                 Delete();

@@ -68,7 +68,7 @@ namespace Server.Gumps
             m_Page = page;
             m_List = list;
 
-            var ts = (TimeSpan)prop.GetValue(o, null);
+            var ts = (TimeSpan)(prop?.GetValue(o, null) ?? new TimeSpan());
 
             AddPage(0);
 
@@ -81,7 +81,7 @@ namespace Server.Gumps
                 OffsetGumpID
             );
 
-            AddRect(0, prop.Name, 0, -1);
+            AddRect(0, prop?.Name, 0, -1);
             AddRect(1, ts.ToString(), 0, -1);
             AddRect(2, "Zero", 1, -1);
             AddRect(3, "From H:M:S", 2, -1);

@@ -29,24 +29,22 @@ namespace Server.Items
 
         public override void OnDoubleClick(Mobile from)
         {
-            var pm = from as PlayerMobile;
-
             if (!IsChildOf(from.Backpack))
             {
                 from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
             }
-            else if (pm == null || from.Skills.Alchemy.Base < 100.0)
+            else if (from is not PlayerMobile pm || from.Skills.Alchemy.Base < 100.0)
             {
-                pm.SendMessage("Only a Grandmaster Alchemist can learn from this book.");
+                from.SendMessage("Only a Grandmaster Alchemist can learn from this book.");
             }
             else if (pm.Glassblowing)
             {
-                pm.SendMessage("You have already learned this information.");
+                from.SendMessage("You have already learned this information.");
             }
             else
             {
                 pm.Glassblowing = true;
-                pm.SendMessage(
+                from.SendMessage(
                     "You have learned to make items from glass. You will need to find miners to mine find sand for you to make these items."
                 );
                 Delete();
