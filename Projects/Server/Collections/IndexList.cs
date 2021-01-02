@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace Server.Collections
 {
@@ -42,5 +43,13 @@ namespace Server.Collections
         public int Count => _table.Count;
 
         public IEnumerator<T> GetEnumerator() => _table.Keys.GetEnumerator();
+
+        public ImmutableSortedSet<KeyValuePair<T, int>> GetSortedList() => _table.ToImmutableSortedSet(IndexListComparer.Instance);
+
+        private class IndexListComparer : IComparer<KeyValuePair<T, int>>
+        {
+            public static IndexListComparer Instance = new();
+            public int Compare(KeyValuePair<T, int> x, KeyValuePair<T, int> y) => x.Value.CompareTo(y.Value);
+        }
     }
 }
