@@ -21,14 +21,8 @@ namespace Server.Gumps
 {
     public class GumpECHandleInput : GumpEntry
     {
-        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("echandleinput");
-        public override string Compile(NetState ns) => "{ echandleinput }";
+        public static readonly byte[] LayoutName = Gump.StringToBuffer("echandleinput");
         public override string Compile(OrderedHashSet<string> strings) => "{ echandleinput }";
-
-        public override void AppendTo(NetState ns, IGumpWriter disp)
-        {
-            disp.AppendLayout(m_LayoutName);
-        }
 
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {

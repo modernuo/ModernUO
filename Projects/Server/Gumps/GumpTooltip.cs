@@ -21,7 +21,7 @@ namespace Server.Gumps
 {
     public class GumpTooltip : GumpEntry
     {
-        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("tooltip");
+        public static readonly byte[] LayoutName = Gump.StringToBuffer("tooltip");
 
         public GumpTooltip(int number, string args)
         {
@@ -33,26 +33,13 @@ namespace Server.Gumps
 
         public string Args { get; set; }
 
-        public override string Compile(NetState ns) =>
-            string.IsNullOrEmpty(Args) ? $"{{ tooltip {Number} }}" : $"{{ tooltip {Number} @{Args}@ }}";
         public override string Compile(OrderedHashSet<string> strings) =>
             string.IsNullOrEmpty(Args) ? $"{{ tooltip {Number} }}" : $"{{ tooltip {Number} @{Args}@ }}";
-
-        public override void AppendTo(NetState ns, IGumpWriter disp)
-        {
-            disp.AppendLayout(m_LayoutName);
-            disp.AppendLayout(Number);
-
-            if (!string.IsNullOrEmpty(Args))
-            {
-                disp.AppendLayout(Args);
-            }
-        }
 
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(m_LayoutName);
+            writer.Write(LayoutName);
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(Number.ToString());
 

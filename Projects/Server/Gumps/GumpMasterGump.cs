@@ -21,25 +21,18 @@ namespace Server.Gumps
 {
     public class GumpMasterGump : GumpEntry
     {
-        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("mastergump");
+        public static readonly byte[] LayoutName = Gump.StringToBuffer("mastergump");
 
         public GumpMasterGump(int gumpID) => GumpID = gumpID;
 
         public int GumpID { get; set; }
 
-        public override string Compile(NetState ns) => $"{{ mastergump {GumpID} }}";
         public override string Compile(OrderedHashSet<string> strings) => $"{{ mastergump {GumpID} }}";
-
-        public override void AppendTo(NetState ns, IGumpWriter disp)
-        {
-            disp.AppendLayout(m_LayoutName);
-            disp.AppendLayout(GumpID);
-        }
 
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(m_LayoutName);
+            writer.Write(LayoutName);
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(GumpID.ToString());
             writer.Write((ushort)0x207D); // " }"

@@ -12,7 +12,7 @@ namespace Server.Gumps
 
     public class GumpButton : GumpEntry
     {
-        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("button");
+        public static readonly byte[] LayoutName = Gump.StringToBuffer("button");
 
         public GumpButton(
             int x, int y, int normalID, int pressedID, int buttonID,
@@ -42,28 +42,13 @@ namespace Server.Gumps
 
         public int Param { get; set; }
 
-        public override string Compile(NetState ns) =>
-            $"{{ button {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} }}";
-
         public override string Compile(OrderedHashSet<string> strings) =>
             $"{{ button {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} }}";
-
-        public override void AppendTo(NetState ns, IGumpWriter disp)
-        {
-            disp.AppendLayout(m_LayoutName);
-            disp.AppendLayout(X);
-            disp.AppendLayout(Y);
-            disp.AppendLayout(NormalID);
-            disp.AppendLayout(PressedID);
-            disp.AppendLayout((int)Type);
-            disp.AppendLayout(Param);
-            disp.AppendLayout(ButtonID);
-        }
 
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(m_LayoutName);
+            writer.Write(LayoutName);
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(X.ToString());
             writer.Write((byte)0x20); // ' '

@@ -6,7 +6,7 @@ namespace Server.Gumps
 {
     public class GumpImageTiled : GumpEntry
     {
-        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("gumppictiled");
+        public static readonly byte[] LayoutName = Gump.StringToBuffer("gumppictiled");
 
         public GumpImageTiled(int x, int y, int width, int height, int gumpID)
         {
@@ -26,24 +26,12 @@ namespace Server.Gumps
         public int Height { get; set; }
 
         public int GumpID { get; set; }
-
-        public override string Compile(NetState ns) => $"{{ gumppictiled {X} {Y} {Width} {Height} {GumpID} }}";
         public override string Compile(OrderedHashSet<string> strings) => $"{{ gumppictiled {X} {Y} {Width} {Height} {GumpID} }}";
-
-        public override void AppendTo(NetState ns, IGumpWriter disp)
-        {
-            disp.AppendLayout(m_LayoutName);
-            disp.AppendLayout(X);
-            disp.AppendLayout(Y);
-            disp.AppendLayout(Width);
-            disp.AppendLayout(Height);
-            disp.AppendLayout(GumpID);
-        }
 
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(m_LayoutName);
+            writer.Write(LayoutName);
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(X.ToString());
             writer.Write((byte)0x20); // ' '

@@ -51,23 +51,6 @@ namespace Server.Tests.Network
         [Theory]
         [InlineData(ProtocolChanges.None)]
         [InlineData(ProtocolChanges.Unpack)]
-        public void TestGumpPacketSimple(ProtocolChanges changes)
-        {
-            using var ns = PacketTestUtilities.CreateTestNetState();
-            ns.ProtocolChanges = changes;
-            var gump = new ResurrectGump(2);
-
-            var expected = gump.Compile(ns).Compile();
-
-            ns.SendDisplayGump(gump);
-
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
-        }
-
-        [Theory]
-        [InlineData(ProtocolChanges.None)]
-        [InlineData(ProtocolChanges.Unpack)]
         public void TestGumpPacketNameChange(ProtocolChanges changes)
         {
             var gump = new NameChangeDeedGump();
@@ -77,34 +60,10 @@ namespace Server.Tests.Network
 
             var expected = gump.Compile(ns).Compile();
 
-            ns.SendDisplayGump(gump);
+            ns.SendDisplayGump(gump, out _, out _);
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
-        }
-    }
-
-    public class ResurrectGump : Gump
-    {
-        public ResurrectGump(int msg) : base(100, 0)
-        {
-            AddPage(0);
-
-            AddBackground(0, 0, 400, 350, 2600);
-
-            AddHtmlLocalized(0, 20, 400, 35, 1011022); // <center>Resurrection</center>
-
-            /* It is possible for you to be resurrected here by this healer. Do you wish to try?<br>
-             * CONTINUE - You chose to try to come back to life now.<br>
-             * CANCEL - You prefer to remain a ghost for now.
-             */
-            AddHtmlLocalized(50, 55, 300, 140, 1011023 + msg, true, true);
-
-            AddButton(200, 227, 4005, 4007, 0);
-            AddHtmlLocalized(235, 230, 110, 35, 1011012); // CANCEL
-
-            AddButton(65, 227, 4005, 4007, 1);
-            AddHtmlLocalized(100, 230, 110, 35, 1011011); // CONTINUE
         }
     }
 

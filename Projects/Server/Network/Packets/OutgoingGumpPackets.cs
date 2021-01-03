@@ -18,7 +18,6 @@ using System.Buffers;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Server.Collections;
 using Server.Gumps;
 
@@ -72,8 +71,11 @@ namespace Server.Network
             ArrayPool<byte>.Shared.Return(packBuffer);
         }
 
-        public static void SendDisplayGump(this NetState ns, Gump gump)
+        public static void SendDisplayGump(this NetState ns, Gump gump, out int switches, out int entries)
         {
+            switches = 0;
+            entries = 0;
+
             if (ns == null || !ns.GetSendBuffer(out var buffer))
             {
                 return;
@@ -113,8 +115,6 @@ namespace Server.Network
             }
 
             var stringsList = new OrderedHashSet<string>(11);
-            var entries = 0;
-            var switches = 0;
 
             foreach (var entry in gump.Entries)
             {
