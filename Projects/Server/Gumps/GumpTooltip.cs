@@ -53,6 +53,7 @@ namespace Server.Gumps
         {
             writer.Write((ushort)0x7B20); // "{ "
             writer.Write(m_LayoutName);
+            writer.Write((byte)0x20); // ' '
             writer.WriteAscii(Number.ToString());
 
             if (!string.IsNullOrEmpty(Args))

@@ -13,7 +13,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Buffers;
+using System.IO;
+using System.IO.Compression;
+using System.Runtime.CompilerServices;
+using System.Text;
+using Server.Collections;
+using Server.Gumps;
 
 namespace Server.Network
 {
@@ -34,6 +41,125 @@ namespace Server.Network
             writer.Write(typeId);
             writer.Write(buttonId);
 
+            ns.Send(ref buffer, writer.Position);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void WritePacked(ref CircularBufferWriter writer, ReadOnlySpan<byte> span)
+        {
+            var length = span.Length;
+
+            if (length == 0)
+            {
+                writer.Write(0);
+                return;
+            }
+
+            var wantLength = 1 + span.Length * 1024 / 1000;
+
+            wantLength += 4095;
+            wantLength &= ~4095;
+
+            var packBuffer = ArrayPool<byte>.Shared.Rent(wantLength);
+            var packLength = wantLength;
+
+            Zlib.Pack(packBuffer, ref packLength, span, length, ZlibQuality.Default);
+
+            writer.Write(4 + packLength);
+            writer.Write(length);
+            writer.Write(packBuffer.AsSpan(0, packLength));
+
+            ArrayPool<byte>.Shared.Return(packBuffer);
+        }
+
+        public static void SendDisplayGump(this NetState ns, Gump gump)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            var packed = ns.Unpack;
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)(packed ? 0xDD : 0xB0)); // Packet ID
+            writer.Seek(2, SeekOrigin.Current);
+
+            writer.Write(gump.Serial);
+            writer.Write(gump.TypeID);
+            writer.Write(gump.X);
+            writer.Write(gump.Y);
+
+            var spanWriter = new SpanWriter(512, true);
+
+            if (!gump.Draggable)
+            {
+                spanWriter.Write(Gump.NoMove);
+            }
+
+            if (!gump.Closable)
+            {
+                spanWriter.Write(Gump.NoClose);
+            }
+
+            if (!gump.Disposable)
+            {
+                spanWriter.Write(Gump.NoDispose);
+            }
+
+            if (!gump.Resizable)
+            {
+                spanWriter.Write(Gump.NoResize);
+            }
+
+            var stringsList = new OrderedHashSet<string>(11);
+            var entries = 0;
+            var switches = 0;
+
+            foreach (var entry in gump.Entries)
+            {
+                entry.AppendTo(ref spanWriter, stringsList, ref entries, ref switches);
+            }
+
+            if (packed)
+            {
+                spanWriter.Write((byte)0); // Layout text terminator
+                WritePacked(ref writer, spanWriter.Span);
+            }
+            else
+            {
+                writer.Write((ushort)spanWriter.Length);
+                writer.Write(spanWriter.Span);
+            }
+
+            if (packed)
+            {
+                writer.Write(stringsList.Count);
+            }
+            else
+            {
+                writer.Write((ushort)stringsList.Count);
+            }
+
+            spanWriter.Seek(0, SeekOrigin.Begin);
+
+            foreach (var str in stringsList)
+            {
+                var s = str ?? "";
+                spanWriter.Write((ushort)s.Length);
+                spanWriter.WriteBigUni(s);
+            }
+
+            if (packed)
+            {
+                WritePacked(ref writer, spanWriter.Span);
+            }
+            else
+            {
+                writer.Write(spanWriter.Span);
+            }
+
+            writer.WritePacketLength();
             ns.Send(ref buffer, writer.Position);
         }
     }

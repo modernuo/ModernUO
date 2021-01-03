@@ -47,6 +47,7 @@ namespace Server.Gumps
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write(Hue == 0 ? m_LayoutName : m_LayoutNameHue);
+            writer.Write((byte)0x20); // ' '
             writer.WriteAscii(X.ToString());
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(Y.ToString());

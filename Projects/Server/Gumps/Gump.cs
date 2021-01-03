@@ -12,10 +12,10 @@ namespace Server.Gumps
         private static readonly byte[] m_BeginLayout = StringToBuffer("{ ");
         private static readonly byte[] m_EndLayout = StringToBuffer(" }");
 
-        private static readonly byte[] m_NoMove = StringToBuffer("{ nomove }");
-        private static readonly byte[] m_NoClose = StringToBuffer("{ noclose }");
-        private static readonly byte[] m_NoDispose = StringToBuffer("{ nodispose }");
-        private static readonly byte[] m_NoResize = StringToBuffer("{ noresize }");
+        public static readonly byte[] NoMove = StringToBuffer("{ nomove }");
+        public static readonly byte[] NoClose = StringToBuffer("{ noclose }");
+        public static readonly byte[] NoDispose = StringToBuffer("{ nodispose }");
+        public static readonly byte[] NoResize = StringToBuffer("{ noresize }");
 
         internal int m_TextEntries, m_Switches;
 
@@ -41,7 +41,7 @@ namespace Server.Gumps
 
         public List<GumpEntry> Entries { get; }
 
-        public uint Serial { get; set; }
+        public Serial Serial { get; set; }
 
         public int X { get; set; }
 
@@ -268,22 +268,22 @@ namespace Server.Gumps
 
             if (!Draggable)
             {
-                disp.AppendLayout(m_NoMove);
+                disp.AppendLayout(NoMove);
             }
 
             if (!Closable)
             {
-                disp.AppendLayout(m_NoClose);
+                disp.AppendLayout(NoClose);
             }
 
             if (!Disposable)
             {
-                disp.AppendLayout(m_NoDispose);
+                disp.AppendLayout(NoDispose);
             }
 
             if (!Resizable)
             {
-                disp.AppendLayout(m_NoResize);
+                disp.AppendLayout(NoResize);
             }
 
             var count = Entries.Count;

@@ -175,6 +175,7 @@ namespace Server.Gumps
                 case GumpHtmlLocalizedType.Plain:
                     {
                         writer.Write(m_LayoutNamePlain);
+                        writer.Write((byte)0x20); // ' '
                         writer.WriteAscii(X.ToString());
                         writer.Write((byte)0x20); // ' '
                         writer.WriteAscii(Y.ToString());
@@ -194,6 +195,7 @@ namespace Server.Gumps
                 case GumpHtmlLocalizedType.Color:
                     {
                         writer.Write(m_LayoutNameColor);
+                        writer.Write((byte)0x20); // ' '
                         writer.WriteAscii(X.ToString());
                         writer.Write((byte)0x20); // ' '
                         writer.WriteAscii(Y.ToString());
@@ -215,6 +217,7 @@ namespace Server.Gumps
                 case GumpHtmlLocalizedType.Args:
                     {
                         writer.Write(m_LayoutNameArgs);
+                        writer.Write((byte)0x20); // ' '
                         writer.WriteAscii(X.ToString());
                         writer.Write((byte)0x20); // ' '
                         writer.WriteAscii(Y.ToString());
