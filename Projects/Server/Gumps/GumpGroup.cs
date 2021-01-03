@@ -1,3 +1,5 @@
+using System.Buffers;
+using Server.Collections;
 using Server.Network;
 
 namespace Server.Gumps
@@ -11,11 +13,20 @@ namespace Server.Gumps
         public int Group { get; set; }
 
         public override string Compile(NetState ns) => $"{{ group {Group} }}";
+        public override string Compile(OrderedHashSet<string> strings) => $"{{ group {Group} }}";
 
         public override void AppendTo(NetState ns, IGumpWriter disp)
         {
             disp.AppendLayout(m_LayoutName);
             disp.AppendLayout(Group);
+        }
+
+        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+        {
+            writer.Write((ushort)0x7B20); // "{ "
+            writer.Write(m_LayoutName);
+            writer.WriteAscii(Group.ToString());
+            writer.Write((ushort)0x207D); // " }"
         }
     }
 }

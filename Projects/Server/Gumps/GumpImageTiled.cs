@@ -1,3 +1,5 @@
+using System.Buffers;
+using Server.Collections;
 using Server.Network;
 
 namespace Server.Gumps
@@ -26,6 +28,7 @@ namespace Server.Gumps
         public int GumpID { get; set; }
 
         public override string Compile(NetState ns) => $"{{ gumppictiled {X} {Y} {Width} {Height} {GumpID} }}";
+        public override string Compile(OrderedHashSet<string> strings) => $"{{ gumppictiled {X} {Y} {Width} {Height} {GumpID} }}";
 
         public override void AppendTo(NetState ns, IGumpWriter disp)
         {
@@ -35,6 +38,22 @@ namespace Server.Gumps
             disp.AppendLayout(Width);
             disp.AppendLayout(Height);
             disp.AppendLayout(GumpID);
+        }
+
+        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+        {
+            writer.Write((ushort)0x7B20); // "{ "
+            writer.Write(m_LayoutName);
+            writer.WriteAscii(X.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Y.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Width.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Height.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(GumpID.ToString());
+            writer.Write((ushort)0x207D); // " }"
         }
     }
 }

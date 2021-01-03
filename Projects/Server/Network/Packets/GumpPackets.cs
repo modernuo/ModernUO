@@ -44,6 +44,7 @@ namespace Server.Network
         void AppendLayout(uint val);
         void AppendLayoutNS(int val);
         void AppendLayout(string text);
+        void AppendLayoutNS(string text);
         void AppendLayout(byte[] buffer);
         void WriteStrings(List<string> strings);
         void Flush();
@@ -108,6 +109,11 @@ namespace Server.Network
             var bytes = Encoding.ASCII.GetBytes(toString, 0, toString.Length, m_Buffer, 1);
 
             m_Layout.Write(m_Buffer, 1, bytes);
+        }
+
+        public void AppendLayoutNS(string text)
+        {
+            m_Layout.WriteAsciiFixed(text, text.Length);
         }
 
         public void AppendLayout(string text)
@@ -246,6 +252,13 @@ namespace Server.Network
 
             Stream.Write(m_Buffer, 1, bytes);
             m_LayoutLength += bytes;
+        }
+
+        public void AppendLayoutNS(string text)
+        {
+            var length = text.Length;
+            Stream.WriteAsciiFixed(text, length);
+            m_LayoutLength += length;
         }
 
         public void AppendLayout(string text)

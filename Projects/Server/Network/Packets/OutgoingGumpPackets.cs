@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: GumpECHandleInput.cs                                            *
+ * File: OutgoingGumpPackets.cs                                          *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,25 +14,27 @@
  *************************************************************************/
 
 using System.Buffers;
-using Server.Collections;
-using Server.Network;
 
-namespace Server.Gumps
+namespace Server.Network
 {
-    public class GumpECHandleInput : GumpEntry
+    public static class OutgoingGumpPackets
     {
-        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("echandleinput");
-        public override string Compile(NetState ns) => "{ echandleinput }";
-        public override string Compile(OrderedHashSet<string> strings) => "{ echandleinput }";
-
-        public override void AppendTo(NetState ns, IGumpWriter disp)
+        public static void SendCloseGump(this NetState ns, int typeId, int buttonId)
         {
-            disp.AppendLayout(m_LayoutName);
-        }
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
 
-        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-        {
-            writer.WriteAscii("{ echandleinput }");
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0xBF); // Packet ID
+            writer.Write((ushort)13);
+
+            writer.Write((short)0x04);
+            writer.Write(typeId);
+            writer.Write(buttonId);
+
+            ns.Send(ref buffer, writer.Position);
         }
     }
 }

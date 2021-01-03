@@ -1,3 +1,5 @@
+using System.Buffers;
+using Server.Collections;
 using Server.Network;
 
 namespace Server.Gumps
@@ -26,6 +28,9 @@ namespace Server.Gumps
         public override string Compile(NetState ns) =>
             Hue == 0 ? $"{{ tilepic {X} {Y} {ItemID} }}" : $"{{ tilepichue {X} {Y} {ItemID} {Hue} }}";
 
+        public override string Compile(OrderedHashSet<string> strings) =>
+            Hue == 0 ? $"{{ tilepic {X} {Y} {ItemID} }}" : $"{{ tilepichue {X} {Y} {ItemID} {Hue} }}";
+
         public override void AppendTo(NetState ns, IGumpWriter disp)
         {
             disp.AppendLayout(Hue == 0 ? m_LayoutName : m_LayoutNameHue);
@@ -37,6 +42,24 @@ namespace Server.Gumps
             {
                 disp.AppendLayout(Hue);
             }
+        }
+
+        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+        {
+            writer.Write(Hue == 0 ? m_LayoutName : m_LayoutNameHue);
+            writer.WriteAscii(X.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(Y.ToString());
+            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(ItemID.ToString());
+
+            if (Hue != 0)
+            {
+                writer.Write((byte)0x20); // ' '
+                writer.WriteAscii(Hue.ToString());
+            }
+
+            writer.Write((ushort)0x207D); // " }"
         }
     }
 }
