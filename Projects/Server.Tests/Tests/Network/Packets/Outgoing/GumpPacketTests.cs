@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    public class GumpPacketTests
+    public class GumpPacketTests : IClassFixture<ServerFixture>
     {
         [Theory]
         [InlineData(100, 10)]
@@ -46,6 +46,29 @@ namespace Server.Tests.Network
         public void TestGumpPacketNameChange(ProtocolChanges changes)
         {
             var gump = new NameChangeDeedGump();
+
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = changes;
+
+            var expected = gump.Compile(ns).Compile();
+
+            ns.SendDisplayGump(gump, out _, out _);
+
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        }
+
+        [Theory]
+        [InlineData(ProtocolChanges.None)]
+        [InlineData(ProtocolChanges.Unpack)]
+        public void TestGumpPacketAdmin(ProtocolChanges changes)
+        {
+            var m = new Mobile(0x1);
+            m.DefaultMobileInit();
+            m.RawName = "Test Mobile";
+            m.AccessLevel = AccessLevel.Administrator;
+
+            var gump = new AdminGump(m, AdminGumpPage.Clients);
 
             using var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;

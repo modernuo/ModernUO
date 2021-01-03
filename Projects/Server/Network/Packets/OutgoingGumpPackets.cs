@@ -18,6 +18,7 @@ using System.Buffers;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Server.Collections;
 using Server.Gumps;
 
@@ -160,6 +161,7 @@ namespace Server.Network
             }
 
             writer.WritePacketLength();
+
             ns.Send(ref buffer, writer.Position);
         }
 
