@@ -142,9 +142,6 @@ namespace Server.Tests
             // Note: layout MUST be null terminated (don't listen to krrios)
             m_Layout.Write((byte)0);
 
-            // var str = Encoding.ASCII.GetString(m_Layout.UnderlyingStream.GetBuffer());
-            // throw new Exception(str);
-
             WritePacked(m_Layout);
 
             Stream.Write(m_StringCount);

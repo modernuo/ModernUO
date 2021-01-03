@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    public class GumpPacketTests : IClassFixture<ServerFixture>
+    public class GumpPacketTests
     {
         [Theory]
         [InlineData(100, 10)]
@@ -31,21 +31,13 @@ namespace Server.Tests.Network
             var unknownString = "This is an unknown string";
             var caption = "This is a caption";
 
-            var data = new DisplaySignGump(gumpSerial, gumpId, unknownString, caption).Compile();
+            var expected = new DisplaySignGump(gumpSerial, gumpId, unknownString, caption).Compile();
 
-            Span<byte> expectedData = stackalloc byte[15 + unknownString.Length + caption.Length];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendDisplaySignGump(gumpSerial, gumpId, unknownString, caption);
 
-            expectedData.Write(ref pos, (byte)0x8B);
-            expectedData.Write(ref pos, (ushort)expectedData.Length);
-            expectedData.Write(ref pos, gumpSerial);
-            expectedData.Write(ref pos, (ushort)gumpId);
-            expectedData.Write(ref pos, (ushort)(unknownString.Length + 1));
-            expectedData.WriteAsciiNull(ref pos, unknownString);
-            expectedData.Write(ref pos, (ushort)(caption.Length + 1));
-            expectedData.WriteAsciiNull(ref pos, caption);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Theory]
@@ -99,9 +91,9 @@ namespace Server.Tests.Network
             AddTextEntry(x + 2, y + 2, width - 4, height - 4, 0, index, "");
         }
 
-        public string Center(string text) => $"<CENTER>{text}</CENTER>";
+        public static string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-        public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
+        public static string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
         public void AddButtonLabeled(int x, int y, int buttonID, string text)
         {

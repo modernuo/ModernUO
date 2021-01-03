@@ -162,5 +162,30 @@ namespace Server.Network
             writer.WritePacketLength();
             ns.Send(ref buffer, writer.Position);
         }
+
+        public static void SendDisplaySignGump(this NetState ns, Serial serial, int gumpId, string unknown, string caption)
+        {
+            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            {
+                return;
+            }
+
+            unknown ??= "";
+            caption ??= "";
+
+            var writer = new CircularBufferWriter(buffer);
+            writer.Write((byte)0x8B); // Packet ID
+            writer.Seek(2, SeekOrigin.Current);
+
+            writer.Write(serial);
+            writer.Write((short)gumpId);
+            writer.Write((short)(unknown.Length + 1));
+            writer.WriteAsciiNull(unknown);
+            writer.Write((short)(caption.Length + 1));
+            writer.WriteAsciiNull(caption);
+
+            writer.WritePacketLength();
+            ns.Send(ref buffer, writer.Position);
+        }
     }
 }
