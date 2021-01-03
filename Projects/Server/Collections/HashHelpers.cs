@@ -7,28 +7,11 @@ using System.Diagnostics;
 
 namespace Microsoft.Collections.Extensions
 {
-    internal static partial class HashHelpers
+    internal static class HashHelpers
     {
-        internal static int PowerOf2(int v)
-        {
-            if ((v & (v - 1)) == 0)
-            {
-                return v;
-            }
-
-            int i = 2;
-            while (i < v)
-            {
-                i <<= 1;
-            }
-
-            return i;
-        }
 
         // must never be written to
         internal static readonly int[] SizeOneIntArray = new int[1];
-
-        public const int HashCollisionThreshold = 100;
 
         // This is the maximum prime smaller than Array.MaxArrayLength
         public const int MaxPrimeArrayLength = 0x7FEFFFFD;
