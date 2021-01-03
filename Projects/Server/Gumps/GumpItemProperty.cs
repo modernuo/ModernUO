@@ -13,7 +13,7 @@ namespace Server.Gumps
         public uint Serial { get; set; }
 
         public override string Compile(NetState ns) => $"{{ itemproperty {Serial} }}";
-        public override string Compile(IndexList<string> strings) => $"{{ itemproperty {Serial} }}";
+        public override string Compile(OrderedHashSet<string> strings) => $"{{ itemproperty {Serial} }}";
 
         public override void AppendTo(NetState ns, IGumpWriter disp)
         {
@@ -21,7 +21,7 @@ namespace Server.Gumps
             disp.AppendLayout(Serial);
         }
 
-        public override void AppendTo(ref SpanWriter writer, IndexList<string> strings, ref int entries, ref int switches)
+        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
             writer.Write(m_LayoutName);

@@ -28,7 +28,7 @@ namespace Server.Gumps
         public override string Compile(NetState ns) =>
             Hue == 0 ? $"{{ tilepic {X} {Y} {ItemID} }}" : $"{{ tilepichue {X} {Y} {ItemID} {Hue} }}";
 
-        public override string Compile(IndexList<string> strings) =>
+        public override string Compile(OrderedHashSet<string> strings) =>
             Hue == 0 ? $"{{ tilepic {X} {Y} {ItemID} }}" : $"{{ tilepichue {X} {Y} {ItemID} {Hue} }}";
 
         public override void AppendTo(NetState ns, IGumpWriter disp)
@@ -44,7 +44,7 @@ namespace Server.Gumps
             }
         }
 
-        public override void AppendTo(ref SpanWriter writer, IndexList<string> strings, ref int entries, ref int switches)
+        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write(Hue == 0 ? m_LayoutName : m_LayoutNameHue);
             writer.WriteAscii(X.ToString());

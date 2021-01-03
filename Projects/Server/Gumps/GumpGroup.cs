@@ -13,7 +13,7 @@ namespace Server.Gumps
         public int Group { get; set; }
 
         public override string Compile(NetState ns) => $"{{ group {Group} }}";
-        public override string Compile(IndexList<string> strings) => $"{{ group {Group} }}";
+        public override string Compile(OrderedHashSet<string> strings) => $"{{ group {Group} }}";
 
         public override void AppendTo(NetState ns, IGumpWriter disp)
         {
@@ -21,7 +21,7 @@ namespace Server.Gumps
             disp.AppendLayout(Group);
         }
 
-        public override void AppendTo(ref SpanWriter writer, IndexList<string> strings, ref int entries, ref int switches)
+        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
             writer.Write(m_LayoutName);

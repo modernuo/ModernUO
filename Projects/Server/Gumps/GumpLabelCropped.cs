@@ -33,8 +33,8 @@ namespace Server.Gumps
         public override string Compile(NetState ns) =>
             $"{{ croppedtext {X} {Y} {Width} {Height} {Hue} {Parent.Intern(Text)} }}";
 
-        public override string Compile(IndexList<string> strings) =>
-            $"{{ croppedtext {X} {Y} {Width} {Height} {Hue} {strings.Add(Text)} }}";
+        public override string Compile(OrderedHashSet<string> strings) =>
+            $"{{ croppedtext {X} {Y} {Width} {Height} {Hue} {strings.GetOrAdd(Text)} }}";
 
         public override void AppendTo(NetState ns, IGumpWriter disp)
         {
@@ -47,7 +47,7 @@ namespace Server.Gumps
             disp.AppendLayout(Parent.Intern(Text));
         }
 
-        public override void AppendTo(ref SpanWriter writer, IndexList<string> strings, ref int entries, ref int switches)
+        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
             writer.Write(m_LayoutName);
@@ -61,7 +61,7 @@ namespace Server.Gumps
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(Hue.ToString());
             writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(strings.Add(Text).ToString());
+            writer.WriteAscii(strings.GetOrAdd(Text).ToString());
             writer.Write((ushort)0x207D); // " }"
         }
     }

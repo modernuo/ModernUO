@@ -23,14 +23,14 @@ namespace Server.Gumps
     {
         private static readonly byte[] m_LayoutName = Gump.StringToBuffer("echandleinput");
         public override string Compile(NetState ns) => "{ echandleinput }";
-        public override string Compile(IndexList<string> strings) => "{ echandleinput }";
+        public override string Compile(OrderedHashSet<string> strings) => "{ echandleinput }";
 
         public override void AppendTo(NetState ns, IGumpWriter disp)
         {
             disp.AppendLayout(m_LayoutName);
         }
 
-        public override void AppendTo(ref SpanWriter writer, IndexList<string> strings, ref int entries, ref int switches)
+        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.WriteAscii("{ echandleinput }");
         }

@@ -11,7 +11,7 @@ namespace Benchmarks
             // var packetConstruction = BenchmarkRunner.Run<BenchmarkPacketConstruction>();
             // var broadcast = BenchmarkRunner.Run<BenchmarkPacketBroadcast>();
             // var stringHelpers = BenchmarkRunner.Run<BenchmarkStringHelpers>();
-            var indexList = BenchmarkRunner.Run<BenchmarkIndexList>();
+            var indexList = BenchmarkRunner.Run<BenchmarkOrderedHashSet>();
         }
     }
 }
