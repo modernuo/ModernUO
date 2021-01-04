@@ -18,7 +18,6 @@ using System.Buffers;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Server.Collections;
 using Server.Gumps;
 
@@ -163,6 +162,7 @@ namespace Server.Network
             writer.WritePacketLength();
 
             ns.Send(ref buffer, writer.Position);
+            spanWriter.Dispose(); // Can't use using and refs, so we dispose manually
         }
 
         public static void SendDisplaySignGump(this NetState ns, Serial serial, int gumpId, string unknown, string caption)

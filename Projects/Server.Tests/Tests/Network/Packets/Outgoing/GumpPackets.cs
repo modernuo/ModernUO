@@ -1,4 +1,3 @@
-using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
@@ -163,7 +162,7 @@ namespace Server.Tests
                 return;
             }
 
-            var wantLength = 1 + buffer.Length * 1024 / 1000;
+            var wantLength = 1 + length * 1024 / 1000;
 
             wantLength += 4095;
             wantLength &= ~4095;
