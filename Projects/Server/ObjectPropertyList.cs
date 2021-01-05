@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Server.Network;
 
@@ -24,12 +25,14 @@ namespace Server
 
         private int _hash;
         private int _strings;
-        private byte[] _buffer = new byte[64];
+        private byte[] _buffer;
         private int _position;
 
         public ObjectPropertyList(IEntity e)
         {
             Entity = e;
+            _buffer = GC.AllocateUninitializedArray<byte>(64);
+
             var writer = new SpanWriter(_buffer);
             writer.Write((byte)0xD6); // Packet ID
             writer.Seek(2, SeekOrigin.Current);
@@ -63,9 +66,12 @@ namespace Server
             Resize(_buffer.Length * 2);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Resize(int amount)
         {
-            Array.Resize(ref _buffer, amount);
+            var newBuffer = GC.AllocateUninitializedArray<byte>(amount);
+            _buffer.AsSpan(0, Math.Min(amount, _buffer.Length)).CopyTo(newBuffer);
+            _buffer = newBuffer;
         }
 
         public void Terminate()
