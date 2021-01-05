@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using Server.Accounting;
 
 namespace Server.Network
@@ -107,6 +108,7 @@ namespace Server.Network
          *
          * Sends a requests for the client version
          */
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SendClientVersionRequest(this NetState ns) => ns?.Send(stackalloc byte[] { 0xBD, 0x00, 0x03 });
 
         /**
@@ -115,6 +117,7 @@ namespace Server.Network
          *
          * Sends the result of a deletion request
          */
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SendCharacterDeleteResult(this NetState ns, DeleteResultType res) =>
             ns?.Send(stackalloc byte[] { 0x85, (byte)res });
 
@@ -124,6 +127,7 @@ namespace Server.Network
          *
          * Sends a PopupMessage with a predetermined message
          */
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SendPopupMessage(this NetState ns, PMMessage msg) =>
             ns?.Send(stackalloc byte[] { 0x53, (byte)msg });
 
@@ -384,6 +388,7 @@ namespace Server.Network
          *
          * Sends a reason for rejecting the login
          */
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SendAccountLoginRejected(this NetState ns, ALRReason reason) =>
             ns?.Send(stackalloc byte[] { 0x82, (byte)reason });
 
