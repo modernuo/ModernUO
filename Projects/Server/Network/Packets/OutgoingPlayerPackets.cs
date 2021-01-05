@@ -92,7 +92,7 @@ namespace Server.Network
             body ??= "";
             footer ??= "";
 
-            var length = 10 + header.Length + footer.Length * 2 + body.Length * 2;
+            var length = 12 + header.Length + footer.Length * 2 + body.Length * 2;
             var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0xB8); // Packet ID
             writer.Write((ushort)length);
