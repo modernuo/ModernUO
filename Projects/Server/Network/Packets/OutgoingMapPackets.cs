@@ -51,18 +51,12 @@ namespace Server.Network
 
         public static void SendMapChange(this NetState ns, Map map)
         {
-            if (ns == null || map == null)
+            if (map == null)
             {
                 return;
             }
 
-            var writer = new SpanWriter(stackalloc byte[6]);
-            writer.Write((byte)0xBF);   // Packet ID
-            writer.Write((ushort)6);   // Length
-            writer.Write((ushort)0x08); // Subpacket
-            writer.Write((byte)map.MapID);
-
-            ns.Send(writer.Span);
+            ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x06, 0x00, 0x08, (byte)map.MapID });
         }
     }
 }
