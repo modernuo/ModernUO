@@ -9,13 +9,10 @@ namespace Server.Gumps
     {
         private static uint m_NextSerial = 1;
 
-        private static readonly byte[] m_BeginLayout = StringToBuffer("{ ");
-        private static readonly byte[] m_EndLayout = StringToBuffer(" }");
-
-        private static readonly byte[] m_NoMove = StringToBuffer("{ nomove }");
-        private static readonly byte[] m_NoClose = StringToBuffer("{ noclose }");
-        private static readonly byte[] m_NoDispose = StringToBuffer("{ nodispose }");
-        private static readonly byte[] m_NoResize = StringToBuffer("{ noresize }");
+        public static readonly byte[] NoMove = StringToBuffer("{ nomove }");
+        public static readonly byte[] NoClose = StringToBuffer("{ noclose }");
+        public static readonly byte[] NoDispose = StringToBuffer("{ nodispose }");
+        public static readonly byte[] NoResize = StringToBuffer("{ noresize }");
 
         internal int m_TextEntries, m_Switches;
 
@@ -41,7 +38,7 @@ namespace Server.Gumps
 
         public List<GumpEntry> Entries { get; }
 
-        public uint Serial { get; set; }
+        public Serial Serial { get; set; }
 
         public int X { get; set; }
 
@@ -248,64 +245,10 @@ namespace Server.Gumps
         public void SendTo(NetState state)
         {
             state.AddGump(this);
-            state.Send(Compile(state));
+            state.SendDisplayGump(this, out m_Switches, out m_TextEntries);
         }
 
         public static byte[] StringToBuffer(string str) => Encoding.ASCII.GetBytes(str);
-
-        public Packet Compile(NetState ns = null)
-        {
-            IGumpWriter disp;
-
-            if (ns?.Unpack == true)
-            {
-                disp = new DisplayGumpPacked(this);
-            }
-            else
-            {
-                disp = new DisplayGumpFast(this);
-            }
-
-            if (!Draggable)
-            {
-                disp.AppendLayout(m_NoMove);
-            }
-
-            if (!Closable)
-            {
-                disp.AppendLayout(m_NoClose);
-            }
-
-            if (!Disposable)
-            {
-                disp.AppendLayout(m_NoDispose);
-            }
-
-            if (!Resizable)
-            {
-                disp.AppendLayout(m_NoResize);
-            }
-
-            var count = Entries.Count;
-
-            for (var i = 0; i < count; ++i)
-            {
-                var e = Entries[i];
-
-                disp.AppendLayout(m_BeginLayout);
-                e.AppendTo(ns, disp);
-                disp.AppendLayout(m_EndLayout);
-            }
-
-            disp.WriteStrings(Strings);
-
-            disp.Flush();
-
-            m_TextEntries = disp.TextEntries;
-            m_Switches = disp.Switches;
-
-            return (Packet)disp;
-        }
 
         public virtual void OnResponse(NetState sender, RelayInfo info)
         {

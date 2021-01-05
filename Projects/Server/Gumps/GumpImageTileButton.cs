@@ -6,8 +6,8 @@ namespace Server.Gumps
 {
     public class GumpImageTileButton : GumpEntry
     {
-        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("buttontileart");
-        private static readonly byte[] m_LayoutTooltip = Gump.StringToBuffer(" }{ tooltip");
+        public static readonly byte[] LayoutName = Gump.StringToBuffer("buttontileart");
+        public static readonly byte[] LayoutTooltip = Gump.StringToBuffer(" }{ tooltip");
 
         // Note, on OSI, the tooltip supports ONLY clilocs as far as I can figure out,
         // and the tooltip ONLY works after the buttonTileArt (as far as I can tell from testing)
@@ -57,43 +57,16 @@ namespace Server.Gumps
 
         public int LocalizedTooltip { get; set; }
 
-        public override string Compile(NetState ns) =>
-            LocalizedTooltip > 0 ?
-                $"{{ buttontileart {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} {ItemID} {Hue} {Width} {Height} }}{{ tooltip {LocalizedTooltip} }}" :
-                $"{{ buttontileart {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} {ItemID} {Hue} {Width} {Height} }}";
-
         public override string Compile(OrderedHashSet<string> strings) =>
             LocalizedTooltip > 0 ?
                 $"{{ buttontileart {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} {ItemID} {Hue} {Width} {Height} }}{{ tooltip {LocalizedTooltip} }}" :
                 $"{{ buttontileart {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} {ItemID} {Hue} {Width} {Height} }}";
 
-        public override void AppendTo(NetState ns, IGumpWriter disp)
-        {
-            disp.AppendLayout(m_LayoutName);
-            disp.AppendLayout(X);
-            disp.AppendLayout(Y);
-            disp.AppendLayout(NormalID);
-            disp.AppendLayout(PressedID);
-            disp.AppendLayout((int)Type);
-            disp.AppendLayout(Param);
-            disp.AppendLayout(ButtonID);
-
-            disp.AppendLayout(ItemID);
-            disp.AppendLayout(Hue);
-            disp.AppendLayout(Width);
-            disp.AppendLayout(Height);
-
-            if (LocalizedTooltip > 0)
-            {
-                disp.AppendLayout(m_LayoutTooltip);
-                disp.AppendLayout(LocalizedTooltip);
-            }
-        }
-
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(m_LayoutName);
+            writer.Write(LayoutName);
+            writer.Write((byte)0x20); // ' '
             writer.WriteAscii(X.ToString());
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(Y.ToString());
@@ -115,16 +88,14 @@ namespace Server.Gumps
             writer.WriteAscii(Width.ToString());
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(Height.ToString());
-            writer.Write((byte)0x20); // ' '
 
             if (LocalizedTooltip > 0)
             {
-                writer.Write(m_LayoutTooltip);
+                writer.Write(LayoutTooltip);
                 writer.WriteAscii(LocalizedTooltip.ToString());
-                writer.Write((byte)0x20); // ' '
             }
 
-            writer.Write((byte)0x7D); // " }"
+            writer.Write((ushort)0x207D); // " }"
         }
     }
 }

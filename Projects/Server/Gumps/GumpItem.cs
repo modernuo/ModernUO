@@ -6,8 +6,8 @@ namespace Server.Gumps
 {
     public class GumpItem : GumpEntry
     {
-        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("tilepic");
-        private static readonly byte[] m_LayoutNameHue = Gump.StringToBuffer("tilepichue");
+        public static readonly byte[] LayoutName = Gump.StringToBuffer("tilepic");
+        public static readonly byte[] LayoutNameHue = Gump.StringToBuffer("tilepichue");
 
         public GumpItem(int x, int y, int itemID, int hue = 0)
         {
@@ -25,28 +25,13 @@ namespace Server.Gumps
 
         public int Hue { get; set; }
 
-        public override string Compile(NetState ns) =>
-            Hue == 0 ? $"{{ tilepic {X} {Y} {ItemID} }}" : $"{{ tilepichue {X} {Y} {ItemID} {Hue} }}";
-
         public override string Compile(OrderedHashSet<string> strings) =>
             Hue == 0 ? $"{{ tilepic {X} {Y} {ItemID} }}" : $"{{ tilepichue {X} {Y} {ItemID} {Hue} }}";
 
-        public override void AppendTo(NetState ns, IGumpWriter disp)
-        {
-            disp.AppendLayout(Hue == 0 ? m_LayoutName : m_LayoutNameHue);
-            disp.AppendLayout(X);
-            disp.AppendLayout(Y);
-            disp.AppendLayout(ItemID);
-
-            if (Hue != 0)
-            {
-                disp.AppendLayout(Hue);
-            }
-        }
-
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
-            writer.Write(Hue == 0 ? m_LayoutName : m_LayoutNameHue);
+            writer.Write(Hue == 0 ? LayoutName : LayoutNameHue);
+            writer.Write((byte)0x20); // ' '
             writer.WriteAscii(X.ToString());
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(Y.ToString());

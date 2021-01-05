@@ -229,6 +229,10 @@ namespace System.Buffers
             var src = value.AsSpan(0, charLength);
 
             var byteCount = fixedLength > -1 ? fixedLength * sizeT : encoding.GetByteCount(value);
+            if (byteCount == 0)
+            {
+                return;
+            }
 
             GrowIfNeeded(byteCount);
 
