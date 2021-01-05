@@ -31,7 +31,7 @@ namespace System.Buffers
         private Span<byte> _buffer;
         private int _position;
 
-        public int Length { get; private set; }
+        public int BytesWritten { get; private set; }
 
         public int Position
         {
@@ -40,9 +40,9 @@ namespace System.Buffers
             {
                 _position = value;
 
-                if (value > Length)
+                if (value > BytesWritten)
                 {
-                    Length = value;
+                    BytesWritten = value;
                 }
             }
         }
@@ -58,7 +58,7 @@ namespace System.Buffers
             _resize = resize;
             _buffer = initialBuffer;
             _position = 0;
-            Length = 0;
+            BytesWritten = 0;
             _arrayToReturnToPool = null;
         }
 
@@ -68,16 +68,16 @@ namespace System.Buffers
             _arrayToReturnToPool = ArrayPool<byte>.Shared.Rent(initialCapacity);
             _buffer = _arrayToReturnToPool;
             _position = 0;
-            Length = 0;
+            BytesWritten = 0;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void Grow(int additionalCapacity)
         {
-            var newSize = Math.Max(Length + additionalCapacity, _buffer.Length * 2);
+            var newSize = Math.Max(BytesWritten + additionalCapacity, _buffer.Length * 2);
             byte[] poolArray = ArrayPool<byte>.Shared.Rent(newSize);
 
-            _buffer.Slice(0, Length).CopyTo(poolArray);
+            _buffer.Slice(0, BytesWritten).CopyTo(poolArray);
 
             byte[]? toReturn = _arrayToReturnToPool;
             _buffer = _arrayToReturnToPool = poolArray;
@@ -112,7 +112,7 @@ namespace System.Buffers
                     throw new OutOfMemoryException();
                 }
 
-                Grow(capacity - Length);
+                Grow(capacity - BytesWritten);
             }
         }
 
@@ -162,10 +162,26 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteLE(int value)
+        {
+            GrowIfNeeded(4);
+            BinaryPrimitives.WriteInt32LittleEndian(_buffer.Slice(_position), value);
+            Position += 4;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(uint value)
         {
             GrowIfNeeded(4);
             BinaryPrimitives.WriteUInt32BigEndian(_buffer.Slice(_position), value);
+            Position += 4;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteLE(uint value)
+        {
+            GrowIfNeeded(4);
+            BinaryPrimitives.WriteUInt32LittleEndian(_buffer.Slice(_position), value);
             Position += 4;
         }
 
@@ -322,7 +338,7 @@ namespace System.Buffers
             var newPosition = Math.Max(0, origin switch
             {
                 SeekOrigin.Current => _position + offset,
-                SeekOrigin.End     => Length + offset,
+                SeekOrigin.End     => BytesWritten + offset,
                 _                  => offset // Begin
             });
 

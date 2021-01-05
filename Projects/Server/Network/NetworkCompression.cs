@@ -61,14 +61,14 @@ namespace Server.Network
             0x4, 0x00D
         };
 
-        public static void Compress(ref CircularBuffer<byte> buffer, ref int length)
+        public static void Compress(ReadOnlySpan<byte> input, ref CircularBuffer<byte> output, out int length)
         {
-            length = Compress(ref buffer, length, ref buffer);
+            length = Compress(input, ref output);
         }
 
-        public static int Compress(ref CircularBuffer<byte> input, int inputLength, ref CircularBuffer<byte> output)
+        public static int Compress(ReadOnlySpan<byte> input, ref CircularBuffer<byte> output)
         {
-            if (inputLength > DefiniteOverflow)
+            if (input.Length > DefiniteOverflow)
             {
                 return 0;
             }
@@ -79,7 +79,7 @@ namespace Server.Network
             int inputIdx = 0;
             int outputIdx = 0;
 
-            while (inputIdx < inputLength)
+            while (inputIdx < input.Length)
             {
                 int i = input[inputIdx++] << 1;
 

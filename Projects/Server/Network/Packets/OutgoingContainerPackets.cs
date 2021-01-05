@@ -42,12 +42,12 @@ namespace Server.Network
 
         public static void SendNewSpellbookContent(this NetState ns, Serial book, int graphic, int offset, ulong content)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[23]);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)23); // Length
             writer.Write((short)0x1B); // Subpacket
@@ -62,24 +62,25 @@ namespace Server.Network
                 writer.Write((byte)(content >> (i * 8)));
             }
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendOldSpellbookContent(this NetState ns, Serial book, int offset, ulong content)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0x3C); // Packet ID
-            writer.Seek(4, SeekOrigin.Current); // Length & written count
+            var count = content.NumberOfSetBits();
+            var length = 5 + count * (ns.ContainerGridLines ? 20 : 19);
 
-            var written = 0;
+            var writer = new SpanWriter(stackalloc byte[length]);
+            writer.Write((byte)0x3C); // Packet ID
+            writer.Write((ushort)length);
+            writer.Write((ushort)count);
 
             ulong mask = 1;
-
             for (var i = 0; i < 64; ++i, mask <<= 1)
             {
                 if ((content & mask) != 0)
@@ -95,27 +96,20 @@ namespace Server.Network
                     }
                     writer.Write(book);
                     writer.Write((short)0); // Quest Hue
-
-                    ++written;
                 }
             }
 
-            var length = writer.Position;
-            writer.Seek(1, SeekOrigin.Begin);
-            writer.Write((ushort)length);
-            writer.Write((ushort)written);
-
-            ns.Send(ref buffer, length);
+            ns.Send(writer.Span);
         }
 
         public static void SendDisplayContainer(this NetState ns, Serial cont, int gumpId)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[ns.HighSeas ? 9 : 7]);
             writer.Write((byte)0x24); // Packet ID
             writer.Write(cont);
             writer.Write((ushort)gumpId);
@@ -124,12 +118,12 @@ namespace Server.Network
                 writer.Write((short)0x7D);
             }
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendContainerContentUpdate(this NetState ns, Item item)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
@@ -146,7 +140,7 @@ namespace Server.Network
                 parentSerial = Serial.Zero;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[ns.ContainerGridLines ? 21 : 20]);
             writer.Write((byte)0x25); // Packet ID
             writer.Write(item.Serial);
             writer.Write((ushort)item.ItemID);
@@ -161,12 +155,12 @@ namespace Server.Network
             writer.Write(parentSerial);
             writer.Write((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue));
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendContainerContent(this NetState ns, Mobile beholder, Item beheld)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
@@ -174,9 +168,9 @@ namespace Server.Network
             var items = beheld.Items;
             var count = items.Count;
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[5 + items.Count * (ns.ContainerGridLines ? 20 : 19)]);
             writer.Write((byte)0x3C); // Packet ID
-            writer.Seek(4, SeekOrigin.Current); // Length & writter count
+            writer.Seek(4, SeekOrigin.Current); // Length & written count
 
             var written = 0;
 
@@ -205,12 +199,12 @@ namespace Server.Network
                 }
             }
 
-            var length = writer.Position;
             writer.Seek(1, SeekOrigin.Begin);
-            writer.Write((ushort)length);
+            writer.Write((ushort)writer.BytesWritten);
             writer.Write((ushort)written);
+            writer.Seek(0, SeekOrigin.End);
 
-            ns.Send(ref buffer, length);
+            ns.Send(writer.Span);
         }
     }
 }

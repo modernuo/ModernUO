@@ -484,22 +484,6 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear()
-        {
-            if (Position < _first.Length)
-            {
-                _first.Slice(Position).Clear();
-                _second.Clear();
-            }
-            else
-            {
-                _second.Slice(Position - _first.Length).Clear();
-            }
-
-            Position = Length;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear(int amount)
         {
             if (Position + amount > Length)

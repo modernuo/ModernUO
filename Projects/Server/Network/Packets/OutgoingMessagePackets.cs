@@ -77,7 +77,6 @@ namespace Server.Network
             writer.WriteLittleUniNull(args);
 
             writer.WritePacketLength();
-
             return writer.Position;
         }
 
@@ -133,7 +132,6 @@ namespace Server.Network
             writer.WriteBigUniNull(args);
 
             writer.WritePacketLength();
-
             return writer.Position;
         }
 
@@ -211,59 +209,58 @@ namespace Server.Network
             }
 
             writer.WritePacketLength();
-
             return writer.Position;
         }
 
         public static void SendFollowMessage(this NetState ns, Serial s1, Serial s2)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[9]);
             writer.Write((byte)0x15); // Packet ID
             writer.Write(s1);
             writer.Write(s2);
 
-            ns.Send(ref buffer, 9);
+            ns.Send(writer.Span);
         }
 
         public static void SendPrompt(this NetState ns, Prompt prompt)
         {
-            if (ns == null || prompt == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null || prompt == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[21]);
             writer.Write((byte)0xC2); // Packet ID
             writer.Write((ushort)21);
             writer.Write(prompt.Serial);
             writer.Write(prompt.Serial);
-            writer.Write((long)0);
-            writer.Write((short)0);
+            writer.Clear(10);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendHelpResponse(this NetState ns, Serial s, string text)
         {
             text = text?.Trim() ?? "";
 
-            if (ns == null || text.Length == 0 || !ns.GetSendBuffer(out var buffer))
+            if (ns == null || text.Length == 0)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var length = 9 + text.Length * 2;
+            var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0xB7);
-            writer.Write((ushort)(9 + text.Length * 2));
+            writer.Write((ushort)length);
             writer.Write(s);
             writer.WriteBigUniNull(text);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }

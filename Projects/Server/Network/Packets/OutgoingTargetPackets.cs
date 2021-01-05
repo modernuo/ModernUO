@@ -23,12 +23,12 @@ namespace Server.Network
     {
         public static void SendMultiTargetReq(this NetState ns, MultiTarget t)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[ns.HighSeas ? 30 : 26]);
             writer.Write((byte)0x99); // Packet ID
             writer.Write(t.AllowGround);
             writer.Write(t.TargetID);
@@ -43,45 +43,30 @@ namespace Server.Network
                 writer.Write(0);
             }
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
-        public static void SendCancelTarget(this NetState ns)
+        public static void SendCancelTarget(this NetState ns) =>
+            ns?.Send(stackalloc byte[]
+            {
+                0x6C, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0
+            });
+
+        public static void SendTargetReq(this NetState ns, Target t)
         {
             if (ns == null)
             {
                 return;
             }
 
-            Span<byte> span = stackalloc byte[]
-            {
-                0x6C, // Packet ID
-                0, // Allow Ground?
-                0, 0, 0, 0, // Target ID
-                3, // Flags
-                0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
-                0, 0
-            };
-
-            ns.Send(span);
-        }
-
-        public static void SendTargetReq(this NetState ns, Target t)
-        {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
-            {
-                return;
-            }
-
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[19]);
             writer.Write((byte)0x6C); // Packet ID
             writer.Write(t.AllowGround);
             writer.Write(t.TargetID);
             writer.Write((byte)t.Flags);
             writer.Clear(12);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }

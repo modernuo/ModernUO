@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace Server.Network
 {
@@ -21,30 +22,21 @@ namespace Server.Network
     {
         public static void SendPersonalLightLevel(this NetState ns, Serial serial, int level)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[6]);
             writer.Write((byte)0x4E); // Packet ID
             writer.Write(serial);
             writer.Write((byte)level);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
-        public static void SendGlobalLightLevel(this NetState ns, int level = 0)
-        {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
-            {
-                return;
-            }
-
-            buffer[0] = 0x4F; // Packet ID
-            buffer[1] = (byte)level;
-
-            ns.Send(ref buffer, 2);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendGlobalLightLevel(this NetState ns, int level = 0) =>
+            ns?.Send(stackalloc byte[] { 0x4F, (byte)level });
     }
 }

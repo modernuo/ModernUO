@@ -33,12 +33,12 @@ namespace Server.Network
             this NetState ns, Mobile them, Container first, Container second, string name
         )
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[47]);
             writer.Write((byte)0x6F); // Packet ID
             writer.Write((ushort)47); // Length
             writer.Write((byte)TradeFlag.Display);
@@ -49,23 +49,23 @@ namespace Server.Network
 
             writer.WriteAscii(name ?? "", 30);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendCloseSecureTrade(this NetState ns, Container cont)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[8]);
             writer.Write((byte)0x6F); // Packet ID
             writer.Write((ushort)8); // Length
             writer.Write((byte)TradeFlag.Close);
             writer.Write(cont.Serial);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendUpdateSecureTrade(this NetState ns, Container cont, bool first, bool second) =>
@@ -73,12 +73,12 @@ namespace Server.Network
 
         public static void SendUpdateSecureTrade(this NetState ns, Container cont, TradeFlag flag, int first, int second)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[16]);
             writer.Write((byte)0x6F); // Packet ID
             writer.Write((ushort)16); // Length
             writer.Write((byte)flag);
@@ -86,17 +86,17 @@ namespace Server.Network
             writer.Write(first);
             writer.Write(second);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendSecureTradeEquip(this NetState ns, Item item, Mobile m)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[ns.ContainerGridLines ? 21 : 20]);
             writer.Write((byte)0x25); // Packet ID
             writer.Write(item.Serial);
             writer.Write((short)item.ItemID);
@@ -111,7 +111,7 @@ namespace Server.Network
             writer.Write(m.Serial);
             writer.Write((short)item.Hue);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }

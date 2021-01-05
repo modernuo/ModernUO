@@ -32,7 +32,8 @@ namespace Server.Network
 {
     public delegate void NetStateCreatedCallback(NetState ns);
 
-    public delegate void EncodePacket(ref CircularBuffer<byte> buffer, ref int length);
+    public delegate void DecodePacket(ref CircularBuffer<byte> buffer, ref int length);
+    public delegate void EncodePacket(ReadOnlySpan<byte> inputBuffer, ref CircularBuffer<byte> outputBuffer, out int length);
 
     public partial class NetState : IComparable<NetState>, IDisposable
     {
@@ -54,7 +55,7 @@ namespace Server.Network
         private byte[] _sendBuffer;
         private long m_NextCheckActivity;
         private volatile bool m_Running;
-        private volatile EncodePacket _packetDecoder;
+        private volatile DecodePacket _packetDecoder;
         private volatile EncodePacket _packetEncoder;
 
         internal int m_AuthID;
@@ -115,7 +116,7 @@ namespace Server.Network
 
         public IPAddress Address { get; }
 
-        public EncodePacket PacketDecoder
+        public DecodePacket PacketDecoder
         {
             get => _packetDecoder;
             set => _packetDecoder = value;
@@ -392,33 +393,15 @@ namespace Server.Network
 
             try
             {
-                buffer.CopyFrom(span);
-                _packetEncoder?.Invoke(ref buffer, ref length);
-                SendPipe.Writer.Advance((uint)length);
-            }
-            catch (Exception ex)
-            {
-#if DEBUG
-                Console.WriteLine(ex);
-                TraceException(ex);
-#endif
-                Dispose();
-            }
-        }
+                if (_packetEncoder != null)
+                {
+                    _packetEncoder(span, ref buffer, out length);
+                }
+                else
+                {
+                    buffer.CopyFrom(span);
+                }
 
-        /**
-         * Send data using a circular buffer from SendPipe
-         */
-        public void Send(ref CircularBuffer<byte> buffer, int length)
-        {
-            if (Connection == null || BlockAllPackets || length <= 0)
-            {
-                return;
-            }
-
-            try
-            {
-                _packetEncoder?.Invoke(ref buffer, ref length);
                 SendPipe.Writer.Advance((uint)length);
             }
             catch (Exception ex)

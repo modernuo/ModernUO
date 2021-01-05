@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace Server.Network
 {
@@ -21,12 +22,12 @@ namespace Server.Network
     {
         public static void SendMapPatches(this NetState ns)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[41]);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)41); // Length
             writer.Write((ushort)0x18); // Subpacket
@@ -44,35 +45,20 @@ namespace Server.Network
             writer.Write(Map.Malas.Tiles.Patch.StaticBlocks);
             writer.Write(Map.Malas.Tiles.Patch.LandBlocks);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
-        public static void SendInvalidMap(this NetState ns)
-        {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
-            {
-                return;
-            }
-
-            buffer[0] = 0xC6; // Packet ID
-
-            ns.Send(ref buffer, 1);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendInvalidMap(this NetState ns) => ns?.Send(stackalloc byte[] { 0xC6 });
 
         public static void SendMapChange(this NetState ns, Map map)
         {
-            if (ns == null || map == null || !ns.GetSendBuffer(out var buffer))
+            if (map == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0xBF);   // Packet ID
-            writer.Write((ushort)6);   // Length
-            writer.Write((ushort)0x08); // Subpacket
-            writer.Write((byte)map.MapID);
-
-            ns.Send(ref buffer, writer.Position);
+            ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x06, 0x00, 0x08, (byte)map.MapID });
         }
     }
 }
