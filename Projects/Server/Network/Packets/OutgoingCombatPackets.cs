@@ -21,47 +21,35 @@ namespace Server.Network
     {
         public static void SendSwing(this NetState ns, Serial attacker, Serial defender)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[10]);
             writer.Write((byte)0x2F); // Packet ID
             writer.Write((byte)0);
             writer.Write(attacker);
             writer.Write(defender);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
-        public static void SendSetWarMode(this NetState ns, bool warmode)
-        {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
-            {
-                return;
-            }
-
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0x72); // Packet ID
-            // Warmode, 0x00, 0x32, 0x00
-            writer.Write(warmode ? 0x01003200 : 0x00003200);
-
-            ns.Send(ref buffer, writer.Position);
-        }
+        public static unsafe void SendSetWarMode(this NetState ns, bool warmode) =>
+            ns?.Send(stackalloc byte[] { 0x72, *(byte*)&warmode, 0x00, 0x32, 0x00 });
 
         public static void SendChangeCombatant(this NetState ns, Serial combatant)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[5]);
             writer.Write((byte)0xAA); // Packet ID
             writer.Write(combatant);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }
