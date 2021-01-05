@@ -28,12 +28,12 @@ namespace Server.Network
 
         public static void SendArrow(this NetState ns, byte command, int x, int y, Serial s)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[10]);
             writer.Write((byte)0xBA); // Packet ID
             writer.Write(command);
 
@@ -55,7 +55,7 @@ namespace Server.Network
                 writer.Write((short)-1);
             }
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }
