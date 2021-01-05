@@ -220,11 +220,6 @@ namespace System.Buffers
 
             value ??= string.Empty;
 
-            if (value.Length == 0)
-            {
-                return;
-            }
-
             var charLength = Math.Min(fixedLength > -1 ? fixedLength : value.Length, value.Length);
             var src = value.AsSpan(0, charLength);
 
