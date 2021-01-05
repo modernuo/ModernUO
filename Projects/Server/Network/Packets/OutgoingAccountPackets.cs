@@ -61,13 +61,13 @@ namespace Server.Network
          */
         public static void SendChangeCharacter(this NetState ns, IAccount a)
         {
-            if (ns == null || a == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null || a == null)
             {
                 return;
             }
 
             var length = 5 + a.Length * 60;
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[length]);
 
             writer.Write((byte)0x81); // Packet ID
             writer.Write((ushort)length);
@@ -98,7 +98,7 @@ namespace Server.Network
             writer.Write((byte)count);
             writer.Seek(position, SeekOrigin.Begin);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         /**
@@ -107,17 +107,7 @@ namespace Server.Network
          *
          * Sends a requests for the client version
          */
-        public static void SendClientVersionRequest(this NetState ns)
-        {
-            if (ns != null && ns.GetSendBuffer(out var buffer))
-            {
-                buffer[0] = 0xBD; // Packet ID
-                buffer[1] = 0x00;
-                buffer[2] = 0x03; // Length
-
-                ns.Send(ref buffer, 3);
-            }
-        }
+        public static void SendClientVersionRequest(this NetState ns) => ns?.Send(stackalloc byte[] { 0xBD, 0x00, 0x03 });
 
         /**
          * Packet: 0x85
@@ -125,16 +115,8 @@ namespace Server.Network
          *
          * Sends the result of a deletion request
          */
-        public static void SendCharacterDeleteResult(this NetState ns, DeleteResultType res)
-        {
-            if (ns != null && ns.GetSendBuffer(out var buffer))
-            {
-                buffer[0] = 0x85; // Packet ID
-                buffer[1] = (byte)res;
-
-                ns.Send(ref buffer, 2);
-            }
-        }
+        public static void SendCharacterDeleteResult(this NetState ns, DeleteResultType res) =>
+            ns?.Send(stackalloc byte[] { 0x85, (byte)res });
 
         /**
          * Packet: 0x53
@@ -142,16 +124,8 @@ namespace Server.Network
          *
          * Sends a PopupMessage with a predetermined message
          */
-        public static void SendPopupMessage(this NetState ns, PMMessage msg)
-        {
-            if (ns != null && ns.GetSendBuffer(out var buffer))
-            {
-                buffer[0] = 0x53; // Packet ID
-                buffer[1] = (byte)msg;
-
-                ns.Send(ref buffer, 2);
-            }
-        }
+        public static void SendPopupMessage(this NetState ns, PMMessage msg) =>
+            ns?.Send(stackalloc byte[] { 0x53, (byte)msg });
 
         /**
          * Packet: 0xB9
@@ -161,7 +135,7 @@ namespace Server.Network
          */
         public static void SendSupportedFeature(this NetState ns)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
@@ -183,7 +157,8 @@ namespace Server.Network
                 }
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var length = ns.ExtendedSupportedFeatures ? 5 : 3;
+            var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0xB9); // Packet ID
 
             if (ns.ExtendedSupportedFeatures)
@@ -195,7 +170,7 @@ namespace Server.Network
                 writer.Write((ushort)flags);
             }
 
-            ns.Send(ref buffer, ns.ExtendedSupportedFeatures ? 5 : 3);
+            ns.Send(writer.Span);
         }
 
         /**
@@ -206,12 +181,12 @@ namespace Server.Network
          */
         public static void SendLoginConfirmation(this NetState ns, Mobile m)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[37]);
             writer.Write((byte)0x1B); // PacketID
             writer.Write(m.Serial);
             writer.Write(0);
@@ -234,9 +209,9 @@ namespace Server.Network
 
             writer.Write((short)(map?.Width ?? Map.Felucca.Width));
             writer.Write((short)(map?.Height ?? Map.Felucca.Height));
-            writer.Clear();
+            writer.Clear(writer.Capacity - writer.Position); // Remaining is zero
 
-            ns.Send(ref buffer, 37);
+            ns.Send(writer.Span);
         }
 
         /**
@@ -247,12 +222,7 @@ namespace Server.Network
          */
         public static void SendLoginComplete(this NetState ns)
         {
-            if (ns != null && ns.GetSendBuffer(out var buffer))
-            {
-                buffer[0] = 0x55; // Packet ID
-
-                ns.Send(ref buffer, 1);
-            }
+            ns?.Send(stackalloc byte[] { 0x55 });
         }
 
         /**
@@ -268,10 +238,6 @@ namespace Server.Network
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0x86); // Packet ID
-            writer.Seek(2, SeekOrigin.Current); // Length
-
             var highSlot = -1;
 
             for (var i = a.Length - 1; i >= 0; i--)
@@ -284,6 +250,12 @@ namespace Server.Network
             }
 
             var count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
+            var length = 4 + count * 60;
+            var writer = new SpanWriter(stackalloc byte[length]);
+            writer.Write((byte)0x86); // Packet ID
+            writer.Write((ushort)length);
+            writer.Seek(2, SeekOrigin.Current); // Length
+
             writer.Write((byte)count);
 
             for (int i = 0; i < count; i++)
@@ -302,8 +274,7 @@ namespace Server.Network
                 }
             }
 
-            writer.WritePacketLength();
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         /**
@@ -316,7 +287,7 @@ namespace Server.Network
         {
             var acct = ns?.Account;
 
-            if (acct == null || !ns.GetSendBuffer(out var buffer))
+            if (acct == null)
             {
                 return;
             }
@@ -325,10 +296,6 @@ namespace Server.Network
             var textLength = client70130 ? 32 : 31;
 
             var cityInfo = ns.CityInfo;
-
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0xA9); // Packet ID
-            writer.Seek(2, SeekOrigin.Current); // Length
 
             var highSlot = -1;
 
@@ -342,6 +309,10 @@ namespace Server.Network
             }
 
             var count = Math.Max(Math.Max(highSlot + 1, acct.Limit), 5);
+            var length = 11 + 89 * cityInfo.Length + count * 60;
+            var writer = new SpanWriter(stackalloc byte[length]);
+            writer.Write((byte)0xA9); // Packet ID
+            writer.Write((ushort)length);
             writer.Write((byte)count);
 
             for (int i = 0; i < count; i++)
@@ -403,8 +374,7 @@ namespace Server.Network
                 writer.Write((short)-1);
             }
 
-            writer.WritePacketLength();
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         /**
@@ -413,37 +383,28 @@ namespace Server.Network
          *
          * Sends a reason for rejecting the login
          */
-        public static void SendAccountLoginRejected(this NetState ns, ALRReason reason)
-        {
-            if (ns != null && ns.GetSendBuffer(out var buffer))
-            {
-                buffer[0] = 0x82; // Packet ID
-                buffer[1] = (byte)reason;
-
-                ns.Send(ref buffer, 2);
-            }
-        }
+        public static void SendAccountLoginRejected(this NetState ns, ALRReason reason) =>
+            ns?.Send(stackalloc byte[] { 0x82, (byte)reason });
 
         /**
          * Packet: 0xA8
-         * Length: up to 240 bytes
+         * Length: 6 + 40 bytes per server listing
          *
          * Sends login acknowledge with server listing
          */
         public static void SendAccountLoginAck(this NetState ns)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0xA8); // Packet ID
-            writer.Seek(2, SeekOrigin.Current); // Length
-
-            writer.Write((byte)0x5D);
-
             var info = ns.ServerInfo;
+            var length = 6 + 40 * info.Length;
+            var writer = new SpanWriter(stackalloc byte[length]);
+            writer.Write((byte)0xA8); // Packet ID
+            writer.Write((ushort)length);
+            writer.Write((byte)0x5D);
             writer.Write((ushort)info.Length);
 
             for (var i = 0; i < info.Length; ++i)
@@ -458,8 +419,7 @@ namespace Server.Network
                 writer.Write(si.RawAddress);
             }
 
-            writer.WritePacketLength();
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         /**
@@ -470,19 +430,19 @@ namespace Server.Network
          */
         public static void SendPlayServerAck(this NetState ns, ServerInfo si, int authId)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[11]);
             writer.Write((byte)0x8C); // Packet ID
 
             writer.WriteLE(si.RawAddress);
             writer.Write((short)si.Address.Port);
             writer.Write(authId);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }
