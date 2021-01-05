@@ -24,15 +24,15 @@ namespace Server.Network
     {
         public static void SendVendorBuyContent(this NetState ns, List<BuyItemState> list)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var length = 5 + list.Count * (ns.ContainerGridLines ? 20 : 19);
+            var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0x3C); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
-
+            writer.Write((ushort)length);
             writer.Write((short)list.Count);
 
             for (var i = list.Count - 1; i >= 0; --i)
@@ -53,18 +53,17 @@ namespace Server.Network
                 writer.Write((ushort)bis.Hue);
             }
 
-            writer.WritePacketLength();
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendDisplayBuyList(this NetState ns, Serial vendor)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[ns.HighSeas ? 9 : 7]);
             writer.Write((byte)0x24); // Packet ID
             writer.Write(vendor);
             writer.Write((short)0x30); // Vendor Buy Window
@@ -73,19 +72,25 @@ namespace Server.Network
                 writer.Write((short)0x0);
             }
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendVendorBuyList(this NetState ns, Mobile vendor, List<BuyItemState> list)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var length = 8;
+            for (int i = 0; i < list.Count; i++)
+            {
+                length += 5 + list[i].Description?.Length ?? 0;
+            }
+
+            var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0x74); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
+            writer.Write((ushort)length);
             writer.Write((vendor.FindItemOnLayer(Layer.ShopBuy) as Container)?.Serial ?? Serial.MinusOne);
             writer.Write((byte)list.Count);
 
@@ -101,25 +106,23 @@ namespace Server.Network
                 writer.WriteAscii(desc); // Doesn't look like it is used anymore
             }
 
-            writer.WritePacketLength();
-
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendEndVendorBuy(this NetState ns, Serial vendor)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[8]);
             writer.Write((byte)0x3B); // Packet ID
             writer.Write((ushort)8);
             writer.Write(vendor);
             writer.Write((byte)0); // Buy count
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }

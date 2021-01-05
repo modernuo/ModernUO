@@ -85,7 +85,7 @@ namespace Server.Network
 
         public static void SendEquipUpdate(this NetState ns, Item item)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }

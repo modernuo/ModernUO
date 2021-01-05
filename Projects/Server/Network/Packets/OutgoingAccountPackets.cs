@@ -237,7 +237,7 @@ namespace Server.Network
          */
         public static void SendCharacterListUpdate(this NetState ns, IAccount a)
         {
-            if (ns == null || a == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null || a == null)
             {
                 return;
             }

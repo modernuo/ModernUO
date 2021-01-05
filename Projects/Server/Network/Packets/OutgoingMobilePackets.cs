@@ -510,13 +510,12 @@ namespace Server.Network
             }
 
             writer.WritePacketLength();
-
             return writer.Position;
         }
 
         public static void SendMobileUpdate(this NetState ns, Mobile m)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
@@ -539,7 +538,7 @@ namespace Server.Network
 
         public static void SendMobileIncoming(this NetState ns, Mobile beholder, Mobile beheld)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }

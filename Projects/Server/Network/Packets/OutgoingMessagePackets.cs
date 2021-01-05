@@ -77,7 +77,6 @@ namespace Server.Network
             writer.WriteLittleUniNull(args);
 
             writer.WritePacketLength();
-
             return writer.Position;
         }
 
@@ -133,7 +132,6 @@ namespace Server.Network
             writer.WriteBigUniNull(args);
 
             writer.WritePacketLength();
-
             return writer.Position;
         }
 
@@ -211,7 +209,6 @@ namespace Server.Network
             }
 
             writer.WritePacketLength();
-
             return writer.Position;
         }
 

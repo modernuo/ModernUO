@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
@@ -23,12 +24,20 @@ namespace Server.Network
     {
         public static void SendVendorSellList(this NetState ns, Serial vendor, List<SellItemState> list)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var maxLength = 9;
+            for (int i = 0; i < list.Count; i++)
+            {
+                var sis = list[i];
+                var item = sis.Item;
+                maxLength += 14 + Math.Max(item.Name?.Length ?? 0, sis.Name?.Length ?? 0);
+            }
+
+            var writer = new SpanWriter(stackalloc byte[maxLength]);
             writer.Write((byte)0x9E); // Packet ID
             writer.Seek(2, SeekOrigin.Current);
 
@@ -52,23 +61,23 @@ namespace Server.Network
             }
 
             writer.WritePacketLength();
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendEndVendorSell(this NetState ns, Serial vendor)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[8]);
             writer.Write((byte)0x3B); // Packet ID
             writer.Write((ushort)8);
             writer.Write(vendor);
             writer.Write((byte)0);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }

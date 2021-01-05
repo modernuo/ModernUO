@@ -160,7 +160,7 @@ namespace Server.Network
 
         public static void SendContainerContent(this NetState ns, Mobile beholder, Item beheld)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
