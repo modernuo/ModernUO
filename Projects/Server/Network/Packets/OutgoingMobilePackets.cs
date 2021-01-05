@@ -48,12 +48,12 @@ namespace Server.Network
 
         public static void SendBondedStatus(this NetState ns, Serial serial, bool bonded)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[11]);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)11); // Length
             writer.Write((ushort)0x19); // Subpacket ID
@@ -61,7 +61,7 @@ namespace Server.Network
             writer.Write(serial);
             writer.Write(bonded);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void CreateDeathAnimation(Span<byte> buffer, Serial killed, Serial corpse)
@@ -263,19 +263,19 @@ namespace Server.Network
 
         public static void SendMobileName(this NetState ns, Mobile m)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[37]);
             writer.Write((byte)0x98); // Packet ID
             writer.Write((ushort)37);
             writer.Write(m.Serial);
             writer.WriteAscii(m.Name ?? "", 29);
             writer.Write((byte)0); // Null terminator
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void CreateMobileAnimation(
@@ -521,7 +521,7 @@ namespace Server.Network
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[19]);
             writer.Write((byte)0x20); // Packet ID
             writer.Write(m.Serial);
             writer.Write((short)m.Body);
@@ -534,7 +534,7 @@ namespace Server.Network
             writer.Write((byte)m.Direction);
             writer.Write((sbyte)m.Z);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendMobileIncoming(this NetState ns, Mobile beholder, Mobile beheld)
@@ -549,7 +549,9 @@ namespace Server.Network
             layers.Clear();
 #endif
 
-            var writer = new CircularBufferWriter(buffer);
+            var eq = beheld.Items;
+            var maxLength = 23 + (eq.Count + 2) * 9;
+            var writer = new SpanWriter(stackalloc byte[maxLength]);
             writer.Write((byte)0x78); // Packet ID
             writer.Seek(2, SeekOrigin.Current);
 
@@ -569,7 +571,6 @@ namespace Server.Network
             writer.Write((byte)beheld.GetPacketFlags(sa));
             writer.Write((byte)Notoriety.Compute(beholder, beheld));
 
-            var eq = beheld.Items;
             for (var i = 0; i < eq.Count; ++i)
             {
                 var item = eq[i];
@@ -650,7 +651,7 @@ namespace Server.Network
             writer.Write(0); // terminate
 
             writer.WritePacketLength();
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }

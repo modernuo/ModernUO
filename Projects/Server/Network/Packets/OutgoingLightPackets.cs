@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace Server.Network
 {
@@ -34,6 +35,7 @@ namespace Server.Network
             ns.Send(writer.Span);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SendGlobalLightLevel(this NetState ns, int level = 0) =>
             ns?.Send(stackalloc byte[] { 0x4F, (byte)level });
     }

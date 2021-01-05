@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace Server.Network
 {
@@ -35,6 +36,7 @@ namespace Server.Network
             ns.Send(writer.Span);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void SendSetWarMode(this NetState ns, bool warmode) =>
             ns?.Send(stackalloc byte[] { 0x72, *(byte*)&warmode, 0x00, 0x32, 0x00 });
 

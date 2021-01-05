@@ -36,12 +36,12 @@ namespace Server.Network
 
         public static void SendStatLockInfo(this NetState ns, Mobile m)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[12]);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)12);
             writer.Write((short)0x19);
@@ -53,20 +53,16 @@ namespace Server.Network
 
             writer.Write((byte)lockBits);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendChangeUpdateRange(this NetState ns, byte range)
-        {
+        public static void SendChangeUpdateRange(this NetState ns, byte range) =>
             ns?.Send(stackalloc byte[] { 0xC8, range });
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendDeathStatus(this NetState ns, bool dead)
-        {
+        public static void SendDeathStatus(this NetState ns, bool dead) =>
             ns?.Send(stackalloc byte[] { 0x2C, dead ? 0 : 2 });
-        }
 
         public static void SendToggleSpecialAbility(this NetState ns, int abilityId, bool active)
         {
@@ -109,31 +105,24 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendLiftReject(this NetState ns, LRReason reason)
-        {
+        public static void SendLiftReject(this NetState ns, LRReason reason) =>
             ns?.Send(stackalloc byte[] { 0x27, (byte)reason });
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendLogoutAck(this NetState ns)
-        {
-            ns?.Send(stackalloc byte[] { 0xD1, 0x01 });
-        }
+        public static void SendLogoutAck(this NetState ns) => ns?.Send(stackalloc byte[] { 0xD1, 0x01 });
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendWeather(this NetState ns, byte type, byte density, byte temp)
-        {
+        public static void SendWeather(this NetState ns, byte type, byte density, byte temp) =>
             ns?.Send(stackalloc byte[] { 0x65, type, density, temp });
-        }
 
         public static void SendServerChange(this NetState ns, Point3D p, Map map)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[16]);
             writer.Write((byte)0x76); // Packet ID
             writer.Write((short)p.X);
             writer.Write((short)p.Y);
@@ -144,20 +133,20 @@ namespace Server.Network
             writer.Write((short)map.Width);
             writer.Write((short)map.Height);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendSkillsUpdate(this NetState ns, Skills skills)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var length = 6 + 9 * skills.Length;
+            var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0x3A); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
-
+            writer.Write((ushort)length);
             writer.Write((byte)0x02); // type: absolute, capped
 
             for (var i = 0; i < skills.Length; ++i)
@@ -176,24 +165,20 @@ namespace Server.Network
 
             writer.Write((short)0); // terminate
 
-            writer.WritePacketLength();
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendSequence(this NetState ns, byte sequence)
-        {
-            ns?.Send(stackalloc byte[] { 0x7B, sequence });
-        }
+        public static void SendSequence(this NetState ns, byte sequence) => ns?.Send(stackalloc byte[] { 0x7B, sequence });
 
         public static void SendSkillChange(this NetState ns, Skill skill)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[13]);
             writer.Write((byte)0x3A); // Packet ID
             writer.Write((ushort)13);
 
@@ -207,24 +192,25 @@ namespace Server.Network
             writer.Write((byte)skill.Lock);
             writer.Write((ushort)skill.CapFixedPoint);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendLaunchBrowser(this NetState ns, string uri)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            uri ??= "";
+
+            var length = 4 + uri.Length;
+            var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0xA5); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
-            writer.WriteAsciiNull(uri ?? "");
+            writer.Write((ushort)length);
+            writer.WriteAsciiNull(uri);
 
-            writer.WritePacketLength();
-
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void CreateDragEffect(
@@ -268,14 +254,12 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void SendSeasonChange(this NetState ns, byte season, bool playSound)
-        {
+        public static unsafe void SendSeasonChange(this NetState ns, byte season, bool playSound) =>
             ns?.Send(stackalloc byte[]{ 0xBC, season, *(byte*)&playSound });
-        }
 
         public static void SendDisplayPaperdoll(this NetState ns, Serial m, string title, bool warmode, bool canLift)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
@@ -292,48 +276,48 @@ namespace Server.Network
                 flags |= 0x02;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[66]);
             writer.Write((byte)0x88); // Packet ID
             writer.Write(m);
             writer.WriteAscii(title, 60);
             writer.Write(flags);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendPlayMusic(this NetState ns, MusicName music)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[3]);
             writer.Write((byte)0x6D); // Packet ID
             writer.Write((short)music);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendScrollMessage(this NetState ns, int type, int tip, string text)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
             text ??= "";
 
-            var writer = new CircularBufferWriter(buffer);
+            var length = 10 + text.Length;
+            var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0xA6); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
+            writer.Write((ushort)length);
             writer.Write((byte)type);
             writer.Write(tip);
             writer.Write((ushort)text.Length);
             writer.WriteAscii(text);
 
-            writer.WritePacketLength();
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         // TODO: Use DateTime caching against core loop
@@ -341,53 +325,46 @@ namespace Server.Network
         public static void SendCurrentTime(this NetState ns) => ns.SendCurrentTime(DateTime.UtcNow);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendCurrentTime(this NetState ns, DateTime date)
-        {
+        public static void SendCurrentTime(this NetState ns, DateTime date) =>
             ns?.Send(stackalloc byte[] { 0x5B, (byte)date.Hour, (byte)date.Minute, (byte)date.Second });
-        }
 
         public static void SendPathfindMessage(this NetState ns, Point3D p)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[7]);
             writer.Write((byte)0x38); // Packet ID
             writer.Write((short)p.X);
             writer.Write((short)p.Y);
             writer.Write((short)p.Z);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendPingAck(this NetState ns, byte ping)
-        {
-            ns?.Send(stackalloc byte[] { 0x73, ping });
-        }
+        public static void SendPingAck(this NetState ns, byte ping) => ns?.Send(stackalloc byte[] { 0x73, ping });
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendClearWeaponAbility(this NetState ns)
-        {
+        public static void SendClearWeaponAbility(this NetState ns) =>
             ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x5, 0x00, 0x21 });
-        }
 
         public static void SendDisplayHuePicker(this NetState ns, Serial huePickerSerial, int huePickerItemID)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[9]);
             writer.Write((byte)0x95); // Packet ID
             writer.Write(huePickerSerial);
             writer.Write((short)0);
             writer.Write((short)huePickerItemID);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }

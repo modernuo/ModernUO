@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace Server.Network
 {
@@ -47,6 +48,7 @@ namespace Server.Network
             ns.Send(writer.Span);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SendInvalidMap(this NetState ns) => ns?.Send(stackalloc byte[] { 0xC6 });
 
         public static void SendMapChange(this NetState ns, Map map)
