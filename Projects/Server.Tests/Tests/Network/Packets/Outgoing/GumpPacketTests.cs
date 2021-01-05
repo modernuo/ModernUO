@@ -8,26 +8,19 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    public class GumpPacketTests
+    public class GumpPacketTests : IClassFixture<ServerFixture>
     {
-        [Fact]
-        public void TestCloseGump()
+        [Theory]
+        [InlineData(100, 10)]
+        public void TestCloseGump(int typeId, int buttonId)
         {
-            var typeId = 100;
-            var buttonId = 10;
+            var expected = new CloseGump(typeId, buttonId).Compile();
 
-            var data = new CloseGump(typeId, buttonId).Compile();
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendCloseGump(typeId, buttonId);
 
-            Span<byte> expectedData = stackalloc byte[13];
-            var pos = 0;
-
-            expectedData.Write(ref pos, (byte)0xBF);  // Packet ID
-            expectedData.Write(ref pos, (ushort)0xD); // Length
-            expectedData.Write(ref pos, (ushort)0x4); // Close Gump
-            expectedData.Write(ref pos, typeId);
-            expectedData.Write(ref pos, buttonId);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
         [Fact]
@@ -38,212 +31,97 @@ namespace Server.Tests.Network
             var unknownString = "This is an unknown string";
             var caption = "This is a caption";
 
-            var data = new DisplaySignGump(gumpSerial, gumpId, unknownString, caption).Compile();
+            var expected = new DisplaySignGump(gumpSerial, gumpId, unknownString, caption).Compile();
 
-            Span<byte> expectedData = stackalloc byte[15 + unknownString.Length + caption.Length];
-            var pos = 0;
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendDisplaySignGump(gumpSerial, gumpId, unknownString, caption);
 
-            expectedData.Write(ref pos, (byte)0x8B);
-            expectedData.Write(ref pos, (ushort)expectedData.Length);
-            expectedData.Write(ref pos, gumpSerial);
-            expectedData.Write(ref pos, (ushort)gumpId);
-            expectedData.Write(ref pos, (ushort)(unknownString.Length + 1));
-            expectedData.WriteAsciiNull(ref pos, unknownString);
-            expectedData.Write(ref pos, (ushort)(caption.Length + 1));
-            expectedData.WriteAsciiNull(ref pos, caption);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestFastGumpPacket()
+        [Theory]
+        [InlineData(ProtocolChanges.None)]
+        [InlineData(ProtocolChanges.Unpack)]
+        public void TestGumpPacketNameChange(ProtocolChanges changes)
         {
-            var ns = new NetState(null);
+            var gump = new NameChangeDeedGump();
 
-            var gump = new ResurrectGump(2);
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = changes;
 
-            var data = gump.Compile(ns).Compile();
+            var expected = gump.Compile(ns).Compile();
 
-            Span<byte> expectedData = stackalloc byte[0x1000];
+            ns.SendDisplayGump(gump, out _, out _);
 
-            var pos = 0;
-
-            expectedData[pos++] = 0xB0; // Packet ID
-            pos += 2;                   // Length
-
-            expectedData.Write(ref pos, gump.Serial);
-            expectedData.Write(ref pos, gump.TypeID);
-            expectedData.Write(ref pos, gump.X);
-            expectedData.Write(ref pos, gump.Y);
-            pos += 2; // Layout Length
-
-            var layoutLength = 0;
-
-            if (!gump.Draggable)
-            {
-                expectedData.Write(ref pos, GumpUtilities.NoMoveBuffer);
-                layoutLength += GumpUtilities.NoMove.Length;
-            }
-
-            if (!gump.Closable)
-            {
-                expectedData.Write(ref pos, GumpUtilities.NoCloseBuffer);
-                layoutLength += GumpUtilities.NoClose.Length;
-            }
-
-            if (!gump.Disposable)
-            {
-                expectedData.Write(ref pos, GumpUtilities.NoDisposeBuffer);
-                layoutLength += GumpUtilities.NoDispose.Length;
-            }
-
-            if (!gump.Resizable)
-            {
-                expectedData.Write(ref pos, GumpUtilities.NoResizeBuffer);
-                layoutLength += GumpUtilities.NoResize.Length;
-            }
-
-            foreach (var entry in gump.Entries)
-            {
-                var str = entry.Compile(ns);
-                expectedData.WriteAscii(ref pos, str);
-                layoutLength += str.Length; // ASCII so 1:1
-            }
-
-            expectedData.Slice(19, 2).Write((ushort)layoutLength);
-            expectedData.Write(ref pos, (ushort)gump.Strings.Count);
-
-            for (var i = 0; i < gump.Strings.Count; ++i)
-            {
-                expectedData.WriteBigUni(ref pos, gump.Strings[i] ?? "");
-            }
-
-            expectedData.Slice(1, 2).Write((ushort)pos); // Length
-
-            expectedData = expectedData.Slice(0, pos);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Fact]
-        public void TestPackedGumpPacket()
+        [Theory]
+        [InlineData(ProtocolChanges.None)]
+        [InlineData(ProtocolChanges.Unpack)]
+        public void TestGumpPacketAdmin(ProtocolChanges changes)
         {
-            var ns = new NetState(null)
-            {
-                ProtocolChanges = ProtocolChanges.Unpack
-            };
+            var m = new Mobile(0x1);
+            m.DefaultMobileInit();
+            m.RawName = "Test Mobile";
+            m.AccessLevel = AccessLevel.Administrator;
 
-            var gump = new ResurrectGump(2);
+            var gump = new AdminGump(m, AdminGumpPage.Clients);
 
-            var data = gump.Compile(ns).Compile();
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = changes;
 
-            Span<byte> expectedData = stackalloc byte[0x1000];
+            var expected = gump.Compile(ns).Compile();
 
-            var pos = 0;
+            ns.SendDisplayGump(gump, out _, out _);
 
-            expectedData[pos++] = 0xDD; // Packet ID
-            pos += 2;                   // Length
-
-            expectedData.Write(ref pos, gump.Serial);
-            expectedData.Write(ref pos, gump.TypeID);
-            expectedData.Write(ref pos, gump.X);
-            expectedData.Write(ref pos, gump.Y);
-
-            var layoutList = new List<string>();
-            var bufferLength = 1; // Null terminated
-
-            if (!gump.Draggable)
-            {
-                layoutList.Add(GumpUtilities.NoMove);
-                bufferLength += GumpUtilities.NoMove.Length;
-            }
-
-            if (!gump.Closable)
-            {
-                layoutList.Add(GumpUtilities.NoClose);
-                bufferLength += GumpUtilities.NoClose.Length;
-            }
-
-            if (!gump.Disposable)
-            {
-                layoutList.Add(GumpUtilities.NoDispose);
-                bufferLength += GumpUtilities.NoDispose.Length;
-            }
-
-            if (!gump.Resizable)
-            {
-                layoutList.Add(GumpUtilities.NoResize);
-                bufferLength += GumpUtilities.NoResize.Length;
-            }
-
-            foreach (var entry in gump.Entries)
-            {
-                var str = entry.Compile(ns);
-                bufferLength += str.Length;
-                layoutList.Add(str);
-            }
-
-            var rawBuffer = ArrayPool<byte>.Shared.Rent(bufferLength);
-            Span<byte> buffer = rawBuffer;
-            var bufferPos = 0;
-
-            foreach (var layout in layoutList)
-            {
-                buffer.WriteAscii(ref bufferPos, layout);
-            }
-
-#if NO_LOCAL_INIT
-            buffer.Write(ref bufferPos, (byte)0); // Layout terminator
-#else
-            bufferPos++;
-#endif
-
-            expectedData.WritePacked(ref pos, buffer.Slice(0, bufferPos));
-            ArrayPool<byte>.Shared.Return(rawBuffer);
-
-            expectedData.Write(ref pos, gump.Strings.Count);
-            bufferLength = gump.Strings.Sum(str => 2 + str.Length * 2);
-            rawBuffer = ArrayPool<byte>.Shared.Rent(bufferLength);
-            buffer = rawBuffer;
-            bufferPos = 0;
-
-            foreach (var str in gump.Strings)
-            {
-                buffer.WriteBigUni(ref bufferPos, str);
-            }
-
-            expectedData.WritePacked(ref pos, buffer.Slice(0, bufferPos));
-            ArrayPool<byte>.Shared.Return(rawBuffer);
-
-            // Length
-            expectedData.Slice(1, 2).Write((ushort)pos);
-            expectedData = expectedData.Slice(0, pos);
-
-            AssertThat.Equal(data, expectedData);
+            var result = ns.SendPipe.Reader.TryRead();
+            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
     }
 
-    public class ResurrectGump : Gump
+    public class NameChangeDeedGump : Gump
     {
-        public ResurrectGump(int msg) : base(100, 0)
+        public NameChangeDeedGump() : base(50, 50)
         {
+            Closable = false;
+            Draggable = false;
+            Resizable = false;
+
             AddPage(0);
 
-            AddBackground(0, 0, 400, 350, 2600);
+            AddBlackAlpha(10, 120, 250, 85);
+            AddHtml(10, 125, 250, 20, Color(Center("Name Change Deed"), 0xFFFFFF));
 
-            AddHtmlLocalized(0, 20, 400, 35, 1011022); // <center>Resurrection</center>
+            AddLabel(73, 15, 1152, "");
+            AddLabel(20, 150, 0x480, "New Name:");
+            AddTextField(100, 150, 150, 20, 0);
 
-            /* It is possible for you to be resurrected here by this healer. Do you wish to try?<br>
-             * CONTINUE - You chose to try to come back to life now.<br>
-             * CANCEL - You prefer to remain a ghost for now.
-             */
-            AddHtmlLocalized(50, 55, 300, 140, 1011023 + msg, true, true);
+            AddButtonLabeled(75, 180, 1, "Submit");
+        }
 
-            AddButton(200, 227, 4005, 4007, 0);
-            AddHtmlLocalized(235, 230, 110, 35, 1011012); // CANCEL
+        public void AddBlackAlpha(int x, int y, int width, int height)
+        {
+            AddImageTiled(x, y, width, height, 2624);
+            AddAlphaRegion(x, y, width, height);
+        }
 
-            AddButton(65, 227, 4005, 4007, 1);
-            AddHtmlLocalized(100, 230, 110, 35, 1011011); // CONTINUE
+        public void AddTextField(int x, int y, int width, int height, int index)
+        {
+            AddBackground(x - 2, y - 2, width + 4, height + 4, 0x2486);
+            AddTextEntry(x + 2, y + 2, width - 4, height - 4, 0, index, "");
+        }
+
+        public static string Center(string text) => $"<CENTER>{text}</CENTER>";
+
+        public static string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
+
+        public void AddButtonLabeled(int x, int y, int buttonID, string text)
+        {
+            AddButton(x, y - 1, 4005, 4007, buttonID);
+            AddHtml(x + 35, y, 240, 20, Color(text, 0xFFFFFF));
         }
     }
 }

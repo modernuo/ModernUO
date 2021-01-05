@@ -362,9 +362,11 @@ namespace System.Buffers
             if (Position < _first.Length)
             {
                 var sz = Math.Min(buffer.Length, _first.Length - Position);
-                buffer.CopyTo(_first.Slice(Position));
-                buffer.Slice(sz).CopyTo(_second);
-                Position += buffer.Length;
+                buffer.Slice(0, sz).CopyTo(_first.Slice(Position));
+                if (sz < buffer.Length)
+                {
+                    buffer.Slice(sz).CopyTo(_second);
+                }
             }
             else if (Position < Length)
             {
@@ -374,6 +376,8 @@ namespace System.Buffers
             {
                 throw new OutOfMemoryException();
             }
+
+            Position += buffer.Length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

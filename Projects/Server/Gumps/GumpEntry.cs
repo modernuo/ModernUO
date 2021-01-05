@@ -1,6 +1,5 @@
 using System.Buffers;
 using Server.Collections;
-using Server.Network;
 
 namespace Server.Gumps
 {
@@ -24,9 +23,7 @@ namespace Server.Gumps
             }
         }
 
-        public abstract string Compile(NetState ns);
         public abstract string Compile(OrderedHashSet<string> strings);
-        public abstract void AppendTo(NetState ns, IGumpWriter disp);
 
         // TODO: Replace OrderedHashSet with InsertOnlyHashSet, a copy of HashSet that is ReadOnly compatible, but includes
         // a public AddIfNotPresent function that returns the index of the element

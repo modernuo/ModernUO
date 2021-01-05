@@ -6,7 +6,7 @@ namespace Server.Gumps
 {
     public class GumpHtml : GumpEntry
     {
-        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("htmlgump");
+        public static readonly byte[] LayoutName = Gump.StringToBuffer("htmlgump");
 
         public GumpHtml(int x, int y, int width, int height, string text, bool background, bool scrollbar)
         {
@@ -33,28 +33,14 @@ namespace Server.Gumps
 
         public bool Scrollbar { get; set; }
 
-        public override string Compile(NetState ns) =>
-            $"{{ htmlgump {X} {Y} {Width} {Height} {Parent.Intern(Text)} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} }}";
-
         public override string Compile(OrderedHashSet<string> strings) =>
             $"{{ htmlgump {X} {Y} {Width} {Height} {strings.GetOrAdd(Text)} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} }}";
-
-        public override void AppendTo(NetState ns, IGumpWriter disp)
-        {
-            disp.AppendLayout(m_LayoutName);
-            disp.AppendLayout(X);
-            disp.AppendLayout(Y);
-            disp.AppendLayout(Width);
-            disp.AppendLayout(Height);
-            disp.AppendLayout(Parent.Intern(Text));
-            disp.AppendLayout(Background);
-            disp.AppendLayout(Scrollbar);
-        }
 
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(m_LayoutName);
+            writer.Write(LayoutName);
+            writer.Write((byte)0x20); // ' '
             writer.WriteAscii(X.ToString());
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(Y.ToString());

@@ -6,7 +6,7 @@ namespace Server.Gumps
 {
     public class GumpAlphaRegion : GumpEntry
     {
-        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("checkertrans");
+        public static readonly byte[] LayoutName = Gump.StringToBuffer("checkertrans");
 
         public GumpAlphaRegion(int x, int y, int width, int height)
         {
@@ -24,23 +24,13 @@ namespace Server.Gumps
 
         public int Height { get; set; }
 
-        public override string Compile(NetState ns) => $"{{ checkertrans {X} {Y} {Width} {Height} }}";
-
         public override string Compile(OrderedHashSet<string> strings) => $"{{ checkertrans {X} {Y} {Width} {Height} }}";
-
-        public override void AppendTo(NetState ns, IGumpWriter disp)
-        {
-            disp.AppendLayout(m_LayoutName);
-            disp.AppendLayout(X);
-            disp.AppendLayout(Y);
-            disp.AppendLayout(Width);
-            disp.AppendLayout(Height);
-        }
 
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(m_LayoutName);
+            writer.Write(LayoutName);
+            writer.Write((byte)0x20); // ' '
             writer.WriteAscii(X.ToString());
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(Y.ToString());

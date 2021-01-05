@@ -1,39 +1,13 @@
-/*************************************************************************
- * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
- * Email: hi@modernuo.com                                                *
- * File: GumpPackets.cs                                                  *
- *                                                                       *
- * This program is free software: you can redistribute it and/or modify  *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- *                                                                       *
- * You should have received a copy of the GNU General Public License     *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
- *************************************************************************/
-
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
 using Server.Gumps;
+using Server.Network;
 
-namespace Server.Network
+namespace Server.Tests
 {
-    public sealed class CloseGump : Packet
-    {
-        public CloseGump(int typeID, int buttonID) : base(0xBF)
-        {
-            EnsureCapacity(13);
-
-            Stream.Write((short)0x04);
-            Stream.Write(typeID);
-            Stream.Write(buttonID);
-        }
-    }
-
     public interface IGumpWriter
     {
         int TextEntries { get; set; }
@@ -48,6 +22,18 @@ namespace Server.Network
         void AppendLayout(byte[] buffer);
         void WriteStrings(List<string> strings);
         void Flush();
+    }
+
+    public sealed class CloseGump : Packet
+    {
+        public CloseGump(int typeID, int buttonID) : base(0xBF)
+        {
+            EnsureCapacity(13);
+
+            Stream.Write((short)0x04);
+            Stream.Write(typeID);
+            Stream.Write(buttonID);
+        }
     }
 
     public sealed class DisplayGumpPacked : Packet, IGumpWriter
@@ -154,6 +140,7 @@ namespace Server.Network
 
             // Note: layout MUST be null terminated (don't listen to krrios)
             m_Layout.Write((byte)0);
+
             WritePacked(m_Layout);
 
             Stream.Write(m_StringCount);
@@ -175,7 +162,7 @@ namespace Server.Network
                 return;
             }
 
-            var wantLength = 1 + buffer.Length * 1024 / 1000;
+            var wantLength = 1 + length * 1024 / 1000;
 
             wantLength += 4095;
             wantLength &= ~4095;
@@ -300,35 +287,6 @@ namespace Server.Network
 
         public void Flush()
         {
-        }
-    }
-
-    public sealed class DisplayGump : Packet
-    {
-        public DisplayGump(Gump g, string layout, string[] text) : base(0xB0)
-        {
-            layout ??= "";
-
-            EnsureCapacity(256);
-
-            Stream.Write(g.Serial);
-            Stream.Write(g.TypeID);
-            Stream.Write(g.X);
-            Stream.Write(g.Y);
-            Stream.Write((ushort)(layout.Length + 1));
-            Stream.WriteAsciiNull(layout);
-
-            Stream.Write((ushort)text.Length);
-
-            for (var i = 0; i < text.Length; ++i)
-            {
-                var v = text[i] ?? "";
-
-                var length = (ushort)v.Length;
-
-                Stream.Write(length);
-                Stream.WriteBigUniFixed(v, length);
-            }
         }
     }
 

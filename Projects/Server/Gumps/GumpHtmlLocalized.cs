@@ -13,9 +13,9 @@ namespace Server.Gumps
 
     public class GumpHtmlLocalized : GumpEntry
     {
-        private static readonly byte[] m_LayoutNamePlain = Gump.StringToBuffer("xmfhtmlgump");
-        private static readonly byte[] m_LayoutNameColor = Gump.StringToBuffer("xmfhtmlgumpcolor");
-        private static readonly byte[] m_LayoutNameArgs = Gump.StringToBuffer("xmfhtmltok");
+        public static readonly byte[] LayoutNamePlain = Gump.StringToBuffer("xmfhtmlgump");
+        public static readonly byte[] LayoutNameColor = Gump.StringToBuffer("xmfhtmlgumpcolor");
+        public static readonly byte[] LayoutNameArgs = Gump.StringToBuffer("xmfhtmltok");
 
         public GumpHtmlLocalized(
             int x, int y, int width, int height, int number,
@@ -90,17 +90,6 @@ namespace Server.Gumps
 
         public GumpHtmlLocalizedType Type { get; set; }
 
-        public override string Compile(NetState ns) =>
-            Type switch
-            {
-                GumpHtmlLocalizedType.Plain =>
-                    $"{{ xmfhtmlgump {X} {Y} {Width} {Height} {Number} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} }}",
-                GumpHtmlLocalizedType.Color =>
-                    $"{{ xmfhtmlgumpcolor {X} {Y} {Width} {Height} {Number} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} {Color} }}",
-                _ =>
-                    $"{{ xmfhtmltok {X} {Y} {Width} {Height} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} {Color} {Number} @{Args}@ }}"
-            };
-
         public override string Compile(OrderedHashSet<string> strings) =>
             Type switch
             {
@@ -112,60 +101,6 @@ namespace Server.Gumps
                     $"{{ xmfhtmltok {X} {Y} {Width} {Height} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} {Color} {Number} @{Args}@ }}"
             };
 
-        public override void AppendTo(NetState ns, IGumpWriter disp)
-        {
-            switch (Type)
-            {
-                case GumpHtmlLocalizedType.Plain:
-                    {
-                        disp.AppendLayout(m_LayoutNamePlain);
-
-                        disp.AppendLayout(X);
-                        disp.AppendLayout(Y);
-                        disp.AppendLayout(Width);
-                        disp.AppendLayout(Height);
-                        disp.AppendLayout(Number);
-                        disp.AppendLayout(Background);
-                        disp.AppendLayout(Scrollbar);
-
-                        break;
-                    }
-
-                case GumpHtmlLocalizedType.Color:
-                    {
-                        disp.AppendLayout(m_LayoutNameColor);
-
-                        disp.AppendLayout(X);
-                        disp.AppendLayout(Y);
-                        disp.AppendLayout(Width);
-                        disp.AppendLayout(Height);
-                        disp.AppendLayout(Number);
-                        disp.AppendLayout(Background);
-                        disp.AppendLayout(Scrollbar);
-                        disp.AppendLayout(Color);
-
-                        break;
-                    }
-
-                case GumpHtmlLocalizedType.Args:
-                    {
-                        disp.AppendLayout(m_LayoutNameArgs);
-
-                        disp.AppendLayout(X);
-                        disp.AppendLayout(Y);
-                        disp.AppendLayout(Width);
-                        disp.AppendLayout(Height);
-                        disp.AppendLayout(Background);
-                        disp.AppendLayout(Scrollbar);
-                        disp.AppendLayout(Color);
-                        disp.AppendLayout(Number);
-                        disp.AppendLayout(Args);
-
-                        break;
-                    }
-            }
-        }
-
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
@@ -174,7 +109,8 @@ namespace Server.Gumps
             {
                 case GumpHtmlLocalizedType.Plain:
                     {
-                        writer.Write(m_LayoutNamePlain);
+                        writer.Write(LayoutNamePlain);
+                        writer.Write((byte)0x20); // ' '
                         writer.WriteAscii(X.ToString());
                         writer.Write((byte)0x20); // ' '
                         writer.WriteAscii(Y.ToString());
@@ -193,7 +129,8 @@ namespace Server.Gumps
                     }
                 case GumpHtmlLocalizedType.Color:
                     {
-                        writer.Write(m_LayoutNameColor);
+                        writer.Write(LayoutNameColor);
+                        writer.Write((byte)0x20); // ' '
                         writer.WriteAscii(X.ToString());
                         writer.Write((byte)0x20); // ' '
                         writer.WriteAscii(Y.ToString());
@@ -214,7 +151,8 @@ namespace Server.Gumps
                     }
                 case GumpHtmlLocalizedType.Args:
                     {
-                        writer.Write(m_LayoutNameArgs);
+                        writer.Write(LayoutNameArgs);
+                        writer.Write((byte)0x20); // ' '
                         writer.WriteAscii(X.ToString());
                         writer.Write((byte)0x20); // ' '
                         writer.WriteAscii(Y.ToString());
