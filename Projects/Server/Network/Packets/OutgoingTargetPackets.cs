@@ -49,13 +49,7 @@ namespace Server.Network
         public static void SendCancelTarget(this NetState ns) =>
             ns?.Send(stackalloc byte[]
             {
-                0x6C,       // Packet ID
-                0,          // Allow Ground?
-                0, 0, 0, 0, // Target ID
-                3,          // Flags
-                0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
-                0, 0
+                0x6C, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0
             });
 
         public static void SendTargetReq(this NetState ns, Target t)
