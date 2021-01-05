@@ -22,12 +22,12 @@ namespace Server.Network
     {
         public static void SendDamage(this NetState ns, Serial serial, int amount)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[ns.DamagePacket ? 7 : 11]);
 
             if (ns.DamagePacket)
             {
@@ -45,7 +45,7 @@ namespace Server.Network
                 writer.Write((byte)Math.Clamp(amount, 0, 0xFF));
             }
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }

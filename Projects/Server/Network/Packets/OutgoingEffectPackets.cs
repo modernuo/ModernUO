@@ -306,12 +306,12 @@ namespace Server.Network
 
         public static void SendScreenEffect(this NetState ns, ScreenEffectType type)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[28]);
 
             writer.Write((byte)0x70); // Packet ID
             writer.Write((byte)0x4);
@@ -319,7 +319,7 @@ namespace Server.Network
             writer.Write((ushort)type);
             writer.Clear(16);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }

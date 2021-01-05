@@ -21,33 +21,35 @@ namespace Server.Network
     {
         public static void SendDisplayItemListMenu(this NetState ns, ItemListMenu menu)
         {
-            if (ns == null || menu == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null || menu == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var question = menu.Question?.Trim();
+            var questionLength = question?.Length ?? 0;
+
+            var entries = menu.Entries;
+            int entriesLength = (byte)entries.Length;
+
+            var maxLength = 11 + questionLength;
+            for (int i = 0; i < entriesLength; i++)
+            {
+                maxLength += 5 + entries[i].Name?.Length ?? 0; // could be trimmed
+            }
+
+            var writer = new SpanWriter(stackalloc byte[maxLength]);
             writer.Write((byte)0x7C);  // Packet ID
-            writer.Seek(2, SeekOrigin.Current); // Length
+            writer.Seek(2, SeekOrigin.Current);
             writer.Write(menu.Serial);
             writer.Write((ushort)0);
 
-            var question = menu.Question?.Trim();
+            writer.Write((byte)questionLength);
 
-            if (question == null)
+            if (question != null)
             {
-                writer.Write((byte)0);
-            }
-            else
-            {
-                var questionLength = question.Length;
-                writer.Write((byte)questionLength);
                 writer.WriteAscii(question);
             }
-
-            var entries = menu.Entries;
-
-            int entriesLength = (byte)entries.Length;
 
             writer.Write((byte)entriesLength);
 
@@ -73,39 +75,39 @@ namespace Server.Network
             }
 
             writer.WritePacketLength();
-
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendDisplayQuestionMenu(this NetState ns, QuestionMenu menu)
         {
-            if (ns == null || menu == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null || menu == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
-            writer.Write((byte)0x7C); // Packet ID
-            writer.Seek(2, SeekOrigin.Current); // Length
-            writer.Write(menu.Serial);
-            writer.Write((ushort)0);
-
             var question = menu.Question?.Trim();
-
-            if (question == null)
-            {
-                writer.Write((byte)0);
-            }
-            else
-            {
-                var questionLength = question.Length;
-                writer.Write((byte)questionLength);
-                writer.WriteAscii(question);
-            }
+            var questionLength = question?.Length ?? 0;
 
             var answers = menu.Answers;
-
             int answersLength = (byte)answers.Length;
+
+            var maxLength = 11 + questionLength;
+            for (int i = 0; i < answersLength; i++)
+            {
+                maxLength += 5 + answers[i]?.Length ?? 0; // could be trimmed
+            }
+
+            var writer = new SpanWriter(stackalloc byte[maxLength]);
+            writer.Write((byte)0x7C); // Packet ID
+            writer.Seek(2, SeekOrigin.Current);
+            writer.Write(menu.Serial);
+            writer.Write((ushort)0);
+            writer.Write((byte)questionLength);
+
+            if (question != null)
+            {
+                writer.WriteAscii(question);
+            }
 
             writer.Write((byte)answersLength);
 
@@ -128,13 +130,12 @@ namespace Server.Network
             }
 
             writer.WritePacketLength();
-
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendDisplayContextMenu(this NetState ns, ContextMenu menu)
         {
-            if (ns == null || menu == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null || menu == null)
             {
                 return;
             }
@@ -143,8 +144,9 @@ namespace Server.Network
 
             var entries = menu.Entries;
             var entriesLength = (byte)entries.Length;
+            var maxLength = 12 + entriesLength * 8;
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[maxLength]);
             writer.Write((byte)0xBF); // Packet ID
             writer.Seek(2, SeekOrigin.Current); // Length
             writer.Write((short)0x14); // Subpacket
@@ -206,8 +208,7 @@ namespace Server.Network
             }
 
             writer.WritePacketLength();
-
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }
