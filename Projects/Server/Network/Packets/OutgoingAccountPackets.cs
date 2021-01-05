@@ -254,7 +254,6 @@ namespace Server.Network
             var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0x86); // Packet ID
             writer.Write((ushort)length);
-            writer.Seek(2, SeekOrigin.Current); // Length
 
             writer.Write((byte)count);
 
@@ -309,7 +308,9 @@ namespace Server.Network
             }
 
             var count = Math.Max(Math.Max(highSlot + 1, acct.Limit), 5);
-            var length = 11 + 89 * cityInfo.Length + count * 60;
+            var length = (client70130 ?
+                11 + (textLength * 2 + 25) * cityInfo.Length :
+                 9 + (textLength * 2 +  1) * cityInfo.Length) + count * 60;
             var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0xA9); // Packet ID
             writer.Write((ushort)length);

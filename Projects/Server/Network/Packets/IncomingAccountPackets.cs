@@ -417,6 +417,8 @@ namespace Server.Network
             if (e.Accepted)
             {
                 state.CityInfo = e.CityInfo;
+
+                // Comment out these lines to turn off huffman compression
                 state.CompressionEnabled = true;
                 state.PacketEncoder = NetworkCompression.Compress;
 
