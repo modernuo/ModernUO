@@ -173,17 +173,17 @@ namespace Server
 
                     var tileList = new List<MultiTileEntry>();
 
-                    // Skip the first 4 bytes
-                    var pos = 4;
-                    var count = data.ReadUInt32LE(ref pos);
+                    var reader = new SpanReader(data);
+                    reader.Seek(4, SeekOrigin.Begin);
+                    var count = reader.ReadUInt32LE();
 
                     for (uint i = 0; i < count; i++)
                     {
-                        var itemId = data.ReadUInt16LE(ref pos);
-                        var x = data.ReadInt16LE(ref pos);
-                        var y = data.ReadInt16LE(ref pos);
-                        var z = data.ReadInt16LE(ref pos);
-                        var flagValue = data.ReadUInt16LE(ref pos);
+                        var itemId = reader.ReadUInt16LE();
+                        var x = reader.ReadInt16LE();
+                        var y = reader.ReadInt16LE();
+                        var z = reader.ReadInt16LE();
+                        var flagValue = reader.ReadUInt16LE();
 
                         var tileFlag = flagValue switch
                         {
@@ -192,8 +192,9 @@ namespace Server
                             _   => TileFlag.Background // 0
                         };
 
-                        var clilocsCount = data.ReadUInt32LE(ref pos);
-                        pos += (int)Math.Min(clilocsCount, int.MaxValue) * 4; // bypass binary block
+                        var clilocsCount = reader.ReadUInt32LE();
+                        var skip = (int)Math.Min(clilocsCount, int.MaxValue) * 4; // bypass binary block
+                        reader.Seek(skip, SeekOrigin.Current);
 
                         tileList.Add(new MultiTileEntry(itemId, x, y, z, tileFlag));
                     }

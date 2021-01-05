@@ -1,6 +1,9 @@
 using System;
 using System.Buffers;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Network;
 
 namespace Server
 {
@@ -13,8 +16,6 @@ namespace Server
 
     public sealed class ObjectPropertyList
     {
-        private static readonly Encoding m_Encoding = Encoding.Unicode;
-
         // Each of these are localized to "~1_NOTHING~" which allows the string argument to be used
         private static readonly int[] m_StringNumbers =
         {
@@ -24,19 +25,21 @@ namespace Server
 
         private int _hash;
         private int _strings;
-        private byte[] _buffer = new byte[64];
+        private byte[] _buffer;
         private int _position;
 
         public ObjectPropertyList(IEntity e)
         {
             Entity = e;
-            Span<byte> buffer = _buffer;
-            buffer.Write(ref _position, (byte)0xD6); // Packet ID
-            _position += 2; // Length
-            buffer.Write(ref _position, (ushort)1);
-            buffer.Write(ref _position, e.Serial);
-            buffer.Write(ref _position, (ushort)0);
-            _position += 4; // Hash
+            _buffer = GC.AllocateUninitializedArray<byte>(64);
+
+            var writer = new SpanWriter(_buffer);
+            writer.Write((byte)0xD6); // Packet ID
+            writer.Seek(2, SeekOrigin.Current);
+            writer.Write((ushort)1);
+            writer.Write(e.Serial);
+            writer.Write((ushort)0);
+            _position = writer.Position + 4; // Hash
         }
 
         public IEntity Entity { get; }
@@ -63,9 +66,12 @@ namespace Server
             Resize(_buffer.Length * 2);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Resize(int amount)
         {
-            Array.Resize(ref _buffer, amount);
+            var newBuffer = GC.AllocateUninitializedArray<byte>(amount);
+            _buffer.AsSpan(0, Math.Min(amount, _buffer.Length)).CopyTo(newBuffer);
+            _buffer = newBuffer;
         }
 
         public void Terminate()
@@ -76,10 +82,13 @@ namespace Server
                 Resize(length);
             }
 
-            Span<byte> buffer = _buffer;
-            buffer.Write(ref _position, 0);
-            buffer.Slice(11, 4).Write(_hash);
-            buffer.Slice(1, 2).Write((ushort)_position);
+            var writer = new SpanWriter(_buffer);
+            writer.Seek(_position, SeekOrigin.Begin);
+            writer.Write(0);
+
+            writer.Seek(11, SeekOrigin.Begin);
+            writer.Write(_hash);
+            writer.WritePacketLength();
         }
 
         public void AddHash(int val)
@@ -109,7 +118,7 @@ namespace Server
                 AddHash(arguments.GetHashCode(StringComparison.Ordinal));
             }
 
-            int strLength = m_Encoding.GetByteCount(arguments);
+            int strLength = Utility.Unicode.GetByteCount(arguments);
 
             int length = _position + 6 + strLength;
             while (length > _buffer.Length)
@@ -117,14 +126,11 @@ namespace Server
                 Flush();
             }
 
-            Span<byte> buffer = _buffer;
-            buffer.Write(ref _position, number);
-            buffer.Write(ref _position, (ushort)strLength);
-            if (strLength > 0)
-            {
-                m_Encoding.GetBytes(arguments, buffer.Slice(_position));
-                _position += strLength;
-            }
+            var writer = new SpanWriter(_buffer);
+            writer.Seek(_position, SeekOrigin.Begin);
+            writer.Write(number);
+            writer.Write((ushort)strLength);
+            writer.WriteBigUni(arguments);
         }
 
         public void Add(int number, string format, object arg0)

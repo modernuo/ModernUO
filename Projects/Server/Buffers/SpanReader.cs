@@ -67,9 +67,33 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public short ReadInt16LE()
+        {
+            if (!BinaryPrimitives.TryReadInt16LittleEndian(_buffer.Slice(Position), out var value))
+            {
+                throw new OutOfMemoryException();
+            }
+
+            Position += 2;
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ushort ReadUInt16()
         {
             if (!BinaryPrimitives.TryReadUInt16BigEndian(_buffer.Slice(Position), out var value))
+            {
+                throw new OutOfMemoryException();
+            }
+
+            Position += 2;
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ushort ReadUInt16LE()
+        {
+            if (!BinaryPrimitives.TryReadUInt16LittleEndian(_buffer.Slice(Position), out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -94,6 +118,18 @@ namespace System.Buffers
         public uint ReadUInt32()
         {
             if (!BinaryPrimitives.TryReadUInt32BigEndian(_buffer.Slice(Position), out var value))
+            {
+                throw new OutOfMemoryException();
+            }
+
+            Position += 4;
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint ReadUInt32LE()
+        {
+            if (!BinaryPrimitives.TryReadUInt32LittleEndian(_buffer.Slice(Position), out var value))
             {
                 throw new OutOfMemoryException();
             }
