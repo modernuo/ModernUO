@@ -34,10 +34,9 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WritePacketLength(this SpanWriter writer)
         {
-            var length = writer.Position;
             writer.Seek(1, SeekOrigin.Begin);
-            writer.Write((ushort)length);
-            writer.Seek(length, SeekOrigin.Begin);
+            writer.Write((ushort)writer.BytesWritten);
+            writer.Seek(0, SeekOrigin.End);
         }
 
         // If LOCAL INIT is off, then stack/heap allocations have garbage data
