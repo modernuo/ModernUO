@@ -414,36 +414,6 @@ namespace Server.Network
             }
         }
 
-        /**
-         * Send data using a circular buffer from SendPipe
-         */
-        public void Send(ref CircularBuffer<byte> buffer, int length)
-        {
-            if (Connection == null || BlockAllPackets || length <= 0)
-            {
-                return;
-            }
-
-            try
-            {
-                // _packetEncoder?.Invoke(ref buffer, ref length);
-                if (CompressionEnabled)
-                {
-                    NetworkCompression.Compress(ref buffer, ref length); // This will be changed soon
-                }
-
-                SendPipe.Writer.Advance((uint)length);
-            }
-            catch (Exception ex)
-            {
-#if DEBUG
-                Console.WriteLine(ex);
-                TraceException(ex);
-#endif
-                Dispose();
-            }
-        }
-
         public virtual void Send(Packet p)
         {
             if (Connection == null || BlockAllPackets)
