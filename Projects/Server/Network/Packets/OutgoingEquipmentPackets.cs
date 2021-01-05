@@ -39,7 +39,7 @@ namespace Server.Network
             Serial serial, int number, string crafterName, bool unidentified, List<EquipInfoAttribute> attrs
         )
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
@@ -51,7 +51,7 @@ namespace Server.Network
                          (unidentified ? 4 : 0) +
                          attrs.Count * 6;
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)length);
             writer.Write((ushort)0x10); // Subpacket
@@ -80,7 +80,7 @@ namespace Server.Network
 
             writer.Write(-1);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendEquipUpdate(this NetState ns, Item item)
@@ -111,7 +111,7 @@ namespace Server.Network
             }
 
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[15]);
             writer.Write((byte)0x2E); // Packet ID
             writer.Write(item.Serial);
             writer.Write((short)item.ItemID);
@@ -119,7 +119,7 @@ namespace Server.Network
             writer.Write(parentSerial);
             writer.Write((short)hue);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }

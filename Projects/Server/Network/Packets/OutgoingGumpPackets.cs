@@ -21,12 +21,12 @@ namespace Server.Network
     {
         public static void SendCloseGump(this NetState ns, int typeId, int buttonId)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[13]);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)13);
 
@@ -34,7 +34,7 @@ namespace Server.Network
             writer.Write(typeId);
             writer.Write(buttonId);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }
