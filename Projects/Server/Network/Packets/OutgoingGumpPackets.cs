@@ -44,7 +44,7 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WritePacked(ref CircularBufferWriter writer, ReadOnlySpan<byte> span)
+        private static void WritePacked(ref SpanWriter writer, ReadOnlySpan<byte> span)
         {
             var length = span.Length;
 
@@ -76,14 +76,14 @@ namespace Server.Network
             switches = 0;
             entries = 0;
 
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
             var packed = ns.Unpack;
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(512, true);
             writer.Write((byte)(packed ? 0xDD : 0xB0)); // Packet ID
             writer.Seek(2, SeekOrigin.Current);
 
@@ -128,7 +128,7 @@ namespace Server.Network
             }
             else
             {
-                writer.Write((ushort)spanWriter.Length);
+                writer.Write((ushort)spanWriter.BytesWritten);
                 writer.Write(spanWriter.Span);
             }
 
@@ -161,7 +161,7 @@ namespace Server.Network
 
             writer.WritePacketLength();
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
             spanWriter.Dispose(); // Can't use using and refs, so we dispose manually
         }
 
@@ -175,9 +175,10 @@ namespace Server.Network
             unknown ??= "";
             caption ??= "";
 
-            var writer = new CircularBufferWriter(buffer);
+            var length = 15 + unknown.Length + caption.Length;
+            var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0x8B); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
+            writer.Write((ushort)length);
 
             writer.Write(serial);
             writer.Write((short)gumpId);
@@ -186,8 +187,7 @@ namespace Server.Network
             writer.Write((short)(caption.Length + 1));
             writer.WriteAsciiNull(caption);
 
-            writer.WritePacketLength();
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
     }
 }
