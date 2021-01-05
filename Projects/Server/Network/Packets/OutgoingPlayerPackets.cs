@@ -66,24 +66,24 @@ namespace Server.Network
 
         public static void SendToggleSpecialAbility(this NetState ns, int abilityId, bool active)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
 
-            var writer = new CircularBufferWriter(buffer);
+            var writer = new SpanWriter(stackalloc byte[8]);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)8);
             writer.Write((short)0x25);
             writer.Write((short)abilityId);
             writer.Write(active);
 
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         public static void SendDisplayProfile(this NetState ns, Serial m, string header, string body, string footer)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }
@@ -92,16 +92,16 @@ namespace Server.Network
             body ??= "";
             footer ??= "";
 
-            var writer = new CircularBufferWriter(buffer);
+            var length = 10 + header.Length + footer.Length * 2 + body.Length * 2;
+            var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0xB8); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
+            writer.Write((ushort)length);
             writer.Write(m);
             writer.WriteAsciiNull(header);
             writer.WriteBigUniNull(footer);
             writer.WriteBigUniNull(body);
 
-            writer.WritePacketLength();
-            ns.Send(ref buffer, writer.Position);
+            ns.Send(writer.Span);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
