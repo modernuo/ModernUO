@@ -18,7 +18,10 @@ namespace Server.Tests.Network
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory, InlineData(0, 0), InlineData(100, 10), InlineData(100000, 100000)]
+        [Theory]
+        [InlineData(0, 0)]
+        [InlineData(100, 10)]
+        [InlineData(100000, 100000)]
         public void TestSetArrow(int x, int y)
         {
             var expected = new SetArrow(x, y).Compile();
@@ -30,7 +33,10 @@ namespace Server.Tests.Network
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory, InlineData(0, 0), InlineData(100, 10), InlineData(100000, 100000)]
+        [Theory]
+        [InlineData(0, 0)]
+        [InlineData(100, 10)]
+        [InlineData(100000, 100000)]
         public void TestCancelArrowHS(int x, int y)
         {
             Serial serial = 0x1024;
@@ -45,7 +51,10 @@ namespace Server.Tests.Network
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
 
-        [Theory, InlineData(0, 0), InlineData(100, 10), InlineData(100000, 100000)]
+        [Theory]
+        [InlineData(0, 0)]
+        [InlineData(100, 10)]
+        [InlineData(100000, 100000)]
         public void TestSetArrowHS(int x, int y)
         {
             Serial serial = 0x1024;
