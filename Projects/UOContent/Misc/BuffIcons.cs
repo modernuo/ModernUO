@@ -216,7 +216,7 @@ namespace Server
             writer.Write(mob);
             writer.Write((short)iconID);
             writer.Write((short)0x0); // command (0 = remove, 1 = add, 2 = data)
-            writer.Clear(4);
+            writer.Write(0);
 
             ns.Send(writer.Span);
         }
