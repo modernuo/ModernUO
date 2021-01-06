@@ -38,13 +38,13 @@ namespace Server.Network
             if (beheld.Hair?.ItemID > 0)
             {
                 Stream.Write((byte)(Layer.Hair + 1));
-                Stream.Write(HairInfo.FakeSerial(beheld.Owner) - 2);
+                Stream.Write(HairInfo.FakeSerial(beheld.Owner.Serial) - 2);
             }
 
             if (beheld.FacialHair?.ItemID > 0)
             {
                 Stream.Write((byte)(Layer.FacialHair + 1));
-                Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner) - 2);
+                Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner.Serial) - 2);
             }
 
             Stream.Write((byte)Layer.Invalid);
@@ -98,7 +98,7 @@ namespace Server.Network
 
             if (beheld.Hair?.ItemID > 0)
             {
-                Stream.Write(HairInfo.FakeSerial(beheld.Owner) - 2);
+                Stream.Write(HairInfo.FakeSerial(beheld.Owner.Serial) - 2);
                 Stream.Write((ushort)beheld.Hair.ItemID);
                 Stream.Write((byte)0); // signed, itemID offset
                 Stream.Write((ushort)1);
@@ -112,7 +112,7 @@ namespace Server.Network
 
             if (beheld.FacialHair?.ItemID > 0)
             {
-                Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner) - 2);
+                Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner.Serial) - 2);
                 Stream.Write((ushort)beheld.FacialHair.ItemID);
                 Stream.Write((byte)0); // signed, itemID offset
                 Stream.Write((ushort)1);
@@ -177,7 +177,7 @@ namespace Server.Network
 
             if (beheld.Hair?.ItemID > 0)
             {
-                Stream.Write(HairInfo.FakeSerial(beheld.Owner) - 2);
+                Stream.Write(HairInfo.FakeSerial(beheld.Owner.Serial) - 2);
                 Stream.Write((ushort)beheld.Hair.ItemID);
                 Stream.Write((byte)0); // signed, itemID offset
                 Stream.Write((ushort)1);
@@ -192,7 +192,7 @@ namespace Server.Network
 
             if (beheld.FacialHair?.ItemID > 0)
             {
-                Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner) - 2);
+                Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner.Serial) - 2);
                 Stream.Write((ushort)beheld.FacialHair.ItemID);
                 Stream.Write((byte)0); // signed, itemID offset
                 Stream.Write((ushort)1);

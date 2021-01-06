@@ -3101,11 +3101,11 @@ namespace Server
                 {
                     if (removeHair)
                     {
-                        ourState.Send(new RemoveHair(this));
+                        ourState.SendRemoveHairPacket(HairInfo.FakeSerial(Serial));
                     }
                     else
                     {
-                        ourState.Send(new HairEquipUpdate(this));
+                        ourState.SendHairEquipUpdatePacket(this, HairInfo.FakeSerial(Serial), Layer.Hair);
                     }
                 }
 
@@ -3113,11 +3113,11 @@ namespace Server
                 {
                     if (removeFacialHair)
                     {
-                        ourState.Send(new RemoveFacialHair(this));
+                        ourState.SendRemoveHairPacket(FacialHairInfo.FakeSerial(Serial));
                     }
                     else
                     {
-                        ourState.Send(new FacialHairEquipUpdate(this));
+                        ourState.SendHairEquipUpdatePacket(this, FacialHairInfo.FakeSerial(Serial), Layer.FacialHair);
                     }
                 }
 
@@ -3144,9 +3144,6 @@ namespace Server
                 return;
             }
 
-            Packet hairPacket = null;
-            Packet facialhairPacket = null;
-
             var eable = Map.GetClientsInRange(m_Location);
 
             Span<byte> statBufferTrue = stackalloc byte[OutgoingMobilePackets.MobileStatusCompactLength];
@@ -3169,6 +3166,20 @@ namespace Server
 
             Span<byte> hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
             hitsPacket.InitializePacket();
+
+            var hairLength = removeHair
+                ? OutgoingVirtualHairPackets.RemovePacketLength
+                : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
+
+            Span<byte> hairPacket = stackalloc byte[hairLength];
+            hairPacket.InitializePacket();
+
+            var facialHairLength = removeFacialHair
+                ? OutgoingVirtualHairPackets.RemovePacketLength
+                : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
+
+            Span<byte> facialhairPacket = stackalloc byte[facialHairLength];
+            facialhairPacket.InitializePacket();
 
             foreach (var state in eable)
             {
@@ -3265,27 +3276,52 @@ namespace Server
 
                 if (sendHair)
                 {
-                    hairPacket ??= removeHair
-                        ? Packet.Acquire(new RemoveHair(this))
-                        : Packet.Acquire(new HairEquipUpdate(this));
+                    if (hairPacket[0] == 0)
+                    {
+                        var hairSerial = HairInfo.FakeSerial(Serial);
+                        if (removeHair)
+                        {
+                            OutgoingVirtualHairPackets.CreateRemoveHairPacket(hairPacket, hairSerial);
+                        }
+                        else
+                        {
+                            OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
+                                hairPacket,
+                                this,
+                                hairSerial,
+                                Layer.Hair
+                            );
+                        }
+                    }
 
                     state.Send(hairPacket);
                 }
 
                 if (sendFacialHair)
                 {
-                    facialhairPacket ??= removeFacialHair
-                        ? Packet.Acquire(new RemoveFacialHair(this))
-                        : Packet.Acquire(new FacialHairEquipUpdate(this));
+                    if (facialhairPacket[0] == 0)
+                    {
+                        var hairSerial = HairInfo.FakeSerial(Serial);
+                        if (removeFacialHair)
+                        {
+                            OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialhairPacket, hairSerial);
+                        }
+                        else
+                        {
+                            OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
+                                facialhairPacket,
+                                this,
+                                hairSerial,
+                                Layer.FacialHair
+                            );
+                        }
+                    }
 
                     state.Send(facialhairPacket);
                 }
 
                 SendOPLPacketTo(state);
             }
-
-            Packet.Release(hairPacket);
-            Packet.Release(facialhairPacket);
 
             eable.Free();
         }

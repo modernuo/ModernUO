@@ -1,7 +1,62 @@
+using System;
+using System.Buffers;
+using System.Runtime.CompilerServices;
 using Server.Network;
 
 namespace Server
 {
+    public static class OutgoingVirtualHairPackets
+    {
+        public const int EquipUpdatePacketLength = 15;
+        public const int RemovePacketLength = 5;
+
+        public static void SendHairEquipUpdatePacket(this NetState ns, Mobile m, Serial hairSerial, Layer layer)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> buffer = stackalloc byte[EquipUpdatePacketLength];
+            CreateHairEquipUpdatePacket(buffer, m, hairSerial, layer);
+            ns.Send(buffer);
+        }
+
+        public static void CreateHairEquipUpdatePacket(Span<byte> buffer, Mobile m, Serial hairSerial, Layer layer)
+        {
+            var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.HairHue;
+
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0x2E); // Packet ID
+
+            writer.Write(hairSerial);
+            writer.Write((short)m.HairItemID);
+            writer.Write((byte)0);
+            writer.Write((byte)layer);
+            writer.Write(m.Serial);
+            writer.Write((short)hue);
+        }
+
+        public static void SendRemoveHairPacket(this NetState ns, Serial hairSerial)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            Span<byte> buffer = stackalloc byte[RemovePacketLength];
+            CreateRemoveHairPacket(buffer, hairSerial);
+            ns.Send(buffer);
+        }
+
+        public static void CreateRemoveHairPacket(Span<byte> buffer, Serial hairSerial)
+        {
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0x1D); // Packet ID
+            writer.Write(hairSerial);
+        }
+    }
+
     public abstract class BaseHairInfo
     {
         protected BaseHairInfo(int itemid, int hue = 0)
@@ -57,7 +112,8 @@ namespace Server
         }
 
         // TODO: Can we make this higher for newer clients?
-        public static uint FakeSerial(Mobile parent) => 0x7FFFFFFF - 0x400 - parent.Serial * 4;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint FakeSerial(Serial m) => 0x7FFFFFFF - 0x400 - m * 4;
     }
 
     public class FacialHairInfo : BaseHairInfo
@@ -77,57 +133,8 @@ namespace Server
         {
         }
 
-        // TOOD: Can we make this higher for newer clients?
-        public static uint FakeSerial(Mobile parent) => 0x7FFFFFFF - 0x400 - 1 - parent.Serial * 4;
-    }
-
-    public sealed class HairEquipUpdate : Packet
-    {
-        public HairEquipUpdate(Mobile parent)
-            : base(0x2E, 15)
-        {
-            var hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.HairHue;
-
-            Stream.Write(HairInfo.FakeSerial(parent));
-            Stream.Write((short)parent.HairItemID);
-            Stream.Write((byte)0);
-            Stream.Write((byte)Layer.Hair);
-            Stream.Write(parent.Serial);
-            Stream.Write((short)hue);
-        }
-    }
-
-    public sealed class FacialHairEquipUpdate : Packet
-    {
-        public FacialHairEquipUpdate(Mobile parent)
-            : base(0x2E, 15)
-        {
-            var hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.FacialHairHue;
-
-            Stream.Write(FacialHairInfo.FakeSerial(parent));
-            Stream.Write((short)parent.FacialHairItemID);
-            Stream.Write((byte)0);
-            Stream.Write((byte)Layer.FacialHair);
-            Stream.Write(parent.Serial);
-            Stream.Write((short)hue);
-        }
-    }
-
-    public sealed class RemoveHair : Packet
-    {
-        public RemoveHair(Mobile parent)
-            : base(0x1D, 5)
-        {
-            Stream.Write(HairInfo.FakeSerial(parent));
-        }
-    }
-
-    public sealed class RemoveFacialHair : Packet
-    {
-        public RemoveFacialHair(Mobile parent)
-            : base(0x1D, 5)
-        {
-            Stream.Write(FacialHairInfo.FakeSerial(parent));
-        }
+        // TODO: Can we make this higher for newer clients?
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint FakeSerial(Serial m) => 0x7FFFFFFF - 0x400 - 1 - m * 4;
     }
 }
