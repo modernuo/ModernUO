@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Server.Mobiles;
 using Server.Network;
 
@@ -143,6 +144,82 @@ namespace Server
         {
             (m as PlayerMobile)?.RemoveBuff(b);
         }
+
+        public void SendAddBuffPacket(NetState ns, Serial m) => SendAddBuffPacket(
+            ns,
+            m,
+            ID,
+            TitleCliloc,
+            SecondaryCliloc,
+            Args,
+            TimeStart != DateTime.MinValue ? TimeStart + TimeLength - DateTime.UtcNow : TimeSpan.Zero
+        );
+
+        public static void SendAddBuffPacket(
+            NetState ns, Serial mob, BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args,
+            TimeSpan ts
+        )
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            var hasArgs = args != null;
+            var length = hasArgs ? args.ToString().Length * 2 + 52 : 46;
+            var writer = new SpanWriter(stackalloc byte[length]);
+            writer.Write((byte)0xDF); // Packet ID
+            writer.Write((ushort)length);
+            writer.Write(mob);
+            writer.Write((short)iconID);
+            writer.Write((short)0x1); // command (0 = remove, 1 = add, 2 = data)
+            writer.Write(0);
+
+            writer.Write((short)iconID);
+            writer.Write((short)0x1); // command (0 = remove, 1 = add, 2 = data)
+            writer.Write(0);
+            writer.Write((short)(ts <= TimeSpan.Zero ? 0 : ts.TotalSeconds));
+            writer.Clear(3);
+            writer.Write(titleCliloc);
+            writer.Write(secondaryCliloc);
+
+            if (hasArgs)
+            {
+                writer.Write(0);
+                writer.Write((short)0x1);
+                writer.Write((ushort)0);
+                writer.WriteLE('\t');
+                writer.WriteLittleUniNull(args);
+                writer.Write((short)0x1);
+                writer.Write((ushort)0);
+            }
+            else
+            {
+                writer.Clear(10);
+            }
+
+            ns.Send(writer.Span);
+        }
+
+        public void SendRemoveBuffPacket(NetState ns, Serial mob) => SendRemoveBuffPacket(ns, mob, ID);
+
+        public static void SendRemoveBuffPacket(NetState ns, Serial mob, BuffIcon iconID)
+        {
+            if (ns == null)
+            {
+                return;
+            }
+
+            var writer = new SpanWriter(stackalloc byte[15]);
+            writer.Write((byte)0xDF); // Packet ID
+            writer.Write((ushort)15);
+            writer.Write(mob);
+            writer.Write((short)iconID);
+            writer.Write((short)0x0); // command (0 = remove, 1 = add, 2 = data)
+            writer.Write(0);
+
+            ns.Send(writer.Span);
+        }
     }
 
     public enum BuffIcon : short
@@ -201,91 +278,5 @@ namespace Server
         SpellTrigger,
         NetherBolt,
         Fly
-    }
-
-    public sealed class AddBuffPacket : Packet
-    {
-        public AddBuffPacket(Mobile m, BuffInfo info)
-            : this(
-                m,
-                info.ID,
-                info.TitleCliloc,
-                info.SecondaryCliloc,
-                info.Args,
-                info.TimeStart != DateTime.MinValue ? info.TimeStart + info.TimeLength - DateTime.UtcNow : TimeSpan.Zero
-            )
-        {
-        }
-
-        public AddBuffPacket(
-            Mobile mob, BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args,
-            TimeSpan length
-        )
-            : base(0xDF)
-        {
-            var hasArgs = args != null;
-
-            EnsureCapacity(hasArgs ? 48 + args.ToString().Length * 2 : 44);
-            Stream.Write(mob.Serial);
-
-            Stream.Write((short)iconID); // ID
-            Stream.Write((short)0x1);    // Type 0 for removal. 1 for add 2 for Data
-
-            Stream.Fill(4);
-
-            Stream.Write((short)iconID); // ID
-            Stream.Write((short)0x01);   // Type 0 for removal. 1 for add 2 for Data
-
-            Stream.Fill(4);
-
-            if (length < TimeSpan.Zero)
-            {
-                length = TimeSpan.Zero;
-            }
-
-            Stream.Write((short)length.TotalSeconds); // Time in seconds
-
-            Stream.Fill(3);
-            Stream.Write(titleCliloc);
-            Stream.Write(secondaryCliloc);
-
-            if (!hasArgs)
-            {
-                // m_Stream.Fill( 2 );
-                Stream.Fill(10);
-            }
-            else
-            {
-                Stream.Fill(4);
-                Stream.Write((short)0x1); // Unknown -> Possibly something saying 'hey, I have more data!'?
-                Stream.Fill(2);
-
-                // m_Stream.WriteLittleUniNull( "\t#1018280" );
-                Stream.WriteLittleUniNull($"\t{args}");
-
-                Stream.Write((short)0x1); // Even more Unknown -> Possibly something saying 'hey, I have more data!'?
-                Stream.Fill(2);
-            }
-        }
-    }
-
-    public sealed class RemoveBuffPacket : Packet
-    {
-        public RemoveBuffPacket(Mobile mob, BuffInfo info)
-            : this(mob, info.ID)
-        {
-        }
-
-        public RemoveBuffPacket(Mobile mob, BuffIcon iconID)
-            : base(0xDF)
-        {
-            EnsureCapacity(13);
-            Stream.Write(mob.Serial);
-
-            Stream.Write((short)iconID); // ID
-            Stream.Write((short)0x0);    // Type 0 for removal. 1 for add 2 for Data
-
-            Stream.Fill(4);
-        }
     }
 }

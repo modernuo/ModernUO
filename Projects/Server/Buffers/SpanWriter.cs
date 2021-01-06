@@ -146,10 +146,26 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteLE(short value)
+        {
+            GrowIfNeeded(2);
+            BinaryPrimitives.WriteInt16LittleEndian(_buffer.Slice(_position), value);
+            Position += 2;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(ushort value)
         {
             GrowIfNeeded(2);
             BinaryPrimitives.WriteUInt16BigEndian(_buffer.Slice(_position), value);
+            Position += 2;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteLE(ushort value)
+        {
+            GrowIfNeeded(2);
+            BinaryPrimitives.WriteUInt16LittleEndian(_buffer.Slice(_position), value);
             Position += 2;
         }
 
