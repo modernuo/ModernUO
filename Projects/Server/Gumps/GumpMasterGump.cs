@@ -15,7 +15,6 @@
 
 using System.Buffers;
 using Server.Collections;
-using Server.Network;
 
 namespace Server.Gumps
 {
@@ -33,7 +32,7 @@ namespace Server.Gumps
         {
             writer.Write((ushort)0x7B20); // "{ "
             writer.Write(LayoutName);
-            writer.Write((byte)0x20); // ' '
+            writer.WriteAscii(' ');
             writer.WriteAscii(GumpID.ToString());
             writer.Write((ushort)0x207D); // " }"
         }

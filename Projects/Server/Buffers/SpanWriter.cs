@@ -225,6 +225,9 @@ namespace System.Buffers
             Position += count;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteAscii(char chr) => Write((byte)chr);
+
         public void WriteString<T>(string value, Encoding encoding, int fixedLength = -1) where T : struct, IEquatable<T>
         {
             int sizeT = Unsafe.SizeOf<T>();
