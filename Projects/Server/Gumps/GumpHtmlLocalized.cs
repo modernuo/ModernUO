@@ -1,6 +1,20 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Email: hi@modernuo.com                                                *
+ * File: GumpHtmlLocalized.cs                                            *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System.Buffers;
 using Server.Collections;
-using Server.Network;
 
 namespace Server.Gumps
 {
@@ -110,41 +124,41 @@ namespace Server.Gumps
                 case GumpHtmlLocalizedType.Plain:
                     {
                         writer.Write(LayoutNamePlain);
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(X.ToString());
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Y.ToString());
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Width.ToString());
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Height.ToString());
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Number.ToString());
-                        writer.Write((byte)0x20); // ' '
-                        writer.Write((byte)(Background ? 0x31 : 0x30)); // 1 or 0
-                        writer.Write((byte)0x20); // ' '
-                        writer.Write((byte)(Scrollbar ? 0x31 : 0x30)); // 1 or 0
+                        writer.WriteAscii(' ');
+                        writer.WriteAscii(Background ? '1' : '0');
+                        writer.WriteAscii(' ');
+                        writer.WriteAscii(Scrollbar ? '1' : '0');
 
                         break;
                     }
                 case GumpHtmlLocalizedType.Color:
                     {
                         writer.Write(LayoutNameColor);
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(X.ToString());
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Y.ToString());
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Width.ToString());
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Height.ToString());
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Number.ToString());
-                        writer.Write((byte)0x20); // ' '
-                        writer.Write((byte)(Background ? 0x31 : 0x30)); // 1 or 0
-                        writer.Write((byte)0x20); // ' '
-                        writer.Write((byte)(Scrollbar ? 0x31 : 0x30)); // 1 or 0
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
+                        writer.WriteAscii(Background ? '1' : '0');
+                        writer.WriteAscii(' ');
+                        writer.WriteAscii(Scrollbar ? '1' : '0');
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Color.ToString());
 
                         break;
@@ -152,26 +166,26 @@ namespace Server.Gumps
                 case GumpHtmlLocalizedType.Args:
                     {
                         writer.Write(LayoutNameArgs);
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(X.ToString());
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Y.ToString());
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Width.ToString());
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Height.ToString());
-                        writer.Write((byte)0x20); // ' '
-                        writer.Write((byte)(Background ? 0x31 : 0x30)); // 1 or 0
-                        writer.Write((byte)0x20); // ' '
-                        writer.Write((byte)(Scrollbar ? 0x31 : 0x30)); // 1 or 0
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
+                        writer.WriteAscii(Background ? '1' : '0');
+                        writer.WriteAscii(' ');
+                        writer.WriteAscii(Scrollbar ? '1' : '0');
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Color.ToString());
-                        writer.Write((byte)0x20); // ' '
+                        writer.WriteAscii(' ');
                         writer.WriteAscii(Number.ToString());
-                        writer.Write((byte)0x20); // ' '
-                        writer.Write((byte)0x40); // '@'
+                        writer.WriteAscii(' ');
+                        writer.WriteAscii('@');
                         writer.WriteAscii(Args ?? "");
-                        writer.Write((byte)0x40); // '@'
+                        writer.WriteAscii('@');
 
                         break;
                     }
