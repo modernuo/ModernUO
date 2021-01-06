@@ -10,7 +10,7 @@ namespace Server
         public const int EquipUpdatePacketLength = 15;
         public const int RemovePacketLength = 5;
 
-        public static void SendVirtualHairEquipUpdatePacket(this NetState ns, Mobile m, Serial hairSerial, Layer layer)
+        public static void SendHairEquipUpdatePacket(this NetState ns, Mobile m, Serial hairSerial, Layer layer)
         {
             if (ns == null)
             {
@@ -18,11 +18,11 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[EquipUpdatePacketLength];
-            CreateVirtualHairEquipUpdatePacket(buffer, m, hairSerial, layer);
+            CreateHairEquipUpdatePacket(buffer, m, hairSerial, layer);
             ns.Send(buffer);
         }
 
-        public static void CreateVirtualHairEquipUpdatePacket(Span<byte> buffer, Mobile m, Serial hairSerial, Layer layer)
+        public static void CreateHairEquipUpdatePacket(Span<byte> buffer, Mobile m, Serial hairSerial, Layer layer)
         {
             var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.HairHue;
 
@@ -37,7 +37,7 @@ namespace Server
             writer.Write((short)hue);
         }
 
-        public static void SendRemoveVirtualHairPacket(this NetState ns, Serial hairSerial)
+        public static void SendRemoveHairPacket(this NetState ns, Serial hairSerial)
         {
             if (ns == null)
             {
@@ -45,11 +45,11 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[RemovePacketLength];
-            CreateVirtualRemoveHairPacket(buffer, hairSerial);
+            CreateRemoveHairPacket(buffer, hairSerial);
             ns.Send(buffer);
         }
 
-        public static void CreateVirtualRemoveHairPacket(Span<byte> buffer, Serial hairSerial)
+        public static void CreateRemoveHairPacket(Span<byte> buffer, Serial hairSerial)
         {
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x1D); // Packet ID

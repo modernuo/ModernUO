@@ -3101,11 +3101,11 @@ namespace Server
                 {
                     if (removeHair)
                     {
-                        ourState.SendRemoveVirtualHairPacket(HairInfo.FakeSerial(Serial));
+                        ourState.SendRemoveHairPacket(HairInfo.FakeSerial(Serial));
                     }
                     else
                     {
-                        ourState.SendVirtualHairEquipUpdatePacket(this, HairInfo.FakeSerial(Serial), Layer.Hair);
+                        ourState.SendHairEquipUpdatePacket(this, HairInfo.FakeSerial(Serial), Layer.Hair);
                     }
                 }
 
@@ -3113,11 +3113,11 @@ namespace Server
                 {
                     if (removeFacialHair)
                     {
-                        ourState.SendRemoveVirtualHairPacket(FacialHairInfo.FakeSerial(Serial));
+                        ourState.SendRemoveHairPacket(FacialHairInfo.FakeSerial(Serial));
                     }
                     else
                     {
-                        ourState.SendVirtualHairEquipUpdatePacket(this, FacialHairInfo.FakeSerial(Serial), Layer.FacialHair);
+                        ourState.SendHairEquipUpdatePacket(this, FacialHairInfo.FakeSerial(Serial), Layer.FacialHair);
                     }
                 }
 
@@ -3281,11 +3281,11 @@ namespace Server
                         var hairSerial = HairInfo.FakeSerial(Serial);
                         if (removeHair)
                         {
-                            OutgoingVirtualHairPackets.CreateVirtualRemoveHairPacket(hairPacket, hairSerial);
+                            OutgoingVirtualHairPackets.CreateRemoveHairPacket(hairPacket, hairSerial);
                         }
                         else
                         {
-                            OutgoingVirtualHairPackets.CreateVirtualHairEquipUpdatePacket(
+                            OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
                                 hairPacket,
                                 this,
                                 hairSerial,
@@ -3304,11 +3304,11 @@ namespace Server
                         var hairSerial = HairInfo.FakeSerial(Serial);
                         if (removeFacialHair)
                         {
-                            OutgoingVirtualHairPackets.CreateVirtualRemoveHairPacket(facialhairPacket, hairSerial);
+                            OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialhairPacket, hairSerial);
                         }
                         else
                         {
-                            OutgoingVirtualHairPackets.CreateVirtualHairEquipUpdatePacket(
+                            OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
                                 facialhairPacket,
                                 this,
                                 hairSerial,
