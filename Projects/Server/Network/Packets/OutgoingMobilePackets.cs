@@ -614,7 +614,7 @@ namespace Server.Network
                     itemID |= 0x8000;
                 }
 
-                writer.Write(HairInfo.FakeSerial(beheld));
+                writer.Write(HairInfo.FakeSerial(beheld.Serial));
                 writer.Write((ushort)itemID);
                 writer.Write((byte)Layer.Hair);
 
@@ -637,7 +637,7 @@ namespace Server.Network
                     itemID |= 0x8000;
                 }
 
-                writer.Write(FacialHairInfo.FakeSerial(beheld));
+                writer.Write(FacialHairInfo.FakeSerial(beheld.Serial));
                 writer.Write((ushort)itemID);
                 writer.Write((byte)Layer.FacialHair);
 
