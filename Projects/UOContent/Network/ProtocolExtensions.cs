@@ -76,7 +76,7 @@ namespace Server.Network
                 return;
             }
 
-            var count = guild?.Members.Count ?? 0;
+            var count = guild?.Members.Count ?? 1;
             var maxLength = 9 + (count - 1) * (sendLocations ? 10 : 4);
             var writer = new SpanWriter(stackalloc byte[maxLength]);
             writer.Write((byte)0xF0); // Packet ID
@@ -136,7 +136,7 @@ namespace Server.Network
                 return;
             }
 
-            var count = party?.Members.Count ?? 0;
+            var count = party?.Members.Count ?? 1;
             var maxLength = 9 + (count - 1) * 9;
             var writer = new SpanWriter(stackalloc byte[maxLength]);
             writer.Write((byte)0xF0); // Packet ID
