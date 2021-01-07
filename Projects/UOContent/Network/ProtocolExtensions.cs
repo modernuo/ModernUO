@@ -10,7 +10,7 @@ namespace Server.Network
     {
         private static readonly PacketHandler[] _handlers = new PacketHandler[0x100];
 
-        public static void Initialize()
+        public static void Configure()
         {
             IncomingPackets.Register( 0xF0, 0, false, DecodeBundledPacket);
             Register(0x00, true, QueryPartyMemberLocations);
