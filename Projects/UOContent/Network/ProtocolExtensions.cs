@@ -76,8 +76,8 @@ namespace Server.Network
                 return;
             }
 
-            var count = guild?.Members.Count ?? 1;
-            var maxLength = 9 + (count - 1) * (sendLocations ? 10 : 4);
+            var count = guild?.Members.Count ?? 0;
+            var maxLength = 9 + (count > 1 ? (count - 1) * (sendLocations ? 10 : 4) : 0);
             var writer = new SpanWriter(stackalloc byte[maxLength]);
             writer.Write((byte)0xF0); // Packet ID
             writer.Seek(2, SeekOrigin.Current);
@@ -136,8 +136,8 @@ namespace Server.Network
                 return;
             }
 
-            var count = party?.Members.Count ?? 1;
-            var maxLength = 9 + (count - 1) * 9;
+            var count = party?.Members.Count ?? 0;
+            var maxLength = 9 + (count > 1 ? (count - 1) * 9 : 0);
             var writer = new SpanWriter(stackalloc byte[maxLength]);
             writer.Write((byte)0xF0); // Packet ID
             writer.Seek(2, SeekOrigin.Current);
