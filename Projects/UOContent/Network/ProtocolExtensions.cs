@@ -147,13 +147,12 @@ namespace Server.Network
             for (var i = 0; i < count; i++)
             {
                 var pmi = party!.Members[i];
+                Mobile mob = pmi?.Mobile;
 
-                if (pmi == null || pmi.Mobile == from)
+                if (mob?.NetState == null || mob == from)
                 {
                     continue;
                 }
-
-                Mobile mob = pmi.Mobile;
 
                 if (Utility.InUpdateRange(from, mob) && from.CanSee(mob))
                 {
