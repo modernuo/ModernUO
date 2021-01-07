@@ -38,7 +38,7 @@ namespace Server.Network
 
             if (ph.Ingame && state.Mobile == null)
             {
-                Console.WriteLine("Client: {0}: Sent ingame packet (0xF0x{1:X2}) before having been attached to a mobile", state, packetID);
+                state.WriteConsole("Sent in-game packet (0xBFx{0:X2}) before having been attached to a mobile", packetID);
                 state.Dispose();
             }
             else if (ph.Ingame && state.Mobile.Deleted)
