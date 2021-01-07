@@ -13,7 +13,7 @@ If for some reason you do not, please follow up via email to ensure we received 
 ## Other discussions
 Our team members also monitor several other discussion forums:
 
-* [ClassicUO Discord](https://discord.gg/VdyCpjQ)
+* [ModernUO Discord](https://discord.gg/NUhe7Pq9gF)
 * [Twitter](https://www.twitter.com/modernuo)
 * [Reddit](https://www.reddit.com/r/modernuo)
 
