@@ -84,6 +84,7 @@ namespace Server.Network
             writer.Write((byte)0x02); // Command
             writer.Write(count > 0 && sendLocations);
 
+            bool sendPacket = false;
             for (var i = 0; i < count; i++)
             {
                 var m = guild!.Members[i];
@@ -98,6 +99,7 @@ namespace Server.Network
                     continue;
                 }
 
+                sendPacket = true;
                 writer.Write(m.Serial);
 
                 if (sendLocations)
@@ -117,8 +119,12 @@ namespace Server.Network
                 }
             }
 
-            writer.Write(0);
+            if (!sendPacket)
+            {
+                return;
+            }
 
+            writer.Write(0);
             writer.WritePacketLength();
             ns.Send(writer.Span);
         }
@@ -137,6 +143,7 @@ namespace Server.Network
             writer.Seek(2, SeekOrigin.Current);
             writer.Write((byte)0x01); // Command
 
+            bool sendPacket = false;
             for (var i = 0; i < count; i++)
             {
                 var pmi = party!.Members[i];
@@ -153,12 +160,19 @@ namespace Server.Network
                     continue;
                 }
 
+                sendPacket = true;
                 writer.Write(mob.Serial);
                 writer.Write((short)mob.X);
                 writer.Write((short)mob.Y);
                 writer.Write((byte)(mob.Map?.MapID ?? 0));
             }
 
+            if (!sendPacket)
+            {
+                return;
+            }
+
+            writer.Write(0);
             writer.WritePacketLength();
             ns.Send(writer.Span);
         }
