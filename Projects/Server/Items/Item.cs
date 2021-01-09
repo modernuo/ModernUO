@@ -3097,6 +3097,11 @@ namespace Server
         public virtual void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> opl = default)
         {
             SendWorldPacketTo(ns, world);
+            SendOPLPacketTo(ns, opl);
+        }
+
+        public void SendOPLPacketTo(NetState ns, Span<byte> opl = default)
+        {
             if (!ObjectPropertyList.Enabled)
             {
                 return;
@@ -3114,14 +3119,6 @@ namespace Server
             }
 
             ns.Send(opl);
-        }
-
-        public void SendOPLPacketTo(NetState ns)
-        {
-            if (ObjectPropertyList.Enabled)
-            {
-                ns.SendOPLInfo(this);
-            }
         }
 
         public virtual void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world = default)
