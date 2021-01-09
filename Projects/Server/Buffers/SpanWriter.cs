@@ -365,7 +365,7 @@ namespace System.Buffers
                 Grow(newPosition - _buffer.Length + 1);
             }
 
-            return _position = newPosition;
+            return Position = newPosition;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1152,7 +1152,7 @@ namespace Server
                     Span<byte> opl = ObjectPropertyList.Enabled ? stackalloc byte[OutgoingEntityPackets.OPLPacketLength] : null;
                     if (opl != null)
                     {
-                        OutgoingEntityPackets.CreateOPLInfo(opl, this);
+                        opl.InitializePacket();
                     }
 
                     var eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
@@ -1163,6 +1163,11 @@ namespace Server
 
                         if (m.CanSee(this) && m.InRange(m_Location, GetUpdateRange(m)))
                         {
+                            if (opl[0] == 0)
+                            {
+                                OutgoingEntityPackets.CreateOPLInfo(opl, this);
+                            }
+
                             if (state.HighSeas)
                             {
                                 if (hsWorldItem[0] == 0)
