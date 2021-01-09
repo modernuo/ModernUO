@@ -3094,43 +3094,43 @@ namespace Server
 
         public virtual int GetUpdateRange(Mobile m) => 18;
 
-        public virtual void SendInfoTo(NetState ns, ReadOnlySpan<byte> world, Span<byte> opl)
+        public virtual void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> opl = default)
         {
-            if (opl != null && opl[0] == 0)
-            {
-                OutgoingEntityPackets.CreateOPLInfo(opl, this);
-            }
-
             SendWorldPacketTo(ns, world);
             SendOPLPacketTo(ns, opl);
         }
 
-        public void SendInfoTo(NetState ns) => SendInfoTo(ns, ObjectPropertyList.Enabled);
-
-        public virtual void SendInfoTo(NetState ns, bool sendOplPacket)
+        public void SendOPLPacketTo(NetState ns, Span<byte> opl = default)
         {
-            SendWorldPacketTo(ns);
-            SendOPLPacketTo(ns, sendOplPacket);
-        }
+            if (!ObjectPropertyList.Enabled)
+            {
+                return;
+            }
 
-        public void SendOPLPacketTo(NetState ns) => SendOPLPacketTo(ns, ObjectPropertyList.Enabled);
-
-        public virtual void SendOPLPacketTo(NetState ns, bool sendOplPacket)
-        {
-            if (sendOplPacket)
+            if (opl == null)
             {
                 ns.SendOPLInfo(this);
+                return;
             }
+
+            if (opl[0] == 0)
+            {
+                OutgoingEntityPackets.CreateOPLInfo(opl, this);
+            }
+
+            ns.Send(opl);
         }
 
-        public virtual void SendOPLPacketTo(NetState ns, ReadOnlySpan<byte> opl)
+        public virtual void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world = default)
         {
-            ns?.Send(opl);
+            if (world != null)
+            {
+                ns?.Send(world);
+                return;
+            }
+
+            ns.SendWorldItem(this);
         }
-
-        protected virtual void SendWorldPacketTo(NetState ns) => ns.SendWorldItem(this);
-
-        public virtual void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world) => ns?.Send(world);
 
         public virtual int GetTotal(TotalType type) => 0;
 

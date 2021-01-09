@@ -815,16 +815,6 @@ namespace Server.Items
             ns.Send(new CorpseEquip(ns.Mobile, this));
         }
 
-        public override void SendInfoTo(NetState ns, bool sendOplPacket)
-        {
-            base.SendInfoTo(ns, sendOplPacket);
-
-            if (((Body)Amount).IsHuman && ItemID == 0x2006)
-            {
-                SendCorpseContent(ns);
-            }
-        }
-
         public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world, Span<byte> opl)
         {
             base.SendInfoTo(ns, world, opl);

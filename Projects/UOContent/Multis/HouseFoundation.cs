@@ -880,19 +880,11 @@ namespace Server.Multis
             DesignState.SendDetailedInfoTo(ns);
         }
 
-        public override void SendInfoTo(NetState ns, bool sendOplPacket)
-        {
-            base.SendInfoTo(ns, sendOplPacket);
-
-            var stateToSend = DesignContext.Find(ns.Mobile)?.Foundation == this ? DesignState : CurrentState;
-            stateToSend.SendGeneralInfoTo(ns);
-        }
-
-        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world, Span<byte> opl)
+        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> opl = default)
         {
             base.SendInfoTo(ns, world, opl);
 
-            var stateToSend = DesignContext.Find(ns.Mobile)?.Foundation == this ? DesignState : CurrentState;
+            var stateToSend = DesignContext.Find(ns?.Mobile)?.Foundation == this ? DesignState : CurrentState;
             stateToSend.SendGeneralInfoTo(ns);
         }
 

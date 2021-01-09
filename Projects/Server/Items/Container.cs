@@ -703,7 +703,7 @@ namespace Server.Items
                 {
                     for (var i = 0; i < Items.Count; ++i)
                     {
-                        Items[i].SendOPLPacketTo(to.NetState, true);
+                        ns.SendOPLInfo(Items[i]);
                     }
                 }
             }
