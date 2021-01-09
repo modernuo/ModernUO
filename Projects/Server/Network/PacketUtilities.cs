@@ -43,7 +43,7 @@ namespace Server.Network
         // If LOCAL INIT is off, then stack/heap allocations have garbage data
         // Initializes the first byte (Packet ID) so it can be used as a flag.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InitializePacket(this Span<byte> buffer)
+        public static Span<byte> InitializePacket(this Span<byte> buffer)
         {
 #if NO_LOCAL_INIT
             if (buffer != null)
@@ -51,10 +51,11 @@ namespace Server.Network
                 buffer[0] = 0;
             }
 #endif
+            return buffer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InitializePackets(this Span2D<byte> buffer)
+        public static Span2D<byte> InitializePackets(this Span2D<byte> buffer)
         {
 #if NO_LOCAL_INIT
             for (var i = 0; i < buffer.Height; i++)
@@ -62,6 +63,7 @@ namespace Server.Network
                 buffer.GetRowSpan(i)[0] = 0;
             }
 #endif
+            return buffer;
         }
     }
 }

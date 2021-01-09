@@ -32,8 +32,7 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[SoundPacketLength];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[SoundPacketLength].InitializePacket();
             CreateSoundEffect(buffer, soundID, target);
 
             ns.Send(buffer);

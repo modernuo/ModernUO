@@ -69,8 +69,7 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[RemoveEntityLength];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[RemoveEntityLength].InitializePacket();
             CreateRemoveEntity(buffer, serial);
 
             ns.Send(buffer);

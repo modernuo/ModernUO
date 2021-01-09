@@ -416,8 +416,7 @@ namespace Server.Commands
                 toAll
             );
 
-            Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
 
             foreach (var state in m.GetClientsInRange(12))
             {

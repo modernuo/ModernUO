@@ -121,8 +121,7 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[MobileMovingPacketLength];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[MobileMovingPacketLength].InitializePacket();
             CreateMobileMoving(buffer, target, noto, ns.StygianAbyss);
             ns.Send(buffer);
         }

@@ -96,8 +96,7 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedAffixLength(affix, args)];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
             var length = CreateMessageLocalizedAffix(
                 buffer, serial, graphic, type, hue, font, number, name, affixType, affix, args
             );
@@ -157,8 +156,7 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[GetMaxMessageLength(text)];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[GetMaxMessageLength(text)].InitializePacket();
             var length = CreateMessage(
                 buffer,
                 serial,

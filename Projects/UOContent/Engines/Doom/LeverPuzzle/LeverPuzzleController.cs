@@ -503,8 +503,7 @@ namespace Server.Engines.Doom
         /* I cant find any better way to send "speech" using fonts other than default */
         public static void POHMessage(Mobile from, int index)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(Msgs[index])];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(Msgs[index])].InitializePacket();
 
             var eable = from.Map.GetClientsInRange(from.Location);
 

@@ -370,8 +370,7 @@ namespace Server.Engines.PartySystem
 
         public void SendToAll(int number, string args = "", int hue = 0x3B2)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
 
             var length = OutgoingMessagePackets.CreateMessageLocalized(
                 buffer,
@@ -417,8 +416,7 @@ namespace Server.Engines.PartySystem
 
         private void SendToStaffMessage(Mobile from, string text)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
             foreach (var ns in from.GetClientsInRange(8))
             {
@@ -506,8 +504,7 @@ namespace Server.Engines.PartySystem
                 m_Mobile.SendLocalizedMessage(1005437); // You have rejoined the party.
                 m_Mobile.Send(new PartyMemberList(p));
 
-                Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")];
-                buffer.InitializePacket();
+                Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")].InitializePacket();
 
                 Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength];
                 OutgoingMobilePackets.CreateMobileAttributes(attrsPacket, m_Mobile, true);

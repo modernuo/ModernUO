@@ -252,8 +252,7 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[DragEffectPacketLength];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[DragEffectPacketLength].InitializePacket();
             CreateDragEffect(buffer, srcSerial, srcLocation, trgSerial, trgLocation, itemID, hue, amount);
             ns.Send(buffer);
         }

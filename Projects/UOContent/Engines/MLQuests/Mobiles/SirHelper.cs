@@ -95,8 +95,7 @@ namespace Server.Engines.MLQuests.Mobiles
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength("")];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength("")].InitializePacket();
 
             foreach (var state in GetClientsInRange(12))
             {

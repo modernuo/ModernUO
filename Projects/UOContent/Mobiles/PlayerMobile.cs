@@ -2818,8 +2818,7 @@ namespace Server.Mobiles
 
         private static void SendToStaffMessage(Mobile from, string text)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
             foreach (var ns in from.GetClientsInRange(8))
             {

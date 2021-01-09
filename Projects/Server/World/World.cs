@@ -152,8 +152,7 @@ namespace Server
         {
             var length = OutgoingMessagePackets.GetMaxMessageLength(text);
 
-            Span<byte> buffer = stackalloc byte[length];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[length].InitializePacket();
 
             foreach (var ns in TcpServer.Instances)
             {
