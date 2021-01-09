@@ -888,7 +888,7 @@ namespace Server.Multis
             stateToSend.SendGeneralInfoTo(ns);
         }
 
-        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world, ReadOnlySpan<byte> opl = default)
+        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world, Span<byte> opl)
         {
             base.SendInfoTo(ns, world, opl);
 

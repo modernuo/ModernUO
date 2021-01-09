@@ -1163,11 +1163,6 @@ namespace Server
 
                         if (m.CanSee(this) && m.InRange(m_Location, GetUpdateRange(m)))
                         {
-                            if (opl[0] == 0)
-                            {
-                                OutgoingEntityPackets.CreateOPLInfo(opl, this);
-                            }
-
                             if (state.HighSeas)
                             {
                                 if (hsWorldItem[0] == 0)
@@ -3099,8 +3094,13 @@ namespace Server
 
         public virtual int GetUpdateRange(Mobile m) => 18;
 
-        public virtual void SendInfoTo(NetState ns, ReadOnlySpan<byte> world, ReadOnlySpan<byte> opl = default)
+        public virtual void SendInfoTo(NetState ns, ReadOnlySpan<byte> world, Span<byte> opl)
         {
+            if (opl != null && opl[0] == 0)
+            {
+                OutgoingEntityPackets.CreateOPLInfo(opl, this);
+            }
+
             SendWorldPacketTo(ns, world);
             SendOPLPacketTo(ns, opl);
         }
