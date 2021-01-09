@@ -117,19 +117,19 @@ namespace Server
                 AddHash(arguments.GetHashCode(StringComparison.Ordinal));
             }
 
-            int strLength = Utility.Unicode.GetByteCount(arguments);
-
+            int strLength = arguments.Length * 2;
             int length = _position + 6 + strLength;
             while (length > _buffer.Length)
             {
                 Flush();
             }
 
-            var writer = new SpanWriter(_buffer);
-            writer.Seek(_position, SeekOrigin.Begin);
+            var writer = new SpanWriter(_buffer.AsSpan(_position));
             writer.Write(number);
             writer.Write((ushort)strLength);
-            writer.WriteBigUni(arguments);
+            writer.WriteLittleUni(arguments);
+
+            _position += writer.BytesWritten;
         }
 
         public void Add(int number, string format, object arg0)
