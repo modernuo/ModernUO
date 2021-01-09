@@ -3094,43 +3094,40 @@ namespace Server
 
         public virtual int GetUpdateRange(Mobile m) => 18;
 
-        public virtual void SendInfoTo(NetState ns, ReadOnlySpan<byte> world, Span<byte> opl)
+        public virtual void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> opl = default)
         {
-            if (opl != null && opl[0] == 0)
+            SendWorldPacketTo(ns, world);
+            if (!ObjectPropertyList.Enabled)
+            {
+                return;
+            }
+
+            if (opl[0] == 0)
             {
                 OutgoingEntityPackets.CreateOPLInfo(opl, this);
             }
 
-            SendWorldPacketTo(ns, world);
-            SendOPLPacketTo(ns, opl);
+            ns.Send(opl);
         }
 
-        public void SendInfoTo(NetState ns) => SendInfoTo(ns, ObjectPropertyList.Enabled);
-
-        public virtual void SendInfoTo(NetState ns, bool sendOplPacket)
+        public void SendOPLPacketTo(NetState ns)
         {
-            SendWorldPacketTo(ns);
-            SendOPLPacketTo(ns, sendOplPacket);
-        }
-
-        public void SendOPLPacketTo(NetState ns) => SendOPLPacketTo(ns, ObjectPropertyList.Enabled);
-
-        public virtual void SendOPLPacketTo(NetState ns, bool sendOplPacket)
-        {
-            if (sendOplPacket)
+            if (ObjectPropertyList.Enabled)
             {
                 ns.SendOPLInfo(this);
             }
         }
 
-        public virtual void SendOPLPacketTo(NetState ns, ReadOnlySpan<byte> opl)
+        public virtual void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world = default)
         {
-            ns?.Send(opl);
+            if (world != null)
+            {
+                ns?.Send(world);
+                return;
+            }
+
+            ns.SendWorldItem(this);
         }
-
-        protected virtual void SendWorldPacketTo(NetState ns) => ns.SendWorldItem(this);
-
-        public virtual void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world) => ns?.Send(world);
 
         public virtual int GetTotal(TotalType type) => 0;
 

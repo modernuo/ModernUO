@@ -17,24 +17,12 @@ namespace Server.Items
 
         public override int LabelNumber => 503057; // Impassable!
 
-        public override void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world)
+        public override void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world = default)
         {
             var mob = ns.Mobile;
             if (AccessLevel.GameMaster >= mob?.AccessLevel)
             {
                 base.SendWorldPacketTo(ns, world);
-                return;
-            }
-
-            SendGMItem(ns);
-        }
-
-        protected override void SendWorldPacketTo(NetState ns)
-        {
-            var mob = ns.Mobile;
-            if (AccessLevel.GameMaster >= mob?.AccessLevel)
-            {
-                base.SendWorldPacketTo(ns);
                 return;
             }
 
