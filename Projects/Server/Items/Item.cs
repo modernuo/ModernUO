@@ -3102,6 +3102,12 @@ namespace Server
                 return;
             }
 
+            if (opl == null)
+            {
+                ns.SendOPLInfo(this);
+                return;
+            }
+
             if (opl[0] == 0)
             {
                 OutgoingEntityPackets.CreateOPLInfo(opl, this);
