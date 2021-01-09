@@ -416,18 +416,13 @@ namespace Server.Commands
                 toAll
             );
 
-            Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
 
             foreach (var state in m.GetClientsInRange(12))
             {
                 if (toAll || state.Mobile.CanSee(m))
                 {
-                    if (buffer[0] == 0)
-                    {
-                        OutgoingEffectPackets.CreateSoundEffect(buffer, index, m);
-                    }
-
+                    OutgoingEffectPackets.CreateSoundEffect(buffer, index, m);
                     state.Send(buffer);
                 }
             }

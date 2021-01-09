@@ -52,6 +52,11 @@ namespace Server.Network
 
         public static void CreateRemoveEntity(Span<byte> buffer, Serial serial)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x1D); // Packet ID
             writer.Write(serial);
@@ -64,7 +69,7 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[RemoveEntityLength];
+            Span<byte> buffer = stackalloc byte[RemoveEntityLength].InitializePacket();
             CreateRemoveEntity(buffer, serial);
 
             ns.Send(buffer);

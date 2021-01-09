@@ -370,7 +370,8 @@ namespace Server.Engines.PartySystem
 
         public void SendToAll(int number, string args = "", int hue = 0x3B2)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)];
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
+
             var length = OutgoingMessagePackets.CreateMessageLocalized(
                 buffer,
                 Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args
@@ -415,8 +416,7 @@ namespace Server.Engines.PartySystem
 
         private void SendToStaffMessage(Mobile from, string text)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)];
-            buffer.InitializePacket();
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
             foreach (var ns in from.GetClientsInRange(8))
             {
@@ -425,21 +425,21 @@ namespace Server.Engines.PartySystem
                 if (mob?.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel &&
                     mob.Party != this && !m_Listeners.Contains(mob))
                 {
-                    if (buffer[0] == 0)
-                    {
-                        var length = OutgoingMessagePackets.CreateMessage(
-                            buffer,
-                            from.Serial,
-                            from.Body,
-                            MessageType.Regular,
-                            from.SpeechHue,
-                            3,
-                            false,
-                            from.Language,
-                            from.Name,
-                            text
-                        );
+                    var length = OutgoingMessagePackets.CreateMessage(
+                        buffer,
+                        from.Serial,
+                        from.Body,
+                        MessageType.Regular,
+                        from.SpeechHue,
+                        3,
+                        false,
+                        from.Language,
+                        from.Name,
+                        text
+                    );
 
+                    if (length != buffer.Length)
+                    {
                         buffer = buffer.Slice(0, length); // Adjust to the actual size
                     }
 
@@ -504,8 +504,7 @@ namespace Server.Engines.PartySystem
                 m_Mobile.SendLocalizedMessage(1005437); // You have rejoined the party.
                 m_Mobile.Send(new PartyMemberList(p));
 
-                Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")];
-                buffer.InitializePacket();
+                Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")].InitializePacket();
 
                 Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength];
                 OutgoingMobilePackets.CreateMobileAttributes(attrsPacket, m_Mobile, true);
@@ -516,32 +515,34 @@ namespace Server.Engines.PartySystem
                 {
                     var m = mi.Mobile;
 
-                    if (m != m_Mobile)
+                    if (m == m_Mobile)
                     {
-                        if (buffer[0] == 0)
-                        {
-                            var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
-                                buffer,
-                                Serial.MinusOne,
-                                -1,
-                                MessageType.Label,
-                                0x3B2,
-                                3,
-                                1008087,
-                                "",
-                                AffixType.Prepend | AffixType.System,
-                                m_Mobile.Name
-                            );
-
-                            buffer = buffer.Slice(0, length); // Adjust to the actual size
-                        }
-
-                        m.NetState?.Send(buffer);
-                        m.NetState.SendMobileStatusCompact(m_Mobile, m_Mobile.CanBeRenamedBy(m));
-                        m.NetState?.Send(attrsPacket);
-                        ns.SendMobileStatusCompact(m, m.CanBeRenamedBy(m_Mobile));
-                        ns.SendMobileAttributes(m, true);
+                        continue;
                     }
+
+                    var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
+                        buffer,
+                        Serial.MinusOne,
+                        -1,
+                        MessageType.Label,
+                        0x3B2,
+                        3,
+                        1008087,
+                        "",
+                        AffixType.Prepend | AffixType.System,
+                        m_Mobile.Name
+                    );
+
+                    if (length != buffer.Length)
+                    {
+                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                    }
+
+                    m.NetState?.Send(buffer);
+                    m.NetState.SendMobileStatusCompact(m_Mobile, m_Mobile.CanBeRenamedBy(m));
+                    m.NetState?.Send(attrsPacket);
+                    ns.SendMobileStatusCompact(m, m.CanBeRenamedBy(m_Mobile));
+                    ns.SendMobileAttributes(m, true);
                 }
             }
         }

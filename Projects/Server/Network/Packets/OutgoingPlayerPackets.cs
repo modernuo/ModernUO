@@ -219,6 +219,11 @@ namespace Server.Network
             int itemID, int hue, int amount
         )
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x23); // Packet ID
             writer.Write((short)itemID);
@@ -247,9 +252,9 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> span = stackalloc byte[DragEffectPacketLength];
-            CreateDragEffect(span, srcSerial, srcLocation, trgSerial, trgLocation, itemID, hue, amount);
-            ns.Send(span);
+            Span<byte> buffer = stackalloc byte[DragEffectPacketLength].InitializePacket();
+            CreateDragEffect(buffer, srcSerial, srcLocation, trgSerial, trgLocation, itemID, hue, amount);
+            ns.Send(buffer);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

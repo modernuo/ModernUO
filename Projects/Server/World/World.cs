@@ -152,19 +152,25 @@ namespace Server
         {
             var length = OutgoingMessagePackets.GetMaxMessageLength(text);
 
-            Span<byte> buffer = stackalloc byte[length];
-            length = OutgoingMessagePackets.CreateMessage(
-                buffer, Serial.MinusOne, -1, MessageType.Regular, hue, 3, ascii, "ENU", "System", text
-            );
-
-            buffer = buffer.Slice(0, length); // Adjust to the actual size
+            Span<byte> buffer = stackalloc byte[length].InitializePacket();
 
             foreach (var ns in TcpServer.Instances)
             {
-                if (ns.Mobile != null)
+                if (ns.Mobile == null)
                 {
-                    ns.Send(buffer);
+                    continue;
                 }
+
+                length = OutgoingMessagePackets.CreateMessage(
+                    buffer, Serial.MinusOne, -1, MessageType.Regular, hue, 3, ascii, "ENU", "System", text
+                );
+
+                if (length != buffer.Length)
+                {
+                    buffer = buffer.Slice(0, length); // Adjust to the actual size
+                }
+
+                ns.Send(buffer);
             }
         }
 
