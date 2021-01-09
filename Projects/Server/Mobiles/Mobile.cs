@@ -3025,7 +3025,7 @@ namespace Server
             var width = OutgoingMobilePackets.MobileMovingPacketLength;
             var height = OutgoingMobilePackets.MobileMovingPacketCacheHeight;
 
-            var mobileMovingCache = stackalloc byte[cacheLength].AsSpan2D(height, width).InitializePacket();
+            var mobileMovingCache = stackalloc byte[cacheLength].AsSpan2D(height, width).InitializePackets();
 
             var ourState = m_NetState;
 
