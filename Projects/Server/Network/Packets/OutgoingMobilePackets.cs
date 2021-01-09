@@ -17,6 +17,7 @@ using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
+using Microsoft.Toolkit.HighPerformance.Memory;
 
 namespace Server.Network
 {
@@ -25,7 +26,8 @@ namespace Server.Network
         public const int BondedStatusPacketLength = 11;
         public const int DeathAnimationPacketLength = 13;
         public const int MobileMovingPacketLength = 17;
-        public const int MobileMovingPacketCacheLength = MobileMovingPacketLength * 8 * 2; // 8 notoriety, 2 client versions
+        public const int MobileMovingPacketCacheHeight = 16; // 8 notoriety, 2 client versions
+        public const int MobileMovingPacketCacheByteLength = MobileMovingPacketLength * MobileMovingPacketCacheHeight;
         public const int AttributeMaximum = 100;
         public const int MobileAttributePacketLength = 9;
         public const int MobileAttributesPacketLength = 17;
@@ -126,12 +128,12 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile source, Mobile target) =>
+        public static void SendMobileMovingUsingCache(this NetState ns, Span2D<byte> cache, Mobile source, Mobile target) =>
             ns.SendMobileMovingUsingCache(cache, target, Notoriety.Compute(source, target));
 
         // Requires a buffer of 16 packets, 17bytes per packet (272 bytes).
         // Requires cache to have the first byte of each packet zeroed.
-        public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile target, int noto)
+        public static void SendMobileMovingUsingCache(this NetState ns, Span2D<byte> cache, Mobile target, int noto)
         {
             if (ns == null)
             {
@@ -139,8 +141,8 @@ namespace Server.Network
             }
 
             var stygianAbyss = ns.StygianAbyss;
-            var startIndex = (noto * 2 + (stygianAbyss ? 1 : 0)) * MobileMovingPacketLength;
-            var buffer = cache.Slice(startIndex, MobileMovingPacketLength);
+            var row = noto * 2 + (stygianAbyss ? 1 : 0);
+            var buffer = cache.GetRowSpan(row);
             CreateMobileMoving(buffer, target, noto, stygianAbyss);
 
             ns.Send(buffer);

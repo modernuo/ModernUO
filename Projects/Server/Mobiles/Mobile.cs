@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using Microsoft.Toolkit.HighPerformance.Extensions;
+using Microsoft.Toolkit.HighPerformance.Memory;
 using Server.Accounting;
 using Server.Buffers;
 using Server.ContextMenus;
@@ -3019,8 +3021,12 @@ namespace Server
                 sendFacialHair = true;
             }
 
-            Span<byte> mobileMovingPackets = stackalloc byte[OutgoingMobilePackets.MobileMovingPacketCacheLength];
-            mobileMovingPackets.InitializePackets(OutgoingMobilePackets.MobileMovingPacketLength);
+            const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
+            var width = OutgoingMobilePackets.MobileMovingPacketLength;
+            var height = OutgoingMobilePackets.MobileMovingPacketCacheHeight;
+
+            var mobileMovingCache = stackalloc byte[cacheLength].AsSpan2D(height, width);
+            mobileMovingCache.InitializePackets();
 
             var ourState = m_NetState;
 
@@ -3039,7 +3045,7 @@ namespace Server
 
                 if (sendMoving || !ourState.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
                 {
-                    ourState.SendMobileMovingUsingCache(mobileMovingPackets, this, this);
+                    ourState.SendMobileMovingUsingCache(mobileMovingCache, this, this);
                 }
 
                 if (ourState.StygianAbyss)
@@ -3213,7 +3219,7 @@ namespace Server
 
                 if (sendMoving || !state.StygianAbyss && (sendHealthbarPoison || sendHealthbarYellow))
                 {
-                    state.SendMobileMovingUsingCache(mobileMovingPackets, beholder, this);
+                    state.SendMobileMovingUsingCache(mobileMovingCache, beholder, this);
                 }
 
                 if (state.StygianAbyss)
@@ -4570,8 +4576,12 @@ namespace Server
 
                 eable.Free();
 
-                Span<byte> mobileMovingPackets = stackalloc byte[OutgoingMobilePackets.MobileMovingPacketCacheLength];
-                mobileMovingPackets.InitializePackets(OutgoingMobilePackets.MobileMovingPacketLength);
+                const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
+                var width = OutgoingMobilePackets.MobileMovingPacketLength;
+                var height = OutgoingMobilePackets.MobileMovingPacketCacheHeight;
+
+                var mobileMovingCache = stackalloc byte[cacheLength].AsSpan2D(height, width);
+                mobileMovingCache.InitializePackets();
 
                 foreach (var m in m_MoveClientList)
                 {
@@ -4579,7 +4589,7 @@ namespace Server
 
                     if (ns != null && Utility.InUpdateRange(m_Location, m.m_Location) && m.CanSee(this))
                     {
-                        ns.SendMobileMovingUsingCache(mobileMovingPackets, m, this);
+                        ns.SendMobileMovingUsingCache(mobileMovingCache, m, this);
                     }
                 }
 
