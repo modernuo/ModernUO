@@ -139,8 +139,7 @@ namespace Server
             Point3D p, Map map, int itemID, int duration, int speed = 10, int hue = 0, int renderMode = 0
         )
         {
-            Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
-            effect.InitializePacket();
+            Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket();
             OutgoingEffectPackets.CreateLocationHuedEffect(
                 effect,
                 p, itemID, speed, duration, hue, renderMode
@@ -205,8 +204,7 @@ namespace Server
         {
             (target as Mobile)?.ProcessDelta();
 
-            Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
-            effect.InitializePacket();
+            Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket();
             OutgoingEffectPackets.CreateTargetHuedEffect(
                 effect,
                 target, itemID, speed, duration, hue, renderMode

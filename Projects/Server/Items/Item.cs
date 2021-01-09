@@ -1199,8 +1199,7 @@ namespace Server
                 {
                     eable = m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange());
 
-                    Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-                    removeEntity.InitializePacket();
+                    Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
                     foreach (var state in eable)
                     {
