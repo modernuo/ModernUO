@@ -2827,21 +2827,21 @@ namespace Server.Mobiles
 
                 if (mob?.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel)
                 {
-                    if (buffer[0] == 0)
-                    {
-                        var length = OutgoingMessagePackets.CreateMessage(
-                            buffer,
-                            from.Serial,
-                            from.Body,
-                            MessageType.Regular,
-                            from.SpeechHue,
-                            3,
-                            false,
-                            from.Language,
-                            from.Name,
-                            text
-                        );
+                    var length = OutgoingMessagePackets.CreateMessage(
+                        buffer,
+                        from.Serial,
+                        from.Body,
+                        MessageType.Regular,
+                        from.SpeechHue,
+                        3,
+                        false,
+                        from.Language,
+                        from.Name,
+                        text
+                    );
 
+                    if (length != buffer.Length)
+                    {
                         buffer = buffer.Slice(0, length); // Adjust to the actual size
                     }
 

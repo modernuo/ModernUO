@@ -423,11 +423,7 @@ namespace Server.Commands
             {
                 if (toAll || state.Mobile.CanSee(m))
                 {
-                    if (buffer[0] == 0)
-                    {
-                        OutgoingEffectPackets.CreateSoundEffect(buffer, index, m);
-                    }
-
+                    OutgoingEffectPackets.CreateSoundEffect(buffer, index, m);
                     state.Send(buffer);
                 }
             }

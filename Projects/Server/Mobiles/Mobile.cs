@@ -3192,11 +3192,7 @@ namespace Server
 
                 if (sendRemove)
                 {
-                    if (removeEntity[0] == 0)
-                    {
-                        OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
-                    }
-
+                    OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
                     state.Send(removeEntity);
                 }
 
@@ -5048,11 +5044,7 @@ namespace Server
 
                         if (!state.Mobile.CanSee(this))
                         {
-                            if (removeEntity[0] == 0)
-                            {
-                                OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
-                            }
-
+                            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
                             state.Send(removeEntity);
                         }
                     }
@@ -5334,19 +5326,16 @@ namespace Server
                                     if (ns.Mobile != from && ns.Mobile.CanSee(from) && ns.Mobile.InLOS(from) &&
                                         ns.Mobile.CanSee(root))
                                     {
-                                        if (buffer[0] == 0)
-                                        {
-                                            OutgoingPlayerPackets.CreateDragEffect(
-                                                buffer,
-                                                rootItem?.Serial ?? Serial.Zero,
-                                                rootItem?.Location ?? item.Location,
-                                                from.Serial,
-                                                from.Location,
-                                                item.ItemID,
-                                                item.Hue,
-                                                amount
-                                            );
-                                        }
+                                        OutgoingPlayerPackets.CreateDragEffect(
+                                            buffer,
+                                            rootItem?.Serial ?? Serial.Zero,
+                                            rootItem?.Location ?? item.Location,
+                                            from.Serial,
+                                            from.Location,
+                                            item.ItemID,
+                                            item.Hue,
+                                            amount
+                                        );
 
                                         ns.Send(buffer);
                                     }
@@ -5490,29 +5479,24 @@ namespace Server
 
             foreach (var ns in eable)
             {
-                if (ns.StygianAbyss)
+                if (ns.StygianAbyss || ns.Mobile == this ||
+                    !ns.Mobile.CanSee(this) || !ns.Mobile.InLOS(this) || !ns.Mobile.CanSee(root))
                 {
                     continue;
                 }
 
-                if (ns.Mobile != this && ns.Mobile.CanSee(this) && ns.Mobile.InLOS(this) && ns.Mobile.CanSee(root))
-                {
-                    if (buffer[0] == 0)
-                    {
-                        OutgoingPlayerPackets.CreateDragEffect(
-                            buffer,
-                            Serial,
-                            Location,
-                            rootItem?.Serial ?? Serial.Zero,
-                            rootItem?.Location ?? item.Location,
-                            item.ItemID,
-                            item.Hue,
-                            item.Amount
-                        );
-                    }
+                OutgoingPlayerPackets.CreateDragEffect(
+                    buffer,
+                    Serial,
+                    Location,
+                    rootItem?.Serial ?? Serial.Zero,
+                    rootItem?.Location ?? item.Location,
+                    item.ItemID,
+                    item.Hue,
+                    item.Amount
+                );
 
-                    ns.Send(buffer);
-                }
+                ns.Send(buffer);
             }
 
             eable.Free();
@@ -5856,11 +5840,12 @@ namespace Server
 
                     if (mutatedArgs == null || !CheckHearsMutatedSpeech(heard, mutateContext))
                     {
-                        if (regBuffer[0] == 0)
+                        var length = OutgoingMessagePackets.CreateMessage(
+                            regBuffer, Serial, Body, type, hue, 3, false, m_Language, Name, text
+                        );
+
+                        if (length != regBuffer.Length)
                         {
-                            var length = OutgoingMessagePackets.CreateMessage(
-                                regBuffer, Serial, Body, type, hue, 3, false, m_Language, Name, text
-                            );
                             regBuffer = regBuffer.Slice(0, length); // Adjust to the actual size
                         }
 
@@ -5869,11 +5854,12 @@ namespace Server
                     }
                     else
                     {
-                        if (mutBuffer[0] == 0)
+                        var length = OutgoingMessagePackets.CreateMessage(
+                            mutBuffer, Serial, Body, type, hue, 3, false, m_Language, Name, mutatedText
+                        );
+
+                        if (length != mutBuffer.Length)
                         {
-                            var length = OutgoingMessagePackets.CreateMessage(
-                                mutBuffer, Serial, Body, type, hue, 3, false, m_Language, Name, mutatedText
-                            );
                             mutBuffer = mutBuffer.Slice(0, length); // Adjust to the actual size
                         }
 
@@ -6922,55 +6908,54 @@ namespace Server
 
             foreach (var state in eable)
             {
-                if (state.Mobile.CanSee(this))
+                if (!state.Mobile.CanSee(this))
                 {
-                    state.Mobile.ProcessDelta();
-
-                    if (Body.IsGargoyle)
-                    {
-                        frameCount = 10;
-
-                        if (Flying)
-                        {
-                            action = action switch
-                            {
-                                >= 9 and <= 11    => 71,
-                                >= 12 and <= 14   => 72,
-                                20                => 77,
-                                31                => 71,
-                                34                => 78,
-                                >= 200 and <= 259 => 75,
-                                >= 260 and <= 270 => 75,
-                                _                 => action
-                            };
-                        }
-                        else
-                        {
-                            action = action switch
-                            {
-                                >= 200 and <= 259 => 17,
-                                >= 260 and <= 270 => 16,
-                                _                 => action
-                            };
-                        }
-                    }
-
-                    if (buffer[0] == 0)
-                    {
-                        OutgoingMobilePackets.CreateMobileAnimation(
-                            buffer,
-                            Serial,
-                            action,
-                            frameCount,
-                            repeatCount,
-                            forward,
-                            repeat,
-                            delay
-                        );
-                    }
-
-                    state.Send(buffer);
+                    continue;
                 }
+
+                state.Mobile.ProcessDelta();
+
+                if (Body.IsGargoyle)
+                {
+                    frameCount = 10;
+
+                    if (Flying)
+                    {
+                        action = action switch
+                        {
+                            >= 9 and <= 11    => 71,
+                            >= 12 and <= 14   => 72,
+                            20                => 77,
+                            31                => 71,
+                            34                => 78,
+                            >= 200 and <= 259 => 75,
+                            >= 260 and <= 270 => 75,
+                            _                 => action
+                        };
+                    }
+                    else
+                    {
+                        action = action switch
+                        {
+                            >= 200 and <= 259 => 17,
+                            >= 260 and <= 270 => 16,
+                            _                 => action
+                        };
+                    }
+                }
+
+                OutgoingMobilePackets.CreateMobileAnimation(
+                    buffer,
+                    Serial,
+                    action,
+                    frameCount,
+                    repeatCount,
+                    forward,
+                    repeat,
+                    delay
+                );
+
+                state.Send(buffer);
             }
 
             eable.Free();
@@ -7007,11 +6992,7 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this))
                 {
-                    if (buffer[0] == 0)
-                    {
-                        OutgoingEffectPackets.CreateSoundEffect(buffer, soundID, this);
-                    }
-
+                    OutgoingEffectPackets.CreateSoundEffect(buffer, soundID, this);
                     state.Send(buffer);
                 }
             }
@@ -7073,11 +7054,7 @@ namespace Server
             {
                 if (state != m_NetState && (everyone || !state.Mobile.CanSee(this)))
                 {
-                    if (removeEntity[0] == 0)
-                    {
-                        OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
-                    }
-
+                    OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
                     state.Send(removeEntity);
                 }
             }
@@ -7328,11 +7305,7 @@ namespace Server
                 var m = state.Mobile;
                 if (!m.CanSee(this))
                 {
-                    if (removeEntity[0] == 0)
-                    {
-                        OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
-                    }
-
+                    OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
                     state.Send(removeEntity);
                 }
                 else
@@ -7563,11 +7536,7 @@ namespace Server
                 {
                     if (ns != m_NetState && !Utility.InUpdateRange(newLocation, ns.Mobile.Location))
                     {
-                        if (removeEntity[0] == 0)
-                        {
-                            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
-                        }
-
+                        OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
                         ns.Send(removeEntity);
                     }
                 }
@@ -9243,12 +9212,12 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
                 {
-                    if (buffer[0] == 0)
-                    {
-                        var length = OutgoingMessagePackets.CreateMessage(
-                            buffer, Serial, Body, type, hue, 3, ascii, Language, Name, text
-                        );
+                    var length = OutgoingMessagePackets.CreateMessage(
+                        buffer, Serial, Body, type, hue, 3, ascii, Language, Name, text
+                    );
 
+                    if (length != buffer.Length)
+                    {
                         buffer = buffer.Slice(0, length); // Adjust to the actual size
                     }
 
@@ -9275,11 +9244,12 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
                 {
-                    if (buffer[0] == 0)
+                    var length = OutgoingMessagePackets.CreateMessageLocalized(
+                        buffer, Serial, Body, type, hue, 3, number, Name, args
+                    );
+
+                    if (length != buffer.Length)
                     {
-                        var length = OutgoingMessagePackets.CreateMessageLocalized(
-                            buffer, Serial, Body, type, hue, 3, number, Name, args
-                        );
                         buffer = buffer.Slice(0, length); // Adjust to the actual size
                     }
 
@@ -9309,11 +9279,12 @@ namespace Server
             {
                 if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
                 {
-                    if (buffer[0] == 0)
+                    var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
+                        buffer, Serial, Body, type, hue, 3, number, Name, affixType, affix, args
+                    );
+
+                    if (length != buffer.Length)
                     {
-                        var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
-                            buffer, Serial, Body, type, hue, 3, number, Name, affixType, affix, args
-                        );
                         buffer = buffer.Slice(0, length); // Adjust to the actual size
                     }
 
@@ -9357,11 +9328,12 @@ namespace Server
             {
                 if (state != m_NetState && state.Mobile.CanSee(this))
                 {
-                    if (buffer[0] == 0)
+                    var length = OutgoingMessagePackets.CreateMessageLocalized(
+                        buffer, Serial, Body, type, hue, 3, number, Name, args
+                    );
+
+                    if (length != buffer.Length)
                     {
-                        var length = OutgoingMessagePackets.CreateMessageLocalized(
-                            buffer, Serial, Body, type, hue, 3, number, Name, args
-                        );
                         buffer = buffer.Slice(0, length); // Adjust to the actual size
                     }
 
@@ -9388,12 +9360,12 @@ namespace Server
             {
                 if (state != m_NetState && state.Mobile.CanSee(this))
                 {
-                    if (buffer[0] == 0)
-                    {
-                        var length = OutgoingMessagePackets.CreateMessage(
-                            buffer, Serial, Body, type, hue, 3, ascii, Language, Name, text
-                        );
+                    var length = OutgoingMessagePackets.CreateMessage(
+                        buffer, Serial, Body, type, hue, 3, ascii, Language, Name, text
+                    );
 
+                    if (length != buffer.Length)
+                    {
                         buffer = buffer.Slice(0, length); // Adjust to the actual size
                     }
 

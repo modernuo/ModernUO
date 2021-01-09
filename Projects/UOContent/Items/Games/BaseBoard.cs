@@ -92,11 +92,7 @@ namespace Server.Items
 
                     foreach (var state in GetClientsInRange(2))
                     {
-                        if (buffer[0] == 0)
-                        {
-                            OutgoingEffectPackets.CreateSoundEffect(buffer, 0x127, GetWorldLocation());
-                        }
-
+                        OutgoingEffectPackets.CreateSoundEffect(buffer, 0x127, GetWorldLocation());
                         state.Send(buffer);
                     }
                 }

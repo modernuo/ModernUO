@@ -510,21 +510,21 @@ namespace Server.Engines.Doom
 
             foreach (var state in eable)
             {
-                if (buffer[0] == 0)
-                {
-                    var length = OutgoingMessagePackets.CreateMessage(
-                        buffer,
-                        from.Serial,
-                        from.Body,
-                        MessageType.Regular,
-                        MsgParams[index][0],
-                        MsgParams[index][1],
-                        true,
-                        null,
-                        from.Name,
-                        Msgs[index]
-                    );
+                var length = OutgoingMessagePackets.CreateMessage(
+                    buffer,
+                    from.Serial,
+                    from.Body,
+                    MessageType.Regular,
+                    MsgParams[index][0],
+                    MsgParams[index][1],
+                    true,
+                    null,
+                    from.Name,
+                    Msgs[index]
+                );
 
+                if (length != buffer.Length)
+                {
                     buffer = buffer.Slice(0, length); // Adjust to the actual size
                 }
 

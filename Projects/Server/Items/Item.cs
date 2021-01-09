@@ -378,11 +378,7 @@ namespace Server
 
                             if (!m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
                             {
-                                if (removeEntity[0] == 0)
-                                {
-                                    OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
-                                }
-
+                                OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
                                 state.Send(removeEntity);
                             }
                         }
@@ -1223,10 +1219,7 @@ namespace Server
 
                         if (!m.InRange(location, GetUpdateRange(m)))
                         {
-                            if (removeEntity[0] == 0)
-                            {
-                                OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
-                            }
+                            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
                             state.Send(removeEntity);
                         }
                     }
@@ -1568,11 +1561,7 @@ namespace Server
 
                                 if (!m.InRange(value, GetUpdateRange(m)))
                                 {
-                                    if (removeEntity[0] == 0)
-                                    {
-                                        OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
-                                    }
-
+                                    OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
                                     state.Send(removeEntity);
                                 }
                             }
@@ -3366,12 +3355,12 @@ namespace Server
 
                 if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
                 {
-                    if (buffer[0] == 0)
-                    {
-                        var length = OutgoingMessagePackets.CreateMessage(
-                            buffer, Serial, m_ItemID, type, hue, 3, ascii, "ENU", Name, text
-                        );
+                    var length = OutgoingMessagePackets.CreateMessage(
+                        buffer, Serial, m_ItemID, type, hue, 3, ascii, "ENU", Name, text
+                    );
 
+                    if (length != buffer.Length)
+                    {
                         buffer = buffer.Slice(0, length); // Adjust to the actual size
                     }
 
@@ -3401,12 +3390,12 @@ namespace Server
 
                 if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
                 {
-                    if (buffer[0] == 0)
-                    {
-                        var length = OutgoingMessagePackets.CreateMessageLocalized(
-                            buffer, Serial, m_ItemID, type, hue, 3, number, Name, args
-                        );
+                    var length = OutgoingMessagePackets.CreateMessageLocalized(
+                        buffer, Serial, m_ItemID, type, hue, 3, number, Name, args
+                    );
 
+                    if (length != buffer.Length)
+                    {
                         buffer = buffer.Slice(0, length); // Adjust to the actual size
                     }
 
@@ -3868,11 +3857,7 @@ namespace Server
 
                 if (m.InRange(worldLoc, GetUpdateRange(m)))
                 {
-                    if (removeEntity[0] == 0)
-                    {
-                        OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
-                    }
-
+                    OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
                     state.Send(removeEntity);
                 }
             }

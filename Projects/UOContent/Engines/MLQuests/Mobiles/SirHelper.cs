@@ -104,13 +104,13 @@ namespace Server.Engines.MLQuests.Mobiles
 
                 if (m.CanSee(this) && m.InLOS(this) && m.CanBeginAction(this))
                 {
-                    if (buffer[0] == 0)
-                    {
-                        // Double Click On Me For Help!
-                        var length = OutgoingMessagePackets.CreateMessageLocalized(
-                            buffer, Serial, Body, MessageType.Regular, 946, 3, 1078099, Name
-                        );
+                    // Double Click On Me For Help!
+                    var length = OutgoingMessagePackets.CreateMessageLocalized(
+                        buffer, Serial, Body, MessageType.Regular, 946, 3, 1078099, Name
+                    );
 
+                    if (length != buffer.Length)
+                    {
                         buffer = buffer.Slice(0, length);
                     }
 

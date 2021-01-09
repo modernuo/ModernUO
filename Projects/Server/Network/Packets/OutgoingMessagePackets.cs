@@ -56,6 +56,11 @@ namespace Server.Network
             Serial serial, int graphic, MessageType type, int hue, int font, int number, string name = "", string args = ""
         )
         {
+            if (buffer[0] != 0)
+            {
+                return buffer.Length;
+            }
+
             name ??= "";
             args ??= "";
 
@@ -92,6 +97,7 @@ namespace Server.Network
             }
 
             Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedAffixLength(affix, args)];
+            buffer.InitializePacket();
             var length = CreateMessageLocalizedAffix(
                 buffer, serial, graphic, type, hue, font, number, name, affixType, affix, args
             );
@@ -108,6 +114,11 @@ namespace Server.Network
             AffixType affixType, string affix = "", string args = ""
         )
         {
+            if (buffer[0] != 0)
+            {
+                return buffer.Length;
+            }
+
             name ??= "";
             affix ??= "";
             args ??= "";
@@ -147,6 +158,7 @@ namespace Server.Network
             }
 
             Span<byte> buffer = stackalloc byte[GetMaxMessageLength(text)];
+            buffer.InitializePacket();
             var length = CreateMessage(
                 buffer,
                 serial,
@@ -179,6 +191,11 @@ namespace Server.Network
             string text
         )
         {
+            if (buffer[0] != 0)
+            {
+                return buffer.Length;
+            }
+
             name ??= "";
             text ??= "";
             lang ??= "ENU";

@@ -78,11 +78,7 @@ namespace Server.Commands
 
                         if (!m.CanSee(pm) && Utility.InUpdateRange(m, pm))
                         {
-                            if (removeEntity[0] == 0)
-                            {
-                                OutgoingEntityPackets.CreateRemoveEntity(removeEntity, pm.Serial);
-                            }
-
+                            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, pm.Serial);
                             m.NetState?.Send(removeEntity);
                         }
                     }

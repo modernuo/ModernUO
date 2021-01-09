@@ -33,6 +33,7 @@ namespace Server.Network
             }
 
             Span<byte> buffer = stackalloc byte[SoundPacketLength];
+            buffer.InitializePacket();
             CreateSoundEffect(buffer, soundID, target);
 
             ns.Send(buffer);
@@ -40,6 +41,11 @@ namespace Server.Network
 
         public static void CreateSoundEffect(Span<byte> buffer, int soundID, IPoint3D target)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x54); // Packet ID
             writer.Write((byte)1); // flags
@@ -57,6 +63,11 @@ namespace Server.Network
             int explodeEffect, int explodeSound, Serial serial, int layer, int unknown
         )
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xC7); // Packet ID
             writer.Write((byte)type);
@@ -168,6 +179,11 @@ namespace Server.Network
             int speed, int duration, bool fixedDirection, bool explode, int hue, int renderMode
         )
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xC0); // Packet ID
             writer.Write((byte)type);

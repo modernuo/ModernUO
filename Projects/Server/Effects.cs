@@ -80,12 +80,7 @@ namespace Server
                 foreach (var state in eable)
                 {
                     state.Mobile.ProcessDelta();
-
-                    if (buffer[0] == 0)
-                    {
-                        OutgoingEffectPackets.CreateSoundEffect(buffer, soundID, p);
-                    }
-
+                    OutgoingEffectPackets.CreateSoundEffect(buffer, soundID, p);
                     state.Send(buffer);
                 }
 
@@ -123,31 +118,19 @@ namespace Server
                 {
                     if (SendParticlesTo(state))
                     {
-                        if (preEffect[0] == 0)
-                        {
-                            OutgoingEffectPackets.CreateTargetParticleEffect(
-                                preEffect,
-                                e, 0, 10, 5, 0, 0, 5031, 3, 0
-                            );
-                        }
-
+                        OutgoingEffectPackets.CreateTargetParticleEffect(
+                            preEffect,
+                            e, 0, 10, 5, 0, 0, 5031, 3, 0
+                        );
                         state.Send(preEffect);
                     }
 
-                    if (boltEffect[0] == 0)
-                    {
-                        OutgoingEffectPackets.CreateBoltEffect(boltEffect, e, hue);
-                    }
-
+                    OutgoingEffectPackets.CreateBoltEffect(boltEffect, e, hue);
                     state.Send(boltEffect);
 
                     if (sound)
                     {
-                        if (soundEffect[0] == 0)
-                        {
-                            OutgoingEffectPackets.CreateSoundEffect(soundEffect, 0x29, e);
-                        }
-
+                        OutgoingEffectPackets.CreateSoundEffect(soundEffect, 0x29, e);
                         state.Send(soundEffect);
                     }
                 }
@@ -165,6 +148,7 @@ namespace Server
         )
         {
             Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
+            effect.InitializePacket();
             OutgoingEffectPackets.CreateLocationHuedEffect(
                 effect,
                 p, itemID, speed, duration, hue, renderMode
@@ -211,26 +195,18 @@ namespace Server
 
                 if (SendParticlesTo(state))
                 {
-                    if (particles[0] == 0)
-                    {
-                        OutgoingEffectPackets.CreateLocationParticleEffect(
-                            particles,
-                            e, itemID, speed, duration, hue, renderMode, effect, unknown
-                        );
-                    }
-
+                    OutgoingEffectPackets.CreateLocationParticleEffect(
+                        particles,
+                        e, itemID, speed, duration, hue, renderMode, effect, unknown
+                    );
                     state.Send(particles);
                 }
                 else if (itemID != 0)
                 {
-                    if (regular[0] == 0)
-                    {
-                        OutgoingEffectPackets.CreateLocationHuedEffect(
-                            regular,
-                            e.Location, itemID, speed, duration, hue, renderMode
-                        );
-                    }
-
+                    OutgoingEffectPackets.CreateLocationHuedEffect(
+                        regular,
+                        e.Location, itemID, speed, duration, hue, renderMode
+                    );
                     state.Send(regular);
                 }
             }
@@ -243,6 +219,7 @@ namespace Server
             (target as Mobile)?.ProcessDelta();
 
             Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
+            effect.InitializePacket();
             OutgoingEffectPackets.CreateTargetHuedEffect(
                 effect,
                 target, itemID, speed, duration, hue, renderMode
@@ -290,23 +267,15 @@ namespace Server
 
                 if (SendParticlesTo(state))
                 {
-                    if (particles[0] == 0)
-                    {
-                        OutgoingEffectPackets.CreateTargetParticleEffect(
-                            particles,
-                            target, itemID, speed, duration, hue, renderMode, effect, (int)layer, unknown
-                        );
-                    }
-
+                    OutgoingEffectPackets.CreateTargetParticleEffect(
+                        particles,
+                        target, itemID, speed, duration, hue, renderMode, effect, (int)layer, unknown
+                    );
                     state.Send(particles);
                 }
                 else if (itemID != 0)
                 {
-                    if (regular[0] == 0)
-                    {
-                        OutgoingEffectPackets.CreateTargetHuedEffect(regular, target, itemID, speed, duration, hue, renderMode);
-                    }
-
+                    OutgoingEffectPackets.CreateTargetHuedEffect(regular, target, itemID, speed, duration, hue, renderMode);
                     state.Send(regular);
                 }
             }
@@ -520,27 +489,19 @@ namespace Server
 
                 if (SendParticlesTo(state))
                 {
-                    if (particles[0] == 0)
-                    {
-                        OutgoingEffectPackets.CreateMovingParticleEffect(
-                            particles,
-                            from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode, effect,
-                            explodeEffect, explodeSound, layer, unknown
-                        );
-                    }
-
+                    OutgoingEffectPackets.CreateMovingParticleEffect(
+                        particles,
+                        from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode, effect,
+                        explodeEffect, explodeSound, layer, unknown
+                    );
                     state.Send(particles);
                 }
                 else if (itemID > 1)
                 {
-                    if (regular[0] == 0)
-                    {
-                        OutgoingEffectPackets.CreateMovingHuedEffect(
-                            regular,
-                            from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode
-                        );
-                    }
-
+                    OutgoingEffectPackets.CreateMovingHuedEffect(
+                        regular,
+                        from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode
+                    );
                     state.Send(regular);
                 }
             }

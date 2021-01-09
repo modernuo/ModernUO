@@ -45,7 +45,10 @@ namespace Server.Network
         public static void InitializePacket(this Span<byte> buffer)
         {
 #if NO_LOCAL_INIT
-            buffer[0] = 0;
+            if (buffer != null)
+            {
+                buffer[0] = 0;
+            }
 #endif
         }
 

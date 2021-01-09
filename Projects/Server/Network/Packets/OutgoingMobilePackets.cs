@@ -87,6 +87,11 @@ namespace Server.Network
 
         public static void CreateMobileMoving(Span<byte> buffer, Mobile m, int noto, bool stygianAbyss)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var loc = m.Location;
             var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
 
@@ -114,9 +119,10 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> span = stackalloc byte[MobileMovingPacketLength];
-            CreateMobileMoving(span, target, noto, ns.StygianAbyss);
-            ns.Send(span);
+            Span<byte> buffer = stackalloc byte[MobileMovingPacketLength];
+            buffer.InitializePacket();
+            CreateMobileMoving(buffer, target, noto, ns.StygianAbyss);
+            ns.Send(buffer);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -135,12 +141,7 @@ namespace Server.Network
             var stygianAbyss = ns.StygianAbyss;
             var startIndex = (noto * 2 + (stygianAbyss ? 1 : 0)) * MobileMovingPacketLength;
             var buffer = cache.Slice(startIndex, MobileMovingPacketLength);
-
-            // Packet not created yet
-            if (buffer[0] == 0)
-            {
-                CreateMobileMoving(buffer, target, noto, stygianAbyss);
-            }
+            CreateMobileMoving(buffer, target, noto, stygianAbyss);
 
             ns.Send(buffer);
         }
@@ -283,6 +284,11 @@ namespace Server.Network
             Serial mobile, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay
         )
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x6E); // Packet ID
             writer.Write(mobile);

@@ -339,21 +339,21 @@ namespace Server.Guilds
 
                 for (var j = 0; j < g.Members.Count; j++)
                 {
-                    if (buffer[0] == 0)
-                    {
-                        var length = OutgoingMessagePackets.CreateMessage(
-                            buffer,
-                            from.Serial,
-                            from.Body,
-                            MessageType.Alliance,
-                            hue,
-                            3,
-                            false,
-                            from.Language,
-                            from.Name,
-                            text
-                        );
+                    var length = OutgoingMessagePackets.CreateMessage(
+                        buffer,
+                        from.Serial,
+                        from.Body,
+                        MessageType.Alliance,
+                        hue,
+                        3,
+                        false,
+                        from.Language,
+                        from.Name,
+                        text
+                    );
 
+                    if (length != buffer.Length)
+                    {
                         buffer = buffer.Slice(0, length); // Adjust to the actual size
                     }
 
@@ -1525,13 +1525,13 @@ namespace Server.Guilds
 
             for (var i = 0; i < Members.Count; i++)
             {
-                if (buffer[0] == 0)
-                {
-                    var length = OutgoingMessagePackets.CreateMessage(
-                        buffer, from.Serial, from.Body, MessageType.Guild, hue, 3, false, from.Language,
-                        from.Name, text
-                    );
+                var length = OutgoingMessagePackets.CreateMessage(
+                    buffer, from.Serial, from.Body, MessageType.Guild, hue, 3, false, from.Language,
+                    from.Name, text
+                );
 
+                if (length != buffer.Length)
+                {
                     buffer = buffer.Slice(0, length); // Adjust to the actual size
                 }
 
