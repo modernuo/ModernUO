@@ -127,11 +127,7 @@ namespace Server
             var writer = new SpanWriter(_buffer.AsSpan(_position));
             writer.Write(number);
             writer.Write((ushort)strLength);
-
-            if (strLength > 0)
-            {
-                writer.WriteLittleUni(arguments);
-            }
+            writer.WriteLittleUni(arguments);
 
             _position += writer.BytesWritten;
         }
