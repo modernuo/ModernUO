@@ -146,7 +146,7 @@ namespace Server.Engines.PartySystem
             writer.Write(0x07); // command
             writer.Write(leader);
 
-            ns.Send(buffer.Span);
+            ns.Send(buffer);
         }
     }
 }
