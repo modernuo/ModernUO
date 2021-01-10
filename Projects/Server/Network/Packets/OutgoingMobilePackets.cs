@@ -39,6 +39,11 @@ namespace Server.Network
 
         public static void CreateBondedStatus(Span<byte> buffer, Serial serial, bool bonded)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)11); // Length
@@ -68,6 +73,11 @@ namespace Server.Network
 
         public static void CreateDeathAnimation(Span<byte> buffer, Serial killed, Serial corpse)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xAF); // Packet ID
             writer.Write(killed);
@@ -194,6 +204,11 @@ namespace Server.Network
 
         public static void CreateMobileHits(Span<byte> buffer, Mobile m, bool normalize = false)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xA1); // Packet ID
             writer.Write(m.Serial);
@@ -214,6 +229,11 @@ namespace Server.Network
 
         public static void CreateMobileMana(Span<byte> buffer, Mobile m, bool normalize = false)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xA2); // Packet ID
             writer.Write(m.Serial);
@@ -234,6 +254,11 @@ namespace Server.Network
 
         public static void CreateMobileStam(Span<byte> buffer, Mobile m, bool normalize = false)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xA3); // Packet ID
             writer.Write(m.Serial);
@@ -254,6 +279,11 @@ namespace Server.Network
 
         public static void CreateMobileAttributes(Span<byte> buffer, Mobile m, bool normalize = false)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x2D); // Packet ID
             writer.Write(m.Serial);
@@ -355,6 +385,11 @@ namespace Server.Network
 
         public static void CreateMobileHealthbar(Span<byte> buffer, Mobile m, Healthbar healthbar)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             switch (healthbar)
             {
                 case Healthbar.Poison:
@@ -442,20 +477,20 @@ namespace Server.Network
             Span<byte> buffer, Mobile beholder, Mobile beheld, int version, bool canBeRenamed
         )
         {
+            if (buffer[0] != 0)
+            {
+                return buffer.Length;
+            }
+
             var name = beheld.Name ?? "";
 
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x11); // Packet ID
             writer.Seek(2, SeekOrigin.Current);
-
             writer.Write(beheld.Serial);
-
             writer.WriteAscii(name, 30);
-
             writer.WriteAttribute(beheld.HitsMax, beheld.Hits, version == 0, true);
-
             writer.Write(canBeRenamed);
-
             writer.Write((byte)version);
 
             if (version <= 0)

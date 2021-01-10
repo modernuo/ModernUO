@@ -24,6 +24,11 @@ namespace Server
 
         public static void CreateHairEquipUpdatePacket(Span<byte> buffer, Mobile m, Serial hairSerial, Layer layer)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.HairHue;
 
             var writer = new SpanWriter(buffer);
@@ -51,6 +56,11 @@ namespace Server
 
         public static void CreateRemoveHairPacket(Span<byte> buffer, Serial hairSerial)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x1D); // Packet ID
             writer.Write(hairSerial);

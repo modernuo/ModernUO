@@ -28,6 +28,11 @@ namespace Server.Network
 
         public static void CreateOPLInfo(Span<byte> buffer, Serial serial, int hash)
         {
+            if (buffer[0] != 0)
+            {
+                return;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xDC); // Packet ID
             writer.Write(serial);

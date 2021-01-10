@@ -1151,9 +1151,9 @@ namespace Server
                         {
                             if (state.HighSeas)
                             {
-                                if (hsWorldItem[0] == 0)
+                                var length = OutgoingItemPackets.CreateWorldItemNew(hsWorldItem, this, true);
+                                if (length != hsWorldItem.Length)
                                 {
-                                    var length = OutgoingItemPackets.CreateWorldItemNew(hsWorldItem, this, true);
                                     hsWorldItem = hsWorldItem.Slice(0, length);
                                 }
 
@@ -1161,9 +1161,9 @@ namespace Server
                             }
                             else if (state.StygianAbyss)
                             {
-                                if (saWorldItem[0] == 0)
+                                var length = OutgoingItemPackets.CreateWorldItemNew(saWorldItem, this, false);
+                                if (length != saWorldItem.Length)
                                 {
-                                    var length = OutgoingItemPackets.CreateWorldItemNew(saWorldItem, this, false);
                                     saWorldItem = saWorldItem.Slice(0, length);
                                 }
 
@@ -1171,9 +1171,9 @@ namespace Server
                             }
                             else
                             {
-                                if (oldWorldItem[0] == 0)
+                                var length = OutgoingItemPackets.CreateWorldItem(oldWorldItem, this);
+                                if (length != oldWorldItem.Length)
                                 {
-                                    var length = OutgoingItemPackets.CreateWorldItem(oldWorldItem, this);
                                     oldWorldItem = oldWorldItem.Slice(0, length);
                                 }
 
@@ -3091,11 +3091,7 @@ namespace Server
                 return;
             }
 
-            if (opl[0] == 0)
-            {
-                OutgoingEntityPackets.CreateOPLInfo(opl, this);
-            }
-
+            OutgoingEntityPackets.CreateOPLInfo(opl, this);
             ns.Send(opl);
         }
 

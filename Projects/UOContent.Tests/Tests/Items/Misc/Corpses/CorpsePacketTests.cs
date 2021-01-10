@@ -8,7 +8,7 @@ using Xunit;
 
 namespace UOContent.Tests
 {
-    public class PacketTests : IClassFixture<ServerFixture>
+    public class CorpsePacketTests : IClassFixture<ServerFixture>
     {
         [Fact]
         public void TestCorpseEquipPacket()
