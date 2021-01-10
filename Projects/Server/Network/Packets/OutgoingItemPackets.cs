@@ -25,6 +25,11 @@ namespace Server.Network
 
         public static int CreateWorldItem(Span<byte> buffer, Item item)
         {
+            if (buffer[0] != 0)
+            {
+                return buffer.Length;
+            }
+            
             var itemID = item is BaseMulti ? item.ItemID | 0x4000 : item.ItemID & 0x3FFF;
             var hasAmount = item.Amount != 0;
             var amount = item.Amount;
@@ -95,6 +100,11 @@ namespace Server.Network
 
         public static int CreateWorldItemNew(Span<byte> buffer, Item item, bool isHS)
         {
+            if (buffer[0] != 0)
+            {
+                return buffer.Length;
+            }
+
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xF3); // Packet ID
             writer.Write((short)0x1); // command

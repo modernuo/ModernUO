@@ -55,10 +55,7 @@ namespace Server.Engines.PartySystem
     {
         public PartyTextMessage(bool toAll, Mobile from, string text) : base(0xBF)
         {
-            if (text == null)
-            {
-                text = "";
-            }
+            text ??= "";
 
             EnsureCapacity(12 + text.Length * 2);
 

@@ -49,6 +49,7 @@ namespace Server.Network
             ns.Send(buffer.Slice(0, length));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetMaxMessageLocalizedLength(string args) => 50 + (args?.Length ?? 0) * 2;
 
         public static int CreateMessageLocalized(
@@ -104,6 +105,7 @@ namespace Server.Network
             ns.Send(buffer.Slice(0, length));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetMaxMessageLocalizedAffixLength(string affix, string args) =>
             52 + (affix?.Length ?? 0) + (args?.Length ?? 0) * 2;
 
@@ -145,7 +147,6 @@ namespace Server.Network
             return writer.Position;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SendMessage(
             this NetState ns,
             Serial serial, int graphic, MessageType type, int hue, int font, bool ascii, string lang, string name, string text

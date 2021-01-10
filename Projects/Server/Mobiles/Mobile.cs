@@ -3191,11 +3191,7 @@ namespace Server
 
                     if (IsDeadBondedPet)
                     {
-                        if (deadBuffer[0] == 0)
-                        {
-                            OutgoingMobilePackets.CreateBondedStatus(deadBuffer, Serial, true);
-                        }
-
+                        OutgoingMobilePackets.CreateBondedStatus(deadBuffer, Serial, true);
                         state.Send(deadBuffer);
                     }
                 }
@@ -3209,21 +3205,13 @@ namespace Server
                 {
                     if (sendHealthbarPoison)
                     {
-                        if (hbpBuffer[0] == 0)
-                        {
-                            OutgoingMobilePackets.CreateMobileHealthbar(hbpBuffer, this, Healthbar.Poison);
-                        }
-
+                        OutgoingMobilePackets.CreateMobileHealthbar(hbpBuffer, this, Healthbar.Poison);
                         state.Send(hbpBuffer);
                     }
 
                     if (sendHealthbarYellow)
                     {
-                        if (hbyBuffer[0] == 0)
-                        {
-                            OutgoingMobilePackets.CreateMobileHealthbar(hbyBuffer, this, Healthbar.Yellow);
-                        }
-
+                        OutgoingMobilePackets.CreateMobileHealthbar(hbyBuffer, this, Healthbar.Yellow);
                         state.Send(hbyBuffer);
                     }
                 }
@@ -3232,51 +3220,36 @@ namespace Server
                 {
                     if (CanBeRenamedBy(beholder))
                     {
-                        if (statBufferTrue[0] == 0)
-                        {
-                            OutgoingMobilePackets.CreateMobileStatusCompact(statBufferTrue, this, true);
-                        }
-
+                        OutgoingMobilePackets.CreateMobileStatusCompact(statBufferTrue, this, true);
                         state.Send(statBufferTrue);
                     }
                     else
                     {
-                        if (statBufferFalse[0] == 0)
-                        {
-                            OutgoingMobilePackets.CreateMobileStatusCompact(statBufferFalse, this, false);
-                        }
-
+                        OutgoingMobilePackets.CreateMobileStatusCompact(statBufferFalse, this, false);
                         state.Send(statBufferFalse);
                     }
                 }
                 else if (sendHits)
                 {
-                    if (hitsPacket[0] == 0)
-                    {
-                        OutgoingMobilePackets.CreateMobileHits(hitsPacket, this, true);
-                    }
-
+                    OutgoingMobilePackets.CreateMobileHits(hitsPacket, this, true);
                     state.Send(hitsPacket);
                 }
 
                 if (sendHair)
                 {
-                    if (hairPacket[0] == 0)
+                    var hairSerial = HairInfo.FakeSerial(Serial);
+                    if (removeHair)
                     {
-                        var hairSerial = HairInfo.FakeSerial(Serial);
-                        if (removeHair)
-                        {
-                            OutgoingVirtualHairPackets.CreateRemoveHairPacket(hairPacket, hairSerial);
-                        }
-                        else
-                        {
-                            OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
-                                hairPacket,
-                                this,
-                                hairSerial,
-                                Layer.Hair
-                            );
-                        }
+                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(hairPacket, hairSerial);
+                    }
+                    else
+                    {
+                        OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
+                            hairPacket,
+                            this,
+                            hairSerial,
+                            Layer.Hair
+                        );
                     }
 
                     state.Send(hairPacket);
@@ -3284,24 +3257,20 @@ namespace Server
 
                 if (sendFacialHair)
                 {
-                    if (facialhairPacket[0] == 0)
+                    var hairSerial = HairInfo.FakeSerial(Serial);
+                    if (removeFacialHair)
                     {
-                        var hairSerial = HairInfo.FakeSerial(Serial);
-                        if (removeFacialHair)
-                        {
-                            OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialhairPacket, hairSerial);
-                        }
-                        else
-                        {
-                            OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
-                                facialhairPacket,
-                                this,
-                                hairSerial,
-                                Layer.FacialHair
-                            );
-                        }
+                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialhairPacket, hairSerial);
                     }
-
+                    else
+                    {
+                        OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
+                            facialhairPacket,
+                            this,
+                            hairSerial,
+                            Layer.FacialHair
+                        );
+                    }
                     state.Send(facialhairPacket);
                 }
 
@@ -5024,11 +4993,7 @@ namespace Server
                 {
                     if (state != m_NetState)
                     {
-                        if (deathAnimation[0] == 0)
-                        {
-                            OutgoingMobilePackets.CreateDeathAnimation(deathAnimation, Serial, corpseSerial);
-                        }
-
+                        OutgoingMobilePackets.CreateDeathAnimation(deathAnimation, Serial, corpseSerial);
                         state.Send(deathAnimation);
 
                         if (!state.Mobile.CanSee(this))

@@ -9,7 +9,7 @@ namespace Server.Engines.PartySystem
     public class Party : IParty
     {
         public const int Capacity = 10;
-        private readonly List<Mobile> m_Listeners; // staff listening
+        private readonly HashSet<Mobile> m_Listeners; // staff listening
 
         public Party(Mobile leader)
         {
@@ -17,7 +17,7 @@ namespace Server.Engines.PartySystem
 
             Members = new List<PartyMemberInfo>();
             Candidates = new List<Mobile>();
-            m_Listeners = new List<Mobile>();
+            m_Listeners = new HashSet<Mobile>();
 
             Members.Add(new PartyMemberInfo(leader));
         }
@@ -185,33 +185,34 @@ namespace Server.Engines.PartySystem
         public void Add(Mobile m)
         {
             var mi = this[m];
-
-            if (mi == null)
+            if (mi != null)
             {
-                var ns = m.NetState;
-                Members.Add(new PartyMemberInfo(m));
-                m.Party = this;
+                return;
+            }
 
-                var memberList = Packet.Acquire(new PartyMemberList(this));
-                Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength];
-                OutgoingMobilePackets.CreateMobileAttributes(attrsPacket, m, true);
+            var ns = m.NetState;
+            Members.Add(new PartyMemberInfo(m));
+            m.Party = this;
 
-                for (var i = 0; i < Members.Count; ++i)
+            Span<byte> memberList =
+                stackalloc byte[PartyPackets.GetPartyMemberListPacketLength(this)].InitializePacket();
+            Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength].InitializePacket();
+
+            for (var i = 0; i < Members.Count; ++i)
+            {
+                var f = Members[i].Mobile;
+
+                PartyPackets.CreatePartyMemberList(memberList, this);
+                f.NetState?.Send(memberList);
+
+                if (f != m)
                 {
-                    var f = Members[i].Mobile;
-
-                    f.Send(memberList);
-
-                    if (f != m)
-                    {
-                        f.NetState.SendMobileStatusCompact(m, m.CanBeRenamedBy(f));
-                        f.NetState?.Send(attrsPacket);
-                        ns.SendMobileStatusCompact(f, f.CanBeRenamedBy(m));
-                        ns.SendMobileAttributes(f, true);
-                    }
+                    f.NetState.SendMobileStatusCompact(m, m.CanBeRenamedBy(f));
+                    OutgoingMobilePackets.CreateMobileAttributes(attrsPacket, m, true);
+                    f.NetState?.Send(attrsPacket);
+                    ns.SendMobileStatusCompact(f, f.CanBeRenamedBy(m));
+                    ns.SendMobileAttributes(f, true);
                 }
-
-                Packet.Release(memberList);
             }
         }
 
@@ -245,7 +246,9 @@ namespace Server.Engines.PartySystem
             );
 
             // : joined the party.
-            SendToAll(buffer.Slice(0, length), true);
+            buffer = buffer.Slice(0, length);
+            SendToAll(buffer);
+            SendToAllListeners(buffer);
 
             from.SendLocalizedMessage(1005445); // You have been added to the party.
 
@@ -261,18 +264,21 @@ namespace Server.Engines.PartySystem
             from.SendLocalizedMessage(1008092); // You notify them that you do not wish to join the party.
 
             Candidates.Remove(from);
-            from.Send(new PartyEmptyList(from));
+            from.NetState.SendPartyRemoveMember(from.Serial);
 
-            if (Candidates.Count == 0 && Members.Count <= 1)
+            if (Candidates.Count != 0 || Members.Count > 1)
             {
-                for (var i = 0; i < Members.Count; ++i)
-                {
-                    this[i].Mobile.Send(new PartyEmptyList(this[i].Mobile));
-                    this[i].Mobile.Party = null;
-                }
-
-                Members.Clear();
+                return;
             }
+
+            for (var i = 0; i < Members.Count; ++i)
+            {
+                var m = this[i].Mobile;
+                m.NetState.SendPartyRemoveMember(m.Serial);
+                m.Party = null;
+            }
+
+            Members.Clear();
         }
 
         public void Remove(Mobile m)
@@ -283,18 +289,22 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            for (var i = 0; i < Members.Count; ++i)
+            Span<byte> removeMember =
+                stackalloc byte[PartyPackets.GetPartyRemoveMemberPacketLength(this)].InitializePacket();
+
+            for (var i = 0; i < Members.Count; i++)
             {
                 if (Members[i].Mobile == m)
                 {
                     Members.RemoveAt(i);
 
+                    m.NetState.SendPartyRemoveMember(m.Serial);
                     m.Party = null;
-                    m.Send(new PartyEmptyList(m));
 
                     m.SendLocalizedMessage(1005451); // You have been removed from the party.
 
-                    SendToAll(new PartyRemoveMember(m, this));
+                    PartyPackets.CreatePartyRemoveMember(removeMember, m.Serial, this);
+                    SendToAll(removeMember);
                     SendToAll(1005452); // A player has been removed from your party.
 
                     break;
@@ -316,8 +326,9 @@ namespace Server.Engines.PartySystem
 
             for (var i = 0; i < Members.Count; ++i)
             {
-                this[i].Mobile.Send(new PartyEmptyList(this[i].Mobile));
-                this[i].Mobile.Party = null;
+                var m = this[i].Mobile;
+                m.NetState.SendPartyRemoveMember(m.Serial);
+                m.Party = null;
             }
 
             Members.Clear();
@@ -362,7 +373,7 @@ namespace Server.Engines.PartySystem
 
             from.SendLocalizedMessage(1008090); // You have invited them to join the party.
 
-            target.Send(new PartyInvitation(from));
+            target.NetState.SendPartyInvitation(from.Serial);
             target.Party = from;
 
             DeclineTimer.Start(target, from);
@@ -377,41 +388,28 @@ namespace Server.Engines.PartySystem
                 Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args
             );
 
-            SendToAll(buffer.Slice(0, length), true);
+            buffer = buffer.Slice(0, length);
+
+            SendToAll(buffer);
+            SendToAllListeners(buffer);
         }
 
         public void SendPublicMessage(Mobile from, string text)
         {
-            SendToAll(new PartyTextMessage(true, from, text));
+            Span<byte> textMessagePacket =
+                stackalloc byte[PartyPackets.GetPartyTextMessagePacketLength(text)].InitializePacket();
+            PartyPackets.CreatePartyTextMessage(textMessagePacket, from.Serial, text, true);
+            SendToAll(textMessagePacket);
 
-            for (var i = 0; i < m_Listeners.Count; ++i)
-            {
-                var mob = m_Listeners[i];
-
-                if (mob.Party != this)
-                {
-                    m_Listeners[i].SendMessage("[{0}]: {1}", from.Name, text);
-                }
-            }
-
-            SendToStaffMessage(from, "[Party]: {0}", text);
+            SendToAllListeners($"[{from.Name}]: {text}");
+            SendToStaffMessage(from, $"[Party]: {text}");
         }
 
         public void SendPrivateMessage(Mobile from, Mobile to, string text)
         {
-            to.Send(new PartyTextMessage(false, from, text));
-
-            for (var i = 0; i < m_Listeners.Count; ++i)
-            {
-                var mob = m_Listeners[i];
-
-                if (mob.Party != this)
-                {
-                    m_Listeners[i].SendMessage("[{0}]->[{1}]: {2}", from.Name, to.Name, text);
-                }
-            }
-
-            SendToStaffMessage(from, "[Party]->[{0}]: {1}", to.Name, text);
+            to.NetState.SendPartyTextMessage(from.Serial, text, false);
+            SendToAllListeners($"[{from.Name}]->[{to.Name}]: {text}");
+            SendToStaffMessage(from, $"[Party]->[{to.Name}]: {text}");
         }
 
         private void SendToStaffMessage(Mobile from, string text)
@@ -448,41 +446,38 @@ namespace Server.Engines.PartySystem
             }
         }
 
-        private void SendToStaffMessage(Mobile from, string format, params object[] args)
+        public void SendToAllListeners(string text)
         {
-            SendToStaffMessage(from, string.Format(format, args));
-        }
-
-        public void SendToAll(Packet p)
-        {
-            p.Acquire();
-
-            for (var i = 0; i < Members.Count; ++i)
+            if (m_Listeners.Count == 0)
             {
-                Members[i].Mobile.Send(p);
+                return;
             }
 
-            p.Release();
+            Span<byte> buffer =
+                stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+            OutgoingMessagePackets.CreateMessage(
+                buffer, Serial.MinusOne, -1, MessageType.Regular, 0x3B2,
+                3, false, "ENU", "System", text
+            );
+            SendToAllListeners(buffer);
         }
 
-        public void SendToAll(Span<byte> span, bool isSpeech)
+        public void SendToAllListeners(Span<byte> span)
+        {
+            foreach (var mob in m_Listeners)
+            {
+                if (mob.Party != this)
+                {
+                    mob.NetState?.Send(span);
+                }
+            }
+        }
+
+        public void SendToAll(Span<byte> span)
         {
             for (var i = 0; i < Members.Count; ++i)
             {
                 Members[i].Mobile.NetState?.Send(span);
-            }
-
-            if (isSpeech)
-            {
-                for (var i = 0; i < m_Listeners.Count; ++i)
-                {
-                    var mob = m_Listeners[i];
-
-                    if (mob.Party != this)
-                    {
-                        mob.NetState?.Send(span);
-                    }
-                }
             }
         }
 
@@ -502,12 +497,10 @@ namespace Server.Engines.PartySystem
                 }
 
                 m_Mobile.SendLocalizedMessage(1005437); // You have rejoined the party.
-                m_Mobile.Send(new PartyMemberList(p));
+                m_Mobile.NetState.SendPartyMemberList(p);
 
                 Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")].InitializePacket();
-
-                Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength];
-                OutgoingMobilePackets.CreateMobileAttributes(attrsPacket, m_Mobile, true);
+                Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength].InitializePacket();
 
                 var ns = m_Mobile.NetState;
 
@@ -540,6 +533,7 @@ namespace Server.Engines.PartySystem
 
                     m.NetState?.Send(buffer);
                     m.NetState.SendMobileStatusCompact(m_Mobile, m_Mobile.CanBeRenamedBy(m));
+                    OutgoingMobilePackets.CreateMobileAttributes(attrsPacket, m_Mobile, true);
                     m.NetState?.Send(attrsPacket);
                     ns.SendMobileStatusCompact(m, m.CanBeRenamedBy(m_Mobile));
                     ns.SendMobileAttributes(m, true);
