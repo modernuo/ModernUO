@@ -1009,58 +1009,6 @@ namespace Server.Commands
             }
         }
 
-        private class DismountTarget : Target
-        {
-            public DismountTarget() : base(-1, false, TargetFlags.None)
-            {
-            }
-
-            protected override void OnTarget(Mobile from, object targeted)
-            {
-                if (targeted is Mobile targ)
-                {
-                    CommandLogging.WriteLine(
-                        from,
-                        "{0} {1} dismounting {2}",
-                        from.AccessLevel,
-                        CommandLogging.Format(from),
-                        CommandLogging.Format(targ)
-                    );
-
-                    for (var i = 0; i < targ.Items.Count; ++i)
-                    {
-                        var item = targ.Items[i];
-
-                        if (item is IMountItem mountItem)
-                        {
-                            var mount = mountItem.Mount;
-
-                            if (mount != null)
-                            {
-                                mount.Rider = null;
-                            }
-
-                            if (targ.Items.IndexOf(item) == -1)
-                            {
-                                --i;
-                            }
-                        }
-                    }
-
-                    for (var i = 0; i < targ.Items.Count; ++i)
-                    {
-                        var item = targ.Items[i];
-
-                        if (item.Layer == Layer.Mount)
-                        {
-                            item.Delete();
-                            --i;
-                        }
-                    }
-                }
-            }
-        }
-
         private class ClientTarget : Target
         {
             public ClientTarget() : base(-1, false, TargetFlags.None)

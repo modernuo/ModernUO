@@ -83,7 +83,7 @@ namespace Server.Engines.CannedEvil
             }
             else
             {
-                SendLocalizedMessageTo(from, 1049487, ""); // I already have my champions awakening skull!
+                SendLocalizedMessageTo(from, 1049487); // I already have my champions awakening skull!
             }
         }
 
@@ -109,11 +109,11 @@ namespace Server.Engines.CannedEvil
             }
             else if (skull == null)
             {
-                SendLocalizedMessageTo(from, 1049488, ""); // That is not my champions awakening skull!
+                SendLocalizedMessageTo(from, 1049488); // That is not my champions awakening skull!
             }
             else if (m_Skull != null)
             {
-                SendLocalizedMessageTo(from, 1049487, ""); // I already have my champions awakening skull!
+                SendLocalizedMessageTo(from, 1049487); // I already have my champions awakening skull!
             }
             else if (!skull.IsChildOf(from.Backpack))
             {
@@ -130,7 +130,7 @@ namespace Server.Engines.CannedEvil
                 }
                 else
                 {
-                    SendLocalizedMessageTo(from, 1049488, ""); // That is not my champions awakening skull!
+                    SendLocalizedMessageTo(from, 1049488); // That is not my champions awakening skull!
                 }
             }
         }

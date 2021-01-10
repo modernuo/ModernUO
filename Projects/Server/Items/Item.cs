@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Server.ContextMenus;
 using Server.Items;
 using Server.Network;
@@ -2487,6 +2488,7 @@ namespace Server
         {
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
         {
             if (setIf)

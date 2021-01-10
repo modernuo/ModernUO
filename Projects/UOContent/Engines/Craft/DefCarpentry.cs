@@ -39,6 +39,7 @@ namespace Server.Engines.Craft
             // no animation
             // if (from.Body.Type == BodyType.Human && !from.Mounted)
             // from.Animate( 9, 5, 1, true, false, 0 );
+            // 0.7 second delay
 
             from.PlaySound(0x23D);
         }

@@ -44,7 +44,7 @@ namespace Server.Engines.Doom
 
         public void CallBackMessage()
         {
-            PublicOverheadMessage(MessageType.Regular, 0x3B2, 1060003, ""); // You try to pry the box open...
+            PublicOverheadMessage(MessageType.Regular, 0x3B2, 1060003); // You try to pry the box open...
         }
 
         public override void OnAfterDelete()

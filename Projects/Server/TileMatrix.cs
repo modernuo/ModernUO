@@ -343,7 +343,13 @@ namespace Server
 
                 fixed (StaticTile* pTiles = staTiles)
                 {
-                    NativeReader.Read(DataStream.SafeFileHandle.DangerousGetHandle(), pTiles, length);
+                    var ptr = DataStream.SafeFileHandle?.DangerousGetHandle();
+                    if (ptr == null)
+                    {
+                        throw new Exception($"Cannot open {DataStream.Name}");
+                    }
+                    NativeReader.Read(ptr.Value, pTiles, length);
+
                     if (m_Lists == null)
                     {
                         m_Lists = new TileList[8][];
@@ -422,7 +428,12 @@ namespace Server
 
                 fixed (LandTile* pTiles = tiles)
                 {
-                    NativeReader.Read(m_MapStream.SafeFileHandle.DangerousGetHandle(), pTiles, 192);
+                    var ptr = m_MapStream.SafeFileHandle?.DangerousGetHandle();
+                    if (ptr == null)
+                    {
+                        throw new Exception($"Cannot open {m_MapStream.Name}");
+                    }
+                    NativeReader.Read(ptr.Value, pTiles, 192);
                 }
 
                 return tiles;

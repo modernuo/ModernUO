@@ -126,7 +126,7 @@ namespace Server.SkillHandlers
                 }
                 else
                 {
-                    (targeted as Item)?.SendLocalizedMessageTo(from, 500323, ""); // Only living things have anatomies!
+                    (targeted as Item)?.SendLocalizedMessageTo(from, 500323); // Only living things have anatomies!
                 }
             }
         }

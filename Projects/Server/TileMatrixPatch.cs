@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -60,7 +61,13 @@ namespace Server
 
                 fixed (LandTile* pTiles = tiles)
                 {
-                    NativeReader.Read(fsData.SafeFileHandle.DangerousGetHandle(), pTiles, 192);
+                    var ptr = fsData.SafeFileHandle?.DangerousGetHandle();
+                    if (ptr == null)
+                    {
+                        throw new Exception($"Cannot open {fsData.Name}");
+                    }
+
+                    NativeReader.Read(ptr.Value, pTiles, 192);
                 }
 
                 matrix.SetLandBlock(x, y, tiles);
@@ -123,7 +130,14 @@ namespace Server
 
                 fixed (StaticTile* pTiles = staTiles)
                 {
-                    NativeReader.Read(fsData.SafeFileHandle.DangerousGetHandle(), pTiles, length);
+                    var ptr = fsData.SafeFileHandle?.DangerousGetHandle();
+                    if (ptr == null)
+                    {
+                        throw new Exception($"Cannot open {fsData.Name}");
+                    }
+
+                    NativeReader.Read(ptr.Value, pTiles, length);
+
                     StaticTile* pCur = pTiles, pEnd = pTiles + tileCount;
 
                     while (pCur < pEnd)

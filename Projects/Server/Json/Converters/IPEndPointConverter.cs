@@ -24,7 +24,7 @@ namespace Server.Json
     {
         public override IPEndPoint Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (IPEndPoint.TryParse(reader.GetString(), out var ipep))
+            if (IPEndPoint.TryParse(reader.GetString()!, out var ipep))
             {
                 return ipep;
             }

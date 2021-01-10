@@ -3,7 +3,7 @@ namespace Server.Engines.Events
     public class BroadcastEvent : IEvent
     {
         private readonly int _hue;
-        private readonly string _text = "";
+        private readonly string _text;
 
         public BroadcastEvent(int hue, string text)
         {
