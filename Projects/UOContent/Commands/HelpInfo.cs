@@ -3,8 +3,6 @@ using System.Text;
 using Server.Commands.Generic;
 using Server.Gumps;
 using Server.Network;
-using CommandInfo = Server.Commands.Docs.DocCommandEntry;
-using CommandInfoSorter = Server.Commands.Docs.CommandEntrySorter;
 
 namespace Server.Commands
 {
@@ -54,12 +52,8 @@ namespace Server.Commands
 
         public static void FillTable()
         {
-            var commands = new List<CommandEntry>(CommandSystem.Entries.Values);
             var list = new List<CommandInfo>();
-
-            commands.Sort();
-            commands.Reverse();
-            Docs.Clean(commands);
+            var commands = CommandEntry.GetList();
 
             for (var i = 0; i < commands.Count; ++i)
             {

@@ -257,7 +257,6 @@ namespace Server.Gumps
                     {
                         AddHtml(10, 125, 400, 20, Color(Center("Generating"), LabelColor32));
 
-                        AddButtonLabeled(20, 150, GetButtonID(3, 100), "Documentation");
                         AddButtonLabeled(220, 150, GetButtonID(3, 107), "Rebuild Categorization");
 
                         AddButtonLabeled(20, 175, GetButtonID(3, 101), "Teleporters");
@@ -2103,10 +2102,6 @@ namespace Server.Gumps
                                 page = AdminGumpPage.Administer_Commands;
                                 break;
 
-                            case 100:
-                                InvokeCommand("DocGen");
-                                notice = "Documentation has been generated.";
-                                break;
                             case 101:
                                 InvokeCommand("TelGen");
                                 notice = "Teleporters have been generated.";
@@ -2114,10 +2109,6 @@ namespace Server.Gumps
                             case 102:
                                 InvokeCommand("MoonGen");
                                 notice = "Moongates have been generated.";
-                                break;
-                            case 103:
-                                InvokeCommand("UOAMVendors");
-                                notice = "Vendor spawners have been generated.";
                                 break;
                             case 104:
                                 InvokeCommand("DoorGen");
