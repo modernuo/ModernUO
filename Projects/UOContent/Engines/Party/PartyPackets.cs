@@ -60,7 +60,7 @@ namespace Server.Engines.PartySystem
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetPartyRemoveMemberPacketLength(Party p) => 11 + p?.Count * 4 ?? 0;
+        public static int GetPartyRemoveMemberPacketLength(Party p) => 11 + (p?.Count * 4 ?? 0);
 
         public static void SendPartyRemoveMember(this NetState ns, Serial m, Party p = null)
         {
@@ -75,14 +75,14 @@ namespace Server.Engines.PartySystem
             ns.Send(buffer);
         }
 
-        public static void CreatePartyRemoveMember(Span<byte> buffer, Serial m, Party p = null)
+        public static void CreatePartyRemoveMember(Span<byte> buffer, Serial removed, Party p = null)
         {
             if (buffer[0] != 0)
             {
                 return;
             }
 
-            var length = GetPartyMemberListPacketLength(p);
+            var length = GetPartyRemoveMemberPacketLength(p);
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)length);
@@ -91,6 +91,7 @@ namespace Server.Engines.PartySystem
 
             var count = p?.Count ?? 0;
             writer.Write((byte)count);
+            writer.Write(removed);
 
             for (var i = 0; i < count; ++i)
             {
@@ -99,7 +100,7 @@ namespace Server.Engines.PartySystem
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetPartyTextMessagePacketLength(string text) => 12 + text?.Length * 2 ?? 0;
+        public static int GetPartyTextMessagePacketLength(string text) => 12 + (text?.Length * 2 ?? 0);
 
         public static void SendPartyTextMessage(this NetState ns, Serial m, string text, bool toAll)
         {
@@ -143,7 +144,7 @@ namespace Server.Engines.PartySystem
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)10);
             writer.Write((ushort)0x06); // Sub-packet
-            writer.Write(0x07); // command
+            writer.Write((byte)0x07); // command
             writer.Write(leader);
 
             ns.Send(buffer);
