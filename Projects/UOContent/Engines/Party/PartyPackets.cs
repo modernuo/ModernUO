@@ -145,6 +145,8 @@ namespace Server.Engines.PartySystem
             writer.Write((ushort)0x06); // Sub-packet
             writer.Write(0x07); // command
             writer.Write(leader);
+
+            ns.Send(buffer.Span);
         }
     }
 }
