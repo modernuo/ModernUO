@@ -800,28 +800,14 @@ namespace Server.Items
             return m_Devourer.Devour(this); // Devour the corpse if it hasn't
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void SendCorpseContent(NetState ns)
-        {
-            if (ns.ContainerGridLines)
-            {
-                ns.Send(new CorpseContent6017(ns.Mobile, this));
-            }
-            else
-            {
-                ns.Send(new CorpseContent(ns.Mobile, this));
-            }
-
-            ns.Send(new CorpseEquip(ns.Mobile, this));
-        }
-
-        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world, Span<byte> opl)
+        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> opl = default)
         {
             base.SendInfoTo(ns, world, opl);
 
             if (((Body)Amount).IsHuman && ItemID == 0x2006)
             {
-                SendCorpseContent(ns);
+                ns.SendCorpseContent(ns.Mobile, this);
+                ns.SendCorpseEquip(ns.Mobile, this);
             }
         }
 
