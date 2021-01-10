@@ -1,11 +1,10 @@
 using System.IO;
 using Server;
 using Server.Items;
-using Server.Network;
 
-namespace UOContent.Tests
+namespace Server.Network
 {
-    public class CorpseEquip : Packet
+    public sealed class CorpseEquip : Packet
     {
         public CorpseEquip(Mobile beholder, Corpse beheld) : base(0x89)
         {
