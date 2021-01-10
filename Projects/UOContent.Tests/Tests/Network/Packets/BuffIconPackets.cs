@@ -1,7 +1,6 @@
 using System;
-using Server.Network;
 
-namespace Server
+namespace Server.Network
 {
     public sealed class AddBuffPacket : Packet
     {

@@ -1,5 +1,6 @@
 using System;
 using Server;
+using Server.Network;
 using Server.Tests;
 using Server.Tests.Network;
 using Xunit;
