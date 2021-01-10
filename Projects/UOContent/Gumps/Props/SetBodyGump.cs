@@ -1,11 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Server.Commands;
 using Server.Network;
 
 namespace Server.Gumps
 {
+    public enum ModelBodyType
+    {
+        Invalid = -1,
+        Monsters,
+        Sea,
+        Animals,
+        Human,
+        Equipment
+    }
+
     public class SetBodyGump : Gump
     {
         private const int LabelColor32 = 0xFFFFFF;
@@ -227,6 +238,47 @@ namespace Server.Gumps
             }
         }
 
+        public static List<BodyEntry> LoadBodies()
+        {
+            var list = new List<BodyEntry>();
+
+            var path = Path.Combine(Core.BaseDirectory, "Data/models.txt");
+
+            if (File.Exists(path))
+            {
+                using var ip = new StreamReader(path);
+                string line;
+
+                while ((line = ip.ReadLine()) != null)
+                {
+                    line = line.Trim();
+
+                    if (line.Length == 0 || line.StartsWithOrdinal("#"))
+                    {
+                        continue;
+                    }
+
+                    var split = line.Split('\t');
+
+                    if (split.Length >= 9)
+                    {
+                        Body body = Utility.ToInt32(split[0]);
+                        var type = (ModelBodyType)Utility.ToInt32(split[1]);
+                        var name = split[8];
+
+                        var entry = new BodyEntry(body, type, name);
+
+                        if (!list.Contains(entry))
+                        {
+                            list.Add(entry);
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
         private static void LoadLists()
         {
             m_Monster = new List<InternalEntry>();
@@ -234,7 +286,7 @@ namespace Server.Gumps
             m_Sea = new List<InternalEntry>();
             m_Human = new List<InternalEntry>();
 
-            var entries = Docs.LoadBodies();
+            var entries = LoadBodies();
 
             for (var i = 0; i < entries.Count; ++i)
             {
@@ -334,6 +386,20 @@ namespace Server.Gumps
 
                 return v == 0 ? Body.CompareTo(comp.Body) : v;
             }
+        }
+
+        public record BodyEntry
+        {
+            public BodyEntry(Body body, ModelBodyType bodyType, string name)
+            {
+                Body = body;
+                BodyType = bodyType;
+                Name = name;
+            }
+
+            public Body Body { get; }
+            public ModelBodyType BodyType { get; }
+            public string Name { get; }
         }
     }
 }

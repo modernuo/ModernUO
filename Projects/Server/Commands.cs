@@ -109,6 +109,69 @@ namespace Server
         public AccessLevel AccessLevel { get; }
 
         public int CompareTo(CommandEntry e) => string.CompareOrdinal(Command, e?.Command);
+
+        public static List<CommandEntry> GetList()
+        {
+            var commands = new List<CommandEntry>(CommandSystem.Entries.Values);
+
+            commands.Sort();
+            commands.Reverse();
+
+            for (var i = 0; i < commands.Count; ++i)
+            {
+                var e = commands[i];
+
+                for (var j = i + 1; j < commands.Count; ++j)
+                {
+                    var c = commands[j];
+
+                    if (e.Handler.Method == c.Handler.Method)
+                    {
+                        commands.RemoveAt(j);
+                        --j;
+                    }
+                }
+            }
+
+            return commands;
+        }
+    }
+
+    public record CommandInfo
+    {
+        public CommandInfo(AccessLevel accessLevel, string name, string[] aliases, string usage, string description)
+        {
+            AccessLevel = accessLevel;
+            Name = name;
+            Aliases = aliases;
+            Usage = usage;
+            Description = description;
+        }
+
+        public AccessLevel AccessLevel { get; }
+
+        public string Name { get; }
+
+        public string[] Aliases { get; }
+
+        public string Usage { get; }
+
+        public string Description { get; }
+    }
+
+    public class CommandInfoSorter : IComparer<CommandInfo>
+    {
+        public int Compare(CommandInfo a, CommandInfo b)
+        {
+            if (a == null && b == null)
+            {
+                return 0;
+            }
+
+            var v = b?.AccessLevel.CompareTo(a?.AccessLevel) ?? 1;
+
+            return v != 0 ? v : string.CompareOrdinal(a?.Name, b?.Name);
+        }
     }
 
     public static class CommandSystem
