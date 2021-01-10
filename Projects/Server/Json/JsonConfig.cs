@@ -78,7 +78,7 @@ namespace Server.Json
                 File.Delete(filePath);
             }
 
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
             File.WriteAllText(filePath, contents);
         }

@@ -33,8 +33,8 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public Map MapDest { get; set; }
 
-        public override int LabelNumber =>
-            1016511; // the floor of the cavern seems to have collapsed here - a faint light is visible at the bottom of the pit
+        // the floor of the cavern seems to have collapsed here - a faint light is visible at the bottom of the pit
+        public override int LabelNumber => 1016511;
 
         public override void OnDoubleClick(Mobile m)
         {
@@ -45,22 +45,9 @@ namespace Server.Items
 
             var map = MapDest;
 
-            if (map == null || map == Map.Internal)
-            {
-                map = m.Map;
-            }
-
-            var p = PointDest;
-
-            if (p == Point3D.Zero)
-            {
-                p = m.Location;
-            }
-
-            if (m.InRange(this, 3))
+            if (map != null && map != Map.Internal && m.InRange(this, 3))
             {
                 BaseCreature.TeleportPets(m, PointDest, MapDest);
-
                 m.MoveToWorld(PointDest, MapDest);
             }
             else

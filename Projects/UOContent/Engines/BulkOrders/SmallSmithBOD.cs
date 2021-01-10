@@ -140,8 +140,7 @@ namespace Server.Engines.BulkOrders
 
                 if (item != null)
                 {
-                    var allRequiredSkills = true;
-                    var chance = item.GetSuccessChance(m, null, system, false, out allRequiredSkills);
+                    var chance = item.GetSuccessChance(m, null, system, false, out var allRequiredSkills);
 
                     if (allRequiredSkills && chance >= 0.0)
                     {

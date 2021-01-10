@@ -9,6 +9,8 @@ namespace Server.Misc
 {
     public static class CharacterCreation
     {
+        private static readonly TimeSpan BadStartMessageDelay = TimeSpan.FromSeconds(3.5);
+
         private static readonly CityInfo m_NewHavenInfo =
             new("New Haven", "The Bountiful Harvest Inn", 3503, 2574, 14, Map.Trammel);
 
@@ -81,9 +83,7 @@ namespace Server.Misc
             Container cont;
 
             // Begin box of money
-            cont = new WoodenBox();
-            cont.ItemID = 0xE7D;
-            cont.Hue = 0x489;
+            cont = new WoodenBox { ItemID = 0xE7D, Hue = 0x489 };
 
             PlaceItemIn(cont, 16, 51, new BankCheck(500000));
             PlaceItemIn(cont, 28, 51, new BankCheck(250000));
@@ -98,8 +98,7 @@ namespace Server.Misc
             // End box of money
 
             // Begin bag of potion kegs
-            cont = new Backpack();
-            cont.Name = "Various Potion Kegs";
+            cont = new Backpack { Name = "Various Potion Kegs" };
 
             PlaceItemIn(cont, 45, 149, MakePotionKeg(PotionEffect.CureGreater, 0x2D));
             PlaceItemIn(cont, 69, 149, MakePotionKeg(PotionEffect.HealGreater, 0x499));
@@ -113,8 +112,7 @@ namespace Server.Misc
             // End bag of potion kegs
 
             // Begin bag of tools
-            cont = new Bag();
-            cont.Name = "Tool Bag";
+            cont = new Bag { Name = "Tool Bag" };
 
             PlaceItemIn(cont, 30, 35, new TinkerTools(1000));
             PlaceItemIn(cont, 60, 35, new HousePlacementTool());
@@ -144,8 +142,7 @@ namespace Server.Misc
             // End bag of tools
 
             // Begin bag of archery ammo
-            cont = new Bag();
-            cont.Name = "Bag Of Archery Ammo";
+            cont = new Bag { Name = "Bag Of Archery Ammo" };
 
             PlaceItemIn(cont, 48, 76, new Arrow(5000));
             PlaceItemIn(cont, 72, 76, new Bolt(5000));
@@ -154,8 +151,7 @@ namespace Server.Misc
             // End bag of archery ammo
 
             // Begin bag of treasure maps
-            cont = new Bag();
-            cont.Name = "Bag Of Treasure Maps";
+            cont = new Bag { Name = "Bag Of Treasure Maps" };
 
             PlaceItemIn(cont, 30, 35, new TreasureMap(1, Map.Trammel));
             PlaceItemIn(cont, 45, 35, new TreasureMap(2, Map.Trammel));
@@ -178,9 +174,7 @@ namespace Server.Misc
             // End bag of treasure maps
 
             // Begin bag of raw materials
-            cont = new Bag();
-            cont.Hue = 0x835;
-            cont.Name = "Raw Materials Bag";
+            cont = new Bag { Hue = 0x835, Name = "Raw Materials Bag" };
 
             PlaceItemIn(cont, 92, 60, new BarbedLeather(5000));
             PlaceItemIn(cont, 92, 68, new HornedLeather(5000));
@@ -212,9 +206,7 @@ namespace Server.Misc
             // End bag of raw materials
 
             // Begin bag of spell casting stuff
-            cont = new Backpack();
-            cont.Hue = 0x480;
-            cont.Name = "Spell Casting Stuff";
+            cont = new Backpack { Hue = 0x480, Name = "Spell Casting Stuff" };
 
             PlaceItemIn(cont, 45, 105, new Spellbook(ulong.MaxValue));
             PlaceItemIn(cont, 65, 105, new NecromancerSpellbook(0xFFFFUL));
@@ -226,12 +218,10 @@ namespace Server.Misc
             runebook.CurCharges = runebook.MaxCharges;
             PlaceItemIn(cont, 145, 105, runebook);
 
-            Item toHue = new BagOfReagents(150);
-            toHue.Hue = 0x2D;
+            Item toHue = new BagOfReagents(150) { Hue = 0x2D };
             PlaceItemIn(cont, 45, 150, toHue);
 
-            toHue = new BagOfNecroReagents(150);
-            toHue.Hue = 0x488;
+            toHue = new BagOfNecroReagents(150) { Hue = 0x488 };
             PlaceItemIn(cont, 65, 150, toHue);
 
             PlaceItemIn(cont, 140, 150, new BagOfAllReagents(500));
@@ -247,9 +237,7 @@ namespace Server.Misc
             // End bag of spell casting stuff
 
             // Begin bag of ethereals
-            cont = new Backpack();
-            cont.Hue = 0x490;
-            cont.Name = "Bag Of Ethy's!";
+            cont = new Backpack { Hue = 0x490, Name = "Bag Of Ethy's!" };
 
             PlaceItemIn(cont, 45, 66, new EtherealHorse());
             PlaceItemIn(cont, 69, 82, new EtherealOstard());
@@ -264,9 +252,7 @@ namespace Server.Misc
             // End bag of ethereals
 
             // Begin first bag of artifacts
-            cont = new Backpack();
-            cont.Hue = 0x48F;
-            cont.Name = "Bag of Artifacts";
+            cont = new Backpack { Hue = 0x48F, Name = "Bag of Artifacts" };
 
             PlaceItemIn(cont, 45, 66, new TitansHammer());
             PlaceItemIn(cont, 69, 82, new InquisitorsResolution());
@@ -277,9 +263,7 @@ namespace Server.Misc
             // End first bag of artifacts
 
             // Begin second bag of artifacts
-            cont = new Backpack();
-            cont.Hue = 0x48F;
-            cont.Name = "Bag of Artifacts";
+            cont = new Backpack { Hue = 0x48F, Name = "Bag of Artifacts" };
 
             PlaceItemIn(cont, 45, 66, new GauntletsOfNobility());
             PlaceItemIn(cont, 69, 82, new MidnightBracers());
@@ -319,9 +303,7 @@ namespace Server.Misc
             // End second bag of artifacts
 
             // Begin bag of minor artifacts
-            cont = new Backpack();
-            cont.Hue = 0x48F;
-            cont.Name = "Bag of Minor Artifacts";
+            cont = new Backpack { Hue = 0x48F, Name = "Bag of Minor Artifacts" };
 
             PlaceItemIn(cont, 45, 66, new LunaLance());
             PlaceItemIn(cont, 69, 82, new VioletCourage());
@@ -364,9 +346,7 @@ namespace Server.Misc
 
             if (Core.SE)
             {
-                cont = new Bag();
-                cont.Hue = 0x501;
-                cont.Name = "Tokuno Minor Artifacts";
+                cont = new Bag { Hue = 0x501, Name = "Tokuno Minor Artifacts" };
 
                 PlaceItemIn(cont, 42, 70, new Exiler());
                 PlaceItemIn(cont, 38, 53, new HanzosBow());
@@ -394,8 +374,7 @@ namespace Server.Misc
 
             if (Core.SE) // This bag came only after SE.
             {
-                cont = new Bag();
-                cont.Name = "Bag of Bows";
+                cont = new Bag { Name = "Bag of Bows" };
 
                 PlaceItemIn(cont, 31, 84, new Bow());
                 PlaceItemIn(cont, 78, 74, new CompositeBow());
@@ -430,9 +409,7 @@ namespace Server.Misc
             bank.DropItem(new BankCheck(1000000));
 
             // Full spellbook
-            var book = new Spellbook();
-
-            book.Content = ulong.MaxValue;
+            var book = new Spellbook { Content = ulong.MaxValue };
 
             bank.DropItem(book);
 
@@ -482,11 +459,7 @@ namespace Server.Misc
             bank.DropItem(new DyeTub());
             bank.DropItem(new BlackDyeTub());
 
-            var darkRedTub = new DyeTub();
-
-            darkRedTub.DyedHue = 0x485;
-            darkRedTub.Redyable = false;
-
+            var darkRedTub = new DyeTub { DyedHue = 0x485, Redyable = false };
             bank.DropItem(darkRedTub);
 
             // Some food
@@ -667,20 +640,8 @@ namespace Server.Misc
             newChar.Player = true;
             newChar.AccessLevel = args.Account.AccessLevel;
             newChar.Female = args.Female;
-            // newChar.Body = newChar.Female ? 0x191 : 0x190;
-
-            if (Core.Expansion >= args.Race.RequiredExpansion)
-            {
-                newChar.Race = args.Race; // Sets body
-            }
-            else
-            {
-                newChar.Race = Race.DefaultRace;
-            }
-
-            // newChar.Hue = Utility.ClipSkinHue( args.Hue & 0x3FFF ) | 0x8000;
+            newChar.Race = Core.Expansion >= args.Race.RequiredExpansion ? args.Race : Race.DefaultRace;
             newChar.Hue = newChar.Race.ClipSkinHue(args.Hue & 0x3FFF) | 0x8000;
-
             newChar.Hunger = 20;
 
             var young = false;
@@ -746,30 +707,9 @@ namespace Server.Misc
             new WelcomeTimer(newChar).Start();
         }
 
-        public static bool VerifyProfession(int profession)
-        {
-            if (profession < 0)
-            {
-                return false;
-            }
+        public static bool VerifyProfession(int profession) =>
+            profession >= 0 && (profession < 4 || Core.AOS && profession < 6 || Core.SE && profession < 8);
 
-            if (profession < 4)
-            {
-                return true;
-            }
-
-            if (Core.AOS && profession < 6)
-            {
-                return true;
-            }
-
-            if (Core.SE && profession < 8)
-            {
-                return true;
-            }
-
-            return false;
-        }
 
         private static CityInfo GetStartLocation(CharacterCreatedEventArgs args, bool isYoung)
         {
@@ -794,15 +734,14 @@ namespace Server.Misc
 
                         useHaven = true;
 
-                        // ReSharper disable once CA1806
-                        new BadStartMessage(m, 1062205);
                         /*
                          * Unfortunately you are playing on a *NON-Age-Of-Shadows* game
                          * installation and cannot be transported to Malas.
                          * You will not be able to take your new player quest in Malas
                          * without an AOS client.  You are now being taken to the city of
                          * Haven on the Trammel facet.
-                         * */
+                         */
+                        Timer.DelayCall(BadStartMessageDelay, from => from.SendLocalizedMessage(1062205), m);
 
                         break;
                     }
@@ -819,15 +758,14 @@ namespace Server.Misc
 
                         useHaven = true;
 
-                        // ReSharper disable once CA1806
-                        new BadStartMessage(m, 1063487);
                         /*
                          * Unfortunately you are playing on a *NON-Samurai-Empire* game
                          * installation and cannot be transported to Tokuno.
                          * You will not be able to take your new player quest in Tokuno
                          * without an SE client. You are now being taken to the city of
                          * Haven on the Trammel facet.
-                         * */
+                         */
+                        Timer.DelayCall(BadStartMessageDelay, from => from.SendLocalizedMessage(1063487), m);
 
                         break;
                     }
@@ -840,25 +778,20 @@ namespace Server.Misc
 
                         useHaven = true;
 
-                        new BadStartMessage(m, 1063487);
                         /*
                          * Unfortunately you are playing on a *NON-Samurai-Empire* game
                          * installation and cannot be transported to Tokuno.
                          * You will not be able to take your new player quest in Tokuno
                          * without an SE client. You are now being taken to the city of
                          * Haven on the Trammel facet.
-                         * */
+                         */
+                        Timer.DelayCall(BadStartMessageDelay, from => from.SendLocalizedMessage(1063487), m);
 
                         break;
                     }
             }
 
-            if (useHaven)
-            {
-                return m_NewHavenInfo;
-            }
-
-            return args.City;
+            return useHaven ? m_NewHavenInfo : args.City;
         }
 
         private static void FixStats(ref int str, ref int dex, ref int intel, int max)
@@ -1888,24 +1821,6 @@ namespace Server.Misc
                         break;
                     }
             }
-        }
-    }
-
-    internal class BadStartMessage : Timer
-    {
-        private readonly int m_Message;
-        private readonly Mobile m_Mobile;
-
-        public BadStartMessage(Mobile m, int message) : base(TimeSpan.FromSeconds(3.5))
-        {
-            m_Mobile = m;
-            m_Message = message;
-            Start();
-        }
-
-        protected override void OnTick()
-        {
-            m_Mobile.SendLocalizedMessage(m_Message);
         }
     }
 }

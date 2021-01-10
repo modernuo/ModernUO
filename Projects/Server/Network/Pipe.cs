@@ -239,7 +239,7 @@ namespace Server.Network
                 _pipe._readContinuation = null;
                 _pipe._readAwaitBeginning = false;
 
-                ThreadPool.UnsafeQueueUserWorkItem(state => continuation(), true);
+                ThreadPool.UnsafeQueueUserWorkItem(_ => continuation(), true);
             }
 
             #region Awaitable
@@ -385,7 +385,7 @@ namespace Server.Network
                 _pipe._writeContinuation = null;
                 _pipe._readAwaitBeginning = false;
 
-                ThreadPool.UnsafeQueueUserWorkItem(state => continuation(), true);
+                ThreadPool.UnsafeQueueUserWorkItem(_ => continuation(), true);
             }
 
             #region Awaitable

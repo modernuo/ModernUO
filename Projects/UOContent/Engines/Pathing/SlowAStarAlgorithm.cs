@@ -101,10 +101,10 @@ namespace Server.PathAlgorithms.SlowAStar
 
                     path[pathCount++] = (Direction)curNode.dir;
 
-                    if (pathCount == MaxNodes)
-                    {
-                        break;
-                    }
+                    // if (pathCount == MaxNodes)
+                    // {
+                    //     break;
+                    // }
 
                     while (xBacktrack != startNode.x || yBacktrack != startNode.y || zBacktrack != startNode.z)
                     {

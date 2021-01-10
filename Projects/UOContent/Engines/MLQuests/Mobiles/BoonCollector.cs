@@ -10,8 +10,6 @@ namespace Server.Engines.MLQuests.Mobiles
 {
     public abstract class DoneQuestCollector : BaseCreature, IRaceChanger
     {
-        private static Type typeOfRaceChangeConfirmGump = typeof(RaceChangeConfirmGump);
-
         private InternalTimer m_Timer;
 
         public DoneQuestCollector()

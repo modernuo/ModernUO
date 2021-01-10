@@ -950,8 +950,7 @@ namespace Server.Engines.Craft
                 if (RequiredExpansion == Expansion.None ||
                     from.NetState?.SupportsExpansion(RequiredExpansion) == true)
                 {
-                    bool allRequiredSkills;
-                    var chance = GetSuccessChance(from, typeRes, craftSystem, false, out allRequiredSkills);
+                    var chance = GetSuccessChance(from, typeRes, craftSystem, false, out var allRequiredSkills);
 
                     if (allRequiredSkills && chance >= 0.0)
                     {
@@ -1414,9 +1413,8 @@ namespace Server.Engines.Craft
                     }
 
                     var quality = 1;
-                    var allRequiredSkills = true;
 
-                    m_CraftItem.CheckSkills(m_From, m_TypeRes, m_CraftSystem, ref quality, out allRequiredSkills, false);
+                    m_CraftItem.CheckSkills(m_From, m_TypeRes, m_CraftSystem, ref quality, out _, false);
 
                     var context = m_CraftSystem.GetContext(m_From);
 

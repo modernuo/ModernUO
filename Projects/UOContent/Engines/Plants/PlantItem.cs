@@ -96,7 +96,7 @@ namespace Server.Engines.Plants
 
                     if (hits == 0 && m_PlantStatus > PlantStatus.BowlOfDirt)
                     {
-                        PlantSystem.Hits = hits + 1;
+                        PlantSystem.Hits = 1;
                     }
                     else
                     {

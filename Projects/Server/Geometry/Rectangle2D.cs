@@ -135,13 +135,13 @@ namespace Server
             }
         }
 
-        public bool Contains(Point3D p) =>
+        public readonly bool Contains(Point3D p) =>
             m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
 
-        public bool Contains(Point2D p) =>
+        public readonly bool Contains(Point2D p) =>
             m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
 
-        public bool Contains(IPoint2D p) => m_Start <= p && m_End > p;
+        public readonly bool Contains(IPoint2D p) => m_Start <= p && m_End > p;
 
         public override string ToString() => $"({X}, {Y})+({Width}, {Height})";
     }
