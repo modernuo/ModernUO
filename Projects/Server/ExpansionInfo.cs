@@ -304,7 +304,6 @@ namespace Server
 
             return ex switch
             {
-                Expansion.None => FeatureFlags.ExpansionNone,
                 Expansion.T2A  => FeatureFlags.ExpansionT2A,
                 Expansion.UOR  => FeatureFlags.ExpansionUOR,
                 Expansion.UOTD => FeatureFlags.ExpansionUOTD,

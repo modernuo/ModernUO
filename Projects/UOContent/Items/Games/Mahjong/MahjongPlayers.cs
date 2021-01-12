@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Server.Network;
 
 namespace Server.Engines.Mahjong
 {
@@ -171,6 +173,8 @@ namespace Server.Engines.Mahjong
         {
             var removed = false;
 
+            Span<byte> relievePacket = stackalloc byte[MahjongPackets.MahjongRelievePacketLength].InitializePacket();
+
             for (var i = 0; i < m_Players.Length; i++)
             {
                 var player = m_Players[i];
@@ -205,7 +209,8 @@ namespace Server.Engines.Mahjong
                     {
                         m_InGame[i] = false;
 
-                        player.Send(new MahjongRelieve(Game));
+                        MahjongPackets.CreateMahjongRelieve(relievePacket, Game.Serial);
+                        player.NetState?.Send(relievePacket);
 
                         SendPlayerExitMessage(player);
                         UpdateDealer(true);
@@ -228,7 +233,8 @@ namespace Server.Engines.Mahjong
                 {
                     m_Spectators.RemoveAt(i);
 
-                    mobile.Send(new MahjongRelieve(Game));
+                    MahjongPackets.CreateMahjongRelieve(relievePacket, Game.Serial);
+                    mobile.NetState?.Send(relievePacket);
                 }
                 else
                 {
@@ -335,13 +341,13 @@ namespace Server.Engines.Mahjong
 
             if (sendJoinGame)
             {
-                player.Send(new MahjongJoinGame(Game));
+                player.NetState.SendMahjongJoinGame(Game.Serial);
             }
 
             SendPlayersPacket(true, true);
 
-            player.Send(new MahjongGeneralInfo(Game));
-            player.Send(new MahjongTilesInfo(Game, player));
+            player.NetState.SendMahjongGeneralInfo(Game);
+            player.NetState.SendMahjongTilesInfo(Game, player);
 
             if (DealerPosition == index)
             {
@@ -360,10 +366,10 @@ namespace Server.Engines.Mahjong
                 m_Spectators.Add(mobile);
             }
 
-            mobile.Send(new MahjongJoinGame(Game));
-            mobile.Send(new MahjongPlayersInfo(Game, mobile));
-            mobile.Send(new MahjongGeneralInfo(Game));
-            mobile.Send(new MahjongTilesInfo(Game, mobile));
+            mobile.NetState.SendMahjongJoinGame(Game.Serial);
+            mobile.NetState.SendMahjongPlayersInfo(Game, mobile);
+            mobile.NetState.SendMahjongGeneralInfo(Game);
+            mobile.NetState.SendMahjongTilesInfo(Game, mobile);
         }
 
         public void Join(Mobile mobile)
@@ -373,19 +379,18 @@ namespace Server.Engines.Mahjong
             if (index >= 0)
             {
                 AddPlayer(mobile, index, true);
+                return;
+            }
+
+            var nextSeat = GetNextSeat();
+
+            if (nextSeat >= 0)
+            {
+                AddPlayer(mobile, nextSeat, true);
             }
             else
             {
-                var nextSeat = GetNextSeat();
-
-                if (nextSeat >= 0)
-                {
-                    AddPlayer(mobile, nextSeat, true);
-                }
-                else
-                {
-                    AddSpectator(mobile);
-                }
+                AddSpectator(mobile);
             }
         }
 
@@ -438,14 +443,12 @@ namespace Server.Engines.Mahjong
             }
             else
             {
-                from.Send(new MahjongPlayersInfo(Game, from));
-                to.Send(new MahjongPlayersInfo(Game, to));
+                from.NetState.SendMahjongPlayersInfo(Game, from);
+                to.NetState.SendMahjongPlayersInfo(Game, to);
             }
 
-            SendLocalizedMessage(
-                1062774,
-                $"{from.Name}\t{to.Name}\t{amount}"
-            ); // ~1_giver~ gives ~2_receiver~ ~3_number~ points.
+            // ~1_giver~ gives ~2_receiver~ ~3_number~ points.
+            SendLocalizedMessage(1062774, $"{from.Name}\t{to.Name}\t{amount}");
         }
 
         public void OpenSeat(int index)
@@ -458,7 +461,7 @@ namespace Server.Engines.Mahjong
 
             if (m_InGame[index])
             {
-                player.Send(new MahjongRelieve(Game));
+                player.NetState.SendMahjongRelieve(Game.Serial);
             }
 
             m_Players[index] = null;
@@ -488,10 +491,10 @@ namespace Server.Engines.Mahjong
 
             if (IsInGamePlayer(oldDealer))
             {
-                m_Players[oldDealer].Send(new MahjongPlayersInfo(Game, m_Players[oldDealer]));
+                m_Players[oldDealer].NetState.SendMahjongPlayersInfo(Game, m_Players[oldDealer]);
             }
 
-            to.Send(new MahjongPlayersInfo(Game, to));
+            to.NetState.SendMahjongPlayersInfo(Game, to);
 
             SendDealerChangedMessage();
         }
@@ -513,7 +516,7 @@ namespace Server.Engines.Mahjong
         {
             foreach (var mobile in GetInGameMobiles(players, spectators))
             {
-                mobile.Send(new MahjongPlayersInfo(Game, mobile));
+                mobile.NetState.SendMahjongPlayersInfo(Game, mobile);
             }
         }
 
@@ -526,23 +529,20 @@ namespace Server.Engines.Mahjong
                 return;
             }
 
-            var generalInfo = new MahjongGeneralInfo(Game);
-
-            generalInfo.Acquire();
+            Span<byte> generalInfo = stackalloc byte[MahjongPackets.MahjongGeneralInfoPacketLength].InitializePacket();
 
             foreach (var mobile in mobiles)
             {
-                mobile.Send(generalInfo);
+                MahjongPackets.CreateMahjongGeneralInfo(generalInfo, Game);
+                mobile.NetState?.Send(generalInfo);
             }
-
-            generalInfo.Release();
         }
 
         public void SendTilesPacket(bool players, bool spectators)
         {
             foreach (var mobile in GetInGameMobiles(players, spectators))
             {
-                mobile.Send(new MahjongTilesInfo(Game, mobile));
+                mobile.NetState.SendMahjongTilesInfo(Game, mobile);
             }
         }
 
@@ -550,7 +550,7 @@ namespace Server.Engines.Mahjong
         {
             foreach (var mobile in GetInGameMobiles(players, spectators))
             {
-                mobile.Send(new MahjongTileInfo(tile, mobile));
+                mobile.NetState.SendMahjongTileInfo(tile, mobile);
             }
         }
 
@@ -563,16 +563,13 @@ namespace Server.Engines.Mahjong
                 return;
             }
 
-            var relieve = new MahjongRelieve(Game);
-
-            relieve.Acquire();
+            Span<byte> relievePacket = stackalloc byte[MahjongPackets.MahjongRelievePacketLength].InitializePacket();
 
             foreach (var mobile in mobiles)
             {
-                mobile.Send(relieve);
+                MahjongPackets.CreateMahjongRelieve(relievePacket, Game.Serial);
+                mobile.NetState?.Send(relievePacket);
             }
-
-            relieve.Release();
         }
 
         public void SendLocalizedMessage(int number)

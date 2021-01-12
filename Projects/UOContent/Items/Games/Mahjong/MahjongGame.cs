@@ -83,7 +83,7 @@ namespace Server.Engines.Mahjong
 
                 if (Players.IsInGamePlayer(Players.DealerPosition))
                 {
-                    Players.Dealer.Send(new MahjongGeneralInfo(this));
+                    Players.Dealer.NetState.SendMahjongGeneralInfo(this);
                 }
 
                 Players.SendTilesPacket(false, true);
