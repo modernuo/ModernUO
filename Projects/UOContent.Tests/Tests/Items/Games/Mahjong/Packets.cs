@@ -5,11 +5,11 @@ namespace Server.Engines.Mahjong
 {
     public sealed class MahjongJoinGame : Packet
     {
-        public MahjongJoinGame(MahjongGame game) : base(0xDA)
+        public MahjongJoinGame(Serial game) : base(0xDA)
         {
             EnsureCapacity(9);
 
-            Stream.Write(game.Serial);
+            Stream.Write(game);
             Stream.Write((byte)0);
             Stream.Write((byte)0x19);
         }
@@ -209,11 +209,11 @@ namespace Server.Engines.Mahjong
 
     public sealed class MahjongRelieve : Packet
     {
-        public MahjongRelieve(MahjongGame game) : base(0xDA)
+        public MahjongRelieve(Serial game) : base(0xDA)
         {
             EnsureCapacity(9);
 
-            Stream.Write(game.Serial);
+            Stream.Write(game);
             Stream.Write((byte)0);
             Stream.Write((byte)0x1A);
         }
