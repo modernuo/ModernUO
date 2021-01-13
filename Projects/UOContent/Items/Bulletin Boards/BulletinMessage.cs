@@ -59,6 +59,7 @@ namespace Server.Items
 
         public string[] Lines { get; private set; }
 
+        // TODO: Memoize
         public string GetTimeAsString() => Time.ToString("MMM dd, yyyy");
 
         public override bool CheckTarget(Mobile from, Target targ, object targeted) => false;
