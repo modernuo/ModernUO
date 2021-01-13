@@ -21,7 +21,7 @@ namespace Server.Engines.Help
     public static class HelpTopic
     {
         // Topics
-        public const int HEALING = 29;
+        public const int Healing = 29;
         public const int PlantGrowing = 48;
         public const int InfestationLevel = 54;
         public const int FungusLevel = 56;

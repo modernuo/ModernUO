@@ -10,7 +10,7 @@ namespace UOContent.Tests
     public class TestHelpTopicPacket
     {
         [Theory]
-        [InlineData(HelpTopic.HEALING, false)]
+        [InlineData(HelpTopic.Healing, false)]
         [InlineData(HelpTopic.EmptyingBowl, true)]
         public void TestDisplayHelpTopic(int topic, bool display)
         {

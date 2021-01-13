@@ -176,7 +176,7 @@ namespace Server.Engines.Quests.Haven
             {
                 if (CurProgress == 0)
                 {
-                    System.From.NetState.SendDisplayHelpTopic(29, false);
+                    System.From.NetState.SendDisplayHelpTopic(HelpTopic.Healing, false);
                 }
 
                 CurProgress++;
