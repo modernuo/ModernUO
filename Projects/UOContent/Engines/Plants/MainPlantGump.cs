@@ -1,4 +1,5 @@
 using System;
+using Server.Engines.Help;
 using Server.Gumps;
 using Server.Items;
 using Server.Network;
@@ -294,7 +295,7 @@ namespace Server.Engines.Plants
                     }
                 case 2: // Infestation
                     {
-                        from.Send(new DisplayHelpTopic(54, true)); // INFESTATION LEVEL
+                        from.NetState.SendDisplayHelpTopic(HelpTopic.InfestationLevel);
 
                         from.SendGump(new MainPlantGump(m_Plant));
 
@@ -302,7 +303,7 @@ namespace Server.Engines.Plants
                     }
                 case 3: // Fungus
                     {
-                        from.Send(new DisplayHelpTopic(56, true)); // FUNGUS LEVEL
+                        from.NetState.SendDisplayHelpTopic(HelpTopic.FungusLevel);
 
                         from.SendGump(new MainPlantGump(m_Plant));
 
@@ -310,7 +311,7 @@ namespace Server.Engines.Plants
                     }
                 case 4: // Poison
                     {
-                        from.Send(new DisplayHelpTopic(58, true)); // POISON LEVEL
+                        from.NetState.SendDisplayHelpTopic(HelpTopic.PoisonLevel);
 
                         from.SendGump(new MainPlantGump(m_Plant));
 
@@ -318,7 +319,7 @@ namespace Server.Engines.Plants
                     }
                 case 5: // Disease
                     {
-                        from.Send(new DisplayHelpTopic(60, true)); // DISEASE LEVEL
+                        from.NetState.SendDisplayHelpTopic(HelpTopic.DiseaseLevel);
 
                         from.SendGump(new MainPlantGump(m_Plant));
 
@@ -375,7 +376,7 @@ namespace Server.Engines.Plants
                     }
                 case 11: // Help
                     {
-                        from.Send(new DisplayHelpTopic(48, true)); // PLANT GROWING
+                        from.NetState.SendDisplayHelpTopic(HelpTopic.PlantGrowing);
 
                         from.SendGump(new MainPlantGump(m_Plant));
 

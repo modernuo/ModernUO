@@ -1,3 +1,4 @@
+using Server.Engines.Help;
 using Server.Gumps;
 using Server.Network;
 
@@ -79,7 +80,7 @@ namespace Server.Engines.Plants
                     }
                 case 2: // Help
                     {
-                        from.Send(new DisplayHelpTopic(71, true)); // EMPTYING THE BOWL
+                        from.NetState.SendDisplayHelpTopic(HelpTopic.EmptyingBowl);
 
                         from.SendGump(new EmptyTheBowlGump(m_Plant));
 

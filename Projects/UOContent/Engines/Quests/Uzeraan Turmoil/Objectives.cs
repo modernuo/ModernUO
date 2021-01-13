@@ -1,3 +1,4 @@
+using Server.Engines.Help;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
@@ -91,16 +92,16 @@ namespace Server.Engines.Quests.Haven
                 {
                     KillHordeMinionsStep.First =>
                         /* Find the mountain pass beyond the house which lies at the
-                           * end of the runic road.<BR><BR>
-                           *
-                           * Assist the city Militia by slaying <I>Horde Minions</I>
-                           */
+                         * end of the runic road.<BR><BR>
+                         *
+                         * Assist the city Militia by slaying <I>Horde Minions</I>
+                         */
                         1049089,
                     KillHordeMinionsStep.LearnKarma =>
                         /* You have just gained some <a href="?ForceTopic45">Karma</a>
-                           * for killing the horde minion. <a href="?ForceTopic134">Learn</a>
-                           * how this affects your Paladin abilities.
-                           */
+                         * for killing the horde minion. <a href="?ForceTopic134">Learn</a>
+                         * how this affects your Paladin abilities.
+                         */
                         1060389,
                     _ => 1060507
                 };
@@ -175,7 +176,7 @@ namespace Server.Engines.Quests.Haven
             {
                 if (CurProgress == 0)
                 {
-                    System.From.Send(new DisplayHelpTopic(29, false)); // HEALING
+                    System.From.NetState.SendDisplayHelpTopic(HelpTopic.Healing, false);
                 }
 
                 CurProgress++;
