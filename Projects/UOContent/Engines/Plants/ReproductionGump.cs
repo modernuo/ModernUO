@@ -1,3 +1,4 @@
+using Server.Engines.Help;
 using Server.Gumps;
 using Server.Network;
 
@@ -165,7 +166,7 @@ namespace Server.Engines.Plants
                     }
                 case 3: // Pollination
                     {
-                        from.Send(new DisplayHelpTopic(67, true)); // POLLINATION STATE
+                        from.NetState.SendDisplayHelpTopic(HelpTopic.PollinationState);
 
                         from.SendGump(new ReproductionGump(m_Plant));
 
@@ -173,7 +174,7 @@ namespace Server.Engines.Plants
                     }
                 case 4: // Resources
                     {
-                        from.Send(new DisplayHelpTopic(69, true)); // RESOURCE PRODUCTION
+                        from.NetState.SendDisplayHelpTopic(HelpTopic.ResourceProduction);
 
                         from.SendGump(new ReproductionGump(m_Plant));
 
@@ -181,7 +182,7 @@ namespace Server.Engines.Plants
                     }
                 case 5: // Seeds
                     {
-                        from.Send(new DisplayHelpTopic(68, true)); // SEED PRODUCTION
+                        from.NetState.SendDisplayHelpTopic(HelpTopic.SeedProduction);
 
                         from.SendGump(new ReproductionGump(m_Plant));
 
