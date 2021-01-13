@@ -99,29 +99,21 @@ namespace Server.Items
         {
             var ns = from.NetState;
 
-            if (ns.NewCharacterList) // 7.0.13.0+ supports maps on all facets
-            {
-                from.Send(new MapDetailsNew(this));
-            }
-            else if (Facet != null && Facet != Map.Felucca && Facet != Map.Trammel
-            ) // Is it Felucca and Trammel, or just Felucca?
+            if (!ns.NewCharacterList && Facet != null && Facet != Map.Felucca && Facet != Map.Trammel)
             {
                 from.SendMessage("You must have client 7.0.13.0 or higher to display this map.");
                 return;
             }
-            else
-            {
-                from.Send(new MapDetails(this));
-            }
 
-            from.Send(new MapDisplay(this));
+            ns.SendMapDetails(this);
+            ns.SendMapDisplay(this);
 
             for (var i = 0; i < Pins.Count; ++i)
             {
-                from.Send(new MapAddPin(this, Pins[i]));
+                ns.SendMapAddPin(this, Pins[i]);
             }
 
-            from.Send(new MapSetEditable(this, ValidateEdit(from)));
+            ns.SendMapSetEditable(this, ValidateEdit(from));
         }
 
         public virtual void OnAddPin(Mobile from, int x, int y)
@@ -194,7 +186,7 @@ namespace Server.Items
                 m_Editable = !m_Editable;
             }
 
-            from.Send(new MapSetEditable(this, Validate(from) && m_Editable));
+            from.NetState.SendMapSetEditable(this, m_Editable && Validate(from));
         }
 
         public virtual void Validate(ref int x, ref int y)
@@ -369,70 +361,6 @@ namespace Server.Items
                 case 6:
                     map.OnToggleEditable(from);
                     break;
-            }
-        }
-
-        private sealed class MapDetails : Packet
-        {
-            public MapDetails(MapItem map) : base(0x90, 19)
-            {
-                Stream.Write(map.Serial);
-                Stream.Write((short)0x139D);
-                Stream.Write((short)map.Bounds.Start.X);
-                Stream.Write((short)map.Bounds.Start.Y);
-                Stream.Write((short)map.Bounds.End.X);
-                Stream.Write((short)map.Bounds.End.Y);
-                Stream.Write((short)map.Width);
-                Stream.Write((short)map.Height);
-            }
-        }
-
-        private sealed class MapDetailsNew : Packet
-        {
-            public MapDetailsNew(MapItem map) : base(0xF5, 21)
-            {
-                Stream.Write(map.Serial);
-                Stream.Write((short)0x139D);
-                Stream.Write((short)map.Bounds.Start.X);
-                Stream.Write((short)map.Bounds.Start.Y);
-                Stream.Write((short)map.Bounds.End.X);
-                Stream.Write((short)map.Bounds.End.Y);
-                Stream.Write((short)map.Width);
-                Stream.Write((short)map.Height);
-                Stream.Write((short)(map.Facet?.MapID ?? 0));
-            }
-        }
-
-        private abstract class MapCommand : Packet
-        {
-            public MapCommand(MapItem map, int command, int number, int x, int y) : base(0x56, 11)
-            {
-                Stream.Write(map.Serial);
-                Stream.Write((byte)command);
-                Stream.Write((byte)number);
-                Stream.Write((short)x);
-                Stream.Write((short)y);
-            }
-        }
-
-        private sealed class MapDisplay : MapCommand
-        {
-            public MapDisplay(MapItem map) : base(map, 5, 0, 0, 0)
-            {
-            }
-        }
-
-        private sealed class MapAddPin : MapCommand
-        {
-            public MapAddPin(MapItem map, Point2D point) : base(map, 1, 0, point.X, point.Y)
-            {
-            }
-        }
-
-        private sealed class MapSetEditable : MapCommand
-        {
-            public MapSetEditable(MapItem map, bool editable) : base(map, 7, editable ? 1 : 0, 0, 0)
-            {
             }
         }
     }
