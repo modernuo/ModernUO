@@ -41,7 +41,7 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span<byte> SliceToLength(this Span<byte> span, int length) => span.Slice(0, length);
+        public static Span<T> SliceToLength<T>(this Span<T> span, int length) => span.Slice(0, length);
 
         // If LOCAL INIT is off, then stack/heap allocations have garbage data
         // Initializes the first byte (Packet ID) so it can be used as a flag.
