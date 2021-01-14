@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using Microsoft.Toolkit.HighPerformance.Extensions;
+using Server.Network;
 using Server.Random;
 
 namespace Server
@@ -386,7 +387,7 @@ namespace Server
             var sectionStart = 0;
             var hasCompressor = false;
 
-            var num = BinaryPrimitives.ReadUInt16BigEndian(ip.Slice(0, 2));
+            var num = BinaryPrimitives.ReadUInt16BigEndian(ip.SliceToLength(2));
 
             for (int i = 0; i < end; i++)
             {

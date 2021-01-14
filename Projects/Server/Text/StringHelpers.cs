@@ -57,7 +57,7 @@ namespace Server
                     throw new OutOfMemoryException(nameof(buffer));
                 }
 
-                sliced.Slice(0, indexOf).CopyTo(buffer.Slice(size));
+                sliced.SliceToLength(indexOf).CopyTo(buffer.Slice(size));
                 size += indexOf;
 
                 if (indexOf == sliced.Length)
@@ -96,7 +96,7 @@ namespace Server
 
             a.Remove(b, comparison, span, out var size);
 
-            var str = span.Slice(0, size).ToString();
+            var str = span.SliceToLength(size).ToString();
 
             if (chrs != null)
             {
@@ -192,7 +192,7 @@ namespace Server
 
                 if (newLineLength == perLine || newLineLength == span.Length)
                 {
-                    list.Add(span.Slice(0, newLineLength).ToString());
+                    list.Add(span.SliceToLength(newLineLength).ToString());
                     if (list.Count == maxLines || newLineLength == span.Length)
                     {
                         break;
@@ -207,7 +207,7 @@ namespace Server
                 }
                 else if (lineLength > 0 && lineLength <= perLine)
                 {
-                    list.Add(span.Slice(0, lineLength - 1).ToString());
+                    list.Add(span.SliceToLength(lineLength - 1).ToString());
                     if (list.Count == maxLines)
                     {
                         break;

@@ -18,6 +18,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Server;
+using Server.Network;
 using Server.Text;
 
 namespace System.Buffers
@@ -363,7 +364,7 @@ namespace System.Buffers
             if (Position < _first.Length)
             {
                 var sz = Math.Min(buffer.Length, _first.Length - Position);
-                buffer.Slice(0, sz).CopyTo(_first.Slice(Position));
+                buffer.SliceToLength(sz).CopyTo(_first.Slice(Position));
                 if (sz < buffer.Length)
                 {
                     buffer.Slice(sz).CopyTo(_second);
@@ -398,7 +399,7 @@ namespace System.Buffers
             if (Position < _first.Length)
             {
                 count = Math.Min(_first.Length - Position, byteCount);
-                bytes.Slice(0, count).CopyTo(_first.Slice(Position));
+                bytes.SliceToLength(count).CopyTo(_first.Slice(Position));
                 byteCount -= count;
                 Position += count;
             }

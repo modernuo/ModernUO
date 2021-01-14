@@ -133,7 +133,7 @@ namespace Benchmarks
                 buffer, Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, "ENU", "System", text
             );
 
-            buffer = buffer.Slice(0, length);
+            buffer = buffer.SliceToLength(length);
 
             foreach (var pipe in _pipes)
             {
@@ -152,7 +152,7 @@ namespace Benchmarks
                 buffer, Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, "ENU", "System", text
             );
 
-            buffer = buffer.Slice(0, length);
+            buffer = buffer.SliceToLength(length);
             var result = pipe.Writer.TryGetMemory();
             result.CopyFrom(buffer);
             pipe.Writer.Advance((uint)buffer.Length);

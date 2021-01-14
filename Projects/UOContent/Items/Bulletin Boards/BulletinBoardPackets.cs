@@ -16,6 +16,7 @@
 using System;
 using System.Buffers;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Server.Items;
 using Server.Text;
 
@@ -42,12 +43,19 @@ namespace Server.Network
             Span<byte> textBuffer = stackalloc byte[TextEncoding.UTF8.GetMaxByteCount(textChars.Length)]; // Max 30 * 3 (90 bytes)
 
             // We are ok with the string being cut-off mid character. The alternative is very slow.
-            // The board name should be regulated by staff, who can test proper strings that will look correct.
             var byteLength = Math.Min(29, TextEncoding.UTF8.GetBytes(textChars, textBuffer));
-            writer.Write(textBuffer.Slice(0, byteLength));
+            writer.Write(textBuffer.SliceToLength(byteLength));
             writer.Clear(30 - byteLength); // terminator
 
             ns.Send(writer.Span);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void UpdateLengthCounters(this string text, ref int maxLength, ref int longestTextLine)
+        {
+            var line = Math.Min(255, text.Length);
+            maxLength += TextEncoding.UTF8.GetMaxByteCount(line);
+            longestTextLine = Math.Max(line, longestTextLine);
         }
 
         public static void SendBBMessage(this NetState ns, BaseBulletinBoard board, BulletinMessage msg, bool content = false)
@@ -60,28 +68,20 @@ namespace Server.Network
             var longestTextLine = 0;
             var maxLength = 22;
             var poster = msg.PostedName ?? "";
-            var line = Math.Min(255, poster.Length);
-            maxLength += TextEncoding.UTF8.GetMaxByteCount(line);
-            longestTextLine = Math.Max(line, longestTextLine);
+            poster.UpdateLengthCounters(ref maxLength, ref longestTextLine);
 
             var subject = msg.Subject ?? "";
-            line = Math.Min(255, subject.Length);
-            maxLength += TextEncoding.UTF8.GetMaxByteCount(Math.Min(255, subject.Length));
-            longestTextLine = Math.Max(line, longestTextLine);
+            subject.UpdateLengthCounters(ref maxLength, ref longestTextLine);
 
             var time = msg.GetTimeAsString() ?? "";
-            line = Math.Min(255, time.Length);
-            maxLength += TextEncoding.UTF8.GetMaxByteCount(Math.Min(255, time.Length));
-            longestTextLine = Math.Max(line, longestTextLine);
+            time.UpdateLengthCounters(ref maxLength, ref longestTextLine);
 
             if (content)
             {
                 maxLength += 6 + msg.PostedEquip.Length * 4;
                 for (int i = 0; i < msg.Lines.Length; i++)
                 {
-                    line = Math.Min(255, msg.Lines[i].Length);
-                    maxLength += TextEncoding.UTF8.GetMaxByteCount(line);
-                    longestTextLine = Math.Max(line, longestTextLine);
+                    msg.Lines[i].UpdateLengthCounters(ref maxLength, ref longestTextLine);
                 }
             }
 
