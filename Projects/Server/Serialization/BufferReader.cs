@@ -21,6 +21,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using Server.Guilds;
+using Server.Text;
 
 namespace Server
 {
@@ -37,7 +38,7 @@ namespace Server
         public BufferReader(byte[] buffer)
         {
             _buffer = buffer;
-            _encoding = Utility.UTF8;
+            _encoding = TextEncoding.UTF8;
         }
 
         public void SwapBuffers(byte[] newBuffer, out byte[] oldBuffer)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Server.Network;
+using Server.Text;
 
 namespace Server.Gumps
 {
@@ -248,7 +249,7 @@ namespace Server.Gumps
             state.SendDisplayGump(this, out m_Switches, out m_TextEntries);
         }
 
-        public static byte[] StringToBuffer(string str) => Encoding.ASCII.GetBytes(str);
+        public static byte[] StringToBuffer(string str) => str.GetBytesAscii();
 
         public virtual void OnResponse(NetState sender, RelayInfo info)
         {

@@ -16,6 +16,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Security.Cryptography;
+using Server.Text;
 
 namespace Server.Accounting.Security
 {

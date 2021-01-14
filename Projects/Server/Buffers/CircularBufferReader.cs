@@ -19,6 +19,7 @@ using System.Buffers.Binary;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Text;
 
 namespace Server.Network
 {
@@ -243,7 +244,7 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string ReadString(Encoding encoding, bool safeString = false, int fixedLength = -1)
         {
-            int sizeT = Utility.GetByteLengthForEncoding(encoding);
+            int sizeT = TextEncoding.GetByteLengthForEncoding(encoding);
 
             bool isFixedLength = fixedLength > -1;
 
@@ -271,7 +272,7 @@ namespace Server.Network
                 var firstLength = Math.Min(_first.Length - Position, size);
 
                 // Find terminator
-                index = Utility.IndexOfTerminator(_first.Slice(Position, firstLength), sizeT);
+                index = _first.Slice(Position, firstLength).IndexOfTerminator(sizeT);
 
                 if (index < 0)
                 {
@@ -283,7 +284,7 @@ namespace Server.Network
                     }
                     else
                     {
-                        index = Utility.IndexOfTerminator(_second.Slice(0, remaining), sizeT);
+                        index = _second.Slice(0, remaining).IndexOfTerminator(sizeT);
 
                         int secondLength = index < 0 ? remaining : index;
                         int length = firstLength + secondLength;
@@ -294,7 +295,7 @@ namespace Server.Network
                         _second.Slice(0, secondLength).CopyTo(bytes.Slice(firstLength));
 
                         Position += length + (index >= 0 ? sizeT : 0);
-                        return Utility.GetString(bytes, encoding, safeString);
+                        return TextEncoding.GetString(bytes, encoding, safeString);
                     }
                 }
 
@@ -304,7 +305,7 @@ namespace Server.Network
             {
                 size = Math.Min(remaining, size);
                 span = _second.Slice( Position - _first.Length, size);
-                index = Utility.IndexOfTerminator(span, sizeT);
+                index = span.IndexOfTerminator(sizeT);
 
                 if (index >= 0)
                 {
@@ -317,41 +318,41 @@ namespace Server.Network
             }
 
             Position += isFixedLength ? size : index + sizeT;
-            return Utility.GetString(span, encoding, safeString);
+            return TextEncoding.GetString(span, encoding, safeString);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUniSafe(int fixedLength) => ReadString(Utility.UnicodeLE, true, fixedLength);
+        public string ReadLittleUniSafe(int fixedLength) => ReadString(TextEncoding.UnicodeLE, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUniSafe() => ReadString(Utility.UnicodeLE, true);
+        public string ReadLittleUniSafe() => ReadString(TextEncoding.UnicodeLE, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUni(int fixedLength) => ReadString(Utility.UnicodeLE, false, fixedLength);
+        public string ReadLittleUni(int fixedLength) => ReadString(TextEncoding.UnicodeLE, false, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUni() => ReadString(Utility.UnicodeLE);
+        public string ReadLittleUni() => ReadString(TextEncoding.UnicodeLE);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUniSafe(int fixedLength) => ReadString(Utility.Unicode, true, fixedLength);
+        public string ReadBigUniSafe(int fixedLength) => ReadString(TextEncoding.Unicode, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUniSafe() => ReadString(Utility.Unicode, true);
+        public string ReadBigUniSafe() => ReadString(TextEncoding.Unicode, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUni(int fixedLength) => ReadString(Utility.Unicode, false, fixedLength);
+        public string ReadBigUni(int fixedLength) => ReadString(TextEncoding.Unicode, false, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUni() => ReadString(Utility.Unicode);
+        public string ReadBigUni() => ReadString(TextEncoding.Unicode);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadUTF8Safe(int fixedLength) => ReadString(Utility.UTF8, true, fixedLength);
+        public string ReadUTF8Safe(int fixedLength) => ReadString(TextEncoding.UTF8, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadUTF8Safe() => ReadString(Utility.UTF8, true);
+        public string ReadUTF8Safe() => ReadString(TextEncoding.UTF8, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadUTF8() => ReadString(Utility.UTF8);
+        public string ReadUTF8() => ReadString(TextEncoding.UTF8);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string ReadAsciiSafe(int fixedLength) => ReadString(Encoding.ASCII, true, fixedLength);

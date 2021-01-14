@@ -1,4 +1,5 @@
 using System;
+using Server.Text;
 
 namespace Server.Tests
 {

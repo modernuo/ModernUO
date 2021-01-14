@@ -15,7 +15,7 @@
 
 using System;
 
-namespace Server
+namespace Server.Text
 {
     public static class HexStringConverter
     {
@@ -66,7 +66,7 @@ namespace Server
             const uint delimiter = 0x20002C; // ", "
             const char openBracket = '[';
             const char closeBracket = ']';
-            var length = bytes.Length * 4; // len * 2 + (len - 1) * 2 + 2
+            var length = Math.Max(2, bytes.Length * 4); // len * 2 + (len - 1) * 2 + 2
 
             var result = new string((char)0, length);
             fixed (char* resultP = result)
