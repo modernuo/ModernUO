@@ -51,11 +51,12 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void UpdateLengthCounters(this string text, ref int maxLength, ref int longestTextLine)
+        private static void UpdateLengthCounters(this string text, ref int maxLength, ref int longestTextLine, bool pad = false)
         {
             var line = Math.Min(255, text.Length);
-            maxLength += TextEncoding.UTF8.GetMaxByteCount(line);
-            longestTextLine = Math.Max(line, longestTextLine);
+            var byteCount = TextEncoding.UTF8.GetMaxByteCount(line) + (pad ? 3 : 2); // 1 + length + terminator
+            maxLength += byteCount;
+            longestTextLine = Math.Max(byteCount, longestTextLine);
         }
 
         public static void SendBBMessage(this NetState ns, BaseBulletinBoard board, BulletinMessage msg, bool content = false)
@@ -76,16 +77,18 @@ namespace Server.Network
             var time = msg.GetTimeAsString() ?? "";
             time.UpdateLengthCounters(ref maxLength, ref longestTextLine);
 
+            var equipLength = Math.Min(255, msg.PostedEquip.Length);
+            var linesLength = Math.Min(255, msg.Lines.Length);
+
             if (content)
             {
-                maxLength += 6 + msg.PostedEquip.Length * 4;
-                for (int i = 0; i < msg.Lines.Length; i++)
+                maxLength += 2 + equipLength * 4; // We have an extra 4 from the thread serial
+                for (int i = 0; i < linesLength; i++)
                 {
-                    msg.Lines[i].UpdateLengthCounters(ref maxLength, ref longestTextLine);
+                    msg.Lines[i].UpdateLengthCounters(ref maxLength, ref longestTextLine, true);
                 }
             }
 
-            // max: 255 * 3 bytes
             Span<byte> textBuffer = stackalloc byte[TextEncoding.UTF8.GetMaxByteCount(longestTextLine)];
 
             var writer = maxLength > 81920 ? new SpanWriter(maxLength) : new SpanWriter(stackalloc byte[maxLength]);
@@ -94,7 +97,10 @@ namespace Server.Network
             writer.Write((byte)(content ? 0x02 : 0x01)); // Command
             writer.Write(board.Serial);
             writer.Write(msg.Serial);
-            writer.Write(msg.Thread?.Serial ?? Serial.Zero);
+            if (!content)
+            {
+                writer.Write(msg.Thread?.Serial ?? Serial.Zero);
+            }
 
             writer.WriteString(poster, textBuffer);
             writer.WriteString(subject, textBuffer);
@@ -105,18 +111,16 @@ namespace Server.Network
                 writer.Write((short)msg.PostedBody);
                 writer.Write((short)msg.PostedHue);
 
-                var length = Math.Min(255, msg.PostedEquip.Length);
-                writer.Write((byte)length);
-                for (var i = 0; i < length; i++)
+                writer.Write((byte)equipLength);
+                for (var i = 0; i < equipLength; i++)
                 {
                     var eq = msg.PostedEquip[i];
                     writer.Write((short)eq.itemID);
                     writer.Write((short)eq.hue);
                 }
 
-                length = msg.Lines.Length;
-                writer.Write((byte)length);
-                for (var i = 0; i < length; i++)
+                writer.Write((byte)linesLength);
+                for (var i = 0; i < linesLength; i++)
                 {
                     writer.WriteString(msg.Lines[i], textBuffer, true);
                 }
@@ -130,9 +134,10 @@ namespace Server.Network
 
         private static void WriteString(this ref SpanWriter writer, string text, Span<byte> buffer, bool pad = false)
         {
-            var length = Math.Min(255, text.GetBytesUtf8(buffer));
-            writer.Write((byte)length);
-            writer.Write(buffer.SliceToLength(length - (pad ? 2 : 1)));
+            var tail = pad ? 2 : 1;
+            var length = Math.Min(pad ? 253 : 254, text.GetBytesUtf8(buffer));
+            writer.Write((byte)(length + tail));
+            writer.Write(buffer.SliceToLength(length));
 
             if (pad)
             {
