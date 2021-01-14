@@ -251,7 +251,7 @@ namespace System.Buffers
 
             GrowIfNeeded(byteCount);
 
-            var bytesWritten = TextEncoding.GetBytes(src, _buffer.Slice(_position), encoding);
+            var bytesWritten = encoding.GetBytes(src, _buffer.Slice(_position));
             Position += bytesWritten;
 
             if (fixedLength > -1)

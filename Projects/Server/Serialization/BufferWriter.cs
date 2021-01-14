@@ -433,7 +433,7 @@ namespace Server
             while (charsLeft > 0)
             {
                 var charCount = Math.Min(charsLeft, maxChars);
-                var bytesWritten = TextEncoding.GetBytes(value.AsSpan(current, charCount), span, m_Encoding);
+                var bytesWritten = m_Encoding.GetBytes(value.AsSpan(current, charCount), span);
                 remaining -= bytesWritten;
                 charsLeft -= charCount;
                 current += charCount;

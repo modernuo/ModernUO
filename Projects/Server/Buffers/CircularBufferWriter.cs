@@ -392,7 +392,7 @@ namespace System.Buffers
             }
 
             Span<byte> bytes = stackalloc byte[byteCount];
-            TextEncoding.GetBytes(value, bytes, encoding);
+            encoding.GetBytes(value, bytes);
 
             int count;
             if (Position < _first.Length)
