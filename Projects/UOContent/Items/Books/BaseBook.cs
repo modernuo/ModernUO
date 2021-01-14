@@ -502,7 +502,7 @@ namespace Server.Items
 
                 for (var j = 0; j < page.Lines.Length; ++j)
                 {
-                    var buffer = TextEncoding.UTF8.GetBytes(page.Lines[j]);
+                    var buffer = page.Lines[j].GetBytesUtf8();
 
                     Stream.Write(buffer, 0, buffer.Length);
                     Stream.Write((byte)0);
@@ -518,8 +518,8 @@ namespace Server.Items
             var title = book.Title ?? "";
             var author = book.Author ?? "";
 
-            var titleBuffer = TextEncoding.UTF8.GetBytes(title);
-            var authorBuffer = TextEncoding.UTF8.GetBytes(author);
+            var titleBuffer = title.GetBytesUtf8();
+            var authorBuffer = author.GetBytesUtf8();
 
             EnsureCapacity(15 + titleBuffer.Length + authorBuffer.Length);
 
