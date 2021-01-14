@@ -6,6 +6,7 @@ using Server.ContextMenus;
 using Server.Gumps;
 using Server.Multis;
 using Server.Network;
+using Server.Text;
 
 namespace Server.Items
 {
@@ -501,7 +502,7 @@ namespace Server.Items
 
                 for (var j = 0; j < page.Lines.Length; ++j)
                 {
-                    var buffer = Utility.UTF8.GetBytes(page.Lines[j]);
+                    var buffer = TextEncoding.UTF8.GetBytes(page.Lines[j]);
 
                     Stream.Write(buffer, 0, buffer.Length);
                     Stream.Write((byte)0);
@@ -517,8 +518,8 @@ namespace Server.Items
             var title = book.Title ?? "";
             var author = book.Author ?? "";
 
-            var titleBuffer = Utility.UTF8.GetBytes(title);
-            var authorBuffer = Utility.UTF8.GetBytes(author);
+            var titleBuffer = TextEncoding.UTF8.GetBytes(title);
+            var authorBuffer = TextEncoding.UTF8.GetBytes(author);
 
             EnsureCapacity(15 + titleBuffer.Length + authorBuffer.Length);
 

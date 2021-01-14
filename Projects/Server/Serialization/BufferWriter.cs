@@ -20,6 +20,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Text;
 
 namespace Server
 {
@@ -56,7 +57,7 @@ namespace Server
         public BufferWriter(byte[] buffer, bool prefixStr)
         {
             m_PrefixStrings = prefixStr;
-            m_Encoding = Utility.UTF8;
+            m_Encoding = TextEncoding.UTF8;
             _buffer = buffer;
         }
 
@@ -67,7 +68,7 @@ namespace Server
         public BufferWriter(int count, bool prefixStr)
         {
             m_PrefixStrings = prefixStr;
-            m_Encoding = Utility.UTF8;
+            m_Encoding = TextEncoding.UTF8;
             _buffer = GC.AllocateUninitializedArray<byte>(count < 1 ? BufferSize : count);
         }
 
@@ -432,7 +433,7 @@ namespace Server
             while (charsLeft > 0)
             {
                 var charCount = Math.Min(charsLeft, maxChars);
-                var bytesWritten = m_Encoding.GetBytes(value.AsSpan(current, charCount), span);
+                var bytesWritten = TextEncoding.GetBytes(value.AsSpan(current, charCount), span, m_Encoding);
                 remaining -= bytesWritten;
                 charsLeft -= charCount;
                 current += charCount;

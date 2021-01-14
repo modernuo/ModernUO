@@ -17,6 +17,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Server
 {
@@ -240,5 +241,14 @@ namespace Server
 
             return list;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfTerminator(this ReadOnlySpan<byte> buffer, int sizeT) =>
+            sizeT switch
+            {
+                2 => MemoryMarshal.Cast<byte, char>(buffer).IndexOf((char)0) * 2,
+                4 => MemoryMarshal.Cast<byte, uint>(buffer).IndexOf((uint)0) * 4,
+                _ => buffer.IndexOf((byte)0)
+            };
     }
 }

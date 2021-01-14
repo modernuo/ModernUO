@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server.Network;
 using Server.Targeting;
+using Server.Text;
 
 namespace Server.Items
 {
@@ -517,7 +518,7 @@ namespace Server.Items
         {
             EnsureCapacity(38);
 
-            var buffer = Utility.UTF8.GetBytes(board.BoardName ?? "");
+            var buffer = TextEncoding.UTF8.GetBytes(board.BoardName ?? "");
 
             Stream.Write((byte)0x00);   // PacketID
             Stream.Write(board.Serial); // Bulletin board serial
@@ -568,7 +569,7 @@ namespace Server.Items
 
         public void WriteString(string v)
         {
-            var buffer = Utility.UTF8.GetBytes(v);
+            var buffer = TextEncoding.UTF8.GetBytes(v);
             var len = buffer.Length + 1;
 
             if (len > 255)
@@ -644,7 +645,7 @@ namespace Server.Items
 
         public void WriteString(string v, bool padding)
         {
-            var buffer = Utility.UTF8.GetBytes(v);
+            var buffer = TextEncoding.UTF8.GetBytes(v);
             var tail = padding ? 2 : 1;
             var len = buffer.Length + tail;
 

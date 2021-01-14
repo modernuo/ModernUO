@@ -16,6 +16,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using Server.Text;
 
 namespace Server.Accounting.Security
 {
@@ -26,10 +27,7 @@ namespace Server.Accounting.Security
 
         public string EncryptPassword(string plainPassword)
         {
-            var password = plainPassword.AsSpan(0, Math.Min(256, plainPassword.Length));
-            var bytes = GC.AllocateUninitializedArray<byte>(Encoding.ASCII.GetByteCount(password));
-            Encoding.ASCII.GetBytes(password, bytes);
-
+            byte[] bytes = plainPassword.AsSpan(0, Math.Min(256, plainPassword.Length)).GetBytesAscii();
             return m_SHA2HashProvider.ComputeHash(bytes).ToHexString();
         }
 

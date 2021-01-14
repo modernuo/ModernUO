@@ -21,6 +21,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using Server;
+using Server.Text;
 
 namespace System.Buffers
 {
@@ -250,7 +251,7 @@ namespace System.Buffers
 
             GrowIfNeeded(byteCount);
 
-            var bytesWritten = encoding.GetBytes(src, _buffer.Slice(_position));
+            var bytesWritten = TextEncoding.GetBytes(src, _buffer.Slice(_position), encoding);
             Position += bytesWritten;
 
             if (fixedLength > -1)
@@ -264,38 +265,38 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteLittleUni(string value) => WriteString<char>(value, Utility.UnicodeLE);
+        public void WriteLittleUni(string value) => WriteString<char>(value, TextEncoding.UnicodeLE);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteLittleUniNull(string value)
         {
-            WriteString<char>(value, Utility.UnicodeLE);
+            WriteString<char>(value, TextEncoding.UnicodeLE);
             Write((ushort)0);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteLittleUni(string value, int fixedLength) => WriteString<char>(value, Utility.UnicodeLE, fixedLength);
+        public void WriteLittleUni(string value, int fixedLength) => WriteString<char>(value, TextEncoding.UnicodeLE, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteBigUni(string value) => WriteString<char>(value, Utility.Unicode);
+        public void WriteBigUni(string value) => WriteString<char>(value, TextEncoding.Unicode);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteBigUniNull(string value)
         {
-            WriteString<char>(value, Utility.Unicode);
+            WriteString<char>(value, TextEncoding.Unicode);
             Write((ushort)0); // '\0'
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteBigUni(string value, int fixedLength) => WriteString<char>(value, Utility.Unicode, fixedLength);
+        public void WriteBigUni(string value, int fixedLength) => WriteString<char>(value, TextEncoding.Unicode, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteUTF8(string value) => WriteString<byte>(value, Utility.UTF8);
+        public void WriteUTF8(string value) => WriteString<byte>(value, TextEncoding.UTF8);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteUTF8Null(string value)
         {
-            WriteString<byte>(value, Utility.UTF8);
+            WriteString<byte>(value, TextEncoding.UTF8);
             Write((byte)0); // '\0'
         }
 

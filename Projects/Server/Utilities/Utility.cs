@@ -7,19 +7,15 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
 using Microsoft.Toolkit.HighPerformance.Extensions;
-using Server.Buffers;
 using Server.Random;
 
 namespace Server
 {
     public static class Utility
     {
-        private static Encoding m_UTF8, m_UTF8WithEncoding, m_Unicode, m_UnicodeLE;
-
         private static Dictionary<IPAddress, IPAddress> _ipAddressTable;
 
         private static readonly SkillName[] m_AllSkills =
@@ -104,62 +100,6 @@ namespace Server
         };
 
         private static readonly Stack<ConsoleColor> m_ConsoleColors = new();
-
-        public static Encoding UTF8 => m_UTF8 ??= new UTF8Encoding(false, false);
-        public static Encoding UTF8WithEncoding => m_UTF8WithEncoding ??= new UTF8Encoding(true, false);
-        public static Encoding Unicode => m_Unicode ??= new UnicodeEncoding(true, false, false);
-        public static Encoding UnicodeLE => m_UnicodeLE ??= new UnicodeEncoding(false, false, false);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetByteLengthForEncoding(Encoding encoding) =>
-            encoding.BodyName switch
-            {
-                "utf-16BE" => 2,
-                "utf-16"   => 2,
-                "utf-32BE" => 4,
-                "utf-32"   => 4,
-                _          => 1
-            };
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOfTerminator(ReadOnlySpan<byte> buffer, int sizeT) =>
-            sizeT switch
-            {
-                2 => MemoryMarshal.Cast<byte, char>(buffer).IndexOf((char)0) * 2,
-                4 => MemoryMarshal.Cast<byte, uint>(buffer).IndexOf((uint)0) * 4,
-                _ => buffer.IndexOf((byte)0)
-            };
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsSafeChar(ushort c) => c >= 0x20 && c < 0xFFFE;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetString(ReadOnlySpan<byte> span, Encoding encoding, bool safeString = false)
-        {
-            string s = encoding.GetString(span);
-
-            if (!safeString)
-            {
-                return s;
-            }
-
-            ReadOnlySpan<char> chars = s.AsSpan();
-
-            using ValueStringBuilder sb = new ValueStringBuilder(stackalloc char[256]);
-            var hasDoneAnyReplacements = false;
-
-            for (int i = 0, last = 0; i < chars.Length; i++)
-            {
-                if (!IsSafeChar(chars[i]) && i == chars.Length - 1)
-                {
-                    hasDoneAnyReplacements = true;
-                    sb.Append(chars.Slice(last, i - last));
-                    last = i + 1; // Skip the unsafe char
-                }
-            }
-
-            return !hasDoneAnyReplacements ? s : sb.ToString();
-        }
 
         public static void Separate(StringBuilder sb, string value, string separator)
         {

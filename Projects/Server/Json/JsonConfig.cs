@@ -19,6 +19,7 @@ using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Server.Text;
 
 namespace Server.Json
 {
@@ -62,7 +63,7 @@ namespace Server.Json
                 return default;
             }
 
-            var text = File.ReadAllText(filePath, Utility.UTF8);
+            var text = File.ReadAllText(filePath, TextEncoding.UTF8);
             return JsonSerializer.Deserialize<T>(text, options ?? DefaultOptions);
         }
 
