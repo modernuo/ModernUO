@@ -18,6 +18,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Server;
+using Server.Text;
 
 namespace System.Buffers
 {
@@ -418,7 +419,7 @@ namespace System.Buffers
         {
             if (fixedLength < 0) { fixedLength = value.Length; }
 
-            WriteString(value.AsSpan(0, Math.Min(fixedLength, value.Length)), Utility.UnicodeLE);
+            WriteString(value.AsSpan(0, Math.Min(fixedLength, value.Length)), TextEncoding.UnicodeLE);
             var count = fixedLength - value.Length;
             if (count > 0)
             {
@@ -429,7 +430,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteLittleUniNull(string value)
         {
-            WriteString(value, Utility.UnicodeLE);
+            WriteString(value, TextEncoding.UnicodeLE);
             Write((ushort)0);
         }
 
@@ -438,7 +439,7 @@ namespace System.Buffers
         {
             if (fixedLength < 0) { fixedLength = value.Length; }
 
-            WriteString(value.AsSpan(0, Math.Min(fixedLength, value.Length)), Utility.Unicode);
+            WriteString(value.AsSpan(0, Math.Min(fixedLength, value.Length)), TextEncoding.Unicode);
             var count = fixedLength - value.Length;
             if (count > 0)
             {
@@ -449,17 +450,17 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteBigUniNull(string value)
         {
-            WriteString(value, Utility.Unicode);
+            WriteString(value, TextEncoding.Unicode);
             Write((ushort)0);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteUTF8(string value) => WriteString(value, Utility.UTF8);
+        public void WriteUTF8(string value) => WriteString(value, TextEncoding.UTF8);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteUTF8Null(string value)
         {
-            WriteString(value, Utility.UTF8);
+            WriteString(value, TextEncoding.UTF8);
             Write((byte)0);
         }
 

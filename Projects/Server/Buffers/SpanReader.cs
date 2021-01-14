@@ -19,6 +19,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Server;
+using Server.Text;
 
 namespace System.Buffers
 {
@@ -141,7 +142,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string ReadString(Encoding encoding, bool safeString = false, int fixedLength = -1)
         {
-            int sizeT = Utility.GetByteLengthForEncoding(encoding);
+            int sizeT = TextEncoding.GetByteLengthForEncoding(encoding);
 
             bool isFixedLength = fixedLength > -1;
 
@@ -161,44 +162,44 @@ namespace System.Buffers
                 size = remaining - (remaining & (sizeT - 1));
             }
 
-            int index = Utility.IndexOfTerminator(_buffer.Slice(Position, size), sizeT);
+            int index = _buffer.Slice(Position, size).IndexOfTerminator(sizeT);
 
             Position += isFixedLength || index < 0 ? size : index + sizeT;
-            return Utility.GetString(_buffer.Slice(Position, index < 0 ? size : index), encoding, safeString);
+            return TextEncoding.GetString(_buffer.Slice(Position, index < 0 ? size : index), encoding, safeString);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUniSafe(int fixedLength) => ReadString(Utility.UnicodeLE, true, fixedLength);
+        public string ReadLittleUniSafe(int fixedLength) => ReadString(TextEncoding.UnicodeLE, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUniSafe() => ReadString(Utility.UnicodeLE, true);
+        public string ReadLittleUniSafe() => ReadString(TextEncoding.UnicodeLE, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUni(int fixedLength) => ReadString(Utility.UnicodeLE, false, fixedLength);
+        public string ReadLittleUni(int fixedLength) => ReadString(TextEncoding.UnicodeLE, false, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadLittleUni() => ReadString(Utility.UnicodeLE);
+        public string ReadLittleUni() => ReadString(TextEncoding.UnicodeLE);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUniSafe(int fixedLength) => ReadString(Utility.Unicode, true, fixedLength);
+        public string ReadBigUniSafe(int fixedLength) => ReadString(TextEncoding.Unicode, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUniSafe() => ReadString(Utility.Unicode, true);
+        public string ReadBigUniSafe() => ReadString(TextEncoding.Unicode, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUni(int fixedLength) => ReadString(Utility.Unicode, false, fixedLength);
+        public string ReadBigUni(int fixedLength) => ReadString(TextEncoding.Unicode, false, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadBigUni() => ReadString(Utility.Unicode);
+        public string ReadBigUni() => ReadString(TextEncoding.Unicode);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadUTF8Safe(int fixedLength) => ReadString(Utility.UTF8, true, fixedLength);
+        public string ReadUTF8Safe(int fixedLength) => ReadString(TextEncoding.UTF8, true, fixedLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadUTF8Safe() => ReadString(Utility.UTF8, true);
+        public string ReadUTF8Safe() => ReadString(TextEncoding.UTF8, true);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ReadUTF8() => ReadString(Utility.UTF8);
+        public string ReadUTF8() => ReadString(TextEncoding.UTF8);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string ReadAsciiSafe(int fixedLength) => ReadString(Encoding.ASCII, true, fixedLength);

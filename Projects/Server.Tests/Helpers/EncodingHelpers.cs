@@ -1,4 +1,5 @@
 using System.Text;
+using Server.Text;
 
 namespace Server.Tests
 {
@@ -7,9 +8,9 @@ namespace Server.Tests
         public static Encoding GetEncoding(string bodyname) =>
             bodyname switch
             {
-                "utf-8"    => Utility.UTF8,
-                "utf-16"   => Utility.UnicodeLE,
-                "utf-16BE" => Utility.Unicode,
+                "utf-8"    => TextEncoding.UTF8,
+                "utf-16"   => TextEncoding.UnicodeLE,
+                "utf-16BE" => TextEncoding.Unicode,
                 _          => Encoding.ASCII
             };
     }
