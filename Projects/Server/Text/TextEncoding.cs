@@ -32,10 +32,10 @@ namespace Server.Text
         public static byte[] GetBytesAscii(this string str) => GetBytes(str, Encoding.ASCII);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetBytesUnicode(this string str) => GetBytes(str, Unicode);
+        public static byte[] GetBytesBigUni(this string str) => GetBytes(str, Unicode);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetBytesUnicodeLE(this string str) => GetBytes(str, UnicodeLE);
+        public static byte[] GetBytesLittleUni(this string str) => GetBytes(str, UnicodeLE);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte[] GetBytesUtf8(this string str) => GetBytes(str, UTF8);
@@ -44,10 +44,10 @@ namespace Server.Text
         public static byte[] GetBytesAscii(this ReadOnlySpan<char> str) => GetBytes(str, Encoding.ASCII);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetBytesUnicode(this ReadOnlySpan<char> str) => GetBytes(str, Unicode);
+        public static byte[] GetBytesBigUni(this ReadOnlySpan<char> str) => GetBytes(str, Unicode);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetBytesUnicodeLE(this ReadOnlySpan<char> str) => GetBytes(str, UnicodeLE);
+        public static byte[] GetBytesLittleUni(this ReadOnlySpan<char> str) => GetBytes(str, UnicodeLE);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte[] GetBytesUtf8(this ReadOnlySpan<char> str) => GetBytes(str, UTF8);
