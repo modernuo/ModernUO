@@ -29,7 +29,7 @@ namespace Server.Network
             {
                 return buffer.Length;
             }
-            
+
             var itemID = item is BaseMulti ? item.ItemID | 0x4000 : item.ItemID & 0x3FFF;
             var hasAmount = item.Amount != 0;
             var amount = item.Amount;
@@ -95,7 +95,7 @@ namespace Server.Network
                 CreateWorldItemNew(buffer, item, ns.HighSeas) :
                 CreateWorldItem(buffer, item);
 
-            ns.Send(buffer.Slice(0, length));
+            ns.Send(buffer.SliceToLength(length));
         }
 
         public static int CreateWorldItemNew(Span<byte> buffer, Item item, bool isHS)

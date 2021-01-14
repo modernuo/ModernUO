@@ -470,7 +470,7 @@ namespace Server.Network
             }
 
             var length = CreateMobileStatus(buffer, beholder, beheld, version, beheld.CanBeRenamedBy(beholder));
-            ns.Send(buffer.Slice(0, length));
+            ns.Send(buffer.SliceToLength(length));
         }
 
         public static int CreateMobileStatus(

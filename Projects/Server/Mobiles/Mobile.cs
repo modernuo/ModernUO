@@ -5796,7 +5796,7 @@ namespace Server
 
                         if (length != regBuffer.Length)
                         {
-                            regBuffer = regBuffer.Slice(0, length); // Adjust to the actual size
+                            regBuffer = regBuffer.SliceToLength(length); // Adjust to the actual size
                         }
 
                         heard.OnSpeech(regArgs);
@@ -5810,7 +5810,7 @@ namespace Server
 
                         if (length != mutBuffer.Length)
                         {
-                            mutBuffer = mutBuffer.Slice(0, length); // Adjust to the actual size
+                            mutBuffer = mutBuffer.SliceToLength(length); // Adjust to the actual size
                         }
 
                         heard.OnSpeech(mutatedArgs);
@@ -9162,7 +9162,7 @@ namespace Server
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
                     }
 
                     state.Send(buffer);
@@ -9193,7 +9193,7 @@ namespace Server
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
                     }
 
                     state.Send(buffer);
@@ -9227,7 +9227,7 @@ namespace Server
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
                     }
 
                     state.Send(buffer);
@@ -9275,7 +9275,7 @@ namespace Server
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
                     }
 
                     state.Send(buffer);
@@ -9306,7 +9306,7 @@ namespace Server
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
                     }
 
                     state.Send(buffer);

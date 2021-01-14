@@ -46,7 +46,7 @@ namespace Server.Network
                 buffer, serial, graphic, type, hue, font, number, name, args
             );
 
-            ns.Send(buffer.Slice(0, length));
+            ns.Send(buffer.SliceToLength(length));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -102,7 +102,7 @@ namespace Server.Network
                 buffer, serial, graphic, type, hue, font, number, name, affixType, affix, args
             );
 
-            ns.Send(buffer.Slice(0, length));
+            ns.Send(buffer.SliceToLength(length));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -171,7 +171,7 @@ namespace Server.Network
                 text
             );
 
-            ns.Send(buffer.Slice(0, length));
+            ns.Send(buffer.SliceToLength(length));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

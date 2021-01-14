@@ -353,7 +353,7 @@ namespace Server.Guilds
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.Slice(0, length); // Adjust to the actual size
+                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
                     }
 
                     g.Members[j].NetState?.Send(buffer);
@@ -1530,7 +1530,7 @@ namespace Server.Guilds
 
                 if (length != buffer.Length)
                 {
-                    buffer = buffer.Slice(0, length); // Adjust to the actual size
+                    buffer = buffer.SliceToLength(length); // Adjust to the actual size
                 }
 
                 Members[i].NetState?.Send(buffer);

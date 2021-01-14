@@ -20,6 +20,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Network;
 using Server.Text;
 
 namespace Server
@@ -222,7 +223,7 @@ namespace Server
             Span<byte> stack = stackalloc byte[16];
             value.TryWriteBytes(stack, out var bytesWritten);
             Write((byte)bytesWritten);
-            Write(stack.Slice(0, bytesWritten));
+            Write(stack.SliceToLength(bytesWritten));
         }
 
         public void Write(TimeSpan value)
@@ -438,7 +439,7 @@ namespace Server
                 charsLeft -= charCount;
                 current += charCount;
 
-                Write(span.Slice(0, bytesWritten));
+                Write(span.SliceToLength(bytesWritten));
             }
         }
     }

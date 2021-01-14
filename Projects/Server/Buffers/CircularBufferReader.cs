@@ -284,7 +284,7 @@ namespace Server.Network
                     }
                     else
                     {
-                        index = _second.Slice(0, remaining).IndexOfTerminator(sizeT);
+                        index = _second.SliceToLength(remaining).IndexOfTerminator(sizeT);
 
                         int secondLength = index < 0 ? remaining : index;
                         int length = firstLength + secondLength;
@@ -292,7 +292,7 @@ namespace Server.Network
                         // Assume no strings should be too long for the stack
                         Span<byte> bytes = stackalloc byte[length];
                         _first.Slice(Position).CopyTo(bytes);
-                        _second.Slice(0, secondLength).CopyTo(bytes.Slice(firstLength));
+                        _second.SliceToLength(secondLength).CopyTo(bytes.Slice(firstLength));
 
                         Position += length + (index >= 0 ? sizeT : 0);
                         return TextEncoding.GetString(bytes, encoding, safeString);
@@ -309,7 +309,7 @@ namespace Server.Network
 
                 if (index >= 0)
                 {
-                    span = span.Slice(0, index);
+                    span = span.SliceToLength(index);
                 }
                 else
                 {

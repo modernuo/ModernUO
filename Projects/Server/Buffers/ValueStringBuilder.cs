@@ -5,6 +5,7 @@ using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Server.Network;
 
 namespace Server.Buffers
 {
@@ -63,7 +64,7 @@ namespace Server.Buffers
 
         public ref char this[int index] => ref _chars[index];
 
-        public override string ToString() => _chars.Slice(0, Length).ToString();
+        public override string ToString() => _chars.SliceToLength(Length).ToString();
 
         /// <summary>Returns the underlying storage of the builder.</summary>
         public Span<char> RawChars => _chars;
@@ -79,16 +80,16 @@ namespace Server.Buffers
                 EnsureCapacity(Length + 1);
                 _chars[Length] = '\0';
             }
-            return _chars.Slice(0, Length);
+            return _chars.SliceToLength(Length);
         }
 
-        public ReadOnlySpan<char> AsSpan() => _chars.Slice(0, Length);
+        public ReadOnlySpan<char> AsSpan() => _chars.SliceToLength(Length);
         public ReadOnlySpan<char> AsSpan(int start) => _chars.Slice(start, Length - start);
         public ReadOnlySpan<char> AsSpan(int start, int length) => _chars.Slice(start, length);
 
         public bool TryCopyTo(Span<char> destination, out int charsWritten)
         {
-            if (_chars.Slice(0, Length).TryCopyTo(destination))
+            if (_chars.SliceToLength(Length).TryCopyTo(destination))
             {
                 charsWritten = Length;
                 return true;
@@ -275,7 +276,7 @@ namespace Server.Buffers
         {
             char[] poolArray = ArrayPool<char>.Shared.Rent(Math.Max(Length + additionalCapacityBeyondPos, _chars.Length * 2));
 
-            _chars.Slice(0, Length).CopyTo(poolArray);
+            _chars.SliceToLength(Length).CopyTo(poolArray);
 
             char[]? toReturn = _arrayToReturnToPool;
             _chars = _arrayToReturnToPool = poolArray;
@@ -349,7 +350,7 @@ namespace Server.Buffers
             }
             else if (startIndex + length == Length)
             {
-                _chars = _chars.Slice(0, startIndex);
+                _chars = _chars.SliceToLength(startIndex);
             }
             else
             {
