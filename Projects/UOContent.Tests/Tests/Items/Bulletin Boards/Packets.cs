@@ -1,4 +1,5 @@
 using Server.Items;
+using Server.Text;
 
 namespace Server.Network
 {
@@ -8,7 +9,7 @@ namespace Server.Network
         {
             EnsureCapacity(38);
 
-            var buffer = Utility.UTF8.GetBytes(board.BoardName ?? "");
+            var buffer = (board.BoardName ?? "").GetBytesUtf8();
 
             Stream.Write((byte)0x00);   // PacketID
             Stream.Write(board.Serial); // Bulletin board serial
@@ -50,7 +51,7 @@ namespace Server.Network
 
         public void WriteString(string v)
         {
-            var buffer = Utility.UTF8.GetBytes(v);
+            var buffer = v.GetBytesUtf8();
             var len = buffer.Length + 1;
 
             if (len > 255)
@@ -121,7 +122,7 @@ namespace Server.Network
 
         public void WriteString(string v, bool padding = false)
         {
-            var buffer = Utility.UTF8.GetBytes(v);
+            var buffer = v.GetBytesUtf8();
             var tail = padding ? 2 : 1;
             var len = buffer.Length + tail;
 

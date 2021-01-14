@@ -17,6 +17,7 @@ using System;
 using System.Buffers;
 using System.IO;
 using Server.Items;
+using Server.Text;
 
 namespace Server.Network
 {
@@ -38,11 +39,11 @@ namespace Server.Network
             var text = board.BoardName ?? "";
 
             var textChars = text.AsSpan(0, Math.Min(text.Length, 30));
-            Span<byte> textBuffer = stackalloc byte[Utility.UTF8.GetMaxByteCount(textChars.Length)]; // Max 30 * 3 (90 bytes)
+            Span<byte> textBuffer = stackalloc byte[TextEncoding.UTF8.GetMaxByteCount(textChars.Length)]; // Max 30 * 3 (90 bytes)
 
             // We are ok with the string being cut-off mid character. The alternative is very slow.
             // The board name should be regulated by staff, who can test proper strings that will look correct.
-            var byteLength = Math.Min(29, Utility.UTF8.GetBytes(textChars, textBuffer));
+            var byteLength = Math.Min(29, TextEncoding.UTF8.GetBytes(textChars, textBuffer));
             writer.Write(textBuffer.Slice(0, byteLength));
             writer.Clear(30 - byteLength); // terminator
 
@@ -56,27 +57,36 @@ namespace Server.Network
                 return;
             }
 
+            var longestTextLine = 0;
             var maxLength = 22;
             var poster = msg.PostedName ?? "";
-            maxLength += Utility.UTF8.GetMaxByteCount(Math.Min(255, poster.Length));
+            var line = Math.Min(255, poster.Length);
+            maxLength += TextEncoding.UTF8.GetMaxByteCount(line);
+            longestTextLine = Math.Max(line, longestTextLine);
 
             var subject = msg.Subject ?? "";
-            maxLength += Utility.UTF8.GetMaxByteCount(Math.Min(255, subject.Length));
+            line = Math.Min(255, subject.Length);
+            maxLength += TextEncoding.UTF8.GetMaxByteCount(Math.Min(255, subject.Length));
+            longestTextLine = Math.Max(line, longestTextLine);
 
             var time = msg.GetTimeAsString() ?? "";
-            maxLength += Utility.UTF8.GetMaxByteCount(Math.Min(255, time.Length));
+            line = Math.Min(255, time.Length);
+            maxLength += TextEncoding.UTF8.GetMaxByteCount(Math.Min(255, time.Length));
+            longestTextLine = Math.Max(line, longestTextLine);
 
             if (content)
             {
                 maxLength += 6 + msg.PostedEquip.Length * 4;
                 for (int i = 0; i < msg.Lines.Length; i++)
                 {
-                    var length = msg.Lines[i].Length;
-                    maxLength += Utility.UTF8.GetMaxByteCount(Math.Min(255, length));
+                    line = Math.Min(255, msg.Lines[i].Length);
+                    maxLength += TextEncoding.UTF8.GetMaxByteCount(line);
+                    longestTextLine = Math.Max(line, longestTextLine);
                 }
             }
 
-            Span<byte> textBuffer = stackalloc byte[Utility.UTF8.GetMaxByteCount(255)]; // 3 * 255 bytes
+            // max: 255 * 3 bytes
+            Span<byte> textBuffer = stackalloc byte[TextEncoding.UTF8.GetMaxByteCount(longestTextLine)];
 
             var writer = maxLength > 81920 ? new SpanWriter(maxLength) : new SpanWriter(stackalloc byte[maxLength]);
             writer.Write((byte)0x71); // Packet ID
@@ -120,8 +130,7 @@ namespace Server.Network
 
         private static void WriteString(this ref SpanWriter writer, string text, Span<byte> buffer, bool pad = false)
         {
-            // TODO: Make this safer since we will be slicing mid-character if the string is >= 255 bytes
-            var length = Math.Min(255, Utility.UTF8.GetBytes(text, buffer));
+            var length = Math.Min(255, text.GetBytesUtf8(buffer));
             writer.Write((byte)length);
             writer.Write(buffer.SliceToLength(length - (pad ? 2 : 1)));
 
