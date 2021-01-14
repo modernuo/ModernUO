@@ -20,6 +20,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Network;
 using Server.Text;
 
 namespace Server
