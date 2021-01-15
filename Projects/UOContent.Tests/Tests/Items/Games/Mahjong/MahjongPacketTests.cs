@@ -7,6 +7,7 @@ using Xunit;
 
 namespace UOContent.Tests
 {
+    [Collection("Sequential Tests")]
     public class MahjongPacketTests : IClassFixture<ServerFixture>
     {
         [Fact]
