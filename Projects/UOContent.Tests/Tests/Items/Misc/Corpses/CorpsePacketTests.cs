@@ -8,6 +8,7 @@ using Xunit;
 
 namespace UOContent.Tests
 {
+    [Collection("Sequential Tests")]
     public class CorpsePacketTests : IClassFixture<ServerFixture>
     {
         [Fact]
