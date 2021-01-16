@@ -46,7 +46,7 @@ namespace Server.Network
             IncomingPackets.Register(0xAD, 0, true, UnicodeSpeech);
         }
 
-        public static void AsciiSpeech(NetState state, CircularBufferReader reader)
+        public static void AsciiSpeech(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 
@@ -73,7 +73,7 @@ namespace Server.Network
             from.DoSpeech(text, Array.Empty<int>(), type, Utility.ClipDyedHue(hue));
         }
 
-        public static void UnicodeSpeech(NetState state, CircularBufferReader reader)
+        public static void UnicodeSpeech(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 

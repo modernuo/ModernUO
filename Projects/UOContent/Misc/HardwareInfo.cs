@@ -141,7 +141,7 @@ namespace Server
             }
         }
 
-        public static void OnReceive(NetState state, CircularBufferReader reader)
+        public static void OnReceive(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             reader.ReadByte(); // 1: <4.0.1a, 2>=4.0.1a
 

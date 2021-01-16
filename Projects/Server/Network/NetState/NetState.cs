@@ -693,8 +693,7 @@ namespace Server.Network
             return false;
         }
 
-        public PacketHandler GetHandler(int packetID) =>
-            ContainerGridLines ? IncomingPackets.Get6017Handler(packetID) : IncomingPackets.GetHandler(packetID);
+        public PacketHandler GetHandler(int packetID) => IncomingPackets.GetHandler(packetID);
 
         public static void TraceException(Exception ex)
         {

@@ -22,7 +22,7 @@ namespace Server.Network
             IncomingPackets.Register(0xFB, 2, false, ShowPublicHouseContent);
         }
 
-        public static void ShowPublicHouseContent(NetState state, CircularBufferReader reader)
+        public static void ShowPublicHouseContent(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var showPublicHouseContent = reader.ReadBoolean();
         }

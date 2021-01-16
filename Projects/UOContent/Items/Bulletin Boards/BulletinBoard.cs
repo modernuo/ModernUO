@@ -217,7 +217,7 @@ namespace Server.Items
             IncomingPackets.Register(0x71, 0, true, BBClientRequest);
         }
 
-        public static void BBClientRequest(NetState state, CircularBufferReader reader)
+        public static void BBClientRequest(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 

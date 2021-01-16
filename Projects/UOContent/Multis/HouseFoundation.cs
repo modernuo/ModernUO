@@ -1768,7 +1768,7 @@ namespace Server.Multis
             context.Foundation.SendInfoTo(state);
         }
 
-        public static void QueryDesignDetails(NetState state, CircularBufferReader reader)
+        public static void QueryDesignDetails(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 
