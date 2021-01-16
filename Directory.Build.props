@@ -26,6 +26,7 @@
         <DefineConstants Condition="'$(IsLinux)'=='true'">LINUX</DefineConstants>
         <DefineConstants Condition="'$(IsOSX)'=='true' OR '$(IsLinux)'=='true'">UNIX</DefineConstants>
         <DefineConstants Condition="'$(SkipLocalsInitAttribute)'=='true'">NO_LOCAL_INIT</DefineConstants>
+        <DefineConstants>MUO</DefineConstants>
         <GitVersionBaseDirectory>$(SolutionDir)</GitVersionBaseDirectory>
     </PropertyGroup>
     <PropertyGroup  Condition="'$(RuntimeIdentifier)'==''">
