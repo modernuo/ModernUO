@@ -14,6 +14,17 @@ namespace Server.Buffers
         private char[]? _arrayToReturnToPool;
         private Span<char> _chars;
 
+        // If this ctor is used, you cannot pass in stackalloc ROS for append/replace.
+        public ValueStringBuilder(ReadOnlySpan<char> initialString) : this(initialString.Length)
+        {
+            Append(initialString);
+        }
+
+        public ValueStringBuilder(ReadOnlySpan<char> initialString, Span<char> initialBuffer) : this(initialBuffer)
+        {
+            Append(initialString);
+        }
+
         public ValueStringBuilder(Span<char> initialBuffer)
         {
             _arrayToReturnToPool = null;
@@ -21,6 +32,7 @@ namespace Server.Buffers
             Length = 0;
         }
 
+        // If this ctor is used, you cannot pass in stackalloc ROS for append/replace.
         public ValueStringBuilder(int initialCapacity)
         {
             _arrayToReturnToPool = ArrayPool<char>.Shared.Rent(initialCapacity);
@@ -294,6 +306,37 @@ namespace Server.Buffers
             if (toReturn != null)
             {
                 ArrayPool<char>.Shared.Return(toReturn);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ReplaceAny(ReadOnlySpan<char> oldChars, ReadOnlySpan<char> newChars, int startIndex, int count)
+        {
+            int currentLength = Length;
+            if ((uint)startIndex > (uint)currentLength)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
+
+            if (count < 0 || startIndex > currentLength - count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+
+            var slice = _chars;
+
+            while (true)
+            {
+                var indexOf = slice.IndexOfAny(oldChars);
+                if (indexOf == -1)
+                {
+                    break;
+                }
+
+                var chr = slice[indexOf];
+
+                slice[indexOf] = oldChars[newChars.IndexOf(chr)];
+                slice = slice.Slice(indexOf + 1);
             }
         }
 
