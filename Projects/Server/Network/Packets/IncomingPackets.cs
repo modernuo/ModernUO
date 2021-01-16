@@ -127,7 +127,9 @@ namespace Server.Network
                 return -1;
             }
 
+            // We use this for failing fast where we already know the length, but may not read it entirely
             var packetLength = handler.Length;
+
             if (handler.Length <= 0 && reader.Length >= 3)
             {
                 packetLength = reader.ReadUInt16();
@@ -156,6 +158,8 @@ namespace Server.Network
                 ns.ThrottledUntil = DateTime.UtcNow + throttled;
             }
 
+            // The packet length is sent in as a ref to support situations where a smaller/larger packet is read.
+            // Example is DropReq to support 6.0.1.7+ where the packet is 1 byte larger
             handler.OnReceive(ns, reader, ref packetLength);
 
             return packetLength;
