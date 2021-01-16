@@ -61,11 +61,11 @@ namespace Server.Network
             RegisterExtended(0x32, true, ToggleFlying);
         }
 
-        private static void UnhandledBF(NetState state, CircularBufferReader reader)
+        private static void UnhandledBF(NetState state, CircularBufferReader reader, ref int packetLength)
         {
         }
 
-        public static void Empty(NetState state, CircularBufferReader reader)
+        public static void Empty(NetState state, CircularBufferReader reader, ref int packetLength)
         {
         }
 
@@ -104,7 +104,7 @@ namespace Server.Network
             }
         }
 
-        public static void ExtendedCommand(NetState state, CircularBufferReader reader)
+        public static void ExtendedCommand(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             int packetID = reader.ReadUInt16();
 
@@ -130,18 +130,18 @@ namespace Server.Network
             }
             else
             {
-                ph.OnReceive(state, reader);
+                ph.OnReceive(state, reader, ref packetLength);
             }
         }
 
-        public static void ScreenSize(NetState state, CircularBufferReader reader)
+        public static void ScreenSize(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var width = reader.ReadInt32();
             var unk = reader.ReadInt32();
         }
 
         // TODO: Move out of the core
-        public static void PartyMessage(NetState state, CircularBufferReader reader)
+        public static void PartyMessage(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             if (state.Mobile == null)
             {
@@ -151,25 +151,25 @@ namespace Server.Network
             switch (reader.ReadByte())
             {
                 case 0x01:
-                    PartyMessage_AddMember(state, reader);
+                    PartyMessage_AddMember(state, reader, ref packetLength);
                     break;
                 case 0x02:
-                    PartyMessage_RemoveMember(state, reader);
+                    PartyMessage_RemoveMember(state, reader, ref packetLength);
                     break;
                 case 0x03:
-                    PartyMessage_PrivateMessage(state, reader);
+                    PartyMessage_PrivateMessage(state, reader, ref packetLength);
                     break;
                 case 0x04:
-                    PartyMessage_PublicMessage(state, reader);
+                    PartyMessage_PublicMessage(state, reader, ref packetLength);
                     break;
                 case 0x06:
-                    PartyMessage_SetCanLoot(state, reader);
+                    PartyMessage_SetCanLoot(state, reader, ref packetLength);
                     break;
                 case 0x08:
-                    PartyMessage_Accept(state, reader);
+                    PartyMessage_Accept(state, reader, ref packetLength);
                     break;
                 case 0x09:
-                    PartyMessage_Decline(state, reader);
+                    PartyMessage_Decline(state, reader, ref packetLength);
                     break;
                 default:
                     reader.Trace(state);
@@ -177,17 +177,17 @@ namespace Server.Network
             }
         }
 
-        public static void PartyMessage_AddMember(NetState state, CircularBufferReader reader)
+        public static void PartyMessage_AddMember(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             PartyCommands.Handler?.OnAdd(state.Mobile);
         }
 
-        public static void PartyMessage_RemoveMember(NetState state, CircularBufferReader reader)
+        public static void PartyMessage_RemoveMember(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             PartyCommands.Handler?.OnRemove(state.Mobile, World.FindMobile(reader.ReadUInt32()));
         }
 
-        public static void PartyMessage_PrivateMessage(NetState state, CircularBufferReader reader)
+        public static void PartyMessage_PrivateMessage(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             PartyCommands.Handler?.OnPrivateMessage(
                 state.Mobile,
@@ -196,27 +196,27 @@ namespace Server.Network
             );
         }
 
-        public static void PartyMessage_PublicMessage(NetState state, CircularBufferReader reader)
+        public static void PartyMessage_PublicMessage(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             PartyCommands.Handler?.OnPublicMessage(state.Mobile, reader.ReadBigUniSafe());
         }
 
-        public static void PartyMessage_SetCanLoot(NetState state, CircularBufferReader reader)
+        public static void PartyMessage_SetCanLoot(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             PartyCommands.Handler?.OnSetCanLoot(state.Mobile, reader.ReadBoolean());
         }
 
-        public static void PartyMessage_Accept(NetState state, CircularBufferReader reader)
+        public static void PartyMessage_Accept(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             PartyCommands.Handler?.OnAccept(state.Mobile, World.FindMobile(reader.ReadUInt32()));
         }
 
-        public static void PartyMessage_Decline(NetState state, CircularBufferReader reader)
+        public static void PartyMessage_Decline(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             PartyCommands.Handler?.OnDecline(state.Mobile, World.FindMobile(reader.ReadUInt32()));
         }
 
-        public static void Animate(NetState state, CircularBufferReader reader)
+        public static void Animate(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 
@@ -240,7 +240,7 @@ namespace Server.Network
             }
         }
 
-        public static void CastSpell(NetState state, CircularBufferReader reader)
+        public static void CastSpell(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 
@@ -255,12 +255,12 @@ namespace Server.Network
             EventSink.InvokeCastSpellRequest(from, spellID, spellbook);
         }
 
-        public static void ToggleFlying(NetState state, CircularBufferReader reader)
+        public static void ToggleFlying(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             state.Mobile?.ToggleFlying();
         }
 
-        public static void StunRequest(NetState state, CircularBufferReader reader)
+        public static void StunRequest(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 
@@ -272,7 +272,7 @@ namespace Server.Network
             EventSink.InvokeStunRequest(from);
         }
 
-        public static void DisarmRequest(NetState state, CircularBufferReader reader)
+        public static void DisarmRequest(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 
@@ -284,7 +284,7 @@ namespace Server.Network
             EventSink.InvokeDisarmRequest(from);
         }
 
-        public static void StatLockChange(NetState state, CircularBufferReader reader)
+        public static void StatLockChange(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 
@@ -315,12 +315,12 @@ namespace Server.Network
             }
         }
 
-        public static void CloseStatus(NetState state, CircularBufferReader reader)
+        public static void CloseStatus(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             Serial serial = reader.ReadUInt32();
         }
 
-        public static void Language(NetState state, CircularBufferReader reader)
+        public static void Language(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 
@@ -332,7 +332,7 @@ namespace Server.Network
             from.Language = reader.ReadAscii(4);
         }
 
-        public static void QueryProperties(NetState state, CircularBufferReader reader)
+        public static void QueryProperties(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             if (!ObjectPropertyList.Enabled)
             {
@@ -364,7 +364,7 @@ namespace Server.Network
             }
         }
 
-        public static void ContextMenuResponse(NetState state, CircularBufferReader reader)
+        public static void ContextMenuResponse(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 
@@ -420,7 +420,7 @@ namespace Server.Network
             }
         }
 
-        public static void ContextMenuRequest(NetState state, CircularBufferReader reader)
+        public static void ContextMenuRequest(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
             var target = World.FindEntity(reader.ReadUInt32());
@@ -455,7 +455,7 @@ namespace Server.Network
             }
         }
 
-        public static void BandageTarget(NetState state, CircularBufferReader reader)
+        public static void BandageTarget(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 
@@ -490,21 +490,21 @@ namespace Server.Network
             }
         }
 
-        public static void TargetedSpell(NetState state, CircularBufferReader reader)
+        public static void TargetedSpell(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var spellId = (short)(reader.ReadInt16() - 1); // zero based;
 
             EventSink.InvokeTargetedSpell(state.Mobile, World.FindEntity(reader.ReadUInt32()), spellId);
         }
 
-        public static void TargetedSkillUse(NetState state, CircularBufferReader reader)
+        public static void TargetedSkillUse(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var skillId = reader.ReadInt16();
 
             EventSink.InvokeTargetedSkillUse(state.Mobile, World.FindEntity(reader.ReadUInt32()), skillId);
         }
 
-        public static void TargetByResourceMacro(NetState state, CircularBufferReader reader)
+        public static void TargetByResourceMacro(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             Serial serial = reader.ReadUInt32();
 

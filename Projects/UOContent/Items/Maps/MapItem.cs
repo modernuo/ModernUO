@@ -326,7 +326,7 @@ namespace Server.Items
             IncomingPackets.Register(0x56, 11, true, OnMapCommand);
         }
 
-        private static void OnMapCommand(NetState state, CircularBufferReader reader)
+        private static void OnMapCommand(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 

@@ -37,13 +37,6 @@ namespace Server.Network
 
         public static PacketHandler GetHandler(int packetID) => Handlers[packetID];
 
-        public static void Register6017(int packetID, int length, bool ingame, OnPacketReceive onReceive)
-        {
-            m_6017Handlers[packetID] = new PacketHandler(packetID, length, ingame, onReceive);
-        }
-
-        public static PacketHandler Get6017Handler(int packetID) => m_6017Handlers[packetID];
-
         public static void RegisterEncoded(int packetID, bool ingame, OnEncodedPacketReceive onReceive)
         {
             if (packetID >= 0 && packetID < 0x100)
@@ -82,13 +75,6 @@ namespace Server.Network
         public static void RegisterThrottler(int packetID, ThrottlePacketCallback t)
         {
             var ph = GetHandler(packetID);
-
-            if (ph != null)
-            {
-                ph.ThrottleCallback = t;
-            }
-
-            ph = Get6017Handler(packetID);
 
             if (ph != null)
             {
@@ -141,7 +127,9 @@ namespace Server.Network
                 return -1;
             }
 
+            // We use this for failing fast where we already know the length, but may not read it entirely
             var packetLength = handler.Length;
+
             if (handler.Length <= 0 && reader.Length >= 3)
             {
                 packetLength = reader.ReadUInt16();
@@ -170,7 +158,9 @@ namespace Server.Network
                 ns.ThrottledUntil = DateTime.UtcNow + throttled;
             }
 
-            handler.OnReceive(ns, reader);
+            // The packet length is sent in as a ref to support situations where a smaller/larger packet is read.
+            // Example is DropReq to support 6.0.1.7+ where the packet is 1 byte larger
+            handler.OnReceive(ns, reader, ref packetLength);
 
             return packetLength;
         }

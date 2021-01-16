@@ -193,7 +193,7 @@ namespace Server.Engines.MLQuests.Gumps
             return false;
         }
 
-        private static void RaceChangeReply(NetState state, CircularBufferReader reader)
+        private static void RaceChangeReply(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             if (!m_Pending.TryGetValue(state, out var raceChangeState))
             {

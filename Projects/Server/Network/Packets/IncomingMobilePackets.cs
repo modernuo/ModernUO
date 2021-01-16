@@ -27,7 +27,7 @@ namespace Server.Network
             IncomingPackets.Register(0x6F, 0, true, SecureTrade);
         }
 
-        public static void RenameRequest(NetState state, CircularBufferReader reader)
+        public static void RenameRequest(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
             var targ = World.FindMobile(reader.ReadUInt32());
@@ -38,7 +38,7 @@ namespace Server.Network
             }
         }
 
-        public static void MobileNameRequest(NetState state, CircularBufferReader reader)
+        public static void MobileNameRequest(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var m = World.FindMobile(reader.ReadUInt32());
 
@@ -48,7 +48,7 @@ namespace Server.Network
             }
         }
 
-        public static void ProfileReq(NetState state, CircularBufferReader reader)
+        public static void ProfileReq(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             int type = reader.ReadByte();
             Serial serial = reader.ReadUInt32();
@@ -88,7 +88,7 @@ namespace Server.Network
             }
         }
 
-        public static void SecureTrade(NetState state, CircularBufferReader reader)
+        public static void SecureTrade(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             switch (reader.ReadByte())
             {

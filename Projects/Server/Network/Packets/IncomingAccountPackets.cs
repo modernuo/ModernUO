@@ -55,7 +55,7 @@ namespace Server.Network
             IncomingPackets.Register(0xF8, 106, false, CreateCharacter);
         }
 
-        public static void CreateCharacter(NetState state, CircularBufferReader reader)
+        public static void CreateCharacter(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var unk1 = reader.ReadInt32();
             var unk2 = reader.ReadInt32();
@@ -202,7 +202,7 @@ namespace Server.Network
             }
         }
 
-        public static void DeleteCharacter(NetState state, CircularBufferReader reader)
+        public static void DeleteCharacter(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             reader.Seek(30, SeekOrigin.Current);
             var index = reader.ReadInt32();
@@ -210,24 +210,24 @@ namespace Server.Network
             EventSink.InvokeDeleteRequest(state, index);
         }
 
-        public static void AccountID(NetState state, CircularBufferReader reader)
+        public static void AccountID(NetState state, CircularBufferReader reader, ref int packetLength)
         {
         }
 
-        public static void AssistVersion(NetState state, CircularBufferReader reader)
+        public static void AssistVersion(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var unk = reader.ReadInt32();
             var av = reader.ReadAscii();
         }
 
-        public static void ClientVersion(NetState state, CircularBufferReader reader)
+        public static void ClientVersion(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var version = state.Version = new CV(reader.ReadAscii());
 
             EventSink.InvokeClientVersionReceived(state, version);
         }
 
-        public static void ClientType(NetState state, CircularBufferReader reader)
+        public static void ClientType(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             reader.ReadUInt16();
 
@@ -237,7 +237,7 @@ namespace Server.Network
             EventSink.InvokeClientVersionReceived(state, version);
         }
 
-        public static void PlayCharacter(NetState state, CircularBufferReader reader)
+        public static void PlayCharacter(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             reader.ReadInt32(); // 0xEDEDEDED
 
@@ -381,7 +381,7 @@ namespace Server.Network
             return authID;
         }
 
-        public static void GameLogin(NetState state, CircularBufferReader reader)
+        public static void GameLogin(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             if (state.SentFirstPacket)
             {
@@ -431,7 +431,7 @@ namespace Server.Network
             }
         }
 
-        public static void PlayServer(NetState state, CircularBufferReader reader)
+        public static void PlayServer(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             int index = reader.ReadInt16();
             var info = state.ServerInfo;
@@ -452,7 +452,7 @@ namespace Server.Network
             }
         }
 
-        public static void LoginServerSeed(NetState state, CircularBufferReader reader)
+        public static void LoginServerSeed(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             state.m_Seed = reader.ReadInt32();
             state.Seeded = true;
@@ -472,7 +472,7 @@ namespace Server.Network
             state.Version = new ClientVersion(clientMaj, clientMin, clientRev, clientPat);
         }
 
-        public static void AccountLogin(NetState state, CircularBufferReader reader)
+        public static void AccountLogin(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             if (state.SentFirstPacket)
             {

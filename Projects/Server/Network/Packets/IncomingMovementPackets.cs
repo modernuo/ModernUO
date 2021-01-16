@@ -78,7 +78,7 @@ namespace Server.Network
             ns.SendTimeSyncResponse();
         }
 
-        public static void MovementReq(NetState state, CircularBufferReader reader)
+        public static void MovementReq(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
 
