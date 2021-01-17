@@ -32,13 +32,13 @@ namespace Server.Items
         private void SendGMItem(NetState ns)
         {
             // GM Packet
-            Span<byte> buffer = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength];
+            Span<byte> buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength];
 
             int length;
 
             if (ns.StygianAbyss)
             {
-                length = OutgoingItemPackets.CreateWorldItemNew(buffer, this, ns.HighSeas);
+                length = OutgoingEntityPackets.CreateWorldEntity(buffer, this, ns.StygianAbyss, ns.HighSeas);
                 BinaryPrimitives.WriteUInt16BigEndian(buffer.Slice(8, 2), GMItemId);
             }
             else

@@ -1136,9 +1136,9 @@ namespace Server
 
                 if (m_Map != null)
                 {
-                    Span<byte> oldWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength].InitializePacket();
-                    Span<byte> saWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength].InitializePacket();
-                    Span<byte> hsWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength].InitializePacket();
+                    Span<byte> oldWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+                    Span<byte> saWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+                    Span<byte> hsWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
                     Span<byte> opl = ObjectPropertyList.Enabled ? stackalloc byte[OutgoingEntityPackets.OPLPacketLength].InitializePacket() : null;
 
                     var eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
@@ -1151,7 +1151,7 @@ namespace Server
                         {
                             if (state.HighSeas)
                             {
-                                var length = OutgoingItemPackets.CreateWorldItemNew(hsWorldItem, this, true);
+                                var length = OutgoingEntityPackets.CreateWorldEntity(hsWorldItem, this, true, true);
                                 if (length != hsWorldItem.Length)
                                 {
                                     hsWorldItem = hsWorldItem.SliceToLength(length);
@@ -1161,7 +1161,7 @@ namespace Server
                             }
                             else if (state.StygianAbyss)
                             {
-                                var length = OutgoingItemPackets.CreateWorldItemNew(saWorldItem, this, false);
+                                var length = OutgoingEntityPackets.CreateWorldEntity(saWorldItem, this, true, false);
                                 if (length != saWorldItem.Length)
                                 {
                                     saWorldItem = saWorldItem.SliceToLength(length);
