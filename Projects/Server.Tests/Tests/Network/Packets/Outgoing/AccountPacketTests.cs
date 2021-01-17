@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
+using Moq;
+using Server.Accounting;
 using Server.Network;
 using Xunit;
 
@@ -7,6 +10,28 @@ namespace Server.Tests.Network
 {
     public class AccountPacketTests : IClassFixture<ServerFixture>
     {
+        public readonly Dictionary<int, Mobile> dictionary = new();
+        public Mock<IAccount> accountMock;
+
+        public AccountPacketTests()
+        {
+            accountMock = new Mock<IAccount>();
+            accountMock
+                .Setup(sb => sb[It.IsAny<int>()])
+                .Returns((int key) => dictionary[key]);
+            accountMock
+                .SetupSet(sb => sb[It.IsAny<int>()] = It.IsAny<Mobile>())
+                .Callback(
+                    (int key, Mobile m) =>
+                    {
+                        dictionary[key] = m;
+                        if (m != null)
+                        {
+                            m.Account = accountMock.Object;
+                        }
+                    });
+        }
+
         [Fact]
         public void TestChangeCharacter()
         {
@@ -18,7 +43,12 @@ namespace Server.Tests.Network
             secondMobile.DefaultMobileInit();
             secondMobile.RawName = null;
 
-            var account = new MockAccount(new[] { firstMobile, null, secondMobile });
+            var account = accountMock.Object;
+            account[0] = firstMobile;
+            account[1] = null;
+            account[2] = secondMobile;
+
+            // var account = new MockAccount(new[] { firstMobile, null, secondMobile });
             var expected = new ChangeCharacter(account).Compile();
 
             using var ns = PacketTestUtilities.CreateTestNetState();
@@ -72,7 +102,12 @@ namespace Server.Tests.Network
             firstMobile.DefaultMobileInit();
             firstMobile.Name = "Test Mobile";
 
-            var account = new MockAccount(new[] { firstMobile, null, null, null, null });
+            var account = accountMock.Object;
+            account[0] = firstMobile;
+            account[1] = null;
+            account[2] = null;
+            account[3] = null;
+            account[4] = null;
 
             using var ns = PacketTestUtilities.CreateTestNetState();
             ns.Account = account;
@@ -125,12 +160,17 @@ namespace Server.Tests.Network
             firstMobile.DefaultMobileInit();
             firstMobile.RawName = "Test Mobile";
 
-            var acct = new MockAccount(new[] { null, firstMobile, null, null, null });
+            var account = accountMock.Object;
+            account[0] = null;
+            account[1] = firstMobile;
+            account[2] = null;
+            account[3] = null;
+            account[4] = null;
 
-            var expected = new CharacterListUpdate(acct).Compile();
+            var expected = new CharacterListUpdate(account).Compile();
 
             using var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendCharacterListUpdate(acct);
+            ns.SendCharacterListUpdate(account);
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
@@ -143,17 +183,23 @@ namespace Server.Tests.Network
             firstMobile.DefaultMobileInit();
             firstMobile.Name = "Test Mobile";
 
-            var acct = new MockAccount(new[] { null, firstMobile, null, null, null });
+            var account = accountMock.Object;
+            account[0] = null;
+            account[1] = firstMobile;
+            account[2] = null;
+            account[3] = null;
+            account[4] = null;
+
             var info = new[]
             {
                 new CityInfo("Test City", "Test Building", 50, 100, 10, -10)
             };
 
-            var expected = new CharacterList(acct, info).Compile();
+            var expected = new CharacterList(account, info).Compile();
 
             using var ns = PacketTestUtilities.CreateTestNetState();
             ns.CityInfo = info;
-            ns.Account = acct;
+            ns.Account = account;
             ns.ProtocolChanges = ProtocolChanges.Version70130;
 
             ns.SendCharacterList();
@@ -169,17 +215,23 @@ namespace Server.Tests.Network
             firstMobile.DefaultMobileInit();
             firstMobile.Name = "Test Mobile";
 
-            var acct = new MockAccount(new[] { null, firstMobile, null, null, null });
+            var account = accountMock.Object;
+            account[0] = null;
+            account[1] = firstMobile;
+            account[2] = null;
+            account[3] = null;
+            account[4] = null;
+
             var info = new[]
             {
                 new CityInfo("Test City", "Test Building", 50, 100, 10, -10)
             };
 
-            var expected = new CharacterListOld(acct, info).Compile();
+            var expected = new CharacterListOld(account, info).Compile();
 
             using var ns = PacketTestUtilities.CreateTestNetState();
             ns.CityInfo = info;
-            ns.Account = acct;
+            ns.Account = account;
 
             ns.SendCharacterList();
 
