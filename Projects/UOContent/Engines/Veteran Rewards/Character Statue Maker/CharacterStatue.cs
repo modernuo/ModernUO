@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Engines.VeteranRewards;
@@ -197,9 +198,10 @@ namespace Server.Mobiles
 
         public override bool CanBeDamaged() => false;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void OnRequestedAnimation(Mobile from)
         {
-            from.Send(new UpdateStatueAnimation(this, 1, m_Animation, m_Frames));
+            from.NetState.SendStatueAnimation(Serial, 1, m_Animation, m_Frames);
         }
 
         public override void OnAosSingleClick(Mobile from)
@@ -384,27 +386,24 @@ namespace Server.Mobiles
                     break;
             }
 
-            if (Map != null)
+            if (Map == null)
             {
-                ProcessDelta();
-
-                Packet p = null;
-
-                var eable = Map.GetClientsInRange(Location);
-
-                foreach (var state in eable)
-                {
-                    state.Mobile.ProcessDelta();
-
-                    p ??= Packet.Acquire(new UpdateStatueAnimation(this, 1, m_Animation, m_Frames));
-
-                    state.Send(p);
-                }
-
-                Packet.Release(p);
-
-                eable.Free();
+                return;
             }
+
+            ProcessDelta();
+
+            var eable = Map.GetClientsInRange(Location);
+            Span<byte> animPacket = stackalloc byte[CharacterStatuePackets.StatueAnimationPacketLength].InitializePacket();
+
+            foreach (var state in eable)
+            {
+                state.Mobile.ProcessDelta();
+                CharacterStatuePackets.CreateStatueAnimation(animPacket, Serial, 1, m_Animation, m_Frames);
+                state.Send(animPacket);
+            }
+
+            eable.Free();
         }
 
         private class DemolishEntry : ContextMenuEntry
@@ -415,12 +414,10 @@ namespace Server.Mobiles
 
             public override void OnClick()
             {
-                if (m_Statue.Deleted)
+                if (!m_Statue.Deleted)
                 {
-                    return;
+                    m_Statue.Demolish(Owner.From);
                 }
-
-                m_Statue.Demolish(Owner.From);
             }
         }
     }
@@ -607,71 +604,75 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (m_Maker.IsChildOf(from.Backpack))
+            if (!m_Maker.IsChildOf(from.Backpack))
             {
-                SpellHelper.GetSurfaceTop(ref p);
-                BaseHouse house = null;
-                var loc = new Point3D(p);
+                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+                return;
+            }
 
-                if (targeted is Item item && !item.IsLockedDown && !item.IsSecure && !(item is AddonComponent))
+            SpellHelper.GetSurfaceTop(ref p);
+            BaseHouse house = null;
+            var loc = new Point3D(p);
+
+            if (targeted is Item item && !item.IsLockedDown && !item.IsSecure && !(item is AddonComponent))
+            {
+                from.SendLocalizedMessage(1076191); // Statues can only be placed in houses.
+                return;
+            }
+
+            if (from.IsBodyMod)
+            {
+                from.SendLocalizedMessage(1073648); // You may only proceed while in your original state...
+                return;
+            }
+
+            var result = CouldFit(loc, map, from, ref house);
+
+            if (result == AddonFitResult.Valid)
+            {
+                var statue = new CharacterStatue(from, m_Type);
+                var plinth = new CharacterStatuePlinth(statue);
+
+                house.Addons.Add(plinth);
+
+                if (m_Maker is IRewardItem rewardItem)
                 {
-                    from.SendLocalizedMessage(1076191); // Statues can only be placed in houses.
-                    return;
+                    statue.IsRewardItem = rewardItem.IsRewardItem;
                 }
 
-                if (from.IsBodyMod)
-                {
-                    from.SendLocalizedMessage(1073648); // You may only proceed while in your original state...
-                    return;
-                }
+                statue.Plinth = plinth;
+                plinth.MoveToWorld(loc, map);
+                statue.InvalidatePose();
 
-                var result = CouldFit(loc, map, from, ref house);
-
-                if (result == AddonFitResult.Valid)
-                {
-                    var statue = new CharacterStatue(from, m_Type);
-                    var plinth = new CharacterStatuePlinth(statue);
-
-                    house.Addons.Add(plinth);
-
-                    if (m_Maker is IRewardItem rewardItem)
-                    {
-                        statue.IsRewardItem = rewardItem.IsRewardItem;
-                    }
-
-                    statue.Plinth = plinth;
-                    plinth.MoveToWorld(loc, map);
-                    statue.InvalidatePose();
-
-                    /*
+                /*
                      * TODO: Previously the maker wasn't deleted until after statue
                      * customization, leading to redeeding issues. Exact OSI behavior
                      * needs looking into.
                      */
-                    m_Maker.Delete();
-                    statue.Sculpt(from);
+                m_Maker.Delete();
+                statue.Sculpt(from);
 
-                    from.CloseGump<CharacterStatueGump>();
-                    from.SendGump(new CharacterStatueGump(m_Maker, statue, from));
-                }
-                else if (result == AddonFitResult.Blocked)
-                {
-                    from.SendLocalizedMessage(500269); // You cannot build that there.
-                }
-                else if (result == AddonFitResult.NotInHouse)
-                {
-                    from.SendLocalizedMessage(
-                        1076192
-                    ); // Statues can only be placed in houses where you are the owner or co-owner.
-                }
-                else if (result == AddonFitResult.DoorTooClose)
-                {
-                    from.SendLocalizedMessage(500271); // You cannot build near the door.
-                }
+                from.CloseGump<CharacterStatueGump>();
+                from.SendGump(new CharacterStatueGump(m_Maker, statue, from));
+                return;
             }
-            else
+
+            if (result == AddonFitResult.Blocked)
             {
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+                from.SendLocalizedMessage(500269); // You cannot build that there.
+                return;
+            }
+
+            if (result == AddonFitResult.NotInHouse)
+            {
+                // Statues can only be placed in houses where you are the owner or co-owner.
+                from.SendLocalizedMessage(1076192);
+                return;
+            }
+
+            if (result == AddonFitResult.DoorTooClose)
+            {
+                from.SendLocalizedMessage(500271); // You cannot build near the door.
             }
         }
 
