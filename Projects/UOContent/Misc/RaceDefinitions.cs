@@ -110,34 +110,24 @@ namespace Server.Misc
 
             public override int ClipSkinHue(int hue)
             {
-                if (hue < 1002)
+                return hue switch
                 {
-                    return 1002;
-                }
-
-                if (hue > 1058)
-                {
-                    return 1058;
-                }
-
-                return hue;
+                    < 1002 => 1002,
+                    > 1058 => 1058,
+                    _      => hue
+                };
             }
 
             public override int RandomSkinHue() => Utility.Random(1002, 57) | 0x8000;
 
             public override int ClipHairHue(int hue)
             {
-                if (hue < 1102)
+                return hue switch
                 {
-                    return 1102;
-                }
-
-                if (hue > 1149)
-                {
-                    return 1149;
-                }
-
-                return hue;
+                    < 1102 => 1102,
+                    > 1149 => 1149,
+                    _      => hue
+                };
             }
 
             public override int RandomHairHue() => Utility.Random(1102, 48);

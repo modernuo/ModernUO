@@ -97,7 +97,7 @@ namespace Server.Engines.MLQuests.Gumps
             CloseCurrent(ns);
 
             m_Pending[ns] = new RaceChangeState(owner, ns, targetRace);
-            ns.Send(new RaceChanger(from.Female, targetRace));
+            ns.SendRaceChanger(from.Female, targetRace);
         }
 
         private static void CloseCurrent(NetState ns)
@@ -108,7 +108,7 @@ namespace Server.Engines.MLQuests.Gumps
                 m_Pending.Remove(ns);
             }
 
-            ns.Send(CloseRaceChanger.Instance);
+            ns.SendCloseRaceChanger();
         }
 
         private static void Timeout(NetState ns)
@@ -116,7 +116,7 @@ namespace Server.Engines.MLQuests.Gumps
             if (IsPending(ns))
             {
                 m_Pending.Remove(ns);
-                ns.Send(CloseRaceChanger.Instance);
+                ns.SendCloseRaceChanger();
             }
         }
 
@@ -281,34 +281,6 @@ namespace Server.Engines.MLQuests.Gumps
                 m_TargetRace = targetRace;
                 m_Timeout = Timer.DelayCall(m_TimeoutDelay, Timeout, ns);
             }
-        }
-    }
-
-    public sealed class RaceChanger : Packet
-    {
-        public RaceChanger(bool female, Race targetRace)
-            : base(0xBF)
-        {
-            EnsureCapacity(7);
-
-            Stream.Write((short)0x2A);
-            Stream.Write((byte)(female ? 1 : 0));
-            Stream.Write((byte)(targetRace.RaceID + 1));
-        }
-    }
-
-    public sealed class CloseRaceChanger : Packet
-    {
-        public static readonly Packet Instance = SetStatic(new CloseRaceChanger());
-
-        private CloseRaceChanger()
-            : base(0xBF)
-        {
-            EnsureCapacity(7);
-
-            Stream.Write((short)0x2A);
-            Stream.Write((byte)0);
-            Stream.Write((byte)0xFF);
         }
     }
 
