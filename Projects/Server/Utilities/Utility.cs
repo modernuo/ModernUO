@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using Microsoft.Toolkit.HighPerformance.Extensions;
+using Server.Buffers;
 using Server.Network;
 using Server.Random;
 
@@ -560,31 +561,10 @@ namespace Server
                 return "";
             }
 
-            var hasOpen = str.ContainsOrdinal('<');
-            var hasClose = str.ContainsOrdinal('>');
-            var hasPound = str.ContainsOrdinal('#');
-
-            if (!hasOpen && !hasClose && !hasPound)
-            {
-                return str;
-            }
-
-            var sb = new StringBuilder(str);
-
-            if (hasOpen)
-            {
-                sb.Replace('<', '(');
-            }
-
-            if (hasClose)
-            {
-                sb.Replace('>', ')');
-            }
-
-            if (hasPound)
-            {
-                sb.Replace('#', '-');
-            }
+            using var sb = new ValueStringBuilder(str, stackalloc char[Math.Min(40960, str.Length)]);
+            ReadOnlySpan<char> invalid = stackalloc []{ '<', '>', '#' };
+            ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
+            sb.ReplaceAny(invalid, replacement, 0, sb.Length);
 
             return sb.ToString();
         }
