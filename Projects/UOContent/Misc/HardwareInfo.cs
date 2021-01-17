@@ -87,7 +87,7 @@ namespace Server
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime TimeReceived { get; private set; }
 
-        public static void Initialize()
+        public static void Configure()
         {
             IncomingPackets.Register(0xD9, 0x10C, false, OnReceive);
 

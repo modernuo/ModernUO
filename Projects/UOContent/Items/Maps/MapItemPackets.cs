@@ -20,6 +20,49 @@ namespace Server.Network
 {
     public static class MapItemPackets
     {
+        public static void Configure()
+        {
+            IncomingPackets.Register(0x56, 11, true, OnMapCommand);
+        }
+
+        private static void OnMapCommand(NetState state, CircularBufferReader reader, ref int packetLength)
+        {
+            var from = state.Mobile;
+
+            if (!(World.FindItem(reader.ReadUInt32()) is MapItem map))
+            {
+                return;
+            }
+
+            int command = reader.ReadByte();
+            int number = reader.ReadByte();
+
+            int x = reader.ReadInt16();
+            int y = reader.ReadInt16();
+
+            switch (command)
+            {
+                case 1:
+                    map.OnAddPin(from, x, y);
+                    break;
+                case 2:
+                    map.OnInsertPin(from, number, x, y);
+                    break;
+                case 3:
+                    map.OnChangePin(from, number, x, y);
+                    break;
+                case 4:
+                    map.OnRemovePin(from, number);
+                    break;
+                case 5:
+                    map.OnClearPins(from);
+                    break;
+                case 6:
+                    map.OnToggleEditable(from);
+                    break;
+            }
+        }
+
         public static void SendMapDetails(this NetState ns, MapItem map)
         {
             if (ns == null)

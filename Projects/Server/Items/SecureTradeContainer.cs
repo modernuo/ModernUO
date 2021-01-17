@@ -41,7 +41,7 @@ namespace Server.Items
 
         public override void OnItemAdded(Item item)
         {
-            if (!(item is VirtualCheck))
+            if (item is not VirtualCheck)
             {
                 ClearChecks();
             }
@@ -49,7 +49,7 @@ namespace Server.Items
 
         public override void OnItemRemoved(Item item)
         {
-            if (!(item is VirtualCheck))
+            if (item is not VirtualCheck)
             {
                 ClearChecks();
             }
@@ -57,7 +57,7 @@ namespace Server.Items
 
         public override void OnSubItemAdded(Item item)
         {
-            if (!(item is VirtualCheck))
+            if (item is not VirtualCheck)
             {
                 ClearChecks();
             }
@@ -65,7 +65,7 @@ namespace Server.Items
 
         public override void OnSubItemRemoved(Item item)
         {
-            if (!(item is VirtualCheck))
+            if (item is not VirtualCheck)
             {
                 ClearChecks();
             }
@@ -93,7 +93,7 @@ namespace Server.Items
 
         public override bool IsChildVisibleTo(Mobile m, Item child) =>
             child is VirtualCheck
-                ? AccountGold.Enabled && m.NetState?.NewSecureTrading != true
+                ? !AccountGold.Enabled || m.NetState?.NewSecureTrading != true
                 : base.IsChildVisibleTo(m, child);
 
         public override void Serialize(IGenericWriter writer)

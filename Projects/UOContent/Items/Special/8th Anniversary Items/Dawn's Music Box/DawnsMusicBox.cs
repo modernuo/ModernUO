@@ -7,16 +7,6 @@ using Server.Network;
 
 namespace Server.Items
 {
-    public sealed class StopMusic : Packet
-    {
-        public static readonly Packet Instance = SetStatic(new StopMusic());
-
-        public StopMusic() : base(0x6D, 3)
-        {
-            Stream.Write((short)0x1FFF);
-        }
-    }
-
     [Flippable(0x2AF9, 0x2AFD)]
     public class DawnsMusicBox : Item, ISecurable
     {
@@ -244,7 +234,7 @@ namespace Server.Items
                 m_Timer.Stop();
             }
 
-            m.Send(StopMusic.Instance);
+            m.NetState.SendStopMusic();
 
             if (m_Count > 0)
             {

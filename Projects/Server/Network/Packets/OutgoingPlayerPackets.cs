@@ -303,6 +303,8 @@ namespace Server.Network
             ns.Send(writer.Span);
         }
 
+        public static void SendStopMusic(this NetState ns) => ns?.Send(stackalloc byte[] { 0x6D, 0x1F, 0xFF });
+
         public static void SendScrollMessage(this NetState ns, int type, int tip, string text)
         {
             if (ns == null)
