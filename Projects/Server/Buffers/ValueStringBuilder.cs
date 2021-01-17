@@ -335,7 +335,7 @@ namespace Server.Buffers
 
                 var chr = slice[indexOf];
 
-                slice[indexOf] = oldChars[newChars.IndexOf(chr)];
+                slice[indexOf] = newChars[oldChars.IndexOf(chr)];
                 slice = slice.Slice(indexOf + 1);
             }
         }

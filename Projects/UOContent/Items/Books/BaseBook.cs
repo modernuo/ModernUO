@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Server.Buffers;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Multis;
-using Server.Network;
 
 namespace Server.Items
 {
@@ -324,121 +322,8 @@ namespace Server.Items
                 Author = from.Name;
             }
 
-            from.Send(new BookHeader(from, this));
-            from.Send(new BookPageDetails(this));
-        }
-
-        public static void Initialize()
-        {
-            IncomingPackets.Register(0xD4, 0, true, HeaderChange);
-            IncomingPackets.Register(0x66, 0, true, ContentChange);
-            IncomingPackets.Register(0x93, 99, true, OldHeaderChange);
-        }
-
-        public static void OldHeaderChange(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var from = state.Mobile;
-
-            if (!(World.FindItem(reader.ReadUInt32()) is BaseBook book) || !book.Writable ||
-                !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
-            {
-                return;
-            }
-
-            reader.Seek(4, SeekOrigin.Current); // Skip flags and page count
-
-            var title = reader.ReadAsciiSafe(60);
-            var author = reader.ReadAsciiSafe(30);
-
-            book.Title = Utility.FixHtml(title);
-            book.Author = Utility.FixHtml(author);
-        }
-
-        public static void HeaderChange(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var from = state.Mobile;
-
-            if (!(World.FindItem(reader.ReadUInt32()) is BaseBook book) || !book.Writable ||
-                !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
-            {
-                return;
-            }
-
-            reader.Seek(4, SeekOrigin.Current); // Skip flags and page count
-
-            int titleLength = reader.ReadUInt16();
-
-            if (titleLength > 60)
-            {
-                return;
-            }
-
-            var title = reader.ReadUTF8Safe(titleLength);
-
-            int authorLength = reader.ReadUInt16();
-
-            if (authorLength > 30)
-            {
-                return;
-            }
-
-            var author = reader.ReadUTF8Safe(authorLength);
-
-            book.Title = Utility.FixHtml(title);
-            book.Author = Utility.FixHtml(author);
-        }
-
-        public static void ContentChange(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var from = state.Mobile;
-
-            if (!(World.FindItem(reader.ReadUInt32()) is BaseBook book) || !book.Writable ||
-                !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
-            {
-                return;
-            }
-
-            int pageCount = reader.ReadUInt16();
-
-            if (pageCount > book.PagesCount)
-            {
-                return;
-            }
-
-            for (var i = 0; i < pageCount; ++i)
-            {
-                int index = reader.ReadUInt16();
-
-                if (index >= 1 && index <= book.PagesCount)
-                {
-                    --index;
-
-                    int lineCount = reader.ReadUInt16();
-
-                    if (lineCount <= 8)
-                    {
-                        var lines = new string[lineCount];
-
-                        for (var j = 0; j < lineCount; ++j)
-                        {
-                            if ((lines[j] = reader.ReadUTF8Safe()).Length >= 80)
-                            {
-                                return;
-                            }
-                        }
-
-                        book.Pages[index].Lines = lines;
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    return;
-                }
-            }
+            from.NetState.SendBookCover(from, this);
+            from.NetState.SendBookContent(this);
         }
 
         [Flags]
