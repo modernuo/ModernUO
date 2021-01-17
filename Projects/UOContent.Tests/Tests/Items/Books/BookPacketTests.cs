@@ -47,7 +47,7 @@ namespace UOContent.Tests
                 "Another page exists but this page:",
                 "Has lots of: 🅵🅰🅽🅲🆈 🆃🅴🆇🆃",
                 "And just more: 🅵🅰🅽🅲🆈 🆃🅴🆇🆃",
-                "So everyone can ready: 🅵🅰🅽🅲🆈 🆃🅴🆇🆃"
+                "So everyone can read: 🅵🅰🅽🅲🆈 🆃🅴🆇🆃"
             };
 
             book.Pages[2].Lines = new[]
