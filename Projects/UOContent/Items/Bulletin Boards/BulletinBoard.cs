@@ -1,9 +1,38 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Server.Network;
 
 namespace Server.Items
 {
+    public static class BulletinBoardSystem
+    {
+        // Threads will be removed six hours after the last post was made
+        public static TimeSpan ThreadDeletionTime { get; private set; }
+
+        // A player may only create a thread once every two minutes
+        public static TimeSpan ThreadCreateTime { get; private set; }
+
+        // A player may only reply once every thirty seconds
+        public static TimeSpan ThreadReplyTime { get; private set; }
+
+        public static void Configure()
+        {
+            ThreadCreateTime = ServerConfiguration.GetOrUpdateSetting("bulletinboards.creationTimeDelay", TimeSpan.FromMinutes(2.0));
+            ThreadDeletionTime = ServerConfiguration.GetOrUpdateSetting("bulletinboards.expireDuration", TimeSpan.FromHours(6.0));
+            ThreadReplyTime = ServerConfiguration.GetOrUpdateSetting("bulletinboards.replyDelay", TimeSpan.FromSeconds(30.0));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool CheckCreateTime(DateTime time) => time + ThreadCreateTime < DateTime.UtcNow;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        public static bool CheckDeletionTime(DateTime time) => time + ThreadDeletionTime < DateTime.UtcNow;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool CheckReplyTime(DateTime time) => time + ThreadReplyTime < DateTime.UtcNow;
+    }
+
     [Flippable(0x1E5E, 0x1E5F)]
     public class BulletinBoard : BaseBulletinBoard
     {
@@ -33,15 +62,6 @@ namespace Server.Items
 
     public abstract class BaseBulletinBoard : Item
     {
-        // Threads will be removed six hours after the last post was made
-        private static readonly TimeSpan ThreadDeletionTime = TimeSpan.FromHours(6.0);
-
-        // A player may only create a thread once every two minutes
-        private static readonly TimeSpan ThreadCreateTime = TimeSpan.FromMinutes(2.0);
-
-        // A player may only reply once every thirty seconds
-        private static readonly TimeSpan ThreadReplyTime = TimeSpan.FromSeconds(30.0);
-
         public BaseBulletinBoard(int itemID) : base(itemID)
         {
             BoardName = "bulletin board";
@@ -54,27 +74,6 @@ namespace Server.Items
 
         [CommandProperty(AccessLevel.GameMaster)]
         public string BoardName { get; set; }
-
-        public static bool CheckTime(DateTime time, TimeSpan range) => time + range < DateTime.UtcNow;
-
-        public static string FormatTS(TimeSpan ts)
-        {
-            var totalSeconds = (int)ts.TotalSeconds;
-            var seconds = totalSeconds % 60;
-            var minutes = totalSeconds / 60;
-
-            if (minutes != 0 && seconds != 0)
-            {
-                return $"{minutes} minute{(minutes == 1 ? "" : "s")} and {seconds} second{(seconds == 1 ? "" : "s")}";
-            }
-
-            if (minutes != 0)
-            {
-                return $"{minutes} minute{(minutes == 1 ? "" : "s")}";
-            }
-
-            return $"{seconds} second{(seconds == 1 ? "" : "s")}";
-        }
 
         public virtual void Cleanup()
         {
@@ -92,7 +91,7 @@ namespace Server.Items
                     continue;
                 }
 
-                if (msg.Thread == null && CheckTime(msg.LastPostTime, ThreadDeletionTime))
+                if (msg.Thread == null && BulletinBoardSystem.CheckDeletionTime(msg.LastPostTime))
                 {
                     msg.Delete();
                     RecurseDelete(msg); // A root-level thread has expired
@@ -210,129 +209,6 @@ namespace Server.Items
                         break;
                     }
             }
-        }
-
-        public static void Initialize()
-        {
-            IncomingPackets.Register(0x71, 0, true, BBClientRequest);
-        }
-
-        public static void BBClientRequest(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var from = state.Mobile;
-
-            int packetID = reader.ReadByte();
-
-            if (World.FindItem(reader.ReadUInt32()) is not BaseBulletinBoard board || !board.CheckRange(from))
-            {
-                return;
-            }
-
-            switch (packetID)
-            {
-                case 3:
-                    BBRequestContent(from, board, reader);
-                    break;
-                case 4:
-                    BBRequestHeader(from, board, reader);
-                    break;
-                case 5:
-                    BBPostMessage(from, board, reader);
-                    break;
-                case 6:
-                    BBRemoveMessage(from, board, reader);
-                    break;
-            }
-        }
-
-        public static void BBRequestContent(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
-        {
-            if (World.FindItem(reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
-            {
-                return;
-            }
-
-            from.NetState.SendBBMessage(board, msg, true);
-        }
-
-        public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
-        {
-            if (World.FindItem(reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
-            {
-                return;
-            }
-
-            from.NetState.SendBBMessage(board, msg);
-        }
-
-        public static void BBPostMessage(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
-        {
-            var thread = World.FindItem(reader.ReadUInt32()) as BulletinMessage;
-
-            if (thread != null && thread.Parent != board)
-            {
-                thread = null;
-            }
-
-            var breakout = 0;
-
-            while (thread?.Thread != null && breakout++ < 10)
-            {
-                thread = thread.Thread;
-            }
-
-            var lastPostTime = DateTime.MinValue;
-
-            if (board.GetLastPostTime(from, thread == null, ref lastPostTime) &&
-                !CheckTime(lastPostTime, thread == null ? ThreadCreateTime : ThreadReplyTime))
-            {
-                if (thread == null)
-                {
-                    from.SendMessage("You must wait {0} before creating a new thread.", FormatTS(ThreadCreateTime));
-                }
-                else
-                {
-                    from.SendMessage("You must wait {0} before replying to another thread.", FormatTS(ThreadReplyTime));
-                }
-
-                return;
-            }
-
-            var subject = reader.ReadUTF8Safe(reader.ReadByte());
-
-            if (subject.Length == 0)
-            {
-                return;
-            }
-
-            var lines = new string[reader.ReadByte()];
-
-            if (lines.Length == 0)
-            {
-                return;
-            }
-
-            for (var i = 0; i < lines.Length; ++i)
-            {
-                lines[i] = reader.ReadUTF8Safe(reader.ReadByte());
-            }
-
-            board.PostMessage(from, thread, subject, lines);
-        }
-
-        public static void BBRemoveMessage(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
-        {
-            if (World.FindItem(reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
-            {
-                return;
-            }
-
-            if (from.AccessLevel < AccessLevel.GameMaster && msg.Poster != from)
-            {
-                return;
-            }
-
-            msg.Delete();
         }
     }
 }

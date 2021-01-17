@@ -24,6 +24,150 @@ namespace Server.Network
 {
     public static class BulletinBoardPackets
     {
+        public static void Configure()
+        {
+            IncomingPackets.Register(0x71, 0, true, BBClientRequest);
+        }
+
+        public static string FormatTS(TimeSpan ts)
+        {
+            var totalSeconds = (int)ts.TotalSeconds;
+            var seconds = totalSeconds % 60;
+            var minutes = totalSeconds / 60;
+
+            if (minutes != 0 && seconds != 0)
+            {
+                return $"{minutes} minute{(minutes == 1 ? "" : "s")} and {seconds} second{(seconds == 1 ? "" : "s")}";
+            }
+
+            if (minutes != 0)
+            {
+                return $"{minutes} minute{(minutes == 1 ? "" : "s")}";
+            }
+
+            return $"{seconds} second{(seconds == 1 ? "" : "s")}";
+        }
+
+        public static void BBClientRequest(NetState state, CircularBufferReader reader, ref int packetLength)
+        {
+            var from = state.Mobile;
+
+            int packetID = reader.ReadByte();
+
+            if (World.FindItem(reader.ReadUInt32()) is not BaseBulletinBoard board || !board.CheckRange(from))
+            {
+                return;
+            }
+
+            switch (packetID)
+            {
+                case 3:
+                    BBRequestContent(from, board, reader);
+                    break;
+                case 4:
+                    BBRequestHeader(from, board, reader);
+                    break;
+                case 5:
+                    BBPostMessage(from, board, reader);
+                    break;
+                case 6:
+                    BBRemoveMessage(from, board, reader);
+                    break;
+            }
+        }
+
+        public static void BBRequestContent(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
+        {
+            if (World.FindItem(reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
+            {
+                return;
+            }
+
+            from.NetState.SendBBMessage(board, msg, true);
+        }
+
+        public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
+        {
+            if (World.FindItem(reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
+            {
+                return;
+            }
+
+            from.NetState.SendBBMessage(board, msg);
+        }
+
+        public static void BBPostMessage(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
+        {
+            var thread = World.FindItem(reader.ReadUInt32()) as BulletinMessage;
+
+            if (thread != null && thread.Parent != board)
+            {
+                thread = null;
+            }
+
+            var breakout = 0;
+
+            while (thread?.Thread != null && breakout++ < 10)
+            {
+                thread = thread.Thread;
+            }
+
+            var lastPostTime = DateTime.MinValue;
+
+            if (board.GetLastPostTime(from, thread == null, ref lastPostTime))
+            {
+                if (thread == null)
+                {
+                    if (!BulletinBoardSystem.CheckCreateTime(lastPostTime))
+                    {
+                        from.SendMessage($"You must wait {FormatTS(BulletinBoardSystem.ThreadCreateTime)} before creating a new thread.");
+                        return;
+                    }
+                }
+                else if (!BulletinBoardSystem.CheckReplyTime(lastPostTime))
+                {
+                    from.SendMessage($"You must wait {FormatTS(BulletinBoardSystem.ThreadReplyTime)} before replying to another thread.");
+                    return;
+                }
+            }
+
+            var subject = reader.ReadUTF8Safe(reader.ReadByte());
+
+            if (subject.Length == 0)
+            {
+                return;
+            }
+
+            var lines = new string[reader.ReadByte()];
+
+            if (lines.Length == 0)
+            {
+                return;
+            }
+
+            for (var i = 0; i < lines.Length; ++i)
+            {
+                lines[i] = reader.ReadUTF8Safe(reader.ReadByte());
+            }
+
+            board.PostMessage(from, thread, subject, lines);
+        }
+
+        public static void BBRemoveMessage(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
+        {
+            if (World.FindItem(reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
+            {
+                return;
+            }
+
+            if (from.AccessLevel < AccessLevel.GameMaster && msg.Poster != from)
+            {
+                return;
+            }
+
+            msg.Delete();
+        }
+
         public static void SendBBDisplayBoard(this NetState ns, BaseBulletinBoard board)
         {
             if (ns == null)
