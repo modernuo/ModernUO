@@ -124,8 +124,7 @@ namespace Server.Buffers
             Length += count;
         }
 
-#nullable enable
-        public void Insert(int index, string? s)
+        public void Insert(int index, string s)
         {
             if (s == null)
             {
@@ -144,7 +143,6 @@ namespace Server.Buffers
             s.AsSpan().CopyTo(_chars.Slice(index));
             Length += count;
         }
-#nullable disable
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(char c)
@@ -161,9 +159,8 @@ namespace Server.Buffers
             }
         }
 
-#nullable enable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(string? s)
+        public void Append(string s)
         {
             if (s == null)
             {
@@ -183,7 +180,7 @@ namespace Server.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(string? s)
+        public void AppendLine(string s)
         {
             if (s == null)
             {
@@ -202,7 +199,6 @@ namespace Server.Buffers
 
             Append(Environment.NewLine);
         }
-#nullable disable
 
         private void AppendSlow(string s)
         {
@@ -295,7 +291,7 @@ namespace Server.Buffers
 
             _chars.SliceToLength(Length).CopyTo(poolArray);
 
-            char[]? toReturn = _arrayToReturnToPool;
+            char[] toReturn = _arrayToReturnToPool;
             _chars = _arrayToReturnToPool = poolArray;
             if (toReturn != null)
             {
@@ -306,7 +302,7 @@ namespace Server.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            char[]? toReturn = _arrayToReturnToPool;
+            char[] toReturn = _arrayToReturnToPool;
             this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
             if (toReturn != null)
             {

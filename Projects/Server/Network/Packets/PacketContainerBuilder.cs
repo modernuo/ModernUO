@@ -85,7 +85,6 @@ namespace Server.Network
             Length += bytesWritten;
         }
 
-#nullable enable
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void Grow(int additionalCapacityBeyondPos)
         {
@@ -94,7 +93,7 @@ namespace Server.Network
 
             _bytes.SliceToLength(Length).CopyTo(poolArray);
 
-            byte[]? toReturn = _arrayToReturnToPool;
+            byte[] toReturn = _arrayToReturnToPool;
             _bytes = _arrayToReturnToPool = poolArray;
             if (toReturn != null)
             {
@@ -105,13 +104,12 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            byte[]? toReturn = _arrayToReturnToPool;
+            byte[] toReturn = _arrayToReturnToPool;
             this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
             if (toReturn != null)
             {
                 ArrayPool<byte>.Shared.Return(toReturn);
             }
         }
-#nullable disable
     }
 }

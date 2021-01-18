@@ -73,7 +73,6 @@ namespace System.Buffers
             BytesWritten = 0;
         }
 
-#nullable enable
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void Grow(int additionalCapacity)
         {
@@ -82,14 +81,13 @@ namespace System.Buffers
 
             _buffer.SliceToLength(BytesWritten).CopyTo(poolArray);
 
-            byte[]? toReturn = _arrayToReturnToPool;
+            byte[] toReturn = _arrayToReturnToPool;
             _buffer = _arrayToReturnToPool = poolArray;
             if (toReturn != null)
             {
                 ArrayPool<byte>.Shared.Return(toReturn);
             }
         }
-#nullable disable
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void GrowIfNeeded(int count)
@@ -372,17 +370,15 @@ namespace System.Buffers
             return Position = newPosition;
         }
 
-#nullable enable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            byte[]? toReturn = _arrayToReturnToPool;
+            byte[] toReturn = _arrayToReturnToPool;
             this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
             if (toReturn != null)
             {
                 ArrayPool<byte>.Shared.Return(toReturn);
             }
         }
-#nullable disable
     }
 }
