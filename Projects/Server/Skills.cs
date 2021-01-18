@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Network;
 
 namespace Server
@@ -806,15 +805,9 @@ namespace Server
         [CommandProperty(AccessLevel.Counselor)]
         public Skill Throwing => this[SkillName.Throwing];
 
-        public IEnumerator<Skill> GetEnumerator()
-        {
-            return m_Skills.Where(s => s != null).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return m_Skills.Where(s => s != null).GetEnumerator();
-        }
+        public Enumerator GetEnumerator() => new(this);
+        IEnumerator<Skill> IEnumerable<Skill>.GetEnumerator() => new Enumerator(this);
+        IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
         public override string ToString() => "...";
 
@@ -901,6 +894,61 @@ namespace Server
 
             Owner.OnSkillInvalidated(skill);
             Owner.NetState.SendSkillChange(skill);
+        }
+
+        public struct Enumerator : IEnumerator<Skill>
+        {
+            private readonly Skills _skills;
+            private int _index;
+            private Skill _current;
+
+            internal Enumerator(Skills skills)
+            {
+                _skills = skills;
+                _index = 0;
+                _current = default;
+            }
+
+            public void Dispose()
+            {
+            }
+
+            public bool MoveNext()
+            {
+                Skills localList = _skills;
+
+                while ((uint)_index < (uint)localList.Length)
+                {
+                    _current = localList.m_Skills[_index++];
+                    if (_current != null)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            public Skill Current => _current!;
+
+            object IEnumerator.Current
+            {
+                get
+                {
+                    if (_index == 0 || _index == _skills.Length + 1)
+                    {
+                        throw new InvalidOperationException(nameof(_index));
+                    }
+
+                    return Current;
+                }
+            }
+
+            void IEnumerator.Reset()
+            {
+                _index = 0;
+                _current = default;
+            }
         }
     }
 }
