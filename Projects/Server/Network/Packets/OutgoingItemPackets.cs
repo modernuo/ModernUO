@@ -21,8 +21,6 @@ namespace Server.Network
 {
     public static class OutgoingItemPackets
     {
-        public const int MaxWorldItemPacketLength = 26;
-
         public static int CreateWorldItem(Span<byte> buffer, Item item)
         {
             if (buffer[0] != 0)
@@ -89,62 +87,13 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[MaxWorldItemPacketLength];
+            Span<byte> buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength];
 
             var length = ns.StygianAbyss ?
-                CreateWorldItemNew(buffer, item, ns.HighSeas) :
+                OutgoingEntityPackets.CreateWorldEntity(buffer, item, ns.StygianAbyss, ns.HighSeas) :
                 CreateWorldItem(buffer, item);
 
             ns.Send(buffer.SliceToLength(length));
-        }
-
-        public static int CreateWorldItemNew(Span<byte> buffer, Item item, bool isHS)
-        {
-            if (buffer[0] != 0)
-            {
-                return buffer.Length;
-            }
-
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xF3); // Packet ID
-            writer.Write((short)0x1); // command
-
-            var itemID = item.ItemID;
-
-            if (item is BaseMulti)
-            {
-                writer.Write((byte)2);
-                writer.Write(item.Serial);
-                writer.Write((short)(itemID & 0x3FFF));
-                writer.Write((byte)0);
-            }
-            else
-            {
-                writer.Write((byte)0);
-                writer.Write(item.Serial);
-                writer.Write((short)(itemID & (isHS ? 0xFFFF : 0x7FFF)));
-                writer.Write((byte)0);
-            }
-
-            var amount = item.Amount;
-            writer.Write((short)amount); // Min
-            writer.Write((short)amount); // Max
-
-            var loc = item.Location;
-            writer.Write((short)loc.X);
-            writer.Write((short)loc.Y);
-            writer.Write((sbyte)loc.Z);
-
-            writer.Write((byte)item.Light);
-            writer.Write((short)item.Hue);
-            writer.Write((byte)item.GetPacketFlags());
-
-            if (isHS)
-            {
-                writer.Write((short)0);
-            }
-
-            return writer.Position;
         }
     }
 }

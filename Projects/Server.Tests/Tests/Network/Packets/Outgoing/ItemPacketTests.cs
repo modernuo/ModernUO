@@ -69,7 +69,7 @@ namespace Server.Tests.Network
             var expected = new WorldItemSA(item).Compile();
 
             using var ns = PacketTestUtilities.CreateTestNetState();
-            ns.ProtocolChanges = ns.ProtocolChanges | ProtocolChanges.StygianAbyss;
+            ns.ProtocolChanges = ProtocolChanges.StygianAbyss;
             ns.SendWorldItem(item);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -104,7 +104,7 @@ namespace Server.Tests.Network
             var expected = new WorldItemHS(item).Compile();
 
             using var ns = PacketTestUtilities.CreateTestNetState();
-            ns.ProtocolChanges = ns.ProtocolChanges | ProtocolChanges.StygianAbyss | ProtocolChanges.HighSeas;
+            ns.ProtocolChanges = ProtocolChanges.StygianAbyss | ProtocolChanges.HighSeas;
             ns.SendWorldItem(item);
 
             var result = ns.SendPipe.Reader.TryRead();

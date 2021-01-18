@@ -15,6 +15,7 @@
 
 using System;
 using System.Buffers;
+using Server.Items;
 
 namespace Server.Network
 {
@@ -22,6 +23,7 @@ namespace Server.Network
     {
         public const int OPLPacketLength = 9;
         public const int RemoveEntityLength = 5;
+        public const int MaxWorldEntityPacketLength = 26;
 
         public static void CreateOPLInfo(Span<byte> buffer, Item item) =>
             CreateOPLInfo(buffer, item.Serial, item.PropertyList.Hash);
@@ -78,6 +80,72 @@ namespace Server.Network
             CreateRemoveEntity(buffer, serial);
 
             ns.Send(buffer);
+        }
+
+        public static int CreateWorldEntity(Span<byte> buffer, IEntity entity, bool isSA, bool isHS)
+        {
+            if (buffer[0] != 0)
+            {
+                return buffer.Length;
+            }
+
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0xF3); // Packet ID
+            writer.Write((short)0x1); // command
+
+            int type = 0;
+            int gfx = 0;
+            int amount = 1;
+            int hue = 0;
+            byte light = 0;
+            int flags = 0;
+
+            if (entity is BaseMulti multi)
+            {
+                type = 2;
+                gfx = multi.ItemID & (isHS ? 0xFFFF : 0x7FFF);
+                hue = multi.Hue;
+                amount = multi.Amount;
+            }
+            else if (entity is Item item)
+            {
+                // type = 3 if is damageable
+                gfx = item.ItemID & (isHS ? 0xFFFF : 0x7FFF);
+                hue = item.Hue;
+                amount = item.Amount;
+                light = (byte)item.Light;
+                flags = item.GetPacketFlags();
+            }
+            else if (entity is Mobile mobile)
+            {
+                type = 1;
+                gfx = mobile.BodyValue;
+                hue = mobile.Hue;
+                flags = mobile.GetPacketFlags(isSA);
+            }
+
+            writer.Write((byte)type);
+            writer.Write(entity.Serial);
+            writer.Write((ushort)gfx);
+            writer.Write((byte)0);
+
+            writer.Write((short)amount); // Min
+            writer.Write((short)amount); // Max
+
+            writer.Write((short)(entity.X & 0x7FFF));
+            writer.Write((short)(entity.Y & 0x3FFF));
+            writer.Write((sbyte)entity.Z);
+
+            writer.Write((byte)light);
+            writer.Write((short)hue);
+            writer.Write((byte)flags);
+
+            if (isHS)
+            {
+                writer.Write((short)0);
+            }
+
+            return writer.Position;
         }
     }
 }

@@ -1,0 +1,54 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Email: hi@modernuo.com                                                *
+ * File: EntityPackets.cs                                                *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+
+namespace Server.Network
+{
+    public static class EntityPackets
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendBatchEntities(this NetState ns, IReadOnlyCollection<IEntity> entities) =>
+            ns.SendBatchEntities(entities, entities.Count);
+
+        public static void SendBatchEntities(this NetState ns, IEnumerable<IEntity> entities, int estimatedCount)
+        {
+            if (ns?.HighSeas != true)
+            {
+                return;
+            }
+
+            bool isSA = ns.StygianAbyss;
+            bool isHS = ns.HighSeas;
+
+            var minLength = PacketContainerBuilder.MinPacketLength
+                            + OutgoingEntityPackets.MaxWorldEntityPacketLength
+                            * estimatedCount;
+
+            using var builder = new PacketContainerBuilder(stackalloc byte[minLength]);
+
+            foreach (var entity in entities)
+            {
+                Span<byte> buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength).InitializePacket();
+                var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, isSA, isHS);
+                builder.Advance(bytesWritten);
+            }
+
+            ns.Send(builder.Finalize());
+        }
+    }
+}

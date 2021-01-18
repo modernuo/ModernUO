@@ -1136,9 +1136,9 @@ namespace Server
 
                 if (m_Map != null)
                 {
-                    Span<byte> oldWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength].InitializePacket();
-                    Span<byte> saWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength].InitializePacket();
-                    Span<byte> hsWorldItem = stackalloc byte[OutgoingItemPackets.MaxWorldItemPacketLength].InitializePacket();
+                    Span<byte> oldWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+                    Span<byte> saWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+                    Span<byte> hsWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
                     Span<byte> opl = ObjectPropertyList.Enabled ? stackalloc byte[OutgoingEntityPackets.OPLPacketLength].InitializePacket() : null;
 
                     var eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
@@ -1151,7 +1151,7 @@ namespace Server
                         {
                             if (state.HighSeas)
                             {
-                                var length = OutgoingItemPackets.CreateWorldItemNew(hsWorldItem, this, true);
+                                var length = OutgoingEntityPackets.CreateWorldEntity(hsWorldItem, this, true, true);
                                 if (length != hsWorldItem.Length)
                                 {
                                     hsWorldItem = hsWorldItem.SliceToLength(length);
@@ -1161,7 +1161,7 @@ namespace Server
                             }
                             else if (state.StygianAbyss)
                             {
-                                var length = OutgoingItemPackets.CreateWorldItemNew(saWorldItem, this, false);
+                                var length = OutgoingEntityPackets.CreateWorldEntity(saWorldItem, this, true, false);
                                 if (length != saWorldItem.Length)
                                 {
                                     saWorldItem = saWorldItem.SliceToLength(length);
@@ -1606,21 +1606,21 @@ namespace Server
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public int X
         {
-            get => m_Location.m_X;
+            get => Location.m_X;
             set => Location = new Point3D(value, m_Location.m_Y, m_Location.m_Z);
         }
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public int Y
         {
-            get => m_Location.m_Y;
+            get => Location.m_Y;
             set => Location = new Point3D(m_Location.m_X, value, m_Location.m_Z);
         }
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public int Z
         {
-            get => m_Location.m_Z;
+            get => Location.m_Z;
             set => Location = new Point3D(m_Location.m_X, m_Location.m_Y, value);
         }
 
