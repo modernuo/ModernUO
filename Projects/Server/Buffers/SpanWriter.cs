@@ -29,7 +29,7 @@ namespace System.Buffers
     public ref struct SpanWriter
     {
         private readonly bool _resize;
-        private byte[]? _arrayToReturnToPool;
+        private byte[] _arrayToReturnToPool;
         private Span<byte> _buffer;
         private int _position;
 
@@ -81,7 +81,7 @@ namespace System.Buffers
 
             _buffer.SliceToLength(BytesWritten).CopyTo(poolArray);
 
-            byte[]? toReturn = _arrayToReturnToPool;
+            byte[] toReturn = _arrayToReturnToPool;
             _buffer = _arrayToReturnToPool = poolArray;
             if (toReturn != null)
             {

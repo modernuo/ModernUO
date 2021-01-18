@@ -492,6 +492,7 @@ namespace Server.Collections
             return index;
         }
 
+#nullable enable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int TryInsert(int? index, TValue value)
         {
@@ -525,6 +526,7 @@ namespace Server.Collections
             ++_version;
             return actualIndex;
         }
+#nullable disable
 
         // Returns the index of the next entry in the bucket
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

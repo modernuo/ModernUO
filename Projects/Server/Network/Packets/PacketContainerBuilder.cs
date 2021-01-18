@@ -27,7 +27,7 @@ namespace Server.Network
         private bool _finished;
         private int _count;
 
-        private byte[]? _arrayToReturnToPool;
+        private byte[] _arrayToReturnToPool;
         private Span<byte> _bytes;
 
         public PacketContainerBuilder(Span<byte> initialBuffer)
@@ -93,7 +93,7 @@ namespace Server.Network
 
             _bytes.SliceToLength(Length).CopyTo(poolArray);
 
-            byte[]? toReturn = _arrayToReturnToPool;
+            byte[] toReturn = _arrayToReturnToPool;
             _bytes = _arrayToReturnToPool = poolArray;
             if (toReturn != null)
             {
@@ -104,7 +104,7 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            byte[]? toReturn = _arrayToReturnToPool;
+            byte[] toReturn = _arrayToReturnToPool;
             this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
             if (toReturn != null)
             {

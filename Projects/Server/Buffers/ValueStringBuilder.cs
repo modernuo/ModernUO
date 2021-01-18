@@ -11,7 +11,7 @@ namespace Server.Buffers
 {
     public ref struct ValueStringBuilder
     {
-        private char[]? _arrayToReturnToPool;
+        private char[] _arrayToReturnToPool;
         private Span<char> _chars;
 
         // If this ctor is used, you cannot pass in stackalloc ROS for append/replace.
@@ -124,7 +124,7 @@ namespace Server.Buffers
             Length += count;
         }
 
-        public void Insert(int index, string? s)
+        public void Insert(int index, string s)
         {
             if (s == null)
             {
@@ -160,7 +160,7 @@ namespace Server.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(string? s)
+        public void Append(string s)
         {
             if (s == null)
             {
@@ -180,7 +180,7 @@ namespace Server.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(string? s)
+        public void AppendLine(string s)
         {
             if (s == null)
             {
@@ -275,6 +275,7 @@ namespace Server.Buffers
             Append(c);
         }
 
+#nullable enable
         /// <summary>
         /// Resize the internal buffer either by doubling current buffer size or
         /// by adding <paramref name="additionalCapacityBeyondPos"/> to
@@ -290,7 +291,7 @@ namespace Server.Buffers
 
             _chars.SliceToLength(Length).CopyTo(poolArray);
 
-            char[]? toReturn = _arrayToReturnToPool;
+            char[] toReturn = _arrayToReturnToPool;
             _chars = _arrayToReturnToPool = poolArray;
             if (toReturn != null)
             {
@@ -301,13 +302,14 @@ namespace Server.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            char[]? toReturn = _arrayToReturnToPool;
+            char[] toReturn = _arrayToReturnToPool;
             this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
             if (toReturn != null)
             {
                 ArrayPool<char>.Shared.Return(toReturn);
             }
         }
+#nullable disable
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ReplaceAny(ReadOnlySpan<char> oldChars, ReadOnlySpan<char> newChars, int startIndex, int count)
