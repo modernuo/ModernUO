@@ -22,30 +22,19 @@ namespace Server
     {
         public static void Serialize(string path, Action<IGenericWriter> serializer)
         {
-            var file = new FileInfo(path);
+            AssemblyHandler.EnsureDirectory(Path.GetDirectoryName(path));
 
-            file.Refresh();
-
-            AssemblyHandler.EnsureDirectory(file.Directory?.Name);
-
-            if (!file.Exists)
-            {
-                file.Create().Close();
-            }
-
-            file.Refresh();
-
-            using var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Write, FileShare.None);
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Write, FileShare.None);
             var writer = new BinaryFileWriter(fs, true);
 
             try
             {
                 serializer(writer);
             }
-            finally
+            catch (Exception e)
             {
-                writer.Flush();
-                writer.Close();
+                Console.WriteLine("[Persistence]: Failed to serialize");
+                Console.WriteLine(e);
             }
         }
 
@@ -73,7 +62,8 @@ namespace Server
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Persistence]: {0}", e);
+                Console.WriteLine("[Persistence]: Failed to deserialize");
+                Console.WriteLine(e);
             }
         }
     }
