@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -224,16 +223,11 @@ namespace Server
 
             var any = false;
 
-            m_TilesList.AddRange(
-                eable.SelectMany(
-                        t =>
-                        {
-                            any = true;
-                            return t;
-                        }
-                    )
-                    .ToArray()
-            );
+            foreach (StaticTile[] multiTiles in eable)
+            {
+                any = true;
+                m_TilesList.AddRange(multiTiles);
+            }
 
             eable.Free();
 

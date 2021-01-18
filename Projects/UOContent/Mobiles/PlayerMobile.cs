@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
@@ -1049,7 +1048,7 @@ namespace Server.Mobiles
 
         public static void EquipMacro(Mobile m, List<Serial> list)
         {
-            if (m is PlayerMobile pm && pm.Backpack != null && pm.Alive)
+            if (m is PlayerMobile { Alive: true } pm && pm.Backpack != null)
             {
                 var pack = pm.Backpack;
 
