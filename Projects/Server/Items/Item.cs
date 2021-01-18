@@ -1606,21 +1606,21 @@ namespace Server
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public int X
         {
-            get => m_Location.m_X;
+            get => Location.m_X;
             set => Location = new Point3D(value, m_Location.m_Y, m_Location.m_Z);
         }
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public int Y
         {
-            get => m_Location.m_Y;
+            get => Location.m_Y;
             set => Location = new Point3D(m_Location.m_X, value, m_Location.m_Z);
         }
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public int Z
         {
-            get => m_Location.m_Z;
+            get => Location.m_Z;
             set => Location = new Point3D(m_Location.m_X, m_Location.m_Y, value);
         }
 

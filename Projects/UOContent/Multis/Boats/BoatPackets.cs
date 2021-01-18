@@ -16,6 +16,8 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Server.Collections;
 using Server.Network;
 
 namespace Server.Multis.Boats
@@ -25,7 +27,7 @@ namespace Server.Multis.Boats
         public static void SendMoveBoatHS(this NetState ns, Mobile beholder, BaseBoat boat,
             Direction d, int speed, List<IEntity> ents, int xOffset, int yOffset)
         {
-            if (ns == null)
+            if (ns?.HighSeas != true)
             {
                 return;
             }
@@ -65,6 +67,22 @@ namespace Server.Multis.Boats
             writer.WritePacketLength();
 
             ns.Send(writer.Span);
+        }
+
+        public static void SendDisplayBoatHS(this NetState ns, Mobile beholder, BaseBoat boat)
+        {
+            var ents = boat.GetMovingEntities();
+
+            ents.AddNotNull(boat.TillerMan);
+            ents.AddNotNull(boat.Hold);
+            ents.AddNotNull(boat.PPlank);
+            ents.AddNotNull(boat.SPlank);
+
+            ents.Add(boat);
+
+            var eable = ents.Where(beholder.CanSee);
+
+            ns.SendBatchEntities(eable, ents.Count);
         }
     }
 }

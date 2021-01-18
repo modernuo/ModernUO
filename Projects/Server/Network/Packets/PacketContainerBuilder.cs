@@ -22,7 +22,7 @@ namespace Server.Network
 {
     public ref struct PacketContainerBuilder
     {
-        public const int MinPacketLength = 3;
+        public const int MinPacketLength = 5;
 
         private bool _finished;
         private int _count;
@@ -37,14 +37,15 @@ namespace Server.Network
             _count = 0;
 
             _bytes = initialBuffer;
-            _bytes[0] = 0xF7; // Packet ID
-            Length = 5; // Length + Count
+            _bytes[0] = 0xF7;         // Packet ID
+            Length = MinPacketLength; // Length + Count
         }
 
         public int Length { get; set; }
 
         public int Capacity => _bytes.Length;
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public ReadOnlySpan<byte> Finalize()
         {
             if (!_finished)
@@ -56,6 +57,7 @@ namespace Server.Network
             return _bytes.SliceToLength(Length);
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public Span<byte> GetSpan(int bytesNeeded)
         {
             if (_finished)
@@ -71,6 +73,7 @@ namespace Server.Network
             return _bytes.Slice(Length);
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public void Advance(int bytesWritten)
         {
             if (_finished)

@@ -15,14 +15,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Server.Network
 {
     public static class EntityPackets
     {
-        public static void CreateBatchEntities(this NetState ns, List<IEntity> entities)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SendBatchEntities(this NetState ns, IReadOnlyCollection<IEntity> entities) =>
+            ns.SendBatchEntities(entities, entities.Count);
+
+        public static void SendBatchEntities(this NetState ns, IEnumerable<IEntity> entities, int estimatedCount)
         {
-            if (ns == null)
+            if (ns?.HighSeas != true)
             {
                 return;
             }
@@ -30,11 +35,11 @@ namespace Server.Network
             bool isSA = ns.StygianAbyss;
             bool isHS = ns.HighSeas;
 
-            var maxLength = PacketContainerBuilder.MinPacketLength
+            var minLength = PacketContainerBuilder.MinPacketLength
                             + OutgoingEntityPackets.MaxWorldEntityPacketLength
-                            * entities.Count;
+                            * estimatedCount;
 
-            using var builder = new PacketContainerBuilder(stackalloc byte[maxLength]);
+            using var builder = new PacketContainerBuilder(stackalloc byte[minLength]);
 
             foreach (var entity in entities)
             {

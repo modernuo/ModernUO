@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Server.Collections;
 using Server.Items;
 using Server.Multis.Boats;
 using Server.Network;
@@ -1737,11 +1738,10 @@ namespace Server.Multis
             else
             {
                 var toMove = GetMovingEntities();
-
-                SafeAdd(TillerMan, toMove);
-                SafeAdd(Hold, toMove);
-                SafeAdd(PPlank, toMove);
-                SafeAdd(SPlank, toMove);
+                toMove.AddNotNull(TillerMan);
+                toMove.AddNotNull(Hold);
+                toMove.AddNotNull(PPlank);
+                toMove.AddNotNull(SPlank);
 
                 // Packet must be sent before actual locations are changed
                 foreach (var ns in Map.GetClientsInRange(Location, GetMaxUpdateRange()))
@@ -1793,14 +1793,6 @@ namespace Server.Multis
             return true;
         }
 
-        private static void SafeAdd(Item item, List<IEntity> toMove)
-        {
-            if (item != null)
-            {
-                toMove.Add(item);
-            }
-        }
-
         public void Teleport(int xOffset, int yOffset, int zOffset)
         {
             var toMove = GetMovingEntities();
@@ -1822,7 +1814,7 @@ namespace Server.Multis
             Location = new Point3D(X + xOffset, Y + yOffset, Z + zOffset);
         }
 
-        public List<IEntity> GetMovingEntities()
+        public virtual List<IEntity> GetMovingEntities()
         {
             var list = new List<IEntity>();
 
@@ -1835,7 +1827,9 @@ namespace Server.Multis
 
             var mcl = Components;
 
-            foreach (var o in map.GetObjectsInBounds(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height)))
+            var eable = map.GetObjectsInBounds(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height));
+
+            foreach (var o in eable)
             {
                 if (o == this || o is TillerMan || o is Hold || o is Plank)
                 {
@@ -1857,6 +1851,8 @@ namespace Server.Multis
                     }
                 }
             }
+
+            eable.Free();
 
             return list;
         }

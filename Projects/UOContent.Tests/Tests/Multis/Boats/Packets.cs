@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Server;
+using Server.Collections;
 using Server.Items;
 using Server.Multis;
 using Server.Network;
@@ -53,10 +54,10 @@ namespace UOContent.Tests
         {
             var ents = boat.GetMovingEntities();
 
-            SafeAdd(boat.TillerMan, ents);
-            SafeAdd(boat.Hold, ents);
-            SafeAdd(boat.PPlank, ents);
-            SafeAdd(boat.SPlank, ents);
+            ents.AddNotNull(boat.TillerMan);
+            ents.AddNotNull(boat.Hold);
+            ents.AddNotNull(boat.PPlank);
+            ents.AddNotNull(boat.SPlank);
 
             ents.Add(boat);
 
@@ -139,14 +140,6 @@ namespace UOContent.Tests
 
             Stream.Seek(3, SeekOrigin.Begin);
             Stream.Write((short)count);
-        }
-
-        private static void SafeAdd(Item item, List<IEntity> toMove)
-        {
-            if (item != null)
-            {
-                toMove.Add(item);
-            }
         }
     }
 }

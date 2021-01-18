@@ -91,11 +91,11 @@ namespace Server.Network
 
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xF3); // Packet ID
-            writer.Write((short)0x1); // command)
+            writer.Write((short)0x1); // command
 
             int type = 0;
             int gfx = 0;
-            int amount = 0;
+            int amount = 1;
             int hue = 0;
             byte light = 0;
             int flags = 0;
