@@ -1054,7 +1054,16 @@ namespace Server.Mobiles
 
                 foreach (var serial in list)
                 {
-                    var item = pack.Items.FirstOrDefault(i => i.Serial == serial);
+                    Item item = null;
+                    foreach (var i in pack.Items)
+                    {
+                        if (i.Serial == serial)
+                        {
+                            item = i;
+                            break;
+                        }
+                    }
+
                     if (item == null)
                     {
                         continue;
@@ -3277,6 +3286,14 @@ namespace Server.Mobiles
             // cleanup our anti-macro table
             foreach (var t in m_AntiMacroTable.Values)
             {
+                foreach (var (k, v) in t)
+                {
+                    if (v.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
+                    {
+                        t.Remove(k);
+                    }
+                }
+
                 var toRemove = t.Where(kvp => kvp.Value.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
                     .Select(kvp => kvp.Key)
                     .ToList();
