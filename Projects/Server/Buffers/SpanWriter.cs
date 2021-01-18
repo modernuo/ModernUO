@@ -29,7 +29,7 @@ namespace System.Buffers
     public ref struct SpanWriter
     {
         private readonly bool _resize;
-        private byte[]? _arrayToReturnToPool;
+        private byte[] _arrayToReturnToPool;
         private Span<byte> _buffer;
         private int _position;
 
@@ -73,6 +73,7 @@ namespace System.Buffers
             BytesWritten = 0;
         }
 
+#nullable enable
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void Grow(int additionalCapacity)
         {
@@ -88,6 +89,7 @@ namespace System.Buffers
                 ArrayPool<byte>.Shared.Return(toReturn);
             }
         }
+#nullable disable
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void GrowIfNeeded(int count)
@@ -370,15 +372,17 @@ namespace System.Buffers
             return Position = newPosition;
         }
 
+#nullable enable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            byte[] toReturn = _arrayToReturnToPool;
+            byte[]? toReturn = _arrayToReturnToPool;
             this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
             if (toReturn != null)
             {
                 ArrayPool<byte>.Shared.Return(toReturn);
             }
         }
+#nullable disable
     }
 }

@@ -2411,6 +2411,7 @@ namespace Server
             m_PropertyList = null;
         }
 
+#nullable enable
         public void InvalidateProperties()
         {
             if (!ObjectPropertyList.Enabled)
@@ -2445,6 +2446,7 @@ namespace Server
                 ClearProperties();
             }
         }
+#nullable disable
 
         public virtual int GetPacketFlags()
         {

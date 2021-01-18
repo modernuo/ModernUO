@@ -27,7 +27,7 @@ namespace Server.Network
         private bool _finished;
         private int _count;
 
-        private byte[]? _arrayToReturnToPool;
+        private byte[] _arrayToReturnToPool;
         private Span<byte> _bytes;
 
         public PacketContainerBuilder(Span<byte> initialBuffer)
@@ -85,6 +85,7 @@ namespace Server.Network
             Length += bytesWritten;
         }
 
+#nullable enable
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void Grow(int additionalCapacityBeyondPos)
         {
@@ -111,5 +112,6 @@ namespace Server.Network
                 ArrayPool<byte>.Shared.Return(toReturn);
             }
         }
+#nullable disable
     }
 }

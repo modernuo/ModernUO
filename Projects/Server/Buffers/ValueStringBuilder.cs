@@ -11,7 +11,7 @@ namespace Server.Buffers
 {
     public ref struct ValueStringBuilder
     {
-        private char[]? _arrayToReturnToPool;
+        private char[] _arrayToReturnToPool;
         private Span<char> _chars;
 
         // If this ctor is used, you cannot pass in stackalloc ROS for append/replace.
@@ -124,6 +124,7 @@ namespace Server.Buffers
             Length += count;
         }
 
+#nullable enable
         public void Insert(int index, string? s)
         {
             if (s == null)
@@ -143,6 +144,7 @@ namespace Server.Buffers
             s.AsSpan().CopyTo(_chars.Slice(index));
             Length += count;
         }
+#nullable disable
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(char c)
@@ -159,6 +161,7 @@ namespace Server.Buffers
             }
         }
 
+#nullable enable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(string? s)
         {
@@ -199,6 +202,7 @@ namespace Server.Buffers
 
             Append(Environment.NewLine);
         }
+#nullable disable
 
         private void AppendSlow(string s)
         {
@@ -275,6 +279,7 @@ namespace Server.Buffers
             Append(c);
         }
 
+#nullable enable
         /// <summary>
         /// Resize the internal buffer either by doubling current buffer size or
         /// by adding <paramref name="additionalCapacityBeyondPos"/> to
@@ -308,6 +313,7 @@ namespace Server.Buffers
                 ArrayPool<char>.Shared.Return(toReturn);
             }
         }
+#nullable disable
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ReplaceAny(ReadOnlySpan<char> oldChars, ReadOnlySpan<char> newChars, int startIndex, int count)
