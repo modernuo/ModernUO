@@ -27,7 +27,7 @@ namespace UOContent.Tests
             item1.Setup(m => m.ItemID).Returns(0x13B9);
             item1.Object.Location = new Point3D(10, 20, 15);
 
-            // Item not the boat
+            // Item not on the boat
             var item2 = new Mock<BaseWeapon>((Serial)0x2);
             item2.Setup(m => m.ItemID).Returns(0x13B9);
             item2.Object.Location = new Point3D(100, 200, 15);
