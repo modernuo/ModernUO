@@ -51,28 +51,19 @@ namespace Server
 
         public static void Deserialize(string path, Action<IGenericReader> deserializer, bool ensure = true)
         {
-            var file = new FileInfo(path);
+            AssemblyHandler.EnsureDirectory(Path.GetDirectoryName(path));
 
-            file.Refresh();
-
-            AssemblyHandler.EnsureDirectory(file.Directory?.Name);
-
-            if (!file.Exists)
+            if (!File.Exists(path))
             {
-                if (!ensure)
+                if (ensure)
                 {
-                    throw new FileNotFoundException
-                    {
-                        Source = file.FullName
-                    };
+                    new FileInfo(path).Create().Close();
                 }
 
-                file.Create().Close();
+                return;
             }
 
-            file.Refresh();
-
-            using FileStream fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             // TODO: Support files larger than 2GB
             var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length);
 
