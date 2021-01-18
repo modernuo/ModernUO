@@ -25,7 +25,9 @@ namespace Server.Commands
 
         [JsonPropertyName("gfx")] public int ItemID { get; set; }
 
+#nullable enable
         [JsonPropertyName("hue")] public int? Hue { get; set; }
+#nullable disable
 
         public CAGCategory Parent { get; set; }
 

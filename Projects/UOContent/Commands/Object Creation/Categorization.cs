@@ -72,6 +72,7 @@ namespace Server.Commands
             JsonConfig.Serialize(fileName, list);
         }
 
+#nullable enable
         public static void RecurseExport(List<CAGJson> list, CategoryEntry ce, string category)
         {
             category = string.IsNullOrWhiteSpace(category) ? ce.Title : $"{category}{ce.Title}";
@@ -153,6 +154,7 @@ namespace Server.Commands
                 RecurseExport(list, subCat, category);
             }
         }
+#nullable disable
 
         public static void Load()
         {
