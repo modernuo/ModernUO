@@ -56,6 +56,8 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 ## Troubleshooting / FAQ
 - See [FAQ](./FAQ.md)
 
+## Want to sponsor?
+Thank you for supporting us! You can find out how by visiting the [sponsors](./SPONSORS.md) page.
 
 </br></br>
 <p align=center>Development Tools provided with &hearts; by <br><a href="https://www.jetbrains.com/?from=ModernUO"><img src="https://user-images.githubusercontent.com/3953314/86882249-cfb2ea00-c0a4-11ea-9cec-bf3f3bcc6f28.png" width="100px" /></a></p>
