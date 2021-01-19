@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Server.Items;
 
 namespace Server.Spells.Chivalry
@@ -55,14 +54,14 @@ namespace Server.Spells.Chivalry
                     0
                 );
 
-                var targets = Caster.GetMobilesInRange(3)
-                    .Where(
-                        m => Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) &&
-                             (!Core.AOS || Caster.InLOS(m))
-                    );
-
-                foreach (var m in targets)
+                foreach (var m in Caster.GetMobilesInRange(3))
                 {
+                    if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false) ||
+                        Core.AOS && !Caster.InLOS(m))
+                    {
+                        continue;
+                    }
+
                     var damage = Math.Clamp(ComputePowerValue(10) + Utility.RandomMinMax(0, 2), 8, 24);
 
                     Caster.DoHarmful(m);

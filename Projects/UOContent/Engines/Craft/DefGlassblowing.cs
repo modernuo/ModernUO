@@ -16,7 +16,7 @@ namespace Server.Engines.Craft
 
         public override int GumpTitleNumber => 1044622;
 
-        public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefGlassblowing());
+        public static CraftSystem CraftSystem => m_CraftSystem ??= new DefGlassblowing();
 
         public override double GetChanceAtMin(CraftItem item) => item.ItemType == typeof(HollowPrism) ? 0.5 : 0.0;
 

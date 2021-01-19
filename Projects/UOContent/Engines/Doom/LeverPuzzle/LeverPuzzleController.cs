@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
@@ -192,11 +191,19 @@ namespace Server.Engines.Doom
         [Usage("GenLeverPuzzle"), Description("Generates lamp room and lever puzzle in doom.")]
         public static void GenLampPuzzle_OnCommand(CommandEventArgs e)
         {
-            if (Map.Malas.GetItemsInRange(lp_Center, 0).OfType<LeverPuzzleController>().Any())
+            var eable = Map.Malas.GetItemsInRange(lp_Center, 0);
+
+            foreach (var item in eable)
             {
-                e.Mobile.SendMessage("Lamp room puzzle already exists: please delete the existing controller first ...");
-                return;
+                if (item is LeverPuzzleController)
+                {
+                    eable.Free();
+                    e.Mobile.SendMessage("Lamp room puzzle already exists: please delete the existing controller first ...");
+                    return;
+                }
             }
+
+            eable.Free();
 
             e.Mobile.SendMessage("Generating Lamp Room puzzle...");
             new LeverPuzzleController().MoveToWorld(lp_Center, Map.Malas);
@@ -634,7 +641,10 @@ namespace Server.Engines.Doom
                         {
                             IEntity m_IEntity = new Entity(Serial.Zero, RandomPointIn(m_Player.Location, 10), m_Player.Map);
 
-                            var mobiles = m_IEntity.Map.GetMobilesInRange(m_IEntity.Location, 2).ToList();
+                            var eable = m_IEntity.Map.GetMobilesInRange(m_IEntity.Location, 2);
+                            var mobiles = new List<Mobile>();
+                            mobiles.AddRange(eable);
+                            eable.Free();
 
                             for (var k = 0; k < mobiles.Count; k++)
                             {

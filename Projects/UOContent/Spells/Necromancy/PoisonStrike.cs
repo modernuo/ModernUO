@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
@@ -84,13 +83,20 @@ namespace Server.Spells.Necromancy
                         targets.Add(m);
                     }
 
-                    targets.AddRange(
-                        m.GetMobilesInRange(2)
-                            .Where(
-                                targ => !(Caster is BaseCreature && targ is BaseCreature && targ != Caster && m != targ &&
-                                          SpellHelper.ValidIndirectTarget(Caster, targ) && Caster.CanBeHarmful(targ, false))
-                            )
-                    );
+                    var eable = m.GetMobilesInRange(2);
+
+                    foreach (Mobile targ in eable)
+                    {
+                        if (!(Caster is BaseCreature && targ is BaseCreature) &&
+                            targ != Caster && m != targ &&
+                            SpellHelper.ValidIndirectTarget(Caster, targ) &&
+                            Caster.CanBeHarmful(targ, false))
+                        {
+                            targets.Add(targ);
+                        }
+                    }
+
+                    eable.Free();
 
                     for (var i = 0; i < targets.Count; ++i)
                     {

@@ -117,10 +117,10 @@ namespace Server.Engines.Harvest
             lumber.RaceBonus = Core.ML;
             lumber.RandomizeVeins = Core.ML;
 
-            Definitions.Add(lumber);
+            Definitions = new[] { lumber };
         }
 
-        public static Lumberjacking System => m_System ?? (m_System = new Lumberjacking());
+        public static Lumberjacking System => m_System ??= new Lumberjacking();
 
         public override bool CheckHarvest(Mobile from, Item tool)
         {

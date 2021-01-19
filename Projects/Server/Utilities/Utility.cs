@@ -3,7 +3,6 @@ using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
@@ -742,7 +741,12 @@ namespace Server
 
             var byteIndex = 0;
 
-            var length = mems.Sum(mem => mem.Length);
+            var length = 0;
+            for (var i = 0; i < mems.Length; i++)
+            {
+                length += mems[i].Length;
+            }
+
             var position = 0;
             var memIndex = 0;
             var span = mems[memIndex].Span;
@@ -1386,5 +1390,7 @@ namespace Server
             i = (i & 0x3333333333333333UL) + ((i >> 2) & 0x3333333333333333UL);
             return (int)(unchecked(((i + (i >> 4)) & 0xF0F0F0F0F0F0F0FUL) * 0x101010101010101UL) >> 56);
         }
+
+
     }
 }

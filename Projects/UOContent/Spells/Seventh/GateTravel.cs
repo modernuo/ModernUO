@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Server.Factions;
 using Server.Items;
 using Server.Misc;
@@ -127,10 +126,16 @@ namespace Server.Spells.Seventh
         private bool GateExistsAt(Map map, Point3D loc)
         {
             var eable = map.GetItemsInRange(loc, 0);
-            var gateFound = eable.Any(item => item is Moongate || item is PublicMoongate);
-            eable.Free();
 
-            return gateFound;
+            foreach (var item in eable)
+            {
+                if (item is Moongate || item is PublicMoongate)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         [DispellableField]

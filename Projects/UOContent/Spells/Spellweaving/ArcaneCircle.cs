@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Items;
 using Server.Mobiles;
 
@@ -105,14 +104,17 @@ namespace Server.Spells.Spellweaving
 
             var eable = map.GetItemsInRange(location, 0);
 
-            var found = eable.Any(
-                item =>
-                    item.Z + item.ItemData.CalcHeight == location.Z && IsValidTile(item.ItemID)
-            );
+            foreach (var item in eable)
+            {
+                if (item.Z + item.ItemData.CalcHeight == location.Z && IsValidTile(item.ItemID))
+                {
+                    return true;
+                }
+            }
 
             eable.Free();
 
-            return found;
+            return false;
         }
 
         public static bool IsValidTile(int itemID) =>
@@ -126,13 +128,19 @@ namespace Server.Spells.Spellweaving
 
             // OSI Verified: Even enemies/combatants count
             // Everyone gets the Arcane Focus, power capped elsewhere
-            weavers.AddRange(
-                Caster.GetMobilesInRange(1)
-                    .Where(
-                        m => m != Caster && m is PlayerMobile && Caster.CanBeBeneficial(m, false) &&
-                             Math.Abs(Caster.Skills.Spellweaving.Value - m.Skills.Spellweaving.Value) <= 20
-                    )
-            );
+
+            var eable = Caster.GetMobilesInRange(1);
+
+            foreach (var m in eable)
+            {
+                if (m != Caster && m is PlayerMobile && Caster.CanBeBeneficial(m, false) &&
+                    Math.Abs(Caster.Skills.Spellweaving.Value - m.Skills.Spellweaving.Value) <= 20)
+                {
+                    weavers.Add(m);
+                }
+            }
+
+            eable.Free();
 
             return weavers;
         }

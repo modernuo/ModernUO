@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Random;
 
 namespace Server.Engines.Harvest
@@ -66,7 +65,13 @@ namespace Server.Engines.Harvest
             set
             {
                 m_Veins = value;
-                VeinWeights = m_Veins.Aggregate<HarvestVein, uint>(0, (current, t) => current + t.VeinChance);
+                var totalWeight = 0u;
+                for (var i = 0; i < m_Veins.Length; i++)
+                {
+                    totalWeight += m_Veins[i].VeinChance;
+                }
+
+                VeinWeights = totalWeight;
             }
         }
 

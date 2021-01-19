@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime;
 using System.Runtime.InteropServices;
@@ -38,7 +37,9 @@ namespace Server
         private static bool m_Profiling;
         private static DateTime m_ProfileStart;
         private static TimeSpan m_ProfileTime;
-        private static bool? m_IsRunningFromXUnit;
+#nullable enable
+        private static bool? _isRunningFromXUnit;
+#nullable disable
 
         private static long m_CycleIndex;
         private static readonly float[] m_CyclesPerSecond = new float[127]; // Divisible by long.MaxValue
@@ -58,11 +59,31 @@ namespace Server
 
         private const string assembliesConfiguration = "Data/assemblies.json";
 
-        public static bool IsRunningFromXUnit =>
-            m_IsRunningFromXUnit ??= AppDomain.CurrentDomain.GetAssemblies()
-                .Any(
-                    a => a.FullName.InsensitiveStartsWith("XUNIT")
-                );
+#nullable enable
+        // TODO: Find a way to get rid of this
+        public static bool IsRunningFromXUnit
+        {
+            get
+            {
+                if (_isRunningFromXUnit != null)
+                {
+                    return _isRunningFromXUnit.Value;
+                }
+
+                foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    if (a.FullName.InsensitiveStartsWith("xunit"))
+                    {
+                        _isRunningFromXUnit = true;
+                        return true;
+                    }
+                }
+
+                _isRunningFromXUnit = false;
+                return false;
+            }
+        }
+#nullable disable
 
         public static bool Profiling
         {
@@ -440,9 +461,11 @@ namespace Server
             var assemblyPath = Path.Join(BaseDirectory, assembliesConfiguration);
 
             // Load UOContent.dll
-            var assemblyFiles = JsonConfig.Deserialize<List<string>>(assemblyPath)
-                .Select(t => Path.Join(BaseDirectory, "Assemblies", t))
-                .ToArray();
+            var assemblyFiles = JsonConfig.Deserialize<List<string>>(assemblyPath).ToArray();
+            for (var i = 0; i < assemblyFiles.Length; i++)
+            {
+                assemblyFiles[i] = Path.Join(BaseDirectory, "Assemblies", assemblyFiles[i]);
+            }
 
             AssemblyHandler.LoadScripts(assemblyFiles);
 

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Microsoft.Toolkit.HighPerformance.Extensions;
@@ -6012,7 +6011,15 @@ namespace Server
                     de.Responsible = list = new List<DamageEntry>();
                 }
 
-                var resp = list.FirstOrDefault(check => check.Damager == master);
+                DamageEntry resp = null;
+                foreach (var check in list)
+                {
+                    if (check.Damager == master)
+                    {
+                        resp = check;
+                        break;
+                    }
+                }
 
                 if (resp == null)
                 {

@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using Server.Factions;
 using Server.Spells;
 using Server.Targeting;
@@ -90,13 +90,19 @@ namespace Server
 
         private static void OnHit(Mobile from, Point3D origin, Map facet)
         {
-            var targets = facet.GetMobilesInRange(origin, 12)
-                .Where(
-                    mob =>
-                        from.CanBeHarmful(mob, false) && mob.InLOS(new Point3D(origin, origin.Z + 1)) &&
-                        Faction.Find(mob) != null
-                )
-                .ToList();
+            var eable = facet.GetMobilesInRange(origin, 12);
+            var targets = new List<Mobile>();
+            foreach (var m in eable)
+            {
+                if (from.CanBeHarmful(m, false) &&
+                    m.InLOS(new Point3D(origin, origin.Z + 1)) &&
+                    Faction.Find(m) != null)
+                {
+                    targets.Add(from);
+                }
+            }
+
+            eable.Free();
 
             foreach (var mob in targets)
             {

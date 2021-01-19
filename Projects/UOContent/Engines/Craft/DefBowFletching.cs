@@ -15,7 +15,7 @@ namespace Server.Engines.Craft
 
         public override int GumpTitleNumber => 1044006;
 
-        public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefBowFletching());
+        public static CraftSystem CraftSystem => m_CraftSystem ??= new DefBowFletching();
 
         public override CraftECA ECA => CraftECA.FiftyPercentChanceMinusTenPercent;
 

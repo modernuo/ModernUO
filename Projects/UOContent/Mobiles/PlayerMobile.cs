@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
@@ -1049,13 +1048,22 @@ namespace Server.Mobiles
 
         public static void EquipMacro(Mobile m, List<Serial> list)
         {
-            if (m is PlayerMobile pm && pm.Backpack != null && pm.Alive)
+            if (m is PlayerMobile { Alive: true } pm && pm.Backpack != null)
             {
                 var pack = pm.Backpack;
 
                 foreach (var serial in list)
                 {
-                    var item = pack.Items.FirstOrDefault(i => i.Serial == serial);
+                    Item item = null;
+                    foreach (var i in pack.Items)
+                    {
+                        if (i.Serial == serial)
+                        {
+                            item = i;
+                            break;
+                        }
+                    }
+
                     if (item == null)
                     {
                         continue;
@@ -3275,12 +3283,20 @@ namespace Server.Mobiles
 
         public override void Serialize(IGenericWriter writer)
         {
+            var toRemove = new List<object>();
+
             // cleanup our anti-macro table
             foreach (var t in m_AntiMacroTable.Values)
             {
-                var toRemove = t.Where(kvp => kvp.Value.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
-                    .Select(kvp => kvp.Key)
-                    .ToList();
+                toRemove.Clear();
+
+                foreach (var (k, v) in t)
+                {
+                    if (v.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
+                    {
+                        toRemove.Add(k);
+                    }
+                }
 
                 foreach (var key in toRemove)
                 {

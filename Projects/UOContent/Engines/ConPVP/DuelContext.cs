@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Engines.PartySystem;
 using Server.Factions;
 using Server.Gumps;
@@ -1295,9 +1294,26 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public static bool CheckCombat(Mobile m) =>
-            m.Aggressed.Any(info => info.Defender.Player && DateTime.UtcNow - info.LastCombatTime < CombatDelay) ||
-            m.Aggressors.Any(info => info.Attacker.Player && DateTime.UtcNow - info.LastCombatTime < CombatDelay);
+        public static bool CheckCombat(Mobile m)
+        {
+            foreach (var info in m.Aggressed)
+            {
+                if (info.Defender.Player && DateTime.UtcNow - info.LastCombatTime < CombatDelay)
+                {
+                    return true;
+                }
+            }
+
+            foreach (var info in m.Aggressors)
+            {
+                if (info.Attacker.Player && DateTime.UtcNow - info.LastCombatTime < CombatDelay)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         private static void EventSink_Login(Mobile m)
         {
