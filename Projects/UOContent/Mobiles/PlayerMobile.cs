@@ -3283,20 +3283,20 @@ namespace Server.Mobiles
 
         public override void Serialize(IGenericWriter writer)
         {
+            var toRemove = new List<object>();
+
             // cleanup our anti-macro table
             foreach (var t in m_AntiMacroTable.Values)
             {
+                toRemove.Clear();
+
                 foreach (var (k, v) in t)
                 {
                     if (v.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
                     {
-                        t.Remove(k);
+                        toRemove.Add(k);
                     }
                 }
-
-                var toRemove = t.Where(kvp => kvp.Value.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
-                    .Select(kvp => kvp.Key)
-                    .ToList();
 
                 foreach (var key in toRemove)
                 {

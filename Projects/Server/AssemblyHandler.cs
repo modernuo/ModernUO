@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -89,40 +90,41 @@ namespace Server
             return m_TypeCaches[asm] = new TypeCache(asm);
         }
 
-        public static Type FindFirstTypeForName(string name, bool ignoreCase = false, Func<Type, bool> predicate = null)
+        private static bool IgnoreCaseTypeComparer(string name, Type type) =>
+            type.FullName.InsensitiveEquals(name) || type.Name.InsensitiveEquals(name);
+
+        private static bool CaseTypeComparer(string name, Type type) =>
+            type.FullName.EqualsOrdinal(name) || type.Name.EqualsOrdinal(name);
+
+        public static Type FindFirstTypeForName(string name, bool ignoreCase = false, Func<string, Type, bool> predicate = null)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 return null;
             }
 
-            var types = FindTypesByName(name, ignoreCase).ToList();
+            var types = FindTypesByName(name, ignoreCase);
+
             if (types.Count == 0)
             {
                 return null;
-            }
-
-            if (predicate != null)
-            {
-                return types.FirstOrDefault(predicate);
-            }
-
-            if (types.Count == 1)
-            {
-                return types[0];
             }
 
             // Try to find the closest match if there is no predicate.
             // Check for exact match of the FullName or Name
             // Then check for case-insensitive match of FullName or Name
             // Otherwise just return the first entry
-            var stringComparer = ignoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+            predicate ??= ignoreCase ? IgnoreCaseTypeComparer : CaseTypeComparer;
 
-            return types.FirstOrDefault(
-                       x =>
-                           stringComparer.Equals(x.FullName, name) || stringComparer.Equals(x.Name, name)
-                   ) ??
-                   types[0];
+            foreach (var type in types)
+            {
+                if (predicate(name, type))
+                {
+                    return type;
+                }
+            }
+
+            return null;
         }
 
         public static List<Type> FindTypesByName(string name, bool ignoreCase = false)
@@ -136,12 +138,18 @@ namespace Server
 
             for (var i = 0; i < Assemblies.Length; i++)
             {
-                types.AddRange(GetTypeCache(Assemblies[i])[name]);
+                foreach (var type in GetTypeCache(Assemblies[i])[name])
+                {
+                    types.Add(type);
+                }
             }
 
             if (types.Count == 0)
             {
-                types.AddRange(GetTypeCache(Core.Assembly)[name]);
+                foreach(var type in GetTypeCache(Core.Assembly)[name])
+                {
+                    types.Add(type);
+                }
             }
 
             return types;
@@ -204,10 +212,70 @@ namespace Server
             }
         }
 
-        public IEnumerable<Type> Types => m_Types;
-        public IEnumerable<string> Names => m_NameMap.Keys;
+        public Enumerator this[string name] => new(name, this);
 
-        public IEnumerable<Type> this[string name] =>
-            m_NameMap.TryGetValue(name, out var value) ? value.Select(x => m_Types[x]) : Array.Empty<Type>();
+        public IEnumerable<Type> Types => m_Types;
+
+        public struct Enumerator : IEnumerable<Type>, IEnumerator<Type>
+        {
+            private readonly TypeCache _cache;
+            private readonly int[] _values;
+            private int _index;
+            private Type _current;
+
+            internal Enumerator(string name, TypeCache cache)
+            {
+                _cache = cache;
+                _values = !cache.m_NameMap.TryGetValue(name, out var values) ? Array.Empty<int>() : values;
+                _index = 0;
+                _current = default;
+            }
+
+            public void Dispose()
+            {
+            }
+
+            public bool MoveNext()
+            {
+                int[] localList = _values;
+
+                while ((uint)_index < (uint)localList.Length)
+                {
+                    _current = _cache.m_Types[_values[_index++]];
+
+                    if (_current != null)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            public Type Current => _current!;
+
+            object IEnumerator.Current
+            {
+                get
+                {
+                    if (_index == 0 || _index == _values.Length + 1)
+                    {
+                        throw new InvalidOperationException(nameof(_index));
+                    }
+
+                    return Current;
+                }
+            }
+
+            void IEnumerator.Reset()
+            {
+                _index = 0;
+                _current = default;
+            }
+
+            public IEnumerator<Type> GetEnumerator() => this;
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        }
     }
 }
