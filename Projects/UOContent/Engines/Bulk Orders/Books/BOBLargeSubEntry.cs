@@ -24,7 +24,7 @@ namespace Server.Engines.BulkOrders
 
                         if (type != null)
                         {
-                            ItemType = AssemblyHandler.FindTypeByName(type);
+                            ItemType = AssemblyHandler.FindTypeByFullName(type);
                         }
 
                         AmountCur = reader.ReadEncodedInt();

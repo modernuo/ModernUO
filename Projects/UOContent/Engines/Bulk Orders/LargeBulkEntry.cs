@@ -25,7 +25,7 @@ namespace Server.Engines.BulkOrders
 
             if (type != null)
             {
-                realType = AssemblyHandler.FindTypeByName(type);
+                realType = AssemblyHandler.FindTypeByFullName(type);
             }
 
             Details = new SmallBulkEntry(realType, reader.ReadInt(), reader.ReadInt());

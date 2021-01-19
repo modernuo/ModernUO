@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 
 namespace Server
@@ -91,13 +90,39 @@ namespace Server
             return m_TypeCaches[asm] = new TypeCache(asm);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool InsensitiveTypeComparer(string name, Type type) =>
-            type.FullName.InsensitiveEquals(name) || type.Name.InsensitiveEquals(name);
+        public static Type FindTypeByFullName(string name, bool ignoreCase = true)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return null;
+            }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool OrdinalTypeComparer(string name, Type type) =>
-            type.FullName.EqualsOrdinal(name) || type.Name.EqualsOrdinal(name);
+            if (ignoreCase)
+            {
+                name = name.ToLower();
+            }
+
+            for (var i = 0; i < Assemblies.Length; i++)
+            {
+                foreach (var type in GetTypeCache(Assemblies[i])[name])
+                {
+                    if (type.FullName.EqualsOrdinal(name))
+                    {
+                        return type;
+                    }
+                }
+            }
+
+            foreach(var type in GetTypeCache(Core.Assembly)[name])
+            {
+                if (type.FullName.EqualsOrdinal(name))
+                {
+                    return type;
+                }
+            }
+
+            return null;
+        }
 
         public static Type FindTypeByName(string name, bool ignoreCase = true)
         {
@@ -115,38 +140,18 @@ namespace Server
             {
                 foreach (var type in GetTypeCache(Assemblies[i])[name])
                 {
-                    if (ignoreCase)
+                    if (type.FullName.EqualsOrdinal(name) || type.Name.EqualsOrdinal(name))
                     {
-                        if (InsensitiveTypeComparer(name, type))
-                        {
-                            return type;
-                        }
-                    }
-                    else
-                    {
-                        if (OrdinalTypeComparer(name, type))
-                        {
-                            return type;
-                        }
+                        return type;
                     }
                 }
             }
 
             foreach(var type in GetTypeCache(Core.Assembly)[name])
             {
-                if (ignoreCase)
+                if (type.FullName.EqualsOrdinal(name) || type.Name.EqualsOrdinal(name))
                 {
-                    if (InsensitiveTypeComparer(name, type))
-                    {
-                        return type;
-                    }
-                }
-                else
-                {
-                    if (OrdinalTypeComparer(name, type))
-                    {
-                        return type;
-                    }
+                    return type;
                 }
             }
 

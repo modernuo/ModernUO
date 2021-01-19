@@ -37,7 +37,7 @@ namespace Server.Engines.BulkOrders
 
                         if (type != null)
                         {
-                            ItemType = AssemblyHandler.FindTypeByName(type);
+                            ItemType = AssemblyHandler.FindTypeByFullName(type);
                         }
 
                         RequireExceptional = reader.ReadBool();

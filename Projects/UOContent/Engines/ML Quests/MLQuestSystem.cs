@@ -773,7 +773,7 @@ namespace Server.Engines.MLQuests
                 return null; // not serialized
             }
 
-            var questType = AssemblyHandler.FindTypeByName(typeName);
+            var questType = AssemblyHandler.FindTypeByFullName(typeName);
 
             if (questType == null)
             {
