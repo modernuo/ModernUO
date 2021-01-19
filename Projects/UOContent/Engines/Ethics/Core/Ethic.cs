@@ -1,4 +1,3 @@
-using System.Linq;
 using Server.Ethics.Evil;
 using Server.Ethics.Hero;
 using Server.Items;
@@ -156,7 +155,21 @@ namespace Server.Ethics
                         continue;
                     }
 
-                    if (!e.Mobile.GetItemsInRange(2).Any(item => item is AnkhNorth || item is AnkhWest))
+                    var eable = e.Mobile.GetItemsInRange(2);
+                    var found = false;
+
+                    foreach (var item in eable)
+                    {
+                        if (item is AnkhNorth || item is AnkhWest)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    eable.Free();
+
+                    if (!found)
                     {
                         continue;
                     }

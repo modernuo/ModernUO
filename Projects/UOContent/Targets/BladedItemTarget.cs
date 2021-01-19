@@ -72,7 +72,7 @@ namespace Server.Targets
                 }
 
                 HarvestSystem system = Lumberjacking.System;
-                var def = Lumberjacking.System.GetDefinition();
+                var def = system.GetDefinition();
 
                 if (!system.GetHarvestDetails(from, m_Item, targeted, out var tileID, out var map, out var loc))
                 {

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Commands;
 using Server.Factions;
 using Server.Items;
@@ -404,12 +403,13 @@ namespace Server.Engines.Craft
             }
 
             var eable = map.GetItemsInRange(from.Location, 2);
-            var found = eable.Any(item => item.Z + 16 > item.Z && item.Z + 16 > item.Z && Find(item.ItemID, itemIDs));
-            eable.Free();
-
-            if (found)
+            foreach (var item in eable)
             {
-                return true;
+                if (item.Z + 16 > item.Z && item.Z + 16 > item.Z && Find(item.ItemID, itemIDs))
+                {
+                    eable.Free();
+                    return true;
+                }
             }
 
             for (var x = -2; x <= 2; ++x)
@@ -449,8 +449,23 @@ namespace Server.Engines.Craft
             return contains;
         }
 
-        public bool IsQuantityType(Type[][] types) =>
-            types.Any(check => check.Any(t => typeof(IHasQuantity).IsAssignableFrom(t)));
+        public bool IsQuantityType(Type[][] types)
+        {
+            for (int i = 0; i < types.Length; ++i)
+            {
+                Type[] check = types[i];
+
+                for (int j = 0; j < check.Length; ++j)
+                {
+                    if (typeof(IHasQuantity).IsAssignableFrom(check[j]))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
 
         public int ConsumeQuantity(Container cont, Type[][] types, int[] amounts)
         {
@@ -861,8 +876,7 @@ namespace Server.Engines.Craft
         }
 
         public bool CheckSkills(
-            Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality,
-            ref bool allRequiredSkills
+            Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality, ref bool allRequiredSkills
         ) =>
             CheckSkills(from, typeRes, craftSystem, ref quality, out allRequiredSkills, true);
 

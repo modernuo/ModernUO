@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using Server.Items;
 using Server.Json;
@@ -79,67 +78,69 @@ namespace Server.Commands
 
             if (ce.Matched.Count > 0)
             {
+                var objects = new CAGObject[ce.Matched.Count];
+
+                for (var i = 0; i < ce.Matched.Count; i++)
+                {
+                    var cte = ce.Matched[i];
+                    if (cte.Object is Item item)
+                    {
+                        var itemID = item.ItemID;
+
+                        if (item is BaseAddon addon && addon.Components.Count == 1)
+                        {
+                            itemID = addon.Components[0].ItemID;
+                        }
+
+                        if (itemID > TileData.MaxItemValue)
+                        {
+                            itemID = 1;
+                        }
+
+                        int? hue = item.Hue & 0x7FFF;
+
+                        if ((hue & 0x4000) != 0)
+                        {
+                            hue = 0;
+                        }
+
+                        objects[i] = new CAGObject
+                        {
+                            Type = cte.Type,
+                            ItemID = itemID,
+                            Hue = hue == 0 ? null : hue
+                        };
+                    }
+
+                    if (cte.Object is Mobile m)
+                    {
+                        var itemID = ShrinkTable.Lookup(m, 1);
+
+                        int? hue = m.Hue & 0x7FFF;
+
+                        if ((hue & 0x4000) != 0)
+                        {
+                            hue = 0;
+                        }
+
+                        objects[i] = new CAGObject
+                        {
+                            Type = cte.Type,
+                            ItemID = itemID,
+                            Hue = hue == 0 ? null : hue
+                        };
+                    }
+
+                    throw new InvalidCastException(
+                        $"Categorization Type Entry: {cte.Type.Name} is not a valid type."
+                    );
+                }
+
                 list.Add(
                     new CAGJson
                     {
                         Category = category,
-                        Objects = ce.Matched.Select(
-                                cte =>
-                                {
-                                    if (cte.Object is Item item)
-                                    {
-                                        var itemID = item.ItemID;
-
-                                        if (item is BaseAddon addon && addon.Components.Count == 1)
-                                        {
-                                            itemID = addon.Components[0].ItemID;
-                                        }
-
-                                        if (itemID > TileData.MaxItemValue)
-                                        {
-                                            itemID = 1;
-                                        }
-
-                                        int? hue = item.Hue & 0x7FFF;
-
-                                        if ((hue & 0x4000) != 0)
-                                        {
-                                            hue = 0;
-                                        }
-
-                                        return new CAGObject
-                                        {
-                                            Type = cte.Type,
-                                            ItemID = itemID,
-                                            Hue = hue == 0 ? null : hue
-                                        };
-                                    }
-
-                                    if (cte.Object is Mobile m)
-                                    {
-                                        var itemID = ShrinkTable.Lookup(m, 1);
-
-                                        int? hue = m.Hue & 0x7FFF;
-
-                                        if ((hue & 0x4000) != 0)
-                                        {
-                                            hue = 0;
-                                        }
-
-                                        return new CAGObject
-                                        {
-                                            Type = cte.Type,
-                                            ItemID = itemID,
-                                            Hue = hue == 0 ? null : hue
-                                        };
-                                    }
-
-                                    throw new InvalidCastException(
-                                        $"Categorization Type Entry: {cte.Type.Name} is not a valid type."
-                                    );
-                                }
-                            )
-                            .ToArray()
+                        Objects = objects
                     }
                 );
             }

@@ -16,7 +16,7 @@ namespace Server.Engines.Craft
 
         public override int GumpTitleNumber => 1044500;
 
-        public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefMasonry());
+        public static CraftSystem CraftSystem => m_CraftSystem ??= new DefMasonry();
 
         public override double GetChanceAtMin(CraftItem item) => 0.0;
 

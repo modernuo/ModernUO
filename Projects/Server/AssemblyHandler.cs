@@ -167,11 +167,10 @@ namespace Server
     public class TypeCache
     {
         private readonly Dictionary<string, int[]> m_NameMap = new();
-        private readonly Type[] m_Types;
 
         public TypeCache(Assembly asm)
         {
-            m_Types = asm?.GetTypes() ?? Type.EmptyTypes;
+            Types = asm?.GetTypes() ?? Type.EmptyTypes;
 
             var nameMap = new Dictionary<string, HashSet<int>>();
             HashSet<int> refs;
@@ -189,9 +188,9 @@ namespace Server
             };
 
             var aliasType = typeof(TypeAliasAttribute);
-            for (var i = 0; i < m_Types.Length; i++)
+            for (var i = 0; i < Types.Length; i++)
             {
-                var current = m_Types[i];
+                var current = Types[i];
                 addToRefs(i, current.Name);
                 addToRefs(i, current.Name.ToLower());
                 addToRefs(i, current.FullName);
@@ -214,7 +213,7 @@ namespace Server
 
         public Enumerator this[string name] => new(name, this);
 
-        public IEnumerable<Type> Types => m_Types;
+        public Type[] Types { get; }
 
         public struct Enumerator : IEnumerable<Type>, IEnumerator<Type>
         {
@@ -241,7 +240,7 @@ namespace Server
 
                 while ((uint)_index < (uint)localList.Length)
                 {
-                    _current = _cache.m_Types[_values[_index++]];
+                    _current = _cache.Types[_values[_index++]];
 
                     if (_current != null)
                     {

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Server.Items;
 using Server.Targeting;
 using Server.Utilities;
@@ -9,9 +7,7 @@ namespace Server.Engines.Harvest
 {
     public abstract class HarvestSystem
     {
-        public HarvestSystem() => Definitions = new List<HarvestDefinition>();
-
-        public List<HarvestDefinition> Definitions { get; }
+        public HarvestDefinition[] Definitions { get; init; }
 
         public virtual bool CheckTool(Mobile from, Item tool)
         {
@@ -311,10 +307,17 @@ namespace Server.Engines.Harvest
                 return false;
             }
 
-            if (m.GetItemsInRange(0).Any(t => t.StackWith(m, item, false)))
+            var eable = m.GetItemsInRange(0);
+            foreach (var i in eable)
             {
-                return true;
+                if (i.StackWith(m, i, false))
+                {
+                    eable.Free();
+                    return true;
+                }
             }
+
+            eable.Free();
 
             item.MoveToWorld(m.Location, map);
             return true;
@@ -418,10 +421,22 @@ namespace Server.Engines.Harvest
             }
         }
 
-        public virtual HarvestDefinition GetDefinition() => Definitions.First();
+        public virtual HarvestDefinition GetDefinition() => Definitions[0];
 
-        public virtual HarvestDefinition GetDefinition(int tileID) =>
-            Definitions.FirstOrDefault(check => check.Validate(tileID));
+        public virtual HarvestDefinition GetDefinition(int tileID)
+        {
+            for (var i = 0; i < Definitions.Length; i++)
+            {
+                var check = Definitions[i];
+
+                if (check.Validate(tileID))
+                {
+                    return check;
+                }
+            }
+
+            return null;
+        }
 
         public virtual void StartHarvesting(Mobile from, Item tool, object toHarvest)
         {

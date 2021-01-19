@@ -93,7 +93,7 @@ namespace Server.Engines.Harvest
                 };
             }
 
-            Definitions.Add(fish);
+            Definitions = new[] { fish };
         }
 
         public static Fishing System => m_System ?? (m_System = new Fishing());

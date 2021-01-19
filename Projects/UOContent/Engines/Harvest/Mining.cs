@@ -225,8 +225,6 @@ namespace Server.Engines.Harvest
             OreAndStone.RaceBonus = Core.ML;
             OreAndStone.RandomizeVeins = Core.ML;
 
-            Definitions.Add(OreAndStone);
-
             Sand = new HarvestDefinition
             {
                 BankWidth = 8,
@@ -267,7 +265,7 @@ namespace Server.Engines.Harvest
             Sand.Resources = res;
             Sand.Veins = veins;
 
-            Definitions.Add(Sand);
+            Definitions = new[] { OreAndStone, Sand };
         }
 
         public static Mining System => m_System ?? (m_System = new Mining());

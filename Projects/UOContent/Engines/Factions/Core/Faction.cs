@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Accounting;
 using Server.Commands.Generic;
 using Server.Engines.ConPVP;
@@ -275,18 +274,37 @@ namespace Server.Factions
             }
 
             var eable = mob.Map.GetObjectsInRange(mob.Location, range, items, mobs);
-            var isInstance = eable.Any(type.IsInstanceOfType);
+            foreach (var obj in eable)
+            {
+                if (type.IsInstanceOfType(obj))
+                {
+                    eable.Free();
+                    return true;
+                }
+            }
+
             eable.Free();
 
-            return isInstance;
+            return false;
         }
 
         public static bool IsNearType(Mobile mob, Type[] types, int range)
         {
             var eable = mob.GetObjectsInRange(range);
-            var found = eable.Any(obj => types.Any(t => t.IsInstanceOfType(obj)));
+            foreach (var obj in eable)
+            {
+                for (int i = 0; i < types.Length; i++)
+                {
+                    if (types[i].IsInstanceOfType(obj))
+                    {
+                        eable.Free();
+                        return true;
+                    }
+                }
+            }
+
             eable.Free();
-            return found;
+            return false;
         }
 
         public void RemovePlayerState(PlayerState pl)

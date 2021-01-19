@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Server.Engines.Quests.Haven;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
@@ -1130,10 +1129,13 @@ namespace Server.Commands
             {
                 eable = map.GetItemsInRange(new Point3D(x, y, z), 0);
 
-                if (eable.Any(item => item.Z == z && item.ItemID == itemID))
+                foreach (var item in eable)
                 {
-                    eable.Free();
-                    return true;
+                    if (item.Z == z && item.ItemID == itemID)
+                    {
+                        eable.Free();
+                        return true;
+                    }
                 }
             }
 

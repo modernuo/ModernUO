@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Net;
 using Server.Network;
 
@@ -22,7 +21,16 @@ namespace Server.Misc
             MaxAddresses = ServerConfiguration.GetOrUpdateSetting("ipLimiter.maxConnectionsPerIP", 10);
         }
 
-        public static bool IsExempt(IPAddress ip) => Exemptions.Contains(ip);
+        public static bool IsExempt(IPAddress ip)
+        {
+            for (int i = 0; i < Exemptions.Length; i++)
+            {
+                if (ip.Equals(Exemptions[i]))
+                    return true;
+            }
+
+            return false;
+        }
 
         public static bool Verify(IPAddress ourAddress)
         {

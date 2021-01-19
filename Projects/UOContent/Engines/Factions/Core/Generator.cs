@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 namespace Server.Factions
 {
@@ -77,7 +76,20 @@ namespace Server.Factions
             }
         }
 
-        private static bool CheckExistence(Point3D loc, Map facet, Type type) =>
-            facet.GetItemsInRange(loc, 0).Any(type.IsInstanceOfType);
+        private static bool CheckExistence(Point3D loc, Map facet, Type type)
+        {
+            var eable = facet.GetItemsInRange(loc, 0);
+            foreach (var item in eable)
+            {
+                if (type.IsInstanceOfType(item))
+                {
+                    eable.Free();
+                    return true;
+                }
+            }
+
+            eable.Free();
+            return false;
+        }
     }
 }
