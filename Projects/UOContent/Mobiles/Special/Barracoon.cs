@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Server.Engines.CannedEvil;
 using Server.Items;
 using Server.Spells.Fifth;
@@ -142,13 +141,22 @@ namespace Server.Mobiles
             }
 
             var eable = GetMobilesInRange<BaseCreature>(10);
-            var rats = eable.Aggregate(0, (c, m) => c + (m is Ratman || m is RatmanArcher || m is RatmanMage ? 1 : 0));
-            eable.Free();
+            var rats = 0;
 
-            if (rats >= 16)
+            foreach (var m in eable)
             {
-                return;
+                if (m is Ratman || m is RatmanArcher || m is RatmanMage)
+                {
+                    rats++;
+                    if (rats >= 16)
+                    {
+                        eable.Free();
+                        return;
+                    }
+                }
             }
+
+            eable.Free();
 
             PlaySound(0x3D);
 

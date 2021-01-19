@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Server.ContextMenus;
 using Server.Items;
@@ -3619,28 +3618,27 @@ namespace Server
 
             var eable = map.GetItemsInRange(p, 0);
 
-            var items = eable.Where(
-                item =>
+            var items = new List<Item>();
+            foreach (var item in eable)
+            {
+                if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
                 {
-                    if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
-                    {
-                        return false;
-                    }
-
-                    var id = item.ItemData;
-
-                    if (id.Surface)
-                    {
-                        var top = item.Z + id.CalcHeight;
-                        if (top <= maxZ && top >= z)
-                        {
-                            z = top;
-                        }
-                    }
-
-                    return true;
+                    continue;
                 }
-            ).ToList();
+
+                var id = item.ItemData;
+
+                if (id.Surface)
+                {
+                    var top = item.Z + id.CalcHeight;
+                    if (top <= maxZ && top >= z)
+                    {
+                        z = top;
+                    }
+                }
+
+                items.Add(item);
+            }
 
             eable.Free();
 

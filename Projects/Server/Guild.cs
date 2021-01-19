@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Server.Guilds
 {
@@ -43,11 +42,31 @@ namespace Server.Guilds
         public abstract void Deserialize(IGenericReader reader);
         public abstract void OnDelete(Mobile mob);
 
-        public static BaseGuild FindByName(string name) =>
-            World.Guilds.Values.FirstOrDefault(g => g.Name == name);
+        public static BaseGuild FindByName(string name)
+        {
+            foreach (var g in World.Guilds.Values)
+            {
+                if (g.Name == name)
+                {
+                    return g;
+                }
+            }
 
-        public static BaseGuild FindByAbbrev(string abbr) =>
-            World.Guilds.Values.FirstOrDefault(g => g.Abbreviation == abbr);
+            return null;
+        }
+
+        public static BaseGuild FindByAbbrev(string abbr)
+        {
+            foreach (var g in World.Guilds.Values)
+            {
+                if (g.Abbreviation == abbr)
+                {
+                    return g;
+                }
+            }
+
+            return null;
+        }
 
         public static HashSet<BaseGuild> Search(string find)
         {

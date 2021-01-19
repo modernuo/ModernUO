@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Server.Network;
 using Server.Utilities;
 using QueuePool = Server.Utilities.RefPool<Server.Utilities.QueueRef<Server.Items.Container>>;
@@ -1457,7 +1456,11 @@ namespace Server.Items
             for (var j = 0; j < groups.Count; ++j)
             {
                 var items = groups[j].ToArray();
-                var total = items.Sum(t => t.Amount);
+                var total = 0;
+                foreach (var item in items)
+                {
+                    total += item.Amount;
+                }
 
                 if (total >= best)
                 {
@@ -1531,9 +1534,27 @@ namespace Server.Items
             return best;
         }
 
-        public int GetAmount(Type type, bool recurse = true) => FindItemsByType(type, recurse).Sum(t => t.Amount);
+        public int GetAmount(Type type, bool recurse = true)
+        {
+            var total = 0;
+            foreach (var item in FindItemsByType(type, recurse))
+            {
+                total += item.Amount;
+            }
 
-        public int GetAmount(Type[] types, bool recurse = true) => FindItemsByType(types, recurse).Sum(t => t.Amount);
+            return total;
+        }
+
+        public int GetAmount(Type[] types, bool recurse = true)
+        {
+            var total = 0;
+            foreach (var item in FindItemsByType(types, recurse))
+            {
+                total += item.Amount;
+            }
+
+            return total;
+        }
 
         public Item[] FindItemsByType(Type type, bool recurse = true)
         {
