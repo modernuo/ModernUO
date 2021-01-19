@@ -1265,7 +1265,7 @@ namespace Server.Commands
 
             var indexOf = line.IndexOfOrdinal(' ');
 
-            list.m_Type = AssemblyHandler.FindFirstTypeForName(line.Substring(0, indexOf++), true);
+            list.m_Type = AssemblyHandler.FindTypeByName(line.Substring(0, indexOf++));
 
             if (list.m_Type == null)
             {

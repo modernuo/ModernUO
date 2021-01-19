@@ -111,7 +111,7 @@ namespace Server.Commands
                 }
             }
 
-            var type = AssemblyHandler.FindFirstTypeForName(name);
+            var type = AssemblyHandler.FindTypeByName(name);
 
             if (!IsEntity(type))
             {
@@ -296,7 +296,7 @@ namespace Server.Commands
 
                 if (IsType(type))
                 {
-                    return AssemblyHandler.FindFirstTypeForName(value);
+                    return AssemblyHandler.FindTypeByName(value);
                 }
 
                 if (IsParsable(type))

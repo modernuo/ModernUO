@@ -101,7 +101,7 @@ namespace Server.Engines.MLQuests.Items
 
             if (typeName != null)
             {
-                m_QuestType = AssemblyHandler.FindFirstTypeForName(typeName);
+                m_QuestType = AssemblyHandler.FindTypeByName(typeName);
             }
 
             Message = TextDefinition.Deserialize(reader);
@@ -209,7 +209,7 @@ namespace Server.Engines.MLQuests.Items
 
             if (typeName != null)
             {
-                m_TicketType = AssemblyHandler.FindFirstTypeForName(typeName);
+                m_TicketType = AssemblyHandler.FindTypeByName(typeName);
             }
 
             Message = TextDefinition.Deserialize(reader);

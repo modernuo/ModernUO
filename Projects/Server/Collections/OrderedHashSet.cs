@@ -609,7 +609,7 @@ namespace Server.Collections
 
         public struct Enumerator : IEnumerator<TValue>
         {
-            private readonly OrderedHashSet<TValue> _OrderedHashSet;
+            private readonly OrderedHashSet<TValue> _orderedHashSet;
             private readonly int _version;
             private int _index;
             private TValue _current;
@@ -618,10 +618,10 @@ namespace Server.Collections
 
             object IEnumerator.Current => _current;
 
-            internal Enumerator(OrderedHashSet<TValue> OrderedHashSet)
+            internal Enumerator(OrderedHashSet<TValue> orderedHashSet)
             {
-                _OrderedHashSet = OrderedHashSet;
-                _version = OrderedHashSet._version;
+                _orderedHashSet = orderedHashSet;
+                _version = orderedHashSet._version;
                 _index = 0;
                 _current = default;
             }
@@ -632,14 +632,14 @@ namespace Server.Collections
 
             public bool MoveNext()
             {
-                if (_version != _OrderedHashSet._version)
+                if (_version != _orderedHashSet._version)
                 {
                     throw new InvalidOperationException(InvalidOperation_EnumFailedVersion);
                 }
 
-                if (_index < _OrderedHashSet.Count)
+                if (_index < _orderedHashSet.Count)
                 {
-                    Entry entry = _OrderedHashSet._entries[_index];
+                    Entry entry = _orderedHashSet._entries[_index];
                     _current = entry.Value;
                     ++_index;
                     return true;
@@ -650,7 +650,7 @@ namespace Server.Collections
 
             void IEnumerator.Reset()
             {
-                if (_version != _OrderedHashSet._version)
+                if (_version != _orderedHashSet._version)
                 {
                     throw new InvalidOperationException(InvalidOperation_EnumFailedVersion);
                 }

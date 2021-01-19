@@ -34,7 +34,7 @@ namespace Server.Items
 
             if (GetSaveFlag(flags, SaveFlag.Type))
             {
-                Type = AssemblyHandler.FindFirstTypeForName(reader.ReadString());
+                Type = AssemblyHandler.FindTypeByName(reader.ReadString());
             }
 
             if (GetSaveFlag(flags, SaveFlag.Name))

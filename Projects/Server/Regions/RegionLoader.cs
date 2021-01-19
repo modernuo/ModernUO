@@ -38,7 +38,7 @@ namespace Server
 
             foreach (var json in regions)
             {
-                var type = AssemblyHandler.FindFirstTypeForName(json.Type);
+                var type = AssemblyHandler.FindTypeByName(json.Type);
 
                 if (type == null || !typeof(Region).IsAssignableFrom(type))
                 {

@@ -219,7 +219,7 @@ namespace Server.Engines.BulkOrders
 
                         if (type != null)
                         {
-                            Type = AssemblyHandler.FindFirstTypeForName(type);
+                            Type = AssemblyHandler.FindTypeByName(type);
                         }
 
                         m_Number = reader.ReadInt();

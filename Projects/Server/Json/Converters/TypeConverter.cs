@@ -28,7 +28,7 @@ namespace Server.Json
                 throw new JsonException("The JSON value could not be converted to System.Type");
             }
 
-            return AssemblyHandler.FindFirstTypeForName(reader.GetString());
+            return AssemblyHandler.FindTypeByName(reader.GetString(), false);
         }
 
         public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options) =>

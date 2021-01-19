@@ -320,7 +320,7 @@ namespace Server.Commands
 
                     for (var i = 0; i < count; ++i)
                     {
-                        types.Add(AssemblyHandler.FindFirstTypeForName(bin.ReadString()));
+                        types.Add(AssemblyHandler.FindTypeByName(bin.ReadString()));
                     }
                 }
 

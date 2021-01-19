@@ -27,7 +27,7 @@ namespace Server.Regions
         {
             if (json.GetProperty("guardsType", options, out string guardType))
             {
-                m_GuardType = AssemblyHandler.FindFirstTypeForName(guardType);
+                m_GuardType = AssemblyHandler.FindTypeByName(guardType);
 
                 if (!typeof(BaseGuard).IsAssignableFrom(m_GuardType))
                 {

@@ -567,7 +567,7 @@ namespace Server.Engines.Spawners
             // Defrag taken care of in Spawn(), beforehand
             // Count check taken care of in Spawn(), beforehand
 
-            var type = AssemblyHandler.FindFirstTypeForName(entry.SpawnedName);
+            var type = AssemblyHandler.FindTypeByName(entry.SpawnedName);
 
             if (type == null)
             {
@@ -1027,7 +1027,7 @@ namespace Server.Engines.Spawners
                                     Entries[i].SpawnedName = typeName;
                                 }
 
-                                if (AssemblyHandler.FindFirstTypeForName(typeName) == null)
+                                if (AssemblyHandler.FindTypeByName(typeName) == null)
                                 {
                                     m_WarnTimer ??= new WarnTimer();
 
@@ -1055,7 +1055,7 @@ namespace Server.Engines.Spawners
 
                                 for (var j = 0; j < Entries.Count; j++)
                                 {
-                                    if (AssemblyHandler.FindFirstTypeForName(Entries[j].SpawnedName) == e.GetType())
+                                    if (AssemblyHandler.FindTypeByName(Entries[j].SpawnedName) == e.GetType())
                                     {
                                         Entries[j].Spawned.Add(e);
                                         Spawned.Add(e, Entries[j]);
