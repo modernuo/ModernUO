@@ -104,7 +104,7 @@ namespace Server
 
             for (var i = 0; i < Assemblies.Length; i++)
             {
-                foreach (var type in GetTypeCache(Assemblies[i])[name])
+                foreach (var type in GetTypeCache(Assemblies[i]).GetEnumerator(name, ignoreCase))
                 {
                     if (type.FullName.EqualsOrdinal(name))
                     {
@@ -113,7 +113,7 @@ namespace Server
                 }
             }
 
-            foreach(var type in GetTypeCache(Core.Assembly)[name])
+            foreach(var type in GetTypeCache(Core.Assembly).GetEnumerator(name, ignoreCase))
             {
                 if (type.FullName.EqualsOrdinal(name))
                 {
@@ -138,7 +138,7 @@ namespace Server
 
             for (var i = 0; i < Assemblies.Length; i++)
             {
-                foreach (var type in GetTypeCache(Assemblies[i])[name])
+                foreach (var type in GetTypeCache(Assemblies[i]).GetEnumerator(name, ignoreCase))
                 {
                     if (type.FullName.EqualsOrdinal(name) || type.Name.EqualsOrdinal(name))
                     {
@@ -147,7 +147,7 @@ namespace Server
                 }
             }
 
-            foreach(var type in GetTypeCache(Core.Assembly)[name])
+            foreach(var type in GetTypeCache(Core.Assembly).GetEnumerator(name, ignoreCase))
             {
                 if (type.FullName.EqualsOrdinal(name) || type.Name.EqualsOrdinal(name))
                 {
@@ -169,13 +169,13 @@ namespace Server
 
             for (var i = 0; i < Assemblies.Length; i++)
             {
-                foreach (var type in GetTypeCache(Assemblies[i])[name])
+                foreach (var type in GetTypeCache(Assemblies[i]).GetEnumerator(name, ignoreCase))
                 {
                     types.Add(type);
                 }
             }
 
-            foreach(var type in GetTypeCache(Core.Assembly)[name])
+            foreach(var type in GetTypeCache(Core.Assembly).GetEnumerator(name, ignoreCase))
             {
                 types.Add(type);
             }
@@ -194,52 +194,64 @@ namespace Server
 
     public class TypeCache
     {
-        private readonly Dictionary<string, int[]> m_NameMap = new();
+        private readonly Dictionary<string, int[]> _nameMap = new();
+        private readonly Dictionary<string, int[]> _nameMapInsensitive = new();
 
         public TypeCache(Assembly asm)
         {
             Types = asm?.GetTypes() ?? Type.EmptyTypes;
 
             var nameMap = new Dictionary<string, HashSet<int>>();
-            HashSet<int> refs;
-            Action<int, string> addToRefs = (index, key) =>
+            var nameMapInsensitive = new Dictionary<string, HashSet<int>>();
+
+            void addToRefs(int index, string key, Dictionary<string, HashSet<int>> map)
             {
-                if (nameMap.TryGetValue(key, out refs))
+                if (key == null)
+                {
+                    return;
+                }
+
+                if (map.TryGetValue(key, out var refs))
                 {
                     refs.Add(index);
                 }
                 else
                 {
                     refs = new HashSet<int> { index };
-                    nameMap.Add(key, refs);
+                    map.Add(key, refs);
                 }
-            };
+            }
 
             var aliasType = typeof(TypeAliasAttribute);
             for (var i = 0; i < Types.Length; i++)
             {
                 var current = Types[i];
-                addToRefs(i, current.Name);
-                addToRefs(i, current.Name.ToLower());
-                addToRefs(i, current.FullName);
-                addToRefs(i, current.FullName?.ToLower());
+                addToRefs(i, current.Name, nameMap);
+                addToRefs(i, current.Name.ToLower(), nameMapInsensitive);
+                addToRefs(i, current.FullName, nameMap);
+                addToRefs(i, current.FullName?.ToLower(), nameMapInsensitive);
                 if (current.GetCustomAttribute(aliasType, false) is TypeAliasAttribute alias)
                 {
                     for (var j = 0; j < alias.Aliases.Length; j++)
                     {
-                        addToRefs(i, alias.Aliases[j]);
-                        addToRefs(i, alias.Aliases[j].ToLower());
+                        addToRefs(i, alias.Aliases[j], nameMap);
+                        addToRefs(i, alias.Aliases[j], nameMapInsensitive);
                     }
                 }
             }
 
             foreach (var (key, value) in nameMap)
             {
-                m_NameMap[key] = value.ToArray();
+                _nameMap[key] = value.ToArray();
+            }
+
+            foreach (var (key, value) in nameMapInsensitive)
+            {
+                _nameMapInsensitive[key] = value.ToArray();
             }
         }
 
-        public Enumerator this[string name] => new(name, this);
+        public Enumerator GetEnumerator(string name, bool ignoreCase) => new(name, this, ignoreCase);
 
         public Type[] Types { get; }
 
@@ -250,10 +262,12 @@ namespace Server
             private int _index;
             private Type _current;
 
-            internal Enumerator(string name, TypeCache cache)
+            internal Enumerator(string name, TypeCache cache, bool ignoreCase)
             {
                 _cache = cache;
-                _values = cache.m_NameMap.TryGetValue(name, out var values) ? values : Array.Empty<int>();
+
+                var map = ignoreCase ? _cache._nameMap : _cache._nameMapInsensitive;
+                _values = map.TryGetValue(name, out var values) ? values : Array.Empty<int>();
                 _index = 0;
                 _current = default;
             }
