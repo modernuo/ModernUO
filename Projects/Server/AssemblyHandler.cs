@@ -140,24 +140,51 @@ namespace Server
             {
                 foreach (var type in GetTypeCache(Assemblies[i]).GetEnumerator(name, ignoreCase))
                 {
-                    if (type.FullName.EqualsOrdinal(name) || type.Name.EqualsOrdinal(name))
+                    return type;
+                }
+            }
+
+            foreach(var type in GetTypeCache(Core.Assembly).GetEnumerator(name, ignoreCase))
+            {
+                return type;
+            }
+
+            return null;
+        }
+
+        // TODO: Change to IEnumerable using another custom enumerator
+        public static List<Type> FindTypesByFullName(string name, bool ignoreCase = true)
+        {
+            var types = new List<Type>();
+
+            if (ignoreCase)
+            {
+                name = name.ToLower();
+            }
+
+            for (var i = 0; i < Assemblies.Length; i++)
+            {
+                foreach (var type in GetTypeCache(Assemblies[i]).GetEnumerator(name, ignoreCase))
+                {
+                    if (type.FullName.EqualsOrdinal(name))
                     {
-                        return type;
+                        types.Add(type);
                     }
                 }
             }
 
             foreach(var type in GetTypeCache(Core.Assembly).GetEnumerator(name, ignoreCase))
             {
-                if (type.FullName.EqualsOrdinal(name) || type.Name.EqualsOrdinal(name))
+                if (type.FullName.EqualsOrdinal(name))
                 {
-                    return type;
+                    types.Add(type);
                 }
             }
 
-            return null;
+            return types;
         }
 
+        // TODO: Change to IEnumerable using another custom enumerator
         public static List<Type> FindTypesByName(string name, bool ignoreCase = true)
         {
             var types = new List<Type>();
