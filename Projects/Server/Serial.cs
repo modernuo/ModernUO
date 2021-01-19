@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -17,6 +18,7 @@ namespace Server
 
         public bool IsValid => Value > 0;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode() => Value.GetHashCode();
 
         public int CompareTo(Serial other) => Value.CompareTo(other.Value);
