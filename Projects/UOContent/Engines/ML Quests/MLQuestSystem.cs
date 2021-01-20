@@ -51,7 +51,7 @@ namespace Server.Engines.MLQuests
 
                     var split = line.Split('\t');
 
-                    var type = AssemblyHandler.FindFirstTypeForName(split[0]);
+                    var type = AssemblyHandler.FindTypeByName(split[0]);
 
                     if (type == null || !baseQuestType.IsAssignableFrom(type))
                     {
@@ -87,7 +87,7 @@ namespace Server.Engines.MLQuests
 
                     for (var i = 1; i < split.Length; ++i)
                     {
-                        var questerType = AssemblyHandler.FindFirstTypeForName(split[i]);
+                        var questerType = AssemblyHandler.FindTypeByName(split[i]);
 
                         if (questerType == null || !baseQuesterType.IsAssignableFrom(questerType))
                         {
@@ -190,7 +190,7 @@ namespace Server.Engines.MLQuests
                 return;
             }
 
-            var index = AssemblyHandler.FindFirstTypeForName(e.GetString(0));
+            var index = AssemblyHandler.FindTypeByName(e.GetString(0));
 
             if (index == null || !Quests.TryGetValue(index, out var quest))
             {
@@ -216,7 +216,7 @@ namespace Server.Engines.MLQuests
                 return;
             }
 
-            var index = AssemblyHandler.FindFirstTypeForName(e.GetString(0));
+            var index = AssemblyHandler.FindTypeByName(e.GetString(0));
 
             if (index == null || !Quests.TryGetValue(index, out var quest))
             {
@@ -773,7 +773,7 @@ namespace Server.Engines.MLQuests
                 return null; // not serialized
             }
 
-            var questType = AssemblyHandler.FindFirstTypeForName(typeName);
+            var questType = AssemblyHandler.FindTypeByFullName(typeName);
 
             if (questType == null)
             {

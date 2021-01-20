@@ -191,7 +191,7 @@ namespace Server
             {
                 var typeName = tdbReader.ReadString();
 
-                var t = AssemblyHandler.FindFirstTypeForName(typeName);
+                var t = AssemblyHandler.FindTypeByFullName(typeName, false);
 
                 if (t?.IsAbstract != false)
                 {

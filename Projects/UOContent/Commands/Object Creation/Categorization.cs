@@ -330,7 +330,7 @@ namespace Server.Commands
 
             for (var i = 0; i < split.Length; ++i)
             {
-                var type = AssemblyHandler.FindFirstTypeForName(split[i].Trim());
+                var type = AssemblyHandler.FindTypeByName(split[i].Trim());
 
                 if (type == null)
                 {

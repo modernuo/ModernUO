@@ -188,9 +188,8 @@ namespace Server.Commands.Generic
 
                     var active = emitter.Active;
 
-                    var getHashCode = active.GetMethod("GetHashCode", Type.EmptyTypes);
-
-                    getHashCode ??= typeof(T).GetMethod("GetHashCode", Type.EmptyTypes);
+                    var getHashCode = active.GetMethod("GetHashCode", Type.EmptyTypes)
+                                      ?? typeof(T).GetMethod("GetHashCode", Type.EmptyTypes);
 
                     if (active != typeof(int))
                     {

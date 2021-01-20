@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -130,6 +131,7 @@ namespace Server
 
         public override string ToString() => $"0x{BodyID:X}";
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode() => BodyID.GetHashCode();
 
         public override bool Equals(object o) => o is Body b && b.BodyID == BodyID;

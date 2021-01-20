@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Server.Buffers;
 
 namespace Server
@@ -163,7 +164,8 @@ namespace Server
 
         public static bool operator <(ClientVersion l, ClientVersion r) => Compare(l, r) < 0;
 
-        public override int GetHashCode() => Major ^ Minor ^ Revision ^ Patch ^ (int)Type;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int GetHashCode() => HashCode.Combine(Major, Minor, Revision, Patch, Type);
 
         public override bool Equals(object obj)
         {

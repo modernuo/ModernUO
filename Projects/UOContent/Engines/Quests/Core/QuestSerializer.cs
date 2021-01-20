@@ -70,7 +70,7 @@ namespace Server.Engines.Quests
                             return null;
                         }
 
-                        return AssemblyHandler.FindFirstTypeForName(fullName);
+                        return AssemblyHandler.FindTypeByFullName(fullName);
                     }
             }
         }

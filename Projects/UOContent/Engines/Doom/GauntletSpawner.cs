@@ -321,7 +321,7 @@ namespace Server.Engines.Doom
                     return;
                 }
 
-                var type = AssemblyHandler.FindFirstTypeForName(TypeName, true);
+                var type = AssemblyHandler.FindTypeByName(TypeName);
 
                 if (type == null)
                 {

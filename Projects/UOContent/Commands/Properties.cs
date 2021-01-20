@@ -456,7 +456,7 @@ namespace Server.Commands
             {
                 try
                 {
-                    toSet = AssemblyHandler.FindFirstTypeForName(value);
+                    toSet = AssemblyHandler.FindTypeByName(value);
 
                     if (toSet == null)
                     {

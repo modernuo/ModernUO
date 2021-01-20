@@ -157,8 +157,8 @@ namespace Server.Spells
             for (var i = 0; i < m_CircleNames.Length; ++i)
             {
                 var t =
-                    AssemblyHandler.FindFirstTypeForName($"Server.Spells.{m_CircleNames[i]}.{name}", true) ??
-                    AssemblyHandler.FindFirstTypeForName($"Server.Spells.{m_CircleNames[i]}.{name}Spell", true);
+                    AssemblyHandler.FindTypeByName($"Server.Spells.{m_CircleNames[i]}.{name}") ??
+                    AssemblyHandler.FindTypeByName($"Server.Spells.{m_CircleNames[i]}.{name}Spell");
 
                 if (t?.IsSubclassOf(typeof(SpecialMove)) == false)
                 {

@@ -103,7 +103,7 @@ namespace Server.Commands.Generic
                 return Empty;
             }
 
-            var objectType = AssemblyHandler.FindFirstTypeForName(args[offset], true);
+            var objectType = AssemblyHandler.FindTypeByName(args[offset]);
 
             if (objectType == null)
             {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Runtime.CompilerServices;
 using Microsoft.Toolkit.HighPerformance.Extensions;
 
 namespace Server
@@ -155,6 +156,7 @@ namespace Server
                 };
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public override int GetHashCode() => m_Address.GetHashCode();
         }
 
@@ -198,7 +200,8 @@ namespace Server
                 return false;
             }
 
-            public override int GetHashCode() => m_CIDRPrefix.GetHashCode() ^ m_CIDRLength.GetHashCode();
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public override int GetHashCode() => HashCode.Combine(m_CIDRPrefix, m_CIDRLength);
         }
 
         public class WildcardIPFirewallEntry : IFirewallEntry
@@ -223,6 +226,7 @@ namespace Server
                 return obj is WildcardIPFirewallEntry entry && m_Entry == entry.m_Entry;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public override int GetHashCode() => m_Entry.GetHashCode(StringComparison.Ordinal);
         }
     }

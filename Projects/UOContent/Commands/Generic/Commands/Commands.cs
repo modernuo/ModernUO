@@ -523,7 +523,7 @@ namespace Server.Commands.Generic
         {
             if (e.Length >= 1)
             {
-                var t = AssemblyHandler.FindFirstTypeForName(e.GetString(0));
+                var t = AssemblyHandler.FindTypeByName(e.GetString(0));
 
                 if (t == null)
                 {

@@ -805,9 +805,9 @@ namespace Server
         [CommandProperty(AccessLevel.Counselor)]
         public Skill Throwing => this[SkillName.Throwing];
 
-        public Enumerator GetEnumerator() => new(this);
-        IEnumerator<Skill> IEnumerable<Skill>.GetEnumerator() => new Enumerator(this);
-        IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
+        public Enumerator GetEnumerator() => new(m_Skills);
+        IEnumerator<Skill> IEnumerable<Skill>.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public override string ToString() => "...";
 
@@ -898,11 +898,11 @@ namespace Server
 
         public struct Enumerator : IEnumerator<Skill>
         {
-            private readonly Skills _skills;
+            private readonly Skill[] _skills;
             private int _index;
             private Skill _current;
 
-            internal Enumerator(Skills skills)
+            internal Enumerator(Skill[] skills)
             {
                 _skills = skills;
                 _index = 0;
@@ -915,11 +915,11 @@ namespace Server
 
             public bool MoveNext()
             {
-                Skills localList = _skills;
+                Skill[] localList = _skills;
 
                 while ((uint)_index < (uint)localList.Length)
                 {
-                    _current = localList.m_Skills[_index++];
+                    _current = _skills[_index++];
                     if (_current != null)
                     {
                         return true;

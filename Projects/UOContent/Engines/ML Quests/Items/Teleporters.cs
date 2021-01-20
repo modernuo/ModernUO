@@ -101,7 +101,7 @@ namespace Server.Engines.MLQuests.Items
 
             if (typeName != null)
             {
-                m_QuestType = AssemblyHandler.FindFirstTypeForName(typeName);
+                m_QuestType = AssemblyHandler.FindTypeByFullName(typeName);
             }
 
             Message = TextDefinition.Deserialize(reader);
@@ -195,7 +195,7 @@ namespace Server.Engines.MLQuests.Items
 
             writer.Write(0); // version
 
-            writer.Write(m_TicketType != null ? m_TicketType.FullName : null);
+            writer.Write( m_TicketType?.FullName);
             TextDefinition.Serialize(writer, Message);
         }
 
@@ -209,7 +209,7 @@ namespace Server.Engines.MLQuests.Items
 
             if (typeName != null)
             {
-                m_TicketType = AssemblyHandler.FindFirstTypeForName(typeName);
+                m_TicketType = AssemblyHandler.FindTypeByFullName(typeName);
             }
 
             Message = TextDefinition.Deserialize(reader);
