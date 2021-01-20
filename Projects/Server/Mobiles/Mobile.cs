@@ -3826,7 +3826,7 @@ namespace Server
             Paralyzed = false;
         }
 
-        public void Paralyze(TimeSpan duration)
+        public virtual void Paralyze(TimeSpan duration)
         {
             if (!m_Paralyzed)
             {
@@ -3842,7 +3842,7 @@ namespace Server
             Frozen = false;
         }
 
-        public void Freeze(TimeSpan duration)
+        public virtual void Freeze(TimeSpan duration)
         {
             if (!m_Frozen)
             {
