@@ -48,7 +48,7 @@ namespace Server.Mobiles
                 }
             }
 
-            return Entries.RandomElement();
+            return Entries?.RandomElement();
         }
 
         public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
