@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Server;
 using Server.Collections;
 using Server.Items;
@@ -52,14 +53,14 @@ namespace UOContent.Tests
     {
         public DisplayBoatHS(Mobile beholder, BaseBoat boat) : base(0xF7)
         {
-            var ents = boat.GetMovingEntities();
+            var ents = boat.GetMovingEntities(true).ToList();
 
-            ents.AddNotNull(boat.TillerMan);
-            ents.AddNotNull(boat.Hold);
-            ents.AddNotNull(boat.PPlank);
-            ents.AddNotNull(boat.SPlank);
-
-            ents.Add(boat);
+            // ents.AddNotNull(boat.TillerMan);
+            // ents.AddNotNull(boat.Hold);
+            // ents.AddNotNull(boat.PPlank);
+            // ents.AddNotNull(boat.SPlank);
+            //
+            // ents.Add(boat);
 
             EnsureCapacity(3 + 2 + ents.Count * 26);
 

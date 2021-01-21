@@ -394,8 +394,17 @@ namespace Server.Commands
         {
             public int Compare(KeyValuePair<Type, int[]> x, KeyValuePair<Type, int[]> y)
             {
-                var aCount = x.Value.Aggregate(0, (t, val) => t + val);
-                var bCount = y.Value.Aggregate(0, (t, val) => t + val);
+                var aCount = 0;
+                foreach (var val in x.Value)
+                {
+                    aCount += val;
+                }
+
+                var bCount = 0;
+                foreach (var val in y.Value)
+                {
+                    bCount += val;
+                }
 
                 var v = -aCount.CompareTo(bCount);
 

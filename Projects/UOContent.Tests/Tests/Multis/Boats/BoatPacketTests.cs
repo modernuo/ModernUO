@@ -64,7 +64,7 @@ namespace UOContent.Tests
             beholder.Setup(m => m.CanSee(It.Is<IEntity>(e => e == item2))).Returns(false);
 
             var boat = new Mock<BaseBoat>((Serial)0x3000);
-            boat.Setup(b => b.GetMovingEntities()).Returns(() => new List<IEntity>{ item1, beholder.Object });
+            boat.Setup(b => b.GetMovingEntities(true)).Returns(() => new List<IEntity> { item1, beholder.Object });
             boat.Setup(b => b.Location).Returns(new Point3D(10, 20, 15));
             boat.Object.Facing = Direction.Right;
 

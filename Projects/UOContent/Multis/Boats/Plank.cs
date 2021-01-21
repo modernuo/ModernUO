@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Server.Factions;
 using Server.Multis;
 using Server.Network;
@@ -226,7 +225,28 @@ namespace Server.Items
             return false;
         }
 
-        public bool CanClose() => Map != null && !Deleted && GetObjectsInRange(0).All(o => o == this);
+        public bool CanClose()
+        {
+            if (Map == null || Deleted)
+            {
+                return false;
+            }
+
+            var eable = GetObjectsInRange(0);
+
+            foreach (var obj in eable)
+            {
+                if (obj == this)
+                {
+                    eable.Free();
+                    return true;
+                }
+            }
+
+            eable.Free();
+
+            return false;
+        }
 
         public void Close()
         {
