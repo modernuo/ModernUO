@@ -293,7 +293,7 @@ namespace Server
             {
                 _cache = cache;
 
-                var map = ignoreCase ? _cache._nameMap : _cache._nameMapInsensitive;
+                var map = ignoreCase ? _cache._nameMapInsensitive : _cache._nameMap;
                 _values = map.TryGetValue(name, out var values) ? values : Array.Empty<int>();
                 _index = 0;
                 _current = default;
