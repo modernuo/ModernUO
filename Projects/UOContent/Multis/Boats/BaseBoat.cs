@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Server.Collections;
 using Server.Items;
 using Server.Multis.Boats;
@@ -737,11 +738,12 @@ namespace Server.Multis
                 return DryDockResult.Items;
             }
 
-            using var ents = GetMovingEntities().GetEnumerator();
+            using var ents = GetMovingEntities();
+            var enumerator = ents.GetEnumerator();
 
-            if (ents.MoveNext())
+            if (enumerator.MoveNext())
             {
-                return ents.Current is Mobile ? DryDockResult.Mobiles : DryDockResult.Items;
+                return enumerator.Current is Mobile ? DryDockResult.Mobiles : DryDockResult.Items;
             }
 
             return DryDockResult.Valid;
@@ -1738,14 +1740,8 @@ namespace Server.Multis
             }
             else
             {
-                // TODO: Change to pooled data structures
-                var toMove = new List<IEntity>();
-                var eable = GetMovingEntities(true);
-
-                foreach (var entity in eable)
-                {
-                    toMove.Add(entity);
-                }
+                using var eable = GetMovingEntities(true);
+                var enumerator = eable.GetEnumerator();
 
                 // Packet must be sent before actual locations are changed
                 foreach (var ns in Map.GetClientsInRange(Location, GetMaxUpdateRange()))
@@ -1754,11 +1750,12 @@ namespace Server.Multis
 
                     if (ns.HighSeas && m.CanSee(this) && m.InRange(Location, GetUpdateRange(m)))
                     {
-                        ns.SendMoveBoatHS(m, this, d, clientSpeed, toMove, xOffset, yOffset);
+                        ns.SendMoveBoatHS(m, this, d, clientSpeed, eable, xOffset, yOffset);
+                        eable.Reset();
                     }
                 }
 
-                foreach (var e in toMove)
+                foreach (var e in eable)
                 {
                     if (e is Item item)
                     {
@@ -1779,7 +1776,9 @@ namespace Server.Multis
                 NoMoveHS = true;
                 Location = new Point3D(X + xOffset, Y + yOffset, Z);
 
-                foreach (var e in toMove)
+                eable.Reset();
+
+                foreach (var e in eable)
                 {
                     if (e is Item item)
                     {
@@ -1814,83 +1813,77 @@ namespace Server.Multis
             Location = new Point3D(X + xOffset, Y + yOffset, Z + zOffset);
         }
 
-        public virtual IEnumerable<IEntity> GetMovingEntities(bool includeBoat = false)
+        public virtual MovingEntitiesEnumerable GetMovingEntities(bool includeBoat = false)
         {
-            var list = new List<IEntity>();
-
             var map = Map;
 
             if (map == null || map == Map.Internal)
             {
-                return Enumerable.Empty<IEntity>();
+                return new MovingEntitiesEnumerable(this, includeBoat, null);
             }
 
             var mcl = Components;
 
             var eable = map.GetObjectsInBounds(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height));
-            return new MovingEntitiesEnumerator(this, includeBoat, eable);
-
-            // foreach (var o in eable)
-            // {
-            //     if (o == this || o is TillerMan || o is Hold || o is Plank)
-            //     {
-            //         continue;
-            //     }
-            //
-            //     if (o is Item item)
-            //     {
-            //         if (Contains(item) && item.Visible && item.Z >= Z)
-            //         {
-            //             list.Add(item);
-            //         }
-            //     }
-            //     else if (o is Mobile m)
-            //     {
-            //         if (Contains(m))
-            //         {
-            //             list.Add(m);
-            //         }
-            //     }
-            // }
-            //
-            // eable.Free();
-            //
-            // return list;
+            return new MovingEntitiesEnumerable(this, includeBoat, eable);
         }
 
-        public struct MovingEntitiesEnumerator : IEnumerable<IEntity>, IEnumerator<IEntity>
+        public ref struct MovingEntitiesEnumerable
         {
             private readonly IPooledEnumerable<IEntity> _entities;
-            private IEnumerator<IEntity> _enumerator;
-            private IEntity? _current;
+            private readonly IEnumerator<IEntity> _enumerator;
             private readonly bool _includeBoat;
             private BaseBoat _boat;
-            private bool _valid;
 
-            internal MovingEntitiesEnumerator(BaseBoat boat, bool includeBoat, IPooledEnumerable<IEntity> entities = null)
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public MovingEntitiesEnumerable(BaseBoat boat, bool includeBoat, IPooledEnumerable<IEntity> entities)
             {
                 _entities = entities;
                 _enumerator = entities?.GetEnumerator();
+                _boat = boat;
+                _includeBoat = includeBoat;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public MovingEntitiesEnumerator GetEnumerator() => new(_boat, _includeBoat, _enumerator);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void Dispose()
+            {
+                _entities?.Free();
+                _enumerator?.Dispose();
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void Reset()
+            {
+                _enumerator?.Reset();
+            }
+        }
+
+        public ref struct MovingEntitiesEnumerator
+        {
+            private readonly IEnumerator<IEntity> _enumerator;
+            private IEntity? _current;
+            private readonly bool _includeBoat;
+            private readonly BaseBoat _boat;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public MovingEntitiesEnumerator(BaseBoat boat, bool includeBoat, IEnumerator<IEntity> enumerator = null)
+            {
+                _enumerator = enumerator;
                 _current = default;
                 _includeBoat = includeBoat;
                 _boat = boat;
-                _valid = false;
             }
 
-            public void Dispose()
-            {
-                _entities.Free();
-            }
-
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
                 if (_enumerator?.MoveNext() != true)
                 {
-                    _valid = false;
                     return false;
                 }
-
-                _valid = true;
 
                 var current = _enumerator.Current;
 
@@ -1922,30 +1915,11 @@ namespace Server.Multis
                 return false;
             }
 
-            public IEntity? Current => _current!;
-
-            object IEnumerator.Current
+            public IEntity Current
             {
-                get
-                {
-                    if (!_valid)
-                    {
-                        throw new InvalidOperationException();
-                    }
-
-                    return _current;
-                }
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _current;
             }
-
-            void IEnumerator.Reset()
-            {
-                _valid = false;
-                _current = default;
-            }
-
-            public IEnumerator<IEntity> GetEnumerator() => this;
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
         public bool SetFacing(Direction facing)

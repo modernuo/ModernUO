@@ -15,9 +15,7 @@
 
 using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Server.Network;
 
 namespace Server.Multis.Boats
@@ -25,20 +23,15 @@ namespace Server.Multis.Boats
     public static class BoatPackets
     {
         public static void SendMoveBoatHS(this NetState ns, Mobile beholder, BaseBoat boat,
-            Direction d, int speed, IEnumerable<IEntity> ents, int xOffset, int yOffset)
+            Direction d, int speed, BaseBoat.MovingEntitiesEnumerable ents, int xOffset, int yOffset)
         {
             if (ns?.HighSeas != true)
             {
                 return;
             }
 
-            if (ents is not IReadOnlyCollection<IEntity> list)
-            {
-                list = ents.ToList();
-            }
-
-            var maxLength = 18 + list.Count * 10;
-            var writer = new SpanWriter(stackalloc byte[maxLength], true);
+            var minLength = 68; // 18 + 5 * 10
+            var writer = new SpanWriter(stackalloc byte[minLength], true);
             writer.Write((byte)0xF6); // Packet ID
             writer.Seek(2, SeekOrigin.Current);
 
@@ -53,7 +46,7 @@ namespace Server.Multis.Boats
 
             var count = 0;
 
-            foreach (var ent in list)
+            foreach (var ent in ents)
             {
                 if (!beholder.CanSee(ent))
                 {
@@ -81,21 +74,18 @@ namespace Server.Multis.Boats
                 return;
             }
 
-            // TODO: Change to pooled data structure
-            var list = boat.GetMovingEntities().ToList();
-
             bool isSA = ns.StygianAbyss;
             bool isHS = ns.HighSeas;
 
             var minLength = PacketContainerBuilder.MinPacketLength
                             + OutgoingEntityPackets.MaxWorldEntityPacketLength
-                            * list.Count;
+                            * 5; // Minimum of boat, hold, planks, and the player
 
             using var builder = new PacketContainerBuilder(stackalloc byte[minLength]);
 
             Span<byte> buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength);
 
-            foreach (var entity in list)
+            foreach (var entity in boat.GetMovingEntities(true))
             {
                 if (!beholder.CanSee(entity))
                 {

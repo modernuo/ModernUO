@@ -53,16 +53,9 @@ namespace UOContent.Tests
     {
         public DisplayBoatHS(Mobile beholder, BaseBoat boat) : base(0xF7)
         {
-            var ents = boat.GetMovingEntities(true).ToList();
+            var ents = boat.GetMovingEntities(true);
 
-            // ents.AddNotNull(boat.TillerMan);
-            // ents.AddNotNull(boat.Hold);
-            // ents.AddNotNull(boat.PPlank);
-            // ents.AddNotNull(boat.SPlank);
-            //
-            // ents.Add(boat);
-
-            EnsureCapacity(3 + 2 + ents.Count * 26);
+            EnsureCapacity(3 + 2 + 5 * 26);
 
             Stream.Write((short)0); // count placeholder
 

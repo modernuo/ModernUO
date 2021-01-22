@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server.Items
 {
@@ -94,8 +95,10 @@ namespace Server.Items
                    && mcl.Tiles[x][y].Length > 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(Mobile m) => m.Map == Map && Contains(m.X, m.Y);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(Item item) => item.Map == Map && Contains(item.X, item.Y);
 
         public override void Serialize(IGenericWriter writer)

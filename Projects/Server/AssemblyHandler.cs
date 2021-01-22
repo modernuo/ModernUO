@@ -14,11 +14,11 @@
  *************************************************************************/
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 
 namespace Server
@@ -104,7 +104,7 @@ namespace Server
 
             for (var i = 0; i < Assemblies.Length; i++)
             {
-                foreach (var type in GetTypeCache(Assemblies[i]).GetEnumerator(name, ignoreCase))
+                foreach (var type in GetTypeCache(Assemblies[i]).GetTypesByName(name, ignoreCase))
                 {
                     if (type.FullName.EqualsOrdinal(name))
                     {
@@ -113,7 +113,7 @@ namespace Server
                 }
             }
 
-            foreach(var type in GetTypeCache(Core.Assembly).GetEnumerator(name, ignoreCase))
+            foreach(var type in GetTypeCache(Core.Assembly).GetTypesByName(name, ignoreCase))
             {
                 if (type.FullName.EqualsOrdinal(name))
                 {
@@ -138,13 +138,13 @@ namespace Server
 
             for (var i = 0; i < Assemblies.Length; i++)
             {
-                foreach (var type in GetTypeCache(Assemblies[i]).GetEnumerator(name, ignoreCase))
+                foreach (var type in GetTypeCache(Assemblies[i]).GetTypesByName(name, ignoreCase))
                 {
                     return type;
                 }
             }
 
-            foreach(var type in GetTypeCache(Core.Assembly).GetEnumerator(name, ignoreCase))
+            foreach(var type in GetTypeCache(Core.Assembly).GetTypesByName(name, ignoreCase))
             {
                 return type;
             }
@@ -164,7 +164,7 @@ namespace Server
 
             for (var i = 0; i < Assemblies.Length; i++)
             {
-                foreach (var type in GetTypeCache(Assemblies[i]).GetEnumerator(name, ignoreCase))
+                foreach (var type in GetTypeCache(Assemblies[i]).GetTypesByName(name, ignoreCase))
                 {
                     if (type.FullName.EqualsOrdinal(name))
                     {
@@ -173,7 +173,7 @@ namespace Server
                 }
             }
 
-            foreach(var type in GetTypeCache(Core.Assembly).GetEnumerator(name, ignoreCase))
+            foreach(var type in GetTypeCache(Core.Assembly).GetTypesByName(name, ignoreCase))
             {
                 if (type.FullName.EqualsOrdinal(name))
                 {
@@ -196,13 +196,13 @@ namespace Server
 
             for (var i = 0; i < Assemblies.Length; i++)
             {
-                foreach (var type in GetTypeCache(Assemblies[i]).GetEnumerator(name, ignoreCase))
+                foreach (var type in GetTypeCache(Assemblies[i]).GetTypesByName(name, ignoreCase))
                 {
                     types.Add(type);
                 }
             }
 
-            foreach(var type in GetTypeCache(Core.Assembly).GetEnumerator(name, ignoreCase))
+            foreach(var type in GetTypeCache(Core.Assembly).GetTypesByName(name, ignoreCase))
             {
                 types.Add(type);
             }
@@ -278,18 +278,38 @@ namespace Server
             }
         }
 
-        public Enumerator GetEnumerator(string name, bool ignoreCase) => new(name, this, ignoreCase);
-
         public Type[] Types { get; }
 
-        public struct Enumerator : IEnumerable<Type>, IEnumerator<Type>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TypeEnumerable GetTypesByName(string name, bool ignoreCase) => new(name, this, ignoreCase);
+
+        public ref struct TypeEnumerable
+        {
+            private readonly TypeCache _cache;
+            private readonly string _name;
+            private readonly bool _ignoreCase;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public TypeEnumerable(string name, TypeCache cache, bool ignoreCase)
+            {
+                _name = name;
+                _cache = cache;
+                _ignoreCase = ignoreCase;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public TypeEnumerator GetEnumerator() => new(_name, _cache, _ignoreCase);
+        }
+
+        public ref struct TypeEnumerator
         {
             private readonly TypeCache _cache;
             private readonly int[] _values;
             private int _index;
             private Type _current;
 
-            internal Enumerator(string name, TypeCache cache, bool ignoreCase)
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal TypeEnumerator(string name, TypeCache cache, bool ignoreCase)
             {
                 _cache = cache;
 
@@ -299,51 +319,26 @@ namespace Server
                 _current = default;
             }
 
-            public void Dispose()
-            {
-            }
-
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
                 int[] localList = _values;
 
-                while ((uint)_index < (uint)localList.Length)
+                if ((uint)_index < (uint)localList.Length)
                 {
                     _current = _cache.Types[_values[_index++]];
 
-                    if (_current != null)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 return false;
             }
 
-            public Type Current => _current!;
-
-            object IEnumerator.Current
+            public Type Current
             {
-                get
-                {
-                    if (_index == 0 || _index == _values.Length + 1)
-                    {
-                        throw new InvalidOperationException(nameof(_index));
-                    }
-
-                    return Current;
-                }
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _current;
             }
-
-            void IEnumerator.Reset()
-            {
-                _index = 0;
-                _current = default;
-            }
-
-            public IEnumerator<Type> GetEnumerator() => this;
-
-            IEnumerator IEnumerable.GetEnumerator() => this;
         }
     }
 }
