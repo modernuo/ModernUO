@@ -1901,6 +1901,7 @@ namespace Server.Multis
 
                     if (_boat.Contains(item) && item.Visible && item.Z >= _boat.Z)
                     {
+                        _current = current;
                         return true;
                     }
                 }
@@ -1908,6 +1909,7 @@ namespace Server.Multis
                 {
                     if (_boat.Contains(m))
                     {
+                        _current = current;
                         return true;
                     }
                 }
