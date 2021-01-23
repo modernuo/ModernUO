@@ -29,45 +29,47 @@ namespace Server.Spells.Seventh
 
         public override bool CheckCast()
         {
-            /*if (Caster.Mounted)
+            var caster = Caster;
+
+            /*if (caster.Mounted)
             {
-              Caster.SendLocalizedMessage( 1042561 ); //Please dismount first.
+              caster.SendLocalizedMessage( 1042561 ); //Please dismount first.
               return false;
             }
             else */
-            if (Sigil.ExistsOn(Caster))
+            if (Sigil.ExistsOn(caster))
             {
-                Caster.SendLocalizedMessage(1010521); // You cannot polymorph while you have a Town Sigil
+                caster.SendLocalizedMessage(1010521); // You cannot polymorph while you have a Town Sigil
                 return false;
             }
 
-            if (TransformationSpellHelper.UnderTransformation(Caster))
+            if (TransformationSpellHelper.UnderTransformation(caster))
             {
-                Caster.SendLocalizedMessage(1061633); // You cannot polymorph while in that form.
+                caster.SendLocalizedMessage(1061633); // You cannot polymorph while in that form.
                 return false;
             }
 
-            if (DisguiseTimers.IsDisguised(Caster))
+            if (DisguiseTimers.IsDisguised(caster))
             {
-                Caster.SendLocalizedMessage(502167); // You cannot polymorph while disguised.
+                caster.SendLocalizedMessage(502167); // You cannot polymorph while disguised.
                 return false;
             }
 
-            if (Caster.BodyMod == 183 || Caster.BodyMod == 184)
+            if (caster.BodyMod == 183 || caster.BodyMod == 184)
             {
-                Caster.SendLocalizedMessage(1042512); // You cannot polymorph while wearing body paint
+                caster.SendLocalizedMessage(1042512); // You cannot polymorph while wearing body paint
                 return false;
             }
 
-            if (!Caster.CanBeginAction<PolymorphSpell>())
+            if (!caster.CanBeginAction<PolymorphSpell>())
             {
                 if (Core.ML)
                 {
-                    EndPolymorph(Caster);
+                    EndPolymorph(caster);
                 }
                 else
                 {
-                    Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                    caster.SendLocalizedMessage(1005559); // This spell is already in effect.
                 }
 
                 return false;
@@ -75,9 +77,9 @@ namespace Server.Spells.Seventh
 
             if (m_NewBody == 0)
             {
-                var gump = Core.SE ? (Gump)new NewPolymorphGump(Caster, Scroll) : new PolymorphGump(Caster, Scroll);
+                var gump = Core.SE ? (Gump)new NewPolymorphGump(caster, Scroll) : new PolymorphGump(caster, Scroll);
 
-                Caster.SendGump(gump);
+                caster.SendGump(gump);
                 return false;
             }
 
