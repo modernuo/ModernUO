@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Server.Gumps;
 using Server.Items;
@@ -472,7 +471,15 @@ namespace Server.Engines.ConPVP
                     {
                         var eable = Map.GetItemsInRange(point, 0);
 
-                        var empty = eable.All(item => item == this);
+                        var empty = true;
+                        foreach (var item in eable)
+                        {
+                            if (item != this)
+                            {
+                                empty = false;
+                                break;
+                            }
+                        }
 
                         eable.Free();
 

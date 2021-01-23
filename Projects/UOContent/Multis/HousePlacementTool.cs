@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Multis;
@@ -2251,7 +2250,15 @@ namespace Server.Items
 
             if (obj is List<HousePlacementEntry> list)
             {
-                return list.FirstOrDefault(e => e.MultiID == house.ItemID);
+                foreach (var hpe in list)
+                {
+                    if (hpe.MultiID == house.ItemID)
+                    {
+                        return hpe;
+                    }
+                }
+
+                return null;
             }
 
             if (obj is Dictionary<int, HousePlacementEntry> table)

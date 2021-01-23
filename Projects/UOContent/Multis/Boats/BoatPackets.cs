@@ -13,11 +13,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Server.Collections;
 using Server.Network;
 
 namespace Server.Multis.Boats
@@ -25,15 +23,15 @@ namespace Server.Multis.Boats
     public static class BoatPackets
     {
         public static void SendMoveBoatHS(this NetState ns, Mobile beholder, BaseBoat boat,
-            Direction d, int speed, List<IEntity> ents, int xOffset, int yOffset)
+            Direction d, int speed, BaseBoat.MovingEntitiesEnumerable ents, int xOffset, int yOffset)
         {
             if (ns?.HighSeas != true)
             {
                 return;
             }
 
-            var maxLength = 18 + ents.Count * 10;
-            var writer = new SpanWriter(stackalloc byte[maxLength]);
+            var minLength = 68; // 18 + 5 * 10
+            var writer = new SpanWriter(stackalloc byte[minLength], true);
             writer.Write((byte)0xF6); // Packet ID
             writer.Seek(2, SeekOrigin.Current);
 
@@ -71,18 +69,35 @@ namespace Server.Multis.Boats
 
         public static void SendDisplayBoatHS(this NetState ns, Mobile beholder, BaseBoat boat)
         {
-            var ents = boat.GetMovingEntities();
+            if (ns?.HighSeas != true)
+            {
+                return;
+            }
 
-            ents.AddNotNull(boat.TillerMan);
-            ents.AddNotNull(boat.Hold);
-            ents.AddNotNull(boat.PPlank);
-            ents.AddNotNull(boat.SPlank);
+            bool isSA = ns.StygianAbyss;
+            bool isHS = ns.HighSeas;
 
-            ents.Add(boat);
+            var minLength = PacketContainerBuilder.MinPacketLength
+                            + OutgoingEntityPackets.MaxWorldEntityPacketLength
+                            * 5; // Minimum of boat, hold, planks, and the player
 
-            var eable = ents.Where(beholder.CanSee);
+            using var builder = new PacketContainerBuilder(stackalloc byte[minLength]);
 
-            ns.SendBatchEntities(eable, ents.Count);
+            Span<byte> buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength);
+
+            foreach (var entity in boat.GetMovingEntities(true))
+            {
+                if (!beholder.CanSee(entity))
+                {
+                    continue;
+                }
+
+                buffer.InitializePacket();
+                var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, isSA, isHS);
+                builder.Advance(bytesWritten);
+            }
+
+            ns.Send(builder.Finalize());
         }
     }
 }

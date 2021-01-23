@@ -2711,9 +2711,15 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        results = Accounts.GetAccounts()
-                                            .Where(acct => acct.Username.InsensitiveContains(match))
-                                            .ToList();
+                                        results = new List<IAccount>();
+                                        foreach (var acct in Accounts.GetAccounts())
+                                        {
+                                            if (acct.Username.InsensitiveContains(match))
+                                            {
+                                                results.Add(acct);
+                                            }
+                                        }
+
                                         results.Sort(AccountComparer.Instance);
                                     }
 

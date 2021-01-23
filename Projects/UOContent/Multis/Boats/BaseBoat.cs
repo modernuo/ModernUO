@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Server.Collections;
 using Server.Items;
 using Server.Multis.Boats;
@@ -736,11 +738,12 @@ namespace Server.Multis
                 return DryDockResult.Items;
             }
 
-            var ents = GetMovingEntities();
+            using var ents = GetMovingEntities();
+            var enumerator = ents.GetEnumerator();
 
-            if (ents.Count >= 1)
+            if (enumerator.MoveNext())
             {
-                return ents[0] is Mobile ? DryDockResult.Mobiles : DryDockResult.Items;
+                return enumerator.Current is Mobile ? DryDockResult.Mobiles : DryDockResult.Items;
             }
 
             return DryDockResult.Valid;
@@ -1737,11 +1740,8 @@ namespace Server.Multis
             }
             else
             {
-                var toMove = GetMovingEntities();
-                toMove.AddNotNull(TillerMan);
-                toMove.AddNotNull(Hold);
-                toMove.AddNotNull(PPlank);
-                toMove.AddNotNull(SPlank);
+                using var eable = GetMovingEntities(true);
+                var enumerator = eable.GetEnumerator();
 
                 // Packet must be sent before actual locations are changed
                 foreach (var ns in Map.GetClientsInRange(Location, GetMaxUpdateRange()))
@@ -1750,11 +1750,12 @@ namespace Server.Multis
 
                     if (ns.HighSeas && m.CanSee(this) && m.InRange(Location, GetUpdateRange(m)))
                     {
-                        ns.SendMoveBoatHS(m, this, d, clientSpeed, toMove, xOffset, yOffset);
+                        ns.SendMoveBoatHS(m, this, d, clientSpeed, eable, xOffset, yOffset);
+                        eable.Reset();
                     }
                 }
 
-                foreach (var e in toMove)
+                foreach (var e in eable)
                 {
                     if (e is Item item)
                     {
@@ -1775,7 +1776,9 @@ namespace Server.Multis
                 NoMoveHS = true;
                 Location = new Point3D(X + xOffset, Y + yOffset, Z);
 
-                foreach (var e in toMove)
+                eable.Reset();
+
+                foreach (var e in eable)
                 {
                     if (e is Item item)
                     {
@@ -1795,12 +1798,8 @@ namespace Server.Multis
 
         public void Teleport(int xOffset, int yOffset, int zOffset)
         {
-            var toMove = GetMovingEntities();
-
-            for (var i = 0; i < toMove.Count; ++i)
+            foreach (var e in GetMovingEntities())
             {
-                var e = toMove[i];
-
                 if (e is Item item)
                 {
                     item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z + zOffset);
@@ -1814,47 +1813,115 @@ namespace Server.Multis
             Location = new Point3D(X + xOffset, Y + yOffset, Z + zOffset);
         }
 
-        public virtual List<IEntity> GetMovingEntities()
+        public virtual MovingEntitiesEnumerable GetMovingEntities(bool includeBoat = false)
         {
-            var list = new List<IEntity>();
-
             var map = Map;
 
             if (map == null || map == Map.Internal)
             {
-                return list;
+                return new MovingEntitiesEnumerable(this, includeBoat, null);
             }
 
             var mcl = Components;
 
             var eable = map.GetObjectsInBounds(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height));
+            return new MovingEntitiesEnumerable(this, includeBoat, eable);
+        }
 
-            foreach (var o in eable)
+        public ref struct MovingEntitiesEnumerable
+        {
+            private readonly IPooledEnumerable<IEntity> _entities;
+            private readonly IEnumerator<IEntity> _enumerator;
+            private readonly bool _includeBoat;
+            private BaseBoat _boat;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public MovingEntitiesEnumerable(BaseBoat boat, bool includeBoat, IPooledEnumerable<IEntity> entities)
             {
-                if (o == this || o is TillerMan || o is Hold || o is Plank)
-                {
-                    continue;
-                }
-
-                if (o is Item item)
-                {
-                    if (Contains(item) && item.Visible && item.Z >= Z)
-                    {
-                        list.Add(item);
-                    }
-                }
-                else if (o is Mobile m)
-                {
-                    if (Contains(m))
-                    {
-                        list.Add(m);
-                    }
-                }
+                _entities = entities;
+                _enumerator = entities?.GetEnumerator();
+                _boat = boat;
+                _includeBoat = includeBoat;
             }
 
-            eable.Free();
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public MovingEntitiesEnumerator GetEnumerator() => new(_boat, _includeBoat, _enumerator);
 
-            return list;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void Dispose()
+            {
+                _entities?.Free();
+                _enumerator?.Dispose();
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void Reset()
+            {
+                _enumerator?.Reset();
+            }
+        }
+
+        public ref struct MovingEntitiesEnumerator
+        {
+            private readonly IEnumerator<IEntity> _enumerator;
+            private IEntity? _current;
+            private readonly bool _includeBoat;
+            private readonly BaseBoat _boat;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public MovingEntitiesEnumerator(BaseBoat boat, bool includeBoat, IEnumerator<IEntity> enumerator = null)
+            {
+                _enumerator = enumerator;
+                _current = default;
+                _includeBoat = includeBoat;
+                _boat = boat;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public bool MoveNext()
+            {
+                if (_enumerator?.MoveNext() != true)
+                {
+                    return false;
+                }
+
+                var current = _enumerator.Current;
+
+                if (!_includeBoat && (current is TillerMan || current is Hold || current is Plank))
+                {
+                    return false;
+                }
+
+                if (current is Item item)
+                {
+                    if (item == _boat)
+                    {
+                        return false;
+                    }
+
+                    if (_boat.Contains(item) && item.Visible && item.Z >= _boat.Z)
+                    {
+                        _current = current;
+                        return true;
+                    }
+                }
+                else if (current is Mobile m)
+                {
+                    if (_boat.Contains(m))
+                    {
+                        _current = current;
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            public IEntity Current
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _current;
+            }
         }
 
         public bool SetFacing(Direction facing)
@@ -1916,36 +1983,37 @@ namespace Server.Multis
 
             SPlank?.SetFacing(facing);
 
-            var toMove = GetMovingEntities();
-
-            toMove.Add(PPlank);
-            toMove.Add(SPlank);
-
             int xOffset = 0, yOffset = 0;
             Movement.Movement.Offset(facing, ref xOffset, ref yOffset);
 
-            if (TillerMan != null)
-            {
-                TillerMan.Location = new Point3D(
-                    X + xOffset * TillerManDistance + (facing == Direction.North ? 1 : 0),
-                    Y + yOffset * TillerManDistance,
-                    TillerMan.Z
-                );
-            }
-
             if (Hold != null)
             {
-                Hold.Location = new Point3D(X + xOffset * HoldDistance, Y + yOffset * HoldDistance, Hold.Z);
+
             }
 
             var count = (m_Facing - old) & 0x7;
             count /= 2;
 
-            for (var i = 0; i < toMove.Count; ++i)
+            foreach (var e in GetMovingEntities(true))
             {
-                var e = toMove[i];
+                if (e == this)
+                {
+                    continue;
+                }
 
-                if (e is Item item)
+                if (e is TillerMan tiller)
+                {
+                    tiller.Location = new Point3D(
+                        X + xOffset * TillerManDistance + (facing == Direction.North ? 1 : 0),
+                        Y + yOffset * TillerManDistance,
+                        tiller.Z
+                    );
+                }
+                else if (e is Hold hold)
+                {
+                    hold.Location = new Point3D(X + xOffset * HoldDistance, Y + yOffset * HoldDistance, hold.Z);
+                }
+                else if (e is Item item)
                 {
                     item.Location = Rotate(item.Location, count);
                 }

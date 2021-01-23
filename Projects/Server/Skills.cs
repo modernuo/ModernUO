@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Server.Network;
 
 namespace Server
@@ -491,7 +492,7 @@ namespace Server
     }
 
     [PropertyObject]
-    public class Skills : IEnumerable<Skill>
+    public class Skills
     {
         private readonly Skill[] m_Skills;
         private Skill m_Highest;
@@ -805,10 +806,6 @@ namespace Server
         [CommandProperty(AccessLevel.Counselor)]
         public Skill Throwing => this[SkillName.Throwing];
 
-        public Enumerator GetEnumerator() => new(m_Skills);
-        IEnumerator<Skill> IEnumerable<Skill>.GetEnumerator() => GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
         public override string ToString() => "...";
 
         public static bool UseSkill(Mobile from, SkillName name) => UseSkill(from, (int)name);
@@ -896,23 +893,24 @@ namespace Server
             Owner.NetState.SendSkillChange(skill);
         }
 
-        public struct Enumerator : IEnumerator<Skill>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public SkillsEnumerator GetEnumerator() => new(m_Skills);
+
+        public ref struct SkillsEnumerator
         {
             private readonly Skill[] _skills;
             private int _index;
             private Skill _current;
 
-            internal Enumerator(Skill[] skills)
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal SkillsEnumerator(Skill[] skills)
             {
                 _skills = skills;
                 _index = 0;
                 _current = default;
             }
 
-            public void Dispose()
-            {
-            }
-
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
                 Skill[] localList = _skills;
@@ -929,25 +927,10 @@ namespace Server
                 return false;
             }
 
-            public Skill Current => _current!;
-
-            object IEnumerator.Current
+            public Skill Current
             {
-                get
-                {
-                    if (_index == 0 || _index == _skills.Length + 1)
-                    {
-                        throw new InvalidOperationException(nameof(_index));
-                    }
-
-                    return Current;
-                }
-            }
-
-            void IEnumerator.Reset()
-            {
-                _index = 0;
-                _current = default;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _current;
             }
         }
     }
