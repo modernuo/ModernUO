@@ -354,7 +354,7 @@ namespace Server
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public virtual bool Visible
+        public bool Visible
         {
             get => GetFlag(ImplFlag.Visible);
             set
@@ -1251,7 +1251,7 @@ namespace Server
         public bool Deleted => GetFlag(ImplFlag.Deleted);
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-        public virtual Map Map
+        public Map Map
         {
             get => m_Map;
             set
