@@ -5,8 +5,7 @@ namespace Server.Spells.Bushido
 {
     public class HonorableExecution : SamuraiMove
     {
-        private static readonly Dictionary<Mobile, HonorableExecutionInfo> m_Table =
-            new();
+        private static readonly Dictionary<Mobile, HonorableExecutionInfo> m_Table = new();
 
         public override int BaseMana => 0;
         public override double RequiredSkill => 25.0;

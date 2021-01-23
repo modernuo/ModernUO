@@ -9,8 +9,7 @@ namespace Server.Items
     /// </summary>
     public class DefenseMastery : WeaponAbility
     {
-        private static readonly Dictionary<Mobile, DefenseMasteryInfo>
-            m_Table = new();
+        private static readonly Dictionary<Mobile, DefenseMasteryInfo> _table = new();
 
         public override int BaseMana => 30;
 
@@ -18,10 +17,8 @@ namespace Server.Items
         {
             if (GetSkill(from, SkillName.Ninjitsu) < 50.0 && GetSkill(from, SkillName.Bushido) < 50.0)
             {
-                from.SendLocalizedMessage(
-                    1063347,
-                    "50"
-                ); // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
+                // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
+                from.SendLocalizedMessage(1063347, "50");
                 return false;
             }
 
@@ -46,7 +43,7 @@ namespace Server.Items
                       ((Math.Max(attacker.Skills.Bushido.Value, attacker.Skills.Ninjitsu.Value) -
                         50.0) / 70.0));
 
-            if (m_Table.TryGetValue(attacker, out var info))
+            if (_table.TryGetValue(attacker, out var info))
             {
                 EndDefense(info);
             }
@@ -57,14 +54,14 @@ namespace Server.Items
             info = new DefenseMasteryInfo(attacker, 80 - modifier, mod);
             info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3.0), EndDefense, info);
 
-            m_Table[attacker] = info;
+            _table[attacker] = info;
 
             attacker.Delta(MobileDelta.WeaponDamage);
         }
 
         public static bool GetMalus(Mobile targ, ref int damageMalus)
         {
-            if (!m_Table.TryGetValue(targ, out var info))
+            if (!_table.TryGetValue(targ, out var info))
             {
                 return false;
             }
@@ -84,7 +81,7 @@ namespace Server.Items
 
             // No message is sent to the player.
 
-            m_Table.Remove(info.m_From);
+            _table.Remove(info.m_From);
 
             info.m_From.Delta(MobileDelta.WeaponDamage);
         }

@@ -18,10 +18,8 @@ namespace Server.Items
         {
             if (GetSkill(from, SkillName.Bushido) < 50.0)
             {
-                from.SendLocalizedMessage(
-                    1070768,
-                    "50"
-                ); // You need ~1_SKILL_REQUIREMENT~ Bushido skill to perform that attack!
+                // You need ~1_SKILL_REQUIREMENT~ Bushido skill to perform that attack!
+                from.SendLocalizedMessage(1070768, "50");
                 return false;
             }
 

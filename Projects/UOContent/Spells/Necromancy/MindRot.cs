@@ -73,14 +73,13 @@ namespace Server.Spells.Necromancy
 
         public static void ClearMindRotScalar(Mobile m)
         {
-            if (!m_Table.Remove(m, out var tmpB))
+            if (m_Table.Remove(m, out var tmpB))
             {
-                return;
+                tmpB.m_MRExpireTimer.Stop();
+                m.SendLocalizedMessage(1060872); // Your mind feels normal again.
             }
 
             BuffInfo.RemoveBuff(m, BuffIcon.Mindrot);
-            tmpB.m_MRExpireTimer.Stop();
-            m.SendLocalizedMessage(1060872); // Your mind feels normal again.
         }
 
         public static bool HasMindRotScalar(Mobile m) => m_Table.ContainsKey(m);

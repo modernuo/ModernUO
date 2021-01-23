@@ -838,10 +838,9 @@ namespace Server.Spells
 
             public void Add(Mobile m, Timer t)
             {
-                if (m_Contexts.TryGetValue(m, out var oldTimer))
+                if (m_Contexts.Remove(m, out var oldTimer))
                 {
                     oldTimer.Stop();
-                    m_Contexts.Remove(m);
                 }
 
                 m_Contexts.Add(m, t);
@@ -850,6 +849,7 @@ namespace Server.Spells
             public void Remove(Mobile m)
             {
                 m_Contexts.Remove(m);
+                // TODO: Should we stop the timer?
             }
         }
 

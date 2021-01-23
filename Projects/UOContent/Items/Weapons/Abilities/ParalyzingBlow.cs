@@ -13,7 +13,7 @@ namespace Server.Items
 
         public static readonly TimeSpan FreezeDelayDuration = TimeSpan.FromSeconds(8.0);
 
-        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, Timer> _table = new();
 
         public override int BaseMana => 30;
 
@@ -80,40 +80,24 @@ namespace Server.Items
             BeginImmunity(defender, duration + FreezeDelayDuration);
         }
 
-        public static bool IsImmune(Mobile m) => m_Table.ContainsKey(m);
+        public static bool IsImmune(Mobile m) => _table.ContainsKey(m);
 
         public static void BeginImmunity(Mobile m, TimeSpan duration)
         {
-            if (m_Table.TryGetValue(m, out var timer))
+            if (_table.TryGetValue(m, out var timer))
             {
                 timer?.Stop();
             }
 
-            m_Table[m] = timer = new InternalTimer(m, duration);
+            _table[m] = timer = Timer.DelayCall(duration, EndImmunity, m);
             timer.Start();
         }
 
         public static void EndImmunity(Mobile m)
         {
-            if (m_Table.Remove(m, out var timer))
+            if (_table.Remove(m, out var timer))
             {
                 timer?.Stop();
-            }
-        }
-
-        private class InternalTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public InternalTimer(Mobile m, TimeSpan duration) : base(duration)
-            {
-                m_Mobile = m;
-                Priority = TimerPriority.TwoFiftyMS;
-            }
-
-            protected override void OnTick()
-            {
-                EndImmunity(m_Mobile);
             }
         }
     }

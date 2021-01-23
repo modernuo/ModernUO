@@ -78,9 +78,7 @@ namespace Server.Spells.Bushido
             m_Table.TryGetValue(m, out var timer);
             timer?.Stop();
 
-            m_Table[m] = timer = new InternalTimer(m);
-
-            timer.Start();
+            m_Table[m] = Timer.DelayCall(TimeSpan.FromSeconds(30.0), EndCountering, m);
         }
 
         public static void StopCountering(Mobile m)
@@ -93,21 +91,10 @@ namespace Server.Spells.Bushido
             OnEffectEnd(m, typeof(CounterAttack));
         }
 
-        private class InternalTimer : Timer
+        private static void EndCountering(Mobile m)
         {
-            private readonly Mobile m_Mobile;
-
-            public InternalTimer(Mobile m) : base(TimeSpan.FromSeconds(30.0))
-            {
-                m_Mobile = m;
-                Priority = TimerPriority.TwoFiftyMS;
-            }
-
-            protected override void OnTick()
-            {
-                StopCountering(m_Mobile);
-                m_Mobile.SendLocalizedMessage(1063119); // You return to your normal stance.
-            }
+            StopCountering(m);
+            m.SendLocalizedMessage(1063119); // You return to your normal stance.
         }
     }
 }

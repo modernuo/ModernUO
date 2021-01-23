@@ -17,8 +17,7 @@ namespace Server.Spells.Mysticism
             Reagent.SulfurousAsh
         );
 
-        private static readonly Dictionary<Mobile, SpellPlagueContext>
-            m_Table = new();
+        private static readonly Dictionary<Mobile, SpellPlagueTimer> m_Table = new();
 
         public SpellPlagueSpell(Mobile caster, Item scroll = null)
             : base(caster, scroll, m_Info)
@@ -67,16 +66,16 @@ namespace Server.Spells.Mysticism
                 var damage = GetNewAosDamage(33, 1, 5, targeted);
                 SpellHelper.Damage(this, targeted, damage, 0, 0, 0, 0, 0);
 
-                var context = new SpellPlagueContext(this, targeted);
+                var timer = new SpellPlagueTimer(this, targeted);
 
-                if (m_Table.TryGetValue(targeted, out var oldContext))
+                if (m_Table.TryGetValue(targeted, out var oldtimer))
                 {
-                    oldContext.SetNext(context);
+                    oldtimer.SetNext(timer);
                 }
                 else
                 {
-                    m_Table[targeted] = context;
-                    context.Start();
+                    m_Table[targeted] = timer;
+                    timer.StartPlague();
                 }
             }
 
@@ -114,94 +113,86 @@ namespace Server.Spells.Mysticism
             to.FixedParticles(0x3779, 1, 15, 0x251E, 0x43, 7, EffectLayer.Head, 0);
         }
 
-        private class SpellPlagueContext
+        private class SpellPlagueTimer : Timer
         {
             private readonly SpellPlagueSpell m_Owner;
             private readonly Mobile m_Target;
             private int m_Explosions;
             private DateTime m_LastExploded;
-            private SpellPlagueContext m_Next;
-            private Timer m_Timer;
+            private SpellPlagueTimer m_Next;
 
-            public SpellPlagueContext(SpellPlagueSpell owner, Mobile target)
+            public SpellPlagueTimer(SpellPlagueSpell owner, Mobile target) : base(TimeSpan.FromSeconds(8.0))
             {
                 m_Owner = owner;
                 m_Target = target;
             }
 
-            public void SetNext(SpellPlagueContext context)
+            public void SetNext(SpellPlagueTimer timer)
             {
                 if (m_Next == null)
                 {
-                    m_Next = context;
+                    m_Next = timer;
                 }
                 else
                 {
-                    m_Next.SetNext(context);
+                    m_Next.SetNext(timer);
                 }
             }
 
-            public void Start()
+            public void StartPlague()
             {
-                m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(8.0), EndPlague);
-                m_Timer.Start();
-
                 BuffInfo.AddBuff(
                     m_Target,
                     new BuffInfo(BuffIcon.SpellPlague, 1031690, 1080167, TimeSpan.FromSeconds(8.5), m_Target)
                 );
+
+                Start();
             }
 
             public void OnDamage()
             {
-                if (DateTime.Now > m_LastExploded + TimeSpan.FromSeconds(2.0))
+                if (DateTime.Now <= m_LastExploded + TimeSpan.FromSeconds(2.0))
                 {
-                    var exploChance = 90 - m_Explosions * 30;
+                    return;
+                }
 
-                    var resist = m_Target.Skills.MagicResist.Value;
+                var exploChance = 90 - m_Explosions * 30;
 
-                    if (resist >= 70)
+                var resist = m_Target.Skills.MagicResist.Value;
+
+                if (resist >= 70)
+                {
+                    exploChance -= (int)((resist - 70.0) * 3.0 / 10.0);
+                }
+
+                if (exploChance > Utility.Random(100))
+                {
+                    m_Owner.VisualEffect(m_Target);
+
+                    var damage = m_Owner.GetNewAosDamage(15 + m_Explosions * 3, 1, 5, m_Target);
+
+                    m_Explosions++;
+                    m_LastExploded = DateTime.Now;
+
+                    SpellHelper.Damage(m_Owner, m_Target, damage, 0, 0, 0, 0, 0, 100);
+
+                    if (m_Explosions >= 3)
                     {
-                        exploChance -= (int)((resist - 70.0) * 3.0 / 10.0);
-                    }
-
-                    if (exploChance > Utility.Random(100))
-                    {
-                        m_Owner.VisualEffect(m_Target);
-
-                        var damage = m_Owner.GetNewAosDamage(15 + m_Explosions * 3, 1, 5, m_Target);
-
-                        m_Explosions++;
-                        m_LastExploded = DateTime.Now;
-
-                        SpellHelper.Damage(m_Owner, m_Target, damage, 0, 0, 0, 0, 0, 100);
-
-                        if (m_Explosions >= 3)
-                        {
-                            EndPlague();
-                        }
+                        EndPlague();
                     }
                 }
             }
 
-            private void EndPlague()
+            public void EndPlague(bool restart = true)
             {
-                EndPlague(true);
-            }
-
-            public void EndPlague(bool restart)
-            {
-                m_Timer?.Stop();
-
                 if (restart && m_Next != null)
                 {
                     m_Table[m_Target] = m_Next;
-                    m_Next.Start();
+                    m_Next.StartPlague();
                 }
                 else
                 {
                     m_Table.Remove(m_Target);
-
                     BuffInfo.RemoveBuff(m_Target, BuffIcon.SpellPlague);
                 }
             }

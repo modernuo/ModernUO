@@ -24,9 +24,7 @@ namespace Server
         private static readonly Queue<Timer> m_Queue = new();
 
         private static int m_QueueCountAtSlice;
-        private readonly int m_Count;
         private long m_Delay;
-        private int m_Index;
         private long m_Interval;
         private List<Timer> m_List;
         private long m_Next;
@@ -44,7 +42,7 @@ namespace Server
         {
             m_Delay = (long)delay.TotalMilliseconds;
             m_Interval = (long)interval.TotalMilliseconds;
-            m_Count = count;
+            Count = count;
 
             if (!m_PrioritySet)
             {
@@ -93,6 +91,10 @@ namespace Server
             get => TimeSpan.FromMilliseconds(m_Interval);
             set => m_Interval = (long)value.TotalMilliseconds;
         }
+
+        public int Index { get; private set; }
+
+        public int Count { get; }
 
         public bool Running
         {
@@ -365,7 +367,7 @@ namespace Server
                         if (tce.m_IsAdd)
                         {
                             timer.m_Next = curTicks + timer.m_Delay;
-                            timer.m_Index = 0;
+                            timer.Index = 0;
                         }
 
                         if (newIndex >= 0)
@@ -425,7 +427,7 @@ namespace Server
                                     m_Queue.Enqueue(t);
                                 }
 
-                                if (t.m_Count != 0 && ++t.m_Index >= t.m_Count)
+                                if (t.Count != 0 && ++t.Index >= t.Count)
                                 {
                                     t.Stop();
                                 }

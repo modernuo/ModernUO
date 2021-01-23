@@ -8,7 +8,7 @@ namespace Server.Items
     /// </summary>
     public class Block : WeaponAbility
     {
-        private static readonly Dictionary<Mobile, BlockInfo> m_Table = new();
+        private static readonly Dictionary<Mobile, InternalTimer> _table = new();
 
         public override int BaseMana => 30;
 
@@ -16,10 +16,8 @@ namespace Server.Items
         {
             if (GetSkill(from, SkillName.Ninjitsu) < 50.0 && GetSkill(from, SkillName.Bushido) < 50.0)
             {
-                from.SendLocalizedMessage(
-                    1063347,
-                    "50"
-                ); // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
+                // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
+                from.SendLocalizedMessage(1063347, "50");
                 return false;
             }
 
@@ -50,7 +48,7 @@ namespace Server.Items
 
         public static bool GetBonus(Mobile targ, ref int bonus)
         {
-            if (!m_Table.TryGetValue(targ, out var info))
+            if (!_table.TryGetValue(targ, out var info))
             {
                 return false;
             }
@@ -62,35 +60,25 @@ namespace Server.Items
         public static void BeginBlock(Mobile m, int bonus)
         {
             EndBlock(m);
-            m_Table[m] = new BlockInfo(m, bonus);
+            _table[m] = new InternalTimer(m, bonus);
         }
 
         public static void EndBlock(Mobile m)
         {
-            if (m_Table.Remove(m, out var info))
+            if (_table.Remove(m, out var timer))
             {
-                info.m_Timer?.Stop();
-            }
-        }
-
-        private class BlockInfo
-        {
-            public readonly int m_Bonus;
-            public readonly Timer m_Timer;
-
-            public BlockInfo(Mobile target, int bonus)
-            {
-                m_Bonus = bonus;
-                m_Timer = new InternalTimer(target);
+                timer?.Stop();
             }
         }
 
         private class InternalTimer : Timer
         {
             private readonly Mobile m_Mobile;
+            public readonly int m_Bonus;
 
-            public InternalTimer(Mobile m) : base(TimeSpan.FromSeconds(6.0))
+            public InternalTimer(Mobile m, int bonus) : base(TimeSpan.FromSeconds(6.0))
             {
+                m_Bonus = bonus;
                 m_Mobile = m;
                 Priority = TimerPriority.TwoFiftyMS;
             }

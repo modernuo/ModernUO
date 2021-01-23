@@ -62,17 +62,19 @@ namespace Server.Spells.Sixth
 
                 var duration = TimeSpan.FromSeconds(1.2 * Caster.Skills.Magery.Fixed / 10);
 
-                Timer t = new InternalTimer(m, duration);
-
                 BuffInfo.RemoveBuff(m, BuffIcon.HidingAndOrStealth);
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825, duration, m)); // Invisibility/Invisible
 
-                m_Table[m] = t;
-
-                t.Start();
+                m_Table[m] = Timer.DelayCall(duration, EndInvisiblity, m);
             }
 
             FinishSequence();
+        }
+
+        private static void EndInvisiblity(Mobile m)
+        {
+            m.RevealingAction();
+            RemoveTimer(m);
         }
 
         public override bool CheckCast()
@@ -98,23 +100,6 @@ namespace Server.Spells.Sixth
             if (m_Table.Remove(m, out var t))
             {
                 t.Stop();
-            }
-        }
-
-        private class InternalTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public InternalTimer(Mobile m, TimeSpan duration) : base(duration)
-            {
-                Priority = TimerPriority.OneSecond;
-                m_Mobile = m;
-            }
-
-            protected override void OnTick()
-            {
-                m_Mobile.RevealingAction();
-                RemoveTimer(m_Mobile);
             }
         }
     }

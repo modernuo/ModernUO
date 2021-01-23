@@ -34,7 +34,7 @@ namespace Server.Items
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
-            if (!Validate(attacker))
+            if (!Validate(attacker) || !CheckMana(attacker, true))
             {
                 return;
             }
@@ -57,11 +57,6 @@ namespace Server.Items
             if (mount == null && !AnimalForm.UnderTransformation(defender))
             {
                 attacker.SendLocalizedMessage(1060848); // This attack only works on mounted targets
-                return;
-            }
-
-            if (!CheckMana(attacker, true))
-            {
                 return;
             }
 
