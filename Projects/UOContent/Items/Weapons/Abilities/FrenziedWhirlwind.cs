@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Server.Mobiles;
 using Server.Spells;
 
 namespace Server.Items
@@ -12,8 +13,7 @@ namespace Server.Items
     {
         public override int BaseMana => 30;
 
-        public static Dictionary<Mobile, FrenziedWirlwindTimer> Registry { get; } =
-            new();
+        public static Dictionary<Mobile, FrenziedWirlwindTimer> Registry { get; } = new();
 
         public override bool CheckSkills(Mobile from)
         {
@@ -43,44 +43,44 @@ namespace Server.Items
                 return;
             }
 
-            var targets = attacker.GetMobilesInRange(1)
-                .Where(
-                    m =>
-                        m?.Deleted == false && m != defender && m != attacker &&
-                        SpellHelper.ValidIndirectTarget(attacker, m) &&
-                        m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
-                        attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m)
-                )
-                .ToList();
-
-            if (targets.Count == 0 || !CheckMana(attacker, true))
-            {
-                return;
-            }
-
-            attacker.FixedEffect(0x3728, 10, 15);
-            attacker.PlaySound(0x2A1);
-
             // 5-15 damage
             var amount = (int)(10.0 * ((Math.Max(
                 attacker.Skills.Bushido.Value,
                 attacker.Skills.Ninjitsu.Value
             ) - 50.0) / 70.0 + 5));
 
-            for (var i = 0; i < targets.Count; ++i)
+            bool didEffect = false;
+
+            var eable = attacker.GetMobilesInRange(1);
+            foreach (var m in eable)
             {
-                var m = targets[i];
-                attacker.DoHarmful(m, true);
-
-                if (Registry.TryGetValue(m, out var timer))
+                if (m?.Deleted == false && m != defender && m != attacker &&
+                    SpellHelper.ValidIndirectTarget(attacker, m) &&
+                    m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
+                    attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m))
                 {
-                    timer.Stop();
-                    Registry.Remove(m);
-                }
+                    attacker.DoHarmful(m, true);
 
-                timer = new FrenziedWirlwindTimer(attacker, m, amount);
-                timer.Start();
-                Registry.Add(m, timer);
+                    if (Registry.TryGetValue(m, out var timer))
+                    {
+                        timer.Stop();
+                        Registry.Remove(m);
+                    }
+
+                    timer = new FrenziedWirlwindTimer(attacker, m, amount);
+                    timer.Start();
+                    Registry.Add(m, timer);
+
+                    didEffect = true;
+                }
+            }
+
+            eable.Free();
+
+            if (didEffect)
+            {
+                attacker.FixedEffect(0x3728, 10, 15);
+                attacker.PlaySound(0x2A1);
             }
 
             Timer.DelayCall(TimeSpan.FromSeconds(2.0), RepeatEffect, attacker);
