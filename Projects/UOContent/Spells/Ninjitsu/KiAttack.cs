@@ -6,7 +6,7 @@ namespace Server.Spells.Ninjitsu
 {
     public class KiAttack : NinjaMove
     {
-        private static readonly Dictionary<Mobile, KiAttackInfo> m_Table = new();
+        private static readonly Dictionary<Mobile, KiAttackTimer> m_Table = new();
 
         public override int BaseMana => 25;
         public override double RequiredSkill => 80.0;
@@ -21,10 +21,9 @@ namespace Server.Spells.Ninjitsu
                 return;
             }
 
-            var info = new KiAttackInfo(from);
-            info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(2.0), EndKiAttack, info);
-
-            m_Table[from] = info;
+            var t = new KiAttackTimer(from);
+            m_Table[from] = t;
+            t.Start();
         }
 
         public override bool Validate(Mobile from)
@@ -87,52 +86,42 @@ namespace Server.Spells.Ninjitsu
 
         public override void OnClearMove(Mobile from)
         {
-            if (m_Table.Remove(from, out var info))
+            if (m_Table.Remove(from, out var t))
             {
-                info.m_Timer.Stop();
+                t.Stop();
             }
         }
 
         public static double GetBonus(Mobile from)
         {
-            if (!m_Table.TryGetValue(from, out var info))
+            if (!m_Table.TryGetValue(from, out var t))
             {
                 return 0;
             }
 
-            var xDelta = info.m_Location.X - from.X;
-            var yDelta = info.m_Location.Y - from.Y;
+            var xDelta = t.m_Location.X - from.X;
+            var yDelta = t.m_Location.Y - from.Y;
 
-            var bonus = Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
-
-            if (bonus > 20.0)
-            {
-                bonus = 20.0;
-            }
-
-            return bonus;
+            return Math.Min(Math.Sqrt(xDelta * xDelta + yDelta * yDelta), 20.0);
         }
 
-        private static void EndKiAttack(KiAttackInfo info)
-        {
-            info.m_Timer?.Stop();
-
-            ClearCurrentMove(info.m_Mobile);
-            info.m_Mobile.SendLocalizedMessage(1063102); // You failed to complete your Ki Attack in time.
-
-            m_Table.Remove(info.m_Mobile);
-        }
-
-        private class KiAttackInfo
+        private class KiAttackTimer : Timer
         {
             public readonly Mobile m_Mobile;
             public Point3D m_Location;
-            public Timer m_Timer;
 
-            public KiAttackInfo(Mobile m)
+            public KiAttackTimer(Mobile m) : base(TimeSpan.FromSeconds(2.0))
             {
                 m_Mobile = m;
                 m_Location = m.Location;
+            }
+
+            protected override void OnTick()
+            {
+                ClearCurrentMove(m_Mobile);
+                m_Mobile.SendLocalizedMessage(1063102); // You failed to complete your Ki Attack in time.
+
+                m_Table.Remove(m_Mobile);
             }
         }
     }

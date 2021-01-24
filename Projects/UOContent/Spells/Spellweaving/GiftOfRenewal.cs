@@ -12,7 +12,7 @@ namespace Server.Spells.Spellweaving
             -1
         );
 
-        private static readonly Dictionary<Mobile, GiftOfRenewalInfo> m_Table = new();
+        private static readonly Dictionary<Mobile, GiftOfRenewalTimer> m_Table = new();
 
         public GiftOfRenewalSpell(Mobile caster, Item scroll = null)
             : base(caster, scroll, m_Info)
@@ -59,29 +59,19 @@ namespace Server.Spells.Spellweaving
                     var skill = Caster.Skills.Spellweaving.Value;
 
                     var hitsPerRound = 5 + (int)(skill / 24) + FocusLevel;
-                    var duration = TimeSpan.FromSeconds(30 + FocusLevel * 10);
+                    var duration = 30 + FocusLevel * 10;
 
-                    var info = new GiftOfRenewalInfo(Caster, m, hitsPerRound);
+                    var t = new GiftOfRenewalTimer(Caster, m, hitsPerRound, duration);
 
-                    Timer.DelayCall(
-                        duration,
-                        () =>
-                        {
-                            if (StopEffect(m))
-                            {
-                                m.PlaySound(0x455);
-                                m.SendLocalizedMessage(1075071); // The Gift of Renewal has faded.
-                            }
-                        }
-                    );
+                    m_Table[m] = t;
 
-                    m_Table[m] = info;
+                    t.Start();
 
                     Caster.BeginAction<GiftOfRenewalSpell>();
 
                     BuffInfo.AddBuff(
                         m,
-                        new BuffInfo(BuffIcon.GiftOfRenewal, 1031602, 1075797, duration, m, hitsPerRound.ToString())
+                        new BuffInfo(BuffIcon.GiftOfRenewal, 1031602, 1075797, TimeSpan.FromSeconds(duration), m, hitsPerRound.ToString())
                     );
                 }
             }
@@ -96,48 +86,43 @@ namespace Server.Spells.Spellweaving
 
         public static bool StopEffect(Mobile m)
         {
-            if (!m_Table.Remove(m, out var info))
-            {
-                return false;
-            }
-
-            info.m_Timer.Stop();
             BuffInfo.RemoveBuff(m, BuffIcon.GiftOfRenewal);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(60), info.m_Caster.EndAction<GiftOfRenewalSpell>);
+            if (m_Table.Remove(m, out var timer))
+            {
+                timer.Stop();
+                Timer.DelayCall(TimeSpan.FromSeconds(60), timer.m_Caster.EndAction<GiftOfRenewalSpell>);
+                return true;
+            }
 
-            return true;
+            return false;
         }
 
-        private class GiftOfRenewalInfo
+        private class GiftOfRenewalTimer : Timer
         {
             public readonly Mobile m_Caster;
             public readonly int m_HitsPerRound;
             public readonly Mobile m_Mobile;
-            public readonly InternalTimer m_Timer;
 
-            public GiftOfRenewalInfo(Mobile caster, Mobile mobile, int hitsPerRound)
+            internal GiftOfRenewalTimer(Mobile caster, Mobile mobile, int hitsPerRound, int duration)
+                : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0), duration / 2)
             {
                 m_Caster = caster;
                 m_Mobile = mobile;
                 m_HitsPerRound = hitsPerRound;
-
-                m_Timer = new InternalTimer(this);
-                m_Timer.Start();
             }
-        }
-
-        private class InternalTimer : Timer
-        {
-            private readonly GiftOfRenewalInfo m_GiftInfo;
-
-            public InternalTimer(GiftOfRenewalInfo info)
-                : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0)) =>
-                m_GiftInfo = info;
 
             protected override void OnTick()
             {
-                var m = m_GiftInfo.m_Mobile;
+                if (Index + 1 == Count)
+                {
+                    StopEffect(m_Mobile);
+                    m_Mobile.PlaySound(0x455);
+                    m_Mobile.SendLocalizedMessage(1075071); // The Gift of Renewal has faded.
+                    return;
+                }
+
+                var m = m_Mobile;
 
                 if (!m_Table.ContainsKey(m))
                 {
@@ -157,9 +142,9 @@ namespace Server.Spells.Spellweaving
                     return;
                 }
 
-                var toHeal = m_GiftInfo.m_HitsPerRound;
+                var toHeal = m_HitsPerRound;
 
-                SpellHelper.Heal(toHeal, m, m_GiftInfo.m_Caster);
+                SpellHelper.Heal(toHeal, m, m_Caster);
                 m.FixedParticles(0x376A, 9, 32, 5005, EffectLayer.Waist);
             }
         }

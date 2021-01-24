@@ -14,7 +14,7 @@ namespace Server.Items
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
-            if (!Validate(attacker))
+            if (!Validate(attacker) || !CheckMana(attacker, true))
             {
                 return;
             }
@@ -29,11 +29,6 @@ namespace Server.Items
             }
 
             if (!(attacker.Weapon is BaseWeapon weapon))
-            {
-                return;
-            }
-
-            if (!CheckMana(attacker, true))
             {
                 return;
             }

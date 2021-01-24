@@ -19,7 +19,7 @@ namespace Server.Spells.Seventh
             Reagent.MandrakeRoot
         );
 
-        private static readonly Dictionary<Mobile, InternalTimer> m_Timers = new();
+        private static readonly Dictionary<Mobile, Timer> m_Table = new();
 
         private readonly int m_NewBody;
 
@@ -29,45 +29,47 @@ namespace Server.Spells.Seventh
 
         public override bool CheckCast()
         {
-            /*if (Caster.Mounted)
+            var caster = Caster;
+
+            /*if (caster.Mounted)
             {
-              Caster.SendLocalizedMessage( 1042561 ); //Please dismount first.
+              caster.SendLocalizedMessage( 1042561 ); //Please dismount first.
               return false;
             }
             else */
-            if (Sigil.ExistsOn(Caster))
+            if (Sigil.ExistsOn(caster))
             {
-                Caster.SendLocalizedMessage(1010521); // You cannot polymorph while you have a Town Sigil
+                caster.SendLocalizedMessage(1010521); // You cannot polymorph while you have a Town Sigil
                 return false;
             }
 
-            if (TransformationSpellHelper.UnderTransformation(Caster))
+            if (TransformationSpellHelper.UnderTransformation(caster))
             {
-                Caster.SendLocalizedMessage(1061633); // You cannot polymorph while in that form.
+                caster.SendLocalizedMessage(1061633); // You cannot polymorph while in that form.
                 return false;
             }
 
-            if (DisguiseTimers.IsDisguised(Caster))
+            if (DisguiseTimers.IsDisguised(caster))
             {
-                Caster.SendLocalizedMessage(502167); // You cannot polymorph while disguised.
+                caster.SendLocalizedMessage(502167); // You cannot polymorph while disguised.
                 return false;
             }
 
-            if (Caster.BodyMod == 183 || Caster.BodyMod == 184)
+            if (caster.BodyMod == 183 || caster.BodyMod == 184)
             {
-                Caster.SendLocalizedMessage(1042512); // You cannot polymorph while wearing body paint
+                caster.SendLocalizedMessage(1042512); // You cannot polymorph while wearing body paint
                 return false;
             }
 
-            if (!Caster.CanBeginAction<PolymorphSpell>())
+            if (!caster.CanBeginAction<PolymorphSpell>())
             {
                 if (Core.ML)
                 {
-                    EndPolymorph(Caster);
+                    EndPolymorph(caster);
                 }
                 else
                 {
-                    Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                    caster.SendLocalizedMessage(1005559); // This spell is already in effect.
                 }
 
                 return false;
@@ -75,9 +77,9 @@ namespace Server.Spells.Seventh
 
             if (m_NewBody == 0)
             {
-                var gump = Core.SE ? (Gump)new NewPolymorphGump(Caster, Scroll) : new PolymorphGump(Caster, Scroll);
+                var gump = Core.SE ? (Gump)new NewPolymorphGump(caster, Scroll) : new PolymorphGump(caster, Scroll);
 
-                Caster.SendGump(gump);
+                caster.SendGump(gump);
                 return false;
             }
 
@@ -86,51 +88,67 @@ namespace Server.Spells.Seventh
 
         public override void OnCast()
         {
-            /*if (Caster.Mounted)
+            var caster = Caster;
+
+            /*if (caster.Mounted)
             {
-              Caster.SendLocalizedMessage( 1042561 ); //Please dismount first.
-            }
-            else */
-            if (Sigil.ExistsOn(Caster))
+              caster.SendLocalizedMessage(1042561); // Please dismount first.
+              return;
+            }*/
+
+            if (Sigil.ExistsOn(caster))
             {
-                Caster.SendLocalizedMessage(1010521); // You cannot polymorph while you have a Town Sigil
+                caster.SendLocalizedMessage(1010521); // You cannot polymorph while you have a Town Sigil
+                return;
             }
-            else if (!Caster.CanBeginAction<PolymorphSpell>())
+
+            if (!caster.CanBeginAction<PolymorphSpell>())
             {
                 if (Core.ML)
                 {
-                    EndPolymorph(Caster);
+                    EndPolymorph(caster);
                 }
                 else
                 {
-                    Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                    caster.SendLocalizedMessage(1005559); // This spell is already in effect.
                 }
+
+                return;
             }
-            else if (TransformationSpellHelper.UnderTransformation(Caster))
+
+            if (TransformationSpellHelper.UnderTransformation(caster))
             {
-                Caster.SendLocalizedMessage(1061633); // You cannot polymorph while in that form.
+                caster.SendLocalizedMessage(1061633); // You cannot polymorph while in that form.
+                return;
             }
-            else if (DisguiseTimers.IsDisguised(Caster))
+
+            if (DisguiseTimers.IsDisguised(caster))
             {
-                Caster.SendLocalizedMessage(502167); // You cannot polymorph while disguised.
+                caster.SendLocalizedMessage(502167); // You cannot polymorph while disguised.
+                return;
             }
-            else if (Caster.BodyMod == 183 || Caster.BodyMod == 184)
+
+            if (caster.BodyMod == 183 || caster.BodyMod == 184)
             {
-                Caster.SendLocalizedMessage(1042512); // You cannot polymorph while wearing body paint
+                caster.SendLocalizedMessage(1042512); // You cannot polymorph while wearing body paint
+                return;
             }
-            else if (!Caster.CanBeginAction<IncognitoSpell>() || Caster.IsBodyMod)
+
+            if (!caster.CanBeginAction<IncognitoSpell>() || caster.IsBodyMod)
             {
                 DoFizzle();
+                return;
             }
-            else if (CheckSequence())
+
+            if (CheckSequence())
             {
-                if (Caster.BeginAction<PolymorphSpell>())
+                if (caster.BeginAction<PolymorphSpell>())
                 {
                     if (m_NewBody != 0)
                     {
                         if (!((Body)m_NewBody).IsHuman)
                         {
-                            var mt = Caster.Mount;
+                            var mt = caster.Mount;
 
                             if (mt != null)
                             {
@@ -138,35 +156,33 @@ namespace Server.Spells.Seventh
                             }
                         }
 
-                        Caster.BodyMod = m_NewBody;
+                        caster.BodyMod = m_NewBody;
 
                         if (m_NewBody == 400 || m_NewBody == 401)
                         {
-                            Caster.HueMod = Caster.Race.RandomSkinHue();
+                            caster.HueMod = caster.Race.RandomSkinHue();
                         }
                         else
                         {
-                            Caster.HueMod = 0;
+                            caster.HueMod = 0;
                         }
 
-                        BaseArmor.ValidateMobile(Caster);
-                        BaseClothing.ValidateMobile(Caster);
+                        BaseArmor.ValidateMobile(caster);
+                        BaseClothing.ValidateMobile(caster);
 
                         if (!Core.ML)
                         {
-                            StopTimer(Caster);
+                            StopTimer(caster);
 
-                            var timer = new InternalTimer(Caster);
+                            var duration = Math.Max((int)caster.Skills.Magery.Value, 120);
 
-                            m_Timers[Caster] = timer;
-
-                            timer.Start();
+                            m_Table[caster] = Timer.DelayCall(TimeSpan.FromSeconds(duration), EndPolymorph, caster);
                         }
                     }
                 }
                 else
                 {
-                    Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                    caster.SendLocalizedMessage(1005559); // This spell is already in effect.
                 }
             }
 
@@ -175,13 +191,10 @@ namespace Server.Spells.Seventh
 
         public static void StopTimer(Mobile m)
         {
-            if (!m_Timers.TryGetValue(m, out var timer))
+            if (m_Table.Remove(m, out var timer))
             {
-                return;
+                timer.Stop();
             }
-
-            timer?.Stop();
-            m_Timers.Remove(m);
         }
 
         private static void EndPolymorph(Mobile m)
@@ -197,31 +210,6 @@ namespace Server.Spells.Seventh
 
             BaseArmor.ValidateMobile(m);
             BaseClothing.ValidateMobile(m);
-        }
-
-        private class InternalTimer : Timer
-        {
-            private readonly Mobile m_Owner;
-
-            public InternalTimer(Mobile owner) : base(TimeSpan.FromSeconds(0))
-            {
-                m_Owner = owner;
-
-                var val = (int)owner.Skills.Magery.Value;
-
-                if (val > 120)
-                {
-                    val = 120;
-                }
-
-                Delay = TimeSpan.FromSeconds(val);
-                Priority = TimerPriority.OneSecond;
-            }
-
-            protected override void OnTick()
-            {
-                EndPolymorph(m_Owner);
-            }
         }
     }
 }

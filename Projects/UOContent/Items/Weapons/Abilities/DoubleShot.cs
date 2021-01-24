@@ -11,10 +11,8 @@ namespace Server.Items
         {
             if (GetSkill(from, SkillName.Ninjitsu) < 50.0 && GetSkill(from, SkillName.Bushido) < 50.0)
             {
-                from.SendLocalizedMessage(
-                    1063347,
-                    "50"
-                ); // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
+                // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
+                from.SendLocalizedMessage(1063347, "50");
                 return false;
             }
 

@@ -13,7 +13,7 @@ namespace Server.Items
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
-            if (!Validate(attacker))
+            if (!Validate(attacker) || !CheckMana(attacker, true))
             {
                 return;
             }
@@ -32,7 +32,7 @@ namespace Server.Items
             {
                 attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
             }
-            else if (CheckMana(attacker, true))
+            else
             {
                 // attacker.SendLocalizedMessage( 1060092 ); // You disarm their weapon!
                 defender.SendLocalizedMessage(1062002); // You can no longer wear your ~1_ARMOR~

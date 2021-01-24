@@ -16,10 +16,8 @@ namespace Server.Items
         {
             if (GetSkill(from, SkillName.Ninjitsu) < 50.0)
             {
-                from.SendLocalizedMessage(
-                    1063352,
-                    "50"
-                ); // You need ~1_SKILL_REQUIREMENT~ Ninjitsu skill to perform that attack!
+                // You need ~1_SKILL_REQUIREMENT~ Ninjitsu skill to perform that attack!
+                from.SendLocalizedMessage(1063352, "50");
                 return false;
             }
 

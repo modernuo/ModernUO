@@ -17,17 +17,17 @@ namespace Server.Items
         {
           if (!base.CheckSkills( from ))
             return false;
-    
+
           if (!(from.Weapon is Fists))
             return true;
-    
+
           Skill skill = from.Skills.ArmsLore;
-    
+
           if (skill?.Base >= 80.0)
             return true;
-    
+
           from.SendLocalizedMessage( 1061812 ); // You lack the required skill in armslore to perform that attack!
-    
+
           return false;
         }*/
 
@@ -43,7 +43,7 @@ namespace Server.Items
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
-            if (!Validate(attacker))
+            if (!Validate(attacker) || !CheckMana(attacker, true))
             {
                 return;
             }
@@ -67,7 +67,7 @@ namespace Server.Items
             {
                 attacker.SendLocalizedMessage(1060849); // Your target is already unarmed!
             }
-            else if (CheckMana(attacker, true))
+            else
             {
                 attacker.SendLocalizedMessage(1060092); // You disarm their weapon!
                 defender.SendLocalizedMessage(1060093); // Your weapon has been disarmed!

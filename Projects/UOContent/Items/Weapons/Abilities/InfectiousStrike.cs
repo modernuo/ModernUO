@@ -23,7 +23,7 @@ namespace Server.Items
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
-            if (!Validate(attacker))
+            if (!Validate(attacker) || !CheckMana(attacker, true))
             {
                 return;
             }
@@ -39,14 +39,8 @@ namespace Server.Items
 
             if (p == null || weapon.PoisonCharges <= 0)
             {
-                attacker.SendLocalizedMessage(
-                    1061141
-                ); // Your weapon must have a dose of poison to perform an infectious strike!
-                return;
-            }
-
-            if (!CheckMana(attacker, true))
-            {
+                // Your weapon must have a dose of poison to perform an infectious strike!
+                attacker.SendLocalizedMessage(1061141);
                 return;
             }
 

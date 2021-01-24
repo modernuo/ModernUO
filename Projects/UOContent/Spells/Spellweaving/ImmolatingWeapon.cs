@@ -12,8 +12,7 @@ namespace Server.Spells.Spellweaving
             -1
         );
 
-        private static readonly Dictionary<BaseWeapon, ImmolatingWeaponEntry> m_WeaponDamageTable =
-            new();
+        private static readonly Dictionary<BaseWeapon, ImmolatingWeaponTimer> m_Table = new();
 
         public ImmolatingWeaponSpell(Mobile caster, Item scroll = null)
             : base(caster, scroll, m_Info)
@@ -54,9 +53,10 @@ namespace Server.Spells.Spellweaving
                     var duration = 10 + (int)(skill / 24) + FocusLevel;
                     var damage = 5 + (int)(skill / 24) + FocusLevel;
 
-                    var stopTimer = Timer.DelayCall(TimeSpan.FromSeconds(duration), StopImmolating, weapon);
+                    var t = new ImmolatingWeaponTimer(TimeSpan.FromSeconds(duration), damage, Caster, weapon);
+                    m_Table[weapon] = t;
+                    t.Start();
 
-                    m_WeaponDamageTable[weapon] = new ImmolatingWeaponEntry(damage, stopTimer, Caster);
                     weapon.InvalidateProperties();
                 }
             }
@@ -64,60 +64,53 @@ namespace Server.Spells.Spellweaving
             FinishSequence();
         }
 
-        public static bool IsImmolating(BaseWeapon weapon) => m_WeaponDamageTable.ContainsKey(weapon);
+        public static bool IsImmolating(BaseWeapon weapon) => m_Table.ContainsKey(weapon);
 
         public static int GetImmolatingDamage(BaseWeapon weapon) =>
-            m_WeaponDamageTable.TryGetValue(weapon, out var entry) ? entry.m_Damage : 0;
+            m_Table.TryGetValue(weapon, out var entry) ? entry._damage : 0;
 
         public static void DoEffect(BaseWeapon weapon, Mobile target)
         {
-            Timer.DelayCall(TimeSpan.FromSeconds(0.25), FinishEffect, new DelayedEffectEntry(weapon, target));
+            if (m_Table.Remove(weapon, out var timer))
+            {
+                timer.Stop();
+
+                Timer.DelayCall(TimeSpan.FromSeconds(0.25), FinishEffect, target, timer);
+            }
         }
 
-        private static void FinishEffect(DelayedEffectEntry effect)
+        private static void FinishEffect(Mobile target, ImmolatingWeaponTimer timer)
         {
-            if (m_WeaponDamageTable.TryGetValue(effect.m_Weapon, out var entry))
-            {
-                AOS.Damage(effect.m_Target, entry.m_Caster, entry.m_Damage, 0, 100, 0, 0, 0);
-            }
+            AOS.Damage(target, timer._caster, timer._damage, 0, 100, 0, 0, 0);
         }
 
         public static void StopImmolating(BaseWeapon weapon)
         {
-            if (!m_WeaponDamageTable.Remove(weapon, out var entry))
+            if (m_Table.Remove(weapon, out var timer))
             {
-                return;
-            }
+                timer._caster?.PlaySound(0x27);
+                timer.Stop();
 
-            entry.m_Caster?.PlaySound(0x27);
-            entry.m_Timer.Stop();
-
-            weapon.InvalidateProperties();
-        }
-
-        private class ImmolatingWeaponEntry
-        {
-            public readonly Mobile m_Caster;
-            public readonly int m_Damage;
-            public readonly Timer m_Timer;
-
-            public ImmolatingWeaponEntry(int damage, Timer stopTimer, Mobile caster)
-            {
-                m_Damage = damage;
-                m_Timer = stopTimer;
-                m_Caster = caster;
+                weapon.InvalidateProperties();
             }
         }
 
-        private class DelayedEffectEntry
+        private class ImmolatingWeaponTimer : Timer
         {
-            public readonly Mobile m_Target;
-            public readonly BaseWeapon m_Weapon;
+            public readonly Mobile _caster;
+            public readonly int _damage;
+            public readonly BaseWeapon _weapon;
 
-            public DelayedEffectEntry(BaseWeapon weapon, Mobile target)
+            public ImmolatingWeaponTimer(TimeSpan duration, int damage, Mobile caster, BaseWeapon weapon) : base(duration)
             {
-                m_Weapon = weapon;
-                m_Target = target;
+                _damage = damage;
+                _caster = caster;
+                _weapon = weapon;
+            }
+
+            protected override void OnTick()
+            {
+                StopImmolating(_weapon);
             }
         }
     }

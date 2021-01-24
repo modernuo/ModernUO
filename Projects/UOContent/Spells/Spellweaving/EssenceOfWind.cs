@@ -7,7 +7,7 @@ namespace Server.Spells.Spellweaving
     {
         private static readonly SpellInfo m_Info = new("Essence of Wind", "Anathrae", -1);
 
-        private static readonly Dictionary<Mobile, EssenceOfWindInfo> m_Table = new();
+        private static readonly Dictionary<Mobile, EssenceOfWindTimer> m_Table = new();
 
         public EssenceOfWindSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {
@@ -53,7 +53,10 @@ namespace Server.Spells.Spellweaving
                         continue;
                     }
 
-                    m_Table[m] = new EssenceOfWindInfo(m, fcMalus, ssiMalus, duration);
+                    var t = new EssenceOfWindTimer(m, fcMalus, ssiMalus, duration);
+                    t.Start();
+
+                    m_Table[m] = t;
 
                     BuffInfo.AddBuff(
                         m,
@@ -73,58 +76,44 @@ namespace Server.Spells.Spellweaving
             FinishSequence();
         }
 
-        public static int GetFCMalus(Mobile m) => m_Table.TryGetValue(m, out var info) ? info.FCMalus : 0;
+        public static int GetFCMalus(Mobile m) => m_Table.TryGetValue(m, out var timer) ? timer._fcMalus : 0;
 
-        public static int GetSSIMalus(Mobile m) => m_Table.TryGetValue(m, out var info) ? info.SSIMalus : 0;
+        public static int GetSSIMalus(Mobile m) => m_Table.TryGetValue(m, out var timer) ? timer._ssiMalus : 0;
 
         public static bool IsDebuffed(Mobile m) => m_Table.ContainsKey(m);
 
         public static void StopDebuffing(Mobile m, bool message)
         {
-            if (m_Table.TryGetValue(m, out var info))
+            if (m_Table.TryGetValue(m, out var timer))
             {
-                info.Timer.DoExpire(message);
+                timer.DoExpire(message);
             }
         }
 
-        private class EssenceOfWindInfo
+        private class EssenceOfWindTimer : Timer
         {
-            public EssenceOfWindInfo(Mobile defender, int fcMalus, int ssiMalus, TimeSpan duration)
+            private readonly Mobile _defender;
+            internal readonly int _fcMalus;
+            internal readonly int _ssiMalus;
+
+            internal EssenceOfWindTimer(Mobile defender, int fcMalus, int ssiMalus, TimeSpan duration) : base(duration)
             {
-                Defender = defender;
-                FCMalus = fcMalus;
-                SSIMalus = ssiMalus;
-
-                Timer = new ExpireTimer(Defender, duration);
-                Timer.Start();
+                _defender = defender;
+                _fcMalus = fcMalus;
+                _ssiMalus = ssiMalus;
             }
-
-            public Mobile Defender { get; }
-
-            public int FCMalus { get; }
-
-            public int SSIMalus { get; }
-
-            public ExpireTimer Timer { get; }
-        }
-
-        private class ExpireTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public ExpireTimer(Mobile m, TimeSpan delay) : base(delay) => m_Mobile = m;
 
             protected override void OnTick()
             {
-                DoExpire(true);
+                DoExpire();
             }
 
-            public void DoExpire(bool message)
+            internal void DoExpire(bool message = true)
             {
                 Stop();
-                m_Table.Remove(m_Mobile);
+                m_Table.Remove(_defender);
 
-                BuffInfo.RemoveBuff(m_Mobile, BuffIcon.EssenceOfWind);
+                BuffInfo.RemoveBuff(_defender, BuffIcon.EssenceOfWind);
             }
         }
     }

@@ -185,10 +185,8 @@ namespace Server.Items
 
             if (Core.ML && reqTactics && from.Skills.Tactics.Base < reqSkill)
             {
-                from.SendLocalizedMessage(
-                    1079308,
-                    reqSkill.ToString()
-                ); // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
+                // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
+                from.SendLocalizedMessage(1079308, reqSkill.ToString());
                 return false;
             }
 
@@ -208,17 +206,13 @@ namespace Server.Items
 
             if (reqTactics)
             {
-                from.SendLocalizedMessage(
-                    1079308,
-                    reqSkill.ToString()
-                ); // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
+                // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
+                from.SendLocalizedMessage(1079308, reqSkill.ToString());
             }
             else
             {
-                from.SendLocalizedMessage(
-                    1060182,
-                    reqSkill.ToString()
-                ); // You need ~1_SKILL_REQUIREMENT~ weapon skill to perform that attack
+                // You need ~1_SKILL_REQUIREMENT~ weapon skill to perform that attack
+                from.SendLocalizedMessage(1060182, reqSkill.ToString());
             }
 
             return false;
@@ -239,10 +233,8 @@ namespace Server.Items
                     return true;
                 }
 
-                from.SendLocalizedMessage(
-                    1060181,
-                    mana.ToString()
-                ); // You need ~1_MANA_REQUIREMENT~ mana to perform that attack
+                // You need ~1_MANA_REQUIREMENT~ mana to perform that attack
+                from.SendLocalizedMessage(1060181, mana.ToString());
                 return false;
             }
 

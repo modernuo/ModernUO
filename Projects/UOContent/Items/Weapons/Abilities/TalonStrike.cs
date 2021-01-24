@@ -8,7 +8,7 @@ namespace Server.Items
     /// </summary>
     public class TalonStrike : WeaponAbility
     {
-        private static readonly HashSet<Mobile> m_Table = new();
+        private static readonly HashSet<Mobile> _defenders = new();
 
         public override int BaseMana => 30;
         public override double DamageScalar => 1.2;
@@ -17,10 +17,8 @@ namespace Server.Items
         {
             if (GetSkill(from, SkillName.Ninjitsu) < 50.0)
             {
-                from.SendLocalizedMessage(
-                    1063352,
-                    "50"
-                ); // You need ~1_SKILL_REQUIREMENT~ Ninjitsu skill to perform that attack!
+                // You need ~1_SKILL_REQUIREMENT~ Ninjitsu skill to perform that attack!
+                from.SendLocalizedMessage(1063352, "50");
                 return false;
             }
 
@@ -29,7 +27,7 @@ namespace Server.Items
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
-            if (m_Table.Contains(defender) || !Validate(attacker) || !CheckMana(attacker, true))
+            if (_defenders.Contains(defender) || !Validate(attacker) || !CheckMana(attacker, true))
             {
                 return;
             }
@@ -48,7 +46,7 @@ namespace Server.Items
 
             timer.Start();
 
-            m_Table.Add(defender);
+            _defenders.Add(defender);
         }
 
         private class InternalTimer : Timer
@@ -58,12 +56,12 @@ namespace Server.Items
             private double m_DamageRemaining;
             private double m_DamageToDo;
 
-            public InternalTimer(Mobile defender, int totalDamage)
-                : base(
-                    TimeSpan.Zero,
-                    TimeSpan.FromSeconds(0.25),
-                    12
-                ) // 3 seconds at .25 seconds apart = 12.  Confirm delay inbetween of .25 each.
+            // 3 seconds at 0.25 seconds apart = 12.  Confirm delay in between of 0.25 each.
+            public InternalTimer(Mobile defender, int totalDamage) : base(
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(0.25),
+                12
+            )
             {
                 m_Defender = defender;
                 m_DamageRemaining = totalDamage;
@@ -77,7 +75,7 @@ namespace Server.Items
                 if (!m_Defender.Alive || m_DamageRemaining <= 0)
                 {
                     Stop();
-                    m_Table.Remove(m_Defender);
+                    _defenders.Remove(m_Defender);
                     return;
                 }
 
@@ -101,7 +99,7 @@ namespace Server.Items
                 if (!m_Defender.Alive || m_DamageRemaining <= 0)
                 {
                     Stop();
-                    m_Table.Remove(m_Defender);
+                    _defenders.Remove(m_Defender);
                 }
             }
         }

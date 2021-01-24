@@ -14,7 +14,7 @@ namespace Server.Items
     /// </summary>
     public class BleedAttack : WeaponAbility
     {
-        private static readonly Dictionary<Mobile, Timer> m_Table = new();
+        private static readonly Dictionary<Mobile, Timer> _table = new();
 
         public override int BaseMana => 30;
 
@@ -46,9 +46,9 @@ namespace Server.Items
                 defender.NonlocalOverheadMessage(
                     MessageType.Regular,
                     0x21,
-                    1060758,
+                    1060758, // ~1_NAME~ is bleeding profusely
                     defender.Name
-                ); // ~1_NAME~ is bleeding profusely
+                );
             }
 
             defender.PlaySound(0x133);
@@ -57,15 +57,15 @@ namespace Server.Items
             BeginBleed(defender, attacker);
         }
 
-        public static bool IsBleeding(Mobile m) => m_Table.ContainsKey(m);
+        public static bool IsBleeding(Mobile m) => _table.ContainsKey(m);
 
         public static void BeginBleed(Mobile m, Mobile from)
         {
-            m_Table.TryGetValue(m, out var t);
-            t?.Stop();
+            _table.TryGetValue(m, out var timer);
+            timer?.Stop();
 
-            m_Table[m] = t = new InternalTimer(from, m);
-            t.Start();
+            _table[m] = timer = new InternalTimer(from, m);
+            timer.Start();
         }
 
         public static void DoBleed(Mobile m, Mobile from, int level)
@@ -93,7 +93,7 @@ namespace Server.Items
 
         public static void EndBleed(Mobile m, bool message)
         {
-            if (!m_Table.Remove(m, out var t))
+            if (!_table.Remove(m, out var t))
             {
                 return;
             }
@@ -110,9 +110,8 @@ namespace Server.Items
         {
             private readonly Mobile m_From;
             private readonly Mobile m_Mobile;
-            private int m_Count;
 
-            public InternalTimer(Mobile from, Mobile m) : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0))
+            public InternalTimer(Mobile from, Mobile m) : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0), 5)
             {
                 m_From = from;
                 m_Mobile = m;
@@ -121,9 +120,9 @@ namespace Server.Items
 
             protected override void OnTick()
             {
-                DoBleed(m_Mobile, m_From, 5 - m_Count);
+                DoBleed(m_Mobile, m_From, 5 - Index);
 
-                if (++m_Count == 5)
+                if (Index == 4)
                 {
                     EndBleed(m_Mobile, true);
                 }
