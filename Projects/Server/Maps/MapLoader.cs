@@ -13,8 +13,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Text.Json.Serialization;
 using Server.Json;
 
 namespace Server
@@ -24,17 +27,13 @@ namespace Server
         /* Here we configure all maps. Some notes:
          *
          * 1) The first 32 maps are reserved for core use.
-         * 2) Map 0x7F is reserved for core use.
-         * 3) Map 0xFF is reserved for core use.
+         * 2) Map 127 is reserved for core use.
+         * 3) Map 255 is reserved for core use.
          * 4) Changing or removing any predefined maps may cause server instability.
          *
-         * Example of registering a custom map:
-         * RegisterMap( 32, 0, 0, 6144, 4096, 3, "Iceland", MapRules.FeluccaRules );
-         *
-         * Defined:
-         * RegisterMap( <index>, <mapID>, <fileIndex>, <width>, <height>, <season>, <name>, <rules> );
+         * Map definitions are modified in Data/map-definitions.json:
          *  - <index> : An unreserved unique index for this map
-         *  - <mapID> : An identification number used in client communications. For any visible maps, this value must be from 0-5
+         *  - <id> : An identification number used in client communications. For any visible maps, this value must be from 0-5
          *  - <fileIndex> : A file identification number. For any visible maps, this value must be from 0-5
          *  - <width>, <height> : Size of the map (in tiles)
          *  - <season> : Season of the map. 0 = Spring, 1 = Summer, 2 = Fall, 3 = Winter, 4 = Desolation
@@ -43,24 +42,62 @@ namespace Server
          */
         internal static void LoadMaps()
         {
+            var failures = new List<string>();
+            var count = 0;
 
             var path = Path.Combine(Core.BaseDirectory, "Data/map-definitions.json");
+
+            Console.Write("Map Definitions: Loading...");
+
+            var stopwatch = Stopwatch.StartNew();
             var maps = JsonConfig.Deserialize<List<MapDefinition>>(path);
 
             foreach (var def in maps)
             {
-                RegisterMap(def);
+                try
+                {
+                    RegisterMap(def);
+                    count++;
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Console.WriteLine(ex);
+#endif
+                    failures.Add($"\tInvalid map definition {def.Name} ({def.Id})");
+                }
+            }
+
+            stopwatch.Stop();
+
+            Utility.PushColor(failures.Count > 0 ? ConsoleColor.Yellow : ConsoleColor.Green);
+            Console.Write("done{0}. ", failures.Count > 0 ? " with failures" : "");
+            Utility.PopColor();
+            Console.WriteLine(
+                "({0} maps, {1} failures) ({2:F2} seconds)",
+                count,
+                failures.Count,
+                stopwatch.Elapsed.TotalSeconds
+            );
+
+            if (failures.Count > 0)
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine(string.Join(Environment.NewLine, failures));
+                Utility.PopColor();
             }
         }
 
         private static void RegisterMap(MapDefinition mapDefinition)
         {
+            var width = mapDefinition.Width > 0 ? mapDefinition.Width : Map.SectorSize;
+            var height = mapDefinition.Height > 0 ? mapDefinition.Height : Map.SectorSize;
             var newMap = new Map(
                 mapDefinition.Id,
                 mapDefinition.Index,
                 mapDefinition.FileIndex,
-                mapDefinition.Width,
-                mapDefinition.Height,
+                width,
+                height,
                 mapDefinition.Season,
                 mapDefinition.Name,
                 mapDefinition.Rules
@@ -68,6 +105,33 @@ namespace Server
 
             Map.Maps[mapDefinition.Index] = newMap;
             Map.AllMaps.Add(newMap);
+        }
+
+        internal class MapDefinition
+        {
+            [JsonPropertyName("index")]
+            public int Index { get; set; }
+
+            [JsonPropertyName("id")]
+            public int Id { get; set; }
+
+            [JsonPropertyName("fileIndex")]
+            public int FileIndex { get; set; }
+
+            [JsonPropertyName("name")]
+            public string Name { get; set; }
+
+            [JsonPropertyName("width")]
+            public int Width { get; set; }
+
+            [JsonPropertyName("height")]
+            public int Height { get; set; }
+
+            [JsonPropertyName("season")]
+            public int Season { get; set; }
+
+            [JsonPropertyName("rules")]
+            public MapRules Rules { get; set; }
         }
     }
 }

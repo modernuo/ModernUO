@@ -53,20 +53,21 @@ namespace Server
 
             stopwatch.Stop();
 
-            Console.ForegroundColor = failures.Count > 0 ? ConsoleColor.Yellow : ConsoleColor.Green;
+            Utility.PushColor(failures.Count > 0 ? ConsoleColor.Yellow : ConsoleColor.Green);
             Console.Write("done{0}. ", failures.Count > 0 ? " with failures" : "");
-            Console.ResetColor();
+            Utility.PopColor();
             Console.WriteLine(
                 "({0} regions, {1} failures) ({2:F2} seconds)",
                 count,
                 failures.Count,
                 stopwatch.Elapsed.TotalSeconds
             );
+
             if (failures.Count > 0)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(string.Join("\n", failures));
-                Console.ResetColor();
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine(string.Join(Environment.NewLine, failures));
+                Utility.PopColor();
             }
         }
     }
