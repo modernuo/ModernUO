@@ -41,9 +41,6 @@ namespace Server
         private static bool? _isRunningFromXUnit;
 #nullable disable
 
-        private static long _cycleIndex;
-        private static readonly float[] _cyclesPerSecond = new float[127]; // Divisible by long.MaxValue
-
         private static int _itemCount;
         private static int _mobileCount;
         private static EventLoopContext _eventLoopContext;
@@ -154,24 +151,6 @@ namespace Server
         public static CancellationTokenSource ClosingTokenSource { get; } = new();
 
         public static bool Closing => ClosingTokenSource.IsCancellationRequested;
-
-        public static float CyclesPerSecond => _cyclesPerSecond[_cycleIndex % _cyclesPerSecond.Length];
-
-        public static float AverageCPS
-        {
-            get
-            {
-                var total = 0.0f;
-                var count = Math.Min(_cycleIndex + 1, _cyclesPerSecond.Length);
-
-                for (int i = 0; i < count; i++)
-                {
-                    total += _cyclesPerSecond[i];
-                }
-
-                return total / count;
-            }
-        }
 
         public static string Arguments
         {
@@ -493,8 +472,6 @@ namespace Server
                 long last = TickCount;
 
                 const int interval = 100;
-                const float ticksPerSecond = 1000.0f * interval;
-                long sample = 0;
                 int idleCount = 0;
 
                 while (!Closing)
@@ -511,15 +488,6 @@ namespace Server
 
                     // Execute captured post-await methods (like timers)
                     events += _eventLoopContext.ExecuteTasks();
-
-                    if (sample++ % interval == 0)
-                    {
-                        var now = TickCount;
-                        var cyclesPerSecond = ticksPerSecond / (now - last);
-                        _cyclesPerSecond[_cycleIndex % _cyclesPerSecond.Length] = cyclesPerSecond;
-                        _cycleIndex = Math.Max(unchecked(_cycleIndex + 1), 0);
-                        last = now;
-                    }
 
                     if (events > 0)
                     {

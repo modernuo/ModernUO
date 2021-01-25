@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using Server.Accounting;
+using Server.Buffers;
 using Server.Commands;
 using Server.Items;
 using Server.Misc;
@@ -222,11 +223,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.Information_Perf:
                     {
-                        AddLabel(20, 130, LabelHue, "Cycles Per Second:");
-                        AddLabel(40, 150, LabelHue, $"Current: {Core.CyclesPerSecond:N2}");
-                        AddLabel(40, 170, LabelHue, $"Average: {Core.AverageCPS:N2}");
-
-                        var sb = new StringBuilder();
+                        using var sb = new ValueStringBuilder();
 
                         ThreadPool.GetAvailableThreads(out var curUser, out var curIOCP);
                         ThreadPool.GetMaxThreads(out var maxUser, out var maxIOCP);
@@ -646,7 +643,7 @@ namespace Server.Gumps
                             AddLabel(12, 140, LabelHue, "There are no accounts to display.");
                         }
 
-                        var sb = new StringBuilder();
+                        using var sb = new ValueStringBuilder();
 
                         for (int i = 0, index = listPage * 12;
                             i < 12 && index >= 0 && index < sharedAccounts.Count;
@@ -662,10 +659,7 @@ namespace Server.Gumps
                             AddLabelCropped(12, offset, 60, 20, LabelHue, accts.Count.ToString());
                             AddLabelCropped(72, offset, 120, 20, LabelHue, ipAddr.ToString());
 
-                            if (sb.Length > 0)
-                            {
-                                sb.Length = 0;
-                            }
+                            sb.Reset();
 
                             for (var j = 0; j < accts.Count; ++j)
                             {
@@ -1199,7 +1193,7 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 150, GetButtonID(5, 4), "Add Comment");
 
-                        var sb = new StringBuilder();
+                        using var sb = new ValueStringBuilder();
 
                         if (a.Comments.Count == 0)
                         {
@@ -1214,8 +1208,12 @@ namespace Server.Gumps
                             }
 
                             var c = a.Comments[i];
-
-                            sb.AppendFormat("[{0} on {1}]<BR>{2}", c.AddedBy, c.LastModified, c.Content);
+                            sb.Append('[');
+                            sb.Append(c.AddedBy);
+                            sb.Append(" on ");
+                            sb.Append(c.LastModified.ToString());
+                            sb.Append("]<BR>");
+                            sb.Append(c.Content);
                         }
 
                         AddHtml(20, 180, 380, 190, sb.ToString(), true, true);
@@ -1233,7 +1231,7 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 150, GetButtonID(5, 5), "Add Tag");
 
-                        var sb = new StringBuilder();
+                        using var sb = new ValueStringBuilder();
 
                         if (a.Tags.Count == 0)
                         {
@@ -1249,7 +1247,9 @@ namespace Server.Gumps
 
                             var tag = a.Tags[i];
 
-                            sb.AppendFormat("{0} = {1}", tag.Name, tag.Value);
+                            sb.Append(tag.Name);
+                            sb.Append(" = ");
+                            sb.Append(tag.Value);
                         }
 
                         AddHtml(20, 180, 380, 190, sb.ToString(), true, true);
@@ -2917,17 +2917,16 @@ namespace Server.Gumps
 
                                     if (list.Count > 0)
                                     {
-                                        var sb = new StringBuilder();
-
-                                        sb.AppendFormat(
-                                            "You are about to ban {0} account{1}. Do you wish to continue?",
-                                            list.Count,
-                                            list.Count != 1 ? "s" : ""
-                                        );
+                                        using var sb = new ValueStringBuilder();
+                                        sb.Append("You are about to ban ");
+                                        sb.Append(list.Count);
+                                        sb.Append(list.Count != 1 ? "accounts." : "account.");
+                                        sb.Append(" Do you wish to continue?");
 
                                         for (var i = 0; i < list.Count; ++i)
                                         {
-                                            sb.AppendFormat("<br>- {0}", list[i].Username);
+                                            sb.Append("<br>- ");
+                                            sb.Append(list[i].Username);
                                         }
 
                                         from.SendGump(

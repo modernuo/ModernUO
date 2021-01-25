@@ -1391,6 +1391,46 @@ namespace Server
             return (int)(unchecked(((i + (i >> 4)) & 0xF0F0F0F0F0F0F0FUL) * 0x101010101010101UL) >> 56);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountDigits(uint value)
+        {
+            int digits = 1;
+            if (value >= 100000)
+            {
+                value /= 100000;
+                digits += 5;
+            }
 
+            if (value < 10)
+            {
+                // no-op
+            }
+            else if (value < 100)
+            {
+                digits++;
+            }
+            else if (value < 1000)
+            {
+                digits += 2;
+            }
+            else if (value < 10000)
+            {
+                digits += 3;
+            }
+            else
+            {
+                digits += 4;
+            }
+
+            return digits;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint DivRem(uint a, uint b, out uint result)
+        {
+            uint div = a / b;
+            result = a - div * b;
+            return div;
+        }
     }
 }
