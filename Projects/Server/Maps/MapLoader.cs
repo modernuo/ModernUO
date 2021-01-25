@@ -71,10 +71,10 @@ namespace Server
             stopwatch.Stop();
 
             Utility.PushColor(failures.Count > 0 ? ConsoleColor.Yellow : ConsoleColor.Green);
-            Console.Write("done{0}. ", failures.Count > 0 ? " with failures" : "");
+            Console.Write(failures.Count > 0 ? "done with failures" : "done");
             Utility.PopColor();
             Console.WriteLine(
-                "({0} maps, {1} failures) ({2:F2} seconds)",
+                " ({0} maps, {1} failures) ({2:F2} seconds)",
                 count,
                 failures.Count,
                 stopwatch.Elapsed.TotalSeconds
