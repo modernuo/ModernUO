@@ -471,6 +471,7 @@ namespace Server
 
             VerifySerialization();
 
+            MapLoader.LoadMaps();
             AssemblyHandler.Invoke("Configure");
 
             RegionLoader.LoadRegions();
