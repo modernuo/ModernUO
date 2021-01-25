@@ -19,7 +19,7 @@ using Server.Json;
 
 namespace Server
 {
-    public static class MapLoader
+    internal static class MapLoader
     {
         /* Here we configure all maps. Some notes:
          *
@@ -41,7 +41,7 @@ namespace Server
          *  - <name> : Reference name for the map, used in props gump, get/set commands, region loading, etc
          *  - <rules> : Rules and restrictions associated with the map. See documentation for details
          */
-        public static void LoadMaps()
+        internal static void LoadMaps()
         {
 
             var path = Path.Combine(Core.BaseDirectory, "Data/map-definitions.json");

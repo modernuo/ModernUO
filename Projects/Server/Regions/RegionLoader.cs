@@ -22,9 +22,9 @@ using Server.Utilities;
 
 namespace Server
 {
-    public static class RegionLoader
+    internal static class RegionLoader
     {
-        public static void LoadRegions()
+        internal static void LoadRegions()
         {
             var path = Path.Join(Core.BaseDirectory, "Data/regions.json");
 
