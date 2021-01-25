@@ -49,8 +49,25 @@ namespace Server
 
             foreach (var def in maps)
             {
-                Map.RegisterMap(def);
+                RegisterMap(def);
             }
+        }
+
+        private static void RegisterMap(MapDefinition mapDefinition)
+        {
+            var newMap = new Map(
+                mapDefinition.Id,
+                mapDefinition.Index,
+                mapDefinition.FileIndex,
+                mapDefinition.Width,
+                mapDefinition.Height,
+                mapDefinition.Season,
+                mapDefinition.Name,
+                mapDefinition.Rules
+            );
+
+            Map.Maps[mapDefinition.Index] = newMap;
+            Map.AllMaps.Add(newMap);
         }
     }
 }

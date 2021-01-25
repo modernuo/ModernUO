@@ -384,23 +384,6 @@ namespace Server
 
         public static int MaxLOSDistance { get; set; } = 25;
 
-        public static void RegisterMap(MapDefinition mapDefinition)
-        {
-            var newMap = new Map(
-                mapDefinition.Id,
-                mapDefinition.Index,
-                mapDefinition.FileIndex,
-                mapDefinition.Width,
-                mapDefinition.Height,
-                mapDefinition.Season,
-                mapDefinition.Name,
-                mapDefinition.Rules
-            );
-
-            Maps[mapDefinition.Index] = newMap;
-            AllMaps.Add(newMap);
-        }
-
         public int CompareTo(Map other) => other == null ? -1 : MapID.CompareTo(other.MapID);
 
         public static string[] GetMapNames() => Maps.Where(m => m != null).Select(m => m.Name).ToArray();
