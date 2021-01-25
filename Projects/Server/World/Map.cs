@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Server.Items;
+using Server.Json;
 using Server.Network;
 using Server.Targeting;
 
@@ -287,6 +289,38 @@ namespace Server
 
         private TileMatrix m_Tiles;
 
+        /* Here we configure all maps. Some notes:
+         *
+         * 1) The first 32 maps are reserved for core use.
+         * 2) Map 0x7F is reserved for core use.
+         * 3) Map 0xFF is reserved for core use.
+         * 4) Changing or removing any predefined maps may cause server instability.
+         *
+         * Example of registering a custom map:
+         * RegisterMap( 32, 0, 0, 6144, 4096, 3, "Iceland", MapRules.FeluccaRules );
+         *
+         * Defined:
+         * RegisterMap( <index>, <mapID>, <fileIndex>, <width>, <height>, <season>, <name>, <rules> );
+         *  - <index> : An unreserved unique index for this map
+         *  - <mapID> : An identification number used in client communications. For any visible maps, this value must be from 0-5
+         *  - <fileIndex> : A file identification number. For any visible maps, this value must be from 0-5
+         *  - <width>, <height> : Size of the map (in tiles)
+         *  - <season> : Season of the map. 0 = Spring, 1 = Summer, 2 = Fall, 3 = Winter, 4 = Desolation
+         *  - <name> : Reference name for the map, used in props gump, get/set commands, region loading, etc
+         *  - <rules> : Rules and restrictions associated with the map. See documentation for details
+         */
+        static Map()
+        {
+
+            var path = Path.Combine(Core.BaseDirectory, "Data/map-definitions.json");
+            var maps = JsonConfig.Deserialize<List<MapDefinition>>(path);
+
+            foreach (var def in maps)
+            {
+                RegisterMap(def);
+            }
+        }
+
         public Map(int mapID, int mapIndex, int fileIndex, int width, int height, int season, string name, MapRules rules)
         {
             MapID = mapID;
@@ -383,6 +417,23 @@ namespace Server
         public static int[] InvalidLandTiles { get; set; } = { 0x244 };
 
         public static int MaxLOSDistance { get; set; } = 25;
+
+        public static void RegisterMap(MapDefinition mapDefinition)
+        {
+            var newMap = new Map(
+                mapDefinition.Id,
+                mapDefinition.Index,
+                mapDefinition.FileIndex,
+                mapDefinition.Width,
+                mapDefinition.Height,
+                mapDefinition.Season,
+                mapDefinition.Name,
+                mapDefinition.Rules
+            );
+
+            Maps[mapDefinition.Index] = newMap;
+            AllMaps.Add(newMap);
+        }
 
         public int CompareTo(Map other) => other == null ? -1 : MapID.CompareTo(other.MapID);
 
