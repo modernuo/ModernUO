@@ -78,6 +78,7 @@ namespace Server.Misc
             }
         }
 
+        [CallPriority(99)]
         public static void Configure()
         {
             MaxAccountsPerIP = ServerConfiguration.GetOrUpdateSetting("accountHandler.maxAccountsPerIP", 1);

@@ -2,6 +2,7 @@ namespace Server.Misc
 {
     public static class MapDefinitions
     {
+        [CallPriority(100)]
         public static void Configure()
         {
             /* Here we configure all maps. Some notes:
