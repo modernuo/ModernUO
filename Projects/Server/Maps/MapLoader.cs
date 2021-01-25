@@ -90,14 +90,12 @@ namespace Server
 
         private static void RegisterMap(MapDefinition mapDefinition)
         {
-            var width = mapDefinition.Width > 0 ? mapDefinition.Width : Map.SectorSize;
-            var height = mapDefinition.Height > 0 ? mapDefinition.Height : Map.SectorSize;
             var newMap = new Map(
                 mapDefinition.Id,
                 mapDefinition.Index,
                 mapDefinition.FileIndex,
-                width,
-                height,
+                Math.Max(mapDefinition.Width, Map.SectorSize),
+                Math.Max(mapDefinition.Height, Map.SectorSize),
                 mapDefinition.Season,
                 mapDefinition.Name,
                 mapDefinition.Rules
