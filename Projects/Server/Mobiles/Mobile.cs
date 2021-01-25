@@ -471,9 +471,6 @@ namespace Server
         };
 
         private static readonly Queue<Mobile> m_DeltaQueue = new();
-        private static readonly Queue<Mobile> m_DeltaQueueR = new();
-
-        private static bool _processing;
 
         private static readonly string[] m_GuildTypes =
         {
@@ -7957,50 +7954,49 @@ namespace Server
             if (!m_InDeltaQueue)
             {
                 m_InDeltaQueue = true;
-
-                if (_processing)
-                {
-                    lock (m_DeltaQueueR)
-                    {
-                        m_DeltaQueueR.Enqueue(this);
-
-                        try
-                        {
-                            using (var op = new StreamWriter("delta-recursion.log", true))
-                            {
-                                op.WriteLine("# {0}", DateTime.UtcNow);
-                                op.WriteLine(new StackTrace());
-                                op.WriteLine();
-                            }
-                        }
-                        catch
-                        {
-                            // ignored
-                        }
-                    }
-                }
-                else
-                {
-                    m_DeltaQueue.Enqueue(this);
-                }
+                m_DeltaQueue.Enqueue(this);
             }
         }
 
-        public static void ProcessDeltaQueue()
+        public static int ProcessDeltaQueue()
         {
-            _processing = true;
+            int count = 0;
 
-            while (m_DeltaQueue.TryDequeue(out var m))
+            var limit = m_DeltaQueue.Count;
+
+            while (m_DeltaQueue.Count > 0 && --limit >= 0)
             {
-                m.ProcessDelta();
+                var mob = m_DeltaQueue.Dequeue();
+
+                if (mob == null)
+                {
+                    continue;
+                }
+
+                count++;
+
+                mob.m_InDeltaQueue = false;
+
+                try
+                {
+                    mob.ProcessDelta();
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Console.WriteLine("Process Delta Queue for {0} failed: {1}", mob, ex);
+#endif
+                }
             }
 
-            _processing = false;
-
-            while (m_DeltaQueueR.TryDequeue(out var m))
+            if (m_DeltaQueue.Count > 0)
             {
-                m.ProcessDelta();
+                Utility.PushColor(ConsoleColor.DarkYellow);
+                Console.WriteLine("Warning: {0} mobiles left in delta queue after processing.", m_DeltaQueue.Count);
+                Utility.PopColor();
             }
+
+            return count;
         }
 
         public virtual void OnKillsChange(int oldValue)

@@ -41,8 +41,8 @@ namespace Server.Network
 
         public ClientVersion Version
         {
-            get => m_Version;
-            set => ProtocolChanges = ProtocolChangesByVersion(m_Version = value);
+            get => _version;
+            set => ProtocolChanges = ProtocolChangesByVersion(_version = value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -87,9 +87,9 @@ namespace Server.Network
         public bool NewSecureTrading => HasProtocolChanges(ProtocolChanges.NewSecureTrading);
 
         public bool IsUOTDClient =>
-            (Flags & ClientFlags.UOTD) != 0 || m_Version?.Type == ClientType.UOTD;
+            (Flags & ClientFlags.UOTD) != 0 || _version?.Type == ClientType.UOTD;
 
-        public bool IsSAClient => m_Version?.Type == ClientType.SA;
+        public bool IsSAClient => _version?.Type == ClientType.SA;
 
         private ExpansionInfo m_Expansion;
 

@@ -283,9 +283,6 @@ namespace Server.Network
 
                 m.NetState?.Dispose();
 
-                // TODO: Make this wait one tick so we don't have to call it unnecessarily
-                NetState.ProcessDisposedQueue();
-
                 state.SendClientVersionRequest();
 
                 state.BlockAllPackets = true;
@@ -395,8 +392,8 @@ namespace Server.Network
 
             if (
                 !m_AuthIDWindow.TryGetValue(authID, out var ap) ||
-                state.m_AuthID != 0 && authID != state.m_AuthID ||
-                state.m_AuthID == 0 && authID != state.m_Seed
+                state._authId != 0 && authID != state._authId ||
+                state._authId == 0 && authID != state._seed
             )
             {
                 state.WriteConsole("Invalid client detected, disconnecting");
@@ -445,19 +442,19 @@ namespace Server.Network
             {
                 var si = info[index];
 
-                state.m_AuthID = GenerateAuthID(state);
+                state._authId = GenerateAuthID(state);
 
                 state.SentFirstPacket = false;
-                state.SendPlayServerAck(si, state.m_AuthID);
+                state.SendPlayServerAck(si, state._authId);
             }
         }
 
         public static void LoginServerSeed(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            state.m_Seed = reader.ReadInt32();
+            state._seed = reader.ReadInt32();
             state.Seeded = true;
 
-            if (state.m_Seed == 0)
+            if (state._seed == 0)
             {
                 state.WriteConsole("Invalid client detected, disconnecting");
                 state.Dispose();

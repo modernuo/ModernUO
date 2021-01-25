@@ -17,24 +17,48 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Server.Network
 {
     public class NetworkSocket : ISocket
     {
-        public Socket Connection { get; }
-        public EndPoint LocalEndPoint => Connection.LocalEndPoint;
-        public EndPoint RemoteEndPoint => Connection.RemoteEndPoint;
+        private Socket _connection;
 
-        public NetworkSocket(Socket connection) => Connection = connection;
+        public Socket Connection
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _connection;
+        }
 
+        public EndPoint LocalEndPoint
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _connection.LocalEndPoint;
+        }
+
+        public EndPoint RemoteEndPoint
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _connection.RemoteEndPoint;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public NetworkSocket(Socket connection) => _connection = connection;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Task<int> SendAsync(IList<ArraySegment<byte>> buffers, SocketFlags flags) =>
-            Connection.SendAsync(buffers, flags);
+            _connection.SendAsync(buffers, flags);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Task<int> ReceiveAsync(IList<ArraySegment<byte>> buffers, SocketFlags flags) =>
-            Connection.ReceiveAsync(buffers, flags);
+            _connection.ReceiveAsync(buffers, flags);
 
-        public void Shutdown(SocketShutdown how) => Connection.Shutdown(how);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Shutdown(SocketShutdown how) => _connection.Shutdown(how);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Close() => _connection.Close();
     }
 }

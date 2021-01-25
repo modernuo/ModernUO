@@ -32,5 +32,7 @@ namespace Server.Network
         public Task<int> ReceiveAsync(IList<ArraySegment<byte>> buffer, SocketFlags flags);
 
         public void Shutdown(SocketShutdown how);
+
+        public void Close();
     }
 }

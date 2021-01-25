@@ -30,26 +30,25 @@ namespace Server
 {
     public static class Core
     {
-        private static bool m_Crashed;
-        private static Thread timerThread;
-        private static string m_BaseDirectory;
+        private static bool _crashed;
+        private static Thread _timerThread;
+        private static string _baseDirectory;
 
-        private static bool m_Profiling;
-        private static DateTime m_ProfileStart;
-        private static TimeSpan m_ProfileTime;
+        private static bool _profiling;
+        private static DateTime _profileStart;
+        private static TimeSpan _profileTime;
 #nullable enable
         private static bool? _isRunningFromXUnit;
 #nullable disable
 
-        private static long m_CycleIndex;
-        private static readonly float[] m_CyclesPerSecond = new float[127]; // Divisible by long.MaxValue
+        private static long _cycleIndex;
+        private static readonly float[] _cyclesPerSecond = new float[127]; // Divisible by long.MaxValue
 
-        // private static readonly AutoResetEvent m_Signal = new AutoResetEvent(true);
+        private static int _itemCount;
+        private static int _mobileCount;
+        private static EventLoopContext _eventLoopContext;
 
-        private static int m_ItemCount;
-        private static int m_MobileCount;
-
-        private static readonly Type[] m_SerialTypeArray = { typeof(Serial) };
+        private static readonly Type[] _serialTypeArray = { typeof(Serial) };
 
         public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         public static readonly bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
@@ -57,7 +56,7 @@ namespace Server
         public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
         public static readonly bool Unix = IsDarwin || IsFreeBSD || IsLinux;
 
-        private const string assembliesConfiguration = "Data/assemblies.json";
+        private const string AssembliesConfiguration = "Data/assemblies.json";
 
 #nullable enable
         // TODO: Find a way to get rid of this
@@ -87,29 +86,29 @@ namespace Server
 
         public static bool Profiling
         {
-            get => m_Profiling;
+            get => _profiling;
             set
             {
-                if (m_Profiling == value)
+                if (_profiling == value)
                 {
                     return;
                 }
 
-                m_Profiling = value;
+                _profiling = value;
 
-                if (m_ProfileStart > DateTime.MinValue)
+                if (_profileStart > DateTime.MinValue)
                 {
-                    m_ProfileTime += DateTime.UtcNow - m_ProfileStart;
+                    _profileTime += DateTime.UtcNow - _profileStart;
                 }
 
-                m_ProfileStart = m_Profiling ? DateTime.UtcNow : DateTime.MinValue;
+                _profileStart = _profiling ? DateTime.UtcNow : DateTime.MinValue;
             }
         }
 
         public static TimeSpan ProfileTime =>
-            m_ProfileStart > DateTime.MinValue
-                ? m_ProfileTime + (DateTime.UtcNow - m_ProfileStart)
-                : m_ProfileTime;
+            _profileStart > DateTime.MinValue
+                ? _profileTime + (DateTime.UtcNow - _profileStart)
+                : _profileTime;
 
         public static Assembly Assembly { get; set; }
 
@@ -131,24 +130,24 @@ namespace Server
         {
             get
             {
-                if (m_BaseDirectory == null)
+                if (_baseDirectory == null)
                 {
                     try
                     {
-                        m_BaseDirectory = Assembly.Location;
+                        _baseDirectory = Assembly.Location;
 
-                        if (m_BaseDirectory.Length > 0)
+                        if (_baseDirectory.Length > 0)
                         {
-                            m_BaseDirectory = Path.GetDirectoryName(m_BaseDirectory);
+                            _baseDirectory = Path.GetDirectoryName(_baseDirectory);
                         }
                     }
                     catch
                     {
-                        m_BaseDirectory = "";
+                        _baseDirectory = "";
                     }
                 }
 
-                return m_BaseDirectory;
+                return _baseDirectory;
             }
         }
 
@@ -156,25 +155,23 @@ namespace Server
 
         public static bool Closing => ClosingTokenSource.IsCancellationRequested;
 
-        public static float CyclesPerSecond => m_CyclesPerSecond[m_CycleIndex % m_CyclesPerSecond.Length];
+        public static float CyclesPerSecond => _cyclesPerSecond[_cycleIndex % _cyclesPerSecond.Length];
 
         public static float AverageCPS
         {
             get
             {
                 var total = 0.0f;
-                var count = Math.Min(m_CycleIndex + 1, m_CyclesPerSecond.Length);
+                var count = Math.Min(_cycleIndex + 1, _cyclesPerSecond.Length);
 
                 for (int i = 0; i < count; i++)
                 {
-                    total += m_CyclesPerSecond[i];
+                    total += _cyclesPerSecond[i];
                 }
 
                 return total / count;
             }
         }
-
-        public static bool ConserveCPU { get; private set; }
 
         public static string Arguments
         {
@@ -182,7 +179,7 @@ namespace Server
             {
                 var sb = new StringBuilder();
 
-                if (m_Profiling)
+                if (_profiling)
                 {
                     Utility.Separate(sb, "-profile", " ");
                 }
@@ -195,8 +192,8 @@ namespace Server
 
         public static int GlobalMaxUpdateRange { get; set; } = 24;
 
-        public static int ScriptItems => m_ItemCount;
-        public static int ScriptMobiles => m_MobileCount;
+        public static int ScriptItems => _itemCount;
+        public static int ScriptMobiles => _mobileCount;
 
         public static Expansion Expansion { get; set; }
 
@@ -221,11 +218,6 @@ namespace Server
         public static bool TOL => Expansion >= Expansion.TOL;
 
         public static bool EJ => Expansion >= Expansion.EJ;
-
-        public static void Configure()
-        {
-            ConserveCPU = ServerConfiguration.GetOrUpdateSetting("core.conserveCpu", true);
-        }
 
         public static string FindDataFile(string path, bool throwNotFound = true, bool warnNotFound = false)
         {
@@ -265,7 +257,7 @@ namespace Server
 
             if (e.IsTerminating)
             {
-                m_Crashed = true;
+                _crashed = true;
 
                 var close = false;
 
@@ -355,7 +347,7 @@ namespace Server
 
             World.WaitForWriteCompletion();
 
-            if (!m_Crashed)
+            if (!_crashed)
             {
                 EventSink.InvokeShutdown();
             }
@@ -369,6 +361,10 @@ namespace Server
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
+
+            _eventLoopContext = new EventLoopContext();
+
+            SynchronizationContext.SetSynchronizationContext(_eventLoopContext);
 
             foreach (var a in args)
             {
@@ -420,7 +416,7 @@ namespace Server
             Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
 
             var ttObj = new Timer.TimerThread();
-            timerThread = new Thread(ttObj.TimerMain)
+            _timerThread = new Thread(ttObj.TimerMain)
             {
                 Name = "Timer Thread"
             };
@@ -458,7 +454,7 @@ namespace Server
 
             ServerConfiguration.Load();
 
-            var assemblyPath = Path.Join(BaseDirectory, assembliesConfiguration);
+            var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
             // Load UOContent.dll
             var assemblyFiles = JsonConfig.Deserialize<List<string>>(assemblyPath).ToArray();
@@ -478,7 +474,7 @@ namespace Server
 
             AssemblyHandler.Invoke("Initialize");
 
-            timerThread.Start();
+            _timerThread.Start();
 
             foreach (var m in Map.AllMaps)
             {
@@ -496,37 +492,42 @@ namespace Server
             {
                 long last = TickCount;
 
-                const int sampleInterval = 100;
-                const float ticksPerSecond = 1000.0f * sampleInterval;
-
+                const int interval = 100;
+                const float ticksPerSecond = 1000.0f * interval;
                 long sample = 0;
+                int idleCount = 0;
 
                 while (!Closing)
                 {
-                    Mobile.ProcessDeltaQueue();
-                    Item.ProcessDeltaQueue();
+                    var events = Mobile.ProcessDeltaQueue();
+                    events += Item.ProcessDeltaQueue();
 
-                    Timer.Slice();
+                    events += Timer.Slice();
 
                     // Handle networking
-                    TcpServer.Slice();
-                    NetState.HandleAllReceives();
-                    NetState.FlushAll();
-                    NetState.ProcessDisposedQueue();
+                    events += TcpServer.Slice();
+                    events += NetState.HandleAllReceives();
+                    events += NetState.FlushAll();
 
-                    // Execute other stuff
-                    if (sample++ % sampleInterval != 0)
+                    // Execute captured post-await methods (like timers)
+                    events += _eventLoopContext.ExecuteTasks();
+
+                    if (sample++ % interval == 0)
                     {
+                        var now = TickCount;
+                        var cyclesPerSecond = ticksPerSecond / (now - last);
+                        _cyclesPerSecond[_cycleIndex % _cyclesPerSecond.Length] = cyclesPerSecond;
+                        _cycleIndex = Math.Max(unchecked(_cycleIndex + 1), 0);
+                        last = now;
+                    }
+
+                    if (events > 0)
+                    {
+                        idleCount = 0;
                         continue;
                     }
 
-                    var now = TickCount;
-                    var cyclesPerSecond = ticksPerSecond / (now - last);
-                    m_CyclesPerSecond[m_CycleIndex % m_CyclesPerSecond.Length] = cyclesPerSecond;
-                    m_CycleIndex = Math.Max(unchecked(m_CycleIndex + 1), 0);
-                    last = now;
-
-                    if (ConserveCPU && cyclesPerSecond >= 100)
+                    if (++idleCount > interval)
                     {
                         Thread.Sleep(1);
                     }
@@ -540,8 +541,8 @@ namespace Server
 
         public static void VerifySerialization()
         {
-            m_ItemCount = 0;
-            m_MobileCount = 0;
+            _itemCount = 0;
+            _mobileCount = 0;
 
             var callingAssembly = Assembly.GetCallingAssembly();
 
@@ -567,18 +568,18 @@ namespace Server
 
             if (isItem)
             {
-                Interlocked.Increment(ref m_ItemCount);
+                Interlocked.Increment(ref _itemCount);
             }
             else
             {
-                Interlocked.Increment(ref m_MobileCount);
+                Interlocked.Increment(ref _mobileCount);
             }
 
             StringBuilder warningSb = null;
 
             try
             {
-                if (type.GetConstructor(m_SerialTypeArray) == null)
+                if (type.GetConstructor(_serialTypeArray) == null)
                 {
                     warningSb = new StringBuilder();
                     warningSb.AppendLine("       - No serialization constructor");

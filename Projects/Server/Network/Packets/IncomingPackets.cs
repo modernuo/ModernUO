@@ -106,7 +106,7 @@ namespace Server.Network
                         return -1;
                     }
 
-                    ns.m_Seed = seed;
+                    ns._seed = seed;
                     ns.Seeded = true;
 
                     return 4;
