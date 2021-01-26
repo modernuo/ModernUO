@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using Server.Accounting;
 using Server.Buffers;
@@ -1193,7 +1192,7 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 150, GetButtonID(5, 4), "Add Comment");
 
-                        using var sb = new ValueStringBuilder();
+                        var sb = new ValueStringBuilder();
 
                         if (a.Comments.Count == 0)
                         {
@@ -1218,6 +1217,7 @@ namespace Server.Gumps
 
                         AddHtml(20, 180, 380, 190, sb.ToString(), true, true);
 
+                        sb.Dispose(); // Due to an analyzer bug, we can't use a using
                         goto case AdminGumpPage.AccountDetails;
                     }
                 case AdminGumpPage.AccountDetails_Tags:
@@ -1231,7 +1231,7 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 150, GetButtonID(5, 5), "Add Tag");
 
-                        using var sb = new ValueStringBuilder();
+                        var sb = new ValueStringBuilder();
 
                         if (a.Tags.Count == 0)
                         {
@@ -1254,6 +1254,7 @@ namespace Server.Gumps
 
                         AddHtml(20, 180, 380, 190, sb.ToString(), true, true);
 
+                        sb.Dispose();
                         goto case AdminGumpPage.AccountDetails;
                     }
                 case AdminGumpPage.Firewall:
