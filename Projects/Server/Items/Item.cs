@@ -195,10 +195,7 @@ namespace Server
     {
         public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
         public static readonly List<Item> EmptyItems = new();
-
-        private static readonly List<Item> m_DeltaQueue = new();
-
-        private static bool _processing;
+        private static readonly Queue<Item> m_DeltaQueue = new();
 
         private static int m_OpenSlots;
         private int m_Amount;
@@ -2498,6 +2495,7 @@ namespace Server
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
         public IPooledEnumerable<IEntity> GetObjectsInRange(int range)
@@ -3243,69 +3241,55 @@ namespace Server
             if (!GetFlag(ImplFlag.InQueue))
             {
                 SetFlag(ImplFlag.InQueue, true);
-
-                if (_processing)
-                {
-                    try
-                    {
-                        using var op = new StreamWriter("delta-recursion.log", true);
-                        op.WriteLine("# {0}", DateTime.UtcNow);
-                        op.WriteLine(new StackTrace());
-                        op.WriteLine();
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-                }
-                else
-                {
-                    m_DeltaQueue.Add(this);
-                }
+                m_DeltaQueue.Enqueue(this);
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemDelta(ItemDelta flags)
         {
             m_DeltaFlags &= ~flags;
-
-            if (GetFlag(ImplFlag.InQueue) && m_DeltaFlags == ItemDelta.None)
-            {
-                SetFlag(ImplFlag.InQueue, false);
-
-                if (_processing)
-                {
-                    try
-                    {
-                        using var op = new StreamWriter("delta-recursion.log", true);
-                        op.WriteLine("# {0}", DateTime.UtcNow);
-                        op.WriteLine(new StackTrace());
-                        op.WriteLine();
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-                }
-                else
-                {
-                    m_DeltaQueue.Remove(this);
-                }
-            }
         }
 
-        public static void ProcessDeltaQueue()
+        public static int ProcessDeltaQueue()
         {
-            _processing = true;
+            int count = 0;
 
-            for (var i = 0; i < m_DeltaQueue.Count; i++)
+            var limit = m_DeltaQueue.Count;
+
+            while (m_DeltaQueue.Count > 0 && --limit >= 0)
             {
-                m_DeltaQueue[i].ProcessDelta();
+                var item = m_DeltaQueue.Dequeue();
+
+                if (item == null)
+                {
+                    continue;
+                }
+
+                count++;
+
+                item.SetFlag(ImplFlag.InQueue, false);
+
+                try
+                {
+                    item.ProcessDelta();
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Console.WriteLine("Process Delta Queue for {0} failed: {1}", item, ex);
+#endif
+                }
             }
 
-            m_DeltaQueue.Clear();
+            if (m_DeltaQueue.Count > 0)
+            {
+                Utility.PushColor(ConsoleColor.DarkYellow);
+                Console.WriteLine("Warning: {0} items left in delta queue after processing.", m_DeltaQueue.Count);
+                Utility.PopColor();
+            }
 
-            _processing = false;
+            return count;
         }
 
         public virtual void OnDelete()

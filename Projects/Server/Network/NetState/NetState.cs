@@ -43,23 +43,25 @@ namespace Server.Network
         private static int HuePickerCap = 512;
         private static int MenuCap = 512;
 
-        private static readonly ConcurrentQueue<NetState> m_Disposed = new();
-        private static NetworkState m_NetworkState = NetworkState.ResumeState;
+        private static readonly Queue<NetState> FlushPending = new(2048);
+        private static readonly ConcurrentQueue<NetState> Disposed = new();
+        private static NetworkState NetworkState = NetworkState.ResumeState;
 
         public static NetStateCreatedCallback CreatedCallback { get; set; }
 
-        private readonly string m_ToString;
-        private int m_Disposing;
-        private ClientVersion m_Version;
+        private readonly string _toString;
+        private int _disposing;
+        private ClientVersion _version;
         private byte[] _recvBuffer;
         private byte[] _sendBuffer;
-        private long m_NextCheckActivity;
-        private volatile bool m_Running;
+        private long _nextActivityCheck;
+        private volatile bool _running;
         private volatile DecodePacket _packetDecoder;
         private volatile EncodePacket _packetEncoder;
+        private bool _flushQueued = false;
 
-        internal int m_AuthID;
-        internal int m_Seed;
+        internal int _authId;
+        internal int _seed;
 
         public static void Configure()
         {
@@ -78,7 +80,7 @@ namespace Server.Network
 
         public NetState(ISocket connection)
         {
-            m_Running = false;
+            _running = false;
             Connection = connection;
             Seeded = false;
             Gumps = new List<Gump>();
@@ -89,18 +91,18 @@ namespace Server.Network
             RecvPipe = new Pipe<byte>(_recvBuffer);
             _sendBuffer = GC.AllocateUninitializedArray<byte>(SendPipeSize);
             SendPipe = new Pipe<byte>(_sendBuffer);
-            m_NextCheckActivity = Core.TickCount + 30000;
+            _nextActivityCheck = Core.TickCount + 30000;
 
             try
             {
                 Address = Utility.Intern((Connection?.RemoteEndPoint as IPEndPoint)?.Address);
-                m_ToString = Address?.ToString() ?? "(error)";
+                _toString = Address?.ToString() ?? "(error)";
             }
             catch (Exception ex)
             {
                 TraceException(ex);
                 Address = IPAddress.None;
-                m_ToString = "(error)";
+                _toString = "(error)";
             }
 
             ConnectedOn = DateTime.UtcNow;
@@ -134,7 +136,7 @@ namespace Server.Network
 
         public List<SecureTrade> Trades { get; }
 
-        public bool Running => m_Running;
+        public bool Running => _running;
 
         public bool Seeded { get; set; }
 
@@ -162,9 +164,9 @@ namespace Server.Network
 
         public IAccount Account { get; set; }
 
-        public bool IsDisposing => m_Disposing != 0;
+        public bool IsDisposing => _disposing != 0;
 
-        public int CompareTo(NetState other) => string.CompareOrdinal(m_ToString, other?.m_ToString);
+        public int CompareTo(NetState other) => string.CompareOrdinal(_toString, other?._toString);
 
         public void ValidateAllTrades()
         {
@@ -358,16 +360,16 @@ namespace Server.Network
             this.SendLaunchBrowser(url);
         }
 
-        public override string ToString() => m_ToString;
+        public override string ToString() => _toString;
 
         public static void Pause()
         {
-            NetworkState.Pause(ref m_NetworkState);
+            NetworkState.Pause(ref NetworkState);
         }
 
         public static void Resume()
         {
-            NetworkState.Resume(ref m_NetworkState);
+            NetworkState.Resume(ref NetworkState);
         }
 
         public bool GetSendBuffer(out CircularBuffer<byte> cBuffer)
@@ -403,6 +405,12 @@ namespace Server.Network
                 }
 
                 SendPipe.Writer.Advance((uint)length);
+
+                if (!_flushQueued)
+                {
+                    FlushPending.Enqueue(this);
+                    _flushQueued = true;
+                }
             }
             catch (Exception ex)
             {
@@ -442,7 +450,11 @@ namespace Server.Network
                         result.CopyFrom(buffer.AsSpan(0, length));
                         writer.Advance((uint)length);
 
-                        // Flush at the end of the game loop
+                        if (!_flushQueued)
+                        {
+                            FlushPending.Enqueue(this);
+                            _flushQueued = true;
+                        }
                     }
                     else
                     {
@@ -471,12 +483,12 @@ namespace Server.Network
 
         internal void Start()
         {
-            if (Connection == null || m_Running)
+            if (Connection == null || _running)
             {
                 return;
             }
 
-            m_Running = true;
+            _running = true;
 
             ThreadPool.UnsafeQueueUserWorkItem(RecvTask, null);
             ThreadPool.UnsafeQueueUserWorkItem(SendTask, null);
@@ -488,7 +500,7 @@ namespace Server.Network
 
             try
             {
-                while (m_Running)
+                while (_running)
                 {
                     var result = await reader.Read();
                     if (result.IsClosed)
@@ -505,7 +517,7 @@ namespace Server.Network
 
                     if (bytesWritten > 0)
                     {
-                        m_NextCheckActivity = Core.TickCount + 90000;
+                        _nextActivityCheck = Core.TickCount + 90000;
                         reader.Advance((uint)bytesWritten);
                     }
                 }
@@ -536,9 +548,9 @@ namespace Server.Network
 
             try
             {
-                while (m_Running)
+                while (_running)
                 {
-                    if (m_NetworkState == NetworkState.PauseState)
+                    if (NetworkState == NetworkState.PauseState)
                     {
                         continue;
                     }
@@ -564,7 +576,7 @@ namespace Server.Network
                     DecodePacket(result.Buffer, ref bytesWritten);
 
                     writer.Advance((uint)bytesWritten);
-                    m_NextCheckActivity = Core.TickCount + 90000;
+                    _nextActivityCheck = Core.TickCount + 90000;
 
                     // No need to flush
                 }
@@ -582,19 +594,26 @@ namespace Server.Network
             }
         }
 
-        public static void HandleAllReceives()
+        public static int HandleAllReceives()
         {
+            int count = 0;
+
             foreach (var ns in TcpServer.Instances)
             {
-                ns.HandleReceive();
+                if (ns.HandleReceive())
+                {
+                    count++;
+                }
             }
+
+            return count;
         }
 
-        public void HandleReceive()
+        public bool HandleReceive()
         {
             if (Connection == null)
             {
-                return;
+                return false;
             }
 
             try
@@ -608,7 +627,7 @@ namespace Server.Network
 
                     if (result.IsClosed || result.Length <= 0)
                     {
-                        return;
+                        return false;
                     }
 
                     var bytesProcessed = this.ProcessPacket(result.Buffer);
@@ -620,9 +639,10 @@ namespace Server.Network
                         if (bytesProcessed < 0)
                         {
                             Dispose();
+                            return false;
                         }
 
-                        return;
+                        return true;
                     }
 
                     reader.Advance((uint)bytesProcessed);
@@ -635,6 +655,7 @@ namespace Server.Network
                 TraceException(ex);
 #endif
                 Dispose();
+                return false;
             }
         }
 
@@ -644,19 +665,32 @@ namespace Server.Network
             {
                 SendPipe.Writer.Flush();
             }
+
+            _flushQueued = false;
         }
 
-        public static void FlushAll()
+        public static int FlushAll()
         {
-            foreach (var ns in TcpServer.Instances)
+            int count = 0;
+            while (FlushPending.TryDequeue(out var ns))
             {
                 ns.Flush();
+                count++;
             }
+
+            while (Disposed.TryDequeue(out var ns))
+            {
+                ns.Disconnect();
+                TcpServer.Instances.Remove(ns);
+                count++;
+            }
+
+            return count;
         }
 
         public void CheckAlive(long curTicks)
         {
-            if (Connection != null && m_NextCheckActivity - curTicks < 0)
+            if (Connection != null && _nextActivityCheck - curTicks < 0)
             {
                 WriteConsole("Disconnecting due to inactivity...");
                 Dispose();
@@ -717,7 +751,7 @@ namespace Server.Network
 
         public virtual void Dispose()
         {
-            if (Connection == null || Interlocked.Exchange(ref m_Disposing, 1) != 0)
+            if (Connection == null || Interlocked.CompareExchange(ref _disposing, 1, 0) == 1)
             {
                 return;
             }
@@ -728,59 +762,56 @@ namespace Server.Network
             {
                 Connection.Shutdown(SocketShutdown.Both);
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
                 TraceException(ex);
             }
-            finally
+
+            try
             {
-                m_Disposed.Enqueue(this);
+                Connection.Close();
             }
+            catch (SocketException ex)
+            {
+                TraceException(ex);
+            }
+
+            Disposed.Enqueue(this);
         }
 
-        public static void ProcessDisposedQueue()
+        private void Disconnect()
         {
-            var breakout = 0;
+            _running = false;
+            Connection = null;
 
-            while (breakout++ < 200)
+            RecvPipe.Writer.Flush();
+            RecvPipe.Writer.Close();
+
+            var m = Mobile;
+            var a = Account;
+
+            if (m != null)
             {
-                if (!m_Disposed.TryDequeue(out var ns))
-                {
-                    break;
-                }
+                m.NetState = null;
+                Mobile = null;
+            }
 
-                var m = ns.Mobile;
-                var a = ns.Account;
+            Gumps.Clear();
+            Menus.Clear();
+            HuePickers.Clear();
+            Account = null;
+            ServerInfo = null;
+            CityInfo = null;
 
-                if (m != null)
-                {
-                    m.NetState = null;
-                    ns.Mobile = null;
-                }
+            var count = TcpServer.Instances.Count;
 
-                ns.m_Running = false;
-                ns.Connection = null;
-                ns._recvBuffer = null;
-                ns.RecvPipe = null;
-                ns._sendBuffer = null;
-                ns.SendPipe = null;
-                ns.Gumps.Clear();
-                ns.Menus.Clear();
-                ns.HuePickers.Clear();
-                ns.Account = null;
-                ns.ServerInfo = null;
-                ns.CityInfo = null;
-
-                TcpServer.Instances.Remove(ns);
-
-                if (a != null)
-                {
-                    ns.WriteConsole("Disconnected. [{0} Online] [{1}]", TcpServer.Instances.Count, a);
-                }
-                else
-                {
-                    ns.WriteConsole("Disconnected. [{0} Online]", TcpServer.Instances.Count);
-                }
+            if (a != null)
+            {
+                WriteConsole("Disconnected. [{0} Online] [{1}]", count, a);
+            }
+            else
+            {
+                WriteConsole("Disconnected. [{0} Online]", count);
             }
         }
     }

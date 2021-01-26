@@ -43,8 +43,12 @@ namespace Server.Network
             ns.Send(writer.Span);
         }
 
+        private static readonly byte[] _layoutBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
+        private static readonly byte[] _stringsBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
+        private static readonly byte[] _packBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WritePacked(ref SpanWriter writer, ReadOnlySpan<byte> span)
+        private static void WritePacked(ReadOnlySpan<byte> span, ref SpanWriter writer)
         {
             var length = span.Length;
 
@@ -54,21 +58,38 @@ namespace Server.Network
                 return;
             }
 
-            var wantLength = 1 + span.Length * 1024 / 1000;
+            var wantLength = Zlib.MaxPackSize(length);
+            var packBuffer = _packBuffer;
+            byte[] rentedBuffer = null;
 
-            wantLength += 4095;
-            wantLength &= ~4095;
+            if (wantLength > packBuffer.Length)
+            {
+                packBuffer = rentedBuffer = ArrayPool<byte>.Shared.Rent(wantLength);
+            }
 
-            var packBuffer = ArrayPool<byte>.Shared.Rent(wantLength);
             var packLength = wantLength;
 
-            Zlib.Pack(packBuffer, ref packLength, span, length, ZlibQuality.Default);
+            var error = Zlib.Pack(packBuffer, ref packLength, span, length, ZlibQuality.Default);
+
+            if (error != ZlibError.Okay)
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("Core: Gump compression failed {0}", error);
+                Utility.PopColor();
+
+                writer.Write(4);
+                writer.Write(0);
+                return;
+            }
 
             writer.Write(4 + packLength);
             writer.Write(length);
             writer.Write(packBuffer.AsSpan(0, packLength));
 
-            ArrayPool<byte>.Shared.Return(packBuffer);
+            if (rentedBuffer != null)
+            {
+                ArrayPool<byte>.Shared.Return(rentedBuffer);
+            }
         }
 
         public static void SendDisplayGump(this NetState ns, Gump gump, out int switches, out int entries)
@@ -83,7 +104,57 @@ namespace Server.Network
 
             var packed = ns.Unpack;
 
-            var writer = new SpanWriter(512, true);
+            var layoutWriter = new SpanWriter(_layoutBuffer);
+
+            if (!gump.Draggable)
+            {
+                layoutWriter.Write(Gump.NoMove);
+            }
+
+            if (!gump.Closable)
+            {
+                layoutWriter.Write(Gump.NoClose);
+            }
+
+            if (!gump.Disposable)
+            {
+                layoutWriter.Write(Gump.NoDispose);
+            }
+
+            if (!gump.Resizable)
+            {
+                layoutWriter.Write(Gump.NoResize);
+            }
+
+            var stringsList = new OrderedHashSet<string>(11);
+
+            foreach (var entry in gump.Entries)
+            {
+                entry.AppendTo(ref layoutWriter, stringsList, ref entries, ref switches);
+            }
+
+            var stringsWriter = new SpanWriter(_stringsBuffer);
+
+            foreach (var str in stringsList)
+            {
+                var s = str ?? "";
+                stringsWriter.Write((ushort)s.Length);
+                stringsWriter.WriteBigUni(s);
+            }
+
+            int maxLength;
+            if (packed)
+            {
+                var worstLayoutLength = Zlib.MaxPackSize(layoutWriter.BytesWritten);
+                var worstStringsLength = Zlib.MaxPackSize(stringsWriter.BytesWritten);
+                maxLength = 40 + worstLayoutLength + worstStringsLength;
+            }
+            else
+            {
+                maxLength = 23 + layoutWriter.BytesWritten + stringsWriter.BytesWritten;
+            }
+
+            var writer = new SpanWriter(stackalloc byte[maxLength]);
             writer.Write((byte)(packed ? 0xDD : 0xB0)); // Packet ID
             writer.Seek(2, SeekOrigin.Current);
 
@@ -92,77 +163,26 @@ namespace Server.Network
             writer.Write(gump.X);
             writer.Write(gump.Y);
 
-            var spanWriter = new SpanWriter(512, true);
-
-            if (!gump.Draggable)
-            {
-                spanWriter.Write(Gump.NoMove);
-            }
-
-            if (!gump.Closable)
-            {
-                spanWriter.Write(Gump.NoClose);
-            }
-
-            if (!gump.Disposable)
-            {
-                spanWriter.Write(Gump.NoDispose);
-            }
-
-            if (!gump.Resizable)
-            {
-                spanWriter.Write(Gump.NoResize);
-            }
-
-            var stringsList = new OrderedHashSet<string>(11);
-
-            foreach (var entry in gump.Entries)
-            {
-                entry.AppendTo(ref spanWriter, stringsList, ref entries, ref switches);
-            }
-
             if (packed)
             {
-                spanWriter.Write((byte)0); // Layout text terminator
-                WritePacked(ref writer, spanWriter.Span);
-            }
-            else
-            {
-                writer.Write((ushort)spanWriter.BytesWritten);
-                writer.Write(spanWriter.Span);
-            }
+                layoutWriter.Write((byte)0); // Layout text terminator
+                WritePacked(layoutWriter.Span, ref writer);
 
-            if (packed)
-            {
                 writer.Write(stringsList.Count);
+                WritePacked(stringsWriter.Span, ref writer);
             }
             else
             {
+                writer.Write((ushort)layoutWriter.BytesWritten);
+                writer.Write(layoutWriter.Span);
+
                 writer.Write((ushort)stringsList.Count);
-            }
-
-            spanWriter.Seek(0, SeekOrigin.Begin);
-
-            foreach (var str in stringsList)
-            {
-                var s = str ?? "";
-                spanWriter.Write((ushort)s.Length);
-                spanWriter.WriteBigUni(s);
-            }
-
-            if (packed)
-            {
-                WritePacked(ref writer, spanWriter.Span);
-            }
-            else
-            {
-                writer.Write(spanWriter.Span);
+                writer.Write(stringsWriter.Span);
             }
 
             writer.WritePacketLength();
 
             ns.Send(writer.Span);
-            spanWriter.Dispose(); // Can't use using and refs, so we dispose manually
         }
 
         public static void SendDisplaySignGump(this NetState ns, Serial serial, int gumpId, string unknown, string caption)

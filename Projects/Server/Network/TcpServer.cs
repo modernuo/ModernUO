@@ -151,20 +151,24 @@ namespace Server.Network
             }
         }
 
-        public static void Slice()
+        public static int Slice()
         {
             int count = 0;
+            var limit = m_ConnectedQueue.Count;
 
-            while (count++ < 250)
+            while (m_ConnectedQueue.Count > 0 && --limit >= 0)
             {
                 if (!m_ConnectedQueue.TryDequeue(out var ns))
                 {
                     break;
                 }
 
+                count++;
                 Instances.Add(ns);
                 ns.WriteConsole("Connected. [{0} Online]", Instances.Count);
             }
+
+            return count;
         }
 
         private static async void BeginAcceptingSockets(this TcpListener listener)

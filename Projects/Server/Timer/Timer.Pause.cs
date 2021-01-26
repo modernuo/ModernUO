@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright (C) 2019-2021 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: NetworkState.cs                                                 *
+ * File: Timer.Pause.cs                                                  *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,26 +13,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Runtime.CompilerServices;
-using System.Threading;
 
-namespace Server.Network
+namespace Server
 {
-    public class NetworkState
+    public partial class Timer
     {
-        public static readonly NetworkState PauseState = new(true);
-        public static readonly NetworkState ResumeState = new(false);
+        public class DelayTaskTimer : Timer, INotifyCompletion
+        {
+            private Action _continuation;
+            private bool _complete;
 
-        public bool Paused { get; }
+            internal DelayTaskTimer(TimeSpan delay) : base(delay) => Start();
 
-        internal NetworkState(bool paused) => Paused = paused;
+            protected override void OnTick()
+            {
+                _complete = true;
+                _continuation?.Invoke();
+            }
+
+            public DelayTaskTimer GetAwaiter() => this;
+
+            public bool IsCompleted => _complete;
+
+            public void OnCompleted(Action continuation) => _continuation = continuation;
+
+            public void GetResult()
+            {
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Pause(ref NetworkState state) =>
-            Interlocked.CompareExchange(ref state, PauseState, ResumeState) != PauseState;
+        public static DelayTaskTimer Pause(TimeSpan ms) => new(ms);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Resume(ref NetworkState state) =>
-            Interlocked.CompareExchange(ref state, ResumeState, PauseState) != ResumeState;
+        public static DelayTaskTimer Pause(int ms) => Pause(TimeSpan.FromMilliseconds(ms));
     }
 }
