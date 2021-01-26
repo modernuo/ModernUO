@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -116,8 +117,16 @@ namespace Server
 
         public static Thread Thread { get; private set; }
 
-        // Milliseconds
-        public static long TickCount => Stopwatch.GetTimestamp() * 1000L / Stopwatch.Frequency;
+        [ThreadStatic] private static long _tickCount;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static long GetTicks() => 1000L * Stopwatch.GetTimestamp() / Stopwatch.Frequency;
+
+        public static long TickCount
+        {
+            get => _tickCount == 0 ? GetTicks() : _tickCount;
+            set => _tickCount = value;
+        }
 
         public static bool MultiProcessor { get; private set; }
 
@@ -466,16 +475,15 @@ namespace Server
         {
             try
             {
-                long last = TickCount;
-
                 const int interval = 100;
                 int idleCount = 0;
 
                 while (!Closing)
                 {
+                    _tickCount = TickCount;
+
                     var events = Mobile.ProcessDeltaQueue();
                     events += Item.ProcessDeltaQueue();
-
                     events += Timer.Slice();
 
                     // Handle networking
@@ -483,8 +491,10 @@ namespace Server
                     events += NetState.HandleAllReceives();
                     events += NetState.FlushAll();
 
-                    // Execute captured post-await methods (like timers)
+                    // Execute captured post-await methods (like Timer.Pause)
                     events += _eventLoopContext.ExecuteTasks();
+
+                    _tickCount = 0;
 
                     if (events > 0)
                     {
