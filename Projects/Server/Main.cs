@@ -446,19 +446,16 @@ namespace Server
 
             VerifySerialization();
 
+            MapLoader.LoadMaps();
             AssemblyHandler.Invoke("Configure");
 
+            TileMatrixLoader.LoadTileMatrix();
             RegionLoader.LoadRegions();
             World.Load();
 
             AssemblyHandler.Invoke("Initialize");
 
             _timerThread.Start();
-
-            foreach (var m in Map.AllMaps)
-            {
-                m.Tiles.Force();
-            }
 
             TcpServer.Start();
             EventSink.InvokeServerStarted();

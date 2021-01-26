@@ -1,0 +1,72 @@
+[
+  {
+    "index": 0,
+    "id": 0,
+    "fileIndex": 0,
+    "name": "Felucca",
+    "width": 7168,
+    "height": 4096,
+    "season": 4,
+    "rules": "FeluccaRules"
+  },
+  {
+    "index": 1,
+    "id": 1,
+    "fileIndex": 1,
+    "name": "Trammel",
+    "width": 7168,
+    "height": 4096,
+    "season": 0,
+    "rules": "TrammelRules"
+  },
+  {
+    "index": 2,
+    "id": 2,
+    "fileIndex": 2,
+    "name": "Ilshenar",
+    "width": 2304,
+    "height": 1600,
+    "season": 1,
+    "rules": "TrammelRules"
+  },
+  {
+    "index": 3,
+    "id": 3,
+    "fileIndex": 3,
+    "name": "Malas",
+    "width": 2560,
+    "height": 2048,
+    "season": 1,
+    "rules": "TrammelRules"
+  },
+  {
+    "index": 4,
+    "id": 4,
+    "fileIndex": 4,
+    "name": "Tokuno",
+    "width": 1448,
+    "height": 1448,
+    "season": 1,
+    "rules": "TrammelRules"
+  },
+  {
+    "index": 5,
+    "id": 5,
+    "fileIndex": 5,
+    "name": "TerMur",
+    "width": 1280,
+    "height": 4096,
+    "season": 1,
+    "rules": "TrammelRules"
+  },
+  {
+    "index": 127,
+    "id": 127,
+    "fileIndex": 127,
+    "name": "Internal",
+    "width": -1,
+    "height": -1,
+    "season": 0,
+    "rules": "Internal"
+  }
+]

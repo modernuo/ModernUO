@@ -33,8 +33,13 @@ namespace Server
             }
         }
 
-        // TODO: Use configuration
-        public static bool Enabled { get; set; } = true;
+        public static bool Enabled { get; set; }
+
+        public static void Configure()
+        {
+            // Using this requires the old mapDif files to be present. Only needed to support Clients < 6.0.0.0
+            Enabled = ServerConfiguration.GetOrUpdateSetting("maps.enableTileMatrixPatches", !Core.SE);
+        }
 
         public int LandBlocks { get; }
 
@@ -143,7 +148,7 @@ namespace Server
                     while (pCur < pEnd)
                     {
                         lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add(pCur->m_ID, pCur->m_Z);
-                        pCur = pCur + 1;
+                        pCur += 1;
                     }
 
                     var tiles = new StaticTile[8][][];

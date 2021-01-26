@@ -536,6 +536,12 @@ namespace Server
             List = Array.Empty<MultiTileEntry>();
         }
 
+        public static void Configure()
+        {
+            // OSI Client Patch 7.0.9.0
+            PostHSFormat = ServerConfiguration.GetOrUpdateSetting("maps.enablePostHSMultiComponentFormat", true);
+        }
+
         public static bool PostHSFormat { get; set; }
 
         public Point2D Min => m_Min;

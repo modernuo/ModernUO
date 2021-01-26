@@ -22,9 +22,9 @@ using Server.Utilities;
 
 namespace Server
 {
-    public static class RegionLoader
+    internal static class RegionLoader
     {
-        public static void LoadRegions()
+        internal static void LoadRegions()
         {
             var path = Path.Join(Core.BaseDirectory, "Data/regions.json");
 
@@ -53,20 +53,21 @@ namespace Server
 
             stopwatch.Stop();
 
-            Console.ForegroundColor = failures.Count > 0 ? ConsoleColor.Yellow : ConsoleColor.Green;
-            Console.Write("done{0}. ", failures.Count > 0 ? " with failures" : "");
-            Console.ResetColor();
+            Utility.PushColor(failures.Count > 0 ? ConsoleColor.Yellow : ConsoleColor.Green);
+            Console.Write(failures.Count > 0 ? "done with failures" : "done");
+            Utility.PopColor();
             Console.WriteLine(
-                "({0} regions, {1} failures) ({2:F2} seconds)",
+                " ({0} regions, {1} failures) ({2:F2} seconds)",
                 count,
                 failures.Count,
                 stopwatch.Elapsed.TotalSeconds
             );
+
             if (failures.Count > 0)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(string.Join("\n", failures));
-                Console.ResetColor();
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine(string.Join(Environment.NewLine, failures));
+                Utility.PopColor();
             }
         }
     }
