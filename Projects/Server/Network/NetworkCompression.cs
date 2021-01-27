@@ -8,21 +8,11 @@ namespace Server.Network
     /// </summary>
     public static class NetworkCompression
     {
-        private const int CountIndex = 0;
-        private const int ValueIndex = 1;
-
         // UO packets may not exceed 64kb in length
         public const int BufferSize = 0x10000;
 
-        // Optimal compression ratio is 2 / 8;  worst compression ratio is 11 / 8
-        private const int MinimalCodeLength = 2;
-        private const int MaximalCodeLength = 11;
-
-        // Fixed overhead, in bits, per compression call
-        private const int TerminalCodeLength = 4;
-
         // If our input exceeds this length, we cannot possibly compress it within the buffer
-        private const int DefiniteOverflow = (BufferSize * 8 - TerminalCodeLength) / MinimalCodeLength;
+        private const int DefiniteOverflow = (BufferSize * 8 - 4) / 2;
 
         private static readonly int[] _huffmanTable =
         {

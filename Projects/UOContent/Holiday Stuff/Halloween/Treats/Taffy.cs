@@ -3,12 +3,9 @@
     public class Taffy : CandyCane
     {
         [Constructible]
-        public Taffy(int amount = 1)
-            : base(0x469D) =>
-            Stackable = true;
+        public Taffy(int amount = 1) : base(0x469D) => Stackable = true;
 
-        public Taffy(Serial serial)
-            : base(serial)
+        public Taffy(Serial serial) : base(serial)
         {
         }
 

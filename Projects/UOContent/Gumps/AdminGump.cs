@@ -1344,9 +1344,7 @@ namespace Server.Gumps
 
                                 var loginList = acct.LoginIPs;
 
-                                var contains = false;
-
-                                for (var i = 0; !contains && i < loginList.Length; ++i)
+                                for (var i = 0; i < loginList.Length; ++i)
                                 {
                                     if (firewallEntry.IsBlocked(loginList[i]))
                                     {
@@ -2531,7 +2529,7 @@ namespace Server.Gumps
                                 {
                                     index -= 2;
 
-                                    if (m_List != null && index >= 0 && index < m_List.Count)
+                                    if (m_List != null && index < m_List.Count)
                                     {
                                         if (!(m_List[index] is NetState ns))
                                         {

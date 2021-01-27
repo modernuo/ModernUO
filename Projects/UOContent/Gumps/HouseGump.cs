@@ -221,14 +221,8 @@ namespace Server.Gumps
 
             var isCombatRestricted = house.IsCombatRestricted(from);
 
-            var isOwner = m_House.IsOwner(from);
-            var isCoOwner = isOwner || m_House.IsCoOwner(from);
-            var isFriend = isCoOwner || m_House.IsFriend(from);
-
-            if (isCombatRestricted)
-            {
-                isFriend = isCoOwner = isOwner = false;
-            }
+            var isFriend = !isCombatRestricted &&
+                           (m_House.IsOwner(from) || m_House.IsCoOwner(from) || m_House.IsFriend(from));
 
             AddPage(0);
 

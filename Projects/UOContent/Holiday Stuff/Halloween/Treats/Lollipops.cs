@@ -4,12 +4,9 @@
     public class Lollipops : CandyCane
     {
         [Constructible]
-        public Lollipops(int amount = 1)
-            : base(0x468D + Utility.Random(3)) =>
-            Stackable = true;
+        public Lollipops(int amount = 1) : base(0x468D + Utility.Random(3)) => Stackable = true;
 
-        public Lollipops(Serial serial)
-            : base(serial)
+        public Lollipops(Serial serial) : base(serial)
         {
         }
 

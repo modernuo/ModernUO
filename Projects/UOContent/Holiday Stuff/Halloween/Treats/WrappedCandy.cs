@@ -3,12 +3,9 @@
     public class WrappedCandy : CandyCane
     {
         [Constructible]
-        public WrappedCandy(int amount = 1)
-            : base(0x469e) =>
-            Stackable = true;
+        public WrappedCandy(int amount = 1) : base(0x469e) => Stackable = true;
 
-        public WrappedCandy(Serial serial)
-            : base(serial)
+        public WrappedCandy(Serial serial) : base(serial)
         {
         }
 

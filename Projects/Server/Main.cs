@@ -117,7 +117,8 @@ namespace Server
 
         public static Thread Thread { get; private set; }
 
-        [ThreadStatic] private static long _tickCount;
+        [ThreadStatic]
+        private static long _tickCount;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long GetTicks() => 1000L * Stopwatch.GetTimestamp() / Stopwatch.Frequency;
@@ -127,10 +128,6 @@ namespace Server
             get => _tickCount == 0 ? GetTicks() : _tickCount;
             set => _tickCount = value;
         }
-
-        public static bool MultiProcessor { get; private set; }
-
-        public static int ProcessorCount { get; private set; }
 
         public static string BaseDirectory
         {
@@ -414,18 +411,6 @@ namespace Server
             if (s.Length > 0)
             {
                 Console.WriteLine("Core: Running with arguments: {0}", s);
-            }
-
-            ProcessorCount = Environment.ProcessorCount;
-
-            if (ProcessorCount > 1)
-            {
-                MultiProcessor = true;
-            }
-
-            if (MultiProcessor)
-            {
-                Console.WriteLine("Core: Optimizing for {0} processor{1}", ProcessorCount, ProcessorCount == 1 ? "" : "s");
             }
 
             Console.CancelKeyPress += Console_CancelKeyPressed;

@@ -3,12 +3,9 @@
     public class NougatSwirl : CandyCane
     {
         [Constructible]
-        public NougatSwirl(int amount = 1)
-            : base(0x4690) =>
-            Stackable = true;
+        public NougatSwirl(int amount = 1) : base(0x4690) => Stackable = true;
 
-        public NougatSwirl(Serial serial)
-            : base(serial)
+        public NougatSwirl(Serial serial) : base(serial)
         {
         }
 

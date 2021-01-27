@@ -3,12 +3,9 @@
     public class JellyBeans : CandyCane
     {
         [Constructible]
-        public JellyBeans(int amount = 1)
-            : base(0x468C) =>
-            Stackable = true;
+        public JellyBeans(int amount = 1) : base(0x468C) => Stackable = true;
 
-        public JellyBeans(Serial serial)
-            : base(serial)
+        public JellyBeans(Serial serial) : base(serial)
         {
         }
 

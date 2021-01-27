@@ -52,8 +52,6 @@ namespace Server.Network
         private readonly string _toString;
         private int _disposing;
         private ClientVersion _version;
-        private byte[] _recvBuffer;
-        private byte[] _sendBuffer;
         private long _nextActivityCheck;
         private volatile bool _running;
         private volatile DecodePacket _packetDecoder;
@@ -87,10 +85,8 @@ namespace Server.Network
             HuePickers = new List<HuePicker>();
             Menus = new List<IMenu>();
             Trades = new List<SecureTrade>();
-            _recvBuffer = GC.AllocateUninitializedArray<byte>(RecvPipeSize);
-            RecvPipe = new Pipe<byte>(_recvBuffer);
-            _sendBuffer = GC.AllocateUninitializedArray<byte>(SendPipeSize);
-            SendPipe = new Pipe<byte>(_sendBuffer);
+            RecvPipe = new Pipe<byte>(GC.AllocateUninitializedArray<byte>(RecvPipeSize));
+            SendPipe = new Pipe<byte>(GC.AllocateUninitializedArray<byte>(SendPipeSize));
             _nextActivityCheck = Core.TickCount + 30000;
 
             try

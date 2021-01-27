@@ -61,16 +61,13 @@ namespace Server.Guilds
                 return;
             }
 
-            var display = m_Display;
-
             if (info.ButtonID == 5)
             {
                 for (var i = 0; i < 3; i++)
                 {
                     if (info.IsSwitched(i))
                     {
-                        display = (GuildDisplayType)i;
-                        m_Callback(display);
+                        m_Callback((GuildDisplayType)i);
                         break;
                     }
                 }
