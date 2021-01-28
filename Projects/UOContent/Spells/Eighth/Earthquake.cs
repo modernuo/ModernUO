@@ -37,14 +37,16 @@ namespace Server.Spells.Eighth
                     return;
                 }
 
-                var targets = Caster.GetMobilesInRange(1 + (int)(Caster.Skills.Magery.Value / 15.0))
-                    .Where(
-                        m => Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) &&
-                             (!Core.AOS || Caster.InLOS(m))
-                    );
+                var eable = Caster.GetMobilesInRange(1 + (int)(Caster.Skills.Magery.Value / 15.0));
 
-                foreach (var m in targets)
+                foreach (var m in eable)
                 {
+                    if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) ||
+                        !Caster.CanBeHarmful(m, false) || Core.AOS && !Caster.InLOS(m))
+                    {
+                        continue;
+                    }
+
                     int damage;
 
                     if (Core.AOS)

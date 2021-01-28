@@ -46,11 +46,15 @@ namespace Server.Spells.Chivalry
 
                 var chiv = Caster.Skills.Chivalry.Value;
 
-                var targets = Caster.GetMobilesInRange(8)
-                    .Where(m => Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false));
+                var eable = Caster.GetMobilesInRange(8);
 
-                foreach (var m in targets)
+                foreach (var m in eable)
                 {
+                    if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false))
+                    {
+                        continue;
+                    }
+
                     if (m is BaseCreature bc)
                     {
                         if (bc.Summoned && !bc.IsAnimatedDead)

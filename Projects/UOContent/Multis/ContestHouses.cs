@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Items;
 
 namespace Server.Multis
@@ -135,8 +134,28 @@ namespace Server.Multis
             Fixtures.Add(item);
         }
 
-        public override bool IsInside(Point3D p, int height) =>
-            base.IsInside(p, height) || Fixtures?.OfType<HouseTeleporter>().Any(fix => fix.Location == p) == true;
+        public override bool IsInside(Point3D p, int height)
+        {
+            if (base.IsInside(p, height))
+            {
+                return true;
+            }
+
+            if (Fixtures == null)
+            {
+                return false;
+            }
+
+            foreach (var fix in Fixtures)
+            {
+                if (fix is HouseTeleporter && fix.Location == p)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public virtual void AutoAddFixtures()
         {
@@ -144,9 +163,14 @@ namespace Server.Multis
 
             var teleporters = new Dictionary<int, List<MultiTileEntry>>();
 
-            foreach (var entry in components.List.Where(e => e.Flags == 0))
-                // Teleporters
+            foreach (var entry in components.List)
             {
+                if (entry.Flags != 0)
+                {
+                    continue;
+                }
+
+                // Teleporters
                 if (entry.ItemId >= 0x181D && entry.ItemId <= 0x1828)
                 {
                     if (teleporters.TryGetValue(entry.ItemId, out var result))
@@ -179,9 +203,9 @@ namespace Server.Multis
 
             foreach (var door in Doors)
             {
-                foreach (var check in Doors.Where(d => d != door))
+                foreach (var check in Doors)
                 {
-                    if (door.InRange(check.Location, 1))
+                    if (check != door && door.InRange(check.Location, 1))
                     {
                         door.Link = check;
                         check.Link = door;

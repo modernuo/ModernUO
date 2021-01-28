@@ -53,16 +53,15 @@ namespace Server.Spells.Fourth
                     return;
                 }
 
-                var targets = Caster.Map.GetMobilesInRange(loc, Core.AOS ? 2 : 3)
-                    .Where(m => Caster.CanBeBeneficial(m, false));
+                var eable = Caster.Map.GetMobilesInRange(loc, Core.AOS ? 2 : 3);
 
                 if (Core.AOS)
                 {
                     var party = Party.Get(Caster);
 
-                    foreach (var m in targets)
+                    foreach (var m in eable)
                     {
-                        if (m == Caster || party?.Contains(m) == true)
+                        if (Caster.CanBeBeneficial(m, false) && m == Caster || party?.Contains(m) == true)
                         {
                             Caster.DoBeneficial(m);
                             ProtectionSpell.Toggle(Caster, m);
@@ -73,9 +72,9 @@ namespace Server.Spells.Fourth
                 {
                     var val = (int)(Caster.Skills.Magery.Value / 10.0 + 1);
 
-                    foreach (var m in targets)
+                    foreach (var m in eable)
                     {
-                        if (m.BeginAction<ArchProtectionSpell>())
+                        if (Caster.CanBeBeneficial(m, false) && m.BeginAction<ArchProtectionSpell>())
                         {
                             Caster.DoBeneficial(m);
                             m.VirtualArmorMod += val;
@@ -88,6 +87,8 @@ namespace Server.Spells.Fourth
                         }
                     }
                 }
+
+                eable.Free();
             }
 
             FinishSequence();

@@ -766,8 +766,18 @@ namespace Server.Multis
         public List<Mobile> AvailableVendorsFor(Mobile m) =>
             PlayerVendors.Where(vendor => vendor.CanInteractWith(m, false)).ToList<Mobile>();
 
-        public bool AreThereAvailableVendorsFor(Mobile m) =>
-            PlayerVendors.Any(vendor => vendor.CanInteractWith(m, false));
+        public bool AreThereAvailableVendorsFor(Mobile m)
+        {
+            foreach (var vendor in PlayerVendors)
+            {
+                if (vendor.CanInteractWith(m, false))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public void MoveAllToCrate()
         {

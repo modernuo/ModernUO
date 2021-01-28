@@ -76,12 +76,16 @@ namespace Server.Mobiles
                 return;
             }
 
-            var eable = GetItemsInRange(2).Where(item => item.Movable && item.Stackable);
-
+            var eable = GetItemsInRange(2);
             var pickedUp = 0;
 
             foreach (var item in eable)
             {
+                if (!(item.Movable && item.Stackable))
+                {
+                    continue;
+                }
+
                 if (!pack.CheckHold(this, item, false, true))
                 {
                     return;
@@ -103,6 +107,8 @@ namespace Server.Mobiles
                     break;
                 }
             }
+
+            eable.Free();
         }
 
         private void ConfirmRelease_Callback(Mobile from, bool okay)

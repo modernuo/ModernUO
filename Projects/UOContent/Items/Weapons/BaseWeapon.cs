@@ -1668,16 +1668,35 @@ namespace Server.Items
             }
 
             var eable = defender.GetMobilesInRange<BaseCreature>(1);
-            var inPack = 1 + eable
-                .Where(m => m != attacker && (m.PackInstinct & bc.PackInstinct) != 0 && (m.Controlled || m.Summoned))
-                .Count(m => master == (m.ControlMaster ?? m.SummonMaster) && m.Combatant == defender);
+            var inPack = 1;
+            foreach (var m in eable)
+            {
+                if (!(m != attacker && (m.PackInstinct & bc.PackInstinct) != 0 && (m.Controlled || m.Summoned)))
+                {
+                    continue;
+                }
+
+                if (master == (m.ControlMaster ?? m.SummonMaster) && m.Combatant == defender)
+                {
+                    inPack++;
+                }
+
+                if (inPack == 5)
+                {
+                    eable.Free();
+                    return 100;
+                }
+            }
 
             eable.Free();
 
-            return inPack >= 5 ? 100 :
-                inPack >= 4 ? 75 :
-                inPack >= 3 ? 50 :
-                inPack >= 2 ? 25 : 0;
+            return inPack switch
+            {
+                >= 4 => 75,
+                >= 3 => 50,
+                >= 2 => 25,
+                _    => 0
+            };
         }
 
         public virtual void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1.0)

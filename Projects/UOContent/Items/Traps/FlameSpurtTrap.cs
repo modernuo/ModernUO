@@ -84,9 +84,25 @@ namespace Server.Items
                 return;
             }
 
-            var foundPlayer = GetMobilesInRange(3)
-                .Where(mob => mob.Player && mob.Alive && mob.AccessLevel <= AccessLevel.Player)
-                .Any(mob => Z + 8 >= mob.Z && mob.Z + 16 > Z);
+            var foundPlayer = false;
+
+            var eable = GetMobilesInRange(3);
+
+            foreach (var m in eable)
+            {
+                if (!(m.Player && m.Alive && m.AccessLevel <= AccessLevel.Player))
+                {
+                    continue;
+                }
+
+                if (Z + 8 >= m.Z && m.Z + 16 > Z)
+                {
+                    foundPlayer = true;
+                    break;
+                }
+            }
+
+            eable.Free();
 
             if (!foundPlayer)
             {

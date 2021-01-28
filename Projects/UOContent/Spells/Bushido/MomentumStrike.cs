@@ -22,8 +22,7 @@ namespace Server.Spells.Bushido
             var weapon = attacker.Weapon;
 
             var targets = attacker.GetMobilesInRange(weapon.MaxRange)
-                .Where(m => m != defender)
-                .Where(m => m.Combatant == attacker)
+                .Where(m => m != defender && m.Combatant == attacker)
                 .ToList();
 
             if (targets.Count <= 0)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Server.Mobiles;
 using Server.Targeting;
 
@@ -36,63 +37,35 @@ namespace Server.Spells.Fourth
             else if (CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
-
                 SpellHelper.GetSurfaceTop(ref p);
 
-                var targets = new List<Mobile>();
-
-                var map = Caster.Map;
-                var directTarget = p as Mobile;
                 var loc = new Point3D(p);
-
-                if (map != null)
-                {
-                    var feluccaRules = map.Rules == MapRules.FeluccaRules;
-
-                    // You can target any living mobile directly, beneficial checks apply
-                    if (directTarget != null && Caster.CanBeBeneficial(directTarget, false))
-                    {
-                        targets.Add(directTarget);
-                    }
-
-                    var eable = map.GetMobilesInRange(loc, 2);
-                    targets.AddRange(eable.Where(m => m != directTarget).Where(m => AreaCanTarget(m, feluccaRules)));
-
-                    eable.Free();
-                }
 
                 Effects.PlaySound(loc, Caster.Map, 0x299);
 
-                if (targets.Count > 0)
+                var map = Caster.Map;
+                if (map != null)
                 {
-                    var cured = 0;
+                    var directTarget = p as Mobile;
+                    var feluccaRules = map.Rules == MapRules.FeluccaRules;
+                    var eable = map.GetMobilesInRange(loc, 2);
+                    var cured = false;
 
-                    for (var i = 0; i < targets.Count; ++i)
+                    foreach (var m in eable)
                     {
-                        var m = targets[i];
-
-                        Caster.DoBeneficial(m);
-
-                        var poison = m.Poison;
-
-                        if (poison != null)
+                        // We assume that GetMobilesInRange should include the direct target, if one exists
+                        if ((directTarget != null && Caster.CanBeBeneficial(directTarget, false) ||
+                             AreaCanTarget(m, feluccaRules)) && DoCure(m))
                         {
-                            var chanceToCure = 10000 + (int)(Caster.Skills.Magery.Value * 75) -
-                                               (poison.Level + 1) * 1750;
-                            chanceToCure /= 100;
-                            chanceToCure -= 1;
-
-                            if (chanceToCure > Utility.Random(100) && m.CurePoison(Caster))
-                            {
-                                ++cured;
-                            }
+                            cured = true;
+                            m.FixedParticles(0x373A, 10, 15, 5012, EffectLayer.Waist);
+                            m.PlaySound(0x1E0);
                         }
-
-                        m.FixedParticles(0x373A, 10, 15, 5012, EffectLayer.Waist);
-                        m.PlaySound(0x1E0);
                     }
 
-                    if (cured > 0)
+                    eable.Free();
+
+                    if (cured)
                     {
                         Caster.SendLocalizedMessage(1010058); // You have cured the target of all poisons!
                     }
@@ -102,11 +75,32 @@ namespace Server.Spells.Fourth
             FinishSequence();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool DoCure(Mobile m)
+        {
+            Caster.DoBeneficial(m);
+
+            var poison = m.Poison;
+
+            if (poison == null)
+            {
+                return false;
+            }
+
+            var chanceToCure = 10000 + (int)(Caster.Skills.Magery.Value * 75) -
+                               (poison.Level + 1) * 1750;
+            chanceToCure /= 100;
+            chanceToCure -= 1;
+
+            return chanceToCure > Utility.Random(100) && m.CurePoison(Caster);
+        }
+
         public override void OnCast()
         {
             Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool AreaCanTarget(Mobile target, bool feluccaRules)
         {
             /* Arch cure area effect won't cure aggressors, victims, murderers, criminals or monsters.
