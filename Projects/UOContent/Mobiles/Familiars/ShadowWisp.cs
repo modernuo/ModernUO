@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Collections.Pooled;
 
 namespace Server.Mobiles
 {
@@ -70,12 +71,14 @@ namespace Server.Mobiles
                 return;
             }
 
-            var list = GetMobilesInRange(5)
-                .Where(
-                    m =>
-                        m.Player && m.Alive && !m.IsDeadBondedPet && m.Karma <= 0 && m.AccessLevel < AccessLevel.Counselor
-                )
-                .ToList();
+            var eable = GetMobilesInRange(5);
+
+            using var list = eable.Where(
+                m =>
+                    m.Player && m.Alive && !m.IsDeadBondedPet && m.Karma <= 0 && m.AccessLevel < AccessLevel.Counselor
+            ).ToPooledList();
+
+            eable.Free();
 
             for (var i = 0; i < list.Count; ++i)
             {

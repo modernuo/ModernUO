@@ -210,13 +210,14 @@ namespace Server.SkillHandlers
 
             var range = 10 + (int)(from.Skills.Tracking.Value / 10);
 
-            var list = from.GetMobilesInRange(range)
-                .Where(
-                    m => m != from && (!Core.AOS || m.Alive) &&
-                         (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) &&
-                         check(m) && CheckDifficulty(from, m)
-                )
-                .ToList();
+            var eable = from.GetMobilesInRange(range);
+            var list = eable.Where(
+                m => m != from && (!Core.AOS || m.Alive) &&
+                     (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) &&
+                     check(m) && CheckDifficulty(from, m)
+            ).ToList();
+
+            eable.Free();
 
             if (list.Count > 0)
             {

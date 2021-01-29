@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Collections.Pooled;
 using Server.Spells;
 
 namespace Server.Items
@@ -36,15 +37,17 @@ namespace Server.Items
             attacker.FixedEffect(0x3728, 10, 15);
             attacker.PlaySound(0x2A1);
 
-            var targets = attacker.GetMobilesInRange(1)
-                .Where(
-                    m =>
-                        m?.Deleted == false && m != defender && m != attacker &&
-                        SpellHelper.ValidIndirectTarget(attacker, m) &&
-                        m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
-                        attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m)
-                )
-                .ToList();
+            var eable = attacker.GetMobilesInRange(1);
+
+            using var targets = eable.Where(
+                m =>
+                    m?.Deleted == false && m != defender && m != attacker &&
+                    SpellHelper.ValidIndirectTarget(attacker, m) &&
+                    m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
+                    attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m)
+            ).ToPooledList();
+
+            eable.Free();
 
             if (targets.Count <= 0)
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Collections.Pooled;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
@@ -97,24 +98,23 @@ namespace Server.Items
             var eable = from.Map.GetMobilesInRange(new Point3D(loc), 2);
 
             var playerVsPlayer = false;
-            var targets = eable.Where(
-                    m =>
+            using var targets = eable.Where(
+                m =>
+                {
+                    if (from == m || !SpellHelper.ValidIndirectTarget(from, m) || !from.CanBeHarmful(m, false)
+                        || Core.AOS && !from.InLOS(m))
                     {
-                        if (from == m || !SpellHelper.ValidIndirectTarget(from, m) || !from.CanBeHarmful(m, false)
-                            || Core.AOS && !from.InLOS(m))
-                        {
-                            return false;
-                        }
-
-                        if (m.Player)
-                        {
-                            playerVsPlayer = true;
-                        }
-
-                        return true;
+                        return false;
                     }
-                )
-                .ToList();
+
+                    if (m.Player)
+                    {
+                        playerVsPlayer = true;
+                    }
+
+                    return true;
+                }
+            ).ToPooledList();
 
             eable.Free();
 

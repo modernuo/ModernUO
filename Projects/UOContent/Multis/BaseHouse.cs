@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Collections.Pooled;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Ethics;
@@ -601,12 +602,14 @@ namespace Server.Multis
 
         public virtual void KillVendors()
         {
-            foreach (var vendor in PlayerVendors.ToList())
+            using var vendors = PlayerVendors.ToPooledList();
+            foreach (var vendor in vendors)
             {
                 vendor.Destroy(true);
             }
 
-            foreach (var barkeeper in PlayerBarkeepers.ToList())
+            using var barkeepers = PlayerBarkeepers.ToPooledList();
+            foreach (var barkeeper in barkeepers)
             {
                 barkeeper.Delete();
             }
@@ -1132,11 +1135,12 @@ namespace Server.Multis
             MovingCrate.DropItem(item);
         }
 
-        public List<Item> GetItems()
+        // TODO: Use a custom enumerator
+        public PooledList<Item> GetItems()
         {
             if (Map == null || Map == Map.Internal)
             {
-                return new List<Item>();
+                return new PooledList<Item>();
             }
 
             var start = new Point2D(X + Components.Min.X, Y + Components.Min.Y);
@@ -1144,27 +1148,27 @@ namespace Server.Multis
             var rect = new Rectangle2D(start, end);
 
             var eable = Map.GetItemsInBounds(rect);
-            var list = eable.Where(item => item.Movable && IsInside(item)).ToList();
-
+            var list = eable.Where(item => item.Movable && IsInside(item)).ToPooledList();
             eable.Free();
 
             return list;
         }
 
-        public List<Mobile> GetMobiles()
+        // TODO: Use a custom enumerator
+        public PooledList<Mobile> GetMobiles()
         {
+            var list = new PooledList<Mobile>();
+
             if (Map == null || Map == Map.Internal)
             {
-                return new List<Mobile>();
+                return list;
             }
 
-            var list = new List<Mobile>();
-
-            foreach (var mobile in Region.GetMobiles())
+            foreach (var m in Region.GetMobiles())
             {
-                if (IsInside(mobile))
+                if (IsInside(m))
                 {
-                    list.Add(mobile);
+                    list.Add(m);
                 }
             }
 
@@ -2596,10 +2600,8 @@ namespace Server.Multis
                 return;
             }
 
-            if (Access.Contains(targ))
+            if (Access.Remove(targ))
             {
-                Access.Remove(targ);
-
                 if (!HasAccess(targ) && IsInside(targ))
                 {
                     targ.Location = BanLocation;
@@ -3217,7 +3219,7 @@ namespace Server.Multis
 
         private void FixLockdowns_Sandbox()
         {
-            var conts = LockDowns?.Where(item => item is Container).ToList();
+            using var conts = LockDowns?.Where(item => item is Container).ToPooledList();
 
             if (conts == null)
             {
@@ -3444,7 +3446,8 @@ namespace Server.Multis
                 Addons.Clear();
             }
 
-            foreach (var inventory in VendorInventories.ToList())
+            using var inventories = VendorInventories.ToPooledList();
+            foreach (var inventory in inventories)
             {
                 inventory.Delete();
             }

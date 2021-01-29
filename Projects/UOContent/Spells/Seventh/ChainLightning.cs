@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Collections.Pooled;
 using Server.Targeting;
 
 namespace Server.Spells.Seventh
@@ -41,56 +42,47 @@ namespace Server.Spells.Seventh
                     p = item.GetWorldLocation();
                 }
 
-                var targets = new List<Mobile>();
-
                 var map = Caster.Map;
+
+                if (map == null)
+                {
+                    FinishSequence();
+                    return;
+                }
 
                 var playerVsPlayer = false;
 
-                if (map != null)
-                {
-                    var eable = map.GetMobilesInRange(new Point3D(p), 2);
+                var eable = map.GetMobilesInRange(new Point3D(p), 2);
+                using var targets = eable.Where(
+                    m =>
+                    {
+                        if (Core.AOS && (m == Caster || !Caster.InLOS(m)) ||
+                            !SpellHelper.ValidIndirectTarget(Caster, m) ||
+                            !Caster.CanBeHarmful(m, false))
+                        {
+                            return false;
+                        }
 
-                    targets.AddRange(
-                        eable.Where(
-                                m =>
-                                {
-                                    if (Core.AOS && (m == Caster || !Caster.InLOS(m)) ||
-                                        !SpellHelper.ValidIndirectTarget(Caster, m) ||
-                                        !Caster.CanBeHarmful(m, false))
-                                    {
-                                        return false;
-                                    }
+                        if (m.Player)
+                        {
+                            playerVsPlayer = true;
+                        }
 
-                                    if (m.Player)
-                                    {
-                                        playerVsPlayer = true;
-                                    }
+                        return true;
+                    }
+                ).ToPooledList();
 
-                                    return true;
-                                }
-                            )
-                            .ToList()
-                    );
-
-                    eable.Free();
-                }
-
-                double damage;
-
-                damage = Core.AOS
-                    ? GetNewAosDamage(51, 1, 5, playerVsPlayer)
-                    : Utility.Random(27, 22);
+                eable.Free();
 
                 if (targets.Count > 0)
                 {
+                    double damage = Core.AOS
+                        ? GetNewAosDamage(51, 1, 5, playerVsPlayer)
+                        : (double)Utility.Random(27, 22) / targets.Count;
+
                     if (Core.AOS && targets.Count > 2)
                     {
                         damage = damage * 2 / targets.Count;
-                    }
-                    else if (!Core.AOS)
-                    {
-                        damage /= targets.Count;
                     }
 
                     for (var i = 0; i < targets.Count; ++i)

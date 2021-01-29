@@ -3591,8 +3591,7 @@ namespace Server.Items
         }
 
         public virtual void DoAreaAttack(
-            Mobile from, Mobile defender, int sound, int hue, int phys, int fire, int cold,
-            int pois, int nrgy
+            Mobile from, Mobile defender, int sound, int hue, int phys, int fire, int cold, int pois, int nrgy
         )
         {
             var map = from.Map;
@@ -3605,24 +3604,22 @@ namespace Server.Items
             var range = Core.ML ? 5 : 10;
 
             var eable = from.GetMobilesInRange(range);
-            var list = eable.Where(
-                    m =>
-                        from != m && defender != m && SpellHelper.ValidIndirectTarget(from, m)
-                        && from.CanBeHarmful(m, false) && (!Core.ML || from.InLOS(m))
-                )
-                .ToList();
-            eable.Free();
 
-            if (list.Count == 0)
+            bool playSound = true;
+
+            foreach (var m in eable)
             {
-                return;
-            }
+                if (from == m || defender == m || !SpellHelper.ValidIndirectTarget(from, m)
+                    || !from.CanBeHarmful(m, false) || Core.ML && !from.InLOS(m))
+                {
+                    continue;
+                }
 
-            Effects.PlaySound(from.Location, map, sound);
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                var m = list[i];
+                if (playSound)
+                {
+                    Effects.PlaySound(from.Location, map, sound);
+                    playSound = false;
+                }
 
                 var scalar = Core.ML ? 1.0 : (11 - from.GetDistanceToSqrt(m)) / 10;
                 var damage = GetBaseDamage(from);
@@ -3641,6 +3638,8 @@ namespace Server.Items
                 m.FixedEffect(0x3779, 1, 15, hue, 0);
                 AOS.Damage(m, from, (int)damage, phys, fire, cold, pois, nrgy);
             }
+
+            eable.Free();
         }
 
         private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)

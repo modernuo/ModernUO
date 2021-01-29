@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Collections.Pooled;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
@@ -138,7 +138,7 @@ namespace Server.Items
                         else if (RootParent == null)
                         {
                             var eable = Map.GetMobilesInRange(Location, 1);
-                            var toDamage = eable.ToList();
+                            using var toDamage = eable.ToPooledList();
 
                             eable.Free();
 
@@ -216,12 +216,12 @@ namespace Server.Items
 
     public class FirebombField : Item
     {
-        private readonly List<Mobile> m_Burning;
+        private readonly PooledList<Mobile> m_Burning;
         private readonly DateTime m_Expire;
         private readonly Mobile m_LitBy;
         private readonly Timer m_Timer;
 
-        public FirebombField(Mobile litBy, List<Mobile> toDamage) : base(0x376A)
+        public FirebombField(Mobile litBy, PooledList<Mobile> toDamage) : base(0x376A)
         {
             Movable = false;
             m_LitBy = litBy;
@@ -300,6 +300,12 @@ namespace Server.Items
                 m_Timer.Stop();
                 Delete();
             }
+        }
+
+        public override void OnDelete()
+        {
+            base.OnDelete();
+            m_Burning.Dispose();
         }
     }
 }

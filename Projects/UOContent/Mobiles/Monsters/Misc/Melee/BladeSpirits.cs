@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Collections.Pooled;
 
 namespace Server.Mobiles
 {
@@ -72,9 +73,9 @@ namespace Server.Mobiles
             if (Core.SE && Summoned)
             {
                 var eable = GetMobilesInRange(5);
-                var spiritsOrVortexes = eable
+                using var spiritsOrVortexes = eable
                     .Where(m => (m is EnergyVortex || m is BladeSpirits) && ((BaseCreature)m).Summoned)
-                    .ToList();
+                    .ToPooledList();
 
                 eable.Free();
 

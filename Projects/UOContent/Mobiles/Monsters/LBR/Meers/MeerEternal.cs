@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Collections.Pooled;
 
 namespace Server.Mobiles
 {
@@ -84,45 +85,36 @@ namespace Server.Mobiles
         private void DoAreaLeech_Finish()
         {
             var eable = GetMobilesInRange(6);
-            var list = eable.Where(m => CanBeHarmful(m) && IsEnemy(m)).ToList();
+            using var list = eable.Where(m => CanBeHarmful(m) && IsEnemy(m)).ToPooledList();
             eable.Free();
 
             if (list.Count == 0)
             {
                 Say(true, "Bah! You have escaped my grasp this time, mortal!");
+                return;
             }
-            else
+
+            double scalar = list.Count switch
             {
-                double scalar;
+                1 => 0.75,
+                2 => 0.50,
+                _ => 0.25
+            };
 
-                if (list.Count == 1)
-                {
-                    scalar = 0.75;
-                }
-                else if (list.Count == 2)
-                {
-                    scalar = 0.50;
-                }
-                else
-                {
-                    scalar = 0.25;
-                }
+            for (var i = 0; i < list.Count; ++i)
+            {
+                var m = list[i];
 
-                for (var i = 0; i < list.Count; ++i)
-                {
-                    var m = list[i];
+                var damage = (int)(m.Hits * scalar) + Utility.RandomMinMax(-5, 5);
 
-                    var damage = (int)(m.Hits * scalar) + Utility.RandomMinMax(-5, 5);
+                m.MovingParticles(this, 0x36F4, 1, 0, false, false, 32, 0, 9535, 1, 0, (EffectLayer)255, 0x100);
+                m.MovingParticles(this, 0x0001, 1, 0, false, true, 32, 0, 9535, 9536, 0, (EffectLayer)255, 0);
 
-                    m.MovingParticles(this, 0x36F4, 1, 0, false, false, 32, 0, 9535, 1, 0, (EffectLayer)255, 0x100);
-                    m.MovingParticles(this, 0x0001, 1, 0, false, true, 32, 0, 9535, 9536, 0, (EffectLayer)255, 0);
-
-                    DoHarmful(m);
-                    Hits += AOS.Damage(m, this, Math.Max(damage, 1), 100, 0, 0, 0, 0);
-                }
-
-                Say(true, "If I cannot cleanse thy soul, I will destroy it!");
+                DoHarmful(m);
+                Hits += AOS.Damage(m, this, Math.Max(damage, 1), 100, 0, 0, 0, 0);
             }
+
+            Say(true, "If I cannot cleanse thy soul, I will destroy it!");
         }
 
         private void DoFocusedLeech(Mobile combatant, string message)

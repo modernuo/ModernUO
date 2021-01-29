@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Collections.Pooled;
 using Server.Mobiles;
 
 namespace Server.Items
@@ -115,7 +116,8 @@ namespace Server.Items
                 return;
             }
 
-            foreach (var entry in m_Entries.ToList())
+            using var entries = m_Entries.ToPooledList();
+            foreach (var entry in entries)
             {
                 if (!entry.Valid || entry.Player.NetState == null)
                 {
@@ -153,7 +155,8 @@ namespace Server.Items
                 return;
             }
 
-            foreach (var entry in m_Entries.ToList())
+            using var entries = m_Entries.ToPooledList();
+            foreach (var entry in entries)
             {
                 RemoveEntry(entry);
             }

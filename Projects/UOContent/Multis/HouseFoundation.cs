@@ -855,12 +855,14 @@ namespace Server.Multis
 
             RelocateEntities();
 
-            foreach (var item in GetItems())
+            using var items = GetItems();
+            foreach (var item in items)
             {
                 item.Location = BanLocation;
             }
 
-            foreach (var mobile in GetMobiles())
+            using var mobiles = GetMobiles();
+            foreach (var mobile in mobiles)
             {
                 if (mobile != m)
                 {
@@ -1250,12 +1252,14 @@ namespace Server.Multis
             // Eject all from house
             from.RevealingAction();
 
-            foreach (var item in GetItems())
+            using var items = GetItems();
+            foreach (var item in items)
             {
                 item.Location = BanLocation;
             }
 
-            foreach (var mobile in GetMobiles())
+            using var mobiles = GetMobiles();
+            foreach (var mobile in mobiles)
             {
                 mobile.Location = BanLocation;
             }
@@ -1716,12 +1720,14 @@ namespace Server.Multis
             // Eject all from house
             from.RevealingAction();
 
-            foreach (var item in context.Foundation.GetItems())
+            using var items = context.Foundation.GetItems();
+            foreach (var item in items)
             {
                 item.Location = context.Foundation.BanLocation;
             }
 
-            foreach (var mobile in context.Foundation.GetMobiles())
+            using var mobiles = context.Foundation.GetMobiles();
+            foreach (var mobile in mobiles)
             {
                 mobile.Location = context.Foundation.BanLocation;
             }

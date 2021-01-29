@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using Collections.Pooled;
 using Server.Accounting;
 using Server.Buffers;
 using Server.Commands;
@@ -441,7 +442,7 @@ namespace Server.Gumps
                     {
                         if (m_List == null)
                         {
-                            var states = TcpServer.Instances.ToList();
+                            var states = Enumerable.ToList(TcpServer.Instances);
                             states.Sort(NetStateComparer.Instance);
 
                             m_List = states.ToList<object>();
@@ -996,7 +997,7 @@ namespace Server.Gumps
 
                         if (m_List == null)
                         {
-                            ipAddresses = a.LoginIPs.ToList();
+                            ipAddresses = Enumerable.ToList(a.LoginIPs);
                             m_List = ipAddresses.ToList<object>();
                         }
                         else
@@ -1068,7 +1069,7 @@ namespace Server.Gumps
 
                         if (m_List == null)
                         {
-                            ipRestrictions = a.IPRestrictions.ToList();
+                            ipRestrictions = Enumerable.ToList(a.IPRestrictions);
                             m_List = ipRestrictions.ToList<object>();
                         }
                         else
@@ -1595,7 +1596,7 @@ namespace Server.Gumps
                 }
             }
 
-            var tableEntries = table.ToList();
+            var tableEntries = Enumerable.ToList(table);
 
             for (var i = 0; i < tableEntries.Count; ++i)
             {
@@ -3237,7 +3238,7 @@ namespace Server.Gumps
                                             m_ListPage,
                                             m_List,
                                             null,
-                                            m_List.ToList()
+                                            Enumerable.ToList(m_List)
                                         )
                                     );
 
@@ -3912,8 +3913,17 @@ namespace Server.Gumps
                             }
                             else if (m_PageType == AdminGumpPage.AccountDetails_Access_Restrictions)
                             {
-                                var list = a.IPRestrictions.ToList();
-                                list.Remove(m_List[index] as string);
+                                var value = m_List[index] as string;
+                                var restrictions = a.IPRestrictions;
+                                using var list = new PooledList<string>(restrictions.Length);
+                                for (int i = 0; i < restrictions.Length; i++)
+                                {
+                                    var ip = restrictions[i];
+                                    if (ip != value)
+                                    {
+                                        list.Add(ip);
+                                    }
+                                }
                                 a.IPRestrictions = list.ToArray();
 
                                 from.SendGump(

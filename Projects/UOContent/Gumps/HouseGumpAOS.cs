@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Collections.Pooled;
 using Server.Guilds;
 using Server.Mobiles;
 using Server.Multis;
@@ -754,13 +755,9 @@ namespace Server.Gumps
 
             if (okay && house.IsFriend(from))
             {
-                var list = house.Access.ToList();
-
-                house.Access?.Clear();
-
-                for (var i = 0; i < list.Count; ++i)
+                for (var i = 0; i < house.Access.Count; ++i)
                 {
-                    var m = list[i];
+                    var m = house.Access[i];
 
                     if (!house.HasAccess(m) && house.IsInside(m))
                     {
@@ -768,6 +765,9 @@ namespace Server.Gumps
                         m.SendLocalizedMessage(1060734); // Your access to this house has been revoked.
                     }
                 }
+
+                house.Access?.Clear();
+                house.Access?.TrimExcess();
 
                 from.SendLocalizedMessage(1061843); // This house's Access List has been cleared.
             }
@@ -871,8 +871,8 @@ namespace Server.Gumps
                         house.MovingCrate = null;
                     }
 
-                    var items = house.GetItems();
-                    var mobiles = house.GetMobiles();
+                    using var items = house.GetItems();
+                    using var mobiles = house.GetMobiles();
 
                     newHouse.MoveToWorld(
                         new Point3D(

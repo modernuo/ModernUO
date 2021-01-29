@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Collections.Pooled;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
@@ -209,30 +210,24 @@ namespace Server.Items
             Effects.PlaySound(loc, map, 0x307);
 
             Effects.SendLocationEffect(loc, map, 0x36B0, 9);
-            var alchemyBonus = 0;
-
-            if (direct)
-            {
-                alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
-            }
+            var alchemyBonus = direct ? (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10)) : 0;
 
             var eable = map.GetObjectsInRange(loc, ExplosionRange, LeveledExplosion);
             var toDamage = 0;
 
-            var toExplode = eable.Where(
-                    o =>
+            using var toExplode = eable.Where(
+                o =>
+                {
+                    if (!(o is Mobile mobile) || from != null &&
+                        (!SpellHelper.ValidIndirectTarget(from, mobile) || !from.CanBeHarmful(mobile, false)))
                     {
-                        if (!(o is Mobile mobile) || from != null &&
-                            (!SpellHelper.ValidIndirectTarget(from, mobile) || !from.CanBeHarmful(mobile, false)))
-                        {
-                            return o is BaseExplosionPotion && o != this;
-                        }
-
-                        ++toDamage;
-                        return true;
+                        return o is BaseExplosionPotion && o != this;
                     }
-                )
-                .ToList();
+
+                    ++toDamage;
+                    return true;
+                }
+            ).ToPooledList();
 
             eable.Free();
 

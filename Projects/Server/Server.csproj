@@ -28,8 +28,8 @@
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
     </Target>
     <ItemGroup>
+        <PackageReference Include="Collections.Pooled" Version="2.0.0-preview.27" />
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.0.0-preview4" />
-        <PackageReference Include="StructLinq.BCL" Version="0.25.3" />
         <PackageReference Include="Zlib.Bindings" Version="1.4.0" />
     </ItemGroup>
 </Project>

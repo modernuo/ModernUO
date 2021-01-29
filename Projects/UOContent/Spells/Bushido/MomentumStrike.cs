@@ -1,4 +1,5 @@
 using System.Linq;
+using Collections.Pooled;
 
 namespace Server.Spells.Bushido
 {
@@ -21,9 +22,13 @@ namespace Server.Spells.Bushido
 
             var weapon = attacker.Weapon;
 
-            var targets = attacker.GetMobilesInRange(weapon.MaxRange)
+            var eable = attacker.GetMobilesInRange(weapon.MaxRange);
+
+            using var targets = eable
                 .Where(m => m != defender && m.Combatant == attacker)
-                .ToList();
+                .ToPooledList();
+
+            eable.Free();
 
             if (targets.Count <= 0)
             {
