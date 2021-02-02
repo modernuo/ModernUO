@@ -26,22 +26,22 @@ namespace Server.Network
 {
     public static class TcpServer
     {
-        private static NetworkState m_NetworkState = NetworkState.ResumeState;
+        private static NetworkState _networkState = NetworkState.ResumeState;
 
         // Sanity. 256 * 1024 * 5000 = ~1.3GB of ram
-        public static int MaxConnections { get; set; } = 5000;
+        public static int MaxConnections { get; set; } = 4096;
 
         private const long _listenerErrorMessageDelay = 10000; // 10 seconds
         private static long _nextMaximumSocketsReachedMessage;
 
         // AccountLoginReject BadComm
-        private static readonly byte[] socketRejected = { 0x82, 0xFF };
+        private static readonly byte[] _socketRejected = { 0x82, 0xFF };
 
         public static IPEndPoint[] ListeningAddresses { get; private set; }
         public static TcpListener[] Listeners { get; private set; }
-        public static HashSet<NetState> Instances { get; } = new(128);
+        public static HashSet<NetState> Instances { get; } = new(2048);
 
-        public static ConcurrentQueue<NetState> m_ConnectedQueue = new();
+        private static readonly ConcurrentQueue<NetState> _connectedQueue = new();
 
         public static void Configure()
         {
@@ -128,7 +128,7 @@ namespace Server.Network
          */
         public static void Pause()
         {
-            NetworkState.Pause(ref m_NetworkState);
+            NetworkState.Pause(ref _networkState);
         }
 
         /**
@@ -137,7 +137,7 @@ namespace Server.Network
          */
         public static void Resume()
         {
-            if (!NetworkState.Resume(ref m_NetworkState))
+            if (!NetworkState.Resume(ref _networkState))
             {
                 return;
             }
@@ -154,11 +154,11 @@ namespace Server.Network
         public static int Slice()
         {
             int count = 0;
-            var limit = m_ConnectedQueue.Count;
+            var limit = _connectedQueue.Count;
 
-            while (m_ConnectedQueue.Count > 0 && --limit >= 0)
+            while (_connectedQueue.Count > 0 && --limit >= 0)
             {
-                if (!m_ConnectedQueue.TryDequeue(out var ns))
+                if (!_connectedQueue.TryDequeue(out var ns))
                 {
                     break;
                 }
@@ -175,7 +175,7 @@ namespace Server.Network
         {
             while (true)
             {
-                if (m_NetworkState.Paused)
+                if (_networkState.Paused)
                 {
                     return;
                 }
@@ -187,7 +187,7 @@ namespace Server.Network
                     socket = await listener.AcceptSocketAsync().ConfigureAwait(false);
                     if (Instances.Count >= MaxConnections)
                     {
-                        socket.Send(socketRejected, SocketFlags.None);
+                        socket.Send(_socketRejected, SocketFlags.None);
                         socket.Shutdown(SocketShutdown.Both);
                         socket.Close();
                         throw new MaxConnectionsException();
@@ -198,7 +198,7 @@ namespace Server.Network
 
                     if (!args.AllowConnection)
                     {
-                        socket.Send(socketRejected, SocketFlags.None);
+                        socket.Send(_socketRejected, SocketFlags.None);
                         socket.Shutdown(SocketShutdown.Both);
                         socket.Close();
                     }
@@ -222,7 +222,7 @@ namespace Server.Network
                 }
 
                 var ns = new NetState(new NetworkSocket(socket));
-                m_ConnectedQueue.Enqueue(ns);
+                _connectedQueue.Enqueue(ns);
                 ns.Start();
             }
         }
