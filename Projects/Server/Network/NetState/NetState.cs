@@ -50,15 +50,12 @@ namespace Server.Network
         public static NetStateCreatedCallback CreatedCallback { get; set; }
 
         private readonly string _toString;
-        private int _disposing;
         private ClientVersion _version;
-        private byte[] _recvBuffer;
-        private byte[] _sendBuffer;
         private long _nextActivityCheck;
         private volatile bool _running;
         private volatile DecodePacket _packetDecoder;
         private volatile EncodePacket _packetEncoder;
-        private bool _flushQueued = false;
+        private bool _flushQueued;
 
         internal int _authId;
         internal int _seed;
@@ -87,10 +84,10 @@ namespace Server.Network
             HuePickers = new List<HuePicker>();
             Menus = new List<IMenu>();
             Trades = new List<SecureTrade>();
-            _recvBuffer = GC.AllocateUninitializedArray<byte>(RecvPipeSize);
-            RecvPipe = new Pipe<byte>(_recvBuffer);
-            _sendBuffer = GC.AllocateUninitializedArray<byte>(SendPipeSize);
-            SendPipe = new Pipe<byte>(_sendBuffer);
+            var recvBuffer = GC.AllocateUninitializedArray<byte>(RecvPipeSize);
+            RecvPipe = new Pipe<byte>(recvBuffer);
+            var sendBuffer = GC.AllocateUninitializedArray<byte>(SendPipeSize);
+            SendPipe = new Pipe<byte>(sendBuffer);
             _nextActivityCheck = Core.TickCount + 30000;
 
             try
@@ -163,8 +160,6 @@ namespace Server.Network
         public ServerInfo[] ServerInfo { get; set; }
 
         public IAccount Account { get; set; }
-
-        public bool IsDisposing => _disposing != 0;
 
         public int CompareTo(NetState other) => string.CompareOrdinal(_toString, other?._toString);
 
@@ -751,12 +746,12 @@ namespace Server.Network
 
         public virtual void Dispose()
         {
-            if (Connection == null || Interlocked.CompareExchange(ref _disposing, 1, 0) == 1)
+            if (Connection == null || !_running)
             {
                 return;
             }
 
-            SendPipe.Writer.Close();
+            _running = true;
 
             try
             {
@@ -781,11 +776,10 @@ namespace Server.Network
 
         private void Disconnect()
         {
-            _running = false;
             Connection = null;
 
             RecvPipe.Writer.Flush();
-            RecvPipe.Writer.Close();
+            SendPipe.Writer.Close();
 
             var m = Mobile;
             var a = Account;
