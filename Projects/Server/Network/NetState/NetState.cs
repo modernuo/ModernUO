@@ -751,7 +751,7 @@ namespace Server.Network
                 return;
             }
 
-            _running = true;
+            _running = false;
 
             try
             {
