@@ -72,7 +72,7 @@ namespace Server.Commands
         }
 
 #nullable enable
-        public static void RecurseExport(List<CAGJson> list, CategoryEntry ce, string category)
+        public static void RecurseExport(List<CAGJson> list, CategoryEntry ce, string? category)
         {
             category = string.IsNullOrWhiteSpace(category) ? ce.Title : $"{category}{ce.Title}";
 

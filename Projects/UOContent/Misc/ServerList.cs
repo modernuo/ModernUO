@@ -81,13 +81,20 @@ namespace Server.Misc
                 if (IsPrivateNetwork(localAddress))
                 {
                     ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
+                    Console.WriteLine("Local address is private: {0} {1}", localAddress, ns.Connection.RemoteEndPoint);
+                    Console.WriteLine("Is private? {0}", IsPrivateNetwork(ipep.Address));
+                    Console.WriteLine("Public address {0}", m_PublicAddress);
                     if (!IsPrivateNetwork(ipep.Address) && m_PublicAddress != null)
                     {
+                        Console.WriteLine("Received connection request from non-private: {0}", ipep);
                         localAddress = m_PublicAddress;
                     }
                 }
 
-                e.AddServer(ServerName, new IPEndPoint(localAddress, localPort));
+                ipep = new IPEndPoint(localAddress, localPort);
+
+                Console.WriteLine("Adding server listing for {0}", ipep);
+                e.AddServer(ServerName, ipep);
             }
             catch (Exception er)
             {

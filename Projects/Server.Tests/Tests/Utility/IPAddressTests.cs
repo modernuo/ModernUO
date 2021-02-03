@@ -53,6 +53,7 @@ namespace Server.Tests
         [InlineData("::1024:*-:1234", "::1024:8A13:1234", false, false)]
         [InlineData("::1024:?1:1234", "::1024:8A13:1234", false, false)]
         [InlineData("::1024:1_2:1234", "::1024:8A13:1234", false, false)]
+        [InlineData("172.16-31.*", "172.16.17.2", true, true)]
         public void TestIPMatch(string val, string addr, bool shouldMatch, bool shouldBeValid)
         {
             var address = IPAddress.Parse(addr);

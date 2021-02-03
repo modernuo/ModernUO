@@ -62,7 +62,7 @@ namespace Server.Tests.Network
 
             var strLength = fixedLength > -1 ? Math.Min(value.Length, fixedLength) : value.Length;
             var chars = value.AsSpan(0, strLength);
-;
+
             encoding.GetBytes(chars, buffer.Slice(offset));
 
             var reader = new CircularBufferReader(buffer.SliceToLength(firstSize), buffer.Slice(firstSize));

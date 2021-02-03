@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Server
@@ -17,37 +18,27 @@ namespace Server
 
         public static int Lookup(int body, int defaultValue)
         {
-            if (m_Table == null)
+            m_Table ??= Load();
+            var index = body < m_Table.Length ? m_Table[body] : -1;
+            if (index < 0)
             {
-                Load();
+                return defaultValue;
             }
 
-            var val = 0;
-
-            if (body >= 0 && body < m_Table!.Length)
-            {
-                val = m_Table[body];
-            }
-
-            if (val == 0)
-            {
-                val = defaultValue;
-            }
-
-            return val;
+            var val = m_Table[body];
+            return val == 0 ? defaultValue : val;
         }
 
-        private static void Load()
+        private static int[] Load()
         {
             var path = Path.Combine(Core.BaseDirectory, "Data/shrink.cfg");
 
             if (!File.Exists(path))
             {
-                m_Table = Array.Empty<int>();
-                return;
+                return Array.Empty<int>();
             }
 
-            m_Table = new int[1000];
+            var table = new List<int>();
 
             using var ip = new StreamReader(path);
             string line;
@@ -70,9 +61,9 @@ namespace Server
                         var body = Utility.ToInt32(split[0]);
                         var item = Utility.ToInt32(split[1]);
 
-                        if (body >= 0 && body < m_Table.Length)
+                        if (body >= 0)
                         {
-                            m_Table[body] = item;
+                            table[body] = item;
                         }
                     }
                 }
@@ -81,6 +72,8 @@ namespace Server
                     // ignored
                 }
             }
+
+            return table.ToArray();
         }
     }
 }

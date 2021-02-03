@@ -21,7 +21,7 @@ namespace Server.Network
 {
     public sealed class ServerInfo
     {
-        private IPEndPoint m_Address;
+        private readonly IPEndPoint m_Address;
 
         public ServerInfo(string name, int fullPercent, TimeZoneInfo tz, IPEndPoint address)
         {
@@ -40,7 +40,7 @@ namespace Server.Network
         public IPEndPoint Address
         {
             get => m_Address;
-            set
+            init
             {
                 m_Address = value;
                 Span<byte> integer = stackalloc byte[4];
