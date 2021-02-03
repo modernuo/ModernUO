@@ -536,9 +536,7 @@ namespace Server
 
         private static void ProcessDecay()
         {
-            Item item;
-
-            while (_decayQueue.TryDequeue(out item))
+            while (_decayQueue.TryDequeue(out var item))
             {
                 if (item.OnDecay())
                 {
@@ -555,7 +553,7 @@ namespace Server
                 return;
             }
 
-            WaitForWriteCompletion(); // Blocks Save until current disk flush is done.s
+            WaitForWriteCompletion(); // Blocks Save until current disk flush is done.
 
             ++_Saves;
 

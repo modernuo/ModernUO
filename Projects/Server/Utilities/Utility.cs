@@ -317,7 +317,7 @@ namespace Server
                             }
 
                             isRange = true;
-                            match = match && num > number;
+                            match = match && num >= number;
                             number = 0;
                             break;
                         }
