@@ -258,7 +258,7 @@ namespace Server.Gumps
                         AddButtonLabeled(20, 175, GetButtonID(3, 101), "Teleporters");
                         AddButtonLabeled(220, 175, GetButtonID(3, 102), "Moongates");
 
-                        AddButtonLabeled(20, 200, GetButtonID(3, 103), "Vendors");
+                        AddButtonLabeled(20, 200, GetButtonID(3, 103), "Generate Spawns");
                         AddButtonLabeled(220, 200, GetButtonID(3, 106), "Decoration");
 
                         AddButtonLabeled(20, 225, GetButtonID(3, 104), "Doors");
@@ -2114,6 +2114,10 @@ namespace Server.Gumps
                             case 104:
                                 InvokeCommand("DoorGen");
                                 notice = "Doors have been generated.";
+                                break;
+                            case 103:
+                                InvokeCommand("GenerateSpawners ./Data/Spawns/*.json");
+                                notice = "Spawners have been generated.";
                                 break;
                             case 105:
                                 InvokeCommand("SignGen");
