@@ -9,6 +9,10 @@ namespace Server.Factions
         {
         }
 
+        public FactionSawTrap(Serial serial) : base(serial)
+        {
+        }
+
         public override int LabelNumber => 1041047; // faction saw trap
 
         public override int AttackMessage => 1010544; // The blade cuts deep into your skin!
