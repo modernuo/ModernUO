@@ -218,7 +218,11 @@ namespace Server.Gumps
 
                 if (node is CAGObject obj)
                 {
-                    var itemID = obj.ItemID;
+                    var itemID = obj.ItemID ?? 0;
+                    if (itemID == 0)
+                    {
+                        Console.WriteLine("Type {0} does not have a valid item id or shrink table entry.", obj.Type);
+                    }
 
                     var bounds = ItemBounds.Table[itemID];
 

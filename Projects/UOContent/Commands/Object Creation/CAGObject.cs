@@ -21,12 +21,15 @@ namespace Server.Commands
 {
     public class CAGObject : CAGNode
     {
-        [JsonPropertyName("type")] public Type Type { get; set; }
-
-        [JsonPropertyName("gfx")] public int ItemID { get; set; }
+        [JsonPropertyName("type")]
+        public Type Type { get; set; }
 
 #nullable enable
-        [JsonPropertyName("hue")] public int? Hue { get; set; }
+        [JsonPropertyName("gfx")]
+        public int? ItemID { get; set; }
+
+        [JsonPropertyName("hue")]
+        public int? Hue { get; set; }
 #nullable disable
 
         public CAGCategory Parent { get; set; }

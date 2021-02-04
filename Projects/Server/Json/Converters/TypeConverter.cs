@@ -28,6 +28,13 @@ namespace Server.Json
                 throw new JsonException("The JSON value could not be converted to System.Type");
             }
 
+            var typeName = reader.GetString();
+            var type = AssemblyHandler.FindTypeByName(typeName);
+            if (type == null)
+            {
+                Console.WriteLine("Invalid type {0} deserialized", typeName);
+            }
+
             return AssemblyHandler.FindTypeByName(reader.GetString());
         }
 

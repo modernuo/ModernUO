@@ -17,7 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
+using Server.Items;
 using Server.Json;
+using Server.Utilities;
 
 namespace Server.Commands
 {
@@ -26,7 +28,7 @@ namespace Server.Commands
         public static CAGCategory Load()
         {
             var root = new CAGCategory("Add Menu");
-            var path = Path.Combine(Core.BaseDirectory, "Data/objects.json");
+            var path = Path.Combine(Core.BaseDirectory, "Data/categorization.json");
 
             var list = JsonConfig.Deserialize<List<CAGJson>>(path);
 
@@ -76,9 +78,61 @@ namespace Server.Commands
                 parent.Nodes = new CAGNode[cag.Objects.Length];
                 for (var i = 0; i < cag.Objects.Length; i++)
                 {
-                    var obj = cag.Objects[i];
-                    obj.Parent = parent;
-                    parent.Nodes[i] = obj;
+                    var cagObj = cag.Objects[i];
+                    cagObj.Parent = parent;
+                    parent.Nodes[i] = cagObj;
+
+                    // Set ItemID and Hue
+                    if (cagObj.Hue == null || cagObj.ItemID == null)
+                    {
+                        var type = cagObj.Type;
+
+                        if (type.IsAssignableTo(typeof(Item)))
+                        {
+                            var item = cagObj.Type.CreateInstance<Item>();
+
+                            if (cagObj.ItemID == null)
+                            {
+                                var itemID = item.ItemID;
+
+                                if (item is BaseAddon addon && addon.Components.Count == 1)
+                                {
+                                    itemID = addon.Components[0].ItemID;
+                                }
+
+                                if (itemID > TileData.MaxItemValue)
+                                {
+                                    itemID = 1;
+                                }
+
+                                cagObj.ItemID = itemID;
+                            }
+
+                            if (cagObj.Hue == null)
+                            {
+                                int hue = item.Hue & 0x7FFF;
+                                hue = (hue & 0x4000) != 0 ? 0 : hue;
+                                cagObj.Hue = hue == 0 ? null : hue;
+                            }
+
+                            item.Delete();
+                        }
+
+                        if (type.IsAssignableTo(typeof(Mobile)))
+                        {
+                            var m = cagObj.Type.CreateInstance<Mobile>();
+                            cagObj.ItemID ??= ShrinkTable.Lookup(m, 1);
+
+                            if (cagObj.Hue == null)
+                            {
+                                int hue = m.Hue & 0x7FFF;
+                                hue = (hue & 0x4000) != 0 ? 0 : hue;
+                                cagObj.Hue = hue == 0 ? null : hue;
+                            }
+
+                            m.Delete();
+                        }
+                    }
                 }
             }
 
@@ -86,10 +140,12 @@ namespace Server.Commands
         }
     }
 
-    public class CAGJson
+    public record CAGJson
     {
-        [JsonPropertyName("category")] public string Category { get; set; }
+        [JsonPropertyName("category")]
+        public string Category { get; init; }
 
-        [JsonPropertyName("objects")] public CAGObject[] Objects { get; set; }
+        [JsonPropertyName("objects")]
+        public CAGObject[] Objects { get; init; }
     }
 }

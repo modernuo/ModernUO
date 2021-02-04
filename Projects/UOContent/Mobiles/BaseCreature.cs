@@ -2567,7 +2567,7 @@ namespace Server.Mobiles
             }
         }
 
-        public override void DoHarmful(Mobile target, bool indirect)
+        public override void DoHarmful(Mobile target, bool indirect = false)
         {
             base.DoHarmful(target, indirect);
 
