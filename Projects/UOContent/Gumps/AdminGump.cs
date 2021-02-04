@@ -1463,22 +1463,13 @@ namespace Server.Gumps
 
         public static string FormatByteAmount(long totalBytes)
         {
-            if (totalBytes > 1000000000)
+            return totalBytes switch
             {
-                return $"{(double)totalBytes / 1073741824:F1} GB";
-            }
-
-            if (totalBytes > 1000000)
-            {
-                return $"{(double)totalBytes / 1048576:F1} MB";
-            }
-
-            if (totalBytes > 1000)
-            {
-                return $"{(double)totalBytes / 1024:F1} KB";
-            }
-
-            return $"{totalBytes} Bytes";
+                > 1000000000 => $"{(double)totalBytes / 1073741824:F1} GB",
+                > 1000000    => $"{(double)totalBytes / 1048576:F1} MB",
+                > 1000       => $"{(double)totalBytes / 1024:F1} KB",
+                _            => $"{totalBytes} Bytes"
+            };
         }
 
         public static void Initialize()
