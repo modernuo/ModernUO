@@ -69,7 +69,7 @@ namespace Server
 
             if (fileIndex != 0x7F)
             {
-                var mapPath = Core.FindDataFile($"map{fileIndex}LegacyMUL.uop", false, true);
+                var mapPath = Core.FindDataFile($"map{fileIndex}LegacyMUL.uop", false);
 
                 if (mapPath != null)
                 {
