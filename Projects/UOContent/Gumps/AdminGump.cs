@@ -253,8 +253,6 @@ namespace Server.Gumps
                     {
                         AddHtml(10, 125, 400, 20, Color(Center("Generating"), LabelColor32));
 
-                        AddButtonLabeled(220, 150, GetButtonID(3, 107), "Rebuild Categorization");
-
                         AddButtonLabeled(20, 175, GetButtonID(3, 101), "Teleporters");
                         AddButtonLabeled(220, 175, GetButtonID(3, 102), "Moongates");
 
@@ -2126,10 +2124,6 @@ namespace Server.Gumps
                             case 106:
                                 InvokeCommand("Decorate");
                                 notice = "Decoration has been generated.";
-                                break;
-                            case 107:
-                                InvokeCommand("RebuildCategorization");
-                                notice = "Categorization menu has been regenerated. The server should be restarted.";
                                 break;
 
                             case 110:

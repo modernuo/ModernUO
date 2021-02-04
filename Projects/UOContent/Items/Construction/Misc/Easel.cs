@@ -1,6 +1,8 @@
 namespace Server.Items
 {
-    [Furniture, Flippable(0xF65, 0xF67, 0xF69)]
+    [Furniture]
+    [Flippable(0xF65, 0xF67, 0xF69)]
+    [TypeAlias("Server.Items.Easle")]
     public class Easel : Item
     {
         [Constructible]

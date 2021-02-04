@@ -950,7 +950,7 @@ namespace Server
 
                     if (m_Combatant == null)
                     {
-                        m_NetState?.SendChangeCombatant(Serial.Zero);
+                        m_NetState.SendChangeCombatant(Serial.Zero);
                         m_ExpireCombatant?.Stop();
                         m_CombatTimer?.Stop();
 
@@ -959,7 +959,7 @@ namespace Server
                     }
                     else
                     {
-                        m_NetState?.SendChangeCombatant(m_Combatant.Serial);
+                        m_NetState.SendChangeCombatant(m_Combatant.Serial);
                         m_ExpireCombatant ??= Timer.DelayCall(ExpireCombatantDelay, ExpireCombatant);
                         m_ExpireCombatant.Start();
 
@@ -968,8 +968,8 @@ namespace Server
 
                         if (CanBeHarmful(m_Combatant, false))
                         {
-                            DoHarmful(m_Combatant);
-                            m_Combatant.PlaySound(m_Combatant.GetAngerSound());
+                            DoHarmful(m_Combatant); // due to reflection, might make m_Combatant null
+                            m_Combatant?.PlaySound(m_Combatant.GetAngerSound());
                         }
                     }
 
@@ -8618,12 +8618,7 @@ namespace Server
             }
         }
 
-        public virtual void DoHarmful(Mobile target)
-        {
-            DoHarmful(target, false);
-        }
-
-        public virtual void DoHarmful(Mobile target, bool indirect)
+        public virtual void DoHarmful(Mobile target, bool indirect = false)
         {
             if (target == null || Deleted)
             {

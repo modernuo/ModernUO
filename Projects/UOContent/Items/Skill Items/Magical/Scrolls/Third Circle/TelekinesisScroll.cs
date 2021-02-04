@@ -1,5 +1,6 @@
 namespace Server.Items
 {
+    [TypeAlias("Server.Items.TelekinisisScroll")]
     public class TelekinesisScroll : SpellScroll
     {
         [Constructible]

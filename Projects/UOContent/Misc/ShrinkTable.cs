@@ -19,7 +19,7 @@ namespace Server
         public static int Lookup(int body, int defaultValue)
         {
             m_Table ??= Load();
-            var index = body < m_Table.Length ? m_Table[body] : -1;
+            var index = body >= 0 && body < m_Table.Length ? m_Table[body] : -1;
             if (index < 0)
             {
                 return defaultValue;
@@ -35,10 +35,12 @@ namespace Server
 
             if (!File.Exists(path))
             {
+                Console.WriteLine("No table found!");
                 return Array.Empty<int>();
             }
 
-            var table = new List<int>();
+            var list = new List<(int, int)>();
+            var length = 0;
 
             using var ip = new StreamReader(path);
             string line;
@@ -61,10 +63,14 @@ namespace Server
                         var body = Utility.ToInt32(split[0]);
                         var item = Utility.ToInt32(split[1]);
 
-                        if (body >= 0)
+                        if (body < 0)
                         {
-                            table[body] = item;
+                            continue;
                         }
+
+                        list.Add((body, item));
+
+                        length = Math.Max(body + 1, length);
                     }
                 }
                 catch
@@ -73,7 +79,13 @@ namespace Server
                 }
             }
 
-            return table.ToArray();
+            var table = new int[length];
+            foreach (var (body, item) in list)
+            {
+                table[body] = item;
+            }
+
+            return table;
         }
     }
 }

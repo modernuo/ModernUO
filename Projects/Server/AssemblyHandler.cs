@@ -261,8 +261,12 @@ namespace Server
                 {
                     for (var j = 0; j < alias.Aliases.Length; j++)
                     {
-                        addToRefs(i, alias.Aliases[j], nameMap);
-                        addToRefs(i, alias.Aliases[j], nameMapInsensitive);
+                        var fullName = alias.Aliases[j];
+                        var name = fullName.Substring(fullName.LastIndexOf('.') + 1);
+                        addToRefs(i, fullName, nameMap);
+                        addToRefs(i, fullName.ToLower(), nameMapInsensitive);
+                        addToRefs(i, name, nameMap);
+                        addToRefs(i, name.ToLower(), nameMapInsensitive);
                     }
                 }
             }
