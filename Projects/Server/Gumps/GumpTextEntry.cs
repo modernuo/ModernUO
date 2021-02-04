@@ -48,7 +48,7 @@ namespace Server.Gumps
         public string InitialText { get; set; }
 
         public override string Compile(OrderedHashSet<string> strings) =>
-            $"{{ textentry {X} {Y} {Width} {Height} {Hue} {EntryID} {strings.GetOrAdd(InitialText)} }}";
+            $"{{ textentry {X} {Y} {Width} {Height} {Hue} {EntryID} {strings.GetOrAdd(InitialText ?? "")} }}";
 
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
@@ -67,7 +67,7 @@ namespace Server.Gumps
             writer.WriteAscii(' ');
             writer.WriteAscii(EntryID.ToString());
             writer.WriteAscii(' ');
-            writer.WriteAscii(strings.GetOrAdd(InitialText).ToString());
+            writer.WriteAscii(strings.GetOrAdd(InitialText ?? "").ToString());
             writer.Write((ushort)0x207D); // " }"
 
             entries++;

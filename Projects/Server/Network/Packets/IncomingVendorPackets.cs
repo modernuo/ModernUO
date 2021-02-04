@@ -38,7 +38,7 @@ namespace Server.Network
 
             if (!vendor.Deleted && Utility.RangeCheck(vendor.Location, state.Mobile.Location, 10) && flag == 0x02)
             {
-                var msgSize = reader.Remaining;
+                var msgSize = packetLength - 8; // Remaining bytes
 
                 if (msgSize / 7 > 100)
                 {

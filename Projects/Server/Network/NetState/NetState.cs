@@ -606,7 +606,7 @@ namespace Server.Network
 
         public bool HandleReceive()
         {
-            if (Connection == null)
+            if (Connection == null || !_running)
             {
                 return false;
             }

@@ -48,7 +48,7 @@ namespace Server.Gumps
         public bool Scrollbar { get; set; }
 
         public override string Compile(OrderedHashSet<string> strings) =>
-            $"{{ htmlgump {X} {Y} {Width} {Height} {strings.GetOrAdd(Text)} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} }}";
+            $"{{ htmlgump {X} {Y} {Width} {Height} {strings.GetOrAdd(Text ?? "")} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} }}";
 
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
@@ -63,7 +63,7 @@ namespace Server.Gumps
             writer.WriteAscii(' ');
             writer.WriteAscii(Height.ToString());
             writer.WriteAscii(' ');
-            writer.WriteAscii(strings.GetOrAdd(Text).ToString());
+            writer.WriteAscii(strings.GetOrAdd(Text ?? "").ToString());
             writer.WriteAscii(' ');
             writer.WriteAscii(Background ? '1' : '0');
             writer.WriteAscii(' ');
