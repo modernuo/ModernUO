@@ -9,7 +9,7 @@ namespace Server.Factions
         {
         }
 
-        public FactionSawTrap( Serial serial ) : base( serial )
+        public FactionSawTrap(Serial serial) : base(serial)
         {
         }
 
