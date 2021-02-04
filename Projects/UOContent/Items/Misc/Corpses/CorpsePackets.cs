@@ -73,8 +73,20 @@ namespace Server.Network
             }
 
             var list = beheld.EquipItems;
+            var hairItemID = beheld.Hair?.ItemID ?? 0;
+            var facialHairItemID = beheld.FacialHair?.ItemID ?? 0;
+            var count = list.Count;
+            if (hairItemID > 0)
+            {
+                count++;
+            }
 
-            var maxLength = 5 + (list.Count + 2) * (ns.ContainerGridLines ? 19 : 20);
+            if (facialHairItemID > 0)
+            {
+                count++;
+            }
+
+            var maxLength = 5 + count * (ns.ContainerGridLines ? 20 : 19);
             var writer = new SpanWriter(stackalloc byte[maxLength]);
             writer.Write((byte)0x3C);
             writer.Seek(4, SeekOrigin.Current); // Length and Count
@@ -103,10 +115,10 @@ namespace Server.Network
                 }
             }
 
-            if (beheld.Hair?.ItemID > 0)
+            if (hairItemID > 0)
             {
                 writer.Write(HairInfo.FakeSerial(beheld.Owner.Serial) - 2);
-                writer.Write((ushort)beheld.Hair.ItemID);
+                writer.Write((ushort)hairItemID);
                 writer.Write((byte)0); // signed, itemID offset
                 writer.Write((ushort)1);
                 writer.Write(0); // X/Y
@@ -115,15 +127,15 @@ namespace Server.Network
                     writer.Write((byte)0); // Grid Location?
                 }
                 writer.Write(beheld.Serial);
-                writer.Write((ushort)beheld.Hair.Hue);
+                writer.Write((ushort)beheld.Hair!.Hue);
 
                 ++written;
             }
 
-            if (beheld.FacialHair?.ItemID > 0)
+            if (facialHairItemID > 0)
             {
                 writer.Write(FacialHairInfo.FakeSerial(beheld.Owner.Serial) - 2);
-                writer.Write((ushort)beheld.FacialHair.ItemID);
+                writer.Write((ushort)facialHairItemID);
                 writer.Write((byte)0); // signed, itemID offset
                 writer.Write((ushort)1);
                 writer.Write(0); // X/Y
@@ -132,7 +144,7 @@ namespace Server.Network
                     writer.Write((byte)0); // Grid Location?
                 }
                 writer.Write(beheld.Serial);
-                writer.Write((ushort)beheld.FacialHair.Hue);
+                writer.Write((ushort)beheld.FacialHair!.Hue);
 
                 ++written;
             }
