@@ -56,6 +56,7 @@ namespace Server.Collections
         private static readonly Entry[] InitialEntries = new Entry[1];
         private int[] _buckets = HashHelpers.SizeOneIntArray;
         private Entry[] _entries = InitialEntries;
+        private ulong _fastModMultiplier;
         private int _count;
         private int _version;
         private readonly IEqualityComparer<TValue> _comparer;
@@ -81,11 +82,13 @@ namespace Server.Collections
             {
                 throw new ArgumentOutOfRangeException(nameof(capacity));
             }
+
             if (capacity > 0)
             {
                 int newSize = HashHelpers.GetPrime(capacity);
                 _buckets = new int[newSize];
                 _entries = new Entry[newSize];
+                _fastModMultiplier = HashHelpers.GetFastModMultiplier((uint)newSize);
             }
 
             if (comparer != EqualityComparer<TValue>.Default)
@@ -300,6 +303,13 @@ namespace Server.Collections
             ArrayPool<Entry>.Shared.Return(entriesToMove);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ref int GetBucketRef(uint hashCode)
+        {
+            int[] buckets = _buckets!;
+            return ref buckets[HashHelpers.FastMod(hashCode, (uint)buckets.Length, _fastModMultiplier)];
+        }
+
         public bool Remove(TValue value)
         {
             int index = IndexOf(value);
@@ -447,6 +457,9 @@ namespace Server.Collections
 
             int count = Count;
             Array.Copy(_entries, newEntries, count);
+
+            _fastModMultiplier = HashHelpers.GetFastModMultiplier((uint)newSize);
+
             for (int i = 0; i < count; ++i)
             {
                 AddEntryToBucket(ref newEntries[i], i, newBuckets);
@@ -459,27 +472,23 @@ namespace Server.Collections
 
         private int IndexOf(TValue value, out uint hashCode)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
             IEqualityComparer<TValue> comparer = _comparer;
-            hashCode = (uint)(comparer?.GetHashCode(value) ?? value.GetHashCode());
-            int index = _buckets[(int)(hashCode % (uint)_buckets.Length)] - 1;
-            if (index >= 0)
+            hashCode = (uint)(comparer?.GetHashCode(value) ?? value?.GetHashCode() ?? 0);
+            ref int bucket = ref GetBucketRef(hashCode);
+            int i = bucket - 1;
+            if (i >= 0)
             {
                 comparer ??= EqualityComparer<TValue>.Default;
                 Entry[] entries = _entries;
                 int collisionCount = 0;
                 do
                 {
-                    Entry entry = entries[index];
+                    Entry entry = entries[i];
                     if (entry.HashCode == hashCode && comparer.Equals(entry.Value, value))
                     {
                         break;
                     }
-                    index = entry.Next;
+                    i = entry.Next;
                     if (collisionCount >= entries.Length)
                     {
                         // The chain of entries forms a loop; which means a concurrent update has happened.
@@ -487,9 +496,9 @@ namespace Server.Collections
                         throw new InvalidOperationException(InvalidOperation_ConcurrentOperationsNotSupported);
                     }
                     ++collisionCount;
-                } while (index >= 0);
+                } while (i >= 0);
             }
-            return index;
+            return i;
         }
 
 #nullable enable
@@ -541,16 +550,16 @@ namespace Server.Collections
         {
             Entry[] entries = _entries;
             Entry entry = entries[entryIndex];
-            ref int b = ref _buckets[(int)(entry.HashCode % (uint)_buckets.Length)];
+            ref int bucket = ref GetBucketRef(entry.HashCode);
             // Bucket was pointing to removed entry. Update it to point to the next in the chain
-            if (b == entryIndex + 1)
+            if (bucket == entryIndex + 1)
             {
-                b = entry.Next + 1;
+                bucket = entry.Next + 1;
             }
             else
             {
                 // Start at the entry the bucket points to, and walk the chain until we find the entry with the index we want to remove, then fix the chain
-                int i = b - 1;
+                int i = bucket - 1;
                 int collisionCount = 0;
                 while (true)
                 {
@@ -576,16 +585,16 @@ namespace Server.Collections
         {
             Entry[] entries = _entries;
             Entry entry = entries[entryIndex];
-            ref int b = ref _buckets[(int)(entry.HashCode % (uint)_buckets.Length)];
+            ref int bucket = ref GetBucketRef(entry.HashCode);
             // Bucket was pointing to entry. Increment the index by incrementAmount.
-            if (b == entryIndex + 1)
+            if (bucket == entryIndex + 1)
             {
-                b += incrementAmount;
+                bucket += incrementAmount;
             }
             else
             {
                 // Start at the entry the bucket points to, and walk the chain until we find the entry with the index we want to increment.
-                int i = b - 1;
+                int i = bucket - 1;
                 int collisionCount = 0;
                 while (true)
                 {
