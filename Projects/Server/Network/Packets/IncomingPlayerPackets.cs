@@ -372,7 +372,7 @@ namespace Server.Network
                 if (!buttonExists)
                 {
                     state.WriteConsole("Invalid gump response, disconnecting...");
-                    state.Dispose();
+                    state.Disconnect();
                     return;
                 }
 
@@ -381,7 +381,7 @@ namespace Server.Network
                 if (switchCount < 0 || switchCount > gump.m_Switches)
                 {
                     state.WriteConsole("Invalid gump response, disconnecting...");
-                    state.Dispose();
+                    state.Disconnect();
                     return;
                 }
 
@@ -397,7 +397,7 @@ namespace Server.Network
                 if (textCount < 0 || textCount > gump.m_TextEntries)
                 {
                     state.WriteConsole("Invalid gump response, disconnecting...");
-                    state.Dispose();
+                    state.Disconnect();
                     return;
                 }
 
@@ -411,7 +411,7 @@ namespace Server.Network
                     if (textLength > 239)
                     {
                         state.WriteConsole("Invalid gump response, disconnecting...");
-                        state.Dispose();
+                        state.Disconnect();
                         return;
                     }
 
@@ -596,11 +596,11 @@ namespace Server.Network
                     "Sent ingame packet (0xD7x{0:X2}) before having been attached to a mobile",
                     packetId
                 );
-                state.Dispose();
+                state.Disconnect();
             }
             else if (ph.Ingame && state.Mobile.Deleted)
             {
-                state.Dispose();
+                state.Disconnect();
             }
             else
             {

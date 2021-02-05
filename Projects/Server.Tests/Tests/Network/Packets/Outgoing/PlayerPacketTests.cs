@@ -19,7 +19,7 @@ namespace Server.Tests.Network
 
             var expected = new StatLockInfo(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendStatLockInfo(m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -34,7 +34,7 @@ namespace Server.Tests.Network
         {
             var expected = new ChangeUpdateRange(range).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendChangeUpdateRange((byte)range);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -48,7 +48,7 @@ namespace Server.Tests.Network
         {
             var expected = new DeathStatus(dead).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDeathStatus(dead);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -64,7 +64,7 @@ namespace Server.Tests.Network
         {
             var expected = new ToggleSpecialAbility(abilityId, active).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendToggleSpecialAbility(abilityId, active);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -79,7 +79,7 @@ namespace Server.Tests.Network
             Serial m = serial;
             var expected = new DisplayProfile(m, header, body, footer).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDisplayProfile(m, header, body, footer);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -93,7 +93,7 @@ namespace Server.Tests.Network
         {
             var expected = new LiftRej(reason).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendLiftReject(reason);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -105,7 +105,7 @@ namespace Server.Tests.Network
         {
             var expected = new LogoutAck().Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendLogoutAck();
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -120,7 +120,7 @@ namespace Server.Tests.Network
         {
             var expected = new Weather(type, density, temp).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendWeather((byte)type, (byte)density, (byte)temp);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -135,7 +135,7 @@ namespace Server.Tests.Network
             var map = Map.Maps[mapID];
             var expected = new ServerChange(p, map).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendServerChange(p, map);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -153,7 +153,7 @@ namespace Server.Tests.Network
 
             var expected = new SkillUpdate(skills).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendSkillsUpdate(skills);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -168,7 +168,7 @@ namespace Server.Tests.Network
         {
             var expected = new Sequence(num).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendSequence(num);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -190,7 +190,7 @@ namespace Server.Tests.Network
 
             var expected = new SkillChange(skill).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendSkillChange(skill);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -206,7 +206,7 @@ namespace Server.Tests.Network
         {
             var expected = new LaunchBrowser(uri).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendLaunchBrowser(uri);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -226,7 +226,7 @@ namespace Server.Tests.Network
 
             var expected = new DragEffect(src, targ, itemId, hue, amount).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDragEffect(
                 src.Serial, src.Location,
                 targ.Serial, targ.Location,
@@ -244,7 +244,7 @@ namespace Server.Tests.Network
         {
             var expected = new SeasonChange(season, playSound).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendSeasonChange((byte)season, playSound);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -259,7 +259,7 @@ namespace Server.Tests.Network
         {
             var expected = new DisplayPaperdoll(m, title, warmode, canLift).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDisplayPaperdoll(m, title, warmode, canLift);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -274,7 +274,7 @@ namespace Server.Tests.Network
         {
             var expected = new PlayMusic(music).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPlayMusic(music);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -288,7 +288,7 @@ namespace Server.Tests.Network
         {
             var expected = new ScrollMessage(type, tip, text).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendScrollMessage(type, tip ,text);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -302,7 +302,7 @@ namespace Server.Tests.Network
             var date = new DateTime(2020, 1, 1, hour, minute, second);
             var expected = new CurrentTime(date).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendCurrentTime(date);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -316,7 +316,7 @@ namespace Server.Tests.Network
             var p = new Point3D(x, y, z);
             var expected = new PathfindMessage(p).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPathfindMessage(p);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -331,7 +331,7 @@ namespace Server.Tests.Network
         {
             var expected = new PingAck(ping).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPingAck(ping);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -343,7 +343,7 @@ namespace Server.Tests.Network
         {
             var expected = new ClearWeaponAbility().Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendClearWeaponAbility();
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -358,7 +358,7 @@ namespace Server.Tests.Network
 
             var expected = new DisplayHuePicker(huePicker).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDisplayHuePicker(huePicker.Serial, huePicker.ItemID);
 
             var result = ns.SendPipe.Reader.TryRead();

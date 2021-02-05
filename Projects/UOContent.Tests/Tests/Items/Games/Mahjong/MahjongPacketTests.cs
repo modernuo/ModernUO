@@ -17,7 +17,7 @@ namespace UOContent.Tests
 
             var expected = new MahjongJoinGame(game).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMahjongJoinGame(game);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -37,7 +37,7 @@ namespace UOContent.Tests
 
             var expected = new MahjongPlayersInfo(game, m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMahjongPlayersInfo(game, m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -55,7 +55,7 @@ namespace UOContent.Tests
 
             var expected = new MahjongGeneralInfo(game).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMahjongGeneralInfo(game);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -75,7 +75,7 @@ namespace UOContent.Tests
 
             var expected = new MahjongTilesInfo(game, m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMahjongTilesInfo(game, m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -95,7 +95,7 @@ namespace UOContent.Tests
 
             var expected = new MahjongTileInfo(game.Tiles[0], m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMahjongTileInfo(game.Tiles[0], m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -109,7 +109,7 @@ namespace UOContent.Tests
 
             var expected = new MahjongRelieve(game).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMahjongRelieve(game);
 
             var result = ns.SendPipe.Reader.TryRead();

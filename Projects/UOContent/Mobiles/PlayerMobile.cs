@@ -1287,7 +1287,7 @@ namespace Server.Mobiles
 
                     if (from.NetState != null)
                     {
-                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), from.NetState.Dispose);
+                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), from.NetState.Disconnect);
                     }
                 }
                 else if (from.AccessLevel >= AccessLevel.Administrator)

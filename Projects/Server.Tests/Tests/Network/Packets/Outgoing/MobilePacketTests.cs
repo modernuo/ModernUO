@@ -14,7 +14,7 @@ namespace Server.Tests.Network
 
             var expected = new DeathAnimation(killed, corpse).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDeathAnimation(killed, corpse);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -29,7 +29,7 @@ namespace Server.Tests.Network
 
             var expected = new BondedStatus(petSerial, bonded).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendBondedStatus(petSerial, bonded);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -46,7 +46,7 @@ namespace Server.Tests.Network
 
             var noto = 10;
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = protocolChanges;
             var expected = new MobileMoving(m, noto, ns.StygianAbyss).Compile();
 
@@ -67,7 +67,7 @@ namespace Server.Tests.Network
 
             var expected = new MobileName(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileName(m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -91,7 +91,7 @@ namespace Server.Tests.Network
                 delay
             ).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileAnimation(
                 mobile,
                 action,
@@ -120,7 +120,7 @@ namespace Server.Tests.Network
                 delay
             ).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendNewMobileAnimation(
                 mobile,
                 action,
@@ -145,7 +145,7 @@ namespace Server.Tests.Network
 
             var expected = new HealthbarPoison(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileHealthbar(m, Healthbar.Poison);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -166,7 +166,7 @@ namespace Server.Tests.Network
 
             var expected = new HealthbarYellow(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileHealthbar(m, Healthbar.Yellow);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -189,7 +189,7 @@ namespace Server.Tests.Network
 
             var expected = new MobileStatusCompact(canBeRenamed, m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileStatusCompact(m, canBeRenamed);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -220,7 +220,7 @@ namespace Server.Tests.Network
             beheld.Dex = 25;
             beheld.Stam = 100;
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;
 
             var expected = new MobileStatus(beholder, beheld, ns).Compile();
@@ -245,7 +245,7 @@ namespace Server.Tests.Network
             m.Dex = 25;
             m.Stam = 100;
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;
 
             var expected = new MobileStatusExtended(m, ns).Compile();
@@ -264,7 +264,7 @@ namespace Server.Tests.Network
             m.DefaultMobileInit();
             m.SolidHueOverride = solidHueOverride;
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;
 
             var expected = new MobileUpdate(m, ns.StygianAbyss).Compile();
@@ -319,7 +319,7 @@ namespace Server.Tests.Network
             beheld.FacialHairItemID = facialHairItemId;
             beheld.FacialHairHue = facialHairHue;
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;
 
             var expected = new MobileIncoming(ns, beholder, beheld).Compile();
@@ -343,7 +343,7 @@ namespace Server.Tests.Network
 
             var expected = new MobileHits(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileHits(m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -360,7 +360,7 @@ namespace Server.Tests.Network
 
             var expected = new MobileHitsN(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileHits(m, true);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -377,7 +377,7 @@ namespace Server.Tests.Network
 
             var expected = new MobileMana(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileMana(m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -394,7 +394,7 @@ namespace Server.Tests.Network
 
             var expected = new MobileManaN(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileMana(m, true);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -411,7 +411,7 @@ namespace Server.Tests.Network
 
             var expected = new MobileStam(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileStam(m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -428,7 +428,7 @@ namespace Server.Tests.Network
 
             var expected = new MobileStamN(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileStam(m, true);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -449,7 +449,7 @@ namespace Server.Tests.Network
 
             var expected = new MobileAttributes(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileAttributes(m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -470,7 +470,7 @@ namespace Server.Tests.Network
 
             var expected = new MobileAttributesN(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMobileAttributes(m, true);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -483,7 +483,7 @@ namespace Server.Tests.Network
             Serial e = 0x1000;
             var expected = new RemoveEntity(e).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendRemoveEntity(e);
 
             var result = ns.SendPipe.Reader.TryRead();

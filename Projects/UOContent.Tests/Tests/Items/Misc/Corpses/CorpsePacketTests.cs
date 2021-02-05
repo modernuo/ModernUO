@@ -24,7 +24,7 @@ namespace UOContent.Tests
 
             var expected = new CorpseEquip(m, c).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendCorpseEquip(m, c);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -44,7 +44,7 @@ namespace UOContent.Tests
 
             var c = new Corpse(m, m.Items);
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;
 
             var expected = (ns.ContainerGridLines ? (Packet)new CorpseContent6017(m, c) : new CorpseContent(m, c)).Compile();

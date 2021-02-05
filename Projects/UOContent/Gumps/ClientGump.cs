@@ -272,7 +272,7 @@ namespace Server.Gumps
                         {
                             focus.Say("I've been kicked!");
 
-                            m_State.Dispose();
+                            m_State.Disconnect();
 
                             CommandLogging.WriteLine(
                                 from,

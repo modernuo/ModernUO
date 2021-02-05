@@ -172,7 +172,7 @@ namespace Server.Misc
             if (ns.Connection != null)
             {
                 ns.WriteConsole("Disconnecting, bad version");
-                ns.Dispose();
+                ns.Disconnect();
             }
         }
 

@@ -12,7 +12,7 @@ namespace Server.Tests.Network
             byte lightLevel = 5;
             var expected = new GlobalLightLevel(lightLevel).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendGlobalLightLevel(lightLevel);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -26,7 +26,7 @@ namespace Server.Tests.Network
             byte lightLevel = 5;
             var expected = new PersonalLightLevel(serial, lightLevel).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPersonalLightLevel(serial, lightLevel);
 
             var result = ns.SendPipe.Reader.TryRead();

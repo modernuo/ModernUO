@@ -52,7 +52,7 @@ namespace UOContent.Tests
 
             beholder.Setup(m => m.CanSee(It.Is<IEntity>(e => e == boat))).Returns(true);
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = ProtocolChanges.HighSeas;
             var expected = new MoveBoatHS(beholder.Object, boat, d, speed, list, xOffset, yOffset).Compile();
 
@@ -95,7 +95,7 @@ namespace UOContent.Tests
 
             beholder.Setup(m => m.CanSee(It.Is<IEntity>(e => e == boat))).Returns(true);
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = ProtocolChanges.HighSeas;
 
             var expected = new DisplayBoatHS(beholder.Object, boat).Compile();

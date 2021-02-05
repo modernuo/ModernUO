@@ -33,7 +33,7 @@ namespace Server.Tests.Network
 
             var expected = new DisplayEquipmentInfo(item, info).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDisplayEquipmentInfo(
                 item.Serial,
                 info.Number,
@@ -56,7 +56,7 @@ namespace Server.Tests.Network
 
             var expected = new EquipUpdate(item).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendEquipUpdate(item);
 
             var result = ns.SendPipe.Reader.TryRead();

@@ -20,7 +20,7 @@ namespace Server.Tests.Network
 
             var expected = new DisplaySecureTrade(m, firstCont, secondCont, name).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDisplaySecureTrade(m, firstCont, secondCont, name);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -34,7 +34,7 @@ namespace Server.Tests.Network
 
             var expected = new CloseSecureTrade(cont).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendCloseSecureTrade(cont);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -52,7 +52,7 @@ namespace Server.Tests.Network
             var cont = first ? firstCont : secondCont;
             var expected = new UpdateSecureTrade(cont, first, second).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendUpdateSecureTrade(cont, first, second);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -67,7 +67,7 @@ namespace Server.Tests.Network
             var cont = new Container(World.NewItem);
             var expected = new UpdateSecureTrade(cont, flag, gold, plat).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendUpdateSecureTrade(cont, flag, gold, plat);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -85,7 +85,7 @@ namespace Server.Tests.Network
 
             var expected = new SecureTradeEquip(itemInCont, m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendSecureTradeEquip(itemInCont, m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -103,7 +103,7 @@ namespace Server.Tests.Network
 
             var expected = new SecureTradeEquip6017(itemInCont, m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges |= ProtocolChanges.ContainerGridLines;
 
             ns.SendSecureTradeEquip(itemInCont, m);

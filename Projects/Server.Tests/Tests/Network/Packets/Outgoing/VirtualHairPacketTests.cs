@@ -15,7 +15,7 @@ namespace Server.Tests
 
             var expected = new HairEquipUpdate(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendHairEquipUpdatePacket(m, HairInfo.FakeSerial(m.Serial), Layer.Hair);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -30,7 +30,7 @@ namespace Server.Tests
 
             var expected = new RemoveHair(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendRemoveHairPacket(HairInfo.FakeSerial(m.Serial));
 
             var result = ns.SendPipe.Reader.TryRead();

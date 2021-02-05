@@ -21,7 +21,7 @@ namespace Server.Engines.MLQuests
 
             var expected = new RaceChanger(female, race).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendRaceChanger(female, race);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -33,7 +33,7 @@ namespace Server.Engines.MLQuests
         {
             var expected = new CloseRaceChanger().Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendCloseRaceChanger();
 
             var result = ns.SendPipe.Reader.TryRead();

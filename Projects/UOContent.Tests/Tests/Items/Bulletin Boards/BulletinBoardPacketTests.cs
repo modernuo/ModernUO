@@ -21,7 +21,7 @@ namespace UOContent.Tests
 
             var expected = new BBDisplayBoard(bb).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendBBDisplayBoard(bb);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -48,7 +48,7 @@ namespace UOContent.Tests
             var expected = (content ?
                 (Packet)new BBMessageContent(bb, msg) : new BBMessageHeader(bb, msg)).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendBBMessage(bb, msg, content);
 
             var result = ns.SendPipe.Reader.TryRead();

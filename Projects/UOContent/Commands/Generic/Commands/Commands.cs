@@ -1250,7 +1250,7 @@ namespace Server.Commands.Generic
 
                         AddResponse($"They have been {(m_Ban ? "banned" : "kicked")}.");
 
-                        targState.Dispose();
+                        targState.Disconnect();
 
                         if (m_Ban)
                         {

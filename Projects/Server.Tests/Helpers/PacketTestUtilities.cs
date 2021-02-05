@@ -24,11 +24,5 @@ namespace Server.Tests.Network
 
             return new NetState(socket.Object);
         }
-
-        public static Map CreateTestMap()
-        {
-            var map = new Mock<Map>();
-            return map.Object;
-        }
     }
 }

@@ -2365,7 +2365,7 @@ namespace Server.Gumps
 
                                             if (!hasAccess)
                                             {
-                                                ns.Dispose();
+                                                ns.Disconnect();
                                                 ++count;
                                             }
                                         }
@@ -3736,7 +3736,7 @@ namespace Server.Gumps
                                             "kicking",
                                             CommandLogging.Format(m)
                                         );
-                                        ns.Dispose();
+                                        ns.Disconnect();
                                         notice = "They have been kicked.";
                                     }
                                     else
@@ -3762,7 +3762,7 @@ namespace Server.Gumps
 
                                         var ns = m.NetState;
 
-                                        ns?.Dispose();
+                                        ns?.Disconnect();
 
                                         notice = "They have been banned.";
                                     }

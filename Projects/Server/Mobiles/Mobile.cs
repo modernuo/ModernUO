@@ -2711,7 +2711,7 @@ namespace Server
             if (m_NetState != null)
             {
                 m_NetState.CancelAllTrades();
-                m_NetState.Dispose();
+                m_NetState.Disconnect();
             }
 
             DropHolding();

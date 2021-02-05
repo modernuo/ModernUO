@@ -15,7 +15,7 @@ namespace UOContent.Tests
         {
             var expected = new ChatMessagePacket(lang, number, param1, param2).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendChatMessage(lang, number, param1, param2);
 
             var result = ns.SendPipe.Reader.TryRead();
