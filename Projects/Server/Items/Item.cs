@@ -2442,7 +2442,7 @@ namespace Server
                 ClearProperties();
             }
         }
-#nullable disable
+#nullable restore
 
         public virtual int GetPacketFlags()
         {

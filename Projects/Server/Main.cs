@@ -40,7 +40,7 @@ namespace Server
         private static TimeSpan _profileTime;
 #nullable enable
         private static bool? _isRunningFromXUnit;
-#nullable disable
+#nullable restore
 
         private static int _itemCount;
         private static int _mobileCount;
@@ -80,7 +80,7 @@ namespace Server
                 return false;
             }
         }
-#nullable disable
+#nullable restore
 
         public static bool Profiling
         {

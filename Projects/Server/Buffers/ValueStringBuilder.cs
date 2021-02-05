@@ -375,7 +375,7 @@ namespace Server.Buffers
                 ArrayPool<char>.Shared.Return(toReturn);
             }
         }
-#nullable disable
+#nullable restore
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ReplaceAny(ReadOnlySpan<char> oldChars, ReadOnlySpan<char> newChars, int startIndex, int count)

@@ -7445,7 +7445,7 @@ namespace Server
                 ClearProperties();
             }
         }
-#nullable disable
+#nullable restore
 
         public virtual void SetLocation(Point3D newLocation, bool isTeleport)
         {
