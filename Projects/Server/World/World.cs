@@ -661,7 +661,7 @@ namespace Server
             {
                 default: // Not Running
                     {
-                        throw new Exception($"Added {typeof(T).Name} before world load.\n");
+                        throw new Exception($"Added {entity.GetType().Name} before world load.\n");
                     }
                 case WorldState.Saving:
                     {
@@ -674,7 +674,7 @@ namespace Server
                         if (_pendingDelete.Remove(entity.Serial))
                         {
                             Utility.PushColor(ConsoleColor.Red);
-                            WriteConsoleLine($"Deleted then added {typeof(T).Name} during {WorldState.ToString().ToLower()} state.");
+                            WriteConsoleLine($"Deleted then added {entity.GetType().Name} during {WorldState.ToString()} state.");
                             Utility.PopColor();
                         }
                         _pendingAdd[entity.Serial] = entity;
@@ -704,7 +704,7 @@ namespace Server
             {
                 default: // Not Running
                     {
-                        throw new Exception($"Removed {typeof(T).Name} before world load.\n");
+                        throw new Exception($"Removed {entity.GetType().Name} before world load.\n");
                     }
                 case WorldState.Saving:
                     {
