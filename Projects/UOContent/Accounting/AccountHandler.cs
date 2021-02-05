@@ -216,7 +216,7 @@ namespace Server.Misc
         {
             if (!(state.Account is Account acct))
             {
-                state.Dispose();
+                state.Disconnect();
                 return;
             }
 

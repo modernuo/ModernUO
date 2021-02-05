@@ -11,7 +11,7 @@ namespace Server.Tests.Network
         {
             var expected = new CancelArrow().Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendCancelArrow(0, 0, Serial.Zero);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -26,7 +26,7 @@ namespace Server.Tests.Network
         {
             var expected = new SetArrow(x, y).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendSetArrow(x, y, Serial.Zero);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -43,7 +43,7 @@ namespace Server.Tests.Network
 
             var expected = new CancelArrowHS(x, y, serial).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = ProtocolChanges.HighSeas;
             ns.SendCancelArrow(x, y, serial);
 
@@ -61,7 +61,7 @@ namespace Server.Tests.Network
 
             var expected = new SetArrowHS(x, y, serial).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = ProtocolChanges.HighSeas;
             ns.SendSetArrow(x, y, serial);
 

@@ -14,7 +14,7 @@ namespace Server.Tests.Network
         {
             var expected = new SpeedControl(speedControl).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendSpeedControl((SpeedControlSetting)speedControl);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -27,7 +27,7 @@ namespace Server.Tests.Network
             const Direction d = Direction.Left;
             var expected = new MovePlayer(d).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMovePlayer(d);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -44,7 +44,7 @@ namespace Server.Tests.Network
 
             var expected = new MovementRej(seq, m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMovementRej(seq, m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -61,7 +61,7 @@ namespace Server.Tests.Network
 
             var expected = MovementAck.Instantiate(seq, m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMovementAck(seq, m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -73,7 +73,7 @@ namespace Server.Tests.Network
         {
             var expected = new NullFastwalkStack().Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendInitialFastwalkStack(new uint[]{ 0, 0, 0, 0, 0, 0 });
 
             var result = ns.SendPipe.Reader.TryRead();

@@ -121,7 +121,7 @@ namespace Server.Items
                     pm.PlaceInBackpack(m_Bedroll);
 
                     pm.BedrollLogout = true;
-                    sender.Dispose();
+                    sender.Disconnect();
                 }
 
                 Campfire.RemoveEntry(m_Entry);

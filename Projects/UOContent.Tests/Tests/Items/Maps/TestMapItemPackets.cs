@@ -18,7 +18,7 @@ namespace UOContent.Tests
         {
             var mapItem = new MapItem(Map.Trammel);
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;
 
             var expected = (ns.NewCharacterList ?
@@ -40,7 +40,7 @@ namespace UOContent.Tests
 
             var expected = new MapCommand(mapItem, command, number, x, y).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMapCommand(mapItem, command, x, y, number > 0);
 
             var result = ns.SendPipe.Reader.TryRead();

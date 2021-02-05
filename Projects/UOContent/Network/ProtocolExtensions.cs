@@ -39,11 +39,11 @@ namespace Server.Network
             if (ph.Ingame && state.Mobile == null)
             {
                 state.WriteConsole("Sent in-game packet (0xBFx{0:X2}) before having been attached to a mobile", packetID);
-                state.Dispose();
+                state.Disconnect();
             }
             else if (ph.Ingame && state.Mobile.Deleted)
             {
-                state.Dispose();
+                state.Disconnect();
             }
             else
             {

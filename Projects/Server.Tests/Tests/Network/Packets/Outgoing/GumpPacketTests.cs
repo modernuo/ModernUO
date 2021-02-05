@@ -13,7 +13,7 @@ namespace Server.Tests.Network
         {
             var expected = new CloseGump(typeId, buttonId).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendCloseGump(typeId, buttonId);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -30,7 +30,7 @@ namespace Server.Tests.Network
 
             var expected = new DisplaySignGump(gumpSerial, gumpId, unknownString, caption).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDisplaySignGump(gumpSerial, gumpId, unknownString, caption);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -44,7 +44,7 @@ namespace Server.Tests.Network
         {
             var gump = new NameChangeDeedGump();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;
 
             var expected = gump.Compile(ns).Compile();
@@ -67,7 +67,7 @@ namespace Server.Tests.Network
 
             var gump = new AdminGump(m, AdminGumpPage.Clients);
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;
 
             var expected = gump.Compile(ns).Compile();

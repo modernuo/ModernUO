@@ -11,7 +11,7 @@ namespace Server.Tests.Network
         {
             var expected = new MapPatches().Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMapPatches();
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -23,7 +23,7 @@ namespace Server.Tests.Network
         {
             var expected = new InvalidMapEnable().Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendInvalidMap();
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -38,7 +38,7 @@ namespace Server.Tests.Network
             var map = Map.Parse(mapName);
             var expected = new MapChange(map).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMapChange(map);
 
             var result = ns.SendPipe.Reader.TryRead();

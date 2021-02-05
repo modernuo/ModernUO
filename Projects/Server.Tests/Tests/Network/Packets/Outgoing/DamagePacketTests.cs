@@ -13,7 +13,7 @@ namespace Server.Tests.Network
 
             var expected = new DamagePacketOld(serial, inputAmount).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDamage(serial, inputAmount);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -27,7 +27,7 @@ namespace Server.Tests.Network
 
             var expected = new DamagePacket(serial, inputAmount).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = ProtocolChanges.DamagePacket;
 
             ns.SendDamage(serial, inputAmount);

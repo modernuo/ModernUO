@@ -20,7 +20,7 @@ namespace UOContent.Tests
             pm.Skills.Tracking.BaseFixedPoint = 1000;
             var g = new TrackWhatGump(pm);
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;
 
             var expected = g.Compile(ns).Compile();

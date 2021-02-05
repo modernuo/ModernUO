@@ -40,7 +40,7 @@ namespace Server.Tests.Network
 
             var expected = new MultiTargetReqHS(t).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges |= ProtocolChanges.HighSeas;
             ns.SendMultiTargetReq(t);
 
@@ -57,7 +57,7 @@ namespace Server.Tests.Network
 
             var expected = new MultiTargetReq(t).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMultiTargetReq(t);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -68,7 +68,7 @@ namespace Server.Tests.Network
         public void TestCancelTarget()
         {
             var expected = new CancelTarget().Compile();
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendCancelTarget();
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -81,7 +81,7 @@ namespace Server.Tests.Network
             var t = new TestTarget(10, true, TargetFlags.Beneficial);
             var expected = new TargetReq(t).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendTargetReq(t);
 
             var result = ns.SendPipe.Reader.TryRead();

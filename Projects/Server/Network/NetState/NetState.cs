@@ -35,7 +35,7 @@ namespace Server.Network
     public delegate void DecodePacket(CircularBuffer<byte> buffer, ref int length);
     public delegate void EncodePacket(ReadOnlySpan<byte> inputBuffer, CircularBuffer<byte> outputBuffer, out int length);
 
-    public partial class NetState : IComparable<NetState>, IDisposable
+    public partial class NetState : IComparable<NetState>
     {
         private static int RecvPipeSize = 1024 * 64 + 1;
         private static int SendPipeSize = 1024 * 256 + 1;
@@ -270,7 +270,7 @@ namespace Server.Network
             else
             {
                 WriteConsole("Exceeded menu cap, disconnecting...");
-                Dispose();
+                Disconnect();
             }
         }
 
@@ -300,7 +300,7 @@ namespace Server.Network
             else
             {
                 WriteConsole("Exceeded hue picker cap, disconnecting...");
-                Dispose();
+                Disconnect();
             }
         }
 
@@ -330,7 +330,7 @@ namespace Server.Network
             else
             {
                 WriteConsole("Exceeded gump cap, disconnecting...");
-                Dispose();
+                Disconnect();
             }
         }
 
@@ -413,7 +413,7 @@ namespace Server.Network
                 Console.WriteLine(ex);
                 TraceException(ex);
 #endif
-                Dispose();
+                Disconnect();
             }
         }
 
@@ -454,7 +454,7 @@ namespace Server.Network
                     else
                     {
                         WriteConsole("Too much data pending, disconnecting...");
-                        Dispose();
+                        Disconnect();
                     }
                 }
                 else
@@ -468,7 +468,7 @@ namespace Server.Network
                 Console.WriteLine(ex);
                 TraceException(ex);
 #endif
-                Dispose();
+                Disconnect();
             }
             finally
             {
@@ -526,7 +526,7 @@ namespace Server.Network
             }
             finally
             {
-                Dispose();
+                Disconnect();
             }
         }
 
@@ -585,7 +585,7 @@ namespace Server.Network
             }
             finally
             {
-                Dispose();
+                Disconnect();
             }
         }
 
@@ -633,7 +633,7 @@ namespace Server.Network
                         // TODO: Throw exception instead?
                         if (bytesProcessed < 0)
                         {
-                            Dispose();
+                            Disconnect();
                             return false;
                         }
 
@@ -649,7 +649,7 @@ namespace Server.Network
                 Console.WriteLine(ex);
                 TraceException(ex);
 #endif
-                Dispose();
+                Disconnect();
                 return false;
             }
         }
@@ -675,7 +675,7 @@ namespace Server.Network
 
             while (Disposed.TryDequeue(out var ns))
             {
-                ns.Disconnect();
+                ns.Dispose();
                 TcpServer.Instances.Remove(ns);
                 count++;
             }
@@ -688,7 +688,7 @@ namespace Server.Network
             if (Connection != null && _nextActivityCheck - curTicks < 0)
             {
                 WriteConsole("Disconnecting due to inactivity...");
-                Dispose();
+                Disconnect();
             }
         }
 
@@ -715,7 +715,7 @@ namespace Server.Network
                 packetID != 0x91 && packetID != 0xA4 && packetID != 0xEF)
             {
                 WriteConsole("Encrypted client detected, disconnecting");
-                Dispose();
+                Disconnect();
                 return true;
             }
 
@@ -744,7 +744,7 @@ namespace Server.Network
             Console.WriteLine(ex);
         }
 
-        public virtual void Dispose()
+        public void Disconnect()
         {
             if (Connection == null || !_running)
             {
@@ -774,7 +774,7 @@ namespace Server.Network
             Disposed.Enqueue(this);
         }
 
-        private void Disconnect()
+        private void Dispose()
         {
             Connection = null;
 

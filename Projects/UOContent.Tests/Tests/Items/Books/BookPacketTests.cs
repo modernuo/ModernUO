@@ -21,7 +21,7 @@ namespace UOContent.Tests
 
             var expected = new BookHeader(m, book).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendBookCover(m, book);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -57,7 +57,7 @@ namespace UOContent.Tests
 
             var expected = new BookPageDetails(book).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendBookContent(book);
 
             var result = ns.SendPipe.Reader.TryRead();

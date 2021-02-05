@@ -30,7 +30,7 @@ namespace Server.Tests.Network
                 args
             ).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMessageLocalized(
                 serial,
                 graphic,
@@ -73,7 +73,7 @@ namespace Server.Tests.Network
                 args
             ).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMessageLocalizedAffix(
                 serial,
                 graphic,
@@ -112,7 +112,7 @@ namespace Server.Tests.Network
                 text
             ).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMessage(
                 serial,
                 graphic,
@@ -152,7 +152,7 @@ namespace Server.Tests.Network
                 text
             ).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMessage(
                 serial,
                 graphic,
@@ -177,7 +177,7 @@ namespace Server.Tests.Network
 
             var expected = new FollowMessage(serial, serial2).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendFollowMessage(serial, serial2);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -192,7 +192,7 @@ namespace Server.Tests.Network
 
             var expected = new ObjectHelpResponse(s, text).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendHelpResponse(s, text);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -211,7 +211,7 @@ namespace Server.Tests.Network
                 var prompt = new TestPrompt();
                 var expected = new UnicodePrompt(prompt).Compile();
 
-                using var ns = PacketTestUtilities.CreateTestNetState();
+                var ns = PacketTestUtilities.CreateTestNetState();
                 ns.SendPrompt(prompt);
 
                 var result = ns.SendPipe.Reader.TryRead();

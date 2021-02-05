@@ -26,7 +26,7 @@ namespace Server.Tests.Network
 
             var expected = new VendorSellList(vendor, sellStates).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendVendorSellList(vendor.Serial, sellStates);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -41,7 +41,7 @@ namespace Server.Tests.Network
 
             var expected = new EndVendorBuy(vendor.Serial).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendEndVendorSell(vendor.Serial);
 
             var result = ns.SendPipe.Reader.TryRead();

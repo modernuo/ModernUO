@@ -14,7 +14,7 @@ namespace Server.Tests.Network
 
             var expected = new Swing(attacker, defender).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendSwing(attacker, defender);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -26,7 +26,7 @@ namespace Server.Tests.Network
         {
             var expected = new SetWarMode(warmode).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendSetWarMode(warmode);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -40,7 +40,7 @@ namespace Server.Tests.Network
 
             var expected = new ChangeCombatant(serial).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendChangeCombatant(serial);
 
             var result = ns.SendPipe.Reader.TryRead();

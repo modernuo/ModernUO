@@ -19,7 +19,7 @@ namespace UOContent.Tests
                 mob, iconID, titleCliloc, secondaryCliloc, args, timeSpan
             ).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             BuffInfo.SendAddBuffPacket(ns, mob, iconID, titleCliloc, secondaryCliloc, args, timeSpan);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -33,7 +33,7 @@ namespace UOContent.Tests
             var buffIcon = BuffIcon.Disguised;
             var expected = new RemoveBuffPacket(m, buffIcon).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             BuffInfo.SendRemoveBuffPacket(ns, m, buffIcon);
 
             var result = ns.SendPipe.Reader.TryRead();

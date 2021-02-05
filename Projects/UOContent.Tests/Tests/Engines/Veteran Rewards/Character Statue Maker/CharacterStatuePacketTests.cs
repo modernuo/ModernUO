@@ -17,7 +17,7 @@ namespace UOContent.Tests
             Serial serial = s;
             var expected = new UpdateStatueAnimation(serial, status, anim, frame).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendStatueAnimation(serial, status, anim, frame);
 
             var result = ns.SendPipe.Reader.TryRead();

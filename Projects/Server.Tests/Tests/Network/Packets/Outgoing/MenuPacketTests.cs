@@ -46,7 +46,7 @@ namespace Server.Tests.Network
 
             var expected = new DisplayItemListMenu(menu).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDisplayItemListMenu(menu);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -67,7 +67,7 @@ namespace Server.Tests.Network
             );
 
             var expected = new DisplayQuestionMenu(menu).Compile();
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDisplayQuestionMenu(menu);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -90,7 +90,7 @@ namespace Server.Tests.Network
             var packet = newHaven && newPacket ? (Packet)new DisplayContextMenu(menu) : new DisplayContextMenuOld(menu);
             var expected = packet.Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             if (newHaven)
             {
                 ns.ProtocolChanges |= ProtocolChanges.NewHaven;

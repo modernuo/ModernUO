@@ -16,7 +16,7 @@ namespace UOContent.Tests
         {
             var expected = new DisplayHelpTopic(topic, display).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDisplayHelpTopic(topic, display);
 
             var result = ns.SendPipe.Reader.TryRead();

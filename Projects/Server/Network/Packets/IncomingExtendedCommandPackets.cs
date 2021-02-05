@@ -126,7 +126,7 @@ namespace Server.Network
                     );
                 }
 
-                state.Dispose();
+                state.Disconnect();
             }
             else
             {

@@ -140,7 +140,7 @@ namespace Server.Network
 
             if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
             {
-                state.Dispose();
+                state.Disconnect();
             }
             else
             {
@@ -197,7 +197,7 @@ namespace Server.Network
                 else
                 {
                     state.BlockAllPackets = false;
-                    state.Dispose();
+                    state.Disconnect();
                 }
             }
         }
@@ -256,7 +256,7 @@ namespace Server.Network
 
             if (a == null || charSlot < 0 || charSlot >= a.Length)
             {
-                state.Dispose();
+                state.Disconnect();
             }
             else
             {
@@ -277,11 +277,11 @@ namespace Server.Network
 
                 if (m == null)
                 {
-                    state.Dispose();
+                    state.Disconnect();
                     return;
                 }
 
-                m.NetState?.Dispose();
+                m.NetState?.Disconnect();
 
                 state.SendClientVersionRequest();
 
@@ -382,7 +382,7 @@ namespace Server.Network
         {
             if (state.SentFirstPacket)
             {
-                state.Dispose();
+                state.Disconnect();
                 return;
             }
 
@@ -397,7 +397,7 @@ namespace Server.Network
             )
             {
                 state.WriteConsole("Invalid client detected, disconnecting");
-                state.Dispose();
+                state.Disconnect();
                 return;
             }
 
@@ -424,7 +424,7 @@ namespace Server.Network
             }
             else
             {
-                state.Dispose();
+                state.Disconnect();
             }
         }
 
@@ -436,7 +436,7 @@ namespace Server.Network
 
             if (info == null || a == null || index < 0 || index >= info.Length)
             {
-                state.Dispose();
+                state.Disconnect();
             }
             else
             {
@@ -457,7 +457,7 @@ namespace Server.Network
             if (state._seed == 0)
             {
                 state.WriteConsole("Invalid client detected, disconnecting");
-                state.Dispose();
+                state.Disconnect();
                 return;
             }
 
@@ -473,7 +473,7 @@ namespace Server.Network
         {
             if (state.SentFirstPacket)
             {
-                state.Dispose();
+                state.Disconnect();
                 return;
             }
 
@@ -512,7 +512,7 @@ namespace Server.Network
         private static void AccountLogin_ReplyRej(this NetState state, ALRReason reason)
         {
             state.SendAccountLoginRejected(reason);
-            state.Dispose();
+            state.Disconnect();
         }
 
         private class LoginTimer : Timer

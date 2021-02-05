@@ -13,7 +13,7 @@ namespace Server.Tests.Network
 
             var expected = new PlaySound(soundID, p).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendSoundEffect(soundID, p);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -95,7 +95,7 @@ namespace Server.Tests.Network
         {
             var expected = new ScreenEffect(screenType).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendScreenEffect(screenType);
 
             var result = ns.SendPipe.Reader.TryRead();

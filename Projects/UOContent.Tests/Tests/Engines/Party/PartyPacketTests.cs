@@ -16,7 +16,7 @@ namespace UOContent.Tests
 
             var expected = new PartyEmptyList(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPartyRemoveMember(m);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -37,7 +37,7 @@ namespace UOContent.Tests
 
             var expected = new PartyRemoveMember(member.Serial, p).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPartyRemoveMember(member.Serial, p);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -58,7 +58,7 @@ namespace UOContent.Tests
 
             var expected = new PartyMemberList(p).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPartyMemberList(p);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -75,7 +75,7 @@ namespace UOContent.Tests
 
             var expected = new PartyTextMessage(toAll, serial, text).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPartyTextMessage(serial, text, toAll);
 
             var result = ns.SendPipe.Reader.TryRead();
@@ -89,7 +89,7 @@ namespace UOContent.Tests
 
             var expected = new PartyInvitation(m).Compile();
 
-            using var ns = PacketTestUtilities.CreateTestNetState();
+            var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPartyInvitation(m);
 
             var result = ns.SendPipe.Reader.TryRead();
