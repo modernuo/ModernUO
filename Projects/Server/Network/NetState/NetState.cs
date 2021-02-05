@@ -32,8 +32,8 @@ namespace Server.Network
 {
     public delegate void NetStateCreatedCallback(NetState ns);
 
-    public delegate void DecodePacket(ref CircularBuffer<byte> buffer, ref int length);
-    public delegate void EncodePacket(ReadOnlySpan<byte> inputBuffer, ref CircularBuffer<byte> outputBuffer, out int length);
+    public delegate void DecodePacket(CircularBuffer<byte> buffer, ref int length);
+    public delegate void EncodePacket(ReadOnlySpan<byte> inputBuffer, CircularBuffer<byte> outputBuffer, out int length);
 
     public partial class NetState : IComparable<NetState>, IDisposable
     {
@@ -392,7 +392,7 @@ namespace Server.Network
             {
                 if (_packetEncoder != null)
                 {
-                    _packetEncoder(span, ref buffer, out length);
+                    _packetEncoder(span, buffer, out length);
                 }
                 else
                 {
@@ -533,7 +533,7 @@ namespace Server.Network
         private void DecodePacket(ArraySegment<byte>[] buffer, ref int length)
         {
             CircularBuffer<byte> cBuffer = new CircularBuffer<byte>(buffer);
-            _packetDecoder?.Invoke(ref cBuffer, ref length);
+            _packetDecoder?.Invoke(cBuffer, ref length);
         }
 
         private async void RecvTask(object state)
