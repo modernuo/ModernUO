@@ -535,7 +535,7 @@ namespace Server.Collections
             ++_version;
             return actualIndex;
         }
-#nullable disable
+#nullable restore
 
         // Returns the index of the next entry in the bucket
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

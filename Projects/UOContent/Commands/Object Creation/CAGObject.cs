@@ -30,7 +30,7 @@ namespace Server.Commands
 
         [JsonPropertyName("hue")]
         public int? Hue { get; set; }
-#nullable disable
+#nullable restore
 
         public CAGCategory Parent { get; set; }
 
