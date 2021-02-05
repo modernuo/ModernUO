@@ -417,7 +417,7 @@ namespace Server.Network
 
                 // Comment out these lines to turn off huffman compression
                 state.CompressionEnabled = true;
-                state.PacketEncoder = NetworkCompression.Compress;
+                state.PacketEncoder ??= NetworkCompression.Compress;
 
                 state.SendSupportedFeature();
                 state.SendCharacterList();
