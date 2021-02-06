@@ -164,8 +164,9 @@ namespace System.Buffers
 
             int index = _buffer.Slice(Position, size).IndexOfTerminator(sizeT);
 
+            var span = _buffer.Slice(Position, index < 0 ? size : index);
             Position += isFixedLength || index < 0 ? size : index + sizeT;
-            return TextEncoding.GetString(_buffer.Slice(Position, index < 0 ? size : index), encoding, safeString);
+            return TextEncoding.GetString(span, encoding, safeString);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
