@@ -282,22 +282,14 @@ namespace Server.Mobiles
 
                 var version = reader.ReadInt();
 
-                m_Mobiles = reader.ReadEntityList<Mobile>();
+                List<IEntity> entities = new (Items);
+                entities.AddRange(reader.ReadEntityList<Mobile>());
 
-                for (var i = 0; i < m_Mobiles.Count; ++i)
-                {
-                    m_Mobiles[i].Delete();
-                }
+                m_Mobiles = new List<Mobile>(); // This cannot be null in case it is referenced before disposing
 
-                m_Mobiles.Clear();
+                Timer.DelayCall(DeleteEntities, entities);
 
-                for (var i = Items.Count - 1; i >= 0; --i)
-                {
-                    if (i < Items.Count)
-                    {
-                        Items[i].Delete();
-                    }
-                }
+                m_Table = new Dictionary<Type, IEntity>();
 
                 if (m_Cache == null)
                 {
@@ -307,8 +299,14 @@ namespace Server.Mobiles
                 {
                     Delete();
                 }
+            }
 
-                m_Table = new Dictionary<Type, IEntity>();
+            private void DeleteEntities(List<IEntity> entities)
+            {
+                foreach (var entity in entities)
+                {
+                    entity.Delete();
+                }
             }
         }
     }
