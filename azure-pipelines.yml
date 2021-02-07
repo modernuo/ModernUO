@@ -18,7 +18,7 @@ jobs:
     displayName: 'Install .NET 5'
     inputs:
       packageType: sdk
-      version: '5.0.100'
+      version: '5.0.102'
   - task: NuGetAuthenticate@0
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
