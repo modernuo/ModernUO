@@ -4561,7 +4561,8 @@ namespace Server.Mobiles
 
         public virtual bool HasRecipe(Recipe r) => r != null && HasRecipe(r.ID);
 
-        public virtual bool HasRecipe(int recipeID) => m_AcquiredRecipes.TryGetValue(recipeID, out var value) && value;
+        public virtual bool HasRecipe(int recipeID) =>
+            m_AcquiredRecipes != null && m_AcquiredRecipes.TryGetValue(recipeID, out var value) && value;
 
         public virtual void AcquireRecipe(Recipe r)
         {
@@ -4574,7 +4575,6 @@ namespace Server.Mobiles
         public virtual void AcquireRecipe(int recipeID)
         {
             m_AcquiredRecipes ??= new Dictionary<int, bool>();
-
             m_AcquiredRecipes[recipeID] = true;
         }
 
