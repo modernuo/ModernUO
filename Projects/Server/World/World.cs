@@ -329,15 +329,38 @@ namespace Server
                 }
 
                 bin.Read(buffer.AsSpan());
+                bool serializedProperly;
 
-                t.Deserialize(br);
-
-                if (br.Position != entry.Length)
+                try
                 {
-                    WriteConsoleLine($"***** Bad deserialize on {t.GetType()} *****");
-                    WriteConsoleLine(
-                        $"Serialized object was {entry.Length} bytes, but {br.Position} bytes deserialized"
-                    );
+                    t.Deserialize(br);
+
+
+
+                    if (br.Position != entry.Length)
+                    {
+                        Utility.PushColor(ConsoleColor.Red);
+                        WriteConsoleLine($"***** Bad deserialize of {t.GetType()} *****");
+                        WriteConsoleLine(
+                            $"Serialized object was {entry.Length} bytes, but {br.Position} bytes deserialized"
+                        );
+                        Utility.PopColor();
+
+                        serializedProperly = false;
+                    }
+                    else
+                    {
+                        serializedProperly = true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Utility.PushColor(ConsoleColor.Red);
+                    WriteConsoleLine($"***** Bad deserialize of {t.GetType()} *****");
+                    WriteConsoleLine(e.ToString());
+                    Utility.PopColor();
+
+                    serializedProperly = false;
 
                     WriteConsoleLine("Delete the object and continue? (y/n)");
 
@@ -345,11 +368,23 @@ namespace Server
                     {
                         throw new Exception("Deserialization failed.");
                     }
+
                     t.Delete();
+                }
+
+                if (serializedProperly)
+                {
+                    t.InitializeSaveBuffer(buffer);
                 }
                 else
                 {
-                    t.InitializeSaveBuffer(buffer);
+                    WriteConsoleLine("Delete the object and continue? (y/n)");
+
+                    if (Console.ReadKey(true).Key != ConsoleKey.Y)
+                    {
+                        throw new Exception("Deserialization failed.");
+                    }
+                    t.Delete();
                 }
             }
         }
