@@ -206,16 +206,14 @@ namespace Server.Engines.Doom
             eable.Free();
 
             e.Mobile.SendMessage("Generating Lamp Room puzzle...");
+
+            NetState.FlushAll();
+
             new LeverPuzzleController().MoveToWorld(lp_Center, Map.Malas);
 
-            if (!installed)
-            {
-                e.Mobile.SendMessage("There was a problem generating the puzzle.");
-            }
-            else
-            {
-                e.Mobile.SendMessage("Lamp room puzzle successfully generated.");
-            }
+            e.Mobile.SendMessage(
+                !installed ? "There was a problem generating the puzzle." : "Lamp room puzzle successfully generated."
+            );
         }
 
         public static Item AddLeverPuzzlePart(int[] loc, Item newitem)

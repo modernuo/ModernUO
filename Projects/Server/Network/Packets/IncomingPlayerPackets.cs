@@ -372,7 +372,7 @@ namespace Server.Network
                 if (!buttonExists)
                 {
                     state.WriteConsole("Invalid gump response, disconnecting...");
-                    state.Disconnect();
+                    state.Disconnect("Invalid gump response.");
                     return;
                 }
 
@@ -381,7 +381,7 @@ namespace Server.Network
                 if (switchCount < 0 || switchCount > gump.m_Switches)
                 {
                     state.WriteConsole("Invalid gump response, disconnecting...");
-                    state.Disconnect();
+                    state.Disconnect("Invalid gump response.");
                     return;
                 }
 
@@ -397,7 +397,7 @@ namespace Server.Network
                 if (textCount < 0 || textCount > gump.m_TextEntries)
                 {
                     state.WriteConsole("Invalid gump response, disconnecting...");
-                    state.Disconnect();
+                    state.Disconnect("Invalid gump response.");
                     return;
                 }
 
@@ -411,7 +411,7 @@ namespace Server.Network
                     if (textLength > 239)
                     {
                         state.WriteConsole("Invalid gump response, disconnecting...");
-                        state.Disconnect();
+                        state.Disconnect("Invalid gump response.");
                         return;
                     }
 
@@ -593,14 +593,14 @@ namespace Server.Network
             if (ph.Ingame && state.Mobile == null)
             {
                 state.WriteConsole(
-                    "Sent ingame packet (0xD7x{0:X2}) before having been attached to a mobile",
+                    "Sent in-game packet (0xD7x{0:X2}) before being attached to a mobile",
                     packetId
                 );
-                state.Disconnect();
+                state.Disconnect($"Sent in-game packet (0xD7x{packetId:X2}) before being attached to a mobile.");
             }
             else if (ph.Ingame && state.Mobile.Deleted)
             {
-                state.Disconnect();
+                state.Disconnect($"Sent in-game packet(0xD7x{packetId:X2}) but mobile is deleted.");
             }
             else
             {

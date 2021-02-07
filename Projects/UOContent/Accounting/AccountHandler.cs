@@ -216,7 +216,7 @@ namespace Server.Misc
         {
             if (!(state.Account is Account acct))
             {
-                state.Disconnect();
+                state.Disconnect("Attempted to delete a character but the account could not be found.");
                 return;
             }
 

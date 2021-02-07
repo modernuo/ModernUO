@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Server.Network
 {
@@ -82,87 +83,25 @@ namespace Server.Network
             }
         }
 
-        public static int ProcessPacket(this NetState ns, ArraySegment<byte>[] buffer)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfoPacket(byte packetId)
         {
-            var reader = new CircularBufferReader(buffer);
-
-            var packetId = reader.ReadByte();
-
-            if (!ns.Seeded)
+            // These packets can arrive at any time during the login process. They're just informational.
+            return packetId switch
             {
-                if (packetId == 0xEF)
-                {
-                    // new packet in client 6.0.5.0 replaces the traditional seed method with a seed packet
-                    // 0xEF = 239 = multicast IP, so this should never appear in a normal seed. So this is backwards compatible with older clients.
-                    ns.Seeded = true;
-                }
-                else
-                {
-                    var seed = (packetId << 24) | (reader.ReadByte() << 16) | (reader.ReadByte() << 8) | reader.ReadByte();
-
-                    if (seed == 0)
-                    {
-                        ns.WriteConsole("Invalid client detected, disconnecting");
-                        return -1;
-                    }
-
-                    ns._seed = seed;
-                    ns.Seeded = true;
-
-                    return 4;
-                }
-            }
-
-            if (ns.CheckEncrypted(packetId))
-            {
-                return -1;
-            }
-
-            // Get Handlers
-            var handler = ns.GetHandler(packetId);
-
-            if (handler == null)
-            {
-                reader.Trace(ns);
-                return -1;
-            }
-
-            // We use this for failing fast where we already know the length, but may not read it entirely
-            var packetLength = handler.Length;
-
-            if (handler.Length <= 0 && reader.Length >= 3)
-            {
-                packetLength = reader.ReadUInt16();
-                if (packetLength < 3)
-                {
-                    return -1;
-                }
-            }
-
-            // Not enough data, let's wait for more to come in
-            if (reader.Length < packetLength)
-            {
-                return 0;
-            }
-
-            if (handler.Ingame && ns.Mobile?.Deleted != false)
-            {
-                ns.WriteConsole("Sent ingame packet (0x{1:X2}) without being attached to a valid mobile.", ns, packetId);
-                return -1;
-            }
-
-            var throttled = handler.ThrottleCallback?.Invoke(ns) ?? TimeSpan.Zero;
-
-            if (throttled > TimeSpan.Zero)
-            {
-                ns.ThrottledUntil = DateTime.UtcNow + throttled;
-            }
-
-            // The packet length is sent in as a ref to support situations where a smaller/larger packet is read.
-            // Example is DropReq to support 6.0.1.7+ where the packet is 1 byte larger
-            handler.OnReceive(ns, reader, ref packetLength);
-
-            return packetLength;
+                0x01 => true, // Disconnect
+                0x73 => true, // Ping
+                0xA4 => true, // SystemInfo
+                0xB1 => true, // Gump Response
+                0xBB => true, // Account ID
+                0xBD => true, // Client Version
+                0xBE => true, // Assist Version
+                0xD9 => true, // Hardware Info
+                0xDD => true, // Gumps (Packed)
+                0xE1 => true, // Client Type
+                0xF4 => true, // CrashReport
+                _    => false
+            };
         }
     }
 }

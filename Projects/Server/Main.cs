@@ -489,7 +489,7 @@ namespace Server
                     // Handle networking
                     events += TcpServer.Slice();
                     events += NetState.HandleAllReceives();
-                    events += NetState.FlushAll();
+                    events += NetState.Slice();
 
                     // Execute captured post-await methods (like Timer.Pause)
                     events += _eventLoopContext.ExecuteTasks();

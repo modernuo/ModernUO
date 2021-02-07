@@ -24,23 +24,26 @@ namespace Server.Accounting
                 return;
             }
 
-            IncomingPackets.RegisterThrottler(0x80, Throttle_Callback);
-            IncomingPackets.RegisterThrottler(0x91, Throttle_Callback);
-            IncomingPackets.RegisterThrottler(0xCF, Throttle_Callback);
+            IncomingPackets.RegisterThrottler(0x80, Throttle);
+            IncomingPackets.RegisterThrottler(0x91, Throttle);
+            IncomingPackets.RegisterThrottler(0xCF, Throttle);
         }
 
-        public static TimeSpan Throttle_Callback(NetState ns)
+        public static bool Throttle(int packetId, NetState ns, out bool drop)
         {
             var accessLog = FindAccessLog(ns);
 
             if (accessLog == null)
             {
-                return TimeSpan.Zero;
+                drop = false;
+                return true;
             }
 
             var date = DateTime.UtcNow;
             var access = accessLog.LastAccessTime + ComputeThrottle(accessLog.Counts);
-            return date >= access ? TimeSpan.Zero : date - access;
+            var allow = date >= access;
+            drop = !allow;
+            return allow;
         }
 
         public static InvalidAccountAccessLog FindAccessLog(NetState ns)

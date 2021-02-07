@@ -106,9 +106,9 @@ namespace Server.Network
 
         public static void ExtendedCommand(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            int packetID = reader.ReadUInt16();
+            int packetId = reader.ReadUInt16();
 
-            var ph = GetExtendedHandler(packetID);
+            var ph = GetExtendedHandler(packetId);
 
             if (ph == null)
             {
@@ -122,11 +122,11 @@ namespace Server.Network
                 {
                     state.WriteConsole(
                         "Sent in-game packet (0xBFx{0:X2}) before having been attached to a mobile",
-                        packetID
+                        packetId
                     );
                 }
 
-                state.Disconnect();
+                state.Disconnect($"Sent in-game packet(0xBFx{packetId:X2}) but mobile is deleted.");
             }
             else
             {

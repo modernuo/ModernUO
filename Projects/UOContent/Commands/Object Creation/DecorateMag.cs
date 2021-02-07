@@ -6,6 +6,7 @@ using Server.Engines.Quests.Haven;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
 using Server.Items;
+using Server.Network;
 using Server.Utilities;
 
 namespace Server.Commands
@@ -27,6 +28,8 @@ namespace Server.Commands
             m_Count = 0;
 
             m_Mobile.SendMessage("Generating world decoration, please wait.");
+
+            NetState.FlushAll();
 
             Generate("Data/Decoration/RuinedMaginciaTram", Map.Trammel);
             Generate("Data/Decoration/RuinedMaginciaFel", Map.Felucca);

@@ -11,7 +11,7 @@ namespace Server.Network
 
             var buffer = (board.BoardName ?? "").GetBytesUtf8();
 
-            Stream.Write((byte)0x00);   // PacketID
+            Stream.Write((byte)0x00);   // Packet ID
             Stream.Write(board.Serial); // Bulletin board serial
 
             // Bulletin board name
@@ -38,7 +38,7 @@ namespace Server.Network
 
             EnsureCapacity(22 + poster.Length + subject.Length + time.Length);
 
-            Stream.Write((byte)0x01);   // PacketID
+            Stream.Write((byte)0x01);   // Packet ID
             Stream.Write(board.Serial); // Bulletin board serial
             Stream.Write(msg.Serial);   // Message serial
 
@@ -77,7 +77,7 @@ namespace Server.Network
 
             EnsureCapacity(22 + poster.Length + subject.Length + time.Length);
 
-            Stream.Write((byte)0x02);   // PacketID
+            Stream.Write((byte)0x02);   // Packet ID
             Stream.Write(board.Serial); // Bulletin board serial
             Stream.Write(msg.Serial);   // Message serial
 
