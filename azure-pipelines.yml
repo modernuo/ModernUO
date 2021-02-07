@@ -20,12 +20,8 @@ jobs:
       packageType: sdk
       version: '5.0.102'
   - task: NuGetAuthenticate@0
-  - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
-    displayName: 'Restore NuGet Packages'
-  - script: dotnet build -r win-x64 -c Release --no-restore Projects/Server/Server.csproj
-    displayName: 'Build Server'
-  - script: dotnet build -r win-x64 -c Release --no-restore Projects/UOContent/UOContent.csproj
-    displayName: 'Build UO Content'
+  - script: ./publish.cmd Release $(os)
+    displayName: 'Build'
   - script: dotnet test --no-restore
     displayName: 'Test'
 
@@ -62,11 +58,7 @@ jobs:
       packageType: sdk
       version: '5.0.102'
   - task: NuGetAuthenticate@0
-  - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
-    displayName: 'Restore NuGet Packages'
-  - script: dotnet build -r $(os) -c Release --no-restore Projects/Server/Server.csproj
-    displayName: 'Build Server'
-  - script: dotnet build -r $(os) -c Release --no-restore Projects/UOContent/UOContent.csproj
-    displayName: 'Build UO Content'
+  - script: ./publish.cmd Release $(os)
+    displayName: 'Build'
   - script: dotnet test --no-restore
     displayName: 'Test'
