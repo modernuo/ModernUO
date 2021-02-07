@@ -13,15 +13,6 @@ namespace Server.Network
         private static readonly int[] Delays = new int[0x100];
         private static string ThrottlesConfiguration = "Configuration/throttles.json";
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void SetDefault(int packetId, int value)
-        {
-            if (Delays[packetId] == 0)
-            {
-                Delays[packetId] = value;
-            }
-        }
-
         public static void Initialize()
         {
             CommandSystem.Register("GetThrottle", AccessLevel.Administrator, GetThrottle);
@@ -30,24 +21,28 @@ namespace Server.Network
             var configPath = ThrottlesConfiguration;
             var path = Path.Join(Core.BaseDirectory, configPath);
 
-            var throttles = JsonConfig.Deserialize<SortedDictionary<string, int>>(path);
-            foreach (var (k, v) in throttles)
+            if (File.Exists(path))
             {
-                if (!int.TryParse(k, out var packetId))
+                var throttles = JsonConfig.Deserialize<SortedDictionary<string, int>>(path);
+                foreach (var (k, v) in throttles)
                 {
-                    Utility.PushColor(ConsoleColor.DarkYellow);
-                    Console.WriteLine("Packet Throttles: Error deserializing {0} from {1}", k, configPath);
-                    Utility.PopColor();
-                    continue;
+                    if (!int.TryParse(k, out var packetId))
+                    {
+                        Utility.PushColor(ConsoleColor.DarkYellow);
+                        Console.WriteLine("Packet Throttles: Error deserializing {0} from {1}", k, configPath);
+                        Utility.PopColor();
+                        continue;
+                    }
+
+                    Delays[packetId] = v;
                 }
-
-                Delays[packetId] = v;
             }
-
-            // Defaults
-            SetDefault(0x03, 5); // Speech
-            SetDefault(0xAD, 5); // Speech
-            SetDefault(0x75, 500); // Rename request
+            else
+            {
+                Delays[0x03] = 5; // Speech
+                Delays[0xAD] = 5; // Speech
+                Delays[0x75] = 500; // Rename request
+            }
 
             for (int i = 0; i < 0x100; i++)
             {
