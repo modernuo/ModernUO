@@ -20,7 +20,7 @@ jobs:
       packageType: sdk
       version: '5.0.102'
   - task: NuGetAuthenticate@0
-  - script: ./publish.cmd Release $(os)
+  - script: ./publish.cmd Release win
     displayName: 'Build'
   - script: dotnet test --no-restore
     displayName: 'Test'
@@ -30,19 +30,19 @@ jobs:
     matrix:
       'CentOS 8':
         containerImage: modernuo/centos-net5:8
-        os: centos.8-x64
+        os: centos.8
       'CentOS 7':
         containerImage: centos:7
-        os: centos.7-x64
+        os: centos.7
       'Debian 10':
         containerImage: mcr.microsoft.com/dotnet/sdk:5.0-buster-slim
-        os: debian.10-x64
+        os: debian.10
       # 'Debian 11':
       #   containerImage: amd64/buildpack-deps:bullseye
       #   os: debian.11-x64
       'Ubuntu 20':
         containerImage: mcr.microsoft.com/dotnet/sdk:5.0-focal
-        os: ubuntu.20.04-x64
+        os: ubuntu.20.04
 
   displayName: Linux
 
