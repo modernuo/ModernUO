@@ -18,14 +18,10 @@ jobs:
     displayName: 'Install .NET 5'
     inputs:
       packageType: sdk
-      version: '5.0.100'
+      version: '5.0.102'
   - task: NuGetAuthenticate@0
-  - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
-    displayName: 'Restore NuGet Packages'
-  - script: dotnet build -r win-x64 -c Release --no-restore Projects/Server/Server.csproj
-    displayName: 'Build Server'
-  - script: dotnet build -r win-x64 -c Release --no-restore Projects/UOContent/UOContent.csproj
-    displayName: 'Build UO Content'
+  - script: ./publish.cmd Release win
+    displayName: 'Build'
   - script: dotnet test --no-restore
     displayName: 'Test'
 
@@ -34,28 +30,19 @@ jobs:
     matrix:
       'CentOS 8':
         containerImage: modernuo/centos-net5:8
-        os: centos.8-x64
+        os: centos.8
       'CentOS 7':
         containerImage: centos:7
-        os: centos.7-x64
-      'Debian 9':
-        containerImage: amd64/buildpack-deps:stretch
-        os: debian.9-x64
+        os: centos.7
       'Debian 10':
-        containerImage: amd64/buildpack-deps:buster
-        os: debian.10-x64
+        containerImage: mcr.microsoft.com/dotnet/sdk:5.0-buster-slim
+        os: debian.10
       # 'Debian 11':
       #   containerImage: amd64/buildpack-deps:bullseye
       #   os: debian.11-x64
-      'Ubuntu 16':
-        containerImage: amd64/buildpack-deps:xenial
-        os: ubuntu.16.04-x64
-      'Ubuntu 18':
-        containerImage: amd64/buildpack-deps:bionic
-        os: ubuntu.18.04-x64
       'Ubuntu 20':
-        containerImage: amd64/buildpack-deps:focal
-        os: ubuntu.20.04-x64
+        containerImage: mcr.microsoft.com/dotnet/sdk:5.0-focal
+        os: ubuntu.20.04
 
   displayName: Linux
 
@@ -69,13 +56,9 @@ jobs:
     displayName: 'Install .NET 5'
     inputs:
       packageType: sdk
-      version: '5.0.100'
+      version: '5.0.102'
   - task: NuGetAuthenticate@0
-  - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
-    displayName: 'Restore NuGet Packages'
-  - script: dotnet build -r $(os) -c Release --no-restore Projects/Server/Server.csproj
-    displayName: 'Build Server'
-  - script: dotnet build -r $(os) -c Release --no-restore Projects/UOContent/UOContent.csproj
-    displayName: 'Build UO Content'
+  - script: ./publish.cmd Release $(os)
+    displayName: 'Build'
   - script: dotnet test --no-restore
     displayName: 'Test'

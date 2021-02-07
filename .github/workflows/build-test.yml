@@ -26,12 +26,8 @@ jobs:
     - name: Setup .NET 5
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100
-    - name: Restore NuGet Packages
-      run: dotnet restore --force-evaluate
-    - name: Build Server
-      run: dotnet build -c Release --no-restore Projects/Server/Server.csproj
-    - name: Build UO Content
-      run: dotnet build -c Release --no-restore Projects/UOContent/UOContent.csproj
+        dotnet-version: 5.0.102
+    - name: Build
+      run: ./publish.cmd
     - name: Test
       run: dotnet test --no-restore

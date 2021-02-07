@@ -1,17 +1,13 @@
 name: Create Release
 
 on:
-  push:
-    branches:
-      - master
+  repository_dispatch:
+    types: [release]
 
 jobs:
   release:
     name: Create Release
-    if: "contains(github.event.head_commit.message, 'Release') || contains(github.event.head_commit.message, 'release')"
     runs-on: ubuntu-latest
-    outputs:
-      skipped: ${{ steps.changelog.outputs.skipped }}
     steps:
     - uses: actions/checkout@v2
       with:
@@ -19,77 +15,40 @@ jobs:
     - name: Setup .NET 5
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100
-    - uses: dotnet/nbgv@master
-      id: nbgv
-    - name: Conventional Changelog
-      id: changelog
-      uses: TriPSs/conventional-changelog-action@v3
+        dotnet-version: 5.0.102
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
       with:
-        github-token: ${{ secrets.github_token }}
-        output-file: false
-        skip-version-file: true
-        skip-commit: true
+        node-version: 14
+    - name: Install NGBV
+      uses: dotnet/nbgv@master
+      id: nbgv
+
+    - name: Githug Changelog Generator
+      id: changelog
+      uses: heinrichreimer/github-changelog-generator-action@v2.1.1
+      with:
+        onlyLastTag: true,
+        stripeHeaders: true,
+        stripeGeneratorNotice: true,
+        pullRequests: true,
+        prWoLabels: true,
+        httpCache: true,
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      run: npx semantic-release
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
-      if: ${{ steps.changelog.outputs.skipped == 'false' }}
       with:
-        body: ${{ steps.changelog.outputs.clean_changelog }}
+        body: ${{ steps.changelog.outputs.changelog }}
         tag_name: ${{ steps.nbgv.outputs.Version }}
         release_name: ${{ steps.nbgv.outputs.Version }}
         draft: false
         prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Output Release URL File
-      if: ${{ steps.changelog.outputs.skipped == 'false' }}
-      run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
-    - name: Save Release URL file
-      if: ${{ steps.changelog.outputs.skipped == 'false' }}
-      uses: actions/upload-artifact@v1
-      with:
-        name: release_url
-        path: release_url.txt
-
-  publish:
-    name: Publish Release Asset
-    if: "(contains(github.event.head_commit.message, 'Release') || contains(github.event.head_commit.message, 'release')) && ${{ needs.release.outputs.skipped == 'false' }}"
-    needs: [release]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [win, ubuntu.16.04, ubuntu.18.04, ubuntu.20.04, debian.9, debian.10, centos.7, centos.8, osx]
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-    - name: Setup .NET 5
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.100
-    - uses: dotnet/nbgv@master
-      id: nbgv
-    - name: Load Release URL File from release job
-      uses: actions/download-artifact@v1
-      with:
-        name: release_url
-    - name: Get Release File Name & Upload URL
-      id: get_release_info
-      run: |
-        value=`cat release_url/release_url.txt`
-        echo ::set-output name=upload_url::$value
-        rm -rf ./release_url
-    - name: Publish Distribution
-      run: ./publish.cmd release ${{ matrix.os }}
-    - name: Create Artifact
-      run: rm -rf ./Projects/*/bin && rm -rf ./Projects/*/obj && zip -9 -r modernuo-asset.zip ./*
-    - name: Upload Release
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-        asset_path: ./modernuo-asset.zip
-        asset_name: modernuo-${{ matrix.os }}-x64-${{ steps.nbgv.outputs.Version }}.zip
-        asset_content_type: application/zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
