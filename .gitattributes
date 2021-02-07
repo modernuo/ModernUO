@@ -25,3 +25,9 @@
 
 # Specific paths
 publish.cmd             text eol=lf
+
+# Do not export
+/.git export-ignore
+/.github export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
