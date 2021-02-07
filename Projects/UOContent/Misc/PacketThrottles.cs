@@ -30,7 +30,6 @@ namespace Server.Network
             var configPath = ThrottlesConfiguration;
             var path = Path.Join(Core.BaseDirectory, configPath);
 
-            // Load UOContent.dll
             var throttles = JsonConfig.Deserialize<SortedDictionary<string, int>>(path);
             foreach (var (k, v) in throttles)
             {
@@ -57,6 +56,8 @@ namespace Server.Network
                     IncomingPackets.RegisterThrottler(i, Throttle);
                 }
             }
+
+            SaveDelays();
         }
 
         [Usage("GetThrottle <packetID>")]
@@ -119,6 +120,25 @@ namespace Server.Network
             }
 
             Delays[packetID] = delay;
+            SaveDelays();
+        }
+
+        private static void SaveDelays()
+        {
+            SortedDictionary<string, int> table = new();
+            for (var i = 0; i < Delays.Length; i++)
+            {
+                var delay = Delays[i];
+
+                if (delay != 0)
+                {
+                    table[i.ToString()] = delay;
+                }
+            }
+
+            var configPath = ThrottlesConfiguration;
+            var path = Path.Join(Core.BaseDirectory, configPath);
+            JsonConfig.Serialize(path, table);
         }
 
         public static bool Throttle(int packetID, NetState ns, out bool drop)
