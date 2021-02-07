@@ -329,15 +329,31 @@ namespace Server
                 }
 
                 bin.Read(buffer.AsSpan());
+                string error;
 
-                t.Deserialize(br);
-
-                if (br.Position != entry.Length)
+                try
                 {
-                    WriteConsoleLine($"***** Bad deserialize on {t.GetType()} *****");
-                    WriteConsoleLine(
-                        $"Serialized object was {entry.Length} bytes, but {br.Position} bytes deserialized"
-                    );
+                    t.Deserialize(br);
+
+                    error = br.Position != entry.Length
+                        ? $"Serialized object was {entry.Length} bytes, but {br.Position} bytes deserialized"
+                        : null;
+                }
+                catch (Exception e)
+                {
+                    error = e.ToString();
+                }
+
+                if (error == null)
+                {
+                    t.InitializeSaveBuffer(buffer);
+                }
+                else
+                {
+                    Utility.PushColor(ConsoleColor.Red);
+                    WriteConsoleLine($"***** Bad deserialize of {t.GetType()} *****");
+                    WriteConsoleLine(error);
+                    Utility.PopColor();
 
                     WriteConsoleLine("Delete the object and continue? (y/n)");
 
@@ -346,10 +362,6 @@ namespace Server
                         throw new Exception("Deserialization failed.");
                     }
                     t.Delete();
-                }
-                else
-                {
-                    t.InitializeSaveBuffer(buffer);
                 }
             }
         }
