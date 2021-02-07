@@ -38,8 +38,8 @@ namespace Server.Network
 
     public partial class NetState : IComparable<NetState>
     {
-        private static int RecvPipeSize = 1024 * 64;
-        private static int SendPipeSize = 1024 * 256;
+        private const int RecvPipeSize = 1024 * 64;
+        private const int SendPipeSize = 1024 * 256;
         private static int GumpCap = 512;
         private static int HuePickerCap = 512;
         private static int MenuCap = 512;
@@ -113,8 +113,6 @@ namespace Server.Network
 
         public static void Configure()
         {
-            RecvPipeSize = ServerConfiguration.GetOrUpdateSetting("netstate.recvPipeSize", RecvPipeSize);
-            SendPipeSize = ServerConfiguration.GetOrUpdateSetting("netstate.sendPipeSize", SendPipeSize);
             GumpCap = ServerConfiguration.GetOrUpdateSetting("netstate.gumpCap", GumpCap);
             HuePickerCap = ServerConfiguration.GetOrUpdateSetting("netstate.huePickerCap", HuePickerCap);
             MenuCap = ServerConfiguration.GetOrUpdateSetting("netstate.menuCap", MenuCap);
