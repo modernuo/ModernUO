@@ -37,8 +37,8 @@ namespace Server.Network
 
     public partial class NetState : IComparable<NetState>
     {
-        private static int RecvPipeSize = 1024 * 64 + 1;
-        private static int SendPipeSize = 1024 * 256 + 1;
+        private static int RecvPipeSize = 1024 * 64;
+        private static int SendPipeSize = 1024 * 256;
         private static int GumpCap = 512;
         private static int HuePickerCap = 512;
         private static int MenuCap = 512;
@@ -84,10 +84,8 @@ namespace Server.Network
             HuePickers = new List<HuePicker>();
             Menus = new List<IMenu>();
             Trades = new List<SecureTrade>();
-            var recvBuffer = GC.AllocateUninitializedArray<byte>(RecvPipeSize);
-            RecvPipe = new Pipe<byte>(recvBuffer);
-            var sendBuffer = GC.AllocateUninitializedArray<byte>(SendPipeSize);
-            SendPipe = new Pipe<byte>(sendBuffer);
+            RecvPipe = new Pipe<byte>(GC.AllocateUninitializedArray<byte>(RecvPipeSize));
+            SendPipe = new Pipe<byte>(GC.AllocateUninitializedArray<byte>(SendPipeSize));
             _nextActivityCheck = Core.TickCount + 30000;
 
             try

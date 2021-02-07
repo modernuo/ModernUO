@@ -18,7 +18,7 @@ namespace Server.Tests.Network
         [Fact]
         public async void Await()
         {
-            var pipe = new Pipe<byte>(new byte[100]);
+            var pipe = new Pipe<byte>(new byte[128]);
 
             var reader = pipe.Reader;
             var writer = pipe.Writer;
@@ -87,7 +87,7 @@ namespace Server.Tests.Network
         [Fact]
         public void Threading()
         {
-            var pipe = new Pipe<byte>(new byte[0x1001]);
+            var pipe = new Pipe<byte>(new byte[0x1000]);
 
             ThreadPool.UnsafeQueueUserWorkItem(Consumer, pipe);
 
@@ -129,7 +129,7 @@ namespace Server.Tests.Network
         [Fact]
         public void Wrap()
         {
-            var pipe = new Pipe<byte>(new byte[10]);
+            var pipe = new Pipe<byte>(new byte[128]);
 
             var reader = pipe.Reader;
             var writer = pipe.Writer;
@@ -166,7 +166,7 @@ namespace Server.Tests.Network
         [Fact]
         public void Match()
         {
-            var pipe = new Pipe<byte>(new byte[10]);
+            var pipe = new Pipe<byte>(new byte[128]);
 
             var reader = pipe.Reader;
             var writer = pipe.Writer;
@@ -184,7 +184,7 @@ namespace Server.Tests.Network
         [Fact]
         public void Sequence()
         {
-            var pipe = new Pipe<byte>(new byte[10]);
+            var pipe = new Pipe<byte>(new byte[128]);
 
             var reader = pipe.Reader;
             var writer = pipe.Writer;
