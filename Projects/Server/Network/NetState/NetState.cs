@@ -461,19 +461,27 @@ namespace Server.Network
 
         public void Send(ReadOnlySpan<byte> span)
         {
-            if (span == null)
+            if (span == null || Connection == null || BlockAllPackets)
             {
                 return;
             }
 
             var length = span.Length;
-            if (Connection == null || BlockAllPackets || length <= 0 || !GetSendBuffer(out var buffer))
+            if (length <= 0 || !GetSendBuffer(out var buffer))
             {
                 return;
             }
 
             try
             {
+                PacketSendProfile prof = null;
+
+                if (Core.Profiling)
+                {
+                    prof = PacketSendProfile.Acquire(p.GetType());
+                    prof.Start();
+                }
+
                 if (_packetEncoder != null)
                 {
                     _packetEncoder(span, buffer, out length);
@@ -490,6 +498,8 @@ namespace Server.Network
                     FlushPending.Enqueue(this);
                     _flushQueued = true;
                 }
+
+                prof?.Finish();
             }
             catch (Exception ex)
             {
