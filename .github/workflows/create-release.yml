@@ -34,12 +34,8 @@ jobs:
         git config --global user.name "Fake Tag Action"
         git config --global user.email "hi@modernuo.com"
         git checkout ${{ steps.last_release.outputs.release }}
-<<<<<<< Updated upstream
         git tag -fa v0.1.0 -m "Fake release"
-=======
-        git tag -fa v0.1.0
         git push --force origin tag v0.1.0
->>>>>>> Stashed changes
         git checkout -
     - name: Conventional Changelog
       id: changelog
