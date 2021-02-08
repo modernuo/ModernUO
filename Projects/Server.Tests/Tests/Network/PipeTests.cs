@@ -112,7 +112,7 @@ namespace Server.Tests.Network
         [Fact]
         public async void Threading()
         {
-            var pipe = new Pipe<byte>(new byte[0x1001]);
+            var pipe = new Pipe<byte>(new byte[0x1000]);
 
             ThreadPool.UnsafeQueueUserWorkItem(Consumer, pipe);
 
@@ -150,34 +150,34 @@ namespace Server.Tests.Network
         [Fact]
         public void Wrap()
         {
-            var pipe = new Pipe<byte>(new byte[10]);
+            var pipe = new Pipe<byte>(new byte[16]);
 
             var reader = pipe.Reader;
             var writer = pipe.Writer;
 
             var result = writer.TryGetMemory();
-            Assert.Equal(9, result.Length);
+            Assert.Equal(15, result.Length);
             Assert.Equal(0u, reader.GetAvailable());
             result = reader.TryRead();
             Assert.Equal(0, result.Length);
 
             writer.Advance(7);
             result = writer.TryGetMemory();
-            Assert.Equal(2, result.Length);
+            Assert.Equal(8, result.Length);
             Assert.Equal(7u, reader.GetAvailable());
             result = reader.TryRead();
             Assert.Equal(7, result.Length);
 
             reader.Advance(4);
             result = writer.TryGetMemory();
-            Assert.Equal(6, result.Length);
+            Assert.Equal(12, result.Length);
             Assert.Equal(3u, reader.GetAvailable());
             result = reader.TryRead();
             Assert.Equal(3, result.Length);
 
             writer.Advance(3);
             result = writer.TryGetMemory();
-            Assert.Equal(3, result.Length);
+            Assert.Equal(9, result.Length);
             Assert.Equal(6u, reader.GetAvailable());
             result = reader.TryRead();
             Assert.Equal(6, result.Length);
@@ -205,13 +205,13 @@ namespace Server.Tests.Network
         [Fact]
         public void Sequence()
         {
-            var pipe = new Pipe<byte>(new byte[10]);
+            var pipe = new Pipe<byte>(new byte[16]);
 
             var reader = pipe.Reader;
             var writer = pipe.Writer;
 
             var buffer = writer.TryGetMemory();
-            Assert.Equal(9, buffer.Length);
+            Assert.Equal(15, buffer.Length);
 
             buffer.CopyFrom(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
 
