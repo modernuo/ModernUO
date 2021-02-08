@@ -717,8 +717,13 @@ namespace Server.Network
 
                             case ProtocolState.LoginServer_ServerSelectAck:
                                 {
-                                    // The code should never arrive here unless a packet is sent after server select.
+#if STRICT_UO_PROTOCOL
                                     HandleError(packetId, packetLength);
+#else
+                                    // Reset the state because CUO/Orion do not reconnect
+                                    _parserState = ParserState.AwaitingNextPacket;
+                                    _protocolState = ProtocolState.AwaitingSeed;
+#endif
                                     return true;
                                 }
 
