@@ -478,7 +478,7 @@ namespace Server.Network
 
                 if (Core.Profiling)
                 {
-                    prof = PacketSendProfile.Acquire(p.GetType());
+                    prof = PacketSendProfile.Acquire(span[0]);
                     prof.Start();
                 }
 
@@ -548,7 +548,7 @@ namespace Server.Network
 
                 if (Core.Profiling)
                 {
-                    prof = PacketSendProfile.Acquire(p.GetType());
+                    prof = PacketSendProfile.Acquire(p.PacketID);
                     prof.Start();
                 }
 
