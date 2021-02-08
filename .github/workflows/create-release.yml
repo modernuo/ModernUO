@@ -16,29 +16,28 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.102
-    - name: Setup Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 14
     - name: Install NGBV
       uses: dotnet/nbgv@master
       id: nbgv
-    - name: Githug Changelog Generator
+    - name: Conventional Changelog
       id: changelog
-      uses: heinrichreimer/github-changelog-generator-action@v2.1.1
+      uses: TriPSs/conventional-changelog-action@v3
       with:
-        onlyLastTag: true,
-        stripHeaders: true,
-        stripGeneratorNotice: true,
-        pullRequests: true,
-        prWoLabels: true,
-        httpCache: true,
-        token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.github_token }}
+        output-file: false
+        skip-version-file: true
+        skip-commit: true
+    - uses: dev-drprasad/delete-tag-and-release@v0.1.3
+      with:
+        delete_release: true
+        tag_name: 0.1.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       with:
-        body: ${{ steps.changelog.outputs.changelog }}
+        body: ${{ steps.changelog.outputs.clean_changelog }}
         tag_name: ${{ steps.nbgv.outputs.Version }}
         release_name: ${{ steps.nbgv.outputs.Version }}
         draft: false
