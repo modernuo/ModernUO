@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Server.Json;
 using Server.Mobiles;
@@ -25,7 +26,7 @@ namespace Server.Network
                 var throttles = JsonConfig.Deserialize<SortedDictionary<string, int>>(path);
                 foreach (var (k, v) in throttles)
                 {
-                    if (!int.TryParse(k, out var packetId))
+                    if (!Utility.ToInt32(k, out var packetId))
                     {
                         Utility.PushColor(ConsoleColor.DarkYellow);
                         Console.WriteLine("Packet Throttles: Error deserializing {0} from {1}", k, configPath);
@@ -126,7 +127,7 @@ namespace Server.Network
 
                 if (delay != 0)
                 {
-                    table[i.ToString()] = delay;
+                    table[$"0x{i:X2}"] = delay;
                 }
             }
 
