@@ -27,7 +27,7 @@ jobs:
         git config --global user.name "Runner"
         git config --global user.email "hi@modernuo.com"
         git checkout ${{ steps.last_release.outputs.release }}
-        git tag -fa v0.1.0
+        git tag -fa v0.1.0 -m "Fake release"
         git checkout -
     - name: Conventional Changelog
       id: changelog
