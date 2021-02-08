@@ -23,24 +23,17 @@ jobs:
     - name: Install NGBV
       uses: dotnet/nbgv@master
       id: nbgv
-
     - name: Githug Changelog Generator
       id: changelog
       uses: heinrichreimer/github-changelog-generator-action@v2.1.1
       with:
         onlyLastTag: true,
-        stripeHeaders: true,
-        stripeGeneratorNotice: true,
+        stripHeaders: true,
+        stripGeneratorNotice: true,
         pullRequests: true,
         prWoLabels: true,
         httpCache: true,
         token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      run: npx semantic-release
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
