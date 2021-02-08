@@ -999,9 +999,14 @@ namespace Server.Network
             }
             catch (SocketException ex)
             {
+                // Socket disconnected by client
+                if (ex.ErrorCode != 54)
+                {
 #if DEBUG
                 Console.WriteLine(ex);
 #endif
+                }
+
                 Disconnect(string.Empty);
             }
             catch (Exception ex)
@@ -1062,8 +1067,8 @@ namespace Server.Network
 
             while (Disposed.TryDequeue(out var ns))
             {
-                ns.Dispose();
                 TcpServer.Instances.Remove(ns);
+                ns.Dispose();
             }
 
             return count;
