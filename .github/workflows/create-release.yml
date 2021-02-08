@@ -45,11 +45,20 @@ jobs:
         skip-version-file: true
         skip-commit: true
         release-count: 1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Delete Fake Release
       uses: dev-drprasad/delete-tag-and-release@v0.1.3
       with:
         delete_release: true
         tag_name: v${{ steps.changelog.outputs.version }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Delete Fake Release
+      uses: dev-drprasad/delete-tag-and-release@v0.1.3
+      with:
+        delete_release: true
+        tag_name: v0.1.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Create Release
