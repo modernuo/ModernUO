@@ -1032,10 +1032,23 @@ namespace Server.Network
         {
             foreach (var ns in TcpServer.Instances)
             {
-                var writer = ns.SendPipe.Writer;
+                ns.Flush();
+            }
 
-                while (writer.GetAvailable() > 0)
+            int count = 10;
+
+            foreach (var ns in TcpServer.Instances)
+            {
+                var writer = ns.SendPipe.Writer;
+                var emptyLength = ns.SendPipe.Size - 1;
+
+                while (writer.GetAvailable() < emptyLength)
                 {
+                    if (count-- <= 10)
+                    {
+                        return;
+                    }
+
                     Thread.Sleep(1);
                 }
             }
