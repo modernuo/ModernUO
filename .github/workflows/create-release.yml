@@ -34,8 +34,11 @@ jobs:
         git config --global user.name "Fake Tag Action"
         git config --global user.email "hi@modernuo.com"
         git checkout ${{ steps.last_release.outputs.release }}
-        git tag -f v0.1.0 -m "Fake release"
+        git tag -fa v0.1.0 -m "Fake release"
+        git push --follow-tags
         git checkout -
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Conventional Changelog
       id: changelog
       uses: TriPSs/conventional-changelog-action@v3
