@@ -1030,27 +1030,9 @@ namespace Server.Network
 
         public static void FlushAll()
         {
-            foreach (var ns in TcpServer.Instances)
+            while (FlushPending.Count != 0)
             {
-                ns.Flush();
-            }
-
-            int count = 10;
-
-            foreach (var ns in TcpServer.Instances)
-            {
-                var writer = ns.SendPipe.Writer;
-                var emptyLength = ns.SendPipe.Size - 1;
-
-                while (writer.GetAvailable() < emptyLength)
-                {
-                    if (count-- <= 10)
-                    {
-                        return;
-                    }
-
-                    Thread.Sleep(1);
-                }
+                FlushPending.Dequeue()?.Flush();
             }
         }
 
