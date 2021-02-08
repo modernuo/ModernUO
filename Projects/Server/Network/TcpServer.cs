@@ -26,9 +26,9 @@ namespace Server.Network
 {
     public static class TcpServer
     {
-        private static NetworkState _networkState = NetworkState.ResumeState;
+        private const int MaxConnectionsPerLoop = 250;
 
-        // Sanity. 256 * 1024 * 5000 = ~1.3GB of ram
+        // Sanity. 256 * 1024 * 4096 = ~1.3GB of ram
         public static int MaxConnections { get; set; } = 4096;
 
         private const long _listenerErrorMessageDelay = 10000; // 10 seconds
@@ -122,50 +122,15 @@ namespace Server.Network
             return null;
         }
 
-        /**
-         * Pauses the TcpServer and stops accepting new sockets.
-         * This is thread-safe without using locks.
-         */
-        public static void Pause()
-        {
-            NetworkState.Pause(ref _networkState);
-        }
-
-        /**
-         * Resumes accepting sockets on the TcpServer.
-         * This is thread-safe using a lock on the listeners
-         */
-        public static void Resume()
-        {
-            if (!NetworkState.Resume(ref _networkState))
-            {
-                return;
-            }
-
-            lock (Listeners)
-            {
-                foreach (var listener in Listeners)
-                {
-                    listener.BeginAcceptingSockets();
-                }
-            }
-        }
-
         public static int Slice()
         {
             int count = 0;
-            var limit = _connectedQueue.Count;
 
-            while (_connectedQueue.Count > 0 && --limit >= 0)
+            while (++count <= MaxConnectionsPerLoop && _connectedQueue.TryDequeue(out var ns))
             {
-                if (!_connectedQueue.TryDequeue(out var ns))
-                {
-                    break;
-                }
-
-                count++;
                 Instances.Add(ns);
                 ns.WriteConsole("Connected. [{0} Online]", Instances.Count);
+                ns.Start();
             }
 
             return count;
@@ -175,22 +140,27 @@ namespace Server.Network
         {
             while (true)
             {
-                if (_networkState.Paused)
-                {
-                    return;
-                }
-
-                Socket socket = null;
-
                 try
                 {
-                    socket = await listener.AcceptSocketAsync().ConfigureAwait(false);
+                    var socket = await listener.AcceptSocketAsync();
+                    var rejected = false;
                     if (Instances.Count >= MaxConnections)
                     {
-                        socket.Send(_socketRejected, SocketFlags.None);
-                        socket.Shutdown(SocketShutdown.Both);
-                        socket.Close();
-                        throw new MaxConnectionsException();
+                        rejected = true;
+
+                        var ticks = Core.TickCount;
+
+                        if (_nextMaximumSocketsReachedMessage <= ticks)
+                        {
+                            if (socket.RemoteEndPoint is IPEndPoint ipep)
+                            {
+                                var ip = ipep.Address.ToString();
+                                Console.WriteLine("Listener {0}: Failed (Maximum connections reached)", ip);
+                                NetState.TraceDisconnect("Maximum connections reached.", ip);
+                            }
+
+                            _nextMaximumSocketsReachedMessage = ticks + _listenerErrorMessageDelay;
+                        }
                     }
 
                     var args = new SocketConnectEventArgs(socket);
@@ -198,32 +168,30 @@ namespace Server.Network
 
                     if (!args.AllowConnection)
                     {
+                        rejected = true;
+                        if (socket.RemoteEndPoint is IPEndPoint ipep)
+                        {
+                            var ip = ipep.Address.ToString();
+                            NetState.TraceDisconnect("Rejected by socket event handler", ip);
+                        }
+                    }
+
+                    if (rejected)
+                    {
                         socket.Send(_socketRejected, SocketFlags.None);
                         socket.Shutdown(SocketShutdown.Both);
                         socket.Close();
                     }
-                }
-                catch (MaxConnectionsException)
-                {
-                    var ticks = Core.TickCount;
-
-                    if (_nextMaximumSocketsReachedMessage <= ticks)
+                    else
                     {
-                        if (socket?.RemoteEndPoint is IPEndPoint ipep)
-                        {
-                            Console.WriteLine("Listener {0}:{1}: Failed (Maximum connections reached)", ipep.Address, ipep.Port);
-                        }
-                        _nextMaximumSocketsReachedMessage = ticks + _listenerErrorMessageDelay;
+                        var ns = new NetState(new NetworkSocket(socket));
+                        _connectedQueue.Enqueue(ns);
                     }
                 }
                 catch
                 {
                     // ignored
                 }
-
-                var ns = new NetState(new NetworkSocket(socket));
-                _connectedQueue.Enqueue(ns);
-                ns.Start();
             }
         }
     }

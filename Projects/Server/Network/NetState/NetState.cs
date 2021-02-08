@@ -185,11 +185,11 @@ namespace Server.Network
 
         public bool Seeded { get; set; }
 
-        public Pipe<byte> RecvPipe { get; private set; }
+        public Pipe<byte> RecvPipe { get; }
 
-        public Pipe<byte> SendPipe { get; private set; }
+        public Pipe<byte> SendPipe { get; }
 
-        public ISocket Connection { get; private set; }
+        public ISocket Connection { get; }
 
         public bool CompressionEnabled { get; set; }
 
@@ -999,9 +999,14 @@ namespace Server.Network
             }
             catch (SocketException ex)
             {
+                // Socket disconnected by client
+                if (ex.ErrorCode != 54)
+                {
 #if DEBUG
                 Console.WriteLine(ex);
 #endif
+                }
+
                 Disconnect(string.Empty);
             }
             catch (Exception ex)
@@ -1062,8 +1067,8 @@ namespace Server.Network
 
             while (Disposed.TryDequeue(out var ns))
             {
-                ns.Dispose();
                 TcpServer.Instances.Remove(ns);
+                ns.Dispose();
             }
 
             return count;
@@ -1139,17 +1144,12 @@ namespace Server.Network
 
             _disconnectReason = reason;
 
-            if (Connection == null)
-            {
-                return;
-            }
-
             Disposed.Enqueue(this);
         }
 
-        public void TraceDisconnect()
+        public static void TraceDisconnect(string reason, string ip)
         {
-            if (_disconnectReason == string.Empty)
+            if (reason == string.Empty)
             {
                 return;
             }
@@ -1159,8 +1159,8 @@ namespace Server.Network
                 using StreamWriter op = new StreamWriter("network-disconnects.log", true);
                 op.WriteLine($"# {DateTime.UtcNow}");
 
-                op.WriteLine($"NetState: {this}");
-                op.WriteLine(_disconnectReason);
+                op.WriteLine($"NetState: {ip}");
+                op.WriteLine(reason);
 
                 op.WriteLine();
                 op.WriteLine();
@@ -1173,7 +1173,7 @@ namespace Server.Network
 
         private void Dispose()
         {
-            TraceDisconnect();
+            TraceDisconnect(_disconnectReason, _toString);
 
             RecvPipe.Writer.Close();
             SendPipe.Writer.Close();
