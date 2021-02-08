@@ -911,14 +911,13 @@ namespace Server.Commands.Generic
                 if (list.Count > 20)
                 {
                     CommandLogging.Enabled = false;
-                    NetState.Pause();
+                    NetState.FlushAll();
                 }
 
                 base.ExecuteList(e, list);
 
                 if (list.Count > 20)
                 {
-                    NetState.Resume();
                     flushToLog = true;
                     CommandLogging.Enabled = true;
                 }
@@ -1250,7 +1249,7 @@ namespace Server.Commands.Generic
 
                         AddResponse($"They have been {(m_Ban ? "banned" : "kicked")}.");
 
-                        targState.Disconnect();
+                        targState.Disconnect($"Banned by {from}.");
 
                         if (m_Ban)
                         {

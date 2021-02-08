@@ -172,6 +172,8 @@ namespace Server
 
                 ns.Send(buffer);
             }
+
+            NetState.FlushAll();
         }
 
         public static void Broadcast(int hue, bool ascii, string format, params object[] args)
@@ -569,9 +571,6 @@ namespace Server
 
             ++_Saves;
 
-            NetState.FlushAll();
-            NetState.Pause();
-
             WorldState = WorldState.Saving;
 
             m_DiskWriteHandle.Reset();
@@ -611,8 +610,6 @@ namespace Server
             }
 
             ThreadPool.QueueUserWorkItem(WriteFiles);
-
-            NetState.Resume();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

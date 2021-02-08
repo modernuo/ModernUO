@@ -347,7 +347,7 @@ namespace Server
         {
             World.Broadcast(0x35, true, "Generating doors, please wait.");
 
-            NetState.Pause();
+            NetState.FlushAll();
 
             m_Map = Map.Trammel;
             m_Count = 0;
@@ -388,8 +388,6 @@ namespace Server
             }
 
             var malasCount = m_Count;
-
-            NetState.Resume();
 
             World.Broadcast(
                 0x35,

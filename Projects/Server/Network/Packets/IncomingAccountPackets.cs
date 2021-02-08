@@ -140,7 +140,7 @@ namespace Server.Network
 
             if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
             {
-                state.Disconnect();
+                state.Disconnect("Invalid city selected during character creation.");
             }
             else
             {
@@ -197,7 +197,7 @@ namespace Server.Network
                 else
                 {
                     state.BlockAllPackets = false;
-                    state.Disconnect();
+                    state.Disconnect("Character creation blocked.");
                 }
             }
         }
@@ -256,7 +256,7 @@ namespace Server.Network
 
             if (a == null || charSlot < 0 || charSlot >= a.Length)
             {
-                state.Disconnect();
+                state.Disconnect("Invalid character slot selected.");
             }
             else
             {
@@ -277,11 +277,11 @@ namespace Server.Network
 
                 if (m == null)
                 {
-                    state.Disconnect();
+                    state.Disconnect("Empty character slot selected.");
                     return;
                 }
 
-                m.NetState?.Disconnect();
+                m.NetState?.Disconnect("Character selected for a player already logged in.");
 
                 state.SendClientVersionRequest();
 
@@ -380,9 +380,11 @@ namespace Server.Network
 
         public static void GameLogin(NetState state, CircularBufferReader reader, ref int packetLength)
         {
+            // TODO: Connection throttling
+
             if (state.SentFirstPacket)
             {
-                state.Disconnect();
+                state.Disconnect("Duplicate game login packet received.");
                 return;
             }
 
@@ -390,14 +392,16 @@ namespace Server.Network
 
             var authID = reader.ReadInt32();
 
-            if (
-                !m_AuthIDWindow.TryGetValue(authID, out var ap) ||
-                state._authId != 0 && authID != state._authId ||
-                state._authId == 0 && authID != state._seed
-            )
+            if (!m_AuthIDWindow.TryGetValue(authID, out var ap))
             {
-                state.WriteConsole("Invalid client detected, disconnecting");
-                state.Disconnect();
+                state.WriteConsole("Invalid client detected, disconnecting...");
+                state.Disconnect("Unable to find auth id.");
+            }
+
+            if (state._authId != 0 && authID != state._authId || state._authId == 0 && authID != state._seed)
+            {
+                state.WriteConsole("Invalid client detected, disconnecting...");
+                state.Disconnect("Invalid auth id in game login packet.");
                 return;
             }
 
@@ -424,7 +428,7 @@ namespace Server.Network
             }
             else
             {
-                state.Disconnect();
+                state.Disconnect("Login rejected by GameLogin packet handler.");
             }
         }
 
@@ -436,7 +440,7 @@ namespace Server.Network
 
             if (info == null || a == null || index < 0 || index >= info.Length)
             {
-                state.Disconnect();
+                state.Disconnect("Invalid server selected.");
             }
             else
             {
@@ -457,7 +461,7 @@ namespace Server.Network
             if (state._seed == 0)
             {
                 state.WriteConsole("Invalid client detected, disconnecting");
-                state.Disconnect();
+                state.Disconnect("Duplicate seed sent.");
                 return;
             }
 
@@ -471,9 +475,11 @@ namespace Server.Network
 
         public static void AccountLogin(NetState state, CircularBufferReader reader, ref int packetLength)
         {
+            // TODO: Throttle Connection
+
             if (state.SentFirstPacket)
             {
-                state.Disconnect();
+                state.Disconnect("Duplicate account login packet sent.");
                 return;
             }
 
@@ -512,7 +518,7 @@ namespace Server.Network
         private static void AccountLogin_ReplyRej(this NetState state, ALRReason reason)
         {
             state.SendAccountLoginRejected(reason);
-            state.Disconnect();
+            state.Disconnect("Account login rejected by AccountLogin packet handler.");
         }
 
         private class LoginTimer : Timer

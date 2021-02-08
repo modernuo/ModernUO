@@ -33,22 +33,22 @@ namespace Server.Diagnostics
 
     public class PacketSendProfile : BasePacketProfile
     {
-        private static readonly Dictionary<Type, PacketSendProfile> _profiles = new();
+        private static readonly Dictionary<int, PacketSendProfile> _profiles = new();
 
         private long _created;
 
-        public PacketSendProfile(Type type) : base(type.FullName)
+        public PacketSendProfile(int packetId) : base($"0x{packetId:X2}")
         {
         }
 
         public static IEnumerable<PacketSendProfile> Profiles => _profiles.Values;
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static PacketSendProfile Acquire(Type type)
+        public static PacketSendProfile Acquire(int packetId)
         {
-            if (!_profiles.TryGetValue(type, out var prof))
+            if (!_profiles.TryGetValue(packetId, out var prof))
             {
-                _profiles.Add(type, prof = new PacketSendProfile(type));
+                _profiles.Add(packetId, prof = new PacketSendProfile(packetId));
             }
 
             return prof;
@@ -72,8 +72,7 @@ namespace Server.Diagnostics
         private static readonly Dictionary<int, PacketReceiveProfile>
             _profiles = new();
 
-        public PacketReceiveProfile(int packetId)
-            : base($"0x{packetId:X2}")
+        public PacketReceiveProfile(int packetId) : base($"0x{packetId:X2}")
         {
         }
 

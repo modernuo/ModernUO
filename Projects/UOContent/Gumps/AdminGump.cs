@@ -1762,7 +1762,7 @@ namespace Server.Gumps
             {
                 if (!ban)
                 {
-                    NetState.Pause();
+                    NetState.FlushAll();
                 }
 
                 for (var i = 0; i < rads.Count; ++i)
@@ -1794,11 +1794,6 @@ namespace Server.Gumps
                         rads.RemoveAt(i--);
                         list.Remove(acct);
                     }
-                }
-
-                if (!ban)
-                {
-                    NetState.Resume();
                 }
 
                 from.SendGump(
@@ -2365,7 +2360,7 @@ namespace Server.Gumps
 
                                             if (!hasAccess)
                                             {
-                                                ns.Disconnect();
+                                                ns.Disconnect("Server has been locked down.");
                                                 ++count;
                                             }
                                         }
@@ -3736,7 +3731,7 @@ namespace Server.Gumps
                                             "kicking",
                                             CommandLogging.Format(m)
                                         );
-                                        ns.Disconnect();
+                                        ns.Disconnect($"Kicked by {from}.");
                                         notice = "They have been kicked.";
                                     }
                                     else
@@ -3762,7 +3757,7 @@ namespace Server.Gumps
 
                                         var ns = m.NetState;
 
-                                        ns?.Disconnect();
+                                        ns?.Disconnect($"Banned by {from}.");
 
                                         notice = "They have been banned.";
                                     }

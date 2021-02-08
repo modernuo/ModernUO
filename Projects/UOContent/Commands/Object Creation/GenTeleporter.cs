@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json.Serialization;
 using Server.Items;
 using Server.Json;
+using Server.Network;
 
 namespace Server.Commands
 {
@@ -68,6 +69,9 @@ namespace Server.Commands
             var from = e.Mobile;
 
             from.SendMessage("Generating teleporters, please wait.");
+
+            NetState.FlushAll();
+
             var c = new TeleportersCreator();
 
             if (!ProcessTeleporterData(from, c.CreateTeleporter))

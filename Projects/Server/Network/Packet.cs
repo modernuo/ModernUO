@@ -22,7 +22,7 @@ namespace Server.Network
 
             if (Core.Profiling)
             {
-                var prof = PacketSendProfile.Acquire(GetType());
+                var prof = PacketSendProfile.Acquire(PacketID);
                 prof.Increment();
             }
         }
@@ -37,7 +37,7 @@ namespace Server.Network
 
             if (Core.Profiling)
             {
-                var prof = PacketSendProfile.Acquire(GetType());
+                var prof = PacketSendProfile.Acquire(PacketID);
                 prof.Increment();
             }
         }

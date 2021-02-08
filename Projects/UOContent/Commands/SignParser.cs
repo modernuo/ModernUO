@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Server.Items;
+using Server.Network;
 
 namespace Server.Commands
 {
@@ -27,6 +28,8 @@ namespace Server.Commands
             {
                 var list = new List<SignEntry>();
                 from.SendMessage("Generating signs, please wait.");
+
+                NetState.FlushAll();
 
                 using (var ip = new StreamReader(cfg))
                 {

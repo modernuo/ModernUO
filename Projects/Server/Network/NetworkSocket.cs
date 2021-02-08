@@ -24,7 +24,7 @@ namespace Server.Network
 {
     public class NetworkSocket : ISocket
     {
-        private Socket _connection;
+        private readonly Socket _connection;
 
         public Socket Connection
         {
@@ -50,6 +50,9 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Task<int> SendAsync(IList<ArraySegment<byte>> buffers, SocketFlags flags) =>
             _connection.SendAsync(buffers, flags);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Send(IList<ArraySegment<byte>> buffers, SocketFlags flags) => _connection.Send(buffers, flags);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Task<int> ReceiveAsync(IList<ArraySegment<byte>> buffers, SocketFlags flags) =>

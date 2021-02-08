@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright (C) 2019-2021 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: ISocket.cs                                                      *
+ * File: DumpNetStates.cs                                                *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,28 +13,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace Server.Network
 {
-    public interface ISocket
+    public static class DumpNetStates
     {
-        public EndPoint LocalEndPoint { get; }
+        public static void Initialize()
+        {
+            CommandSystem.Register("DumpNetStates", AccessLevel.Administrator, DumpNetStatesCommand);
+        }
 
-        public EndPoint RemoteEndPoint { get; }
+        public static void DumpNetStatesCommand(CommandEventArgs args)
+        {
+            using var file = new StreamWriter("netstatedump.csv");
 
-        public Task<int> SendAsync(IList<ArraySegment<byte>> buffer, SocketFlags flags);
+            file.WriteLine("NetState, RecvTask, SendTask, ProtocolState, ParserState");
 
-        public int Send(IList<ArraySegment<byte>> buffer, SocketFlags flags);
-
-        public Task<int> ReceiveAsync(IList<ArraySegment<byte>> buffer, SocketFlags flags);
-
-        public void Shutdown(SocketShutdown how);
-
-        public void Close();
+            foreach (var ns in TcpServer.Instances)
+            {
+                file.WriteLine($"{ns}, {ns._recvState}, {ns._sendState}, {ns._protocolState}, {ns._parserState}");
+            }
+        }
     }
 }

@@ -2711,7 +2711,7 @@ namespace Server
             if (m_NetState != null)
             {
                 m_NetState.CancelAllTrades();
-                m_NetState.Disconnect();
+                m_NetState.Disconnect($"Player {this} has been deleted.");
             }
 
             DropHolding();
