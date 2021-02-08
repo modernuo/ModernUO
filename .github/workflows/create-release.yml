@@ -19,6 +19,12 @@ jobs:
     - name: Install NGBV
       uses: dotnet/nbgv@master
       id: nbgv
+    - name: Modify version file
+      uses: deef0000dragon1/json-edit-action/@v1
+      env:
+        KEY: version
+        VALUE: ${{ steps.nbgv.outputs.Version }}
+        FILE: version.json
     - name: Conventional Changelog
       id: changelog
       uses: TriPSs/conventional-changelog-action@v3
@@ -29,6 +35,7 @@ jobs:
         skip-commit: true
         release-count: 1
         tag-prefix: ''
+        version-file: ./version.json
     - uses: dev-drprasad/delete-tag-and-release@v0.1.3
       with:
         delete_release: true
