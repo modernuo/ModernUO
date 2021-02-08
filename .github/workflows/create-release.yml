@@ -15,13 +15,6 @@ jobs:
     - name: Install NGBV
       uses: dotnet/nbgv@master
       id: nbgv
-    - name: Delete Fake Release
-      uses: dev-drprasad/delete-tag-and-release@v0.1.3
-      with:
-        delete_release: true
-        tag_name: v0.1.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Get Latest Release
       id: last_release
       uses: pozetroninc/github-action-get-latest-release@master
@@ -29,14 +22,14 @@ jobs:
         owner: ModernUO
         repo: ModernUO
         excludes: prerelease, draft
-    - name: Create fake tag for diffing
+    - name: Create Fake tag
       run: |
         git config --global user.name "Fake Tag Action"
         git config --global user.email "hi@modernuo.com"
         git checkout ${{ steps.last_release.outputs.release }}
         git tag -fa v0.1.0 -m "Fake release"
-        git push --follow-tags
         git checkout -
+        git push --follow-tags
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Conventional Changelog
@@ -50,14 +43,14 @@ jobs:
         release-count: 1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Delete Fake Release
+    - name: Delete v${{ steps.changelog.outputs.version }} Tag
       uses: dev-drprasad/delete-tag-and-release@v0.1.3
       with:
         delete_release: true
         tag_name: v${{ steps.changelog.outputs.version }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Delete Fake Release
+    - name: Delete v0.1.0 Tag
       uses: dev-drprasad/delete-tag-and-release@v0.1.3
       with:
         delete_release: true
