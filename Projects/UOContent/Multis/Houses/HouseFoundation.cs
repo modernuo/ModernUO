@@ -869,7 +869,7 @@ namespace Server.Multis
             }
 
             DesignContext.Add(m, this);
-            m.Send(new BeginHouseCustomization(this));
+            m.NetState.SendBeginHouseCustomization(Serial);
 
             var ns = m.NetState;
             if (ns != null)
@@ -1237,7 +1237,7 @@ namespace Server.Multis
             DesignContext.Remove(from);
 
             // Notify the client that customization has ended
-            from.Send(new EndHouseCustomization(this));
+            from.NetState.SendEndHouseCustomization(Serial);
 
             // Notify the core that the foundation has changed and should be resent to all clients
             Delta(ItemDelta.Update);
@@ -1704,7 +1704,7 @@ namespace Server.Multis
             DesignContext.Remove(from);
 
             // Notify the client that customization has ended
-            from.Send(new EndHouseCustomization(context.Foundation));
+            from.NetState.SendEndHouseCustomization(context.Foundation.Serial);
 
             // Refresh client with current visible design state
             context.Foundation.SendInfoTo(state);
@@ -1981,7 +1981,7 @@ namespace Server.Multis
 
         public void SendGeneralInfoTo(NetState state)
         {
-            state.Send(new DesignStateGeneral(Foundation, this));
+            state.SendDesignStateGeneral(Foundation.Serial, Revision);
         }
 
         public void SendDetailedInfoTo(NetState state)
@@ -2380,53 +2380,6 @@ namespace Server.Multis
             context.Foundation.SignHanger?.SendInfoTo(state);
 
             context.Foundation.Sign?.SendInfoTo(state);
-        }
-    }
-
-    public class BeginHouseCustomization : Packet
-    {
-        public BeginHouseCustomization(HouseFoundation house)
-            : base(0xBF)
-        {
-            EnsureCapacity(17);
-
-            Stream.Write((short)0x20);
-            Stream.Write(house.Serial);
-            Stream.Write((byte)0x04);
-            Stream.Write((ushort)0x0000);
-            Stream.Write((ushort)0xFFFF);
-            Stream.Write((ushort)0xFFFF);
-            Stream.Write((byte)0xFF);
-        }
-    }
-
-    public class EndHouseCustomization : Packet
-    {
-        public EndHouseCustomization(HouseFoundation house)
-            : base(0xBF)
-        {
-            EnsureCapacity(17);
-
-            Stream.Write((short)0x20);
-            Stream.Write(house.Serial);
-            Stream.Write((byte)0x05);
-            Stream.Write((ushort)0x0000);
-            Stream.Write((ushort)0xFFFF);
-            Stream.Write((ushort)0xFFFF);
-            Stream.Write((byte)0xFF);
-        }
-    }
-
-    public sealed class DesignStateGeneral : Packet
-    {
-        public DesignStateGeneral(HouseFoundation house, DesignState state)
-            : base(0xBF)
-        {
-            EnsureCapacity(13);
-
-            Stream.Write((short)0x1D);
-            Stream.Write(house.Serial);
-            Stream.Write(state.Revision);
         }
     }
 
