@@ -22,15 +22,11 @@ jobs:
         owner: ModernUO
         repo: ModernUO
         excludes: prerelease, draft
-<<<<<<< Updated upstream
-    - name: Create Fake tag
-=======
     - name: Git Credentials
       uses: oleksiyrudenko/gha-git-credentials@v2-latest
       with:
         token: '${{ secrets.GITHUB_TOKEN }}'
     - name: Create fake tag for diffing
->>>>>>> Stashed changes
       run: |
         git config --global user.name "Fake Tag Action"
         git config --global user.email "hi@modernuo.com"
@@ -38,8 +34,6 @@ jobs:
         git tag -fa v0.1.0 -m "Fake release"
         git checkout -
         git push --follow-tags
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Conventional Changelog
       id: changelog
       uses: TriPSs/conventional-changelog-action@v3
@@ -49,13 +43,9 @@ jobs:
         skip-version-file: true
         skip-commit: true
         release-count: 1
-<<<<<<< Updated upstream
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Delete v${{ steps.changelog.outputs.version }} Tag
-=======
-    - name: Delete Fake Release
->>>>>>> Stashed changes
       uses: dev-drprasad/delete-tag-and-release@v0.1.3
       with:
         delete_release: true
