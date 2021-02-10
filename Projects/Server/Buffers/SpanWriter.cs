@@ -16,10 +16,12 @@
 using System.Buffers.Binary;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.Toolkit.HighPerformance.Extensions;
 using Server.Network;
 using Server.Text;
 
@@ -57,7 +59,19 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IArrayPoolOwner ToPooledArray()
         {
-            var apo = new IArrayPoolOwner(_arrayToReturnToPool);
+            byte[] buffer;
+            if (_arrayToReturnToPool != null)
+            {
+                buffer = _arrayToReturnToPool;
+            }
+            else
+            {
+                buffer = ArrayPool<byte>.Shared.Rent(_position);
+                _buffer.CopyTo(buffer);
+            }
+
+            var apo = new IArrayPoolOwner(_position, buffer);
+            _arrayToReturnToPool = null;
             this = default; // Don't allow a double dispose
             return apo;
         }
@@ -391,20 +405,36 @@ namespace System.Buffers
 
         public struct IArrayPoolOwner : IDisposable
         {
-            private byte[] _arrayToReturnToPool;
+            private int _length;
+            private readonly byte[] _arrayToReturnToPool;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal IArrayPoolOwner(byte[] buffer) => _arrayToReturnToPool = buffer;
+            internal IArrayPoolOwner(int length, byte[] buffer)
+            {
+                _length = length;
+                _arrayToReturnToPool = buffer;
+            }
 
+            public Span<byte> Span
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => MemoryMarshal.CreateSpan(ref DangerousGetReference(), _length);
+            }
+
+            [Pure]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public Span<byte> AsSpan() => _arrayToReturnToPool.AsSpan();
+            public ref byte DangerousGetReference() => ref _arrayToReturnToPool.DangerousGetReference();
+
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public ArraySegment<byte> DangerousGetArray() => new(_arrayToReturnToPool, 0, _length);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void Dispose()
             {
                 byte[] toReturn = _arrayToReturnToPool;
-                this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
-                if (toReturn != null)
+                this = default;
+                if (_length > 0)
                 {
                     ArrayPool<byte>.Shared.Return(toReturn);
                 }
