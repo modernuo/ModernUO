@@ -20,7 +20,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using Server;
 using Server.Network;
 using Server.Text;
 
@@ -54,6 +53,14 @@ namespace System.Buffers
         public ReadOnlySpan<byte> Span => _buffer.SliceToLength(Position);
 
         public Span<byte> RawBuffer => _buffer;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IArrayPoolOwner ToPooledArray()
+        {
+            var apo = new IArrayPoolOwner(_arrayToReturnToPool);
+            this = default; // Don't allow a double dispose
+            return apo;
+        }
 
         public SpanWriter(Span<byte> initialBuffer, bool resize = false)
         {
@@ -332,6 +339,7 @@ namespace System.Buffers
 
             Debug.Assert(
                 origin != SeekOrigin.End || offset >= -_buffer.Length,
+
                 "Attempting to seek to a negative position using SeekOrigin.End"
             );
 
@@ -378,6 +386,28 @@ namespace System.Buffers
             if (toReturn != null)
             {
                 ArrayPool<byte>.Shared.Return(toReturn);
+            }
+        }
+
+        public struct IArrayPoolOwner : IDisposable
+        {
+            private byte[] _arrayToReturnToPool;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal IArrayPoolOwner(byte[] buffer) => _arrayToReturnToPool = buffer;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public Span<byte> AsSpan() => _arrayToReturnToPool.AsSpan();
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void Dispose()
+            {
+                byte[] toReturn = _arrayToReturnToPool;
+                this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
+                if (toReturn != null)
+                {
+                    ArrayPool<byte>.Shared.Return(toReturn);
+                }
             }
         }
     }

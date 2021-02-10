@@ -1278,7 +1278,7 @@ namespace Server.Multis
                                  context.Foundation.Fixtures.Count)) * 500;
                 var bankBalance = Banker.GetBalance(from);
 
-                from.SendGump(new ConfirmCommitGump(from, context.Foundation, bankBalance, oldPrice, newPrice));
+                from.SendGump(new ConfirmCommitGump(context.Foundation, bankBalance, oldPrice, newPrice));
             }
         }
 
@@ -2194,8 +2194,7 @@ namespace Server.Multis
     {
         private readonly HouseFoundation m_Foundation;
 
-        public ConfirmCommitGump(Mobile from, HouseFoundation foundation, int bankBalance, int oldPrice, int newPrice)
-            : base(50, 50)
+        public ConfirmCommitGump(HouseFoundation foundation, int bankBalance, int oldPrice, int newPrice) : base(50, 50)
         {
             m_Foundation = foundation;
 
@@ -2534,20 +2533,12 @@ namespace Server.Multis
 
                 ++planeCount;
 
-                int size;
-
-                if (i == 0)
+                int size = i switch
                 {
-                    size = width * height * 2;
-                }
-                else if (i < 5)
-                {
-                    size = (width - 1) * (height - 2) * 2;
-                }
-                else
-                {
-                    size = width * (height - 1) * 2;
-                }
+                    0   => width * height * 2,
+                    < 5 => (width - 1) * (height - 2) * 2,
+                    _   => width * (height - 1) * 2
+                };
 
                 var inflatedBuffer = planeBuffers[i];
 
@@ -2583,12 +2574,7 @@ namespace Server.Multis
             {
                 ++planeCount;
 
-                var count = totalStairsUsed - i * MaxItemsPerStairBuffer;
-
-                if (count > MaxItemsPerStairBuffer)
-                {
-                    count = MaxItemsPerStairBuffer;
-                }
+                var count = Math.Min(MaxItemsPerStairBuffer, totalStairsUsed - i * MaxItemsPerStairBuffer);
 
                 var size = count * 5;
 
