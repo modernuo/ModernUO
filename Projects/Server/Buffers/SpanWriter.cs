@@ -16,7 +16,6 @@
 using System.Buffers.Binary;
 using System.Data;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -56,19 +55,38 @@ namespace System.Buffers
 
         public Span<byte> RawBuffer => _buffer;
 
+        /**
+         * Converts the writer to a Span<byte> using a SpanOwner.
+         * If the buffer was stackalloc, it will be copied to a rented buffer.
+         * Otherwise the existing rented buffer is used.
+         *
+         * Note:
+         * Do not use the SpanWriter after calling this method.
+         * This method will effectively dispose of the SpanWriter and is therefore considered terminal.
+         */
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ISpanOwner ToSpan()
+        public SpanOwner ToSpan()
         {
-            ISpanOwner apo;
-            if (_arrayToReturnToPool != null)
+            var toReturn = _arrayToReturnToPool;
+
+            SpanOwner apo;
+            if (_position == 0)
             {
-                apo = new ISpanOwner(_position, _arrayToReturnToPool);
+                apo = new SpanOwner(_position, Array.Empty<byte>());
+                if (toReturn != null)
+                {
+                    ArrayPool<byte>.Shared.Return(toReturn);
+                }
+            }
+            else if (toReturn != null)
+            {
+                apo = new SpanOwner(_position, toReturn);
             }
             else
             {
                 var buffer = ArrayPool<byte>.Shared.Rent(_position);
                 _buffer.CopyTo(buffer);
-                apo = new ISpanOwner(_position, buffer);
+                apo = new SpanOwner(_position, buffer);
             }
 
             this = default; // Don't allow two references to the same buffer
@@ -402,13 +420,13 @@ namespace System.Buffers
             }
         }
 
-        public struct ISpanOwner : IDisposable
+        public struct SpanOwner : IDisposable
         {
             private int _length;
             private readonly byte[] _arrayToReturnToPool;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal ISpanOwner(int length, byte[] buffer)
+            internal SpanOwner(int length, byte[] buffer)
             {
                 _length = length;
                 _arrayToReturnToPool = buffer;
@@ -417,16 +435,8 @@ namespace System.Buffers
             public Span<byte> Span
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get => MemoryMarshal.CreateSpan(ref DangerousGetReference(), _length);
+                get => MemoryMarshal.CreateSpan(ref _arrayToReturnToPool.DangerousGetReference(), _length);
             }
-
-            [Pure]
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public ref byte DangerousGetReference() => ref _arrayToReturnToPool.DangerousGetReference();
-
-            [Pure]
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public ArraySegment<byte> DangerousGetArray() => new(_arrayToReturnToPool, 0, _length);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void Dispose()
