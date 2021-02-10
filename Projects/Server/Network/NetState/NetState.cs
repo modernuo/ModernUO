@@ -999,14 +999,12 @@ namespace Server.Network
             }
             catch (SocketException ex)
             {
-                // Socket disconnected by client
-                if (ex.ErrorCode != 54)
-                {
 #if DEBUG
-                Console.WriteLine(ex);
-#endif
+                if (ex.ErrorCode != 54 && ex.ErrorCode != 89 && ex.ErrorCode != 995)
+                {
+                    Console.WriteLine(ex);
                 }
-
+#endif
                 Disconnect(string.Empty);
             }
             catch (Exception ex)
