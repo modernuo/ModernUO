@@ -59,20 +59,19 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IArrayPoolOwner ToPooledArray()
         {
-            byte[] buffer;
+            IArrayPoolOwner apo;
             if (_arrayToReturnToPool != null)
             {
-                buffer = _arrayToReturnToPool;
+                apo = new IArrayPoolOwner(_position, _arrayToReturnToPool);
             }
             else
             {
-                buffer = ArrayPool<byte>.Shared.Rent(_position);
+                var buffer = ArrayPool<byte>.Shared.Rent(_position);
                 _buffer.CopyTo(buffer);
+                apo = new IArrayPoolOwner(_position, buffer);
             }
 
-            var apo = new IArrayPoolOwner(_position, buffer);
-            _arrayToReturnToPool = null;
-            this = default; // Don't allow a double dispose
+            this = default; // Don't allow two references to the same buffer
             return apo;
         }
 
