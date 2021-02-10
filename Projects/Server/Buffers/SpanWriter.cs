@@ -57,18 +57,18 @@ namespace System.Buffers
         public Span<byte> RawBuffer => _buffer;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IArrayPoolOwner ToPooledArray()
+        public ISpanOwner ToSpan()
         {
-            IArrayPoolOwner apo;
+            ISpanOwner apo;
             if (_arrayToReturnToPool != null)
             {
-                apo = new IArrayPoolOwner(_position, _arrayToReturnToPool);
+                apo = new ISpanOwner(_position, _arrayToReturnToPool);
             }
             else
             {
                 var buffer = ArrayPool<byte>.Shared.Rent(_position);
                 _buffer.CopyTo(buffer);
-                apo = new IArrayPoolOwner(_position, buffer);
+                apo = new ISpanOwner(_position, buffer);
             }
 
             this = default; // Don't allow two references to the same buffer
@@ -402,13 +402,13 @@ namespace System.Buffers
             }
         }
 
-        public struct IArrayPoolOwner : IDisposable
+        public struct ISpanOwner : IDisposable
         {
             private int _length;
             private readonly byte[] _arrayToReturnToPool;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal IArrayPoolOwner(int length, byte[] buffer)
+            internal ISpanOwner(int length, byte[] buffer)
             {
                 _length = length;
                 _arrayToReturnToPool = buffer;
