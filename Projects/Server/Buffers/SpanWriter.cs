@@ -93,6 +93,7 @@ namespace System.Buffers
             return apo;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SpanWriter(Span<byte> initialBuffer, bool resize = false)
         {
             _resize = resize;
@@ -102,6 +103,7 @@ namespace System.Buffers
             _arrayToReturnToPool = null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SpanWriter(int initialCapacity, bool resize = false)
         {
             _resize = resize;
@@ -257,6 +259,7 @@ namespace System.Buffers
             Position += 8;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(ReadOnlySpan<byte> buffer)
         {
             var count = buffer.Length;
@@ -422,7 +425,7 @@ namespace System.Buffers
 
         public struct SpanOwner : IDisposable
         {
-            private int _length;
+            private readonly int _length;
             private readonly byte[] _arrayToReturnToPool;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
