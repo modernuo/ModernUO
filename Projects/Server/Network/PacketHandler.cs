@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Network
 {
     public delegate void OnPacketReceive(NetState state, CircularBufferReader reader, ref int packetLength);
