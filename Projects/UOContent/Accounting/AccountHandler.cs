@@ -403,10 +403,8 @@ namespace Server.Misc
 
                 Console.WriteLine("Login: {0}: Past IP limit threshold", e.State);
 
-                using (var op = new StreamWriter("ipLimits.log", true))
-                {
-                    op.WriteLine("{0}\tPast IP limit threshold\t{1}", e.State, DateTime.UtcNow);
-                }
+                using var op = new StreamWriter("ipLimits.log", true);
+                op.WriteLine("{0}\tPast IP limit threshold\t{1}", e.State, DateTime.UtcNow);
 
                 return;
             }
@@ -414,7 +412,7 @@ namespace Server.Misc
             var un = e.Username;
             var pw = e.Password;
 
-            if (!(Accounts.GetAccount(un) is Account acct))
+            if (Accounts.GetAccount(un) is not Account acct)
             {
                 e.Accepted = false;
             }
