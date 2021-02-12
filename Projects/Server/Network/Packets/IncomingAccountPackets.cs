@@ -522,7 +522,7 @@ namespace Server.Network
         private static void AccountLogin_ReplyRej(this NetState state, ALRReason reason)
         {
             state.SendAccountLoginRejected(reason);
-            state.Disconnect("Account login rejected by AccountLogin packet handler.");
+            state.Disconnect($"Account login rejected due to {reason}");
         }
 
         private class LoginTimer : Timer
