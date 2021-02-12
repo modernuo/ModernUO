@@ -57,9 +57,12 @@ namespace Server.Network
 
         public static void CreateCharacter(NetState state, CircularBufferReader reader, ref int packetLength)
         {
+            reader.Seek(9, SeekOrigin.Current);
+            /*
             var unk1 = reader.ReadInt32();
             var unk2 = reader.ReadInt32();
             int unk3 = reader.ReadByte();
+            */
             var name = reader.ReadAscii(30);
 
             reader.Seek(2, SeekOrigin.Current);
@@ -113,8 +116,11 @@ namespace Server.Network
             int hairHuef = reader.ReadInt16();
             reader.ReadByte();
             int cityIndex = reader.ReadByte();
+            reader.Seek(8, SeekOrigin.Current);
+            /*
             var charSlot = reader.ReadInt32();
             var clientIP = reader.ReadInt32();
+            */
             int shirtHue = reader.ReadInt16();
             int pantsHue = reader.ReadInt16();
 
@@ -141,64 +147,63 @@ namespace Server.Network
             if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
             {
                 state.Disconnect("Invalid city selected during character creation.");
+                return;
+            }
+
+            // Check if anyone is using this account
+            for (var i = 0; i < a.Length; ++i)
+            {
+                var check = a[i];
+
+                if (check != null && check.Map != Map.Internal)
+                {
+                    state.WriteConsole("Account in use");
+                    state.SendPopupMessage(PMMessage.CharInWorld);
+                    return;
+                }
+            }
+
+            state.Flags = (ClientFlags)flags;
+
+            var args = new CharacterCreatedEventArgs(
+                state,
+                a,
+                name,
+                female,
+                hue,
+                str,
+                dex,
+                intl,
+                info[cityIndex],
+                skills,
+                shirtHue,
+                pantsHue,
+                hairVal,
+                hairHue,
+                hairValf,
+                hairHuef,
+                prof,
+                race
+            );
+
+            state.SendClientVersionRequest();
+
+            state.BlockAllPackets = true;
+
+            EventSink.InvokeCharacterCreated(args);
+
+            var m = args.Mobile;
+
+            if (m != null)
+            {
+                state.Mobile = m;
+                m.NetState = state;
+                new LoginTimer(state, m).Start();
             }
             else
             {
-                // Check if anyone is using this account
-                for (var i = 0; i < a.Length; ++i)
-                {
-                    var check = a[i];
-
-                    if (check != null && check.Map != Map.Internal)
-                    {
-                        state.WriteConsole("Account in use");
-                        state.SendPopupMessage(PMMessage.CharInWorld);
-                        return;
-                    }
-                }
-
-                state.Flags = (ClientFlags)flags;
-
-                var args = new CharacterCreatedEventArgs(
-                    state,
-                    a,
-                    name,
-                    female,
-                    hue,
-                    str,
-                    dex,
-                    intl,
-                    info[cityIndex],
-                    skills,
-                    shirtHue,
-                    pantsHue,
-                    hairVal,
-                    hairHue,
-                    hairValf,
-                    hairHuef,
-                    prof,
-                    race
-                );
-
-                state.SendClientVersionRequest();
-
-                state.BlockAllPackets = true;
-
-                EventSink.InvokeCharacterCreated(args);
-
-                var m = args.Mobile;
-
-                if (m != null)
-                {
-                    state.Mobile = m;
-                    m.NetState = state;
-                    new LoginTimer(state, m).Start();
-                }
-                else
-                {
-                    state.BlockAllPackets = false;
-                    state.Disconnect("Character creation blocked.");
-                }
+                state.BlockAllPackets = false;
+                state.Disconnect("Character creation blocked.");
             }
         }
 
@@ -239,9 +244,9 @@ namespace Server.Network
 
         public static void PlayCharacter(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            reader.ReadInt32(); // 0xEDEDEDED
+            reader.Seek(4, SeekOrigin.Current); // 0xEDEDEDED
 
-            var name = reader.ReadAscii(30);
+            reader.Seek(30, SeekOrigin.Current); //  var name = reader.ReadAscii(30);
 
             reader.Seek(2, SeekOrigin.Current);
 
@@ -250,50 +255,49 @@ namespace Server.Network
             reader.Seek(24, SeekOrigin.Current);
 
             var charSlot = reader.ReadInt32();
-            var clientIP = reader.ReadInt32();
+            reader.Seek(4, SeekOrigin.Current); // var clientIP = reader.ReadInt32();
 
             var a = state.Account;
 
             if (a == null || charSlot < 0 || charSlot >= a.Length)
             {
                 state.Disconnect("Invalid character slot selected.");
+                return;
             }
-            else
+
+            var m = a[charSlot];
+
+            // Check if anyone is using this account
+            for (var i = 0; i < a.Length; ++i)
             {
-                var m = a[charSlot];
+                var check = a[i];
 
-                // Check if anyone is using this account
-                for (var i = 0; i < a.Length; ++i)
+                if (check != null && check.Map != Map.Internal && check != m)
                 {
-                    var check = a[i];
-
-                    if (check != null && check.Map != Map.Internal && check != m)
-                    {
-                        state.WriteConsole("Account in use");
-                        state.SendPopupMessage(PMMessage.CharInWorld);
-                        return;
-                    }
-                }
-
-                if (m == null)
-                {
-                    state.Disconnect("Empty character slot selected.");
+                    state.WriteConsole("Account in use");
+                    state.SendPopupMessage(PMMessage.CharInWorld);
                     return;
                 }
-
-                m.NetState?.Disconnect("Character selected for a player already logged in.");
-
-                state.SendClientVersionRequest();
-
-                state.BlockAllPackets = true;
-
-                state.Flags = (ClientFlags)flags;
-
-                state.Mobile = m;
-                m.NetState = state;
-
-                new LoginTimer(state, m).Start();
             }
+
+            if (m == null)
+            {
+                state.Disconnect("Empty character slot selected.");
+                return;
+            }
+
+            m.NetState?.Disconnect("Character selected for a player already logged in.");
+
+            state.SendClientVersionRequest();
+
+            state.BlockAllPackets = true;
+
+            state.Flags = (ClientFlags)flags;
+
+            state.Mobile = m;
+            m.NetState = state;
+
+            new LoginTimer(state, m).Start();
         }
 
         public static void DoLogin(this NetState state, Mobile m)
@@ -523,29 +527,39 @@ namespace Server.Network
 
         private class LoginTimer : Timer
         {
-            private readonly Mobile m_Mobile;
-            private readonly NetState m_State;
+            private readonly Mobile _mobile;
+            private readonly NetState _state;
 
             public LoginTimer(NetState state, Mobile m) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
             {
-                m_State = state;
-                m_Mobile = m;
+                _state = state;
+                _mobile = m;
             }
 
             protected override void OnTick()
             {
-                if (m_State == null)
+                if (_state != null)
                 {
-                    Stop();
-                    return;
+                    if (_state.Account == null)
+                    {
+                        _state.Disconnect("Account was deleted during the login process.");
+                    }
+                    else if (_mobile == null)
+                    {
+                        _state.Disconnect("Player was deleted during the login process.");
+                    }
+                    else if (_state.Version != null)
+                    {
+                        _state.BlockAllPackets = false;
+                        DoLogin(_state, _mobile);
+                    }
+                    else // Waiting to receive the client version before we continue the login process
+                    {
+                        return;
+                    }
                 }
 
-                if (m_State.Version != null)
-                {
-                    m_State.BlockAllPackets = false;
-                    DoLogin(m_State, m_Mobile);
-                    Stop();
-                }
+                Stop();
             }
         }
     }
