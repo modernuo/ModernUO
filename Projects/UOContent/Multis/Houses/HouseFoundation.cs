@@ -869,7 +869,7 @@ namespace Server.Multis
             }
 
             DesignContext.Add(m, this);
-            m.Send(new BeginHouseCustomization(this));
+            m.NetState.SendBeginHouseCustomization(Serial);
 
             var ns = m.NetState;
             if (ns != null)
@@ -1237,7 +1237,7 @@ namespace Server.Multis
             DesignContext.Remove(from);
 
             // Notify the client that customization has ended
-            from.Send(new EndHouseCustomization(this));
+            from.NetState.SendEndHouseCustomization(Serial);
 
             // Notify the core that the foundation has changed and should be resent to all clients
             Delta(ItemDelta.Update);
@@ -1278,7 +1278,7 @@ namespace Server.Multis
                                  context.Foundation.Fixtures.Count)) * 500;
                 var bankBalance = Banker.GetBalance(from);
 
-                from.SendGump(new ConfirmCommitGump(from, context.Foundation, bankBalance, oldPrice, newPrice));
+                from.SendGump(new ConfirmCommitGump(context.Foundation, bankBalance, oldPrice, newPrice));
             }
         }
 
@@ -1704,7 +1704,7 @@ namespace Server.Multis
             DesignContext.Remove(from);
 
             // Notify the client that customization has ended
-            from.Send(new EndHouseCustomization(context.Foundation));
+            from.NetState.SendEndHouseCustomization(context.Foundation.Serial);
 
             // Refresh client with current visible design state
             context.Foundation.SendInfoTo(state);
@@ -1981,7 +1981,7 @@ namespace Server.Multis
 
         public void SendGeneralInfoTo(NetState state)
         {
-            state.Send(new DesignStateGeneral(Foundation, this));
+            state.SendDesignStateGeneral(Foundation.Serial, Revision);
         }
 
         public void SendDetailedInfoTo(NetState state)
@@ -2194,8 +2194,7 @@ namespace Server.Multis
     {
         private readonly HouseFoundation m_Foundation;
 
-        public ConfirmCommitGump(Mobile from, HouseFoundation foundation, int bankBalance, int oldPrice, int newPrice)
-            : base(50, 50)
+        public ConfirmCommitGump(HouseFoundation foundation, int bankBalance, int oldPrice, int newPrice) : base(50, 50)
         {
             m_Foundation = foundation;
 
@@ -2383,53 +2382,6 @@ namespace Server.Multis
         }
     }
 
-    public class BeginHouseCustomization : Packet
-    {
-        public BeginHouseCustomization(HouseFoundation house)
-            : base(0xBF)
-        {
-            EnsureCapacity(17);
-
-            Stream.Write((short)0x20);
-            Stream.Write(house.Serial);
-            Stream.Write((byte)0x04);
-            Stream.Write((ushort)0x0000);
-            Stream.Write((ushort)0xFFFF);
-            Stream.Write((ushort)0xFFFF);
-            Stream.Write((byte)0xFF);
-        }
-    }
-
-    public class EndHouseCustomization : Packet
-    {
-        public EndHouseCustomization(HouseFoundation house)
-            : base(0xBF)
-        {
-            EnsureCapacity(17);
-
-            Stream.Write((short)0x20);
-            Stream.Write(house.Serial);
-            Stream.Write((byte)0x05);
-            Stream.Write((ushort)0x0000);
-            Stream.Write((ushort)0xFFFF);
-            Stream.Write((ushort)0xFFFF);
-            Stream.Write((byte)0xFF);
-        }
-    }
-
-    public sealed class DesignStateGeneral : Packet
-    {
-        public DesignStateGeneral(HouseFoundation house, DesignState state)
-            : base(0xBF)
-        {
-            EnsureCapacity(13);
-
-            Stream.Write((short)0x1D);
-            Stream.Write(house.Serial);
-            Stream.Write(state.Revision);
-        }
-    }
-
     public sealed class DesignStateDetailed : Packet
     {
         public const int MaxItemsPerStairBuffer = 750;
@@ -2581,20 +2533,12 @@ namespace Server.Multis
 
                 ++planeCount;
 
-                int size;
-
-                if (i == 0)
+                int size = i switch
                 {
-                    size = width * height * 2;
-                }
-                else if (i < 5)
-                {
-                    size = (width - 1) * (height - 2) * 2;
-                }
-                else
-                {
-                    size = width * (height - 1) * 2;
-                }
+                    0   => width * height * 2,
+                    < 5 => (width - 1) * (height - 2) * 2,
+                    _   => width * (height - 1) * 2
+                };
 
                 var inflatedBuffer = planeBuffers[i];
 
@@ -2630,12 +2574,7 @@ namespace Server.Multis
             {
                 ++planeCount;
 
-                var count = totalStairsUsed - i * MaxItemsPerStairBuffer;
-
-                if (count > MaxItemsPerStairBuffer)
-                {
-                    count = MaxItemsPerStairBuffer;
-                }
+                var count = Math.Min(MaxItemsPerStairBuffer, totalStairsUsed - i * MaxItemsPerStairBuffer);
 
                 var size = count * 5;
 
