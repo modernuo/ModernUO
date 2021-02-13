@@ -268,7 +268,8 @@ namespace Server
             var filePath = Core.FindDataFile("tiledata.mul");
 
             using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var bin = new BinaryReader(fs);
+            var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length);
+            var bin = new BufferReader(buffer);
 
             bool is64BitFlags;
             int landLength = 0x4000;
@@ -292,37 +293,37 @@ namespace Server
 
             for (var i = 0; i < landLength; i++)
             {
-                if (is64BitFlags ? (i == 1 || (i > 0 && (i & 0x1F) == 0)) : ((i & 0x1F) == 0))
+                if (is64BitFlags ? i == 1 || i > 0 && (i & 0x1F) == 0 : (i & 0x1F) == 0)
                 {
-                    bin.ReadInt32(); // header
+                    bin.ReadInt(); // header
                 }
 
-                var flags = (TileFlag)(is64BitFlags ? bin.ReadUInt64() : bin.ReadUInt32());
-                bin.ReadInt16(); // skip 2 bytes -- textureID
+                var flags = (TileFlag)(is64BitFlags ? bin.ReadULong() : bin.ReadUInt());
+                bin.ReadUShort(); // skip 2 bytes -- textureID
 
-                LandTable[i] = new LandData(ReadNameString(bin), flags);
+                LandTable[i] = new LandData(bin.ReadAsciiNull(20), flags);
             }
 
             for (var i = 0; i < itemLength; i++)
             {
                 if ((i & 0x1F) == 0)
                 {
-                    bin.ReadInt32(); // header
+                    bin.ReadInt(); // header
                 }
 
-                var flags = (TileFlag)(is64BitFlags ? bin.ReadUInt64() : bin.ReadUInt32());
+                var flags = (TileFlag)(is64BitFlags ? bin.ReadULong() : bin.ReadUInt());
                 int weight = bin.ReadByte();
                 int quality = bin.ReadByte();
-                int animation = bin.ReadInt16();
+                int animation = bin.ReadUShort();
                 bin.ReadByte();
                 int quantity = bin.ReadByte();
-                bin.ReadInt32();
+                bin.ReadInt();
                 bin.ReadByte();
                 int value = bin.ReadByte();
                 int height = bin.ReadByte();
 
                 ItemTable[i] = new ItemData(
-                    ReadNameString(bin),
+                    bin.ReadAsciiNull(20),
                     flags,
                     weight,
                     quality,
@@ -335,15 +336,6 @@ namespace Server
 
             MaxLandValue = LandTable.Length - 1;
             MaxItemValue = ItemTable.Length - 1;
-        }
-
-        private static string ReadNameString(BinaryReader bin)
-        {
-            Span<byte> buffer = stackalloc byte[20];
-            bin.Read(buffer);
-
-            var count = buffer.IndexOfTerminator(1);
-            return Encoding.ASCII.GetString(buffer.SliceToLength(count));
         }
     }
 }

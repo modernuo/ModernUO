@@ -21,6 +21,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using Server.Guilds;
+using Server.Network;
 using Server.Text;
 
 namespace Server
@@ -48,6 +49,7 @@ namespace Server
             _position = 0;
         }
 
+        // TODO: Replace with all variants
         public string ReadString()
         {
             if (!ReadBool())
@@ -64,6 +66,18 @@ namespace Server
             var s = _encoding.GetString(_buffer.AsSpan(Position, length));
             _position += length;
             return s;
+        }
+
+        public string ReadAsciiNull(int fixedLength)
+        {
+            Span<byte> buffer = _buffer;
+            if (fixedLength > -1)
+            {
+                buffer = buffer.SliceToLength(fixedLength);
+            }
+
+            var count = buffer.IndexOfTerminator(1);
+            return Encoding.ASCII.GetString(buffer.SliceToLength(count));
         }
 
         public DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);

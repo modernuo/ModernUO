@@ -20,6 +20,7 @@ namespace Server.Tests.Network
                 1,
                 1,
                 1,
+                1,
                 1
             );
 
@@ -55,6 +56,7 @@ namespace Server.Tests.Network
                 1,
                 1,
                 1,
+                1,
                 1
             );
 
@@ -86,6 +88,7 @@ namespace Server.Tests.Network
             TileData.ItemTable[itemId] = new ItemData(
                 "Test Item Data",
                 TileFlag.Generic,
+                1,
                 1,
                 1,
                 1,
