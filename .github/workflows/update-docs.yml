@@ -2,7 +2,7 @@ name: Updates Docs
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   update-docs:
     runs-on: ubuntu-latest

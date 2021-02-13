@@ -20,7 +20,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using Server;
+using Microsoft.Toolkit.HighPerformance.Extensions;
 using Server.Network;
 using Server.Text;
 
@@ -55,6 +55,45 @@ namespace System.Buffers
 
         public Span<byte> RawBuffer => _buffer;
 
+        /**
+         * Converts the writer to a Span<byte> using a SpanOwner.
+         * If the buffer was stackalloc, it will be copied to a rented buffer.
+         * Otherwise the existing rented buffer is used.
+         *
+         * Note:
+         * Do not use the SpanWriter after calling this method.
+         * This method will effectively dispose of the SpanWriter and is therefore considered terminal.
+         */
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public SpanOwner ToSpan()
+        {
+            var toReturn = _arrayToReturnToPool;
+
+            SpanOwner apo;
+            if (_position == 0)
+            {
+                apo = new SpanOwner(_position, Array.Empty<byte>());
+                if (toReturn != null)
+                {
+                    ArrayPool<byte>.Shared.Return(toReturn);
+                }
+            }
+            else if (toReturn != null)
+            {
+                apo = new SpanOwner(_position, toReturn);
+            }
+            else
+            {
+                var buffer = ArrayPool<byte>.Shared.Rent(_position);
+                _buffer.CopyTo(buffer);
+                apo = new SpanOwner(_position, buffer);
+            }
+
+            this = default; // Don't allow two references to the same buffer
+            return apo;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SpanWriter(Span<byte> initialBuffer, bool resize = false)
         {
             _resize = resize;
@@ -64,6 +103,7 @@ namespace System.Buffers
             _arrayToReturnToPool = null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SpanWriter(int initialCapacity, bool resize = false)
         {
             _resize = resize;
@@ -219,6 +259,7 @@ namespace System.Buffers
             Position += 8;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(ReadOnlySpan<byte> buffer)
         {
             var count = buffer.Length;
@@ -332,6 +373,7 @@ namespace System.Buffers
 
             Debug.Assert(
                 origin != SeekOrigin.End || offset >= -_buffer.Length,
+
                 "Attempting to seek to a negative position using SeekOrigin.End"
             );
 
@@ -378,6 +420,36 @@ namespace System.Buffers
             if (toReturn != null)
             {
                 ArrayPool<byte>.Shared.Return(toReturn);
+            }
+        }
+
+        public struct SpanOwner : IDisposable
+        {
+            private readonly int _length;
+            private readonly byte[] _arrayToReturnToPool;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal SpanOwner(int length, byte[] buffer)
+            {
+                _length = length;
+                _arrayToReturnToPool = buffer;
+            }
+
+            public Span<byte> Span
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => MemoryMarshal.CreateSpan(ref _arrayToReturnToPool.DangerousGetReference(), _length);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void Dispose()
+            {
+                byte[] toReturn = _arrayToReturnToPool;
+                this = default;
+                if (_length > 0)
+                {
+                    ArrayPool<byte>.Shared.Return(toReturn);
+                }
             }
         }
     }
