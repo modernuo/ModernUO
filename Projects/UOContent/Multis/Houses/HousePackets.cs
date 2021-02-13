@@ -13,10 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Buffers;
-using System.Buffers.Binary;
-using System.Runtime.CompilerServices;
 using Server.Network;
 
 namespace Server.Multis
@@ -82,11 +79,6 @@ namespace Server.Multis
             writer.Write(revision);
 
             ns.Send(writer.Span);
-        }
-
-        public static void CreateDesignStateDetailed()
-        {
-
         }
     }
 }
