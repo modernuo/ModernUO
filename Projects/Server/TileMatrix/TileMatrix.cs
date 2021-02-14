@@ -8,74 +8,56 @@ namespace Server
 {
     public class TileMatrix
     {
-        private readonly StaticTile[][][][][] m_StaticTiles;
-        private readonly LandTile[][][] m_LandTiles;
+        private static readonly List<TileMatrix> _instances = new();
 
-        private readonly LandTile[] m_InvalidLandBlock;
-        private readonly StaticTile[][][] m_EmptyStaticBlock;
+        private readonly StaticTile[][][][][] _staticTiles;
+        private readonly LandTile[][][] _landTiles;
+        private readonly LandTile[] _invalidLandBlock;
+        private readonly StaticTile[][][] _emptyStaticBlock;
+        private readonly UOPIndex _mapIndex;
+        private readonly int _fileIndex;
+        private readonly Map _map;
+        private readonly int[][] _staticPatches;
+        private readonly int[][] _landPatches;
+        private readonly List<TileMatrix> _fileShare = new();
 
-        private readonly UOPIndex m_MapIndex;
-
-        private readonly int m_FileIndex;
-        private readonly int m_Width;
-        private readonly int m_Height;
-
-        private readonly Map m_Owner;
-
-        private readonly TileMatrixPatch m_Patch;
-        private readonly int[][] m_StaticPatches;
-        private readonly int[][] m_LandPatches;
-
-        public TileMatrixPatch Patch => m_Patch;
-
+        public TileMatrixPatch Patch { get; }
         public int BlockWidth { get; }
-
         public int BlockHeight { get; }
-
-        public FileStream MapStream { get; set; }
-
-        public FileStream IndexStream { get; set; }
-
-        public FileStream DataStream { get; set; }
-
-        public BinaryReader IndexReader { get; set; }
-
-        public bool Exists => MapStream != null && IndexStream != null && DataStream != null;
-
-        private static readonly List<TileMatrix> m_Instances = new();
-        private readonly List<TileMatrix> m_FileShare = new();
+        public FileStream MapStream { get; }
+        public FileStream IndexStream { get; }
+        public FileStream DataStream { get; }
+        public BinaryReader IndexReader { get; }
 
         public TileMatrix(Map owner, int fileIndex, int mapID, int width, int height)
         {
-            lock (m_Instances)
+            lock (_instances)
             {
-                for (var i = 0; i < m_Instances.Count; ++i)
+                for (var i = 0; i < _instances.Count; ++i)
                 {
-                    var tm = m_Instances[i];
+                    var tm = _instances[i];
 
-                    if (tm.m_FileIndex == fileIndex)
+                    if (tm._fileIndex == fileIndex)
                     {
-                        lock (m_FileShare)
+                        lock (_fileShare)
                         {
-                            lock (tm.m_FileShare)
+                            lock (tm._fileShare)
                             {
-                                tm.m_FileShare.Add(this);
-                                m_FileShare.Add(tm);
+                                tm._fileShare.Add(this);
+                                _fileShare.Add(tm);
                             }
                         }
                     }
                 }
 
-                m_Instances.Add(this);
+                _instances.Add(this);
             }
 
-            m_FileIndex = fileIndex;
-            m_Width = width;
-            m_Height = height;
+            _fileIndex = fileIndex;
             BlockWidth = width >> 3;
             BlockHeight = height >> 3;
 
-            m_Owner = owner;
+            _map = owner;
 
             if (fileIndex != 0x7F)
             {
@@ -92,7 +74,7 @@ namespace Server
                     if (mapPath != null)
                     {
                         MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                        m_MapIndex = new UOPIndex(MapStream);
+                        _mapIndex = new UOPIndex(MapStream);
                     }
                 }
 
@@ -112,29 +94,29 @@ namespace Server
                 }
             }
 
-            m_EmptyStaticBlock = new StaticTile[8][][];
+            _emptyStaticBlock = new StaticTile[8][][];
 
             for (var i = 0; i < 8; ++i)
             {
-                m_EmptyStaticBlock[i] = new StaticTile[8][];
+                _emptyStaticBlock[i] = new StaticTile[8][];
 
                 for (var j = 0; j < 8; ++j)
                 {
-                    m_EmptyStaticBlock[i][j] = new StaticTile[0];
+                    _emptyStaticBlock[i][j] = new StaticTile[0];
                 }
             }
 
-            m_InvalidLandBlock = new LandTile[196];
+            _invalidLandBlock = new LandTile[196];
 
-            m_LandTiles = new LandTile[BlockWidth][][];
-            m_StaticTiles = new StaticTile[BlockWidth][][][][];
-            m_StaticPatches = new int[BlockWidth][];
-            m_LandPatches = new int[BlockWidth][];
+            _landTiles = new LandTile[BlockWidth][][];
+            _staticTiles = new StaticTile[BlockWidth][][][][];
+            _staticPatches = new int[BlockWidth][];
+            _landPatches = new int[BlockWidth][];
 
-            m_Patch = new TileMatrixPatch(this, mapID);
+            Patch = new TileMatrixPatch(this, mapID);
         }
 
-        public StaticTile[][][] EmptyStaticBlock => m_EmptyStaticBlock;
+        public StaticTile[][][] EmptyStaticBlock => _emptyStaticBlock;
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void SetStaticBlock(int x, int y, StaticTile[][][] value)
@@ -144,11 +126,11 @@ namespace Server
                 return;
             }
 
-            m_StaticTiles[x] ??= new StaticTile[BlockHeight][][][];
-            m_StaticTiles[x][y] = value;
+            _staticTiles[x] ??= new StaticTile[BlockHeight][][][];
+            _staticTiles[x][y] = value;
 
-            m_StaticPatches[x] ??= new int[(BlockHeight + 31) >> 5];
-            m_StaticPatches[x][y >> 5] |= 1 << (y & 0x1F);
+            _staticPatches[x] ??= new int[(BlockHeight + 31) >> 5];
+            _staticPatches[x][y >> 5] |= 1 << (y & 0x1F);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -156,26 +138,26 @@ namespace Server
         {
             if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || DataStream == null || IndexStream == null)
             {
-                return m_EmptyStaticBlock;
+                return _emptyStaticBlock;
             }
 
-            m_StaticTiles[x] ??= new StaticTile[BlockHeight][][][];
+            _staticTiles[x] ??= new StaticTile[BlockHeight][][][];
 
-            var tiles = m_StaticTiles[x][y];
+            var tiles = _staticTiles[x][y];
 
             if (tiles == null)
             {
-                lock (m_FileShare)
+                lock (_fileShare)
                 {
-                    for (var i = 0; tiles == null && i < m_FileShare.Count; ++i)
+                    for (var i = 0; tiles == null && i < _fileShare.Count; ++i)
                     {
-                        var shared = m_FileShare[i];
+                        var shared = _fileShare[i];
 
                         lock (shared)
                         {
                             if (x < shared.BlockWidth && y < shared.BlockHeight)
                             {
-                                var theirTiles = shared.m_StaticTiles[x];
+                                var theirTiles = shared._staticTiles[x];
 
                                 if (theirTiles != null)
                                 {
@@ -184,7 +166,7 @@ namespace Server
 
                                 if (tiles != null)
                                 {
-                                    var theirBits = shared.m_StaticPatches[x];
+                                    var theirBits = shared._staticPatches[x];
 
                                     if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
                                     {
@@ -198,7 +180,7 @@ namespace Server
 
                 tiles ??= ReadStaticBlock(x, y);
 
-                m_StaticTiles[x][y] = tiles;
+                _staticTiles[x][y] = tiles;
             }
 
             return tiles;
@@ -220,7 +202,7 @@ namespace Server
 
             if (multis)
             {
-                var eable = m_Owner.GetMultiTilesAt(x, y);
+                var eable = _map.GetMultiTilesAt(x, y);
 
                 if (eable == Map.NullEnumerable<StaticTile[]>.Instance)
                 {
@@ -262,11 +244,11 @@ namespace Server
                 return;
             }
 
-            m_LandTiles[x] ??= new LandTile[BlockHeight][];
-            m_LandTiles[x][y] = value;
+            _landTiles[x] ??= new LandTile[BlockHeight][];
+            _landTiles[x][y] = value;
 
-            m_LandPatches[x] ??= new int[(BlockHeight + 31) >> 5];
-            m_LandPatches[x][y >> 5] |= 1 << (y & 0x1F);
+            _landPatches[x] ??= new int[(BlockHeight + 31) >> 5];
+            _landPatches[x][y >> 5] |= 1 << (y & 0x1F);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -274,29 +256,29 @@ namespace Server
         {
             if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || MapStream == null)
             {
-                return m_InvalidLandBlock;
+                return _invalidLandBlock;
             }
 
-            m_LandTiles[x] ??= new LandTile[BlockHeight][];
+            _landTiles[x] ??= new LandTile[BlockHeight][];
 
-            var tiles = m_LandTiles[x][y];
+            var tiles = _landTiles[x][y];
 
             if (tiles != null)
             {
                 return tiles;
             }
 
-            lock (m_FileShare)
+            lock (_fileShare)
             {
-                for (var i = 0; tiles == null && i < m_FileShare.Count; ++i)
+                for (var i = 0; tiles == null && i < _fileShare.Count; ++i)
                 {
-                    var shared = m_FileShare[i];
+                    var shared = _fileShare[i];
 
                     lock (shared)
                     {
                         if (x < shared.BlockWidth && y < shared.BlockHeight)
                         {
-                            var theirTiles = shared.m_LandTiles[x];
+                            var theirTiles = shared._landTiles[x];
 
                             if (theirTiles != null)
                             {
@@ -305,7 +287,7 @@ namespace Server
 
                             if (tiles != null)
                             {
-                                var theirBits = shared.m_LandPatches[x];
+                                var theirBits = shared._landPatches[x];
 
                                 if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
                                 {
@@ -319,7 +301,7 @@ namespace Server
 
             tiles ??= ReadLandBlock(x, y);
 
-            m_LandTiles[x][y] = tiles;
+            _landTiles[x][y] = tiles;
 
             return tiles;
         }
@@ -347,7 +329,7 @@ namespace Server
 
                 if (lookup < 0 || length <= 0)
                 {
-                    return m_EmptyStaticBlock;
+                    return _emptyStaticBlock;
                 }
 
                 var count = length / 7;
@@ -410,11 +392,11 @@ namespace Server
             {
                 if (DateTime.UtcNow >= m_NextStaticWarning)
                 {
-                    Console.WriteLine("Warning: Static EOS for {0} ({1}, {2})", m_Owner, x, y);
+                    Console.WriteLine("Warning: Static EOS for {0} ({1}, {2})", _map, x, y);
                     m_NextStaticWarning = DateTime.UtcNow + TimeSpan.FromMinutes(1.0);
                 }
 
-                return m_EmptyStaticBlock;
+                return _emptyStaticBlock;
             }
         }
 
@@ -438,9 +420,9 @@ namespace Server
             {
                 var offset = (x * BlockHeight + y) * 196 + 4;
 
-                if (m_MapIndex != null)
+                if (_mapIndex != null)
                 {
-                    offset = m_MapIndex.Lookup(offset);
+                    offset = _mapIndex.Lookup(offset);
                 }
 
                 MapStream.Seek(offset, SeekOrigin.Begin);
@@ -458,17 +440,17 @@ namespace Server
             {
                 if (DateTime.UtcNow >= m_NextLandWarning)
                 {
-                    Console.WriteLine("Warning: Land EOS for {0} ({1}, {2})", m_Owner, x, y);
+                    Console.WriteLine("Warning: Land EOS for {0} ({1}, {2})", _map, x, y);
                     m_NextLandWarning = DateTime.UtcNow + TimeSpan.FromMinutes(1.0);
                 }
 
-                return m_InvalidLandBlock;
+                return _invalidLandBlock;
             }
         }
 
         public void Dispose()
         {
-            m_MapIndex?.Close();
+            _mapIndex?.Close();
             MapStream?.Close();
             DataStream?.Close();
             IndexReader?.Close();
