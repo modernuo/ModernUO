@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -269,6 +270,7 @@ namespace Server
 
             using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length);
+            fs.Read(buffer);
             var bin = new BufferReader(buffer);
 
             bool is64BitFlags;
@@ -299,9 +301,9 @@ namespace Server
                 }
 
                 var flags = (TileFlag)(is64BitFlags ? bin.ReadULong() : bin.ReadUInt());
-                bin.ReadUShort(); // skip 2 bytes -- textureID
+                bin.ReadShort(); // skip 2 bytes -- textureID
 
-                LandTable[i] = new LandData(bin.ReadAsciiNull(20), flags);
+                LandTable[i] = new LandData(bin.ReadAscii(20), flags);
             }
 
             for (var i = 0; i < itemLength; i++)
@@ -323,7 +325,7 @@ namespace Server
                 int height = bin.ReadByte();
 
                 ItemTable[i] = new ItemData(
-                    bin.ReadAsciiNull(20),
+                    bin.ReadAscii(20),
                     flags,
                     weight,
                     quality,

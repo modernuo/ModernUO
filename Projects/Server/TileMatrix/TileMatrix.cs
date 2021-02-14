@@ -583,8 +583,7 @@ namespace Server
         {
             public static readonly IComparer<UOPEntry> Instance = new OffsetComparer();
 
-            public int Compare(UOPEntry x, UOPEntry y) =>
-                x?.m_Offset.CompareTo(y?.m_Offset) ?? (y == null ? 0 : 1);
+            public int Compare(UOPEntry x, UOPEntry y) => x!.m_Offset.CompareTo(y!.m_Offset);
         }
 
         private readonly BinaryReader m_Reader;

@@ -140,6 +140,30 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public long ReadInt64()
+        {
+            if (!BinaryPrimitives.TryReadInt64BigEndian(_buffer.Slice(Position), out var value))
+            {
+                throw new OutOfMemoryException();
+            }
+
+            Position += 8;
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ulong ReadUInt64()
+        {
+            if (!BinaryPrimitives.TryReadUInt64BigEndian(_buffer.Slice(Position), out var value))
+            {
+                throw new OutOfMemoryException();
+            }
+
+            Position += 8;
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string ReadString(Encoding encoding, bool safeString = false, int fixedLength = -1)
         {
             int sizeT = TextEncoding.GetByteLengthForEncoding(encoding);
