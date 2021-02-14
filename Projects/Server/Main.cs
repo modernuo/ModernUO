@@ -458,13 +458,14 @@ namespace Server
             MapLoader.LoadMaps();
             AssemblyHandler.Invoke("Configure");
 
-            TileMatrixLoader.LoadTileMatrix();
             RegionLoader.LoadRegions();
             World.Load();
 
             AssemblyHandler.Invoke("Initialize");
 
             _timerThread.Start();
+
+            TileMatrixLoader.LoadTileMatrix();
 
             TcpServer.Start();
             EventSink.InvokeServerStarted();

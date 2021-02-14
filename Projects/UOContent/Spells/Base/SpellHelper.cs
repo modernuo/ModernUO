@@ -259,7 +259,7 @@ namespace Server.Spells
             return false;
         }
 
-        public static bool CanRevealCaster(Mobile m) => m is BaseCreature c && !c.Controlled;
+        public static bool CanRevealCaster(Mobile m) => m is BaseCreature { Controlled: false };
 
         public static void GetSurfaceTop(ref IPoint3D p)
         {

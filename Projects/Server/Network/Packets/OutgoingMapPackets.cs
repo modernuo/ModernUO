@@ -30,7 +30,7 @@ namespace Server.Network
             var staticPatch = TileMatrixPatch.PatchStaticsEnabled;
             var landPatch = TileMatrixPatch.PatchLandEnabled;
 
-            if (!staticPatch && !landPatch && ns.ProtocolChanges < ProtocolChanges.Version6000)
+            if (!(staticPatch || landPatch) || ns.ProtocolChanges >= ProtocolChanges.Version6000)
             {
                 return;
             }

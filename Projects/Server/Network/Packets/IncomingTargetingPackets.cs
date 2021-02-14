@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using Server.Diagnostics;
 using Server.Targeting;
 
@@ -33,7 +34,8 @@ namespace Server.Network
             Serial serial = reader.ReadUInt32();
             int x = reader.ReadInt16();
             int y = reader.ReadInt16();
-            int z = reader.ReadInt16();
+            reader.ReadByte();
+            int z = reader.ReadSByte();
             int graphic = reader.ReadUInt16();
 
             if (targetID == unchecked((int)0xDEADBEEF))
@@ -86,6 +88,11 @@ namespace Server.Network
                             else
                             {
                                 var tiles = map.Tiles.GetStaticTiles(x, y, !t.DisallowMultis);
+
+                                foreach (var tile in tiles)
+                                {
+                                    Console.WriteLine("Static {0:X} at Offset {1} {2} {3}", tile.ID, tile.X, tile.Y, tile.Z);
+                                }
 
                                 var valid = false;
 
