@@ -50,6 +50,7 @@ namespace Server
             _position = 0;
         }
 
+        [Obsolete("RunUO backward compatible method that should be replaced.")]
         public string ReadString()
         {
             if (!ReadBool())
@@ -58,14 +59,7 @@ namespace Server
             }
 
             var length = ReadEncodedInt();
-            if (length <= 0)
-            {
-                return "";
-            }
-
-            var s = _encoding.GetString(_buffer.AsSpan(Position, length));
-            _position += length;
-            return s;
+            return length <= 0 ? "" : ReadString(_encoding, false, length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

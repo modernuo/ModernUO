@@ -89,11 +89,6 @@ namespace Server.Network
                             {
                                 var tiles = map.Tiles.GetStaticTiles(x, y, !t.DisallowMultis);
 
-                                foreach (var tile in tiles)
-                                {
-                                    Console.WriteLine("Static {0:X} at Offset {1} {2} {3}", tile.ID, tile.X, tile.Y, tile.Z);
-                                }
-
                                 var valid = false;
 
                                 if (state.HighSeas)
