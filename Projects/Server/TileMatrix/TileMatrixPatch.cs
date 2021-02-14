@@ -10,35 +10,38 @@ namespace Server
 
         public TileMatrixPatch(TileMatrix matrix, int index)
         {
-            if (!Enabled)
+            if (PatchLandEnabled)
             {
-                return;
+                var mapDataPath = Core.FindDataFile($"mapdif{index}.mul", false);
+                var mapIndexPath = Core.FindDataFile($"mapdifl{index}.mul", false);
+
+                if (File.Exists(mapDataPath) && File.Exists(mapIndexPath))
+                {
+                    LandBlocks = PatchLand(matrix, mapDataPath, mapIndexPath);
+                }
             }
 
-            var mapDataPath = Core.FindDataFile($"mapdif{index}.mul", false);
-            var mapIndexPath = Core.FindDataFile($"mapdifl{index}.mul", false);
-
-            if (File.Exists(mapDataPath) && File.Exists(mapIndexPath))
+            if (PatchStaticsEnabled)
             {
-                LandBlocks = PatchLand(matrix, mapDataPath, mapIndexPath);
-            }
+                var staDataPath = Core.FindDataFile($"stadif{index}.mul", false);
+                var staIndexPath = Core.FindDataFile($"stadifl{index}.mul", false);
+                var staLookupPath = Core.FindDataFile($"stadifi{index}.mul", false);
 
-            var staDataPath = Core.FindDataFile($"stadif{index}.mul", false);
-            var staIndexPath = Core.FindDataFile($"stadifl{index}.mul", false);
-            var staLookupPath = Core.FindDataFile($"stadifi{index}.mul", false);
-
-            if (File.Exists(staDataPath) && File.Exists(staIndexPath) && File.Exists(staLookupPath))
-            {
-                StaticBlocks = PatchStatics(matrix, staDataPath, staIndexPath, staLookupPath);
+                if (File.Exists(staDataPath) && File.Exists(staIndexPath) && File.Exists(staLookupPath))
+                {
+                    StaticBlocks = PatchStatics(matrix, staDataPath, staIndexPath, staLookupPath);
+                }
             }
         }
 
-        public static bool Enabled { get; set; }
+        public static bool PatchLandEnabled { get; private set; }
+        public static bool PatchStaticsEnabled { get; private set; }
 
         public static void Configure()
         {
             // Using this requires the old mapDif files to be present. Only needed to support Clients < 6.0.0.0
-            Enabled = ServerConfiguration.GetOrUpdateSetting("maps.enableTileMatrixPatches", !Core.SE);
+            PatchLandEnabled = ServerConfiguration.GetOrUpdateSetting("maps.enableMapDiffPatches", false);
+            PatchStaticsEnabled = ServerConfiguration.GetOrUpdateSetting("maps.enableStaticsDiffPatches", false);
         }
 
         public int LandBlocks { get; }

@@ -272,7 +272,7 @@ namespace Server
             var bin = new BufferReader(buffer);
 
             bool is64BitFlags;
-            int landLength = 0x4000;
+            const int landLength = 0x4000;
             int itemLength;
 
             if (fs.Length >= 3188736) // 7.0.9.0

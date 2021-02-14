@@ -27,23 +27,58 @@ namespace Server.Network
                 return;
             }
 
-            var writer = new SpanWriter(stackalloc byte[41]);
+            var staticPatch = TileMatrixPatch.PatchStaticsEnabled;
+            var landPatch = TileMatrixPatch.PatchLandEnabled;
+
+            if (!staticPatch && !landPatch && ns.ProtocolChanges < ProtocolChanges.Version6000)
+            {
+                return;
+            }
+
+            int count;
+
+            if (ns.HasFlag(ClientFlags.TerMur))
+            {
+                count = 6;
+            }
+            else if (ns.HasFlag(ClientFlags.Tokuno))
+            {
+                count = 5;
+            }
+            else if (ns.HasFlag(ClientFlags.Malas))
+            {
+                count = 4;
+            }
+            else if (ns.HasFlag(ClientFlags.Ilshenar))
+            {
+                count = 3;
+            }
+            else if (ns.HasFlag(ClientFlags.Trammel))
+            {
+                count = 2;
+            }
+            else if (ns.HasFlag(ClientFlags.Felucca))
+            {
+                count = 1;
+            }
+            else
+            {
+                return;
+            }
+
+            var writer = new SpanWriter(stackalloc byte[9 + count * 8]);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)41); // Length
             writer.Write((ushort)0x18); // Subpacket
-            writer.Write(4); // Map count?
+            writer.Write(count);
 
-            writer.Write(Map.Felucca.Tiles.Patch.StaticBlocks);
-            writer.Write(Map.Felucca.Tiles.Patch.LandBlocks);
+            for (int i = 0; i < count; i++)
+            {
+                var map = Map.Maps[i];
 
-            writer.Write(Map.Trammel.Tiles.Patch.StaticBlocks);
-            writer.Write(Map.Trammel.Tiles.Patch.LandBlocks);
-
-            writer.Write(Map.Ilshenar.Tiles.Patch.StaticBlocks);
-            writer.Write(Map.Ilshenar.Tiles.Patch.LandBlocks);
-
-            writer.Write(Map.Malas.Tiles.Patch.StaticBlocks);
-            writer.Write(Map.Malas.Tiles.Patch.LandBlocks);
+                writer.Write(map.Tiles.Patch.StaticBlocks);
+                writer.Write(map.Tiles.Patch.LandBlocks);
+            }
 
             ns.Send(writer.Span);
         }

@@ -249,9 +249,7 @@ namespace Server
             FeatureFlags supportedFeatures,
             CharacterListFlags charListFlags,
             HousingFlags customHousingFlag
-        )
-            : this(id, name, supportedFeatures, charListFlags, customHousingFlag) =>
-            ClientFlags = clientFlags;
+        ) : this(id, name, supportedFeatures, charListFlags, customHousingFlag) => ClientFlags = clientFlags;
 
         public ExpansionInfo(
             int id,
@@ -260,9 +258,7 @@ namespace Server
             FeatureFlags supportedFeatures,
             CharacterListFlags charListFlags,
             HousingFlags customHousingFlag
-        )
-            : this(id, name, supportedFeatures, charListFlags, customHousingFlag) =>
-            RequiredClient = requiredClient;
+        ) : this(id, name, supportedFeatures, charListFlags, customHousingFlag) => RequiredClient = requiredClient;
 
         private ExpansionInfo(
             int id,

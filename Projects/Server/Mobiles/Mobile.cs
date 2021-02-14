@@ -2814,10 +2814,7 @@ namespace Server
                 {
                     ns.SendMapChange(Map);
 
-                    if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
-                    {
-                        ns.SendMapPatches();
-                    }
+                    ns.SendMapPatches();
 
                     ns.SendSeasonChange((byte)GetSeason(), true);
 

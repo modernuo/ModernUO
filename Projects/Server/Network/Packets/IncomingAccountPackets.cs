@@ -306,10 +306,7 @@ namespace Server.Network
 
             state.SendMapChange(m.Map);
 
-            if (!Core.SE && state.ProtocolChanges < ProtocolChanges.Version6000)
-            {
-                state.SendMapPatches();
-            }
+            state.SendMapPatches();
 
             state.SendSeasonChange((byte)m.GetSeason(), true);
 
