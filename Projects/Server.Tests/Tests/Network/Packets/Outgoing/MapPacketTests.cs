@@ -6,12 +6,17 @@ namespace Server.Tests.Network
 {
     public class MapPatchesTests : IClassFixture<ServerFixture>
     {
-        [Fact]
-        public void TestMapPatches()
+        [Theory]
+        [InlineData(ProtocolChanges.Version500a, ClientFlags.Malas | ClientFlags.Trammel | ClientFlags.Felucca)]
+        [InlineData(ProtocolChanges.Version7090, ClientFlags.TerMur | ClientFlags.Trammel | ClientFlags.Felucca)]
+        public void TestMapPatches(ProtocolChanges protocolChanges, ClientFlags flags)
         {
-            var expected = new MapPatches().Compile();
-
             var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = protocolChanges;
+            ns.Flags = flags;
+
+            var expected = ns.ProtocolChanges >= ProtocolChanges.Version6000 ? Span<byte>.Empty : new MapPatches().Compile();
+
             ns.SendMapPatches();
 
             var result = ns.SendPipe.Reader.TryRead();
