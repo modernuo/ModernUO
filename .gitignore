@@ -4,6 +4,7 @@
 /Distribution/Assemblies
 /Distribution/Configuration/modernuo.json
 /Distribution/Configuration/email-settings.json
+/Distribution/Configuration/throttles.json
 /Distribution/Logs
 /Distribution/Backups
 /Distribution/Saves

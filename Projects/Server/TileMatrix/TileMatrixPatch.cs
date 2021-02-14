@@ -5,7 +5,13 @@ namespace Server
 {
     public class TileMatrixPatch
     {
-        private StaticTile[] m_TileBuffer = new StaticTile[128];
+        private StaticTile[] _tileBuffer = new StaticTile[128];
+
+        public static bool PatchLandEnabled { get; private set; }
+        public static bool PatchStaticsEnabled { get; private set; }
+
+        public int LandBlocks { get; }
+        public int StaticBlocks { get; }
 
         public TileMatrixPatch(TileMatrix matrix, int index)
         {
@@ -33,19 +39,12 @@ namespace Server
             }
         }
 
-        public static bool PatchLandEnabled { get; private set; }
-        public static bool PatchStaticsEnabled { get; private set; }
-
         public static void Configure()
         {
             // Using this requires the old mapDif files to be present. Only needed to support Clients < 6.0.0.0
             PatchLandEnabled = ServerConfiguration.GetOrUpdateSetting("maps.enableMapDiffPatches", false);
             PatchStaticsEnabled = ServerConfiguration.GetOrUpdateSetting("maps.enableStaticsDiffPatches", false);
         }
-
-        public int LandBlocks { get; }
-
-        public int StaticBlocks { get; }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         private unsafe int PatchLand(TileMatrix matrix, string dataPath, string indexPath)
@@ -122,12 +121,12 @@ namespace Server
 
                 var tileCount = length / 7;
 
-                if (m_TileBuffer.Length < tileCount)
+                if (_tileBuffer.Length < tileCount)
                 {
-                    m_TileBuffer = new StaticTile[tileCount];
+                    _tileBuffer = new StaticTile[tileCount];
                 }
 
-                var staTiles = m_TileBuffer;
+                var staTiles = _tileBuffer;
 
                 fixed (StaticTile* pTiles = staTiles)
                 {
