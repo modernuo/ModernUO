@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using Server.Json;
 
 namespace Server
@@ -28,8 +29,12 @@ namespace Server
 
         private static int[] Load()
         {
-            var table = JsonConfig.Deserialize<Dictionary<string, string>>("Data/shrink.json")
-                        ?? new Dictionary<string, string>();
+            var path = "Data/shrink.json";
+            var table = JsonConfig.Deserialize<Dictionary<string, string>>(path);
+            if (table == null)
+            {
+                throw new JsonException($"Failed to deserialize {path}.");
+            }
 
             int length = 0;
 

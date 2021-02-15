@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using Server.Json;
 
 namespace Server.Gumps
@@ -23,6 +24,10 @@ namespace Server.Gumps
             try
             {
                 Root = JsonConfig.Deserialize<GoCategory>(path);
+                if (Root == null)
+                {
+                    throw new JsonException($"Failed to deserialize {path}.");
+                }
                 SetParents(Root);
             }
             catch (Exception e)
