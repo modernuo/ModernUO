@@ -449,7 +449,7 @@ namespace Server
             var assemblyFiles = JsonConfig.Deserialize<List<string>>(assemblyPath)?.ToArray();
             if (assemblyFiles == null)
             {
-                throw new JsonException($"Failed to deserialize {m_FilePath}.");
+                throw new JsonException($"Failed to deserialize {assemblyPath}.");
             }
 
             for (var i = 0; i < assemblyFiles.Length; i++)
