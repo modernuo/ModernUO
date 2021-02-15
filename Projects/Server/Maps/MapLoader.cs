@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Server.Json;
 
@@ -51,6 +52,10 @@ namespace Server
 
             var stopwatch = Stopwatch.StartNew();
             var maps = JsonConfig.Deserialize<List<MapDefinition>>(path);
+            if (maps == null)
+            {
+                throw new JsonException($"Failed to deserialize {path}.");
+            }
 
             foreach (var def in maps)
             {
