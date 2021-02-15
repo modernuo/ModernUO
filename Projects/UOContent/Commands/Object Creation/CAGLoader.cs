@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Server.Items;
 using Server.Json;
@@ -31,6 +32,10 @@ namespace Server.Commands
             var path = Path.Combine(Core.BaseDirectory, "Data/categorization.json");
 
             var list = JsonConfig.Deserialize<List<CAGJson>>(path);
+            if (list == null)
+            {
+                throw new JsonException($"Failed to deserialize {path}.");
+            }
 
             // Not an optimized solution
             foreach (var cag in list)

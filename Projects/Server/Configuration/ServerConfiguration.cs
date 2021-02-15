@@ -176,7 +176,7 @@ namespace Server
                     Utility.PushColor(ConsoleColor.Red);
                     Console.WriteLine("failed");
                     Utility.PopColor();
-                    throw new Exception("Core: Server configuration failed to deserialize.");
+                    throw new FileNotFoundException($"Failed to deserialize {m_FilePath}.");
                 }
 
                 Console.WriteLine("done");

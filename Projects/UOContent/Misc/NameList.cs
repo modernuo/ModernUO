@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Server.Json;
 
@@ -44,6 +45,12 @@ namespace Server
             var filePath = Path.Combine(Core.BaseDirectory, "Data/names.json");
 
             var nameLists = JsonConfig.Deserialize<List<NameList>>(filePath);
+
+            if (nameLists == null)
+            {
+                throw new JsonException($"Failed to deserialize {filePath}.");
+            }
+
             foreach (var nameList in nameLists)
             {
                 nameList.FixNames();

@@ -22,6 +22,7 @@ using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Server.Json;
@@ -445,7 +446,12 @@ namespace Server
             var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
             // Load UOContent.dll
-            var assemblyFiles = JsonConfig.Deserialize<List<string>>(assemblyPath).ToArray();
+            var assemblyFiles = JsonConfig.Deserialize<List<string>>(assemblyPath)?.ToArray();
+            if (assemblyFiles == null)
+            {
+                throw new JsonException($"Failed to deserialize {assemblyPath}.");
+            }
+
             for (var i = 0; i < assemblyFiles.Length; i++)
             {
                 assemblyFiles[i] = Path.Join(BaseDirectory, "Assemblies", assemblyFiles[i]);
