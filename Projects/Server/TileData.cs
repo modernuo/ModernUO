@@ -1,139 +1,183 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Email: hi@modernuo.com                                                *
+ * File: TileData.cs                                                     *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
+using System.Buffers;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Network;
 
 namespace Server
 {
     public struct LandData
     {
+        public string Name { get; set; }
+
+        public TileFlag Flags { get; set; }
+
         public LandData(string name, TileFlag flags)
         {
             Name = name;
             Flags = flags;
         }
-
-        public string Name { get; set; }
-
-        public TileFlag Flags { get; set; }
     }
 
+    [PropertyObject]
     public struct ItemData
     {
-        private byte m_Weight;
-        private byte m_Quality;
-        private byte m_Quantity;
-        private byte m_Value;
-        private byte m_Height;
+        private byte _weight;
+        private byte _quality;
+        private ushort _animation;
+        private byte _quantity;
+        private byte _value;
+        private byte _height;
 
-        public ItemData(string name, TileFlag flags, int weight, int quality, int quantity, int value, int height)
+        public ItemData(string name, TileFlag flags, int weight, int quality, int animation, int quantity, int value, int height)
         {
             Name = name;
             Flags = flags;
-            m_Weight = (byte)weight;
-            m_Quality = (byte)quality;
-            m_Quantity = (byte)quantity;
-            m_Value = (byte)value;
-            m_Height = (byte)height;
+            _weight = (byte)weight;
+            _quality = (byte)quality;
+            _animation = (ushort)animation;
+            _quantity = (byte)quantity;
+            _value = (byte)value;
+            _height = (byte)height;
         }
 
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public string Name { get; set; }
 
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public TileFlag Flags { get; set; }
 
-        public bool Bridge
-        {
-            get => (Flags & TileFlag.Bridge) != 0;
-            set
-            {
-                if (value)
-                {
-                    Flags |= TileFlag.Bridge;
-                }
-                else
-                {
-                    Flags &= ~TileFlag.Bridge;
-                }
-            }
-        }
-
-        public bool Impassable
-        {
-            get => (Flags & TileFlag.Impassable) != 0;
-            set
-            {
-                if (value)
-                {
-                    Flags |= TileFlag.Impassable;
-                }
-                else
-                {
-                    Flags &= ~TileFlag.Impassable;
-                }
-            }
-        }
-
-        public bool Surface
-        {
-            get => (Flags & TileFlag.Surface) != 0;
-            set
-            {
-                if (value)
-                {
-                    Flags |= TileFlag.Surface;
-                }
-                else
-                {
-                    Flags &= ~TileFlag.Surface;
-                }
-            }
-        }
-
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public int Weight
         {
-            get => m_Weight;
-            set => m_Weight = (byte)value;
+            get => _weight;
+            set => _weight = (byte)value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public int Quality
         {
-            get => m_Quality;
-            set => m_Quality = (byte)value;
+            get => _quality;
+            set => _quality = (byte)value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public int Animation
+        {
+            get => _animation;
+            set => _animation = (ushort)value;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public int Quantity
         {
-            get => m_Quantity;
-            set => m_Quantity = (byte)value;
+            get => _quantity;
+            set => _quantity = (byte)value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public int Value
         {
-            get => m_Value;
-            set => m_Value = (byte)value;
+            get => _value;
+            set => _value = (byte)value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public int Height
         {
-            get => m_Height;
-            set => m_Height = (byte)value;
+            get => _height;
+            set => _height = (byte)value;
         }
 
-        public int CalcHeight
-        {
-            get
-            {
-                if ((Flags & TileFlag.Bridge) != 0)
-                {
-                    return m_Height / 2;
-                }
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public int CalcHeight => (Flags & TileFlag.Bridge) != 0 ? _height / 2 : _height;
 
-                return m_Height;
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public bool Bridge
+        {
+            get => this[TileFlag.Bridge];
+            set => this[TileFlag.Bridge] = value;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public bool Wall
+        {
+            get => this[TileFlag.Wall];
+            set => this[TileFlag.Wall] = value;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public bool Window
+        {
+            get => this[TileFlag.Window];
+            set => this[TileFlag.Window] = value;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public bool Impassable
+        {
+            get => this[TileFlag.Impassable];
+            set => this[TileFlag.Impassable] = value;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public bool Surface
+        {
+            get => this[TileFlag.Surface];
+            set => this[TileFlag.Surface] = value;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public bool Roof
+        {
+            get => this[TileFlag.Roof];
+            set => this[TileFlag.Roof] = value;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public bool LightSource
+        {
+            get => this[TileFlag.LightSource];
+            set => this[TileFlag.LightSource] = value;
+        }
+
+        public bool this[TileFlag flag]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => (Flags & flag) != 0;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set
+            {
+                if (value)
+                {
+                    Flags |= flag;
+                }
+                else
+                {
+                    Flags &= ~flag;
+                }
             }
         }
     }
 
     [Flags]
-    public enum TileFlag : long
+    public enum TileFlag : ulong
     {
         None = 0x00000000,
         Background = 0x00000001,
@@ -167,78 +211,125 @@ namespace Server
         Roof = 0x10000000,
         Door = 0x20000000,
         StairBack = 0x40000000,
-        StairRight = 0x80000000
+        StairRight = 0x80000000,
+
+        HS33 = 0x0000000100000000,
+        HS34 = 0x0000000200000000,
+        HS35 = 0x0000000400000000,
+        HS36 = 0x0000000800000000,
+        HS37 = 0x0000001000000000,
+        HS38 = 0x0000002000000000,
+        HS39 = 0x0000004000000000,
+        HS40 = 0x0000008000000000,
+        HS41 = 0x0000010000000000,
+        HS42 = 0x0000020000000000,
+        HS43 = 0x0000040000000000,
+        HS44 = 0x0000080000000000,
+        HS45 = 0x0000100000000000,
+        HS46 = 0x0000200000000000,
+        HS47 = 0x0000400000000000,
+        HS48 = 0x0000800000000000,
+        HS49 = 0x0001000000000000,
+        HS50 = 0x0002000000000000,
+        HS51 = 0x0004000000000000,
+        HS52 = 0x0008000000000000,
+        HS53 = 0x0010000000000000,
+        HS54 = 0x0020000000000000,
+        HS55 = 0x0040000000000000,
+        HS56 = 0x0080000000000000,
+        HS57 = 0x0100000000000000,
+        HS58 = 0x0200000000000000,
+        HS59 = 0x0400000000000000,
+        HS60 = 0x0800000000000000,
+        HS61 = 0x1000000000000000,
+        HS62 = 0x2000000000000000,
+        HS63 = 0x4000000000000000,
+        HS64 = 0x8000000000000000
     }
 
     public static class TileData
     {
-        private static readonly byte[] m_StringBuffer = new byte[20];
+        public static LandData[] LandTable { get; } = new LandData[0x4000];
+        public static ItemData[] ItemTable { get; } = new ItemData[0x10000];
+        public static int MaxLandValue { get; private set; }
+        public static int MaxItemValue { get; private set; }
 
         static TileData()
         {
-            ItemTable = new ItemData[0x10000];
-            LandTable = new LandData[0x4000];
-
             if (Core.IsRunningFromXUnit)
             {
                 return;
             }
 
+            Load();
+        }
+
+        private static void Load()
+        {
             var filePath = Core.FindDataFile("tiledata.mul");
 
             using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var bin = new BinaryReader(fs);
+            var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length);
+            fs.Read(buffer);
+            var bin = new BufferReader(buffer);
 
-            var is7090 = fs.Length == 3188736;
-            var is7000 = fs.Length == 1644544;
+            bool is64BitFlags;
+            const int landLength = 0x4000;
+            int itemLength;
 
-            for (var i = 0; i < 0x4000; i++)
+            if (fs.Length >= 3188736) // 7.0.9.0
             {
-                // header
-                if (is7090)
-                {
-                    if (i == 1 || i > 0 && (i & 0x1F) == 0)
-                    {
-                        bin.ReadInt32();
-                    }
-                }
-                else if ((i & 0x1F) == 0)
-                {
-                    bin.ReadInt32();
-                }
-
-                var flags = (TileFlag)(is7090 ? bin.ReadInt64() : bin.ReadInt32());
-                bin.ReadInt16(); // skip 2 bytes -- textureID
-
-                LandTable[i] = new LandData(ReadNameString(bin), flags);
+                is64BitFlags = true;
+                itemLength = 0x10000;
+            }
+            else if (fs.Length >= 1644544) // 7.0.0.0
+            {
+                is64BitFlags = false;
+                itemLength = 0x8000;
+            }
+            else
+            {
+                is64BitFlags = false;
+                itemLength = 0x4000;
             }
 
-            var length = is7090 ? 0x10000 :
-                is7000 ? 0x8000 : 0x4000;
+            for (var i = 0; i < landLength; i++)
+            {
+                if (is64BitFlags ? i == 1 || i > 0 && (i & 0x1F) == 0 : (i & 0x1F) == 0)
+                {
+                    bin.ReadInt(); // header
+                }
 
-            for (var i = 0; i < length; i++)
+                var flags = (TileFlag)(is64BitFlags ? bin.ReadULong() : bin.ReadUInt());
+                bin.ReadShort(); // skip 2 bytes -- textureID
+
+                LandTable[i] = new LandData(bin.ReadAscii(20), flags);
+            }
+
+            for (var i = 0; i < itemLength; i++)
             {
                 if ((i & 0x1F) == 0)
                 {
-                    bin.ReadInt32(); // header
+                    bin.ReadInt(); // header
                 }
 
-                var flags = (TileFlag)(is7090 ? bin.ReadInt64() : bin.ReadInt32());
+                var flags = (TileFlag)(is64BitFlags ? bin.ReadULong() : bin.ReadUInt());
                 int weight = bin.ReadByte();
                 int quality = bin.ReadByte();
-                bin.ReadInt16();
+                int animation = bin.ReadUShort();
                 bin.ReadByte();
                 int quantity = bin.ReadByte();
-                bin.ReadInt32();
+                bin.ReadInt();
                 bin.ReadByte();
                 int value = bin.ReadByte();
                 int height = bin.ReadByte();
 
                 ItemTable[i] = new ItemData(
-                    ReadNameString(bin),
+                    bin.ReadAscii(20),
                     flags,
                     weight,
                     quality,
+                    animation,
                     quantity,
                     value,
                     height
@@ -247,33 +338,6 @@ namespace Server
 
             MaxLandValue = LandTable.Length - 1;
             MaxItemValue = ItemTable.Length - 1;
-        }
-
-        public static LandData[] LandTable { get; }
-
-        public static ItemData[] ItemTable { get; }
-
-        public static int MaxLandValue { get; }
-
-        public static int MaxItemValue { get; }
-
-        private static string ReadNameString(BinaryReader bin)
-        {
-            bin.Read(m_StringBuffer, 0, 20);
-
-            var count = 0;
-
-            while (count < 20)
-            {
-                if (m_StringBuffer[count] == 0)
-                {
-                    break;
-                }
-
-                count++;
-            }
-
-            return Encoding.ASCII.GetString(new ReadOnlySpan<byte>(m_StringBuffer, 0, count));
         }
     }
 }

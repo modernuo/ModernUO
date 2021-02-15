@@ -19,8 +19,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Server.Guilds;
+using Server.Network;
 using Server.Text;
 
 namespace Server
@@ -48,6 +50,7 @@ namespace Server
             _position = 0;
         }
 
+        [Obsolete("RunUO backward compatible method that should be replaced.")]
         public string ReadString()
         {
             if (!ReadBool())
@@ -56,15 +59,85 @@ namespace Server
             }
 
             var length = ReadEncodedInt();
-            if (length <= 0)
+            return length <= 0 ? "" : ReadString(_encoding, false, length);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadString(Encoding encoding, bool safeString = false, int fixedLength = -1)
+        {
+            int sizeT = TextEncoding.GetByteLengthForEncoding(encoding);
+
+            bool isFixedLength = fixedLength > -1;
+
+            var remaining = _buffer.Length - _position;
+            int size;
+
+            if (isFixedLength)
             {
-                return "";
+                size = fixedLength * sizeT;
+                if (size > remaining)
+                {
+                    throw new OutOfMemoryException();
+                }
+            }
+            else
+            {
+                size = remaining - (remaining & (sizeT - 1));
             }
 
-            var s = _encoding.GetString(_buffer.AsSpan(Position, length));
-            _position += length;
-            return s;
+            var buffer = _buffer.AsSpan(Position, size);
+
+            int index = buffer.IndexOfTerminator(sizeT);
+
+            var span = buffer.SliceToLength(index < 0 ? size : index);
+            _position += isFixedLength || index < 0 ? size : index + sizeT;
+            return TextEncoding.GetString(span, encoding, safeString);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadLittleUniSafe(int fixedLength) => ReadString(TextEncoding.UnicodeLE, true, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadLittleUniSafe() => ReadString(TextEncoding.UnicodeLE, true);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadLittleUni(int fixedLength) => ReadString(TextEncoding.UnicodeLE, false, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadLittleUni() => ReadString(TextEncoding.UnicodeLE);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadBigUniSafe(int fixedLength) => ReadString(TextEncoding.Unicode, true, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadBigUniSafe() => ReadString(TextEncoding.Unicode, true);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadBigUni(int fixedLength) => ReadString(TextEncoding.Unicode, false, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadBigUni() => ReadString(TextEncoding.Unicode);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadUTF8Safe(int fixedLength) => ReadString(TextEncoding.UTF8, true, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadUTF8Safe() => ReadString(TextEncoding.UTF8, true);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadUTF8() => ReadString(TextEncoding.UTF8);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadAsciiSafe(int fixedLength) => ReadString(Encoding.ASCII, true, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadAsciiSafe() => ReadString(Encoding.ASCII, true);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadAscii(int fixedLength) => ReadString(Encoding.ASCII, false, fixedLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ReadAscii() => ReadString(Encoding.ASCII);
 
         public DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);
 

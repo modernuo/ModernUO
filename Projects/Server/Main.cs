@@ -459,6 +459,7 @@ namespace Server
             AssemblyHandler.Invoke("Configure");
 
             TileMatrixLoader.LoadTileMatrix();
+
             RegionLoader.LoadRegions();
             World.Load();
 

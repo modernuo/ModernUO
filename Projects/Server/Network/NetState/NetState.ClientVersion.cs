@@ -39,6 +39,9 @@ namespace Server.Network
         public ProtocolChanges ProtocolChanges { get; set; }
         public ClientFlags Flags { get; set; }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HasFlag(ClientFlags flag) => (Flags & flag) != 0;
+
         public ClientVersion Version
         {
             get => _version;
