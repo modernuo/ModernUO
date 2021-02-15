@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using MimeKit;
 using Server.Json;
@@ -52,7 +53,7 @@ namespace Server.Configurations
                     Utility.PushColor(ConsoleColor.Red);
                     Console.WriteLine("failed");
                     Utility.PopColor();
-                    throw new Exception("Core: Email configuration failed to deserialize.");
+                    throw new JsonException($"Failed to deserialize {path}.");
                 }
 
                 Console.WriteLine("done");

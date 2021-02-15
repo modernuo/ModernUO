@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
 using Server.Json;
 using Server.Utilities;
 
@@ -35,6 +36,10 @@ namespace Server
 
             var stopwatch = Stopwatch.StartNew();
             var regions = JsonConfig.Deserialize<List<DynamicJson>>(path);
+            if (regions == null)
+            {
+                throw new JsonException($"Failed to deserialize {path}.");
+            }
 
             foreach (var json in regions)
             {
