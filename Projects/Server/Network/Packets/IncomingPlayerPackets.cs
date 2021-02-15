@@ -377,6 +377,7 @@ namespace Server.Network
                     var exception = new InvalidGumpResponseException($"Button {buttonID} doesn't exist");
                     exception.SetStackTrace(new StackTrace());
                     NetState.TraceException(exception);
+                    state.Mobile?.SendMessage("Invalid gump response.");
 
                     // state.Disconnect("Invalid gump response.");
                     return;
@@ -390,6 +391,7 @@ namespace Server.Network
                     var exception = new InvalidGumpResponseException($"Bad switch count {switchCount}");
                     exception.SetStackTrace(new StackTrace());
                     NetState.TraceException(exception);
+                    state.Mobile?.SendMessage("Invalid gump response.");
 
                     // state.Disconnect("Invalid gump response.");
                     return;
@@ -410,6 +412,7 @@ namespace Server.Network
                     var exception = new InvalidGumpResponseException($"Bad text entry count {textCount}");
                     exception.SetStackTrace(new StackTrace());
                     NetState.TraceException(exception);
+                    state.Mobile?.SendMessage("Invalid gump response.");
 
                     // state.Disconnect("Invalid gump response.");
                     return;
@@ -428,6 +431,7 @@ namespace Server.Network
                         var exception = new InvalidGumpResponseException($"Text entry {i} is too long ({textLength})");
                         exception.SetStackTrace(new StackTrace());
                         NetState.TraceException(exception);
+                        state.Mobile?.SendMessage("Invalid gump response.");
 
                         // state.Disconnect("Invalid gump response.");
                         return;
