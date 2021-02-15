@@ -13,8 +13,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Diagnostics;
 using Microsoft.Toolkit.HighPerformance.Extensions;
 using Server.Diagnostics;
+using Server.Exceptions;
 using Server.Gumps;
 
 namespace Server.Network
@@ -372,7 +374,12 @@ namespace Server.Network
                 if (!buttonExists)
                 {
                     state.WriteConsole("Invalid gump response, disconnecting...");
-                    state.Disconnect("Invalid gump response.");
+                    var exception = new InvalidGumpResponseException($"Button {buttonID} doesn't exist");
+                    exception.SetStackTrace(new StackTrace());
+                    NetState.TraceException(exception);
+                    state.Mobile?.SendMessage("Invalid gump response.");
+
+                    // state.Disconnect("Invalid gump response.");
                     return;
                 }
 
@@ -381,15 +388,20 @@ namespace Server.Network
                 if (switchCount < 0 || switchCount > gump.m_Switches)
                 {
                     state.WriteConsole("Invalid gump response, disconnecting...");
-                    state.Disconnect("Invalid gump response.");
+                    var exception = new InvalidGumpResponseException($"Bad switch count {switchCount}");
+                    exception.SetStackTrace(new StackTrace());
+                    NetState.TraceException(exception);
+                    state.Mobile?.SendMessage("Invalid gump response.");
+
+                    // state.Disconnect("Invalid gump response.");
                     return;
                 }
 
                 var switches = new int[switchCount];
 
-                for (var j = 0; j < switches.Length; ++j)
+                for (var i = 0; i < switches.Length; ++i)
                 {
-                    switches[j] = reader.ReadInt32();
+                    switches[i] = reader.ReadInt32();
                 }
 
                 var textCount = reader.ReadInt32();
@@ -397,13 +409,18 @@ namespace Server.Network
                 if (textCount < 0 || textCount > gump.m_TextEntries)
                 {
                     state.WriteConsole("Invalid gump response, disconnecting...");
-                    state.Disconnect("Invalid gump response.");
+                    var exception = new InvalidGumpResponseException($"Bad text entry count {textCount}");
+                    exception.SetStackTrace(new StackTrace());
+                    NetState.TraceException(exception);
+                    state.Mobile?.SendMessage("Invalid gump response.");
+
+                    // state.Disconnect("Invalid gump response.");
                     return;
                 }
 
                 var textEntries = new TextRelay[textCount];
 
-                for (var j = 0; j < textEntries.Length; ++j)
+                for (var i = 0; i < textEntries.Length; ++i)
                 {
                     int entryID = reader.ReadUInt16();
                     int textLength = reader.ReadUInt16();
@@ -411,12 +428,17 @@ namespace Server.Network
                     if (textLength > 239)
                     {
                         state.WriteConsole("Invalid gump response, disconnecting...");
-                        state.Disconnect("Invalid gump response.");
+                        var exception = new InvalidGumpResponseException($"Text entry {i} is too long ({textLength})");
+                        exception.SetStackTrace(new StackTrace());
+                        NetState.TraceException(exception);
+                        state.Mobile?.SendMessage("Invalid gump response.");
+
+                        // state.Disconnect("Invalid gump response.");
                         return;
                     }
 
                     var text = reader.ReadBigUniSafe(textLength);
-                    textEntries[j] = new TextRelay(entryID, text);
+                    textEntries[i] = new TextRelay(entryID, text);
                 }
 
                 state.RemoveGump(gump);
