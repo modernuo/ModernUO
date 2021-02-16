@@ -18,6 +18,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -157,6 +158,34 @@ namespace Server
             foreach (var ns in TcpServer.Instances)
             {
                 if (ns.Mobile == null)
+                {
+                    continue;
+                }
+
+                length = OutgoingMessagePackets.CreateMessage(
+                    buffer, Serial.MinusOne, -1, MessageType.Regular, hue, 3, ascii, "ENU", "System", text
+                );
+
+                if (length != buffer.Length)
+                {
+                    buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                }
+
+                ns.Send(buffer);
+            }
+
+            NetState.FlushAll();
+        }
+
+        public static void BroadcastStaff(int hue, bool ascii, string text)
+        {
+            var length = OutgoingMessagePackets.GetMaxMessageLength(text);
+
+            Span<byte> buffer = stackalloc byte[length].InitializePacket();
+
+            foreach (var ns in TcpServer.Instances)
+            {
+                if (ns.Mobile == null || ns.Mobile.AccessLevel < AccessLevel.GameMaster)
                 {
                     continue;
                 }
@@ -477,6 +506,55 @@ namespace Server
             ProcessSafetyQueues();
         }
 
+        private static void TraceException(Exception ex)
+        {
+            try
+            {
+                using var op = new StreamWriter("save-errors.log", true);
+                op.WriteLine("# {0}", DateTime.UtcNow);
+
+                op.WriteLine(ex);
+
+                op.WriteLine();
+                op.WriteLine();
+            }
+            catch
+            {
+                // ignored
+            }
+
+            Console.WriteLine(ex);
+        }
+
+        private static void TraceSave(params IEnumerable<KeyValuePair<string, int>>[] entityTypes)
+        {
+            try
+            {
+                int count = 0;
+
+                var timestamp = Utility.GetTimeStamp();
+                using var op = new StreamWriter("Logs/Saves/Save-Stats-{0}.log", true);
+
+                for (var i = 0; i < entityTypes.Length; i++)
+                {
+                    foreach (var (t, c) in entityTypes[i])
+                    {
+                        op.WriteLine("{0}: {1}", t, c);
+                        count++;
+                    }
+                }
+
+                op.WriteLine("- Total: {0}", count);
+
+                op.WriteLine();
+                op.WriteLine();
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
         public static void WriteFiles(object state)
         {
             var watch = Stopwatch.StartNew();
@@ -486,21 +564,57 @@ namespace Server
             IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
             IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
 
-            WriteEntities(mobileIndexInfo, Mobiles, MobileTypes);
-            WriteEntities(itemIndexInfo, Items, ItemTypes);
-            WriteEntities(guildIndexInfo, Guilds, GuildTypes);
+            Exception exception = null;
+
+            Dictionary<string, int> mobileCounts = null;
+            Dictionary<string, int> itemCounts = null;
+            Dictionary<string, int> guildCounts = null;
+
+            try
+            {
+                WriteEntities(mobileIndexInfo, Mobiles, MobileTypes, out mobileCounts);
+                WriteEntities(itemIndexInfo, Items, ItemTypes, out itemCounts);
+                WriteEntities(guildIndexInfo, Guilds, GuildTypes, out guildCounts);
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
 
             watch.Stop();
 
             m_DiskWriteHandle.Set();
 
-            Console.WriteLine("done ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
+            if (exception == null)
+            {
+                Utility.PushColor(ConsoleColor.Green);
+                Console.WriteLine("done ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
+                Utility.PopColor();
+
+                TraceSave(mobileCounts.ToList(), itemCounts.ToList());
+            }
+            else
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("failed");
+                Utility.PopColor();
+                TraceException(exception);
+
+                BroadcastStaff(0x35, true, "Writing world save snapshot failed.");
+            }
 
             Timer.DelayCall(FinishWorldSave);
         }
 
-        private static void WriteEntities<I, T>(IIndexInfo<I> indexInfo, Dictionary<I, T> entities, List<Type> types) where T : class, ISerializable
+        private static void WriteEntities<I, T>(
+            IIndexInfo<I> indexInfo,
+            Dictionary<I, T> entities,
+            List<Type> types,
+            out Dictionary<string, int> counts
+        ) where T : class, ISerializable
         {
+            counts = new Dictionary<string, int>();
+
             var typeName = indexInfo.TypeName;
 
             var path = Path.Combine("Saves", typeName);
@@ -527,6 +641,12 @@ namespace Server
                 e.SerializeTo(bin);
 
                 idx.Write((int)(bin.Position - start));
+
+                var type = e.GetType().FullName;
+                if (type != null)
+                {
+                    counts[type] = (counts.TryGetValue(type, out var count) ? count : 0) + 1;
+                }
             }
 
             tdb.Write(types.Count);
@@ -583,30 +703,46 @@ namespace Server
 
             var watch = Stopwatch.StartNew();
 
-            SaveEntities(Items.Values, now);
-            SaveEntities(Mobiles.Values, now);
-            SaveEntities(Guilds.Values, now);
+            Exception exception = null;
 
             try
             {
+                SaveEntities(Items.Values, now);
+                SaveEntities(Mobiles.Values, now);
+                SaveEntities(Guilds.Values, now);
+
                 EventSink.InvokeWorldSave();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new Exception("World Save event threw an exception. Save failed!", e);
+                exception = ex;
             }
 
             WorldState = WorldState.WritingSave;
 
             watch.Stop();
 
-            var duration = watch.Elapsed.TotalSeconds;
-            Console.WriteLine("done ({0:F2} seconds)", duration);
-
-            // Only broadcast if it took at least 150ms
-            if (duration >= 0.15)
+            if (exception == null)
             {
-                Broadcast(0x35, true, $"World Save completed in {duration:F2} seconds.");
+                var duration = watch.Elapsed.TotalSeconds;
+                Utility.PushColor(ConsoleColor.Green);
+                Console.WriteLine("done ({0:F2} seconds)", duration);
+                Utility.PopColor();
+
+                // Only broadcast if it took at least 150ms
+                if (duration >= 0.15)
+                {
+                    Broadcast(0x35, true, $"World Save completed in {duration:F2} seconds.");
+                }
+            }
+            else
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("failed");
+                Utility.PopColor();
+                TraceException(exception);
+
+                BroadcastStaff(0x35, true, "World save failed.");
             }
 
             ThreadPool.QueueUserWorkItem(WriteFiles);
