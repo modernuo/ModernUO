@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -64,6 +65,8 @@ namespace Server
     public static partial class EventSink
     {
         public static event Action<AggressiveActionEventArgs> AggressiveAction;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void InvokeAggressiveAction(AggressiveActionEventArgs e) => AggressiveAction?.Invoke(e);
     }
 }

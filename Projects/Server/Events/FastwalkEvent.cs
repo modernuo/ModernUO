@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 using Server.Network;
 
 namespace Server
@@ -31,6 +32,7 @@ namespace Server
     {
         public static event Action<FastWalkEventArgs> FastWalk;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void InvokeFastWalk(FastWalkEventArgs e) => FastWalk?.Invoke(e);
     }
 }

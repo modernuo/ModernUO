@@ -44,6 +44,9 @@ namespace Server
         private static readonly Dictionary<Serial, IEntity> _pendingDelete = new();
         private static readonly ConcurrentQueue<Item> _decayQueue = new();
 
+        private static string _tempSavePath; // Path to the temporary folder for the save
+        private static string _savePath; // Path to "Saves" folder
+
         public const uint ItemOffset = 0x40000000;
         public const uint MaxItemSerial = 0x7FFFFFFF;
         public const uint MaxMobileSerial = ItemOffset - 1;
@@ -119,7 +122,6 @@ namespace Server
 
         private static void OutOfMemory(string message) => throw new OutOfMemoryException(message);
 
-        internal static int _Saves;
         internal static List<Type> ItemTypes { get; } = new();
         internal static List<Type> MobileTypes { get; } = new();
         internal static List<Type> GuildTypes { get; } = new();
@@ -133,6 +135,15 @@ namespace Server
         public static Dictionary<Serial, Item> Items { get; private set; }
         public static Dictionary<Serial, BaseGuild> Guilds { get; private set; }
 
+        public static void Configure()
+        {
+            var tempSavePath = ServerConfiguration.GetOrUpdateSetting("world.tempSavePath", "temp");
+            _tempSavePath = Path.Combine(Core.BaseDirectory, tempSavePath);
+            var savePath = ServerConfiguration.GetOrUpdateSetting("world.savePath", "Saves");
+            _savePath = Path.Combine(Core.BaseDirectory, savePath);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WaitForWriteCompletion()
         {
             m_DiskWriteHandle.WaitOne();
@@ -205,10 +216,9 @@ namespace Server
             NetState.FlushAll();
         }
 
-        public static void Broadcast(int hue, bool ascii, string format, params object[] args)
-        {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Broadcast(int hue, bool ascii, string format, params object[] args) =>
             Broadcast(hue, ascii, string.Format(format, args));
-        }
 
         private static List<Tuple<ConstructorInfo, string>> ReadTypes<I>(BinaryReader tdbReader)
         {
@@ -266,8 +276,8 @@ namespace Server
 
             var indexType = indexInfo.TypeName;
 
-            string indexPath = Path.Combine("Saves", indexType, $"{indexType}.idx");
-            string typesPath = Path.Combine("Saves", indexType, $"{indexType}.tdb");
+            string indexPath = Path.Combine(_savePath, $"{indexType}.idx");
+            string typesPath = Path.Combine(_savePath, $"{indexType}.tdb");
 
             entities = new List<EntityIndex<T>>();
 
@@ -327,7 +337,7 @@ namespace Server
         {
             var indexType = indexInfo.TypeName;
 
-            string dataPath = Path.Combine("Saves", indexType, $"{indexType}.bin");
+            string dataPath = Path.Combine(_savePath, indexType, $"{indexType}.bin");
 
             if (!File.Exists(dataPath))
             {
@@ -557,9 +567,6 @@ namespace Server
 
         public static void WriteFiles(object state)
         {
-            var watch = Stopwatch.StartNew();
-            WriteConsole("Writing snapshot...");
-
             IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
             IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
             IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
@@ -570,30 +577,29 @@ namespace Server
             Dictionary<string, int> itemCounts = null;
             Dictionary<string, int> guildCounts = null;
 
+            var tempPath = Path.Combine(_tempSavePath, Utility.GetTimeStamp());
+
             try
             {
-                WriteEntities(mobileIndexInfo, Mobiles, MobileTypes, out mobileCounts);
-                WriteEntities(itemIndexInfo, Items, ItemTypes, out itemCounts);
-                WriteEntities(guildIndexInfo, Guilds, GuildTypes, out guildCounts);
+                var watch = Stopwatch.StartNew();
+                WriteConsole("Writing snapshot...");
+
+                WriteEntities(mobileIndexInfo, Mobiles, MobileTypes, tempPath, out mobileCounts);
+                WriteEntities(itemIndexInfo, Items, ItemTypes, tempPath, out itemCounts);
+                WriteEntities(guildIndexInfo, Guilds, GuildTypes, tempPath, out guildCounts);
+
+                watch.Stop();
+
+                Utility.PushColor(ConsoleColor.Green);
+                Console.WriteLine("done ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
+                Utility.PopColor();
             }
             catch (Exception ex)
             {
                 exception = ex;
             }
 
-            watch.Stop();
-
-            m_DiskWriteHandle.Set();
-
-            if (exception == null)
-            {
-                Utility.PushColor(ConsoleColor.Green);
-                Console.WriteLine("done ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
-                Utility.PopColor();
-
-                TraceSave(mobileCounts.ToList(), itemCounts.ToList());
-            }
-            else
+            if (exception != null)
             {
                 Utility.PushColor(ConsoleColor.Red);
                 Console.WriteLine("failed");
@@ -602,6 +608,22 @@ namespace Server
 
                 BroadcastStaff(0x35, true, "Writing world save snapshot failed.");
             }
+            else
+            {
+                try
+                {
+                    TraceSave(mobileCounts.ToList(), itemCounts.ToList(), guildCounts.ToList());
+
+                    EventSink.InvokeWorldSavePostSnapshot(_savePath, tempPath);
+                    Directory.Move(tempPath, _savePath);
+                }
+                catch (Exception ex)
+                {
+                    TraceException(ex);
+                }
+            }
+
+            m_DiskWriteHandle.Set();
 
             Timer.DelayCall(FinishWorldSave);
         }
@@ -610,6 +632,7 @@ namespace Server
             IIndexInfo<I> indexInfo,
             Dictionary<I, T> entities,
             List<Type> types,
+            string savePath,
             out Dictionary<string, int> counts
         ) where T : class, ISerializable
         {
@@ -617,7 +640,7 @@ namespace Server
 
             var typeName = indexInfo.TypeName;
 
-            var path = Path.Combine("Saves", typeName);
+            var path = Path.Combine(savePath, typeName);
 
             AssemblyHandler.EnsureDirectory(path);
 
@@ -688,8 +711,6 @@ namespace Server
             }
 
             WaitForWriteCompletion(); // Blocks Save until current disk flush is done.
-
-            ++_Saves;
 
             WorldState = WorldState.Saving;
 
@@ -798,6 +819,7 @@ namespace Server
         public static Mobile FindMobile(Serial serial, bool returnDeleted = false) =>
             FindEntity<Mobile>(serial, returnDeleted);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BaseGuild FindGuild(Serial serial) => Guilds.TryGetValue(serial, out var guild) ? guild : null;
 
         public static void AddEntity<T>(T entity) where T : class, IEntity
@@ -841,6 +863,7 @@ namespace Server
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void AddGuild(BaseGuild guild) => Guilds[guild.Serial] = guild;
 
         public static void RemoveEntity<T>(T entity) where T : class, IEntity
@@ -879,6 +902,7 @@ namespace Server
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
 
         private static void SerializeTo(this ISerializable entity, IGenericWriter writer)

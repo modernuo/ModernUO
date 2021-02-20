@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -29,6 +30,8 @@ namespace Server
     public static partial class EventSink
     {
         public static event Action<ServerCrashedEventArgs> ServerCrashed;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void InvokeServerCrashed(ServerCrashedEventArgs e) => ServerCrashed?.Invoke(e);
     }
 }

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.Network;
 
@@ -52,6 +53,8 @@ namespace Server
     public static partial class EventSink
     {
         public static event Action<ServerListEventArgs> ServerList;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void InvokeServerList(ServerListEventArgs e) => ServerList?.Invoke(e);
     }
 }
