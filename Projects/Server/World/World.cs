@@ -276,8 +276,8 @@ namespace Server
 
             var indexType = indexInfo.TypeName;
 
-            string indexPath = Path.Combine(_savePath, $"{indexType}.idx");
-            string typesPath = Path.Combine(_savePath, $"{indexType}.tdb");
+            string indexPath = Path.Combine(_savePath, indexType, $"{indexType}.idx");
+            string typesPath = Path.Combine(_savePath, indexType, $"{indexType}.tdb");
 
             entities = new List<EntityIndex<T>>();
 
@@ -289,45 +289,42 @@ namespace Server
             using FileStream idx = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             BinaryReader idxReader = new BinaryReader(idx);
 
-            using (FileStream tdb = new FileStream(typesPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using FileStream tdb = new FileStream(typesPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            BinaryReader tdbReader = new BinaryReader(tdb);
+
+            List<Tuple<ConstructorInfo, string>> types = ReadTypes<I>(tdbReader);
+
+            var count = idxReader.ReadInt32();
+
+            for (int i = 0; i < count; ++i)
             {
-                BinaryReader tdbReader = new BinaryReader(tdb);
+                var typeID = idxReader.ReadInt32();
+                var number = idxReader.ReadUInt32();
+                var pos = idxReader.ReadInt64();
+                var length = idxReader.ReadInt32();
 
-                List<Tuple<ConstructorInfo, string>> types = ReadTypes<I>(tdbReader);
+                Tuple<ConstructorInfo, string> objs = types[typeID];
 
-                var count = idxReader.ReadInt32();
-
-                for (int i = 0; i < count; ++i)
+                if (objs == null)
                 {
-                    var typeID = idxReader.ReadInt32();
-                    var number = idxReader.ReadUInt32();
-                    var pos = idxReader.ReadInt64();
-                    var length = idxReader.ReadInt32();
-
-                    Tuple<ConstructorInfo, string> objs = types[typeID];
-
-                    if (objs == null)
-                    {
-                        continue;
-                    }
-
-                    T t;
-                    ConstructorInfo ctor = objs.Item1;
-                    I indexer = indexInfo.CreateIndex(number);
-
-                    ctorArgs[0] = indexer;
-                    t = ctor.Invoke(ctorArgs) as T;
-
-                    if (t != null)
-                    {
-                        entities.Add(new EntityIndex<T>(t, typeID, pos, length));
-                        map[indexer] = t;
-                    }
+                    continue;
                 }
 
-                tdbReader.Close();
+                T t;
+                ConstructorInfo ctor = objs.Item1;
+                I indexer = indexInfo.CreateIndex(number);
+
+                ctorArgs[0] = indexer;
+                t = ctor.Invoke(ctorArgs) as T;
+
+                if (t != null)
+                {
+                    entities.Add(new EntityIndex<T>(t, typeID, pos, length));
+                    map[indexer] = t;
+                }
             }
 
+            tdbReader.Close();
             idxReader.Close();
 
             return map;
