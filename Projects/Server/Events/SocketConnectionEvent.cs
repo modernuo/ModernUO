@@ -15,6 +15,7 @@
 
 using System;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -34,6 +35,8 @@ namespace Server
     public static partial class EventSink
     {
         public static event Action<SocketConnectEventArgs> SocketConnect;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void InvokeSocketConnect(SocketConnectEventArgs e) => SocketConnect?.Invoke(e);
     }
 }

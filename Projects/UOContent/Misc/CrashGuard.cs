@@ -100,7 +100,7 @@ namespace Server.Misc
 
             try
             {
-                var timeStamp = GetTimeStamp();
+                var timeStamp = Utility.GetTimeStamp();
 
                 var root = Core.BaseDirectory;
                 var rootBackup = Path.Combine(root, $"Backups/Crashed/{timeStamp}/");
@@ -137,7 +137,7 @@ namespace Server.Misc
 
             try
             {
-                var timeStamp = GetTimeStamp();
+                var timeStamp = Utility.GetTimeStamp();
                 var fileName = $"Crash {timeStamp}.log";
 
                 var root = Core.BaseDirectory;
@@ -218,13 +218,6 @@ namespace Server.Misc
             {
                 Console.WriteLine("failed");
             }
-        }
-
-        private static string GetTimeStamp()
-        {
-            var now = DateTime.UtcNow;
-
-            return $"{now.Day}-{now.Month}-{now.Year}-{now.Hour}-{now.Minute}-{now.Second}";
         }
     }
 }

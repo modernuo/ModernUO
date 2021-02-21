@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.Network;
 
@@ -102,6 +103,8 @@ namespace Server
     public static partial class EventSink
     {
         public static event Action<CharacterCreatedEventArgs> CharacterCreated;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void InvokeCharacterCreated(CharacterCreatedEventArgs e) => CharacterCreated?.Invoke(e);
     }
 }

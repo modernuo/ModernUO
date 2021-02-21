@@ -1432,5 +1432,13 @@ namespace Server
             result = a - div * b;
             return div;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetTimeStamp()
+        {
+            var now = DateTime.UtcNow;
+
+            return $"{now.Year}-{now.Month}-{now.Day} {now.Hour}-{now.Minute:D2}-{now.Second:D2}";
+        }
     }
 }

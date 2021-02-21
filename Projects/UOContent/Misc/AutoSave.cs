@@ -5,25 +5,27 @@ namespace Server.Misc
 {
     public class AutoSave : Timer
     {
-        private static readonly TimeSpan m_Delay = TimeSpan.FromMinutes(5.0);
-        private static readonly TimeSpan m_Warning = TimeSpan.Zero;
+        public static TimeSpan Delay { get; private set; }
+        public static TimeSpan Warning { get; private set; }
+        public static string BackupPath { get; private set; }
 
-        private static readonly string[] m_Backups =
-        {
-            "Third Backup",
-            "Second Backup",
-            "Most Recent"
-        };
-
-        public AutoSave() : base(m_Delay - m_Warning, m_Delay) => Priority = TimerPriority.OneMinute;
+        public AutoSave() : base(Delay - Warning, Delay) => Priority = TimerPriority.OneMinute;
 
         public static bool SavesEnabled { get; set; } = true;
-        // private static TimeSpan m_Warning = TimeSpan.FromSeconds( 15.0 );
+
+        public static void Configure()
+        {
+            BackupPath = ServerConfiguration.GetOrUpdateSetting("autosave.backupPath", "Backups/Automatic");
+            Delay = ServerConfiguration.GetOrUpdateSetting("autosave.saveDelay", TimeSpan.FromMinutes(5.0));
+            Warning = ServerConfiguration.GetOrUpdateSetting("autosave.warningDelay", TimeSpan.Zero);
+        }
 
         public static void Initialize()
         {
             new AutoSave().Start();
             CommandSystem.Register("SetSaves", AccessLevel.Administrator, SetSaves_OnCommand);
+
+            EventSink.WorldSavePostSnapshot += Backup;
         }
 
         [Usage("SetSaves <true | false>"), Description("Enables or disables automatic shard saving.")]
@@ -47,13 +49,13 @@ namespace Server.Misc
                 return;
             }
 
-            if (m_Warning == TimeSpan.Zero)
+            if (Warning == TimeSpan.Zero)
             {
                 Save();
             }
             else
             {
-                var s = (int)m_Warning.TotalSeconds;
+                var s = (int)Warning.TotalSeconds;
                 var m = s / 60;
                 s %= 60;
 
@@ -78,130 +80,25 @@ namespace Server.Misc
                     World.Broadcast(0x35, true, "The world will save in {0} second{1}.", s, s != 1 ? "s" : "");
                 }
 
-                DelayCall(m_Warning, Save);
+                DelayCall(Warning, Save);
             }
         }
 
         public static void Save()
         {
-            if (AutoRestart.Restarting || World.WorldState != WorldState.Running)
+            if (!AutoRestart.Restarting && World.WorldState == WorldState.Running)
             {
-                return;
-            }
-
-            World.WaitForWriteCompletion();
-
-            try
-            {
-                Backup();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("WARNING: Automatic backup FAILED: {0}", e);
-            }
-
-            World.Save();
-        }
-
-        private static void Backup()
-        {
-            if (m_Backups.Length == 0)
-            {
-                return;
-            }
-
-            var root = Path.Combine(Core.BaseDirectory, "Backups/Automatic");
-
-            AssemblyHandler.EnsureDirectory(root);
-
-            var existing = Directory.GetDirectories(root);
-
-            for (var i = 0; i < m_Backups.Length; ++i)
-            {
-                var dir = Match(existing, m_Backups[i]);
-
-                if (dir == null)
-                {
-                    continue;
-                }
-
-                if (i > 0)
-                {
-                    var timeStamp = FindTimeStamp(dir.Name);
-
-                    if (timeStamp != null)
-                    {
-                        try
-                        {
-                            dir.MoveTo(FormatDirectory(root, m_Backups[i - 1], timeStamp));
-                        }
-                        catch
-                        {
-                            // ignored
-                        }
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        dir.Delete(true);
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-                }
-            }
-
-            var saves = Path.Combine(Core.BaseDirectory, "Saves");
-
-            if (Directory.Exists(saves))
-            {
-                Directory.Move(saves, FormatDirectory(root, m_Backups[^1], GetTimeStamp()));
+                World.Save();
             }
         }
 
-        private static DirectoryInfo Match(string[] paths, string match)
+        private static void Backup(WorldSavePostSnapshotEventArgs args)
         {
-            for (var i = 0; i < paths.Length; ++i)
-            {
-                var info = new DirectoryInfo(paths[i]);
+            var backupPath = Path.Combine(BackupPath, Utility.GetTimeStamp());
+            AssemblyHandler.EnsureDirectory(BackupPath);
+            Directory.Move(args.OldSavePath, backupPath);
 
-                if (info.Name.StartsWithOrdinal(match))
-                {
-                    return info;
-                }
-            }
-
-            return null;
-        }
-
-        private static string FormatDirectory(string root, string name, string timeStamp) =>
-            Path.Combine(root, $"{name} ({timeStamp})");
-
-        private static string FindTimeStamp(string input)
-        {
-            var start = input.IndexOfOrdinal('(');
-
-            if (start >= 0)
-            {
-                var end = input.IndexOf(')', ++start);
-
-                if (end >= start)
-                {
-                    return input.Substring(start, end - start);
-                }
-            }
-
-            return null;
-        }
-
-        private static string GetTimeStamp()
-        {
-            var now = DateTime.UtcNow;
-
-            return $"{now.Day}-{now.Month}-{now.Year} {now.Hour}-{now.Minute:D2}-{now.Second:D2}";
+            Console.WriteLine("AutoSave: Created backup at {0}", backupPath);
         }
     }
 }

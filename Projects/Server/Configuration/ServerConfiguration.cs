@@ -179,7 +179,9 @@ namespace Server
                     throw new FileNotFoundException($"Failed to deserialize {m_FilePath}.");
                 }
 
+                Utility.PushColor(ConsoleColor.Green);
                 Console.WriteLine("done");
+                Utility.PopColor();
             }
             else
             {

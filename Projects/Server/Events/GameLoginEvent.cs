@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 using Server.Network;
 
 namespace Server
@@ -41,6 +42,8 @@ namespace Server
     public static partial class EventSink
     {
         public static event Action<GameLoginEventArgs> GameLogin;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void InvokeGameLogin(GameLoginEventArgs e) => GameLogin?.Invoke(e);
     }
 }
