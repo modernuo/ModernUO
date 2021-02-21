@@ -56,7 +56,9 @@ namespace Server.Configurations
                     throw new JsonException($"Failed to deserialize {path}.");
                 }
 
+                Utility.PushColor(ConsoleColor.Green);
                 Console.WriteLine("done");
+                Utility.PopColor();
             }
             else
             {

@@ -98,7 +98,7 @@ namespace Server.Misc
             AssemblyHandler.EnsureDirectory(BackupPath);
             Directory.Move(args.OldSavePath, backupPath);
 
-            Console.WriteLine("AutoSave: Created backup at {0}.", backupPath);
+            Console.WriteLine("AutoSave: Created backup at {0}", backupPath);
         }
     }
 }

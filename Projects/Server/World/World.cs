@@ -456,13 +456,14 @@ namespace Server
 
             watch.Stop();
 
+            Utility.PushColor(ConsoleColor.Green);
             Console.WriteLine(
                 "done ({1} items, {2} mobiles) ({0:F2} seconds)",
                 watch.Elapsed.TotalSeconds,
                 Items.Count,
                 Mobiles.Count
             );
-
+            Utility.PopColor();
 
             WorldState = WorldState.Running;
         }
