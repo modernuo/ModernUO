@@ -15,6 +15,9 @@ namespace Server.Tests
             // Configure / Initialize
             TestMapDefinitions.ConfigureTestMapDefinitions();
 
+            // Configure the world
+            World.Configure();
+
             // Load the world
             World.Load();
         }

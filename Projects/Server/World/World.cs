@@ -416,17 +416,13 @@ namespace Server
             WriteConsole("Loading...");
             var watch = Stopwatch.StartNew();
 
-            List<EntityIndex<Item>> items;
-            List<EntityIndex<Mobile>> mobiles;
-            List<EntityIndex<BaseGuild>> guilds;
-
             IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
             IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
             IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
 
-            Mobiles = LoadIndex(mobileIndexInfo, out mobiles);
-            Items = LoadIndex(itemIndexInfo, out items);
-            Guilds = LoadIndex(guildIndexInfo, out guilds);
+            Mobiles = LoadIndex(mobileIndexInfo, out List<EntityIndex<Mobile>> mobiles);
+            Items = LoadIndex(itemIndexInfo, out List<EntityIndex<Item>> items);
+            Guilds = LoadIndex(guildIndexInfo, out List<EntityIndex<BaseGuild>> guilds);
 
             LoadData(mobileIndexInfo, mobiles);
             LoadData(itemIndexInfo, items);
