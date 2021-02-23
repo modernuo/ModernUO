@@ -14,13 +14,30 @@ namespace Server.Guilds
         protected BaseGuild(Serial serial)
         {
             Serial = serial;
-            World.AddGuild(this);
+
+            var ourType = GetType();
+            TypeRef = World.GuildTypes.IndexOf(ourType);
+
+            if (TypeRef == -1)
+            {
+                World.GuildTypes.Add(ourType);
+                TypeRef = World.GuildTypes.Count - 1;
+            }
         }
 
         protected BaseGuild()
         {
             Serial = World.NewGuild;
             World.AddGuild(this);
+
+            var ourType = GetType();
+            TypeRef = World.GuildTypes.IndexOf(ourType);
+
+            if (TypeRef == -1)
+            {
+                World.GuildTypes.Add(ourType);
+                TypeRef = World.GuildTypes.Count - 1;
+            }
         }
 
         public abstract string Abbreviation { get; set; }
@@ -36,7 +53,7 @@ namespace Server.Guilds
 
         BufferWriter ISerializable.SaveBuffer { get; set; }
 
-        public int TypeRef => 0;
+        public int TypeRef { get; }
 
         public abstract void Serialize(IGenericWriter writer);
         public abstract void Deserialize(IGenericReader reader);
