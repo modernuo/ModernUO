@@ -405,7 +405,7 @@ namespace Server.Network
                 } while (continuation == null);
 
                 _pipe._writeContinuation = null;
-                _pipe._readAwaitBeginning = false;
+                _pipe._writeAwaitBeginning = false;
 
                 ThreadPool.UnsafeQueueUserWorkItem(_ => continuation(), true);
             }
@@ -429,7 +429,7 @@ namespace Server.Network
                 } while (continuation == null);
 
                 _pipe._writeContinuation = null;
-                _pipe._readAwaitBeginning = false;
+                _pipe._writeAwaitBeginning = false;
 
                 ThreadPool.UnsafeQueueUserWorkItem(_ => continuation(), true);
             }
