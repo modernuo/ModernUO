@@ -80,5 +80,7 @@ namespace Server.Multis
 
             ns.Send(writer.Span);
         }
+
+        public static void CreateHouseDesignStateDetailed()
     }
 }
