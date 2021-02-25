@@ -19,10 +19,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Server.Guilds;
 using Server.Network;
 
@@ -141,6 +139,9 @@ namespace Server
             _tempSavePath = Path.Combine(Core.BaseDirectory, tempSavePath);
             var savePath = ServerConfiguration.GetOrUpdateSetting("world.savePath", "Saves");
             _savePath = Path.Combine(Core.BaseDirectory, savePath);
+
+            // Mobiles & Items
+            Persistence.Register(SaveEntities, WriteEntities, LoadEntities, 1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -220,188 +221,19 @@ namespace Server
         public static void Broadcast(int hue, bool ascii, string format, params object[] args) =>
             Broadcast(hue, ascii, string.Format(format, args));
 
-        private static List<Tuple<ConstructorInfo, string>> ReadTypes<I>(BinaryReader tdbReader)
+        internal static void LoadEntities(string basePath)
         {
-            var constructorTypes = new[] { typeof(I) };
+            IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
+            IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
+            IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
 
-            var count = tdbReader.ReadInt32();
+            Mobiles = EntityPersistence.LoadIndex(basePath, mobileIndexInfo, out List<EntityIndex<Mobile>> mobiles);
+            Items = EntityPersistence.LoadIndex(basePath, itemIndexInfo, out List<EntityIndex<Item>> items);
+            Guilds = EntityPersistence.LoadIndex(basePath, guildIndexInfo, out List<EntityIndex<BaseGuild>> guilds);
 
-            var types = new List<Tuple<ConstructorInfo, string>>(count);
-
-            for (var i = 0; i < count; ++i)
-            {
-                var typeName = tdbReader.ReadString();
-
-                var t = AssemblyHandler.FindTypeByFullName(typeName, false);
-
-                if (t?.IsAbstract != false)
-                {
-                    WriteConsoleLine("failed");
-
-                    var issue = t?.IsAbstract == true ? "marked abstract" : "not found";
-
-                    WriteConsoleLine($"Error: Type '{typeName}' was {issue}. Delete all of those types? (y/n)");
-
-                    if (Console.ReadKey(true).Key == ConsoleKey.Y)
-                    {
-                        types.Add(null);
-                        WriteConsole("Loading...");
-                        continue;
-                    }
-
-                    WriteConsoleLine("Types will not be deleted. An exception will be thrown.");
-
-                    throw new Exception($"Bad type '{typeName}'");
-                }
-
-                var ctor = t.GetConstructor(constructorTypes);
-
-                if (ctor != null)
-                {
-                    types.Add(new Tuple<ConstructorInfo, string>(ctor, typeName));
-                }
-                else
-                {
-                    throw new Exception($"Type '{t}' does not have a serialization constructor");
-                }
-            }
-
-            return types;
-        }
-
-        private static Dictionary<I, T> LoadIndex<I, T>(IIndexInfo<I> indexInfo, out List<EntityIndex<T>> entities) where T : class, ISerializable
-        {
-            var map = new Dictionary<I, T>();
-            object[] ctorArgs = new object[1];
-
-            var indexType = indexInfo.TypeName;
-
-            string indexPath = Path.Combine(_savePath, indexType, $"{indexType}.idx");
-            string typesPath = Path.Combine(_savePath, indexType, $"{indexType}.tdb");
-
-            entities = new List<EntityIndex<T>>();
-
-            if (!File.Exists(indexPath) || !File.Exists(typesPath))
-            {
-                return map;
-            }
-
-            using FileStream idx = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            BinaryReader idxReader = new BinaryReader(idx);
-
-            using FileStream tdb = new FileStream(typesPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            BinaryReader tdbReader = new BinaryReader(tdb);
-
-            List<Tuple<ConstructorInfo, string>> types = ReadTypes<I>(tdbReader);
-
-            var count = idxReader.ReadInt32();
-
-            for (int i = 0; i < count; ++i)
-            {
-                var typeID = idxReader.ReadInt32();
-                var number = idxReader.ReadUInt32();
-                var pos = idxReader.ReadInt64();
-                var length = idxReader.ReadInt32();
-
-                Tuple<ConstructorInfo, string> objs = types[typeID];
-
-                if (objs == null)
-                {
-                    continue;
-                }
-
-                T t;
-                ConstructorInfo ctor = objs.Item1;
-                I indexer = indexInfo.CreateIndex(number);
-
-                ctorArgs[0] = indexer;
-                t = ctor.Invoke(ctorArgs) as T;
-
-                if (t != null)
-                {
-                    entities.Add(new EntityIndex<T>(t, typeID, pos, length));
-                    map[indexer] = t;
-                }
-            }
-
-            tdbReader.Close();
-            idxReader.Close();
-
-            return map;
-        }
-
-        private static void LoadData<I, T>(IIndexInfo<I> indexInfo, List<EntityIndex<T>> entities) where T : class, ISerializable
-        {
-            var indexType = indexInfo.TypeName;
-
-            string dataPath = Path.Combine(_savePath, indexType, $"{indexType}.bin");
-
-            if (!File.Exists(dataPath))
-            {
-                return;
-            }
-
-            using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-            BufferReader br = null;
-
-            foreach (var entry in entities)
-            {
-                T t = entry.Entity;
-
-                // Skip this entry
-                if (t == null)
-                {
-                    bin.Seek(entry.Length, SeekOrigin.Current);
-                    continue;
-                }
-
-                var buffer = GC.AllocateUninitializedArray<byte>(entry.Length);
-                if (br == null)
-                {
-                    br = new BufferReader(buffer);
-                }
-                else
-                {
-                    br.SwapBuffers(buffer, out _);
-                }
-
-                bin.Read(buffer.AsSpan());
-                string error;
-
-                try
-                {
-                    t.Deserialize(br);
-
-                    error = br.Position != entry.Length
-                        ? $"Serialized object was {entry.Length} bytes, but {br.Position} bytes deserialized"
-                        : null;
-                }
-                catch (Exception e)
-                {
-                    error = e.ToString();
-                }
-
-                if (error == null)
-                {
-                    t.InitializeSaveBuffer(buffer);
-                }
-                else
-                {
-                    Utility.PushColor(ConsoleColor.Red);
-                    WriteConsoleLine($"***** Bad deserialize of {t.GetType()} *****");
-                    WriteConsoleLine(error);
-                    Utility.PopColor();
-
-                    WriteConsoleLine("Delete the object and continue? (y/n)");
-
-                    if (Console.ReadKey(true).Key != ConsoleKey.Y)
-                    {
-                        throw new Exception("Deserialization failed.");
-                    }
-                    t.Delete();
-                }
-            }
+            EntityPersistence.LoadData(basePath, mobileIndexInfo, mobiles);
+            EntityPersistence.LoadData(basePath, itemIndexInfo, items);
+            EntityPersistence.LoadData(basePath, guildIndexInfo, guilds);
         }
 
         public static void Load()
@@ -416,18 +248,7 @@ namespace Server
             WriteConsole("Loading...");
             var watch = Stopwatch.StartNew();
 
-            IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
-            IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
-            IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
-
-            Mobiles = LoadIndex(mobileIndexInfo, out List<EntityIndex<Mobile>> mobiles);
-            Items = LoadIndex(itemIndexInfo, out List<EntityIndex<Item>> items);
-            Guilds = LoadIndex(guildIndexInfo, out List<EntityIndex<BaseGuild>> guilds);
-
-            LoadData(mobileIndexInfo, mobiles);
-            LoadData(itemIndexInfo, items);
-            LoadData(guildIndexInfo, guilds);
-
+            Persistence.Load(_savePath);
             EventSink.InvokeWorldLoad();
 
             ProcessSafetyQueues();
@@ -510,26 +331,6 @@ namespace Server
             ProcessSafetyQueues();
         }
 
-        private static void TraceException(Exception ex)
-        {
-            try
-            {
-                using var op = new StreamWriter("save-errors.log", true);
-                op.WriteLine("# {0}", DateTime.UtcNow);
-
-                op.WriteLine(ex);
-
-                op.WriteLine();
-                op.WriteLine();
-            }
-            catch
-            {
-                // ignored
-            }
-
-            Console.WriteLine(ex);
-        }
-
         private static void TraceSave(params IEnumerable<KeyValuePair<string, int>>[] entityTypes)
         {
             try
@@ -559,17 +360,22 @@ namespace Server
             }
         }
 
-        public static void WriteFiles(object state)
+        internal static void WriteEntities(string basePath)
         {
             IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
             IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
             IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
 
-            Exception exception = null;
+            EntityPersistence.WriteEntities(mobileIndexInfo, Mobiles, MobileTypes, basePath, out var mobileCounts);
+            EntityPersistence.WriteEntities(itemIndexInfo, Items, ItemTypes, basePath, out var itemCounts);
+            EntityPersistence.WriteEntities(guildIndexInfo, Guilds, GuildTypes, basePath, out var guildCounts);
 
-            Dictionary<string, int> mobileCounts = null;
-            Dictionary<string, int> itemCounts = null;
-            Dictionary<string, int> guildCounts = null;
+            TraceSave(mobileCounts?.ToList(), itemCounts?.ToList(), guildCounts?.ToList());
+        }
+
+        public static void WriteFiles(object state)
+        {
+            Exception exception = null;
 
             var tempPath = Path.Combine(_tempSavePath, Utility.GetTimeStamp());
 
@@ -578,9 +384,7 @@ namespace Server
                 var watch = Stopwatch.StartNew();
                 WriteConsole("Writing snapshot...");
 
-                WriteEntities(mobileIndexInfo, Mobiles, MobileTypes, tempPath, out mobileCounts);
-                WriteEntities(itemIndexInfo, Items, ItemTypes, tempPath, out itemCounts);
-                WriteEntities(guildIndexInfo, Guilds, GuildTypes, tempPath, out guildCounts);
+                Persistence.WriteSnapshot(tempPath);
 
                 watch.Stop();
 
@@ -598,7 +402,7 @@ namespace Server
                 Utility.PushColor(ConsoleColor.Red);
                 Console.WriteLine("failed");
                 Utility.PopColor();
-                TraceException(exception);
+                Persistence.TraceException(exception);
 
                 BroadcastStaff(0x35, true, "Writing world save snapshot failed.");
             }
@@ -606,83 +410,18 @@ namespace Server
             {
                 try
                 {
-                    TraceSave(mobileCounts.ToList(), itemCounts.ToList(), guildCounts.ToList());
-
                     EventSink.InvokeWorldSavePostSnapshot(_savePath, tempPath);
                     Directory.Move(tempPath, _savePath);
                 }
                 catch (Exception ex)
                 {
-                    TraceException(ex);
+                    Persistence.TraceException(ex);
                 }
             }
 
             m_DiskWriteHandle.Set();
 
             Timer.DelayCall(FinishWorldSave);
-        }
-
-        private static void WriteEntities<I, T>(
-            IIndexInfo<I> indexInfo,
-            Dictionary<I, T> entities,
-            List<Type> types,
-            string savePath,
-            out Dictionary<string, int> counts
-        ) where T : class, ISerializable
-        {
-            counts = new Dictionary<string, int>();
-
-            var typeName = indexInfo.TypeName;
-
-            var path = Path.Combine(savePath, typeName);
-
-            AssemblyHandler.EnsureDirectory(path);
-
-            string idxPath = Path.Combine(path, $"{typeName}.idx");
-            string tdbPath = Path.Combine(path, $"{typeName}.tdb");
-            string binPath = Path.Combine(path, $"{typeName}.bin");
-
-            using var idx = new BinaryFileWriter(idxPath, false);
-            using var tdb = new BinaryFileWriter(tdbPath, false);
-            using var bin = new BinaryFileWriter(binPath, true);
-
-            idx.Write(entities.Count);
-            foreach (var e in entities.Values)
-            {
-                long start = bin.Position;
-
-                idx.Write(e.TypeRef);
-                idx.Write(e.Serial);
-                idx.Write(start);
-
-                e.SerializeTo(bin);
-
-                idx.Write((int)(bin.Position - start));
-
-                var type = e.GetType().FullName;
-                if (type != null)
-                {
-                    counts[type] = (counts.TryGetValue(type, out var count) ? count : 0) + 1;
-                }
-            }
-
-            tdb.Write(types.Count);
-            for (int i = 0; i < types.Count; ++i)
-            {
-                tdb.Write(types[i].FullName);
-            }
-        }
-
-        private static void SaveEntities<T>(IEnumerable<T> list, DateTime serializeStart) where T : class, ISerializable
-        {
-            Parallel.ForEach(list, t => {
-                if (t is Item item && item.CanDecay() && item.LastMoved + item.DecayTime <= serializeStart)
-                {
-                    EnqueueForDecay(item);
-                }
-
-                t.Serialize();
-            });
         }
 
         private static void ProcessDecay()
@@ -695,6 +434,27 @@ namespace Server
                     item.Delete();
                 }
             }
+        }
+
+        private static DateTime _serializationStart;
+
+        internal static void SaveEntities()
+        {
+            _serializationStart = DateTime.UtcNow;
+            EntityPersistence.SaveEntities(Items.Values, SaveEntity);
+            EntityPersistence.SaveEntities(Mobiles.Values, SaveEntity);
+            EntityPersistence.SaveEntities(Guilds.Values, SaveEntity);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void SaveEntity<T>(T entity) where T : class, ISerializable
+        {
+            if (entity is Item item && item.CanDecay() && item.LastMoved + item.DecayTime <= _serializationStart)
+            {
+                EnqueueForDecay(item);
+            }
+
+            entity.Serialize();
         }
 
         public static void Save()
@@ -722,10 +482,7 @@ namespace Server
 
             try
             {
-                SaveEntities(Items.Values, now);
-                SaveEntities(Mobiles.Values, now);
-                SaveEntities(Guilds.Values, now);
-
+                Persistence.Serialize();
                 EventSink.InvokeWorldSave();
             }
             catch (Exception ex)
@@ -755,7 +512,7 @@ namespace Server
                 Utility.PushColor(ConsoleColor.Red);
                 Console.WriteLine("failed");
                 Utility.PopColor();
-                TraceException(exception);
+                Persistence.TraceException(exception);
 
                 BroadcastStaff(0x35, true, "World save failed.");
             }
@@ -898,15 +655,6 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
-
-        private static void SerializeTo(this ISerializable entity, IGenericWriter writer)
-        {
-            var saveBuffer = entity.SaveBuffer;
-            writer.Write(saveBuffer.Buffer.AsSpan(0, (int)saveBuffer.Position));
-
-            // Resize to exact buffer size
-            entity.SaveBuffer.Resize((int)entity.SaveBuffer.Position);
-        }
 
         private static void WriteConsole(string message)
         {

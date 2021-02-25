@@ -14,57 +14,103 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Server
 {
     public static class Persistence
     {
-        public static void Serialize(string path, Action<IGenericWriter> serializer)
+        public static readonly SortedSet<RegistryEntry> _registry = new(new RegistryEntryComparer());
+
+        public static void Register(
+            Action serializer,
+            Action<string> snapshotWriter,
+            Action<string> deserializer,
+            int priority = 100
+        )
         {
-            AssemblyHandler.EnsureDirectory(Path.GetDirectoryName(path));
+            _registry.Add(
+                new RegistryEntry
+                {
+                    Priority = priority,
+                    Serialize = serializer,
+                    WriteSnapshot = snapshotWriter,
+                    Deserialize = deserializer
+                }
+            );
+        }
 
-            using var fs = new FileStream(path, FileMode.Open, FileAccess.Write, FileShare.None);
-            var writer = new BinaryFileWriter(fs, true);
-
-            try
+        public static void Load(string path)
+        {
+            // This should probably not be parallel since Mobiles must be loaded before Items
+            foreach (var entry in _registry)
             {
-                serializer(writer);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("[Persistence]: Failed to serialize");
-                Console.WriteLine(e);
+                entry.Deserialize(path);
             }
         }
 
-        public static void Deserialize(string path, Action<IGenericReader> deserializer, bool ensure = true)
+        public static void Serialize()
         {
-            AssemblyHandler.EnsureDirectory(Path.GetDirectoryName(path));
+            Parallel.ForEach(_registry, entry => entry.Serialize());
+        }
 
-            if (!File.Exists(path))
+        public static void WriteSnapshot(string path)
+        {
+            foreach (var entry in _registry)
             {
-                if (ensure)
-                {
-                    new FileInfo(path).Create().Close();
-                }
-
-                return;
+                entry.WriteSnapshot(path);
             }
+        }
 
-            using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            // TODO: Support files larger than 2GB
-            var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length);
+        public class RegistryEntry
+        {
+            public int Priority { get; init; }
+            public Action Serialize { get; init; } // Serializing to memory buffers
+            public Action<string> WriteSnapshot { get; init; }
+            public Action<string> Deserialize { get; init; }
+        }
 
+        internal class RegistryEntryComparer : IComparer<RegistryEntry>
+        {
+            public int Compare(RegistryEntry x, RegistryEntry y) =>
+                x?.Priority.CompareTo(y?.Priority) ?? 1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WriteConsole(string message)
+        {
+            var now = DateTime.UtcNow;
+            Console.Write("[{0} {1}] Persistence: {2}", now.ToShortDateString(), now.ToLongTimeString(), message);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WriteConsoleLine(string message)
+        {
+            var now = DateTime.UtcNow;
+            Console.WriteLine("[{0} {1}] Persistence: {2}", now.ToShortDateString(), now.ToLongTimeString(), message);
+        }
+
+        public static void TraceException(Exception ex)
+        {
             try
             {
-                deserializer(new BufferReader(buffer));
+                using var op = new StreamWriter("save-errors.log", true);
+                op.WriteLine("# {0}", DateTime.UtcNow);
+
+                op.WriteLine(ex);
+
+                op.WriteLine();
+                op.WriteLine();
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine("[Persistence]: Failed to deserialize");
-                Console.WriteLine(e);
+                // ignored
             }
+
+            Console.WriteLine(ex);
         }
     }
 }
