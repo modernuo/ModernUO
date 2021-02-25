@@ -311,17 +311,17 @@ namespace Server.Accounting
             }
 
             length = reader.ReadInt();
-            m_Comments = new List<AccountComment>(length);
+            m_Comments = length > 0 ? new List<AccountComment>(length) : null;
             for (int i = 0; i < length; i++)
             {
-                m_Comments.Add(new AccountComment(reader));
+                m_Comments!.Add(new AccountComment(reader));
             }
 
             length = reader.ReadInt();
-            m_Tags = new List<AccountTag>(length);
+            m_Tags = length > 0 ? new List<AccountTag>(length) : null;
             for (int i = 0; i < length; i++)
             {
-                m_Tags.Add(new AccountTag(reader));
+                m_Tags!.Add(new AccountTag(reader));
             }
 
             length = reader.ReadInt();
@@ -384,7 +384,11 @@ namespace Server.Accounting
             writer.Write(Count);
             for (int i = 0; i < m_Mobiles.Length; i++)
             {
-                writer.Write(m_Mobiles[i]);
+                var m = m_Mobiles[i];
+                if (m != null)
+                {
+                    writer.Write(m);
+                }
             }
 
             var length = m_Comments?.Count ?? 0;
