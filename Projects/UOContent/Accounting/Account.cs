@@ -25,7 +25,7 @@ namespace Server.Accounting
         private Timer m_YoungTimer;
         private BufferWriter _saveBuffer;
 
-        public Account(string username, string password)
+        public Account(string username, string password) : this(Accounts.NewAccount)
         {
             Username = username;
 
@@ -41,16 +41,6 @@ namespace Server.Accounting
             IPRestrictions = Array.Empty<string>();
             LoginIPs = Array.Empty<IPAddress>();
 
-            var ourType = GetType();
-            TypeRef = Accounts.Types.IndexOf(ourType);
-
-            if (TypeRef == -1)
-            {
-                Accounts.Types.Add(ourType);
-                TypeRef = Accounts.Types.Count - 1;
-            }
-
-            Serial = Accounts.NewAccount;
             Accounts.Add(this);
         }
 

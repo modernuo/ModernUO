@@ -69,7 +69,7 @@ namespace Server.Accounting
             _accountsById.Remove(a.Serial);
         }
 
-        public static void Deserialize(string path)
+        internal static void Deserialize(string path)
         {
             var filePath = Path.Combine(path, "Accounts", "accounts.xml");
 
