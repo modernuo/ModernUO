@@ -26,6 +26,16 @@ namespace Server.Accounting
         }
 
         /// <summary>
+        ///     Deserializes an AccountTag instance .
+        /// </summary>
+        /// <param name="node">The deserialization reader</param>
+        public AccountTag(IGenericReader reader)
+        {
+            Name = reader.ReadString();
+            Value = reader.ReadString();
+        }
+
+        /// <summary>
         ///     Gets or sets the name of this tag.
         /// </summary>
         public string Name { get; set; }
@@ -45,6 +55,16 @@ namespace Server.Accounting
             xml.WriteAttributeString("name", Name);
             xml.WriteString(Value);
             xml.WriteEndElement();
+        }
+
+        /// <summary>
+        ///     Serializes this AccountTag instance to an XmlTextWriter.
+        /// </summary>
+        /// <param name="xml">The serialization writer.</param>
+        public void Serialize(IGenericWriter writer)
+        {
+            writer.Write(Name ?? "empty");
+            writer.Write(Value);
         }
     }
 }

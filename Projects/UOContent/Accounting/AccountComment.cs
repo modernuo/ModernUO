@@ -31,6 +31,17 @@ namespace Server.Accounting
         }
 
         /// <summary>
+        ///     Deserializes an AccountComment instance.
+        /// </summary>
+        /// <param name="node">The deserialization reader</param>
+        public AccountComment(IGenericReader reader)
+        {
+            AddedBy = reader.ReadString();
+            LastModified = reader.ReadDateTime();
+            m_Content = reader.ReadString();
+        }
+
+        /// <summary>
         ///     A string representing who added this comment.
         /// </summary>
         public string AddedBy { get; }
@@ -68,6 +79,17 @@ namespace Server.Accounting
             xml.WriteString(m_Content);
 
             xml.WriteEndElement();
+        }
+
+        /// <summary>
+        ///     Serializes this AccountComment instance.
+        /// </summary>
+        /// <param name="xml">The serialization writer.</param>
+        public void Serialize(IGenericWriter writer)
+        {
+            writer.Write(AddedBy ?? "empty");
+            writer.Write(LastModified);
+            writer.Write(m_Content);
         }
     }
 }

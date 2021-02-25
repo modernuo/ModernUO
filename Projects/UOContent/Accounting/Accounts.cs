@@ -7,50 +7,92 @@ namespace Server.Accounting
 {
     public static class Accounts
     {
-        private static Dictionary<string, IAccount> m_Accounts = new();
+        private static readonly Dictionary<string, IAccount> _accountsByName = new(32, StringComparer.OrdinalIgnoreCase);
+        private static Dictionary<Serial, IAccount> _accountsById = new(32);
+        private static Serial _lastAccount;
+        internal static List<Type> Types { get; } = new();
 
-        static Accounts()
+        private static void OutOfMemory(string message) => throw new OutOfMemoryException(message);
+
+        public static Serial NewAccount
         {
+            get
+            {
+                uint last = _lastAccount;
+
+                for (uint i = 0; i < uint.MaxValue; i++)
+                {
+                    last++;
+
+                    if (FindAccount(last) == null)
+                    {
+                        return _lastAccount = last;
+                    }
+                }
+
+                OutOfMemory("No serials left to allocate for accounts");
+                return Serial.MinusOne;
+            }
         }
 
-        public static int Count => m_Accounts.Count;
+        public static int Count => _accountsByName.Count;
 
-        public static void Configure()
+        public static void Configure() =>
+            Persistence.Register(Serialize, WriteSnapshot, Deserialize);
+
+        internal static void Serialize() =>
+            EntityPersistence.SaveEntities(_accountsById.Values, account => account.Serialize());
+
+        internal static void WriteSnapshot(string basePath)
         {
-            EventSink.WorldLoad += Load;
-            EventSink.WorldSave += Save;
+            IIndexInfo<Serial> indexInfo = new EntityTypeIndex("Accounts");
+            EntityPersistence.WriteEntities(indexInfo, _accountsById, Types, basePath, out _);
         }
 
-        public static IEnumerable<IAccount> GetAccounts() => m_Accounts.Values;
+        public static IEnumerable<IAccount> GetAccounts() => _accountsByName.Values;
 
         public static IAccount GetAccount(string username)
         {
-            m_Accounts.TryGetValue(username, out var a);
-
+            _accountsByName.TryGetValue(username, out var a);
             return a;
         }
 
         public static void Add(IAccount a)
         {
-            m_Accounts[a.Username] = a;
+            _accountsByName[a.Username] = a;
+            _accountsById[a.Serial] = a;
         }
 
-        public static void Remove(string username)
+        public static void Remove(IAccount a)
         {
-            m_Accounts.Remove(username);
+            _accountsByName.Remove(a.Username);
+            _accountsById.Remove(a.Serial);
         }
 
-        public static void Load()
+        internal static void Deserialize(string path)
         {
-            m_Accounts = new Dictionary<string, IAccount>(32, StringComparer.OrdinalIgnoreCase);
+            var filePath = Path.Combine(path, "Accounts", "accounts.xml");
 
-            var filePath = Path.Combine("Saves/Accounts", "accounts.xml");
-
-            if (!File.Exists(filePath))
+            // Backward Compatibility
+            if (File.Exists(filePath))
             {
+                DeserializeXml(filePath);
                 return;
             }
 
+            IIndexInfo<Serial> indexInfo = new EntityTypeIndex("Accounts");
+
+            _accountsById = EntityPersistence.LoadIndex(path, indexInfo, out List<EntityIndex<IAccount>> accounts);
+            EntityPersistence.LoadData(path, indexInfo, accounts);
+
+            foreach (var a in _accountsById.Values)
+            {
+                _accountsByName[a.Username] = a;
+            }
+        }
+
+        private static void DeserializeXml(string filePath)
+        {
             var doc = new XmlDocument();
             doc.Load(filePath);
 
@@ -74,29 +116,10 @@ namespace Server.Accounting
             }
         }
 
-        public static void Save()
+        public static IAccount FindAccount(Serial serial)
         {
-            AssemblyHandler.EnsureDirectory("Saves/Accounts");
-
-            var filePath = Path.Combine("Saves/Accounts", "accounts.xml");
-
-            using var op = new StreamWriter(filePath);
-            var xml = new XmlTextWriter(op) { Formatting = Formatting.Indented, IndentChar = '\t', Indentation = 1 };
-
-            xml.WriteStartDocument(true);
-
-            xml.WriteStartElement("accounts");
-
-            xml.WriteAttributeString("count", m_Accounts.Count.ToString());
-
-            foreach (Account a in GetAccounts())
-            {
-                a.Save(xml);
-            }
-
-            xml.WriteEndElement();
-
-            xml.Close();
+            _accountsById.TryGetValue(serial, out var account);
+            return account;
         }
     }
 }
