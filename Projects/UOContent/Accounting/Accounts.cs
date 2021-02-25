@@ -20,7 +20,7 @@ namespace Server.Accounting
             {
                 uint last = _lastAccount;
 
-                for (int i = 0; i < uint.MaxValue; i++)
+                for (uint i = 0; i < uint.MaxValue; i++)
                 {
                     last++;
 

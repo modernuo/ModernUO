@@ -57,11 +57,29 @@ namespace Server.Accounting
         public Account(Serial serial)
         {
             Serial = serial;
+
+            var ourType = GetType();
+            TypeRef = Accounts.Types.IndexOf(ourType);
+
+            if (TypeRef == -1)
+            {
+                Accounts.Types.Add(ourType);
+                TypeRef = Accounts.Types.Count - 1;
+            }
         }
 
         public Account(XmlElement node)
         {
             Serial = Accounts.NewAccount;
+
+            var ourType = GetType();
+            TypeRef = Accounts.Types.IndexOf(ourType);
+
+            if (TypeRef == -1)
+            {
+                Accounts.Types.Add(ourType);
+                TypeRef = Accounts.Types.Count - 1;
+            }
 
             Username = Utility.GetText(node["username"], "empty");
 
@@ -369,16 +387,18 @@ namespace Server.Accounting
                 writer.Write(m_Mobiles[i]);
             }
 
-            writer.Write(m_Comments.Count);
-            for (int i = 0; i < m_Mobiles.Length; i++)
+            var length = m_Comments?.Count ?? 0;
+            writer.Write(length);
+            for (int i = 0; i < length; i++)
             {
-                m_Comments[i].Serialize(writer);
+                m_Comments![i].Serialize(writer);
             }
 
-            writer.Write(m_Tags.Count);
-            for (int i = 0; i < m_Tags.Count; i++)
+            length = m_Tags?.Count ?? 0;
+            writer.Write(length);
+            for (int i = 0; i < length; i++)
             {
-                m_Tags[i].Serialize(writer);
+                m_Tags![i].Serialize(writer);
             }
 
             writer.Write(LoginIPs.Length);
@@ -390,7 +410,7 @@ namespace Server.Accounting
             writer.Write(IPRestrictions.Length);
             for (int i = 0; i < IPRestrictions.Length; i++)
             {
-                writer.Write(IPRestrictions[i].ToString());
+                writer.Write(IPRestrictions[i]);
             }
 
             writer.Write(TotalGameTime);
