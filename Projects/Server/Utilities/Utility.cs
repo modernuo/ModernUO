@@ -1434,6 +1434,6 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetTimeStamp() => DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+        public static string GetTimeStamp() => DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss");
     }
 }
