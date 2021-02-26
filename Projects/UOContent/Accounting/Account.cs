@@ -15,17 +15,17 @@ namespace Server.Accounting
         public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
         public static readonly TimeSpan InactiveDuration = TimeSpan.FromDays(180.0);
         public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays(30.0);
-        private readonly Mobile[] m_Mobiles;
 
+        private Mobile[] m_Mobiles;
         private AccessLevel m_AccessLevel;
         private List<AccountComment> m_Comments;
         private PasswordProtectionAlgorithm m_PasswordAlgorithm;
         private List<AccountTag> m_Tags;
         private TimeSpan m_TotalGameTime;
-
         private Timer m_YoungTimer;
+        private BufferWriter _saveBuffer;
 
-        public Account(string username, string password)
+        public Account(string username, string password) : this(Accounts.NewAccount)
         {
             Username = username;
 
@@ -44,8 +44,33 @@ namespace Server.Accounting
             Accounts.Add(this);
         }
 
+        public Account(Serial serial)
+        {
+            Serial = serial;
+
+            var ourType = GetType();
+            TypeRef = Accounts.Types.IndexOf(ourType);
+
+            if (TypeRef == -1)
+            {
+                Accounts.Types.Add(ourType);
+                TypeRef = Accounts.Types.Count - 1;
+            }
+        }
+
         public Account(XmlElement node)
         {
+            Serial = Accounts.NewAccount;
+
+            var ourType = GetType();
+            TypeRef = Accounts.Types.IndexOf(ourType);
+
+            if (TypeRef == -1)
+            {
+                Accounts.Types.Add(ourType);
+                TypeRef = Accounts.Types.Count - 1;
+            }
+
             Username = Utility.GetText(node["username"], "empty");
 
             Enum.TryParse(Utility.GetText(node["passwordAlgorithm"], null), true, out m_PasswordAlgorithm);
@@ -199,7 +224,7 @@ namespace Server.Accounting
         /// <summary>
         ///     The date and time of when this account was created.
         /// </summary>
-        public DateTime Created { get; }
+        public DateTime Created { get; private set; }
 
         /// <summary>
         ///     Gets or sets the date and time when this account was last accessed.
@@ -245,6 +270,146 @@ namespace Server.Accounting
             }
         }
 
+        BufferWriter ISerializable.SaveBuffer
+        {
+            get => _saveBuffer;
+            set => _saveBuffer = value;
+        }
+
+        public int TypeRef { get; private set; }
+
+        public Serial Serial { get; set; }
+
+        public void Deserialize(IGenericReader reader)
+        {
+            Username = reader.ReadString();
+            m_PasswordAlgorithm = (PasswordProtectionAlgorithm)reader.ReadInt();
+            Password = reader.ReadString();
+            m_AccessLevel = (AccessLevel)reader.ReadInt();
+            Flags = reader.ReadInt();
+            Created = reader.ReadDateTime();
+            LastLogin = reader.ReadDateTime();
+
+            TotalGold = reader.ReadInt();
+            TotalPlat = reader.ReadInt();
+
+            m_Mobiles = new Mobile[7];
+            var length = reader.ReadInt();
+            for (int i = 0; i < length; i++)
+            {
+                m_Mobiles[i] = reader.ReadEntity<Mobile>();
+            }
+
+            length = reader.ReadInt();
+            m_Comments = length > 0 ? new List<AccountComment>(length) : null;
+            for (int i = 0; i < length; i++)
+            {
+                m_Comments!.Add(new AccountComment(reader));
+            }
+
+            length = reader.ReadInt();
+            m_Tags = length > 0 ? new List<AccountTag>(length) : null;
+            for (int i = 0; i < length; i++)
+            {
+                m_Tags!.Add(new AccountTag(reader));
+            }
+
+            length = reader.ReadInt();
+            LoginIPs = new IPAddress[length];
+            for (int i = 0; i < length; i++)
+            {
+                if (IPAddress.TryParse(reader.ReadString(), out var address))
+                {
+                    LoginIPs[i] = Utility.Intern(address);
+                }
+            }
+
+            length = reader.ReadInt();
+            IPRestrictions = new string[length];
+            for (int i = 0; i < length; i++)
+            {
+                IPRestrictions[i] = reader.ReadString();
+            }
+
+            for (var i = 0; i < m_Mobiles.Length; ++i)
+            {
+                if (m_Mobiles[i] != null)
+                {
+                    m_Mobiles[i].Account = this;
+                }
+            }
+
+            var totalGameTime = reader.ReadTimeSpan();
+            if (totalGameTime == TimeSpan.Zero)
+            {
+                for (var i = 0; i < m_Mobiles.Length; i++)
+                {
+                    if (m_Mobiles[i] is PlayerMobile m)
+                    {
+                        totalGameTime += m.GameTime;
+                    }
+                }
+            }
+
+            m_TotalGameTime = totalGameTime;
+
+            if (Young)
+            {
+                CheckYoung();
+            }
+        }
+
+        public void Serialize(IGenericWriter writer)
+        {
+            writer.Write(Username);
+            writer.Write((int)m_PasswordAlgorithm);
+            writer.Write(Password);
+            writer.Write((int)m_AccessLevel);
+            writer.Write(Flags);
+            writer.Write(Created);
+            writer.Write(LastLogin);
+            writer.Write(TotalGold);
+            writer.Write(TotalPlat);
+
+            writer.Write(Count);
+            for (int i = 0; i < m_Mobiles.Length; i++)
+            {
+                var m = m_Mobiles[i];
+                if (m != null)
+                {
+                    writer.Write(m);
+                }
+            }
+
+            var length = m_Comments?.Count ?? 0;
+            writer.Write(length);
+            for (int i = 0; i < length; i++)
+            {
+                m_Comments![i].Serialize(writer);
+            }
+
+            length = m_Tags?.Count ?? 0;
+            writer.Write(length);
+            for (int i = 0; i < length; i++)
+            {
+                m_Tags![i].Serialize(writer);
+            }
+
+            writer.Write(LoginIPs.Length);
+            for (int i = 0; i < LoginIPs.Length; i++)
+            {
+                writer.Write(LoginIPs[i].ToString());
+            }
+
+            writer.Write(IPRestrictions.Length);
+            for (int i = 0; i < IPRestrictions.Length; i++)
+            {
+                writer.Write(IPRestrictions[i]);
+            }
+
+            writer.Write(TotalGameTime);
+        }
+
         /// <summary>
         ///     Deletes the account, all characters of the account, and all houses of those characters
         /// </summary>
@@ -277,8 +442,11 @@ namespace Server.Accounting
                 --AccountHandler.IPTable[LoginIPs[0]];
             }
 
-            Accounts.Remove(Username);
+            Deleted = true;
+            Accounts.Remove(this);
         }
+
+        public bool Deleted { get; private set; }
 
         /// <summary>
         ///     Account username. Case insensitive validation.
@@ -784,7 +952,7 @@ namespace Server.Accounting
         /// </summary>
         /// <param name="node">The XmlElement from which to deserialize.</param>
         /// <returns>String list. Value will never be null.</returns>
-        public static string[] LoadAccessCheck(XmlElement node)
+        private static string[] LoadAccessCheck(XmlElement node)
         {
             string[] stringList;
             var accessCheck = node["accessCheck"];
@@ -818,7 +986,7 @@ namespace Server.Accounting
         /// </summary>
         /// <param name="node">The XmlElement from which to deserialize.</param>
         /// <returns>Address list. Value will never be null.</returns>
-        public static IPAddress[] LoadAddressList(XmlElement node)
+        private static IPAddress[] LoadAddressList(XmlElement node)
         {
             IPAddress[] list;
             var addressList = node["addressList"];
@@ -867,7 +1035,7 @@ namespace Server.Accounting
         /// </summary>
         /// <param name="node">The XmlElement instance from which to deserialize.</param>
         /// <returns>Mobile list. Value will never be null.</returns>
-        public static Mobile[] LoadMobiles(XmlElement node)
+        private static Mobile[] LoadMobiles(XmlElement node)
         {
             var list = new Mobile[7];
             var chars = node["chars"];
@@ -905,7 +1073,7 @@ namespace Server.Accounting
         /// </summary>
         /// <param name="node">The XmlElement from which to deserialize.</param>
         /// <returns>Comment list. Value will never be null.</returns>
-        public static List<AccountComment> LoadComments(XmlElement node)
+        private static List<AccountComment> LoadComments(XmlElement node)
         {
             List<AccountComment> list = null;
             var comments = node["comments"];
@@ -935,7 +1103,7 @@ namespace Server.Accounting
         /// </summary>
         /// <param name="node">The XmlElement from which to deserialize.</param>
         /// <returns>Tag list. Value will never be null.</returns>
-        public static List<AccountTag> LoadTags(XmlElement node)
+        private static List<AccountTag> LoadTags(XmlElement node)
         {
             List<AccountTag> list = null;
             var tags = node["tags"];

@@ -141,7 +141,7 @@ namespace Server.Network
             {
                 if (_pipe._writeAwaitBeginning)
                 {
-                    throw new Exception("Double await on reader");
+                    throw new Exception("Double await on writer");
                 }
 
                 return this;
