@@ -1434,11 +1434,6 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetTimeStamp()
-        {
-            var now = DateTime.UtcNow;
-
-            return $"{now.Year}-{now.Month}-{now.Day} {now.Hour}-{now.Minute:D2}-{now.Second:D2}";
-        }
+        public static string GetTimeStamp() => DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss");
     }
 }
