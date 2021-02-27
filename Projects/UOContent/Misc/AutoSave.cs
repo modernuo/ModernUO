@@ -103,7 +103,7 @@ namespace Server.Misc
             AssemblyHandler.EnsureDirectory(BackupPath);
             Directory.Move(args.OldSavePath, backupPath);
 
-            Persistence.WriteConsole($"Created backup at {backupPath}");
+            Persistence.WriteConsoleLine($"Created backup at {backupPath}");
         }
     }
 }
