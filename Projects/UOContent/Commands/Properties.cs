@@ -47,6 +47,12 @@ namespace Server.Commands
         public static void Initialize()
         {
             CommandSystem.Register("Props", AccessLevel.Counselor, Props_OnCommand);
+            CommandSystem.Register("GlobalProps", AccessLevel.Counselor, GlobalProps_OnCommand);
+        }
+
+        private static void GlobalProps_OnCommand(CommandEventArgs e)
+        {
+            e.Mobile.Target = new PropsTarget(true);
         }
 
         [Usage("Props [serial]"),
@@ -597,10 +603,13 @@ namespace Server.Commands
             return result ?? SetDirect(o, p, toSet);
         }
 
+       
         private class PropsTarget : Target
         {
-            public PropsTarget() : base(-1, true, TargetFlags.None)
+            bool iEdit;
+            public PropsTarget(bool iEdit = false) : base(-1, true, TargetFlags.None)
             {
+                this.iEdit = iEdit;
             }
 
             protected override void OnTarget(Mobile from, object o)
@@ -611,7 +620,18 @@ namespace Server.Commands
                 }
                 else
                 {
-                    from.SendGump(new PropertiesGump(from, o));
+                    if (iEdit)
+                    {
+                        if (o is Mobile mbl && !mbl.Player)
+                        {
+                            from.SendGump(new GlobalPropsGump(from, o));
+                        }
+                        else
+                        {
+                            from.SendLocalizedMessage(500447); // That is not accessible.
+                        }
+                    }
+                    else from.SendGump(new PropertiesGump(from, o));
                 }
             }
         }
