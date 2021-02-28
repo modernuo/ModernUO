@@ -269,7 +269,7 @@ namespace Server.Engines.MLQuests
         {
             var name = $"MLQS-{GetType().Name}";
 
-            var toDelete = map.GetItemsInRange(loc, 0).Where(item => item is Spawner && item.Name == name);
+            var toDelete = map.GetItemsInRange(loc, 0).Where(item => item is BaseSpawner && item.Name == name);
 
             foreach (var item in toDelete)
             {
