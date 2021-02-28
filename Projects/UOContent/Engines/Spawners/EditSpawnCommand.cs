@@ -34,8 +34,8 @@ namespace Server.Engines.Spawners
             Supports = CommandSupport.Complex | CommandSupport.Simple;
             Commands = new[] { "EditSpawner" };
             ObjectTypes = ObjectTypes.Items;
-            Usage = "EditSpawner <mobile> <arguments> set <properties>";
-            Description = "Modifies the given ";
+            Usage = "EditSpawner <type> <arguments> set <properties>";
+            Description = "Modifies spawners arguments and properties for the given type";
             ListOptimized = true;
         }
 
