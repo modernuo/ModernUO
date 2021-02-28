@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Server.Buffers;
 using Server.Commands.Generic;
 using Server.Engines.Spawners;
 using Server.Network;
@@ -9,8 +10,6 @@ using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Gumps
 {
-  
-
     public class GlobalPropsGump : Gump
     {
         public static readonly bool OldStyle = PropsConfig.OldStyle;
@@ -73,25 +72,19 @@ namespace Server.Gumps
         private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
         private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
 
-        public static string[] m_BoolNames = { "True", "False" };
-        public static object[] m_BoolValues = { true, false };
-
-        public static string[] m_PoisonNames = { "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
-        private static string[] M_attr ={ "Str", "Dex","Int",  "HitsMaxSeed", "Hits", "DamageMin",  "DamageMax", "ActiveSpeed","PassiveSpeed", "VirtualArmor" };
-
-
-
-
-
-
-
-
-
-
-
-
-        public static object[] m_PoisonValues =
-            { null, Poison.Lesser, Poison.Regular, Poison.Greater, Poison.Deadly, Poison.Lethal };
+        private static readonly string[] _attrs =
+        {
+            "Str",
+            "Dex",
+            "Int",
+            "HitsMaxSeed",
+            "Hits",
+            "DamageMin",
+            "DamageMax",
+            "ActiveSpeed",
+            "PassiveSpeed",
+            "VirtualArmor"
+        };
 
         private static readonly Type typeofMobile = typeof(Mobile);
         private static readonly Type typeofItem = typeof(Item);
@@ -136,7 +129,6 @@ namespace Server.Gumps
         private readonly Stack<StackEntry> m_Stack;
         private readonly Type m_Type;
         private int m_Page;
-       
 
         public GlobalPropsGump(Mobile mobile, object o) : base(GumpOffsetX, GumpOffsetY)
         {
@@ -204,7 +196,6 @@ namespace Server.Gumps
 
             AddPage(0);
 
-         
             AddBackground(0, 0, BackWidth, BorderSize + totalHeight + BorderSize + ApplySize, BackGumpID);
             AddButton(BackWidth/3, BorderSize + totalHeight + BorderSize, 5204, 5205, 3);
             AddImageTiled(
@@ -238,7 +229,7 @@ namespace Server.Gumps
                     AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
                 }
             }
-          
+
             x += PrevWidth + OffsetSize;
 
             if (!OldStyle)
@@ -321,10 +312,8 @@ namespace Server.Gumps
             }
         }
 
-        public static object GetPropValue(object src, string propName)
-        {
-            return src.GetType().GetProperty(propName)?.GetValue(src, null);
-        }
+        public static object GetPropValue(object src, string propName) =>
+            src.GetType().GetProperty(propName)?.GetValue(src, null);
 
         public override void OnResponse(NetState state, RelayInfo info)
         {
@@ -335,7 +324,7 @@ namespace Server.Gumps
                 from.SendMessage("You may no longer access their properties.");
                 return;
             }
-           
+
             switch (info.ButtonID)
             {
                 case 0: // Closed
@@ -368,15 +357,32 @@ namespace Server.Gumps
                     }
                 case 3: // Apply
                     {
-                        if (M_attr?.Length > 0)
+                        if (_attrs?.Length > 0)
                         {
-                            var Props = string.Empty;
-                            foreach (var item in M_attr)
+                            using var propsBuilder = new ValueStringBuilder(64);
+                            for (var i = 0; i < _attrs.Length; i++)
                             {
-                                var prop = GetPropValue(m_Object, item);
-                                if (prop != null) Props += " " + item + " " + prop;
+                                var attr = _attrs[i];
+                                var prop = GetPropValue(m_Object, attr);
+                                if (prop != null)
+                                {
+                                    propsBuilder.Append(' ');
+                                    propsBuilder.Append(attr);
+                                    propsBuilder.Append(' ');
+                                    propsBuilder.Append(prop.ToString()); // TODO: Replace with ZString, or IFormatter code
+                                }
                             }
-                            GenerateSpawners.UpdateSpawners(m_Object.GetType().Name, Props);
+
+                            var name = m_Object.GetType().Name;
+                            var props = propsBuilder.ToString();
+
+                            foreach (var obj in World.Items.Values)
+                            {
+                                if (obj is BaseSpawner spawner)
+                                {
+                                    EditSpawnCommand.UpdateSpawner(spawner, name, null, props);
+                                }
+                            }
                         }
                         break;
                     }
@@ -462,8 +468,8 @@ namespace Server.Gumps
                                         m_Stack,
                                         m_Page,
                                         m_List,
-                                        m_BoolNames,
-                                        m_BoolValues
+                                        PropertiesGump.m_BoolNames,
+                                        PropertiesGump.m_BoolValues
                                     )
                                 );
                             }
@@ -482,8 +488,8 @@ namespace Server.Gumps
                                         m_Stack,
                                         m_Page,
                                         m_List,
-                                        m_PoisonNames,
-                                        m_PoisonValues
+                                        PropertiesGump.m_PoisonNames,
+                                        PropertiesGump.m_PoisonValues
                                     )
                                 );
                             }
@@ -717,17 +723,15 @@ namespace Server.Gumps
 
         private static bool CompareAttr(string name)
         {
-            foreach (var item in M_attr)
+            foreach (var item in _attrs)
             {
-                if(item.Equals(name,StringComparison.OrdinalIgnoreCase))
+                if (item.Equals(name,StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
             }
             return false;
         }
-
-
 
         private static CPA GetCPA(PropertyInfo prop)
         {
@@ -911,7 +915,7 @@ namespace Server.Gumps
                     return -1;
                 }
 
-                return y == null ? 1 : string.CompareOrdinal(x.Name, x.Name);
+                return x.Name.CompareOrdinal(y?.Name);
             }
         }
 

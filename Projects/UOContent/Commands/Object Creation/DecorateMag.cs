@@ -508,7 +508,7 @@ namespace Server.Commands
                     light.ItemID = m_ItemID;
                 }
             }
-            else if (item is Spawner sp)
+            else if (item is BaseSpawner sp)
             {
                 sp.NextSpawn = TimeSpan.Zero;
 

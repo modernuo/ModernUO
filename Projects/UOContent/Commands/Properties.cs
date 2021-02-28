@@ -606,32 +606,31 @@ namespace Server.Commands
 
         private class PropsTarget : Target
         {
-            bool iEdit;
-            public PropsTarget(bool iEdit = false) : base(-1, true, TargetFlags.None)
-            {
-                this.iEdit = iEdit;
-            }
+            private readonly bool _canEdit;
+
+            public PropsTarget(bool canEdit = false) : base(-1, true, TargetFlags.None) => _canEdit = canEdit;
 
             protected override void OnTarget(Mobile from, object o)
             {
                 if (!BaseCommand.IsAccessible(from, o))
                 {
                     from.SendLocalizedMessage(500447); // That is not accessible.
+                    return;
+                }
+
+                if (!_canEdit)
+                {
+                    from.SendGump(new PropertiesGump(from, o));
+                    return;
+                }
+
+                if (o is Mobile { Player: false })
+                {
+                    from.SendGump(new GlobalPropsGump(from, o));
                 }
                 else
                 {
-                    if (iEdit)
-                    {
-                        if (o is Mobile mbl && !mbl.Player)
-                        {
-                            from.SendGump(new GlobalPropsGump(from, o));
-                        }
-                        else
-                        {
-                            from.SendLocalizedMessage(500447); // That is not accessible.
-                        }
-                    }
-                    else from.SendGump(new PropertiesGump(from, o));
+                    from.SendLocalizedMessage(500447); // That is not accessible.
                 }
             }
         }

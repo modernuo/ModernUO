@@ -55,16 +55,16 @@ namespace Server.Gumps
         private readonly int m_Page;
         private readonly PropertyInfo m_Property;
         private readonly Stack<StackEntry> m_Stack;
-        private bool m_Edit = false;
+        private readonly bool m_Edit;
 
         public SetGump(
-            PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, List<object> list, bool IsEdit = false
+            PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, List<object> list, bool edit = false
         ) : base(
             GumpOffsetX,
             GumpOffsetY
         )
         {
-            m_Edit = IsEdit;
+            m_Edit = edit;
             m_Property = prop;
             m_Mobile = mobile;
             m_Object = o;
@@ -276,8 +276,10 @@ namespace Server.Gumps
                 {
                     m_Mobile.SendGump(new GlobalPropsGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
                 }
-                else m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
-
+                else
+                {
+                    m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+                }
             }
         }
 
