@@ -15,7 +15,57 @@ namespace Server.Engines.Spawners
         public static void Initialize()
         {
             CommandSystem.Register("GenerateSpawners", AccessLevel.Developer, GenerateSpawners_OnCommand);
+            CommandSystem.Register("RespawnSpawners", AccessLevel.GameMaster, RespawnWorld_OnCommand);
+            CommandSystem.Register("EditSpawners", AccessLevel.Developer, EditSpawnersProps_OnCommand);
+
         }
+
+        private static void EditSpawnersProps_OnCommand(CommandEventArgs e)
+        {
+            var from = e.Mobile;
+            if (e.Arguments.Length < 2)
+            {
+                //[EditSpawnersProps skeleton str 10 dex 10
+                from.SendMessage("Usage: [EditSpawnersProps <'Monster name'> <props string>");
+                return;
+            }
+            var Props = string.Join(" ", e.Arguments.Skip(1));
+            UpdateSpawners(e.Arguments[0], Props);
+        }
+
+        public static void UpdateSpawners(string Name, string Props)
+        {
+            var Monster = AssemblyHandler.FindTypeByName(Name);
+            if (Monster is null) return;
+
+            foreach (var item in World.Items)
+            {
+                if (item.Value is Spawner spwn)
+                {
+                    foreach (var entr in spwn.Entries)
+                    {
+                        if (entr.SpawnedName.Equals(Name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            entr.Properties = Props;
+                        }
+                    }
+                }
+            }
+        }
+        private static void RespawnWorld_OnCommand(CommandEventArgs e)
+        {
+
+            var toRespawn = new List<Spawner>();
+            foreach (var item in World.Items)
+            {
+                if (item.Value is Spawner itm)
+                {
+                    toRespawn.Add(itm);
+                }
+            }
+            toRespawn.ForEach(_ => _.Respawn());
+        }
+
 
         private static void GenerateSpawners_OnCommand(CommandEventArgs e)
         {

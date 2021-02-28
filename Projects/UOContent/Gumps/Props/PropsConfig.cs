@@ -38,5 +38,6 @@ namespace Server.Gumps
 
         public static readonly int EntryHeight = 20;
         public static readonly int BorderSize = 10;
+        public static readonly int ApplySize = 30;
     }
 }
