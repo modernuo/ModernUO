@@ -15,6 +15,7 @@
 
 using System.Collections.Generic;
 using Server.Commands.Generic;
+using Server.Network;
 
 namespace Server.Engines.Spawners
 {
@@ -44,6 +45,10 @@ namespace Server.Engines.Spawners
                 return;
             }
 
+            e.Mobile.SendMessage("Respawning...");
+
+            NetState.FlushAll();
+
             foreach (var obj in list)
             {
                 if (obj is ISpawner spawner)
@@ -51,6 +56,8 @@ namespace Server.Engines.Spawners
                     spawner.Respawn();
                 }
             }
+
+            e.Mobile.SendMessage("Respawn completed.");
         }
     }
 }

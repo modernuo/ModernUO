@@ -274,13 +274,14 @@ namespace Server
             watch.Stop();
 
             Utility.PushColor(ConsoleColor.Green);
+            Console.Write("done");
+            Utility.PopColor();
             Console.WriteLine(
-                "done ({1} items, {2} mobiles) ({0:F2} seconds)",
+                " ({1} items, {2} mobiles) ({0:F2} seconds)",
                 watch.Elapsed.TotalSeconds,
                 Items.Count,
                 Mobiles.Count
             );
-            Utility.PopColor();
 
             WorldState = WorldState.Running;
         }

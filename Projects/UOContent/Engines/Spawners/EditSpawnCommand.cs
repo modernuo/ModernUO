@@ -80,6 +80,8 @@ namespace Server.Engines.Spawners
             var argStr = argSpan.ToString().DefaultIfNullOrEmpty(null);
             var propsStr = props.ToString().DefaultIfNullOrEmpty(null);
 
+            e.Mobile.SendMessage("Updating spawners...");
+
             foreach (var obj in list)
             {
                 if (obj is BaseSpawner spawner)
@@ -87,6 +89,8 @@ namespace Server.Engines.Spawners
                     UpdateSpawner(spawner, name, argStr, propsStr);
                 }
             }
+
+            e.Mobile.SendMessage("Update completed.");
         }
 
         public static void UpdateSpawner(BaseSpawner spawner, string name, string arguments, string properties)

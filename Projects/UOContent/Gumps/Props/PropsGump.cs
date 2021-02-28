@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Server.Commands.Generic;
 using Server.Network;
 using CPA = Server.CommandPropertyAttribute;
@@ -69,24 +70,24 @@ namespace Server.Gumps
         private static readonly int NameWidth = 107;
         private static readonly int ValueWidth = 128;
 
-        private static readonly int EntryCount = 15;
+        private static readonly int MaxEntriesPerPage = 15;
 
         private static readonly int TypeWidth = NameWidth + OffsetSize + ValueWidth;
 
         private static readonly int TotalWidth =
             OffsetSize + NameWidth + OffsetSize + ValueWidth + OffsetSize + SetWidth + OffsetSize;
 
-        private static readonly int TotalHeight = OffsetSize + (EntryHeight + OffsetSize) * (EntryCount + 1);
+        private static readonly int MaxHeight = OffsetSize + (EntryHeight + OffsetSize) * (MaxEntriesPerPage + 1);
 
-        private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-        private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
+        protected static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
+        protected static readonly int BackHeight = BorderSize + MaxHeight + BorderSize;
 
-        public static string[] m_BoolNames = { "True", "False" };
-        public static object[] m_BoolValues = { true, false };
+        public static readonly string[] BoolNames = { "True", "False" };
+        public static readonly object[] BoolValues = { true, false };
 
-        public static string[] m_PoisonNames = { "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
+        public static readonly string[] PoisonNames = { "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
 
-        public static object[] m_PoisonValues =
+        public static readonly object[] PoisonValues =
             { null, Poison.Lesser, Poison.Regular, Poison.Greater, Poison.Deadly, Poison.Lethal };
 
         private static readonly Type typeofMobile = typeof(Mobile);
@@ -106,13 +107,13 @@ namespace Server.Gumps
         private static readonly Type typeofPropertyObject = typeof(PropertyObjectAttribute);
         private static readonly Type typeofNoSort = typeof(NoSortAttribute);
 
-        private static readonly Type[] typeofReal =
+        public static readonly Type[] DecimalTypes =
         {
             typeof(float),
             typeof(double)
         };
 
-        private static readonly Type[] typeofNumeric =
+        private static readonly Type[] NumericTypes =
         {
             typeof(byte),
             typeof(short),
@@ -126,12 +127,16 @@ namespace Server.Gumps
 
         private static readonly Type typeofCPA = typeof(CPA);
         private static readonly Type typeofObject = typeof(object);
-        private readonly List<object> m_List;
-        private readonly Mobile m_Mobile;
-        private readonly object m_Object;
-        private readonly Stack<StackEntry> m_Stack;
-        private readonly Type m_Type;
-        private int m_Page;
+
+        protected readonly List<object> m_List;
+        protected readonly Mobile m_Mobile;
+        protected readonly object m_Object;
+        protected readonly Stack<StackEntry> m_Stack;
+        protected readonly Type m_Type;
+        protected int m_Page;
+        protected int m_EntryCount;
+
+        protected virtual int TotalHeight => OffsetSize + (EntryHeight + OffsetSize) * (m_EntryCount + 1);
 
         public PropertiesGump(Mobile mobile, object o) : base(GumpOffsetX, GumpOffsetY)
         {
@@ -182,20 +187,19 @@ namespace Server.Gumps
             Initialize(page);
         }
 
-        private void Initialize(int page)
+        protected virtual void Initialize(int page)
         {
             m_Page = page;
+            var indexOnPage = m_Page * MaxEntriesPerPage;
 
-            var count = Math.Clamp(m_List.Count - page * EntryCount, 0, EntryCount);
-
-            var lastIndex = page * EntryCount + count - 1;
-
+            m_EntryCount = Math.Clamp(m_List.Count - indexOnPage, 0, MaxEntriesPerPage);
+            var lastIndex = indexOnPage + m_EntryCount - 1;
             if (lastIndex >= 0 && lastIndex < m_List.Count && m_List[lastIndex] == null)
             {
-                --count;
+                --m_EntryCount;
             }
 
-            var totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
+            var totalHeight = TotalHeight;
 
             AddPage(0);
 
@@ -257,7 +261,7 @@ namespace Server.Gumps
                 AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
             }
 
-            if ((page + 1) * EntryCount < m_List.Count)
+            if ((page + 1) * MaxEntriesPerPage < m_List.Count)
             {
                 AddButton(x + NextOffsetX, y + NextOffsetY, NextButtonID1, NextButtonID2, 2, GumpButtonType.Reply, 1);
 
@@ -267,7 +271,7 @@ namespace Server.Gumps
                 }
             }
 
-            for (int i = 0, index = page * EntryCount; i < count && index < m_List.Count; ++i, ++index)
+            for (int i = 0, index = page * MaxEntriesPerPage; i < count && index < m_List.Count; ++i, ++index)
             {
                 x = BorderSize + OffsetSize;
                 y += EntryHeight + OffsetSize;
@@ -347,7 +351,7 @@ namespace Server.Gumps
                     }
                 case 2: // Next
                     {
-                        if ((m_Page + 1) * EntryCount < m_List.Count)
+                        if ((m_Page + 1) * MaxEntriesPerPage < m_List.Count)
                         {
                             from.SendGump(new PropertiesGump(from, m_Object, m_Stack, m_List, m_Page + 1));
                         }
@@ -356,7 +360,7 @@ namespace Server.Gumps
                     }
                 default:
                     {
-                        var index = m_Page * EntryCount + (info.ButtonID - 3);
+                        var index = m_Page * MaxEntriesPerPage + (info.ButtonID - 3);
 
                         if (index >= 0 && index < m_List.Count)
                         {
@@ -436,12 +440,12 @@ namespace Server.Gumps
                                         m_Stack,
                                         m_Page,
                                         m_List,
-                                        m_BoolNames,
-                                        m_BoolValues
+                                        BoolNames,
+                                        BoolValues
                                     )
                                 );
                             }
-                            else if (IsType(type, typeofString) || IsType(type, typeofReal) || IsType(type, typeofNumeric) ||
+                            else if (IsType(type, typeofString) || IsType(type, DecimalTypes) || IsType(type, NumericTypes) ||
                                      IsType(type, typeofText))
                             {
                                 from.SendGump(new SetGump(prop, from, m_Object, m_Stack, m_Page, m_List));
@@ -456,8 +460,8 @@ namespace Server.Gumps
                                         m_Stack,
                                         m_Page,
                                         m_List,
-                                        m_PoisonNames,
-                                        m_PoisonValues
+                                        PoisonNames,
+                                        PoisonValues
                                     )
                                 );
                             }
@@ -680,11 +684,20 @@ namespace Server.Gumps
                 }
 
                 list.Add(kvp.Key);
-                list.AddRange(kvp.Value);
+
+                foreach (var item in kvp.Value)
+                {
+                    if (ShowAttribute(item.Name))
+                    {
+                        list.Add(item);
+                    }
+                }
             }
 
             return list;
         }
+
+        protected virtual bool ShowAttribute(string name) => true;
 
         private static CPA GetCPA(PropertyInfo prop)
         {
