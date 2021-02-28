@@ -1,0 +1,101 @@
+/* Remove spacing, as we cannot hide it completely */
+.md-main__inner {
+  margin: 0;
+}
+
+/* Hide main content for now */
+.md-content {
+  display: none;
+}
+
+/* Hide table of contents */
+@media screen and (min-width: 60em) {
+  .md-sidebar--secondary {
+    display: none;
+  }
+}
+
+/* Hide navigation */
+@media screen and (min-width: 76.25em) {
+  .md-sidebar--primary {
+    display: none;
+  }
+}
+
+.md-main {
+  background: var(--md-default-fg-color);
+}
+
+.md-typeset h1 {
+  color: var(--md-default-bg-color--light);
+}
+
+.tx-container {
+  background: var(--md-default-fg-color);
+  padding-top: 1rem;
+}
+
+.tx-hero {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 400px;
+  margin: 0 0.8rem;
+}
+
+.tx-hero div {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.tx-hero__image {
+  text-align: center;
+}
+
+.tx-hero__content {
+  text-align: center;
+}
+
+.tx-hero__content .md-button {
+  background-color: transparent;
+  color: var(--md-primary-bg-color--light);
+  border-color: var(--md-primary-bg-color--light);
+}
+
+.tx-hero__content .md-button--primary {
+  background-color: var(--muo-gold);
+  color: var(--md-primary-fg-color);
+  border-color: transparent;
+}
+
+.tx-hero__content .md-button:hover {
+  border-color: transparent;
+  color: var(--md-primary-fg-color);
+  background-color: var(--md-primary-bg-color);
+}
+
+.tx-hero__content .md-button--primary:hover {
+  border-color: var(--md-primary-bg-color--light);
+}
+
+/*@media screen and (max-width: 60em)*/
+/*{*/
+/*  .tx-hero__image img {*/
+/*    max-width: 64px;*/
+/*  }*/
+/*}*/
+
+@media screen and (max-width: 60em)
+{
+  .tx-hero__image img {
+    max-width: 128px;
+  }
+}
+
+@media screen and (min-width: 60em)
+{
+  .tx-hero__image img {
+    max-width: 200px;
+  }
+}
