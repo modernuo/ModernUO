@@ -122,6 +122,8 @@ namespace Server.Gumps
                         var name = m_Object.GetType().Name;
                         var props = propsBuilder.ToString();
 
+                        m_Mobile.SendMessage("Updating spawners...");
+
                         foreach (var obj in _spawners)
                         {
                             if (obj is BaseSpawner spawner)
@@ -129,6 +131,9 @@ namespace Server.Gumps
                                 EditSpawnCommand.UpdateSpawner(spawner, name, null, props);
                             }
                         }
+
+                        m_Mobile.SendMessage("Update completed.");
+
                         break;
                     }
             }

@@ -207,7 +207,7 @@ namespace Server.Gumps
                 BorderSize,
                 BorderSize,
                 TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
-                totalHeight,
+                OffsetSize + (EntryHeight + OffsetSize) * (m_EntryCount + 1),
                 OffsetGumpID
             );
 

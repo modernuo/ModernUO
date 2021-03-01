@@ -47,6 +47,7 @@ namespace Server.Engines.Spawners
                 return;
             }
 
+            e.Mobile.SendMessage("Target the object you want to use as a template for modifying the spawner properties.");
             e.Mobile.Target = new InternalTarget(list);
         }
 
@@ -65,7 +66,7 @@ namespace Server.Engines.Spawners
                     from.SendMessage("No type with that name was found.");
                 }
 
-                from.SendGump(new SpawnPropsGump(from, type, _list));
+                from.SendGump(new SpawnPropsGump(from, targeted, _list));
             }
         }
     }
