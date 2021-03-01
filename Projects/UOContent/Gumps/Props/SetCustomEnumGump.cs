@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands;
 using Server.Network;
@@ -11,9 +10,8 @@ namespace Server.Gumps
         private readonly string[] m_Names;
 
         public SetCustomEnumGump(
-            PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int propspage,
-            List<object> list, string[] names
-        ) : base(prop, mobile, o, stack, propspage, list, names, null) =>
+            PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump, string[] names
+        ) : base(prop, mobile, o, propertiesGump, names, null) =>
             m_Names = names;
 
         public override void OnResponse(NetState sender, RelayInfo relayInfo)
@@ -61,7 +59,7 @@ namespace Server.Gumps
 
                     if (result == "Property has been set.")
                     {
-                        PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                        m_PropertiesGump.OnValueChanged(m_Object, m_Property);
                     }
                 }
                 catch
@@ -70,7 +68,7 @@ namespace Server.Gumps
                 }
             }
 
-            m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+            m_PropertiesGump.SendPropertiesGump();
         }
     }
 }

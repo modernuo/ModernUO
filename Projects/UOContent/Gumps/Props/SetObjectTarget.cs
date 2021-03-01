@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands;
 using Server.Items;
@@ -9,26 +8,21 @@ namespace Server.Gumps
 {
     public class SetObjectTarget : Target
     {
-        private readonly List<object> m_List;
         private readonly Mobile m_Mobile;
         private readonly object m_Object;
-        private readonly int m_Page;
         private readonly PropertyInfo m_Property;
-        private readonly Stack<StackEntry> m_Stack;
         private readonly Type m_Type;
+        private readonly PropertiesGump m_PropertiesGump;
 
         public SetObjectTarget(
-            PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, Type type, int page,
-            List<object> list
+            PropertyInfo prop, Mobile mobile, object o, Type type, PropertiesGump propertiesGump
         ) : base(-1, false, TargetFlags.None)
         {
+            m_PropertiesGump = propertiesGump;
             m_Property = prop;
             m_Mobile = mobile;
             m_Object = o;
-            m_Stack = stack;
             m_Type = type;
-            m_Page = page;
-            m_List = list;
         }
 
         protected override void OnTarget(Mobile from, object targeted)
@@ -49,7 +43,7 @@ namespace Server.Gumps
                 {
                     CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, targeted.ToString());
                     m_Property.SetValue(m_Object, targeted, null);
-                    PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                    m_PropertiesGump.OnValueChanged(m_Object, m_Property);
                 }
                 else
                 {
@@ -66,11 +60,11 @@ namespace Server.Gumps
         {
             if (m_Type == typeof(Type))
             {
-                from.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+                m_PropertiesGump.SendPropertiesGump();
             }
             else
             {
-                from.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List));
+                from.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Type, m_PropertiesGump));
             }
         }
     }

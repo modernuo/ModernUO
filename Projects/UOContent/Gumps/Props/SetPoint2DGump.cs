@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands;
 using Server.Network;
@@ -50,24 +49,20 @@ namespace Server.Gumps
 
         private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
         private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
-        private readonly List<object> m_List;
         private readonly Mobile m_Mobile;
         private readonly object m_Object;
-        private readonly int m_Page;
         private readonly PropertyInfo m_Property;
-        private readonly Stack<StackEntry> m_Stack;
+        private readonly PropertiesGump m_PropertiesGump;
 
         public SetPoint2DGump(
-            PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, List<object> list
+            PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump
         )
             : base(GumpOffsetX, GumpOffsetY)
         {
+            m_PropertiesGump = propertiesGump;
             m_Property = prop;
             m_Mobile = mobile;
             m_Object = o;
-            m_Stack = stack;
-            m_Page = page;
-            m_List = list;
 
             var p = (Point2D)(prop?.GetValue(o, null) ?? new Point2D());
 
@@ -160,7 +155,7 @@ namespace Server.Gumps
                     }
                 case 2: // Pick location
                     {
-                        m_Mobile.Target = new InternalTarget(m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List);
+                        m_Mobile.Target = new InternalTarget(m_Property, m_Mobile, m_Object, m_PropertiesGump);
 
                         toSet = Point2D.Zero;
                         shouldSet = false;
@@ -198,7 +193,7 @@ namespace Server.Gumps
                 {
                     CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, toSet.ToString());
                     m_Property.SetValue(m_Object, toSet, null);
-                    PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                    m_PropertiesGump.OnValueChanged(m_Object, m_Property);
                 }
                 catch
                 {
@@ -208,30 +203,25 @@ namespace Server.Gumps
 
             if (shouldSend)
             {
-                m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+                m_PropertiesGump.SendPropertiesGump();
             }
         }
 
         private class InternalTarget : Target
         {
-            private readonly List<object> m_List;
             private readonly Mobile m_Mobile;
             private readonly object m_Object;
-            private readonly int m_Page;
             private readonly PropertyInfo m_Property;
-            private readonly Stack<StackEntry> m_Stack;
+            private readonly PropertiesGump m_PropertiesGump;
 
             public InternalTarget(
-                PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page,
-                List<object> list
+                PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump
             ) : base(-1, true, TargetFlags.None)
             {
                 m_Property = prop;
                 m_Mobile = mobile;
                 m_Object = o;
-                m_Stack = stack;
-                m_Page = page;
-                m_List = list;
+                m_PropertiesGump = propertiesGump;
             }
 
             protected override void OnTarget(Mobile from, object targeted)
@@ -242,7 +232,7 @@ namespace Server.Gumps
                     {
                         CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, new Point2D(p).ToString());
                         m_Property.SetValue(m_Object, new Point2D(p), null);
-                        PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                        m_PropertiesGump.OnValueChanged(m_Object, m_Property);
                     }
                     catch
                     {
@@ -253,7 +243,7 @@ namespace Server.Gumps
 
             protected override void OnTargetFinish(Mobile from)
             {
-                m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+                m_PropertiesGump.SendPropertiesGump();
             }
         }
     }

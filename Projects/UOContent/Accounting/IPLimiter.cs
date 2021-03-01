@@ -26,7 +26,9 @@ namespace Server.Misc
             for (int i = 0; i < Exemptions.Length; i++)
             {
                 if (ip.Equals(Exemptions[i]))
+                {
                     return true;
+                }
             }
 
             return false;

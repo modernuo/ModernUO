@@ -178,8 +178,7 @@ namespace Server
     {
         public static string Prefix { get; set; } = "[";
 
-        public static Dictionary<string, CommandEntry> Entries { get; } =
-            new(StringComparer.OrdinalIgnoreCase);
+        public static Dictionary<string, CommandEntry> Entries { get; } = new(StringComparer.OrdinalIgnoreCase);
 
         public static AccessLevel BadCommandIgnoreLevel { get; set; } = AccessLevel.Player;
 
