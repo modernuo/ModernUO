@@ -600,7 +600,7 @@ namespace Server.Commands
 
         private class PropsTarget : Target
         {
-            public PropsTarget(bool canEdit = false) : base(-1, true, TargetFlags.None)
+            public PropsTarget() : base(-1, true, TargetFlags.None)
             {
             }
 
