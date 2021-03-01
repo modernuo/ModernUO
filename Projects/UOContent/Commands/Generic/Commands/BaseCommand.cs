@@ -36,16 +36,12 @@ namespace Server.Commands.Generic
                 return true;
             }
 
-            Mobile mob = null;
-
-            if (obj is Mobile m)
+            Mobile mob = obj switch
             {
-                mob = m;
-            }
-            else if (obj is Item item)
-            {
-                mob = item.RootParent as Mobile;
-            }
+                Mobile m  => m,
+                Item item => item.RootParent as Mobile,
+                _         => null
+            };
 
             return mob == null || mob == from || from.AccessLevel > mob.AccessLevel;
         }

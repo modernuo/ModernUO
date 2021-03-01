@@ -34,8 +34,8 @@ namespace Server.Engines.Spawners
             Supports = CommandSupport.Complex | CommandSupport.Simple;
             Commands = new[] { "SpawnProps" };
             ObjectTypes = ObjectTypes.Items;
-            Usage = "SpawnProps <type>";
-            Description = "Shows a props gump that will modify the properties of spawn entries related to the chosen type";
+            Usage = "SpawnProps";
+            Description = "Shows a props gump that will modify the properties of spawn entries related to the chosen entity";
             ListOptimized = true;
         }
 
@@ -47,25 +47,7 @@ namespace Server.Engines.Spawners
                 return;
             }
 
-            var args = e.Arguments;
-
-            if (args.Length == 0)
-            {
-                e.Mobile.Target =new InternalTarget(list);
-                return;
-            }
-
-            var name = args[0];
-
-            var type = AssemblyHandler.FindTypeByName(name);
-
-            if (!Add.IsEntity(type))
-            {
-                LogFailure("No type with that name was found.");
-                return;
-            }
-
-            e.Mobile.SendGump(new SpawnPropsGump(e.Mobile, type, list));
+            e.Mobile.Target = new InternalTarget(list);
         }
 
         private class InternalTarget : Target
