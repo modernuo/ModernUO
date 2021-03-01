@@ -55,8 +55,8 @@ namespace Server.Commands
             e.Mobile.Target = new PropsTarget(true);
         }
 
-        [Usage("Props [serial]"),
-         Description("Opens a menu where you can view and edit all properties of a targeted (or specified) object.")]
+        [Usage("Props [serial]")]
+        [Description("Opens a menu where you can view and edit all properties of a targeted (or specified) object.")]
         private static void Props_OnCommand(CommandEventArgs e)
         {
             if (e.Length == 1)

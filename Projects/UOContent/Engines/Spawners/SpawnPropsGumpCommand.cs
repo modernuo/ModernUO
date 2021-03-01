@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2021 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: RespawnCommand.cs                                               *
+ * File: SpawnPropsGump.cs                                               *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,26 +14,28 @@
  *************************************************************************/
 
 using System.Collections.Generic;
+using Server.Commands;
 using Server.Commands.Generic;
-using Server.Network;
+using Server.Gumps;
+using Server.Targeting;
 
 namespace Server.Engines.Spawners
 {
-    public class RespawnCommand : BaseCommand
+    public class SpawnPropsGumpCommand : BaseCommand
     {
         public static void Initialize()
         {
-            TargetCommands.Register(new RespawnCommand());
+            TargetCommands.Register(new SpawnPropsGumpCommand());
         }
 
-        public RespawnCommand()
+        public SpawnPropsGumpCommand()
         {
             AccessLevel = AccessLevel.GameMaster;
             Supports = CommandSupport.Complex | CommandSupport.Simple;
-            Commands = new[] { "Respawn" };
+            Commands = new[] { "SpawnProps" };
             ObjectTypes = ObjectTypes.Items;
-            Usage = "Respawn";
-            Description = "Respawns the given the spawners.";
+            Usage = "SpawnProps";
+            Description = "Shows a props gump that will modify the properties of spawn entries related to the chosen entity";
             ListOptimized = true;
         }
 
@@ -45,19 +47,27 @@ namespace Server.Engines.Spawners
                 return;
             }
 
-            e.Mobile.SendMessage("Respawning...");
+            e.Mobile.SendMessage("Target the object you want to use as a template for modifying the spawner properties.");
+            e.Mobile.Target = new InternalTarget(list);
+        }
 
-            NetState.FlushAll();
+        private class InternalTarget : Target
+        {
+            private List<object> _list;
 
-            foreach (var obj in list)
+            public InternalTarget(List<object> list) : base(-1, false, TargetFlags.None) =>
+                _list = list;
+
+            protected override void OnTarget(Mobile from, object targeted)
             {
-                if (obj is ISpawner spawner)
+                var type = targeted.GetType();
+                if (!Add.IsEntity(type))
                 {
-                    spawner.Respawn();
+                    from.SendMessage("No type with that name was found.");
                 }
-            }
 
-            e.Mobile.SendMessage("Respawn completed.");
+                from.SendGump(new SpawnPropsGump(from, targeted, _list));
+            }
         }
     }
 }
