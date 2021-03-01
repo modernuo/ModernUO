@@ -15,17 +15,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Server.Commands;
 using Server.Commands.Generic;
 using Server.Network;
 
 namespace Server.Engines.Spawners
 {
-    public class MatchParam
-    {
-        public bool Match { get; set; }
-        public string FindPattern { get; set; }
-    }
+  
     public class EditSpawnCommand : BaseCommand
     {
         public static void Initialize()
@@ -73,20 +70,23 @@ namespace Server.Engines.Spawners
             var argSpan = e.ArgString.AsSpan(name.Length + 1);
             var setIndex = argSpan.InsensitiveIndexOf("set ");
             var where = argSpan.InsensitiveIndexOf("match ");
-            if (where > -1) setIndex = where;
-
-
-
 
             ReadOnlySpan<char> props = null, findmatch = null;
 
-            if (setIndex > -1)
+            if (setIndex > -1 || where > -1)
             {
                 var start = setIndex + 4;
-                props = argSpan.Slice(start, argSpan.Length - start - where > -1?(argSpan.Length- where) :0);
-                if(where > -1)findmatch = argSpan.Slice(where+6);
-                argSpan = argSpan.SliceToLength(setIndex);
-                
+                var len = where>-1? where : argSpan.Length;
+                findmatch = argSpan.Slice(len < argSpan.Length ? len + 6 : argSpan.Length);
+                if (setIndex>-1)
+                {
+                    props = argSpan.Slice(start, len - start);
+                    argSpan = argSpan.SliceToLength(setIndex);
+                }
+                else
+                {
+                    argSpan = argSpan.SliceToLength(argSpan.Length-len);
+                }
             }
 
             var argStr = argSpan.ToString().DefaultIfNullOrEmpty(null);
@@ -100,26 +100,42 @@ namespace Server.Engines.Spawners
             {
                 if (obj is BaseSpawner spawner)
                 {
-                    UpdateSpawner(spawner, name, argStr, propsStr);
+                    UpdateSpawner(spawner, name, argStr, propsStr, whereStr);
                 }
             }
 
             e.Mobile.SendMessage("Update completed.");
         }
 
-        public static void UpdateSpawner(BaseSpawner spawner, string name, string arguments, string properties, MatchParam param = null)
+        public static void UpdateSpawner(BaseSpawner spawner, string name, string arguments, string properties, string find = null)
         {
             foreach (var entry in spawner.Entries)
             {
                 // TODO: Should cache spawn type on the entry
                 if (entry.SpawnedName.InsensitiveEquals(name))
                 {
-                    if (arguments != null)
+                    if (find != null)
                     {
-                        entry.Parameters = arguments;
+                        var pattern = @"\b" + Regex.Escape(find) + @"\b";
+                        if (entry.Properties != null &&
+                            //replace multiply space to one and find
+                            Regex.IsMatch(entry.Properties.Replace(@"\s+"," "), pattern, RegexOptions.IgnoreCase))
+                        {
+                            if (arguments != null)
+                            {
+                                entry.Parameters = arguments;
+                            }
+                            entry.Properties = properties;
+                        }    
                     }
-
-                    entry.Properties = properties;
+                    else
+                    {
+                        if (arguments != null)
+                        {
+                            entry.Parameters = arguments;
+                        }
+                        entry.Properties = properties;
+                    }
                 }
             }
         }
