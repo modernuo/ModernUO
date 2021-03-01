@@ -21,6 +21,11 @@ using Server.Network;
 
 namespace Server.Engines.Spawners
 {
+    public class MatchParam
+    {
+        public bool Match { get; set; }
+        public string FindPattern { get; set; }
+    }
     public class EditSpawnCommand : BaseCommand
     {
         public static void Initialize()
@@ -67,18 +72,27 @@ namespace Server.Engines.Spawners
 
             var argSpan = e.ArgString.AsSpan(name.Length + 1);
             var setIndex = argSpan.InsensitiveIndexOf("set ");
+            var where = argSpan.InsensitiveIndexOf("match ");
+            if (where > -1) setIndex = where;
 
-            ReadOnlySpan<char> props = null;
+
+
+
+            ReadOnlySpan<char> props = null, findmatch = null;
 
             if (setIndex > -1)
             {
                 var start = setIndex + 4;
-                props = argSpan.Slice(start, argSpan.Length - start);
+                props = argSpan.Slice(start, argSpan.Length - start - where > -1?(argSpan.Length- where) :0);
+                if(where > -1)findmatch = argSpan.Slice(where+6);
                 argSpan = argSpan.SliceToLength(setIndex);
+                
             }
 
             var argStr = argSpan.ToString().DefaultIfNullOrEmpty(null);
             var propsStr = props.ToString().DefaultIfNullOrEmpty(null);
+            var whereStr = findmatch.ToString().DefaultIfNullOrEmpty(null);
+
 
             e.Mobile.SendMessage("Updating spawners...");
 
@@ -93,7 +107,7 @@ namespace Server.Engines.Spawners
             e.Mobile.SendMessage("Update completed.");
         }
 
-        public static void UpdateSpawner(BaseSpawner spawner, string name, string arguments, string properties)
+        public static void UpdateSpawner(BaseSpawner spawner, string name, string arguments, string properties, MatchParam param = null)
         {
             foreach (var entry in spawner.Entries)
             {
