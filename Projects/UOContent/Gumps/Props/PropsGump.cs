@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Server.Commands.Generic;
 using Server.Network;
 using CPA = Server.CommandPropertyAttribute;
@@ -61,7 +60,7 @@ namespace Server.Gumps
         private static readonly bool NextLabel = OldStyle;
         private static readonly bool TypeLabel = !OldStyle;
 
-        private static readonly int PrevLabelOffsetX = PrevWidth + 1;
+        public static readonly int PrevLabelOffsetX = PrevWidth + 1;
         private static readonly int PrevLabelOffsetY = 0;
 
         private static readonly int NextLabelOffsetX = -29;
@@ -70,7 +69,7 @@ namespace Server.Gumps
         private static readonly int NameWidth = 107;
         private static readonly int ValueWidth = 128;
 
-        private static readonly int MaxEntriesPerPage = 15;
+        public static readonly int MaxEntriesPerPage = 15;
 
         private static readonly int TypeWidth = NameWidth + OffsetSize + ValueWidth;
 
@@ -90,22 +89,22 @@ namespace Server.Gumps
         public static readonly object[] PoisonValues =
             { null, Poison.Lesser, Poison.Regular, Poison.Greater, Poison.Deadly, Poison.Lethal };
 
-        private static readonly Type typeofMobile = typeof(Mobile);
-        private static readonly Type typeofItem = typeof(Item);
-        private static readonly Type typeofType = typeof(Type);
-        private static readonly Type typeofPoint3D = typeof(Point3D);
-        private static readonly Type typeofPoint2D = typeof(Point2D);
-        private static readonly Type typeofTimeSpan = typeof(TimeSpan);
-        private static readonly Type typeofCustomEnum = typeof(CustomEnumAttribute);
-        private static readonly Type typeofEnum = typeof(Enum);
-        private static readonly Type typeofBool = typeof(bool);
-        private static readonly Type typeofString = typeof(string);
-        private static readonly Type typeofText = typeof(TextDefinition);
-        private static readonly Type typeofPoison = typeof(Poison);
-        private static readonly Type typeofMap = typeof(Map);
-        private static readonly Type typeofSkills = typeof(Skills);
-        private static readonly Type typeofPropertyObject = typeof(PropertyObjectAttribute);
-        private static readonly Type typeofNoSort = typeof(NoSortAttribute);
+        public static readonly Type TypeofMobile = typeof(Mobile);
+        public static readonly Type TypeofItem = typeof(Item);
+        public static readonly Type TypeofType = typeof(Type);
+        public static readonly Type TypeofPoint3D = typeof(Point3D);
+        public static readonly Type TypeofPoint2D = typeof(Point2D);
+        public static readonly Type TypeofTimeSpan = typeof(TimeSpan);
+        public static readonly Type TypeofCustomEnum = typeof(CustomEnumAttribute);
+        public static readonly Type TypeofEnum = typeof(Enum);
+        public static readonly Type TypeofBool = typeof(bool);
+        public static readonly Type TypeofString = typeof(string);
+        public static readonly Type TypeofText = typeof(TextDefinition);
+        public static readonly Type TypeofPoison = typeof(Poison);
+        public static readonly Type TypeofMap = typeof(Map);
+        public static readonly Type TypeofSkills = typeof(Skills);
+        public static readonly Type TypeofPropertyObject = typeof(PropertyObjectAttribute);
+        public static readonly Type TypeofNoSort = typeof(NoSortAttribute);
 
         public static readonly Type[] DecimalTypes =
         {
@@ -113,7 +112,7 @@ namespace Server.Gumps
             typeof(double)
         };
 
-        private static readonly Type[] NumericTypes =
+        public static readonly Type[] NumericTypes =
         {
             typeof(byte),
             typeof(short),
@@ -125,8 +124,8 @@ namespace Server.Gumps
             typeof(ulong)
         };
 
-        private static readonly Type typeofCPA = typeof(CPA);
-        private static readonly Type typeofObject = typeof(object);
+        private static readonly Type TypeofCPA = typeof(CPA);
+        private static readonly Type TypeofObject = typeof(object);
 
         protected readonly List<object> m_List;
         protected readonly Mobile m_Mobile;
@@ -271,7 +270,7 @@ namespace Server.Gumps
                 }
             }
 
-            for (int i = 0, index = page * MaxEntriesPerPage; i < count && index < m_List.Count; ++i, ++index)
+            for (int i = 0, index = page * MaxEntriesPerPage; i < m_EntryCount && index < m_List.Count; ++i, ++index)
             {
                 x = BorderSize + OffsetSize;
                 y += EntryHeight + OffsetSize;
@@ -362,141 +361,134 @@ namespace Server.Gumps
                     {
                         var index = m_Page * MaxEntriesPerPage + (info.ButtonID - 3);
 
-                        if (index >= 0 && index < m_List.Count)
+                        if (index < 0 || index >= m_List.Count)
                         {
-                            var prop = m_List[index] as PropertyInfo;
+                            break;
+                        }
 
-                            if (prop == null)
-                            {
-                                return;
-                            }
+                        var prop = m_List[index] as PropertyInfo;
 
-                            var attr = GetCPA(prop);
+                        if (prop == null)
+                        {
+                            return;
+                        }
 
-                            if (prop.GetType().IsValueType && !prop.CanWrite || attr == null ||
-                                from.AccessLevel < attr.WriteLevel || attr.ReadOnly)
-                            {
-                                return;
-                            }
+                        var attr = GetCPA(prop);
 
-                            var type = prop.PropertyType;
+                        if (prop.GetType().IsValueType && !prop.CanWrite || attr == null ||
+                            from.AccessLevel < attr.WriteLevel || attr.ReadOnly)
+                        {
+                            return;
+                        }
 
-                            if (IsType(type, typeofMobile) || IsType(type, typeofItem))
-                            {
-                                from.SendGump(new SetObjectGump(prop, from, m_Object, m_Stack, type, m_Page, m_List));
-                            }
-                            else if (IsType(type, typeofType))
-                            {
-                                from.Target = new SetObjectTarget(prop, from, m_Object, m_Stack, type, m_Page, m_List);
-                            }
-                            else if (IsType(type, typeofPoint3D))
-                            {
-                                from.SendGump(new SetPoint3DGump(prop, from, m_Object, m_Stack, m_Page, m_List));
-                            }
-                            else if (IsType(type, typeofPoint2D))
-                            {
-                                from.SendGump(new SetPoint2DGump(prop, from, m_Object, m_Stack, m_Page, m_List));
-                            }
-                            else if (IsType(type, typeofTimeSpan))
-                            {
-                                from.SendGump(new SetTimeSpanGump(prop, from, m_Object, m_Stack, m_Page, m_List));
-                            }
-                            else if (IsCustomEnum(type))
-                            {
-                                from.SendGump(
-                                    new SetCustomEnumGump(
-                                        prop,
-                                        from,
-                                        m_Object,
-                                        m_Stack,
-                                        m_Page,
-                                        m_List,
-                                        GetCustomEnumNames(type)
-                                    )
-                                );
-                            }
-                            else if (IsType(type, typeofEnum))
-                            {
-                                from.SendGump(
-                                    new SetListOptionGump(
-                                        prop,
-                                        from,
-                                        m_Object,
-                                        m_Stack,
-                                        m_Page,
-                                        m_List,
-                                        Enum.GetNames(type),
-                                        GetObjects(Enum.GetValues(type))
-                                    )
-                                );
-                            }
-                            else if (IsType(type, typeofBool))
-                            {
-                                from.SendGump(
-                                    new SetListOptionGump(
-                                        prop,
-                                        from,
-                                        m_Object,
-                                        m_Stack,
-                                        m_Page,
-                                        m_List,
-                                        BoolNames,
-                                        BoolValues
-                                    )
-                                );
-                            }
-                            else if (IsType(type, typeofString) || IsType(type, DecimalTypes) || IsType(type, NumericTypes) ||
-                                     IsType(type, typeofText))
-                            {
-                                from.SendGump(new SetGump(prop, from, m_Object, m_Stack, m_Page, m_List));
-                            }
-                            else if (IsType(type, typeofPoison))
-                            {
-                                from.SendGump(
-                                    new SetListOptionGump(
-                                        prop,
-                                        from,
-                                        m_Object,
-                                        m_Stack,
-                                        m_Page,
-                                        m_List,
-                                        PoisonNames,
-                                        PoisonValues
-                                    )
-                                );
-                            }
-                            else if (IsType(type, typeofMap))
-                            {
-                                from.SendGump(
-                                    new SetListOptionGump(
-                                        prop,
-                                        from,
-                                        m_Object,
-                                        m_Stack,
-                                        m_Page,
-                                        m_List,
-                                        Map.GetMapNames(),
-                                        Map.GetMapValues().ToArray<object>()
-                                    )
-                                );
-                            }
-                            else if (IsType(type, typeofSkills) && m_Object is Mobile mobile)
-                            {
-                                from.SendGump(new PropertiesGump(from, mobile, m_Stack, m_List, m_Page));
-                                from.SendGump(new SkillsGump(from, mobile));
-                            }
-                            else if (HasAttribute(type, typeofPropertyObject, true))
-                            {
-                                var obj = prop.GetValue(m_Object, null);
+                        var type = prop.PropertyType;
 
-                                if (obj != null)
-                                {
-                                    from.SendGump(new PropertiesGump(from, obj, m_Stack, new StackEntry(m_Object, prop)));
-                                }
-                                else
-                                {
-                                    from.SendGump(new PropertiesGump(from, m_Object, m_Stack, m_List, m_Page));
-                                }
+                        if (IsType(type, TypeofMobile) || IsType(type, TypeofItem))
+                        {
+                            from.SendGump(new SetObjectGump(prop, from, m_Object, type, this));
+                        }
+                        else if (IsType(type, TypeofType))
+                        {
+                            from.Target = new SetObjectTarget(prop, from, m_Object, type, this);
+                        }
+                        else if (IsType(type, TypeofPoint3D))
+                        {
+                            from.SendGump(new SetPoint3DGump(prop, from, m_Object, this));
+                        }
+                        else if (IsType(type, TypeofPoint2D))
+                        {
+                            from.SendGump(new SetPoint2DGump(prop, from, m_Object, this));
+                        }
+                        else if (IsType(type, TypeofTimeSpan))
+                        {
+                            from.SendGump(new SetTimeSpanGump(prop, from, m_Object, this));
+                        }
+                        else if (IsCustomEnum(type))
+                        {
+                            from.SendGump(
+                                new SetCustomEnumGump(
+                                    prop,
+                                    from,
+                                    m_Object,
+                                    this,
+                                    GetCustomEnumNames(type)
+                                )
+                            );
+                        }
+                        else if (IsType(type, TypeofEnum))
+                        {
+                            from.SendGump(
+                                new SetListOptionGump(
+                                    prop,
+                                    from,
+                                    m_Object,
+                                    this,
+                                    Enum.GetNames(type),
+                                    GetObjects(Enum.GetValues(type))
+                                )
+                            );
+                        }
+                        else if (IsType(type, TypeofBool))
+                        {
+                            from.SendGump(
+                                new SetListOptionGump(
+                                    prop,
+                                    from,
+                                    m_Object,
+                                    this,
+                                    BoolNames,
+                                    BoolValues
+                                )
+                            );
+                        }
+                        else if (IsType(type, TypeofString) || IsType(type, DecimalTypes) ||
+                                 IsType(type, NumericTypes) ||
+                                 IsType(type, TypeofText))
+                        {
+                            from.SendGump(new SetGump(prop, from, m_Object, this));
+                        }
+                        else if (IsType(type, TypeofPoison))
+                        {
+                            from.SendGump(
+                                new SetListOptionGump(
+                                    prop,
+                                    from,
+                                    m_Object,
+                                    this,
+                                    PoisonNames,
+                                    PoisonValues
+                                )
+                            );
+                        }
+                        else if (IsType(type, TypeofMap))
+                        {
+                            from.SendGump(
+                                new SetListOptionGump(
+                                    prop,
+                                    from,
+                                    m_Object,
+                                    this,
+                                    Map.GetMapNames(),
+                                    Map.GetMapValues().ToArray<object>()
+                                )
+                            );
+                        }
+                        else if (IsType(type, TypeofSkills) && m_Object is Mobile mobile)
+                        {
+                            from.SendGump(new PropertiesGump(from, mobile, m_Stack, m_List, m_Page));
+                            from.SendGump(new SkillsGump(from, mobile));
+                        }
+                        else if (HasAttribute(type, TypeofPropertyObject, true))
+                        {
+                            var obj = prop.GetValue(m_Object, null);
+
+                            if (obj != null)
+                            {
+                                from.SendGump(new PropertiesGump(from, obj, m_Stack, new StackEntry(m_Object, prop)));
+                            }
+                            else
+                            {
+                                from.SendGump(new PropertiesGump(from, m_Object, m_Stack, m_List, m_Page));
                             }
                         }
 
@@ -504,6 +496,9 @@ namespace Server.Gumps
                     }
             }
         }
+
+        public virtual void SendPropertiesGump() =>
+            m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
 
         private static object[] GetObjects(Array a)
         {
@@ -517,11 +512,11 @@ namespace Server.Gumps
             return list;
         }
 
-        private static bool IsCustomEnum(Type type) => type.IsDefined(typeofCustomEnum, false);
+        private static bool IsCustomEnum(Type type) => type.IsDefined(TypeofCustomEnum, false);
 
-        public static void OnValueChanged(object obj, PropertyInfo prop, Stack<StackEntry> stack)
+        public void OnValueChanged(object obj, PropertyInfo prop)
         {
-            if (stack == null || stack.Count == 0)
+            if (m_Stack == null || m_Stack.Count == 0)
             {
                 return;
             }
@@ -531,7 +526,7 @@ namespace Server.Gumps
                 return;
             }
 
-            var peek = stack.Peek();
+            var peek = m_Stack.Peek();
 
             if (peek.m_Property.CanWrite)
             {
@@ -541,7 +536,7 @@ namespace Server.Gumps
 
         private static string[] GetCustomEnumNames(Type type)
         {
-            var attrs = type.GetCustomAttributes(typeofCustomEnum, false);
+            var attrs = type.GetCustomAttributes(TypeofCustomEnum, false);
 
             if (attrs.Length == 0)
             {
@@ -556,12 +551,12 @@ namespace Server.Gumps
             return ce.Names;
         }
 
-        private static bool HasAttribute(Type type, Type check, bool inherit) =>
+        public static bool HasAttribute(Type type, Type check, bool inherit) =>
             type.GetCustomAttributes(check, inherit).Length > 0;
 
-        private static bool IsType(Type type, Type check) => type == check || type.IsSubclassOf(check);
+        public static bool IsType(Type type, Type check) => type == check || type.IsSubclassOf(check);
 
-        private static bool IsType(Type type, Type[] check)
+        public static bool IsType(Type type, Type[] check)
         {
             for (var i = 0; i < check.Length; ++i)
             {
@@ -574,7 +569,7 @@ namespace Server.Gumps
             return false;
         }
 
-        private string ValueToString(PropertyInfo prop) => ValueToString(m_Object, prop);
+        public string ValueToString(PropertyInfo prop) => ValueToString(m_Object, prop);
 
         public static string ValueToString(object obj, PropertyInfo prop)
         {
@@ -673,7 +668,7 @@ namespace Server.Gumps
             {
                 var kvp = groups[i];
 
-                if (!HasAttribute(kvp.Key, typeofNoSort, false))
+                if (!HasAttribute(kvp.Key, TypeofNoSort, false))
                 {
                     kvp.Value.Sort(PropertySorter.Instance);
                 }
@@ -699,9 +694,9 @@ namespace Server.Gumps
 
         protected virtual bool ShowAttribute(string name) => true;
 
-        private static CPA GetCPA(PropertyInfo prop)
+        public static CPA GetCPA(PropertyInfo prop)
         {
-            var attrs = prop.GetCustomAttributes(typeofCPA, false);
+            var attrs = prop.GetCustomAttributes(TypeofCPA, false);
 
             if (attrs.Length > 0)
             {
@@ -731,7 +726,7 @@ namespace Server.Gumps
                         {
                             var baseType = type?.BaseType;
 
-                            if (baseType == typeofObject || baseType?.GetProperty(prop.Name, prop.PropertyType) == null)
+                            if (baseType == TypeofObject || baseType?.GetProperty(prop.Name, prop.PropertyType) == null)
                             {
                                 break;
                             }
@@ -900,7 +895,7 @@ namespace Server.Gumps
 
                 int dist;
 
-                for (dist = 0; current != null && current != typeofObject && current != type; ++dist)
+                for (dist = 0; current != null && current != TypeofObject && current != type; ++dist)
                 {
                     current = current.BaseType;
                 }

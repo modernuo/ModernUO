@@ -14,44 +14,52 @@
  *************************************************************************/
 
 using System.Collections.Generic;
+using System.Reflection;
 using Server.Buffers;
 using Server.Commands.Generic;
 using Server.Engines.Spawners;
+using Server.Mobiles;
 using Server.Network;
 using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Gumps
 {
-    public class GlobalPropsGump : PropertiesGump
+    public class SpawnPropsGump : PropertiesGump
     {
-        public static readonly string[] MobileAttributes =
+        public static readonly HashSet<string> MobileAttributes = new()
         {
-            "Str",
-            "Dex",
-            "Int",
-            "HitsMaxSeed",
-            "Hits",
-            "DamageMin",
-            "DamageMax",
-            "ActiveSpeed",
-            "PassiveSpeed",
-            "VirtualArmor"
+            nameof(Mobile.Hue),
+            nameof(Mobile.Str),
+            nameof(Mobile.Dex),
+            nameof(Mobile.Int),
+            nameof(BaseCreature.HitsMaxSeed),
+            nameof(BaseCreature.Hits),
+            nameof(BaseCreature.DamageMin),
+            nameof(BaseCreature.DamageMax),
+            nameof(BaseCreature.ActiveSpeed),
+            nameof(BaseCreature.PassiveSpeed),
+            nameof(BaseCreature.VirtualArmor)
         };
 
-        public GlobalPropsGump(Mobile mobile, object o) : base(mobile, o)
+        private List<object> _spawners;
+
+        public SpawnPropsGump(Mobile mobile, object o, List<object> spawners) : base(mobile, o)
         {
+            _spawners = spawners;
         }
 
-        public GlobalPropsGump(Mobile mobile, object o, Stack<StackEntry> stack, StackEntry parent) : base(
+        public SpawnPropsGump(Mobile mobile, object o, Stack<StackEntry> stack, StackEntry parent, List<object> spawners) : base(
             mobile, o, stack, parent
         )
         {
+            _spawners = spawners;
         }
 
-        public GlobalPropsGump(Mobile mobile, object o, Stack<StackEntry> stack, List<object> list, int page) : base(
+        public SpawnPropsGump(Mobile mobile, object o, Stack<StackEntry> stack, List<object> list, int page, List<object> spawners) : base(
             mobile, o, stack, list, page
         )
         {
+            _spawners = spawners;
         }
 
         protected override int TotalHeight => base.TotalHeight + PropsConfig.ApplySize;
@@ -63,6 +71,9 @@ namespace Server.Gumps
 
             AddButton(BackWidth / 3, PropsConfig.BorderSize + totalHeight + PropsConfig.BorderSize, 5204, 5205, 3);
         }
+
+        public override void SendPropertiesGump() =>
+            m_Mobile.SendGump(new SpawnPropsGump(m_Mobile, m_Object, m_Stack, m_List, m_Page, _spawners));
 
         public static object GetPropValue(object src, string propName) =>
             src.GetType().GetProperty(propName)?.GetValue(src, null);
@@ -86,35 +97,36 @@ namespace Server.Gumps
                     }
                 case 3: // Apply
                     {
-                        if (MobileAttributes?.Length > 0)
+                        using var propsBuilder = new ValueStringBuilder(64);
+                        bool first = true;
+                        foreach (var attr in MobileAttributes)
                         {
-                            using var propsBuilder = new ValueStringBuilder(64);
-                            for (var i = 0; i < MobileAttributes.Length; i++)
+                            var prop = GetPropValue(m_Object, attr);
+                            if (prop != null)
                             {
-                                var attr = MobileAttributes[i];
-                                var prop = GetPropValue(m_Object, attr);
-                                if (prop != null)
+                                if (first)
                                 {
-                                    if (i > 0)
-                                    {
-                                        propsBuilder.Append(' ');
-                                    }
-
-                                    propsBuilder.Append(attr);
+                                    first = false;
+                                }
+                                else
+                                {
                                     propsBuilder.Append(' ');
-                                    propsBuilder.Append(prop.ToString()); // TODO: Replace with ZString, or IFormatter code
                                 }
+
+                                propsBuilder.Append(attr);
+                                propsBuilder.Append(' ');
+                                propsBuilder.Append(prop.ToString()); // TODO: Replace with ZString, or IFormatter code
                             }
+                        }
 
-                            var name = m_Object.GetType().Name;
-                            var props = propsBuilder.ToString();
+                        var name = m_Object.GetType().Name;
+                        var props = propsBuilder.ToString();
 
-                            foreach (var obj in World.Items.Values)
+                        foreach (var obj in _spawners)
+                        {
+                            if (obj is BaseSpawner spawner)
                             {
-                                if (obj is BaseSpawner spawner)
-                                {
-                                    EditSpawnCommand.UpdateSpawner(spawner, name, null, props);
-                                }
+                                EditSpawnCommand.UpdateSpawner(spawner, name, null, props);
                             }
                         }
                         break;

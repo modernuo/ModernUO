@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands;
 using Server.HuePickers;
@@ -49,28 +48,17 @@ namespace Server.Gumps
 
         private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
         private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
-        private readonly List<object> m_List;
         private readonly Mobile m_Mobile;
         private readonly object m_Object;
-        private readonly int m_Page;
         private readonly PropertyInfo m_Property;
-        private readonly Stack<StackEntry> m_Stack;
-        private readonly bool m_Edit;
+        private PropertiesGump m_PropertiesGump;
 
-        public SetGump(
-            PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, List<object> list, bool edit = false
-        ) : base(
-            GumpOffsetX,
-            GumpOffsetY
-        )
+        public SetGump(PropertyInfo prop, Mobile from, object o, PropertiesGump propertiesGump) : base(GumpOffsetX, GumpOffsetY)
         {
-            m_Edit = edit;
-            m_Property = prop;
-            m_Mobile = mobile;
+            m_Mobile = from;
             m_Object = o;
-            m_Stack = stack;
-            m_Page = page;
-            m_List = list;
+            m_Property = prop;
+            m_PropertiesGump = propertiesGump;
 
             var canNull = !prop.PropertyType.IsValueType;
             var canDye = prop.IsDefined(typeof(HueAttribute), false);
@@ -228,7 +216,7 @@ namespace Server.Gumps
                         shouldSet = false;
                         shouldSend = false;
 
-                        m_Mobile.SendHuePicker(new InternalPicker(m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List));
+                        m_Mobile.SendHuePicker(new InternalPicker(m_Property, m_Mobile, m_Object, m_PropertiesGump));
 
                         break;
                     }
@@ -238,7 +226,7 @@ namespace Server.Gumps
                         shouldSet = false;
                         shouldSend = false;
 
-                        m_Mobile.SendGump(new SetBodyGump(m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List));
+                        m_Mobile.SendGump(new SetBodyGump(m_Property, m_Mobile, m_Object, m_PropertiesGump));
 
                         break;
                     }
@@ -262,7 +250,7 @@ namespace Server.Gumps
                         toSet?.ToString() ?? "(null)"
                     );
                     m_Property.SetValue(m_Object, toSet, null);
-                    PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                    m_PropertiesGump.OnValueChanged(m_Object, m_Property);
                 }
                 catch
                 {
@@ -272,37 +260,24 @@ namespace Server.Gumps
 
             if (shouldSend)
             {
-                if (m_Edit)
-                {
-                    m_Mobile.SendGump(new GlobalPropsGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
-                }
-                else
-                {
-                    m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
-                }
+                m_PropertiesGump.SendPropertiesGump();
             }
         }
 
         private class InternalPicker : HuePicker
         {
-            private readonly List<object> m_List;
             private readonly Mobile m_Mobile;
             private readonly object m_Object;
-            private readonly int m_Page;
             private readonly PropertyInfo m_Property;
-            private readonly Stack<StackEntry> m_Stack;
+            private readonly PropertiesGump m_PropertiesGump;
 
             public InternalPicker(
-                PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page,
-                List<object> list
-            ) : base(((IHued)o).HuedItemID)
+                PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump) : base(((IHued)o).HuedItemID)
             {
                 m_Property = prop;
                 m_Mobile = mobile;
                 m_Object = o;
-                m_Stack = stack;
-                m_Page = page;
-                m_List = list;
+                m_PropertiesGump = propertiesGump;
             }
 
             public override void OnResponse(int hue)
@@ -311,14 +286,14 @@ namespace Server.Gumps
                 {
                     CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, hue.ToString());
                     m_Property.SetValue(m_Object, hue, null);
-                    PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                    m_PropertiesGump.OnValueChanged(m_Object, m_Property);
                 }
                 catch
                 {
                     m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
                 }
 
-                m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+                m_PropertiesGump.SendPropertiesGump();
             }
         }
     }

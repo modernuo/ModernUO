@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands;
 using Server.Commands.Generic;
@@ -51,26 +50,21 @@ namespace Server.Gumps
 
         private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
         private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
-        private readonly List<object> m_List;
         private readonly Mobile m_Mobile;
         private readonly object m_Object;
-        private readonly int m_Page;
         private readonly PropertyInfo m_Property;
-        private readonly Stack<StackEntry> m_Stack;
         private readonly Type m_Type;
+        private readonly PropertiesGump m_PropertiesGump;
 
         public SetObjectGump(
-            PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, Type type, int page,
-            List<object> list
+            PropertyInfo prop, Mobile mobile, object o, Type type, PropertiesGump propertiesGump
         ) : base(GumpOffsetX, GumpOffsetY)
         {
+            m_PropertiesGump = propertiesGump;
             m_Property = prop;
             m_Mobile = mobile;
             m_Object = o;
-            m_Stack = stack;
             m_Type = type;
-            m_Page = page;
-            m_List = list;
 
             var initialText = PropertiesGump.ValueToString(o, prop);
 
@@ -163,7 +157,7 @@ namespace Server.Gumps
             {
                 case 0: // closed
                     {
-                        m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+                        m_PropertiesGump.SendPropertiesGump();
                         shouldSend = false;
                         break;
                     }
@@ -173,10 +167,8 @@ namespace Server.Gumps
                             m_Property,
                             m_Mobile,
                             m_Object,
-                            m_Stack,
                             m_Type,
-                            m_Page,
-                            m_List
+                            m_PropertiesGump
                         );
                         shouldSend = false;
                         break;
@@ -190,10 +182,8 @@ namespace Server.Gumps
                             m_Property,
                             m_Mobile,
                             m_Object,
-                            m_Stack,
                             m_Type,
-                            m_Page,
-                            m_List
+                            m_PropertiesGump
                         );
 
                         break;
@@ -204,7 +194,7 @@ namespace Server.Gumps
                         {
                             CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, "(null)");
                             m_Property.SetValue(m_Object, null, null);
-                            PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                            m_PropertiesGump.OnValueChanged(m_Object, m_Property);
                         }
                         catch
                         {
@@ -236,7 +226,7 @@ namespace Server.Gumps
 
             if (shouldSend)
             {
-                m_Mobile.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List));
+                m_Mobile.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Type, m_PropertiesGump));
             }
 
             if (viewProps != null)
@@ -247,31 +237,26 @@ namespace Server.Gumps
 
         private class InternalPrompt : Prompt
         {
-            private readonly List<object> m_List;
             private readonly Mobile m_Mobile;
             private readonly object m_Object;
-            private readonly int m_Page;
             private readonly PropertyInfo m_Property;
-            private readonly Stack<StackEntry> m_Stack;
             private readonly Type m_Type;
+            private readonly PropertiesGump m_PropertiesGump;
 
             public InternalPrompt(
-                PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, Type type, int page,
-                List<object> list
+                PropertyInfo prop, Mobile mobile, object o, Type type, PropertiesGump propertiesGump
             )
             {
+                m_PropertiesGump = propertiesGump;
                 m_Property = prop;
                 m_Mobile = mobile;
                 m_Object = o;
-                m_Stack = stack;
                 m_Type = type;
-                m_Page = page;
-                m_List = list;
             }
 
             public override void OnCancel(Mobile from)
             {
-                m_Mobile.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List));
+                m_Mobile.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Type, m_PropertiesGump));
             }
 
             public override void OnResponse(Mobile from, string text)
@@ -304,7 +289,7 @@ namespace Server.Gumps
                                 toSet.ToString()
                             );
                             m_Property.SetValue(m_Object, toSet, null);
-                            PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                            m_PropertiesGump.OnValueChanged(m_Object, m_Property);
                         }
                         catch
                         {
@@ -317,7 +302,7 @@ namespace Server.Gumps
                     m_Mobile.SendMessage("Bad format");
                 }
 
-                m_Mobile.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List));
+                m_Mobile.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Type, m_PropertiesGump));
             }
         }
     }
