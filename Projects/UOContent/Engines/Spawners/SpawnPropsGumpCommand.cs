@@ -14,10 +14,11 @@
  *************************************************************************/
 
 using System.Collections.Generic;
-using Server.Commands;
 using Server.Commands.Generic;
 using Server.Gumps;
 using Server.Targeting;
+
+using static Server.Types;
 
 namespace Server.Engines.Spawners
 {
@@ -61,7 +62,7 @@ namespace Server.Engines.Spawners
             protected override void OnTarget(Mobile from, object targeted)
             {
                 var type = targeted.GetType();
-                if (!Add.IsEntity(type))
+                if (IsEntity(type))
                 {
                     from.SendMessage("No type with that name was found.");
                 }

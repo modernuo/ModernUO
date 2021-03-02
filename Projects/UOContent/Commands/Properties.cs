@@ -6,6 +6,8 @@ using Server.Gumps;
 using Server.Targeting;
 using CPA = Server.CommandPropertyAttribute;
 
+using static Server.Types;
+
 namespace Server.Commands
 {
     [Flags]
@@ -18,31 +20,7 @@ namespace Server.Commands
 
     public static class Properties
     {
-        private static readonly Type typeofCPA = typeof(CPA);
-
-        private static readonly Type typeofSerial = typeof(Serial);
-
-        private static readonly Type typeofType = typeof(Type);
-
-        private static readonly Type typeofChar = typeof(char);
-
-        private static readonly Type typeofString = typeof(string);
-
-        private static readonly Type typeofText = typeof(TextDefinition);
-
-        private static readonly Type typeofTimeSpan = typeof(TimeSpan);
-        private static readonly Type typeofParsable = typeof(ParsableAttribute);
-
-        private static readonly Type[] m_ParseTypes = { typeof(string) };
         private static readonly object[] m_ParseParams = new object[1];
-
-        private static readonly Type[] m_NumericTypes =
-        {
-            typeof(byte), typeof(sbyte),
-            typeof(short), typeof(ushort),
-            typeof(int), typeof(uint),
-            typeof(long), typeof(ulong)
-        };
 
         public static void Initialize()
         {
@@ -77,18 +55,6 @@ namespace Server.Commands
         }
 
         private static bool CIEqual(string l, string r) => l.InsensitiveEquals(r);
-
-        public static CPA GetCPA(PropertyInfo p)
-        {
-            var attrs = p.GetCustomAttributes(typeofCPA, false);
-
-            if (attrs.Length == 0)
-            {
-                return null;
-            }
-
-            return attrs[0] as CPA;
-        }
 
         public static PropertyInfo[] GetPropertyInfoChain(
             Mobile from, Type type, string propertyString,
@@ -130,7 +96,7 @@ namespace Server.Commands
 
                     if (CIEqual(p.Name, propertyName))
                     {
-                        var attr = GetCPA(p);
+                        var attr = Types.GetCPA(p);
 
                         if (attr == null)
                         {
@@ -401,30 +367,14 @@ namespace Server.Commands
             return p == null ? failReason : InternalSetValue(from, logObject, o, p, name, value, true);
         }
 
-        private static bool IsSerial(Type t) => t == typeofSerial;
-
-        private static bool IsType(Type t) => t == typeofType;
-
-        private static bool IsChar(Type t) => t == typeofChar;
-
-        private static bool IsString(Type t) => t == typeofString;
-
-        private static bool IsText(Type t) => t == typeofText;
-
-        private static bool IsEnum(Type t) => t.IsEnum;
-
-        private static bool IsParsable(Type t) => t == typeofTimeSpan || t.IsDefined(typeofParsable, false);
-
         private static object Parse(object o, Type t, string value)
         {
-            var method = t.GetMethod("Parse", m_ParseTypes);
+            var method = t.GetMethod("Parse", ParseTypes);
 
             m_ParseParams[0] = value;
 
             return method?.Invoke(o, m_ParseParams);
         }
-
-        private static bool IsNumeric(Type t) => Array.IndexOf(m_NumericTypes, t) >= 0;
 
         public static string ConstructFromString(Type type, object obj, string value, ref object constructed)
         {
@@ -433,7 +383,7 @@ namespace Server.Commands
 
             if (isSerial) // mutate into int32
             {
-                type = m_NumericTypes[4];
+                type = OfInt;
             }
 
             if (value == "(-null-)" && !type.IsValueType)
@@ -683,7 +633,7 @@ namespace Server
                     access |= PropertyAccess.Read;
                 }
 
-                var security = Properties.GetCPA(prop);
+                var security = GetCPA(prop);
 
                 if (security == null)
                 {
