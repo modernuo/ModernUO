@@ -1,6 +1,8 @@
 using System;
 using Server.Network;
 
+using static Server.Gumps.PropsConfig;
+
 namespace Server.Gumps
 {
     public class GoGump : Gump
@@ -12,43 +14,6 @@ namespace Server.Gumps
         private static LocationTree Tokuno;
         private static LocationTree TerMur;
 
-        public static bool OldStyle = PropsConfig.OldStyle;
-
-        public static readonly int GumpOffsetX = PropsConfig.GumpOffsetX;
-        public static readonly int GumpOffsetY = PropsConfig.GumpOffsetY;
-
-        public static readonly int TextHue = PropsConfig.TextHue;
-        public static readonly int TextOffsetX = PropsConfig.TextOffsetX;
-
-        public static readonly int OffsetGumpID = PropsConfig.OffsetGumpID;
-        public static readonly int HeaderGumpID = PropsConfig.HeaderGumpID;
-        public static readonly int EntryGumpID = PropsConfig.EntryGumpID;
-        public static readonly int BackGumpID = PropsConfig.BackGumpID;
-        public static readonly int SetGumpID = PropsConfig.SetGumpID;
-
-        public static readonly int SetWidth = PropsConfig.SetWidth;
-        public static readonly int SetOffsetX = PropsConfig.SetOffsetX, SetOffsetY = PropsConfig.SetOffsetY;
-        public static readonly int SetButtonID1 = PropsConfig.SetButtonID1;
-        public static readonly int SetButtonID2 = PropsConfig.SetButtonID2;
-
-        public static readonly int PrevWidth = PropsConfig.PrevWidth;
-        public static readonly int PrevOffsetX = PropsConfig.PrevOffsetX, PrevOffsetY = PropsConfig.PrevOffsetY;
-        public static readonly int PrevButtonID1 = PropsConfig.PrevButtonID1;
-        public static readonly int PrevButtonID2 = PropsConfig.PrevButtonID2;
-
-        public static readonly int NextWidth = PropsConfig.NextWidth;
-        public static readonly int NextOffsetX = PropsConfig.NextOffsetX, NextOffsetY = PropsConfig.NextOffsetY;
-        public static readonly int NextButtonID1 = PropsConfig.NextButtonID1;
-        public static readonly int NextButtonID2 = PropsConfig.NextButtonID2;
-
-        public static readonly int OffsetSize = PropsConfig.OffsetSize;
-
-        public static readonly int EntryHeight = PropsConfig.EntryHeight;
-        public static readonly int BorderSize = PropsConfig.BorderSize;
-
-        private static readonly bool PrevLabel = false;
-        private static readonly bool NextLabel = false;
-
         private static readonly int PrevLabelOffsetX = PrevWidth + 1;
         private static readonly int PrevLabelOffsetY = 0;
 
@@ -59,10 +24,9 @@ namespace Server.Gumps
         private static readonly int EntryCount = 15;
 
         private static readonly int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-        private static readonly int TotalHeight = OffsetSize + (EntryHeight + OffsetSize) * (EntryCount + 1);
 
         private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-        private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
+
         private readonly GoCategory m_Node;
         private readonly int m_Page;
 
