@@ -70,7 +70,7 @@ namespace Server.Engines.Spawners
             var argSpan = e.ArgString.AsSpan(name.Length + 1);
             var setIndex = argSpan.InsensitiveIndexOf("set ");
             var where = argSpan.InsensitiveIndexOf("match ");
-
+           
             ReadOnlySpan<char> props = null, findmatch = null;
 
             if (setIndex > -1 || where > -1)
@@ -92,7 +92,8 @@ namespace Server.Engines.Spawners
             var argStr = argSpan.ToString().DefaultIfNullOrEmpty(null);
             var propsStr = props.ToString().DefaultIfNullOrEmpty(null);
             var whereStr = findmatch.ToString().DefaultIfNullOrEmpty(null);
-
+            //this is fix for search like  match str 10  if mob had str 100 it's find it
+            if (whereStr != null) (whereStr += " ").ToLower();
 
             e.Mobile.SendMessage("Updating spawners...");
 
@@ -116,24 +117,15 @@ namespace Server.Engines.Spawners
                 {
                     if (find != null)
                     {
-                        var pattern = @"\b" + Regex.Escape(find) + @"\b";
-                        if (entry.Properties != null &&
-                            //replace multiply space to one and find
-                            Regex.IsMatch(entry.Properties.Replace(@"\s+"," "), pattern, RegexOptions.IgnoreCase))
+                        if (entry.Properties?.IndexOf(find) != -1)
                         {
-                            if (arguments != null)
-                            {
-                                entry.Parameters = arguments;
-                            }
+                            if (arguments != null) entry.Parameters = arguments;
                             entry.Properties = properties;
                         }    
                     }
                     else
                     {
-                        if (arguments != null)
-                        {
-                            entry.Parameters = arguments;
-                        }
+                        if (arguments != null) entry.Parameters = arguments;
                         entry.Properties = properties;
                     }
                 }
