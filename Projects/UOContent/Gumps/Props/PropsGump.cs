@@ -6,7 +6,6 @@ using Server.Commands.Generic;
 using Server.Network;
 using CPA = Server.CommandPropertyAttribute;
 
-using static Server.Types;
 using static Server.Gumps.PropsConfig;
 
 namespace Server.Gumps
@@ -45,14 +44,55 @@ namespace Server.Gumps
         private static readonly int TotalWidth =
             OffsetSize + NameWidth + OffsetSize + ValueWidth + OffsetSize + SetWidth + OffsetSize;
 
+        private static readonly int MaxHeight = OffsetSize + (EntryHeight + OffsetSize) * (MaxEntriesPerPage + 1);
+
         protected static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
+        protected static readonly int BackHeight = BorderSize + MaxHeight + BorderSize;
 
-        private static readonly string[] BoolNames = { "True", "False" };
-        private static readonly object[] BoolValues = { true, false };
+        public static readonly string[] BoolNames = { "True", "False" };
+        public static readonly object[] BoolValues = { true, false };
 
-        private static readonly string[] PoisonNames = { "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
-        private static readonly object[] PoisonValues =
+        public static readonly string[] PoisonNames = { "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
+        public static readonly object[] PoisonValues =
             { null, Poison.Lesser, Poison.Regular, Poison.Greater, Poison.Deadly, Poison.Lethal };
+
+        public static readonly Type TypeofMobile = typeof(Mobile);
+        public static readonly Type TypeofItem = typeof(Item);
+        public static readonly Type TypeofType = typeof(Type);
+        public static readonly Type TypeofPoint3D = typeof(Point3D);
+        public static readonly Type TypeofPoint2D = typeof(Point2D);
+        public static readonly Type TypeofTimeSpan = typeof(TimeSpan);
+        public static readonly Type TypeofCustomEnum = typeof(CustomEnumAttribute);
+        public static readonly Type TypeofEnum = typeof(Enum);
+        public static readonly Type TypeofBool = typeof(bool);
+        public static readonly Type TypeofString = typeof(string);
+        public static readonly Type TypeofText = typeof(TextDefinition);
+        public static readonly Type TypeofPoison = typeof(Poison);
+        public static readonly Type TypeofMap = typeof(Map);
+        public static readonly Type TypeofSkills = typeof(Skills);
+        public static readonly Type TypeofPropertyObject = typeof(PropertyObjectAttribute);
+        public static readonly Type TypeofNoSort = typeof(NoSortAttribute);
+
+        public static readonly Type[] DecimalTypes =
+        {
+            typeof(float),
+            typeof(double)
+        };
+
+        public static readonly Type[] NumericTypes =
+        {
+            typeof(byte),
+            typeof(short),
+            typeof(int),
+            typeof(long),
+            typeof(sbyte),
+            typeof(ushort),
+            typeof(uint),
+            typeof(ulong)
+        };
+
+        private static readonly Type TypeofCPA = typeof(CPA);
+        private static readonly Type TypeofObject = typeof(object);
 
         protected readonly List<object> m_List;
         protected readonly Mobile m_Mobile;
@@ -310,23 +350,23 @@ namespace Server.Gumps
 
                         var type = prop.PropertyType;
 
-                        if (IsType(type, OfMobile) || IsType(type, OfItem))
+                        if (IsType(type, TypeofMobile) || IsType(type, TypeofItem))
                         {
                             from.SendGump(new SetObjectGump(prop, from, m_Object, type, this));
                         }
-                        else if (IsType(type, OfType))
+                        else if (IsType(type, TypeofType))
                         {
                             from.Target = new SetObjectTarget(prop, from, m_Object, type, this);
                         }
-                        else if (IsType(type, OfPoint3D))
+                        else if (IsType(type, TypeofPoint3D))
                         {
                             from.SendGump(new SetPoint3DGump(prop, from, m_Object, this));
                         }
-                        else if (IsType(type, OfPoint2D))
+                        else if (IsType(type, TypeofPoint2D))
                         {
                             from.SendGump(new SetPoint2DGump(prop, from, m_Object, this));
                         }
-                        else if (IsType(type, OfTimeSpan))
+                        else if (IsType(type, TypeofTimeSpan))
                         {
                             from.SendGump(new SetTimeSpanGump(prop, from, m_Object, this));
                         }
@@ -342,7 +382,7 @@ namespace Server.Gumps
                                 )
                             );
                         }
-                        else if (IsType(type, OfEnum))
+                        else if (IsType(type, TypeofEnum))
                         {
                             from.SendGump(
                                 new SetListOptionGump(
@@ -355,7 +395,7 @@ namespace Server.Gumps
                                 )
                             );
                         }
-                        else if (IsType(type, OfBool))
+                        else if (IsType(type, TypeofBool))
                         {
                             from.SendGump(
                                 new SetListOptionGump(
@@ -368,13 +408,13 @@ namespace Server.Gumps
                                 )
                             );
                         }
-                        else if (IsType(type, OfString) || IsType(type, DecimalTypes) ||
+                        else if (IsType(type, TypeofString) || IsType(type, DecimalTypes) ||
                                  IsType(type, NumericTypes) ||
-                                 IsType(type, OfText))
+                                 IsType(type, TypeofText))
                         {
                             from.SendGump(new SetGump(prop, from, m_Object, this));
                         }
-                        else if (IsType(type, OfPoison))
+                        else if (IsType(type, TypeofPoison))
                         {
                             from.SendGump(
                                 new SetListOptionGump(
@@ -387,7 +427,7 @@ namespace Server.Gumps
                                 )
                             );
                         }
-                        else if (IsType(type, OfMap))
+                        else if (IsType(type, TypeofMap))
                         {
                             from.SendGump(
                                 new SetListOptionGump(
@@ -400,12 +440,12 @@ namespace Server.Gumps
                                 )
                             );
                         }
-                        else if (IsType(type, OfSkills) && m_Object is Mobile mobile)
+                        else if (IsType(type, TypeofSkills) && m_Object is Mobile mobile)
                         {
                             from.SendGump(new PropertiesGump(from, mobile, m_Stack, m_List, m_Page));
                             from.SendGump(new SkillsGump(from, mobile));
                         }
-                        else if (HasAttribute(type, OfPropertyObject, true))
+                        else if (HasAttribute(type, TypeofPropertyObject, true))
                         {
                             var obj = prop.GetValue(m_Object, null);
 
@@ -439,7 +479,7 @@ namespace Server.Gumps
             return list;
         }
 
-        private static bool IsCustomEnum(Type type) => type.IsDefined(OfCustomEnum, false);
+        private static bool IsCustomEnum(Type type) => type.IsDefined(TypeofCustomEnum, false);
 
         public void OnValueChanged(object obj, PropertyInfo prop)
         {
@@ -463,7 +503,7 @@ namespace Server.Gumps
 
         private static string[] GetCustomEnumNames(Type type)
         {
-            var attrs = type.GetCustomAttributes(OfCustomEnum, false);
+            var attrs = type.GetCustomAttributes(TypeofCustomEnum, false);
 
             if (attrs.Length == 0)
             {
@@ -478,12 +518,12 @@ namespace Server.Gumps
             return ce.Names;
         }
 
-        private static bool HasAttribute(Type type, Type check, bool inherit) =>
+        public static bool HasAttribute(Type type, Type check, bool inherit) =>
             type.GetCustomAttributes(check, inherit).Length > 0;
 
-        private static bool IsType(Type type, Type check) => type == check || type.IsSubclassOf(check);
+        public static bool IsType(Type type, Type check) => type == check || type.IsSubclassOf(check);
 
-        private static bool IsType(Type type, Type[] check)
+        public static bool IsType(Type type, Type[] check)
         {
             for (var i = 0; i < check.Length; ++i)
             {
@@ -496,7 +536,7 @@ namespace Server.Gumps
             return false;
         }
 
-        private string ValueToString(PropertyInfo prop) => ValueToString(m_Object, prop);
+        public string ValueToString(PropertyInfo prop) => ValueToString(m_Object, prop);
 
         public static string ValueToString(object obj, PropertyInfo prop)
         {
@@ -510,7 +550,7 @@ namespace Server.Gumps
             }
         }
 
-        private static string ValueToString(object o)
+        public static string ValueToString(object o)
         {
             if (o == null)
             {
@@ -595,7 +635,7 @@ namespace Server.Gumps
             {
                 var kvp = groups[i];
 
-                if (!HasAttribute(kvp.Key, OfNoSort, false))
+                if (!HasAttribute(kvp.Key, TypeofNoSort, false))
                 {
                     kvp.Value.Sort(PropertySorter.Instance);
                 }
@@ -623,7 +663,7 @@ namespace Server.Gumps
 
         public static CPA GetCPA(PropertyInfo prop)
         {
-            var attrs = prop.GetCustomAttributes(OfCPA, false);
+            var attrs = prop.GetCustomAttributes(TypeofCPA, false);
 
             if (attrs.Length > 0)
             {
@@ -653,7 +693,7 @@ namespace Server.Gumps
                         {
                             var baseType = type?.BaseType;
 
-                            if (baseType == OfObject || baseType?.GetProperty(prop.Name, prop.PropertyType) == null)
+                            if (baseType == TypeofObject || baseType?.GetProperty(prop.Name, prop.PropertyType) == null)
                             {
                                 break;
                             }
@@ -822,7 +862,7 @@ namespace Server.Gumps
 
                 int dist;
 
-                for (dist = 0; current != null && current != OfObject && current != type; ++dist)
+                for (dist = 0; current != null && current != TypeofObject && current != type; ++dist)
                 {
                     current = current.BaseType;
                 }
