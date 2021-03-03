@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2021 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: SpawnPropsGump.cs                                               *
+ * File: SpawnPropsCommand.cs                                            *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -21,14 +21,14 @@ using Server.Targeting;
 
 namespace Server.Engines.Spawners
 {
-    public class SpawnPropsGumpCommand : BaseCommand
+    public class SpawnPropsCommand : BaseCommand
     {
         public static void Initialize()
         {
-            TargetCommands.Register(new SpawnPropsGumpCommand());
+            TargetCommands.Register(new SpawnPropsCommand());
         }
 
-        public SpawnPropsGumpCommand()
+        public SpawnPropsCommand()
         {
             AccessLevel = AccessLevel.GameMaster;
             Supports = CommandSupport.Complex | CommandSupport.Simple;

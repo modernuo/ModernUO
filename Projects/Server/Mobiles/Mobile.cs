@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using Microsoft.Toolkit.HighPerformance.Extensions;
+using Microsoft.Toolkit.HighPerformance;
 using Server.Accounting;
 using Server.Buffers;
 using Server.ContextMenus;
@@ -7045,24 +7045,6 @@ namespace Server
             }
 
             eable.Free();
-        }
-
-        public bool Send(Packet p) => Send(p, false);
-
-        public bool Send(Packet p, bool throwOnOffline)
-        {
-            if (m_NetState != null)
-            {
-                m_NetState.Send(p);
-                return true;
-            }
-
-            if (throwOnOffline)
-            {
-                throw new MobileNotConnectedException(this, "Packet could not be sent.");
-            }
-
-            return false;
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using Microsoft.Toolkit.HighPerformance.Extensions;
+using Microsoft.Toolkit.HighPerformance;
 using Server.Commands;
 using Server.Gumps;
 using Server.Network;

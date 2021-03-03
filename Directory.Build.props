@@ -29,16 +29,16 @@
         <DefineConstants>MUO</DefineConstants>
         <GitVersionBaseDirectory>$(SolutionDir)</GitVersionBaseDirectory>
     </PropertyGroup>
-    <PropertyGroup  Condition="'$(RuntimeIdentifier)'==''">
+    <PropertyGroup Condition="'$(RuntimeIdentifier)'==''">
         <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
         <SelfContained>false</SelfContained>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <InvariantGlobalization>true</InvariantGlobalization>
     </PropertyGroup>
-    <PropertyGroup  Condition="'$(IsWindows)'=='true' AND '$(RuntimeIdentifier)'==''">
+    <PropertyGroup Condition="'$(IsWindows)'=='true' AND '$(RuntimeIdentifier)'==''">
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     </PropertyGroup>
-    <PropertyGroup  Condition="'$(IsOSX)'=='true' AND '$(RuntimeIdentifier)'==''">
+    <PropertyGroup Condition="'$(IsOSX)'=='true' AND '$(RuntimeIdentifier)'==''">
         <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Debug'">
