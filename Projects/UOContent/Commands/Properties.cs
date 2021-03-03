@@ -49,8 +49,8 @@ namespace Server.Commands
             CommandSystem.Register("Props", AccessLevel.Counselor, Props_OnCommand);
         }
 
-        [Usage("Props [serial]"),
-         Description("Opens a menu where you can view and edit all properties of a targeted (or specified) object.")]
+        [Usage("Props [serial]")]
+        [Description("Opens a menu where you can view and edit all properties of a targeted (or specified) object.")]
         private static void Props_OnCommand(CommandEventArgs e)
         {
             if (e.Length == 1)
@@ -596,6 +596,7 @@ namespace Server.Commands
 
             return result ?? SetDirect(o, p, toSet);
         }
+
 
         private class PropsTarget : Target
         {

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands;
 using Server.Network;
@@ -58,24 +57,19 @@ namespace Server.Gumps
         private static readonly int NextLabelOffsetY = 0;
 
         private readonly object[] m_Values;
-        protected List<object> m_List;
         protected Mobile m_Mobile;
         protected object m_Object;
-        protected int m_Page;
         protected PropertyInfo m_Property;
-        protected Stack<StackEntry> m_Stack;
+        protected PropertiesGump m_PropertiesGump;
 
         public SetListOptionGump(
-            PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int propspage,
-            List<object> list, string[] names, object[] values
+            PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump, string[] names, object[] values
         ) : base(GumpOffsetX, GumpOffsetY)
         {
+            m_PropertiesGump = propertiesGump;
             m_Property = prop;
             m_Mobile = mobile;
             m_Object = o;
-            m_Stack = stack;
-            m_Page = propspage;
-            m_List = list;
 
             m_Values = values;
 
@@ -224,7 +218,7 @@ namespace Server.Gumps
 
                     if (result == "Property has been set.")
                     {
-                        PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                        m_PropertiesGump.OnValueChanged(m_Object, m_Property);
                     }
                 }
                 catch
@@ -233,7 +227,7 @@ namespace Server.Gumps
                 }
             }
 
-            m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+            m_PropertiesGump.SendPropertiesGump();
         }
     }
 }

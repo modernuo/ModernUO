@@ -94,11 +94,16 @@ namespace Server.Misc
 
         private static void Backup(WorldSavePostSnapshotEventArgs args)
         {
+            if (!Directory.Exists(args.OldSavePath))
+            {
+                return;
+            }
+
             var backupPath = Path.Combine(BackupPath, Utility.GetTimeStamp());
             AssemblyHandler.EnsureDirectory(BackupPath);
             Directory.Move(args.OldSavePath, backupPath);
 
-            Console.WriteLine("AutoSave: Created backup at {0}", backupPath);
+            Persistence.WriteConsoleLine($"Created backup at {backupPath}");
         }
     }
 }

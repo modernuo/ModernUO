@@ -24,28 +24,24 @@ namespace Server.Gumps
         private const int TextColor32 = 0xFFFFFF;
 
         private static List<InternalEntry> m_Monster, m_Animal, m_Sea, m_Human;
-        private readonly List<object> m_List;
         private readonly Mobile m_Mobile;
         private readonly object m_Object;
         private readonly List<InternalEntry> m_OurList;
         private readonly int m_OurPage;
         private readonly ModelBodyType m_OurType;
-        private readonly int m_Page;
         private readonly PropertyInfo m_Property;
-        private readonly Stack<StackEntry> m_Stack;
+        private readonly PropertiesGump m_PropertiesGump;
 
         public SetBodyGump(
-            PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, List<object> list,
+            PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump,
             int ourPage = 0, List<InternalEntry> ourList = null, ModelBodyType ourType = ModelBodyType.Invalid
         )
             : base(20, 30)
         {
+            m_PropertiesGump = propertiesGump;
             m_Property = prop;
             m_Mobile = mobile;
             m_Object = o;
-            m_Stack = stack;
-            m_Page = page;
-            m_List = list;
             m_OurPage = ourPage;
             m_OurList = ourList;
             m_OurType = ourType;
@@ -131,7 +127,7 @@ namespace Server.Gumps
 
             if (index == -1)
             {
-                m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+                m_PropertiesGump.SendPropertiesGump();
             }
             else if (index >= 0 && index < 4)
             {
@@ -163,7 +159,7 @@ namespace Server.Gumps
                         break;
                 }
 
-                m_Mobile.SendGump(new SetBodyGump(m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List, 0, list, type));
+                m_Mobile.SendGump(new SetBodyGump(m_Property, m_Mobile, m_Object, m_PropertiesGump, 0, list, type));
             }
             else if (m_OurList != null)
             {
@@ -176,9 +172,7 @@ namespace Server.Gumps
                             m_Property,
                             m_Mobile,
                             m_Object,
-                            m_Stack,
-                            m_Page,
-                            m_List,
+                            m_PropertiesGump,
                             m_OurPage - 1,
                             m_OurList,
                             m_OurType
@@ -192,9 +186,7 @@ namespace Server.Gumps
                             m_Property,
                             m_Mobile,
                             m_Object,
-                            m_Stack,
-                            m_Page,
-                            m_List,
+                            m_PropertiesGump,
                             m_OurPage + 1,
                             m_OurList,
                             m_OurType
@@ -213,7 +205,7 @@ namespace Server.Gumps
 
                             CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, entry.Body.ToString());
                             m_Property.SetValue(m_Object, entry.Body, null);
-                            PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                            m_PropertiesGump.OnValueChanged(m_Object, m_Property);
                         }
                         catch
                         {
@@ -225,9 +217,7 @@ namespace Server.Gumps
                                 m_Property,
                                 m_Mobile,
                                 m_Object,
-                                m_Stack,
-                                m_Page,
-                                m_List,
+                                m_PropertiesGump,
                                 m_OurPage,
                                 m_OurList,
                                 m_OurType
