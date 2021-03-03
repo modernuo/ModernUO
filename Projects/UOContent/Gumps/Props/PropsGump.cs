@@ -621,18 +621,6 @@ namespace Server.Gumps
 
         protected virtual bool ShowAttribute(string name) => true;
 
-        public static CPA GetCPA(PropertyInfo prop)
-        {
-            var attrs = prop.GetCustomAttributes(OfCPA, false);
-
-            if (attrs.Length > 0)
-            {
-                return attrs[0] as CPA;
-            }
-
-            return null;
-        }
-
         private List<KeyValuePair<Type, List<PropertyInfo>>> GetGroups(Type objectType, PropertyInfo[] props)
         {
             var groups = new Dictionary<Type, List<PropertyInfo>>();
