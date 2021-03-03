@@ -7,6 +7,7 @@ using Server.Network;
 using CPA = Server.CommandPropertyAttribute;
 
 using static Server.Types;
+using static Server.Attributes;
 using static Server.Gumps.PropsConfig;
 
 namespace Server.Gumps
@@ -46,13 +47,6 @@ namespace Server.Gumps
             OffsetSize + NameWidth + OffsetSize + ValueWidth + OffsetSize + SetWidth + OffsetSize;
 
         protected static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-
-        private static readonly string[] BoolNames = { "True", "False" };
-        private static readonly object[] BoolValues = { true, false };
-
-        private static readonly string[] PoisonNames = { "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
-        private static readonly object[] PoisonValues =
-            { null, Poison.Lesser, Poison.Regular, Poison.Greater, Poison.Deadly, Poison.Lethal };
 
         protected readonly List<object> m_List;
         protected readonly Mobile m_Mobile;
@@ -477,9 +471,6 @@ namespace Server.Gumps
 
             return ce.Names;
         }
-
-        private static bool HasAttribute(Type type, Type check, bool inherit) =>
-            type.GetCustomAttributes(check, inherit).Length > 0;
 
         private static bool IsType(Type type, Type check) => type == check || type.IsSubclassOf(check);
 

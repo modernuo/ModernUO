@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 
 namespace Server
 {
@@ -32,6 +31,12 @@ namespace Server
         public static readonly Type OfEntity = typeof(IEntity);
         public static readonly Type OfConstructible = typeof(ConstructibleAttribute);
 
+        public static readonly string[] BoolNames = { "True", "False" };
+        public static readonly object[] BoolValues = { true, false };
+
+        public static readonly string[] PoisonNames = { "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
+        public static readonly object[] PoisonValues =
+            { null, Poison.Lesser, Poison.Regular, Poison.Greater, Poison.Deadly, Poison.Lethal };
 
         public static readonly Type[] DecimalTypes =
         {
@@ -54,7 +59,7 @@ namespace Server
         private static readonly Type[] SignedNumerics =
         {
             typeof(long),
-            typeof(int),
+            OfInt,
             typeof(short),
             typeof(sbyte)
         };
@@ -68,7 +73,7 @@ namespace Server
         };
 
 
-        public static readonly Type[] ParseTypes = { typeof(string) };
+        public static readonly Type[] ParseTypes = { OfString };
 
         public static bool IsSerial(Type t) => t == OfSerial;
 
@@ -86,51 +91,10 @@ namespace Server
 
         public static bool IsNumeric(Type t) => Array.IndexOf(NumericTypes, t) >= 0;
 
+        public static bool IsSignedNumeric(Type t) => Array.IndexOf(SignedNumerics, t) >= 0;
+
+        public static bool IsUnsignedNumeric(Type t) => Array.IndexOf(UnsignedNumerics, t) >= 0;
+
         public static bool IsEntity(Type t) => OfEntity.IsAssignableFrom(t);
-
-        public static bool IsConstructible(ConstructorInfo ctor, AccessLevel accessLevel)
-        {
-            var attrs = ctor.GetCustomAttributes(OfConstructible, false);
-
-            return attrs.Length != 0 && accessLevel >= ((ConstructibleAttribute)attrs[0]).AccessLevel;
-        }
-
-        public static bool IsSignedNumeric(Type type)
-        {
-            for (var i = 0; i < SignedNumerics.Length; ++i)
-            {
-                if (type == SignedNumerics[i])
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool IsUnsignedNumeric(Type type)
-        {
-            for (var i = 0; i < UnsignedNumerics.Length; ++i)
-            {
-                if (type == UnsignedNumerics[i])
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static CommandPropertyAttribute GetCPA(PropertyInfo p)
-        {
-            var attrs = p.GetCustomAttributes(OfCPA, false);
-
-            if (attrs.Length == 0)
-            {
-                return null;
-            }
-
-            return attrs[0] as CommandPropertyAttribute;
-        }
     }
 }

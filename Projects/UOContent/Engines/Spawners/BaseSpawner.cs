@@ -10,7 +10,7 @@ using Server.Mobiles;
 using Server.Utilities;
 using CPA = Server.CommandPropertyAttribute;
 
-using static Server.Types;
+using static Server.Attributes;
 
 namespace Server.Engines.Spawners
 {
@@ -531,7 +531,7 @@ namespace Server.Engines.Spawners
                         return null;
                     }
 
-                    var attr = Types.GetCPA(thisProp);
+                    var attr = GetCPA(thisProp);
 
                     if (attr == null || attr.WriteLevel > AccessLevel.Developer || !thisProp.CanWrite || attr.ReadOnly)
                     {

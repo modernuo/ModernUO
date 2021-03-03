@@ -6,6 +6,7 @@ using Server.Gumps;
 using Server.Targeting;
 using CPA = Server.CommandPropertyAttribute;
 
+using static Server.Attributes;
 using static Server.Types;
 
 namespace Server.Commands

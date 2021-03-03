@@ -5,6 +5,7 @@ using System.Text;
 using Server.Items;
 using CPA = Server.CommandPropertyAttribute;
 
+using static Server.Attributes;
 using static Server.Types;
 
 namespace Server.Commands
