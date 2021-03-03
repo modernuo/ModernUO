@@ -7047,24 +7047,6 @@ namespace Server
             eable.Free();
         }
 
-        public bool Send(Packet p) => Send(p, false);
-
-        public bool Send(Packet p, bool throwOnOffline)
-        {
-            if (m_NetState != null)
-            {
-                m_NetState.Send(p);
-                return true;
-            }
-
-            if (throwOnOffline)
-            {
-                throw new MobileNotConnectedException(this, "Packet could not be sent.");
-            }
-
-            return false;
-        }
-
         /// <summary>
         ///     Overridable. Event invoked before the Mobile says something.
         ///     <seealso cref="DoSpeech" />
