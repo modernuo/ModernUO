@@ -331,29 +331,5 @@ namespace Server.Network
                 buffer[i] = 0;
             }
         }
-
-        public static void SendDetails(NetState ns, HouseFoundation house, DesignState state)
-        {
-            var p = state.PacketCache;
-
-            if (p == null)
-            {
-                var mcl = state.Components;
-                p = new DesignStateDetailed(
-                    house.Serial,
-                    state.Revision,
-                    mcl.Min.X,
-                    mcl.Min.Y,
-                    mcl.Max.X,
-                    mcl.Max.Y,
-                    mcl.List
-                );
-
-                p.SetStatic();
-                state.PacketCache = p;
-            }
-
-            ns.Send(p);
-        }
     }
 }

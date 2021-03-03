@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Runtime.CompilerServices;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -1872,8 +1873,6 @@ namespace Server.Multis
 
     public class DesignState
     {
-        private Packet m_PacketCache;
-
         public DesignState(HouseFoundation foundation, MultiComponentList components)
         {
             Foundation = foundation;
@@ -1926,21 +1925,7 @@ namespace Server.Multis
             }
         }
 
-        public Packet PacketCache
-        {
-            get => m_PacketCache;
-            set
-            {
-                if (m_PacketCache == value)
-                {
-                    return;
-                }
-
-                m_PacketCache?.Release();
-
-                m_PacketCache = value;
-            }
-        }
+        public byte[] PacketCache { get; set; }
 
         public HouseFoundation Foundation { get; }
 
@@ -1975,31 +1960,18 @@ namespace Server.Multis
         public void OnRevised()
         {
             Revision = ++Foundation.LastRevision;
-            m_PacketCache?.Release();
-            m_PacketCache = null;
+            PacketCache = null;
         }
 
-        public void SendGeneralInfoTo(NetState state)
-        {
-            state.SendDesignStateGeneral(Foundation.Serial, Revision);
-        }
+        public void SendGeneralInfoTo(NetState state) => state.SendDesignStateGeneral(Foundation.Serial, Revision);
+        public void SendDetailedInfoTo(NetState state) => state?.Send(PacketCache ??= SendDetails(Foundation.Serial));
 
-        public void SendDetailedInfoTo(NetState state)
-        {
-            if (state == null)
-            {
-                return;
-            }
-
-            if (m_PacketCache == null)
-            {
-                // DesignStateDetailed.SendDetails(state, Foundation, this);
-            }
-            else
-            {
-                state.Send(m_PacketCache);
-            }
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte[] SendDetails(Serial house) => HousePackets.CreateHouseDesignStateDetailed(
+            house,
+            Revision,
+            Components
+        );
 
         public void FreezeFixtures()
         {

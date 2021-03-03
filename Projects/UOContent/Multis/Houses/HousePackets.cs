@@ -91,14 +91,18 @@ namespace Server.Multis
 
         // Maximum size of the packed packet (31988 bytes)
         private static readonly int maxPacketLength =
-            17 +
+            18 +
             (Zlib.MaxPackSize(planeLength) + 4) * planeCount + // 9369
             (Zlib.MaxPackSize(stairsPerBuffer * stairsLength) + 4) * stairsCount; // 22602
 
-        public static byte[] CreateHouseDesignStateDetailed(
-            uint serial, int revision, int xMin, int yMin, int xMax, int yMax, MultiTileEntry[] tiles, out int length
-        )
+        public static byte[] CreateHouseDesignStateDetailed(uint serial, int revision, MultiComponentList components)
         {
+            var xMin = components.Min.X;
+            var yMin = components.Min.Y;
+            var xMax = components.Max.X;
+            var yMax = components.Max.Y;
+            var tiles = components.List;
+
             const int totalPlaneLength = planeLength * planeCount;
             const int stairsBufferLength = stairsPerBuffer * stairsLength;
             const int maxUnpackedSize = totalPlaneLength + stairsBufferLength * stairsCount;
@@ -195,7 +199,7 @@ namespace Server.Multis
             writer.Write(serial);
             writer.Write(revision);
             writer.Write((short)tiles.Length);
-            writer.Seek(2, SeekOrigin.Current); // Buffer Length, Plane Count
+            writer.Seek(3, SeekOrigin.Current); // Buffer Length, Plane Count
 
             var totalPlanes = 0;
             var totalLength = 1; // includes plane count
@@ -245,7 +249,9 @@ namespace Server.Multis
             writer.Write((byte)totalLength);
             writer.Write((byte)totalPlanes);
             writer.WritePacketLength();
-            length = writer.Position;
+
+            // TODO: Avoid this somehow. Use pool?
+            Array.Resize(ref buffer, writer.Position);
             return buffer;
         }
 
