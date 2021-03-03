@@ -4,7 +4,14 @@ namespace Server
 {
     public static class Types
     {
+        public static readonly Type OfByte = typeof(byte);
+        public static readonly Type OfSByte = typeof(sbyte);
+        public static readonly Type OfShort = typeof(short);
+        public static readonly Type OfUShort = typeof(ushort);
         public static readonly Type OfInt = typeof(int);
+        public static readonly Type OfUInt = typeof(uint);
+        public static readonly Type OfLong = typeof(long);
+        public static readonly Type OfULong = typeof(ulong);
         public static readonly Type OfObject = typeof(object);
         public static readonly Type OfBool = typeof(bool);
         public static readonly Type OfChar = typeof(char);
@@ -46,30 +53,30 @@ namespace Server
 
         public static readonly Type[] NumericTypes =
         {
-            typeof(byte),
-            typeof(short),
+            OfByte,
+            OfShort,
             OfInt,
-            typeof(long),
-            typeof(sbyte),
-            typeof(ushort),
-            typeof(uint),
-            typeof(ulong)
+            OfLong,
+            OfSByte,
+            OfUShort,
+            OfUInt,
+            OfULong
         };
 
         private static readonly Type[] SignedNumerics =
         {
-            typeof(long),
+            OfLong,
             OfInt,
-            typeof(short),
-            typeof(sbyte)
+            OfShort,
+            OfSByte
         };
 
         private static readonly Type[] UnsignedNumerics =
         {
-            typeof(ulong),
-            typeof(uint),
-            typeof(ushort),
-            typeof(byte)
+            OfULong,
+            OfUInt,
+            OfUShort,
+            OfByte
         };
 
 
