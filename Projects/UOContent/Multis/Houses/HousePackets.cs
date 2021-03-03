@@ -110,8 +110,6 @@ namespace Server.Multis
 
             Span<bool> planesUsed = stackalloc bool[9];
             var stairsIndex = totalPlaneLength;
-            var stairInBuffer = 0;
-            var stairsBuffers = 0;
             var totalStairsUsed = 0;
             var width = xMax - xMin + 1;
             var height = yMax - yMin + 1;
@@ -170,22 +168,12 @@ namespace Server.Multis
                     }
                 }
 
-                // Start of a new buffer
-                if (stairInBuffer == stairsPerBuffer)
-                {
-                    inflatedWriter.Seek(stairsIndex, SeekOrigin.Begin);
-                    inflatedWriter.Clear(stairsBufferLength);
-                    stairInBuffer = 0;
-                    stairsBuffers++;
-                }
-
                 inflatedWriter.Seek(stairsIndex, SeekOrigin.Begin);
                 inflatedWriter.Write(mte.ItemId);
                 inflatedWriter.Write((byte)mte.OffsetX);
                 inflatedWriter.Write((byte)mte.OffsetY);
                 inflatedWriter.Write((byte)mte.OffsetZ);
                 stairsIndex = inflatedWriter.Position;
-                stairInBuffer++;
                 totalStairsUsed++;
             }
 
@@ -231,7 +219,7 @@ namespace Server.Multis
                 totalPlanes++;
             }
 
-            for (var i = 0; i < stairsBuffers; i++)
+            for (var i = 0; totalStairsUsed > 0; i++)
             {
                 var count = Math.Min(stairsPerBuffer, totalStairsUsed);
                 totalStairsUsed -= count;
@@ -250,8 +238,8 @@ namespace Server.Multis
             writer.Write((byte)totalPlanes);
             writer.WritePacketLength();
 
-            // TODO: Avoid this somehow. Use pool?
-            Array.Resize(ref buffer, writer.Position);
+            // TODO: Avoid this somehow.
+            Array.Resize(ref buffer, writer.BytesWritten);
             return buffer;
         }
 

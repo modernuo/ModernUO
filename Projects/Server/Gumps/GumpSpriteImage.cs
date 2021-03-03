@@ -49,7 +49,7 @@ namespace Server.Gumps
         public override string Compile(OrderedHashSet<string> strings) =>
             $"{{ picinpic {X} {Y} {GumpID} {Width} {Height} {SX} {SY} }}";
 
-        public override void AppendTo(SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
             writer.Write(LayoutName);

@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Server;
 using Server.Multis;
 using Server.Network;
 using Server.Tests;
@@ -47,6 +49,33 @@ namespace UOContent.Tests
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        }
+
+        [Fact]
+        public void TestHouseDesignStateDetailed()
+        {
+            Serial serial = 0x40000001;
+            var revision = 10;
+            var tiles = new MultiTileEntry[100];
+            for (var i = 0; i < tiles.Length; i++)
+            {
+                tiles[i] = new MultiTileEntry(
+                    (ushort)i,
+                    (byte)(i + 10),
+                    (byte)(i + 11),
+                    (byte)(i + 12),
+                    TileFlag.None
+                );
+            }
+            var mcl = new MultiComponentList(tiles.ToList());
+
+            var expected = new DesignStateDetailed(
+                serial, revision, mcl.Min.X, mcl.Min.Y, mcl.Max.X, mcl.Max.Y, tiles
+            ).Compile();
+
+            var actual = HousePackets.CreateHouseDesignStateDetailed(serial, revision, mcl);
+
+            AssertThat.Equal(actual, expected);
         }
     }
 }
