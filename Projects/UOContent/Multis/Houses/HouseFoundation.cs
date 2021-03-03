@@ -1993,7 +1993,7 @@ namespace Server.Multis
 
             if (m_PacketCache == null)
             {
-                DesignStateDetailed.SendDetails(state, Foundation, this);
+                // DesignStateDetailed.SendDetails(state, Foundation, this);
             }
             else
             {

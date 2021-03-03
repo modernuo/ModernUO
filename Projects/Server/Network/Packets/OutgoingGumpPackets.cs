@@ -130,7 +130,7 @@ namespace Server.Network
 
             foreach (var entry in gump.Entries)
             {
-                entry.AppendTo(ref layoutWriter, stringsList, ref entries, ref switches);
+                entry.AppendTo(layoutWriter, stringsList, ref entries, ref switches);
             }
 
             var stringsWriter = new SpanWriter(_stringsBuffer);
