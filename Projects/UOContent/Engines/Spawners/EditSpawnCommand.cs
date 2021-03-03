@@ -91,8 +91,8 @@ namespace Server.Engines.Spawners
             var argStr = argSpan.ToString().DefaultIfNullOrEmpty(null);
             var propsStr = props.ToString().DefaultIfNullOrEmpty(null);
             var whereStr = findmatch.ToString().DefaultIfNullOrEmpty(null);
-            //this is fix for search like  match str 10  if mob had str 100 it's find it
-            if (whereStr != null) (whereStr += " ").ToLower();
+          
+         
 
             e.Mobile.SendMessage("Updating spawners...");
 
@@ -100,14 +100,14 @@ namespace Server.Engines.Spawners
             {
                 if (obj is BaseSpawner spawner)
                 {
-                    UpdateSpawner(spawner, name, argStr, propsStr, whereStr);
+                    UpdateSpawner(spawner, name, argStr, propsStr, whereStr?.ToLower().Split(" ", StringSplitOptions.RemoveEmptyEntries));
                 }
             }
 
             e.Mobile.SendMessage("Update completed.");
         }
 
-        public static void UpdateSpawner(BaseSpawner spawner, string name, string arguments, string properties, string find = null)
+        public static void UpdateSpawner(BaseSpawner spawner, string name, string arguments, string properties, string[] find = null)
         {
             foreach (var entry in spawner.Entries)
             {
@@ -116,7 +116,7 @@ namespace Server.Engines.Spawners
                 {
                     if (find != null)
                     {
-                        if (entry.Properties?.IndexOf(find) != -1)
+                        if (entry.ArrayProperties?.Compare(find) == true)
                         {
                             if (arguments != null) entry.Parameters = arguments;
                             entry.Properties = properties;

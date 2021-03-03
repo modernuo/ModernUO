@@ -20,6 +20,21 @@ namespace Server
 {
     public static class InsensitiveStringHelpers
     {
+        public static bool Compare(this String[] str, string[] str2)
+        {
+            var pattern = str2[0];
+            for (int i = 0; i < str.Length; i++)
+            {
+                var line = str[i];
+                if (line == pattern &&
+                    str[i] == str2[0])
+                {
+                    if (str[i + 1] == str2[1])
+                        return true;
+                }
+            }
+            return false;
+        }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int InsensitiveCompare(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
             a.CompareTo(b, StringComparison.OrdinalIgnoreCase);

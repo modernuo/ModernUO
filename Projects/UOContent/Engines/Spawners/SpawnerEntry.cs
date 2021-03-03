@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Server.Mobiles;
@@ -24,6 +25,10 @@ namespace Server.Engines.Spawners
             SpawnedMaxCount = reader.ReadInt();
 
             Properties = reader.ReadString();
+          
+               
+
+
             Parameters = reader.ReadString();
 
             var count = reader.ReadInt();
@@ -48,6 +53,7 @@ namespace Server.Engines.Spawners
                 }
             }
         }
+        public string[] ArrayProperties { get; set; }
 
         [JsonPropertyName("probability")]
         public int SpawnedProbability { get; set; }
@@ -57,14 +63,23 @@ namespace Server.Engines.Spawners
 
         [JsonPropertyName("name")]
         public string SpawnedName { get; set; }
-
-        string _props;
+        string _properties;
         [JsonPropertyName("properties")]
-        public string Properties { get { return _props; } set { _props = value.ToLower() + " "; } }
-
-        string _param;
+        public string Properties
+        {
+            get
+            {
+                return _properties;
+            }
+            set
+            {
+                _properties = value;
+                ArrayProperties = _properties.ToLower().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            }
+        }
+       
         [JsonPropertyName("parameters")]
-        public string Parameters { get { return _param; } set { _param = value.ToLower()+ " "; }}
+        public string Parameters { get; set; }
 
         [JsonIgnore]
         public EntryFlags Valid { get; set; }
