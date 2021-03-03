@@ -472,6 +472,9 @@ namespace Server.Gumps
             return ce.Names;
         }
 
+        private static bool HasAttribute(Type type, Type check, bool inherit) =>
+            type.GetCustomAttributes(check, inherit).Length > 0;
+
         private static bool IsType(Type type, Type check) => type == check || type.IsSubclassOf(check);
 
         private static bool IsType(Type type, Type[] check)
