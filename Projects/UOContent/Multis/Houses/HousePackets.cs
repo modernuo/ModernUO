@@ -109,6 +109,7 @@ namespace Server.Multis
             using var inflatedWriter = new SpanWriter(maxUnpackedSize);
 
             Span<bool> planesUsed = stackalloc bool[9];
+            var index = 0;
             var stairsIndex = totalPlaneLength;
             var totalStairsUsed = 0;
             var width = xMax - xMin + 1;
@@ -151,7 +152,7 @@ namespace Server.Multis
                         plane += 4;
                     }
 
-                    var index = (x * size + y) * 2;
+                    index = (x * size + y) * 2;
                     if (x >= 0 && y >= 0 && y < size && index + 1 < 0x400)
                     {
                         var planeUsed = planesUsed[plane];
@@ -192,7 +193,6 @@ namespace Server.Multis
             var totalPlanes = 0;
             var totalLength = 1; // includes plane count
 
-            // Writer buffers
             for (var i = 0; i < planeCount; i++)
             {
                 if (!planesUsed[i])
@@ -201,8 +201,6 @@ namespace Server.Multis
                     continue;
                 }
 
-                totalPlanes++;
-
                 int size = i switch
                 {
                     0   => width * height * 2,
@@ -210,31 +208,33 @@ namespace Server.Multis
                     _   => width * (height - 1) * 2
                 };
 
-                var source = inflatedWriter.RawBuffer.Slice(planeCount * planeLength, size);
+                var source = inflatedWriter.RawBuffer.Slice(i * planeLength, size);
 
                 writer.Write((byte)(0x20 | i));
-                WritePacked(source, ref writer, size, out int destLength);
+                WritePacked(source, ref writer, out int destLength);
 
                 totalLength += 4 + destLength;
                 totalPlanes++;
             }
 
-            for (var i = 0; totalStairsUsed > 0; i++)
+            index = 0;
+            while (totalStairsUsed > 0)
             {
                 var count = Math.Min(stairsPerBuffer, totalStairsUsed);
                 totalStairsUsed -= count;
 
+                var start = totalPlaneLength + index * stairsLength;
                 var size = count * 5;
-                var source = inflatedWriter.RawBuffer.Slice(planeLength + i * stairsLength, size);
+                var source = inflatedWriter.RawBuffer.Slice(start, size);
 
-                writer.Write((byte)(9 + i));
-                WritePacked(source, ref writer, size, out int destLength);
-                totalPlanes++;
+                writer.Write((byte)(9 + index++));
+                WritePacked(source, ref writer, out int destLength);
                 totalLength += 4 + destLength;
+                totalPlanes++;
             }
 
             writer.Seek(15, SeekOrigin.Begin);
-            writer.Write((byte)totalLength);
+            writer.Write((short)totalLength);
             writer.Write((byte)totalPlanes);
             writer.WritePacketLength();
 
@@ -244,8 +244,9 @@ namespace Server.Multis
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WritePacked(ReadOnlySpan<byte> source, ref SpanWriter writer, int size, out int length)
+        private static void WritePacked(ReadOnlySpan<byte> source, ref SpanWriter writer, out int length)
         {
+            var size = source.Length;
             var dest = writer.RawBuffer.Slice(writer.Position + 3);
             length = dest.Length;
 

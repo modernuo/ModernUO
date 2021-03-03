@@ -56,14 +56,14 @@ namespace UOContent.Tests
         {
             Serial serial = 0x40000001;
             var revision = 10;
-            var tiles = new MultiTileEntry[100];
+            var tiles = new MultiTileEntry[250];
             for (var i = 0; i < tiles.Length; i++)
             {
                 tiles[i] = new MultiTileEntry(
                     (ushort)i,
-                    (byte)(i + 10),
-                    (byte)(i + 11),
-                    (byte)(i + 12),
+                    (byte)i,
+                    (byte)i,
+                    (byte)(i / 50),
                     TileFlag.None
                 );
             }
