@@ -96,7 +96,7 @@ namespace Server.Commands
 
                     if (CIEqual(p.Name, propertyName))
                     {
-                        var attr = Types.GetCPA(p);
+                        var attr = GetCPA(p);
 
                         if (attr == null)
                         {
