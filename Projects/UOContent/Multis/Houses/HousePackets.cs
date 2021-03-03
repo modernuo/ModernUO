@@ -213,7 +213,7 @@ namespace Server.Multis
                 var source = inflatedWriter.RawBuffer.Slice(planeCount * planeLength, size);
 
                 writer.Write((byte)(0x20 | i));
-                WritePacked(source, writer, size, out int destLength);
+                WritePacked(source, ref writer, size, out int destLength);
 
                 totalLength += 4 + destLength;
                 totalPlanes++;
@@ -228,7 +228,7 @@ namespace Server.Multis
                 var source = inflatedWriter.RawBuffer.Slice(planeLength + i * stairsLength, size);
 
                 writer.Write((byte)(9 + i));
-                WritePacked(source, writer, size, out int destLength);
+                WritePacked(source, ref writer, size, out int destLength);
                 totalPlanes++;
                 totalLength += 4 + destLength;
             }
@@ -244,7 +244,7 @@ namespace Server.Multis
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WritePacked(ReadOnlySpan<byte> source, SpanWriter writer, int size, out int length)
+        private static void WritePacked(ReadOnlySpan<byte> source, ref SpanWriter writer, int size, out int length)
         {
             var dest = writer.RawBuffer.Slice(writer.Position + 3);
             length = dest.Length;
