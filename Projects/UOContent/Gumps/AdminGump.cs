@@ -2115,7 +2115,7 @@ namespace Server.Gumps
                                 break;
                             case 107:
                                 InvokeCommand("GenGauntlet");
-                                notice = "Doom Spawners have been generated.";
+                                notice = "Gauntlet Spawners have been generated.";
 
                             case 110:
                                 InvokeCommand("Freeze");
