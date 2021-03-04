@@ -256,11 +256,13 @@ namespace Server.Gumps
                         AddButtonLabeled(20, 175, GetButtonID(3, 101), "Teleporters");
                         AddButtonLabeled(220, 175, GetButtonID(3, 102), "Moongates");
 
-                        AddButtonLabeled(20, 200, GetButtonID(3, 103), "Generate Spawns");
+                        AddButtonLabeled(20, 200, GetButtonID(3, 103), "World Spawners");
                         AddButtonLabeled(220, 200, GetButtonID(3, 106), "Decoration");
 
                         AddButtonLabeled(20, 225, GetButtonID(3, 104), "Doors");
                         AddButtonLabeled(220, 225, GetButtonID(3, 105), "Signs");
+                        
+                        AddButtonLabeled(20, 250, GetButtonID(3, 107), "Gauntlet Spawners");
 
                         AddHtml(20, 275, 400, 30, Color(Center("Statics"), LabelColor32));
 
@@ -2101,7 +2103,7 @@ namespace Server.Gumps
                                 break;
                             case 103:
                                 InvokeCommand("GenerateSpawners ./Data/Spawns/*.json");
-                                notice = "Spawners have been generated.";
+                                notice = "World Spawners have been generated.";
                                 break;
                             case 105:
                                 InvokeCommand("SignGen");
@@ -2111,6 +2113,9 @@ namespace Server.Gumps
                                 InvokeCommand("Decorate");
                                 notice = "Decoration has been generated.";
                                 break;
+                            case 107:
+                                InvokeCommand("GenGauntlet");
+                                notice = "Doom Spawners have been generated.";
 
                             case 110:
                                 InvokeCommand("Freeze");
