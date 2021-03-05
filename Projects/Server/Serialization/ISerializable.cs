@@ -13,12 +13,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.IO;
 
 namespace Server
 {
     public interface ISerializable
     {
+        long SavePosition { get; protected set; }
         BufferWriter SaveBuffer { get; protected internal set; }
         int TypeRef { get; }
         Serial Serial { get; }
@@ -26,6 +28,13 @@ namespace Server
         void Serialize(IGenericWriter writer);
         void Delete();
         bool Deleted { get; }
+
+        void MarkDirty()
+        {
+            SavePosition = -1;
+        }
+
+        void SetTypeRef(Type type);
 
         public void InitializeSaveBuffer(byte[] buffer)
         {
@@ -35,8 +44,21 @@ namespace Server
         public void Serialize()
         {
             SaveBuffer ??= new BufferWriter(true);
+
+            // Clean, don't bother serializing
+            if (SavePosition > -1)
+            {
+                SaveBuffer.Seek(SavePosition, SeekOrigin.Begin);
+                return;
+            }
+
             SaveBuffer.Seek(0, SeekOrigin.Begin);
             Serialize(SaveBuffer);
+
+            if (World.DirtyTrackingEnabled)
+            {
+                SavePosition = SaveBuffer.Position;
+            }
         }
     }
 }

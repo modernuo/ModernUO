@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: TypeConverter.cs                                                *
+ * File: NamedTypeSymbolConverter.cs                                     *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -16,29 +16,32 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.CodeAnalysis;
 
 namespace Server.Json
 {
-    public class TypeConverter : JsonConverter<Type>
+    public class NamedTypeSymbolConverter : JsonConverter<INamedTypeSymbol>
     {
-        public override Type Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        private Compilation _compilation;
+        public NamedTypeSymbolConverter(Compilation compilation) => _compilation = compilation;
+
+        public override INamedTypeSymbol Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.String)
             {
-                throw new JsonException("The JSON value could not be converted to System.Type");
+                throw new JsonException("The JSON value could not be converted to Microsoft.CodeAnalysis.INamedTypeSymbol");
             }
 
             var typeName = reader.GetString();
-            var type = AssemblyHandler.FindTypeByName(typeName);
-            if (type == null)
+            if (string.IsNullOrEmpty(typeName))
             {
-                Console.WriteLine("Invalid type {0} deserialized", typeName);
+                throw new JsonException("Type must not be null");
             }
 
-            return type;
+            return _compilation.GetTypeByMetadataName(typeName);
         }
 
-        public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options) =>
-            writer.WriteStringValue(value.FullName);
+        public override void Write(Utf8JsonWriter writer, INamedTypeSymbol value, JsonSerializerOptions options) =>
+            writer.WriteStringValue(value.ToDisplayString());
     }
 }

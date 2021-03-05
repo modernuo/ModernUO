@@ -216,9 +216,6 @@ namespace Server
 
         private ObjectPropertyList m_PropertyList;
 
-        // Position in the save buffer where serialization ends. -1 if dirty
-        private int _savePosition = -1;
-
         [Constructible]
         public Item(int itemID = 0)
         {
@@ -234,27 +231,22 @@ namespace Server
             SetLastMoved();
 
             World.AddEntity(this);
-
-            var ourType = GetType();
-            TypeRef = World.ItemTypes.IndexOf(ourType);
-
-            if (TypeRef == -1)
-            {
-                World.ItemTypes.Add(ourType);
-                TypeRef = World.ItemTypes.Count - 1;
-            }
+            SetTypeRef(GetType());
         }
 
         public Item(Serial serial)
         {
             Serial = serial;
+            SetTypeRef(GetType());
+        }
 
-            var ourType = GetType();
-            TypeRef = World.ItemTypes.IndexOf(ourType);
+        public void SetTypeRef(Type type)
+        {
+            TypeRef = World.ItemTypes.IndexOf(type);
 
             if (TypeRef == -1)
             {
-                World.ItemTypes.Add(ourType);
+                World.ItemTypes.Add(type);
                 TypeRef = World.ItemTypes.Count - 1;
             }
         }
@@ -792,22 +784,17 @@ namespace Server
             AddNameProperties(list);
         }
 
+        long ISerializable.SavePosition { get; set; }
+
         BufferWriter ISerializable.SaveBuffer { get; set; }
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
-        public int TypeRef { get; }
+        public int TypeRef { get; private set; }
 
         public virtual void Serialize(IGenericWriter writer)
         {
-            // The item is clean, so let's skip
-            if (_savePosition > -1)
-            {
-                writer.Seek(_savePosition, SeekOrigin.Begin);
-                return;
-            }
-
             writer.Write(9); // version
 
             var flags = SaveFlag.None;

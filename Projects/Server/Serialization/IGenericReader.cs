@@ -46,6 +46,7 @@ namespace Server
         Map ReadMap();
         Race ReadRace();
         int Read(Span<byte> buffer);
+        T ReadEnum<T>() where T : unmanaged, Enum;
         long Seek(long offset, SeekOrigin origin);
     }
 }

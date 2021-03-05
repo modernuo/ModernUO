@@ -53,6 +53,7 @@ namespace Server
             void Deserialize(string savePath)
             {
                 var path = Path.Combine(savePath, name);
+
                 AssemblyHandler.EnsureDirectory(path);
 
                 string binPath = Path.Combine(path, $"{name}.bin");

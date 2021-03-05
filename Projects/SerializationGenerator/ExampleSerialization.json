@@ -1,0 +1,10 @@
+{
+  "type": "Server.Items.SomeItem",
+  "version": 2,
+  "properties": [
+    {
+      "name": "SomeProperty",
+      "type": "string"
+    }
+  ]
+}

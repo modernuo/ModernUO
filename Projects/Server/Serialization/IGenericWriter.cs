@@ -48,6 +48,7 @@ namespace Server
         void Write(Map value);
         void Write(Race value);
         void Write(ReadOnlySpan<byte> bytes);
+        void Write<T>(T value) where T : unmanaged, Enum;
 
         long Seek(long offset, SeekOrigin origin);
     }

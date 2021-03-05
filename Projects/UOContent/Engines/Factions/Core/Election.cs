@@ -275,7 +275,6 @@ namespace Server.Factions
             if (Faction.Election != this)
             {
                 m_Timer?.Stop();
-
                 m_Timer = null;
 
                 return;
@@ -447,14 +446,7 @@ namespace Server.Factions
                 gameTime = mobile.GameTime;
             }
 
-            var kp = 0;
-
-            var pl = PlayerState.Find(From);
-
-            if (pl != null)
-            {
-                kp = pl.KillPoints;
-            }
+            var kp = PlayerState.Find(From)?.KillPoints ?? 0;
 
             var sk = From.Skills.Total;
 

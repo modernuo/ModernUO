@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: TypeConverter.cs                                                *
+ * File: NamedTypeSymbolConverterFactory.cs                              *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -16,29 +16,19 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.CodeAnalysis;
 
 namespace Server.Json
 {
-    public class TypeConverter : JsonConverter<Type>
+    public class NamedTypeSymbolConverterFactory : JsonConverterFactory
     {
-        public override Type Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            if (reader.TokenType != JsonTokenType.String)
-            {
-                throw new JsonException("The JSON value could not be converted to System.Type");
-            }
+        private Compilation _compilation;
 
-            var typeName = reader.GetString();
-            var type = AssemblyHandler.FindTypeByName(typeName);
-            if (type == null)
-            {
-                Console.WriteLine("Invalid type {0} deserialized", typeName);
-            }
+        public NamedTypeSymbolConverterFactory(Compilation compilation) => _compilation = compilation;
 
-            return type;
-        }
+        public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(Type);
 
-        public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options) =>
-            writer.WriteStringValue(value.FullName);
+        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+            new NamedTypeSymbolConverter(_compilation);
     }
 }
