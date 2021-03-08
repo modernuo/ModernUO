@@ -657,7 +657,7 @@ namespace Server.Network
 
                             case ProtocolState.GameServer_AwaitingGameServerLogin:
                                 {
-                                    if (packetId != 0x91)
+                                    if (packetId != 0x91 && packetId != 0x80)
                                     {
                                         HandleError(packetId, packetLength);
                                         return true;
