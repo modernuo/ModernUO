@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Buffers;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Server.Network
@@ -60,7 +61,7 @@ namespace Server.Network
 
             var writer = new SpanWriter(stackalloc byte[9 + count * 8]);
             writer.Write((byte)0xBF); // Packet ID
-            writer.Write((ushort)41); // Length
+            writer.Seek(2, SeekOrigin.Current);
             writer.Write((ushort)0x18); // Subpacket
             writer.Write(count);
 
@@ -71,6 +72,8 @@ namespace Server.Network
                 writer.Write(map.Tiles.Patch.StaticBlocks);
                 writer.Write(map.Tiles.Patch.LandBlocks);
             }
+
+            writer.WritePacketLength();
 
             ns.Send(writer.Span);
         }
