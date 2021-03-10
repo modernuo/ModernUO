@@ -23,7 +23,8 @@ namespace Server
         public static void Register(
             string name,
             Action<IGenericWriter> serializer,
-            Action<IGenericReader> deserializer
+            Action<IGenericReader> deserializer,
+            int priority = Persistence.DefaultPriority
         )
         {
             BufferWriter saveBuffer = null;
@@ -77,7 +78,7 @@ namespace Server
                 }
             }
 
-            Persistence.Register(Serialize, WriterSnapshot, Deserialize);
+            Persistence.Register(Serialize, WriterSnapshot, Deserialize, priority);
         }
     }
 }
