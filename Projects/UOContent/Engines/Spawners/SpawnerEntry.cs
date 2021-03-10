@@ -58,11 +58,13 @@ namespace Server.Engines.Spawners
         [JsonPropertyName("name")]
         public string SpawnedName { get; set; }
 
+        string _props;
         [JsonPropertyName("properties")]
-        public string Properties { get; set; }
+        public string Properties { get { return _props; } set { _props = value.ToLower() + " "; } }
 
+        string _param;
         [JsonPropertyName("parameters")]
-        public string Parameters { get; set; }
+        public string Parameters { get { return _param; } set { _param = value.ToLower()+ " "; }}
 
         [JsonIgnore]
         public EntryFlags Valid { get; set; }
