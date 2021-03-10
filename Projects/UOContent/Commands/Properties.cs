@@ -47,12 +47,6 @@ namespace Server.Commands
         public static void Initialize()
         {
             CommandSystem.Register("Props", AccessLevel.Counselor, Props_OnCommand);
-            CommandSystem.Register("GlobalProps", AccessLevel.Counselor, GlobalProps_OnCommand);
-        }
-
-        private static void GlobalProps_OnCommand(CommandEventArgs e)
-        {
-            e.Mobile.Target = new PropsTarget(true);
         }
 
         [Usage("Props [serial]")]
@@ -606,31 +600,19 @@ namespace Server.Commands
 
         private class PropsTarget : Target
         {
-            private readonly bool _canEdit;
-
-            public PropsTarget(bool canEdit = false) : base(-1, true, TargetFlags.None) => _canEdit = canEdit;
+            public PropsTarget() : base(-1, true, TargetFlags.None)
+            {
+            }
 
             protected override void OnTarget(Mobile from, object o)
             {
                 if (!BaseCommand.IsAccessible(from, o))
                 {
                     from.SendLocalizedMessage(500447); // That is not accessible.
-                    return;
-                }
-
-                if (!_canEdit)
-                {
-                    from.SendGump(new PropertiesGump(from, o));
-                    return;
-                }
-
-                if (o is Mobile { Player: false })
-                {
-                    from.SendGump(new GlobalPropsGump(from, o));
                 }
                 else
                 {
-                    from.SendLocalizedMessage(500447); // That is not accessible.
+                    from.SendGump(new PropertiesGump(from, o));
                 }
             }
         }
