@@ -91,8 +91,7 @@ namespace Server.Engines.Spawners
             var argStr = argSpan.ToString().DefaultIfNullOrEmpty(null);
             var propsStr = props.ToString().DefaultIfNullOrEmpty(null);
             var whereStr = findmatch.ToString().DefaultIfNullOrEmpty(null);
-            //this is fix for search like  match str 10  if mob had str 100 it's find it
-            if (whereStr != null) (whereStr += " ").ToLower();
+          
 
             e.Mobile.SendMessage("Updating spawners...");
 
@@ -116,10 +115,16 @@ namespace Server.Engines.Spawners
                 {
                     if (find != null)
                     {
-                        if (entry.Properties?.IndexOf(find) != -1)
+                        var found = entry.Properties?.LastIndexOf(find,StringComparison.OrdinalIgnoreCase);
+                        if (found!=-1)
                         {
-                            if (arguments != null) entry.Parameters = arguments;
-                            entry.Properties = properties;
+                            if((found + find.Length) == entry.Properties.Length ||
+                                entry.Properties[(int)found+1]== ' ')
+                            {
+                                if (arguments != null) entry.Parameters = arguments;
+                                entry.Properties = properties;
+                            }
+                           
                         }    
                     }
                     else

@@ -57,14 +57,13 @@ namespace Server.Engines.Spawners
 
         [JsonPropertyName("name")]
         public string SpawnedName { get; set; }
-
-        string _props;
+        
         [JsonPropertyName("properties")]
-        public string Properties { get { return _props; } set { _props = value.ToLower() + " "; } }
-
-        string _param;
+        public string Properties { get; set; }
+      
         [JsonPropertyName("parameters")]
-        public string Parameters { get { return _param; } set { _param = value.ToLower()+ " "; }}
+
+        public string Parameters { get; set; }
 
         [JsonIgnore]
         public EntryFlags Valid { get; set; }
