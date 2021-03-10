@@ -46,7 +46,7 @@ namespace Server
                 using var bin = new BinaryFileWriter(binPath, true);
 
                 saveBuffer!.Resize((int)saveBuffer.Position);
-                bin.Write(saveBuffer.Buffer.AsSpan());
+                bin.Write(saveBuffer.Buffer);
             }
 
             void Deserialize(string savePath)
