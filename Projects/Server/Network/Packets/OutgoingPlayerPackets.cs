@@ -61,7 +61,7 @@ namespace Server.Network
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SendDeathStatus(this NetState ns, bool dead) =>
-            ns?.Send(stackalloc byte[] { 0x2C, dead ? 0 : 2 });
+            ns?.Send(stackalloc byte[] { 0x2C, dead ? (byte)0 : (byte)2 });
 
         public static void SendToggleSpecialAbility(this NetState ns, int abilityId, bool active)
         {

@@ -14,7 +14,7 @@
  *************************************************************************/
 
 using System.Diagnostics;
-using Microsoft.Toolkit.HighPerformance.Extensions;
+using Microsoft.Toolkit.HighPerformance;
 using Server.Diagnostics;
 using Server.Exceptions;
 using Server.Gumps;
