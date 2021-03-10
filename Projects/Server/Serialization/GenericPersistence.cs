@@ -20,35 +20,64 @@ namespace Server
 {
     public static class GenericPersistence
     {
-        public static void Serialize(Action<IGenericWriter> serializer) => serializer(new BufferWriter(true));
-
-        public static void WriteSnapshot(string path, Action<IGenericWriter> serializer)
+        public static void Register(
+            string name,
+            Action<IGenericWriter> serializer,
+            Action<IGenericReader> deserializer
+        )
         {
-            AssemblyHandler.EnsureDirectory(Path.GetDirectoryName(path));
+            BufferWriter saveBuffer = null;
 
-            using var fs = new FileStream(path, FileMode.Open, FileAccess.Write, FileShare.None);
-            serializer(new BinaryFileWriter(fs, true));
-        }
-
-        public static void Deserialize(string path, Action<IGenericReader> deserializer, bool ensure = true)
-        {
-            AssemblyHandler.EnsureDirectory(Path.GetDirectoryName(path));
-
-            if (!File.Exists(path))
+            void Serialize()
             {
-                if (ensure)
-                {
-                    new FileInfo(path).Create().Close();
-                }
+                saveBuffer ??= new BufferWriter(true);
+                saveBuffer.Seek(0, SeekOrigin.Begin);
 
-                return;
+                serializer(saveBuffer);
             }
 
-            using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            // TODO: Support files larger than 2GB
-            var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length);
+            void WriterSnapshot(string savePath)
+            {
+                var path = Path.Combine(savePath, name);
 
-            deserializer(new BufferReader(buffer));
+                AssemblyHandler.EnsureDirectory(path);
+
+                string binPath = Path.Combine(path, $"{name}.bin");
+                using var bin = new BinaryFileWriter(binPath, true);
+
+                saveBuffer!.Resize((int)saveBuffer.Position);
+                bin.Write(saveBuffer.Buffer.AsSpan());
+            }
+
+            void Deserialize(string savePath)
+            {
+                var path = Path.Combine(savePath, name);
+
+                AssemblyHandler.EnsureDirectory(path);
+
+                string binPath = Path.Combine(path, $"{name}.bin");
+
+                if (!File.Exists(binPath))
+                {
+                    return;
+                }
+
+                try
+                {
+                    using FileStream bin = new FileStream(binPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    var br = new BufferReader(GC.AllocateUninitializedArray<byte>((int)bin.Length));
+                    deserializer(br);
+                }
+                catch (Exception e)
+                {
+                    Utility.PushColor(ConsoleColor.Red);
+                    Persistence.WriteConsoleLine($"***** Bad deserialize of {name} *****");
+                    Persistence.WriteConsoleLine(e.ToString());
+                    Utility.PopColor();
+                }
+            }
+
+            Persistence.Register(Serialize, WriterSnapshot, Deserialize);
         }
     }
 }

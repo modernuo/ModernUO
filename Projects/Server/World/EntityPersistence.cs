@@ -276,10 +276,12 @@ namespace Server
         private static void SerializeTo(this ISerializable entity, IGenericWriter writer)
         {
             var saveBuffer = entity.SaveBuffer;
-            writer.Write(saveBuffer.Buffer.AsSpan(0, (int)saveBuffer.Position));
 
-            // Resize to exact buffer size
-            entity.SaveBuffer.Resize((int)entity.SaveBuffer.Position);
+            // Resize to the exact size
+            saveBuffer.Resize((int)saveBuffer.Position);
+
+            // Write that amount
+            writer.Write(saveBuffer.Buffer);
         }
     }
 }
