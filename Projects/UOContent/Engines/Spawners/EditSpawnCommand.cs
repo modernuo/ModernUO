@@ -92,7 +92,6 @@ namespace Server.Engines.Spawners
             var propsStr = props.ToString().DefaultIfNullOrEmpty(null);
             var whereStr = findmatch.ToString().DefaultIfNullOrEmpty(null);
           
-         
 
             e.Mobile.SendMessage("Updating spawners...");
 
@@ -100,14 +99,14 @@ namespace Server.Engines.Spawners
             {
                 if (obj is BaseSpawner spawner)
                 {
-                    UpdateSpawner(spawner, name, argStr, propsStr, whereStr?.ToLower().Split(" ", StringSplitOptions.RemoveEmptyEntries));
+                    UpdateSpawner(spawner, name, argStr, propsStr, whereStr);
                 }
             }
 
             e.Mobile.SendMessage("Update completed.");
         }
 
-        public static void UpdateSpawner(BaseSpawner spawner, string name, string arguments, string properties, string[] find = null)
+        public static void UpdateSpawner(BaseSpawner spawner, string name, string arguments, string properties, string find = null)
         {
             foreach (var entry in spawner.Entries)
             {
@@ -116,10 +115,16 @@ namespace Server.Engines.Spawners
                 {
                     if (find != null)
                     {
-                        if (entry.ArrayProperties?.Compare(find) == true)
+                        var found = entry.Properties?.LastIndexOf(find,StringComparison.OrdinalIgnoreCase);
+                        if (found!=-1)
                         {
-                            if (arguments != null) entry.Parameters = arguments;
-                            entry.Properties = properties;
+                            if((found + find.Length) == entry.Properties.Length ||
+                                entry.Properties[(int)found+1]== ' ')
+                            {
+                                if (arguments != null) entry.Parameters = arguments;
+                                entry.Properties = properties;
+                            }
+                           
                         }    
                     }
                     else
