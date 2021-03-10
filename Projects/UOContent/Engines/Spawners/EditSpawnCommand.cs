@@ -119,7 +119,7 @@ namespace Server.Engines.Spawners
                         if (found != -1)
                         {
                             if ((found + find.Length) == entry.Properties.Length ||
-                                entry.Properties[(int)found + 1] == ' ')
+                                char.IsWhiteSpace(entry.Properties[(int)found + find.Length]))
                             {
                                 if (arguments != null) entry.Parameters = arguments;
                                 entry.Properties = properties;
