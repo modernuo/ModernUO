@@ -23,13 +23,15 @@ namespace Server
 {
     public static class Persistence
     {
+        public const int DefaultPriority = 100;
+
         public static readonly SortedSet<RegistryEntry> _registry = new(new RegistryEntryComparer());
 
         public static void Register(
             Action serializer,
             Action<string> snapshotWriter,
             Action<string> deserializer,
-            int priority = 100
+            int priority = DefaultPriority
         )
         {
             _registry.Add(
