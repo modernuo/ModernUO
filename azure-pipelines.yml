@@ -1,7 +1,7 @@
 name: 'Build'
 
 trigger:
-- master
+- main
 
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
@@ -18,7 +18,7 @@ jobs:
     displayName: 'Install .NET 5'
     inputs:
       packageType: sdk
-      version: '5.0.102'
+      version: 5.0.200
   - task: NuGetAuthenticate@0
   - script: ./publish.cmd Release win
     displayName: 'Build'
@@ -56,7 +56,7 @@ jobs:
     displayName: 'Install .NET 5'
     inputs:
       packageType: sdk
-      version: '5.0.102'
+      version: 5.0.200
   - task: NuGetAuthenticate@0
   - script: ./publish.cmd Release $(os)
     displayName: 'Build'

@@ -511,78 +511,6 @@ namespace Server.Network
             }
         }
 
-        public virtual void Send(Packet p)
-        {
-            if (Connection == null || BlockAllPackets)
-            {
-                p.OnSend();
-                return;
-            }
-
-            var writer = SendPipe.Writer;
-
-            try
-            {
-                byte[] buffer = p.Compile(CompressionEnabled, out var length);
-
-                if (buffer == null)
-                {
-                    WriteConsole("null buffer send, disconnecting...", this);
-                    using (StreamWriter op = new StreamWriter("null_send.log", true))
-                    {
-                        op.WriteLine("{0} Client: {1}: null buffer send, disconnecting...", DateTime.UtcNow, this);
-                        op.WriteLine(new System.Diagnostics.StackTrace());
-                    }
-
-                    Disconnect("Attempted to send null packet buffer.");
-                    return;
-                }
-
-                if (buffer.Length <= 0 || length <= 0)
-                {
-                    p.OnSend();
-                    return;
-                }
-
-                PacketSendProfile prof = null;
-
-                if (Core.Profiling)
-                {
-                    prof = PacketSendProfile.Acquire(p.PacketID);
-                    prof.Start();
-                }
-
-                var result = writer.TryGetMemory();
-
-                if (result.Length >= length)
-                {
-                    result.CopyFrom(buffer.AsSpan(0, length));
-                    writer.Advance((uint)length);
-
-                    if (!_flushQueued)
-                    {
-                        FlushPending.Enqueue(this);
-                        _flushQueued = true;
-                    }
-                }
-                else
-                {
-                    WriteConsole("Too much data pending, disconnecting...");
-                    Disconnect("Too much data pending.");
-                }
-
-                prof?.Finish(length);
-            }
-            catch (Exception ex)
-            {
-#if DEBUG
-                Console.WriteLine(ex);
-#endif
-                TraceException(ex);
-                Disconnect("Exception while sending.");
-            }
-        }
-
         internal void Start()
         {
             if (Interlocked.CompareExchange(ref _running, 1, 0) == 1 || Connection == null)
@@ -729,7 +657,7 @@ namespace Server.Network
 
                             case ProtocolState.GameServer_AwaitingGameServerLogin:
                                 {
-                                    if (packetId != 0x91)
+                                    if (packetId != 0x91 && packetId != 0x80)
                                     {
                                         HandleError(packetId, packetLength);
                                         return true;
