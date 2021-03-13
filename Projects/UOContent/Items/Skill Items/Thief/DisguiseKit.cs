@@ -315,7 +315,7 @@ namespace Server.Items
                 return;
             }
 
-            var ts = t.Next - DateTime.UtcNow;
+            var ts = t.Next - Core.Now;
             if (ts < TimeSpan.Zero)
             {
                 ts = TimeSpan.Zero;
@@ -334,7 +334,7 @@ namespace Server.Items
         }
 
         public static TimeSpan TimeRemaining(Mobile m) =>
-            Timers.TryGetValue(m, out var t) ? t.Next - DateTime.UtcNow : TimeSpan.Zero;
+            Timers.TryGetValue(m, out var t) ? t.Next - Core.Now : TimeSpan.Zero;
 
         private class InternalTimer : Timer
         {

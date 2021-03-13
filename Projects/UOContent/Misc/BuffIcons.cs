@@ -29,7 +29,7 @@ namespace Server
             : this(iconID, titleCliloc, secondaryCliloc)
         {
             TimeLength = length;
-            TimeStart = DateTime.UtcNow;
+            TimeStart = Core.TickCount;
 
             Timer = Timer.DelayCall(length, RemoveBuff, m, this);
         }
@@ -101,7 +101,7 @@ namespace Server
 
         public TimeSpan TimeLength { get; }
 
-        public DateTime TimeStart { get; }
+        public long TimeStart { get; }
 
         public Timer Timer { get; }
 
@@ -152,12 +152,12 @@ namespace Server
             TitleCliloc,
             SecondaryCliloc,
             Args,
-            TimeStart != DateTime.MinValue ? TimeStart + TimeLength - DateTime.UtcNow : TimeSpan.Zero
+            TimeStart == 0 ? 0 : Math.Max(TimeStart + (long)TimeLength.TotalMilliseconds - Core.TickCount, 0)
         );
 
         public static void SendAddBuffPacket(
             NetState ns, Serial mob, BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args,
-            TimeSpan ts
+            long ticks
         )
         {
             if (ns == null)
@@ -178,7 +178,7 @@ namespace Server
             writer.Write((short)iconID);
             writer.Write((short)0x1); // command (0 = remove, 1 = add, 2 = data)
             writer.Write(0);
-            writer.Write((short)(ts <= TimeSpan.Zero ? 0 : ts.TotalSeconds));
+            writer.Write((short)(ticks / 1000));
             writer.Clear(3);
             writer.Write(titleCliloc);
             writer.Write(secondaryCliloc);

@@ -24,7 +24,7 @@ namespace Server.Mobiles
             var scalar = caster.Skills.SpiritSpeak.Value * 0.01;
 
             m_Target = target;
-            m_ExpireTime = DateTime.UtcNow + duration;
+            m_ExpireTime = Core.Now + duration;
 
             SetStr(200);
             SetDex(150);
@@ -87,7 +87,7 @@ namespace Server.Mobiles
 
         public override void OnThink()
         {
-            if (!m_Target.Alive || DateTime.UtcNow > m_ExpireTime)
+            if (!m_Target.Alive || Core.Now > m_ExpireTime)
             {
                 Kill();
                 return;

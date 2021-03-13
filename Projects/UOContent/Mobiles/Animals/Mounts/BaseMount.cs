@@ -134,10 +134,10 @@ namespace Server.Mobiles
 
             var attacker = from ?? m_Rider.FindMostRecentDamager(true);
 
-            if (!(attacker == this || attacker == m_Rider || willKill || DateTime.UtcNow < NextMountAbility)
+            if (!(attacker == this || attacker == m_Rider || willKill || Core.Now < NextMountAbility)
                 && DoMountAbility(amount, from))
             {
-                NextMountAbility = DateTime.UtcNow + MountAbilityDelay;
+                NextMountAbility = Core.Now + MountAbilityDelay;
             }
         }
 

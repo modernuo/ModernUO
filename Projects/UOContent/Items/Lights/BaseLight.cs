@@ -51,16 +51,7 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public TimeSpan Duration
         {
-            get
-            {
-                if (m_Duration != TimeSpan.Zero && m_Burning)
-                {
-                    return m_End - DateTime.UtcNow;
-                }
-
-                return m_Duration;
-            }
-
+            get => m_Duration != TimeSpan.Zero && m_Burning ? m_End - Core.Now : m_Duration;
             set => m_Duration = value;
         }
 
@@ -120,7 +111,7 @@ namespace Server.Items
             }
             else if (m_Duration != TimeSpan.Zero)
             {
-                m_Duration = m_End - DateTime.UtcNow;
+                m_Duration = m_End - Core.Now;
             }
 
             m_Timer?.Stop();
@@ -145,7 +136,7 @@ namespace Server.Items
                 return;
             }
 
-            m_End = DateTime.UtcNow + delay;
+            m_End = Core.Now + delay;
 
             m_Timer = new InternalTimer(this, delay);
             m_Timer.Start();
@@ -214,7 +205,7 @@ namespace Server.Items
 
                         if (m_Burning && m_Duration != TimeSpan.Zero)
                         {
-                            DoTimer(reader.ReadDeltaTime() - DateTime.UtcNow);
+                            DoTimer(reader.ReadDeltaTime() - Core.Now);
                         }
 
                         break;

@@ -34,7 +34,7 @@ namespace Server
         private readonly DateTime m_Expire;
 
         public TimedSkillMod(SkillName skill, bool relative, double value, TimeSpan delay)
-            : this(skill, relative, value, DateTime.UtcNow + delay)
+            : this(skill, relative, value, Core.Now + delay)
         {
         }
 
@@ -42,7 +42,7 @@ namespace Server
             : base(skill, relative, value) =>
             m_Expire = expire;
 
-        public override bool CheckCondition() => DateTime.UtcNow < m_Expire;
+        public override bool CheckCondition() => Core.Now < m_Expire;
     }
 
     public class EquippedSkillMod : SkillMod
@@ -240,7 +240,7 @@ namespace Server
             Name = name;
             Offset = offset;
             m_Duration = duration;
-            m_Added = DateTime.UtcNow;
+            m_Added = Core.Now;
         }
 
         public StatType Type { get; }
@@ -249,15 +249,7 @@ namespace Server
 
         public int Offset { get; }
 
-        public bool HasElapsed()
-        {
-            if (m_Duration == TimeSpan.Zero)
-            {
-                return false;
-            }
-
-            return DateTime.UtcNow - m_Added >= m_Duration;
-        }
+        public bool HasElapsed() => m_Duration != TimeSpan.Zero && Core.Now - m_Added >= m_Duration;
     }
 
     public class DamageEntry
@@ -270,7 +262,7 @@ namespace Server
 
         public DateTime LastDamage { get; set; }
 
-        public bool HasExpired => DateTime.UtcNow > LastDamage + ExpireDelay;
+        public bool HasExpired => Core.Now > LastDamage + ExpireDelay;
 
         public List<DamageEntry> Responsible { get; set; }
 
@@ -3747,7 +3739,7 @@ namespace Server
                 return;
             }
 
-            var now = DateTime.UtcNow;
+            var now = Core.Now;
             var next = m_NextWarmodeChange;
 
             if (now > next || m_WarmodeChanges == 0)
@@ -5996,7 +5988,7 @@ namespace Server
             var de = FindDamageEntryFor(from) ?? new DamageEntry(from);
 
             de.DamageGiven += amount;
-            de.LastDamage = DateTime.UtcNow;
+            de.LastDamage = Core.Now;
 
             DamageEntries.Remove(de);
             DamageEntries.Add(de);
@@ -6028,7 +6020,7 @@ namespace Server
                 }
 
                 resp.DamageGiven += amount;
-                resp.LastDamage = DateTime.UtcNow;
+                resp.LastDamage = Core.Now;
             }
 
             return de;
@@ -7925,7 +7917,7 @@ namespace Server
             DamageEntries = new List<DamageEntry>();
 
             NextSkillTime = Core.TickCount;
-            CreationTime = DateTime.UtcNow;
+            CreationTime = Core.Now;
         }
 
         public virtual void Delta(MobileDelta flag)

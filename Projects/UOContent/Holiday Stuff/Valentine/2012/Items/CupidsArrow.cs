@@ -57,7 +57,7 @@ namespace Server.Items
 
         public static bool CheckSeason(Mobile from)
         {
-            if (DateTime.UtcNow.Month == 2)
+            if (Core.Now.Month == 2)
             {
                 return true;
             }

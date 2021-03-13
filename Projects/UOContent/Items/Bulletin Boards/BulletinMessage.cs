@@ -12,7 +12,7 @@ namespace Server.Items
 
             Poster = poster;
             Subject = subject;
-            Time = DateTime.UtcNow;
+            Time = Core.Now;
             LastPostTime = Time;
             Thread = thread;
             PostedName = Poster.Name;

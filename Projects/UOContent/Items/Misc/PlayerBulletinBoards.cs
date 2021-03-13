@@ -244,7 +244,7 @@ namespace Server.Items
 
                 if (text.Length > 0)
                 {
-                    var message = new PlayerBBMessage(DateTime.UtcNow, from, text);
+                    var message = new PlayerBBMessage(Core.Now, from, text);
 
                     if (m_Greeting)
                     {

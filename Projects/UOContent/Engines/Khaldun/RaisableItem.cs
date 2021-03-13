@@ -121,7 +121,7 @@ namespace Server.Items
             public RaiseTimer(RaisableItem item) : base(TimeSpan.Zero, TimeSpan.FromSeconds(0.5))
             {
                 m_Item = item;
-                m_CloseTime = DateTime.UtcNow + item.CloseDelay;
+                m_CloseTime = Core.Now + item.CloseDelay;
                 m_Up = true;
 
                 Priority = TimerPriority.TenMS;
@@ -153,7 +153,7 @@ namespace Server.Items
                             m_Up = false;
                             m_Step = 0;
 
-                            var delay = m_CloseTime - DateTime.UtcNow;
+                            var delay = m_CloseTime - Core.Now;
                             DelayCall(delay > TimeSpan.Zero ? delay : TimeSpan.Zero, Start);
 
                             return;

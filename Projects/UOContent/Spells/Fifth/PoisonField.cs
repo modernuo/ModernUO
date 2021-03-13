@@ -103,7 +103,7 @@ namespace Server.Spells.Fifth
 
                 m_Caster = caster;
 
-                m_End = DateTime.UtcNow + duration;
+                m_End = Core.Now + duration;
 
                 m_Timer = new InternalTimer(this, TimeSpan.FromSeconds(Math.Abs(val) * 0.2), caster.InLOS(this), canFit);
                 m_Timer.Start();
@@ -267,7 +267,7 @@ namespace Server.Spells.Fifth
                             );
                         }
                     }
-                    else if (DateTime.UtcNow > m_Item.m_End)
+                    else if (Core.Now > m_Item.m_End)
                     {
                         m_Item.Delete();
                         Stop();

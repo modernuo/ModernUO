@@ -96,7 +96,7 @@ namespace Server.Items
                 return;
             }
 
-            if (DateTime.UtcNow < LastUse + UseDelay)
+            if (Core.Now < LastUse + UseDelay)
             {
                 return;
             }
@@ -172,7 +172,7 @@ namespace Server.Items
                 return;
             }
 
-            LastUse = DateTime.UtcNow;
+            LastUse = Core.Now;
 
             from.Direction = from.GetDirectionTo(GetWorldLocation());
             bow.PlaySwingAnimation(from);

@@ -293,7 +293,7 @@ namespace Server.Misc
                 }
 
                 if (from is PlayerMobile pm && skill.SkillName == pm.AcceleratedSkill &&
-                    pm.AcceleratedStart > DateTime.UtcNow)
+                    pm.AcceleratedStart > Core.Now)
                 {
                     toGain *= Utility.RandomMinMax(2, 5);
                 }
@@ -433,51 +433,51 @@ namespace Server.Misc
                     {
                         if (from is BaseCreature creature && creature.Controlled)
                         {
-                            if (creature.LastStrGain + m_PetStatGainDelay >= DateTime.UtcNow)
+                            if (creature.LastStrGain + m_PetStatGainDelay >= Core.Now)
                             {
                                 return;
                             }
                         }
-                        else if (from.LastStrGain + m_StatGainDelay >= DateTime.UtcNow)
+                        else if (from.LastStrGain + m_StatGainDelay >= Core.Now)
                         {
                             return;
                         }
 
-                        from.LastStrGain = DateTime.UtcNow;
+                        from.LastStrGain = Core.Now;
                         break;
                     }
                 case Stat.Dex:
                     {
                         if (from is BaseCreature creature && creature.Controlled)
                         {
-                            if (creature.LastDexGain + m_PetStatGainDelay >= DateTime.UtcNow)
+                            if (creature.LastDexGain + m_PetStatGainDelay >= Core.Now)
                             {
                                 return;
                             }
                         }
-                        else if (from.LastDexGain + m_StatGainDelay >= DateTime.UtcNow)
+                        else if (from.LastDexGain + m_StatGainDelay >= Core.Now)
                         {
                             return;
                         }
 
-                        from.LastDexGain = DateTime.UtcNow;
+                        from.LastDexGain = Core.Now;
                         break;
                     }
                 case Stat.Int:
                     {
                         if (from is BaseCreature creature && creature.Controlled)
                         {
-                            if (creature.LastIntGain + m_PetStatGainDelay >= DateTime.UtcNow)
+                            if (creature.LastIntGain + m_PetStatGainDelay >= Core.Now)
                             {
                                 return;
                             }
                         }
-                        else if (from.LastIntGain + m_StatGainDelay >= DateTime.UtcNow)
+                        else if (from.LastIntGain + m_StatGainDelay >= Core.Now)
                         {
                             return;
                         }
 
-                        from.LastIntGain = DateTime.UtcNow;
+                        from.LastIntGain = Core.Now;
                         break;
                     }
             }

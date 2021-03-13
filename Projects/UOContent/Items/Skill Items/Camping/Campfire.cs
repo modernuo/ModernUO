@@ -29,7 +29,7 @@ namespace Server.Items
 
             m_Entries = new List<CampfireEntry>();
 
-            Created = DateTime.UtcNow;
+            Created = Core.Now;
             m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnTick);
         }
 
@@ -94,7 +94,7 @@ namespace Server.Items
 
         private void OnTick()
         {
-            var now = DateTime.UtcNow;
+            var now = Core.Now;
             var age = now - Created;
 
             if (age >= TimeSpan.FromSeconds(100.0))
@@ -191,7 +191,7 @@ namespace Server.Items
         {
             Player = player;
             Fire = fire;
-            Start = DateTime.UtcNow;
+            Start = Core.Now;
             m_Safe = false;
         }
 

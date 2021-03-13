@@ -43,7 +43,7 @@ namespace Server.Gumps
                     }
                 }
 
-                if (ai.Attacker.Player && DateTime.UtcNow - ai.LastCombatTime < TimeSpan.FromSeconds(30.0) &&
+                if (ai.Attacker.Player && Core.Now - ai.LastCombatTime < TimeSpan.FromSeconds(30.0) &&
                     !toGive.Contains(ai.Attacker))
                 {
                     toGive.Add(ai.Attacker);
@@ -52,7 +52,7 @@ namespace Server.Gumps
 
             foreach (var ai in m.Aggressed)
             {
-                if (ai.Defender.Player && DateTime.UtcNow - ai.LastCombatTime < TimeSpan.FromSeconds(30.0) &&
+                if (ai.Defender.Player && Core.Now - ai.LastCombatTime < TimeSpan.FromSeconds(30.0) &&
                     !toGive.Contains(ai.Defender))
                 {
                     toGive.Add(ai.Defender);

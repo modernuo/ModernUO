@@ -145,7 +145,7 @@ namespace Server.Items
             {
                 var info = m.Aggressed[i];
 
-                if (DateTime.UtcNow - info.LastCombatTime < time)
+                if (Core.Now - info.LastCombatTime < time)
                 {
                     return true;
                 }
@@ -231,7 +231,7 @@ namespace Server.Items
                 return false;
             }
 
-            if ((from as PlayerMobile)?.AcceleratedStart > DateTime.UtcNow)
+            if ((from as PlayerMobile)?.AcceleratedStart > Core.Now)
             {
                 // You may not use a soulstone while your character is under the effects of a Scroll of Alacrity.
                 from.SendLocalizedMessage(1078115);
@@ -743,7 +743,7 @@ namespace Server.Items
                     return;
                 }
 
-                if ((from as PlayerMobile)?.AcceleratedStart > DateTime.UtcNow)
+                if ((from as PlayerMobile)?.AcceleratedStart > Core.Now)
                 {
                     // <CENTER>Unable to Absorb Selected Skill from Soulstone</CENTER>
 

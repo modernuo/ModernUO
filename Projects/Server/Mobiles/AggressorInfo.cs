@@ -38,7 +38,7 @@ namespace Server
                     DumpAccess();
                 }
 
-                return m_Attacker.Deleted || m_Defender.Deleted || DateTime.UtcNow >= m_LastCombatTime + ExpireDelay;
+                return m_Attacker.Deleted || m_Defender.Deleted || Core.Now >= m_LastCombatTime + ExpireDelay;
             }
         }
 
@@ -200,7 +200,7 @@ namespace Server
                 DumpAccess();
             }
 
-            m_LastCombatTime = DateTime.UtcNow;
+            m_LastCombatTime = Core.Now;
             m_Reported = false;
         }
     }

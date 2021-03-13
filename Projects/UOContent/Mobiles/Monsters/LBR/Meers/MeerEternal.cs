@@ -40,7 +40,7 @@ namespace Server.Mobiles
 
             VirtualArmor = 34;
 
-            m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
+            m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
         }
 
         public MeerEternal(Serial serial) : base(serial)
@@ -159,13 +159,13 @@ namespace Server.Mobiles
 
         public override void OnThink()
         {
-            if (DateTime.UtcNow >= m_NextAbilityTime)
+            if (Core.Now >= m_NextAbilityTime)
             {
                 var combatant = Combatant;
 
                 if (combatant != null && combatant.Map == Map && combatant.InRange(this, 12))
                 {
-                    m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(10, 15));
+                    m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(10, 15));
 
                     var ability = Utility.Random(4);
 

@@ -93,14 +93,14 @@ namespace Server.Engines.Spawners
                 return;
             }
 
-            End = DateTime.UtcNow + delay;
+            End = Core.Now + delay;
         }
 
         public override void Respawn()
         {
             RemoveSpawns();
 
-            End = DateTime.UtcNow;
+            End = Core.Now;
         }
 
         public virtual bool ValidTrigger(Mobile m)
@@ -120,7 +120,7 @@ namespace Server.Engines.Spawners
                 return;
             }
 
-            if (IsEmpty && End <= DateTime.UtcNow && m.InRange(GetWorldLocation(), TriggerRange) &&
+            if (IsEmpty && End <= Core.Now && m.InRange(GetWorldLocation(), TriggerRange) &&
                 m.Location != oldLocation && ValidTrigger(m))
             {
                 TextDefinition.SendMessageTo(m, SpawnMessage);

@@ -113,11 +113,11 @@ namespace Server.Mobiles
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
-            if (!m.Frozen && DateTime.UtcNow >= m_NextResurrect && InRange(m, 4) && !InRange(oldLocation, 4) && InLOS(m))
+            if (!m.Frozen && Core.Now >= m_NextResurrect && InRange(m, 4) && !InRange(oldLocation, 4) && InLOS(m))
             {
                 if (!m.Alive)
                 {
-                    m_NextResurrect = DateTime.UtcNow + ResurrectDelay;
+                    m_NextResurrect = Core.Now + ResurrectDelay;
 
                     if (m.Map?.CanFit(m.Location, 16, false, false) != true)
                     {

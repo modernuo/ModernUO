@@ -37,8 +37,8 @@ namespace Server
         private static string _baseDirectory;
 
         private static bool _profiling;
-        private static DateTime _profileStart;
-        private static TimeSpan _profileTime;
+        private static long _profileStart;
+        private static long _profileTime;
 #nullable enable
         private static bool? _isRunningFromXUnit;
 #nullable restore
@@ -95,19 +95,17 @@ namespace Server
 
                 _profiling = value;
 
-                if (_profileStart > DateTime.MinValue)
+                if (_profileStart > 0)
                 {
-                    _profileTime += DateTime.UtcNow - _profileStart;
+                    _profileTime += TickCount - _profileStart;
                 }
 
-                _profileStart = _profiling ? DateTime.UtcNow : DateTime.MinValue;
+                _profileStart = _profiling ? TickCount : 0;
             }
         }
 
         public static TimeSpan ProfileTime =>
-            _profileStart > DateTime.MinValue
-                ? _profileTime + (DateTime.UtcNow - _profileStart)
-                : _profileTime;
+            TimeSpan.FromMilliseconds(_profileStart > 0 ? _profileTime + (TickCount - _profileStart) : _profileTime);
 
         public static Assembly Assembly { get; set; }
 
@@ -118,7 +116,11 @@ namespace Server
 
         public static Thread Thread { get; private set; }
 
-        [ThreadStatic] private static long _tickCount;
+        [ThreadStatic]
+        private static long _tickCount;
+
+        [ThreadStatic]
+        private static DateTime _now;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long GetTicks() => 1000L * Stopwatch.GetTimestamp() / Stopwatch.Frequency;
@@ -127,6 +129,12 @@ namespace Server
         {
             get => _tickCount == 0 ? GetTicks() : _tickCount;
             set => _tickCount = value;
+        }
+
+        public static DateTime Now
+        {
+            get => _now == DateTime.MinValue ? DateTime.UtcNow : _now;
+            set => _now = value;
         }
 
         public static bool MultiProcessor { get; private set; }
@@ -488,6 +496,7 @@ namespace Server
                 while (!Closing)
                 {
                     _tickCount = TickCount;
+                    _now = DateTime.UtcNow;
 
                     var events = Mobile.ProcessDeltaQueue();
                     events += Item.ProcessDeltaQueue();
@@ -502,6 +511,7 @@ namespace Server
                     events += _eventLoopContext.ExecuteTasks();
 
                     _tickCount = 0;
+                    _now = DateTime.MinValue;
 
                     if (events > 0)
                     {

@@ -22,7 +22,7 @@ namespace Server.Factions
             Visible = false;
 
             Faction = f;
-            TimeOfPlacement = DateTime.UtcNow;
+            TimeOfPlacement = Core.Now;
             Placer = m;
         }
 
@@ -204,7 +204,7 @@ namespace Server.Factions
                 return false;
             }
 
-            if (TimeOfPlacement + decayPeriod < DateTime.UtcNow)
+            if (TimeOfPlacement + decayPeriod < Core.Now)
             {
                 Timer.DelayCall(Delete);
                 return true;

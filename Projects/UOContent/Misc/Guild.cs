@@ -500,7 +500,7 @@ namespace Server.Guilds
                     return WarStatus.Win;
                 }
 
-                if (WarLength != TimeSpan.Zero && WarBeginning + WarLength < DateTime.UtcNow)
+                if (WarLength != TimeSpan.Zero && WarBeginning + WarLength < Core.Now)
                 {
                     if (Kills > w.Kills)
                     {
@@ -598,7 +598,7 @@ namespace Server.Guilds
             Candidates = new List<Mobile>();
             Accepted = new List<Mobile>();
 
-            LastFealty = DateTime.UtcNow;
+            LastFealty = Core.Now;
 
             m_Name = name;
             m_Abbreviation = abbreviation;
@@ -766,7 +766,7 @@ namespace Server.Guilds
                 if (m_Type != value)
                 {
                     m_Type = value;
-                    TypeLastChange = DateTime.UtcNow;
+                    TypeLastChange = Core.Now;
 
                     InvalidateMemberProperties();
                 }
@@ -1157,7 +1157,7 @@ namespace Server.Guilds
 
         public override void Serialize(IGenericWriter writer)
         {
-            if (LastFealty + TimeSpan.FromDays(1.0) < DateTime.UtcNow)
+            if (LastFealty + TimeSpan.FromDays(1.0) < Core.Now)
             {
                 CalculateGuildmaster();
             }
@@ -1547,7 +1547,7 @@ namespace Server.Guilds
             m?.Deleted == false && m.Guild == this;
 
         public bool CanBeVotedFor(Mobile m) =>
-            (!NewGuildSystem || m is PlayerMobile pm && pm.LastOnline + InactiveTime >= DateTime.UtcNow) &&
+            (!NewGuildSystem || m is PlayerMobile pm && pm.LastOnline + InactiveTime >= Core.Now) &&
             m?.Deleted == false && m.Guild == this;
 
         public void CalculateGuildmaster()
@@ -1615,7 +1615,7 @@ namespace Server.Guilds
             }
 
             Leader = winner;
-            LastFealty = DateTime.UtcNow;
+            LastFealty = Core.Now;
         }
 
         private class GuildPropsTarget : Target

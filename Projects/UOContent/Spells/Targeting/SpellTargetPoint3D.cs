@@ -40,7 +40,7 @@ namespace Server.Spells
 
             from.SendLocalizedMessage(501943); // Target cannot be seen. Try again.
             from.Target = new SpellTargetPoint3D(m_Spell);
-            from.Target.BeginTimeout(from, TimeoutTime - DateTime.UtcNow);
+            from.Target.BeginTimeout(from, TimeoutTime - Core.TickCount);
             m_Spell = null; // Needed?
         }
 

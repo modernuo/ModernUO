@@ -535,7 +535,7 @@ namespace Server.Items
             }
             else
             {
-                writer.Write(DateTime.UtcNow + EvaluationInterval);
+                writer.Write(Core.Now + EvaluationInterval);
             }
 
             // version 0
@@ -569,12 +569,12 @@ namespace Server.Items
                     {
                         var next = reader.ReadDateTime();
 
-                        if (next < DateTime.UtcNow)
+                        if (next < Core.Now)
                         {
-                            next = DateTime.UtcNow;
+                            next = Core.Now;
                         }
 
-                        m_Timer = Timer.DelayCall(next - DateTime.UtcNow, EvaluationInterval, Evaluate);
+                        m_Timer = Timer.DelayCall(next - Core.Now, EvaluationInterval, Evaluate);
 
                         goto case 0;
                     }

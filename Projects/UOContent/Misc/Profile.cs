@@ -70,7 +70,7 @@ namespace Server.Misc
                 return "";
             }
 
-            var ts = DateTime.UtcNow - a.Created;
+            var ts = Core.Now - a.Created;
 
             if (Format(ts.TotalDays, "This account is {0} day{1} old.", out var v))
             {

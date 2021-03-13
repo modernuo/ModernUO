@@ -62,12 +62,12 @@ namespace Server.Mobiles
         {
             base.OnThink();
 
-            if (DateTime.UtcNow < m_NextPickup)
+            if (Core.Now < m_NextPickup)
             {
                 return;
             }
 
-            m_NextPickup = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(5, 10));
+            m_NextPickup = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(5, 10));
 
             var pack = Backpack;
 

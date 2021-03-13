@@ -10,7 +10,7 @@ namespace Server.Mobiles
         public PlagueSpawn(Mobile owner = null) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
         {
             Owner = owner;
-            ExpireTime = DateTime.UtcNow + TimeSpan.FromMinutes(1.0);
+            ExpireTime = Core.Now + TimeSpan.FromMinutes(1.0);
 
             Hue = Utility.Random(0x11, 15);
 
@@ -102,7 +102,7 @@ namespace Server.Mobiles
 
         public override void OnThink()
         {
-            if (Owner != null && (DateTime.UtcNow >= ExpireTime || Owner.Deleted || Map != Owner.Map || !InRange(Owner, 16)))
+            if (Owner != null && (Core.Now >= ExpireTime || Owner.Deleted || Map != Owner.Map || !InRange(Owner, 16)))
             {
                 PlaySound(GetIdleSound());
                 Delete();

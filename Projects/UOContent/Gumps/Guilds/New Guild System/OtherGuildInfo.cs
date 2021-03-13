@@ -70,9 +70,9 @@ namespace Server.Guilds
 
                 var timeRemaining = TimeSpan.Zero;
 
-                if (activeWar.WarLength != TimeSpan.Zero && activeWar.WarBeginning + activeWar.WarLength > DateTime.UtcNow)
+                if (activeWar.WarLength != TimeSpan.Zero && activeWar.WarBeginning + activeWar.WarLength > Core.Now)
                 {
-                    timeRemaining = activeWar.WarBeginning + activeWar.WarLength - DateTime.UtcNow;
+                    timeRemaining = activeWar.WarBeginning + activeWar.WarLength - Core.Now;
                 }
 
                 time = $"{timeRemaining.Hours:D2}:{DateTime.MinValue + timeRemaining:mm}";
@@ -234,7 +234,7 @@ namespace Server.Guilds
                             {
                                 // Accept the war
                                 guild.PendingWars.Remove(war);
-                                war.WarBeginning = DateTime.UtcNow;
+                                war.WarBeginning = Core.Now;
                                 guild.AcceptedWars.Add(war);
 
                                 if (alliance?.IsMember(guild) == true)
@@ -260,7 +260,7 @@ namespace Server.Guilds
                                 // Technically  SHOULD say Your guild is now at war w/out any info, intentional diff.
 
                                 otherGuild.PendingWars.Remove(otherWar);
-                                otherWar.WarBeginning = DateTime.UtcNow;
+                                otherWar.WarBeginning = Core.Now;
                                 otherGuild.AcceptedWars.Add(otherWar);
 
                                 if (otherAlliance != null && m_Other.Alliance.IsMember(m_Other))

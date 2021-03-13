@@ -205,6 +205,8 @@ namespace Server
             Write(ticks);
         }
 
+        // TODO: Find a way to speed this up.
+        // Maybe used a special cached value?
         public void WriteDeltaTime(DateTime value)
         {
             var ticks = (value.Kind switch

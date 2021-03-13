@@ -483,7 +483,7 @@ namespace Server.Spells
             {
                 Caster.SendLocalizedMessage(502644); // You have not yet recovered from casting a spell.
             }
-            else if (Caster is PlayerMobile mobile && mobile.PeacedUntil > DateTime.UtcNow)
+            else if (Caster is PlayerMobile mobile && mobile.PeacedUntil > Core.Now)
             {
                 mobile.SendLocalizedMessage(1072060); // You cannot cast a spell while calmed.
             }
@@ -691,7 +691,7 @@ namespace Server.Spells
 
             var fcDelay = TimeSpan.FromSeconds(-(CastDelayFastScalar * fc * CastDelaySecondsPerTick));
 
-            return (CastDelayBase + fcDelay).Max(CastDelayMinimum);
+            return Utility.Max(CastDelayBase + fcDelay, CastDelayMinimum);
         }
 
         public virtual int ComputeKarmaAward() => 0;
@@ -723,7 +723,7 @@ namespace Server.Spells
                 Caster.SendLocalizedMessage(502646); // You cannot cast a spell while frozen.
                 DoFizzle();
             }
-            else if (Caster is PlayerMobile mobile && mobile.PeacedUntil > DateTime.UtcNow)
+            else if (Caster is PlayerMobile mobile && mobile.PeacedUntil > Core.Now)
             {
                 mobile.SendLocalizedMessage(1072060); // You cannot cast a spell while calmed.
                 DoFizzle();
@@ -924,7 +924,7 @@ namespace Server.Spells
 
                     if (m_Spell.Caster.Player && m_Spell.Caster.Target != originalTarget)
                     {
-                        m_Spell.Caster.Target?.BeginTimeout(m_Spell.Caster, TimeSpan.FromSeconds(30.0));
+                        m_Spell.Caster.Target?.BeginTimeout(m_Spell.Caster, 30000); // 30 seconds
                     }
 
                     m_Spell.m_CastTimer = null;

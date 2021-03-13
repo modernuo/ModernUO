@@ -43,9 +43,9 @@ namespace Server.Multis
         {
             AllHouses.Add(this);
 
-            LastRefreshed = DateTime.UtcNow;
+            LastRefreshed = Core.Now;
 
-            BuiltOn = DateTime.UtcNow;
+            BuiltOn = Core.Now;
             LastTraded = DateTime.MinValue;
 
             Doors = new List<BaseDoor>();
@@ -203,14 +203,14 @@ namespace Server.Multis
                         ResetDynamicDecay();
                     }
 
-                    LastRefreshed = DateTime.UtcNow;
+                    LastRefreshed = Core.Now;
                     result = DecayLevel.Ageless;
                 }
                 else if (DynamicDecay.Enabled)
                 {
                     var stage = m_CurrentStage;
 
-                    if (stage == DecayLevel.Ageless || DynamicDecay.Decays(stage) && NextDecayStage <= DateTime.UtcNow)
+                    if (stage == DecayLevel.Ageless || DynamicDecay.Decays(stage) && NextDecayStage <= Core.Now)
                     {
                         SetDynamicDecay(++stage);
                     }
@@ -531,7 +531,7 @@ namespace Server.Multis
 
         public DecayLevel GetOldDecayLevel()
         {
-            var timeAfterRefresh = DateTime.UtcNow - LastRefreshed;
+            var timeAfterRefresh = Core.Now - LastRefreshed;
             var percent = (int)(timeAfterRefresh.Ticks * 1000 / DecayPeriod.Ticks);
 
             if (percent >= 1000) // 100.0%
@@ -576,7 +576,7 @@ namespace Server.Multis
 
             var oldLevel = DecayLevel;
 
-            LastRefreshed = DateTime.UtcNow;
+            LastRefreshed = Core.Now;
 
             if (DynamicDecay.Enabled)
             {
@@ -2416,7 +2416,7 @@ namespace Server.Multis
                 var info = m.Aggressed[i];
 
                 if (info.Defender.Player && info.Defender.Alive &&
-                    DateTime.UtcNow - info.LastCombatTime < HouseRegion.CombatHeatDelay &&
+                    Core.Now - info.LastCombatTime < HouseRegion.CombatHeatDelay &&
                     (!(m.Guild is Guild attackerGuild) || !(info.Defender.Guild is Guild defenderGuild) ||
                      defenderGuild != attackerGuild && !defenderGuild.IsEnemy(attackerGuild)))
                 {
@@ -2935,7 +2935,7 @@ namespace Server.Multis
                         var child = children[j];
 
                         if (child.Decays && !child.IsLockedDown && !child.IsSecure &&
-                            child.LastMoved + child.DecayTime <= DateTime.UtcNow)
+                            child.LastMoved + child.DecayTime <= Core.Now)
                         {
                             Timer.DelayCall(child.Delete);
                         }
@@ -3176,7 +3176,7 @@ namespace Server.Multis
 
             if (version < 11)
             {
-                LastRefreshed = DateTime.UtcNow + TimeSpan.FromHours(24 * Utility.RandomDouble());
+                LastRefreshed = Core.Now + TimeSpan.FromHours(24 * Utility.RandomDouble());
             }
 
             if (DynamicDecay.Enabled && !loadedDynamicDecay)
@@ -3633,7 +3633,7 @@ namespace Server.Multis
 
             if (DynamicDecay.Decays(level))
             {
-                NextDecayStage = DateTime.UtcNow + DynamicDecay.GetRandomDuration(level);
+                NextDecayStage = Core.Now + DynamicDecay.GetRandomDuration(level);
             }
             else
             {
@@ -3764,7 +3764,7 @@ namespace Server.Multis
                 m_House.Friends.Clear();
                 m_House.CoOwners.Clear();
                 m_House.ChangeLocks(to);
-                m_House.LastTraded = DateTime.UtcNow;
+                m_House.LastTraded = Core.Now;
             }
         }
 

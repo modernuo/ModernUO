@@ -34,13 +34,13 @@ namespace Server.Mobiles
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
-            if (DateTime.UtcNow > m_NextCheckPack && InRange(m, 4) && !InRange(oldLocation, 4) && m.Player)
+            if (Core.Now > m_NextCheckPack && InRange(m, 4) && !InRange(oldLocation, 4) && m.Player)
             {
                 var pack = m.Backpack;
 
                 if (pack != null)
                 {
-                    m_NextCheckPack = DateTime.UtcNow + TimeSpan.FromSeconds(2.0);
+                    m_NextCheckPack = Core.Now + TimeSpan.FromSeconds(2.0);
 
                     if (pack.FindItemByType<HouseDeed>(false) != null)
                     {

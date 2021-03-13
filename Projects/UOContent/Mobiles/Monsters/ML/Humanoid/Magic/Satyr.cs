@@ -90,14 +90,14 @@ namespace Server.Mobiles
 
         public void Peace(Mobile target)
         {
-            if (target == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || Utility.RandomDouble() > 0.1)
+            if (target == null || Deleted || !Alive || m_NextPeace > Core.Now || Utility.RandomDouble() > 0.1)
             {
                 return;
             }
 
-            if (target is PlayerMobile p && p.PeacedUntil < DateTime.UtcNow && !p.Hidden && CanBeHarmful(p))
+            if (target is PlayerMobile p && p.PeacedUntil < Core.Now && !p.Hidden && CanBeHarmful(p))
             {
-                p.PeacedUntil = DateTime.UtcNow + TimeSpan.FromMinutes(1);
+                p.PeacedUntil = Core.Now + TimeSpan.FromMinutes(1);
                 p.SendLocalizedMessage(500616); // You hear lovely music, and forget to continue battling!
                 p.FixedParticles(0x376A, 1, 32, 0x15BD, EffectLayer.Waist);
                 p.Combatant = null;
@@ -105,13 +105,13 @@ namespace Server.Mobiles
                 PlaySound(0x58D);
             }
 
-            m_NextPeace = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+            m_NextPeace = Core.Now + TimeSpan.FromSeconds(10);
         }
 
         public void Suppress(Mobile target)
         {
             if (target == null || m_Suppressed.ContainsKey(target) || Deleted || !Alive ||
-                m_NextSuppress > DateTime.UtcNow || Utility.RandomDouble() > 0.1)
+                m_NextSuppress > Core.Now || Utility.RandomDouble() > 0.1)
             {
                 return;
             }
@@ -137,7 +137,7 @@ namespace Server.Mobiles
                 PlaySound(0x58C);
             }
 
-            m_NextSuppress = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+            m_NextSuppress = Core.Now + TimeSpan.FromSeconds(10);
         }
 
         public static void SuppressRemove(Mobile target)
@@ -160,7 +160,7 @@ namespace Server.Mobiles
 
         public void Undress(Mobile target)
         {
-            if (target == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || Utility.RandomDouble() > 0.005)
+            if (target == null || Deleted || !Alive || m_NextUndress > Core.Now || Utility.RandomDouble() > 0.005)
             {
                 return;
             }
@@ -178,7 +178,7 @@ namespace Server.Mobiles
                 ); // The satyr's music makes your blood race. Your clothing is too confining.
             }
 
-            m_NextUndress = DateTime.UtcNow + TimeSpan.FromMinutes(1);
+            m_NextUndress = Core.Now + TimeSpan.FromMinutes(1);
         }
 
         public void UndressItem(Mobile m, Layer layer)
@@ -193,7 +193,7 @@ namespace Server.Mobiles
 
         public void Provoke(Mobile target)
         {
-            if (target == null || Deleted || !Alive || m_NextProvoke > DateTime.UtcNow || Utility.RandomDouble() > 0.05)
+            if (target == null || Deleted || !Alive || m_NextProvoke > Core.Now || Utility.RandomDouble() > 0.05)
             {
                 return;
             }
@@ -220,7 +220,7 @@ namespace Server.Mobiles
                 }
             }
 
-            m_NextProvoke = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+            m_NextProvoke = Core.Now + TimeSpan.FromSeconds(10);
         }
 
         private class AnimateTimer : Timer

@@ -211,7 +211,7 @@ namespace Server.Regions
 
         public override TimeSpan GetLogoutDelay(Mobile m) =>
             House.IsFriend(m) && House.IsInside(m)
-                ? m.Aggressed.Any(info => info.Defender.Player && DateTime.UtcNow - info.LastCombatTime < CombatHeatDelay) ?
+                ? m.Aggressed.Any(info => info.Defender.Player && Core.Now - info.LastCombatTime < CombatHeatDelay) ?
                     base.GetLogoutDelay(m) : TimeSpan.Zero
                 : base.GetLogoutDelay(m);
 
@@ -242,7 +242,7 @@ namespace Server.Regions
                 {
                     from.SendLocalizedMessage(500295); // you are too far away to do that.
                 }
-                else if (DateTime.UtcNow <= House.BuiltOn.AddHours(1))
+                else if (Core.Now <= House.BuiltOn.AddHours(1))
                 {
                     from.SendLocalizedMessage(1080178); // You must wait one hour between each house demolition.
                 }

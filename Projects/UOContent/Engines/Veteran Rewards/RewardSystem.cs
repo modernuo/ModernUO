@@ -83,16 +83,9 @@ namespace Server.Engines.VeteranRewards
                 return false;
             }
 
-            var totalTime = DateTime.UtcNow - acct.Created;
+            ts = list.Age - (Core.Now - acct.Created);
 
-            ts = list.Age - totalTime;
-
-            if (ts <= TimeSpan.Zero)
-            {
-                return true;
-            }
-
-            return false;
+            return ts <= TimeSpan.Zero;
         }
 
         public static int GetRewardLevel(Mobile mob)
@@ -107,7 +100,7 @@ namespace Server.Engines.VeteranRewards
 
         public static int GetRewardLevel(Account acct)
         {
-            var totalTime = DateTime.UtcNow - acct.Created;
+            var totalTime = Core.Now - acct.Created;
 
             return Math.Max((int)(totalTime.TotalDays / RewardInterval.TotalDays), 0);
         }
@@ -124,7 +117,7 @@ namespace Server.Engines.VeteranRewards
 
         public static bool HasHalfLevel(Account acct)
         {
-            var totalTime = DateTime.UtcNow - acct.Created;
+            var totalTime = Core.Now - acct.Created;
 
             var level = totalTime.TotalDays / RewardInterval.TotalDays;
 

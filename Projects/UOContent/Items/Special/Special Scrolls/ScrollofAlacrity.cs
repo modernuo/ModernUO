@@ -61,7 +61,7 @@ namespace Server.Items
                 }
             }
 
-            if (pm.AcceleratedStart > DateTime.UtcNow)
+            if (pm.AcceleratedStart > Core.Now)
             {
                 from.SendLocalizedMessage(1077951); // You are already under the effect of an accelerated skillgain scroll.
                 return false;
@@ -96,7 +96,7 @@ namespace Server.Items
             Effects.PlaySound(from.Location, from.Map, 0x1E9);
             Effects.SendTargetParticles(from, 0x373A, 35, 45, 0x00, 0x00, 9502, (EffectLayer)255, 0x100);
 
-            pm.AcceleratedStart = DateTime.UtcNow + TimeSpan.FromMinutes(15);
+            pm.AcceleratedStart = Core.Now + TimeSpan.FromMinutes(15);
             Timer.DelayCall(TimeSpan.FromMinutes(15), Expire_Callback, from);
 
             pm.AcceleratedSkill = Skill;

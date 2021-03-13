@@ -225,7 +225,7 @@ namespace Server.Items
         {
             Movable = false;
             m_LitBy = litBy;
-            m_Expire = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+            m_Expire = Core.Now + TimeSpan.FromSeconds(10);
             m_Burning = toDamage;
             m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnFirebombFieldTimerTick);
         }
@@ -295,7 +295,7 @@ namespace Server.Items
                 }
             }
 
-            if (DateTime.UtcNow >= m_Expire)
+            if (Core.Now >= m_Expire)
             {
                 m_Timer.Stop();
                 Delete();

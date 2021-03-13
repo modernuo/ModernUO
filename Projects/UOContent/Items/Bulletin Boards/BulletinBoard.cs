@@ -24,13 +24,13 @@ namespace Server.Items
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool CheckCreateTime(DateTime time) => time + ThreadCreateTime < DateTime.UtcNow;
+        public static bool CheckCreateTime(DateTime time) => time + ThreadCreateTime < Core.Now;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 
-        public static bool CheckDeletionTime(DateTime time) => time + ThreadDeletionTime < DateTime.UtcNow;
+        public static bool CheckDeletionTime(DateTime time) => time + ThreadDeletionTime < Core.Now;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool CheckReplyTime(DateTime time) => time + ThreadReplyTime < DateTime.UtcNow;
+        public static bool CheckReplyTime(DateTime time) => time + ThreadReplyTime < Core.Now;
     }
 
     [Flippable(0x1E5E, 0x1E5F)]
@@ -180,7 +180,7 @@ namespace Server.Items
         {
             if (thread != null)
             {
-                thread.LastPostTime = DateTime.UtcNow;
+                thread.LastPostTime = Core.Now;
             }
 
             AddItem(new BulletinMessage(from, thread, subject, lines));
