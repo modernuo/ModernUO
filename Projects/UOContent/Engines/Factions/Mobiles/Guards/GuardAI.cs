@@ -141,12 +141,7 @@ namespace Server.Factions
                     return TimeSpan.MaxValue;
                 }
 
-                if (ts < TimeSpan.Zero)
-                {
-                    ts = TimeSpan.Zero;
-                }
-
-                return ts;
+                return Utility.Max(ts, TimeSpan.Zero);
             }
         }
 

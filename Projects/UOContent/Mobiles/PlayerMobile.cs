@@ -289,34 +289,14 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public TimeSpan SavagePaintExpiration
         {
-            get
-            {
-                var ts = m_SavagePaintExpiration - Core.Now;
-
-                if (ts < TimeSpan.Zero)
-                {
-                    ts = TimeSpan.Zero;
-                }
-
-                return ts;
-            }
+            get => Utility.Max(m_SavagePaintExpiration - Core.Now, TimeSpan.Zero);
             set => m_SavagePaintExpiration = Core.Now + value;
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public TimeSpan NextSmithBulkOrder
         {
-            get
-            {
-                var ts = m_NextSmithBulkOrder - Core.Now;
-
-                if (ts < TimeSpan.Zero)
-                {
-                    ts = TimeSpan.Zero;
-                }
-
-                return ts;
-            }
+            get => Utility.Max(m_NextSmithBulkOrder - Core.Now, TimeSpan.Zero);
             set
             {
                 try
@@ -333,17 +313,7 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public TimeSpan NextTailorBulkOrder
         {
-            get
-            {
-                var ts = m_NextTailorBulkOrder - Core.Now;
-
-                if (ts < TimeSpan.Zero)
-                {
-                    ts = TimeSpan.Zero;
-                }
-
-                return ts;
-            }
+            get => Utility.Max(m_NextTailorBulkOrder - Core.Now, TimeSpan.Zero);
             set
             {
                 try

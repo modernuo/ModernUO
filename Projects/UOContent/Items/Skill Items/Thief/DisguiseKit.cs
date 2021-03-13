@@ -315,13 +315,7 @@ namespace Server.Items
                 return;
             }
 
-            var ts = t.Next - Core.Now;
-            if (ts < TimeSpan.Zero)
-            {
-                ts = TimeSpan.Zero;
-            }
-
-            t.Delay = ts;
+            t.Delay = Utility.Max(t.Next - Core.Now, TimeSpan.Zero);
             t.Stop();
         }
 

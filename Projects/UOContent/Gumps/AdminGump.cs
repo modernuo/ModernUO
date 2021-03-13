@@ -902,17 +902,7 @@ namespace Server.Gumps
                             }
                             else
                             {
-                                var remaining = Core.Now - banTime;
-
-                                if (remaining < TimeSpan.Zero)
-                                {
-                                    remaining = TimeSpan.Zero;
-                                }
-                                else if (remaining > banDuration)
-                                {
-                                    remaining = banDuration;
-                                }
-
+                                var remaining = (Core.Now - banTime).Clamp(TimeSpan.Zero, banDuration);
                                 var remMinutes = remaining.TotalMinutes;
                                 var totMinutes = banDuration.TotalMinutes;
 
