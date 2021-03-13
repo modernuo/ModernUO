@@ -97,15 +97,15 @@ namespace Server
 
                 if (_profileStart > 0)
                 {
-                    _profileTime += TickCount - _profileStart;
+                    _profileTime += Stopwatch.GetTimestamp() - _profileStart;
                 }
 
-                _profileStart = _profiling ? TickCount : 0;
+                _profileStart = _profiling ? Stopwatch.GetTimestamp() : 0;
             }
         }
 
         public static TimeSpan ProfileTime =>
-            TimeSpan.FromMilliseconds(_profileStart > 0 ? _profileTime + (TickCount - _profileStart) : _profileTime);
+            TimeSpan.FromTicks(_profileStart > 0 ? _profileTime + (Stopwatch.GetTimestamp() - _profileStart) : _profileTime);
 
         public static Assembly Assembly { get; set; }
 
