@@ -47,12 +47,12 @@ namespace Server.Mobiles
         {
             base.OnThink();
 
-            if (DateTime.UtcNow < m_NextRestore)
+            if (Core.Now < m_NextRestore)
             {
                 return;
             }
 
-            m_NextRestore = DateTime.UtcNow + TimeSpan.FromSeconds(2.0);
+            m_NextRestore = Core.Now + TimeSpan.FromSeconds(2.0);
 
             var caster = ControlMaster ?? SummonMaster;
 

@@ -185,7 +185,7 @@ namespace Server.Gumps
                         AddLabel(150, 270, LabelHue, Core.ScriptItems.ToString());
 
                         AddLabel(20, 290, LabelHue, "Uptime:");
-                        AddLabel(150, 290, LabelHue, FormatTimeSpan(DateTime.UtcNow - Clock.ServerStart));
+                        AddLabel(150, 290, LabelHue, FormatTimeSpan(Core.Now - Clock.ServerStart));
 
                         AddLabel(20, 310, LabelHue, "Memory:");
                         AddLabel(150, 310, LabelHue, FormatByteAmount(GC.GetTotalMemory(false)));
@@ -902,17 +902,7 @@ namespace Server.Gumps
                             }
                             else
                             {
-                                var remaining = DateTime.UtcNow - banTime;
-
-                                if (remaining < TimeSpan.Zero)
-                                {
-                                    remaining = TimeSpan.Zero;
-                                }
-                                else if (remaining > banDuration)
-                                {
-                                    remaining = banDuration;
-                                }
-
+                                var remaining = (Core.Now - banTime).Clamp(TimeSpan.Zero, banDuration);
                                 var remMinutes = remaining.TotalMinutes;
                                 var totMinutes = banDuration.TotalMinutes;
 

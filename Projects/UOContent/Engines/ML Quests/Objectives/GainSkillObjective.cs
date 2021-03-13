@@ -133,7 +133,7 @@ namespace Server.Engines.MLQuests.Objectives
             var pm = Instance.Player;
 
             pm.AcceleratedSkill = Objective.Skill;
-            pm.AcceleratedStart = DateTime.UtcNow + TimeSpan.FromMinutes(15); // TODO: Is there a max duration?
+            pm.AcceleratedStart = Core.Now + TimeSpan.FromMinutes(15); // TODO: Is there a max duration?
         }
 
         public override void OnQuestCancelled()
@@ -145,7 +145,7 @@ namespace Server.Engines.MLQuests.Objectives
 
             var pm = Instance.Player;
 
-            pm.AcceleratedStart = DateTime.UtcNow;
+            pm.AcceleratedStart = Core.Now;
             pm.PlaySound(0x100);
         }
 

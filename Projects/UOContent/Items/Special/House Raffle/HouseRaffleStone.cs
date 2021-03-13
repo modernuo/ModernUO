@@ -18,7 +18,7 @@ namespace Server.Items
 
             Address = From.NetState?.Address ?? IPAddress.None;
 
-            Date = DateTime.UtcNow;
+            Date = Core.Now;
         }
 
         public RaffleEntry(IGenericReader reader, int version)
@@ -132,7 +132,7 @@ namespace Server.Items
                         Entries.Clear();
                         m_Winner = null;
                         Deed = null;
-                        m_Started = DateTime.UtcNow;
+                        m_Started = Core.Now;
                     }
 
                     m_State = value;
@@ -213,7 +213,7 @@ namespace Server.Items
                     return false;
                 }
 
-                return m_Started + m_Duration + ExpirationTime <= DateTime.UtcNow;
+                return m_Started + m_Duration + ExpirationTime <= Core.Now;
             }
         }
 
@@ -537,7 +537,7 @@ namespace Server.Items
 
         public void CheckEnd()
         {
-            if (m_State != HouseRaffleState.Active || m_Started + m_Duration > DateTime.UtcNow)
+            if (m_State != HouseRaffleState.Active || m_Started + m_Duration > Core.Now)
             {
                 return;
             }

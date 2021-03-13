@@ -60,9 +60,9 @@ namespace Server.Items
             {
                 m.SendLocalizedMessage(1060197); // You are not dead, and thus cannot be resurrected!
             }
-            else if (m.AnkhNextUse > DateTime.UtcNow)
+            else if (m.AnkhNextUse > Core.Now)
             {
-                var delay = m.AnkhNextUse - DateTime.UtcNow;
+                var delay = m.AnkhNextUse - Core.Now;
 
                 if (delay.TotalMinutes > 0)
                 {
@@ -167,7 +167,7 @@ namespace Server.Items
 
                     if (from is PlayerMobile mobile)
                     {
-                        mobile.AnkhNextUse = DateTime.UtcNow + TimeSpan.FromHours(1);
+                        mobile.AnkhNextUse = Core.Now + TimeSpan.FromHours(1);
                     }
 
                     base.OnResponse(state, info);

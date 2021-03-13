@@ -310,12 +310,9 @@ namespace Server.Engines.ConPVP
             }
 
             public Mobile Ignored => m_Ignored;
-            public bool Expired => DateTime.UtcNow >= m_Expire;
+            public bool Expired => Core.Now >= m_Expire;
 
-            public void Refresh()
-            {
-                m_Expire = DateTime.UtcNow + ExpireDelay;
-            }
+            public void Refresh() => m_Expire = Core.Now + ExpireDelay;
         }
     }
 }

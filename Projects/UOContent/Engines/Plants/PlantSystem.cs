@@ -50,7 +50,7 @@ namespace Server.Engines.Plants
             Plant = plant;
             FertileDirt = fertileDirt;
 
-            NextGrowth = DateTime.UtcNow + CheckDelay;
+            NextGrowth = Core.Now + CheckDelay;
             GrowthIndicator = PlantGrowthIndicator.None;
             m_Hits = MaxHits;
             m_LeftSeeds = 8;
@@ -290,7 +290,7 @@ namespace Server.Engines.Plants
 
         public void Reset(bool potions)
         {
-            NextGrowth = DateTime.UtcNow + CheckDelay;
+            NextGrowth = Core.Now + CheckDelay;
             GrowthIndicator = PlantGrowthIndicator.None;
 
             Hits = MaxHits;
@@ -387,7 +387,7 @@ namespace Server.Engines.Plants
         public static void GrowAll()
         {
             var plants = PlantItem.Plants;
-            var now = DateTime.UtcNow;
+            var now = Core.Now;
 
             for (var i = plants.Count - 1; i >= 0; --i)
             {
@@ -417,13 +417,15 @@ namespace Server.Engines.Plants
                 return;
             }
 
-            if (DateTime.UtcNow < NextGrowth)
+            var now = Core.Now;
+
+            if (now < NextGrowth)
             {
                 GrowthIndicator = PlantGrowthIndicator.Delay;
                 return;
             }
 
-            NextGrowth = DateTime.UtcNow + CheckDelay;
+            NextGrowth = now + CheckDelay;
 
             if (!Plant.ValidGrowthLocation)
             {

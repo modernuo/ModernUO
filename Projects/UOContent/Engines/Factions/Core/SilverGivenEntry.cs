@@ -9,13 +9,13 @@ namespace Server.Factions
         public SilverGivenEntry(Mobile givenTo)
         {
             GivenTo = givenTo;
-            TimeOfGift = DateTime.UtcNow;
+            TimeOfGift = Core.Now;
         }
 
         public Mobile GivenTo { get; }
 
         public DateTime TimeOfGift { get; }
 
-        public bool IsExpired => TimeOfGift + ExpirePeriod < DateTime.UtcNow;
+        public bool IsExpired => TimeOfGift + ExpirePeriod < Core.Now;
     }
 }

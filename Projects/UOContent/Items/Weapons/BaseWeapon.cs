@@ -730,7 +730,7 @@ namespace Server.Items
 
                 if (canSwing)
                 {
-                    canSwing = !(attacker is PlayerMobile p) || p.PeacedUntil <= DateTime.UtcNow;
+                    canSwing = !(attacker is PlayerMobile p) || p.PeacedUntil <= Core.Now;
                 }
             }
 

@@ -238,7 +238,7 @@ namespace Server.Misc
                 {
                     res = DeleteResultType.CharBeingPlayed;
                 }
-                else if (RestrictDeletion && DateTime.UtcNow < m.CreationTime + DeleteDelay)
+                else if (RestrictDeletion && Core.Now < m.CreationTime + DeleteDelay)
                 {
                     res = DeleteResultType.CharTooYoung;
                 }
@@ -336,7 +336,7 @@ namespace Server.Misc
                 Console.WriteLine("Login: {0}: Past IP limit threshold", e.State);
 
                 using var op = new StreamWriter("ipLimits.log", true);
-                op.WriteLine("{0}\tPast IP limit threshold\t{1}", e.State, DateTime.UtcNow);
+                op.WriteLine("{0}\tPast IP limit threshold\t{1}", e.State, Core.Now);
 
                 return;
             }
@@ -404,7 +404,7 @@ namespace Server.Misc
                 Console.WriteLine("Login: {0}: Past IP limit threshold", e.State);
 
                 using var op = new StreamWriter("ipLimits.log", true);
-                op.WriteLine("{0}\tPast IP limit threshold\t{1}", e.State, DateTime.UtcNow);
+                op.WriteLine("{0}\tPast IP limit threshold\t{1}", e.State, Core.Now);
 
                 return;
             }

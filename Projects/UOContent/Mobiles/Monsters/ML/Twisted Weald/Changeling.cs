@@ -98,7 +98,7 @@ namespace Server.Mobiles
                     if (value != null)
                     {
                         Morph(value);
-                        m_LastMorph = DateTime.UtcNow;
+                        m_LastMorph = Core.Now;
                     }
 
                     m_MorphedInto = value;
@@ -128,10 +128,10 @@ namespace Server.Mobiles
 
             if (Combatant != null)
             {
-                if (m_NextFireRing <= DateTime.UtcNow && Utility.RandomDouble() < 0.02)
+                if (m_NextFireRing <= Core.Now && Utility.RandomDouble() < 0.02)
                 {
                     FireRing();
-                    m_NextFireRing = DateTime.UtcNow + TimeSpan.FromMinutes(2);
+                    m_NextFireRing = Core.Now + TimeSpan.FromMinutes(2);
                 }
 
                 if (Combatant.Player && m_MorphedInto != Combatant && Utility.RandomDouble() < 0.05)
@@ -145,7 +145,7 @@ namespace Server.Mobiles
         {
             var idle = base.CheckIdle();
 
-            if (idle && m_MorphedInto != null && DateTime.UtcNow - m_LastMorph > TimeSpan.FromSeconds(30))
+            if (idle && m_MorphedInto != null && Core.Now - m_LastMorph > TimeSpan.FromSeconds(30))
             {
                 MorphedInto = null;
             }

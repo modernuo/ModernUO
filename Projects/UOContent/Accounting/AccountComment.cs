@@ -16,7 +16,7 @@ namespace Server.Accounting
         {
             AddedBy = addedBy;
             m_Content = content;
-            LastModified = DateTime.UtcNow;
+            LastModified = Core.Now;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace Server.Accounting
         public AccountComment(XmlElement node)
         {
             AddedBy = Utility.GetAttribute(node, "addedBy", "empty");
-            LastModified = Utility.GetXMLDateTime(Utility.GetAttribute(node, "lastModified"), DateTime.UtcNow);
+            LastModified = Utility.GetXMLDateTime(Utility.GetAttribute(node, "lastModified"), Core.Now);
             m_Content = Utility.GetText(node, "");
         }
 
@@ -55,7 +55,7 @@ namespace Server.Accounting
             set
             {
                 m_Content = value;
-                LastModified = DateTime.UtcNow;
+                LastModified = Core.Now;
             }
         }
 

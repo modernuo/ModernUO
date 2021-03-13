@@ -225,17 +225,17 @@ namespace Server.Factions
                     else if (Town.FromRegion(Region) == m_Town)
                     {
                         Say(1042180); // Your orders, sire?
-                        m_OrdersEnd = DateTime.UtcNow + TimeSpan.FromSeconds(10.0);
+                        m_OrdersEnd = Core.Now + TimeSpan.FromSeconds(10.0);
                     }
                 }
-                else if (DateTime.UtcNow < m_OrdersEnd)
+                else if (Core.Now < m_OrdersEnd)
                 {
                     if (m_Town?.IsSheriff(from) != true || Town.FromRegion(Region) != m_Town)
                     {
                         return;
                     }
 
-                    m_OrdersEnd = DateTime.UtcNow + TimeSpan.FromSeconds(10.0);
+                    m_OrdersEnd = Core.Now + TimeSpan.FromSeconds(10.0);
 
                     var understood = true;
                     ReactionType newType = 0;

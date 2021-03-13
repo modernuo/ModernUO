@@ -48,12 +48,12 @@ namespace Server.Mobiles
         {
             base.OnThink();
 
-            if (DateTime.UtcNow < m_NextFlare)
+            if (Core.Now < m_NextFlare)
             {
                 return;
             }
 
-            m_NextFlare = DateTime.UtcNow + TimeSpan.FromSeconds(5.0 + 25.0 * Utility.RandomDouble());
+            m_NextFlare = Core.Now + TimeSpan.FromSeconds(5.0 + 25.0 * Utility.RandomDouble());
 
             FixedEffect(0x37C4, 1, 12, 1109, 6);
             PlaySound(0x1D3);

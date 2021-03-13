@@ -30,12 +30,11 @@ namespace Server.Commands
 
             try
             {
-                Output = new StreamWriter(Path.Combine(directory, $"{DateTime.UtcNow.ToLongDateString()}.log"), true);
-
+                Output = new StreamWriter(Path.Combine(directory, $"{Core.Now.ToLongDateString()}.log"), true);
                 Output.AutoFlush = true;
 
                 Output.WriteLine("##############################");
-                Output.WriteLine("Log started on {0}", DateTime.UtcNow);
+                Output.WriteLine("Log started on {0}", Core.Now);
                 Output.WriteLine();
             }
             catch
@@ -71,7 +70,7 @@ namespace Server.Commands
 
             try
             {
-                Output.WriteLine("{0}: {1}: {2}", DateTime.UtcNow, from.NetState, text);
+                Output.WriteLine("{0}: {1}: {2}", Core.Now, from.NetState, text);
 
                 var path = Core.BaseDirectory;
 
@@ -83,7 +82,7 @@ namespace Server.Commands
                 path = Path.Combine(path, $"{name}.log");
 
                 using var sw = new StreamWriter(path, true);
-                sw.WriteLine("{0}: {1}: {2}", DateTime.UtcNow, from.NetState, text);
+                sw.WriteLine("{0}: {1}: {2}", Core.Now, from.NetState, text);
             }
             catch
             {

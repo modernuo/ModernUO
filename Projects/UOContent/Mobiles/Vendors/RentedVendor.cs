@@ -61,7 +61,7 @@ namespace Server.Mobiles
 
             RentalGold = rentalGold;
 
-            RentalExpireTime = DateTime.UtcNow + duration.Duration;
+            RentalExpireTime = Core.Now + duration.Duration;
             m_RentalExpireTimer = new RentalExpireTimer(this, duration.Duration);
             m_RentalExpireTimer.Start();
         }
@@ -103,7 +103,7 @@ namespace Server.Mobiles
 
         public void ComputeRentalExpireDelay(out int days, out int hours)
         {
-            var delay = RentalExpireTime - DateTime.UtcNow;
+            var delay = RentalExpireTime - Core.Now;
 
             if (delay <= TimeSpan.Zero)
             {
@@ -213,7 +213,7 @@ namespace Server.Mobiles
 
             RentalExpireTime = reader.ReadDeltaTime();
 
-            var delay = RentalExpireTime - DateTime.UtcNow;
+            var delay = RentalExpireTime - Core.Now;
             m_RentalExpireTimer = new RentalExpireTimer(this, delay > TimeSpan.Zero ? delay : TimeSpan.Zero);
             m_RentalExpireTimer.Start();
         }
@@ -380,7 +380,7 @@ namespace Server.Mobiles
 
                     m_Vendor.RentalPrice = renewalPrice;
 
-                    m_Vendor.RentalExpireTime = DateTime.UtcNow + m_Vendor.RentalDuration.Duration;
+                    m_Vendor.RentalExpireTime = Core.Now + m_Vendor.RentalDuration.Duration;
                 }
                 else
                 {

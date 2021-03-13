@@ -148,14 +148,14 @@ namespace Server.Network
                 _toString = "(error)";
             }
 
-            ConnectedOn = DateTime.UtcNow;
+            ConnectedOn = Core.Now;
 
             CreatedCallback?.Invoke(this);
         }
 
         public DateTime ConnectedOn { get; }
 
-        public TimeSpan ConnectedFor => DateTime.UtcNow - ConnectedOn;
+        public TimeSpan ConnectedFor => Core.Now - ConnectedOn;
 
         public IPAddress Address { get; }
 
@@ -1034,7 +1034,7 @@ namespace Server.Network
             try
             {
                 using var op = new StreamWriter("network-errors.log", true);
-                op.WriteLine("# {0}", DateTime.UtcNow);
+                op.WriteLine("# {0}", Core.Now);
 
                 op.WriteLine(ex);
 
@@ -1083,7 +1083,7 @@ namespace Server.Network
             try
             {
                 using StreamWriter op = new StreamWriter("network-disconnects.log", true);
-                op.WriteLine($"# {DateTime.UtcNow}");
+                op.WriteLine($"# {Core.Now}");
 
                 op.WriteLine($"NetState: {ip}");
                 op.WriteLine(reason);

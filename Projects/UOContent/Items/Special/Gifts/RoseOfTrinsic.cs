@@ -86,7 +86,7 @@ namespace Server.Items
             m_SpawnTimer = new SpawnTimer(this, delay);
             m_SpawnTimer.Start();
 
-            m_NextSpawnTime = DateTime.UtcNow + delay;
+            m_NextSpawnTime = Core.Now + delay;
         }
 
         private void StopSpawnTimer()
@@ -134,7 +134,7 @@ namespace Server.Items
 
             if (m_Petals < 10)
             {
-                StartSpawnTimer(m_NextSpawnTime - DateTime.UtcNow);
+                StartSpawnTimer(m_NextSpawnTime - Core.Now);
             }
         }
 

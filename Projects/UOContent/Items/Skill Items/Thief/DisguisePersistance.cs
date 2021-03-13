@@ -39,7 +39,7 @@ namespace Server.Items
                 var m = entry.Key;
 
                 writer.Write(m);
-                writer.Write(entry.Value.Next - DateTime.UtcNow);
+                writer.Write(entry.Value.Next - Core.Now);
                 writer.Write(m.NameMod);
             }
         }

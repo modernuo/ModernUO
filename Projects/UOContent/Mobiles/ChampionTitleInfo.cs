@@ -190,7 +190,7 @@ namespace Server.Mobiles
 
             if (before != m_Values[index].Value)
             {
-                m_Values[index].LastDecay = DateTime.UtcNow;
+                m_Values[index].LastDecay = Core.Now;
             }
         }
 
@@ -225,7 +225,7 @@ namespace Server.Mobiles
 
             for (var i = 0; i < t.m_Values.Length; i++)
             {
-                if (t.GetLastDecay(i) + LossDelay < DateTime.UtcNow)
+                if (t.GetLastDecay(i) + LossDelay < Core.Now)
                 {
                     t.Atrophy(i, LossAmount);
                 }

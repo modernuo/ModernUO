@@ -235,7 +235,7 @@ namespace Server.Factions
                 }
                 else
                 {
-                    recvState.LastHonorTime = DateTime.UtcNow;
+                    recvState.LastHonorTime = Core.Now;
                     giveState.KillPoints -= 5;
                     recvState.KillPoints += 4;
 
@@ -604,7 +604,7 @@ namespace Server.Factions
                 return false;
             }
 
-            if (pl.Leaving + LeavePeriod >= DateTime.UtcNow)
+            if (pl.Leaving + LeavePeriod >= Core.Now)
             {
                 return false;
             }
@@ -911,13 +911,13 @@ namespace Server.Factions
                 var sigil = sigils[i];
 
                 if (!sigil.IsBeingCorrupted && sigil.GraceStart != DateTime.MinValue &&
-                    sigil.GraceStart + Sigil.CorruptionGrace < DateTime.UtcNow)
+                    sigil.GraceStart + Sigil.CorruptionGrace < Core.Now)
                 {
                     if (sigil.LastMonolith is StrongholdMonolith &&
                         (sigil.Corrupted == null || sigil.LastMonolith.Faction != sigil.Corrupted))
                     {
                         sigil.Corrupting = sigil.LastMonolith.Faction;
-                        sigil.CorruptionStart = DateTime.UtcNow;
+                        sigil.CorruptionStart = Core.Now;
                     }
                     else
                     {
@@ -930,21 +930,21 @@ namespace Server.Factions
 
                 if (sigil.LastMonolith?.Sigil == null)
                 {
-                    if (sigil.LastStolen + Sigil.ReturnPeriod < DateTime.UtcNow)
+                    if (sigil.LastStolen + Sigil.ReturnPeriod < Core.Now)
                     {
                         sigil.ReturnHome();
                     }
                 }
                 else
                 {
-                    if (sigil.IsBeingCorrupted && sigil.CorruptionStart + Sigil.CorruptionPeriod < DateTime.UtcNow)
+                    if (sigil.IsBeingCorrupted && sigil.CorruptionStart + Sigil.CorruptionPeriod < Core.Now)
                     {
                         sigil.Corrupted = sigil.Corrupting;
                         sigil.Corrupting = null;
                         sigil.CorruptionStart = DateTime.MinValue;
                         sigil.GraceStart = DateTime.MinValue;
                     }
-                    else if (sigil.IsPurifying && sigil.PurificationStart + Sigil.PurificationPeriod < DateTime.UtcNow)
+                    else if (sigil.IsPurifying && sigil.PurificationStart + Sigil.PurificationPeriod < Core.Now)
                     {
                         sigil.PurificationStart = DateTime.MinValue;
                         sigil.Corrupted = null;

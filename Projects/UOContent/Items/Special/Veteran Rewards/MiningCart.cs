@@ -255,7 +255,7 @@ namespace Server.Items
             }
             else
             {
-                writer.Write(DateTime.UtcNow + TimeSpan.FromDays(1));
+                writer.Write(Core.Now + TimeSpan.FromDays(1));
             }
         }
 
@@ -277,12 +277,12 @@ namespace Server.Items
 
                     var next = reader.ReadDateTime();
 
-                    if (next < DateTime.UtcNow)
+                    if (next < Core.Now)
                     {
-                        next = DateTime.UtcNow;
+                        next = Core.Now;
                     }
 
-                    m_Timer = Timer.DelayCall(next - DateTime.UtcNow, TimeSpan.FromDays(1), GiveResources);
+                    m_Timer = Timer.DelayCall(next - Core.Now, TimeSpan.FromDays(1), GiveResources);
                     break;
             }
         }

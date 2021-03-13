@@ -315,13 +315,7 @@ namespace Server.Items
                 return;
             }
 
-            var ts = t.Next - DateTime.UtcNow;
-            if (ts < TimeSpan.Zero)
-            {
-                ts = TimeSpan.Zero;
-            }
-
-            t.Delay = ts;
+            t.Delay = Utility.Max(t.Next - Core.Now, TimeSpan.Zero);
             t.Stop();
         }
 
@@ -334,7 +328,7 @@ namespace Server.Items
         }
 
         public static TimeSpan TimeRemaining(Mobile m) =>
-            Timers.TryGetValue(m, out var t) ? t.Next - DateTime.UtcNow : TimeSpan.Zero;
+            Timers.TryGetValue(m, out var t) ? t.Next - Core.Now : TimeSpan.Zero;
 
         private class InternalTimer : Timer
         {

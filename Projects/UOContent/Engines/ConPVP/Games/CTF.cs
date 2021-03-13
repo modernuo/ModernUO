@@ -313,7 +313,7 @@ namespace Server.Engines.ConPVP
                         }
 
                         m_Returner = from;
-                        m_ReturnTime = DateTime.UtcNow;
+                        m_ReturnTime = Core.Now;
 
                         SendHome();
 
@@ -356,7 +356,7 @@ namespace Server.Engines.ConPVP
         public void DropTo(Mobile mob, Mobile killer)
         {
             m_Fragger = killer;
-            m_FragTime = DateTime.UtcNow;
+            m_FragTime = Core.Now;
 
             if (mob != null)
             {
@@ -464,7 +464,7 @@ namespace Server.Engines.ConPVP
                         var teamFlag = useTeam.Flag;
 
                         if (teamFlag.m_Fragger != null &&
-                            DateTime.UtcNow < teamFlag.m_FragTime + TimeSpan.FromSeconds(5.0) &&
+                            Core.Now < teamFlag.m_FragTime + TimeSpan.FromSeconds(5.0) &&
                             m_TeamInfo.Game.GetTeamInfo(teamFlag.m_Fragger) == useTeam)
                         {
                             var assistInfo = useTeam[teamFlag.m_Fragger];
@@ -476,7 +476,7 @@ namespace Server.Engines.ConPVP
                         }
 
                         if (teamFlag.m_Returner != null &&
-                            DateTime.UtcNow < teamFlag.m_ReturnTime + TimeSpan.FromSeconds(5.0))
+                            Core.Now < teamFlag.m_ReturnTime + TimeSpan.FromSeconds(5.0))
                         {
                             var assistInfo = useTeam[teamFlag.m_Returner];
 

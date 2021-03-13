@@ -94,7 +94,7 @@ namespace Server.Mobiles
                     {
                         SayTo(pm, 501046); // Thou must resign from thy other guild first.
                     }
-                    else if (pm.GameTime < JoinGameAge || pm.CreationTime + JoinAge > DateTime.UtcNow)
+                    else if (pm.GameTime < JoinGameAge || pm.CreationTime + JoinAge > Core.Now)
                     {
                         SayTo(pm, 501048); // You are too young to join my guild...
                     }
@@ -111,7 +111,7 @@ namespace Server.Mobiles
                     {
                         SayTo(pm, 501052); // Thou dost not belong to my guild!
                     }
-                    else if (pm.NpcGuildJoinTime + QuitAge > DateTime.UtcNow ||
+                    else if (pm.NpcGuildJoinTime + QuitAge > Core.Now ||
                              pm.NpcGuildGameTime + QuitGameAge > pm.GameTime)
                     {
                         SayTo(pm, 501053); // You just joined my guild! You must wait a week to resign.
@@ -141,7 +141,7 @@ namespace Server.Mobiles
                 {
                     SayTo(pm, 501046); // Thou must resign from thy other guild first.
                 }
-                else if (pm.GameTime < JoinGameAge || pm.CreationTime + JoinAge > DateTime.UtcNow)
+                else if (pm.GameTime < JoinGameAge || pm.CreationTime + JoinAge > Core.Now)
                 {
                     SayTo(pm, 501048); // You are too young to join my guild...
                 }
@@ -150,7 +150,7 @@ namespace Server.Mobiles
                     SayWelcomeTo(pm);
 
                     pm.NpcGuild = NpcGuild;
-                    pm.NpcGuildJoinTime = DateTime.UtcNow;
+                    pm.NpcGuildJoinTime = Core.Now;
                     pm.NpcGuildGameTime = pm.GameTime;
 
                     dropped.Delete();

@@ -66,7 +66,7 @@ namespace Server.SkillHandlers
                 }
             }
 
-            if (ends && info.m_Ending && info.m_EndTime < DateTime.UtcNow)
+            if (ends && info.m_Ending && info.m_EndTime < Core.Now)
             {
                 info.m_Timer?.Stop();
 
@@ -78,12 +78,12 @@ namespace Server.SkillHandlers
                 if (ends && !info.m_Ending)
                 {
                     info.m_Ending = true;
-                    info.m_EndTime = DateTime.UtcNow + TimeSpan.FromSeconds(15);
+                    info.m_EndTime = Core.Now + TimeSpan.FromSeconds(15);
                 }
                 else if (!ends)
                 {
                     info.m_Ending = false;
-                    info.m_EndTime = DateTime.UtcNow;
+                    info.m_EndTime = Core.Now;
                 }
 
                 targ.FixedEffect(0x376A, 1, 32);
@@ -104,7 +104,7 @@ namespace Server.SkillHandlers
             {
                 m_From = from;
                 m_Creature = creature;
-                m_EndTime = DateTime.UtcNow;
+                m_EndTime = Core.Now;
                 m_Ending = false;
                 m_Effect = effect;
                 m_Mods = mods;

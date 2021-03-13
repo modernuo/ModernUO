@@ -72,7 +72,7 @@ namespace Server.Items
                 }
             }
 
-            if (pm.AcceleratedStart > DateTime.UtcNow)
+            if (pm.AcceleratedStart > Core.Now)
             {
                 from.SendLocalizedMessage(1077951); // You are already under the effect of an accelerated skillgain scroll.
                 return false;

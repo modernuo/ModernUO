@@ -33,7 +33,7 @@ namespace Server.Network
 
             public AuthIDPersistence(ClientVersion v)
             {
-                Age = DateTime.UtcNow;
+                Age = Core.Now;
                 Version = v;
             }
         }

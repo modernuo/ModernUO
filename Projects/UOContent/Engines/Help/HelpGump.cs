@@ -324,7 +324,7 @@ namespace Server.Engines.Help
             {
                 var info = m.Aggressed[i];
 
-                if (DateTime.UtcNow - info.LastCombatTime < TimeSpan.FromSeconds(30.0))
+                if (Core.Now - info.LastCombatTime < TimeSpan.FromSeconds(30.0))
                 {
                     return true;
                 }

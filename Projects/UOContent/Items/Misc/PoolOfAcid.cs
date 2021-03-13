@@ -27,7 +27,7 @@ namespace Server.Items
 
             m_MinDamage = minDamage;
             m_MaxDamage = maxDamage;
-            m_Created = DateTime.UtcNow;
+            m_Created = Core.Now;
             m_Duration = duration;
 
             m_Timer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick);
@@ -46,7 +46,7 @@ namespace Server.Items
 
         private void OnTick()
         {
-            var now = DateTime.UtcNow;
+            var now = Core.Now;
             var age = now - m_Created;
 
             if (age > m_Duration)

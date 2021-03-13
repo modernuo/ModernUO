@@ -86,7 +86,7 @@ namespace Server.Items
 
         public bool IsSigned => m_Line1 != null || m_Line2 != null || m_Line3 != null;
 
-        public bool CanSign => !IsSigned || DateTime.UtcNow <= EditLimit;
+        public bool CanSign => !IsSigned || Core.Now <= EditLimit;
 
         public override void AddNameProperty(ObjectPropertyList list)
         {
@@ -237,7 +237,7 @@ namespace Server.Items
 
                 if (!m_Bear.IsSigned)
                 {
-                    m_Bear.EditLimit = DateTime.UtcNow + TimeSpan.FromMinutes(10);
+                    m_Bear.EditLimit = Core.Now + TimeSpan.FromMinutes(10);
                 }
 
                 m_Bear.Line1 = Utility.FixHtml(line1);

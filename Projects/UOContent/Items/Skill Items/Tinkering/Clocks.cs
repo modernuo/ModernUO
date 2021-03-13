@@ -33,7 +33,7 @@ namespace Server.Items
 
         public static void Initialize()
         {
-            ServerStart = DateTime.UtcNow;
+            ServerStart = Core.Now;
         }
 
         public static MoonPhase GetMoonPhase(Map map, int x, int y)
@@ -55,7 +55,7 @@ namespace Server.Items
 
         public static void GetTime(Map map, int x, int y, out int hours, out int minutes, out int totalMinutes)
         {
-            var timeSpan = DateTime.UtcNow - WorldStart;
+            var timeSpan = Core.Now - WorldStart;
 
             totalMinutes = (int)(timeSpan.TotalSeconds / SecondsPerUOMinute);
 

@@ -58,7 +58,7 @@ namespace Server.Engines.Events
 
         public void ScheduleEvent(IEvent e, int hour, int min, TimeSpan interval)
         {
-            var now = DateTime.UtcNow;
+            var now = Core.Now;
             var firstRun = new DateTime(now.Year, now.Month, now.Day, hour, min, 0);
 
             while (now > firstRun)
@@ -85,7 +85,7 @@ namespace Server.Engines.Events
         {
             foreach (var entry in _schedule)
             {
-                if (entry.NextOccurrence <= DateTime.UtcNow)
+                if (entry.NextOccurrence <= Core.Now)
                 {
                     entry.Occur();
                 }

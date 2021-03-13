@@ -385,7 +385,7 @@ namespace Server.Mobiles
         public override void OnThink()
         {
             /*
-            if (m_NextWave < DateTime.UtcNow)
+            if (m_NextWave < Core.Now)
               AreaHeatDamage();
             */
         }
@@ -436,7 +436,7 @@ namespace Server.Mobiles
             }
           }
 
-          m_NextWave = DateTime.UtcNow + TimeSpan.FromSeconds( 3 );
+          m_NextWave = Core.Now + TimeSpan.FromSeconds( 3 );
         }
         */
     }

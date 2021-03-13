@@ -75,7 +75,7 @@ namespace Server.Multis
 
         public BaseBoat() : base(0x0)
         {
-            m_DecayTime = DateTime.UtcNow + BoatDecayDelay;
+            m_DecayTime = Core.Now + BoatDecayDelay;
 
             TillerMan = new TillerMan(this);
             Hold = new Hold(this);
@@ -168,29 +168,29 @@ namespace Server.Multis
         {
             get
             {
-                var start = TimeOfDecay - BoatDecayDelay;
+                var start = Core.Now - TimeOfDecay - BoatDecayDelay;
 
-                if (DateTime.UtcNow - start < TimeSpan.FromHours(1.0))
+                if (start < TimeSpan.FromHours(1.0))
                 {
                     return 1043010; // This structure is like new.
                 }
 
-                if (DateTime.UtcNow - start < TimeSpan.FromDays(2.0))
+                if (start < TimeSpan.FromDays(2.0))
                 {
                     return 1043011; // This structure is slightly worn.
                 }
 
-                if (DateTime.UtcNow - start < TimeSpan.FromDays(3.0))
+                if (start < TimeSpan.FromDays(3.0))
                 {
                     return 1043012; // This structure is somewhat worn.
                 }
 
-                if (DateTime.UtcNow - start < TimeSpan.FromDays(4.0))
+                if (start < TimeSpan.FromDays(4.0))
                 {
                     return 1043013; // This structure is fairly worn.
                 }
 
-                if (DateTime.UtcNow - start < TimeSpan.FromDays(5.0))
+                if (start < TimeSpan.FromDays(5.0))
                 {
                     return 1043014; // This structure is greatly worn.
                 }
@@ -527,7 +527,7 @@ namespace Server.Multis
 
         public void Refresh()
         {
-            m_DecayTime = DateTime.UtcNow + BoatDecayDelay;
+            m_DecayTime = Core.Now + BoatDecayDelay;
 
             TillerMan?.InvalidateProperties();
         }
@@ -539,7 +539,7 @@ namespace Server.Multis
                 return true;
             }
 
-            if (!IsMoving && DateTime.UtcNow >= m_DecayTime)
+            if (!IsMoving && Core.Now >= m_DecayTime)
             {
                 new DecayTimer(this).Start();
 

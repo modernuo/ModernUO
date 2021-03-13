@@ -25,7 +25,7 @@ namespace Server.Commands
             try
             {
                 using var sw = new StreamWriter("profiles.log", true);
-                sw.WriteLine("# Dump on {0:f}", DateTime.UtcNow);
+                sw.WriteLine("# Dump on {0:f}", Core.Now);
                 sw.WriteLine($"# Core profiling for {Core.ProfileTime}");
 
                 sw.WriteLine("# Packet send");
@@ -114,7 +114,7 @@ namespace Server.Commands
                 items.Sort(new CountSorter());
                 mobiles.Sort(new CountSorter());
 
-                op.WriteLine("# Object count table generated on {0}", DateTime.UtcNow);
+                op.WriteLine("# Object count table generated on {0}", Core.Now);
                 op.WriteLine();
                 op.WriteLine();
 
@@ -362,7 +362,7 @@ namespace Server.Commands
 
                 using var op = new StreamWriter(opFile);
                 op.WriteLine("# Profile of world {0}", type);
-                op.WriteLine("# Generated on {0}", DateTime.UtcNow);
+                op.WriteLine("# Generated on {0}", Core.Now);
                 op.WriteLine();
                 op.WriteLine();
 

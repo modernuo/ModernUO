@@ -99,7 +99,7 @@ namespace Server.Engines.ConPVP
 
                         if (m_Tournament.Stage == TournamentStage.Signup)
                         {
-                            var until = m_Tournament.SignupStart + m_Tournament.SignupPeriod - DateTime.UtcNow;
+                            var until = m_Tournament.SignupStart + m_Tournament.SignupPeriod - Core.Now;
                             string text;
                             var secs = (int)until.TotalSeconds;
 

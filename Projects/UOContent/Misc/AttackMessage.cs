@@ -51,7 +51,7 @@ namespace Server.Misc
             {
                 var info = list[i];
 
-                if (info.Attacker == m2 && DateTime.UtcNow < info.LastCombatTime + Delay)
+                if (info.Attacker == m2 && Core.Now < info.LastCombatTime + Delay)
                 {
                     return true;
                 }
@@ -63,7 +63,7 @@ namespace Server.Misc
             {
                 var info = list[i];
 
-                if (info.Attacker == m1 && DateTime.UtcNow < info.LastCombatTime + Delay)
+                if (info.Attacker == m1 && Core.Now < info.LastCombatTime + Delay)
                 {
                     return true;
                 }

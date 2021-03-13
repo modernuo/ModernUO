@@ -32,7 +32,7 @@ namespace Server.Engines.MLQuests.Objectives
 
             if (obj.IsTimed)
             {
-                EndTime = DateTime.UtcNow + obj.Duration;
+                EndTime = Core.Now + obj.Duration;
             }
         }
 
@@ -50,7 +50,7 @@ namespace Server.Engines.MLQuests.Objectives
         {
             if (IsTimed)
             {
-                WriteTimeRemaining(g, ref y, EndTime > DateTime.UtcNow ? EndTime - DateTime.UtcNow : TimeSpan.Zero);
+                WriteTimeRemaining(g, ref y, Utility.Max(EndTime - Core.Now, TimeSpan.Zero));
             }
         }
 

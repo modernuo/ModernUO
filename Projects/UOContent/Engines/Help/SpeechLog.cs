@@ -66,7 +66,7 @@ namespace Server.Engines.Help
             {
                 var entry = m_Queue.Peek();
 
-                if (DateTime.UtcNow - entry.Created > EntryDuration)
+                if (Core.Now - entry.Created > EntryDuration)
                 {
                     m_Queue.Dequeue();
                 }
@@ -128,7 +128,7 @@ namespace Server.Engines.Help
         {
             From = from;
             Speech = speech;
-            Created = DateTime.UtcNow;
+            Created = Core.Now;
         }
 
         public Mobile From { get; }

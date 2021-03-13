@@ -131,7 +131,7 @@ namespace Server.Spells.Sixth
                 m_Timer = new InternalTimer(this, duration);
                 m_Timer.Start();
 
-                m_End = DateTime.UtcNow + duration;
+                m_End = Core.Now + duration;
             }
 
             public InternalItem(Serial serial) : base(serial)
@@ -170,7 +170,7 @@ namespace Server.Spells.Sixth
                             m_Caster = reader.ReadEntity<Mobile>();
                             m_End = reader.ReadDeltaTime();
 
-                            m_Timer = new InternalTimer(this, m_End - DateTime.UtcNow);
+                            m_Timer = new InternalTimer(this, m_End - Core.Now);
                             m_Timer.Start();
 
                             break;

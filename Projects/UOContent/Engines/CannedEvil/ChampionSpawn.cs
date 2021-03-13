@@ -301,7 +301,7 @@ namespace Server.Engines.CannedEvil
         {
             m_RestartTimer?.Stop();
 
-            RestartTime = DateTime.UtcNow + ts;
+            RestartTime = Core.Now + ts;
 
             m_RestartTimer = new RestartTimer(this, ts);
             m_RestartTimer.Start();
@@ -564,7 +564,7 @@ namespace Server.Engines.CannedEvil
                     SetWhiteSkullCount(p / 20);
                 }
 
-                if (DateTime.UtcNow >= ExpireTime)
+                if (Core.Now >= ExpireTime)
                 {
                     Expire();
                 }
@@ -575,7 +575,7 @@ namespace Server.Engines.CannedEvil
 
         public void AdvanceLevel()
         {
-            ExpireTime = DateTime.UtcNow + ExpireDelay;
+            ExpireTime = Core.Now + ExpireDelay;
 
             if (Level < 16)
             {
@@ -811,7 +811,7 @@ namespace Server.Engines.CannedEvil
                 SetWhiteSkullCount(0);
             }
 
-            ExpireTime = DateTime.UtcNow + ExpireDelay;
+            ExpireTime = Core.Now + ExpireDelay;
         }
 
         public Point3D GetRedSkullLocation(int index)
@@ -1293,7 +1293,7 @@ namespace Server.Engines.CannedEvil
                         if (reader.ReadBool())
                         {
                             RestartTime = reader.ReadDeltaTime();
-                            BeginRestart(RestartTime - DateTime.UtcNow);
+                            BeginRestart(RestartTime - Core.Now);
                         }
 
                         if (version < 4)

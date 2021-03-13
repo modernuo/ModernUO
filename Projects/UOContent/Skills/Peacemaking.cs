@@ -126,7 +126,7 @@ namespace Server.SkillHandlers
 
                                     if (bc?.BardPacified == false)
                                     {
-                                        bc.Pacify(from, DateTime.UtcNow + TimeSpan.FromSeconds(1.0));
+                                        bc.Pacify(from, Core.Now + TimeSpan.FromSeconds(1.0));
                                     }
                                 }
 
@@ -210,7 +210,7 @@ namespace Server.SkillHandlers
                                         seconds = 10;
                                     }
 
-                                    bc.Pacify(from, DateTime.UtcNow + TimeSpan.FromSeconds(seconds));
+                                    bc.Pacify(from, Core.Now + TimeSpan.FromSeconds(seconds));
                                 }
                                 else
                                 {

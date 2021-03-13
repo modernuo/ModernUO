@@ -1338,7 +1338,10 @@ namespace Server
             val.CompareTo(max) > 0 ? max : val;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TimeSpan Max(this TimeSpan val, TimeSpan max) => val > max ? max : val;
+        public static T Min<T>(T val, T min) where T : IComparable<T> => val.CompareTo(min) < 0 ? val : min;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T Max<T>(T val, T max) where T : IComparable<T> => val.CompareTo(max) > 0 ? val : max;
 
         public static string TrimMultiline(this string str, string lineSeparator = "\n")
         {
@@ -1434,6 +1437,6 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetTimeStamp() => DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss");
+        public static string GetTimeStamp() => Core.Now.ToString("yyyy-MM-dd-HH-mm-ss");
     }
 }

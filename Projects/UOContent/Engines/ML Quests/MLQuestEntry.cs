@@ -30,7 +30,7 @@ namespace Server.Engines.MLQuests
             QuesterType = quester?.GetType();
             Player = player;
 
-            Accepted = DateTime.UtcNow;
+            Accepted = Core.Now;
             m_Flags = MLQuestInstanceFlags.None;
 
             Objectives = new BaseObjectiveInstance[quest.Objectives.Count];
@@ -204,7 +204,7 @@ namespace Server.Engines.MLQuests
             {
                 if (!obj.Expired)
                 {
-                    if (obj.IsTimed && obj.EndTime <= DateTime.UtcNow)
+                    if (obj.IsTimed && obj.EndTime <= Core.Now)
                     {
                         Player.SendLocalizedMessage(1072258); // You failed to complete an objective in time!
 
@@ -335,7 +335,7 @@ namespace Server.Engines.MLQuests
 
             if (Quest.HasRestartDelay)
             {
-                PlayerContext.SetDoneQuest(Quest, DateTime.UtcNow + Quest.GetRestartDelay());
+                PlayerContext.SetDoneQuest(Quest, Core.Now + Quest.GetRestartDelay());
             }
 
             // This is correct for ObjectiveType.Any as well

@@ -90,7 +90,7 @@ namespace Server.Factions
 
                 if (entry.Chance > Utility.Random(100))
                 {
-                    releaseTime = DateTime.UtcNow + entry.Hold;
+                    releaseTime = Core.Now + entry.Hold;
                     return entry.Spell.CreateInstance<Spell>(mob, null);
                 }
             }
@@ -133,7 +133,7 @@ namespace Server.Factions
                     return TimeSpan.MaxValue;
                 }
 
-                var ts = m_BandageStart + m_Bandage.Timer.Delay - DateTime.UtcNow;
+                var ts = m_BandageStart + m_Bandage.Timer.Delay - Core.Now;
 
                 if (ts < TimeSpan.FromSeconds(-1.0))
                 {
@@ -141,12 +141,7 @@ namespace Server.Factions
                     return TimeSpan.MaxValue;
                 }
 
-                if (ts < TimeSpan.Zero)
-                {
-                    ts = TimeSpan.Zero;
-                }
-
-                return ts;
+                return Utility.Max(ts, TimeSpan.Zero);
             }
         }
 
@@ -187,7 +182,7 @@ namespace Server.Factions
             }
 
             m_Bandage = BandageContext.BeginHeal(m_Guard, m_Guard);
-            m_BandageStart = DateTime.UtcNow;
+            m_BandageStart = Core.Now;
             return m_Bandage != null;
         }
 
@@ -487,10 +482,10 @@ namespace Server.Factions
 
             if (m_Guard.Target != null && m_ReleaseTarget == DateTime.MinValue)
             {
-                m_ReleaseTarget = DateTime.UtcNow + TimeSpan.FromSeconds(10.0);
+                m_ReleaseTarget = Core.Now + TimeSpan.FromSeconds(10.0);
             }
 
-            if (m_Guard.Target != null && DateTime.UtcNow > m_ReleaseTarget)
+            if (m_Guard.Target != null && Core.Now > m_ReleaseTarget)
             {
                 var targ = m_Guard.Target;
 

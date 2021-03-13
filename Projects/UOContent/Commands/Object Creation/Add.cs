@@ -119,7 +119,7 @@ namespace Server.Commands
                 return;
             }
 
-            var time = DateTime.UtcNow;
+            var time = Core.Now;
 
             var built = BuildObjects(from, type, start, end, args, props, packs, outline, mapAvg);
 
@@ -129,7 +129,7 @@ namespace Server.Commands
                     "{0} object{1} generated in {2:F1} seconds.",
                     built,
                     built != 1 ? "s" : "",
-                    (DateTime.UtcNow - time).TotalSeconds
+                    (Core.Now - time).TotalSeconds
                 );
             }
             else

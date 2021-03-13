@@ -1760,7 +1760,7 @@ namespace Server.Mobiles
 
         public virtual bool DoBardPacified()
         {
-            if (DateTime.UtcNow < m_Mobile.BardEndTime)
+            if (Core.Now < m_Mobile.BardEndTime)
             {
                 m_Mobile.DebugSay("I am pacified, I wait");
                 m_Mobile.Combatant = null;
@@ -1777,7 +1777,7 @@ namespace Server.Mobiles
 
         public virtual bool DoBardProvoked()
         {
-            if (DateTime.UtcNow >= m_Mobile.BardEndTime &&
+            if (Core.Now >= m_Mobile.BardEndTime &&
                 (m_Mobile.BardMaster?.Deleted != false ||
                  m_Mobile.BardMaster.Map != m_Mobile.Map || m_Mobile.GetDistanceToSqrt(m_Mobile.BardMaster) >
                  m_Mobile.RangePerception))
@@ -1944,7 +1944,7 @@ namespace Server.Mobiles
                 using (var op = new StreamWriter("nan_transform.txt", true))
                 {
                     op.WriteLine(
-                        $"NaN in TransformMoveDelay: {DateTime.UtcNow}, {GetType()}, {m_Mobile?.GetType()}, {m_Mobile.HitsMax}"
+                        $"NaN in TransformMoveDelay: {Core.Now}, {GetType()}, {m_Mobile?.GetType()}, {m_Mobile.HitsMax}"
                     );
                 }
 

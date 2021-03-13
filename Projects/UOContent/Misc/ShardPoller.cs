@@ -47,32 +47,10 @@ namespace Server.Misc
         public DateTime StartTime { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-        public TimeSpan TimeRemaining
-        {
-            get
-            {
-                if (StartTime == DateTime.MinValue || !m_Active)
-                {
-                    return TimeSpan.Zero;
-                }
-
-                try
-                {
-                    var ts = StartTime + Duration - DateTime.UtcNow;
-
-                    if (ts < TimeSpan.Zero)
-                    {
-                        return TimeSpan.Zero;
-                    }
-
-                    return ts;
-                }
-                catch
-                {
-                    return TimeSpan.Zero;
-                }
-            }
-        }
+        public TimeSpan TimeRemaining =>
+            StartTime == DateTime.MinValue || !m_Active
+                ? TimeSpan.Zero
+                : Utility.Max(StartTime + Duration - Core.Now, TimeSpan.Zero);
 
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public bool Active
@@ -89,7 +67,7 @@ namespace Server.Misc
 
                 if (m_Active)
                 {
-                    StartTime = DateTime.UtcNow;
+                    StartTime = Core.Now;
                     m_ActivePollers.Add(this);
                 }
                 else

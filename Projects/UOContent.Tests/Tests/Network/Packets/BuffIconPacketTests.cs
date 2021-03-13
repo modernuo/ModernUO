@@ -20,7 +20,7 @@ namespace UOContent.Tests
             ).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
-            BuffInfo.SendAddBuffPacket(ns, mob, iconID, titleCliloc, secondaryCliloc, args, timeSpan);
+            BuffInfo.SendAddBuffPacket(ns, mob, iconID, titleCliloc, secondaryCliloc, args, (int)timeSpan.TotalMilliseconds);
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);

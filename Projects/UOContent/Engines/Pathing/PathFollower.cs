@@ -66,13 +66,13 @@ namespace Server
 
             var goal = GetGoalLocation();
 
-            if (m_Path != null && (m_Path.Success && goal == m_LastGoalLoc || m_LastPathTime + RepathDelay > DateTime.Now) &&
+            if (m_Path != null && (m_Path.Success && goal == m_LastGoalLoc || m_LastPathTime + RepathDelay > Core.Now) &&
                 !(m_Path.Success && Check(m_From.Location, m_LastGoalLoc, 0)))
             {
                 return false;
             }
 
-            m_LastPathTime = DateTime.UtcNow;
+            m_LastPathTime = Core.Now;
             m_LastGoalLoc = goal;
 
             m_Path = new MovementPath(m_From, goal);
