@@ -478,7 +478,7 @@ namespace Server
                 top = zBottom;
             }
 
-            avg = Math.Abs(zTop - zBottom) > Math.Abs(zLeft - zRight)
+            avg = Utility.Abs(zTop - zBottom) > Utility.Abs(zLeft - zRight)
                 ? FloorAverage(zLeft, zRight)
                 : FloorAverage(zTop, zBottom);
         }

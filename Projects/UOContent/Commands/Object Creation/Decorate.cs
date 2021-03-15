@@ -1072,7 +1072,7 @@ namespace Server.Commands
                     {
                         res = true;
                     }
-                    else if (Math.Abs(item.Z - z) < 8)
+                    else if (Utility.Abs(item.Z - z) < 8)
                     {
                         m_DeleteQueue.Enqueue(item);
                     }

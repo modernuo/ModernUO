@@ -288,7 +288,7 @@ namespace Server.SkillHandlers
                                 }
                             }
 
-                            var info = new DiscordanceInfo(from, targ, Math.Abs(effect), mods);
+                            var info = new DiscordanceInfo(from, targ, Utility.Abs(effect), mods);
                             info.m_Timer = Timer.DelayCall(
                                 TimeSpan.Zero,
                                 TimeSpan.FromSeconds(1.25),

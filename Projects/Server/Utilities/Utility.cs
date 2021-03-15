@@ -577,8 +577,8 @@ namespace Server
             var dx = to.X - from.X;
             var dy = to.Y - from.Y;
 
-            var adx = Math.Abs(dx);
-            var ady = Math.Abs(dy);
+            var adx = Abs(dx);
+            var ady = Abs(dy);
 
             if (adx >= ady * 3)
             {
@@ -1395,7 +1395,21 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CountDigits(uint value)
+        public static int Abs(this int value)
+        {
+            int mask = value >> 31;
+            return (value + mask) ^ mask;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Abs(this long value)
+        {
+            long mask = value >> 63;
+            return (value + mask) ^ mask;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountDigits(this uint value)
         {
             int digits = 1;
             if (value >= 100000)
@@ -1423,6 +1437,47 @@ namespace Server
             else
             {
                 digits += 4;
+            }
+
+            return digits;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountDigits(this int value)
+        {
+            int absValue = Abs(value);
+
+            int digits = 1;
+            if (absValue >= 100000)
+            {
+                absValue /= 100000;
+                digits += 5;
+            }
+
+            if (absValue < 10)
+            {
+                // no-op
+            }
+            else if (absValue < 100)
+            {
+                digits++;
+            }
+            else if (absValue < 1000)
+            {
+                digits += 2;
+            }
+            else if (absValue < 10000)
+            {
+                digits += 3;
+            }
+            else
+            {
+                digits += 4;
+            }
+
+            if (value < 0)
+            {
+                digits += 1; // negative
             }
 
             return digits;

@@ -15,7 +15,9 @@
 
 using System;
 using System.Buffers;
+using System.Text;
 using Server.Misc;
+using Server.Text;
 
 namespace Server.Network
 {
@@ -48,7 +50,7 @@ namespace Server.Network
             const long ticksInHour = 1000 * 60 * 60;
             ns.SendExtendedShardStats(
                 ServerList.ServerName,
-                Core.TickCount / ticksInHour,
+                (int)(Core.TickCount / ticksInHour),
                 TcpServer.Instances.Count,
                 World.Items.Count,
                 World.Mobiles.Count,
@@ -78,7 +80,7 @@ namespace Server.Network
         }
 
         public static void SendExtendedShardStats(
-            this NetState ns, string name, long age, int clients, int items, int mobiles, int mem
+            this NetState ns, string name, int age, int clients, int items, int mobiles, int mem
         )
         {
             if (ns == null)
@@ -86,11 +88,16 @@ namespace Server.Network
                 return;
             }
 
-            var str = $"ModernUO, Name={name}, Age={age}, Clients={clients}, Items={items}, Chars={mobiles}, Mem={mem}, Ver=2";
-            var writer = new SpanWriter(stackalloc byte[str.Length + 1]);
-            writer.WriteAsciiNull(str);
+            var str =
+                $"ModernUO, Name={name}, Age={age}, Clients={clients}, Items={items}, Chars={mobiles}, Mem={mem}, Ver=2";
 
-            ns.Send(writer.Span);
+            var length = Encoding.UTF8.GetMaxByteCount(str.Length);
+
+            Span<byte> span = stackalloc byte[length + 1];
+            Encoding.UTF8.GetBytes(str, span);
+            span[^1] = 0; // Terminator
+
+            ns.Send(span);
         }
     }
 

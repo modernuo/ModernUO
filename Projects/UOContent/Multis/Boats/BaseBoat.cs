@@ -1518,8 +1518,8 @@ namespace Server.Multis
             var dx = x - X;
             var dy = y - Y;
 
-            var adx = Math.Abs(dx);
-            var ady = Math.Abs(dy);
+            var adx = Utility.Abs(dx);
+            var ady = Utility.Abs(dy);
 
             var dir = Utility.GetDirection(this, new Point2D(x, y));
             var iDir = (int)dir;
@@ -1527,7 +1527,7 @@ namespace Server.Multis
             // Compute the maximum distance we can travel without going too far away
             if (iDir % 2 == 0) // North, East, South and West
             {
-                maxSpeed = Math.Abs(adx - ady);
+                maxSpeed = Utility.Abs(adx - ady);
             }
             else // Right, Down, Left and Up
             {
@@ -1732,7 +1732,7 @@ namespace Server.Multis
                 }
             }
 
-            if (!NewBoatMovement || Math.Abs(xOffset) > 1 || Math.Abs(yOffset) > 1)
+            if (!NewBoatMovement || Utility.Abs(xOffset) > 1 || Utility.Abs(yOffset) > 1)
             {
                 Teleport(xOffset, yOffset, 0);
             }
