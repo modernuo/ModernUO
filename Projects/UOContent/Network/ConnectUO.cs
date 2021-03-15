@@ -13,8 +13,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Buffers;
 using Server.Accounting;
+using Server.Text;
 
 namespace Server.Network
 {
@@ -23,13 +25,33 @@ namespace Server.Network
         public const byte ConnectUOProtocolVersion = 0;
         public const byte ConnectUOServerType = 5;
         private static long _serverStart;
+        private static byte[] _token;
 
         public static void Configure()
         {
             _serverStart = Core.TickCount;
             var enabled = ServerConfiguration.GetOrUpdateSetting("connectuo.enabled", true);
+            var token = ServerConfiguration.GetOrUpdateSetting("connectuo.token", null);
+
             if (enabled)
             {
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(token))
+                    {
+                        _token = GC.AllocateUninitializedArray<byte>(32);
+                        token.GetBytes(_token);
+                    }
+                }
+                catch
+                {
+                    Utility.PushColor(ConsoleColor.Red);
+                    Console.WriteLine("ConnectUO token could not be parsed");
+                    Console.WriteLine("Make sure modernuo.json is properly configured");
+                    Utility.PopColor();
+                    _token = null;
+                }
+
                 FreeshardProtocol.Register(0xC0, false, PollInfo);
             }
         }
@@ -37,6 +59,22 @@ namespace Server.Network
         public static void PollInfo(NetState ns, CircularBufferReader reader, ref int packetLength)
         {
             var version = reader.ReadByte();
+
+            if (_token != null)
+            {
+                unsafe {
+                    byte* tok = stackalloc byte[32];
+                    var span = new Span<byte>(tok, 32);
+                    reader.Read(span);
+
+                    if (!span.SequenceEqual(_token))
+                    {
+                        ns.Disconnect("Invalid token sent for ConnectUO");
+                        return;
+                    }
+                }
+            }
+
             ns.WriteConsole($"ConnectUO (v{version}) is requesting stats.");
             ns.SendServerPollInfo();
         }

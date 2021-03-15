@@ -10,7 +10,7 @@ namespace Server.Tests
         public void TestGetBytes(string input, byte[] bytes)
         {
             Span<byte> outputBytes = stackalloc byte[input.Length / 2];
-            HexStringConverter.GetBytes(input, outputBytes);
+            input.GetBytes(outputBytes);
 
             Assert.Equal(bytes, outputBytes.ToArray());
             Assert.Equal(input, bytes.ToHexString());
