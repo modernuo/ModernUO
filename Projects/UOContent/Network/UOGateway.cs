@@ -17,7 +17,6 @@ using System;
 using System.Buffers;
 using System.Text;
 using Server.Misc;
-using Server.Text;
 
 namespace Server.Network
 {
