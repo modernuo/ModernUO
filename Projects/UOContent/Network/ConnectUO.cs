@@ -22,6 +22,7 @@ namespace Server.Network
 {
     public static class ConnectUOServerPoller
     {
+        private const int ConnectUOTokenLength = 32;
         public const byte ConnectUOProtocolVersion = 0;
         public const byte ConnectUOServerType = 5;
         private static long _serverStart;
@@ -39,7 +40,12 @@ namespace Server.Network
                 {
                     if (!string.IsNullOrWhiteSpace(token))
                     {
-                        _token = GC.AllocateUninitializedArray<byte>(32);
+                        if (token.Length != ConnectUOTokenLength * 2)
+                        {
+                            throw new Exception("Invalid length for ConnectUO token");
+                        }
+
+                        _token = GC.AllocateUninitializedArray<byte>(ConnectUOTokenLength);
                         token.GetBytes(_token);
                     }
                 }
@@ -63,8 +69,8 @@ namespace Server.Network
             if (_token != null)
             {
                 unsafe {
-                    byte* tok = stackalloc byte[32];
-                    var span = new Span<byte>(tok, 32);
+                    byte* tok = stackalloc byte[_token.Length];
+                    var span = new Span<byte>(tok, _token.Length);
                     reader.Read(span);
 
                     if (!span.SequenceEqual(_token))
