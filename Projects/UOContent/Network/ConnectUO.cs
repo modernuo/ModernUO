@@ -109,7 +109,7 @@ namespace Server.Network
 
             var writer = new SpanWriter(stackalloc byte[15]);
             writer.Write((byte)0xC0); // Packet ID
-            writer.Write(17); // Length
+            writer.Write((ushort)17); // Length
             writer.Write(ConnectUOProtocolVersion); // Version
             writer.Write((byte)_serverType);
             writer.Write((int)(Core.TickCount / 1000));
