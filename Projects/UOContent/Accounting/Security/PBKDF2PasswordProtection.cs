@@ -46,7 +46,7 @@ namespace Server.Accounting.Security
         public bool ValidatePassword(string encryptedPassword, string plainPassword)
         {
             Span<byte> encryptedBytes = stackalloc byte[m_OutputSize];
-            HexStringConverter.GetBytes(encryptedPassword, encryptedBytes);
+            encryptedPassword.GetBytes(encryptedBytes);
 
             var iterations = BinaryPrimitives.ReadUInt16LittleEndian(encryptedBytes.SliceToLength(2));
             var salt = encryptedBytes.Slice(2, m_SaltSize);

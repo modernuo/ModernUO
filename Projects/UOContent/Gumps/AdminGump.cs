@@ -185,7 +185,7 @@ namespace Server.Gumps
                         AddLabel(150, 270, LabelHue, Core.ScriptItems.ToString());
 
                         AddLabel(20, 290, LabelHue, "Uptime:");
-                        AddLabel(150, 290, LabelHue, FormatTimeSpan(Core.Now - Clock.ServerStart));
+                        AddLabel(150, 290, LabelHue, FormatTimeSpan(TimeSpan.FromMilliseconds(Core.TickCount)));
 
                         AddLabel(20, 310, LabelHue, "Memory:");
                         AddLabel(150, 310, LabelHue, FormatByteAmount(GC.GetTotalMemory(false)));
