@@ -35,12 +35,10 @@ namespace Server.Network
         public const byte ConnectUOProtocolVersion = 0;
         private const int _connectUOTokenLength = 32;
         private const ConnectUOServerType _serverType = ConnectUOServerType.ModernUO;
-        private static long _serverStart;
         private static byte[] _token;
 
         public static void Configure()
         {
-            _serverStart = Core.TickCount;
             var enabled = ServerConfiguration.GetOrUpdateSetting("connectuo.enabled", true);
             var token = ServerConfiguration.GetOrUpdateSetting("connectuo.token", null);
 
@@ -114,7 +112,7 @@ namespace Server.Network
             writer.Write(17); // Length
             writer.Write(ConnectUOProtocolVersion); // Version
             writer.Write((byte)_serverType);
-            writer.Write((int)(Core.TickCount - _serverStart) / 1000);
+            writer.Write((int)(Core.TickCount / 1000));
             writer.Write(Accounts.Count);            // Shame if you modify this!
             writer.Write(TcpServer.Instances.Count); // Shame if you modify this!
 
