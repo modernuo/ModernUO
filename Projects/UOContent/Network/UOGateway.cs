@@ -24,7 +24,6 @@ namespace Server.Network
     {
         public static void Configure()
         {
-            Console.WriteLine("Executed UOGateway");
             var enabled = ServerConfiguration.GetOrUpdateSetting("uogateway.enabled", true);
 
             if (enabled)
