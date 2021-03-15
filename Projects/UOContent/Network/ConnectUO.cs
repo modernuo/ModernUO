@@ -20,7 +20,7 @@ using Server.Text;
 
 namespace Server.Network
 {
-    public static class ConnectUOServerPoller
+    public static class ConnectUO
     {
         private const int ConnectUOTokenLength = 32;
         public const byte ConnectUOProtocolVersion = 0;
@@ -82,6 +82,11 @@ namespace Server.Network
             }
 
             ns.WriteConsole($"ConnectUO (v{version}) is requesting stats.");
+            if (version > ConnectUOProtocolVersion)
+            {
+                ns.WriteConsole("ConnectUO (v{version}) is newer than what is supported.");
+            }
+
             ns.SendServerPollInfo();
         }
 
