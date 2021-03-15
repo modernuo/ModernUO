@@ -9086,8 +9086,8 @@ namespace Server
             var rx = (dx - dy) * 44;
             var ry = (dx + dy) * 44;
 
-            var ax = Math.Abs(rx);
-            var ay = Math.Abs(ry);
+            var ax = rx.Abs();
+            var ay = ry.Abs();
 
             Direction ret;
 

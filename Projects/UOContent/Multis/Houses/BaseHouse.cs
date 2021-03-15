@@ -744,7 +744,7 @@ namespace Server.Multis
 
             foreach (var entity in eable)
             {
-                if (Math.Abs(location.Z - entity.Z) <= 16)
+                if ((location.Z - entity.Z).Abs() <= 16)
                 {
                     if (entity is PlayerVendor || entity is PlayerBarkeeper || entity is PlayerVendorPlaceholder)
                     {

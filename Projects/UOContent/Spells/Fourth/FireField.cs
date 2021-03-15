@@ -120,7 +120,7 @@ namespace Server.Spells.Fourth
 
                 m_End = Core.Now + duration;
 
-                m_Timer = new InternalTimer(this, TimeSpan.FromSeconds(Math.Abs(val) * 0.2), caster.InLOS(this), canFit);
+                m_Timer = new InternalTimer(this, TimeSpan.FromSeconds(val.Abs() * 0.2), caster.InLOS(this), canFit);
                 m_Timer.Start();
             }
 

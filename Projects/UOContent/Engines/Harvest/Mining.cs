@@ -414,7 +414,7 @@ namespace Server.Engines.Harvest
 
                                 var z = map.GetAverageZ(x, y);
 
-                                if (Math.Abs(z - from.Z) < 10 && map.CanSpawnMobile(x, y, z))
+                                if ((z - from.Z).Abs() < 10 && map.CanSpawnMobile(x, y, z))
                                 {
                                     spawned.OnBeforeSpawn(new Point3D(x, y, z), map);
                                     spawned.MoveToWorld(new Point3D(x, y, z), map);

@@ -284,7 +284,7 @@ namespace Server.Items
 
             var rx = from.X - X;
             var ry = from.Y - Y;
-            var az = Math.Abs(from.Z - Z);
+            var az = (from.Z - Z).Abs();
 
             return rx >= x && rx < x + w && ry >= y && ry < y + h && az <= 4;
         }

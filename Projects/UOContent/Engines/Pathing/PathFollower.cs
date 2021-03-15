@@ -86,7 +86,7 @@ namespace Server
         }
 
         public static bool Check(Point3D loc, Point3D goal, int range) =>
-            Utility.InRange(loc, goal, range) && (range > 1 || Math.Abs(loc.Z - goal.Z) < 16);
+            Utility.InRange(loc, goal, range) && (range > 1 || (loc.Z - goal.Z).Abs() < 16);
 
         public bool Follow(bool run, int range)
         {
