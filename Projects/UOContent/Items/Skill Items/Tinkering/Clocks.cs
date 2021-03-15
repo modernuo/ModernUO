@@ -31,7 +31,7 @@ namespace Server.Items
 
         public static DateTime ServerStart { get; private set; }
 
-        public static void Initialize()
+        public static void Configure()
         {
             ServerStart = Core.Now;
         }
