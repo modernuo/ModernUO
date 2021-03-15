@@ -54,7 +54,7 @@ namespace Server.Network
                         }
 
                         _token = GC.AllocateUninitializedArray<byte>(_connectUOTokenLength);
-                        token.GetBytes(_token);
+                        token.ToUpperInvariant().GetBytes(_token);
                     }
                 }
                 catch
