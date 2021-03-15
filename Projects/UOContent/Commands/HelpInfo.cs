@@ -12,7 +12,6 @@ namespace Server.Commands
 
         public static List<CommandInfo> SortedHelpInfo { get; private set; } = new();
 
-        [CallPriority(100)]
         public static void Initialize()
         {
             CommandSystem.Register("HelpInfo", AccessLevel.Player, HelpInfo_OnCommand);

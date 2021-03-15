@@ -40,7 +40,7 @@ namespace Server.Network
         public static void Configure()
         {
             var enabled = ServerConfiguration.GetOrUpdateSetting("connectuo.enabled", true);
-            var token = ServerConfiguration.GetOrUpdateSetting("connectuo.token", null);
+            var token = ServerConfiguration.GetOrUpdateSetting("connectuo.token", "");
 
             if (enabled)
             {

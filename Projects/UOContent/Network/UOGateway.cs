@@ -17,7 +17,6 @@ using System;
 using System.Buffers;
 using System.Text;
 using Server.Misc;
-using Server.Text;
 
 namespace Server.Network
 {
@@ -25,6 +24,7 @@ namespace Server.Network
     {
         public static void Configure()
         {
+            Console.WriteLine("Executed UOGateway");
             var enabled = ServerConfiguration.GetOrUpdateSetting("uogateway.enabled", true);
 
             if (enabled)
