@@ -22,9 +22,19 @@ namespace Server.Network
 {
     public static class ConnectUO
     {
-        private const int ConnectUOTokenLength = 32;
+        public enum ConnectUOServerType
+        {
+            RunUO,
+            ServUO,
+            UOX3,
+            POL,
+            Sphere,
+            ModernUO
+        }
+
         public const byte ConnectUOProtocolVersion = 0;
-        public const byte ConnectUOServerType = 5;
+        private const int _connectUOTokenLength = 32;
+        private const ConnectUOServerType _serverType = ConnectUOServerType.ModernUO;
         private static long _serverStart;
         private static byte[] _token;
 
@@ -40,12 +50,12 @@ namespace Server.Network
                 {
                     if (!string.IsNullOrWhiteSpace(token))
                     {
-                        if (token.Length != ConnectUOTokenLength * 2)
+                        if (token.Length != _connectUOTokenLength * 2)
                         {
                             throw new Exception("Invalid length for ConnectUO token");
                         }
 
-                        _token = GC.AllocateUninitializedArray<byte>(ConnectUOTokenLength);
+                        _token = GC.AllocateUninitializedArray<byte>(_connectUOTokenLength);
                         token.GetBytes(_token);
                     }
                 }
@@ -103,10 +113,10 @@ namespace Server.Network
             writer.Write((byte)0xC0); // Packet ID
             writer.Write(17); // Length
             writer.Write(ConnectUOProtocolVersion); // Version
-            writer.Write(ConnectUOServerType);
+            writer.Write((byte)_serverType);
             writer.Write((int)(Core.TickCount - _serverStart) / 1000);
-            writer.Write(Accounts.Count);
-            writer.Write(TcpServer.Instances.Count);
+            writer.Write(Accounts.Count);            // Shame if you modify this!
+            writer.Write(TcpServer.Instances.Count); // Shame if you modify this!
 
             ns.Send(writer.Span);
         }
