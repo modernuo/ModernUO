@@ -100,24 +100,4 @@ namespace Server.Network
             ns.Send(span);
         }
     }
-
-    /**
-     *     public sealed class CompactServerInfo : Packet
-    {
-        public CompactServerInfo()
-            : base(0x51)
-        {
-            EnsureCapacity(1 + 2 + (4 * 4) + 8);
-
-            m_Stream.Write(NetState.Instances.Count - 1);                      // Clients
-            m_Stream.Write(World.Items.Count);                                 // Items
-            m_Stream.Write(World.Mobiles.Count);                               // Mobiles
-            m_Stream.Write((uint)(DateTime.UtcNow - Clock.ServerStart).TotalSeconds);  // Age (seconds)
-
-            long memory = GC.GetTotalMemory(false);
-            m_Stream.Write((uint)(memory >> 32));                                   // Memory high bytes
-            m_Stream.Write((uint)memory);                                           // Memory low bytes
-        }
-    }
-     */
 }
