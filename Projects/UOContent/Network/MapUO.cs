@@ -23,48 +23,18 @@ namespace Server.Network
 {
     public static class MapUO
     {
-        private static readonly PacketHandler[] _handlers = new PacketHandler[0x100];
+        private static PacketHandler[] _handlers;
 
         public static void Configure()
         {
-            IncomingPackets.Register( 0xF0, 0, false, DecodeBundledPacket);
+            _handlers = ProtocolExtensions.Register(0xF0);
+
             Register(0x00, true, QueryPartyMemberLocations);
             Register(0x01, true, QueryGuildMemberLocations);
         }
 
-        public static void Register(int packetID, bool ingame, OnPacketReceive onReceive)
-        {
-            _handlers[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
-        }
-
-        public static PacketHandler GetHandler(int packetID) =>
-            packetID >= 0 && packetID < _handlers.Length ? _handlers[packetID] : null;
-
-        public static void DecodeBundledPacket(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            int packetID = reader.ReadByte();
-
-            PacketHandler ph = GetHandler(packetID);
-
-            if (ph == null)
-            {
-                return;
-            }
-
-            if (ph.Ingame && state.Mobile == null)
-            {
-                state.WriteConsole("Sent in-game packet (0xBFx{0:X2}) before having been attached to a mobile", packetID);
-                state.Disconnect("Sent in-game packet before being attached to a mobile.");
-            }
-            else if (ph.Ingame && state.Mobile.Deleted)
-            {
-                state.Disconnect(string.Empty);
-            }
-            else
-            {
-                ph.OnReceive(state, reader, ref packetLength);
-            }
-        }
+        public static void Register(int cmd, bool ingame, OnPacketReceive onReceive) =>
+            _handlers[cmd] = new PacketHandler(cmd, 0, ingame, onReceive);
 
         public static void QueryGuildMemberLocations(NetState state, CircularBufferReader reader, ref int packetLength)
         {
