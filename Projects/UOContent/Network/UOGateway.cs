@@ -85,6 +85,7 @@ namespace Server.Network
             {
                 return;
             }
+
             var str = $"ModernUO, Name={name}, Age={age}, Clients={clients}, Items={items}, Chars={mobiles}, Mem={mem}, Ver=2";
             var writer = new SpanWriter(stackalloc byte[str.Length + 1]);
             writer.WriteAsciiNull(str);
