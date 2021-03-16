@@ -113,8 +113,8 @@ namespace Server.Network
             writer.Write(ConnectUOProtocolVersion); // Version
             writer.Write((byte)_serverType);
             writer.Write((int)(Core.TickCount / 1000));
-            writer.Write(Accounts.Count);            // Shame if you modify this!
-            writer.Write(TcpServer.Instances.Count); // Shame if you modify this!
+            writer.Write(Accounts.Count); // Shame if you modify this!
+            writer.Write(TcpServer.Instances.Count - 1); // Shame if you modify this!
 
             ns.Send(writer.Span);
         }

@@ -37,7 +37,7 @@ namespace Server.Network
         {
             ns.SendCompactShardStats(
                 (uint)(Core.TickCount / 1000),
-                TcpServer.Instances.Count,
+                TcpServer.Instances.Count - 1, // Shame if you modify this!
                 World.Items.Count,
                 World.Mobiles.Count,
                 GC.GetTotalMemory(false)
@@ -50,7 +50,7 @@ namespace Server.Network
             ns.SendExtendedShardStats(
                 ServerList.ServerName,
                 (int)(Core.TickCount / ticksInHour),
-                TcpServer.Instances.Count,
+                TcpServer.Instances.Count - 1, // Shame if you modify this!
                 World.Items.Count,
                 World.Mobiles.Count,
                 (int)(GC.GetTotalMemory(false) / 1024)
