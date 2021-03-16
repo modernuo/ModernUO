@@ -88,7 +88,7 @@ namespace Server.Network
             }
 
             var str =
-                $"ModernUO, Name={name}, Age={age}, Clients={clients}, Items={items}, Chars={mobiles}, Mem={mem}, Ver=2";
+                $"ModernUO, Name={name}, Age={age}, Clients={clients}, Items={items}, Chars={mobiles}, Mem={mem}K, Ver=2";
 
             var length = Encoding.UTF8.GetMaxByteCount(str.Length);
 
