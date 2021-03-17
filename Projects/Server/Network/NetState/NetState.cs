@@ -1056,6 +1056,13 @@ namespace Server.Network
                 return;
             }
 
+            var m = Mobile;
+            if (m != null)
+            {
+                m.NetState = null;
+                Mobile = null;
+            }
+
             try
             {
                 if (_disconnectReason != string.Empty)
@@ -1104,14 +1111,7 @@ namespace Server.Network
             RecvPipe.Writer.Close();
             SendPipe.Writer.Close();
 
-            var m = Mobile;
             var a = Account;
-
-            if (m != null)
-            {
-                m.NetState = null;
-                Mobile = null;
-            }
 
             Gumps.Clear();
             Menus.Clear();
