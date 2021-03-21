@@ -1,8 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
 using Server.Commands.Generic;
+using Server.Mobiles;
 
 namespace Server.Commands
 {
+    internal static class SwapItems
+    {
+        static readonly List<Layer> SPECIAL_LAYERS = new() { Layer.Backpack, Layer.Bank, Layer.Mount };
+        public static void swapItems(Mobile target, PlayerMobile caster)
+        {
+            var targetItems = new List<Item>(target.Items).FindAll(item => !SPECIAL_LAYERS.Contains(item.Layer));
+            var casterItems = new List<Item>(caster.Items).FindAll(item => !SPECIAL_LAYERS.Contains(item.Layer));
+
+            foreach (Item item in casterItems)
+            {
+                caster.RemoveItem(item);
+            }
+
+            foreach (Item item in targetItems)
+            {
+                caster.EquipItem(item);
+                target.RemoveItem(item);
+            }
+
+            foreach (Item item in casterItems)
+            {
+                target.EquipItem(item);
+            }
+        }
+    }
+
     public class PossessCommand : BaseCommand
     {
         public PossessCommand()
@@ -17,42 +45,45 @@ namespace Server.Commands
 
         public override void Execute(CommandEventArgs e, object obj)
         {
-            Console.WriteLine("Executing possess command " + Core.Expansion);
+            Console.WriteLine("Executing possess command");
 
-            var caster = e.Mobile;
-            var target = (Mobile)obj;
+            if (e.Mobile is PlayerMobile caster && obj is Mobile target) {
+                if (caster.PossessType == PossessType.Possessing)
+                {
+                    AddResponse("You are already possessing a target!");
+                    return;
+                }
 
-            if (caster.PossessType == PossessType.Possessing)
-            {
-                AddResponse("You are already possessing a target!");
-                return;
+                if (target.Player)
+                {
+                    AddResponse("You can't possess a player");
+                    return;
+                }
+
+                caster.BodyMod = target.Body;
+                caster.NameMod = target.Name;
+                caster.HueMod = target.Hue;
+                caster.SetHairMods(target.HairItemID, target.FacialHairItemID);
+
+                caster.Location = target.Location;
+                caster.Direction = target.Direction;
+
+                target.PossessType = PossessType.Possessed;
+                caster.PossessType = PossessType.Possessing;
+
+                SwapItems.swapItems(target, caster);
+
+                caster.Stabled.Add(target);
+                target.Internalize();
+
+                Properties.SetValue(e.Mobile, caster, "blessed", "true");
+
+                caster.Hidden = target.Hidden;
+
+                BuffInfo.AddBuff(caster, new BuffInfo(BuffIcon.Incognito, 1075819, new TextDefinition("Possessing " + target.Name)));
+
+                AddResponse("You've taken control of " + target.Name);
             }
-
-            if (target.Player)
-            {
-                AddResponse("You can't possess a player");
-                return;
-            }
-
-            caster.BodyMod = target.Body;
-            caster.Location = target.Location;
-            caster.Direction = target.Direction;
-
-            target.PossessType = PossessType.Possessed;
-            caster.PossessType = PossessType.Possessing;
-
-            caster.Stabled.Add(target);
-            target.Internalize();
-
-            Properties.SetValue(e.Mobile, obj, "Invul", "true");
-
-            if (caster.Hidden)
-            {
-                caster.Hidden = false;
-            }
-            BuffInfo.AddBuff(caster, new BuffInfo(BuffIcon.Incognito, 1075819, new TextDefinition("Possessing " + target.Name)));
-
-            AddResponse("You've taken control of " + target.Name);
         }
     }
 
@@ -70,35 +101,36 @@ namespace Server.Commands
 
         public override void Execute(CommandEventArgs e, object obj)
         {
-            var caster = e.Mobile;
-
-            Mobile toRelease = null;
-
-            foreach (Mobile mob in caster.Stabled)
+            if (e.Mobile is PlayerMobile caster)
             {
-                if (mob.PossessType == PossessType.Possessed)
+                var toRelease = caster.Stabled.Find(mob => mob.PossessType == PossessType.Possessed);
+
+                if (toRelease == null)
                 {
-                    toRelease = mob;
+                    AddResponse("You have nothing to unpossess!");
+                    return;
                 }
+
+                caster.Hidden = true;
+                caster.BodyMod = 0;
+                caster.NameMod = null;
+                caster.HueMod = -1;
+                caster.SetHairMods(-1, -1);
+
+                caster.Stabled.Remove(toRelease);
+                caster.PossessType = PossessType.None;
+
+                Properties.SetValue(e.Mobile, caster, "blessed", "false");
+
+                SwapItems.swapItems(toRelease, caster);
+
+                toRelease.MoveToWorld(caster.Location, caster.Map);
+                toRelease.Direction = caster.Direction;
+                toRelease.PossessType = PossessType.None;
+
+                BuffInfo.RemoveBuff(caster, BuffIcon.Incognito);
+                AddResponse("You've released control of " + toRelease.Name);
             }
-
-            if (toRelease == null)
-            {
-                AddResponse("You have nothing to unpossess!");
-                return;
-            }
-
-            caster.Hidden = true;
-            caster.BodyMod = 0;
-            caster.Stabled.Remove(toRelease);
-            caster.PossessType = PossessType.None;
-
-            toRelease.MoveToWorld(caster.Location, caster.Map);
-            toRelease.Direction = caster.Direction;
-            toRelease.PossessType = PossessType.None;
-
-            BuffInfo.RemoveBuff(caster, BuffIcon.Incognito);
-            AddResponse("You've released control of " + toRelease.Name);
         }
     }
 }
