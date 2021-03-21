@@ -67,6 +67,8 @@ namespace Server.Commands.Generic
             Register(new BringToPackCommand());
             Register(new TraceLockdownCommand());
             Register(new LocationCommand());
+            Register(new PossessCommand());
+            Register(new UnpossessCommand());
         }
 
         public static void Register(BaseCommand command)

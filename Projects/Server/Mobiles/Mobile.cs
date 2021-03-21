@@ -285,6 +285,13 @@ namespace Server
         Locked
     }
 
+    public enum PossessType : byte
+    {
+        None,
+        Possessed,
+        Possessing
+    }
+
     [Flags]
     [CustomEnum(new[] { "North", "Right", "East", "Down", "South", "Left", "West", "Up" })]
     public enum Direction : byte
@@ -546,6 +553,7 @@ namespace Server
         private DateTime m_NextWarmodeChange;
         private bool m_Paralyzed;
         private Timer m_ParaTimer;
+        private PossessType m_PossessType;
         private bool m_Player;
         private Poison m_Poison;
         private Prompt m_Prompt;
@@ -610,6 +618,8 @@ namespace Server
                 World.MobileTypes.Add(ourType);
                 TypeRef = World.MobileTypes.Count - 1;
             }
+
+            m_PossessType = PossessType.None;
         }
 
         public static bool DragEffects { get; set; } = true;
@@ -803,6 +813,12 @@ namespace Server
                     }
                 }
             }
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public PossessType PossessType {
+            get => m_PossessType;
+            set => m_PossessType = value;
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -2559,7 +2575,9 @@ namespace Server
                 return;
             }
 
-            writer.Write(32); // version
+            writer.Write(33); // version
+
+            writer.Write((byte) m_PossessType);
 
             writer.WriteDeltaTime(LastStrGain);
             writer.WriteDeltaTime(LastIntGain);
@@ -6255,6 +6273,12 @@ namespace Server
 
             switch (version)
             {
+                case 33:
+                    {
+                        var possessByte = reader.ReadByte();
+                        m_PossessType = (PossessType) Enum.ToObject(typeof(PossessType), possessByte);
+                        goto case 32;
+                    }
                 case 32:
                     {
                         // Removed StuckMenu
