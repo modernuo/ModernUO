@@ -144,7 +144,7 @@ namespace Server.Commands
                 toRelease.PossessType = PossessType.None;
 
                 BuffInfo.RemoveBuff(caster, BuffIcon.Incognito);
-                AddResponse("You've released control of " + toRelease.Name);
+                AddResponse($"You've released control of {toRelease.Name}");
             }
         }
     }
