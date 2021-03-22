@@ -288,8 +288,7 @@ namespace Server
     public enum PossessType : byte
     {
         None,
-        Possessed,
-        Possessing
+        Possessed
     }
 
     [Flags]
@@ -672,6 +671,8 @@ namespace Server
         public virtual bool NewGuildDisplay => false;
 
         public List<Mobile> Stabled { get; private set; }
+
+        public Mobile PossessedMobile => Stabled.Find(mob => mob.PossessType == PossessType.Possessed);
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public VirtueInfo Virtues { get; private set; }
