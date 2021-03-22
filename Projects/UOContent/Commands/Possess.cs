@@ -7,10 +7,11 @@ namespace Server.Commands
 {
     internal static class Swap
     {
-        private static readonly List<Layer> SPECIAL_LAYERS = new() { Layer.Backpack, Layer.Bank, Layer.Mount };
+        private static readonly HashSet<Layer> _specialLayer = new() { Layer.Backpack, Layer.Bank, Layer.Mount };
 
         private static List<Item> GetItemsFromLayers(IEnumerable<Item> items) =>
-            new List<Item>(items).FindAll(item => !SPECIAL_LAYERS.Contains(item.Layer));
+            new List<Item>(items).FindAll(item => !_specialLayer.Contains(item.Layer));
+
         public static void Items(Mobile target, PlayerMobile caster)
         {
             var targetItems = GetItemsFromLayers(target.Items);
@@ -23,13 +24,20 @@ namespace Server.Commands
 
             foreach (Item item in targetItems)
             {
-                caster.EquipItem(item);
                 target.RemoveItem(item);
+
+                if (!caster.EquipItem(item))
+                {
+                    Console.WriteLine($"Nie udało się ubrać {item.Name} na {target.Name}");
+                }
             }
 
             foreach (Item item in casterItems)
             {
-                target.EquipItem(item);
+                if (!target.EquipItem(item))
+                {
+                    Console.WriteLine($"Nie udało się ubrać {item.Name} na {target.Name}");
+                }
             }
         }
 
@@ -82,7 +90,7 @@ namespace Server.Commands
                 caster.Location = target.Location;
                 caster.Direction = target.Direction;
 
-                target.PossessType = PossessType.Possessed;
+                target.Possessed = true;
 
                 Swap.Items(target, caster);
                 Swap.Titles(target, caster);
@@ -90,7 +98,7 @@ namespace Server.Commands
                 caster.Stabled.Add(target);
                 target.Internalize();
 
-                Properties.SetValue(e.Mobile, caster, "blessed", "true");
+                caster.Blessed = true;
 
                 caster.Hidden = target.Hidden;
 
@@ -132,16 +140,14 @@ namespace Server.Commands
                 caster.SetHairMods(-1, -1);
 
                 caster.Stabled.Remove(toRelease);
-                caster.PossessType = PossessType.None;
-
-                Properties.SetValue(e.Mobile, caster, "blessed", "false");
+                caster.Blessed = false;
 
                 Swap.Items(toRelease, caster);
                 Swap.Titles(toRelease, caster);
 
                 toRelease.MoveToWorld(caster.Location, caster.Map);
                 toRelease.Direction = caster.Direction;
-                toRelease.PossessType = PossessType.None;
+                toRelease.Possessed = false;
 
                 BuffInfo.RemoveBuff(caster, BuffIcon.Incognito);
                 AddResponse($"You've released control of {toRelease.Name}");

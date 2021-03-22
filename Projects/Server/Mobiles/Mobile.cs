@@ -285,12 +285,6 @@ namespace Server
         Locked
     }
 
-    public enum PossessType : byte
-    {
-        None,
-        Possessed
-    }
-
     [Flags]
     [CustomEnum(new[] { "North", "Right", "East", "Down", "South", "Left", "West", "Up" })]
     public enum Direction : byte
@@ -672,7 +666,7 @@ namespace Server
 
         public List<Mobile> Stabled { get; private set; }
 
-        public Mobile PossessedMobile => Stabled.Find(mob => mob.PossessType == PossessType.Possessed);
+        public Mobile PossessedMobile => Stabled.Find(mob => mob.Possessed);
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public VirtueInfo Virtues { get; private set; }
@@ -814,7 +808,7 @@ namespace Server
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public PossessType PossessType { get; set; } = PossessType.None;
+        public bool Possessed { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool DisarmReady { get; set; }
@@ -2572,7 +2566,7 @@ namespace Server
 
             writer.Write(33); // version
 
-            writer.Write((byte) PossessType);
+            writer.Write(Possessed);
 
             writer.WriteDeltaTime(LastStrGain);
             writer.WriteDeltaTime(LastIntGain);
@@ -6270,8 +6264,7 @@ namespace Server
             {
                 case 33:
                     {
-                        var possessByte = reader.ReadByte();
-                        PossessType = (PossessType) Enum.ToObject(typeof(PossessType), possessByte);
+                        Possessed = reader.ReadBool();
                         goto case 32;
                     }
                 case 32:
