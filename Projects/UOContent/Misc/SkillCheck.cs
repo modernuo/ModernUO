@@ -150,7 +150,7 @@ namespace Server.Misc
 
         public static bool CheckSkill(Mobile from, Skill skill, object amObj, double chance)
         {
-            if (from.Skills.Cap == 0)
+            if (from.Skills.Cap == 0 || from.IsPossessing)
             {
                 return false;
             }

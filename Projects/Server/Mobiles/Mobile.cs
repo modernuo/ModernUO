@@ -70,6 +70,13 @@ namespace Server
         public override bool CheckCondition() => true;
     }
 
+    public class PossessionSkillMod : DefaultSkillMod
+    {
+        public PossessionSkillMod(SkillName skill, double value) : base(skill, false, value)
+        {
+        }
+    }
+
     public abstract class SkillMod
     {
         private bool m_ObeyCap;
@@ -667,6 +674,8 @@ namespace Server
         public List<Mobile> Stabled { get; private set; }
 
         public Mobile PossessedMobile => Stabled.Find(mob => mob.Possessed);
+
+        public bool IsPossessing => PossessedMobile != null;
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public VirtueInfo Virtues { get; private set; }
@@ -2165,6 +2174,18 @@ namespace Server
                     OnRawStatChange(StatType.Dex, oldValue);
                 }
             }
+        }
+
+        public int GetStat(StatType statType)
+        {
+            return statType switch
+            {
+                StatType.Str => Str,
+                StatType.Int => Int,
+                StatType.Dex => Dex,
+                StatType.All => Dex + Str + Int,
+                _            => 0
+            };
         }
 
         /// <summary>

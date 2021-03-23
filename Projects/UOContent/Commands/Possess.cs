@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using Server.Commands.Generic;
+using Server.Items;
 using Server.Mobiles;
 
 namespace Server.Commands
 {
-    internal static class Swap
+    internal static class PossessHelper
     {
+        private const string _possessStatModLabel = "PossessMod";
+
         private static readonly HashSet<Layer> _specialLayer = new() { Layer.Backpack, Layer.Bank, Layer.Mount };
+
+        private static readonly List<StatType> _statTypes = new() { StatType.Str, StatType.Dex, StatType.Int };
 
         private static List<Item> GetItemsFromLayers(IEnumerable<Item> items) =>
             new List<Item>(items).FindAll(item => !_specialLayer.Contains(item.Layer));
 
-        public static void Items(Mobile target, PlayerMobile caster)
+        private static void SwapItems(Mobile target, Mobile caster)
         {
             var targetItems = GetItemsFromLayers(target.Items);
             var casterItems = GetItemsFromLayers(caster.Items);
@@ -25,27 +30,104 @@ namespace Server.Commands
             foreach (Item item in targetItems)
             {
                 target.RemoveItem(item);
-
-                if (!caster.EquipItem(item))
-                {
-                    Console.WriteLine($"Nie udało się ubrać {item.Name} na {target.Name}");
-                }
+                caster.EquipItem(item);
             }
 
             foreach (Item item in casterItems)
             {
-                if (!target.EquipItem(item))
-                {
-                    Console.WriteLine($"Nie udało się ubrać {item.Name} na {target.Name}");
-                }
+                target.EquipItem(item);
             }
         }
 
-        public static void Titles(Mobile target, PlayerMobile caster)
+        private static void SwapTitles(Mobile target, Mobile caster)
         {
             var casterTitle = caster.Title;
             caster.Title = target.Title;
             target.Title = casterTitle;
+        }
+
+        private static string GetStatModLabel(StatType statType) => $"{_possessStatModLabel} {Enum.GetName(statType)}";
+
+        private static void ApplyStatMods(Mobile target, Mobile caster)
+        {
+            foreach (StatType statType in _statTypes)
+            {
+                var casterStat = caster.GetStat(statType);
+                var targetStat = target.GetStat(statType);
+
+                if (targetStat > casterStat)
+                {
+                    caster.StatMods.Add(
+                        new StatMod(statType, GetStatModLabel(statType), targetStat - casterStat, TimeSpan.Zero));
+                }
+            }
+        }
+
+        private static void RemoveStatMods(Mobile caster)
+        {
+            foreach (StatType statType in _statTypes)
+            {
+                caster.RemoveStatMod(GetStatModLabel(statType));
+            }
+        }
+
+        private static void ApplySkillMods(Mobile target, Mobile caster)
+        {
+            for (int i = 0; i < target.Skills.Length; i++)
+            {
+                var targetSkill = target.Skills[i];
+                var casterSkill = caster.Skills[targetSkill.SkillName];
+
+                if (targetSkill.Value > casterSkill.Value)
+                {
+                    caster.AddSkillMod(new PossessionSkillMod(targetSkill.SkillName, targetSkill.Value));
+                }
+            }
+        }
+
+        private static void RemoveSkillMods(Mobile caster)
+        {
+            for (int i = 0; i < caster.SkillMods.Count; i++)
+            {
+                var casterSkillMod = caster.SkillMods[i];
+                if (typeof(PossessionSkillMod) == casterSkillMod.GetType())
+                {
+                    caster.RemoveSkillMod(casterSkillMod);
+                }
+            }
+        }
+
+        public static void Possess(Mobile target, Mobile caster)
+        {
+            var targetBackpack = target.Backpack;
+
+            if (targetBackpack != null)
+            {
+                target.RemoveItem(targetBackpack);
+                caster.PlaceInBackpack(new PossessBackpack(targetBackpack, target.Name));
+            }
+
+            ApplyStatMods(target, caster);
+            ApplySkillMods(target, caster);
+            SwapItems(target, caster);
+            SwapTitles(target, caster);
+        }
+
+        public static void Unpossess(Mobile target, Mobile caster)
+        {
+            SwapItems(target, caster);
+            SwapTitles(target, caster);
+
+            var possessBackpack = caster.Backpack.FindItemByType(typeof(PossessBackpack), false);
+
+            if (possessBackpack is PossessBackpack targetsBackpack)
+            {
+                caster.RemoveItem(possessBackpack);
+                target.AddItem(targetsBackpack.Backpack);
+            }
+
+            RemoveSkillMods(caster);
+            RemoveStatMods(caster);
         }
     }
 
@@ -67,10 +149,9 @@ namespace Server.Commands
 
             if (e.Mobile is PlayerMobile caster && obj is Mobile target)
             {
-                var casterPossessedMobile = caster.PossessedMobile;
-                if (casterPossessedMobile != null)
+                if (caster.IsPossessing)
                 {
-                    AddResponse($"You are already possessing a target: {casterPossessedMobile.Name}!");
+                    AddResponse($"You are already possessing a target: {caster.PossessedMobile.Name}!");
                     return;
                 }
 
@@ -91,9 +172,9 @@ namespace Server.Commands
                 caster.Direction = target.Direction;
 
                 target.Possessed = true;
+                target.Frozen = true;
 
-                Swap.Items(target, caster);
-                Swap.Titles(target, caster);
+                PossessHelper.Possess(target, caster);
 
                 caster.Stabled.Add(target);
                 target.Internalize();
@@ -101,8 +182,6 @@ namespace Server.Commands
                 caster.Blessed = true;
 
                 caster.Hidden = target.Hidden;
-
-                BuffInfo.AddBuff(caster, new BuffInfo(BuffIcon.Incognito, 1075819, new TextDefinition($"Possessing {target.Name}")));
 
                 AddResponse($"You've taken control of {target.Name}");
             }
@@ -142,14 +221,13 @@ namespace Server.Commands
                 caster.Stabled.Remove(toRelease);
                 caster.Blessed = false;
 
-                Swap.Items(toRelease, caster);
-                Swap.Titles(toRelease, caster);
+                PossessHelper.Unpossess(toRelease, caster);
 
                 toRelease.MoveToWorld(caster.Location, caster.Map);
                 toRelease.Direction = caster.Direction;
+                toRelease.Frozen = false;
                 toRelease.Possessed = false;
 
-                BuffInfo.RemoveBuff(caster, BuffIcon.Incognito);
                 AddResponse($"You've released control of {toRelease.Name}");
             }
         }
