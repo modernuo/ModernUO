@@ -21,7 +21,7 @@ namespace Server.Engines.Craft
 
         public override SkillName MainSkill => SkillName.Tailoring;
 
-        public override int GumpTitleNumber => 1044005;
+        public override int GumpTitleNumber => 1044005; // Tailoring Menu
 
         public static CraftSystem CraftSystem => m_CraftSystem ??= new DefTailoring();
 
@@ -534,6 +534,14 @@ namespace Server.Engines.Craft
                     1044463
                 );
                 SetNeededExpansion(index, Expansion.SE);
+            }
+            if (Core.SA)
+            {
+                index = AddCraft(typeof(GargishLeatherChest), 1015293, 1020772, 70.5, 95.5, typeof(Leather), 1044462, 12, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(FemaleGargishLeatherChest), 1015293, 1020771, 70.5, 95.5, typeof(Leather), 1044462, 12, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+
             }
 
             AddCraft(typeof(StuddedGorget), 1015300, 1025078, 78.8, 103.8, typeof(Leather), 1044462, 6, 1044463);
