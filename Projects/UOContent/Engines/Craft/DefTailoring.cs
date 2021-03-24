@@ -539,6 +539,7 @@ namespace Server.Engines.Craft
             {
                 index = AddCraft(typeof(GargishLeatherChest), 1015293, 1020772, 70.5, 95.5, typeof(Leather), 1044462, 12, 1044463);
                 SetNeededExpansion(index, Expansion.SA);
+
                 index = AddCraft(typeof(FemaleGargishLeatherChest), 1015293, 1020771, 70.5, 95.5, typeof(Leather), 1044462, 12, 1044463);
                 SetNeededExpansion(index, Expansion.SA);
 

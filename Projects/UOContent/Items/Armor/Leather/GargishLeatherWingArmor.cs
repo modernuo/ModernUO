@@ -28,7 +28,7 @@ namespace Server.Items
         public override void Serialize(IGenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(1);
+            writer.Write(0);
    
         }
 

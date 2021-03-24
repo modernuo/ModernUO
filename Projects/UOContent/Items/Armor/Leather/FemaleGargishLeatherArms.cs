@@ -33,15 +33,13 @@ namespace Server.Items
         public override void Serialize(IGenericWriter writer)
         {
             base.Serialize(writer);
-
-            writer.WriteEncodedInt(0);
+            writer.Write(0);
         }
 
         public override void Deserialize(IGenericReader reader)
         {
             base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            int version = reader.ReadInt();
         }
     }
 }
