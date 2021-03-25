@@ -10,33 +10,91 @@ namespace Server.Commands
     {
         private const string _possessStatModLabel = "PossessMod";
 
-        private static readonly HashSet<Layer> _specialLayer = new() { Layer.Backpack, Layer.Bank, Layer.Mount };
+        private static readonly HashSet<Layer> _specialLayers = new() { Layer.Backpack, Layer.Bank, Layer.Mount };
 
         private static readonly List<StatType> _statTypes = new() { StatType.Str, StatType.Dex, StatType.Int };
 
-        private static List<Item> GetItemsFromLayers(IEnumerable<Item> items) =>
-            new List<Item>(items).FindAll(item => !_specialLayer.Contains(item.Layer));
-
-        private static void SwapItems(Mobile target, Mobile caster)
+        private static List<Item> GetItemsOnMobile(Mobile m)
         {
-            var targetItems = GetItemsFromLayers(target.Items);
-            var casterItems = GetItemsFromLayers(caster.Items);
+            var items = m.Items;
+            var list = new List<Item>(m.Items.Count);
+            for (var i = 0; i < items.Count; i++)
+            {
+                var item = items[i];
+                if (!_specialLayers.Contains(item.Layer))
+                {
+                    list.Add(item);
+                }
+            }
+
+            return list;
+        }
+
+        private static Backpack PackItems(IEnumerable<Item> items)
+        {
+            var backpack = new Backpack();
+
+            foreach (Item i in items)
+            {
+                backpack.AddItem(i);
+            }
+
+            return backpack;
+        }
+
+        private static void OnPossessItems(Mobile target, Mobile caster)
+        {
+            var targetItems = GetItemsOnMobile(target);
+            var casterItems = GetItemsOnMobile(caster);
+
+            var targetBackpack = target.Backpack;
+            if (targetBackpack != null)
+            {
+                target.RemoveItem(targetBackpack);
+                caster.AddToBackpack(targetBackpack);
+                caster.PossessContainer = targetBackpack;
+            }
 
             foreach (Item item in casterItems)
             {
                 caster.RemoveItem(item);
             }
 
+            var packedCasterItems = PackItems(casterItems);
+            target.PossessContainer = packedCasterItems;
+
             foreach (Item item in targetItems)
             {
                 target.RemoveItem(item);
                 caster.EquipItem(item);
             }
+        }
+
+        private static void OnUnpossessItems(Mobile target, Mobile caster)
+        {
+            var casterItems = GetItemsOnMobile(caster);
 
             foreach (Item item in casterItems)
             {
-                target.EquipItem(item);
+                caster.RemoveItem(item);
+                target.AddItem(item);
             }
+
+            target.AddItem(caster.PossessContainer);
+
+            var targetPossessContainer = target.PossessContainer;
+
+            if (targetPossessContainer != null)
+            {
+                var formerCasterItems = new List<Item>(targetPossessContainer.Items);
+                foreach (Item item in formerCasterItems)
+                {
+                    caster.AddItem(item);
+                }
+            }
+
+            caster.PossessContainer = null;
+            target.PossessContainer = null;
         }
 
         private static void SwapTitles(Mobile target, Mobile caster)
@@ -61,6 +119,10 @@ namespace Server.Commands
                         new StatMod(statType, GetStatModLabel(statType), targetStat - casterStat, TimeSpan.Zero));
                 }
             }
+
+            caster.Hits = caster.HitsMax;
+            caster.Mana = caster.ManaMax;
+            caster.Stam = caster.StamMax;
         }
 
         private static void RemoveStatMods(Mobile caster)
@@ -99,33 +161,16 @@ namespace Server.Commands
 
         public static void Possess(Mobile target, Mobile caster)
         {
-            var targetBackpack = target.Backpack;
-
-            if (targetBackpack != null)
-            {
-                target.RemoveItem(targetBackpack);
-                caster.PlaceInBackpack(new PossessBackpack(targetBackpack, target.Name));
-            }
-
             ApplyStatMods(target, caster);
             ApplySkillMods(target, caster);
-            SwapItems(target, caster);
+            OnPossessItems(target, caster);
             SwapTitles(target, caster);
         }
 
         public static void Unpossess(Mobile target, Mobile caster)
         {
-            SwapItems(target, caster);
             SwapTitles(target, caster);
-
-            var possessBackpack = caster.Backpack.FindItemByType(typeof(PossessBackpack), false);
-
-            if (possessBackpack is PossessBackpack targetsBackpack)
-            {
-                caster.RemoveItem(possessBackpack);
-                target.AddItem(targetsBackpack.Backpack);
-            }
-
+            OnUnpossessItems(target, caster);
             RemoveSkillMods(caster);
             RemoveStatMods(caster);
         }
@@ -145,8 +190,6 @@ namespace Server.Commands
 
         public override void Execute(CommandEventArgs e, object obj)
         {
-            Console.WriteLine("Executing possess command");
-
             if (e.Mobile is PlayerMobile caster && obj is Mobile target)
             {
                 if (caster.IsPossessing)
@@ -208,7 +251,7 @@ namespace Server.Commands
 
                 if (toRelease == null)
                 {
-                    AddResponse("You have nothing to unpossess!");
+                    AddResponse("You have nothing or nobody to unpossess!");
                     return;
                 }
 

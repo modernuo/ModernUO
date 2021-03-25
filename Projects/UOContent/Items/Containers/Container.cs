@@ -349,21 +349,6 @@ namespace Server.Items
         }
     }
 
-    public class PossessBackpack : Backpack
-    {
-        public PossessBackpack(Container backpack, string ownerName)
-        {
-            Name = $"{ownerName} {backpack.Name}";
-            Backpack = backpack;
-        }
-
-        public Container Backpack { get; set; }
-
-        public PossessBackpack(Serial serial) : base(serial)
-        {
-        }
-    }
-
     public class Pouch : TrappableContainer
     {
         [Constructible]

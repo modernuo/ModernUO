@@ -1858,6 +1858,9 @@ namespace Server
             }
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public Container PossessContainer { get; set; } = null;
+
         public virtual bool KeepsItemsOnDeath => m_AccessLevel > AccessLevel.Player;
 
         public bool HasTrade => m_NetState?.Trades.Count > 0;
