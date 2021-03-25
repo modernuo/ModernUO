@@ -9,7 +9,7 @@ namespace Server
             Mobile.InsuranceEnabled = ServerConfiguration.GetSetting("insurance.enable", Core.AOS);
             ObjectPropertyList.Enabled = ServerConfiguration.GetSetting("opl.enable", Core.AOS);
             var visibleDamage = ServerConfiguration.GetSetting("visibleDamage", Core.AOS);
-            Mobile.VisibleDamageType = visibleDamage ? VisibleDamageType.Related : VisibleDamageType.None;
+            Mobile.VisibleDamageType = VisibleDamageType.Related;
             Mobile.GuildClickMessage = ServerConfiguration.GetSetting("guildClickMessage", !Core.AOS);
             Mobile.AsciiClickMessage = ServerConfiguration.GetSetting("asciiClickMessage", !Core.AOS);
 

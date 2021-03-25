@@ -66,6 +66,7 @@ namespace Server.Items
         private SlayerName m_Slayer;
         private SlayerName m_Slayer2;
         private float m_Speed;
+        private static int m_DiceNum, m_DiceSides, m_DiceOffset;
 
         // Overridable values. These values are provided to override the defaults which get defined in the individual weapon scripts.
         private int m_StrReq, m_DexReq, m_IntReq;
@@ -81,6 +82,9 @@ namespace Server.Items
             m_IntReq = -1;
             m_MinDamage = -1;
             m_MaxDamage = -1;
+            m_DiceNum = 0;
+            m_DiceSides = 0;
+            m_DiceOffset = 0;
             m_HitSound = -1;
             m_MissSound = -1;
             m_Speed = -1;
@@ -165,6 +169,9 @@ namespace Server.Items
         public virtual int OldIntelligenceReq => 0;
         public virtual int OldMinDamage => 0;
         public virtual int OldMaxDamage => 0;
+        public virtual int Dice_Num => m_DiceNum;
+        public virtual int Dice_Sides => m_DiceSides;
+        public virtual int Dice_Offset => m_DiceOffset;
         public virtual int OldSpeed => 0;
         public virtual int OldMaxRange => DefMaxRange;
         public virtual int OldHitSound => DefHitSound;
@@ -339,23 +346,13 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public int MinDamage
         {
-            get => m_MinDamage == -1 ? Core.AOS ? AosMinDamage : OldMinDamage : m_MinDamage;
-            set
-            {
-                m_MinDamage = value;
-                InvalidateProperties();
-            }
+            get { return (Dice_Num + Dice_Offset); }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int MaxDamage
         {
-            get => m_MaxDamage == -1 ? Core.AOS ? AosMaxDamage : OldMaxDamage : m_MaxDamage;
-            set
-            {
-                m_MaxDamage = value;
-                InvalidateProperties();
-            }
+            get { return (Dice_Num * Dice_Sides + Dice_Offset); }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -2338,12 +2335,19 @@ namespace Server.Items
 
         public virtual double GetBaseDamage(Mobile attacker)
         {
-            GetBaseDamageRange(attacker, out var min, out var max);
-
-            var damage = Utility.RandomMinMax(min, max);
+            int min, max, damage;
+            GetBaseDamageRange(attacker, out min, out max);
 
             if (Core.AOS)
             {
+                if (attacker is BaseCreature)
+                {
+                    damage = Utility.RandomMinMax(min, max);
+                }
+                else
+                {
+                    damage = Utility.Dice((uint)Dice_Num, (uint)Dice_Sides, Dice_Offset);
+                }
                 return damage;
             }
 
@@ -2355,9 +2359,10 @@ namespace Server.Items
              * : Power   : 7
              * : Vanq    : 9
              */
+            damage = Utility.RandomMinMax(min, max);
             if (m_DamageLevel != WeaponDamageLevel.Regular)
             {
-                damage += 2 * (int)m_DamageLevel - 1;
+                damage += (2 * (int)m_DamageLevel) - 1;
             }
 
             return damage;
@@ -2682,16 +2687,16 @@ namespace Server.Items
                         {
                             action = Animation switch
                             {
-                                WeaponAnimation.Wrestle   => 26,
-                                WeaponAnimation.Bash1H    => 26,
-                                WeaponAnimation.Pierce1H  => 26,
-                                WeaponAnimation.Slash1H   => 26,
-                                WeaponAnimation.Bash2H    => 29,
-                                WeaponAnimation.Pierce2H  => 29,
-                                WeaponAnimation.Slash2H   => 29,
-                                WeaponAnimation.ShootBow  => 27,
+                                WeaponAnimation.Wrestle => 26,
+                                WeaponAnimation.Bash1H => 26,
+                                WeaponAnimation.Pierce1H => 26,
+                                WeaponAnimation.Slash1H => 26,
+                                WeaponAnimation.Bash2H => 29,
+                                WeaponAnimation.Pierce2H => 29,
+                                WeaponAnimation.Slash2H => 29,
+                                WeaponAnimation.ShootBow => 27,
                                 WeaponAnimation.ShootXBow => 28,
-                                _                         => 26
+                                _ => 26
                             };
                         }
 
@@ -2746,24 +2751,24 @@ namespace Server.Items
         {
             var oreType = m_Resource switch
             {
-                CraftResource.DullCopper    => 1053108,
-                CraftResource.ShadowIron    => 1053107,
-                CraftResource.Copper        => 1053106,
-                CraftResource.Bronze        => 1053105,
-                CraftResource.Gold          => 1053104,
-                CraftResource.Agapite       => 1053103,
-                CraftResource.Verite        => 1053102,
-                CraftResource.Valorite      => 1053101,
+                CraftResource.DullCopper => 1053108,
+                CraftResource.ShadowIron => 1053107,
+                CraftResource.Copper => 1053106,
+                CraftResource.Bronze => 1053105,
+                CraftResource.Gold => 1053104,
+                CraftResource.Agapite => 1053103,
+                CraftResource.Verite => 1053102,
+                CraftResource.Valorite => 1053101,
                 CraftResource.SpinedLeather => 1061118,
                 CraftResource.HornedLeather => 1061117,
                 CraftResource.BarbedLeather => 1061116,
-                CraftResource.RedScales     => 1060814,
-                CraftResource.YellowScales  => 1060818,
-                CraftResource.BlackScales   => 1060820,
-                CraftResource.GreenScales   => 1060819,
-                CraftResource.WhiteScales   => 1060821,
-                CraftResource.BlueScales    => 1060815,
-                _                           => 0
+                CraftResource.RedScales => 1060814,
+                CraftResource.YellowScales => 1060818,
+                CraftResource.BlackScales => 1060820,
+                CraftResource.GreenScales => 1060819,
+                CraftResource.WhiteScales => 1060821,
+                CraftResource.BlueScales => 1060815,
+                _ => 0
             };
 
             if (oreType != 0)

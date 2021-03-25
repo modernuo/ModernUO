@@ -21,6 +21,10 @@ namespace Server.Items
         public override int OldMaxDamage => 36;
         public override int OldSpeed => 46;
 
+        public override int Dice_Num => 2;
+        public override int Dice_Sides => 18;
+        public override int Dice_Offset => 0;
+
         public override int InitMinHits => 31;
         public override int InitMaxHits => 80;
     }
