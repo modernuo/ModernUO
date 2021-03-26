@@ -121,11 +121,11 @@ namespace Server.Items
 
             var count = 0;
 
-            count += MoonGen(PMList.Trammel);
+            //count += MoonGen(PMList.Trammel);
             count += MoonGen(PMList.Felucca);
-            count += MoonGen(PMList.Ilshenar);
-            count += MoonGen(PMList.Malas);
-            count += MoonGen(PMList.Tokuno);
+            //count += MoonGen(PMList.Ilshenar);
+            //count += MoonGen(PMList.Malas);
+            //count += MoonGen(PMList.Tokuno);
 
             World.Broadcast(0x35, true, "{0} moongates generated.", count);
         }
@@ -269,8 +269,8 @@ namespace Server.Items
                     new PMEntry(new Point3D(270, 628, 15), 1063414)   // Homare-Jima
                 }
             );
-
-        public static readonly PMList[] UORLists = { Trammel, Felucca };
+        //public static readonly PMList[] UORLists = { Trammel, Felucca };
+        public static readonly PMList[] UORLists = { Felucca };
         public static readonly PMList[] UORListsYoung = { Trammel };
         public static readonly PMList[] LBRLists = { Trammel, Felucca, Ilshenar };
         public static readonly PMList[] LBRListsYoung = { Trammel, Ilshenar };
