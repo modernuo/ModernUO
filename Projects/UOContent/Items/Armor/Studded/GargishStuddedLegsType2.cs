@@ -1,13 +1,10 @@
-
 namespace Server.Items
 {
-    class FemaleGargishStuddedKilt : BaseArmor
+    public class GargishStuddedLegsType2 : BaseArmor
     {
-    
         [Constructible]
-        public FemaleGargishStuddedKilt() : base(0x287) => Weight = 10.0;
- 
-        public FemaleGargishStuddedKilt(Serial serial) : base(serial)
+        public GargishStuddedLegsType2() : base(0x289) => Weight = 15.0;
+        public GargishStuddedLegsType2(Serial serial) : base(serial)
         {
         }
 
@@ -25,23 +22,21 @@ namespace Server.Items
         public override int OldStrReq => 40;
 
         public override int ArmorBase => 16;
+
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Studded;
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.Half;
-        public override bool AllowMaleWearer => false;
 
         public override void Serialize(IGenericWriter writer)
         {
             base.Serialize(writer);
             writer.Write(0);
         }
-
         public override void Deserialize(IGenericReader reader)
         {
             base.Deserialize(reader);
             int version = reader.ReadInt();
         }
-
     }
 }

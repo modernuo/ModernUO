@@ -1,12 +1,10 @@
-
 namespace Server.Items
 {
-    class FemaleGargishStuddedLegs : BaseArmor
+    public class GargishStuddedLegsType1 : BaseArmor
     {
         [Constructible]
-        public FemaleGargishStuddedLegs() : base(0x289) => Weight = 15.0;
-   
-        public FemaleGargishStuddedLegs(Serial serial) : base(serial)
+        public GargishStuddedLegsType1() : base(0x28A) => Weight = 15.0;
+        public GargishStuddedLegsType1(Serial serial) : base(serial)
         {
         }
 
@@ -35,12 +33,10 @@ namespace Server.Items
             base.Serialize(writer);
             writer.Write(0);
         }
-
         public override void Deserialize(IGenericReader reader)
         {
             base.Deserialize(reader);
             int version = reader.ReadInt();
         }
-
     }
 }

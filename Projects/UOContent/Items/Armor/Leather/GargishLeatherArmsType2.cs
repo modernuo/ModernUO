@@ -1,12 +1,10 @@
-
 namespace Server.Items
 {
-    class FemaleGargishLeatherChest : BaseArmor
+    public class GargishLeatherArmsType2 : BaseArmor
     {
         [Constructible]
-        public FemaleGargishLeatherChest() : base(0x303) => Weight = 8.0;
-
-        public FemaleGargishLeatherChest(Serial serial) : base(serial)
+        public GargishLeatherArmsType2() : base(0x302) => Weight = 4.0;
+        public GargishLeatherArmsType2(Serial serial) : base(serial)
         {
         }
 
@@ -22,10 +20,8 @@ namespace Server.Items
 
         public override int AosStrReq => 25;
         public override int OldStrReq => 25;
-
         public override int ArmorBase => 13;
 
-        
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Leather;
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
@@ -36,7 +32,6 @@ namespace Server.Items
             base.Serialize(writer);
             writer.Write(0);
         }
-
         public override void Deserialize(IGenericReader reader)
         {
             base.Deserialize(reader);

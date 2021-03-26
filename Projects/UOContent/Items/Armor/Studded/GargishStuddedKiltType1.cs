@@ -1,12 +1,11 @@
-
 namespace Server.Items
 {
-    class GargishStuddedChest : BaseArmor
+    public class GargishStuddedKiltType1 : BaseArmor
     {
         [Constructible]
-        public GargishStuddedChest() : base(0x286) => Weight = 15.0;
-
-        public GargishStuddedChest(Serial serial) : base(serial)
+        public GargishStuddedKiltType1() : base(0x288) => Weight = 10.0;
+        public GargishStuddedKiltType1(Serial serial)
+            : base(serial)
         {
         }
 
@@ -35,7 +34,6 @@ namespace Server.Items
             base.Serialize(writer);
             writer.Write(0);
         }
-
         public override void Deserialize(IGenericReader reader)
         {
             base.Deserialize(reader);
