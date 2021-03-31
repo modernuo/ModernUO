@@ -1,5 +1,6 @@
 namespace Server.Items
 {
+    [TypeAlias("Server.Items.GargishLeatherKilt")]
     public class GargishLeatherKiltType1 : BaseArmor
     {
         [Constructible]
