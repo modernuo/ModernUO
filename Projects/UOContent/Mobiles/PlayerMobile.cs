@@ -22,6 +22,7 @@ using Server.Multis;
 using Server.Network;
 using Server.Regions;
 using Server.SkillHandlers;
+using Server.Special_Systems.YoungPlayerProgram;
 using Server.Spells;
 using Server.Spells.Bushido;
 using Server.Spells.Fifth;
@@ -202,6 +203,7 @@ namespace Server.Mobiles
 
         private QuestArrow m_QuestArrow;
 
+        
         public PlayerMobile()
         {
             AutoStabled = new List<Mobile>();
@@ -3207,6 +3209,7 @@ namespace Server.Mobiles
 
                         break;
                     }
+                
             }
 
             RecentlyReported ??= new List<Mobile>();
@@ -3407,6 +3410,8 @@ namespace Server.Mobiles
             writer.Write(m_LongTermElapse);
             writer.Write(m_ShortTermElapse);
             writer.Write(GameTime);
+
+            
         }
 
         public static void CheckAtrophies(Mobile m)

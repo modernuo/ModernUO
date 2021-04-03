@@ -71,11 +71,12 @@ namespace Server.Items
         public PowerScroll(SkillName skill = SkillName.Alchemy, double value = 0.0) : base(skill, value)
         {
             Hue = 0x481;
-
-            if (Value == 105.0 || skill == SkillName.Blacksmith || skill == SkillName.Tailoring)
-            {
-                LootType = LootType.Regular;
-            }
+            //Stealable
+            LootType = LootType.Regular;
+            //if (Value == 105.0 || skill == SkillName.Blacksmith || skill == SkillName.Tailoring)
+            //{
+            //    LootType = LootType.Regular;
+            //}
         }
 
         public PowerScroll(Serial serial) : base(serial)
@@ -213,6 +214,12 @@ namespace Server.Items
                     1049511,
                     GetNameLocalized()
                 ); // Your ~1_type~ is too high for this power scroll.
+                return false;
+            }
+
+            if (skill.Cap < (Value - 5))
+            {
+                from.SendMessage($"Your current cap has to be at {Value - 5} to use this scroll");
                 return false;
             }
 

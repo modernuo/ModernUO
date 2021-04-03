@@ -6,6 +6,9 @@ using Server.Items;
 using Server.Logging;
 using Server.Mobiles;
 using Server.Network;
+using Server.Special_Systems.YoungPlayerProgram;
+using System;
+
 
 namespace Server.Misc
 {
@@ -298,7 +301,8 @@ namespace Server.Misc
                     }
             }
 
-            return useHaven ? _newHavenInfo : args.City;
+            return args.City;
+            // return useHaven ? _newHavenInfo : args.City;
         }
 
         private static void SetStats(Mobile m, NetState state, StatNameValue[] stats, int prof)
