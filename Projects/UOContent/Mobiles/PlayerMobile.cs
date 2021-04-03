@@ -203,7 +203,7 @@ namespace Server.Mobiles
 
         private QuestArrow m_QuestArrow;
 
-        
+
         public PlayerMobile()
         {
             AutoStabled = new List<Mobile>();
@@ -932,17 +932,17 @@ namespace Server.Mobiles
                                 {
                                     Direction.North => itemIDs[0],
                                     Direction.South => itemIDs[0],
-                                    Direction.East  => itemIDs[1],
-                                    Direction.West  => itemIDs[1],
-                                    _               => item.ItemID
+                                    Direction.East => itemIDs[1],
+                                    Direction.West => itemIDs[1],
+                                    _ => item.ItemID
                                 },
                                 4 => dir switch
                                 {
                                     Direction.South => itemIDs[0],
-                                    Direction.East  => itemIDs[1],
+                                    Direction.East => itemIDs[1],
                                     Direction.North => itemIDs[2],
-                                    Direction.West  => itemIDs[3],
-                                    _               => item.ItemID
+                                    Direction.West => itemIDs[3],
+                                    _ => item.ItemID
                                 },
                                 _ => item.ItemID
                             };
@@ -1018,7 +1018,7 @@ namespace Server.Mobiles
             }
 
             if (skillId == 35)
-                // AnimalTaming.DeferredTarget = true;
+            // AnimalTaming.DeferredTarget = true;
             {
                 AnimalTaming.DisableMessage = false;
             }
@@ -1283,6 +1283,17 @@ namespace Server.Mobiles
 
                 from.SendGump(new NoticeGump(1060637, 30720, notice, 0xFFC000, 300, 140));
                 return;
+            }
+
+            if (NameChangeGump.HasValidName(from))
+            {
+                return;
+            }
+            else
+            {
+                from.SendMessage(33, "Your character name '{0}' is already in use by player character or it has been marked as invalid. Please choose a new one.", from.Name);
+                from.RawName = "Generic Player";
+                from.SendGump(new NameChangeGump());
             }
 
             if (from is PlayerMobile mobile)
@@ -3209,7 +3220,7 @@ namespace Server.Mobiles
 
                         break;
                     }
-                
+
             }
 
             RecentlyReported ??= new List<Mobile>();
@@ -3411,7 +3422,7 @@ namespace Server.Mobiles
             writer.Write(m_ShortTermElapse);
             writer.Write(GameTime);
 
-            
+
         }
 
         public static void CheckAtrophies(Mobile m)
@@ -3819,8 +3830,8 @@ namespace Server.Mobiles
                     var name = ammo.Name ?? ammo switch
                     {
                         Arrow _ => $"arrow{(ammo.Amount != 1 ? "s" : "")}",
-                        Bolt _  => $"bolt{(ammo.Amount != 1 ? "s" : "")}",
-                        _       => $"#{ammo.LabelNumber}"
+                        Bolt _ => $"bolt{(ammo.Amount != 1 ? "s" : "")}",
+                        _ => $"#{ammo.LabelNumber}"
                     };
 
                     PlaceInBackpack(ammo);
