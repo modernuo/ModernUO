@@ -56,4 +56,8 @@
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Special Systems\Items\Magic Jewelry\" />
+      <Folder Include="Special Systems\Misc\NewFolder\" />
+    </ItemGroup>
 </Project>

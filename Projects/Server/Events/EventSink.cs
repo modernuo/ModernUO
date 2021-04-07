@@ -154,5 +154,7 @@ namespace Server
 
         public static void InvokeTargetByResourceMacro(Mobile m, Item item, short resourceType) =>
             TargetByResourceMacro?.Invoke(m, item, resourceType);
+
+        
     }
 }
