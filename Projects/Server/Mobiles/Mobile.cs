@@ -1447,6 +1447,11 @@ namespace Server
             }
             set
             {
+                if (m_NetState == value)
+                {
+                    return;
+                }
+
 #if THREADGUARD
             if (Thread.CurrentThread != Core.Thread)
             {
@@ -1458,17 +1463,9 @@ namespace Server
             }
 #endif
 
-                if (m_NetState == value)
-                {
-                    return;
-                }
-
                 m_Map?.OnClientChange(m_NetState, value, this);
-
                 m_Target?.Cancel(this, TargetCancelType.Disconnected);
-
                 m_Spell?.OnConnectionChanged();
-
                 m_NetState?.CancelAllTrades();
 
                 var box = FindBankNoCreate();
