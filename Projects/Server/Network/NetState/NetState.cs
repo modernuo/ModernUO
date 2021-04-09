@@ -17,6 +17,7 @@ using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -453,6 +454,15 @@ namespace Server.Network
 
         public bool GetSendBuffer(out CircularBuffer<byte> cBuffer)
         {
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("Attempting to get pipe buffer from wrong thread!");
+                Console.WriteLine(new StackTrace());
+                return;
+            }
+#endif
             var result = SendPipe.Writer.TryGetMemory();
             cBuffer = new CircularBuffer<byte>(result.Buffer);
 
@@ -1056,13 +1066,6 @@ namespace Server.Network
                 return;
             }
 
-            var m = Mobile;
-            if (m != null)
-            {
-                m.NetState = null;
-                Mobile = null;
-            }
-
             try
             {
                 if (_disconnectReason != string.Empty)
@@ -1108,8 +1111,26 @@ namespace Server.Network
         {
             TraceDisconnect(_disconnectReason, _toString);
 
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("Attempting to dispose a netstate from an invalid thread!");
+                Console.WriteLine(new StackTrace());
+                return;
+            }
+#endif
+
             RecvPipe.Writer.Close();
             SendPipe.Writer.Close();
+
+            var m = Mobile;
+            Mobile = null;
+
+            if (m?.NetState == this)
+            {
+                m.NetState = null;
+            }
 
             var a = Account;
 

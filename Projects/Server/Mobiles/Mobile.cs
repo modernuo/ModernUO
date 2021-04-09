@@ -1447,93 +1447,98 @@ namespace Server
             }
             set
             {
-                if (m_NetState != value)
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("Attempting to set Mobile.NetState value from an invalid thread!");
+                Console.WriteLine(new StackTrace());
+                return;
+            }
+#endif
+
+                if (m_NetState == value)
                 {
-                    m_Map?.OnClientChange(m_NetState, value, this);
+                    return;
+                }
 
-                    m_Target?.Cancel(this, TargetCancelType.Disconnected);
+                m_Map?.OnClientChange(m_NetState, value, this);
 
-                    m_Spell?.OnConnectionChanged();
+                m_Target?.Cancel(this, TargetCancelType.Disconnected);
 
-                    // if (m_Spell != null)
-                    // m_Spell.FinishSequence();
+                m_Spell?.OnConnectionChanged();
 
-                    m_NetState?.CancelAllTrades();
+                m_NetState?.CancelAllTrades();
 
-                    var box = FindBankNoCreate();
+                var box = FindBankNoCreate();
 
-                    if (box?.Opened == true)
+                if (box?.Opened == true)
+                {
+                    box.Close();
+                }
+
+                m_NetState = value;
+
+                if (m_NetState == null)
+                {
+                    OnDisconnected();
+                    EventSink.InvokeDisconnected(this);
+
+                    // Disconnected, start the logout timer
+                    if (m_LogoutTimer == null)
                     {
-                        box.Close();
-                    }
-
-                    // REMOVED:
-                    // m_Actions.Clear();
-
-                    m_NetState = value;
-
-                    if (m_NetState == null)
-                    {
-                        OnDisconnected();
-                        EventSink.InvokeDisconnected(this);
-
-                        // Disconnected, start the logout timer
-                        if (m_LogoutTimer == null)
-                        {
-                            m_LogoutTimer = Timer.DelayCall(GetLogoutDelay(), Logout);
-                        }
-                        else
-                        {
-                            m_LogoutTimer.Stop();
-                            m_LogoutTimer.Delay = GetLogoutDelay();
-                            m_LogoutTimer.Start();
-                        }
+                        m_LogoutTimer = Timer.DelayCall(GetLogoutDelay(), Logout);
                     }
                     else
                     {
-                        OnConnected();
-                        EventSink.InvokeConnected(this);
-
-                        // Connected, stop the logout timer and if needed, move to the world
-
-                        m_LogoutTimer?.Stop();
-
-                        m_LogoutTimer = null;
-
-                        if (m_Map == Map.Internal && LogoutMap != null)
-                        {
-                            Map = LogoutMap;
-                            Location = LogoutLocation;
-                        }
+                        m_LogoutTimer.Stop();
+                        m_LogoutTimer.Delay = GetLogoutDelay();
+                        m_LogoutTimer.Start();
                     }
-
-                    for (var i = Items.Count - 1; i >= 0; --i)
-                    {
-                        if (i >= Items.Count)
-                        {
-                            continue;
-                        }
-
-                        var item = Items[i];
-
-                        if (item is SecureTradeContainer)
-                        {
-                            for (var j = item.Items.Count - 1; j >= 0; --j)
-                            {
-                                if (j < item.Items.Count)
-                                {
-                                    item.Items[j].OnSecureTrade(this, this, this, false);
-                                    AddToBackpack(item.Items[j]);
-                                }
-                            }
-
-                            Timer.DelayCall(item.Delete);
-                        }
-                    }
-
-                    DropHolding();
-                    OnNetStateChanged();
                 }
+                else
+                {
+                    OnConnected();
+                    EventSink.InvokeConnected(this);
+
+                    // Connected, stop the logout timer and if needed, move to the world
+                    m_LogoutTimer?.Stop();
+
+                    m_LogoutTimer = null;
+
+                    if (m_Map == Map.Internal && LogoutMap != null)
+                    {
+                        Map = LogoutMap;
+                        Location = LogoutLocation;
+                    }
+                }
+
+                for (var i = Items.Count - 1; i >= 0; --i)
+                {
+                    if (i >= Items.Count)
+                    {
+                        continue;
+                    }
+
+                    var item = Items[i];
+
+                    if (item is SecureTradeContainer)
+                    {
+                        for (var j = item.Items.Count - 1; j >= 0; --j)
+                        {
+                            if (j < item.Items.Count)
+                            {
+                                item.Items[j].OnSecureTrade(this, this, this, false);
+                                AddToBackpack(item.Items[j]);
+                            }
+                        }
+
+                        Timer.DelayCall(item.Delete);
+                    }
+                }
+
+                DropHolding();
+                OnNetStateChanged();
             }
         }
 
@@ -7922,6 +7927,16 @@ namespace Server
 
         public virtual void Delta(MobileDelta flag)
         {
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("Attempting to queue a delta change from an invalid thread!");
+                Console.WriteLine(new StackTrace());
+                return;
+            }
+#endif
+
             if (m_Map == null || m_Map == Map.Internal || Deleted)
             {
                 return;
