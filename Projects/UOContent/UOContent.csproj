@@ -58,6 +58,6 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Special Systems\Items\Magic Jewelry\" />
-      <Folder Include="Special Systems\Misc\NewFolder\" />
+      <Folder Include="Special Systems\Misc\Pirates\" />
     </ItemGroup>
 </Project>

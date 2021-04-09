@@ -27,6 +27,8 @@ namespace Server
 
                 Mobile.AOSStatusHandler = AOS.GetStatus;
             }
+
+            
         }
     }
 }

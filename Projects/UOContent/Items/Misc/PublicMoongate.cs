@@ -271,9 +271,9 @@ namespace Server.Items
             );
         //public static readonly PMList[] UORLists = { Trammel, Felucca };
         public static readonly PMList[] UORLists = { Felucca };
-        public static readonly PMList[] UORListsYoung = { Trammel };
-        public static readonly PMList[] LBRLists = { Trammel, Felucca, Ilshenar };
-        public static readonly PMList[] LBRListsYoung = { Trammel, Ilshenar };
+        public static readonly PMList[] UORListsYoung = { Felucca };
+        public static readonly PMList[] LBRLists = { Felucca };
+        public static readonly PMList[] LBRListsYoung = { Felucca };
         public static readonly PMList[] AOSLists = { Trammel, Felucca, Ilshenar, Malas };
         public static readonly PMList[] AOSListsYoung = { Trammel, Ilshenar, Malas };
         public static readonly PMList[] SELists = { Trammel, Felucca, Ilshenar, Malas, Tokuno };
@@ -298,6 +298,132 @@ namespace Server.Items
         public PMEntry[] Entries { get; }
     }
 
+    public class MoongateGump : Gump
+    {
+        private readonly Mobile m_Mobile;
+        private readonly Item m_Moongate;
+        private static readonly PMList[] m_MoongateList = PMList.UORLists;
+
+        public MoongateGump(Mobile mobile, Item moongate) : base(100, 100)
+        {
+            m_Mobile = mobile;
+            m_Moongate = moongate;
+
+
+            if (mobile.Player)
+            {
+                var flags = mobile.NetState?.Flags ?? ClientFlags.None;
+                var young = mobile is PlayerMobile playerMobile && playerMobile.Young;
+
+            }
+
+
+            AddPage(0);
+            AddBackground(282, 87, 233, 374, 9250);
+            AddLabel(333, 101, 0, "Pick your destination");
+
+            var moongates = m_MoongateList[0].Entries;
+
+            for (var i = 0; i < moongates.Length; ++i)
+            {
+                // Radiobutton for moongate
+                AddRadio(335, 130 + i * 30, 210, 211, false, i);
+                // Label for radio button
+                AddHtmlLocalized(366, 130 + i * 30, 150, 20, moongates[i].Number);
+
+            }
+
+            // Cancel
+            AddButton(300, 413, 241, 243, 0, GumpButtonType.Reply, 0);
+            // Okay
+            AddButton(435, 413, 247, 248, 1, GumpButtonType.Reply, 0);
+
+
+
+        }
+
+
+        public override void OnResponse(NetState state, RelayInfo info)
+        {
+            if (info.ButtonID == 0) // Cancel
+            {
+                return;
+            }
+
+            if (m_Mobile.Deleted || m_Moongate.Deleted || m_Mobile.Map == null)
+            {
+                return;
+            }
+
+            var switches = info.Switches;
+
+            if (switches.Length == 0)
+            {
+                return;
+            }
+
+            var switchID = switches[0];
+            var listIndex = switchID / 100;
+            var listEntry = switchID % 100;
+
+            if (listIndex < 0 || listIndex >= m_MoongateList.Length)
+            {
+                return;
+            }
+
+            var list = m_MoongateList[listIndex];
+
+            if (listEntry < 0 || listEntry >= list.Entries.Length)
+            {
+                return;
+            }
+
+            var entry = list.Entries[listEntry];
+
+            if (!m_Mobile.InRange(m_Moongate.GetWorldLocation(), 1) || m_Mobile.Map != m_Moongate.Map)
+            {
+                m_Mobile.SendLocalizedMessage(1019002); // You are too far away to use the gate.
+            }
+            else if (m_Mobile.Player && m_Mobile.Kills >= 5 && list.Map != Map.Felucca)
+            {
+                m_Mobile.SendLocalizedMessage(1019004); // You are not allowed to travel there.
+            }
+            else if (Sigil.ExistsOn(m_Mobile) && list.Map != Faction.Facet)
+            {
+                m_Mobile.SendLocalizedMessage(1019004); // You are not allowed to travel there.
+            }
+            else if (m_Mobile.Criminal)
+            {
+                m_Mobile.SendLocalizedMessage(1005561, "", 0x22); // Thou'rt a criminal and cannot escape so easily.
+            }
+            else if (SpellHelper.CheckCombat(m_Mobile))
+            {
+                m_Mobile.SendLocalizedMessage(1005564, "", 0x22); // Wouldst thou flee during the heat of battle??
+            }
+            else if (m_Mobile.Spell != null)
+            {
+                m_Mobile.SendLocalizedMessage(1049616); // You are too busy to do that at the moment.
+            }
+            else if (m_Mobile.Map == list.Map && m_Mobile.InRange(entry.Location, 1))
+            {
+                m_Mobile.SendLocalizedMessage(1019003); // You are already there.
+            }
+            else
+            {
+                BaseCreature.TeleportPets(m_Mobile, entry.Location, list.Map);
+
+                m_Mobile.Combatant = null;
+                m_Mobile.Warmode = false;
+                m_Mobile.Hidden = true;
+
+                m_Mobile.MoveToWorld(entry.Location, list.Map);
+
+                Effects.PlaySound(entry.Location, list.Map, 0x1FE);
+            }
+        }
+    }
+
+    /*
     public class MoongateGump : Gump
     {
         private readonly PMList[] m_Lists;
@@ -489,5 +615,5 @@ namespace Server.Items
                 Effects.PlaySound(entry.Location, list.Map, 0x1FE);
             }
         }
-    }
+    }*/
 }
