@@ -1453,6 +1453,7 @@ namespace Server
                 Utility.PushColor(ConsoleColor.Red);
                 Console.WriteLine("Attempting to set Mobile.NetState value from an invalid thread!");
                 Console.WriteLine(new StackTrace());
+                Utility.PopColor();
                 return;
             }
 #endif
@@ -7933,6 +7934,7 @@ namespace Server
                 Utility.PushColor(ConsoleColor.Red);
                 Console.WriteLine("Attempting to queue a delta change from an invalid thread!");
                 Console.WriteLine(new StackTrace());
+                Utility.PopColor();
                 return;
             }
 #endif

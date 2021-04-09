@@ -460,6 +460,7 @@ namespace Server.Network
                 Utility.PushColor(ConsoleColor.Red);
                 Console.WriteLine("Attempting to get pipe buffer from wrong thread!");
                 Console.WriteLine(new StackTrace());
+                Utility.PopColor();
                 return;
             }
 #endif
@@ -1117,6 +1118,7 @@ namespace Server.Network
                 Utility.PushColor(ConsoleColor.Red);
                 Console.WriteLine("Attempting to dispose a netstate from an invalid thread!");
                 Console.WriteLine(new StackTrace());
+                Utility.PopColor();
                 return;
             }
 #endif
