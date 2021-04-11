@@ -1971,15 +1971,15 @@ namespace Server.Multis
 
             m_Facing = facing;
 
-            int xOffset = 0, yOffset = 0;
-            Movement.Movement.Offset(facing, ref xOffset, ref yOffset);
-
-            var count = ((m_Facing - old) & 0x7) / 2;
-
             TillerMan?.SetFacing(facing);
             Hold?.SetFacing(facing);
             PPlank?.SetFacing(facing);
             SPlank?.SetFacing(facing);
+
+            int xOffset = 0, yOffset = 0;
+            Movement.Movement.Offset(facing, ref xOffset, ref yOffset);
+
+            var count = ((m_Facing - old) & 0x7) / 2;
 
             foreach (var e in GetMovingEntities())
             {
