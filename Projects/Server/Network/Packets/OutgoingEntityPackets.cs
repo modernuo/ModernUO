@@ -51,7 +51,7 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[OPLPacketLength];
+            Span<byte> buffer = stackalloc byte[OPLPacketLength].InitializePacket();
             CreateOPLInfo(buffer, serial, hash);
 
             ns.Send(buffer);
@@ -82,7 +82,7 @@ namespace Server.Network
             ns.Send(buffer);
         }
 
-        public static int CreateWorldEntity(Span<byte> buffer, IEntity entity, bool isSA, bool isHS)
+        public static int CreateWorldEntity(Span<byte> buffer, IEntity entity, bool isHS)
         {
             if (buffer[0] != 0)
             {
@@ -121,7 +121,7 @@ namespace Server.Network
                 type = 1;
                 gfx = mobile.BodyValue;
                 hue = mobile.Hue;
-                flags = mobile.GetPacketFlags(isSA);
+                flags = mobile.GetPacketFlags(true);
             }
 
             writer.Write((byte)type);
@@ -136,7 +136,7 @@ namespace Server.Network
             writer.Write((short)(entity.Y & 0x3FFF));
             writer.Write((sbyte)entity.Z);
 
-            writer.Write((byte)light);
+            writer.Write(light);
             writer.Write((short)hue);
             writer.Write((byte)flags);
 

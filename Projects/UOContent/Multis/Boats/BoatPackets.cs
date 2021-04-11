@@ -76,9 +76,6 @@ namespace Server.Multis.Boats
                 return;
             }
 
-            bool isSA = ns.StygianAbyss;
-            bool isHS = ns.HighSeas;
-
             var minLength = PacketContainerBuilder.MinPacketLength
                             + OutgoingEntityPackets.MaxWorldEntityPacketLength
                             * 5; // Minimum of boat, hold, planks, and the player
@@ -95,7 +92,7 @@ namespace Server.Multis.Boats
                 }
 
                 buffer.InitializePacket();
-                var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, isSA, isHS);
+                var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, true);
                 builder.Advance(bytesWritten);
             }
 

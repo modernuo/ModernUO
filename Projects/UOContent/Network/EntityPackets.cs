@@ -32,9 +32,6 @@ namespace Server.Network
                 return;
             }
 
-            bool isSA = ns.StygianAbyss;
-            bool isHS = ns.HighSeas;
-
             var minLength = PacketContainerBuilder.MinPacketLength
                             + OutgoingEntityPackets.MaxWorldEntityPacketLength
                             * estimatedCount;
@@ -46,7 +43,7 @@ namespace Server.Network
             foreach (var entity in entities)
             {
                 buffer.InitializePacket();
-                var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, isSA, isHS);
+                var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, true);
                 builder.Advance(bytesWritten);
             }
 
