@@ -1147,7 +1147,7 @@ namespace Server
                         {
                             if (state.HighSeas)
                             {
-                                var length = OutgoingEntityPackets.CreateWorldEntity(hsWorldItem, this, true, true);
+                                var length = OutgoingEntityPackets.CreateWorldEntity(hsWorldItem, this, true);
                                 if (length != hsWorldItem.Length)
                                 {
                                     hsWorldItem = hsWorldItem.SliceToLength(length);
@@ -1157,7 +1157,7 @@ namespace Server
                             }
                             else if (state.StygianAbyss)
                             {
-                                var length = OutgoingEntityPackets.CreateWorldEntity(saWorldItem, this, true, false);
+                                var length = OutgoingEntityPackets.CreateWorldEntity(saWorldItem, this, false);
                                 if (length != saWorldItem.Length)
                                 {
                                     saWorldItem = saWorldItem.SliceToLength(length);
