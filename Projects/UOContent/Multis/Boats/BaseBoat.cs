@@ -450,16 +450,13 @@ namespace Server.Multis
         public override void OnAfterDelete()
         {
             TillerMan?.Delete();
-
             Hold?.Delete();
-
             PPlank?.Delete();
-
             SPlank?.Delete();
-
             m_TurnTimer?.Stop();
-
+            m_TurnTimer = null;
             m_MoveTimer?.Stop();
+            m_MoveTimer = null;
 
             Boats.Remove(this);
         }
@@ -2048,13 +2045,8 @@ namespace Server.Multis
 
         public static void Initialize()
         {
-            new UpdateAllTimer().Start();
-            EventSink.WorldSave += EventSink_WorldSave;
-        }
-
-        private static void EventSink_WorldSave()
-        {
-            new UpdateAllTimer().Start();
+            EventSink.WorldLoad += UpdateAllComponents;
+            EventSink.WorldSave += UpdateAllComponents;
         }
 
         private class DecayTimer : Timer
@@ -2103,18 +2095,6 @@ namespace Server.Multis
                 {
                     m_Boat.StopMove(false);
                 }
-            }
-        }
-
-        public class UpdateAllTimer : Timer
-        {
-            public UpdateAllTimer() : base(TimeSpan.FromSeconds(1.0))
-            {
-            }
-
-            protected override void OnTick()
-            {
-                UpdateAllComponents();
             }
         }
 
