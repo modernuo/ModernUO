@@ -450,16 +450,13 @@ namespace Server.Multis
         public override void OnAfterDelete()
         {
             TillerMan?.Delete();
-
             Hold?.Delete();
-
             PPlank?.Delete();
-
             SPlank?.Delete();
-
             m_TurnTimer?.Stop();
-
+            m_TurnTimer = null;
             m_MoveTimer?.Stop();
+            m_MoveTimer = null;
 
             Boats.Remove(this);
         }
@@ -1278,7 +1275,7 @@ namespace Server.Multis
 
             m_TurnTimer?.Stop();
 
-            m_TurnTimer = new TurnTimer(this, offset);
+            m_TurnTimer = Timer.DelayCall(TimeSpan.FromMilliseconds(500), Turn, offset);
             m_TurnTimer.Start();
 
             if (message)
@@ -1288,6 +1285,8 @@ namespace Server.Multis
 
             return true;
         }
+
+        public void Turn(int offset) => Turn(offset, true);
 
         public bool Turn(int offset, bool message)
         {
@@ -1478,7 +1477,7 @@ namespace Server.Multis
             var rx = p.X - Location.X;
             var ry = p.Y - Location.Y;
 
-            for (var i = 0; i < count; ++i)
+            for (var i = 0; i < count; i++)
             {
                 var temp = rx;
                 rx = -ry;
@@ -1739,7 +1738,6 @@ namespace Server.Multis
             else
             {
                 using var eable = GetMovingEntities(true);
-                var enumerator = eable.GetEnumerator();
 
                 // Packet must be sent before actual locations are changed
                 foreach (var ns in Map.GetClientsInRange(Location, GetMaxUpdateRange()))
@@ -1878,37 +1876,37 @@ namespace Server.Multis
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
-                if (_enumerator?.MoveNext() != true)
+                IEntity current;
+                while (_enumerator?.MoveNext() == true)
                 {
-                    return false;
-                }
+                    current = _enumerator.Current;
 
-                var current = _enumerator.Current;
-
-                if (!_includeBoat && (current is TillerMan || current is Hold || current is Plank))
-                {
-                    return false;
-                }
-
-                if (current is Item item)
-                {
-                    if (item == _boat)
+                    if (!_includeBoat && current is Server.Items.TillerMan or Server.Items.Hold or Plank)
                     {
-                        return false;
+                        continue;
                     }
 
-                    if (_boat.Contains(item) && item.Visible && item.Z >= _boat.Z)
+                    if (current is Item item)
                     {
-                        _current = current;
-                        return true;
+                        if (item == _boat)
+                        {
+                            continue;
+                        }
+
+                         // TODO: Remove visible check and use something better, like check for spawners, or other things in the ocean we shouldn't pick up on accident
+                        if (_boat.Contains(item) && item.Visible && item.Z >= _boat.Z)
+                        {
+                            _current = current;
+                            return true;
+                        }
                     }
-                }
-                else if (current is Mobile m)
-                {
-                    if (_boat.Contains(m))
+                    else if (current is Mobile m)
                     {
-                        _current = current;
-                        return true;
+                        if (_boat.Contains(m))
+                        {
+                            _current = current;
+                            return true;
+                        }
                     }
                 }
 
@@ -1974,44 +1972,23 @@ namespace Server.Multis
             m_Facing = facing;
 
             TillerMan?.SetFacing(facing);
-
             Hold?.SetFacing(facing);
-
             PPlank?.SetFacing(facing);
-
             SPlank?.SetFacing(facing);
 
             int xOffset = 0, yOffset = 0;
             Movement.Movement.Offset(facing, ref xOffset, ref yOffset);
 
-            if (Hold != null)
-            {
+            var count = ((m_Facing - old) & 0x7) / 2;
 
-            }
-
-            var count = (m_Facing - old) & 0x7;
-            count /= 2;
-
-            foreach (var e in GetMovingEntities(true))
+            foreach (var e in GetMovingEntities())
             {
                 if (e == this)
                 {
                     continue;
                 }
 
-                if (e is TillerMan tiller)
-                {
-                    tiller.Location = new Point3D(
-                        X + xOffset * TillerManDistance + (facing == Direction.North ? 1 : 0),
-                        Y + yOffset * TillerManDistance,
-                        tiller.Z
-                    );
-                }
-                else if (e is Hold hold)
-                {
-                    hold.Location = new Point3D(X + xOffset * HoldDistance, Y + yOffset * HoldDistance, hold.Z);
-                }
-                else if (e is Item item)
+                if (e is Item item)
                 {
                     item.Location = Rotate(item.Location, count);
                 }
@@ -2020,6 +1997,30 @@ namespace Server.Multis
                     m.Direction = (m.Direction - old + facing) & Direction.Mask;
                     m.Location = Rotate(m.Location, count);
                 }
+            }
+
+            if (TillerMan != null)
+            {
+                TillerMan.Location = new Point3D(
+                    X + xOffset * TillerManDistance + (facing == Direction.North ? 1 : 0),
+                    Y + yOffset * TillerManDistance,
+                    TillerMan.Z
+                );
+            }
+
+            if (Hold != null)
+            {
+                Hold.Location = new Point3D(X + xOffset * HoldDistance, Y + yOffset * HoldDistance, Hold.Z);
+            }
+
+            if (PPlank != null)
+            {
+                PPlank.Location = Rotate(PPlank.Location, count);
+            }
+
+            if (SPlank != null)
+            {
+                SPlank.Location = Rotate(SPlank.Location, count);
             }
 
             ItemID = facing switch
@@ -2044,13 +2045,8 @@ namespace Server.Multis
 
         public static void Initialize()
         {
-            new UpdateAllTimer().Start();
-            EventSink.WorldSave += EventSink_WorldSave;
-        }
-
-        private static void EventSink_WorldSave()
-        {
-            new UpdateAllTimer().Start();
+            EventSink.WorldLoad += UpdateAllComponents;
+            EventSink.WorldSave += UpdateAllComponents;
         }
 
         private class DecayTimer : Timer
@@ -2083,28 +2079,6 @@ namespace Server.Multis
             }
         }
 
-        private class TurnTimer : Timer
-        {
-            private readonly BaseBoat m_Boat;
-            private readonly int m_Offset;
-
-            public TurnTimer(BaseBoat boat, int offset) : base(TimeSpan.FromSeconds(0.5))
-            {
-                m_Boat = boat;
-                m_Offset = offset;
-
-                Priority = TimerPriority.TenMS;
-            }
-
-            protected override void OnTick()
-            {
-                if (!m_Boat.Deleted)
-                {
-                    m_Boat.Turn(m_Offset, true);
-                }
-            }
-        }
-
         private class MoveTimer : Timer
         {
             private readonly BaseBoat m_Boat;
@@ -2121,18 +2095,6 @@ namespace Server.Multis
                 {
                     m_Boat.StopMove(false);
                 }
-            }
-        }
-
-        public class UpdateAllTimer : Timer
-        {
-            public UpdateAllTimer() : base(TimeSpan.FromSeconds(1.0))
-            {
-            }
-
-            protected override void OnTick()
-            {
-                UpdateAllComponents();
             }
         }
 

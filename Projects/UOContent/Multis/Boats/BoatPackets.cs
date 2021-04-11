@@ -48,6 +48,8 @@ namespace Server.Multis.Boats
 
             foreach (var ent in ents)
             {
+                // If we assume that the entities list contains everything a player can see,
+                // then this can be removed and the packet can be written once and copied to improve performance
                 if (!beholder.CanSee(ent))
                 {
                     continue;
