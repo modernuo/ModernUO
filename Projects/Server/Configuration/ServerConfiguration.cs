@@ -242,18 +242,25 @@ namespace Server
 
         private static void SetPre6000Support()
         {
-            Console.WriteLine("Will you be using client older than 6.0.0.0?");
+            Console.WriteLine("Will you be using a client version older than 6.0.0.0?");
 
             do
             {
-                Console.Write("[no]> ");
+                Console.Write("y or [n]> ");
                 var input = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(input) || input.InsensitiveStartsWith("n"))
                 {
                     return;
                 }
 
-                SetSetting("maps.enableMapDiffPatches", true.ToString());
+                if (input.InsensitiveStartsWith("y"))
+                {
+                    SetSetting("maps.enableOldHaven", true.ToString());
+                    SetSetting("maps.enableMapDiffPatches", true.ToString());
+                    return;
+                }
+
+                Core.WriteConsoleLine($"Invalid option. ({input})");
             } while (true);
         }
 
