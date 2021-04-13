@@ -15,9 +15,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Text.Json.Serialization;
 using Server.Json;
 
 namespace Server
@@ -29,43 +29,53 @@ namespace Server
         private static ServerSettings m_Settings;
         private static bool m_Mocked;
 
-        public static List<string> DataDirectories => m_Settings.dataDirectories;
+        public static List<string> DataDirectories => m_Settings.DataDirectories;
 
-        public static List<IPEndPoint> Listeners => m_Settings.listeners;
+        public static List<IPEndPoint> Listeners => m_Settings.Listeners;
 
         public static string GetSetting(string key, string defaultValue)
         {
-            m_Settings.settings.TryGetValue(key, out var value);
+            m_Settings.Settings.TryGetValue(key, out var value);
             return value ?? defaultValue;
         }
 
         public static int GetSetting(string key, int defaultValue)
         {
-            m_Settings.settings.TryGetValue(key, out var strValue);
+            m_Settings.Settings.TryGetValue(key, out var strValue);
             return int.TryParse(strValue, out var value) ? value : defaultValue;
         }
 
         public static long GetSetting(string key, long defaultValue)
         {
-            m_Settings.settings.TryGetValue(key, out var strValue);
+            m_Settings.Settings.TryGetValue(key, out var strValue);
             return long.TryParse(strValue, out var value) ? value : defaultValue;
         }
 
         public static bool GetSetting(string key, bool defaultValue)
         {
-            m_Settings.settings.TryGetValue(key, out var strValue);
+            m_Settings.Settings.TryGetValue(key, out var strValue);
             return bool.TryParse(strValue, out var value) ? value : defaultValue;
         }
 
         public static T GetSetting<T>(string key, T defaultValue) where T : struct, Enum
         {
-            m_Settings.settings.TryGetValue(key, out var strValue);
+            m_Settings.Settings.TryGetValue(key, out var strValue);
             return Enum.TryParse(strValue, out T value) ? value : defaultValue;
+        }
+
+        public static T? GetSetting<T>(string key) where T : struct, Enum
+        {
+            if (!m_Settings.Settings.TryGetValue(key, out var strValue))
+            {
+                return null;
+            }
+
+            return Enum.TryParse(strValue, out T value) ? value : null;
         }
 
         public static string GetOrUpdateSetting(string key, string defaultValue)
         {
-            if (m_Settings.settings.TryGetValue(key, out var value))
+            if (m_Settings.Settings.TryGetValue(key, out var value))
             {
                 return value;
             }
@@ -78,7 +88,7 @@ namespace Server
         {
             int value;
 
-            if (m_Settings.settings.TryGetValue(key, out var strValue))
+            if (m_Settings.Settings.TryGetValue(key, out var strValue))
             {
                 value = int.TryParse(strValue, out value) ? value : defaultValue;
             }
@@ -94,7 +104,7 @@ namespace Server
         {
             long value;
 
-            if (m_Settings.settings.TryGetValue(key, out var strValue))
+            if (m_Settings.Settings.TryGetValue(key, out var strValue))
             {
                 value = long.TryParse(strValue, out value) ? value : defaultValue;
             }
@@ -110,7 +120,7 @@ namespace Server
         {
             bool value;
 
-            if (m_Settings.settings.TryGetValue(key, out var strValue))
+            if (m_Settings.Settings.TryGetValue(key, out var strValue))
             {
                 value = bool.TryParse(strValue, out value) ? value : defaultValue;
             }
@@ -126,7 +136,7 @@ namespace Server
         {
             TimeSpan value;
 
-            if (m_Settings.settings.TryGetValue(key, out var strValue))
+            if (m_Settings.Settings.TryGetValue(key, out var strValue))
             {
                 value = TimeSpan.TryParse(strValue, out value) ? value : defaultValue;
             }
@@ -142,7 +152,7 @@ namespace Server
         {
             T value;
 
-            if (m_Settings.settings.TryGetValue(key, out var strValue))
+            if (m_Settings.Settings.TryGetValue(key, out var strValue))
             {
                 value = Enum.TryParse(strValue, out value) ? value : defaultValue;
             }
@@ -156,7 +166,7 @@ namespace Server
 
         public static void SetSetting(string key, string value)
         {
-            m_Settings.settings[key] = value;
+            m_Settings.Settings[key] = value;
             Save();
         }
 
@@ -168,7 +178,7 @@ namespace Server
 
             if (File.Exists(m_FilePath))
             {
-                Console.Write($"Core: Reading server configuration from {m_RelPath}...");
+                Core.WriteConsole($"Reading server configuration from {m_RelPath}...");
                 m_Settings = JsonConfig.Deserialize<ServerSettings>(m_FilePath);
 
                 if (m_Settings == null)
@@ -194,31 +204,95 @@ namespace Server
                 return;
             }
 
-            if (m_Settings.dataDirectories.Count == 0)
+            if (m_Settings.DataDirectories.Count == 0)
             {
                 updated = true;
-                Utility.PushColor(ConsoleColor.DarkYellow);
-                Console.WriteLine("Core: Server configuration is missing data directories.");
-                Utility.PopColor();
-                m_Settings.dataDirectories.AddRange(GetDataDirectories());
+                m_Settings.DataDirectories.AddRange(GetDataDirectories());
             }
 
-            if (m_Settings.listeners.Count == 0)
+            if (m_Settings.Listeners.Count == 0)
             {
                 updated = true;
-                Utility.PushColor(ConsoleColor.DarkYellow);
-                Console.WriteLine("Core: Server is missing socket listener IP addresses.");
-                Utility.PopColor();
-                m_Settings.listeners.AddRange(GetListeners());
+                m_Settings.Listeners.AddRange(GetListeners());
+            }
+
+            if (m_Settings.Expansion == null)
+            {
+                var expansion = GetSetting<Expansion>("currentExpansion");
+                var hasExpansion = expansion != null;
+
+                expansion ??= GetExpansion();
+
+                if (expansion <= Expansion.ML && !hasExpansion)
+                {
+                    SetPre6000Support();
+                }
+
+                m_Settings.Expansion = expansion;
             }
 
             if (updated)
             {
                 Save();
                 Utility.PushColor(ConsoleColor.Green);
-                Console.WriteLine($"Core: Server configuration saved to {m_RelPath}.");
+                Core.WriteConsoleLine($"Server configuration saved to {m_RelPath}.");
                 Utility.PopColor();
             }
+        }
+
+        private static void SetPre6000Support()
+        {
+            Console.WriteLine("Will you be using client older than 6.0.0.0?");
+
+            do
+            {
+                Console.Write("[no]> ");
+                var input = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(input) || input.InsensitiveStartsWith("n"))
+                {
+                    return;
+                }
+
+                SetSetting("maps.enableMapDiffPatches", true.ToString());
+            } while (true);
+        }
+
+        private static Expansion GetExpansion()
+        {
+            Console.WriteLine("Please choose an expansion by typing the number or short name:");
+            var expansions = ExpansionInfo.Table;
+
+            for (int i = 0; i < expansions.Length; i++)
+            {
+                var info = expansions[i];
+                Console.WriteLine(" - {0,2}: {1} ({2})", i, ((Expansion)info.ID).ToString(), info.Name);
+            }
+
+            var maxExpansion = (Expansion)expansions[^1].ID;
+            var maxExpansionName = maxExpansion.ToString();
+
+            do
+            {
+                Console.Write("[{0}]> ", maxExpansionName);
+                var input = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    return maxExpansion;
+                }
+
+                if (int.TryParse(input, NumberStyles.Integer, null, out var number) && number >= 0 &&
+                    number < expansions.Length)
+                {
+                    return (Expansion)number;
+                }
+
+                if (Enum.TryParse<Expansion>(input, out var expansion))
+                {
+                    return expansion;
+                }
+
+                Core.WriteConsoleLine($"Invalid expansion. ({input})");
+            } while (true);
         }
 
         private static List<string> GetDataDirectories()
@@ -239,11 +313,11 @@ namespace Server
                 if (Directory.Exists(directory))
                 {
                     directories.Add(directory);
-                    Console.WriteLine("Core: Path {0} added.", directory);
+                    Core.WriteConsoleLine($"Path {directory} added.");
                 }
                 else
                 {
-                    Console.WriteLine("Core: Path does not exist. ({0})");
+                    Core.WriteConsoleLine($"Path does not exist. ({directory})");
                 }
             } while (true);
 
@@ -276,11 +350,11 @@ namespace Server
                 if (IPEndPoint.TryParse(ipStr, out var ip))
                 {
                     ips.Add(ip);
-                    Console.WriteLine("Core: {0} added.", ipStr);
+                    Core.WriteConsoleLine($"Core: {ipStr} added.");
                 }
                 else
                 {
-                    Console.WriteLine("Core: {0} is not a valid IP or port");
+                    Core.WriteConsoleLine($"{ipStr} is not a valid IP or port");
                 }
             } while (true);
 
@@ -300,18 +374,6 @@ namespace Server
             }
 
             JsonConfig.Serialize(m_FilePath, m_Settings);
-        }
-
-        internal class ServerSettings
-        {
-            [JsonPropertyName("dataDirectories")]
-            public List<string> dataDirectories { get; set; } = new();
-
-            [JsonPropertyName("listeners")]
-            public List<IPEndPoint> listeners { get; set; } = new();
-
-            [JsonPropertyName("settings")]
-            public SortedDictionary<string, string> settings { get; set; } = new();
         }
     }
 }

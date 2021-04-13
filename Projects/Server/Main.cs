@@ -297,7 +297,7 @@ namespace Server
                 _ => "CTRL+C"
             };
 
-            Console.WriteLine("Core: Detected {0} pressed.", keypress);
+            WriteConsoleLine($"Detected {keypress} pressed.");
             e.Cancel = true;
             Kill();
         }
@@ -410,7 +410,7 @@ namespace Server
             ".TrimMultiline());
             Utility.PopColor();
 
-            Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
+            WriteConsoleLine($"Running on {RuntimeInformation.FrameworkDescription}");
 
             var ttObj = new Timer.TimerThread();
             _timerThread = new Thread(ttObj.TimerMain)
@@ -422,7 +422,7 @@ namespace Server
 
             if (s.Length > 0)
             {
-                Console.WriteLine("Core: Running with arguments: {0}", s);
+                WriteConsoleLine($"Running with arguments: {s}");
             }
 
             ProcessorCount = Environment.ProcessorCount;
@@ -434,20 +434,17 @@ namespace Server
 
             if (MultiProcessor)
             {
-                Console.WriteLine("Core: Optimizing for {0} processor{1}", ProcessorCount, ProcessorCount == 1 ? "" : "s");
+                WriteConsoleLine($"Optimizing for {ProcessorCount} processor{(ProcessorCount == 1 ? "" : "s")}");
             }
 
             Console.CancelKeyPress += Console_CancelKeyPressed;
 
             if (GCSettings.IsServerGC)
             {
-                Console.WriteLine("Core: Server garbage collection mode enabled");
+                WriteConsoleLine(": Server garbage collection mode enabled");
             }
 
-            Console.WriteLine(
-                "Core: High resolution timing ({0})",
-                Stopwatch.IsHighResolution ? "Supported" : "Unsupported"
-            );
+            WriteConsoleLine($"High resolution timing ({(Stopwatch.IsHighResolution ? "Supported" : "Unsupported")})");
 
             ServerConfiguration.Load();
 
@@ -469,7 +466,6 @@ namespace Server
 
             VerifySerialization();
 
-            MapLoader.LoadMaps();
             AssemblyHandler.Invoke("Configure");
 
             TileMatrixLoader.LoadTileMatrix();
@@ -608,6 +604,18 @@ namespace Server
             {
                 Parallel.ForEach(assembly.GetTypes(), VerifyType);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void WriteConsole(string message)
+        {
+            Console.Write("Core: {0}", message);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void WriteConsoleLine(string message)
+        {
+            Console.WriteLine("Core: {0}", message);
         }
     }
 }
