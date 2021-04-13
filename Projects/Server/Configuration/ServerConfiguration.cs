@@ -228,6 +228,7 @@ namespace Server
                     SetPre6000Support();
                 }
 
+                updated = true;
                 m_Settings.Expansion = expansion;
             }
 
