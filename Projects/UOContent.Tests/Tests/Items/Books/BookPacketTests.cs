@@ -8,6 +8,31 @@ using Xunit;
 
 namespace UOContent.Tests
 {
+    public class TestBook : BaseBook
+    {
+        public TestBook(int itemID, int pageCount = 20, bool writable = true) : base(itemID, pageCount, writable)
+        {
+        }
+
+        public TestBook(int itemID, string title, string author, int pageCount, bool writable) : base(itemID, title, author, pageCount, writable)
+        {
+        }
+
+        public TestBook(int itemID, bool writable) : base(itemID, writable)
+        {
+        }
+
+        public TestBook(Serial serial) : base(serial)
+        {
+            Pages = new BookPageInfo[20];
+
+            for (var i = 0; i < Pages.Length; ++i)
+            {
+                Pages[i] = new BookPageInfo();
+            }
+        }
+    }
+
     public class BookPacketTests : IClassFixture<ServerFixture>
     {
         [Theory]
@@ -18,7 +43,7 @@ namespace UOContent.Tests
             m.DefaultMobileInit();
 
             Serial serial = 0x1001;
-            var book = new BlueBook(serial) { Author = author, Title = title };
+            var book = new TestBook(serial) { Author = author, Title = title };
 
             var expected = new BookHeader(m, book).Compile();
 
@@ -36,7 +61,7 @@ namespace UOContent.Tests
             m.DefaultMobileInit();
 
             Serial serial = 0x1001;
-            var book = new BlueBook(serial) { Author = "Some Author", Title = "Some Title" };
+            var book = new TestBook(serial) { Author = "Some Author", Title = "Some Title" };
             book.Pages[0].Lines = new[]
             {
                 "Some books start with actual content",
