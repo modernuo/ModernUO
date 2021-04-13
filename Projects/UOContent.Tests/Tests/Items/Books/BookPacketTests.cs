@@ -17,7 +17,8 @@ namespace UOContent.Tests
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var book = new BlueBook { Author = author, Title = title };
+            Serial serial = 0x1001;
+            var book = new BlueBook(serial) { Author = author, Title = title };
 
             var expected = new BookHeader(m, book).Compile();
 
@@ -34,7 +35,8 @@ namespace UOContent.Tests
             var m = new Mobile(0x1);
             m.DefaultMobileInit();
 
-            var book = new BlueBook { Author = "Some Author", Title = "Some Title" };
+            Serial serial = 0x1001;
+            var book = new BlueBook(serial) { Author = "Some Author", Title = "Some Title" };
             book.Pages[0].Lines = new[]
             {
                 "Some books start with actual content",
