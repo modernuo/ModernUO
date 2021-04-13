@@ -41,6 +41,7 @@ namespace Server.Json
             };
 
             options.Converters.Add(new JsonNullableEnumConverterFactory());
+            options.Converters.Add(new JsonStringEnumConverter());
             options.Converters.Add(new MapConverterFactory());
             options.Converters.Add(new Point3DConverterFactory());
             options.Converters.Add(new Rectangle3DConverterFactory());

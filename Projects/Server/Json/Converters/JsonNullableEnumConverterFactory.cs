@@ -21,7 +21,7 @@ namespace Server.Json.Converters
 {
     public class JsonNullableEnumConverterFactory : JsonConverterFactory
     {
-        readonly JsonStringEnumConverter _stringEnumConverter;
+        private readonly JsonStringEnumConverter _stringEnumConverter;
 
         public JsonNullableEnumConverterFactory(JsonNamingPolicy? namingPolicy = null, bool allowIntegerValues = true) =>
             _stringEnumConverter = new JsonStringEnumConverter(namingPolicy, allowIntegerValues);
