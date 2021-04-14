@@ -78,7 +78,7 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public int PagesCount => Pages.Length;
 
-        public BookPageInfo[] Pages { get; private set; }
+        public BookPageInfo[] Pages { get; protected set; }
 
         public virtual BookContent DefaultContent => null;
 
@@ -230,14 +230,7 @@ namespace Server.Items
                         }
                         else
                         {
-                            if (content != null)
-                            {
-                                Pages = content.Copy();
-                            }
-                            else
-                            {
-                                Pages = Array.Empty<BookPageInfo>();
-                            }
+                            Pages = content?.Copy() ?? Array.Empty<BookPageInfo>();
                         }
 
                         break;
@@ -262,14 +255,7 @@ namespace Server.Items
                         {
                             var content = DefaultContent;
 
-                            if (content != null)
-                            {
-                                Pages = content.Copy();
-                            }
-                            else
-                            {
-                                Pages = Array.Empty<BookPageInfo>();
-                            }
+                            Pages = content?.Copy() ?? Array.Empty<BookPageInfo>();
                         }
 
                         break;

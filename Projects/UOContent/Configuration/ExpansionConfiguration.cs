@@ -1,5 +1,3 @@
-using Server.Accounting;
-using Server.Items;
 using Server.Network;
 
 namespace Server
@@ -8,13 +6,6 @@ namespace Server
     {
         public static void Configure()
         {
-            Core.Expansion = ServerConfiguration.GetOrUpdateSetting("currentExpansion", Expansion.TOL);
-
-            AccountGold.Enabled = ServerConfiguration.GetSetting("accountGold.enable", Core.TOL);
-            AccountGold.ConvertOnBank = ServerConfiguration.GetSetting("accountGold.convertOnBank", true);
-            AccountGold.ConvertOnTrade = ServerConfiguration.GetSetting("accountGold.convertOnTrade", false);
-            VirtualCheck.UseEditGump = ServerConfiguration.GetSetting("virtualChecks.useEditGump", true);
-
             Mobile.InsuranceEnabled = ServerConfiguration.GetSetting("insurance.enable", Core.AOS);
             ObjectPropertyList.Enabled = ServerConfiguration.GetSetting("opl.enable", Core.AOS);
             var visibleDamage = ServerConfiguration.GetSetting("visibleDamage", Core.AOS);
@@ -30,8 +21,8 @@ namespace Server
 
                 if (ObjectPropertyList.Enabled)
                 {
-                    IncomingEntityPackets.SingleClickProps =
-                        true; // single click for everything is overridden to check object property list
+                    // single click for everything is overridden to check object property list
+                    IncomingEntityPackets.SingleClickProps = true;
                 }
 
                 Mobile.AOSStatusHandler = AOS.GetStatus;
