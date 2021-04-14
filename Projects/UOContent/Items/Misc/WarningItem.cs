@@ -100,12 +100,12 @@ namespace Server.Items
 
         public virtual void Broadcast(Mobile triggerer)
         {
-            if (m_Broadcasting || DateTime.UtcNow < m_LastBroadcast + ResetDelay)
+            if (m_Broadcasting || Core.Now < m_LastBroadcast + ResetDelay)
             {
                 return;
             }
 
-            m_LastBroadcast = DateTime.UtcNow;
+            m_LastBroadcast = Core.Now;
 
             m_Broadcasting = true;
 

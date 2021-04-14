@@ -192,7 +192,7 @@ namespace Server.Misc
 
         public static void Line2D(Point3D start, Point3D end, Map map, DoEffect_Callback effect)
         {
-            var steep = Math.Abs(end.Y - start.Y) > Math.Abs(end.X - start.X);
+            var steep = (end.Y - start.Y).Abs() > (end.X - start.X).Abs();
 
             var x0 = start.X;
             var x1 = end.X;
@@ -212,7 +212,7 @@ namespace Server.Misc
             }
 
             var deltax = x1 - x0;
-            var deltay = Math.Abs(y1 - y0);
+            var deltay = (y1 - y0).Abs();
             var error = deltax / 2;
             var ystep = y0 < y1 ? 1 : -1;
             var y = y0;

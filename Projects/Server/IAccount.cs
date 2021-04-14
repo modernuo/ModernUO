@@ -4,7 +4,7 @@ namespace Server.Accounting
 {
     public static class AccountGold
     {
-        public static bool Enabled = false;
+        public static bool Enabled { get; private set; }
 
         /// <summary>
         ///     This amount specifies the value at which point Gold turns to Platinum.
@@ -20,13 +20,20 @@ namespace Server.Accounting
         ///     Enables or Disables automatic conversion of Gold and Checks to Bank Currency
         ///     when they are added to a bank box container.
         /// </summary>
-        public static bool ConvertOnBank = true;
+        public static bool ConvertOnBank { get; private set; }
 
         /// <summary>
         ///     Enables or Disables automatic conversion of Gold and Checks to Bank Currency
         ///     when they are added to a secure trade container.
         /// </summary>
-        public static bool ConvertOnTrade = false;
+        public static bool ConvertOnTrade { get; private set; }
+
+        public static void Configure()
+        {
+            Enabled = ServerConfiguration.GetSetting("accountGold.enable", Core.TOL);
+            ConvertOnBank = ServerConfiguration.GetSetting("accountGold.convertOnBank", true);
+            ConvertOnTrade = ServerConfiguration.GetSetting("accountGold.convertOnTrade", false);
+        }
     }
 
     public interface IGoldAccount

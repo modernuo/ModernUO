@@ -108,7 +108,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (DateTime.UtcNow >= m_NextBomb)
+            if (Core.Now >= m_NextBomb)
             {
                 ThrowBomb(combatant);
 
@@ -116,11 +116,11 @@ namespace Server.Mobiles
 
                 if (Utility.RandomDouble() <= 0.75 && m_Thrown % 2 == 1) // 75% chance to quickly throw another bomb
                 {
-                    m_NextBomb = DateTime.UtcNow + TimeSpan.FromSeconds(3.0);
+                    m_NextBomb = Core.Now + TimeSpan.FromSeconds(3.0);
                 }
                 else
                 {
-                    m_NextBomb = DateTime.UtcNow + TimeSpan.FromSeconds(5.0 + 10.0 * Utility.RandomDouble()); // 5-15 seconds
+                    m_NextBomb = Core.Now + TimeSpan.FromSeconds(5.0 + 10.0 * Utility.RandomDouble()); // 5-15 seconds
                 }
             }
         }

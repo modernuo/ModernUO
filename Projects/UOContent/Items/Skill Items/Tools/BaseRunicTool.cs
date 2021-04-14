@@ -132,7 +132,7 @@ namespace Server.Items
                 percent = v;
             }
 
-            percent *= 10000 + 10000 / (Math.Abs(high - low) + 1);
+            percent *= 10000 + 10000 / ((high - low).Abs() + 1);
 
             return low + (high - low) * percent / 1000001;
         }

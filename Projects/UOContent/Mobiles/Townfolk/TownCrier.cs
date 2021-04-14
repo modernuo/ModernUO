@@ -102,23 +102,14 @@ namespace Server.Mobiles
         {
             Lines = lines;
 
-            if (duration < TimeSpan.Zero)
-            {
-                duration = TimeSpan.Zero;
-            }
-            else if (duration > TimeSpan.FromDays(365.0))
-            {
-                duration = TimeSpan.FromDays(365.0);
-            }
-
-            ExpireTime = DateTime.UtcNow + duration;
+            ExpireTime = Core.Now + duration.Clamp(TimeSpan.Zero, TimeSpan.FromDays(365));
         }
 
         public string[] Lines { get; }
 
         public DateTime ExpireTime { get; }
 
-        public bool Expired => DateTime.UtcNow >= ExpireTime;
+        public bool Expired => Core.Now >= ExpireTime;
     }
 
     public class TownCrierDurationPrompt : Prompt
@@ -242,12 +233,7 @@ namespace Server.Mobiles
                 {
                     var tce = entries[i];
 
-                    var toExpire = tce.ExpireTime - DateTime.UtcNow;
-
-                    if (toExpire < TimeSpan.Zero)
-                    {
-                        toExpire = TimeSpan.Zero;
-                    }
+                    var toExpire = Utility.Max(tce.ExpireTime - Core.Now, TimeSpan.Zero);
 
                     var sb = new StringBuilder();
 
@@ -301,12 +287,7 @@ namespace Server.Mobiles
                 if (index < entries?.Count)
                 {
                     var tce = entries[index];
-                    var ts = tce.ExpireTime - DateTime.UtcNow;
-
-                    if (ts < TimeSpan.Zero)
-                    {
-                        ts = TimeSpan.Zero;
-                    }
+                    var ts = Utility.Max(tce.ExpireTime - Core.Now, TimeSpan.Zero);
 
                     m_From.SendMessage("Editing entry #{0}.", index + 1);
                     m_From.SendMessage("Enter the first line to shout:");

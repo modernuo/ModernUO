@@ -628,7 +628,7 @@ namespace Server.Network
                 var itemID = item.ItemID & itemIdMask;
                 var writeHue = newPacket || hue != 0;
 
-                if (!newPacket)
+                if (!newPacket && writeHue)
                 {
                     itemID |= 0x8000;
                 }
@@ -651,7 +651,7 @@ namespace Server.Network
                 var itemID = beheld.HairItemID & itemIdMask;
                 var writeHue = newPacket || hue != 0;
 
-                if (!newPacket)
+                if (!newPacket && writeHue)
                 {
                     itemID |= 0x8000;
                 }
@@ -674,7 +674,7 @@ namespace Server.Network
                 var itemID = beheld.FacialHairItemID & itemIdMask;
                 var writeHue = newPacket || hue != 0;
 
-                if (!newPacket)
+                if (!newPacket && writeHue)
                 {
                     itemID |= 0x8000;
                 }

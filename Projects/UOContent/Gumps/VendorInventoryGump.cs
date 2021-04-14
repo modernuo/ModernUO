@@ -38,7 +38,7 @@ namespace Server.Gumps
 
                 AddLabel(45, y, 0x481, $"{inventory.ShopName} ({inventory.VendorName})");
 
-                var expire = inventory.ExpireTime - DateTime.UtcNow;
+                var expire = inventory.ExpireTime - Core.Now;
                 var hours = (int)expire.TotalHours;
 
                 AddLabel(320, y, 0x481, hours.ToString());

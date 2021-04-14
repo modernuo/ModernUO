@@ -45,7 +45,7 @@ namespace Server.Mobiles
             pack = new Backpack { Layer = Layer.ShopResale, Movable = false, Visible = false };
             AddItem(pack);
 
-            LastRestock = DateTime.UtcNow;
+            LastRestock = Core.Now;
         }
 
         public BaseVendor(Serial serial)
@@ -97,7 +97,7 @@ namespace Server.Mobiles
 
         public virtual void Restock()
         {
-            LastRestock = DateTime.UtcNow;
+            LastRestock = Core.Now;
 
             var buyInfo = GetBuyInfo();
 
@@ -565,7 +565,7 @@ namespace Server.Mobiles
 
         protected void LoadSBInfo()
         {
-            LastRestock = DateTime.UtcNow;
+            LastRestock = Core.Now;
 
             for (var i = 0; i < m_ArmorBuyInfo.Count; ++i)
             {
@@ -840,7 +840,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (DateTime.UtcNow - LastRestock > RestockDelay)
+            if (Core.Now - LastRestock > RestockDelay)
             {
                 Restock();
             }
@@ -900,7 +900,7 @@ namespace Server.Mobiles
 
                 var item = playerItems[i];
 
-                if (item.LastMoved + InventoryDecayTime <= DateTime.UtcNow)
+                if (item.LastMoved + InventoryDecayTime <= Core.Now)
                 {
                     item.Delete();
                 }
@@ -1064,7 +1064,7 @@ namespace Server.Mobiles
 
             var pm = from as PlayerMobile;
 
-            if (Core.ML && pm?.NextBODTurnInTime > DateTime.UtcNow)
+            if (Core.ML && pm?.NextBODTurnInTime > Core.Now)
             {
                 SayTo(from, 1079976); // You'll have to wait a few seconds while I inspect the last order.
                 return false;
@@ -1118,7 +1118,7 @@ namespace Server.Mobiles
 
             if (Core.ML && pm != null)
             {
-                pm.NextBODTurnInTime = DateTime.UtcNow + TimeSpan.FromSeconds(10.0);
+                pm.NextBODTurnInTime = Core.Now + TimeSpan.FromSeconds(10.0);
             }
 
             dropped.Delete();

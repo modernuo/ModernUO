@@ -74,7 +74,7 @@ namespace Server.Network
             if (error != ZlibError.Okay)
             {
                 Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine("Core: Gump compression failed {0}", error);
+                Core.WriteConsoleLine($"Gump compression failed {error}");
                 Utility.PopColor();
 
                 writer.Write(4);

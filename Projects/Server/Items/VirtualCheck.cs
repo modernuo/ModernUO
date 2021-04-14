@@ -20,8 +20,12 @@ namespace Server.Items
 {
     public sealed class VirtualCheck : Item
     {
-        // TODO: Move to configuration
-        public static bool UseEditGump = false;
+        public static bool UseEditGump { get; private set; }
+
+        public static void Configure()
+        {
+            UseEditGump = ServerConfiguration.GetSetting("virtualChecks.useEditGump", true);
+        }
 
         private int m_Gold;
 

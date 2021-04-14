@@ -23,7 +23,7 @@ using Server.Json;
 
 namespace Server
 {
-    internal static class MapLoader
+    public static class MapLoader
     {
         /* Here we configure all maps. Some notes:
          *
@@ -32,7 +32,7 @@ namespace Server
          * 3) Map 255 is reserved for core use.
          * 4) Changing or removing any predefined maps may cause server instability.
          *
-         * Map definitions are modified in Data/map-definitions.json:
+         * Map definitions are modified in Data/Map Definitions/<expansion>.json:
          *  - <index> : An unreserved unique index for this map
          *  - <id> : An identification number used in client communications. For any visible maps, this value must be from 0-5
          *  - <fileIndex> : A file identification number. For any visible maps, this value must be from 0-5
@@ -41,8 +41,12 @@ namespace Server
          *  - <name> : Reference name for the map, used in props gump, get/set commands, region loading, etc
          *  - <rules> : Rules and restrictions associated with the map. See documentation for details
          */
-        internal static void LoadMaps()
+        [CallPriority(2)]
+        public static void Configure()
         {
+            // Set to true to support < 6.0.0 clients where map0.mul is both Felucca & Trammel
+            var pre6000Trammel = ServerConfiguration.GetOrUpdateSetting("maps.enablePre6000Trammel", false);
+
             var failures = new List<string>();
             var count = 0;
 
@@ -59,6 +63,12 @@ namespace Server
 
             foreach (var def in maps)
             {
+                if (def.Id == 1 && pre6000Trammel)
+                {
+                    // Use Old Haven by changing file index to Felucca
+                    def.FileIndex = 0;
+                }
+
                 try
                 {
                     RegisterMap(def);

@@ -71,7 +71,7 @@ namespace Server.Factions
             set => m_State.LastTaxChange = value;
         }
 
-        public bool TaxChangeReady => m_State.LastTaxChange + TaxChangePeriod < DateTime.UtcNow;
+        public bool TaxChangeReady => m_State.LastTaxChange + TaxChangePeriod < Core.Now;
 
         public int FinanceUpkeep
         {
@@ -236,7 +236,7 @@ namespace Server.Factions
 
         public void CheckIncome()
         {
-            if (LastIncome + IncomePeriod > DateTime.UtcNow || Owner == null)
+            if (LastIncome + IncomePeriod > Core.Now || Owner == null)
             {
                 return;
             }
@@ -246,7 +246,7 @@ namespace Server.Factions
 
         public void ProcessIncome()
         {
-            LastIncome = DateTime.UtcNow;
+            LastIncome = Core.Now;
 
             var flow = NetCashFlow;
 
@@ -454,7 +454,7 @@ namespace Server.Factions
 
             if (m_State.Owner == null) // going from unowned to owned
             {
-                LastIncome = DateTime.UtcNow;
+                LastIncome = Core.Now;
                 f.Silver += SilverCaptureBonus;
             }
             else if (f == null) // going from owned to unowned

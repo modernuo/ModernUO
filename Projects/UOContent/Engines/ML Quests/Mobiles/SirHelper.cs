@@ -90,7 +90,7 @@ namespace Server.Engines.MLQuests.Mobiles
         {
             base.OnThink();
 
-            if (m_NextShout > DateTime.UtcNow)
+            if (m_NextShout > Core.Now)
             {
                 return;
             }
@@ -117,7 +117,7 @@ namespace Server.Engines.MLQuests.Mobiles
                 }
             }
 
-            m_NextShout = DateTime.UtcNow + m_ShoutDelay;
+            m_NextShout = Core.Now + m_ShoutDelay;
         }
 
         private void EndLock(Mobile m)

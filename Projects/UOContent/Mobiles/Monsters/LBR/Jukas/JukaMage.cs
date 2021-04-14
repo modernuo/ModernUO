@@ -71,7 +71,7 @@ namespace Server.Mobiles
                 PackItem(Seed.RandomPeculiarSeed(4));
             }
 
-            m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
+            m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
         }
 
         public JukaMage(Serial serial) : base(serial)
@@ -101,7 +101,7 @@ namespace Server.Mobiles
 
         public override void OnThink()
         {
-            if (DateTime.UtcNow >= m_NextAbilityTime)
+            if (Core.Now >= m_NextAbilityTime)
             {
                 JukaLord toBuff = null;
 
@@ -119,7 +119,7 @@ namespace Server.Mobiles
                 {
                     if (CanBeBeneficial(toBuff) && toBuff.BeginAction<JukaMage>())
                     {
-                        m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(30, 60));
+                        m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(30, 60));
 
                         toBuff.Say(true, "Give me the power to destroy my enemies!");
                         Say(true, "Fight well my lord!");
@@ -169,7 +169,7 @@ namespace Server.Mobiles
                 }
                 else
                 {
-                    m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
+                    m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
                 }
             }
 

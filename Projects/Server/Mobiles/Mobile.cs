@@ -34,7 +34,7 @@ namespace Server
         private readonly DateTime m_Expire;
 
         public TimedSkillMod(SkillName skill, bool relative, double value, TimeSpan delay)
-            : this(skill, relative, value, DateTime.UtcNow + delay)
+            : this(skill, relative, value, Core.Now + delay)
         {
         }
 
@@ -42,7 +42,7 @@ namespace Server
             : base(skill, relative, value) =>
             m_Expire = expire;
 
-        public override bool CheckCondition() => DateTime.UtcNow < m_Expire;
+        public override bool CheckCondition() => Core.Now < m_Expire;
     }
 
     public class EquippedSkillMod : SkillMod
@@ -240,7 +240,7 @@ namespace Server
             Name = name;
             Offset = offset;
             m_Duration = duration;
-            m_Added = DateTime.UtcNow;
+            m_Added = Core.Now;
         }
 
         public StatType Type { get; }
@@ -249,15 +249,7 @@ namespace Server
 
         public int Offset { get; }
 
-        public bool HasElapsed()
-        {
-            if (m_Duration == TimeSpan.Zero)
-            {
-                return false;
-            }
-
-            return DateTime.UtcNow - m_Added >= m_Duration;
-        }
+        public bool HasElapsed() => m_Duration != TimeSpan.Zero && Core.Now - m_Added >= m_Duration;
     }
 
     public class DamageEntry
@@ -270,7 +262,7 @@ namespace Server
 
         public DateTime LastDamage { get; set; }
 
-        public bool HasExpired => DateTime.UtcNow > LastDamage + ExpireDelay;
+        public bool HasExpired => Core.Now > LastDamage + ExpireDelay;
 
         public List<DamageEntry> Responsible { get; set; }
 
@@ -1455,93 +1447,96 @@ namespace Server
             }
             set
             {
-                if (m_NetState != value)
+                if (m_NetState == value)
                 {
-                    m_Map?.OnClientChange(m_NetState, value, this);
+                    return;
+                }
 
-                    m_Target?.Cancel(this, TargetCancelType.Disconnected);
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("Attempting to set Mobile.NetState value from an invalid thread!");
+                Console.WriteLine(new StackTrace());
+                Utility.PopColor();
+                return;
+            }
+#endif
 
-                    m_Spell?.OnConnectionChanged();
+                m_Map?.OnClientChange(m_NetState, value, this);
+                m_Target?.Cancel(this, TargetCancelType.Disconnected);
+                m_Spell?.OnConnectionChanged();
+                m_NetState?.CancelAllTrades();
 
-                    // if (m_Spell != null)
-                    // m_Spell.FinishSequence();
+                var box = FindBankNoCreate();
 
-                    m_NetState?.CancelAllTrades();
+                if (box?.Opened == true)
+                {
+                    box.Close();
+                }
 
-                    var box = FindBankNoCreate();
+                m_NetState = value;
 
-                    if (box?.Opened == true)
+                if (m_NetState == null)
+                {
+                    OnDisconnected();
+                    EventSink.InvokeDisconnected(this);
+
+                    // Disconnected, start the logout timer
+                    if (m_LogoutTimer == null)
                     {
-                        box.Close();
-                    }
-
-                    // REMOVED:
-                    // m_Actions.Clear();
-
-                    m_NetState = value;
-
-                    if (m_NetState == null)
-                    {
-                        OnDisconnected();
-                        EventSink.InvokeDisconnected(this);
-
-                        // Disconnected, start the logout timer
-                        if (m_LogoutTimer == null)
-                        {
-                            m_LogoutTimer = Timer.DelayCall(GetLogoutDelay(), Logout);
-                        }
-                        else
-                        {
-                            m_LogoutTimer.Stop();
-                            m_LogoutTimer.Delay = GetLogoutDelay();
-                            m_LogoutTimer.Start();
-                        }
+                        m_LogoutTimer = Timer.DelayCall(GetLogoutDelay(), Logout);
                     }
                     else
                     {
-                        OnConnected();
-                        EventSink.InvokeConnected(this);
-
-                        // Connected, stop the logout timer and if needed, move to the world
-
-                        m_LogoutTimer?.Stop();
-
-                        m_LogoutTimer = null;
-
-                        if (m_Map == Map.Internal && LogoutMap != null)
-                        {
-                            Map = LogoutMap;
-                            Location = LogoutLocation;
-                        }
+                        m_LogoutTimer.Stop();
+                        m_LogoutTimer.Delay = GetLogoutDelay();
+                        m_LogoutTimer.Start();
                     }
-
-                    for (var i = Items.Count - 1; i >= 0; --i)
-                    {
-                        if (i >= Items.Count)
-                        {
-                            continue;
-                        }
-
-                        var item = Items[i];
-
-                        if (item is SecureTradeContainer)
-                        {
-                            for (var j = item.Items.Count - 1; j >= 0; --j)
-                            {
-                                if (j < item.Items.Count)
-                                {
-                                    item.Items[j].OnSecureTrade(this, this, this, false);
-                                    AddToBackpack(item.Items[j]);
-                                }
-                            }
-
-                            Timer.DelayCall(item.Delete);
-                        }
-                    }
-
-                    DropHolding();
-                    OnNetStateChanged();
                 }
+                else
+                {
+                    OnConnected();
+                    EventSink.InvokeConnected(this);
+
+                    // Connected, stop the logout timer and if needed, move to the world
+                    m_LogoutTimer?.Stop();
+
+                    m_LogoutTimer = null;
+
+                    if (m_Map == Map.Internal && LogoutMap != null)
+                    {
+                        Map = LogoutMap;
+                        Location = LogoutLocation;
+                    }
+                }
+
+                for (var i = Items.Count - 1; i >= 0; --i)
+                {
+                    if (i >= Items.Count)
+                    {
+                        continue;
+                    }
+
+                    var item = Items[i];
+
+                    if (item is SecureTradeContainer)
+                    {
+                        for (var j = item.Items.Count - 1; j >= 0; --j)
+                        {
+                            if (j < item.Items.Count)
+                            {
+                                item.Items[j].OnSecureTrade(this, this, this, false);
+                                AddToBackpack(item.Items[j]);
+                            }
+                        }
+
+                        Timer.DelayCall(item.Delete);
+                    }
+                }
+
+                DropHolding();
+                OnNetStateChanged();
             }
         }
 
@@ -3747,7 +3742,7 @@ namespace Server
                 return;
             }
 
-            var now = DateTime.UtcNow;
+            var now = Core.Now;
             var next = m_NextWarmodeChange;
 
             if (now > next || m_WarmodeChanges == 0)
@@ -5996,7 +5991,7 @@ namespace Server
             var de = FindDamageEntryFor(from) ?? new DamageEntry(from);
 
             de.DamageGiven += amount;
-            de.LastDamage = DateTime.UtcNow;
+            de.LastDamage = Core.Now;
 
             DamageEntries.Remove(de);
             DamageEntries.Add(de);
@@ -6028,7 +6023,7 @@ namespace Server
                 }
 
                 resp.DamageGiven += amount;
-                resp.LastDamage = DateTime.UtcNow;
+                resp.LastDamage = Core.Now;
             }
 
             return de;
@@ -7925,11 +7920,22 @@ namespace Server
             DamageEntries = new List<DamageEntry>();
 
             NextSkillTime = Core.TickCount;
-            CreationTime = DateTime.UtcNow;
+            CreationTime = Core.Now;
         }
 
         public virtual void Delta(MobileDelta flag)
         {
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("Attempting to queue a delta change from an invalid thread!");
+                Console.WriteLine(new StackTrace());
+                Utility.PopColor();
+                return;
+            }
+#endif
+
             if (m_Map == null || m_Map == Map.Internal || Deleted)
             {
                 return;
@@ -9094,8 +9100,8 @@ namespace Server
             var rx = (dx - dy) * 44;
             var ry = (dx + dy) * 44;
 
-            var ax = Math.Abs(rx);
-            var ay = Math.Abs(ry);
+            var ax = rx.Abs();
+            var ay = ry.Abs();
 
             Direction ret;
 

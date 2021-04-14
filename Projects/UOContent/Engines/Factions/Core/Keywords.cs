@@ -121,7 +121,7 @@ namespace Server.Factions
                                     break;
                                 }
 
-                                var remaining = pl.Leaving + Faction.LeavePeriod - DateTime.UtcNow;
+                                var remaining = pl.Leaving + Faction.LeavePeriod - Core.Now;
 
                                 if (remaining.TotalDays >= 1)
                                 {

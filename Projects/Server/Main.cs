@@ -37,8 +37,8 @@ namespace Server
         private static string _baseDirectory;
 
         private static bool _profiling;
-        private static DateTime _profileStart;
-        private static TimeSpan _profileTime;
+        private static long _profileStart;
+        private static long _profileTime;
 #nullable enable
         private static bool? _isRunningFromXUnit;
 #nullable restore
@@ -95,19 +95,17 @@ namespace Server
 
                 _profiling = value;
 
-                if (_profileStart > DateTime.MinValue)
+                if (_profileStart > 0)
                 {
-                    _profileTime += DateTime.UtcNow - _profileStart;
+                    _profileTime += Stopwatch.GetTimestamp() - _profileStart;
                 }
 
-                _profileStart = _profiling ? DateTime.UtcNow : DateTime.MinValue;
+                _profileStart = _profiling ? Stopwatch.GetTimestamp() : 0;
             }
         }
 
         public static TimeSpan ProfileTime =>
-            _profileStart > DateTime.MinValue
-                ? _profileTime + (DateTime.UtcNow - _profileStart)
-                : _profileTime;
+            TimeSpan.FromTicks(_profileStart > 0 ? _profileTime + (Stopwatch.GetTimestamp() - _profileStart) : _profileTime);
 
         public static Assembly Assembly { get; set; }
 
@@ -118,7 +116,11 @@ namespace Server
 
         public static Thread Thread { get; private set; }
 
-        [ThreadStatic] private static long _tickCount;
+        [ThreadStatic]
+        private static long _tickCount;
+
+        [ThreadStatic]
+        private static DateTime _now;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long GetTicks() => 1000L * Stopwatch.GetTimestamp() / Stopwatch.Frequency;
@@ -127,6 +129,12 @@ namespace Server
         {
             get => _tickCount == 0 ? GetTicks() : _tickCount;
             set => _tickCount = value;
+        }
+
+        public static DateTime Now
+        {
+            get => _now == DateTime.MinValue ? DateTime.UtcNow : _now;
+            set => _now = value;
         }
 
         public static bool MultiProcessor { get; private set; }
@@ -289,7 +297,7 @@ namespace Server
                 _ => "CTRL+C"
             };
 
-            Console.WriteLine("Core: Detected {0} pressed.", keypress);
+            WriteConsoleLine($"Detected {keypress} pressed.");
             e.Cancel = true;
             Kill();
         }
@@ -402,7 +410,7 @@ namespace Server
             ".TrimMultiline());
             Utility.PopColor();
 
-            Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
+            WriteConsoleLine($"Running on {RuntimeInformation.FrameworkDescription}");
 
             var ttObj = new Timer.TimerThread();
             _timerThread = new Thread(ttObj.TimerMain)
@@ -414,7 +422,7 @@ namespace Server
 
             if (s.Length > 0)
             {
-                Console.WriteLine("Core: Running with arguments: {0}", s);
+                WriteConsoleLine($"Running with arguments: {s}");
             }
 
             ProcessorCount = Environment.ProcessorCount;
@@ -426,20 +434,17 @@ namespace Server
 
             if (MultiProcessor)
             {
-                Console.WriteLine("Core: Optimizing for {0} processor{1}", ProcessorCount, ProcessorCount == 1 ? "" : "s");
+                WriteConsoleLine($"Optimizing for {ProcessorCount} processor{(ProcessorCount == 1 ? "" : "s")}");
             }
 
             Console.CancelKeyPress += Console_CancelKeyPressed;
 
             if (GCSettings.IsServerGC)
             {
-                Console.WriteLine("Core: Server garbage collection mode enabled");
+                WriteConsoleLine(": Server garbage collection mode enabled");
             }
 
-            Console.WriteLine(
-                "Core: High resolution timing ({0})",
-                Stopwatch.IsHighResolution ? "Supported" : "Unsupported"
-            );
+            WriteConsoleLine($"High resolution timing ({(Stopwatch.IsHighResolution ? "Supported" : "Unsupported")})");
 
             ServerConfiguration.Load();
 
@@ -461,7 +466,6 @@ namespace Server
 
             VerifySerialization();
 
-            MapLoader.LoadMaps();
             AssemblyHandler.Invoke("Configure");
 
             TileMatrixLoader.LoadTileMatrix();
@@ -488,6 +492,7 @@ namespace Server
                 while (!Closing)
                 {
                     _tickCount = TickCount;
+                    _now = DateTime.UtcNow;
 
                     var events = Mobile.ProcessDeltaQueue();
                     events += Item.ProcessDeltaQueue();
@@ -502,6 +507,7 @@ namespace Server
                     events += _eventLoopContext.ExecuteTasks();
 
                     _tickCount = 0;
+                    _now = DateTime.MinValue;
 
                     if (events > 0)
                     {
@@ -598,6 +604,18 @@ namespace Server
             {
                 Parallel.ForEach(assembly.GetTypes(), VerifyType);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void WriteConsole(string message)
+        {
+            Console.Write("Core: {0}", message);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void WriteConsoleLine(string message)
+        {
+            Console.WriteLine("Core: {0}", message);
         }
     }
 }

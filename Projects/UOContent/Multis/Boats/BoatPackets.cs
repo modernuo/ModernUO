@@ -48,6 +48,8 @@ namespace Server.Multis.Boats
 
             foreach (var ent in ents)
             {
+                // If we assume that the entities list contains everything a player can see,
+                // then this can be removed and the packet can be written once and copied to improve performance
                 if (!beholder.CanSee(ent))
                 {
                     continue;
@@ -74,9 +76,6 @@ namespace Server.Multis.Boats
                 return;
             }
 
-            bool isSA = ns.StygianAbyss;
-            bool isHS = ns.HighSeas;
-
             var minLength = PacketContainerBuilder.MinPacketLength
                             + OutgoingEntityPackets.MaxWorldEntityPacketLength
                             * 5; // Minimum of boat, hold, planks, and the player
@@ -93,7 +92,7 @@ namespace Server.Multis.Boats
                 }
 
                 buffer.InitializePacket();
-                var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, isSA, isHS);
+                var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, true);
                 builder.Advance(bytesWritten);
             }
 

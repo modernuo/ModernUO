@@ -342,7 +342,7 @@ namespace Server.Misc
                     actual = Notoriety.Murderer;
                 }
 
-                if (DateTime.UtcNow >= target.TimeOfDeath + Corpse.MonsterLootRightSacrifice)
+                if (Core.Now >= target.TimeOfDeath + Corpse.MonsterLootRightSacrifice)
                 {
                     return actual;
                 }

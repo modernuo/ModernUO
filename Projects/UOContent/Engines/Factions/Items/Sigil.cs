@@ -101,25 +101,10 @@ namespace Server.Factions
         public bool IsCorrupting => m_Corrupting != null && m_Corrupting != m_Corrupted;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public TimeSpan TimeUntilCorruption
-        {
-            get
-            {
-                if (!IsBeingCorrupted)
-                {
-                    return TimeSpan.Zero;
-                }
-
-                var ts = CorruptionStart + CorruptionPeriod - DateTime.UtcNow;
-
-                if (ts < TimeSpan.Zero)
-                {
-                    ts = TimeSpan.Zero;
-                }
-
-                return ts;
-            }
-        }
+        public TimeSpan TimeUntilCorruption =>
+            !IsBeingCorrupted ?
+                TimeSpan.Zero :
+                Utility.Max(CorruptionStart + CorruptionPeriod - Core.Now, TimeSpan.Zero);
 
         public static List<Sigil> Sigils { get; } = new();
 
@@ -263,7 +248,7 @@ namespace Server.Factions
         private void BeginCorrupting(Faction faction)
         {
             m_Corrupting = faction;
-            CorruptionStart = DateTime.UtcNow;
+            CorruptionStart = Core.Now;
         }
 
         private void ClearCorrupting()
@@ -340,7 +325,7 @@ namespace Server.Factions
                                 BeginCorrupting(newController);
                             }
                         }
-                        else if (GraceStart > DateTime.MinValue && GraceStart + CorruptionGrace < DateTime.UtcNow)
+                        else if (GraceStart > DateTime.MinValue && GraceStart + CorruptionGrace < Core.Now)
                         {
                             if (m_Corrupted != newController)
                             {
@@ -359,7 +344,7 @@ namespace Server.Factions
                         }
                         else if (GraceStart == DateTime.MinValue)
                         {
-                            GraceStart = DateTime.UtcNow;
+                            GraceStart = Core.Now;
                         }
 
                         PurificationStart = DateTime.MinValue;
@@ -381,7 +366,7 @@ namespace Server.Factions
                         tm.Sigil = this;
 
                         m_Corrupting = null;
-                        PurificationStart = DateTime.UtcNow;
+                        PurificationStart = Core.Now;
                         CorruptionStart = DateTime.MinValue;
 
                         m_Town.Capture(m_Corrupted);

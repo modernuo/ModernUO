@@ -30,7 +30,7 @@ namespace Server.Engines.Quests.Naturalist
                 {
                     if (m_StudyState != StudyState.Inactive)
                     {
-                        var time = DateTime.UtcNow - m_StudyBegin;
+                        var time = Core.Now - m_StudyBegin;
 
                         if (time > TimeSpan.FromSeconds(30.0))
                         {
@@ -84,7 +84,7 @@ namespace Server.Engines.Quests.Naturalist
                 if (nest != null)
                 {
                     m_CurrentNest = nest;
-                    m_StudyBegin = DateTime.UtcNow;
+                    m_StudyBegin = Core.Now;
 
                     if (m_StudiedNests.Contains(nest))
                     {

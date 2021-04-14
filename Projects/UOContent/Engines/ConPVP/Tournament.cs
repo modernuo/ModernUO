@@ -681,7 +681,7 @@ namespace Server.Engines.ConPVP
         {
             if (CurrentStage == TournamentStage.Signup)
             {
-                var until = SignupStart + SignupPeriod - DateTime.UtcNow;
+                var until = SignupStart + SignupPeriod - Core.Now;
 
                 if (until <= TimeSpan.Zero)
                 {
@@ -741,7 +741,7 @@ namespace Server.Engines.ConPVP
                     else
                     {
                         /*Alert( "Is this all?", "Pitiful. Signup extended." );
-                        m_SignupStart = DateTime.UtcNow;*/
+                        m_SignupStart = Core.Now;*/
 
                         Alert("Is this all?", "Pitiful. Tournament cancelled.");
                         CurrentStage = TournamentStage.Inactive;

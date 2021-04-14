@@ -238,7 +238,7 @@ namespace Server.Items
                     "You cannot summon your pet to this location."
                 );
             }
-            else if (Core.ML && from is PlayerMobile mobile && DateTime.UtcNow < mobile.LastPetBallTime.AddSeconds(15.0))
+            else if (Core.ML && from is PlayerMobile mobile && Core.Now < mobile.LastPetBallTime.AddSeconds(15.0))
             {
                 MessageHelper.SendLocalizedMessageTo(
                     this,
@@ -304,7 +304,7 @@ namespace Server.Items
 
             if (from is PlayerMobile playerMobile)
             {
-                playerMobile.LastPetBallTime = DateTime.UtcNow;
+                playerMobile.LastPetBallTime = Core.Now;
             }
         }
 

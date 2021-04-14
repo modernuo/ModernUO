@@ -23,7 +23,7 @@ namespace Server.Engines.Events
 
         public static void Initialize()
         {
-            var now = DateTime.UtcNow;
+            var now = Core.Now;
 
             if (now >= HolidaySettings.StartHalloween && now <= HolidaySettings.FinishHalloween)
             {

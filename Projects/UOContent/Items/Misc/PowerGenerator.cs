@@ -197,7 +197,7 @@ namespace Server.Items
                 }
 
                 if (m_User.Deleted || m_User.Map != Map || !m_User.InRange(this, 3)
-                    || m_User.NetState == null || DateTime.UtcNow - m_LastUse >= m_UseTimeout)
+                    || m_User.NetState == null || Core.Now - m_LastUse >= m_UseTimeout)
                 {
                     m_User.CloseGump<GameGump>();
                 }
@@ -209,7 +209,7 @@ namespace Server.Items
             }
 
             m_User = from;
-            m_LastUse = DateTime.UtcNow;
+            m_LastUse = Core.Now;
 
             from.SendGump(new GameGump(this, from, 0, false));
         }
@@ -473,7 +473,7 @@ namespace Server.Items
                     if (40.0 + Utility.RandomDouble() * 80.0 < lockpicking)
                     {
                         m_From.SendGump(new GameGump(m_Panel, m_From, m_Step, true));
-                        m_Panel.m_LastUse = DateTime.UtcNow;
+                        m_Panel.m_LastUse = Core.Now;
                     }
                     else
                     {
@@ -520,7 +520,7 @@ namespace Server.Items
                         {
                             m_From.PlaySound(0x1F4);
                             m_From.SendGump(new GameGump(m_Panel, m_From, m_Step + 1, false));
-                            m_Panel.m_LastUse = DateTime.UtcNow;
+                            m_Panel.m_LastUse = Core.Now;
                         }
                     }
                     else

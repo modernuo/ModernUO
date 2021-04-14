@@ -25,12 +25,13 @@ namespace Server.Network
         {
             if (buffer[0] != 0)
             {
+                // This assumes the packet was sliced properly
                 return buffer.Length;
             }
 
             var itemID = item is BaseMulti ? item.ItemID | 0x4000 : item.ItemID & 0x3FFF;
-            var hasAmount = item.Amount != 0;
             var amount = item.Amount;
+            var hasAmount = amount != 0;
             var serial = hasAmount ? item.Serial | 0x80000000 : item.Serial & 0x7FFFFFFF;
             var loc = item.Location;
             var hue = item.Hue;
@@ -52,7 +53,7 @@ namespace Server.Network
             writer.Write(serial);
             writer.Write((ushort)itemID);
 
-            if (amount != 0)
+            if (hasAmount)
             {
                 writer.Write((ushort)amount);
             }
@@ -60,24 +61,24 @@ namespace Server.Network
             writer.Write((ushort)x);
             writer.Write((ushort)y);
 
-            if (direction != 0)
+            if (hasDirection)
             {
                 writer.Write((byte)direction);
             }
 
             writer.Write((sbyte)loc.Z);
 
-            if (hue != 0)
+            if (hasHue)
             {
                 writer.Write((ushort)hue);
             }
 
-            if (flags != 0)
+            if (hasFlags)
             {
                 writer.Write((byte)flags);
             }
 
-            return writer.Position;
+            return writer.BytesWritten;
         }
 
         public static void SendWorldItem(this NetState ns, Item item)
@@ -87,10 +88,10 @@ namespace Server.Network
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength];
+            Span<byte> buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
 
             var length = ns.StygianAbyss ?
-                OutgoingEntityPackets.CreateWorldEntity(buffer, item, ns.StygianAbyss, ns.HighSeas) :
+                OutgoingEntityPackets.CreateWorldEntity(buffer, item, ns.HighSeas) :
                 CreateWorldItem(buffer, item);
 
             ns.Send(buffer.SliceToLength(length));

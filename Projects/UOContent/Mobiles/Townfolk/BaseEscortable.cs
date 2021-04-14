@@ -284,10 +284,10 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (m is PlayerMobile mobile && mobile.LastEscortTime + EscortDelay >= DateTime.UtcNow)
+            if (m is PlayerMobile mobile && mobile.LastEscortTime + EscortDelay >= Core.Now)
             {
                 var minutes =
-                    (int)Math.Ceiling((mobile.LastEscortTime + EscortDelay - DateTime.UtcNow).TotalMinutes);
+                    (int)Math.Ceiling((mobile.LastEscortTime + EscortDelay - Core.Now).TotalMinutes);
 
                 Say("You must rest {0} minute{1} before we set out on this journey.", minutes, minutes == 1 ? "" : "s");
                 return false;
@@ -295,11 +295,11 @@ namespace Server.Mobiles
 
             if (SetControlMaster(m))
             {
-                m_LastSeenEscorter = DateTime.UtcNow;
+                m_LastSeenEscorter = Core.Now;
 
                 if (m is PlayerMobile playerMobile)
                 {
-                    playerMobile.LastEscortTime = DateTime.UtcNow;
+                    playerMobile.LastEscortTime = Core.Now;
                 }
 
                 Say(
@@ -420,7 +420,7 @@ namespace Server.Mobiles
             {
                 StopFollow();
 
-                var lastSeenDelay = DateTime.UtcNow - m_LastSeenEscorter;
+                var lastSeenDelay = Core.Now - m_LastSeenEscorter;
 
                 if (lastSeenDelay >= AbandonDelay)
                 {
@@ -443,7 +443,7 @@ namespace Server.Mobiles
                 StartFollow(master);
             }
 
-            m_LastSeenEscorter = DateTime.UtcNow;
+            m_LastSeenEscorter = Core.Now;
             return master;
         }
 
@@ -451,9 +451,9 @@ namespace Server.Mobiles
         {
             m_DeleteTimer?.Stop();
 
-            m_DeleteTime = DateTime.UtcNow + DeleteTime;
+            m_DeleteTime = Core.Now + DeleteTime;
 
-            m_DeleteTimer = new DeleteTimer(this, m_DeleteTime - DateTime.UtcNow);
+            m_DeleteTimer = new DeleteTimer(this, m_DeleteTime - Core.Now);
             m_DeleteTimer.Start();
         }
 
@@ -509,7 +509,7 @@ namespace Server.Mobiles
 
                 if (escorter is PlayerMobile pm)
                 {
-                    if (pm.CompassionGains > 0 && DateTime.UtcNow > pm.NextCompassionDay)
+                    if (pm.CompassionGains > 0 && Core.Now > pm.NextCompassionDay)
                     {
                         pm.NextCompassionDay = DateTime.MinValue;
                         pm.CompassionGains = 0;
@@ -533,7 +533,7 @@ namespace Server.Mobiles
                         }
 
                         pm.NextCompassionDay =
-                            DateTime.UtcNow + TimeSpan.FromDays(1.0); // in one day CompassionGains gets reset to 0
+                            Core.Now + TimeSpan.FromDays(1.0); // in one day CompassionGains gets reset to 0
                         ++pm.CompassionGains;
 
                         if (pm.CompassionGains >= 5)
@@ -604,7 +604,7 @@ namespace Server.Mobiles
             if (reader.ReadBool())
             {
                 m_DeleteTime = reader.ReadDeltaTime();
-                m_DeleteTimer = new DeleteTimer(this, m_DeleteTime - DateTime.UtcNow);
+                m_DeleteTimer = new DeleteTimer(this, m_DeleteTime - Core.Now);
                 m_DeleteTimer.Start();
             }
 

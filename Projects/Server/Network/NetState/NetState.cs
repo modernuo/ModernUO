@@ -17,6 +17,7 @@ using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -148,14 +149,14 @@ namespace Server.Network
                 _toString = "(error)";
             }
 
-            ConnectedOn = DateTime.UtcNow;
+            ConnectedOn = Core.Now;
 
             CreatedCallback?.Invoke(this);
         }
 
         public DateTime ConnectedOn { get; }
 
-        public TimeSpan ConnectedFor => DateTime.UtcNow - ConnectedOn;
+        public TimeSpan ConnectedFor => Core.Now - ConnectedOn;
 
         public IPAddress Address { get; }
 
@@ -453,6 +454,16 @@ namespace Server.Network
 
         public bool GetSendBuffer(out CircularBuffer<byte> cBuffer)
         {
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("Attempting to get pipe buffer from wrong thread!");
+                Console.WriteLine(new StackTrace());
+                Utility.PopColor();
+                return;
+            }
+#endif
             var result = SendPipe.Writer.TryGetMemory();
             cBuffer = new CircularBuffer<byte>(result.Buffer);
 
@@ -1034,7 +1045,7 @@ namespace Server.Network
             try
             {
                 using var op = new StreamWriter("network-errors.log", true);
-                op.WriteLine("# {0}", DateTime.UtcNow);
+                op.WriteLine("# {0}", Core.Now);
 
                 op.WriteLine(ex);
 
@@ -1083,7 +1094,7 @@ namespace Server.Network
             try
             {
                 using StreamWriter op = new StreamWriter("network-disconnects.log", true);
-                op.WriteLine($"# {DateTime.UtcNow}");
+                op.WriteLine($"# {Core.Now}");
 
                 op.WriteLine($"NetState: {ip}");
                 op.WriteLine(reason);
@@ -1101,17 +1112,29 @@ namespace Server.Network
         {
             TraceDisconnect(_disconnectReason, _toString);
 
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("Attempting to dispose a netstate from an invalid thread!");
+                Console.WriteLine(new StackTrace());
+                Utility.PopColor();
+                return;
+            }
+#endif
+
             RecvPipe.Writer.Close();
             SendPipe.Writer.Close();
 
             var m = Mobile;
-            var a = Account;
+            Mobile = null;
 
-            if (m != null)
+            if (m?.NetState == this)
             {
                 m.NetState = null;
-                Mobile = null;
             }
+
+            var a = Account;
 
             Gumps.Clear();
             Menus.Clear();

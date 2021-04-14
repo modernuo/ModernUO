@@ -11,7 +11,9 @@ namespace Server.Network
                 info.TitleCliloc,
                 info.SecondaryCliloc,
                 info.Args,
-                info.TimeStart != DateTime.MinValue ? info.TimeStart + info.TimeLength - DateTime.UtcNow : TimeSpan.Zero
+                info.TimeStart != 0 ?
+                    TimeSpan.FromMilliseconds(info.TimeStart + (long)info.TimeLength.TotalMilliseconds - Core.TickCount) :
+                    TimeSpan.Zero
             )
         {
         }
@@ -37,12 +39,7 @@ namespace Server.Network
 
             Stream.Fill(4);
 
-            if (length < TimeSpan.Zero)
-            {
-                length = TimeSpan.Zero;
-            }
-
-            Stream.Write((short)length.TotalSeconds); // Time in seconds
+            Stream.Write((short)Math.Max(length.TotalSeconds, 0)); // Time in seconds
 
             Stream.Fill(3);
             Stream.Write(titleCliloc);

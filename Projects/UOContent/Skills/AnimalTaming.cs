@@ -268,7 +268,7 @@ namespace Server.SkillHandlers
                     }
                     else
                     {
-                        creature.BardEndTime = DateTime.UtcNow;
+                        creature.BardEndTime = Core.Now;
                     }
 
                     creature.BardPacified = false;
@@ -324,7 +324,7 @@ namespace Server.SkillHandlers
                     m_Creature = creature;
                     m_MaxCount = count;
                     m_Paralyzed = creature.Paralyzed;
-                    m_StartTime = DateTime.UtcNow;
+                    m_StartTime = Core.Now;
                     Priority = TimerPriority.TwoFiftyMS;
                 }
 

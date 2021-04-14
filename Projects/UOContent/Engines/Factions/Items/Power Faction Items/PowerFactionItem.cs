@@ -72,7 +72,7 @@ namespace Server
                                     try
                                     {
                                         using var op = new StreamWriter("faction-power-items.log", true);
-                                        op.WriteLine("{0}\t{1}\t{2}\t{3}", DateTime.UtcNow, killer, victim, obj);
+                                        op.WriteLine("{0}\t{1}\t{2}\t{3}", Core.Now, killer, victim, obj);
                                     }
                                     catch
                                     {

@@ -23,7 +23,7 @@ namespace Server.Items
         {
             Owner = owner;
             Level = level;
-            DeleteTime = DateTime.UtcNow + TimeSpan.FromHours(3.0);
+            DeleteTime = Core.Now + TimeSpan.FromHours(3.0);
 
             Temporary = temporary;
             Guardians = new List<Mobile>();
@@ -585,7 +585,7 @@ namespace Server.Items
         {
             private readonly Item m_Item;
 
-            public DeleteTimer(Item item, DateTime time) : base(time - DateTime.UtcNow)
+            public DeleteTimer(Item item, DateTime time) : base(time - Core.Now)
             {
                 m_Item = item;
                 Priority = TimerPriority.OneMinute;

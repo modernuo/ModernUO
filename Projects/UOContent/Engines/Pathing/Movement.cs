@@ -464,7 +464,7 @@ namespace Server.Movement
 
                 if (moveIsOk)
                 {
-                    var cmp = Math.Abs(ourZ - m.Z) - Math.Abs(newZ - m.Z);
+                    var cmp = (ourZ - m.Z).Abs() - (newZ - m.Z).Abs();
 
                     if (cmp > 0 || cmp == 0 && ourZ > newZ)
                     {
@@ -532,7 +532,7 @@ namespace Server.Movement
 
                 if (moveIsOk)
                 {
-                    var cmp = Math.Abs(ourZ - m.Z) - Math.Abs(newZ - m.Z);
+                    var cmp = (ourZ - m.Z).Abs() - (newZ - m.Z).Abs();
 
                     if (cmp > 0 || cmp == 0 && ourZ > newZ)
                     {
@@ -591,7 +591,7 @@ namespace Server.Movement
 
                 if (moveIsOk)
                 {
-                    var cmp = Math.Abs(ourZ - m.Z) - Math.Abs(newZ - m.Z);
+                    var cmp = (ourZ - m.Z).Abs() - (newZ - m.Z).Abs();
 
                     if (cmp > 0 || cmp == 0 && ourZ > newZ)
                     {

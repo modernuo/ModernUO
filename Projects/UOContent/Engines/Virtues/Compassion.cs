@@ -27,11 +27,11 @@ namespace Server
 
             try
             {
-                if (pm.LastCompassionLoss + LossDelay < DateTime.UtcNow)
+                if (pm.LastCompassionLoss + LossDelay < Core.Now)
                 {
                     VirtueHelper.Atrophy(from, VirtueName.Compassion, LossAmount);
                     // OSI has no cliloc message for losing compassion.  Weird.
-                    pm.LastCompassionLoss = DateTime.UtcNow;
+                    pm.LastCompassionLoss = Core.Now;
                 }
             }
             catch

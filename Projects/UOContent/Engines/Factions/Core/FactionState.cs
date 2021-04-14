@@ -65,7 +65,7 @@ namespace Server.Factions
 
                         if (version < 5)
                         {
-                            LastAtrophy = DateTime.UtcNow;
+                            LastAtrophy = Core.Now;
                         }
 
                         if (version < 4)
@@ -161,7 +161,7 @@ namespace Server.Factions
             {
                 for (var i = 0; i < m_LastBroadcasts.Length; ++i)
                 {
-                    if (DateTime.UtcNow >= m_LastBroadcasts[i] + BroadcastPeriod)
+                    if (Core.Now >= m_LastBroadcasts[i] + BroadcastPeriod)
                     {
                         return true;
                     }
@@ -171,7 +171,7 @@ namespace Server.Factions
             }
         }
 
-        public bool IsAtrophyReady => DateTime.UtcNow >= LastAtrophy + TimeSpan.FromHours(47.0);
+        public bool IsAtrophyReady => Core.Now >= LastAtrophy + TimeSpan.FromHours(47.0);
 
         public List<FactionItem> FactionItems { get; set; }
 
@@ -217,13 +217,13 @@ namespace Server.Factions
 
         public int CheckAtrophy()
         {
-            if (DateTime.UtcNow < LastAtrophy + TimeSpan.FromHours(47.0))
+            if (Core.Now < LastAtrophy + TimeSpan.FromHours(47.0))
             {
                 return 0;
             }
 
             var distrib = 0;
-            LastAtrophy = DateTime.UtcNow;
+            LastAtrophy = Core.Now;
 
             var members = new List<PlayerState>(Members);
 
@@ -252,9 +252,9 @@ namespace Server.Factions
         {
             for (var i = 0; i < m_LastBroadcasts.Length; ++i)
             {
-                if (DateTime.UtcNow >= m_LastBroadcasts[i] + BroadcastPeriod)
+                if (Core.Now >= m_LastBroadcasts[i] + BroadcastPeriod)
                 {
-                    m_LastBroadcasts[i] = DateTime.UtcNow;
+                    m_LastBroadcasts[i] = Core.Now;
                     break;
                 }
             }

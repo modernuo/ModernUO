@@ -113,7 +113,7 @@ namespace Server.Items
         {
             m_DecayTimer?.Stop();
 
-            m_DecayTime = DateTime.UtcNow + delay;
+            m_DecayTime = Core.Now + delay;
 
             m_DecayTimer = new InternalTimer(this, delay);
             m_DecayTimer.Start();
@@ -171,7 +171,7 @@ namespace Server.Items
                         if (reader.ReadBool())
                         {
                             m_DecayTime = reader.ReadDeltaTime();
-                            BeginDecay(m_DecayTime - DateTime.UtcNow);
+                            BeginDecay(m_DecayTime - Core.Now);
                         }
 
                         break;

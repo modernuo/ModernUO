@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Server.Items;
@@ -119,17 +120,19 @@ namespace Server.Commands
                 return;
             }
 
-            var time = DateTime.UtcNow;
+            var watch = new Stopwatch();
+            watch.Start();
 
             var built = BuildObjects(from, type, start, end, args, props, packs, outline, mapAvg);
 
             if (built > 0)
             {
+                watch.Stop();
                 from.SendMessage(
-                    "{0} object{1} generated in {2:F1} seconds.",
+                    "{0} object{1} generated in {2:F2} seconds.",
                     built,
                     built != 1 ? "s" : "",
-                    (DateTime.UtcNow - time).TotalSeconds
+                    watch.Elapsed.TotalSeconds
                 );
             }
             else
@@ -141,7 +144,7 @@ namespace Server.Commands
         public static void FixSetString(ref string[] args, int index)
         {
             var old = args;
-            args = new string[index];
+            args = GC.AllocateUninitializedArray<string>(index);
 
             Array.Copy(old, 0, args, 0, index);
         }
@@ -149,7 +152,7 @@ namespace Server.Commands
         public static void FixArgs(ref string[] args)
         {
             var old = args;
-            args = new string[args.Length - 1];
+            args = GC.AllocateUninitializedArray<string>(args.Length - 1);
 
             Array.Copy(old, 1, args, 0, args.Length);
         }

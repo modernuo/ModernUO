@@ -306,7 +306,7 @@ namespace Server.Mobiles
             m_PayTimer = new PayTimer(this, delay);
             m_PayTimer.Start();
 
-            NextPayTime = DateTime.UtcNow + delay;
+            NextPayTime = Core.Now + delay;
         }
 
         public PlayerVendor(Serial serial) : base(serial)
@@ -454,7 +454,7 @@ namespace Server.Mobiles
 
                             var description = reader.ReadString();
 
-                            var created = version < 1 ? DateTime.UtcNow : reader.ReadDateTime();
+                            var created = version < 1 ? Core.Now : reader.ReadDateTime();
 
                             if (item != null)
                             {
@@ -480,7 +480,7 @@ namespace Server.Mobiles
                     Timer.DelayCall(FixDresswear);
                 }
 
-                NextPayTime = DateTime.UtcNow + PayTimer.GetInterval();
+                NextPayTime = Core.Now + PayTimer.GetInterval();
 
                 if (newVendorSystemActivated)
                 {
@@ -494,7 +494,7 @@ namespace Server.Mobiles
                 InitStats(100, 100, 25);
             }
 
-            var delay = NextPayTime - DateTime.UtcNow;
+            var delay = NextPayTime - Core.Now;
 
             m_PayTimer = new PayTimer(this, delay > TimeSpan.Zero ? delay : TimeSpan.Zero);
             m_PayTimer.Start();
@@ -752,7 +752,7 @@ namespace Server.Mobiles
         }
 
         private VendorItem SetVendorItem(Item item, int price, string description) =>
-            SetVendorItem(item, price, description, DateTime.UtcNow);
+            SetVendorItem(item, price, description, Core.Now);
 
         private VendorItem SetVendorItem(Item item, int price, string description, DateTime created)
         {
@@ -1064,7 +1064,7 @@ namespace Server.Mobiles
             {
                 vendor.SayTo(from, 503202); // This item is not for sale.
             }
-            else if (vi.Created + TimeSpan.FromMinutes(1.0) > DateTime.UtcNow)
+            else if (vi.Created + TimeSpan.FromMinutes(1.0) > Core.Now)
             {
                 from.SendMessage("You cannot buy this item right now.  Please wait one minute and try again.");
             }
@@ -1368,7 +1368,7 @@ namespace Server.Mobiles
 
             protected override void OnTick()
             {
-                m_Vendor.NextPayTime = DateTime.UtcNow + Interval;
+                m_Vendor.NextPayTime = Core.Now + Interval;
 
                 int pay;
                 int totalGold;

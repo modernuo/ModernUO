@@ -755,7 +755,7 @@ namespace Server.Items
 
                         if (ShowTimeRemaining)
                         {
-                            m.SendMessage("Time remaining: {0}", FormatTime(info.Timer.Next - DateTime.UtcNow));
+                            m.SendMessage("Time remaining: {0}", FormatTime(info.Timer.Next - Core.Now));
                         }
 
                         Timer.DelayCall(TimeSpan.FromSeconds(5), EndLock, m);
@@ -932,7 +932,7 @@ namespace Server.Items
                 var m = reader.ReadEntity<Mobile>();
                 var end = reader.ReadDateTime();
 
-                StartTimer(m, end - DateTime.UtcNow);
+                StartTimer(m, end - Core.Now);
             }
         }
     }

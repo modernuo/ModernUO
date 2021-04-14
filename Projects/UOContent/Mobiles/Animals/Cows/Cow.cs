@@ -100,7 +100,7 @@ namespace Server.Mobiles
                 from.SendLocalizedMessage(1071182); // The cow nimbly escapes your attempts to milk it.
             }
 
-            if (Milk == 0 && MilkedOn + TimeSpan.FromDays(1) > DateTime.UtcNow)
+            if (Milk == 0 && MilkedOn + TimeSpan.FromDays(1) > Core.Now)
             {
                 from.SendLocalizedMessage(1080198); // This cow can not be milked now. Please wait for some time.
             }
@@ -111,7 +111,7 @@ namespace Server.Mobiles
                     Milk = 4;
                 }
 
-                MilkedOn = DateTime.UtcNow;
+                MilkedOn = Core.Now;
                 Milk--;
 
                 return true;

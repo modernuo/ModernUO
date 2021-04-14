@@ -291,28 +291,28 @@ namespace Server.Items
                         switch (m_Cannon.CannonDirection)
                         {
                             case CannonDirection.North:
-                                if (y < 0 && Math.Abs(x) <= -y / 3)
+                                if (y < 0 && x.Abs() <= -y / 3)
                                 {
                                     allow = true;
                                 }
 
                                 break;
                             case CannonDirection.East:
-                                if (x > 0 && Math.Abs(y) <= x / 3)
+                                if (x > 0 && y.Abs() <= x / 3)
                                 {
                                     allow = true;
                                 }
 
                                 break;
                             case CannonDirection.South:
-                                if (y > 0 && Math.Abs(x) <= y / 3)
+                                if (y > 0 && x.Abs() <= y / 3)
                                 {
                                     allow = true;
                                 }
 
                                 break;
                             case CannonDirection.West:
-                                if (x < 0 && Math.Abs(y) <= -x / 3)
+                                if (x < 0 && y.Abs() <= -x / 3)
                                 {
                                     allow = true;
                                 }

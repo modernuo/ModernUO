@@ -172,7 +172,7 @@ namespace Server
                 PartialInstalled = reader.ReadByte(),
                 Language = reader.ReadLittleUniSafe(4),
                 Unknown = reader.ReadAsciiSafe(64),
-                TimeReceived = DateTime.UtcNow
+                TimeReceived = Core.Now
             };
 
             if (state.Account is Account acct)

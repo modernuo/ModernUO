@@ -51,7 +51,7 @@ namespace Server.Items
                 return false;
             }
 
-            if (DateTime.UtcNow.Month != 12)
+            if (Core.Now.Month != 12)
             {
                 from.SendLocalizedMessage(
                     1005700

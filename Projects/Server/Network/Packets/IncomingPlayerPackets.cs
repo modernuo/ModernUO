@@ -457,7 +457,7 @@ namespace Server.Network
             if (typeID == 461)
             {
                 // Virtue gump
-                var switchCount = reader.ReadInt32();
+                var switchCount = reader.Remaining >= 4 ? reader.ReadInt32() : 0;
 
                 if (buttonID == 1 && switchCount > 0)
                 {

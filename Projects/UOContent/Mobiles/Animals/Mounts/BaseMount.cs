@@ -134,10 +134,10 @@ namespace Server.Mobiles
 
             var attacker = from ?? m_Rider.FindMostRecentDamager(true);
 
-            if (!(attacker == this || attacker == m_Rider || willKill || DateTime.UtcNow < NextMountAbility)
+            if (!(attacker == this || attacker == m_Rider || willKill || Core.Now < NextMountAbility)
                 && DoMountAbility(amount, from))
             {
-                NextMountAbility = DateTime.UtcNow + MountAbilityDelay;
+                NextMountAbility = Core.Now + MountAbilityDelay;
             }
         }
 
@@ -313,10 +313,19 @@ namespace Server.Mobiles
         {
             var result = true;
 
-            if (mob is PlayerMobile mobile && mobile.MountBlockReason != BlockMountType.None)
+            if (mob is PlayerMobile mobile)
             {
-                mobile.SendLocalizedMessage((int)mobile.MountBlockReason);
-                result = false;
+                if (mobile.MountBlockReason != BlockMountType.None)
+                {
+                    mobile.SendLocalizedMessage((int)mobile.MountBlockReason);
+                    result = false;
+                }
+
+                if (mobile.Race == Race.Gargoyle)
+                {
+                    mobile.PrivateOverheadMessage(MessageType.Regular, mobile.SpeechHue, 1112281, mobile.NetState); // Gargoyles are unable to ride animals.
+                    result = false;
+                }
             }
 
             return result;

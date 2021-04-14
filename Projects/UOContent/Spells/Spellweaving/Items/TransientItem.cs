@@ -10,7 +10,7 @@ namespace Server.Items
         public TransientItem(int itemID, TimeSpan lifeSpan)
             : base(itemID)
         {
-            CreationTime = DateTime.UtcNow;
+            CreationTime = Core.Now;
             LifeSpan = lifeSpan;
 
             m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry);
@@ -67,7 +67,7 @@ namespace Server.Items
 
         public virtual void CheckExpiry()
         {
-            if (CreationTime + LifeSpan < DateTime.UtcNow)
+            if (CreationTime + LifeSpan < Core.Now)
             {
                 Expire(RootParent as Mobile);
             }
@@ -81,7 +81,7 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            var remaining = CreationTime + LifeSpan - DateTime.UtcNow;
+            var remaining = CreationTime + LifeSpan - Core.Now;
 
             list.Add(1072517, ((int)remaining.TotalSeconds).ToString()); // Lifespan: ~1_val~ seconds
         }

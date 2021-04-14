@@ -49,7 +49,7 @@ namespace Server
                 return;
             }
 
-            var waitTime = DateTime.UtcNow - pm.LastHonorUse;
+            var waitTime = Core.Now - pm.LastHonorUse;
             if (waitTime < UseDelay)
             {
                 var remainingTime = UseDelay - waitTime;
@@ -93,7 +93,7 @@ namespace Server
                 () =>
                 {
                     pm.HonorActive = false;
-                    pm.LastHonorUse = DateTime.UtcNow;
+                    pm.LastHonorUse = Core.Now;
                     pm.SendLocalizedMessage(1063236); // You no longer embrace your honor
                 }
             );
@@ -225,13 +225,13 @@ namespace Server
 
             m_Timer = new InternalTimer(this);
             m_Timer.Start();
-            source.m_hontime = DateTime.UtcNow + TimeSpan.FromMinutes(40);
+            source.m_hontime = Core.Now + TimeSpan.FromMinutes(40);
 
             Timer.DelayCall(
                 TimeSpan.FromMinutes(40),
                 () =>
                 {
-                    if (source.m_hontime < DateTime.UtcNow && source.SentHonorContext != null)
+                    if (source.m_hontime < Core.Now && source.SentHonorContext != null)
                     {
                         Cancel();
                     }
