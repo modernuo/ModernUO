@@ -256,7 +256,7 @@ namespace Server
 
                 if (input.InsensitiveStartsWith("y"))
                 {
-                    SetSetting("maps.enableOldHaven", true.ToString());
+                    SetSetting("maps.enablePre6000Trammel", true.ToString());
                     SetSetting("maps.enableMapDiffPatches", true.ToString());
                     return;
                 }
