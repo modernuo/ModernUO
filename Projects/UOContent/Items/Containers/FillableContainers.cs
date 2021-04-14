@@ -129,7 +129,7 @@ namespace Server.Items
                     var mins = Utility.RandomMinMax(MinRespawnMinutes, MaxRespawnMinutes);
                     var delay = TimeSpan.FromMinutes(mins);
 
-                    m_NextRespawnTime = DateTime.UtcNow + delay;
+                    m_NextRespawnTime = Core.Now + delay;
                     m_RespawnTimer = Timer.DelayCall(delay, Respawn);
                 }
             }
@@ -279,7 +279,7 @@ namespace Server.Items
                         {
                             m_NextRespawnTime = reader.ReadDeltaTime();
 
-                            var delay = m_NextRespawnTime - DateTime.UtcNow;
+                            var delay = m_NextRespawnTime - Core.Now;
                             m_RespawnTimer = Timer.DelayCall(delay > TimeSpan.Zero ? delay : TimeSpan.Zero, Respawn);
                         }
                         else

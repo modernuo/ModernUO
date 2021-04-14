@@ -13,9 +13,9 @@ namespace Server.Engines.Events
 
         public static void Initialize()
         {
-            var now = DateTime.UtcNow;
+            var now = Core.Now;
 
-            if (DateTime.UtcNow >= HolidaySettings.StartHalloween && DateTime.UtcNow <= HolidaySettings.FinishHalloween)
+            if (now >= HolidaySettings.StartHalloween && now <= HolidaySettings.FinishHalloween)
             {
                 EventSink.Speech += EventSink_Speech;
             }
@@ -165,7 +165,7 @@ namespace Server.Engines.Events
                     return;
                 }
 
-                var now = DateTime.UtcNow;
+                var now = Core.Now;
 
                 if (CheckMobile(begged))
                 {

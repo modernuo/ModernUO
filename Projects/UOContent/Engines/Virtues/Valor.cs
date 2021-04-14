@@ -33,14 +33,14 @@ namespace Server
 
             try
             {
-                if (pm.LastValorLoss + LossDelay < DateTime.UtcNow)
+                if (pm.LastValorLoss + LossDelay < Core.Now)
                 {
                     if (VirtueHelper.Atrophy(from, VirtueName.Valor, LossAmount))
                     {
                         from.SendLocalizedMessage(1054040); // You have lost some Valor.
                     }
 
-                    pm.LastValorLoss = DateTime.UtcNow;
+                    pm.LastValorLoss = Core.Now;
                 }
             }
             catch

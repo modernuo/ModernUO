@@ -146,7 +146,7 @@ namespace Server.Multis
                 if (canClaim && !BaseHouse.HasAccountHouse(from))
                 {
                     Owner.Owner = from;
-                    Owner.LastTraded = DateTime.UtcNow;
+                    Owner.LastTraded = Core.Now;
                 }
             }
 

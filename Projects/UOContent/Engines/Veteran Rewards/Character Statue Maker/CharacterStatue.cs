@@ -254,7 +254,7 @@ namespace Server.Mobiles
         public void Sculpt(Mobile by)
         {
             m_SculptedBy = by;
-            SculptedOn = DateTime.UtcNow;
+            SculptedOn = Core.Now;
 
             InvalidateProperties();
         }
@@ -516,7 +516,7 @@ namespace Server.Mobiles
             if (from.Account is Account acct && from.AccessLevel == AccessLevel.Player)
             {
                 var time = TimeSpan.FromDays(RewardSystem.RewardInterval.TotalDays * 6) -
-                           (DateTime.UtcNow - acct.Created);
+                           (Core.Now - acct.Created);
 
                 if (time > TimeSpan.Zero)
                 {

@@ -73,12 +73,12 @@ namespace Server
 
             if (objs.Length == 0)
             {
-                return 0;
+                return 50;
             }
 
             if (!(objs[0] is CallPriorityAttribute attr))
             {
-                return 0;
+                return 50;
             }
 
             return attr.Priority;

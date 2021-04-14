@@ -155,7 +155,7 @@ namespace Server.Items
 
             var next = reader.ReadDateTime();
 
-            var now = DateTime.UtcNow;
+            var now = Core.Now;
 
             if (next < now)
             {

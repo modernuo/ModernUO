@@ -33,7 +33,7 @@ namespace Server.Accounting
 
             m_AccessLevel = AccessLevel.Player;
 
-            Created = LastLogin = DateTime.UtcNow;
+            Created = LastLogin = Core.Now;
             m_TotalGameTime = TimeSpan.Zero;
 
             m_Mobiles = new Mobile[7];
@@ -99,8 +99,8 @@ namespace Server.Accounting
 
             Enum.TryParse(Utility.GetText(node["accessLevel"], "Player"), true, out m_AccessLevel);
             Flags = Utility.GetXMLInt32(Utility.GetText(node["flags"], "0"), 0);
-            Created = Utility.GetXMLDateTime(Utility.GetText(node["created"], null), DateTime.UtcNow);
-            LastLogin = Utility.GetXMLDateTime(Utility.GetText(node["lastLogin"], null), DateTime.UtcNow);
+            Created = Utility.GetXMLDateTime(Utility.GetText(node["created"], null), Core.Now);
+            LastLogin = Utility.GetXMLDateTime(Utility.GetText(node["lastLogin"], null), Core.Now);
 
             TotalGold = Utility.GetXMLInt32(Utility.GetText(node["totalGold"], "0"), 0);
             TotalPlat = Utility.GetXMLInt32(Utility.GetText(node["totalPlat"], "0"), 0);
@@ -193,7 +193,7 @@ namespace Server.Accounting
 
                 if (GetBanTags(out var banTime, out var banDuration))
                 {
-                    if (banDuration != TimeSpan.MaxValue && DateTime.UtcNow >= banTime + banDuration)
+                    if (banDuration != TimeSpan.MaxValue && Core.Now >= banTime + banDuration)
                     {
                         SetUnspecifiedBan(null); // clear
                         Banned = false;
@@ -244,7 +244,7 @@ namespace Server.Accounting
                     return false;
                 }
 
-                var inactiveLength = DateTime.UtcNow - LastLogin;
+                var inactiveLength = Core.Now - LastLogin;
 
                 return inactiveLength > (Count == 0 ? EmptyInactiveDuration : InactiveDuration);
             }
@@ -262,7 +262,7 @@ namespace Server.Accounting
                 {
                     if (m_Mobiles[i] is PlayerMobile m && m.NetState != null)
                     {
-                        return m_TotalGameTime + (DateTime.UtcNow - m.SessionStart);
+                        return m_TotalGameTime + (Core.Now - m.SessionStart);
                     }
                 }
 
@@ -873,7 +873,7 @@ namespace Server.Accounting
                 return;
             }
 
-            acc.m_TotalGameTime += DateTime.UtcNow - pm.SessionStart;
+            acc.m_TotalGameTime += Core.Now - pm.SessionStart;
         }
 
         private static void EventSink_Login(Mobile m)

@@ -188,7 +188,7 @@ namespace Server.Engines.Spawners
         [CommandProperty(AccessLevel.Developer)]
         public TimeSpan NextSpawn
         {
-            get => m_Running && m_Timer?.Running == true ? End - DateTime.UtcNow : TimeSpan.FromSeconds(0);
+            get => m_Running && m_Timer?.Running == true ? End - Core.Now : TimeSpan.FromSeconds(0);
             set
             {
                 Start();
@@ -750,7 +750,7 @@ namespace Server.Engines.Spawners
                 return;
             }
 
-            End = DateTime.UtcNow + delay;
+            End = Core.Now + delay;
 
             if (m_Timer == null)
             {
@@ -1007,7 +1007,7 @@ namespace Server.Engines.Spawners
 
                         if (m_Running)
                         {
-                            ts = reader.ReadDeltaTime() - DateTime.UtcNow;
+                            ts = reader.ReadDeltaTime() - Core.Now;
                         }
 
                         if (version < 7)

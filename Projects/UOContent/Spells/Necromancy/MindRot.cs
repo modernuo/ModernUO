@@ -119,13 +119,13 @@ namespace Server.Spells.Necromancy
         )
         {
             m_Target = target;
-            m_End = DateTime.UtcNow + delay;
+            m_End = Core.Now + delay;
             Priority = TimerPriority.TwoFiftyMS;
         }
 
         protected override void OnTick()
         {
-            if (m_Target.Deleted || !m_Target.Alive || DateTime.UtcNow >= m_End)
+            if (m_Target.Deleted || !m_Target.Alive || Core.Now >= m_End)
             {
                 MindRotSpell.ClearMindRotScalar(m_Target);
                 Stop();

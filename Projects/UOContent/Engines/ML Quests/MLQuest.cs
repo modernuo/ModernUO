@@ -149,7 +149,7 @@ namespace Server.Engines.MLQuests
                             return false;
                         }
 
-                        if (nextAvailable > DateTime.UtcNow)
+                        if (nextAvailable > Core.Now)
                         {
                             if (message)
                             {

@@ -31,7 +31,7 @@ namespace Server.Misc
                 return;
             }
 
-            var now = DateTime.UtcNow;
+            var now = Core.Now;
 
             for (var i = 0; i < m_Givers.Count; ++i)
             {

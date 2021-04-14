@@ -63,10 +63,10 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (DateTime.UtcNow >= m_NextAttack)
+            if (Core.Now >= m_NextAttack)
             {
                 SandAttack(combatant);
-                m_NextAttack = DateTime.UtcNow + TimeSpan.FromSeconds(10.0 + 10.0 * Utility.RandomDouble());
+                m_NextAttack = Core.Now + TimeSpan.FromSeconds(10.0 + 10.0 * Utility.RandomDouble());
             }
         }
 

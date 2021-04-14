@@ -20,7 +20,7 @@ namespace Server.SkillHandlers
             Target target = new InternalTargetSrc();
             m.Target = target;
             m.SendLocalizedMessage(1046295); // Target the book you wish to copy.
-            target.BeginTimeout(m, TimeSpan.FromMinutes(1.0));
+            target.BeginTimeout(m, 60000); // 1 minute
 
             return TimeSpan.FromSeconds(1.0);
         }
@@ -93,7 +93,7 @@ namespace Server.SkillHandlers
                     Target target = new InternalTargetDst(book);
                     from.Target = target;
                     from.SendLocalizedMessage(501612); // Select a book to copy this to.
-                    target.BeginTimeout(from, TimeSpan.FromMinutes(1.0));
+                    target.BeginTimeout(from, 60000); // 1 minute
                     SetUser(book, from);
                 }
             }

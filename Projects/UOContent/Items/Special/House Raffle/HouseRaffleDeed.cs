@@ -204,7 +204,7 @@ namespace Server.Items
 
                 var daysLeft = (int)Math.Ceiling(
                     (deed.Stone.Started + deed.Stone.Duration +
-                        HouseRaffleStone.ExpirationTime - DateTime.UtcNow).TotalDays
+                        HouseRaffleStone.ExpirationTime - Core.Now).TotalDays
                 );
 
                 return

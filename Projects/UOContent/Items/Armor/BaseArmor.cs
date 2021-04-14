@@ -1802,6 +1802,11 @@ namespace Server.Items
                 list.Add(1075086); // Elves Only
             }
 
+            if (RequiredRace == Race.Gargoyle)
+            {
+                list.Add(1111709); // Gargoyles Only
+            }
+
             SkillBonuses.GetProperties(list);
 
             int prop;

@@ -514,7 +514,7 @@ namespace Server.Engines.ConPVP
 
                                 string timeUntil;
                                 var minutesUntil = (int)Math.Round(
-                                    (tourney.SignupStart + tourney.SignupPeriod - DateTime.UtcNow)
+                                    (tourney.SignupStart + tourney.SignupPeriod - Core.Now)
                                     .TotalMinutes
                                 );
 

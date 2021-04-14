@@ -374,5 +374,21 @@ namespace Server.Network
                 SeekOrigin.End   => Length + offset,
                 _                => Position + offset // Current
             };
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Read(Span<byte> bytes)
+        {
+            if (bytes.Length < Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bytes));
+            }
+
+            if (_first.Length > 0 && !_first.TryCopyTo(bytes))
+            {
+                return false;
+            }
+
+            return _second.Length <= 0 || _second.TryCopyTo(bytes.Slice(_first.Length));
+        }
     }
 }

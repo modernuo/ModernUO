@@ -113,9 +113,9 @@ namespace Server.Items
 
         public static int GetDelay(Mobile m)
         {
-            if (m_Delay.TryGetValue(m, out var timer) && timer.Next > DateTime.UtcNow)
+            if (m_Delay.TryGetValue(m, out var timer) && timer.Next > Core.Now)
             {
-                return (int)(timer.Next - DateTime.UtcNow).TotalSeconds;
+                return (int)(timer.Next - Core.Now).TotalSeconds;
             }
 
             return 0;
@@ -185,7 +185,7 @@ namespace Server.Items
                 MoveToWorld(loc, map);
 
                 From = from;
-                m_End = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+                m_End = Core.Now + TimeSpan.FromSeconds(10);
 
                 SetDamage(min, max);
 
@@ -292,7 +292,7 @@ namespace Server.Items
                         return;
                     }
 
-                    if (DateTime.UtcNow > m_End)
+                    if (Core.Now > m_End)
                     {
                         m_Item.Delete();
                         Stop();

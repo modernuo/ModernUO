@@ -73,7 +73,7 @@ namespace Server.Ethics
                     return false;
                 }
 
-                if (DateTime.UtcNow < m_Shield + TimeSpan.FromHours(1.0))
+                if (Core.Now < m_Shield + TimeSpan.FromHours(1.0))
                 {
                     return true;
                 }
@@ -119,15 +119,9 @@ namespace Server.Ethics
             return pl;
         }
 
-        public void BeginShield()
-        {
-            m_Shield = DateTime.UtcNow;
-        }
+        public void BeginShield() => m_Shield = Core.Now;
 
-        public void FinishShield()
-        {
-            m_Shield = DateTime.MinValue;
-        }
+        public void FinishShield() => m_Shield = DateTime.MinValue;
 
         public void CheckAttach()
         {

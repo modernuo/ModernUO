@@ -278,5 +278,16 @@ namespace System.Buffers
                 _                  => offset // Begin
             });
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Read(Span<byte> bytes)
+        {
+            if (bytes.Length < Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bytes));
+            }
+
+            return _buffer.TryCopyTo(bytes);
+        }
     }
 }

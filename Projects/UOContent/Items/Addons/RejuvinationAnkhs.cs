@@ -90,14 +90,14 @@ namespace Server.Items
 
             if (m.Player && Utility.InRange(Location, m.Location, 3) && !Utility.InRange(Location, oldLocation, 3))
             {
-                if (DateTime.UtcNow >= m_NextMessage)
+                if (Core.Now >= m_NextMessage)
                 {
                     if (Components.Count > 0)
                     {
                         Components[0].SendLocalizedMessageTo(m, 1010061); // An overwhelming sense of peace fills you.
                     }
 
-                    m_NextMessage = DateTime.UtcNow + TimeSpan.FromSeconds(25.0);
+                    m_NextMessage = Core.Now + TimeSpan.FromSeconds(25.0);
                 }
             }
         }

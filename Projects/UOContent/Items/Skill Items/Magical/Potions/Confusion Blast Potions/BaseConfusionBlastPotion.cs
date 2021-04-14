@@ -104,7 +104,7 @@ namespace Server.Items
                         continue;
                     }
 
-                    mon.Pacify(from, DateTime.UtcNow + TimeSpan.FromSeconds(5.0)); // TODO check
+                    mon.Pacify(from, Core.Now + TimeSpan.FromSeconds(5.0)); // TODO check
                 }
             }
         }
@@ -131,9 +131,9 @@ namespace Server.Items
 
         public static int GetDelay(Mobile m)
         {
-            if (m_Delay.TryGetValue(m, out var timer) && timer.Next > DateTime.UtcNow)
+            if (m_Delay.TryGetValue(m, out var timer) && timer.Next > Core.Now)
             {
-                return (int)(timer.Next - DateTime.UtcNow).TotalSeconds;
+                return (int)(timer.Next - Core.Now).TotalSeconds;
             }
 
             return 0;

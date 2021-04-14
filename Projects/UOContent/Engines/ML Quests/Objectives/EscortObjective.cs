@@ -39,11 +39,11 @@ namespace Server.Engines.MLQuests.Objectives
 
             var nextEscort = pm.LastEscortTime + BaseEscortable.EscortDelay;
 
-            if (nextEscort > DateTime.UtcNow)
+            if (nextEscort > Core.Now)
             {
                 if (message)
                 {
-                    var minutes = (int)Math.Ceiling((nextEscort - DateTime.UtcNow).TotalMinutes);
+                    var minutes = (int)Math.Ceiling((nextEscort - Core.Now).TotalMinutes);
 
                     if (minutes == 1)
                     {
@@ -106,7 +106,7 @@ namespace Server.Engines.MLQuests.Objectives
             m_Objective = objective;
             HasCompleted = false;
             m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckDestination);
-            m_LastSeenEscorter = DateTime.UtcNow;
+            m_LastSeenEscorter = Core.Now;
             m_Escort = instance.Quester as BaseCreature;
 
             if (MLQuestSystem.Debug && m_Escort == null && instance.Quester != null)
@@ -170,14 +170,14 @@ namespace Server.Engines.MLQuests.Objectives
             }
             else if (pm.Map != m_Escort.Map || !pm.InRange(m_Escort, 30)) // TODO: verify range
             {
-                if (m_LastSeenEscorter + BaseEscortable.AbandonDelay <= DateTime.UtcNow)
+                if (m_LastSeenEscorter + BaseEscortable.AbandonDelay <= Core.Now)
                 {
                     Abandon();
                 }
             }
             else
             {
-                m_LastSeenEscorter = DateTime.UtcNow;
+                m_LastSeenEscorter = Core.Now;
             }
         }
 
@@ -225,7 +225,7 @@ namespace Server.Engines.MLQuests.Objectives
             var instance = Instance;
             var pm = instance.Player;
 
-            pm.LastEscortTime = DateTime.UtcNow;
+            pm.LastEscortTime = Core.Now;
 
             if (m_Escort != null)
             {

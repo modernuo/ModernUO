@@ -39,7 +39,7 @@ namespace Server.Accounting
                 return true;
             }
 
-            var date = DateTime.UtcNow;
+            var date = Core.Now;
             var access = accessLog.LastAccessTime + ComputeThrottle(accessLog.Counts);
             var allow = date >= access;
             drop = !allow;
@@ -96,7 +96,7 @@ namespace Server.Accounting
                     using var op = new StreamWriter("throttle.log", true);
                     op.WriteLine(
                         "{0}\t{1}\t{2}",
-                        DateTime.UtcNow,
+                        Core.Now,
                         ns,
                         accessLog.Counts
                     );
@@ -151,13 +151,13 @@ namespace Server.Accounting
 
         public DateTime LastAccessTime { get; set; }
 
-        public bool HasExpired => DateTime.UtcNow >= LastAccessTime + TimeSpan.FromHours(1.0);
+        public bool HasExpired => Core.Now >= LastAccessTime + TimeSpan.FromHours(1.0);
 
         public int Counts { get; set; }
 
         public void RefreshAccessTime()
         {
-            LastAccessTime = DateTime.UtcNow;
+            LastAccessTime = Core.Now;
         }
     }
 }

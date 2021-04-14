@@ -49,13 +49,13 @@ namespace Server.Factions
                     return true;
                 }
 
-                return Expiration != DateTime.MinValue && DateTime.UtcNow >= Expiration;
+                return Expiration != DateTime.MinValue && Core.Now >= Expiration;
             }
         }
 
         public void StartExpiration()
         {
-            Expiration = DateTime.UtcNow + ExpirationPeriod;
+            Expiration = Core.Now + ExpirationPeriod;
         }
 
         public void CheckAttach()

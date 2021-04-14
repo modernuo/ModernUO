@@ -206,7 +206,7 @@ namespace Server.Network
                     using var op = new StreamWriter("compression_overflow.log", true);
                     op.WriteLine(
                         "{0} Warning: Compression buffer overflowed on packet 0x{1:X2} ('{2}') (length={3})",
-                        DateTime.UtcNow,
+                        Core.Now,
                         PacketID,
                         GetType().Name,
                         length

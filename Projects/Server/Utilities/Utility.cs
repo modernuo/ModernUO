@@ -577,8 +577,8 @@ namespace Server
             var dx = to.X - from.X;
             var dy = to.Y - from.Y;
 
-            var adx = Math.Abs(dx);
-            var ady = Math.Abs(dy);
+            var adx = Abs(dx);
+            var ady = Abs(dy);
 
             if (adx >= ady * 3)
             {
@@ -1338,7 +1338,10 @@ namespace Server
             val.CompareTo(max) > 0 ? max : val;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TimeSpan Max(this TimeSpan val, TimeSpan max) => val > max ? max : val;
+        public static T Min<T>(T val, T min) where T : IComparable<T> => val.CompareTo(min) < 0 ? val : min;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T Max<T>(T val, T max) where T : IComparable<T> => val.CompareTo(max) > 0 ? val : max;
 
         public static string TrimMultiline(this string str, string lineSeparator = "\n")
         {
@@ -1392,7 +1395,21 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CountDigits(uint value)
+        public static int Abs(this int value)
+        {
+            int mask = value >> 31;
+            return (value + mask) ^ mask;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Abs(this long value)
+        {
+            long mask = value >> 63;
+            return (value + mask) ^ mask;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountDigits(this uint value)
         {
             int digits = 1;
             if (value >= 100000)
@@ -1426,6 +1443,47 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountDigits(this int value)
+        {
+            int absValue = Abs(value);
+
+            int digits = 1;
+            if (absValue >= 100000)
+            {
+                absValue /= 100000;
+                digits += 5;
+            }
+
+            if (absValue < 10)
+            {
+                // no-op
+            }
+            else if (absValue < 100)
+            {
+                digits++;
+            }
+            else if (absValue < 1000)
+            {
+                digits += 2;
+            }
+            else if (absValue < 10000)
+            {
+                digits += 3;
+            }
+            else
+            {
+                digits += 4;
+            }
+
+            if (value < 0)
+            {
+                digits += 1; // negative
+            }
+
+            return digits;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint DivRem(uint a, uint b, out uint result)
         {
             uint div = a / b;
@@ -1434,6 +1492,6 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetTimeStamp() => DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss");
+        public static string GetTimeStamp() => Core.Now.ToString("yyyy-MM-dd-HH-mm-ss");
     }
 }

@@ -21,7 +21,7 @@ namespace Server.Engines.Craft
 
         public override SkillName MainSkill => SkillName.Tailoring;
 
-        public override int GumpTitleNumber => 1044005;
+        public override int GumpTitleNumber => 1044005; // Tailoring Menu
 
         public static CraftSystem CraftSystem => m_CraftSystem ??= new DefTailoring();
 
@@ -535,6 +535,27 @@ namespace Server.Engines.Craft
                 );
                 SetNeededExpansion(index, Expansion.SE);
             }
+            if (Core.SA)
+            {
+                index = AddCraft(typeof(GargishLeatherArmsType1), 1015293, 1020769, 53.9, 78.9, typeof(Leather), 1044462, 8, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishLeatherArmsType2), 1015293, 1020770, 53.9, 78.9, typeof(Leather), 1044462, 8, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishLeatherKiltType1), 1015293, 1020784, 58.0, 83.0, typeof(Leather), 1044462, 8, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishLeatherKiltType2), 1015293, 1020785, 58.0, 83.0, typeof(Leather), 1044462, 8, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishLeatherLegsType1), 1015293, 1020773, 66.3, 91.3, typeof(Leather), 1044462, 8, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishLeatherLegsType2), 1015293, 1020774, 66.3, 91.3, typeof(Leather), 1044462, 8, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishLeatherChestType1), 1015293, 1020772, 70.5, 95.5, typeof(Leather), 1044462, 12, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishLeatherChestType2), 1015293, 1020771, 70.5, 95.5, typeof(Leather), 1044462, 12, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishLeatherWingArmor), 1015293, 1096662, 65.3, 90.3, typeof(Leather), 1044462, 8, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+            }
 
             AddCraft(typeof(StuddedGorget), 1015300, 1025078, 78.8, 103.8, typeof(Leather), 1044462, 6, 1044463);
             AddCraft(typeof(StuddedGloves), 1015300, 1025077, 82.9, 107.9, typeof(Leather), 1044462, 8, 1044463);
@@ -584,6 +605,25 @@ namespace Server.Engines.Craft
                     1044463
                 );
                 SetNeededExpansion(index, Expansion.SE);
+            }
+            if (Core.SA)
+            {
+                index = AddCraft(typeof(GargishStuddedArmsType1), 1015300, 1020643, 87.1, 112.1, typeof(Leather), 1044462, 8, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishStuddedArmsType2), 1015300, 1020644, 87.1, 112.1, typeof(Leather), 1044462, 8, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishStuddedKiltType1), 1015300, 1020647, 89.5, 114.5, typeof(Leather), 1044462, 10, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishStuddedKiltType2), 1015300, 1020648, 89.5, 114.5, typeof(Leather), 1044462, 10, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishStuddedLegsType1), 1015300, 1020649, 91.2, 116.2, typeof(Leather), 1044462, 12, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishStuddedLegsType2), 1015300, 1020650, 91.2, 116.2, typeof(Leather), 1044462, 12, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishStuddedChestType1), 1015300, 1020645, 94.0, 119.0, typeof(Leather), 1044462, 14, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
+                index = AddCraft(typeof(GargishStuddedChestType2), 1015300, 1020646, 94.0, 119.0, typeof(Leather), 1044462, 14, 1044463);
+                SetNeededExpansion(index, Expansion.SA);
             }
 
             AddCraft(typeof(LeatherShorts), 1015306, 1027168, 62.2, 87.2, typeof(Leather), 1044462, 8, 1044463);

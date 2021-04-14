@@ -101,7 +101,7 @@ namespace Server.Mobiles
             {
                 bc.Karma = (int)(bc.Karma * KarmaBuff);
 
-                if (Math.Abs(bc.Karma) > 32000)
+                if (bc.Karma.Abs() > 32000)
                 {
                     bc.Karma = 32000 * Math.Sign(bc.Karma);
                 }

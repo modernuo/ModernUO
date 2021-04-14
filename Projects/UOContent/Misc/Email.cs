@@ -24,7 +24,7 @@ namespace Server.Misc
             }
 
             var sender = entry.Sender;
-            var time = DateTime.UtcNow;
+            var time = Core.Now;
 
             var message = new MimeMessage();
             message.From.Add(EmailConfiguration.FromAddress);
@@ -107,7 +107,7 @@ namespace Server.Misc
                 return;
             }
 
-            var now = DateTime.UtcNow;
+            var now = Core.Now;
             var messageID = $"<{now:yyyyMMdd}.{now:HHmmssff}@{EmailConfiguration.EmailServer}>";
             message.Headers.Add("Message-ID", messageID);
             message.From.Add(EmailConfiguration.FromAddress);

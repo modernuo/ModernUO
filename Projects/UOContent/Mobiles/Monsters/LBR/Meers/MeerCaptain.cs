@@ -81,7 +81,7 @@ namespace Server.Mobiles
             AddItem(new Crossbow());
             PackItem(pack);
 
-            m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
+            m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
         }
 
         public MeerCaptain(Serial serial) : base(serial)
@@ -116,9 +116,9 @@ namespace Server.Mobiles
                 PlaySound(0x1E9);
             }
 
-            if (DateTime.UtcNow >= m_NextAbilityTime)
+            if (Core.Now >= m_NextAbilityTime)
             {
-                m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(10, 15));
+                m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(10, 15));
 
                 var eable = GetMobilesInRange(8);
 

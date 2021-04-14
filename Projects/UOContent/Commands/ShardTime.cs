@@ -13,7 +13,7 @@ namespace Server.Commands
         [Usage("Time"), Description("Returns the server's local time.")]
         private static void Time_OnCommand(CommandEventArgs e)
         {
-            e.Mobile.SendMessage(DateTime.UtcNow.ToString(CultureInfo.InvariantCulture));
+            e.Mobile.SendMessage(Core.Now.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

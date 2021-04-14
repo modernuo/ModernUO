@@ -229,7 +229,7 @@ namespace Server.Gumps
                 {
                     var a = m_List[i];
 
-                    a.SetBanTags(from, DateTime.UtcNow, duration);
+                    a.SetBanTags(from, Core.Now, duration);
 
                     if (comment != null)
                     {

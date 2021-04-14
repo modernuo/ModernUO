@@ -342,7 +342,7 @@ namespace Server.Items
                     return;
                 }
 
-                if (DateTime.UtcNow < NextUse)
+                if (Core.Now < NextUse)
                 {
                     from.SendLocalizedMessage(502406); // This book needs time to recharge.
                     return;
@@ -359,7 +359,7 @@ namespace Server.Items
         {
             if (!Core.SA)
             {
-                NextUse = DateTime.UtcNow + UseDelay;
+                NextUse = Core.Now + UseDelay;
             }
         }
 

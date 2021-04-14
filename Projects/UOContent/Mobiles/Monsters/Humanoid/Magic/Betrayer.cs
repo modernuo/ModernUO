@@ -51,7 +51,7 @@ namespace Server.Mobiles
                 PackItem(new BlackthornWelcomeBook());
             }
 
-            m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(5, 30));
+            m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(5, 30));
         }
 
         public Betrayer(Serial serial)
@@ -148,13 +148,13 @@ namespace Server.Mobiles
         {
             var combatant = Combatant;
 
-            if (DateTime.UtcNow < m_NextAbilityTime || combatant?.Deleted != false || combatant.Map != Map ||
+            if (Core.Now < m_NextAbilityTime || combatant?.Deleted != false || combatant.Map != Map ||
                 !InRange(combatant, 3) || !CanBeHarmful(combatant) || !InLOS(combatant))
             {
                 return;
             }
 
-            m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(5, 30));
+            m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(5, 30));
 
             if (Utility.RandomBool())
             {

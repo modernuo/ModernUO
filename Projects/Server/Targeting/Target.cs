@@ -19,7 +19,7 @@ namespace Server.Targeting
             CheckLOS = true;
         }
 
-        public DateTime TimeoutTime { get; private set; }
+        public long TimeoutTime { get; private set; }
 
         public bool CheckLOS { get; set; }
 
@@ -41,13 +41,13 @@ namespace Server.Targeting
             m.Target?.OnTargetCancel(m, TargetCancelType.Canceled);
         }
 
-        public void BeginTimeout(Mobile from, TimeSpan delay)
+        public void BeginTimeout(Mobile from, long delay)
         {
-            TimeoutTime = DateTime.UtcNow + delay;
+            TimeoutTime = Core.TickCount + delay;
 
             m_TimeoutTimer?.Stop();
 
-            m_TimeoutTimer = new TimeoutTimer(this, from, delay);
+            m_TimeoutTimer = new TimeoutTimer(this, from, TimeSpan.FromMilliseconds(delay));
             m_TimeoutTimer.Start();
         }
 

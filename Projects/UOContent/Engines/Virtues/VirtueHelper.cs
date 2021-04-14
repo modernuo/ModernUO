@@ -112,7 +112,7 @@ namespace Server
         {
             if (virtue == VirtueName.Compassion)
             {
-                if (pm.CompassionGains > 0 && DateTime.UtcNow > pm.NextCompassionDay)
+                if (pm.CompassionGains > 0 && Core.Now > pm.NextCompassionDay)
                 {
                     pm.NextCompassionDay = DateTime.MinValue;
                     pm.CompassionGains = 0;
@@ -142,7 +142,7 @@ namespace Server
 
                 if (virtue == VirtueName.Compassion)
                 {
-                    pm.NextCompassionDay = DateTime.UtcNow + TimeSpan.FromDays(1.0);
+                    pm.NextCompassionDay = Core.Now + TimeSpan.FromDays(1.0);
                     ++pm.CompassionGains;
 
                     if (pm.CompassionGains >= 5)

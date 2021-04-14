@@ -212,7 +212,7 @@ namespace Server.Items
 
             if (!Locked && m_AutoLock)
             {
-                m_RelockTimer = new InternalTimer(this, reader.ReadDeltaTime() - DateTime.UtcNow);
+                m_RelockTimer = new InternalTimer(this, reader.ReadDeltaTime() - Core.Now);
             }
 
             TargetMap = reader.ReadMap();
@@ -229,7 +229,7 @@ namespace Server.Items
             public InternalTimer(MarkContainer container, TimeSpan delay) : base(delay)
             {
                 Container = container;
-                RelockTime = DateTime.UtcNow + delay;
+                RelockTime = Core.Now + delay;
 
                 Start();
             }

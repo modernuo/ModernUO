@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Server.Items;
 using Server.PathAlgorithms;
 using Server.PathAlgorithms.FastAStar;
@@ -71,18 +72,18 @@ namespace Server
         {
             OverrideAlgorithm = alg;
 
-            var start = DateTime.UtcNow.Ticks;
+            var watch = new Stopwatch();
+            watch.Start();
             var path = new MovementPath(from, new Point3D(p));
-            var end = DateTime.UtcNow.Ticks;
-            var len = Math.Round((end - start) / 10000.0, 2);
+            watch.Stop();
 
             if (!path.Success)
             {
-                from.SendMessage("{0} path failed: {1}ms", name, len);
+                from.SendMessage("{0} path failed: {1}ms", name, watch.ElapsedMilliseconds);
             }
             else
             {
-                from.SendMessage("{0} path success: {1}ms", name, len);
+                from.SendMessage("{0} path success: {1}ms", name, watch.ElapsedMilliseconds);
 
                 var x = from.X;
                 var y = from.Y;

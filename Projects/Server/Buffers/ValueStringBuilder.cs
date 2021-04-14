@@ -193,7 +193,7 @@ namespace Server.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void Append(uint value)
         {
-            int bufferLength = Utility.CountDigits(value);
+            int bufferLength = value.CountDigits();
 
             int pos = _length;
             if ((uint)pos + (uint)bufferLength >= _chars.Length)

@@ -24,11 +24,11 @@ namespace Server.Items
             {
                 from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that
             }
-            else if (Visible && (ItemID == 4656 || ItemID == 4702) && DateTime.UtcNow >= m_NextUse)
+            else if (Visible && (ItemID == 4656 || ItemID == 4702) && Core.Now >= m_NextUse)
             {
                 var p = GetWorldLocation();
 
-                if (Utility.Random(Math.Max(Math.Abs(from.X - p.X), Math.Abs(from.Y - p.Y))) < 1)
+                if (Utility.Random(Math.Max((from.X - p.X).Abs(), (from.Y - p.Y).Abs())) < 1)
                 {
                     Effects.PlaySound(from.Location, from.Map, from.GetHurtSound());
                     from.PublicOverheadMessage(MessageType.Regular, from.SpeechHue, true, "Ouch!");
@@ -42,7 +42,7 @@ namespace Server.Items
 
                 Timer.DelayCall(TimeSpan.FromSeconds(5.00), BackUp);
 
-                m_NextUse = DateTime.UtcNow + TimeSpan.FromSeconds(10.0);
+                m_NextUse = Core.Now + TimeSpan.FromSeconds(10.0);
             }
         }
 

@@ -86,7 +86,7 @@ namespace Server.PathAlgorithms.SlowAStar
                     }
                 }
 
-                if (curNode.x == goalNode.x && curNode.y == goalNode.y && Math.Abs(curNode.z - goalNode.z) < 16)
+                if (curNode.x == goalNode.x && curNode.y == goalNode.y && (curNode.z - goalNode.z).Abs() < 16)
                 {
                     if (closedCount == MaxNodes)
                     {

@@ -89,7 +89,7 @@ namespace Server.Text
             return result;
         }
 
-        public static unsafe void GetBytes(string str, Span<byte> bytes)
+        public static unsafe void GetBytes(this string str, Span<byte> bytes)
         {
             fixed (char* strP = str)
             {

@@ -265,7 +265,7 @@ namespace Server.Mobiles
             {
                 var range = 3;
 
-                if (pm.Alive && Math.Abs(Z - pm.Z) < 16 && InRange(m, range) && !InRange(oldLocation, range))
+                if (pm.Alive && (Z - pm.Z).Abs() < 16 && InRange(m, range) && !InRange(oldLocation, range))
                 {
                     if (pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward)
                     {

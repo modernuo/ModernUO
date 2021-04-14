@@ -326,9 +326,8 @@ namespace Server.Network
             ns.Send(writer.Span);
         }
 
-        // TODO: Use DateTime caching against core loop
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendCurrentTime(this NetState ns) => ns.SendCurrentTime(DateTime.UtcNow);
+        public static void SendCurrentTime(this NetState ns) => ns.SendCurrentTime(Core.Now);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SendCurrentTime(this NetState ns, DateTime date) =>

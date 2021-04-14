@@ -108,7 +108,7 @@ namespace Server.Items
             {
                 if (value != m_ReplenishesCharges && value)
                 {
-                    m_LastReplenished = DateTime.UtcNow;
+                    m_LastReplenished = Core.Now;
                 }
 
                 m_ReplenishesCharges = value;
@@ -159,15 +159,15 @@ namespace Server.Items
                 return;
             }
 
-            if (m_LastReplenished + ChargeReplenishRate < DateTime.UtcNow)
+            if (m_LastReplenished + ChargeReplenishRate < Core.Now)
             {
-                var timeDifference = DateTime.UtcNow - m_LastReplenished;
+                var timeDifference = Core.Now - m_LastReplenished;
 
                 m_UsesRemaining = Math.Min(
                     m_UsesRemaining + (int)(timeDifference.Ticks / ChargeReplenishRate.Ticks),
                     InitMaxUses
                 ); // How rude of TimeSpan to not allow timespan division.
-                m_LastReplenished = DateTime.UtcNow;
+                m_LastReplenished = Core.Now;
 
                 if (invalidate)
                 {
