@@ -209,11 +209,11 @@ namespace Server
                 else
                 {
                     Utility.PushColor(ConsoleColor.Red);
-                    Persistence.WriteConsoleLine($"***** Bad deserialize of {t.GetType()} *****");
-                    Persistence.WriteConsoleLine(error);
+                    Persistence.LogInfo($"***** Bad deserialize of {t.GetType()} *****");
+                    Persistence.LogInfo(error);
                     Utility.PopColor();
 
-                    Persistence.WriteConsoleLine("Delete the object and continue? (y/n)");
+                    Persistence.LogInfo("Delete the object and continue? (y/n)");
 
                     if (Console.ReadKey(true).Key != ConsoleKey.Y)
                     {
@@ -240,20 +240,20 @@ namespace Server
 
                 if (t?.IsAbstract != false)
                 {
-                    Persistence.WriteConsoleLine("failed");
+                    Persistence.LogInfo("failed");
 
                     var issue = t?.IsAbstract == true ? "marked abstract" : "not found";
 
-                    Persistence.WriteConsoleLine($"Error: Type '{typeName}' was {issue}. Delete all of those types? (y/n)");
+                    Persistence.LogInfo($"Error: Type '{typeName}' was {issue}. Delete all of those types? (y/n)");
 
                     if (Console.ReadKey(true).Key == ConsoleKey.Y)
                     {
                         types.Add(null);
-                        Persistence.WriteConsole("Loading...");
+                        Persistence.LogInfo("Loading...");
                         continue;
                     }
 
-                    Persistence.WriteConsoleLine("Types will not be deleted. An exception will be thrown.");
+                    Persistence.LogInfo("Types will not be deleted. An exception will be thrown.");
 
                     throw new Exception($"Bad type '{typeName}'");
                 }
