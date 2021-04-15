@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
+using Serilog;
 using Server.Json;
 using Server.Utilities;
 
@@ -32,7 +33,7 @@ namespace Server
             var failures = new List<string>();
             var count = 0;
 
-            Console.Write("Regions: Loading...");
+            Log.Information("Loading regions");
 
             var stopwatch = Stopwatch.StartNew();
             var regions = JsonConfig.Deserialize<List<DynamicJson>>(path);
@@ -58,21 +59,25 @@ namespace Server
 
             stopwatch.Stop();
 
-            Utility.PushColor(failures.Count > 0 ? ConsoleColor.Yellow : ConsoleColor.Green);
-            Console.Write(failures.Count > 0 ? "done with failures" : "done");
-            Utility.PopColor();
-            Console.WriteLine(
-                " ({0} regions, {1} failures) ({2:F2} seconds)",
-                count,
-                failures.Count,
-                stopwatch.Elapsed.TotalSeconds
-            );
-
-            if (failures.Count > 0)
+            if (failures.Count == 0)
             {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine(string.Join(Environment.NewLine, failures));
-                Utility.PopColor();
+                Log.Information(
+                    "Regions loaded ({0} regions, {1} failures) ({2:F2} seconds)",
+                    count,
+                    failures.Count,
+                    stopwatch.Elapsed.TotalSeconds
+                );
+            }
+            else
+            {
+                Log.Warning(
+                    "Failed loading regions ({0} regions, {1} failures) ({2:F2} seconds)",
+                    count,
+                    failures.Count,
+                    stopwatch.Elapsed.TotalSeconds
+                );
+
+                Log.Warning(string.Join(Environment.NewLine, failures));
             }
         }
     }

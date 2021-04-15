@@ -246,7 +246,7 @@ namespace Server
 
             WorldState = WorldState.Loading;
 
-            LogInfo("Loading...");
+            LogInfo("Loading world");
             var watch = Stopwatch.StartNew();
 
             Persistence.Load(_savePath);
@@ -274,15 +274,11 @@ namespace Server
 
             watch.Stop();
 
-            Utility.PushColor(ConsoleColor.Green);
-            Console.Write("done");
-            Utility.PopColor();
-            Console.WriteLine(
-                " ({1} items, {2} mobiles) ({0:F2} seconds)",
+            LogInfo(string.Format("World loaded ({1} items, {2} mobiles) ({0:F2} seconds)",
                 watch.Elapsed.TotalSeconds,
                 Items.Count,
                 Mobiles.Count
-            );
+            ));
 
             WorldState = WorldState.Running;
         }
