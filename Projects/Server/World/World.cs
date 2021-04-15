@@ -155,7 +155,7 @@ namespace Server
         {
             if (WorldState != WorldState.Saving)
             {
-                WriteConsoleLine($"Attempting to queue {item} for decay but the world is not saving");
+                LogInfo($"Attempting to queue {item} for decay but the world is not saving");
                 return;
             }
 
@@ -246,7 +246,7 @@ namespace Server
 
             WorldState = WorldState.Loading;
 
-            WriteConsoleLine("Loading...");
+            LogInfo("Loading...");
             var watch = Stopwatch.StartNew();
 
             Persistence.Load(_savePath);
@@ -310,7 +310,7 @@ namespace Server
             var message =
                 $"Warning: Attempted to {action} {entity} during world save.{Environment.NewLine}This action could cause inconsistent state.{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
 
-            WriteConsoleLine(message);
+            LogInfo(message);
 
             try
             {
@@ -384,7 +384,7 @@ namespace Server
             try
             {
                 var watch = Stopwatch.StartNew();
-                WriteConsoleLine("Writing snapshot...");
+                LogInfo("Writing snapshot...");
 
                 Persistence.WriteSnapshot(tempPath);
 
@@ -476,7 +476,7 @@ namespace Server
 
             var now = DateTime.UtcNow;
 
-            WriteConsoleLine("Saving...");
+            LogInfo("Saving...");
 
             var watch = Stopwatch.StartNew();
 
@@ -594,7 +594,7 @@ namespace Server
                         if (_pendingDelete.Remove(entity.Serial))
                         {
                             Utility.PushColor(ConsoleColor.Red);
-                            WriteConsoleLine($"Deleted then added {entity.GetType().Name} during {WorldState.ToString()} state.");
+                            LogInfo($"Deleted then added {entity.GetType().Name} during {WorldState.ToString()} state.");
                             Utility.PopColor();
                         }
                         _pendingAdd[entity.Serial] = entity;
@@ -659,7 +659,7 @@ namespace Server
         public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WriteConsoleLine(string message)
+        private static void LogInfo(string message)
         {
             Log.ForContext<World>().Information(message);
         }
