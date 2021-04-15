@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Serilog;
 using Server.Guilds;
 using Server.Network;
 
@@ -35,7 +36,7 @@ namespace Server
         WritingSave
     }
 
-    public static class World
+    public class World
     {
         private static readonly ManualResetEvent m_DiskWriteHandle = new(true);
         private static readonly Dictionary<Serial, IEntity> _pendingAdd = new();
@@ -245,7 +246,7 @@ namespace Server
 
             WorldState = WorldState.Loading;
 
-            WriteConsole("Loading...");
+            WriteConsoleLine("Loading...");
             var watch = Stopwatch.StartNew();
 
             Persistence.Load(_savePath);
@@ -383,7 +384,7 @@ namespace Server
             try
             {
                 var watch = Stopwatch.StartNew();
-                WriteConsole("Writing snapshot...");
+                WriteConsoleLine("Writing snapshot...");
 
                 Persistence.WriteSnapshot(tempPath);
 
@@ -475,7 +476,7 @@ namespace Server
 
             var now = DateTime.UtcNow;
 
-            WriteConsole("Saving...");
+            WriteConsoleLine("Saving...");
 
             var watch = Stopwatch.StartNew();
 
@@ -658,17 +659,9 @@ namespace Server
         public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WriteConsole(string message)
-        {
-            var now = DateTime.UtcNow;
-            Console.Write("[{0} {1}] World: {2}", now.ToShortDateString(), now.ToLongTimeString(), message);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void WriteConsoleLine(string message)
         {
-            var now = DateTime.UtcNow;
-            Console.WriteLine("[{0} {1}] World: {2}", now.ToShortDateString(), now.ToLongTimeString(), message);
+            Log.ForContext<World>().Information(message);
         }
     }
 }
