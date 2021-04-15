@@ -232,6 +232,8 @@ namespace Server
                 m_Settings.Expansion = expansion;
             }
 
+            Core.Expansion = m_Settings.Expansion.Value;
+
             if (updated)
             {
                 Save();
