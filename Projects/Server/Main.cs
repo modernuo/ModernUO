@@ -613,12 +613,6 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void WriteConsole(string message)
-        {
-            Console.Write("Core: {0}", message);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void LogInfo(string message)
         {
             Log.ForContext<Core>().Information(message);
