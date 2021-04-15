@@ -128,7 +128,7 @@ namespace Server.Network
             while (++count <= MaxConnectionsPerLoop && _connectedQueue.TryDequeue(out var ns))
             {
                 Instances.Add(ns);
-                ns.WriteConsole("Connected. [{0} Online]", Instances.Count);
+                ns.LogInfo("Connected. [{0} Online]", Instances.Count);
                 ns.Start();
             }
 

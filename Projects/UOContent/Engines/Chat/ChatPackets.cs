@@ -73,7 +73,7 @@ namespace Server.Engines.Chat
 
                 if (handler == null)
                 {
-                    state.WriteConsole("Unknown chat action 0x{0:X}: {1}", actionID, param);
+                    state.LogInfo("Unknown chat action 0x{0:X}: {1}", actionID, param);
                     return;
                 }
 

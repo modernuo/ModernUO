@@ -344,15 +344,15 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteConsole(string text)
+        public void LogInfo(string text)
         {
             Log.ForContext<NetState>().Information("Client: {0}: {1}", this, text);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteConsole(string format, params object[] args)
+        public void LogInfo(string format, params object[] args)
         {
-            WriteConsole(string.Format(format, args));
+            LogInfo(string.Format(format, args));
         }
 
         public void AddMenu(IMenu menu)
@@ -365,7 +365,7 @@ namespace Server.Network
             }
             else
             {
-                WriteConsole("Exceeded menu cap, disconnecting...");
+                LogInfo("Exceeded menu cap, disconnecting...");
                 Disconnect("Exceeded menu cap.");
             }
         }
@@ -395,7 +395,7 @@ namespace Server.Network
             }
             else
             {
-                WriteConsole("Exceeded hue picker cap, disconnecting...");
+                LogInfo("Exceeded hue picker cap, disconnecting...");
                 Disconnect("Exceeded hue picker cap.");
             }
         }
@@ -425,7 +425,7 @@ namespace Server.Network
             }
             else
             {
-                WriteConsole("Exceeded gump cap, disconnecting...");
+                LogInfo("Exceeded gump cap, disconnecting...");
                 Disconnect("Exceeded gump cap.");
             }
         }
@@ -623,7 +623,7 @@ namespace Server.Network
                                 {
                                     if (packetId != 0xCF && packetId != 0x80)
                                     {
-                                        WriteConsole("Possible encrypted client detected, disconnecting...");
+                                        LogInfo("Possible encrypted client detected, disconnecting...");
                                         HandleError(packetId, packetLength);
                                         return true;
                                     }
@@ -741,7 +741,7 @@ namespace Server.Network
             PacketHandler handler = GetHandler(packetId);
             if (handler == null)
             {
-                WriteConsole($"received unknown packet 0x{packetId:X2} while in state {_protocolState}");
+                LogInfo($"received unknown packet 0x{packetId:X2} while in state {_protocolState}");
                 packetLength = length;
                 return ParserState.Error;
             }
@@ -772,7 +772,7 @@ namespace Server.Network
             {
                 if (Mobile == null)
                 {
-                    WriteConsole($"received packet 0x{packetId:X2} before having been attached to a mobile");
+                    LogInfo($"received packet 0x{packetId:X2} before having been attached to a mobile");
                     return ParserState.Error;
                 }
 
@@ -1016,7 +1016,7 @@ namespace Server.Network
         {
             if (Connection != null && _nextActivityCheck - curTicks < 0)
             {
-                WriteConsole("Disconnecting due to inactivity...");
+                LogInfo("Disconnecting due to inactivity...");
                 Disconnect("Disconnecting due to inactivity.");
             }
         }
@@ -1148,11 +1148,11 @@ namespace Server.Network
 
             if (a != null)
             {
-                WriteConsole("Disconnected. [{0} Online] [{1}]", count, a);
+                LogInfo("Disconnected. [{0} Online] [{1}]", count, a);
             }
             else
             {
-                WriteConsole("Disconnected. [{0} Online]", count);
+                LogInfo("Disconnected. [{0} Online]", count);
             }
         }
     }
