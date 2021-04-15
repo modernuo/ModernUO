@@ -6,6 +6,9 @@ using Server.Gumps;
 using Server.Targeting;
 using CPA = Server.CommandPropertyAttribute;
 
+using static Server.Attributes;
+using static Server.Types;
+
 namespace Server.Commands
 {
     [Flags]
@@ -18,31 +21,7 @@ namespace Server.Commands
 
     public static class Properties
     {
-        private static readonly Type typeofCPA = typeof(CPA);
-
-        private static readonly Type typeofSerial = typeof(Serial);
-
-        private static readonly Type typeofType = typeof(Type);
-
-        private static readonly Type typeofChar = typeof(char);
-
-        private static readonly Type typeofString = typeof(string);
-
-        private static readonly Type typeofText = typeof(TextDefinition);
-
-        private static readonly Type typeofTimeSpan = typeof(TimeSpan);
-        private static readonly Type typeofParsable = typeof(ParsableAttribute);
-
-        private static readonly Type[] m_ParseTypes = { typeof(string) };
         private static readonly object[] m_ParseParams = new object[1];
-
-        private static readonly Type[] m_NumericTypes =
-        {
-            typeof(byte), typeof(sbyte),
-            typeof(short), typeof(ushort),
-            typeof(int), typeof(uint),
-            typeof(long), typeof(ulong)
-        };
 
         public static void Initialize()
         {
@@ -77,18 +56,6 @@ namespace Server.Commands
         }
 
         private static bool CIEqual(string l, string r) => l.InsensitiveEquals(r);
-
-        public static CPA GetCPA(PropertyInfo p)
-        {
-            var attrs = p.GetCustomAttributes(typeofCPA, false);
-
-            if (attrs.Length == 0)
-            {
-                return null;
-            }
-
-            return attrs[0] as CPA;
-        }
 
         public static PropertyInfo[] GetPropertyInfoChain(
             Mobile from, Type type, string propertyString,
@@ -401,30 +368,14 @@ namespace Server.Commands
             return p == null ? failReason : InternalSetValue(from, logObject, o, p, name, value, true);
         }
 
-        private static bool IsSerial(Type t) => t == typeofSerial;
-
-        private static bool IsType(Type t) => t == typeofType;
-
-        private static bool IsChar(Type t) => t == typeofChar;
-
-        private static bool IsString(Type t) => t == typeofString;
-
-        private static bool IsText(Type t) => t == typeofText;
-
-        private static bool IsEnum(Type t) => t.IsEnum;
-
-        private static bool IsParsable(Type t) => t == typeofTimeSpan || t.IsDefined(typeofParsable, false);
-
         private static object Parse(object o, Type t, string value)
         {
-            var method = t.GetMethod("Parse", m_ParseTypes);
+            var method = t.GetMethod("Parse", ParseTypes);
 
             m_ParseParams[0] = value;
 
             return method?.Invoke(o, m_ParseParams);
         }
-
-        private static bool IsNumeric(Type t) => Array.IndexOf(m_NumericTypes, t) >= 0;
 
         public static string ConstructFromString(Type type, object obj, string value, ref object constructed)
         {
@@ -433,7 +384,7 @@ namespace Server.Commands
 
             if (isSerial) // mutate into int32
             {
-                type = m_NumericTypes[4];
+                type = OfInt;
             }
 
             if (value == "(-null-)" && !type.IsValueType)
@@ -621,111 +572,6 @@ namespace Server.Commands
 
 namespace Server
 {
-    public abstract class PropertyException : Exception
-    {
-        protected Property m_Property;
-
-        public PropertyException(Property property, string message)
-            : base(message) =>
-            m_Property = property;
-
-        public Property Property => m_Property;
-    }
-
-    public abstract class BindingException : PropertyException
-    {
-        public BindingException(Property property, string message)
-            : base(property, message)
-        {
-        }
-    }
-
-    public sealed class NotYetBoundException : BindingException
-    {
-        public NotYetBoundException(Property property)
-            : base(property, "Property has not yet been bound.")
-        {
-        }
-    }
-
-    public sealed class AlreadyBoundException : BindingException
-    {
-        public AlreadyBoundException(Property property)
-            : base(property, "Property has already been bound.")
-        {
-        }
-    }
-
-    public sealed class UnknownPropertyException : BindingException
-    {
-        public UnknownPropertyException(Property property, string current)
-            : base(property, $"Property '{current}' not found.")
-        {
-        }
-    }
-
-    public sealed class ReadOnlyException : BindingException
-    {
-        public ReadOnlyException(Property property)
-            : base(property, "Property is read-only.")
-        {
-        }
-    }
-
-    public sealed class WriteOnlyException : BindingException
-    {
-        public WriteOnlyException(Property property)
-            : base(property, "Property is write-only.")
-        {
-        }
-    }
-
-    public abstract class AccessException : PropertyException
-    {
-        public AccessException(Property property, string message)
-            : base(property, message)
-        {
-        }
-    }
-
-    public sealed class InternalAccessException : AccessException
-    {
-        public InternalAccessException(Property property)
-            : base(property, "Property is internal.")
-        {
-        }
-    }
-
-    public abstract class ClearanceException : AccessException
-    {
-        public ClearanceException(Property property, AccessLevel playerAccess, AccessLevel neededAccess, string accessType)
-            : base(
-                property,
-                $"You must be at least {Mobile.GetAccessLevelName(neededAccess)} to {accessType} this property."
-            )
-        {
-        }
-
-        public AccessLevel PlayerAccess { get; set; }
-        public AccessLevel NeededAccess { get; set; }
-    }
-
-    public sealed class ReadAccessException : ClearanceException
-    {
-        public ReadAccessException(Property property, AccessLevel playerAccess, AccessLevel neededAccess)
-            : base(property, playerAccess, neededAccess, "read")
-        {
-        }
-    }
-
-    public sealed class WriteAccessException : ClearanceException
-    {
-        public WriteAccessException(Property property, AccessLevel playerAccess, AccessLevel neededAccess)
-            : base(property, playerAccess, neededAccess, "write")
-        {
-        }
-    }
-
     public sealed class Property
     {
         private PropertyInfo[] m_Chain;
@@ -788,7 +634,7 @@ namespace Server
                     access |= PropertyAccess.Read;
                 }
 
-                var security = Properties.GetCPA(prop);
+                var security = GetCPA(prop);
 
                 if (security == null)
                 {

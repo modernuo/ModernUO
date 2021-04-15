@@ -6,38 +6,14 @@ using System.Text;
 using Server.Items;
 using CPA = Server.CommandPropertyAttribute;
 
+using static Server.Attributes;
+using static Server.Types;
+
 namespace Server.Commands
 {
     public static class Add
     {
-        private static readonly Type m_EntityType = typeof(IEntity);
-
-        private static readonly Type m_ConstructibleType = typeof(ConstructibleAttribute);
-
-        private static readonly Type m_EnumType = typeof(Enum);
-
-        private static readonly Type m_TypeType = typeof(Type);
-
-        private static readonly Type m_ParsableType = typeof(ParsableAttribute);
-
-        private static readonly Type[] m_ParseTypes = { typeof(string) };
         private static readonly object[] m_ParseArgs = new object[1];
-
-        private static readonly Type[] m_SignedNumerics =
-        {
-            typeof(long),
-            typeof(int),
-            typeof(short),
-            typeof(sbyte)
-        };
-
-        private static readonly Type[] m_UnsignedNumerics =
-        {
-            typeof(ulong),
-            typeof(uint),
-            typeof(ushort),
-            typeof(byte)
-        };
 
         public static void Initialize()
         {
@@ -193,7 +169,7 @@ namespace Server.Commands
                     }
                     else
                     {
-                        var attr = Properties.GetCPA(thisProp);
+                        var attr = GetCPA(thisProp);
 
                         if (attr == null)
                         {
@@ -759,54 +735,19 @@ namespace Server.Commands
             InternalAvg_OnCommand(e, true);
         }
 
-        public static bool IsEntity(Type t) => m_EntityType.IsAssignableFrom(t);
+        public static bool IsEnum(Type type) => type.IsSubclassOf(OfEnum);
 
-        public static bool IsConstructible(ConstructorInfo ctor, AccessLevel accessLevel)
-        {
-            var attrs = ctor.GetCustomAttributes(m_ConstructibleType, false);
+        public static bool IsType(Type type) => type == OfType || type.IsSubclassOf(OfType);
 
-            return attrs.Length != 0 && accessLevel >= ((ConstructibleAttribute)attrs[0]).AccessLevel;
-        }
-
-        public static bool IsEnum(Type type) => type.IsSubclassOf(m_EnumType);
-
-        public static bool IsType(Type type) => type == m_TypeType || type.IsSubclassOf(m_TypeType);
-
-        public static bool IsParsable(Type type) => type.IsDefined(m_ParsableType, false);
+        public static bool IsParsable(Type type) => type.IsDefined(OfParsable, false);
 
         public static object ParseParsable(Type type, string value)
         {
-            var method = type.GetMethod("Parse", m_ParseTypes);
+            var method = type.GetMethod("Parse", ParseTypes);
 
             m_ParseArgs[0] = value;
 
             return method?.Invoke(null, m_ParseArgs);
-        }
-
-        public static bool IsSignedNumeric(Type type)
-        {
-            for (var i = 0; i < m_SignedNumerics.Length; ++i)
-            {
-                if (type == m_SignedNumerics[i])
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool IsUnsignedNumeric(Type type)
-        {
-            for (var i = 0; i < m_UnsignedNumerics.Length; ++i)
-            {
-                if (type == m_UnsignedNumerics[i])
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private enum TileZType

@@ -15,9 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using Server.Commands;
 using Server.Commands.Generic;
 using Server.Network;
+
+using static Server.Types;
 
 namespace Server.Engines.Spawners
 {
@@ -59,7 +60,7 @@ namespace Server.Engines.Spawners
 
             var type = AssemblyHandler.FindTypeByName(name);
 
-            if (!Add.IsEntity(type))
+            if (!IsEntity(type))
             {
                 LogFailure("No type with that name was found.");
                 return;

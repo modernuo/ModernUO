@@ -10,6 +10,8 @@ using Server.Mobiles;
 using Server.Utilities;
 using CPA = Server.CommandPropertyAttribute;
 
+using static Server.Attributes;
+
 namespace Server.Engines.Spawners
 {
     public abstract class BaseSpawner : Item, ISpawner
@@ -529,7 +531,7 @@ namespace Server.Engines.Spawners
                         return null;
                     }
 
-                    var attr = Properties.GetCPA(thisProp);
+                    var attr = GetCPA(thisProp);
 
                     if (attr == null || attr.WriteLevel > AccessLevel.Developer || !thisProp.CanWrite || attr.ReadOnly)
                     {
@@ -600,7 +602,7 @@ namespace Server.Engines.Spawners
                 if (paramargs.Length == 0)
                 {
                     entity = type.CreateInstance<IEntity>(
-                        ci => Add.IsConstructible(ci, AccessLevel.Developer)
+                        ci => IsConstructible(ci, AccessLevel.Developer)
                     );
                 }
                 else
@@ -611,7 +613,7 @@ namespace Server.Engines.Spawners
                     {
                         var ctor = ctors[i];
 
-                        if (Add.IsConstructible(ctor, AccessLevel.Developer))
+                        if (IsConstructible(ctor, AccessLevel.Developer))
                         {
                             var paramList = ctor.GetParameters();
 
