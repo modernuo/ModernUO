@@ -23,6 +23,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Serilog;
 using Server.Accounting;
 using Server.Diagnostics;
 using Server.Gumps;
@@ -345,7 +346,7 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteConsole(string text)
         {
-            Console.WriteLine("Client: {0}: {1}", this, text);
+            Log.ForContext<NetState>().Information("Client: {0}: {1}", this, text);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
