@@ -20,6 +20,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using Serilog;
 
 namespace Server.Network
 {
@@ -75,7 +76,7 @@ namespace Server.Network
 
             foreach (var ipep in listeningAddresses)
             {
-                Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
+                Log.Information("Listening: {0}:{1}", ipep.Address, ipep.Port);
             }
 
             ListeningAddresses = listeningAddresses.ToArray();
@@ -104,17 +105,16 @@ namespace Server.Network
                 // WSAEADDRINUSE
                 if (se.ErrorCode == 10048)
                 {
-                    Console.WriteLine("Listener: {0}:{1}: Failed (In Use)", ipep.Address, ipep.Port);
+                    Log.Warning("Listener: {0}:{1}: Failed (In Use)", ipep.Address, ipep.Port);
                 }
                 // WSAEADDRNOTAVAIL
                 else if (se.ErrorCode == 10049)
                 {
-                    Console.WriteLine("Listener {0}:{1}: Failed (Unavailable)", ipep.Address, ipep.Port);
+                    Log.Warning("Listener {0}:{1}: Failed (Unavailable)", ipep.Address, ipep.Port);
                 }
                 else
                 {
-                    Console.WriteLine("Listener Exception:");
-                    Console.WriteLine(se);
+                    Log.Warning(se, "Listener Exception:");
                 }
             }
 
@@ -154,7 +154,7 @@ namespace Server.Network
                             if (socket.RemoteEndPoint is IPEndPoint ipep)
                             {
                                 var ip = ipep.Address.ToString();
-                                Console.WriteLine("Listener {0}: Failed (Maximum connections reached)", ip);
+                                Log.Warning("Listener {0}: Failed (Maximum connections reached)", ip);
                                 NetState.TraceDisconnect("Maximum connections reached.", ip);
                             }
 
