@@ -178,20 +178,16 @@ namespace Server
 
             if (File.Exists(m_FilePath))
             {
-                Core.WriteConsole($"Reading server configuration from {m_RelPath}...");
+                Core.LogInfo($"Reading server configuration from {m_RelPath}...");
                 m_Settings = JsonConfig.Deserialize<ServerSettings>(m_FilePath);
 
                 if (m_Settings == null)
                 {
-                    Utility.PushColor(ConsoleColor.Red);
-                    Console.WriteLine("failed");
-                    Utility.PopColor();
+                    Core.LogError($"Reading server configuration failed");
                     throw new FileNotFoundException($"Failed to deserialize {m_FilePath}.");
                 }
 
-                Utility.PushColor(ConsoleColor.Green);
-                Console.WriteLine("done");
-                Utility.PopColor();
+                Core.LogInfo($"Reading server configuration done");
             }
             else
             {
@@ -236,7 +232,7 @@ namespace Server
             {
                 Save();
                 Utility.PushColor(ConsoleColor.Green);
-                Core.WriteConsoleLine($"Server configuration saved to {m_RelPath}.");
+                Core.LogInfo($"Server configuration saved to {m_RelPath}.");
                 Utility.PopColor();
             }
         }
@@ -261,7 +257,7 @@ namespace Server
                     return;
                 }
 
-                Core.WriteConsoleLine($"Invalid option. ({input})");
+                Core.LogInfo($"Invalid option. ({input})");
             } while (true);
         }
 
@@ -299,7 +295,7 @@ namespace Server
                     return expansion;
                 }
 
-                Core.WriteConsoleLine($"Invalid expansion. ({input})");
+                Core.LogInfo($"Invalid expansion. ({input})");
             } while (true);
         }
 
@@ -321,11 +317,11 @@ namespace Server
                 if (Directory.Exists(directory))
                 {
                     directories.Add(directory);
-                    Core.WriteConsoleLine($"Path {directory} added.");
+                    Core.LogInfo($"Path {directory} added.");
                 }
                 else
                 {
-                    Core.WriteConsoleLine($"Path does not exist. ({directory})");
+                    Core.LogInfo($"Path does not exist. ({directory})");
                 }
             } while (true);
 
@@ -358,11 +354,11 @@ namespace Server
                 if (IPEndPoint.TryParse(ipStr, out var ip))
                 {
                     ips.Add(ip);
-                    Core.WriteConsoleLine($"Core: {ipStr} added.");
+                    Core.LogInfo($"Core: {ipStr} added.");
                 }
                 else
                 {
-                    Core.WriteConsoleLine($"{ipStr} is not a valid IP or port");
+                    Core.LogInfo($"{ipStr} is not a valid IP or port");
                 }
             } while (true);
 

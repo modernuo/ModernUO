@@ -31,7 +31,7 @@ using Server.Network;
 
 namespace Server
 {
-    public static class Core
+    public class Core
     {
         private static bool _crashed;
         private static Thread _timerThread;
@@ -298,7 +298,7 @@ namespace Server
                 _ => "CTRL+C"
             };
 
-            WriteConsoleLine($"Detected {keypress} pressed.");
+            LogInfo($"Detected {keypress} pressed.");
             e.Cancel = true;
             Kill();
         }
@@ -361,7 +361,8 @@ namespace Server
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console()
+                .WriteTo.Console(
+                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} <s:{SourceContext}>{NewLine}{Exception}")
                 .CreateLogger();
 
             _eventLoopContext = new EventLoopContext();
@@ -415,7 +416,7 @@ namespace Server
             ".TrimMultiline());
             Utility.PopColor();
 
-            WriteConsoleLine($"Running on {RuntimeInformation.FrameworkDescription}");
+            LogInfo($"Running on {RuntimeInformation.FrameworkDescription}");
 
             var ttObj = new Timer.TimerThread();
             _timerThread = new Thread(ttObj.TimerMain)
@@ -427,7 +428,7 @@ namespace Server
 
             if (s.Length > 0)
             {
-                WriteConsoleLine($"Running with arguments: {s}");
+                LogInfo($"Running with arguments: {s}");
             }
 
             ProcessorCount = Environment.ProcessorCount;
@@ -439,17 +440,17 @@ namespace Server
 
             if (MultiProcessor)
             {
-                WriteConsoleLine($"Optimizing for {ProcessorCount} processor{(ProcessorCount == 1 ? "" : "s")}");
+                LogInfo($"Optimizing for {ProcessorCount} processor{(ProcessorCount == 1 ? "" : "s")}");
             }
 
             Console.CancelKeyPress += Console_CancelKeyPressed;
 
             if (GCSettings.IsServerGC)
             {
-                WriteConsoleLine(": Server garbage collection mode enabled");
+                LogInfo("Server garbage collection mode enabled");
             }
 
-            WriteConsoleLine($"High resolution timing ({(Stopwatch.IsHighResolution ? "Supported" : "Unsupported")})");
+            LogInfo($"High resolution timing ({(Stopwatch.IsHighResolution ? "Supported" : "Unsupported")})");
 
             ServerConfiguration.Load();
 
@@ -618,9 +619,15 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void WriteConsoleLine(string message)
+        internal static void LogInfo(string message)
         {
-            Console.WriteLine("Core: {0}", message);
+            Log.ForContext<Core>().Information(message);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void LogError(string message)
+        {
+            Log.ForContext<Core>().Warning(message);
         }
     }
 }
