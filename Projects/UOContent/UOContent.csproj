@@ -35,11 +35,6 @@
         <Delete Files="..\..\Distribution\Assemblies\Zstd.Binaries.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
-      <Compile Remove="Special Systems\Archievements\**" />
-      <EmbeddedResource Remove="Special Systems\Archievements\**" />
-      <None Remove="Special Systems\Archievements\**" />
-    </ItemGroup>
-    <ItemGroup>
         <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>
@@ -64,5 +59,6 @@
     <ItemGroup>
       <Folder Include="Special Systems\Items\Magic Jewelry\" />
       <Folder Include="Special Systems\Misc\Pirates\" />
+      <Folder Include="Special Systems\Bosses\" />
     </ItemGroup>
 </Project>

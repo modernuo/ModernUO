@@ -3,14 +3,14 @@ using Server.Mobiles;
 using System;
 
 
-namespace Scripts.Mythik.Systems.Achievements
+namespace Scripts.Systems.Achievements
 {
-   
+
     class AchieveData
     {
         //public int ID { get; set; }
         public int Progress { get; set; }
-        public DateTime? CompletedOn { get; set; }
+        public DateTime CompletedOn { get; set; } = DateTime.MinValue;
 
         public AchieveData()
         {
@@ -24,7 +24,7 @@ namespace Scripts.Mythik.Systems.Achievements
         {
             writer.Write(1); // version
             writer.Write(Progress);
-            writer.Write(CompletedOn.ToString());
+            writer.Write(CompletedOn);
 
         }
         public void Deserialize(IGenericReader reader)

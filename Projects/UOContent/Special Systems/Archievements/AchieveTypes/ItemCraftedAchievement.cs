@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scripts.Mythik.Systems.Achievements
+namespace Scripts.Systems.Achievements
 {
 
     public class ItemCraftedAchievement : BaseAchievement
@@ -17,7 +17,7 @@ namespace Scripts.Mythik.Systems.Achievements
         {
             m_Item = item;
             EventSink.CraftSuccess += EventSink_CraftSuccess;
-            
+
         }
 
         private void EventSink_CraftSuccess(Mobile m, Item item, Item tool)
@@ -28,6 +28,6 @@ namespace Scripts.Mythik.Systems.Achievements
             }
         }
 
-       
+
     }
 }

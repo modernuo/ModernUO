@@ -1226,6 +1226,8 @@ namespace Server.Engines.Craft
 
                     from.AddToBackpack(item);
 
+                    EventSink.InvokeCraftSuccess(from, item, tool is Item ? (Item)tool : null);
+
                     if (from.AccessLevel > AccessLevel.Player)
                     {
                         CommandLogging.WriteLine(

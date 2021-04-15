@@ -4,7 +4,7 @@ using Server.Network;
 using System.Linq;
 using System;
 
-namespace Scripts.Mythik.Systems.Achievements.Gumps
+namespace Scripts.Systems.Achievements.Gumps
 {
     class AchievementGump : Gump
     {
@@ -13,7 +13,7 @@ namespace Scripts.Mythik.Systems.Achievements.Gumps
 
         public AchievementGump(Dictionary<int, AchieveData> achieves, int total,int category = 1) : base(25, 25)
         {
-            
+
             m_curAchieves = achieves;
             m_curTotal = total;
             this.Closable = true;
@@ -44,7 +44,7 @@ namespace Scripts.Mythik.Systems.Achievements.Gumps
                 int x = 90;
                 int bgID = 9200;
                 var cat = AchievementSystem.Categories[i];
-               
+
                 if (cat.Parent != 0 && cat.ID != reqCat.ID && cat.Parent != reqCat.ID && cat.Parent != reqCat.Parent)
                     continue;
                 if(cat.Parent != 0)
@@ -60,17 +60,17 @@ namespace Scripts.Mythik.Systems.Achievements.Gumps
                 this.AddLabel(x + 32, 125 + (cnt * 31), 0, cat.Name);
                 cnt++;
             }
-            cnt = 0; 
+            cnt = 0;
             foreach( var ac in AchievementSystem.Achievements)
             {
-                
+
                 if (ac.CategoryID == category)
                 {
                     if(ac.PreReq != null)
                     {
                         if (!achieves.ContainsKey(ac.PreReq.ID))
                             continue;
-                        if(achieves[ac.PreReq.ID].CompletedOn != null)
+                        if(achieves[ac.PreReq.ID].CompletedOn != DateTime.MinValue)
                             continue;
 
                     }
@@ -85,10 +85,10 @@ namespace Scripts.Mythik.Systems.Achievements.Gumps
                         AddAchieve(ac, cnt,null);
                     }
                     cnt++;
-                }                
+                }
             }
         }
-        
+
         private void AddAchieve(BaseAchievement ac, int i, AchieveData acheiveData)
         {
             int index = i % 4;
@@ -100,7 +100,7 @@ namespace Scripts.Mythik.Systems.Achievements.Gumps
                 this.AddButton(345, 524, 4014, 4015, 0, GumpButtonType.Page, i/4);
             }
             int bg = 9350;
-            if (acheiveData != null && acheiveData.CompletedOn != null)
+            if (acheiveData != null && acheiveData.CompletedOn != DateTime.MinValue)
                 bg = 9300;
             this.AddBackground(340, 122 + (index * 100), 347, 97, bg);
             this.AddLabel(414, 131 + (index * 100), 49, ac.Title);
@@ -110,12 +110,12 @@ namespace Scripts.Mythik.Systems.Achievements.Gumps
 
             var step = 95.0 / ac.CompletionTotal;
             var progress = 0;
-            if (acheiveData != null && acheiveData.CompletedOn != null)
+            if (acheiveData != null && acheiveData.CompletedOn != DateTime.MinValue)
                 progress = acheiveData.Progress;
 
             this.AddImageTiled(416, 203 + (index * 100), (int)(progress * step), 9, 9752);
             this.AddHtml(413, 152 + (index * 100), 194, 47,ac.Desc, (bool)true, (bool)true);
-            if (acheiveData != null && acheiveData.CompletedOn != null)
+            if (acheiveData != null && acheiveData.CompletedOn != DateTime.MinValue)
                 this.AddLabel(566, 127 + (index * 100), 32, acheiveData.CompletedOn.ToString());
 
             if(ac.CompletionTotal > 1)

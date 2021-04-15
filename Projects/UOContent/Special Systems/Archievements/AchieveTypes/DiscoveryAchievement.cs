@@ -3,7 +3,7 @@ using Server.Mobiles;
 using System;
 
 
-namespace Scripts.Mythik.Systems.Achievements
+namespace Scripts.Systems.Achievements
 {
     public class DiscoveryAchievement : BaseAchievement
     {

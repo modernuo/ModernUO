@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scripts.Mythik.Systems.Achievements.AchieveTypes
+namespace Scripts.Systems.Achievements.AchieveTypes
 {
     /// <summary>
     /// Achievement to handle hitting X in skill Y

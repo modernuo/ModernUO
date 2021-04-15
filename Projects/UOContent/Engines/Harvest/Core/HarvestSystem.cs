@@ -208,10 +208,11 @@ namespace Server.Engines.Harvest
                         }
 
                         var bonus = def.GetBonusResource();
+                        Item bonusItem = null;
 
                         if (bonus?.Type != null && skillBase >= bonus.ReqSkill)
                         {
-                            var bonusItem = Construct(bonus.Type, from);
+                            bonusItem = Construct(bonus.Type, from);
 
                             if (Give(from, bonusItem, true)
                             ) // Bonuses always allow placing at feet, even if pack is full irregrdless of def
@@ -223,6 +224,8 @@ namespace Server.Engines.Harvest
                                 item.Delete();
                             }
                         }
+
+                        EventSink.InvokeResourceHarvestSuccess(from, tool, item, bonusItem);
 
                         if (tool is IUsesRemaining toolWithUses)
                         {

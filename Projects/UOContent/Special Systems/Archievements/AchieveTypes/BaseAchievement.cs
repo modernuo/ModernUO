@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scripts.Mythik.Systems.Achievements
+namespace Scripts.Systems.Achievements
 {
     /// <summary>
     /// Base Achievement Class.

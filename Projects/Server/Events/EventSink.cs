@@ -155,6 +155,22 @@ namespace Server
         public static void InvokeTargetByResourceMacro(Mobile m, Item item, short resourceType) =>
             TargetByResourceMacro?.Invoke(m, item, resourceType);
 
-        
+        public static event Action<Mobile, Item, Item> CraftSuccess;
+        public static void InvokeCraftSuccess(Mobile m, Item item, Item tool) =>
+            CraftSuccess?.Invoke(m, item, tool);
+
+        public static event Action<Mobile, Item, Item, Item> ResourceHarvestSuccess;
+        public static void InvokeResourceHarvestSuccess(Mobile m, Item tool, Item item, Item bonusItem) =>
+            ResourceHarvestSuccess?.Invoke(m, tool, item, bonusItem);
+
+        public static event Action<Mobile, Mobile> OnKilledBy;
+        public static void InvokeOnKilledBy(Mobile killed, Mobile killedBy) =>
+            OnKilledBy?.Invoke(killed, killedBy);
+
+        public static event Action<Mobile, Region, Region> OnEnterRegion;
+        public static void InvokeOnEnterRegion(Mobile m, Region oldRegion, Region newRegion) =>
+            OnEnterRegion?.Invoke(m, oldRegion, newRegion);
+
+
     }
 }

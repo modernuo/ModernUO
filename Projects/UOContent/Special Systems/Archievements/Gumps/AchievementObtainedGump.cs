@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scripts.Mythik.Systems.Achievements.Gumps
+namespace Scripts.Systems.Achievements.Gumps
 {
     class AchievementObtainedGump : Gump
     {
