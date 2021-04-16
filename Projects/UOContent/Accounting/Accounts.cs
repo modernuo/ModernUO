@@ -38,7 +38,7 @@ namespace Server.Accounting
         public static int Count => _accountsByName.Count;
 
         public static void Configure() =>
-            Persistence.Register(Serialize, WriteSnapshot, Deserialize);
+            Persistence.Register("Accounts", Serialize, WriteSnapshot, Deserialize);
 
         internal static void Serialize() =>
             EntityPersistence.SaveEntities(_accountsById.Values, account => account.Serialize());
