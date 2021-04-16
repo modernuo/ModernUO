@@ -66,8 +66,9 @@ namespace Server
                 try
                 {
                     using FileStream bin = new FileStream(binPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    var br = new BufferReader(GC.AllocateUninitializedArray<byte>((int)bin.Length));
-                    deserializer(br);
+                    var buffer = GC.AllocateUninitializedArray<byte>((int)bin.Length);
+                    bin.Read(buffer);
+                    deserializer(new BufferReader(buffer));
                 }
                 catch (Exception e)
                 {
