@@ -12,6 +12,7 @@ namespace Benchmarks
         private const string text = "Sample message";
 
         private Logger logger;
+        private Logger asyncLogger;
 
         [IterationSetup]
         public void IterationSetup()
@@ -19,12 +20,17 @@ namespace Benchmarks
             logger = new LoggerConfiguration()
                 .WriteTo.Console()
                 .CreateLogger();
+
+            asyncLogger = new LoggerConfiguration()
+                .WriteTo.Async(a => a.Console())
+                .CreateLogger();
         }
 
         [IterationCleanup]
         public void IterationCleanup()
         {
             logger = null;
+            asyncLogger = null;
         }
 
         [Benchmark]
@@ -42,6 +48,15 @@ namespace Benchmarks
             for (int i = 0; i < 100; i++)
             {
                 logger.Information(text);
+            }
+        }
+
+        [Benchmark]
+        public void TestSerilogAsyncConsoleSink()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                asyncLogger.Information(text);
             }
         }
     }
