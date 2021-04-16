@@ -1,5 +1,4 @@
 using BenchmarkDotNet.Running;
-using Benchmarks.BenchmarkText;
 
 namespace Benchmarks
 {
@@ -12,7 +11,8 @@ namespace Benchmarks
             // var broadcast = BenchmarkRunner.Run<BenchmarkPacketBroadcast>();
             // var stringHelpers = BenchmarkRunner.Run<BenchmarkStringHelpers>();
             // var indexList = BenchmarkRunner.Run<BenchmarkOrderedHashSet>();
-            var textEncoding = BenchmarkRunner.Run<BenchmarkTextEncoding>();
+            // var textEncoding = BenchmarkRunner.Run<BenchmarkTextEncoding>();
+            var logging = BenchmarkRunner.Run<BenchmarkConsoleLogging>();
         }
     }
 }
