@@ -25,9 +25,10 @@ namespace Server
     {
         public const int DefaultPriority = 100;
 
-        public static readonly SortedSet<RegistryEntry> _registry = new(new RegistryEntryComparer());
+        private static readonly SortedSet<RegistryEntry> _registry = new(new RegistryEntryComparer());
 
         public static void Register(
+            string name,
             Action serializer,
             Action<string> snapshotWriter,
             Action<string> deserializer,
@@ -37,6 +38,7 @@ namespace Server
             _registry.Add(
                 new RegistryEntry
                 {
+                    Name = name,
                     Priority = priority,
                     Serialize = serializer,
                     WriteSnapshot = snapshotWriter,
@@ -67,8 +69,9 @@ namespace Server
             }
         }
 
-        public class RegistryEntry
+        public record RegistryEntry
         {
+            public string Name { get; init; }
             public int Priority { get; init; }
             public Action Serialize { get; init; } // Serializing to memory buffers
             public Action<string> WriteSnapshot { get; init; }
@@ -77,8 +80,29 @@ namespace Server
 
         internal class RegistryEntryComparer : IComparer<RegistryEntry>
         {
-            public int Compare(RegistryEntry x, RegistryEntry y) =>
-                x?.Priority.CompareTo(y?.Priority) ?? 1;
+            public int Compare(RegistryEntry x, RegistryEntry y)
+            {
+                if (x == y)
+                {
+                    return 0;
+                }
+
+                if (x == null)
+                {
+                    return 1;
+                }
+
+                if (y == null)
+                {
+                    return -1;
+                }
+
+                // First sort by priority
+                var cmp = x.Priority.CompareTo(y.Priority);
+
+                // Then alphabetically. We won't allow the same entry (by name) twice in the SortedSet
+                return cmp != 0 ? cmp : x.Name?.CompareOrdinal(y.Name) ?? -1;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
