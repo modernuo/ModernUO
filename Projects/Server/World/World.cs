@@ -142,7 +142,7 @@ namespace Server
             _savePath = Path.Combine(Core.BaseDirectory, savePath);
 
             // Mobiles & Items
-            Persistence.Register(SaveEntities, WriteEntities, LoadEntities, 1);
+            Persistence.Register("Mobiles & Items", SaveEntities, WriteEntities, LoadEntities, 1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
