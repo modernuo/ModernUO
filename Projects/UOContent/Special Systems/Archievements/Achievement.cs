@@ -22,7 +22,8 @@ namespace Scripts.Systems.Achievements
         }
         public void Serialize(IGenericWriter writer)
         {
-            writer.Write(1); // version
+
+            writer.Write(0); // version
             writer.Write(Progress);
             writer.Write(CompletedOn);
 
@@ -32,6 +33,7 @@ namespace Scripts.Systems.Achievements
             int version = reader.ReadInt();
             Progress = reader.ReadInt();
             CompletedOn = reader.ReadDateTime();
+
         }
 
     }

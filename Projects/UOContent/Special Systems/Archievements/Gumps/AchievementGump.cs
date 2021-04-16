@@ -110,13 +110,15 @@ namespace Scripts.Systems.Achievements.Gumps
 
             var step = 95.0 / ac.CompletionTotal;
             var progress = 0;
-            if (acheiveData != null && acheiveData.CompletedOn != DateTime.MinValue)
+            // Todo
+            //if (acheiveData != null && acheiveData.CompletedOn != DateTime.MinValue)
+             //   progress = acheiveData.Progress;
+            if(acheiveData != null)
                 progress = acheiveData.Progress;
-
             this.AddImageTiled(416, 203 + (index * 100), (int)(progress * step), 9, 9752);
             this.AddHtml(413, 152 + (index * 100), 194, 47,ac.Desc, (bool)true, (bool)true);
             if (acheiveData != null && acheiveData.CompletedOn != DateTime.MinValue)
-                this.AddLabel(566, 127 + (index * 100), 32, acheiveData.CompletedOn.ToString());
+                this.AddLabel(530, 127 + (index * 100), 32, acheiveData.CompletedOn.ToString());
 
             if(ac.CompletionTotal > 1)
                 this.AddLabel(522, 196 + (index * 100), 0, progress + @" / " + ac.CompletionTotal);

@@ -68,7 +68,6 @@ namespace Scripts.Systems.Achievements
         public static void Deserialize(IGenericReader reader)
         {
             var version = reader.ReadEncodedInt();
-
             switch (version)
             {
                 case 0:
@@ -84,6 +83,7 @@ namespace Scripts.Systems.Achievements
                         {
                             var id = reader.ReadUInt();
                             int iCount = reader.ReadInt();
+
 
                             var dict = new Dictionary<int, AchieveData>();
 
@@ -436,8 +436,7 @@ namespace Scripts.Systems.Achievements
             Achievements.Add(slay150dragon);
             Achievements.Add(slay400dragon);
             CommandSystem.Register("feats", AccessLevel.Player, new CommandEventHandler(OpenGumpCommand));
-            //EventSink.WorldSave += EventSink_WorldSave;
-            //Deserialize(IGenericWriter writer);
+            
         }
 
         public static void OpenGump(Mobile from, Mobile target)
@@ -462,17 +461,32 @@ namespace Scripts.Systems.Achievements
             OpenGump(e.Mobile, e.Mobile);
         }
 
+        internal static int GetArchievementPoints(PlayerMobile player, BaseAchievement ach)
+        {
+            var achieves = m_featData[player.Serial];
+
+            if (achieves.ContainsKey(ach.ID))
+            {
+                return achieves[ach.ID].Progress;
+
+            }
+
+            return 0;
+        }
+
         internal static void SetAchievementStatus(PlayerMobile player, BaseAchievement ach, int progress)
         {
             if (!m_featData.ContainsKey(player.Serial))
                 m_featData.Add(player.Serial, new Dictionary<int, AchieveData>());
             var achieves = m_featData[player.Serial];
 
+
             if (achieves.ContainsKey(ach.ID))
             {
                 if (achieves[ach.ID].Progress >= ach.CompletionTotal)
                     return;
                 achieves[ach.ID].Progress += progress;
+
             }
             else
             {
