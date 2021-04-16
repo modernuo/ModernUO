@@ -59,7 +59,7 @@ namespace Server.Network
                 return;
             }
 
-            var writer = new SpanWriter(stackalloc byte[8]);
+            var writer = new SpanWriter(stackalloc byte[17]);
             writer.Write((byte)0x6F); // Packet ID
             writer.Write((ushort)17); // Length
             writer.Write((byte)TradeFlag.Close);
@@ -81,7 +81,7 @@ namespace Server.Network
                 return;
             }
 
-            var writer = new SpanWriter(stackalloc byte[16]);
+            var writer = new SpanWriter(stackalloc byte[17]);
             writer.Write((byte)0x6F); // Packet ID
             writer.Write((ushort)17); // Length
             writer.Write((byte)flag);
