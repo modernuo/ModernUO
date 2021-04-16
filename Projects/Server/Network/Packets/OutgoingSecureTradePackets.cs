@@ -59,14 +59,11 @@ namespace Server.Network
                 return;
             }
 
-            var writer = new SpanWriter(stackalloc byte[17]);
+            var writer = new SpanWriter(stackalloc byte[8]);
             writer.Write((byte)0x6F); // Packet ID
-            writer.Write((ushort)17); // Length
+            writer.Write((ushort)8); // Length
             writer.Write((byte)TradeFlag.Close);
             writer.Write(cont.Serial);
-            writer.Write(0);
-            writer.Write(0);
-            writer.Write(false);
 
             ns.Send(writer.Span);
         }
@@ -81,14 +78,13 @@ namespace Server.Network
                 return;
             }
 
-            var writer = new SpanWriter(stackalloc byte[17]);
+            var writer = new SpanWriter(stackalloc byte[16]);
             writer.Write((byte)0x6F); // Packet ID
-            writer.Write((ushort)17); // Length
+            writer.Write((ushort)16); // Length
             writer.Write((byte)flag);
             writer.Write(cont.Serial);
             writer.Write(first);
             writer.Write(second);
-            writer.Write(false);
 
             ns.Send(writer.Span);
         }
