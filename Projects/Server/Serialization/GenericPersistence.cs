@@ -78,7 +78,7 @@ namespace Server
                 }
             }
 
-            Persistence.Register(Serialize, WriterSnapshot, Deserialize, priority);
+            Persistence.Register(name, Serialize, WriterSnapshot, Deserialize, priority);
         }
     }
 }
