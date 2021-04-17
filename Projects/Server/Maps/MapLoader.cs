@@ -19,13 +19,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Serilog;
 using Server.Json;
+using Server.Logging;
 
 namespace Server
 {
     public static class MapLoader
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(MapLoader));
+
         /* Here we configure all maps. Some notes:
          *
          * 1) The first 32 maps are reserved for core use.
@@ -53,7 +55,7 @@ namespace Server
 
             var path = Path.Combine(Core.BaseDirectory, "Data/map-definitions.json");
 
-            Log.Information("Loading Map Definitions");
+            logger.Information("Loading Map Definitions");
 
             var stopwatch = Stopwatch.StartNew();
             var maps = JsonConfig.Deserialize<List<MapDefinition>>(path);
@@ -88,7 +90,7 @@ namespace Server
 
             if (failures.Count > 0)
             {
-                Log.Warning(
+                logger.Warning(
                     "Map Definitions loaded with failures ({0} maps, {1} failures) ({2:F2} seconds)",
                     count,
                     failures.Count,
@@ -97,12 +99,12 @@ namespace Server
 
                 if (failures.Count > 0)
                 {
-                    Log.Warning(string.Join(Environment.NewLine, failures));
+                    logger.Warning(string.Join(Environment.NewLine, failures));
                 }
             }
             else
             {
-                Log.Information(
+                logger.Information(
                     "Map Definitions loaded successfully ({0} maps, {1} failures) ({2:F2} seconds)",
                     count,
                     failures.Count,

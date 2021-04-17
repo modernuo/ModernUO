@@ -25,14 +25,16 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Serilog;
 using Server.Json;
+using Server.Logging;
 using Server.Network;
 
 namespace Server
 {
-    public class Core
+    public static class Core
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Core));
+
         private static bool _crashed;
         private static Thread _timerThread;
         private static string _baseDirectory;
@@ -298,7 +300,7 @@ namespace Server
                 _ => "CTRL+C"
             };
 
-            LogInfo($"Detected {keypress} pressed.");
+            logger.Information($"Detected {keypress} pressed.");
             e.Cancel = true;
             Kill();
         }
@@ -360,11 +362,6 @@ namespace Server
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
-            Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console(
-                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} <s:{SourceContext}>{NewLine}{Exception}")
-                .CreateLogger();
-
             _eventLoopContext = new EventLoopContext();
 
             SynchronizationContext.SetSynchronizationContext(_eventLoopContext);
@@ -416,7 +413,7 @@ namespace Server
             ".TrimMultiline());
             Utility.PopColor();
 
-            LogInfo($"Running on {RuntimeInformation.FrameworkDescription}");
+            logger.Information($"Running on {RuntimeInformation.FrameworkDescription}");
 
             var ttObj = new Timer.TimerThread();
             _timerThread = new Thread(ttObj.TimerMain)
@@ -428,7 +425,7 @@ namespace Server
 
             if (s.Length > 0)
             {
-                LogInfo($"Running with arguments: {s}");
+                logger.Information($"Running with arguments: {s}");
             }
 
             ProcessorCount = Environment.ProcessorCount;
@@ -440,17 +437,17 @@ namespace Server
 
             if (MultiProcessor)
             {
-                LogInfo($"Optimizing for {ProcessorCount} processor{(ProcessorCount == 1 ? "" : "s")}");
+                logger.Information($"Optimizing for {ProcessorCount} processor{(ProcessorCount == 1 ? "" : "s")}");
             }
 
             Console.CancelKeyPress += Console_CancelKeyPressed;
 
             if (GCSettings.IsServerGC)
             {
-                LogInfo("Server garbage collection mode enabled");
+                logger.Information("Server garbage collection mode enabled");
             }
 
-            LogInfo($"High resolution timing ({(Stopwatch.IsHighResolution ? "Supported" : "Unsupported")})");
+            logger.Information($"High resolution timing ({(Stopwatch.IsHighResolution ? "Supported" : "Unsupported")})");
 
             ServerConfiguration.Load();
 
@@ -610,18 +607,6 @@ namespace Server
             {
                 Parallel.ForEach(assembly.GetTypes(), VerifyType);
             }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void LogInfo(string message)
-        {
-            Log.ForContext<Core>().Information(message);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void LogError(string message)
-        {
-            Log.ForContext<Core>().Warning(message);
         }
     }
 }

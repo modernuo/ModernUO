@@ -15,15 +15,17 @@
 
 using System;
 using System.Diagnostics;
-using Serilog;
+using Server.Logging;
 
 namespace Server
 {
     internal static class TileMatrixLoader
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(TileMatrixLoader));
+
         internal static void LoadTileMatrix()
         {
-            Log.Information("Loading maps");
+            logger.Information("Loading maps");
 
             var stopwatch = Stopwatch.StartNew();
             Exception exception = null;
@@ -44,11 +46,11 @@ namespace Server
 
             if (exception == null)
             {
-                Log.Information("Maps loaded ({0:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
+                logger.Information("Maps loaded ({0:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
             }
             else
             {
-                Log.Error(exception, "Loading maps failed ({0:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
+                logger.Error(exception, "Loading maps failed ({0:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
                 throw exception;
             }
         }

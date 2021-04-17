@@ -16,9 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Serilog;
 
 namespace Server
 {
@@ -104,12 +102,6 @@ namespace Server
                 // Then alphabetically. We won't allow the same entry (by name) twice in the SortedSet
                 return cmp != 0 ? cmp : x.Name?.CompareOrdinal(y.Name) ?? -1;
             }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void LogInfo(string message)
-        {
-            Log.ForContext<Persistence>().Information(message);
         }
 
         public static void TraceException(Exception ex)

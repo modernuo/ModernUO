@@ -19,11 +19,14 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using Server.Json;
+using Server.Logging;
 
 namespace Server
 {
     public static class ServerConfiguration
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(ServerConfiguration));
+
         private const string m_RelPath = "Configuration/modernuo.json";
         private static readonly string m_FilePath = Path.Join(Core.BaseDirectory, m_RelPath);
         private static ServerSettings m_Settings;
@@ -178,16 +181,16 @@ namespace Server
 
             if (File.Exists(m_FilePath))
             {
-                Core.LogInfo($"Reading server configuration from {m_RelPath}...");
+                logger.Information($"Reading server configuration from {m_RelPath}...");
                 m_Settings = JsonConfig.Deserialize<ServerSettings>(m_FilePath);
 
                 if (m_Settings == null)
                 {
-                    Core.LogError($"Reading server configuration failed");
+                    logger.Error($"Reading server configuration failed");
                     throw new FileNotFoundException($"Failed to deserialize {m_FilePath}.");
                 }
 
-                Core.LogInfo($"Reading server configuration done");
+                logger.Information($"Reading server configuration done");
             }
             else
             {
@@ -233,9 +236,7 @@ namespace Server
             if (updated)
             {
                 Save();
-                Utility.PushColor(ConsoleColor.Green);
-                Core.LogInfo($"Server configuration saved to {m_RelPath}.");
-                Utility.PopColor();
+                logger.Information($"Server configuration saved to {m_RelPath}.");
             }
         }
 
@@ -259,7 +260,7 @@ namespace Server
                     return;
                 }
 
-                Core.LogInfo($"Invalid option. ({input})");
+                logger.Information($"Invalid option. ({input})");
             } while (true);
         }
 
@@ -297,7 +298,7 @@ namespace Server
                     return expansion;
                 }
 
-                Core.LogInfo($"Invalid expansion. ({input})");
+                logger.Information($"Invalid expansion. ({input})");
             } while (true);
         }
 
@@ -319,11 +320,11 @@ namespace Server
                 if (Directory.Exists(directory))
                 {
                     directories.Add(directory);
-                    Core.LogInfo($"Path {directory} added.");
+                    logger.Information($"Path {directory} added.");
                 }
                 else
                 {
-                    Core.LogInfo($"Path does not exist. ({directory})");
+                    logger.Information($"Path does not exist. ({directory})");
                 }
             } while (true);
 
@@ -356,11 +357,11 @@ namespace Server
                 if (IPEndPoint.TryParse(ipStr, out var ip))
                 {
                     ips.Add(ip);
-                    Core.LogInfo($"Core: {ipStr} added.");
+                    logger.Information($"Core: {ipStr} added.");
                 }
                 else
                 {
-                    Core.LogInfo($"{ipStr} is not a valid IP or port");
+                    logger.Information($"{ipStr} is not a valid IP or port");
                 }
             } while (true);
 

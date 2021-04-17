@@ -17,18 +17,17 @@ using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Serilog;
 using Server.Accounting;
 using Server.Diagnostics;
 using Server.Gumps;
 using Server.HuePickers;
 using Server.Items;
+using Server.Logging;
 using Server.Menus;
 
 namespace Server.Network
@@ -40,6 +39,8 @@ namespace Server.Network
 
     public partial class NetState : IComparable<NetState>
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(NetState));
+
         private const int RecvPipeSize = 1024 * 64;
         private const int SendPipeSize = 1024 * 256;
         private static int GumpCap = 512;
@@ -346,7 +347,7 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LogInfo(string text)
         {
-            Log.ForContext<NetState>().Information("Client: {0}: {1}", this, text);
+            logger.Information("Client: {0}: {1}", this, text);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

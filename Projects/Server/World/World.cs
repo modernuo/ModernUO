@@ -21,8 +21,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Serilog;
 using Server.Guilds;
+using Server.Logging;
 using Server.Network;
 
 namespace Server
@@ -36,8 +36,10 @@ namespace Server
         WritingSave
     }
 
-    public class World
+    public static class World
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(World));
+
         private static readonly ManualResetEvent m_DiskWriteHandle = new(true);
         private static readonly Dictionary<Serial, IEntity> _pendingAdd = new();
         private static readonly Dictionary<Serial, IEntity> _pendingDelete = new();
@@ -155,7 +157,7 @@ namespace Server
         {
             if (WorldState != WorldState.Saving)
             {
-                LogInfo($"Attempting to queue {item} for decay but the world is not saving");
+                logger.Warning($"Attempting to queue {item} for decay but the world is not saving");
                 return;
             }
 
@@ -246,7 +248,7 @@ namespace Server
 
             WorldState = WorldState.Loading;
 
-            LogInfo("Loading world");
+            logger.Information("Loading world");
             var watch = Stopwatch.StartNew();
 
             Persistence.Load(_savePath);
@@ -274,7 +276,7 @@ namespace Server
 
             watch.Stop();
 
-            LogInfo(string.Format("World loaded ({1} items, {2} mobiles) ({0:F2} seconds)",
+            logger.Information(string.Format("World loaded ({1} items, {2} mobiles) ({0:F2} seconds)",
                 watch.Elapsed.TotalSeconds,
                 Items.Count,
                 Mobiles.Count
@@ -306,7 +308,7 @@ namespace Server
             var message =
                 $"Warning: Attempted to {action} {entity} during world save.{Environment.NewLine}This action could cause inconsistent state.{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
 
-            LogInfo(message);
+            logger.Information(message);
 
             try
             {
@@ -380,7 +382,7 @@ namespace Server
             try
             {
                 var watch = Stopwatch.StartNew();
-                LogInfo("Writing snapshot...");
+                logger.Information("Writing snapshot...");
 
                 Persistence.WriteSnapshot(tempPath);
 
@@ -472,7 +474,7 @@ namespace Server
 
             var now = DateTime.UtcNow;
 
-            LogInfo("Saving...");
+            logger.Information("Saving world");
 
             var watch = Stopwatch.StartNew();
 
@@ -589,9 +591,7 @@ namespace Server
                     {
                         if (_pendingDelete.Remove(entity.Serial))
                         {
-                            Utility.PushColor(ConsoleColor.Red);
-                            LogInfo($"Deleted then added {entity.GetType().Name} during {WorldState.ToString()} state.");
-                            Utility.PopColor();
+                            logger.Warning($"Deleted then added {entity.GetType().Name} during {WorldState.ToString()} state.");
                         }
                         _pendingAdd[entity.Serial] = entity;
                         break;
@@ -653,11 +653,5 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void LogInfo(string message)
-        {
-            Log.ForContext<World>().Information(message);
-        }
     }
 }

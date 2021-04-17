@@ -20,12 +20,14 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using Serilog;
+using Server.Logging;
 
 namespace Server.Network
 {
     public static class TcpServer
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(TcpServer));
+
         private const int MaxConnectionsPerLoop = 250;
 
         // Sanity. 256 * 1024 * 4096 = ~1.3GB of ram
@@ -76,7 +78,7 @@ namespace Server.Network
 
             foreach (var ipep in listeningAddresses)
             {
-                Log.Information("Listening: {0}:{1}", ipep.Address, ipep.Port);
+                logger.Information("Listening: {0}:{1}", ipep.Address, ipep.Port);
             }
 
             ListeningAddresses = listeningAddresses.ToArray();
@@ -105,16 +107,16 @@ namespace Server.Network
                 // WSAEADDRINUSE
                 if (se.ErrorCode == 10048)
                 {
-                    Log.Warning("Listener: {0}:{1}: Failed (In Use)", ipep.Address, ipep.Port);
+                    logger.Warning("Listener: {0}:{1}: Failed (In Use)", ipep.Address, ipep.Port);
                 }
                 // WSAEADDRNOTAVAIL
                 else if (se.ErrorCode == 10049)
                 {
-                    Log.Warning("Listener {0}:{1}: Failed (Unavailable)", ipep.Address, ipep.Port);
+                    logger.Warning("Listener {0}:{1}: Failed (Unavailable)", ipep.Address, ipep.Port);
                 }
                 else
                 {
-                    Log.Warning(se, "Listener Exception:");
+                    logger.Warning(se, "Listener Exception:");
                 }
             }
 
@@ -154,7 +156,7 @@ namespace Server.Network
                             if (socket.RemoteEndPoint is IPEndPoint ipep)
                             {
                                 var ip = ipep.Address.ToString();
-                                Log.Warning("Listener {0}: Failed (Maximum connections reached)", ip);
+                                logger.Warning("Listener {0}: Failed (Maximum connections reached)", ip);
                                 NetState.TraceDisconnect("Maximum connections reached.", ip);
                             }
 

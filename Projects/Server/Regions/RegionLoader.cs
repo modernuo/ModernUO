@@ -18,14 +18,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
-using Serilog;
 using Server.Json;
+using Server.Logging;
 using Server.Utilities;
 
 namespace Server
 {
     internal static class RegionLoader
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(RegionLoader));
+
         internal static void LoadRegions()
         {
             var path = Path.Join(Core.BaseDirectory, "Data/regions.json");
@@ -33,7 +35,7 @@ namespace Server
             var failures = new List<string>();
             var count = 0;
 
-            Log.Information("Loading regions");
+            logger.Information("Loading regions");
 
             var stopwatch = Stopwatch.StartNew();
             var regions = JsonConfig.Deserialize<List<DynamicJson>>(path);
@@ -61,7 +63,7 @@ namespace Server
 
             if (failures.Count == 0)
             {
-                Log.Information(
+                logger.Information(
                     "Regions loaded ({0} regions, {1} failures) ({2:F2} seconds)",
                     count,
                     failures.Count,
@@ -70,14 +72,14 @@ namespace Server
             }
             else
             {
-                Log.Warning(
+                logger.Warning(
                     "Failed loading regions ({0} regions, {1} failures) ({2:F2} seconds)",
                     count,
                     failures.Count,
                     stopwatch.Elapsed.TotalSeconds
                 );
 
-                Log.Warning(string.Join(Environment.NewLine, failures));
+                logger.Warning(string.Join(Environment.NewLine, failures));
             }
         }
     }
