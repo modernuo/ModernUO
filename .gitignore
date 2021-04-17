@@ -9,8 +9,8 @@
 /Distribution/Backups
 /Distribution/Saves
 /Distribution/docs
-/Distribution/libz.dylib
-/Distribution/libz.so
+/Distribution/*.dylib
+/Distribution/*.so
 /Distribution/*.dll
 /Distribution/runtimes
 /Distribution/nohup.out
