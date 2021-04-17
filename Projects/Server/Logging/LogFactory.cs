@@ -22,9 +22,9 @@ namespace Server.Logging
     public static class LogFactory
     {
         private static readonly Serilog.ILogger serilogLogger = new LoggerConfiguration()
-            .WriteTo.Console(
+            .WriteTo.Async(a => a.Console(
                 outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} <s:{SourceContext}>{NewLine}{Exception}"
-            )
+            ))
             .CreateLogger();
 
         private static readonly Dictionary<Type, ILogger> m_Loggers = new();
