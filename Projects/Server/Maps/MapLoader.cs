@@ -97,10 +97,7 @@ namespace Server
                     stopwatch.Elapsed.TotalSeconds
                 );
 
-                if (failures.Count > 0)
-                {
-                    logger.Warning(string.Join(Environment.NewLine, failures));
-                }
+                logger.Warning(string.Join(Environment.NewLine, failures));
             }
             else
             {
