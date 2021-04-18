@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using Serilog;
 
 namespace Server.Logging
@@ -27,18 +26,6 @@ namespace Server.Logging
             ))
             .CreateLogger();
 
-        private static readonly Dictionary<Type, ILogger> m_Loggers = new();
-
-        public static ILogger GetLogger(Type declaringType)
-        {
-            if (m_Loggers.ContainsKey(declaringType))
-            {
-                return m_Loggers[declaringType];
-            }
-
-            return m_Loggers[declaringType] = CreateLogger(declaringType);
-        }
-
-        private static ILogger CreateLogger(Type declaringType) => new SerilogLogger(serilogLogger.ForContext(declaringType));
+        public static ILogger GetLogger(Type declaringType) => new SerilogLogger(serilogLogger.ForContext(declaringType));
     }
 }
