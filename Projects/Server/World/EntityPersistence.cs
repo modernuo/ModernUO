@@ -169,6 +169,8 @@ namespace Server
             {
                 T t = entry.Entity;
 
+                var position = bin.Position;
+
                 // Skip this entry
                 if (t == null)
                 {
@@ -219,7 +221,10 @@ namespace Server
                     {
                         throw new Exception("Deserialization failed.");
                     }
+
                     t.Delete();
+                    // Skip this entry
+                    bin.Seek(position + entry.Length, SeekOrigin.Begin);
                 }
             }
         }
