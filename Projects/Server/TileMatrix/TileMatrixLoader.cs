@@ -15,14 +15,17 @@
 
 using System;
 using System.Diagnostics;
+using Server.Logging;
 
 namespace Server
 {
     internal static class TileMatrixLoader
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(TileMatrixLoader));
+
         internal static void LoadTileMatrix()
         {
-            Console.Write("Maps: Loading...");
+            logger.Information("Loading maps");
 
             var stopwatch = Stopwatch.StartNew();
             Exception exception = null;
@@ -41,14 +44,13 @@ namespace Server
 
             stopwatch.Stop();
 
-            Utility.PushColor(exception != null ? ConsoleColor.Yellow : ConsoleColor.Green);
-            Console.Write(exception != null ? "failed" : "done");
-            Utility.PopColor();
-            Console.WriteLine(" ({0:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
-
-            if (exception != null)
+            if (exception == null)
             {
-                Console.WriteLine(exception);
+                logger.Information("Maps loaded ({0:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
+            }
+            else
+            {
+                logger.Error(exception, "Loading maps failed ({0:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
                 throw exception;
             }
         }

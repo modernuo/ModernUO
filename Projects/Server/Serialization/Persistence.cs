@@ -16,18 +16,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Server
 {
-    public static class Persistence
+    public class Persistence
     {
         public const int DefaultPriority = 100;
 
-        public static readonly SortedSet<RegistryEntry> _registry = new(new RegistryEntryComparer());
+        private static readonly SortedSet<RegistryEntry> _registry = new(new RegistryEntryComparer());
 
         public static void Register(
+            string name,
             Action serializer,
             Action<string> snapshotWriter,
             Action<string> deserializer,
@@ -37,6 +37,7 @@ namespace Server
             _registry.Add(
                 new RegistryEntry
                 {
+                    Name = name,
                     Priority = priority,
                     Serialize = serializer,
                     WriteSnapshot = snapshotWriter,
@@ -67,8 +68,9 @@ namespace Server
             }
         }
 
-        public class RegistryEntry
+        public record RegistryEntry
         {
+            public string Name { get; init; }
             public int Priority { get; init; }
             public Action Serialize { get; init; } // Serializing to memory buffers
             public Action<string> WriteSnapshot { get; init; }
@@ -77,22 +79,29 @@ namespace Server
 
         internal class RegistryEntryComparer : IComparer<RegistryEntry>
         {
-            public int Compare(RegistryEntry x, RegistryEntry y) =>
-                x?.Priority.CompareTo(y?.Priority) ?? 1;
-        }
+            public int Compare(RegistryEntry x, RegistryEntry y)
+            {
+                if (x == y)
+                {
+                    return 0;
+                }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteConsole(string message)
-        {
-            var now = Core.Now;
-            Console.Write("[{0} {1}] Persistence: {2}", now.ToShortDateString(), now.ToLongTimeString(), message);
-        }
+                if (x == null)
+                {
+                    return 1;
+                }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteConsoleLine(string message)
-        {
-            var now = Core.Now;
-            Console.WriteLine("[{0} {1}] Persistence: {2}", now.ToShortDateString(), now.ToLongTimeString(), message);
+                if (y == null)
+                {
+                    return -1;
+                }
+
+                // First sort by priority
+                var cmp = x.Priority.CompareTo(y.Priority);
+
+                // Then alphabetically. We won't allow the same entry (by name) twice in the SortedSet
+                return cmp != 0 ? cmp : x.Name?.CompareOrdinal(y.Name) ?? -1;
+            }
         }
 
         public static void TraceException(Exception ex)

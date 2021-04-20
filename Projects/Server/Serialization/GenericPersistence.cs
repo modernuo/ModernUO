@@ -66,19 +66,20 @@ namespace Server
                 try
                 {
                     using FileStream bin = new FileStream(binPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    var br = new BufferReader(GC.AllocateUninitializedArray<byte>((int)bin.Length));
-                    deserializer(br);
+                    var buffer = GC.AllocateUninitializedArray<byte>((int)bin.Length);
+                    bin.Read(buffer);
+                    deserializer(new BufferReader(buffer));
                 }
                 catch (Exception e)
                 {
                     Utility.PushColor(ConsoleColor.Red);
-                    Persistence.WriteConsoleLine($"***** Bad deserialize of {name} *****");
-                    Persistence.WriteConsoleLine(e.ToString());
+                    Console.WriteLine($"***** Bad deserialize of {name} *****");
+                    Console.WriteLine(e.ToString());
                     Utility.PopColor();
                 }
             }
 
-            Persistence.Register(Serialize, WriterSnapshot, Deserialize, priority);
+            Persistence.Register(name, Serialize, WriterSnapshot, Deserialize, priority);
         }
     }
 }

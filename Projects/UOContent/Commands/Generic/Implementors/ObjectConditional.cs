@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 
+using static Server.Types;
+
 namespace Server.Commands.Generic
 {
     public sealed class ObjectConditional
     {
-        private static readonly Type typeofItem = typeof(Item);
-        private static readonly Type typeofMobile = typeof(Mobile);
-
         public static readonly ObjectConditional Empty = new(null, null);
 
         private readonly ICondition[][] m_Conditions;
@@ -22,9 +21,9 @@ namespace Server.Commands.Generic
 
         public Type Type { get; }
 
-        public bool IsItem => Type == null || Type == typeofItem || Type.IsSubclassOf(typeofItem);
+        public bool IsItem => Type == null || Type.IsAssignableTo(OfItem);
 
-        public bool IsMobile => Type == null || Type == typeofMobile || Type.IsSubclassOf(typeofMobile);
+        public bool IsMobile => Type == null || Type.IsAssignableTo(OfMobile);
 
         public bool HasCompiled => m_Conditionals != null;
 

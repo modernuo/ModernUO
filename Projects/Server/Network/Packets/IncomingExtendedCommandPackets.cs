@@ -120,7 +120,7 @@ namespace Server.Network
             {
                 if (state.Mobile == null)
                 {
-                    state.WriteConsole(
+                    state.LogInfo(
                         "Sent in-game packet (0xBFx{0:X2}) before having been attached to a mobile",
                         packetId
                     );

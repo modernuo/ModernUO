@@ -171,7 +171,7 @@ namespace Server.Misc
         {
             if (ns.Connection != null)
             {
-                ns.WriteConsole("Disconnecting, bad version");
+                ns.LogInfo("Disconnecting, bad version");
                 ns.Disconnect($"Invalid client version {ns.Version}.");
             }
         }

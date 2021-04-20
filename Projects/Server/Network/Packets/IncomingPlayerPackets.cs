@@ -203,7 +203,7 @@ namespace Server.Network
                     }
                 default:
                     {
-                        state.WriteConsole("Unknown text-command type 0x{0:X2}: {1}", state, type, command);
+                        state.LogInfo("Unknown text-command type 0x{0:X2}: {1}", state, type, command);
                         break;
                     }
             }
@@ -373,7 +373,7 @@ namespace Server.Network
 
                 if (!buttonExists)
                 {
-                    state.WriteConsole("Invalid gump response, disconnecting...");
+                    state.LogInfo("Invalid gump response, disconnecting...");
                     var exception = new InvalidGumpResponseException($"Button {buttonID} doesn't exist");
                     exception.SetStackTrace(new StackTrace());
                     NetState.TraceException(exception);
@@ -387,7 +387,7 @@ namespace Server.Network
 
                 if (switchCount < 0 || switchCount > gump.m_Switches)
                 {
-                    state.WriteConsole("Invalid gump response, disconnecting...");
+                    state.LogInfo("Invalid gump response, disconnecting...");
                     var exception = new InvalidGumpResponseException($"Bad switch count {switchCount}");
                     exception.SetStackTrace(new StackTrace());
                     NetState.TraceException(exception);
@@ -408,7 +408,7 @@ namespace Server.Network
 
                 if (textCount < 0 || textCount > gump.m_TextEntries)
                 {
-                    state.WriteConsole("Invalid gump response, disconnecting...");
+                    state.LogInfo("Invalid gump response, disconnecting...");
                     var exception = new InvalidGumpResponseException($"Bad text entry count {textCount}");
                     exception.SetStackTrace(new StackTrace());
                     NetState.TraceException(exception);
@@ -427,7 +427,7 @@ namespace Server.Network
 
                     if (textLength > 239)
                     {
-                        state.WriteConsole("Invalid gump response, disconnecting...");
+                        state.LogInfo("Invalid gump response, disconnecting...");
                         var exception = new InvalidGumpResponseException($"Text entry {i} is too long ({textLength})");
                         exception.SetStackTrace(new StackTrace());
                         NetState.TraceException(exception);
@@ -614,7 +614,7 @@ namespace Server.Network
 
             if (ph.Ingame && state.Mobile == null)
             {
-                state.WriteConsole(
+                state.LogInfo(
                     "Sent in-game packet (0xD7x{0:X2}) before being attached to a mobile",
                     packetId
                 );

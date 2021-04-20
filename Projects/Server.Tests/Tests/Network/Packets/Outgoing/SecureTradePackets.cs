@@ -9,7 +9,7 @@ namespace Server.Network
         {
             name ??= "";
 
-            EnsureCapacity(18 + name.Length);
+            EnsureCapacity(17 + name.Length);
 
             Stream.Write((byte)0); // Display
             Stream.Write(them.Serial);
@@ -26,10 +26,13 @@ namespace Server.Network
         public CloseSecureTrade(Container cont)
             : base(0x6F)
         {
-            EnsureCapacity(8);
+            EnsureCapacity(17);
 
             Stream.Write((byte)1); // Close
             Stream.Write(cont.Serial);
+            Stream.Write(0);
+            Stream.Write(0);
+            Stream.Write(false);
         }
     }
 
@@ -49,6 +52,7 @@ namespace Server.Network
             Stream.Write(cont.Serial);
             Stream.Write(first);
             Stream.Write(second);
+            Stream.Write(false);
         }
     }
 

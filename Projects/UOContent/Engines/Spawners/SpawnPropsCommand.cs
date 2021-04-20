@@ -14,10 +14,11 @@
  *************************************************************************/
 
 using System.Collections.Generic;
-using Server.Commands;
 using Server.Commands.Generic;
 using Server.Gumps;
 using Server.Targeting;
+
+using static Server.Types;
 
 namespace Server.Engines.Spawners
 {
@@ -53,15 +54,14 @@ namespace Server.Engines.Spawners
 
         private class InternalTarget : Target
         {
-            private List<object> _list;
+            private readonly List<object> _list;
 
-            public InternalTarget(List<object> list) : base(-1, false, TargetFlags.None) =>
-                _list = list;
+            public InternalTarget(List<object> list) : base(-1, false, TargetFlags.None) => _list = list;
 
             protected override void OnTarget(Mobile from, object targeted)
             {
                 var type = targeted.GetType();
-                if (!Add.IsEntity(type))
+                if (!IsEntity(type))
                 {
                     from.SendMessage("No type with that name was found.");
                 }
