@@ -296,7 +296,7 @@ namespace Server
             {
                 if (_pendingAdd.ContainsKey(entity.Serial))
                 {
-                    Console.Error.WriteLine("Entity {0} was both pending both deletion and addition after save", entity);
+                    logger.Error($"Entity ${entity} was both pending deletion and addition after save");
                 }
 
                 RemoveEntity(entity);
@@ -382,15 +382,13 @@ namespace Server
             try
             {
                 var watch = Stopwatch.StartNew();
-                logger.Information("Writing snapshot...");
+                logger.Information("Writing snapshot");
 
                 Persistence.WriteSnapshot(tempPath);
 
                 watch.Stop();
 
-                Utility.PushColor(ConsoleColor.Green);
-                Console.WriteLine("done ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
-                Utility.PopColor();
+                logger.Information($"Writing snapshot finished ({watch.Elapsed.TotalSeconds:F2} seconds)");
             }
             catch (Exception ex)
             {
@@ -399,9 +397,7 @@ namespace Server
 
             if (exception != null)
             {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine("failed");
-                Utility.PopColor();
+                logger.Error("Writing snapshot failed");
                 Persistence.TraceException(exception);
 
                 BroadcastStaff(0x35, true, "Writing world save snapshot failed.");
@@ -497,21 +493,17 @@ namespace Server
             if (exception == null)
             {
                 var duration = watch.Elapsed.TotalSeconds;
-                Utility.PushColor(ConsoleColor.Green);
-                Console.WriteLine("done ({0:F2} seconds)", duration);
-                Utility.PopColor();
+                logger.Information("World saved ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
 
                 // Only broadcast if it took at least 150ms
                 if (duration >= 0.15)
                 {
-                    Broadcast(0x35, true, $"World Save completed in {duration:F2} seconds.");
+                    Broadcast(0x35, true, $"World save completed in {duration:F2} seconds.");
                 }
             }
             else
             {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine("failed");
-                Utility.PopColor();
+                logger.Error("World save failed");
                 Persistence.TraceException(exception);
 
                 BroadcastStaff(0x35, true, "World save failed.");

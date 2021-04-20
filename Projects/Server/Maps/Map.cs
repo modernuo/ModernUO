@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Server.Items;
+using Server.Logging;
 using Server.Network;
 using Server.Targeting;
 
@@ -268,11 +270,13 @@ namespace Server
     {
         public const int SectorSize = 16;
         public const int SectorShift = 4;
-        public static readonly int SectorActiveRange = 2;
+        public const int SectorActiveRange = 2;
 
         private static readonly Queue<List<Item>> m_FixPool = new(128);
-
         private static readonly List<Item> m_EmptyFixItems = new();
+
+        private static ILogger _logger;
+        private static ILogger Logger => _logger ??= LogFactory.GetLogger(typeof(Map));
 
         private readonly int m_FileIndex;
         private readonly Sector[][] m_Sectors;
@@ -360,8 +364,7 @@ namespace Server
             {
                 if (this == Internal && m_Name != "Internal")
                 {
-                    Console.WriteLine("Internal Map Name was changed to '{0}'", m_Name);
-
+                    Logger.Warning($"Internal map name was '{m_Name}'\n{new StackTrace()}");
                     m_Name = "Internal";
                 }
 
@@ -371,7 +374,7 @@ namespace Server
             {
                 if (this == Internal && value != "Internal")
                 {
-                    Console.WriteLine("Attempted to set Internal Map Name to '{0}'", value);
+                    Logger.Warning($"Attempted to set internal map name to '{value}'\n{new StackTrace()}");
 
                     value = "Internal";
                 }
@@ -967,7 +970,7 @@ namespace Server
 
             if (Regions.ContainsKey(regName))
             {
-                Console.WriteLine("Warning: Duplicate region name '{0}' for map '{1}'", regName, Name);
+                Logger.Warning($"Duplicate region name '{regName}' for map '{Name}'");
             }
             else
             {
@@ -1024,7 +1027,7 @@ namespace Server
             }
             else
             {
-                Console.WriteLine("Warning: Invalid object ({0}) in line of sight", o);
+                Logger.Warning($"Warning: Invalid object ({o}) in line of sight");
                 p = Point3D.Zero;
             }
 
@@ -1382,14 +1385,6 @@ namespace Server
 
                         return false;
                     }
-
-                    /*if (t.Z <= point.Z && t.Z+height >= point.Z && (flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0
-                      && ( (flags&TileFlag.Wall)!=0 || (flags&TileFlag.Roof)!=0 || (((flags&TileFlag.Surface)!=0 && zd != 0)) ) )*/
-                    /*{
-                      //Console.WriteLine( "LoS: Blocked by Static \"{0}\" Z:{1} T:{3} P:{2} F:x{4:X}", TileData.ItemTable[t.ID&TileData.MaxItemValue].Name, t.Z, point, t.Z+height, flags );
-                      //Console.WriteLine( "if ({0} && {1} && {2} && ( {3} || {4} || {5} || ({6} && {7} && {8}) ) )", t.Z <= point.Z, t.Z+height >= point.Z, (flags&TileFlag.Window)==0, (flags&TileFlag.Impassable)!=0, (flags&TileFlag.Wall)!=0, (flags&TileFlag.Roof)!=0, (flags&TileFlag.Surface)!=0, t.Z != dest.Z, zd != 0 ) ;
-                      return false;
-                    }*/
                 }
             }
 
@@ -1447,17 +1442,6 @@ namespace Server
 
                 area.Free();
                 return false;
-
-                /*if ((flags & (TileFlag.Impassable | TileFlag.Surface | TileFlag.Roof)) != 0)
-
-                //flags = TileData.ItemTable[i.ItemID&TileData.MaxItemValue].Flags;
-                //if ((flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0 && ( (flags&TileFlag.Wall)!=0 || (flags&TileFlag.Roof)!=0 || (((flags&TileFlag.Surface)!=0 && zd != 0)) ))
-                {
-                  //height = TileData.ItemTable[i.ItemID&TileData.MaxItemValue].Height;
-                  //Console.WriteLine( "LoS: Blocked by ITEM \"{0}\" P:{1} T:{2} F:x{3:X}", TileData.ItemTable[i.ItemID&TileData.MaxItemValue].Name, i.Location, i.Location.Z+height, flags );
-                  area.Free();
-                  return false;
-                }*/
             }
 
             area.Free();
