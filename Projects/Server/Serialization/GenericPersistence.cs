@@ -73,8 +73,8 @@ namespace Server
                 catch (Exception e)
                 {
                     Utility.PushColor(ConsoleColor.Red);
-                    Persistence.WriteConsoleLine($"***** Bad deserialize of {name} *****");
-                    Persistence.WriteConsoleLine(e.ToString());
+                    Console.WriteLine($"***** Bad deserialize of {name} *****");
+                    Console.WriteLine(e.ToString());
                     Utility.PopColor();
                 }
             }

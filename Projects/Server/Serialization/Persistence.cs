@@ -16,12 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Server
 {
-    public static class Persistence
+    public class Persistence
     {
         public const int DefaultPriority = 100;
 
@@ -103,20 +102,6 @@ namespace Server
                 // Then alphabetically. We won't allow the same entry (by name) twice in the SortedSet
                 return cmp != 0 ? cmp : x.Name?.CompareOrdinal(y.Name) ?? -1;
             }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteConsole(string message)
-        {
-            var now = Core.Now;
-            Console.Write("[{0} {1}] Persistence: {2}", now.ToShortDateString(), now.ToLongTimeString(), message);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteConsoleLine(string message)
-        {
-            var now = Core.Now;
-            Console.WriteLine("[{0} {1}] Persistence: {2}", now.ToShortDateString(), now.ToLongTimeString(), message);
         }
 
         public static void TraceException(Exception ex)

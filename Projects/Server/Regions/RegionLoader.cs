@@ -19,12 +19,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using Server.Json;
+using Server.Logging;
 using Server.Utilities;
 
 namespace Server
 {
     internal static class RegionLoader
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(RegionLoader));
+
         internal static void LoadRegions()
         {
             var path = Path.Join(Core.BaseDirectory, "Data/regions.json");
@@ -32,7 +35,7 @@ namespace Server
             var failures = new List<string>();
             var count = 0;
 
-            Console.Write("Regions: Loading...");
+            logger.Information("Loading regions");
 
             var stopwatch = Stopwatch.StartNew();
             var regions = JsonConfig.Deserialize<List<DynamicJson>>(path);
@@ -58,21 +61,25 @@ namespace Server
 
             stopwatch.Stop();
 
-            Utility.PushColor(failures.Count > 0 ? ConsoleColor.Yellow : ConsoleColor.Green);
-            Console.Write(failures.Count > 0 ? "done with failures" : "done");
-            Utility.PopColor();
-            Console.WriteLine(
-                " ({0} regions, {1} failures) ({2:F2} seconds)",
-                count,
-                failures.Count,
-                stopwatch.Elapsed.TotalSeconds
-            );
-
-            if (failures.Count > 0)
+            if (failures.Count == 0)
             {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine(string.Join(Environment.NewLine, failures));
-                Utility.PopColor();
+                logger.Information(
+                    "Regions loaded ({0} regions, {1} failures) ({2:F2} seconds)",
+                    count,
+                    failures.Count,
+                    stopwatch.Elapsed.TotalSeconds
+                );
+            }
+            else
+            {
+                logger.Warning(
+                    "Failed loading regions ({0} regions, {1} failures) ({2:F2} seconds)",
+                    count,
+                    failures.Count,
+                    stopwatch.Elapsed.TotalSeconds
+                );
+
+                logger.Warning(string.Join(Environment.NewLine, failures));
             }
         }
     }
