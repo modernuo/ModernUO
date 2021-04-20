@@ -67,7 +67,7 @@ namespace Server
 
             if (fileIndex != 0x7F)
             {
-                var mapPath = Core.FindDataFile($"map{fileIndex}.mul", warnNotFound);
+                var mapPath = Core.FindDataFile($"map{fileIndex}.mul", false, warnNotFound);
 
                 if (mapPath != null)
                 {
