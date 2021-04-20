@@ -1,10 +1,13 @@
 using System;
 using System.IO;
+using Server.Logging;
 
 namespace Server.Misc
 {
     public class AutoSave : Timer
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Persistence));
+
         public static TimeSpan Delay { get; private set; }
         public static TimeSpan Warning { get; private set; }
         public static string BackupPath { get; private set; }
@@ -103,7 +106,7 @@ namespace Server.Misc
             AssemblyHandler.EnsureDirectory(BackupPath);
             Directory.Move(args.OldSavePath, backupPath);
 
-            Persistence.WriteConsoleLine($"Created backup at {backupPath}");
+            logger.Information($"Created backup at {backupPath}");
         }
     }
 }

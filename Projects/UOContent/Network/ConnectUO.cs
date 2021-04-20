@@ -89,11 +89,11 @@ namespace Server.Network
                 }
             }
 
-            ns.WriteConsole($"ConnectUO (v{version}) is requesting stats.");
+            ns.LogInfo($"ConnectUO (v{version}) is requesting stats.");
             if (version > ConnectUOProtocolVersion)
             {
                 Utility.PushColor(ConsoleColor.Yellow);
-                ns.WriteConsole("Warning! ConnectUO (v{version}) is newer than what is supported.");
+                ns.LogInfo("Warning! ConnectUO (v{version}) is newer than what is supported.");
                 Utility.PopColor();
             }
 

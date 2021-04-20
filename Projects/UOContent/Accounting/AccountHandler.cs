@@ -250,7 +250,7 @@ namespace Server.Misc
                 }
                 else
                 {
-                    state.WriteConsole("Deleting character {0} (0x{1:X})", index, m.Serial.Value);
+                    state.LogInfo("Deleting character {0} (0x{1:X})", index, m.Serial.Value);
 
                     acct.Comments.Add(new AccountComment("System", $"Character #{index + 1} {m} deleted by {state}"));
 

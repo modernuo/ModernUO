@@ -157,7 +157,7 @@ namespace Server.Network
 
                 if (check != null && check.Map != Map.Internal)
                 {
-                    state.WriteConsole("Account in use");
+                    state.LogInfo("Account in use");
                     state.SendPopupMessage(PMMessage.CharInWorld);
                     return;
                 }
@@ -274,7 +274,7 @@ namespace Server.Network
 
                 if (check != null && check.Map != Map.Internal && check != m)
                 {
-                    state.WriteConsole("Account in use");
+                    state.LogInfo("Account in use");
                     state.SendPopupMessage(PMMessage.CharInWorld);
                     return;
                 }
@@ -395,13 +395,13 @@ namespace Server.Network
 
             if (!m_AuthIDWindow.TryGetValue(authID, out var ap))
             {
-                state.WriteConsole("Invalid client detected, disconnecting...");
+                state.LogInfo("Invalid client detected, disconnecting...");
                 state.Disconnect("Unable to find auth id.");
             }
 
             if (state._authId != 0 && authID != state._authId || state._authId == 0 && authID != state._seed)
             {
-                state.WriteConsole("Invalid client detected, disconnecting...");
+                state.LogInfo("Invalid client detected, disconnecting...");
                 state.Disconnect("Invalid auth id in game login packet.");
                 return;
             }
@@ -461,7 +461,7 @@ namespace Server.Network
 
             if (state._seed == 0)
             {
-                state.WriteConsole("Invalid client detected, disconnecting");
+                state.LogInfo("Invalid client detected, disconnecting");
                 state.Disconnect("Duplicate seed sent.");
                 return;
             }

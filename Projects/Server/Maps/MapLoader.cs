@@ -20,11 +20,14 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Server.Json;
+using Server.Logging;
 
 namespace Server
 {
     public static class MapLoader
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(MapLoader));
+
         /* Here we configure all maps. Some notes:
          *
          * 1) The first 32 maps are reserved for core use.
@@ -52,7 +55,7 @@ namespace Server
 
             var path = Path.Combine(Core.BaseDirectory, "Data/map-definitions.json");
 
-            Console.Write("Map Definitions: Loading...");
+            logger.Information("Loading Map Definitions");
 
             var stopwatch = Stopwatch.StartNew();
             var maps = JsonConfig.Deserialize<List<MapDefinition>>(path);
@@ -85,21 +88,25 @@ namespace Server
 
             stopwatch.Stop();
 
-            Utility.PushColor(failures.Count > 0 ? ConsoleColor.Yellow : ConsoleColor.Green);
-            Console.Write(failures.Count > 0 ? "done with failures" : "done");
-            Utility.PopColor();
-            Console.WriteLine(
-                " ({0} maps, {1} failures) ({2:F2} seconds)",
-                count,
-                failures.Count,
-                stopwatch.Elapsed.TotalSeconds
-            );
-
             if (failures.Count > 0)
             {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine(string.Join(Environment.NewLine, failures));
-                Utility.PopColor();
+                logger.Warning(
+                    "Map Definitions loaded with failures ({0} maps, {1} failures) ({2:F2} seconds)",
+                    count,
+                    failures.Count,
+                    stopwatch.Elapsed.TotalSeconds
+                );
+
+                logger.Warning(string.Join(Environment.NewLine, failures));
+            }
+            else
+            {
+                logger.Information(
+                    "Map Definitions loaded successfully ({0} maps, {1} failures) ({2:F2} seconds)",
+                    count,
+                    failures.Count,
+                    stopwatch.Elapsed.TotalSeconds
+                );
             }
         }
 

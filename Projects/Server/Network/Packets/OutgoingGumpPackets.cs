@@ -20,11 +20,14 @@ using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using Server.Collections;
 using Server.Gumps;
+using Server.Logging;
 
 namespace Server.Network
 {
     public static class OutgoingGumpPackets
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(OutgoingGumpPackets));
+
         public static void SendCloseGump(this NetState ns, int typeId, int buttonId)
         {
             if (ns == null)
@@ -73,9 +76,7 @@ namespace Server.Network
 
             if (error != ZlibError.Okay)
             {
-                Utility.PushColor(ConsoleColor.Red);
-                Core.WriteConsoleLine($"Gump compression failed {error}");
-                Utility.PopColor();
+                logger.Warning($"Gump compression failed {error}");
 
                 writer.Write(4);
                 writer.Write(0);
