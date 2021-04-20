@@ -1888,7 +1888,7 @@ namespace Server
             }
         }
 
-        public virtual Timer ExpireCriminalTimer { get; set; }
+        public Timer ExpireCriminalTimer { get; set; }
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public virtual bool Criminal
