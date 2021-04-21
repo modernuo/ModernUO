@@ -54,7 +54,6 @@ namespace Server.Commands
                 }
                 catch
                 {
-                    // Console.WriteLine( "Denied" );
                 }
             }
         }
