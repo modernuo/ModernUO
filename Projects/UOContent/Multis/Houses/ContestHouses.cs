@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Items;
+using Server.Logging;
 
 namespace Server.Multis
 {
@@ -14,6 +15,8 @@ namespace Server.Multis
 
     public class BaseContestHouse : BaseHouse
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseContestHouse));
+
         public BaseContestHouse(ContestHouseType type, int multiID, Mobile owner, int maxLockDown, int maxSecure)
             : base(multiID, owner, maxLockDown, maxSecure)
         {
@@ -193,11 +196,11 @@ namespace Server.Multis
             {
                 if (value.Count > 2)
                 {
-                    Console.WriteLine("Warning: More than 2 teleporters detected for {0:X}!", key);
+                    logger.Warning("More than 2 teleporters detected for {0:X}!", key);
                 }
                 else if (value.Count <= 1)
                 {
-                    Console.WriteLine("Warning: 1 or less teleporters detected for {0:X}!", key);
+                    logger.Warning("1 or less teleporters detected for {0:X}!", key);
 
                     continue;
                 }
