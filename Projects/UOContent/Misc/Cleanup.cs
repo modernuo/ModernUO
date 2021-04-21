@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using Server.Items;
+using Server.Logging;
 using Server.Multis;
 
 namespace Server.Misc
 {
     public static class Cleanup
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Cleanup));
+
         public static void Initialize()
         {
             Timer.DelayCall(TimeSpan.FromSeconds(2.5), Run);
@@ -118,7 +121,7 @@ namespace Server.Misc
             {
                 if (boxes > 0)
                 {
-                    Console.WriteLine(
+                    logger.Information(
                         "Cleanup: Detected {0} inaccessible items, including {1} bank boxes, removing..",
                         items.Count,
                         boxes
@@ -126,7 +129,7 @@ namespace Server.Misc
                 }
                 else
                 {
-                    Console.WriteLine("Cleanup: Detected {0} inaccessible items, removing..", items.Count);
+                    logger.Information("Cleanup: Detected {0} inaccessible items, removing..", items.Count);
                 }
 
                 for (var i = 0; i < items.Count; ++i)
@@ -137,7 +140,7 @@ namespace Server.Misc
 
             if (hairCleanup.Count > 0)
             {
-                Console.WriteLine(
+                logger.Information(
                     "Cleanup: Detected {0} hair and facial hair items being worn, converting to their virtual counterparts..",
                     hairCleanup.Count
                 );
