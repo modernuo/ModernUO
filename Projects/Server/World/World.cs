@@ -296,7 +296,7 @@ namespace Server
             {
                 if (_pendingAdd.ContainsKey(entity.Serial))
                 {
-                    Console.Error.WriteLine("Entity {0} was both pending both deletion and addition after save", entity);
+                    logger.Warning("Entity {0} was both pending both deletion and addition after save", entity);
                 }
 
                 RemoveEntity(entity);
@@ -382,15 +382,13 @@ namespace Server
             try
             {
                 var watch = Stopwatch.StartNew();
-                logger.Information("Writing snapshot...");
+                logger.Information("Writing world save snapshot");
 
                 Persistence.WriteSnapshot(tempPath);
 
                 watch.Stop();
 
-                Utility.PushColor(ConsoleColor.Green);
-                Console.WriteLine("done ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
-                Utility.PopColor();
+                logger.Information("Writing world save snapshot done ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
             }
             catch (Exception ex)
             {
@@ -399,9 +397,7 @@ namespace Server
 
             if (exception != null)
             {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine("failed");
-                Utility.PopColor();
+                logger.Error(exception, "Writing world save snapshot failed.");
                 Persistence.TraceException(exception);
 
                 BroadcastStaff(0x35, true, "Writing world save snapshot failed.");
@@ -497,9 +493,7 @@ namespace Server
             if (exception == null)
             {
                 var duration = watch.Elapsed.TotalSeconds;
-                Utility.PushColor(ConsoleColor.Green);
-                Console.WriteLine("done ({0:F2} seconds)", duration);
-                Utility.PopColor();
+                logger.Information("World save completed ({0:F2} seconds)", duration);
 
                 // Only broadcast if it took at least 150ms
                 if (duration >= 0.15)
@@ -509,9 +503,7 @@ namespace Server
             }
             else
             {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine("failed");
-                Utility.PopColor();
+                logger.Error(exception, "World save failed");
                 Persistence.TraceException(exception);
 
                 BroadcastStaff(0x35, true, "World save failed.");

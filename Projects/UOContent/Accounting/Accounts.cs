@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using Server.Logging;
 
 namespace Server.Accounting
 {
     public static class Accounts
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Accounts));
+
         private static readonly Dictionary<string, IAccount> _accountsByName = new(32, StringComparer.OrdinalIgnoreCase);
         private static Dictionary<Serial, IAccount> _accountsById = new(32);
         private static Serial _lastAccount;
@@ -111,7 +114,7 @@ namespace Server.Accounting
                 }
                 catch
                 {
-                    Console.WriteLine("Warning: Account instance load failed");
+                    logger.Warning("Account instance load failed");
                 }
             }
         }

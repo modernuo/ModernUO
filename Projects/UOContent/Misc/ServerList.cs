@@ -4,11 +4,14 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using Server.Logging;
 
 namespace Server.Misc
 {
     public static class ServerList
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(ServerList));
+
         private static IPAddress m_PublicAddress;
         /*
          * The default setting for Address, a value of 'null', will use your local IP address. If all of your local IP addresses
@@ -91,7 +94,7 @@ namespace Server.Misc
             }
             catch (Exception er)
             {
-                Console.WriteLine(er);
+                logger.Warning(er, "Unhandled exception at server list");
                 e.Rejected = true;
             }
         }
@@ -100,16 +103,15 @@ namespace Server.Misc
         {
             if (!HasPublicIPAddress())
             {
-                Console.Write("ServerList: Auto-detecting public IP address...");
                 m_PublicAddress = FindPublicAddress();
 
                 if (m_PublicAddress != null)
                 {
-                    Console.WriteLine("done ({0})", m_PublicAddress);
+                    logger.Information("Auto-detected public IP address ({0})", m_PublicAddress);
                 }
                 else
                 {
-                    Console.WriteLine("failed");
+                    logger.Warning("Could not auto-detect public IP address");
                 }
             }
         }

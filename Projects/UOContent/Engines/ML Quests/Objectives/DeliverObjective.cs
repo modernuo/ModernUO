@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Server.Gumps;
 using Server.Items;
+using Server.Logging;
 using Server.Utilities;
 
 namespace Server.Engines.MLQuests.Objectives
 {
     public class DeliverObjective : BaseObjective
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(DeliverObjective));
+
         public DeliverObjective(Type delivery, int amount, TextDefinition name, Type destination, bool spawnsDelivery = true)
         {
             Delivery = delivery;
@@ -23,7 +26,7 @@ namespace Server.Engines.MLQuests.Objectives
 
                 if (itemid <= 0 || itemid > 0x4000)
                 {
-                    Console.WriteLine("Warning: cliloc {0} is likely giving the wrong item ID", name.Number);
+                    logger.Warning("Cliloc {0} is likely giving the wrong item ID", name.Number);
                 }
             }
         }

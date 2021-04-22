@@ -18,12 +18,15 @@ using System.Buffers;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
+using Server.Logging;
 using Server.Network;
 
 namespace Server.Multis
 {
     public static class HousePackets
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(HousePackets));
+
         public static void SendBeginHouseCustomization(this NetState ns, Serial house)
         {
             if (ns == null)
@@ -254,7 +257,7 @@ namespace Server.Multis
 
             if (ce != ZlibError.Okay)
             {
-                Console.WriteLine("ZLib error: {0} (#{1})", ce, (int)ce);
+                logger.Warning("ZLib error: {0} (#{1})", ce, (int)ce);
                 length = 0;
                 size = 0;
             }
