@@ -1,12 +1,15 @@
 using System;
 using System.IO;
 using System.Net;
+using Server.Logging;
 using Server.Misc;
 
 namespace Server
 {
     public static class AccessRestrictions
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(AccessRestrictions));
+
         public static void Initialize()
         {
             EventSink.SocketConnect += EventSink_SocketConnect;
@@ -20,14 +23,14 @@ namespace Server
 
                 if (Firewall.IsBlocked(ip))
                 {
-                    Console.WriteLine("Client: {0}: Firewall blocked connection attempt.", ip);
+                    logger.Information("Client: {0}: Firewall blocked connection attempt.", ip);
                     e.AllowConnection = false;
                     return;
                 }
 
                 if (IPLimiter.SocketBlock && !IPLimiter.Verify(ip))
                 {
-                    Console.WriteLine("Client: {0}: Past IP limit threshold", ip);
+                    logger.Warning("Client: {0}: Past IP limit threshold", ip);
 
                     using (var op = new StreamWriter("ipLimits.log", true))
                     {
