@@ -29,40 +29,40 @@ namespace Server.Engines.CannedEvil
             Instance.OnTick();
         }
 
-        private static readonly List<DungeonChampionSpawn> DungeonSpawns = new();
-        private static readonly List<LLChampionSpawn> LLSpawns = new();
-        private static DateTime SliceTime;
+        private static readonly List<DungeonChampionSpawn> _dungeonSpawns = new();
+        private static readonly List<LLChampionSpawn> _lostLandsSpawns = new();
+        private static DateTime _sliceTime;
 
-        public static CannedEvilTimer Instance;
+        public static CannedEvilTimer Instance { get; private set; }
 
         public static void AddSpawn(DungeonChampionSpawn spawn)
         {
-            DungeonSpawns.Add(spawn);
-            Instance?.OnSlice(DungeonSpawns, false);
+            _dungeonSpawns.Add(spawn);
+            Instance?.OnSlice(_dungeonSpawns, false);
         }
 
         public static void AddSpawn(LLChampionSpawn spawn)
         {
-            LLSpawns.Add(spawn);
-            Instance?.OnSlice(LLSpawns, false);
+            _lostLandsSpawns.Add(spawn);
+            Instance?.OnSlice(_lostLandsSpawns, false);
         }
 
         public static void RemoveSpawn(DungeonChampionSpawn spawn)
         {
-            DungeonSpawns.Remove(spawn);
-            Instance?.OnSlice(DungeonSpawns, false);
+            _dungeonSpawns.Remove(spawn);
+            Instance?.OnSlice(_dungeonSpawns, false);
         }
 
         public static void RemoveSpawn(LLChampionSpawn spawn)
         {
-            LLSpawns.Remove(spawn);
-            Instance?.OnSlice(LLSpawns, false);
+            _lostLandsSpawns.Remove(spawn);
+            Instance?.OnSlice(_lostLandsSpawns, false);
         }
 
         public CannedEvilTimer() : base(TimeSpan.Zero, TimeSpan.FromMinutes(1.0))
         {
             Priority = TimerPriority.OneMinute;
-            SliceTime = DateTime.Now;
+            _sliceTime = DateTime.Now;
         }
 
         public void OnSlice<T>(List<T> list) where T : ChampionSpawn
@@ -100,12 +100,12 @@ namespace Server.Engines.CannedEvil
 
         protected override void OnTick()
         {
-            if (!AutoRestart.Restarting && DateTime.Now >= SliceTime)
+            if (!AutoRestart.Restarting && DateTime.Now >= _sliceTime)
             {
-                OnSlice(DungeonSpawns);
-                OnSlice(LLSpawns);
+                OnSlice(_dungeonSpawns);
+                OnSlice(_lostLandsSpawns);
 
-                SliceTime = DateTime.Now.Date + TimeSpan.FromDays(1.0);
+                _sliceTime = DateTime.Now.Date + TimeSpan.FromDays(1.0);
             }
         }
     }
