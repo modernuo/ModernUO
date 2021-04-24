@@ -41,7 +41,7 @@ namespace Server.Engines.CannedEvil
 
             protected override void OnTarget(Mobile from, object targ)
             {
-                if (from?.AccessLevel < AccessLevel.Administrator)
+                if (from == null || from.AccessLevel < AccessLevel.Administrator)
                 {
                     return;
                 }
@@ -54,6 +54,11 @@ namespace Server.Engines.CannedEvil
                     ChampionPlatform platform   => platform.Spawn,
                     _                           => null
                 };
+
+                if (spawn == null)
+                {
+                    from.SendMessage("That is not a valid target. Please target the champion, altar, platform, or idol.");
+                }
 
                 spawn?.DeleteCreatures();
                 spawn?.Champion?.Delete();
