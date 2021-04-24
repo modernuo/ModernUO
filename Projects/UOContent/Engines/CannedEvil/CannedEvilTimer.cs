@@ -29,8 +29,8 @@ namespace Server.Engines.CannedEvil
             Instance.OnTick();
         }
 
-        private static readonly List<DungeonChampionSpawn> _dungeonSpawns = new();
-        private static readonly List<LLChampionSpawn> _lostLandsSpawns = new();
+        private static readonly HashSet<DungeonChampionSpawn> _dungeonSpawns = new();
+        private static readonly HashSet<LLChampionSpawn> _lostLandsSpawns = new();
         private static DateTime _sliceTime;
 
         public static CannedEvilTimer Instance { get; private set; }
@@ -65,12 +65,7 @@ namespace Server.Engines.CannedEvil
             _sliceTime = DateTime.Now;
         }
 
-        public void OnSlice<T>(List<T> list) where T : ChampionSpawn
-        {
-            OnSlice(list, true);
-        }
-
-        public void OnSlice<T>(List<T> list, bool rotate) where T : ChampionSpawn
+        public void OnSlice<T>(ICollection<T> list, bool rotate = true) where T : ChampionSpawn
         {
             if (list.Count > 0)
             {
