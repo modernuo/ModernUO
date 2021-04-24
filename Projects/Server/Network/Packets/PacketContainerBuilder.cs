@@ -50,8 +50,8 @@ namespace Server.Network
         {
             if (!_finished)
             {
-                BinaryPrimitives.WriteUInt16BigEndian(_bytes.Slice(1, 2), (ushort)Length);
-                BinaryPrimitives.WriteUInt16BigEndian(_bytes.Slice(3, 2), (ushort)_count);
+                BinaryPrimitives.WriteUInt16BigEndian(_bytes[1..3], (ushort)Length);
+                BinaryPrimitives.WriteUInt16BigEndian(_bytes[3..5], (ushort)_count);
             }
 
             return _bytes[..Length];

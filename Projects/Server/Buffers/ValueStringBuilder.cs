@@ -109,7 +109,7 @@ namespace Server.Buffers
         public ReadOnlySpan<char> AsSpan() => _chars[.._length];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<char> AsSpan(int start) => _chars.Slice(start, _length - start);
+        public ReadOnlySpan<char> AsSpan(int start) => _chars[start..];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<char> AsSpan(int start, int length) => _chars.Slice(start, length);

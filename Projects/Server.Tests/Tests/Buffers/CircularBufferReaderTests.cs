@@ -82,7 +82,7 @@ namespace Server.Tests.Network
             expected[1] = 0x1;
             expected[2] = 0x1;
             expected[3] = 0x1;
-            Encoding.ASCII.GetBytes("TestString", expected.Slice(4, 10));
+            Encoding.ASCII.GetBytes("TestString", expected[4..14]);
             expected[14] = 0x0; // Null
             expected[15] = 0x2;
             expected[16] = 0x2;
