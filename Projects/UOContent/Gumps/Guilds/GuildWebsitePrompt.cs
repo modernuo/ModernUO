@@ -36,7 +36,7 @@ namespace Server.Gumps
 
             if (text.Length > 50)
             {
-                text = text.Substring(0, 50);
+                text = text[..50];
             }
 
             if (text.Length > 0)

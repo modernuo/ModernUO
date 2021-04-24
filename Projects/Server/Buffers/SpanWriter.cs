@@ -51,7 +51,7 @@ namespace System.Buffers
 
         public int Capacity => _buffer.Length;
 
-        public ReadOnlySpan<byte> Span => _buffer.SliceToLength(Position);
+        public ReadOnlySpan<byte> Span => _buffer[..Position];
 
         public Span<byte> RawBuffer => _buffer;
 
@@ -119,7 +119,7 @@ namespace System.Buffers
             var newSize = Math.Max(BytesWritten + additionalCapacity, _buffer.Length * 2);
             byte[] poolArray = ArrayPool<byte>.Shared.Rent(newSize);
 
-            _buffer.SliceToLength(BytesWritten).CopyTo(poolArray);
+            _buffer[..BytesWritten].CopyTo(poolArray);
 
             byte[] toReturn = _arrayToReturnToPool;
             _buffer = _arrayToReturnToPool = poolArray;
@@ -183,7 +183,7 @@ namespace System.Buffers
         public void Write(short value)
         {
             GrowIfNeeded(2);
-            BinaryPrimitives.WriteInt16BigEndian(_buffer.Slice(_position), value);
+            BinaryPrimitives.WriteInt16BigEndian(_buffer[_position..], value);
             Position += 2;
         }
 
@@ -191,7 +191,7 @@ namespace System.Buffers
         public void WriteLE(short value)
         {
             GrowIfNeeded(2);
-            BinaryPrimitives.WriteInt16LittleEndian(_buffer.Slice(_position), value);
+            BinaryPrimitives.WriteInt16LittleEndian(_buffer[_position..], value);
             Position += 2;
         }
 
@@ -199,7 +199,7 @@ namespace System.Buffers
         public void Write(ushort value)
         {
             GrowIfNeeded(2);
-            BinaryPrimitives.WriteUInt16BigEndian(_buffer.Slice(_position), value);
+            BinaryPrimitives.WriteUInt16BigEndian(_buffer[_position..], value);
             Position += 2;
         }
 
@@ -207,7 +207,7 @@ namespace System.Buffers
         public void WriteLE(ushort value)
         {
             GrowIfNeeded(2);
-            BinaryPrimitives.WriteUInt16LittleEndian(_buffer.Slice(_position), value);
+            BinaryPrimitives.WriteUInt16LittleEndian(_buffer[_position..], value);
             Position += 2;
         }
 
@@ -215,7 +215,7 @@ namespace System.Buffers
         public void Write(int value)
         {
             GrowIfNeeded(4);
-            BinaryPrimitives.WriteInt32BigEndian(_buffer.Slice(_position), value);
+            BinaryPrimitives.WriteInt32BigEndian(_buffer[_position..], value);
             Position += 4;
         }
 
@@ -223,7 +223,7 @@ namespace System.Buffers
         public void WriteLE(int value)
         {
             GrowIfNeeded(4);
-            BinaryPrimitives.WriteInt32LittleEndian(_buffer.Slice(_position), value);
+            BinaryPrimitives.WriteInt32LittleEndian(_buffer[_position..], value);
             Position += 4;
         }
 
@@ -231,7 +231,7 @@ namespace System.Buffers
         public void Write(uint value)
         {
             GrowIfNeeded(4);
-            BinaryPrimitives.WriteUInt32BigEndian(_buffer.Slice(_position), value);
+            BinaryPrimitives.WriteUInt32BigEndian(_buffer[_position..], value);
             Position += 4;
         }
 
@@ -239,7 +239,7 @@ namespace System.Buffers
         public void WriteLE(uint value)
         {
             GrowIfNeeded(4);
-            BinaryPrimitives.WriteUInt32LittleEndian(_buffer.Slice(_position), value);
+            BinaryPrimitives.WriteUInt32LittleEndian(_buffer[_position..], value);
             Position += 4;
         }
 
@@ -247,7 +247,7 @@ namespace System.Buffers
         public void Write(long value)
         {
             GrowIfNeeded(8);
-            BinaryPrimitives.WriteInt64BigEndian(_buffer.Slice(_position), value);
+            BinaryPrimitives.WriteInt64BigEndian(_buffer[_position..], value);
             Position += 8;
         }
 
@@ -255,7 +255,7 @@ namespace System.Buffers
         public void Write(ulong value)
         {
             GrowIfNeeded(8);
-            BinaryPrimitives.WriteUInt64BigEndian(_buffer.Slice(_position), value);
+            BinaryPrimitives.WriteUInt64BigEndian(_buffer[_position..], value);
             Position += 8;
         }
 
@@ -264,7 +264,7 @@ namespace System.Buffers
         {
             var count = buffer.Length;
             GrowIfNeeded(count);
-            buffer.CopyTo(_buffer.Slice(_position));
+            buffer.CopyTo(_buffer[_position..]);
             Position += count;
         }
 
@@ -293,7 +293,7 @@ namespace System.Buffers
 
             GrowIfNeeded(byteCount);
 
-            var bytesWritten = encoding.GetBytes(src, _buffer.Slice(_position));
+            var bytesWritten = encoding.GetBytes(src, _buffer[_position..]);
             Position += bytesWritten;
 
             if (fixedLength > -1)

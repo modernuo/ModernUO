@@ -239,7 +239,7 @@ namespace Server.Items
 
                 if (text.Length > 255)
                 {
-                    text = text.Substring(0, 255);
+                    text = text[..255];
                 }
 
                 if (text.Length > 0)
@@ -316,7 +316,7 @@ namespace Server.Items
 
                 if (text.Length > 255)
                 {
-                    text = text.Substring(0, 255);
+                    text = text[..255];
                 }
 
                 if (text.Length > 0)

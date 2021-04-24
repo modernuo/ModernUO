@@ -58,7 +58,7 @@ namespace Server
                     throw new OutOfMemoryException(nameof(buffer));
                 }
 
-                sliced.SliceToLength(indexOf).CopyTo(buffer.Slice(size));
+                sliced[..indexOf].CopyTo(buffer[size..]);
                 size += indexOf;
 
                 if (indexOf == sliced.Length)
@@ -66,7 +66,7 @@ namespace Server
                     break;
                 }
 
-                sliced = sliced.Slice(indexOf + 1);
+                sliced = sliced[(indexOf + 1)..];
             }
         }
 
@@ -97,7 +97,7 @@ namespace Server
 
             a.Remove(b, comparison, span, out var size);
 
-            var str = span.SliceToLength(size).ToString();
+            var str = span[..size].ToString();
 
             if (chrs != null)
             {
@@ -138,7 +138,7 @@ namespace Server
                 // Special case for titles - words that don't get capitalized
                 if (sliced.InsensitiveStartsWith("the "))
                 {
-                    sliced = sliced.Slice(4);
+                    sliced = sliced[4..];
                     index += 4;
                     continue;
                 }
@@ -156,7 +156,7 @@ namespace Server
                     break;
                 }
 
-                sliced = sliced.Slice(indexOf + 1);
+                sliced = sliced[(indexOf + 1)..];
                 index += indexOf + 1;
             }
 
@@ -183,7 +183,7 @@ namespace Server
 
             while (span.Length > 0)
             {
-                var spaceIndex = span.Slice(lineLength).IndexOf(' ');
+                var spaceIndex = span[lineLength..].IndexOf(' ');
                 if (spaceIndex == -1)
                 {
                     spaceIndex = span.Length; // End of the string
@@ -193,13 +193,13 @@ namespace Server
 
                 if (newLineLength == perLine || newLineLength == span.Length)
                 {
-                    list.Add(span.SliceToLength(newLineLength).ToString());
+                    list.Add(span[..newLineLength].ToString());
                     if (list.Count == maxLines || newLineLength == span.Length)
                     {
                         break;
                     }
 
-                    span = span.Slice(newLineLength + 1);
+                    span = span[(newLineLength + 1)..];
                     lineLength = 0;
                 }
                 else if (newLineLength < perLine)
@@ -208,13 +208,13 @@ namespace Server
                 }
                 else if (lineLength > 0 && lineLength <= perLine)
                 {
-                    list.Add(span.SliceToLength(lineLength - 1).ToString());
+                    list.Add(span[..(lineLength - 1)].ToString());
                     if (list.Count == maxLines)
                     {
                         break;
                     }
 
-                    span = span.Slice(lineLength);
+                    span = span[lineLength..];
                     lineLength = spaceIndex;
                 }
                 else
@@ -236,7 +236,7 @@ namespace Server
                         index += perLine;
                     }
 
-                    span = span.Slice(newLineLength - lineLength);
+                    span = span[(newLineLength - lineLength)..];
                 }
             }
 

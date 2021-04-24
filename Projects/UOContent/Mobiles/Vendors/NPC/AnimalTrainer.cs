@@ -393,7 +393,7 @@ namespace Server.Mobiles
 
                 if (index != -1)
                 {
-                    Claim(e.Mobile, e.Speech.Substring(index).Trim());
+                    Claim(e.Mobile, e.Speech[index..].Trim());
                 }
                 else
                 {

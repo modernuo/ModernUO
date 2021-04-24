@@ -89,7 +89,7 @@ namespace Server
 
             int index = buffer.IndexOfTerminator(sizeT);
 
-            var span = buffer.SliceToLength(index < 0 ? size : index);
+            var span = buffer[..(index < 0 ? size : index)];
             _position += isFixedLength || index < 0 ? size : index + sizeT;
             return TextEncoding.GetString(span, encoding, safeString);
         }

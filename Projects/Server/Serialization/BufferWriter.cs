@@ -225,7 +225,7 @@ namespace Server
             Span<byte> stack = stackalloc byte[16];
             value.TryWriteBytes(stack, out var bytesWritten);
             Write((byte)bytesWritten);
-            Write(stack.SliceToLength(bytesWritten));
+            Write(stack[..bytesWritten]);
         }
 
         public void Write(TimeSpan value)
@@ -441,7 +441,7 @@ namespace Server
                 charsLeft -= charCount;
                 current += charCount;
 
-                Write(span.SliceToLength(bytesWritten));
+                Write(span[..bytesWritten]);
             }
         }
     }

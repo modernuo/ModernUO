@@ -34,11 +34,11 @@ namespace Server.Accounting.Security
         {
             Span<byte> output = stackalloc byte[m_OutputSize];
             var iterations = Utility.RandomMinMax(m_MinIterations, m_MaxIterations);
-            BinaryPrimitives.WriteUInt16LittleEndian(output.SliceToLength(2), (ushort)iterations);
+            BinaryPrimitives.WriteUInt16LittleEndian(output[..2], (ushort)iterations);
 
             var rfc2898 = new Rfc2898DeriveBytes(plainPassword, m_SaltSize, iterations, HashAlgorithmName.SHA256);
             rfc2898.Salt.CopyTo(output.Slice(2, m_SaltSize));
-            rfc2898.GetBytes(m_HashSize).CopyTo(output.Slice(m_SaltSize + 2));
+            rfc2898.GetBytes(m_HashSize).CopyTo(output[(m_SaltSize + 2)..]);
 
             return output.ToHexString();
         }
@@ -48,13 +48,13 @@ namespace Server.Accounting.Security
             Span<byte> encryptedBytes = stackalloc byte[m_OutputSize];
             encryptedPassword.GetBytes(encryptedBytes);
 
-            var iterations = BinaryPrimitives.ReadUInt16LittleEndian(encryptedBytes.SliceToLength(2));
+            var iterations = BinaryPrimitives.ReadUInt16LittleEndian(encryptedBytes[..2]);
             var salt = encryptedBytes.Slice(2, m_SaltSize);
 
             ReadOnlySpan<byte> hash =
                 new Rfc2898DeriveBytes(plainPassword, salt.ToArray(), iterations, HashAlgorithmName.SHA256).GetBytes(m_HashSize);
 
-            return hash.SequenceEqual(encryptedBytes.Slice(m_SaltSize + 2));
+            return hash.SequenceEqual(encryptedBytes[(m_SaltSize + 2)..]);
         }
     }
 }

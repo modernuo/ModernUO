@@ -1092,7 +1092,7 @@ namespace Server
                 return;
             }
 
-            Count = Utility.ToInt32(str.Substring(start, index - start));
+            Count = Utility.ToInt32(str.Substring(start, index));
 
             start = index + 1;
             index = str.IndexOf('+', start);

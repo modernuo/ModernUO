@@ -116,7 +116,7 @@ namespace Server.Items
 
                         if (text.Length > 40)
                         {
-                            text = text.Substring(0, 40);
+                            text = text[..40];
                         }
 
                         var guild = new Guild(from, text, "none");

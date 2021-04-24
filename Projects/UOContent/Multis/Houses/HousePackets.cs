@@ -250,7 +250,7 @@ namespace Server.Multis
         private static void WritePacked(ReadOnlySpan<byte> source, ref SpanWriter writer, out int length)
         {
             var size = source.Length;
-            var dest = writer.RawBuffer.Slice(writer.Position + 3);
+            var dest = writer.RawBuffer[(writer.Position + 3)..];
             length = dest.Length;
 
             var ce = Zlib.Pack(dest, ref length, source, ZlibQuality.Default);

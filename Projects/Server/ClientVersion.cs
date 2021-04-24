@@ -42,7 +42,7 @@ namespace Server
                     br3++;
                 }
 
-                Major = Utility.ToInt32(fmt.Substring(0, br1));
+                Major = Utility.ToInt32(fmt.AsSpan()[..br1]);
                 Minor = Utility.ToInt32(fmt.Substring(br1 + 1, br2 - br1 - 1));
                 Revision = Utility.ToInt32(fmt.Substring(br2 + 1, br3 - br2 - 1));
 

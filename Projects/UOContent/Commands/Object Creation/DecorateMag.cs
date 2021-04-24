@@ -108,7 +108,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                labelNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                                labelNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                                 break;
                             }
                         }
@@ -128,7 +128,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                labelNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                                labelNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                                 break;
                             }
                         }
@@ -176,7 +176,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                map = Map.Parse(m_Params[i].Substring(++indexOf));
+                                map = Map.Parse(m_Params[i][++indexOf..]);
                             }
                         }
                     }
@@ -205,7 +205,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                range = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                                range = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("WarningString"))
@@ -214,7 +214,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                messageString = m_Params[i].Substring(++indexOf);
+                                messageString = m_Params[i][++indexOf..];
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("WarningNumber"))
@@ -223,7 +223,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                messageNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                                messageNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("HintString"))
@@ -232,7 +232,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                hintString = m_Params[i].Substring(++indexOf);
+                                hintString = m_Params[i][++indexOf..];
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("HintNumber"))
@@ -241,7 +241,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                hintNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                                hintNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("ResetDelay"))
@@ -250,7 +250,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                resetDelay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                                resetDelay = TimeSpan.Parse(m_Params[i][++indexOf..]);
                             }
                         }
                     }
@@ -278,7 +278,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                range = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                                range = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("WarningString"))
@@ -287,7 +287,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                messageString = m_Params[i].Substring(++indexOf);
+                                messageString = m_Params[i][++indexOf..];
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("WarningNumber"))
@@ -296,7 +296,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                messageNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                                messageNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("ResetDelay"))
@@ -305,7 +305,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                resetDelay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                                resetDelay = TimeSpan.Parse(m_Params[i][++indexOf..]);
                             }
                         }
                     }
@@ -331,7 +331,7 @@ namespace Server.Commands
                             {
                                 direction = (CannonDirection)Enum.Parse(
                                     typeof(CannonDirection),
-                                    m_Params[i].Substring(++indexOf),
+                                    m_Params[i][++indexOf..],
                                     true
                                 );
                             }
@@ -353,7 +353,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                word = m_Params[i].Substring(++indexOf);
+                                word = m_Params[i][++indexOf..];
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("DestStart"))
@@ -362,7 +362,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                destination.Start = Point2D.Parse(m_Params[i].Substring(++indexOf));
+                                destination.Start = Point2D.Parse(m_Params[i][++indexOf..]);
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("DestEnd"))
@@ -371,7 +371,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                destination.End = Point2D.Parse(m_Params[i].Substring(++indexOf));
+                                destination.End = Point2D.Parse(m_Params[i][++indexOf..]);
                             }
                         }
                     }
@@ -393,7 +393,7 @@ namespace Server.Commands
                             {
                                 content = (BeverageType)Enum.Parse(
                                     typeof(BeverageType),
-                                    m_Params[i].Substring(++indexOf),
+                                    m_Params[i][++indexOf..],
                                     true
                                 );
                                 fill = true;
@@ -422,7 +422,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                facing = (DoorFacing)Enum.Parse(typeof(DoorFacing), m_Params[i].Substring(++indexOf), true);
+                                facing = (DoorFacing)Enum.Parse(typeof(DoorFacing), m_Params[i][++indexOf..], true);
                                 break;
                             }
                         }
@@ -452,7 +452,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                coffin.SpawnLocation = Point3D.Parse(m_Params[i].Substring(++indexOf));
+                                coffin.SpawnLocation = Point3D.Parse(m_Params[i][++indexOf..]);
                             }
                         }
                     }
@@ -520,7 +520,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            sp.AddEntry(m_Params[i].Substring(++indexOf));
+                            sp.AddEntry(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("MinDelay"))
@@ -529,7 +529,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            sp.MinDelay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                            sp.MinDelay = TimeSpan.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("MaxDelay"))
@@ -538,7 +538,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            sp.MaxDelay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                            sp.MaxDelay = TimeSpan.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("NextSpawn"))
@@ -547,7 +547,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            sp.NextSpawn = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                            sp.NextSpawn = TimeSpan.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Count"))
@@ -556,7 +556,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            sp.Count = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            sp.Count = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                             for (var se = 0; se < sp.Entries.Count; se++)
                             {
                                 sp.Entries[se].SpawnedMaxCount = sp.Count;
@@ -569,7 +569,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            sp.Team = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            sp.Team = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("HomeRange"))
@@ -578,7 +578,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            sp.HomeRange = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            sp.HomeRange = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Running"))
@@ -587,7 +587,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            sp.Running = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                            sp.Running = Utility.ToBoolean(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Group"))
@@ -596,7 +596,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            sp.Group = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                            sp.Group = Utility.ToBoolean(m_Params[i][++indexOf..]);
                         }
                     }
                 }
@@ -611,7 +611,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            rune.Description = m_Params[i].Substring(++indexOf);
+                            rune.Description = m_Params[i][++indexOf..];
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Marked"))
@@ -620,7 +620,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            rune.Marked = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                            rune.Marked = Utility.ToBoolean(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("TargetMap"))
@@ -629,7 +629,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            rune.TargetMap = Map.Parse(m_Params[i].Substring(++indexOf));
+                            rune.TargetMap = Map.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Target"))
@@ -638,7 +638,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            rune.Target = Point3D.Parse(m_Params[i].Substring(++indexOf));
+                            rune.Target = Point3D.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                 }
@@ -653,7 +653,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.Skill = (SkillName)Enum.Parse(typeof(SkillName), m_Params[i].Substring(++indexOf), true);
+                            st.Skill = (SkillName)Enum.Parse(typeof(SkillName), m_Params[i][++indexOf..], true);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("RequiredFixedPoint"))
@@ -662,7 +662,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.Required = Utility.ToInt32(m_Params[i].Substring(++indexOf)) * 0.1;
+                            st.Required = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]) * 0.1;
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Required"))
@@ -671,7 +671,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.Required = Utility.ToDouble(m_Params[i].Substring(++indexOf));
+                            st.Required = Utility.ToDouble(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("MessageString"))
@@ -680,7 +680,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.MessageString = m_Params[i].Substring(++indexOf);
+                            st.MessageString = m_Params[i][++indexOf..];
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("MessageNumber"))
@@ -689,7 +689,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.MessageNumber = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            st.MessageNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("PointDest"))
@@ -698,7 +698,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.PointDest = Point3D.Parse(m_Params[i].Substring(++indexOf));
+                            st.PointDest = Point3D.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("MapDest"))
@@ -707,7 +707,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.MapDest = Map.Parse(m_Params[i].Substring(++indexOf));
+                            st.MapDest = Map.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Creatures"))
@@ -716,7 +716,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.Creatures = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                            st.Creatures = Utility.ToBoolean(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("SourceEffect"))
@@ -725,7 +725,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.SourceEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                            st.SourceEffect = Utility.ToBoolean(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("DestEffect"))
@@ -734,7 +734,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.DestEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                            st.DestEffect = Utility.ToBoolean(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("SoundID"))
@@ -743,7 +743,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.SoundID = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            st.SoundID = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Delay"))
@@ -752,7 +752,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.Delay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                            st.Delay = TimeSpan.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                 }
@@ -772,7 +772,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.Substring = m_Params[i].Substring(++indexOf);
+                            kt.Substring = m_Params[i][++indexOf..];
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Keyword"))
@@ -781,7 +781,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.Keyword = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            kt.Keyword = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Range"))
@@ -790,7 +790,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.Range = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            kt.Range = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("PointDest"))
@@ -799,7 +799,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.PointDest = Point3D.Parse(m_Params[i].Substring(++indexOf));
+                            kt.PointDest = Point3D.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("MapDest"))
@@ -808,7 +808,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.MapDest = Map.Parse(m_Params[i].Substring(++indexOf));
+                            kt.MapDest = Map.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Creatures"))
@@ -817,7 +817,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.Creatures = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                            kt.Creatures = Utility.ToBoolean(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("SourceEffect"))
@@ -826,7 +826,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.SourceEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                            kt.SourceEffect = Utility.ToBoolean(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("DestEffect"))
@@ -835,7 +835,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.DestEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                            kt.DestEffect = Utility.ToBoolean(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("SoundID"))
@@ -844,7 +844,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.SoundID = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            kt.SoundID = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Delay"))
@@ -853,7 +853,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.Delay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                            kt.Delay = TimeSpan.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                 }
@@ -873,7 +873,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            tp.PointDest = Point3D.Parse(m_Params[i].Substring(++indexOf));
+                            tp.PointDest = Point3D.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("MapDest"))
@@ -882,7 +882,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            tp.MapDest = Map.Parse(m_Params[i].Substring(++indexOf));
+                            tp.MapDest = Map.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Creatures"))
@@ -891,7 +891,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            tp.Creatures = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                            tp.Creatures = Utility.ToBoolean(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("SourceEffect"))
@@ -900,7 +900,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            tp.SourceEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                            tp.SourceEffect = Utility.ToBoolean(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("DestEffect"))
@@ -909,7 +909,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            tp.DestEffect = Utility.ToBoolean(m_Params[i].Substring(++indexOf));
+                            tp.DestEffect = Utility.ToBoolean(m_Params[i][++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("SoundID"))
@@ -918,7 +918,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            tp.SoundID = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                            tp.SoundID = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Delay"))
@@ -927,7 +927,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            tp.Delay = TimeSpan.Parse(m_Params[i].Substring(++indexOf));
+                            tp.Delay = TimeSpan.Parse(m_Params[i][++indexOf..]);
                         }
                     }
                 }
@@ -949,7 +949,7 @@ namespace Server.Commands
                         {
                             cont.ContentType = (FillableContentType)Enum.Parse(
                                 typeof(FillableContentType),
-                                m_Params[i].Substring(++indexOf),
+                                m_Params[i][++indexOf..],
                                 true
                             );
                         }
@@ -976,7 +976,7 @@ namespace Server.Commands
 
                     if (indexOf >= 0)
                     {
-                        item.Light = (LightType)Enum.Parse(typeof(LightType), m_Params[i].Substring(++indexOf), true);
+                        item.Light = (LightType)Enum.Parse(typeof(LightType), m_Params[i][++indexOf..], true);
                     }
                 }
                 else if (m_Params[i].StartsWithOrdinal("Hue"))
@@ -985,7 +985,7 @@ namespace Server.Commands
 
                     if (indexOf >= 0)
                     {
-                        var hue = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                        var hue = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
 
                         if (item is DyeTub tub)
                         {
@@ -1003,7 +1003,7 @@ namespace Server.Commands
 
                     if (indexOf >= 0)
                     {
-                        item.Name = m_Params[i].Substring(++indexOf);
+                        item.Name = m_Params[i][++indexOf..];
                     }
                 }
                 else if (m_Params[i].StartsWithOrdinal("Amount"))
@@ -1017,7 +1017,7 @@ namespace Server.Commands
                         var wasStackable = item.Stackable;
 
                         item.Stackable = true;
-                        item.Amount = Utility.ToInt32(m_Params[i].Substring(++indexOf));
+                        item.Amount = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         item.Stackable = wasStackable;
                     }
                 }
@@ -1255,25 +1255,20 @@ namespace Server.Commands
 
             var indexOf = line.IndexOfOrdinal(' ');
 
-            list.m_Type = AssemblyHandler.FindTypeByName(line.Substring(0, indexOf++));
+            list.m_Type = AssemblyHandler.FindTypeByName(line[..indexOf++]);
 
             if (list.m_Type == null)
             {
                 throw new ArgumentException($"Type not found for header: '{line}'");
             }
 
-            line = line.Substring(indexOf);
+            line = line[indexOf..];
             indexOf = line.IndexOfOrdinal('(');
             if (indexOf >= 0)
             {
-                list.m_ItemID = Utility.ToInt32(line.Substring(0, indexOf - 1));
+                list.m_ItemID = Utility.ToInt32(line.AsSpan()[..(indexOf - 1)]);
 
-                var parms = line.Substring(++indexOf);
-
-                if (line.EndsWithOrdinal(")"))
-                {
-                    parms = parms.Substring(0, parms.Length - 1);
-                }
+                var parms = line[++indexOf..^(line.EndsWithOrdinal(")") ? 1 : 0)];
 
                 list.m_Params = parms.Split(';');
 
@@ -1333,8 +1328,8 @@ namespace Server.Commands
 
             if (space >= 0)
             {
-                v = line.Substring(0, space++);
-                line = line.Substring(space);
+                v = line[..space++];
+                line = line[space..];
             }
             else
             {

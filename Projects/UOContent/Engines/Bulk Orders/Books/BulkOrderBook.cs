@@ -325,7 +325,7 @@ namespace Server.Engines.BulkOrders
             {
                 if (text.Length > 40)
                 {
-                    text = text.Substring(0, 40);
+                    text = text[..40];
                 }
 
                 if (from.CheckAlive() && m_Book.IsChildOf(from.Backpack))

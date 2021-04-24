@@ -48,7 +48,7 @@ namespace Server.Gumps
 
             if (text.Length > 20)
             {
-                text = text.Substring(0, 20);
+                text = text[..20];
             }
 
             if (text.Length > 0)

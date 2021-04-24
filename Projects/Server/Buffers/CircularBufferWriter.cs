@@ -87,7 +87,7 @@ namespace System.Buffers
         {
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryWriteInt16BigEndian(_first.Slice(Position), value))
+                if (!BinaryPrimitives.TryWriteInt16BigEndian(_first[Position..], value))
                 {
                     if (BitConverter.IsLittleEndian)
                     {
@@ -102,7 +102,7 @@ namespace System.Buffers
                     Position += 2;
                 }
             }
-            else if (BinaryPrimitives.TryWriteInt16BigEndian(_second.Slice(Position - _first.Length), value))
+            else if (BinaryPrimitives.TryWriteInt16BigEndian(_second[(Position - _first.Length)..], value))
             {
                 Position += 2;
             }
@@ -117,7 +117,7 @@ namespace System.Buffers
         {
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryWriteUInt16BigEndian(_first.Slice(Position), value))
+                if (!BinaryPrimitives.TryWriteUInt16BigEndian(_first[Position..], value))
                 {
                     if (BitConverter.IsLittleEndian)
                     {
@@ -132,7 +132,7 @@ namespace System.Buffers
                     Position += 2;
                 }
             }
-            else if (BinaryPrimitives.TryWriteUInt16BigEndian(_second.Slice(Position - _first.Length), value))
+            else if (BinaryPrimitives.TryWriteUInt16BigEndian(_second[(Position - _first.Length)..], value))
             {
                 Position += 2;
             }
@@ -147,7 +147,7 @@ namespace System.Buffers
         {
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryWriteInt32BigEndian(_first.Slice(Position), value))
+                if (!BinaryPrimitives.TryWriteInt32BigEndian(_first[Position..], value))
                 {
                     if (BitConverter.IsLittleEndian)
                     {
@@ -164,7 +164,7 @@ namespace System.Buffers
                     Position += 4;
                 }
             }
-            else if (BinaryPrimitives.TryWriteInt32BigEndian(_second.Slice(Position - _first.Length), value))
+            else if (BinaryPrimitives.TryWriteInt32BigEndian(_second[(Position - _first.Length)..], value))
             {
                 Position += 4;
             }
@@ -179,7 +179,7 @@ namespace System.Buffers
         {
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryWriteInt32LittleEndian(_first.Slice(Position), value))
+                if (!BinaryPrimitives.TryWriteInt32LittleEndian(_first[Position..], value))
                 {
                     if (!BitConverter.IsLittleEndian)
                     {
@@ -196,7 +196,7 @@ namespace System.Buffers
                     Position += 4;
                 }
             }
-            else if (BinaryPrimitives.TryWriteInt32LittleEndian(_second.Slice(Position - _first.Length), value))
+            else if (BinaryPrimitives.TryWriteInt32LittleEndian(_second[(Position - _first.Length)..], value))
             {
                 Position += 4;
             }
@@ -214,7 +214,7 @@ namespace System.Buffers
         {
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryWriteUInt32BigEndian(_first.Slice(Position), value))
+                if (!BinaryPrimitives.TryWriteUInt32BigEndian(_first[Position..], value))
                 {
                     if (BitConverter.IsLittleEndian)
                     {
@@ -231,7 +231,7 @@ namespace System.Buffers
                     Position += 4;
                 }
             }
-            else if (BinaryPrimitives.TryWriteUInt32BigEndian(_second.Slice(Position - _first.Length), value))
+            else if (BinaryPrimitives.TryWriteUInt32BigEndian(_second[(Position - _first.Length)..], value))
             {
                 Position += 4;
             }
@@ -246,7 +246,7 @@ namespace System.Buffers
         {
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryWriteUInt32LittleEndian(_first.Slice(Position), value))
+                if (!BinaryPrimitives.TryWriteUInt32LittleEndian(_first[Position..], value))
                 {
                     if (!BitConverter.IsLittleEndian)
                     {
@@ -263,7 +263,7 @@ namespace System.Buffers
                     Position += 4;
                 }
             }
-            else if (BinaryPrimitives.TryWriteUInt32LittleEndian(_second.Slice(Position - _first.Length), value))
+            else if (BinaryPrimitives.TryWriteUInt32LittleEndian(_second[(Position - _first.Length)..], value))
             {
                 Position += 4;
             }
@@ -281,7 +281,7 @@ namespace System.Buffers
         {
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryWriteInt64BigEndian(_first.Slice(Position), value))
+                if (!BinaryPrimitives.TryWriteInt64BigEndian(_first[Position..], value))
                 {
                     if (BitConverter.IsLittleEndian)
                     {
@@ -303,7 +303,7 @@ namespace System.Buffers
                     Position += 8;
                 }
             }
-            else if (BinaryPrimitives.TryWriteInt64BigEndian(_second.Slice(Position - _first.Length), value))
+            else if (BinaryPrimitives.TryWriteInt64BigEndian(_second[(Position - _first.Length)..], value))
             {
                 Position += 8;
             }
@@ -321,7 +321,7 @@ namespace System.Buffers
         {
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryWriteUInt64BigEndian(_first.Slice(Position), value))
+                if (!BinaryPrimitives.TryWriteUInt64BigEndian(_first[Position..], value))
                 {
                     if (BitConverter.IsLittleEndian)
                     {
@@ -342,7 +342,7 @@ namespace System.Buffers
                     Position += 8;
                 }
             }
-            else if (BinaryPrimitives.TryWriteUInt64BigEndian(_second.Slice(Position - _first.Length), value))
+            else if (BinaryPrimitives.TryWriteUInt64BigEndian(_second[(Position - _first.Length)..], value))
             {
                 Position += 8;
             }
@@ -363,15 +363,15 @@ namespace System.Buffers
             if (Position < _first.Length)
             {
                 var sz = Math.Min(buffer.Length, _first.Length - Position);
-                buffer.SliceToLength(sz).CopyTo(_first.Slice(Position));
+                buffer[..sz].CopyTo(_first[Position..]);
                 if (sz < buffer.Length)
                 {
-                    buffer.Slice(sz).CopyTo(_second);
+                    buffer[sz..].CopyTo(_second);
                 }
             }
             else if (Position < Length)
             {
-                buffer.CopyTo(_second.Slice(Position - _first.Length));
+                buffer.CopyTo(_second[(Position - _first.Length)..]);
             }
             else
             {
@@ -398,7 +398,7 @@ namespace System.Buffers
             if (Position < _first.Length)
             {
                 count = Math.Min(_first.Length - Position, byteCount);
-                bytes.SliceToLength(count).CopyTo(_first.Slice(Position));
+                bytes[..count].CopyTo(_first[Position..]);
                 byteCount -= count;
                 Position += count;
             }
@@ -409,7 +409,7 @@ namespace System.Buffers
 
             if (byteCount > 0)
             {
-                bytes.Slice(count).CopyTo(_second.Slice(Math.Max(0, Position - _first.Length)));
+                bytes[count..].CopyTo(_second[Math.Max(0, Position - _first.Length)..]);
                 Position += byteCount;
             }
         }

@@ -110,7 +110,7 @@ namespace Server.Engines.MLQuests.Mobiles
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.SliceToLength(length);
+                        buffer = buffer[..length];
                     }
 
                     state.Send(buffer);

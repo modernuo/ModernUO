@@ -212,9 +212,9 @@ namespace Server.Commands
 
             if (indexOf >= 0)
             {
-                argString = Command.Substring(indexOf + 1);
+                argString = Command[(indexOf + 1)..];
 
-                command = Command.Substring(0, indexOf);
+                command = Command[..indexOf];
                 args = CommandSystem.Split(argString);
             }
             else

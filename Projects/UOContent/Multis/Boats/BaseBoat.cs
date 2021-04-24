@@ -858,7 +858,7 @@ namespace Server.Multis
 
             if (e.Speech.Length > 8)
             {
-                Rename(e.Speech.Substring(8).Trim().DefaultIfNullOrEmpty(null));
+                Rename(e.Speech[8..].Trim().DefaultIfNullOrEmpty(null));
             }
         }
 
@@ -871,7 +871,7 @@ namespace Server.Multis
 
             if (newName?.Length > 40)
             {
-                newName = newName.Substring(0, 40);
+                newName = newName[..40];
             }
 
             if (m_ShipName == newName)
@@ -1005,7 +1005,7 @@ namespace Server.Multis
 
             if (start != -1)
             {
-                var sNumber = navPoint.Substring(start);
+                var sNumber = navPoint[start..];
 
                 if (!int.TryParse(sNumber, out number))
                 {

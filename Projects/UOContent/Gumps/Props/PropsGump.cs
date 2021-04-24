@@ -678,10 +678,10 @@ namespace Server.Gumps
                 {
                     if (t == typeof(ulong) || t == typeof(uint) || t == typeof(ushort) || t == typeof(byte))
                     {
-                        return Convert.ChangeType(Convert.ToUInt64(s.Substring(2), 16), t);
+                        return Convert.ChangeType(Convert.ToUInt64(s[2..], 16), t);
                     }
 
-                    return Convert.ChangeType(Convert.ToInt64(s.Substring(2), 16), t);
+                    return Convert.ChangeType(Convert.ToInt64(s[2..], 16), t);
                 }
 
                 return Convert.ChangeType(s, t);

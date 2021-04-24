@@ -101,14 +101,14 @@ namespace Server.Tests
                 {
                     while (v.Length >= startIndex)
                     {
-                        list.Add(v.Substring(0, startIndex));
+                        list.Add(v[..startIndex]);
 
                         if (list.Count == maxLines)
                         {
                             return list;
                         }
 
-                        v = v.Substring(startIndex);
+                        v = v[startIndex..];
                     }
 
                     current = v;
