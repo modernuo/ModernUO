@@ -54,10 +54,10 @@ namespace Server.Engines.CannedEvil
         {
             /*
             //We take the assumption that we are spawning managed champions
-            for (int i = CannedEvilTimer.DungeonSpawns.Count-1;i >= 0; i--)
+            for (int i = CannedEvilTimer.DungeonSpawns.Count - 1; i >= 0; i--)
                 CannedEvilTimer.DungeonSpawns[i].Delete();
 
-            for (int i = CannedEvilTimer.LLSpawns.Count-1;i >= 0; i--)
+            for (int i = CannedEvilTimer.LLSpawns.Count - 1; i >= 0; i--)
                 CannedEvilTimer.LLSpawns[i].Delete();
             */
 
@@ -71,7 +71,7 @@ namespace Server.Engines.CannedEvil
                 }
             }
 
-            for (int i = spawns.Count-1;i >= 0; i--)
+            for (int i = spawns.Count - 1; i >= 0; i--)
             {
                 spawns[i].Delete();
             }
