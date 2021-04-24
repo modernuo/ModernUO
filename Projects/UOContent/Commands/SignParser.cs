@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Server.Items;
@@ -110,7 +111,7 @@ namespace Server.Commands
 
             if (name.StartsWithOrdinal("#"))
             {
-                sign = new LocalizedSign(itemID, Utility.ToInt32(name[1..]));
+                sign = new LocalizedSign(itemID, Utility.ToInt32(name.AsSpan()[1..]));
             }
             else
             {
@@ -119,14 +120,12 @@ namespace Server.Commands
 
             if (map == Map.Malas)
             {
-                if (location.X >= 965 && location.Y >= 502 && location.X <= 1012 && location.Y <= 537)
+                sign.Hue = location.X switch
                 {
-                    sign.Hue = 0x47E;
-                }
-                else if (location.X >= 1960 && location.Y >= 1278 && location.X < 2106 && location.Y < 1413)
-                {
-                    sign.Hue = 0x44E;
-                }
+                    >= 965 when location.Y >= 502 && location.X <= 1012 && location.Y <= 537  => 0x47E,
+                    >= 1960 when location.Y >= 1278 && location.X < 2106 && location.Y < 1413 => 0x44E,
+                    _                                                                         => sign.Hue
+                };
             }
 
             sign.MoveToWorld(location, map);

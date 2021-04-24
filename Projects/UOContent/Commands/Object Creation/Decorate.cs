@@ -111,7 +111,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                labelNumber = Utility.ToInt32(m_Params[i][++indexOf..]);
+                                labelNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                                 break;
                             }
                         }
@@ -131,7 +131,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                labelNumber = Utility.ToInt32(m_Params[i][++indexOf..]);
+                                labelNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                                 break;
                             }
                         }
@@ -208,7 +208,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                range = Utility.ToInt32(m_Params[i][++indexOf..]);
+                                range = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("WarningString"))
@@ -226,7 +226,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                messageNumber = Utility.ToInt32(m_Params[i][++indexOf..]);
+                                messageNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("HintString"))
@@ -244,7 +244,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                hintNumber = Utility.ToInt32(m_Params[i][++indexOf..]);
+                                hintNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("ResetDelay"))
@@ -281,7 +281,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                range = Utility.ToInt32(m_Params[i][++indexOf..]);
+                                range = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("WarningString"))
@@ -299,7 +299,7 @@ namespace Server.Commands
 
                             if (indexOf >= 0)
                             {
-                                messageNumber = Utility.ToInt32(m_Params[i][++indexOf..]);
+                                messageNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                             }
                         }
                         else if (m_Params[i].StartsWithOrdinal("ResetDelay"))
@@ -559,7 +559,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            sp.Count = Utility.ToInt32(m_Params[i][++indexOf..]);
+                            sp.Count = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                             for (var se = 0; se < sp.Entries.Count; se++)
                             {
                                 sp.Entries[se].SpawnedMaxCount = sp.Count;
@@ -572,7 +572,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            sp.Team = Utility.ToInt32(m_Params[i][++indexOf..]);
+                            sp.Team = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("HomeRange"))
@@ -581,7 +581,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            sp.HomeRange = Utility.ToInt32(m_Params[i][++indexOf..]);
+                            sp.HomeRange = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Running"))
@@ -665,7 +665,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.Required = Utility.ToInt32(m_Params[i][++indexOf..]) * 0.1;
+                            st.Required = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]) * 0.1;
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Required"))
@@ -692,7 +692,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.MessageNumber = Utility.ToInt32(m_Params[i][++indexOf..]);
+                            st.MessageNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("PointDest"))
@@ -746,7 +746,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.SoundID = Utility.ToInt32(m_Params[i][++indexOf..]);
+                            st.SoundID = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Delay"))
@@ -784,7 +784,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.Keyword = Utility.ToInt32(m_Params[i][++indexOf..]);
+                            kt.Keyword = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Range"))
@@ -793,7 +793,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.Range = Utility.ToInt32(m_Params[i][++indexOf..]);
+                            kt.Range = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("PointDest"))
@@ -847,7 +847,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            kt.SoundID = Utility.ToInt32(m_Params[i][++indexOf..]);
+                            kt.SoundID = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Delay"))
@@ -921,7 +921,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            tp.SoundID = Utility.ToInt32(m_Params[i][++indexOf..]);
+                            tp.SoundID = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Delay"))
@@ -988,7 +988,7 @@ namespace Server.Commands
 
                     if (indexOf >= 0)
                     {
-                        var hue = Utility.ToInt32(m_Params[i][++indexOf..]);
+                        var hue = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
 
                         if (item is DyeTub tub)
                         {
@@ -1020,7 +1020,7 @@ namespace Server.Commands
                         var wasStackable = item.Stackable;
 
                         item.Stackable = true;
-                        item.Amount = Utility.ToInt32(m_Params[i][++indexOf..]);
+                        item.Amount = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         item.Stackable = wasStackable;
                     }
                 }
