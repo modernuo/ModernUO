@@ -1266,14 +1266,9 @@ namespace Server.Commands
             indexOf = line.IndexOfOrdinal('(');
             if (indexOf >= 0)
             {
-                list.m_ItemID = Utility.ToInt32(line[..(indexOf - 1)]);
+                list.m_ItemID = Utility.ToInt32(line.AsSpan()[..(indexOf - 1)]);
 
-                var parms = line[++indexOf..];
-
-                if (line.EndsWithOrdinal(")"))
-                {
-                    parms = parms[..^1];
-                }
+                var parms = line[++indexOf..^(line.EndsWithOrdinal(")") ? 1 : 0)];
 
                 list.m_Params = parms.Split(';');
 
