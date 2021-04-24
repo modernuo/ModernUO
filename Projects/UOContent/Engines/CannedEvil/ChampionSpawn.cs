@@ -321,7 +321,7 @@ namespace Server.Engines.CannedEvil
                 m_Platform.Hue = 0x452;
             }
 
-            ExpireTime = DateTime.Now + ExpireDelay;
+            ExpireTime = Core.Now + ExpireDelay;
         }
 
         public void Stop()
@@ -360,7 +360,7 @@ namespace Server.Engines.CannedEvil
             else if (ActivatedByProximity)
             {
                 ActivatedByProximity = false;
-                NextProximityTime = DateTime.Now + TimeSpan.FromHours(6.0);
+                NextProximityTime = Core.Now + TimeSpan.FromHours(6.0);
             }
 
             Timer.DelayCall(TimeSpan.FromMinutes(10.0), ExpireCreatures);
@@ -370,7 +370,7 @@ namespace Server.Engines.CannedEvil
         {
             RestartTimer?.Stop();
 
-            RestartTime = DateTime.Now + ts;
+            RestartTime = Core.Now + ts;
 
             RestartTimer = Timer.DelayCall(ts, EndRestart);
             RestartTimer.Start();
@@ -645,7 +645,7 @@ namespace Server.Engines.CannedEvil
                     SetWhiteSkullCount(p / 20);
                 }
 
-                if (DateTime.Now >= ExpireTime)
+                if (Core.Now >= ExpireTime)
                 {
                     Expire();
                 }
@@ -656,7 +656,7 @@ namespace Server.Engines.CannedEvil
 
         public void AdvanceLevel()
         {
-            ExpireTime = DateTime.Now + ExpireDelay;
+            ExpireTime = Core.Now + ExpireDelay;
 
             if (Level < m_MaxLevel)
             {
@@ -900,7 +900,7 @@ namespace Server.Engines.CannedEvil
                 SetWhiteSkullCount(0);
             }
 
-            ExpireTime = DateTime.Now + ExpireDelay;
+            ExpireTime = Core.Now + ExpireDelay;
         }
 
         public Point3D GetRedSkullLocation(int index)
@@ -1430,7 +1430,7 @@ namespace Server.Engines.CannedEvil
                         if (reader.ReadBool())
                         {
                             RestartTime = reader.ReadDeltaTime();
-                            BeginRestart(RestartTime - DateTime.Now);
+                            BeginRestart(RestartTime - Core.Now);
                         }
 
                         if (version < 4)
@@ -1487,7 +1487,7 @@ namespace Server.Engines.CannedEvil
                 {
                     Spawn.Start();
                 }
-                else if (Spawn.ProximitySpawn && !Spawn.ActivatedByProximity && DateTime.Now >= Spawn.NextProximityTime)
+                else if (Spawn.ProximitySpawn && !Spawn.ActivatedByProximity && Core.Now >= Spawn.NextProximityTime)
                 {
                     List<Mobile> players = parent.GetPlayers();
                     List<IPAddress> addresses = new List<IPAddress>();

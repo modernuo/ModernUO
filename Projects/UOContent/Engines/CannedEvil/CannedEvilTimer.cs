@@ -62,7 +62,7 @@ namespace Server.Engines.CannedEvil
         public CannedEvilTimer() : base(TimeSpan.Zero, TimeSpan.FromMinutes(1.0))
         {
             Priority = TimerPriority.OneMinute;
-            _sliceTime = DateTime.Now;
+            _sliceTime = Core.Now;
         }
 
         public void OnSlice<T>(ICollection<T> list, bool rotate = true) where T : ChampionSpawn
@@ -95,12 +95,12 @@ namespace Server.Engines.CannedEvil
 
         protected override void OnTick()
         {
-            if (!AutoRestart.Restarting && DateTime.Now >= _sliceTime)
+            if (!AutoRestart.Restarting && Core.Now >= _sliceTime)
             {
                 OnSlice(_dungeonSpawns);
                 OnSlice(_lostLandsSpawns);
 
-                _sliceTime = DateTime.Now.Date + TimeSpan.FromDays(1.0);
+                _sliceTime = Core.Now.Date + TimeSpan.FromDays(1.0);
             }
         }
     }
