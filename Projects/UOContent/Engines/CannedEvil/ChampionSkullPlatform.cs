@@ -26,32 +26,32 @@ namespace Server.Engines.CannedEvil
         public ChampionSkullPlatform()
         {
             AddComponent(new AddonComponent(0x71A), -1, -1, -1);
-            AddComponent(new AddonComponent(0x709),  0, -1, -1);
-            AddComponent(new AddonComponent(0x709),  1, -1, -1);
-            AddComponent(new AddonComponent(0x709), -1,  0, -1);
-            AddComponent(new AddonComponent(0x709),  0,  0, -1);
-            AddComponent(new AddonComponent(0x709),  1,  0, -1);
-            AddComponent(new AddonComponent(0x709), -1,  1, -1);
-            AddComponent(new AddonComponent(0x709),  0,  1, -1);
-            AddComponent(new AddonComponent(0x71B),  1,  1, -1);
+            AddComponent(new AddonComponent(0x709), 0, -1, -1);
+            AddComponent(new AddonComponent(0x709), 1, -1, -1);
+            AddComponent(new AddonComponent(0x709), -1, 0, -1);
+            AddComponent(new AddonComponent(0x709), 0, 0, -1);
+            AddComponent(new AddonComponent(0x709), 1, 0, -1);
+            AddComponent(new AddonComponent(0x709), -1, 1, -1);
+            AddComponent(new AddonComponent(0x709), 0, 1, -1);
+            AddComponent(new AddonComponent(0x71B), 1, 1, -1);
 
-            AddComponent(new AddonComponent(0x50F),  0, -1, 4);
-            AddComponent(m_Power = new ChampionSkullBrazier(this, ChampionSkullType.Power),  0, -1, 5);
+            AddComponent(new AddonComponent(0x50F), 0, -1, 4);
+            AddComponent(m_Power = new ChampionSkullBrazier(this, ChampionSkullType.Power), 0, -1, 5);
 
-            AddComponent(new AddonComponent(0x50F),  1, -1, 4);
-            AddComponent(m_Enlightenment = new ChampionSkullBrazier(this, ChampionSkullType.Enlightenment),  1, -1, 5);
+            AddComponent(new AddonComponent(0x50F), 1, -1, 4);
+            AddComponent(m_Enlightenment = new ChampionSkullBrazier(this, ChampionSkullType.Enlightenment), 1, -1, 5);
 
-            AddComponent(new AddonComponent(0x50F), -1,  0, 4);
-            AddComponent(m_Venom = new ChampionSkullBrazier(this, ChampionSkullType.Venom), -1,  0, 5);
+            AddComponent(new AddonComponent(0x50F), -1, 0, 4);
+            AddComponent(m_Venom = new ChampionSkullBrazier(this, ChampionSkullType.Venom), -1, 0, 5);
 
-            AddComponent(new AddonComponent(0x50F),  1,  0, 4);
-            AddComponent(m_Pain = new ChampionSkullBrazier(this, ChampionSkullType.Pain),  1,  0, 5);
+            AddComponent(new AddonComponent(0x50F), 1, 0, 4);
+            AddComponent(m_Pain = new ChampionSkullBrazier(this, ChampionSkullType.Pain), 1, 0, 5);
 
-            AddComponent(new AddonComponent(0x50F), -1,  1, 4);
-            AddComponent(m_Greed = new ChampionSkullBrazier(this, ChampionSkullType.Greed), -1,  1, 5);
+            AddComponent(new AddonComponent(0x50F), -1, 1, 4);
+            AddComponent(m_Greed = new ChampionSkullBrazier(this, ChampionSkullType.Greed), -1, 1, 5);
 
-            AddComponent(new AddonComponent(0x50F),  0,  1, 4);
-            AddComponent(m_Death = new ChampionSkullBrazier(this, ChampionSkullType.Death),  0,  1, 5);
+            AddComponent(new AddonComponent(0x50F), 0, 1, 4);
+            AddComponent(m_Death = new ChampionSkullBrazier(this, ChampionSkullType.Death), 0, 1, 5);
 
             AddonComponent comp = new LocalizedAddonComponent(0x20D2, 1049495) { Hue = 0x482 };
             AddComponent(comp, 0, 0, 5);
