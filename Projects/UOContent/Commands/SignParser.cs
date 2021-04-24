@@ -40,10 +40,8 @@ namespace Server.Commands
                         var split = line.Split(' ');
 
                         var e = new SignEntry(
-                            line.Substring(
-                                split[0].Length + 1 + split[1].Length + 1 + split[2].Length + 1 +
-                                split[3].Length + 1 + split[4].Length + 1
-                            ),
+                            line[(split[0].Length + 1 + split[1].Length + 1 + split[2].Length + 1 +
+                                  split[3].Length + 1 + split[4].Length + 1)..],
                             new Point3D(Utility.ToInt32(split[2]), Utility.ToInt32(split[3]), Utility.ToInt32(split[4])),
                             Utility.ToInt32(split[1]),
                             Utility.ToInt32(split[0])
@@ -112,7 +110,7 @@ namespace Server.Commands
 
             if (name.StartsWithOrdinal("#"))
             {
-                sign = new LocalizedSign(itemID, Utility.ToInt32(name.Substring(1)));
+                sign = new LocalizedSign(itemID, Utility.ToInt32(name[1..]));
             }
             else
             {

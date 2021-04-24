@@ -29,7 +29,7 @@ namespace Server.Mobiles
         {
             if (text.Length > 130)
             {
-                text = text.Substring(0, 130);
+                text = text[..130];
             }
 
             m_Barkeeper.EndChangeRumor(from, m_RumorIndex, text);
@@ -56,7 +56,7 @@ namespace Server.Mobiles
         {
             if (text.Length > 130)
             {
-                text = text.Substring(0, 130);
+                text = text[..130];
             }
 
             m_Barkeeper.EndChangeKeyword(from, m_RumorIndex, text);
@@ -78,7 +78,7 @@ namespace Server.Mobiles
         {
             if (text.Length > 130)
             {
-                text = text.Substring(0, 130);
+                text = text[..130];
             }
 
             m_Barkeeper.EndChangeTip(from, text);

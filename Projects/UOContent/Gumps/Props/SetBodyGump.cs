@@ -354,7 +354,7 @@ namespace Server.Gumps
                 {
                     if (DisplayName.StartsWithOrdinal(m_GroupNames[i]))
                     {
-                        DisplayName = DisplayName.Substring(m_GroupNames[i].Length);
+                        DisplayName = DisplayName[m_GroupNames[i].Length..];
                         break;
                     }
                 }

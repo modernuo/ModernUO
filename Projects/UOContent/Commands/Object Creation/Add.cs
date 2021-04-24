@@ -289,15 +289,15 @@ namespace Server.Commands
                 {
                     if (IsSignedNumeric(type))
                     {
-                        obj = Convert.ToInt64(value.Substring(2), 16);
+                        obj = Convert.ToInt64(value[2..], 16);
                     }
                     else if (IsUnsignedNumeric(type))
                     {
-                        obj = Convert.ToUInt64(value.Substring(2), 16);
+                        obj = Convert.ToUInt64(value[2..], 16);
                     }
                     else
                     {
-                        obj = Convert.ToInt32(value.Substring(2), 16);
+                        obj = Convert.ToInt32(value[2..], 16);
                     }
                 }
 

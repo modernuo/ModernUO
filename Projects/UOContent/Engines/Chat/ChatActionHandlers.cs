@@ -86,8 +86,8 @@ namespace Server.Engines.Chat
         {
             var indexOf = param.IndexOfOrdinal(' ');
 
-            var name = param.Substring(0, indexOf);
-            var text = param.Substring(indexOf + 1);
+            var name = param[..indexOf];
+            var text = param[(indexOf + 1)..];
 
             var target = ChatSystem.SearchForUser(from, name);
 
@@ -180,11 +180,11 @@ namespace Server.Engines.Chat
                 if (end >= 0)
                 {
                     name = param.Substring(start, end - start);
-                    password = param.Substring(++end);
+                    password = param[++end..];
                 }
                 else
                 {
-                    name = param.Substring(start);
+                    name = param[start..];
                 }
             }
             else
@@ -193,8 +193,8 @@ namespace Server.Engines.Chat
 
                 if (indexOf >= 0)
                 {
-                    name = param.Substring(0, indexOf++);
-                    password = param.Substring(indexOf);
+                    name = param[..indexOf++];
+                    password = param[indexOf..];
                 }
                 else
                 {
@@ -230,7 +230,7 @@ namespace Server.Engines.Chat
 
             if (start >= 0)
             {
-                name = param.Substring(0, start++);
+                name = param[..start++];
 
                 var end = param.IndexOf('}', start);
 

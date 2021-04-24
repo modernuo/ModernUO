@@ -70,7 +70,7 @@ namespace Server.Network
                 Grow(bytesNeeded);
             }
 
-            return _bytes.Slice(Length);
+            return _bytes[Length..];
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

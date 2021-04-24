@@ -223,7 +223,7 @@ namespace Server.Commands
 
                     if (valueString.StartsWithOrdinal("0x"))
                     {
-                        realValues[i] = Convert.ToInt32(valueString.Substring(2), 16);
+                        realValues[i] = Convert.ToInt32(valueString[2..], 16);
                     }
                     else
                     {
@@ -438,7 +438,7 @@ namespace Server.Commands
             {
                 try
                 {
-                    toSet = Convert.ChangeType(Convert.ToUInt64(value.Substring(2), 16), type);
+                    toSet = Convert.ChangeType(Convert.ToUInt64(value[2..], 16), type);
                 }
                 catch
                 {

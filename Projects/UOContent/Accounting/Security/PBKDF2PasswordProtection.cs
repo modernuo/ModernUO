@@ -38,7 +38,7 @@ namespace Server.Accounting.Security
 
             var rfc2898 = new Rfc2898DeriveBytes(plainPassword, m_SaltSize, iterations, HashAlgorithmName.SHA256);
             rfc2898.Salt.CopyTo(output.Slice(2, m_SaltSize));
-            rfc2898.GetBytes(m_HashSize).CopyTo(output.Slice(m_SaltSize + 2));
+            rfc2898.GetBytes(m_HashSize).CopyTo(output[(m_SaltSize + 2)..]);
 
             return output.ToHexString();
         }
@@ -54,7 +54,7 @@ namespace Server.Accounting.Security
             ReadOnlySpan<byte> hash =
                 new Rfc2898DeriveBytes(plainPassword, salt.ToArray(), iterations, HashAlgorithmName.SHA256).GetBytes(m_HashSize);
 
-            return hash.SequenceEqual(encryptedBytes.Slice(m_SaltSize + 2));
+            return hash.SequenceEqual(encryptedBytes[(m_SaltSize + 2)..]);
         }
     }
 }

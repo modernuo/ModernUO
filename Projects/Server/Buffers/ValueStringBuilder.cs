@@ -136,7 +136,7 @@ namespace Server.Buffers
             }
 
             int remaining = _length - index;
-            _chars.Slice(index, remaining).CopyTo(_chars.Slice(index + count));
+            _chars.Slice(index, remaining).CopyTo(_chars[(index + count)..]);
             _chars.Slice(index, count).Fill(value);
             _length += count;
         }
@@ -157,8 +157,8 @@ namespace Server.Buffers
             }
 
             int remaining = _length - index;
-            _chars.Slice(index, remaining).CopyTo(_chars.Slice(index + count));
-            s.AsSpan().CopyTo(_chars.Slice(index));
+            _chars.Slice(index, remaining).CopyTo(_chars[(index + count)..]);
+            s.AsSpan().CopyTo(_chars[index..]);
             _length += count;
         }
 
@@ -208,7 +208,7 @@ namespace Server.Buffers
                 return;
             }
 
-            fixed (char* buffer = _chars.Slice(pos))
+            fixed (char* buffer = _chars[pos..])
             {
                 char* p = buffer + bufferLength;
                 do
@@ -271,7 +271,7 @@ namespace Server.Buffers
                 Grow(s.Length);
             }
 
-            s.AsSpan().CopyTo(_chars.Slice(pos));
+            s.AsSpan().CopyTo(_chars[pos..]);
             _length += s.Length;
         }
 
@@ -317,7 +317,7 @@ namespace Server.Buffers
                 Grow(value.Length);
             }
 
-            value.CopyTo(_chars.Slice(_length));
+            value.CopyTo(_chars[_length..]);
             _length += value.Length;
         }
 
@@ -404,7 +404,7 @@ namespace Server.Buffers
                 var chr = slice[indexOf];
 
                 slice[indexOf] = newChars[oldChars.IndexOf(chr)];
-                slice = slice.Slice(indexOf + 1);
+                slice = slice[(indexOf + 1)..];
             }
         }
 
@@ -433,7 +433,7 @@ namespace Server.Buffers
                 }
 
                 slice[indexOf] = newChar;
-                slice = slice.Slice(indexOf + 1);
+                slice = slice[(indexOf + 1)..];
             }
         }
 
@@ -457,7 +457,7 @@ namespace Server.Buffers
 
             if (startIndex == 0)
             {
-                _chars = _chars.Slice(length);
+                _chars = _chars[length..];
             }
             else if (startIndex + length == _length)
             {
@@ -466,7 +466,7 @@ namespace Server.Buffers
             else
             {
                 // Somewhere in the middle, this will be slow
-                _chars.Slice(startIndex + length).CopyTo(_chars.Slice(startIndex));
+                _chars[(startIndex + length)..].CopyTo(_chars[startIndex..]);
             }
 
             _length -= length;

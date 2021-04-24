@@ -262,7 +262,7 @@ namespace Server
                     for (var j = 0; j < alias.Aliases.Length; j++)
                     {
                         var fullName = alias.Aliases[j];
-                        var name = fullName.Substring(fullName.LastIndexOf('.') + 1);
+                        var name = fullName[(fullName.LastIndexOf('.') + 1)..];
                         addToRefs(i, fullName, nameMap);
                         addToRefs(i, fullName.ToLower(), nameMapInsensitive);
                         addToRefs(i, name, nameMap);

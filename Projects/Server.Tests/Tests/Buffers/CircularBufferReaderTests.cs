@@ -64,14 +64,14 @@ namespace Server.Tests.Network
             var strLength = fixedLength > -1 ? Math.Min(value.Length, fixedLength) : value.Length;
             var chars = value.AsSpan(0, strLength);
 
-            encoding.GetBytes(chars, buffer.Slice(offset));
+            encoding.GetBytes(chars, buffer[offset..]);
 
-            var reader = new CircularBufferReader(buffer.SliceToLength(firstSize), buffer.Slice(firstSize));
+            var reader = new CircularBufferReader(buffer.SliceToLength(firstSize), buffer[firstSize..]);
             reader.Seek(offset, SeekOrigin.Begin);
 
             var actual = reader.ReadString(encoding, isSafe, fixedLength);
 
-            Assert.Equal(value.Substring(0, strLength), actual);
+            Assert.Equal(value[..strLength], actual);
         }
 
         [Fact]
