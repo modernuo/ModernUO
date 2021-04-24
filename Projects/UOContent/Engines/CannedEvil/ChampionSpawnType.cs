@@ -122,7 +122,7 @@ namespace Server.Engines.CannedEvil
 
         public static ChampionSpawnInfo GetInfo(ChampionSpawnType type)
         {
-            int v = (int)type;
+            var v = (int)type;
 
             if (v < 0 || v >= Table.Length)
             {

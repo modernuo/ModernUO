@@ -423,7 +423,7 @@ namespace Server.Engines.CannedEvil
 
 
             // Justice reward
-            PlayerMobile pm = (PlayerMobile)killer;
+            var pm = (PlayerMobile)killer;
             for (var j = 0; j < pm.JusticeProtectors.Count; ++j)
             {
                 Mobile prot = pm.JusticeProtectors[j];
@@ -432,7 +432,7 @@ namespace Server.Engines.CannedEvil
                     continue;
                 }
 
-                int chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
+                var chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
                 {
                     VirtueLevel.Seeker   => 60,
                     VirtueLevel.Follower => 80,
@@ -472,7 +472,7 @@ namespace Server.Engines.CannedEvil
             }
 
             // Justice reward
-            PlayerMobile pm = (PlayerMobile)killer;
+            var pm = (PlayerMobile)killer;
             for (var j = 0; j < pm.JusticeProtectors.Count; ++j)
             {
                 Mobile prot = pm.JusticeProtectors[j];
@@ -481,7 +481,7 @@ namespace Server.Engines.CannedEvil
                     continue;
                 }
 
-                int chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
+                var chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
                 {
                     VirtueLevel.Seeker   => 60,
                     VirtueLevel.Follower => 80,
