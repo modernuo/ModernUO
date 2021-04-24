@@ -84,7 +84,7 @@ namespace Server.Spells.Necromancy
         public override void OnCast()
         {
             var r = Caster.Region.GetRegion<ChampionSpawnRegion>();
-            if (r == null || !Caster.InRange(r.ChampionSpawn, Range))
+            if (r == null || !Caster.InRange(r.Spawn, Range))
             {
                 Caster.SendLocalizedMessage(1072111); // You are not in a valid exorcism region.
             }
@@ -95,7 +95,7 @@ namespace Server.Spells.Necromancy
                 if (map != null)
                 {
                     // Surprisingly, no sparkle type effects
-                    foreach (var m in r.ChampionSpawn.GetMobilesInRange(Range))
+                    foreach (var m in r.Spawn.GetMobilesInRange(Range))
                     {
                         if (IsValidTarget(m))
                         {

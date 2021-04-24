@@ -1,22 +1,37 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: ChampionAltar.cs                                                *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using Server.Items;
 
 namespace Server.Engines.CannedEvil
 {
     public class ChampionAltar : PentagramAddon
     {
-        private ChampionSpawn m_Spawn;
+        public ChampionSpawn Spawn { get; private set; }
 
-        public ChampionAltar(ChampionSpawn spawn) => m_Spawn = spawn;
-
-        public ChampionAltar(Serial serial) : base(serial)
-        {
-        }
+        public ChampionAltar(ChampionSpawn spawn) => Spawn = spawn;
 
         public override void OnAfterDelete()
         {
             base.OnAfterDelete();
 
-            m_Spawn?.Delete();
+            Spawn?.Delete();
+        }
+
+        public ChampionAltar(Serial serial) : base(serial)
+        {
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -25,7 +40,7 @@ namespace Server.Engines.CannedEvil
 
             writer.Write(0); // version
 
-            writer.Write(m_Spawn);
+            writer.Write(Spawn);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -38,9 +53,9 @@ namespace Server.Engines.CannedEvil
             {
                 case 0:
                     {
-                        m_Spawn = reader.ReadEntity<ChampionSpawn>();
+                        Spawn = reader.ReadEntity<ChampionSpawn>();
 
-                        if (m_Spawn == null)
+                        if (Spawn == null)
                         {
                             Delete();
                         }
