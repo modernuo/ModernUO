@@ -662,7 +662,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.Required = Utility.ToInt32(m_Params[i][++indexOf..]) * 0.1;
+                            st.Required = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]) * 0.1;
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("Required"))
