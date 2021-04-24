@@ -66,7 +66,7 @@ namespace Server.Tests.Network
 
             encoding.GetBytes(chars, buffer[offset..]);
 
-            var reader = new CircularBufferReader(buffer.SliceToLength(firstSize), buffer[firstSize..]);
+            var reader = new CircularBufferReader(buffer[..firstSize], buffer[firstSize..]);
             reader.Seek(offset, SeekOrigin.Begin);
 
             var actual = reader.ReadString(encoding, isSafe, fixedLength);

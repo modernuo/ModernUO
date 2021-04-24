@@ -183,7 +183,7 @@ namespace Server
 
                 if (length != buffer.Length)
                 {
-                    buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                    buffer = buffer[..length]; // Adjust to the actual size
                 }
 
                 ns.Send(buffer);
@@ -211,7 +211,7 @@ namespace Server
 
                 if (length != buffer.Length)
                 {
-                    buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                    buffer = buffer[..length]; // Adjust to the actual size
                 }
 
                 ns.Send(buffer);

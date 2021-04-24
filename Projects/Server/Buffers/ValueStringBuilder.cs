@@ -86,7 +86,7 @@ namespace Server.Buffers
         public ref char this[int index] => ref _chars[index];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString() => _chars.SliceToLength(_length).ToString();
+        public override string ToString() => _chars[.._length].ToString();
 
         /// <summary>Returns the underlying storage of the builder.</summary>
         public Span<char> RawChars => _chars;
@@ -102,11 +102,11 @@ namespace Server.Buffers
                 EnsureCapacity(_length + 1);
                 _chars[_length] = '\0';
             }
-            return _chars.SliceToLength(_length);
+            return _chars[.._length];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<char> AsSpan() => _chars.SliceToLength(_length);
+        public ReadOnlySpan<char> AsSpan() => _chars[.._length];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<char> AsSpan(int start) => _chars.Slice(start, _length - start);
@@ -117,7 +117,7 @@ namespace Server.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryCopyTo(Span<char> destination, out int charsWritten)
         {
-            if (_chars.SliceToLength(_length).TryCopyTo(destination))
+            if (_chars[.._length].TryCopyTo(destination))
             {
                 charsWritten = _length;
                 return true;
@@ -355,7 +355,7 @@ namespace Server.Buffers
         {
             char[] poolArray = ArrayPool<char>.Shared.Rent(Math.Max(_length + additionalCapacityBeyondPos, _chars.Length * 2));
 
-            _chars.SliceToLength(_length).CopyTo(poolArray);
+            _chars[.._length].CopyTo(poolArray);
 
             char[] toReturn = _arrayToReturnToPool;
             _chars = _arrayToReturnToPool = poolArray;
@@ -461,7 +461,7 @@ namespace Server.Buffers
             }
             else if (startIndex + length == _length)
             {
-                _chars = _chars.SliceToLength(startIndex);
+                _chars = _chars[..startIndex];
             }
             else
             {

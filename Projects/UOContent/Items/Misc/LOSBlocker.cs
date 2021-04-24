@@ -53,7 +53,7 @@ namespace Server.Items
                 BinaryPrimitives.WriteUInt16BigEndian(buffer.Slice(7, 2), GMItemId);
             }
 
-            ns.Send(buffer.SliceToLength(length));
+            ns.Send(buffer[..length]);
         }
 
         public override void Serialize(IGenericWriter writer)

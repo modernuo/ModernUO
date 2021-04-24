@@ -75,7 +75,7 @@ namespace Server.Engines.Spawners
             {
                 var start = setIndex + 4;
                 props = argSpan.Slice(start, argSpan.Length - start);
-                argSpan = argSpan.SliceToLength(setIndex);
+                argSpan = argSpan[..setIndex];
             }
 
             var argStr = argSpan.ToString().DefaultIfNullOrEmpty(null);

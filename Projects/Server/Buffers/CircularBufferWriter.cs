@@ -363,7 +363,7 @@ namespace System.Buffers
             if (Position < _first.Length)
             {
                 var sz = Math.Min(buffer.Length, _first.Length - Position);
-                buffer.SliceToLength(sz).CopyTo(_first[Position..]);
+                buffer[..sz].CopyTo(_first[Position..]);
                 if (sz < buffer.Length)
                 {
                     buffer[sz..].CopyTo(_second);
@@ -398,7 +398,7 @@ namespace System.Buffers
             if (Position < _first.Length)
             {
                 count = Math.Min(_first.Length - Position, byteCount);
-                bytes.SliceToLength(count).CopyTo(_first[Position..]);
+                bytes[..count].CopyTo(_first[Position..]);
                 byteCount -= count;
                 Position += count;
             }

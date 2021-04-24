@@ -246,7 +246,7 @@ namespace Server.Engines.PartySystem
             );
 
             // : joined the party.
-            buffer = buffer.SliceToLength(length);
+            buffer = buffer[..length];
             SendToAll(buffer);
             SendToAllListeners(buffer);
 
@@ -388,7 +388,7 @@ namespace Server.Engines.PartySystem
                 Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args
             );
 
-            buffer = buffer.SliceToLength(length);
+            buffer = buffer[..length];
 
             SendToAll(buffer);
             SendToAllListeners(buffer);
@@ -438,7 +438,7 @@ namespace Server.Engines.PartySystem
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                        buffer = buffer[..length]; // Adjust to the actual size
                     }
 
                     ns.Send(buffer);
@@ -528,7 +528,7 @@ namespace Server.Engines.PartySystem
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                        buffer = buffer[..length]; // Adjust to the actual size
                     }
 
                     m.NetState?.Send(buffer);

@@ -529,7 +529,7 @@ namespace Server.Engines.Doom
 
                 if (length != buffer.Length)
                 {
-                    buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                    buffer = buffer[..length]; // Adjust to the actual size
                 }
 
                 state.Send(buffer);

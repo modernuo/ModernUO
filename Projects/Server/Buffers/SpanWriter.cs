@@ -51,7 +51,7 @@ namespace System.Buffers
 
         public int Capacity => _buffer.Length;
 
-        public ReadOnlySpan<byte> Span => _buffer.SliceToLength(Position);
+        public ReadOnlySpan<byte> Span => _buffer[..Position];
 
         public Span<byte> RawBuffer => _buffer;
 
@@ -119,7 +119,7 @@ namespace System.Buffers
             var newSize = Math.Max(BytesWritten + additionalCapacity, _buffer.Length * 2);
             byte[] poolArray = ArrayPool<byte>.Shared.Rent(newSize);
 
-            _buffer.SliceToLength(BytesWritten).CopyTo(poolArray);
+            _buffer[..BytesWritten].CopyTo(poolArray);
 
             byte[] toReturn = _arrayToReturnToPool;
             _buffer = _arrayToReturnToPool = poolArray;

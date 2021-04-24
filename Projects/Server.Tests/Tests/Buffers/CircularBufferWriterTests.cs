@@ -55,7 +55,7 @@ namespace Server.Tests.Buffers
             var strLength = fixedLength > -1 ? Math.Min(value.Length, fixedLength) : value.Length;
             var chars = value.AsSpan(0, strLength);
 
-            var writer = new CircularBufferWriter(buffer.SliceToLength(firstSize), buffer[firstSize..]);
+            var writer = new CircularBufferWriter(buffer[..firstSize], buffer[firstSize..]);
             writer.Seek(offset, SeekOrigin.Begin);
             writer.WriteString(chars, encoding);
 
@@ -63,7 +63,7 @@ namespace Server.Tests.Buffers
             {
                 Span<byte> testEmpty = stackalloc byte[offset];
                 testEmpty.Clear();
-                AssertThat.Equal(buffer.SliceToLength(offset), testEmpty);
+                AssertThat.Equal(buffer[..offset], testEmpty);
             }
 
             Span<byte> expectedStr = stackalloc byte[encoding.GetByteCount(chars)];

@@ -94,7 +94,7 @@ namespace Server.Network
                 OutgoingEntityPackets.CreateWorldEntity(buffer, item, ns.HighSeas) :
                 CreateWorldItem(buffer, item);
 
-            ns.Send(buffer.SliceToLength(length));
+            ns.Send(buffer[..length]);
         }
     }
 }

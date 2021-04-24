@@ -387,7 +387,7 @@ namespace Server
             var sectionStart = 0;
             var hasCompressor = false;
 
-            var num = BinaryPrimitives.ReadUInt16BigEndian(ip.SliceToLength(2));
+            var num = BinaryPrimitives.ReadUInt16BigEndian(ip[..2]);
 
             for (int i = 0; i < end; i++)
             {

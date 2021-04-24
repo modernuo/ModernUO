@@ -40,12 +40,6 @@ namespace Server.Network
             writer.Seek(0, SeekOrigin.End);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span<T> SliceToLength<T>(this Span<T> span, int length) => span[..length];
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<T> SliceToLength<T>(this ReadOnlySpan<T> span, int length) => span[..length];
-
         // If LOCAL INIT is off, then stack/heap allocations have garbage data
         // Initializes the first byte (Packet ID) so it can be used as a flag.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
