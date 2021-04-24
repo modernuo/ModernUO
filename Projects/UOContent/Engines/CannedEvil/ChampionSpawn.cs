@@ -1150,7 +1150,7 @@ namespace Server.Engines.CannedEvil
                 return;
             }
 
-            foreach(DamageEntry de in m.DamageEntries)
+            foreach (DamageEntry de in m.DamageEntries)
             {
                 if (de.HasExpired)
                 {
@@ -1560,8 +1560,8 @@ namespace Server.Engines.CannedEvil
 
         private class EjectTimer : Timer
         {
-            private Mobile m_From;
-            private ChampionSpawnRegion m_Region;
+            private readonly Mobile m_From;
+            private readonly ChampionSpawnRegion m_Region;
 
             public EjectTimer(Mobile from, ChampionSpawnRegion region) : base(TimeSpan.FromMinutes(5.0))
             {

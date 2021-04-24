@@ -50,8 +50,7 @@ namespace Server.Engines.CannedEvil
             SpawnTypes = spawnTypes;
         }
 
-        public static ChampionSpawnInfo[] Table { get; } = new ChampionSpawnInfo[]
-        {
+        public static ChampionSpawnInfo[] Table { get; } = {
             new("Abyss", typeof(Semidar), new[]{ "Foe", "Assassin", "Conqueror" }, new[]
             {
                 new[]{ typeof(GreaterMongbat), typeof(Imp) },                           // Level 1
