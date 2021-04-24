@@ -19,7 +19,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Server.Logging;
 
 namespace Server
 {

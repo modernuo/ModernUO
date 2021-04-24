@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Server.Logging;
 using Server.Network;
 using Server.Utilities;
 using QueuePool = Server.Utilities.RefPool<Server.Utilities.QueueRef<Server.Items.Container>>;
@@ -1822,6 +1823,8 @@ namespace Server.Items
 
     public class ContainerData
     {
+        private static ILogger _logger;
+        private static ILogger Logger => _logger ??= LogFactory.GetLogger(typeof(ContainerData));
         private static readonly Dictionary<int, ContainerData> m_Table;
 
         static ContainerData()
@@ -1886,7 +1889,7 @@ namespace Server.Items
 
                                     if (m_Table.ContainsKey(id))
                                     {
-                                        Console.WriteLine(@"Warning: double ItemID entry in Data\containers.cfg");
+                                        Logger.Warning("double ItemID entry in Data\\containers.cfg");
                                     }
                                     else
                                     {

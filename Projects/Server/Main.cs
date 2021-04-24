@@ -343,7 +343,7 @@ namespace Server
         {
             ClosingTokenSource.Cancel();
 
-            Console.Write("Core: Shutting down...");
+            logger.Information("Shutting down");
 
             World.WaitForWriteCompletion();
 
@@ -353,8 +353,6 @@ namespace Server
             }
 
             Timer.TimerThread.Set();
-
-            Console.WriteLine("done");
         }
 
         public static void Main(string[] args)

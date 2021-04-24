@@ -59,9 +59,15 @@ namespace Server
 
             _map = owner;
 
+#if DEBUG
+            const bool warnNotFound = true;
+#else
+            const bool warnNotFound = false;
+#endif
+
             if (fileIndex != 0x7F)
             {
-                var mapPath = Core.FindDataFile($"map{fileIndex}.mul", false);
+                var mapPath = Core.FindDataFile($"map{fileIndex}.mul", false, warnNotFound);
 
                 if (mapPath != null)
                 {
@@ -69,7 +75,7 @@ namespace Server
                 }
                 else
                 {
-                    mapPath = Core.FindDataFile($"map{fileIndex}LegacyMUL.uop", false, true);
+                    mapPath = Core.FindDataFile($"map{fileIndex}LegacyMUL.uop", false, warnNotFound);
 
                     if (mapPath != null)
                     {
@@ -78,7 +84,7 @@ namespace Server
                     }
                 }
 
-                var indexPath = Core.FindDataFile($"staidx{fileIndex}.mul", false, true);
+                var indexPath = Core.FindDataFile($"staidx{fileIndex}.mul", false, warnNotFound);
 
                 if (indexPath != null)
                 {
@@ -86,7 +92,7 @@ namespace Server
                     IndexReader = new BinaryReader(IndexStream);
                 }
 
-                var staticsPath = Core.FindDataFile($"statics{fileIndex}.mul", false, true);
+                var staticsPath = Core.FindDataFile($"statics{fileIndex}.mul", false, warnNotFound);
 
                 if (staticsPath != null)
                 {
