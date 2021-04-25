@@ -886,7 +886,7 @@ namespace Server.Engines.CannedEvil
 
                 list.Add(
                     1060660, // ~1_val~: ~2_val~
-                    "Kills\t{0} of {1} ({2:F1}%)",
+                    "Kills\t{0} of {1} ({2:0.#}%)",
                     m_Kills,
                     MaxKills,
                     100.0 * ((double)m_Kills / MaxKills)
