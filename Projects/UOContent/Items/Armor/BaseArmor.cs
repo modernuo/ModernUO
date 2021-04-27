@@ -1451,6 +1451,12 @@ namespace Server.Items
 
             SkillBonuses.GetProperties(list);
 
+            if (!_identified)
+            {
+                list.Add(1060847, "<CENTER><BASEFONT COLOR=#0000FF>Unidentified</BASEFONT></CENTER>");
+                return;
+            }
+
             int prop;
 
             if ((prop = ArtifactRarity) > 0)

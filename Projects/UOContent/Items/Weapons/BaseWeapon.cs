@@ -2851,6 +2851,12 @@ namespace Server.Items
                 list.Add(1060584, usesRemaining.UsesRemaining.ToString()); // uses remaining: ~1_val~
             }
 
+            if (!m_Identified)
+            {
+                list.Add(1060847, "<CENTER><BASEFONT COLOR=#0000FF>Unidentified</BASEFONT></CENTER>");
+                return;
+            }
+
             if (m_Poison != null && m_PoisonCharges > 0)
             {
                 list.Add(1062412 + m_Poison.Level, m_PoisonCharges.ToString());
