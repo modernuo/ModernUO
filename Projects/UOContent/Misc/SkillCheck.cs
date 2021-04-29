@@ -80,10 +80,10 @@ namespace Server.Misc
             true,  // Chivalry = 51
             true,  // Bushido = 52
             true,  // Ninjitsu = 53
-            true,   // Spellweaving
-            true,   // Mysticism = 55
-            true,   // Imbuing = 56
-            false,   // Throwing = 57
+            true,  // Spellweaving
+            true,  // Mysticism = 55
+            true,  // Imbuing = 56
+            false, // Throwing = 57
         };
 
         private static readonly TimeSpan m_StatGainDelay = TimeSpan.FromMinutes(Core.ML ? 0.05 : 15);
@@ -270,6 +270,19 @@ namespace Server.Misc
             if (skill.Base < skill.Cap && skill.Lock == SkillLock.Up)
             {
                 var toGain = 1;
+
+                #region Powerhour Testing
+
+                if (PowerHour.On)
+                {
+                    toGain = toGain * 2;
+                }
+                else if (!PowerHour.On)
+                {
+                    toGain = toGain * 1;
+                }
+
+                #endregion
 
                 if (skill.Base <= 10.0)
                 {
