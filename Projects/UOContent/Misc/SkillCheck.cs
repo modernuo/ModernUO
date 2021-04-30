@@ -273,11 +273,11 @@ namespace Server.Misc
 
                 #region Powerhour Testing
 
-                if (PowerHour.On)
+                if (PowerHour.IsActive)
                 {
                     toGain = toGain * 2;
                 }
-                else if (!PowerHour.On)
+                else if (!PowerHour.IsActive)
                 {
                     toGain = toGain * 1;
                 }

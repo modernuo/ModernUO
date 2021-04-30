@@ -24,13 +24,6 @@ namespace Server.Special_Systems.Misc.SkillBalls
             Stackable = true;
         }
 
-       /* [CommandProperty(AccessLevel.GameMaster)]
-        public SkillName SkillName
-        {
-            get => m_Skill.SkillName;
-            set => m_Skill = SkillList.Find(x => x.SkillName == value);
-        }*/
-
 
         public enum SkillBallType
         {
