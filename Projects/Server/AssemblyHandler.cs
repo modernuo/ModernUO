@@ -154,7 +154,7 @@ namespace Server
             for (var i = 0; i < Types.Length; i++)
             {
                 var current = Types[i];
-                addTypeToRefs(i, Types[i].FullName);
+                addTypeToRefs(i, current.FullName);
                 if (current.GetCustomAttribute(aliasType, false) is TypeAliasAttribute alias)
                 {
                     for (var j = 0; j < alias.Aliases.Length; j++)
