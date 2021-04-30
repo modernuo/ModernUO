@@ -555,9 +555,9 @@ namespace Server
 
         public static string FixHtml(string str)
         {
-            if (str == null)
+            if (string.IsNullOrEmpty(str))
             {
-                return "";
+                return str;
             }
 
             using var sb = new ValueStringBuilder(str, stackalloc char[Math.Min(40960, str.Length)]);
