@@ -141,6 +141,7 @@ namespace Server
             var fullNameMap = new Dictionary<string, HashSet<int>>();
             var fullNameMapInsensitive = new Dictionary<string, HashSet<int>>();
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             void addTypeToRefs(int index, string fullTypeName)
             {
                 var typeName = fullTypeName[(fullTypeName.LastIndexOf('.') + 1)..];
@@ -185,6 +186,7 @@ namespace Server
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void AddToRefs(int index, string key, Dictionary<string, HashSet<int>> map)
         {
             if (key == null)
