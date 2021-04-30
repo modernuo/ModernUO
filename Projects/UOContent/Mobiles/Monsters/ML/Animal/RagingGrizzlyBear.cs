@@ -1,6 +1,5 @@
 namespace Server.Mobiles
 {
-    [TypeAlias("Server.Mobiles.Grizzlybear")]
     public class RagingGrizzlyBear : BaseCreature
     {
         [Constructible]
