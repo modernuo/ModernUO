@@ -141,6 +141,7 @@ namespace Server
             var fullNameMap = new Dictionary<string, HashSet<int>>();
             var fullNameMapInsensitive = new Dictionary<string, HashSet<int>>();
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             void addTypeToRefs(int index, string fullTypeName)
             {
                 var typeName = fullTypeName[(fullTypeName.LastIndexOf('.') + 1)..];
@@ -154,7 +155,7 @@ namespace Server
             for (var i = 0; i < Types.Length; i++)
             {
                 var current = Types[i];
-                addTypeToRefs(i, Types[i].FullName);
+                addTypeToRefs(i, current.FullName);
                 if (current.GetCustomAttribute(aliasType, false) is TypeAliasAttribute alias)
                 {
                     for (var j = 0; j < alias.Aliases.Length; j++)
@@ -185,6 +186,7 @@ namespace Server
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void AddToRefs(int index, string key, Dictionary<string, HashSet<int>> map)
         {
             if (key == null)
