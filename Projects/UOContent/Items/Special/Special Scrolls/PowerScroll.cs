@@ -27,7 +27,9 @@ namespace Server.Items
             SkillName.Musicianship,
             SkillName.Provocation,
             SkillName.Discordance,
-            SkillName.Peacemaking
+            SkillName.Peacemaking,
+            SkillName.Fishing,
+            SkillName.Fletching
         };
 
         private static readonly SkillName[] m_AOSSkills =
@@ -161,16 +163,42 @@ namespace Server.Items
             return new PowerScroll(skillName, 100 + Utility.RandomMinMax(min, max) * 5);
         }
 
+        public static PowerScroll CreateRandomForChampions(int min, int max)
+        {
+            // To exclude
+            //SkillName.Blacksmith,
+            //SkillName.Tailoring,
+            //SkillName.Fletching
+            //SkillName.AnimalTaming,
+            //SkillName.AnimalLore,
+
+            min /= 5;
+            max /= 5;
+
+            SkillName skillName;
+
+            do
+            {
+                skillName = Skills.RandomElement();
+            } while (skillName == SkillName.Blacksmith
+            || skillName == SkillName.Tailoring
+            || skillName == SkillName.Fletching
+            || skillName == SkillName.AnimalTaming
+            || skillName == SkillName.AnimalLore);
+
+            return new PowerScroll(skillName, 100 + Utility.RandomMinMax(min, max) * 5);
+        }
+
         public override void AddNameProperty(ObjectPropertyList list)
         {
             var level = (Value - 105.0) / 5.0;
 
             if (level >= 0.0 && level <= 3.0 && Value % 5.0 == 0.0)
-                /* a wonderous scroll of ~1_type~ (105 Skill) OR
-                 * an exalted scroll of ~1_type~ (110 Skill) OR
-                 * a mythical scroll of ~1_type~ (115 Skill) OR
-                 * a legendary scroll of ~1_type~ (120 Skill)
-                 */
+            /* a wonderous scroll of ~1_type~ (105 Skill) OR
+             * an exalted scroll of ~1_type~ (110 Skill) OR
+             * a mythical scroll of ~1_type~ (115 Skill) OR
+             * a legendary scroll of ~1_type~ (120 Skill)
+             */
             {
                 list.Add(1049639 + (int)level, GetNameLocalized());
             }
