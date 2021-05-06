@@ -4234,6 +4234,11 @@ namespace Server.Mobiles
 
         public virtual void AlterMeleeDamageTo(Mobile to, ref int damage)
         {
+            if (Utility.RandomDouble() > .80)
+            {
+                to.PlaySound(0x133); //Original bleed sound,you can change.
+                to.FixedParticles(0x377A, 244, 25, 9950, 31, 0, EffectLayer.Waist); //Original bleed particles.
+            }
         }
 
         public virtual bool CheckFoodPreference(Item f) =>
@@ -4334,12 +4339,24 @@ namespace Server.Mobiles
                                     if (BondingBegin == DateTime.MinValue)
                                     {
                                         BondingBegin = Core.Now;
+                                        from.SendMessage(0x38, "Your pet has begun bonding with you. Feed them again after 7 days from now to complete the bonding process.");
+
                                     }
                                     else if (BondingBegin + BondingDelay <= Core.Now)
                                     {
                                         IsBonded = true;
                                         BondingBegin = DateTime.MinValue;
                                         from.SendLocalizedMessage(1049666); // Your pet has bonded with you!
+                                    }
+                                    else // they are in the middle of the bonding process
+                                    {
+                                        DateTime today = Core.Now;
+                                        DateTime willbebonded = BondingBegin.AddDays(7);
+                                        TimeSpan bondedfor = BondingBegin - today;
+                                        TimeSpan daystobond = willbebonded - today;
+                                        string BondInfo = string.Format("The pet started bonding with you at {0}. Its {1} days, {2} hours and {3} minutes until it bonds", BondingBegin, daystobond.Days,
+                                        daystobond.Hours, daystobond.Minutes);
+                                        from.SendMessage(0x38, BondInfo);
                                     }
                                 }
                                 else if (Core.ML)

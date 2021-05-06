@@ -2252,6 +2252,11 @@ namespace Server
             to.NetState.SendMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, false, "ENU", "", text);
         }
 
+        public void LabelTo(Mobile to, string text, int hue)
+        {
+            to.NetState.SendMessage(Serial, m_ItemID, MessageType.Label, hue, 3, false, "ENU", "", text);
+        }
+
         public void LabelTo(Mobile to, string format, params object[] args)
         {
             LabelTo(to, string.Format(format, args));
