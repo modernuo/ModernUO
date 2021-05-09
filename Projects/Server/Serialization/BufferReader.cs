@@ -15,12 +15,10 @@
 
 using System;
 using System.Buffers.Binary;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
-using Server.Guilds;
 using Server.Text;
 
 namespace Server
