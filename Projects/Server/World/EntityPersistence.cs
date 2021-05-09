@@ -126,14 +126,12 @@ namespace Server
                     continue;
                 }
 
-                T t;
                 ConstructorInfo ctor = objs.Item1;
                 I indexer = indexInfo.CreateIndex(number);
 
                 ctorArgs[0] = indexer;
-                t = ctor.Invoke(ctorArgs) as T;
 
-                if (t != null)
+                if (ctor.Invoke(ctorArgs) is T t)
                 {
                     entities.Add(new EntityIndex<T>(t, typeID, pos, length));
                     map[indexer] = t;
@@ -162,19 +160,18 @@ namespace Server
             }
 
             using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-
             BufferReader br = null;
 
             foreach (var entry in entities)
             {
                 T t = entry.Entity;
 
-                var position = bin.Position;
+                var position = entry.Position;
+                bin.Seek(position, SeekOrigin.Begin);
 
                 // Skip this entry
                 if (t == null)
                 {
-                    bin.Seek(entry.Length, SeekOrigin.Current);
                     continue;
                 }
 
@@ -185,7 +182,7 @@ namespace Server
                 }
                 else
                 {
-                    br.SwapBuffers(buffer, out _);
+                    br.Reset(buffer, out _);
                 }
 
                 bin.Read(buffer.AsSpan());
@@ -221,8 +218,6 @@ namespace Server
                     }
 
                     t.Delete();
-                    // Skip this entry
-                    bin.Seek(position + entry.Length, SeekOrigin.Begin);
                 }
             }
         }
