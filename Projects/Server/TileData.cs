@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Server
@@ -262,7 +263,7 @@ namespace Server
             Load();
         }
 
-        private static void Load()
+        private unsafe static void Load()
         {
             var filePath = Core.FindDataFile("tiledata.mul");
 
@@ -327,8 +328,13 @@ namespace Server
                 int height = bin.ReadByte();
 
                 bin.Read(buffer);
-                Encoding.ASCII.GetChars(buffer, chars);
-                var name = Utility.Intern(new string(chars));
+                string name;
+                fixed (byte* ptr = &buffer.GetPinnableReference())
+                {
+                    name = new string((sbyte*)ptr, 0, buffer.Length, Encoding.ASCII);
+                }
+                Console.WriteLine("Name: {0}", name);
+                // var name = Utility.Intern(new string(chars));
 
                 ItemTable[i] = new ItemData(
                     name,
