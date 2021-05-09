@@ -644,5 +644,85 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
+
+        public static T ReadEntity<T>(this IGenericReader reader) where T : class, ISerializable
+        {
+            Serial serial = reader.ReadUInt();
+
+            // Special case for now:
+            if (typeof(T).IsAssignableTo(typeof(BaseGuild)))
+            {
+                return FindGuild(serial) as T;
+            }
+
+            return FindEntity(serial) as T;
+        }
+
+        public static List<T> ReadEntityList<T>(this IGenericReader reader) where T : class, ISerializable
+        {
+            var count = reader.ReadInt();
+
+            var list = new List<T>(count);
+
+            for (var i = 0; i < count; ++i)
+            {
+                var entity = reader.ReadEntity<T>();
+                if (entity != null)
+                {
+                    list.Add(entity);
+                }
+            }
+
+            return list;
+        }
+
+        public static HashSet<T> ReadEntitySet<T>(this IGenericReader reader) where T : class, ISerializable
+        {
+            var count = reader.ReadInt();
+
+            var set = new HashSet<T>(count);
+
+            for (var i = 0; i < count; ++i)
+            {
+                var entity = reader.ReadEntity<T>();
+                if (entity != null)
+                {
+                    set.Add(entity);
+                }
+            }
+
+            return set;
+        }
+
+        public static void Write(this IGenericWriter writer, ISerializable value)
+        {
+            writer.Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
+        }
+
+        public static void Write<T>(this IGenericWriter writer, ICollection<T> coll) where T : class, ISerializable
+        {
+            writer.Write(coll.Count);
+            foreach (var entry in coll)
+            {
+                writer.Write(entry);
+            }
+        }
+
+        public static void Write<T>(
+            this IGenericWriter writer, ICollection<T> coll, Action<IGenericWriter, T> action
+        ) where T : class, ISerializable
+        {
+            if (coll == null)
+            {
+                writer.Write(0);
+                return;
+            }
+
+            writer.Write(coll.Count);
+            foreach (var entry in coll)
+            {
+                action(writer, entry);
+            }
+        }
     }
 }

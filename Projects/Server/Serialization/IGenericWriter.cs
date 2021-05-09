@@ -47,9 +47,7 @@ namespace Server
         void Write(Rectangle2D value);
         void Write(Rectangle3D value);
         void Write(Map value);
-        void Write(ISerializable value);
         void Write(Race value);
-        void Write<T>(ICollection<T> list) where T : class, ISerializable;
         void Write(ReadOnlySpan<byte> bytes);
 
         long Seek(long offset, SeekOrigin origin);

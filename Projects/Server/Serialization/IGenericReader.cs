@@ -45,9 +45,6 @@ namespace Server
         Rectangle2D ReadRect2D();
         Rectangle3D ReadRect3D();
         Map ReadMap();
-        T ReadEntity<T>() where T : class, ISerializable;
-        List<T> ReadEntityList<T>() where T : class, ISerializable;
-        HashSet<T> ReadEntitySet<T>() where T : class, ISerializable;
         Race ReadRace();
         int Read(Span<byte> buffer);
         long Seek(long offset, SeekOrigin origin);

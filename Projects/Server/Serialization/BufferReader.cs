@@ -169,55 +169,6 @@ namespace Server
 
         public Map ReadMap() => Map.Maps[ReadByte()];
 
-        public T ReadEntity<T>() where T : class, ISerializable
-        {
-            Serial serial = ReadUInt();
-
-            // Special case for now:
-            if (typeof(T).IsAssignableTo(typeof(BaseGuild)))
-            {
-                return World.FindGuild(serial) as T;
-            }
-
-            return World.FindEntity(serial) as T;
-        }
-
-        public List<T> ReadEntityList<T>() where T : class, ISerializable
-        {
-            var count = ReadInt();
-
-            var list = new List<T>(count);
-
-            for (var i = 0; i < count; ++i)
-            {
-                var entity = ReadEntity<T>();
-                if (entity != null)
-                {
-                    list.Add(entity);
-                }
-            }
-
-            return list;
-        }
-
-        public HashSet<T> ReadEntitySet<T>() where T : class, ISerializable
-        {
-            var count = ReadInt();
-
-            var set = new HashSet<T>(count);
-
-            for (var i = 0; i < count; ++i)
-            {
-                var entity = ReadEntity<T>();
-                if (entity != null)
-                {
-                    set.Add(entity);
-                }
-            }
-
-            return set;
-        }
-
         public Race ReadRace() => Race.Races[ReadByte()];
 
         public int Read(Span<byte> buffer)

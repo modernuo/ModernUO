@@ -387,35 +387,6 @@ namespace Server
             Write((byte)(value?.RaceIndex ?? 0xFF));
         }
 
-        public void Write(ISerializable value)
-        {
-            Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
-        }
-
-        public void Write<T>(ICollection<T> coll) where T : class, ISerializable
-        {
-            Write(coll.Count);
-            foreach (var entry in coll)
-            {
-                Write(entry);
-            }
-        }
-
-        public void Write<T>(ICollection<T> coll, Action<IGenericWriter, T> action) where T : class, ISerializable
-        {
-            if (coll == null)
-            {
-                Write(0);
-                return;
-            }
-
-            Write(coll.Count);
-            foreach (var entry in coll)
-            {
-                action(this, entry);
-            }
-        }
-
         internal void InternalWriteString(string value)
         {
             var remaining = m_Encoding.GetByteCount(value);
