@@ -645,17 +645,18 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
 
-        private struct TypeOf<T> { }
         public static T ReadEntity<T>(this IGenericReader reader) where T : class, ISerializable
         {
             Serial serial = reader.ReadUInt();
+            var typeT = typeof(T);
 
-            return default(TypeOf<T>) switch
+            // Add to this list when creating new serializable types
+            if (typeof(BaseGuild).IsAssignableTo(typeT))
             {
-                TypeOf<BaseGuild> => FindGuild(serial) as T,
-                TypeOf<IEntity>   => FindEntity<IEntity>(serial) as T,
-                _                 => default
-            };
+                return FindGuild(serial) as T;
+            }
+
+            return FindEntity<IEntity>(serial) as T;
         }
 
         public static List<T> ReadEntityList<T>(this IGenericReader reader) where T : class, ISerializable
