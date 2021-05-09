@@ -290,6 +290,7 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[20];
+            Span<char> chars = stackalloc char[20];
 
             for (var i = 0; i < landLength; i++)
             {
@@ -302,9 +303,8 @@ namespace Server
                 bin.ReadInt16(); // skip 2 bytes -- textureID
 
                 bin.Read(buffer);
-                var terminator = buffer.IndexOfTerminator(1);
-                var span = terminator == -1 ? buffer : buffer[..terminator];
-                var name = Utility.Intern(Encoding.ASCII.GetString(span));
+                Encoding.ASCII.GetChars(buffer, chars);
+                var name = Utility.Intern(new string(chars));
                 LandTable[i] = new LandData(name, flags);
             }
 
@@ -327,9 +327,8 @@ namespace Server
                 int height = bin.ReadByte();
 
                 bin.Read(buffer);
-                var terminator = buffer.IndexOfTerminator(1);
-                var span = terminator == -1 ? buffer : buffer[..terminator];
-                var name = Utility.Intern(Encoding.ASCII.GetString(span));
+                Encoding.ASCII.GetChars(buffer, chars);
+                var name = Utility.Intern(new string(chars));
 
                 ItemTable[i] = new ItemData(
                     name,
