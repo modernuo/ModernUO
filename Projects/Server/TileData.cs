@@ -290,7 +290,6 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[20];
-            Span<char> chars = stackalloc char[20];
 
             for (var i = 0; i < landLength; i++)
             {
