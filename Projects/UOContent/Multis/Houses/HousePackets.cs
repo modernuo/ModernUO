@@ -117,8 +117,6 @@ namespace Server.Multis
             var width = xMax - xMin + 1;
             var height = yMax - yMin + 1;
 
-            Console.WriteLine("Start {0} {1}", width, height);
-
             for (var i = 0; i < tiles.Length; ++i)
             {
                 var mte = tiles[i];
