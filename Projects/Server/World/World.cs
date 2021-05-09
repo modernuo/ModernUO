@@ -153,6 +153,7 @@ namespace Server
             m_DiskWriteHandle.WaitOne();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EnqueueForDecay(Item item)
         {
             if (WorldState != WorldState.Saving)
@@ -467,8 +468,6 @@ namespace Server
             m_DiskWriteHandle.Reset();
 
             Broadcast(0x35, true, "The world is saving, please wait.");
-
-            var now = DateTime.UtcNow;
 
             logger.Information("Saving world");
 

@@ -15,13 +15,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 
 namespace Server
 {
     public interface IGenericReader
     {
-        string ReadString();
+        string ReadString(bool intern = false);
         DateTime ReadDateTime();
         TimeSpan ReadTimeSpan();
         DateTime ReadDeltaTime();
@@ -49,5 +50,6 @@ namespace Server
         HashSet<T> ReadEntitySet<T>() where T : class, ISerializable;
         Race ReadRace();
         int Read(Span<byte> buffer);
+        long Seek(long offset, SeekOrigin origin);
     }
 }
