@@ -1,14 +1,29 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: ChampionPlatform.cs                                             *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using Server.Items;
 
 namespace Server.Engines.CannedEvil
 {
     public class ChampionPlatform : BaseAddon
     {
-        private ChampionSpawn m_Spawn;
+        public ChampionSpawn Spawn { get; private set; }
 
         public ChampionPlatform(ChampionSpawn spawn)
         {
-            m_Spawn = spawn;
+            Spawn = spawn;
 
             for (var x = -2; x <= 2; ++x)
             {
@@ -41,16 +56,9 @@ namespace Server.Engines.CannedEvil
             AddComponent(0x75C, 2, -2, 0);
         }
 
-        public ChampionPlatform(Serial serial) : base(serial)
-        {
-        }
-
         public void AddComponent(int id, int x, int y, int z)
         {
-            var ac = new AddonComponent(id);
-
-            ac.Hue = 0x497;
-
+            AddonComponent ac = new AddonComponent(id) { Hue = 0x497 };
             AddComponent(ac, x, y, z);
         }
 
@@ -58,7 +66,11 @@ namespace Server.Engines.CannedEvil
         {
             base.OnAfterDelete();
 
-            m_Spawn?.Delete();
+            Spawn?.Delete();
+        }
+
+        public ChampionPlatform(Serial serial) : base(serial)
+        {
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -67,7 +79,7 @@ namespace Server.Engines.CannedEvil
 
             writer.Write(0); // version
 
-            writer.Write(m_Spawn);
+            writer.Write(Spawn);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -80,9 +92,9 @@ namespace Server.Engines.CannedEvil
             {
                 case 0:
                     {
-                        m_Spawn = reader.ReadEntity<ChampionSpawn>();
+                        Spawn = reader.ReadEntity<ChampionSpawn>();
 
-                        if (m_Spawn == null)
+                        if (Spawn == null)
                         {
                             Delete();
                         }

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: ChampionAltar.cs                                                *
+ * File: DungeonChampionSpawn.cs                                         *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,56 +13,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using Server.Items;
-
 namespace Server.Engines.CannedEvil
 {
-    public class ChampionAltar : PentagramAddon
+    public class DungeonChampionSpawn : ChampionSpawn
     {
-        public ChampionSpawn Spawn { get; private set; }
-
-        public ChampionAltar(ChampionSpawn spawn) => Spawn = spawn;
-
-        public override void OnAfterDelete()
+        [Constructible]
+        public DungeonChampionSpawn() : base()
         {
-            base.OnAfterDelete();
-
-            Spawn?.Delete();
+            CannedEvilTimer.AddSpawn(this);
         }
 
-        public ChampionAltar(Serial serial) : base(serial)
+        public DungeonChampionSpawn(Serial serial) : base(serial)
         {
+            CannedEvilTimer.AddSpawn(this);
         }
+
+        public override bool ProximitySpawn => true;
+        public override bool AlwaysActive => false;
 
         public override void Serialize(IGenericWriter writer)
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
-
-            writer.Write(Spawn);
+            writer.WriteEncodedInt(0); //version
         }
 
         public override void Deserialize(IGenericReader reader)
         {
             base.Deserialize(reader);
 
-            var version = reader.ReadInt();
+            int version = reader.ReadEncodedInt();
+        }
 
-            switch (version)
-            {
-                case 0:
-                    {
-                        Spawn = reader.ReadEntity<ChampionSpawn>();
-
-                        if (Spawn == null)
-                        {
-                            Delete();
-                        }
-
-                        break;
-                    }
-            }
+        public override void OnAfterDelete()
+        {
+            base.OnAfterDelete();
+            CannedEvilTimer.RemoveSpawn(this);
         }
     }
 }
