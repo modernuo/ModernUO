@@ -142,13 +142,7 @@ namespace Server.Engines.Doom
                 }
                 else
                 {
-                    ClearCreatures();
-                    ClearTraps();
-                    DestroyRegion();
-
-                    m_Timer?.Stop();
-
-                    m_Timer = null;
+                    Stop();
                 }
             }
         }
@@ -176,6 +170,26 @@ namespace Server.Engines.Doom
             }
 
             Region = new GauntletRegion(this, map);
+        }
+
+        public void Stop()
+        {
+            ClearCreatures();
+            ClearTraps();
+            DestroyRegion();
+
+            m_Timer?.Stop();
+            m_Timer = null;
+        }
+
+        public override void OnDelete()
+        {
+            base.OnDelete();
+            Stop();
+
+            Door?.Link?.Delete();
+            Door?.Delete();
+            Addon?.Delete();
         }
 
         public virtual void DestroyRegion()

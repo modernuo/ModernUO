@@ -161,15 +161,8 @@ namespace Server.Engines.Doom
         {
             foreach (var item in Map.Malas.GetItemsInRange(new Point3D(xSpawner, ySpawner, -1), 0))
             {
-                if (item is GauntletSpawner spawner)
-                {
-                    spawner.Region.Unregister();
-                    spawner.Door?.Link?.Delete();
-                    spawner.Door?.Delete();
-                    spawner.Addon?.Delete();
-                    spawner.Delete();
-                    break;
-                }
+                (item as GauntletSpawner)?.Delete();
+                break;
             }
         }
 
@@ -201,7 +194,7 @@ namespace Server.Engines.Doom
                 if (item is BaseDoor door)
                 {
                     door.Link?.Delete();
-                    item.Delete();
+                    door.Delete();
                     break;
                 }
             }
