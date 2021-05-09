@@ -108,15 +108,16 @@ namespace Server.Multis
 
             const int totalPlaneLength = planeLength * planeCount;
             const int stairsBufferLength = stairsPerBuffer * stairsLength;
-            const int maxUnpackedSize = totalPlaneLength + stairsBufferLength * stairsCount;
-            using var inflatedWriter = new SpanWriter(maxUnpackedSize);
+            using var stairsWriter = new SpanWriter(stairsBufferLength);
+            using var planesWriter = new SpanWriter(totalPlaneLength);
 
             Span<bool> planesUsed = stackalloc bool[9];
-            var index = 0;
-            var stairsIndex = totalPlaneLength;
+            int index;
             var totalStairsUsed = 0;
             var width = xMax - xMin + 1;
             var height = yMax - yMin + 1;
+
+            Console.WriteLine("Start {0} {1}", width, height);
 
             for (var i = 0; i < tiles.Length; ++i)
             {
@@ -156,28 +157,28 @@ namespace Server.Multis
                     }
 
                     index = (x * size + y) * 2;
+
+                    // Planes (x/y is within bounds, and index is < 0x400)
                     if (x >= 0 && y >= 0 && y < size && index + 1 < 0x400)
                     {
                         var planeUsed = planesUsed[plane];
                         if (!planeUsed)
                         {
-                            inflatedWriter.Seek(plane * planeLength, SeekOrigin.Begin);
-                            inflatedWriter.Clear(planeLength);
                             planesUsed[plane] = true;
                         }
 
-                        inflatedWriter.Seek(index, SeekOrigin.Begin);
-                        inflatedWriter.Write(mte.ItemId);
+                        var planeWriterIndex = width * height * 2 * plane;
+
+                        planesWriter.Seek(planeWriterIndex + index, SeekOrigin.Begin);
+                        planesWriter.Write(mte.ItemId);
                         continue;
                     }
                 }
 
-                inflatedWriter.Seek(stairsIndex, SeekOrigin.Begin);
-                inflatedWriter.Write(mte.ItemId);
-                inflatedWriter.Write((byte)mte.OffsetX);
-                inflatedWriter.Write((byte)mte.OffsetY);
-                inflatedWriter.Write((byte)mte.OffsetZ);
-                stairsIndex = inflatedWriter.Position;
+                stairsWriter.Write(mte.ItemId);
+                stairsWriter.Write((byte)mte.OffsetX);
+                stairsWriter.Write((byte)mte.OffsetY);
+                stairsWriter.Write((byte)mte.OffsetZ);
                 totalStairsUsed++;
             }
 
@@ -200,7 +201,6 @@ namespace Server.Multis
             {
                 if (!planesUsed[i])
                 {
-                    inflatedWriter.Seek(planeCount, SeekOrigin.Current);
                     continue;
                 }
 
@@ -211,7 +211,9 @@ namespace Server.Multis
                     _   => width * (height - 1) * 2
                 };
 
-                var source = inflatedWriter.RawBuffer.Slice(i * planeLength, size);
+                var planeWriterIndex = width * height * 2 * i;
+
+                var source = planesWriter.RawBuffer.Slice(planeWriterIndex, size);
 
                 writer.Write((byte)(0x20 | i));
                 WritePacked(source, ref writer, out int destLength);
@@ -226,9 +228,7 @@ namespace Server.Multis
                 var count = Math.Min(stairsPerBuffer, totalStairsUsed);
                 totalStairsUsed -= count;
 
-                var start = totalPlaneLength + index * stairsLength;
-                var size = count * 5;
-                var source = inflatedWriter.RawBuffer.Slice(start, size);
+                var source = stairsWriter.RawBuffer.Slice(index * stairsLength, count * stairsLength);
 
                 writer.Write((byte)(9 + index++));
                 WritePacked(source, ref writer, out int destLength);
