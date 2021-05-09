@@ -164,7 +164,7 @@ namespace Server.Engines.Doom
                 if (item is GauntletSpawner spawner)
                 {
                     spawner.Region.Unregister();
-                    spawner.Door.Link?.Delete();
+                    spawner.Door?.Link?.Delete();
                     spawner.Door?.Delete();
                     spawner.Addon?.Delete();
                     spawner.Delete();
