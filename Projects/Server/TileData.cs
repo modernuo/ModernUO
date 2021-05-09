@@ -304,9 +304,12 @@ namespace Server
                 bin.ReadInt16(); // skip 2 bytes -- textureID
 
                 bin.Read(buffer);
-                Encoding.ASCII.GetChars(buffer, chars);
-                var name = Utility.Intern(new string(chars));
-                LandTable[i] = new LandData(name, flags);
+                string name;
+                fixed (byte* ptr = &buffer.GetPinnableReference())
+                {
+                    name = new string((sbyte*)ptr, 0, buffer.Length, Encoding.ASCII);
+                }
+                LandTable[i] = new LandData(Utility.Intern(name), flags);
             }
 
             for (var i = 0; i < itemLength; i++)
@@ -333,11 +336,9 @@ namespace Server
                 {
                     name = new string((sbyte*)ptr, 0, buffer.Length, Encoding.ASCII);
                 }
-                Console.WriteLine("Name: {0}", name);
-                // var name = Utility.Intern(new string(chars));
 
                 ItemTable[i] = new ItemData(
-                    name,
+                    Utility.Intern(name),
                     flags,
                     weight,
                     quality,
