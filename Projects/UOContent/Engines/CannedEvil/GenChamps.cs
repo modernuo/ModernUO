@@ -15,11 +15,14 @@
 
 using System;
 using System.Collections.Generic;
+using Server.Logging;
 
 namespace Server.Engines.CannedEvil
 {
     public static class ChampionGenerator
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(ChampionGenerator));
+
         public static void Initialize()
         {
             CommandSystem.Register("GenChamps", AccessLevel.Owner, ChampGen_OnCommand);
@@ -105,7 +108,7 @@ namespace Server.Engines.CannedEvil
                 }
                 catch
                 {
-                    Console.WriteLine("World: Failed to generate champion spawn {0} at {1} ({2}).", entry.m_ChampType.FullName, entry.m_SignLocation, entry.m_Map);
+                    logger.Warning($"Failed to generate champion spawn {entry.m_ChampType.FullName} at {entry.m_SignLocation} ({entry.m_Map})");
                 }
             }
         }
