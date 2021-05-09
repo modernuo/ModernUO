@@ -35,12 +35,12 @@ namespace Server.Engines.Doom
             RemoveTeleporter(357, 476, 356, 480);
             RemoveTeleporter(361, 433, 357, 434);
 
-            RemoveSpawner(491, 456);
-            RemoveSpawner(482, 520);
-            RemoveSpawner(406, 538);
-            RemoveSpawner(335, 512);
-            RemoveSpawner(326, 433);
-            RemoveSpawner(423, 430);
+            RemoveItem<GauntletSpawner>(491, 456);
+            RemoveItem<GauntletSpawner>(482, 520);
+            RemoveItem<GauntletSpawner>(406, 538);
+            RemoveItem<GauntletSpawner>(335, 512);
+            RemoveItem<GauntletSpawner>(326, 433);
+            RemoveItem<GauntletSpawner>(423, 430);
 
             RemoveItem<ConfirmationMoongate>(433, 326, 4);
         }
@@ -157,15 +157,6 @@ namespace Server.Engines.Doom
             return spawner;
         }
 
-        public static void RemoveSpawner(int xSpawner, int ySpawner)
-        {
-            foreach (var item in Map.Malas.GetItemsInRange(new Point3D(xSpawner, ySpawner, -1), 0))
-            {
-                (item as GauntletSpawner)?.Delete();
-                break;
-            }
-        }
-
         public static BaseDoor CreateDoorSet(int xDoor, int yDoor, bool doorEastToWest, int hue)
         {
             BaseDoor hiDoor = new MetalDoor(doorEastToWest ? DoorFacing.NorthCCW : DoorFacing.WestCW);
@@ -218,7 +209,7 @@ namespace Server.Engines.Doom
         public static void RemoveTeleporter(int xFrom, int yFrom, int xTo, int yTo)
         {
             RemoveItem<Teleporter>(xFrom, yFrom);
-            RemoveItem<Teleporter>(xTo, yTo);
+            RemoveItem<Static>(xFrom, yFrom);
         }
 
         public static void RemoveMobile<T>(int x, int y) where T : BaseCreature
@@ -235,8 +226,7 @@ namespace Server.Engines.Doom
 
         public static void RemoveItem<T>(int x, int y, int z = -1) where T : Item
         {
-            var loc = new Point3D(x, y, z);
-            foreach (var item in Map.Malas.GetItemsInRange(loc, 0))
+            foreach (var item in Map.Malas.GetItemsInRange(new Point3D(x, y, z), 0))
             {
                 if (item is T)
                 {
