@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Server.Guilds;
@@ -645,17 +646,17 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
 
+        private struct TypeOf<T> { }
         public static T ReadEntity<T>(this IGenericReader reader) where T : class, ISerializable
         {
             Serial serial = reader.ReadUInt();
 
-            // Special case for now:
-            if (typeof(T).IsAssignableTo(typeof(BaseGuild)))
+            return default(TypeOf<T>) switch
             {
-                return FindGuild(serial) as T;
-            }
-
-            return FindEntity(serial) as T;
+                TypeOf<BaseGuild> => FindGuild(serial) as T,
+                TypeOf<IEntity>   => FindEntity<IEntity>(serial) as T,
+                _                 => default
+            };
         }
 
         public static List<T> ReadEntityList<T>(this IGenericReader reader) where T : class, ISerializable
