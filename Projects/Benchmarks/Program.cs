@@ -13,8 +13,7 @@ namespace Benchmarks
             // var stringHelpers = BenchmarkRunner.Run<BenchmarkStringHelpers>();
             // var indexList = BenchmarkRunner.Run<BenchmarkOrderedHashSet>();
             // var textEncoding = BenchmarkRunner.Run<BenchmarkTextEncoding>();
-            // var logging = BenchmarkRunner.Run<BenchmarkConsoleLogging>();
-            var createStrings = BenchmarkRunner.Run<BenchmarkCreatingStrings>();
+            var logging = BenchmarkRunner.Run<BenchmarkConsoleLogging>();
         }
     }
 }

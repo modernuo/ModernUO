@@ -17,6 +17,7 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Text;
 
 namespace Server
 {
@@ -302,11 +303,8 @@ namespace Server
                 bin.ReadInt16(); // skip 2 bytes -- textureID
 
                 bin.Read(buffer);
-                string name;
-                fixed (byte* ptr = &buffer.GetPinnableReference())
-                {
-                    name = new string((sbyte*)ptr, 0, buffer.Length, Encoding.ASCII);
-                }
+                var terminator = buffer.IndexOfTerminator(1);
+                var name = Encoding.ASCII.GetString(buffer[..(terminator < 0 ? buffer.Length : terminator)]);
                 LandTable[i] = new LandData(Utility.Intern(name), flags);
             }
 
@@ -329,12 +327,8 @@ namespace Server
                 int height = bin.ReadByte();
 
                 bin.Read(buffer);
-                string name;
-                fixed (byte* ptr = &buffer.GetPinnableReference())
-                {
-                    name = new string((sbyte*)ptr, 0, buffer.Length, Encoding.ASCII);
-                }
-
+                var terminator = buffer.IndexOfTerminator(1);
+                var name = Encoding.ASCII.GetString(buffer[..(terminator < 0 ? buffer.Length : terminator)]);
                 ItemTable[i] = new ItemData(
                     Utility.Intern(name),
                     flags,
