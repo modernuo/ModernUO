@@ -168,6 +168,7 @@ namespace Server.Engines.Doom
                     spawner.Door?.Delete();
                     spawner.Addon?.Delete();
                     spawner.Delete();
+                    break;
                 }
             }
         }
