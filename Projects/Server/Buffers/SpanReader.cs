@@ -172,7 +172,6 @@ namespace System.Buffers
 
             var remaining = Remaining;
             int size;
-
             if (isFixedLength)
             {
                 size = fixedLength * sizeT;
@@ -183,13 +182,14 @@ namespace System.Buffers
             }
             else
             {
+                // In case the remaining is not evenly divisible
                 size = remaining - (remaining & (sizeT - 1));
+                int index = _buffer.Slice(Position, size).IndexOfTerminator(sizeT);
+                size = index < 0 ? size : index;
             }
 
-            int index = _buffer.Slice(Position, size).IndexOfTerminator(sizeT);
-
-            var span = _buffer.Slice(Position, index < 0 ? size : index);
-            Position += isFixedLength || index < 0 ? size : index + sizeT;
+            var span = _buffer.Slice(Position, size);
+            Position += size;
             return TextEncoding.GetString(span, encoding, safeString);
         }
 

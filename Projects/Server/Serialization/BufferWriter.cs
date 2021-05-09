@@ -14,13 +14,11 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Server.Network;
 using Server.Text;
 
 namespace Server
@@ -385,35 +383,6 @@ namespace Server
         public void Write(Race value)
         {
             Write((byte)(value?.RaceIndex ?? 0xFF));
-        }
-
-        public void Write(ISerializable value)
-        {
-            Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
-        }
-
-        public void Write<T>(ICollection<T> coll) where T : class, ISerializable
-        {
-            Write(coll.Count);
-            foreach (var entry in coll)
-            {
-                Write(entry);
-            }
-        }
-
-        public void Write<T>(ICollection<T> coll, Action<IGenericWriter, T> action) where T : class, ISerializable
-        {
-            if (coll == null)
-            {
-                Write(0);
-                return;
-            }
-
-            Write(coll.Count);
-            foreach (var entry in coll)
-            {
-                action(this, entry);
-            }
         }
 
         internal void InternalWriteString(string value)

@@ -66,9 +66,6 @@ namespace Server
             return _position = _file.Seek(offset, origin);
         }
 
-        public void Dispose()
-        {
-            Close();
-        }
+        public void Dispose() => Close();
     }
 }
