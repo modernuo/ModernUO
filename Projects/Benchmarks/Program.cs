@@ -1,5 +1,4 @@
 using BenchmarkDotNet.Running;
-using Benchmarks.BenchmarkText;
 
 namespace Benchmarks
 {
