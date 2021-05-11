@@ -110,9 +110,7 @@ namespace Server.Multis
             Span<bool> planesUsed = stackalloc bool[9];
             int index;
             var totalStairsUsed = 0;
-            var totalPlanesUsed = 0;
-
-            logger.Information("We are here!");
+            var totalPlanes = 0;
 
             for (var i = 0; i < tiles.Length; ++i)
             {
@@ -156,23 +154,22 @@ namespace Server.Multis
                     if (x >= 0 && y >= 0 && y < size && index + 1 < maxPlaneLength)
                     {
                         var planeUsed = planesUsed[plane];
+                        var planeWriterIndex = planeLength * plane;
                         if (!planeUsed)
                         {
                             planesUsed[plane] = true;
-                            totalPlanesUsed++;
+                            totalPlanes++;
+                            planesWriter.Seek(planeWriterIndex, SeekOrigin.Begin);
+                            planesWriter.Clear(planeLength);
                         }
-
-                        var planeWriterIndex = planeLength * plane;
 
                         planesWriter.Seek(planeWriterIndex + index, SeekOrigin.Begin);
                         var itemId = mte.ItemId;
-                        logger.Information("Item ID: {0:X} (Plane)", mte.ItemId);
                         planesWriter.Write(itemId);
                         continue;
                     }
                 }
 
-                logger.Information("Item ID: {0:X} (Stairs)", mte.ItemId);
                 stairsWriter.Write(mte.ItemId);
                 stairsWriter.Write((byte)mte.OffsetX);
                 stairsWriter.Write((byte)mte.OffsetY);
@@ -181,7 +178,7 @@ namespace Server.Multis
             }
 
             var packetLength = 18 +
-                               (Zlib.MaxPackSize(planeLength) + 4) * totalPlanesUsed +
+                               (Zlib.MaxPackSize(planeLength) + 4) * totalPlanes +
                                (maxZlibPackedStairsBuffer + 4) * (totalStairsUsed / stairsPerBuffer + 1);
 
             var buffer = GC.AllocateUninitializedArray<byte>(packetLength);
@@ -196,7 +193,6 @@ namespace Server.Multis
             writer.Write((short)tiles.Length);
             writer.Seek(3, SeekOrigin.Current); // Buffer Length, Plane Count
 
-            var totalPlanes = 0;
             var totalLength = 1; // includes plane count
 
             for (var i = 0; i < planeCount; i++)
@@ -221,7 +217,6 @@ namespace Server.Multis
                 WritePacked(source, ref writer, out int destLength);
 
                 totalLength += 4 + destLength;
-                totalPlanes++;
             }
 
             index = 0;
