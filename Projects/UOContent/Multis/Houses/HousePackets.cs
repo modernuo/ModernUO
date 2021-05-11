@@ -88,9 +88,8 @@ namespace Server.Multis
 
         private const int planeCount = 9;
         private const int maxPlaneLength = 0x400;
-        private const int stairsLength = 5; // ItemID, X, Y, Z (max 4500 items)
-        private const int stairsPerBuffer = 750;
-        private static readonly int maxZlibPackedStairsBuffer = Zlib.MaxPackSize(stairsPerBuffer * stairsLength);
+        private const int maxPerPlaneOffsetBuffer = 750;
+        private static readonly int maxPackedPlaneOffsetBuffer = Zlib.MaxPackSize(maxPerPlaneOffsetBuffer * 5);
 
         public static byte[] CreateHouseDesignStateDetailed(uint serial, int revision, MultiComponentList components)
         {
@@ -102,14 +101,13 @@ namespace Server.Multis
             var height = yMax - yMin + 1;
             var tiles = components.List;
 
-            const int stairsBufferLength = stairsPerBuffer * stairsLength;
             var planeLength = width * height * 2;
-            using var stairsWriter = new SpanWriter(stairsBufferLength, true);
+            using var planeOffsetWriter = new SpanWriter(0x500, true);
             using var planesWriter = new SpanWriter(planeLength * planeCount);
 
             Span<bool> planesUsed = stackalloc bool[9];
             int index;
-            var totalStairsUsed = 0;
+            var totalPlaneOffsets = 0;
             var totalPlanes = 0;
 
             for (var i = 0; i < tiles.Length; ++i)
@@ -164,24 +162,23 @@ namespace Server.Multis
                         }
 
                         planesWriter.Seek(planeWriterIndex + index, SeekOrigin.Begin);
-                        var itemId = mte.ItemId;
-                        planesWriter.Write(itemId);
+                        planesWriter.Write(mte.ItemId);
                         continue;
                     }
                 }
 
-                stairsWriter.Write(mte.ItemId);
-                stairsWriter.Write((byte)mte.OffsetX);
-                stairsWriter.Write((byte)mte.OffsetY);
-                stairsWriter.Write((byte)mte.OffsetZ);
-                totalStairsUsed++;
+                planeOffsetWriter.Write(mte.ItemId);
+                planeOffsetWriter.Write((byte)mte.OffsetX);
+                planeOffsetWriter.Write((byte)mte.OffsetY);
+                planeOffsetWriter.Write((byte)mte.OffsetZ);
+                totalPlaneOffsets++;
             }
 
-            var packetLength = 18 +
-                               (Zlib.MaxPackSize(planeLength) + 4) * totalPlanes +
-                               (maxZlibPackedStairsBuffer + 4) * (totalStairsUsed / stairsPerBuffer + 1);
+            var maxPlanesLength = (Zlib.MaxPackSize(planeLength) + 4) * totalPlanes;
+            var maxPlaneOffsetLength = totalPlaneOffsets == 0 ? 0
+                : (maxPackedPlaneOffsetBuffer + 4) * (totalPlaneOffsets / maxPerPlaneOffsetBuffer + 1);
 
-            var buffer = GC.AllocateUninitializedArray<byte>(packetLength);
+            var buffer = GC.AllocateUninitializedArray<byte>(18 + maxPlanesLength + maxPlaneOffsetLength);
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xD8); // Packet ID
             writer.Seek(2, SeekOrigin.Current); // Length
@@ -220,12 +217,12 @@ namespace Server.Multis
             }
 
             index = 0;
-            while (totalStairsUsed > 0)
+            while (totalPlaneOffsets > 0)
             {
-                var count = Math.Min(stairsPerBuffer, totalStairsUsed);
-                totalStairsUsed -= count;
+                var count = Math.Min(maxPerPlaneOffsetBuffer, totalPlaneOffsets);
+                totalPlaneOffsets -= count;
 
-                var source = stairsWriter.RawBuffer.Slice(index * stairsLength, count * stairsLength);
+                var source = planeOffsetWriter.RawBuffer.Slice(index * 5, count * 5);
 
                 writer.Write((byte)(9 + index++));
                 WritePacked(source, ref writer, out int destLength);
