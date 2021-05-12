@@ -24,7 +24,7 @@ namespace Server.Items
 
         public static void Configure()
         {
-            UseEditGump = ServerConfiguration.GetSetting("virtualChecks.useEditGump", true);
+            UseEditGump = ServerConfiguration.GetOrUpdateSetting("virtualChecks.useEditGump", true);
         }
 
         private int m_Gold;
