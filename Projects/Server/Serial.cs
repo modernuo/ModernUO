@@ -42,7 +42,7 @@ namespace Server
         public bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => this != MinusOne;
+            get => Value > 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
