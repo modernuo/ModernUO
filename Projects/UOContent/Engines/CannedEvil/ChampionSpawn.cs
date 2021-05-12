@@ -383,7 +383,7 @@ namespace Server.Engines.CannedEvil
             return ScrollofTranscendence.CreateRandom(level, level);
         }
 
-        private static PowerScroll CreateRandomFelPS() => PowerScroll.CreateRandomNoCraft(5, 5);
+        private static PowerScroll CreateRandomFelPS() => PowerScroll.CreateRandomForChampions(5, 5);
 
         public static void GiveScrollOfTranscendenceFelTo (Mobile killer, ScrollofTranscendence SoTF)
         {
