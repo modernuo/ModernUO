@@ -125,12 +125,35 @@ namespace Server
         [ThreadStatic]
         private static DateTime _now;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static long GetTicks() => 1000L * Stopwatch.GetTimestamp() / Stopwatch.Frequency;
+        private static long _maxTickCountBeforePrecisionLoss = long.MaxValue / 1000L;
+        private static long _ticksPerMillisecond = -1;
 
         public static long TickCount
         {
-            get => _tickCount == 0 ? GetTicks() : _tickCount;
+            get
+            {
+                if (_tickCount != 0)
+                {
+                    return _tickCount;
+                }
+                
+                var timestamp = Stopwatch.GetTimestamp();
+                if (timestamp > _maxTickCountBeforePrecisionLoss)
+                {
+                    if (_ticksPerMillisecond < 0)
+                    {
+                        _ticksPerMillisecond = Math.DivRem(Stopwatch.Frequency, 1000L, out var loss);
+                        if (loss > 0)
+                        {
+                            logger.Warning("Tick rate frequency precision loss detected!");
+                        }
+                    }
+                    return timestamp / _ticksPerMillisecond;
+                }
+                
+                // No precision loss
+                return 1000L * timestamp / Stopwatch.Frequency;
+            }
             set => _tickCount = value;
         }
 
