@@ -229,8 +229,9 @@ namespace Server.Gumps
 
                     var cpa = GetCPA(prop);
 
-                    if (!prop.GetType().IsValueType && prop.CanWrite &&
-                        m_Mobile.AccessLevel >= cpa?.WriteLevel && !cpa.ReadOnly)
+                    // !prop.GetType().IsValueType
+
+                    if (prop.CanWrite && m_Mobile.AccessLevel >= cpa?.WriteLevel && !cpa.ReadOnly)
                     {
                         AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 3);
                     }
@@ -296,7 +297,7 @@ namespace Server.Gumps
 
                         var attr = GetCPA(prop);
 
-                        if (prop.GetType().IsValueType || !prop.CanWrite || attr == null ||
+                        if (!prop.CanWrite || attr == null ||
                             from.AccessLevel < attr.WriteLevel || attr.ReadOnly)
                         {
                             return;
@@ -403,14 +404,11 @@ namespace Server.Gumps
                         {
                             var obj = prop.GetValue(m_Object, null);
 
-                            if (obj != null)
-                            {
-                                from.SendGump(new PropertiesGump(from, obj, m_Stack, new StackEntry(m_Object, prop)));
-                            }
-                            else
-                            {
-                                from.SendGump(new PropertiesGump(from, m_Object, m_Stack, m_List, m_Page));
-                            }
+                            from.SendGump(
+                                obj != null
+                                    ? new PropertiesGump(from, obj, m_Stack, new StackEntry(m_Object, prop))
+                                    : new PropertiesGump(from, m_Object, m_Stack, m_List, m_Page)
+                            );
                         }
 
                         break;
