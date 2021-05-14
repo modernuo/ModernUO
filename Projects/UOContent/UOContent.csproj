@@ -13,7 +13,10 @@
         <Delete Files="..\..\Distribution\Assemblies\BouncyCastle.Crypto.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\MailKit.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\MimeKit.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\Microsoft.Toolkit.HighPerformance.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\System.Security.Cryptography.Pkcs.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\ref\$(AssemblyName).dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).deps.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).pdb" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\libargon2.dll" ContinueOnError="true" />
