@@ -125,8 +125,10 @@ namespace Server
         [ThreadStatic]
         private static DateTime _now;
 
+        // For Unix Stopwatch.Frequency is normalized to 1ns
+        // We don't anticipate needing this for Windows/OSX
         private static long _maxTickCountBeforePrecisionLoss = long.MaxValue / 1000L;
-        private static long _ticksPerMillisecond = -1;
+        private static long _ticksPerMillisecond = Stopwatch.Frequency / 1000L;
 
         public static long TickCount
         {
@@ -136,23 +138,12 @@ namespace Server
                 {
                     return _tickCount;
                 }
-                
+
                 var timestamp = Stopwatch.GetTimestamp();
-                if (timestamp > _maxTickCountBeforePrecisionLoss)
-                {
-                    if (_ticksPerMillisecond < 0)
-                    {
-                        _ticksPerMillisecond = Math.DivRem(Stopwatch.Frequency, 1000L, out var loss);
-                        if (loss > 0)
-                        {
-                            logger.Warning("Tick rate frequency precision loss detected!");
-                        }
-                    }
-                    return timestamp / _ticksPerMillisecond;
-                }
-                
-                // No precision loss
-                return 1000L * timestamp / Stopwatch.Frequency;
+                return timestamp > _maxTickCountBeforePrecisionLoss
+                    ? timestamp / _ticksPerMillisecond
+                    // No precision loss
+                    : 1000L * timestamp / Stopwatch.Frequency;
             }
             set => _tickCount = value;
         }
