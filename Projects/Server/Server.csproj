@@ -18,8 +18,12 @@
         <Delete Files="..\..\Distribution\libz.so" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\ZLib.Bindings.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Microsoft.Toolkit.HighPerformance.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Serilog.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Serilog.Sinks.Async.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Serilog.Sinks.Console.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\ref\$(AssemblyName).dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).dll.config" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).exe" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
@@ -28,10 +32,10 @@
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
     </Target>
     <ItemGroup>
-        <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.0.0-preview5" />
+        <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.0.2" />
         <PackageReference Include="Serilog" Version="2.10.0" />
         <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
-        <PackageReference Include="Zlib.Bindings" Version="1.4.0" />
+        <PackageReference Include="Zlib.Bindings" Version="1.5.0" />
     </ItemGroup>
 </Project>
