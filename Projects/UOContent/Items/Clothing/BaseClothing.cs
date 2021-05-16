@@ -104,16 +104,16 @@ namespace Server.Items
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosAttributes Attributes { get; private set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosArmorAttributes ClothingAttributes { get; private set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosSkillBonuses SkillBonuses { get; private set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosElementAttributes Resistances { get; private set; }
 
         public virtual int BasePhysicalResistance => 0;

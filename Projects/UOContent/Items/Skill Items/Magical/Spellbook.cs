@@ -119,10 +119,10 @@ namespace Server.Items
 
         public override bool DisplayWeight => false;
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosAttributes Attributes { get; private set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosSkillBonuses SkillBonuses { get; private set; }
 
         public virtual SpellbookType SpellbookType => SpellbookType.Regular;

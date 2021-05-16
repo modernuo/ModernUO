@@ -229,9 +229,7 @@ namespace Server.Gumps
 
                     var cpa = GetCPA(prop);
 
-                    // !prop.GetType().IsValueType
-
-                    if (prop.CanWrite && m_Mobile.AccessLevel >= cpa?.WriteLevel && !cpa.ReadOnly)
+                    if (cpa?.ReadOnly == false && m_Mobile.AccessLevel >= cpa.WriteLevel && (prop.CanWrite || cpa.CanModify))
                     {
                         AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 3);
                     }
@@ -295,10 +293,10 @@ namespace Server.Gumps
                             return;
                         }
 
-                        var attr = GetCPA(prop);
+                        var cpa = GetCPA(prop);
 
-                        if (!prop.CanWrite || attr == null ||
-                            from.AccessLevel < attr.WriteLevel || attr.ReadOnly)
+                        if (cpa == null || !(prop.CanWrite || cpa.CanModify) || cpa.ReadOnly ||
+                            from.AccessLevel < cpa.WriteLevel)
                         {
                             return;
                         }
