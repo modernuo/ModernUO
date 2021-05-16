@@ -15,7 +15,6 @@
 
 using System;
 using System.IO;
-using System.Net;
 
 namespace Server
 {
@@ -34,14 +33,6 @@ namespace Server
             var str = _reader.ReadString();
             return intern ? Utility.Intern(str) : str;
         }
-
-        public DateTime ReadDateTime() => new(_reader.ReadInt64(), DateTimeKind.Utc);
-
-        public TimeSpan ReadTimeSpan() => new(_reader.ReadInt64());
-
-        public DateTime ReadDeltaTime() => new(_reader.ReadInt64() + DateTime.UtcNow.Ticks, DateTimeKind.Utc);
-
-        public decimal ReadDecimal() => _reader.ReadDecimal();
 
         public long ReadLong() => _reader.ReadInt64();
 
@@ -64,43 +55,6 @@ namespace Server
         public sbyte ReadSByte() => _reader.ReadSByte();
 
         public bool ReadBool() => _reader.ReadBoolean();
-
-        public int ReadEncodedInt()
-        {
-            int v = 0, shift = 0;
-            byte b;
-
-            do
-            {
-                b = _reader.ReadByte();
-                v |= (b & 0x7F) << shift;
-                shift += 7;
-            }
-            while (b >= 0x80);
-
-            return v;
-        }
-
-        public IPAddress ReadIPAddress()
-        {
-            byte length = ReadByte();
-            // Either 2 ushorts, or 8 ushorts
-            Span<byte> integer = stackalloc byte[length];
-            Read(integer);
-            return Utility.Intern(new IPAddress(integer));
-        }
-
-        public Point3D ReadPoint3D() => new(ReadInt(), ReadInt(), ReadInt());
-
-        public Point2D ReadPoint2D() => new(ReadInt(), ReadInt());
-
-        public Rectangle2D ReadRect2D() => new(ReadPoint2D(), ReadPoint2D());
-
-        public Rectangle3D ReadRect3D() => new(ReadPoint3D(), ReadPoint3D());
-
-        public Map ReadMap() => Map.Maps[ReadByte()];
-
-        public Race ReadRace() => Race.Races[ReadByte()];
 
         public int Read(Span<byte> buffer) => _reader.Read(buffer);
 

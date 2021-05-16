@@ -158,19 +158,6 @@ namespace Server
             });
         }
 
-        public void WriteEncodedInt(int value)
-        {
-            var v = (uint)value;
-
-            while (v >= 0x80)
-            {
-                Write((byte)(v | 0x80));
-                v >>= 7;
-            }
-
-            Write((byte)v);
-        }
-
         public void Write(string value)
         {
             if (m_PrefixStrings)
@@ -188,56 +175,6 @@ namespace Server
             else
             {
                 InternalWriteString(value);
-            }
-        }
-
-        public void Write(DateTime value)
-        {
-            var ticks = (value.Kind switch
-            {
-                DateTimeKind.Local       => value.ToUniversalTime(),
-                DateTimeKind.Unspecified => value.ToLocalTime().ToUniversalTime(),
-                _                        => value
-            }).Ticks;
-
-            Write(ticks);
-        }
-
-        // TODO: Find a way to speed this up.
-        // Maybe used a special cached value?
-        public void WriteDeltaTime(DateTime value)
-        {
-            var ticks = (value.Kind switch
-            {
-                DateTimeKind.Local       => value.ToUniversalTime(),
-                DateTimeKind.Unspecified => value.ToLocalTime().ToUniversalTime(),
-                _                        => value
-            }).Ticks;
-
-            // Technically supports negative deltas for times in the past
-            Write(ticks - DateTime.UtcNow.Ticks);
-        }
-
-        public void Write(IPAddress value)
-        {
-            Span<byte> stack = stackalloc byte[16];
-            value.TryWriteBytes(stack, out var bytesWritten);
-            Write((byte)bytesWritten);
-            Write(stack[..bytesWritten]);
-        }
-
-        public void Write(TimeSpan value)
-        {
-            Write(value.Ticks);
-        }
-
-        public void Write(decimal value)
-        {
-            var bits = decimal.GetBits(value);
-
-            for (var i = 0; i < 4; ++i)
-            {
-                Write(bits[i]);
             }
         }
 
@@ -350,46 +287,11 @@ namespace Server
             _buffer[Index++] = *(byte*)&value; // up to 30% faster to dereference the raw value on the stack
         }
 
-        public void Write(Point3D value)
-        {
-            Write(value.m_X);
-            Write(value.m_Y);
-            Write(value.m_Z);
-        }
-
-        public void Write(Point2D value)
-        {
-            Write(value.m_X);
-            Write(value.m_Y);
-        }
-
-        public void Write(Rectangle2D value)
-        {
-            Write(value.Start);
-            Write(value.End);
-        }
-
-        public void Write(Rectangle3D value)
-        {
-            Write(value.Start);
-            Write(value.End);
-        }
-
-        public void Write(Map value)
-        {
-            Write((byte)(value?.MapIndex ?? 0xFF));
-        }
-
-        public void Write(Race value)
-        {
-            Write((byte)(value?.RaceIndex ?? 0xFF));
-        }
-
         internal void InternalWriteString(string value)
         {
             var remaining = m_Encoding.GetByteCount(value);
 
-            WriteEncodedInt(remaining);
+            ((IGenericWriter)this).WriteEncodedInt(remaining);
 
             if (remaining == 0)
             {
