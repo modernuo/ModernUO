@@ -23,7 +23,7 @@ namespace Server.Engines.ConPVP
         {
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public Tournament Tournament { get; private set; }
 
         public static bool IsActive

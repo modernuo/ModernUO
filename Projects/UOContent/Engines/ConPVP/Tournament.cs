@@ -996,10 +996,11 @@ namespace Server.Engines.ConPVP
             {
                 for (var j = 0; j < alerts.Length; ++j)
                 {
-                    var alert = alerts[j];
                     Timer.DelayCall(
                         TimeSpan.FromSeconds(Math.Max(j - 0.5, 0.0)),
-                        () => arena.Announcer.PublicOverheadMessage(MessageType.Regular, 0x35, false, alert)
+                        (announcer, alert) => announcer.PublicOverheadMessage(MessageType.Regular, 0x35, false, alert),
+                        arena.Announcer,
+                        alerts[j]
                     );
                 }
             }

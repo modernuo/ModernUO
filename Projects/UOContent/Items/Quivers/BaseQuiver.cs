@@ -38,7 +38,7 @@ namespace Server.Items
         public override int DefaultMaxWeight => 50;
         public override double DefaultWeight => 2.0;
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosAttributes Attributes { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster)]

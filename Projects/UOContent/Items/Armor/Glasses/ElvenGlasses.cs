@@ -35,7 +35,7 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosWeaponAttributes WeaponAttributes { get; private set; }
 
         public override void AppendChildNameProperties(ObjectPropertyList list)

@@ -28,7 +28,7 @@ namespace Server.Engines.ConPVP
         {
         }
 
-        [CommandProperty(AccessLevel.Administrator)]
+        [CommandProperty(AccessLevel.Administrator, canModify: true)]
         public Preferences Preferences { get; private set; }
 
         public override string DefaultName => "preferences controller";

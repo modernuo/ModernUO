@@ -20,7 +20,7 @@ namespace Server.Engines.ConPVP
         {
         }
 
-        [CommandProperty(AccessLevel.Administrator)]
+        [CommandProperty(AccessLevel.Administrator, canModify: true)]
         public Ladder Ladder { get; private set; }
 
         public override string DefaultName => "ladder controller";
