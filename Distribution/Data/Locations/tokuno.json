@@ -10,8 +10,8 @@
             {
               "name": "Zento",
               "locations": [
-                { "name": "Zento Moongate", "x": 802, "y": 1204, "z": 25 },
-                { "name": "Zento Bank", "x": 735, "y": 1255, "z": 30 }
+                { "name": "Zento Moongate", "location": [802, 1204, 25] },
+                { "name": "Zento Bank", "location": [735, 1255, 30] }
               ]
             }
           ]
@@ -19,8 +19,8 @@
         {
           "name": "Dungeons",
           "categories": [
-            { "name": "Fan Dancer's Dojo", "locations": [{ "name": "Entrance", "x": 977, "y": 218, "z": 23 }] },
-            { "name": "Yomotsu Mines", "locations": [{ "name": "Entrance", "x": 259, "y": 785, "z": 64 }] }
+            { "name": "Fan Dancer's Dojo", "locations": [{ "name": "Entrance", "location": [977, 218, 23] }] },
+            { "name": "Yomotsu Mines", "locations": [{ "name": "Entrance", "location": [259, 785, 64] }] }
           ]
         },
         {
@@ -29,31 +29,31 @@
             {
               "name": "Makoto-Jima",
               "locations": [
-                { "name": "Moongate", "x": 802, "y": 1204, "z": 25 },
-                { "name": "Shrine", "x": 718, "y": 1161, "z": 25 },
-                { "name": "The Waste", "x": 724, "y": 943, "z": 42 }
+                { "name": "Moongate", "location": [802, 1204, 25] },
+                { "name": "Shrine", "location": [718, 1161, 25] },
+                { "name": "The Waste", "location": [724, 943, 42] }
               ]
             },
             {
               "name": "Isamu-Jima",
               "locations": [
-                { "name": "Moongate", "x": 1169, "y": 998, "z": 41 },
-                { "name": "Shrine", "x": 1047, "y": 512, "z": 15 },
-                { "name": "Lotus Lakes", "x": 1066, "y": 817, "z": 20 },
-                { "name": "Mount Sho", "x": 1159, "y": 696, "z": 70 },
-                { "name": "Dragon Valley", "x": 948, "y": 432, "z": 8 },
-                { "name": "Winter Spur", "x": 926, "y": 162, "z": 34 }
+                { "name": "Moongate", "location": [1169, 998, 41] },
+                { "name": "Shrine", "location": [1047, 512, 15] },
+                { "name": "Lotus Lakes", "location": [1066, 817, 20] },
+                { "name": "Mount Sho", "location": [1159, 696, 70] },
+                { "name": "Dragon Valley", "location": [948, 432, 8] },
+                { "name": "Winter Spur", "location": [926, 162, 34] }
               ]
             },
             {
               "name": "Homare-Jima",
               "locations": [
-                { "name": "Moongate", "x": 270, "y": 628, "z": 15 },
-                { "name": "Shrine", "x": 295, "y": 712, "z": 55 },
-                { "name": "Field of Echoes", "x": 160, "y": 654, "z": 36 },
-                { "name": "Crane Marsh", "x": 232, "y": 1107, "z": 10 },
-                { "name": "Bushido Dojo", "x": 334, "y": 407, "z": 32 },
-                { "name": "Kitsune Woods", "x": 523, "y": 520, "z": 32 }
+                { "name": "Moongate", "location": [270, 628, 15] },
+                { "name": "Shrine", "location": [295, 712, 55] },
+                { "name": "Field of Echoes", "location": [160, 654, 36] },
+                { "name": "Crane Marsh", "location": [232, 1107, 10] },
+                { "name": "Bushido Dojo", "location": [334, 407, 32] },
+                { "name": "Kitsune Woods", "location": [523, 520, 32] }
               ]
             }
           ]
