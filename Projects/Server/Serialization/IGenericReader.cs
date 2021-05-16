@@ -22,10 +22,6 @@ namespace Server
     public interface IGenericReader
     {
         string ReadString(bool intern = false);
-        DateTime ReadDateTime();
-        TimeSpan ReadTimeSpan();
-        DateTime ReadDeltaTime();
-        decimal ReadDecimal();
         long ReadLong();
         ulong ReadULong();
         int ReadInt();
@@ -37,16 +33,69 @@ namespace Server
         byte ReadByte();
         sbyte ReadSByte();
         bool ReadBool();
-        int ReadEncodedInt();
-        IPAddress ReadIPAddress();
-        Point3D ReadPoint3D();
-        Point2D ReadPoint2D();
-        Rectangle2D ReadRect2D();
-        Rectangle3D ReadRect3D();
-        Map ReadMap();
-        Race ReadRace();
+
+        DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);
+        TimeSpan ReadTimeSpan() => new(ReadLong());
+        DateTime ReadDeltaTime() => new(ReadLong() + DateTime.UtcNow.Ticks, DateTimeKind.Utc);
+        decimal ReadDecimal() => new(stackalloc int[4] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });
+        int ReadEncodedInt()
+        {
+            int v = 0, shift = 0;
+            byte b;
+
+            do
+            {
+                b = ReadByte();
+                v |= (b & 0x7F) << shift;
+                shift += 7;
+            }
+            while (b >= 0x80);
+
+            return v;
+        }
+        IPAddress ReadIPAddress()
+        {
+            byte length = ReadByte();
+            // Either 2 ushorts, or 8 ushorts
+            Span<byte> integer = stackalloc byte[length];
+            Read(integer);
+            return Utility.Intern(new IPAddress(integer));
+        }
+        Point3D ReadPoint3D() => new(ReadInt(), ReadInt(), ReadInt());
+        Point2D ReadPoint2D() => new(ReadInt(), ReadInt());
+        Rectangle2D ReadRect2D() => new(ReadPoint2D(), ReadPoint2D());
+        Rectangle3D ReadRect3D() => new(ReadPoint3D(), ReadPoint3D());
+        Map ReadMap() => Map.Maps[ReadByte()];
+        Race ReadRace() => Race.Races[ReadByte()];
         int Read(Span<byte> buffer);
-        T ReadEnum<T>() where T : unmanaged, Enum;
+        unsafe T ReadEnum<T>() where T : unmanaged, Enum
+        {
+            switch (ReadByte())
+            {
+                case 1:
+                    {
+                        var num = ReadByte();
+                        return *(T*)&num;
+                    }
+                case 2:
+                    {
+                        var num = ReadShort();
+                        return *(T*)&num;
+                    }
+                case 3:
+                    {
+                        var num = ReadEncodedInt();
+                        return *(T*)&num;
+                    }
+                case 4:
+                    {
+                        var num = ReadLong();
+                        return *(T*)&num;
+                    }
+            }
+
+            return default;
+        }
         long Seek(long offset, SeekOrigin origin);
     }
 }

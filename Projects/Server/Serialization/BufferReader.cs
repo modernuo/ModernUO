@@ -17,7 +17,6 @@ using System;
 using System.Buffers.Binary;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Text;
 using Server.Text;
 
@@ -52,7 +51,7 @@ namespace Server
                 return null;
             }
 
-            var length = ReadEncodedInt();
+            var length = ((IGenericReader)this).ReadEncodedInt();
             if (length <= 0)
             {
                 return intern ? Utility.Intern("") : "";
@@ -62,14 +61,6 @@ namespace Server
             _position += length;
             return intern ? Utility.Intern(str) : str;
         }
-
-        public DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);
-
-        public TimeSpan ReadTimeSpan() => new(ReadLong());
-
-        public DateTime ReadDeltaTime() => new(ReadLong() + DateTime.UtcNow.Ticks, DateTimeKind.Utc);
-
-        public decimal ReadDecimal() => new(stackalloc int[4] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });
 
         public long ReadLong()
         {
@@ -132,42 +123,6 @@ namespace Server
         public sbyte ReadSByte() => (sbyte)_buffer[_position++];
 
         public bool ReadBool() => _buffer[_position++] != 0;
-
-        public int ReadEncodedInt()
-        {
-            int v = 0, shift = 0;
-            byte b;
-
-            do
-            {
-                b = ReadByte();
-                v |= (b & 0x7F) << shift;
-                shift += 7;
-            } while (b >= 0x80);
-
-            return v;
-        }
-
-        public IPAddress ReadIPAddress()
-        {
-            byte length = ReadByte();
-            // Either 2 ushorts, or 8 ushorts
-            Span<byte> integer = stackalloc byte[length];
-            Read(integer);
-            return Utility.Intern(new IPAddress(integer));
-        }
-
-        public Point3D ReadPoint3D() => new(ReadInt(), ReadInt(), ReadInt());
-
-        public Point2D ReadPoint2D() => new(ReadInt(), ReadInt());
-
-        public Rectangle2D ReadRect2D() => new(ReadPoint2D(), ReadPoint2D());
-
-        public Rectangle3D ReadRect3D() => new(ReadPoint3D(), ReadPoint3D());
-
-        public Map ReadMap() => Map.Maps[ReadByte()];
-
-        public Race ReadRace() => Race.Races[ReadByte()];
 
         public int Read(Span<byte> buffer)
         {
