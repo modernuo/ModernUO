@@ -29,7 +29,7 @@ jobs:
   strategy:
     matrix:
       'CentOS 8':
-        containerImage: modernuo/centos-net5:8
+        containerImage: centos:8
         os: centos.8
       'CentOS 7':
         containerImage: centos:7
@@ -44,7 +44,7 @@ jobs:
         containerImage: mcr.microsoft.com/dotnet/sdk:5.0-focal
         os: ubuntu.20.04
       'Fedora 32':
-        containerImage: modernuo/fedora-net5:32
+        containerImage: fedora:32
         os: fedora.32
 
   displayName: Linux
