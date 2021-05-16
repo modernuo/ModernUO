@@ -45,9 +45,7 @@ namespace SerializationGenerator
             var versionValue = classSymbol.GetAttributes()
                 .FirstOrDefault(
                     attr => attr.AttributeClass?.Equals(serializableEntityAttribute, SymbolEqualityComparer.Default) ?? false
-                )
-                ?.ConstructorArguments.FirstOrDefault()
-                .Value;
+                )?.ConstructorArguments.FirstOrDefault().Value;
 
             return versionValue != null;
         }
@@ -58,7 +56,7 @@ namespace SerializationGenerator
             GeneratorExecutionContext context,
             string migrationPath,
             JsonSerializerOptions jsonSerializerOptions,
-            IList<INamedTypeSymbol> serializableTypes
+            ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
             var compilation = context.Compilation;
@@ -85,19 +83,16 @@ namespace SerializationGenerator
                 return null;
             }
 
-            var versionValue = classSymbol.GetAttributes()
+            var version = classSymbol.GetAttributes()
                 .FirstOrDefault(
                     attr => attr.AttributeClass?.Equals(serializableEntityAttribute, SymbolEqualityComparer.Default) ?? false
-                )
-                ?.ConstructorArguments.FirstOrDefault()
-                .Value;
+                )?.ConstructorArguments.FirstOrDefault().Value?.ToString();
 
-            if (versionValue == null)
+            if (version == null)
             {
                 return null; // We don't have the attribute
             }
 
-            var version = versionValue.ToString();
             var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
             var className = classSymbol.Name;
             HashSet<string> namespaceList = new();
@@ -170,7 +165,7 @@ namespace SerializationGenerator
 
                     migrationProperties.Add(new SerializableProperty
                     {
-                        Name = SourceGeneration.GetPropertyName(fieldSymbol),
+                        Name = fieldSymbol.GetPropertyName(),
                         Type = (INamedTypeSymbol)fieldSymbol.Type
                     });
                 }
@@ -204,26 +199,28 @@ namespace SerializationGenerator
             source.GenerateSerialCtor(context, className, isOverride);
             source.AppendLine();
 
+            var fieldsArray = serializableFields.ToImmutableArray();
+
             // Serialize Method
             source.GenerateSerializeMethod(
                 compilation,
                 isOverride,
-                serializableFields.ToImmutableArray()
+                fieldsArray,
+                serializableTypes
             );
             source.AppendLine();
 
+            var versionValue = int.Parse(version);
             var genericReaderInterface = compilation.GetTypeByMetadataName(GENERIC_READER_INTERFACE);
 
             // Deserialize Method
-            source.GenerateMethodStart(
-                "Deserialize",
-                AccessModifier.Public,
+            source.GenerateDeserializeMethod(
+                compilation,
                 isOverride,
-                "void",
-                ImmutableArray.Create<(ITypeSymbol, string)>((genericReaderInterface, "reader"))
+                versionValue,
+                fieldsArray,
+                serializableTypes
             );
-            // Generate deserialize method stuff here
-            source.GenerateMethodEnd();
 
             source.GenerateClassEnd();
             source.GenerateNamespaceEnd();
@@ -231,7 +228,7 @@ namespace SerializationGenerator
             // Write the migration file
             var migration = new SerializableMetadata
             {
-                Version = int.Parse(version),
+                Version = versionValue,
                 Type = classSymbol,
                 Properties = migrationProperties
             };

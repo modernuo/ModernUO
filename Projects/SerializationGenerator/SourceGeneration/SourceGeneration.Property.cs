@@ -22,7 +22,7 @@ namespace SerializationGenerator
 {
     public static partial class SourceGeneration
     {
-        public static string GetPropertyName(IFieldSymbol fieldSymbol)
+        public static string GetPropertyName(this IFieldSymbol fieldSymbol)
         {
             var fieldName = fieldSymbol.Name;
 
@@ -46,7 +46,7 @@ namespace SerializationGenerator
             IFieldSymbol fieldSymbol
         )
         {
-            var propertyName = GetPropertyName(fieldSymbol);
+            var propertyName = fieldSymbol.GetPropertyName();
 
             source.AppendLine($@"        {accessors.ToFriendlyString()} {fieldSymbol.Type} {propertyName}
         {{");

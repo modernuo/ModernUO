@@ -21,9 +21,9 @@ namespace SerializationGenerator
     public record SerializableProperty
     {
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; init; }
 
         [JsonPropertyName("type")]
-        public INamedTypeSymbol Type { get; set; }
+        public INamedTypeSymbol Type { get; init; }
     }
 }

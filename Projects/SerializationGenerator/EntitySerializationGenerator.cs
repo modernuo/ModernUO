@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -57,7 +58,7 @@ namespace SerializationGenerator
                 .GroupBy(f => f.ContainingType, SymbolEqualityComparer.Default)
                 .Select(g => g.Key as INamedTypeSymbol)
                 .Where(t => t.WillBeSerializable(context))
-                .ToList();
+                .ToImmutableArray();
 
             foreach (IGrouping<ISymbol, IFieldSymbol> group in receiver.Fields.GroupBy(f => f.ContainingType, SymbolEqualityComparer.Default))
             {

@@ -22,12 +22,12 @@ namespace SerializationGenerator
     public record SerializableMetadata
     {
         [JsonPropertyName("version")]
-        public int Version { get; set; }
+        public int Version { get; init; }
 
         [JsonPropertyName("type")]
-        public INamedTypeSymbol Type { get; set; }
+        public INamedTypeSymbol Type { get; init; }
 
         [JsonPropertyName("properties")]
-        public List<SerializableProperty> Properties { get; set; }
+        public List<SerializableProperty> Properties { get; init; }
     }
 }

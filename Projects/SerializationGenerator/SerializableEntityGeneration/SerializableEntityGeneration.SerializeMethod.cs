@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,8 @@ namespace SerializationGenerator
             this StringBuilder source,
             Compilation compilation,
             bool isOverride,
-            ImmutableArray<IFieldSymbol> fields
+            ImmutableArray<IFieldSymbol> fields,
+            ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
             var genericWriterInterface = compilation.GetTypeByMetadataName(GENERIC_WRITER_INTERFACE);
@@ -47,18 +49,24 @@ namespace SerializationGenerator
 {indent}    return;
 {indent}}}");
 
-            // Writer version
+            // Version
             source.AppendLine($"{indent}writer.WriteEncodedInt(_version);");
 
             foreach (var field in fields)
             {
-                source.SerializeField($"{indent}    ", field, compilation);
+                source.SerializeField($"{indent}    ", field, compilation, serializableTypes);
             }
 
             source.GenerateMethodEnd();
         }
 
-        private static void SerializeField(this StringBuilder source, string indent, IFieldSymbol field, Compilation compilation)
+        public static void SerializeField(
+            this StringBuilder source,
+            string indent,
+            IFieldSymbol field,
+            Compilation compilation,
+            ImmutableArray<INamedTypeSymbol> serializableTypes
+        )
         {
             var fieldName = field.Name;
             var fieldType = field.Type;
@@ -69,15 +77,8 @@ namespace SerializationGenerator
                 return;
             }
 
-            var primitiveWrite = fieldType.IsPrimitive() ||
-                                 fieldType.IsPoint2D(compilation) ||
-                                 fieldType.IsPoint3D(compilation) ||
-                                 fieldType.IsRectangle2D(compilation) ||
-                                 fieldType.IsRectangle3D(compilation) ||
-                                 fieldType.IsIpAddress(compilation) ||
-                                 fieldType.IsRace(compilation) ||
-                                 fieldType.IsMap(compilation) ||
-                                 fieldType.HasSerializableInterface(compilation);
+            // Uses `writer.Write(obj);`
+            var primitiveWrite = fieldType.IsPrimitiveSerialization(compilation, serializableTypes);
 
             var attributes = field.GetAttributes();
 
@@ -89,10 +90,17 @@ namespace SerializationGenerator
                 }
                 return;
             }
+
+            throw new Exception($"No serialization Write method for type {field}");
         }
 
-        private static bool IsPrimitive(this ITypeSymbol symbol) =>
-            symbol.SpecialType switch
+        private static bool IsPrimitiveSerialization(
+            this ITypeSymbol symbol,
+            Compilation compilation,
+            ImmutableArray<INamedTypeSymbol> serializableTypes
+        )
+        {
+            var isSpecialType = symbol.SpecialType switch
             {
                 SpecialType.System_Boolean   => true,
                 SpecialType.System_SByte     => true,
@@ -111,5 +119,20 @@ namespace SerializationGenerator
                 SpecialType.System_ValueType => true,
                 _                            => false
             };
+
+            return isSpecialType ||
+                   symbol.IsPoint2D(compilation) ||
+                   symbol.IsPoint3D(compilation) ||
+                   symbol.IsRectangle2D(compilation) ||
+                   symbol.IsRectangle3D(compilation) ||
+                   symbol.IsIpAddress(compilation) ||
+                   symbol.IsRace(compilation) ||
+                   symbol.IsMap(compilation) ||
+                   // Already inherits `ISerializable` somehow
+                   symbol.HasSerializableInterface(compilation) ||
+                   // Will be serialized and possibly have `ISerializable` added to it
+                   symbol is INamedTypeSymbol namedSymbol &&
+                   serializableTypes.Contains(namedSymbol, SymbolEqualityComparer.Default);
+        }
     }
 }
