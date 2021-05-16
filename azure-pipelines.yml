@@ -46,6 +46,9 @@ jobs:
       'Fedora 32':
         containerImage: fedora:32
         os: fedora.32
+      'Fedora 33':
+        containerImage: fedora:33
+        os: fedora.33
 
   displayName: Linux
 
