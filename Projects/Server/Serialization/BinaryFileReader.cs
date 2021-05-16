@@ -58,35 +58,6 @@ namespace Server
 
         public int Read(Span<byte> buffer) => _reader.Read(buffer);
 
-        public unsafe T ReadEnum<T>() where T : unmanaged, Enum
-        {
-            switch (ReadByte())
-            {
-                case 1:
-                    {
-                        var num = ReadByte();
-                        return *(T*)&num;
-                    }
-                case 2:
-                    {
-                        var num = ReadShort();
-                        return *(T*)&num;
-                    }
-                case 3:
-                    {
-                        var num = ReadEncodedInt();
-                        return *(T*)&num;
-                    }
-                case 4:
-                    {
-                        var num = ReadLong();
-                        return *(T*)&num;
-                    }
-            }
-
-            return default;
-        }
-
         public long Seek(long offset, SeekOrigin origin) => _reader.BaseStream.Seek(offset, origin);
 
         public void Dispose() => Close();
