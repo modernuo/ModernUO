@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -42,12 +43,9 @@ namespace Server.Random
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Next(int count)
         {
-            if (count == 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count), count, "count must not be 0");
-            }
+            Debug.Assert(count != 0, $"{nameof(count)} must not be 0");
 
-            if (count == 1 || count == -1)
+            if (count is -1 or 0 or 1)
             {
                 return 0;
             }
@@ -73,12 +71,9 @@ namespace Server.Random
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Next(uint count)
         {
-            if (count == 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count), count, "count must not be 0");
-            }
+            Debug.Assert(count != 0, $"{nameof(count)} must not be 0");
 
-            if (count == 1)
+            if (count is 0 or 1)
             {
                 return 0;
             }
@@ -100,12 +95,9 @@ namespace Server.Random
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long Next(long count)
         {
-            if (count == 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count), count, "count must not be 0");
-            }
+            Debug.Assert(count != 0, $"{nameof(count)} must not be 0");
 
-            if (count == 1 || count == -1)
+            if (count is -1 or 0 or 1)
             {
                 return 0;
             }
