@@ -56,14 +56,6 @@ namespace SerializationGenerator
                 source.AppendLine($@"{indent}}}");
             }
 
-            var serializableProperties = fields.Select(
-                f => new SerializableProperty
-                {
-                    Name = f.ToString(),
-                    Type = (INamedTypeSymbol)f.Type
-                }
-            ).ToImmutableArray();
-
             foreach (var field in fields)
             {
                 var serializableProperty = new SerializableProperty
@@ -89,7 +81,8 @@ namespace SerializationGenerator
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
-
+            var serializeMethod = property.Type.GetDeserializeReaderMethod(compilation, attributes, serializableTypes);
+            source.AppendLine($"{indent}{property.Name} = {serializeMethod}();");
         }
 
         private static string GetDeserializeReaderMethod(
