@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -71,7 +72,9 @@ namespace SerializationGenerator
                     Type = (INamedTypeSymbol)field.Type
                 };
 
-                source.DeserializeField($"{indent}    ", serializableProperty, compilation, serializableTypes);
+                var attributes = field.GetAttributes();
+
+                source.DeserializeField($"{indent}    ", serializableProperty, compilation, attributes, serializableTypes);
             }
 
             source.GenerateMethodEnd();
@@ -82,10 +85,99 @@ namespace SerializationGenerator
             string indent,
             SerializableProperty property,
             Compilation compilation,
+            ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
 
+        }
+
+        private static string GetDeserializeReaderMethod(
+            this ITypeSymbol symbol,
+            Compilation compilation,
+            ImmutableArray<AttributeData> attributes,
+            ImmutableArray<INamedTypeSymbol> serializableTypes
+        )
+        {
+            switch (symbol.SpecialType)
+            {
+                case SpecialType.System_Boolean:  return "ReadBool";
+                case SpecialType.System_SByte:    return "ReadSByte";
+                case SpecialType.System_Int16:    return "ReadShort";
+                case SpecialType.System_Int32:    return "ReadInt";
+                case SpecialType.System_Int64:    return "ReadLong";
+                case SpecialType.System_Byte:     return "ReadByte";
+                case SpecialType.System_UInt16:   return "ReadUShort";
+                case SpecialType.System_UInt32:   return "ReadUInt";
+                case SpecialType.System_UInt64:   return "ReadULong";
+                case SpecialType.System_Single:   return "ReadFloat";
+                case SpecialType.System_Double:   return "ReadDouble";
+                case SpecialType.System_String:   return "ReadString";
+                case SpecialType.System_Decimal:  return "ReadDecimal";
+                case SpecialType.System_DateTime:
+                    {
+                        return attributes.Any(a => a.IsDeltaDateTime(compilation)) ?
+                            "ReadDeltaTime" :
+                            "ReadDateTime";
+                    }
+            }
+
+            if (symbol.IsPoint2D(compilation))
+            {
+                return "ReadPoint2D";
+            }
+
+            if (symbol.IsPoint3D(compilation))
+            {
+                return "ReadPoint3D";
+            }
+
+            if (symbol.IsRectangle2D(compilation))
+            {
+                return "ReadRect2D";
+            }
+
+            if (symbol.IsRectangle3D(compilation))
+            {
+                return "ReadPoint3D";
+            }
+
+            if (symbol.IsIpAddress(compilation))
+            {
+                return "ReadIPAddress";
+            }
+
+            if (symbol.IsRace(compilation))
+            {
+                return "ReadRace";
+            }
+
+            if (symbol.IsMap(compilation))
+            {
+                return "ReadMap";
+            }
+
+            if (symbol.HasSerializableInterface(compilation, serializableTypes))
+            {
+                return $"ReadEntity<{symbol.Name}>";
+            }
+
+            if (symbol.IsListOfSerializable(compilation, serializableTypes))
+            {
+                return $"ReadEntityList<{symbol.Name}>";
+            }
+
+            if (symbol.IsHashSetOfSerializable(compilation, serializableTypes))
+            {
+                return $"ReadEntitySet<{symbol.Name}>";
+            }
+
+            if (symbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.HasGenericReaderCtor(compilation, out var requiresParent))
+            {
+                return $"new {namedTypeSymbol}(reader{(requiresParent ? ", this" : "")})";
+            }
+
+            throw new Exception($"No serialization Read method for type {symbol.Name}");
         }
     }
 }
