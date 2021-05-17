@@ -54,7 +54,8 @@ namespace SerializationGenerator
 
             foreach (var field in fields)
             {
-                source.SerializeField($"{indent}    ", field, compilation, serializableTypes);
+                var attributes = field.GetAttributes();
+                source.SerializeField($"{indent}    ", field.Name, field.Type, compilation, attributes, serializableTypes);
             }
 
             source.GenerateMethodEnd();
@@ -63,14 +64,13 @@ namespace SerializationGenerator
         public static void SerializeField(
             this StringBuilder source,
             string indent,
-            IFieldSymbol field,
+            string fieldName,
+            ITypeSymbol fieldType,
             Compilation compilation,
+            ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
-            var fieldName = field.Name;
-            var fieldType = field.Type;
-
             if (fieldType.IsEnum())
             {
                 source.AppendLine($"{indent}writer.WriteEnum({fieldName})");
@@ -79,8 +79,6 @@ namespace SerializationGenerator
 
             // Uses `writer.Write(obj);`
             var primitiveWrite = fieldType.IsPrimitiveSerialization(compilation, serializableTypes);
-
-            var attributes = field.GetAttributes();
 
             if (primitiveWrite)
             {
@@ -91,7 +89,46 @@ namespace SerializationGenerator
                 return;
             }
 
-            throw new Exception($"No serialization Write method for type {field}");
+            // Custom type, but it has a `Serialize` method we can use
+            if (fieldType.HasPublicSerializeMethod(compilation, serializableTypes))
+            {
+                source.AppendLine($"{indent}{fieldName}.Serialize(writer);");
+                return;
+            }
+
+            // Check if we have an array or collection, then recurse
+            var collectionTypeParam = compilation.GetTypeByMetadataName("System.Collections.Generic.ICollection`1");
+            ITypeSymbol collectionElementType;
+            string lengthProperty;
+
+            if (fieldType is IArrayTypeSymbol arrayTypeSymbol)
+            {
+                collectionElementType = arrayTypeSymbol.ElementType;
+                lengthProperty = "Length";
+            }
+            else
+            {
+                collectionElementType = fieldType.GetTypeParameterForGeneric(collectionTypeParam);
+                lengthProperty = "Count";
+            }
+
+            if (collectionElementType != null)
+            {
+                source.AppendLine($"{indent}for (var i = 0; i < {fieldName}.{lengthProperty}; i++)");
+                source.AppendLine($@"{indent}{{");
+                source.SerializeField(
+                    $"{indent}    ",
+                    $"{fieldName}[i]",
+                    collectionElementType,
+                    compilation,
+                    ImmutableArray<AttributeData>.Empty,
+                    serializableTypes
+                );
+                source.AppendLine($@"{indent}}}");
+                return;
+            }
+
+            throw new Exception($"No serialization Write method for type {fieldType}");
         }
 
         private static bool IsPrimitiveSerialization(
@@ -128,11 +165,10 @@ namespace SerializationGenerator
                    symbol.IsIpAddress(compilation) ||
                    symbol.IsRace(compilation) ||
                    symbol.IsMap(compilation) ||
-                   // Already inherits `ISerializable` somehow
-                   symbol.HasSerializableInterface(compilation) ||
-                   // Will be serialized and possibly have `ISerializable` added to it
-                   symbol is INamedTypeSymbol namedSymbol &&
-                   serializableTypes.Contains(namedSymbol, SymbolEqualityComparer.Default);
+                   // Already inherits `ISerializable`
+                   symbol.HasSerializableInterface(compilation, serializableTypes) ||
+                   symbol.IsListOfSerializable(compilation, serializableTypes) ||
+                   symbol.IsHashSetOfSerializable(compilation, serializableTypes);
         }
     }
 }

@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
@@ -43,8 +44,17 @@ namespace SerializationGenerator
         public static bool IsEnum(this ITypeSymbol symbol) =>
             symbol.SpecialType == SpecialType.System_Enum || symbol.TypeKind == TypeKind.Enum;
 
-        public static bool HasSerializableInterface(this ITypeSymbol symbol, Compilation compilation) =>
-            symbol.BaseType.ContainsInterface(compilation.GetTypeByMetadataName(SERIALIZABLE_INTERFACE));
+        public static bool HasSerializableInterface(
+            this ITypeSymbol symbol,
+            Compilation compilation,
+            ImmutableArray<INamedTypeSymbol> serializableTypes
+        ) =>
+            symbol.BaseType.ContainsInterface(compilation.GetTypeByMetadataName(SERIALIZABLE_INTERFACE)) ||
+            serializableTypes.Contains(symbol);
+
+        public static bool Contains(this ImmutableArray<INamedTypeSymbol> symbols, ITypeSymbol symbol) =>
+            symbol is INamedTypeSymbol namedSymbol &&
+            symbols.Contains(namedSymbol, SymbolEqualityComparer.Default);
 
         public static bool HasGenericReaderCtor(this INamedTypeSymbol symbol, Compilation compilation)
         {
@@ -58,9 +68,13 @@ namespace SerializationGenerator
             );
         }
 
-        public static bool HasPublicSerializeMethod(this INamedTypeSymbol symbol, Compilation compilation)
+        public static bool HasPublicSerializeMethod(
+            this ITypeSymbol symbol,
+            Compilation compilation,
+            ImmutableArray<INamedTypeSymbol> serializableTypes
+        )
         {
-            if (symbol.HasSerializableInterface(compilation))
+            if (symbol.HasSerializableInterface(compilation, serializableTypes))
             {
                 return true;
             }
@@ -77,15 +91,19 @@ namespace SerializationGenerator
                 );
         }
 
-        public static bool IsListOfSerializable(this ITypeSymbol symbol, Compilation compilation) =>
-            symbol.AllInterfaces.FirstOrDefault(
-                i => i.ContainsInterface(compilation.GetTypeByMetadataName("System.Collections.Generic.IList`1"))
-            )?.TypeParameters[0].HasSerializableInterface(compilation) == true;
+        public static bool IsListOfSerializable(
+            this ITypeSymbol symbol,
+            Compilation compilation,
+            ImmutableArray<INamedTypeSymbol> serializableTypes
+        ) => symbol.GetTypeParameterForGeneric(compilation.GetTypeByMetadataName("System.Collections.Generic.IList`1"))
+            ?.HasSerializableInterface(compilation, serializableTypes) == true;
 
-        public static bool IsHashSetOfSerializable(this ITypeSymbol symbol, Compilation compilation) =>
-            symbol.AllInterfaces.FirstOrDefault(
-                i => i.ContainsInterface(compilation.GetTypeByMetadataName("System.Collections.Generic.HashSet`1"))
-            )?.TypeParameters[0].HasSerializableInterface(compilation) == true;
+        public static bool IsHashSetOfSerializable(
+            this ITypeSymbol symbol,
+            Compilation compilation,
+            ImmutableArray<INamedTypeSymbol> serializableTypes
+        ) => symbol.GetTypeParameterForGeneric(compilation.GetTypeByMetadataName("System.Collections.Generic.HashSet`1"))
+            ?.HasSerializableInterface(compilation, serializableTypes) == true;
 
         public static bool IsPoint2D(this ITypeSymbol symbol, Compilation compilation) =>
             symbol.TypeKind == TypeKind.Struct && symbol.Equals(
@@ -128,5 +146,13 @@ namespace SerializationGenerator
                 compilation.GetTypeByMetadataName(MAP_CLASS),
                 SymbolEqualityComparer.Default
             );
+
+        public static ITypeParameterSymbol? GetTypeParameterForGeneric(
+            this ITypeSymbol symbol,
+            INamedTypeSymbol? genericType
+        ) => symbol
+            .AllInterfaces
+            .FirstOrDefault(i => i.ContainsInterface(genericType))
+            ?.TypeParameters[0];
     }
 }
