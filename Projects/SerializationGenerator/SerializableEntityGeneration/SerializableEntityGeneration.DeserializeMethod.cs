@@ -49,11 +49,11 @@ namespace SerializationGenerator
             for (var i = 0; i < version; i++)
             {
                 source.AppendLine($"{indent}if (version == {i})");
-                source.AppendLine($@"{indent}{{");
+                source.AppendLine($"{indent}{{");
                 source.AppendLine($"{indent}    MigrateFrom(new Version{i}Content(reader));");
                 source.AppendLine($"{indent}    MarkDirty();");
                 source.AppendLine($"{indent}    return;");
-                source.AppendLine($@"{indent}}}");
+                source.AppendLine($"{indent}}}");
             }
 
             foreach (var field in fields)

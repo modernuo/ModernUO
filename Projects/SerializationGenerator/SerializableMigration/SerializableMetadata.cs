@@ -19,15 +19,15 @@ using Microsoft.CodeAnalysis;
 
 namespace SerializationGenerator
 {
-    public record SerializableMetadata
+    public class SerializableMetadata
     {
         [JsonPropertyName("version")]
-        public int Version { get; init; }
+        public int Version { get; set; }
 
         [JsonPropertyName("type")]
-        public INamedTypeSymbol Type { get; init; }
+        public INamedTypeSymbol Type { get; set; }
 
         [JsonPropertyName("properties")]
-        public List<SerializableProperty> Properties { get; init; }
+        public List<SerializableProperty> Properties { get; set; }
     }
 }

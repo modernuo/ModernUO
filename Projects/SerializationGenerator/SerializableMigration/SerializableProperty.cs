@@ -18,12 +18,12 @@ using Microsoft.CodeAnalysis;
 
 namespace SerializationGenerator
 {
-    public record SerializableProperty
+    public class SerializableProperty
     {
         [JsonPropertyName("name")]
-        public string Name { get; init; }
+        public string Name { get; set; }
 
         [JsonPropertyName("type")]
-        public INamedTypeSymbol Type { get; init; }
+        public INamedTypeSymbol Type { get; set; }
     }
 }

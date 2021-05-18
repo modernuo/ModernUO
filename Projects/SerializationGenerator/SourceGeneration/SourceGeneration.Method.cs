@@ -23,7 +23,7 @@ namespace SerializationGenerator
     {
         public static void GenerateMethodStart(this StringBuilder source, string methodName, AccessModifier accessors, bool isOverride, string returnType, ImmutableArray<(ITypeSymbol, string)> parameters)
         {
-            source.Append($@"        {accessors.ToFriendlyString()}{(isOverride ? " override" : "")} {returnType} {methodName}(");
+            source.Append($"        {accessors.ToFriendlyString()}{(isOverride ? " override" : "")} {returnType} {methodName}(");
             source.GenerateSignatureArguments(parameters);
             source.AppendLine(@")
         {");
@@ -36,7 +36,7 @@ namespace SerializationGenerator
             ImmutableArray<string> baseParameters, bool isOverload = false
         )
         {
-            source.Append($@"        {accessors.ToFriendlyString()} {className}(");
+            source.Append($"        {accessors.ToFriendlyString()} {className}(");
             source.GenerateSignatureArguments(parameters);
             source.Append(')');
             bool hasBaseParams = baseParameters.Length > 0;

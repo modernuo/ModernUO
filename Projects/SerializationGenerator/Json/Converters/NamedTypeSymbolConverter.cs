@@ -22,7 +22,7 @@ namespace Server.Json
 {
     public class NamedTypeSymbolConverter : JsonConverter<INamedTypeSymbol>
     {
-        private Compilation _compilation;
+        private readonly Compilation _compilation;
         public NamedTypeSymbolConverter(Compilation compilation) => _compilation = compilation;
 
         public override INamedTypeSymbol Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

@@ -22,7 +22,7 @@ namespace Server.Json
 {
     public class NamedTypeSymbolConverterFactory : JsonConverterFactory
     {
-        private Compilation _compilation;
+        private readonly Compilation _compilation;
 
         public NamedTypeSymbolConverterFactory(Compilation compilation) => _compilation = compilation;
 

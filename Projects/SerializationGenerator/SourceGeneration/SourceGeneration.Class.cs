@@ -45,7 +45,7 @@ namespace SerializationGenerator
 
         public static void GenerateClassStart(this StringBuilder source, string className, ImmutableArray<ITypeSymbol> interfaces)
         {
-            source.Append($@"    public partial class {className}");
+            source.Append($"    public partial class {className}");
             if (!interfaces.IsEmpty)
             {
                 source.Append(" : ");

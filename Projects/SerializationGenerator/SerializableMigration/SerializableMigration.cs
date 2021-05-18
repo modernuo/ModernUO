@@ -24,7 +24,7 @@ using Server.Json;
 
 namespace SerializationGenerator
 {
-    public static class SerializableMigration
+    public static partial class SerializableMigration
     {
         public static JsonSerializerOptions GetJsonSerializerOptions(Compilation compilation)
         {

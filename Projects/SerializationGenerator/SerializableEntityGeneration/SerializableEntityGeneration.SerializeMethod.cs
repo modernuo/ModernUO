@@ -115,7 +115,7 @@ namespace SerializationGenerator
             if (collectionElementType != null)
             {
                 source.AppendLine($"{indent}for (var i = 0; i < {fieldName}.{lengthProperty}; i++)");
-                source.AppendLine($@"{indent}{{");
+                source.AppendLine($"{indent}{{");
                 source.SerializeField(
                     $"{indent}    ",
                     $"{fieldName}[i]",
@@ -124,7 +124,7 @@ namespace SerializationGenerator
                     ImmutableArray<AttributeData>.Empty,
                     serializableTypes
                 );
-                source.AppendLine($@"{indent}}}");
+                source.AppendLine($"{indent}}}");
                 return;
             }
 

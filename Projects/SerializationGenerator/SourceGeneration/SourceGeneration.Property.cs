@@ -79,7 +79,7 @@ namespace SerializationGenerator
 
             var propertyAccessor = accessors == AccessModifier.None ? "" : $"{accessors.ToFriendlyString()} ";
 
-            source.AppendLine($@"{propertyAccessor}{type} {propertyName} {{ {getter}{setter} }}");
+            source.AppendLine($"{propertyAccessor}{type} {propertyName} {{ {getter}{setter} }}");
         }
 
         public static void GeneratePropertyEnd(this StringBuilder source) => source.AppendLine("        }");

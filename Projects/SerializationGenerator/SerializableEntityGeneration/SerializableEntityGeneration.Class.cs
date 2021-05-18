@@ -211,7 +211,6 @@ namespace SerializationGenerator
             source.AppendLine();
 
             var versionValue = int.Parse(version);
-            var genericReaderInterface = compilation.GetTypeByMetadataName(GENERIC_READER_INTERFACE);
 
             // Deserialize Method
             source.GenerateDeserializeMethod(
@@ -224,6 +223,15 @@ namespace SerializationGenerator
 
             source.GenerateClassEnd();
             source.GenerateNamespaceEnd();
+
+            if (versionValue > 0)
+            {
+                source.AppendLine();
+                for (var i = 0; i < versionValue; i++)
+                {
+                    source.GenerateMigrationContentStruct(compilation, versionValue, fieldsArray, serializableTypes);
+                }
+            }
 
             // Write the migration file
             var migration = new SerializableMetadata
