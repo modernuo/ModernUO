@@ -26,7 +26,7 @@ namespace SerializationGenerator
         {
             const string indent = "        ";
 
-            source.AppendLine($"{indent}ref struct V{migration.Version}Content");
+            source.AppendLine($"{indent}partial readonly struct V{migration.Version}Content");
             source.AppendLine($"{indent}{{");
             foreach (var serializableProperty in migration.Properties)
             {

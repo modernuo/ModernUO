@@ -9,6 +9,10 @@ namespace Server.Items
         [SerializableFieldAttr("[CommandProperty(AccessLevel.Administrator)]")]
         private List<Item> _someProperty;
 
+        readonly partial struct V0Content
+        {
+        }
+
         private void MigrateFrom(V0Content content)
         {
             _someProperty = new List<Item>
