@@ -9,8 +9,12 @@ namespace Server.Items
         [SerializableFieldAttr("[CommandProperty(AccessLevel.Administrator)]")]
         private List<Item> _someProperty;
 
-        public void OldDeserialize(IGenericReader reader, int version)
+        private void MigrateFrom(V0Content content)
         {
+            _someProperty = new List<Item>
+            {
+                content.SomeProperty
+            };
         }
     }
 }

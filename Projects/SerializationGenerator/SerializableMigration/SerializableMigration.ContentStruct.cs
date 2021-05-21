@@ -24,13 +24,13 @@ namespace SerializationGenerator
             SerializableMetadata migration
         )
         {
-            const string indent = "            ";
+            const string indent = "        ";
 
-            source.AppendLine($"{indent}struct V{migration.Version}Content");
+            source.AppendLine($"{indent}ref struct V{migration.Version}Content");
             source.AppendLine($"{indent}{{");
             foreach (var serializableProperty in migration.Properties)
             {
-                source.AppendLine($"{indent}    protected {serializableProperty.Type} {serializableProperty.Name}");
+                source.AppendLine($"{indent}    internal readonly {serializableProperty.Type} {serializableProperty.Name};");
             }
 
             source.AppendLine($"{indent}    public V{migration.Version}Content(IGenericReader reader)");
@@ -42,6 +42,8 @@ namespace SerializationGenerator
             }
 
             source.AppendLine($"{indent}    }}");
+
+            source.AppendLine($"{indent}}}");
         }
     }
 }

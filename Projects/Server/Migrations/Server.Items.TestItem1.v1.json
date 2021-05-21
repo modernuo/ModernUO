@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "type": "TestItem1",
+  "type": "Server.Items.TestItem1",
   "properties": [
     {
       "name": "SomeProperty",

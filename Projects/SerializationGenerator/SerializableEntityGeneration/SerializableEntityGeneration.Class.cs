@@ -256,7 +256,7 @@ namespace SerializationGenerator
             var newMigration = new SerializableMetadata
             {
                 Version = versionValue,
-                Type = classSymbol.Name,
+                Type = classSymbol.ToDisplayString(),
                 Properties = migrationProperties
             };
             SerializableMigration.WriteMigration(migrationPath, newMigration, jsonSerializerOptions);
