@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Server.Items
 {
     [Serializable(1)]
@@ -5,6 +7,10 @@ namespace Server.Items
     {
         [SerializableField(1)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.Administrator)]")]
-        private int _someProperty;
+        private List<Item> _someProperty;
+
+        public void OldDeserialize(IGenericReader reader, int version)
+        {
+        }
     }
 }

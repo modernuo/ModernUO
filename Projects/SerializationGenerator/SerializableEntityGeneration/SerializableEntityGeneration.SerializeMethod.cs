@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,8 @@ namespace SerializationGenerator
             Compilation compilation,
             bool isOverride,
             ImmutableArray<IFieldSymbol> fields,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            ImmutableArray<INamedTypeSymbol> serializableTypes,
+            HashSet<string> namespaces
         )
         {
             var genericWriterInterface = compilation.GetTypeByMetadataName(GENERIC_WRITER_INTERFACE);
@@ -41,11 +43,15 @@ namespace SerializationGenerator
                 ImmutableArray.Create<(ITypeSymbol, string)>((genericWriterInterface, "writer"))
             );
 
+            namespaces.Add(genericWriterInterface.GetNamespace().ToDisplayString());
+            namespaces.Add("System.IO"); // For SeekOrigin
+
             const string indent = "            ";
 
-            source.AppendLine(@$"{indent}if (SavePosition > -1)
+            source.AppendLine($"{indent}var savePosition = ((ISerializable)this).SavePosition;");
+            source.AppendLine(@$"{indent}if (savePosition > -1)
 {indent}{{
-{indent}    writer.Seek(SavePosition, SeekOrigin.Begin);
+{indent}    writer.Seek(savePosition, SeekOrigin.Begin);
 {indent}    return;
 {indent}}}");
 
@@ -54,8 +60,24 @@ namespace SerializationGenerator
 
             foreach (var field in fields)
             {
+                namespaces.Add(field.Type.GetNamespace().ToDisplayString());
+                if (field.Type is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.IsGenericType)
+                {
+                    foreach (var genericArgument in namedTypeSymbol.TypeArguments)
+                    {
+                        namespaces.Add(genericArgument.GetNamespace().ToDisplayString());
+                    }
+                }
+
                 var attributes = field.GetAttributes();
-                source.SerializeField($"{indent}    ", field.Name, field.Type, compilation, attributes, serializableTypes);
+                source.SerializeField(
+                    $"{indent}    ",
+                    field.Name,
+                    field.Type,
+                    compilation,
+                    attributes,
+                    serializableTypes
+                );
             }
 
             source.GenerateMethodEnd();
@@ -77,15 +99,16 @@ namespace SerializationGenerator
                 return;
             }
 
-            // Uses `writer.Write(obj);`
-            var primitiveWrite = fieldType.IsPrimitiveSerialization(compilation, serializableTypes);
+            var namedFieldType = fieldType as INamedTypeSymbol;
 
-            if (primitiveWrite)
+            // Uses `writer.Write(obj);`
+            if (namedFieldType?.IsPrimitiveSerialization(compilation, serializableTypes) == true)
             {
-                if (attributes.Any(a => a.IsDeltaDateTime(compilation)))
-                {
-                    source.AppendLine($"{indent}writer.WriteDeltaTime({fieldName})");
-                }
+                source.AppendLine(
+                    attributes.Any(a => a.IsDeltaDateTime(compilation))
+                        ? $"{indent}writer.WriteDeltaTime({fieldName});"
+                        : $"{indent}writer.Write({fieldName});"
+                );
                 return;
             }
 
@@ -97,18 +120,17 @@ namespace SerializationGenerator
             }
 
             // Check if we have an array or collection, then recurse
-            var collectionTypeParam = compilation.GetTypeByMetadataName("System.Collections.Generic.ICollection`1");
-            ITypeSymbol collectionElementType;
-            string lengthProperty;
+            ITypeSymbol collectionElementType = null;
+            string lengthProperty = null;
 
-            if (fieldType is IArrayTypeSymbol arrayTypeSymbol)
+            if (fieldType.SpecialType == SpecialType.System_Array)
             {
-                collectionElementType = arrayTypeSymbol.ElementType;
+                collectionElementType = ((IArrayTypeSymbol)fieldType).ElementType;
                 lengthProperty = "Length";
             }
-            else
+            else if (namedFieldType?.ContainsInterface(compilation.GetTypeByMetadataName(ICOLLECTION_INTERFACE)) == true)
             {
-                collectionElementType = fieldType.GetTypeParameterForGeneric(collectionTypeParam);
+                collectionElementType = namedFieldType.TypeArguments[0];
                 lengthProperty = "Count";
             }
 
@@ -132,7 +154,7 @@ namespace SerializationGenerator
         }
 
         private static bool IsPrimitiveSerialization(
-            this ITypeSymbol symbol,
+            this INamedTypeSymbol symbol,
             Compilation compilation,
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )

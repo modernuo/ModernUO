@@ -15,7 +15,6 @@
 
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using Microsoft.CodeAnalysis;
 
 namespace SerializationGenerator
 {
@@ -25,7 +24,7 @@ namespace SerializationGenerator
         public int Version { get; set; }
 
         [JsonPropertyName("type")]
-        public INamedTypeSymbol Type { get; set; }
+        public string Type { get; set; }
 
         [JsonPropertyName("properties")]
         public List<SerializableProperty> Properties { get; set; }

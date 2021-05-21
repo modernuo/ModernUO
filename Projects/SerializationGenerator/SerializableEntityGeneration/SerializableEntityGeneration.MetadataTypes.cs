@@ -21,6 +21,11 @@ namespace SerializationGenerator
 {
     public static partial class SerializableEntityGeneration
     {
+        public const string ICOLLECTION_INTERFACE = "System.Collections.Generic.ICollection`1";
+        public const string ILIST_INTERFACE = "System.Collections.Generic.IList`1";
+        public const string ISET_INTERFACE = "System.Collections.Generic.ISet`1";
+        public const string IP_CLASS = "System.Net.IPAddress";
+
         public const string SERIALIZABLE_ATTRIBUTE = "Server.SerializableAttribute";
         public const string SERIALIZABLE_FIELD_ATTRIBUTE = "Server.SerializableFieldAttribute";
         public const string SERIALIZABLE_FIELD_ATTR_ATTRIBUTE = "Server.SerializableFieldAttrAttribute";
@@ -49,7 +54,7 @@ namespace SerializationGenerator
             Compilation compilation,
             ImmutableArray<INamedTypeSymbol> serializableTypes
         ) =>
-            symbol.BaseType.ContainsInterface(compilation.GetTypeByMetadataName(SERIALIZABLE_INTERFACE)) ||
+            symbol.ContainsInterface(compilation.GetTypeByMetadataName(SERIALIZABLE_INTERFACE)) ||
             serializableTypes.Contains(symbol);
 
         public static bool Contains(this ImmutableArray<INamedTypeSymbol> symbols, ITypeSymbol symbol) =>
@@ -94,18 +99,18 @@ namespace SerializationGenerator
         }
 
         public static bool IsListOfSerializable(
-            this ITypeSymbol symbol,
+            this INamedTypeSymbol symbol,
             Compilation compilation,
             ImmutableArray<INamedTypeSymbol> serializableTypes
-        ) => symbol.GetTypeParameterForGeneric(compilation.GetTypeByMetadataName("System.Collections.Generic.IList`1"))
-            ?.HasSerializableInterface(compilation, serializableTypes) == true;
+        ) => symbol.ContainsInterface(compilation.GetTypeByMetadataName("System.Collections.Generic.IList`1")) &&
+             symbol.TypeArguments[0].HasSerializableInterface(compilation, serializableTypes);
 
         public static bool IsHashSetOfSerializable(
-            this ITypeSymbol symbol,
+            this INamedTypeSymbol symbol,
             Compilation compilation,
             ImmutableArray<INamedTypeSymbol> serializableTypes
-        ) => symbol.GetTypeParameterForGeneric(compilation.GetTypeByMetadataName("System.Collections.Generic.HashSet`1"))
-            ?.HasSerializableInterface(compilation, serializableTypes) == true;
+        ) => symbol.ContainsInterface(compilation.GetTypeByMetadataName("System.Collections.Generic.ISet`1")) &&
+             symbol.TypeArguments[0].HasSerializableInterface(compilation, serializableTypes);
 
         public static bool IsPoint2D(this ITypeSymbol symbol, Compilation compilation) =>
             symbol.TypeKind == TypeKind.Struct && symbol.Equals(
@@ -133,7 +138,7 @@ namespace SerializationGenerator
 
         public static bool IsIpAddress(this ITypeSymbol symbol, Compilation compilation) =>
             symbol.Equals(
-                compilation.GetTypeByMetadataName("System.Net.IPAddress"),
+                compilation.GetTypeByMetadataName(IP_CLASS),
                 SymbolEqualityComparer.Default
             );
 
@@ -148,13 +153,5 @@ namespace SerializationGenerator
                 compilation.GetTypeByMetadataName(MAP_CLASS),
                 SymbolEqualityComparer.Default
             );
-
-        public static ITypeParameterSymbol? GetTypeParameterForGeneric(
-            this ITypeSymbol symbol,
-            INamedTypeSymbol? genericType
-        ) => symbol
-            .AllInterfaces
-            .FirstOrDefault(i => i.ContainsInterface(genericType))
-            ?.TypeParameters[0];
     }
 }

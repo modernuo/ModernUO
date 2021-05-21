@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,7 @@ namespace SerializationGenerator
             Compilation compilation,
             bool isOverride,
             int version,
+            List<SerializableMetadata> migrations,
             ImmutableArray<IFieldSymbol> fields,
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )
@@ -46,28 +48,46 @@ namespace SerializationGenerator
 
             // Version
             source.AppendLine($"{indent}var version = reader.ReadEncodedInt();");
-            for (var i = 0; i < version; i++)
-            {
-                source.AppendLine($"{indent}if (version == {i})");
-                source.AppendLine($"{indent}{{");
-                source.AppendLine($"{indent}    MigrateFrom(new Version{i}Content(reader));");
-                source.AppendLine($"{indent}    MarkDirty();");
-                source.AppendLine($"{indent}    return;");
-                source.AppendLine($"{indent}}}");
-            }
 
-            foreach (var field in fields)
+            if (version > 0)
             {
-                var serializableProperty = new SerializableProperty
+                // Old Deserialize
+                var oldVersion = migrations.Count > 0 ? migrations[0].Version : version;
+
+                if (oldVersion > 0)
                 {
-                    Name = field.GetPropertyName(),
-                    Type = (INamedTypeSymbol)field.Type
-                };
+                    source.AppendLine($"{indent}if (version < {oldVersion})");
+                    source.AppendLine($"{indent}{{");
+                    source.AppendLine($"{indent}    OldDeserialize(reader, version);");
+                    source.AppendLine($"{indent}    ((ISerializable)this).MarkDirty();");
+                    source.AppendLine($"{indent}    return;");
+                    source.AppendLine($"{indent}}}");
+                }
 
-                var attributes = field.GetAttributes();
-
-                source.DeserializeField($"{indent}    ", serializableProperty, compilation, attributes, serializableTypes);
+                for (var i = 0; i < migrations.Count; i++)
+                {
+                    var migrationVersion = migrations[i].Version;
+                    source.AppendLine($"{indent}if (version == {migrationVersion})");
+                    source.AppendLine($"{indent}{{");
+                    source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader));");
+                    source.AppendLine($"{indent}    ((ISerializable)this).MarkDirty();");
+                    source.AppendLine($"{indent}    return;");
+                    source.AppendLine($"{indent}}}");
+                }
             }
+
+            // foreach (var field in fields)
+            // {
+            //     var serializableProperty = new SerializableProperty
+            //     {
+            //         Name = field.GetPropertyName(),
+            //         Type = field.Type.Name
+            //     };
+            //
+            //     var attributes = field.GetAttributes();
+            //
+            //     source.DeserializeField($"{indent}    ", serializableProperty, compilation, attributes, serializableTypes);
+            // }
 
             source.GenerateMethodEnd();
         }
@@ -81,12 +101,13 @@ namespace SerializationGenerator
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
-            var serializeMethod = property.Type.GetDeserializeReaderMethod(compilation, attributes, serializableTypes);
+            var propertyType = compilation.GetTypeByMetadataName(property.Type);
+            var serializeMethod = propertyType.GetDeserializeReaderMethod(compilation, attributes, serializableTypes);
             source.AppendLine($"{indent}{property.Name} = {serializeMethod}();");
         }
 
         private static string GetDeserializeReaderMethod(
-            this ITypeSymbol symbol,
+            this INamedTypeSymbol symbol,
             Compilation compilation,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes

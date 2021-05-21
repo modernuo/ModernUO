@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -23,7 +24,8 @@ namespace SerializationGenerator
     public static class Helpers
     {
         public static bool ContainsInterface(this ITypeSymbol symbol, ISymbol interfaceSymbol) =>
-            symbol?.AllInterfaces.Any(i => i.Equals(interfaceSymbol, SymbolEqualityComparer.Default)) ?? false;
+            symbol.Interfaces.Any(i => i.ConstructedFrom.Equals(interfaceSymbol, SymbolEqualityComparer.Default)) ||
+            symbol.AllInterfaces.Any(i => i.ConstructedFrom.Equals(interfaceSymbol, SymbolEqualityComparer.Default));
 
         public static ImmutableArray<IMethodSymbol> GetAllMethods(this ITypeSymbol symbol, string name)
         {
@@ -38,6 +40,42 @@ namespace SerializationGenerator
             list.AddRange(GetAllMethods(typeSymbol, name).ToList());
 
             return list.ToImmutableArray();
+        }
+
+        public static INamespaceSymbol GetNamespace(this ISymbol symbol)
+        {
+            while (true)
+            {
+                if (symbol is INamespaceSymbol namespaceSymbol && namespaceSymbol.IsGlobalNamespace)
+                {
+                    return namespaceSymbol;
+                }
+
+                if (symbol.ContainingSymbol != null)
+                {
+                    symbol = symbol.ContainingSymbol;
+                }
+            }
+        }
+
+        public static void GetNamespaces(this string fullyQualifiedName, Compilation compilation, HashSet<string> namespaces)
+        {
+            var parts = fullyQualifiedName.Split('.');
+            var namespacePart = "";
+
+            for (int i = 0; i < parts.Length; i++)
+            {
+                var newNamespace = $"{namespacePart}{parts[0]}";
+                if (compilation.GetTypeByMetadataName(newNamespace)?.IsNamespace != true)
+                {
+                    namespaces.Add(namespacePart);
+                    break;
+                }
+
+                namespacePart = newNamespace;
+            }
+
+            // Get namespaces for generics by recursion
         }
     }
 }

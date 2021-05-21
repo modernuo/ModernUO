@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -24,31 +25,26 @@ namespace SerializationGenerator
         public static void GenerateMigrationContentStruct(
             this StringBuilder source,
             Compilation compilation,
-            int version,
-            ImmutableArray<IFieldSymbol> fields,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            SerializableMetadata migration,
+            ImmutableArray<INamedTypeSymbol> serializableTypes,
+            HashSet<string> namespaces
         )
         {
             const string indent = "            ";
 
-            source.AppendLine($"{indent}struct ContentV{version}");
+            source.AppendLine($"{indent}struct V{migration.Version}Content");
             source.AppendLine($"{indent}{{");
-            foreach (var field in fields)
+            foreach (var serializableProperty in migration.Properties)
             {
-                source.AppendLine($"{indent}    protected {field.Type} {field.GetPropertyName()}");
+                namespaces.Add(serializableProperty.Type)
+                source.AppendLine($"{indent}    protected {serializableProperty.Type} {serializableProperty.Name}");
             }
 
-            source.AppendLine($"{indent}    public ContentV{version}(IGenericReader reader)");
+            source.AppendLine($"{indent}    public V{migration.Version}Content(IGenericReader reader)");
             source.AppendLine($"{indent}    {{");
 
-            foreach (var field in fields)
+            foreach (var serializableProperty in migration.Properties)
             {
-                var serializableProperty = new SerializableProperty
-                {
-                    Name = field.GetPropertyName(),
-                    Type = (INamedTypeSymbol)field.Type
-                };
-
                 source.DeserializeField(
                     $"{indent}        ",
                     serializableProperty,

@@ -134,6 +134,7 @@ namespace SerializationGenerator
                 if (hasAttribute)
                 {
                     serializableFields.Add(fieldSymbol);
+                    namespaceList.Add(fieldSymbol.Type.GetNamespace().ToDisplayString());
 
                     foreach (var attr in allAttributes)
                     {
@@ -156,7 +157,9 @@ namespace SerializationGenerator
                         }
                         else
                         {
-                            source.GenerateAttribute(((ITypeSymbol)attrTypeArg.Value)?.Name, ctorArgs[1].Values);
+                            var attrType = (ITypeSymbol)attrTypeArg.Value;
+                            source.GenerateAttribute(attrType.Name, ctorArgs[1].Values);
+                            namespaceList.Add(attrType.GetNamespace().ToDisplayString());
                         }
                     }
 
@@ -166,7 +169,7 @@ namespace SerializationGenerator
                     migrationProperties.Add(new SerializableProperty
                     {
                         Name = fieldSymbol.GetPropertyName(),
-                        Type = (INamedTypeSymbol)fieldSymbol.Type
+                        Type = fieldSymbol.Type.Name
                     });
                 }
             }
@@ -206,17 +209,42 @@ namespace SerializationGenerator
                 compilation,
                 isOverride,
                 fieldsArray,
-                serializableTypes
+                serializableTypes,
+                namespaceList
             );
             source.AppendLine();
 
             var versionValue = int.Parse(version);
+            List<SerializableMetadata> migrations;
+
+            if (versionValue > 0)
+            {
+                source.AppendLine();
+
+                migrations = SerializableMigration.GetMigrations(
+                    migrationPath,
+                    classSymbol,
+                    versionValue,
+                    jsonSerializerOptions
+                );
+
+                for (var i = 0; i < migrations.Count; i++)
+                {
+                    var migration = migrations[i];
+                    source.GenerateMigrationContentStruct(compilation, migration, serializableTypes, namespaceList);
+                }
+            }
+            else
+            {
+                migrations = new List<SerializableMetadata>();
+            }
 
             // Deserialize Method
             source.GenerateDeserializeMethod(
                 compilation,
                 isOverride,
                 versionValue,
+                migrations,
                 fieldsArray,
                 serializableTypes
             );
@@ -224,23 +252,14 @@ namespace SerializationGenerator
             source.GenerateClassEnd();
             source.GenerateNamespaceEnd();
 
-            if (versionValue > 0)
-            {
-                source.AppendLine();
-                for (var i = 0; i < versionValue; i++)
-                {
-                    source.GenerateMigrationContentStruct(compilation, versionValue, fieldsArray, serializableTypes);
-                }
-            }
-
             // Write the migration file
-            var migration = new SerializableMetadata
+            var newMigration = new SerializableMetadata
             {
                 Version = versionValue,
-                Type = classSymbol,
+                Type = classSymbol.Name,
                 Properties = migrationProperties
             };
-            SerializableMigration.WriteMigration(migrationPath, migration, jsonSerializerOptions);
+            SerializableMigration.WriteMigration(migrationPath, newMigration, jsonSerializerOptions);
 
             return source.ToString();
         }

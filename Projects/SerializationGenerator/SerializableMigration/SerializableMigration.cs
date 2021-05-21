@@ -20,25 +20,19 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using Microsoft.CodeAnalysis;
-using Server.Json;
 
 namespace SerializationGenerator
 {
     public static partial class SerializableMigration
     {
-        public static JsonSerializerOptions GetJsonSerializerOptions(Compilation compilation)
-        {
-            var options = new JsonSerializerOptions
+        public static JsonSerializerOptions GetJsonSerializerOptions(Compilation compilation) =>
+            new()
             {
                 WriteIndented = true,
                 AllowTrailingCommas = true,
                 IgnoreNullValues = true,
                 ReadCommentHandling = JsonCommentHandling.Skip
             };
-            options.Converters.Add(new NamedTypeSymbolConverterFactory(compilation));
-
-            return options;
-        }
 
         public static string GetMigrationPath(GeneratorExecutionContext context)
         {
@@ -73,7 +67,7 @@ namespace SerializationGenerator
             {
                 var text = File.ReadAllText(migrationFile, Encoding.UTF8);
                 var migration = JsonSerializer.Deserialize<SerializableMetadata>(text, options);
-                if (migration != null && typeName == migration.Type.ToDisplayString() && version > migration.Version)
+                if (typeName == migration!.Type && version > migration.Version)
                 {
                     migrations.Add(migration);
                 }
@@ -85,7 +79,7 @@ namespace SerializationGenerator
         public static void WriteMigration(string migrationPath, SerializableMetadata metadata, JsonSerializerOptions options)
         {
             Directory.CreateDirectory(migrationPath);
-            var filePath = Path.Combine(migrationPath, $"{metadata.Type.Name}.v{metadata.Version}.json");
+            var filePath = Path.Combine(migrationPath, $"{metadata.Type}.v{metadata.Version}.json");
             File.WriteAllText(filePath, JsonSerializer.Serialize(metadata, options));
         }
     }
