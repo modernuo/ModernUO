@@ -36,19 +36,12 @@ namespace SerializationGenerator
 
         public static string GetMigrationPath(GeneratorExecutionContext context)
         {
-            string path = null;
+            context.AnalyzerConfigOptions.GlobalOptions.TryGetValue(
+                "build_property.SerializableMigrationPath",
+                out var migrationPath
+            );
 
-            foreach (var file in context.AdditionalFiles)
-            {
-                if (context.AnalyzerConfigOptions.GetOptions(file).TryGetValue("build_metadata.AdditionalFiles.MigrationPath", out var migrationPath)
-                    && migrationPath.Equals("true", StringComparison.OrdinalIgnoreCase))
-                {
-                    path = Path.GetDirectoryName(file.Path);
-                    break;
-                }
-            }
-
-            return path;
+            return migrationPath;
         }
 
         public static List<SerializableMetadata> GetMigrations(

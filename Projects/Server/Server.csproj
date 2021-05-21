@@ -60,9 +60,10 @@
         </ItemGroup>
         <RemoveDir Directories="Generated" />
     </Target>
-   <ItemGroup>
-       <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="MigrationPath" />
-       <Folder Include="SerializableMigrationFiles" />
-       <AdditionalFiles Include="Migrations\" MigrationPath="true" Visible="false" />
-   </ItemGroup>
+    <ItemGroup>
+        <CompilerVisibleProperty Include="SerializableMigrationPath" />
+    </ItemGroup>
+    <PropertyGroup>
+        <SerializableMigrationPath>Migrations</SerializableMigrationPath>
+    </PropertyGroup>
 </Project>
