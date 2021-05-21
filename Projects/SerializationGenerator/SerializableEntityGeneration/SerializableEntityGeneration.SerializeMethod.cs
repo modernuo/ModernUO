@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -29,8 +28,7 @@ namespace SerializationGenerator
             Compilation compilation,
             bool isOverride,
             ImmutableArray<IFieldSymbol> fields,
-            ImmutableArray<INamedTypeSymbol> serializableTypes,
-            HashSet<string> namespaces
+            ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
             var genericWriterInterface = compilation.GetTypeByMetadataName(GENERIC_WRITER_INTERFACE);
@@ -43,15 +41,12 @@ namespace SerializationGenerator
                 ImmutableArray.Create<(ITypeSymbol, string)>((genericWriterInterface, "writer"))
             );
 
-            namespaces.Add(genericWriterInterface.GetNamespace().ToDisplayString());
-            namespaces.Add("System.IO"); // For SeekOrigin
-
             const string indent = "            ";
 
-            source.AppendLine($"{indent}var savePosition = ((ISerializable)this).SavePosition;");
+            source.AppendLine($"{indent}var savePosition = ((Server.ISerializable)this).SavePosition;");
             source.AppendLine(@$"{indent}if (savePosition > -1)
 {indent}{{
-{indent}    writer.Seek(savePosition, SeekOrigin.Begin);
+{indent}    writer.Seek(savePosition, System.IO.SeekOrigin.Begin);
 {indent}    return;
 {indent}}}");
 
@@ -60,18 +55,9 @@ namespace SerializationGenerator
 
             foreach (var field in fields)
             {
-                namespaces.Add(field.Type.GetNamespace().ToDisplayString());
-                if (field.Type is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.IsGenericType)
-                {
-                    foreach (var genericArgument in namedTypeSymbol.TypeArguments)
-                    {
-                        namespaces.Add(genericArgument.GetNamespace().ToDisplayString());
-                    }
-                }
-
                 var attributes = field.GetAttributes();
                 source.SerializeField(
-                    $"{indent}    ",
+                    indent,
                     field.Name,
                     field.Type,
                     compilation,

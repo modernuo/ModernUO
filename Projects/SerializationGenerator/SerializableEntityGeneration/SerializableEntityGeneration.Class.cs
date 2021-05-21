@@ -95,7 +95,6 @@ namespace SerializationGenerator
 
             var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
             var className = classSymbol.Name;
-            HashSet<string> namespaceList = new();
 
             StringBuilder source = new StringBuilder();
 
@@ -134,7 +133,6 @@ namespace SerializationGenerator
                 if (hasAttribute)
                 {
                     serializableFields.Add(fieldSymbol);
-                    namespaceList.Add(fieldSymbol.Type.GetNamespace().ToDisplayString());
 
                     foreach (var attr in allAttributes)
                     {
@@ -159,7 +157,6 @@ namespace SerializationGenerator
                         {
                             var attrType = (ITypeSymbol)attrTypeArg.Value;
                             source.GenerateAttribute(attrType.Name, ctorArgs[1].Values);
-                            namespaceList.Add(attrType.GetNamespace().ToDisplayString());
                         }
                     }
 
@@ -169,7 +166,12 @@ namespace SerializationGenerator
                     migrationProperties.Add(new SerializableProperty
                     {
                         Name = fieldSymbol.GetPropertyName(),
-                        Type = fieldSymbol.Type.Name
+                        Type = fieldSymbol.Type.ToDisplayString(),
+                        ReadMethod = ((INamedTypeSymbol)fieldSymbol.Type).GetDeserializeReaderMethod(
+                            compilation,
+                            allAttributes,
+                            serializableTypes
+                        )
                     });
                 }
             }
@@ -209,8 +211,7 @@ namespace SerializationGenerator
                 compilation,
                 isOverride,
                 fieldsArray,
-                serializableTypes,
-                namespaceList
+                serializableTypes
             );
             source.AppendLine();
 
@@ -219,8 +220,6 @@ namespace SerializationGenerator
 
             if (versionValue > 0)
             {
-                source.AppendLine();
-
                 migrations = SerializableMigration.GetMigrations(
                     migrationPath,
                     classSymbol,
@@ -231,7 +230,8 @@ namespace SerializationGenerator
                 for (var i = 0; i < migrations.Count; i++)
                 {
                     var migration = migrations[i];
-                    source.GenerateMigrationContentStruct(compilation, migration, serializableTypes, namespaceList);
+                    source.GenerateMigrationContentStruct(migration);
+                    source.AppendLine();
                 }
             }
             else

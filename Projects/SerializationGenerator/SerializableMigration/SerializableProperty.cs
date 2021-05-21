@@ -20,9 +20,12 @@ namespace SerializationGenerator
     public class SerializableProperty
     {
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; init; }
 
         [JsonPropertyName("type")]
-        public string Type { get; set; }
+        public string Type { get; init; }
+
+        [JsonPropertyName("readMethod")]
+        public string ReadMethod { get; init; }
     }
 }

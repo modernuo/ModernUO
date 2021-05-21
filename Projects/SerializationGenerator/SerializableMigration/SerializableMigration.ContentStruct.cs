@@ -13,10 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Text;
-using Microsoft.CodeAnalysis;
 
 namespace SerializationGenerator
 {
@@ -24,10 +21,7 @@ namespace SerializationGenerator
     {
         public static void GenerateMigrationContentStruct(
             this StringBuilder source,
-            Compilation compilation,
-            SerializableMetadata migration,
-            ImmutableArray<INamedTypeSymbol> serializableTypes,
-            HashSet<string> namespaces
+            SerializableMetadata migration
         )
         {
             const string indent = "            ";
@@ -36,7 +30,6 @@ namespace SerializationGenerator
             source.AppendLine($"{indent}{{");
             foreach (var serializableProperty in migration.Properties)
             {
-                namespaces.Add(serializableProperty.Type)
                 source.AppendLine($"{indent}    protected {serializableProperty.Type} {serializableProperty.Name}");
             }
 
@@ -45,13 +38,7 @@ namespace SerializationGenerator
 
             foreach (var serializableProperty in migration.Properties)
             {
-                source.DeserializeField(
-                    $"{indent}        ",
-                    serializableProperty,
-                    compilation,
-                    ImmutableArray<AttributeData>.Empty,
-                    serializableTypes
-                );
+                source.DeserializeField($"{indent}        ", serializableProperty);
             }
 
             source.AppendLine($"{indent}    }}");

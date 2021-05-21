@@ -1,10 +1,11 @@
 {
-  "type": "Server.Items.SomeItem",
-  "version": 2,
+  "type": "Server.Items.TestItem1",
+  "version": 0,
   "properties": [
     {
       "name": "SomeProperty",
-      "type": "string"
+      "type": "string",
+      "readMethod": "ReadString()"
     }
   ]
 }

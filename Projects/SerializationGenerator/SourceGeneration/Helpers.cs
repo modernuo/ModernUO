@@ -41,41 +41,5 @@ namespace SerializationGenerator
 
             return list.ToImmutableArray();
         }
-
-        public static INamespaceSymbol GetNamespace(this ISymbol symbol)
-        {
-            while (true)
-            {
-                if (symbol is INamespaceSymbol namespaceSymbol && namespaceSymbol.IsGlobalNamespace)
-                {
-                    return namespaceSymbol;
-                }
-
-                if (symbol.ContainingSymbol != null)
-                {
-                    symbol = symbol.ContainingSymbol;
-                }
-            }
-        }
-
-        public static void GetNamespaces(this string fullyQualifiedName, Compilation compilation, HashSet<string> namespaces)
-        {
-            var parts = fullyQualifiedName.Split('.');
-            var namespacePart = "";
-
-            for (int i = 0; i < parts.Length; i++)
-            {
-                var newNamespace = $"{namespacePart}{parts[0]}";
-                if (compilation.GetTypeByMetadataName(newNamespace)?.IsNamespace != true)
-                {
-                    namespaces.Add(namespacePart);
-                    break;
-                }
-
-                namespacePart = newNamespace;
-            }
-
-            // Get namespaces for generics by recursion
-        }
     }
 }

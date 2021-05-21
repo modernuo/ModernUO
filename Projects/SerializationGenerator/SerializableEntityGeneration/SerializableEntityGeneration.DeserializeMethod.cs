@@ -59,7 +59,7 @@ namespace SerializationGenerator
                     source.AppendLine($"{indent}if (version < {oldVersion})");
                     source.AppendLine($"{indent}{{");
                     source.AppendLine($"{indent}    OldDeserialize(reader, version);");
-                    source.AppendLine($"{indent}    ((ISerializable)this).MarkDirty();");
+                    source.AppendLine($"{indent}    ((Server.ISerializable)this).MarkDirty();");
                     source.AppendLine($"{indent}    return;");
                     source.AppendLine($"{indent}}}");
                 }
@@ -70,24 +70,29 @@ namespace SerializationGenerator
                     source.AppendLine($"{indent}if (version == {migrationVersion})");
                     source.AppendLine($"{indent}{{");
                     source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader));");
-                    source.AppendLine($"{indent}    ((ISerializable)this).MarkDirty();");
+                    source.AppendLine($"{indent}    ((Server.ISerializable)this).MarkDirty();");
                     source.AppendLine($"{indent}    return;");
                     source.AppendLine($"{indent}}}");
                 }
             }
 
-            // foreach (var field in fields)
-            // {
-            //     var serializableProperty = new SerializableProperty
-            //     {
-            //         Name = field.GetPropertyName(),
-            //         Type = field.Type.Name
-            //     };
-            //
-            //     var attributes = field.GetAttributes();
-            //
-            //     source.DeserializeField($"{indent}    ", serializableProperty, compilation, attributes, serializableTypes);
-            // }
+            foreach (var field in fields)
+            {
+                var attributes = field.GetAttributes();
+
+                var serializableProperty = new SerializableProperty
+                {
+                    Name = field.GetPropertyName(),
+                    Type = field.Type.ToDisplayString(),
+                    ReadMethod = ((INamedTypeSymbol)field.Type).GetDeserializeReaderMethod(
+                        compilation,
+                        attributes,
+                        serializableTypes
+                    )
+                };
+
+                source.DeserializeField($"{indent}", serializableProperty);
+            }
 
             source.GenerateMethodEnd();
         }
@@ -95,15 +100,10 @@ namespace SerializationGenerator
         public static void DeserializeField(
             this StringBuilder source,
             string indent,
-            SerializableProperty property,
-            Compilation compilation,
-            ImmutableArray<AttributeData> attributes,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            SerializableProperty property
         )
         {
-            var propertyType = compilation.GetTypeByMetadataName(property.Type);
-            var serializeMethod = propertyType.GetDeserializeReaderMethod(compilation, attributes, serializableTypes);
-            source.AppendLine($"{indent}{property.Name} = {serializeMethod}();");
+            source.AppendLine($"{indent}{property.Name} = reader.{property.ReadMethod};");
         }
 
         private static string GetDeserializeReaderMethod(
@@ -115,80 +115,80 @@ namespace SerializationGenerator
         {
             switch (symbol.SpecialType)
             {
-                case SpecialType.System_Boolean:  return "ReadBool";
-                case SpecialType.System_SByte:    return "ReadSByte";
-                case SpecialType.System_Int16:    return "ReadShort";
-                case SpecialType.System_Int32:    return "ReadInt";
-                case SpecialType.System_Int64:    return "ReadLong";
-                case SpecialType.System_Byte:     return "ReadByte";
-                case SpecialType.System_UInt16:   return "ReadUShort";
-                case SpecialType.System_UInt32:   return "ReadUInt";
-                case SpecialType.System_UInt64:   return "ReadULong";
-                case SpecialType.System_Single:   return "ReadFloat";
-                case SpecialType.System_Double:   return "ReadDouble";
-                case SpecialType.System_String:   return "ReadString";
-                case SpecialType.System_Decimal:  return "ReadDecimal";
+                case SpecialType.System_Boolean:  return "ReadBool()";
+                case SpecialType.System_SByte:    return "ReadSByte()";
+                case SpecialType.System_Int16:    return "ReadShort()";
+                case SpecialType.System_Int32:    return "ReadInt()";
+                case SpecialType.System_Int64:    return "ReadLong()";
+                case SpecialType.System_Byte:     return "ReadByte()";
+                case SpecialType.System_UInt16:   return "ReadUShort()";
+                case SpecialType.System_UInt32:   return "ReadUInt()";
+                case SpecialType.System_UInt64:   return "ReadULong()";
+                case SpecialType.System_Single:   return "ReadFloat()";
+                case SpecialType.System_Double:   return "ReadDouble()";
+                case SpecialType.System_String:   return "ReadString()";
+                case SpecialType.System_Decimal:  return "ReadDecimal()";
                 case SpecialType.System_DateTime:
                     {
                         return attributes.Any(a => a.IsDeltaDateTime(compilation)) ?
-                            "ReadDeltaTime" :
-                            "ReadDateTime";
+                            "ReadDeltaTime()" :
+                            "ReadDateTime()";
                     }
             }
 
             if (symbol.IsPoint2D(compilation))
             {
-                return "ReadPoint2D";
+                return "ReadPoint2D()";
             }
 
             if (symbol.IsPoint3D(compilation))
             {
-                return "ReadPoint3D";
+                return "ReadPoint3D()";
             }
 
             if (symbol.IsRectangle2D(compilation))
             {
-                return "ReadRect2D";
+                return "ReadRect2D()";
             }
 
             if (symbol.IsRectangle3D(compilation))
             {
-                return "ReadPoint3D";
+                return "ReadPoint3D()";
             }
 
             if (symbol.IsIpAddress(compilation))
             {
-                return "ReadIPAddress";
+                return "ReadIPAddress()";
             }
 
             if (symbol.IsRace(compilation))
             {
-                return "ReadRace";
+                return "ReadRace()";
             }
 
             if (symbol.IsMap(compilation))
             {
-                return "ReadMap";
+                return "ReadMap()";
             }
 
             if (symbol.HasSerializableInterface(compilation, serializableTypes))
             {
-                return $"ReadEntity<{symbol.Name}>";
+                return $"ReadEntity<{symbol.TypeArguments[0].ToDisplayString()}>()";
             }
 
             if (symbol.IsListOfSerializable(compilation, serializableTypes))
             {
-                return $"ReadEntityList<{symbol.Name}>";
+                return $"ReadEntityList<{symbol.TypeArguments[0].ToDisplayString()}>()";
             }
 
             if (symbol.IsHashSetOfSerializable(compilation, serializableTypes))
             {
-                return $"ReadEntitySet<{symbol.Name}>";
+                return $"ReadEntitySet<{symbol.TypeArguments[0].ToDisplayString()}>()";
             }
 
-            if (symbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.HasGenericReaderCtor(compilation, out var requiresParent))
+            if (symbol.HasGenericReaderCtor(compilation, out var requiresParent))
             {
-                return $"new {namedTypeSymbol}(reader{(requiresParent ? ", this" : "")})";
+                return $"new {symbol.ToDisplayString()}(reader{(requiresParent ? ", this" : "")})";
             }
 
             throw new Exception($"No serialization Read method for type {symbol.Name}");
