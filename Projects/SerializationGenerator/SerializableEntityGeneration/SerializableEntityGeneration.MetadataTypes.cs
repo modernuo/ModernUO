@@ -112,43 +112,43 @@ namespace SerializationGenerator
         ) => symbol.ContainsInterface(compilation.GetTypeByMetadataName("System.Collections.Generic.ISet`1")) &&
              symbol.TypeArguments[0].HasSerializableInterface(compilation, serializableTypes);
 
-        public static bool IsPoint2D(this ITypeSymbol symbol, Compilation compilation) =>
-            symbol.TypeKind == TypeKind.Struct && symbol.Equals(
+        public static bool IsPoint2D(this ISymbol symbol, Compilation compilation) =>
+            symbol.Equals(
                 compilation.GetTypeByMetadataName(POINT2D_STRUCT),
                 SymbolEqualityComparer.Default
             );
 
-        public static bool IsPoint3D(this ITypeSymbol symbol, Compilation compilation) =>
-            symbol.TypeKind == TypeKind.Struct && symbol.Equals(
+        public static bool IsPoint3D(this ISymbol symbol, Compilation compilation) =>
+            symbol.Equals(
                 compilation.GetTypeByMetadataName(POINT3D_STRUCT),
                 SymbolEqualityComparer.Default
             );
 
-        public static bool IsRectangle2D(this ITypeSymbol symbol, Compilation compilation) =>
-            symbol.TypeKind == TypeKind.Struct && symbol.Equals(
+        public static bool IsRectangle2D(this ISymbol symbol, Compilation compilation) =>
+            symbol.Equals(
                 compilation.GetTypeByMetadataName(RECTANGLE2D_STRUCT),
                 SymbolEqualityComparer.Default
             );
 
-        public static bool IsRectangle3D(this ITypeSymbol symbol, Compilation compilation) =>
-            symbol.TypeKind == TypeKind.Struct && symbol.Equals(
+        public static bool IsRectangle3D(this ISymbol symbol, Compilation compilation) =>
+            symbol.Equals(
                 compilation.GetTypeByMetadataName(RECTANGLE3D_STRUCT),
                 SymbolEqualityComparer.Default
             );
 
-        public static bool IsIpAddress(this ITypeSymbol symbol, Compilation compilation) =>
+        public static bool IsIpAddress(this ISymbol symbol, Compilation compilation) =>
             symbol.Equals(
                 compilation.GetTypeByMetadataName(IP_CLASS),
                 SymbolEqualityComparer.Default
             );
 
-        public static bool IsRace(this ITypeSymbol symbol, Compilation compilation) =>
+        public static bool IsRace(this ISymbol symbol, Compilation compilation) =>
             symbol.Equals(
                 compilation.GetTypeByMetadataName(RACE_CLASS),
                 SymbolEqualityComparer.Default
             );
 
-        public static bool IsMap(this ITypeSymbol symbol, Compilation compilation) =>
+        public static bool IsMap(this ISymbol symbol, Compilation compilation) =>
             symbol.Equals(
                 compilation.GetTypeByMetadataName(MAP_CLASS),
                 SymbolEqualityComparer.Default

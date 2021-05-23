@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SerializableProperty.cs                                         *
+ * File: SerializableMigrationRule.cs                                    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,22 +13,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Text.Json.Serialization;
+using System.Collections.Immutable;
+using System.Text;
+using Microsoft.CodeAnalysis;
 
 namespace SerializationGenerator
 {
-    public class SerializableProperty
+    public interface ISerializableMigrationRule
     {
-        [JsonPropertyName("name")]
-        public string Name { get; init; }
+        string RuleName { get; }
 
-        [JsonPropertyName("type")]
-        public string Type { get; init; }
+        bool GenerateRuleState(
+            Compilation compilation,
+            ISymbol symbol,
+            ImmutableArray<AttributeData> attributes,
+            ImmutableArray<INamedTypeSymbol> serializableTypes,
+            out string[] rulesState
+        );
 
-        [JsonPropertyName("rule")]
-        public string Rule { get; init; }
+        void GenerateDeserializationMethod(
+            StringBuilder source,
+            string indent,
+            SerializableProperty property
+        );
 
-        [JsonPropertyName("ruleArguments")]
-        public string[] RuleArguments { get; init; }
+        void GenerateSerializationMethod(
+            StringBuilder source,
+            string indent,
+            SerializableProperty property
+        );
     }
 }

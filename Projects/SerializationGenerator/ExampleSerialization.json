@@ -4,8 +4,8 @@
   "properties": [
     {
       "name": "SomeProperty",
-      "type": "string",
-      "readMethod": "ReadString()"
+      "type": "List<Server.Item>",
+      "rules": ["is_generic_list", "of_serializable"]
     }
   ]
 }
