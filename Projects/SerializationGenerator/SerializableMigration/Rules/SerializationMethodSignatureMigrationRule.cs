@@ -61,7 +61,7 @@ namespace SerializationGenerator
             var argument = property.RuleArguments.Length >= 1 &&
                            property.RuleArguments[0] == "DeserializationRequiresParent" ? ", this" : "";
 
-            source.AppendLine($"{indent}new {property.Type}(reader{argument})");
+            source.AppendLine($"{indent}{propertyName} = new {property.Type}(reader{argument})");
         }
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
