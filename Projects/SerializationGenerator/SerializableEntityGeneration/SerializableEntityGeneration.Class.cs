@@ -118,7 +118,7 @@ namespace SerializationGenerator
             source.AppendLine();
 
             var serializableFields = new List<IFieldSymbol>();
-            var migrationProperties = new List<SerializableProperty>();
+            var serializableProperties = new List<SerializableProperty>();
 
             foreach (IFieldSymbol fieldSymbol in fields)
             {
@@ -163,16 +163,15 @@ namespace SerializationGenerator
                     source.GenerateSerializableProperty(fieldSymbol);
                     source.AppendLine();
 
-                    migrationProperties.Add(new SerializableProperty
-                    {
-                        Name = fieldSymbol.GetPropertyName(),
-                        Type = fieldSymbol.Type.ToDisplayString(),
-                        ReadMethod = ((INamedTypeSymbol)fieldSymbol.Type).GetDeserializeReaderMethod(
-                            compilation,
-                            allAttributes,
-                            serializableTypes
-                        )
-                    });
+                    var serializableProperty = SerializableMigrationRulesEngine.GenerateSerializableProperty(
+                        compilation,
+                        fieldSymbol.GetPropertyName(),
+                        fieldSymbol.Type,
+                        allAttributes,
+                        serializableTypes
+                    );
+
+                    serializableProperties.Add(serializableProperty);
                 }
             }
 
@@ -245,8 +244,7 @@ namespace SerializationGenerator
                 isOverride,
                 versionValue,
                 migrations,
-                fieldsArray,
-                serializableTypes
+                serializableProperties
             );
 
             source.GenerateClassEnd();
@@ -257,7 +255,7 @@ namespace SerializationGenerator
             {
                 Version = versionValue,
                 Type = classSymbol.ToDisplayString(),
-                Properties = migrationProperties
+                Properties = serializableProperties
             };
             SerializableMigration.WriteMigration(migrationPath, newMigration, jsonSerializerOptions);
 

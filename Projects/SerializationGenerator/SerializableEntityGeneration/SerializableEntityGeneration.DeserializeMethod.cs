@@ -30,8 +30,7 @@ namespace SerializationGenerator
             bool isOverride,
             int version,
             List<SerializableMetadata> migrations,
-            ImmutableArray<IFieldSymbol> fields,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            List<SerializableProperty> properties
         )
         {
             var genericReaderInterface = compilation.GetTypeByMetadataName(GENERIC_READER_INTERFACE);
@@ -76,34 +75,16 @@ namespace SerializationGenerator
                 }
             }
 
-            foreach (var field in fields)
+            foreach (var property in properties)
             {
-                var attributes = field.GetAttributes();
-
-                var serializableProperty = new SerializableProperty
-                {
-                    Name = field.GetPropertyName(),
-                    Type = field.Type.ToDisplayString(),
-                    ReadMethod = ((INamedTypeSymbol)field.Type).GetDeserializeReaderMethod(
-                        compilation,
-                        attributes,
-                        serializableTypes
-                    )
-                };
-
-                source.DeserializeField($"{indent}", serializableProperty);
+                SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
+                    source,
+                    $"{indent}    ",
+                    property
+                );
             }
 
             source.GenerateMethodEnd();
-        }
-
-        public static void DeserializeField(
-            this StringBuilder source,
-            string indent,
-            SerializableProperty property
-        )
-        {
-            source.AppendLine($"{indent}{property.Name} = reader.{property.ReadMethod};");
         }
 
         private static string GetDeserializeReaderMethod(

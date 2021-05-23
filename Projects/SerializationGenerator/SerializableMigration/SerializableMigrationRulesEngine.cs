@@ -22,9 +22,7 @@ namespace SerializationGenerator
 {
     public static class SerializableMigrationRulesEngine
     {
-        private static readonly HashSet<ISerializableMigrationRule> _rules = new();
-
-        public static void RegisterRule(ISerializableMigrationRule rule) => _rules.Add(rule);
+        public static readonly Dictionary<string, ISerializableMigrationRule> Rules = new();
 
         public static SerializableProperty GenerateSerializableProperty(
             Compilation compilation,
@@ -34,18 +32,18 @@ namespace SerializationGenerator
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
-            string propertyType = symbol switch
+            ITypeSymbol propertyType = symbol switch
             {
-                IFieldSymbol fieldSymbol => fieldSymbol.Type.ToDisplayString(),
-                IPropertySymbol propertySymbol => propertySymbol.Type.ToDisplayString(),
+                IFieldSymbol fieldSymbol => fieldSymbol.Type,
+                IPropertySymbol propertySymbol => propertySymbol.Type,
                 _ => throw new ArgumentException($"Invalid symbol type provided for {propertyName}")
             };
 
-            foreach (var rule in _rules)
+            foreach (var rule in Rules.Values)
             {
                 if (rule.GenerateRuleState(
                     compilation,
-                    symbol,
+                    propertyType,
                     attributes,
                     serializableTypes,
                     out var ruleArguments
@@ -54,7 +52,7 @@ namespace SerializationGenerator
                     return new SerializableProperty
                     {
                         Name = propertyName,
-                        Type = propertyType,
+                        Type = propertyType.ToDisplayString(),
                         Rule = rule.RuleName,
                         RuleArguments = ruleArguments
                     };

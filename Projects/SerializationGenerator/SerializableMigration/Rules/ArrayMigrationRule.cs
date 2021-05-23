@@ -13,7 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
+using System;
 using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -32,25 +32,76 @@ namespace SerializationGenerator
             out string[] ruleArguments
         )
         {
-            if (!symbol.HasPublicSerializeMethod(compilation, serializableTypes))
+            if (symbol is not IArrayTypeSymbol arrayTypeSymbol)
             {
                 ruleArguments = null;
                 return false;
             }
 
-            var list = new List<string>();
+            var serializableArrayType = SerializableMigrationRulesEngine.GenerateSerializableProperty(
+                compilation,
+                "ArrayEntry",
+                arrayTypeSymbol.ElementType,
+                ImmutableArray<AttributeData>.Empty,
+                serializableTypes
+            );
+
+            var length = serializableArrayType.RuleArguments.Length;
+            ruleArguments = new string[length + 2];
+            ruleArguments[0] = arrayTypeSymbol.ElementType.ToDisplayString();
+            ruleArguments[1] = serializableArrayType.Rule;
+            Array.Copy(serializableArrayType.RuleArguments, 0, ruleArguments, 2, length);
 
             return true;
         }
 
         public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            throw new System.NotImplementedException();
+            var ruleArguments = property.RuleArguments;
+            var arrayElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
+            var arrayElementRuleArguments = new string[ruleArguments.Length - 2];
+            Array.Copy(ruleArguments, 2, arrayElementRuleArguments, 0, ruleArguments.Length - 2);
+
+            source.AppendLine($"{indent}{property.Name} = new {ruleArguments[0]}[reader.ReadEncodedInt()];");
+            source.AppendLine($"{indent}writer.WriteEncodedInt({property.Name}.Length);");
+            source.AppendLine($"{indent}for (var i = 0; i < {property.Name}.Length; i++)");
+            source.AppendLine($"{indent}{{");
+
+            var serializableArrayElement = new SerializableProperty
+            {
+                Name = $"{property.Name}[i]",
+                Type = ruleArguments[0],
+                Rule = arrayElementRule.RuleName,
+                RuleArguments = arrayElementRuleArguments
+            };
+
+            arrayElementRule.GenerateDeserializationMethod(source, $"{indent}    ", serializableArrayElement);
+
+            source.AppendLine($"{indent}}}");
         }
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            throw new System.NotImplementedException();
+            var ruleArguments = property.RuleArguments;
+            var arrayElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
+            var arrayElementRuleArguments = new string[ruleArguments.Length - 2];
+            Array.Copy(ruleArguments, 2, arrayElementRuleArguments, 0, ruleArguments.Length - 2);
+
+            source.AppendLine($"{indent}writer.WriteEncodedInt({property.Name}.Length);");
+            source.AppendLine($"{indent}for (var i = 0; i < {property.Name}.Length; i++)");
+            source.AppendLine($"{indent}{{");
+
+            var serializableArrayElement = new SerializableProperty
+            {
+                Name = $"{property.Name}[i]",
+                Type = ruleArguments[0],
+                Rule = arrayElementRule.RuleName,
+                RuleArguments = arrayElementRuleArguments
+            };
+
+            arrayElementRule.GenerateSerializationMethod(source, $"{indent}    ", serializableArrayElement);
+
+            source.AppendLine($"{indent}}}");
         }
     }
 }

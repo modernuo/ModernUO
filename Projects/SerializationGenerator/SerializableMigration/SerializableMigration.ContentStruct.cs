@@ -38,7 +38,11 @@ namespace SerializationGenerator
 
             foreach (var serializableProperty in migration.Properties)
             {
-                source.DeserializeField($"{indent}        ", serializableProperty);
+                SerializableMigrationRulesEngine.Rules[serializableProperty.Rule].GenerateDeserializationMethod(
+                    source,
+                    $"{indent}        ",
+                    serializableProperty
+                );
             }
 
             source.AppendLine($"{indent}    }}");

@@ -39,14 +39,14 @@ namespace SerializationGenerator
                 return true;
             }
 
-            if (symbol is not ITypeSymbol typedSymbol)
+            if (symbol is not ITypeSymbol typeSymbol)
             {
                 ruleArguments = null;
                 return false;
             }
 
             if (
-                typedSymbol.SpecialType is
+                typeSymbol.SpecialType is
                     SpecialType.System_Boolean or
                     SpecialType.System_SByte or
                     SpecialType.System_Int16 or
@@ -63,15 +63,15 @@ namespace SerializationGenerator
                     SpecialType.System_DateTime
             )
             {
-                ruleArguments = new[] { typedSymbol.SpecialType.ToString() };
+                ruleArguments = new[] { typeSymbol.SpecialType.ToString() };
                 return true;
             }
 
-            if (typedSymbol.SpecialType == SpecialType.System_DateTime)
+            if (typeSymbol.SpecialType == SpecialType.System_DateTime)
             {
                 ruleArguments = attributes.Any(a => a.IsDeltaDateTime(compilation))
-                    ? new[] { typedSymbol.SpecialType.ToString(), "DeltaTime" }
-                    : new[] { typedSymbol.SpecialType.ToString() };
+                    ? new[] { typeSymbol.SpecialType.ToString(), "DeltaTime" }
+                    : new[] { typeSymbol.SpecialType.ToString() };
 
                 return true;
             }
