@@ -28,7 +28,7 @@ namespace SerializationGenerator
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
-            out string[] rulesState
+            out string[] ruleArguments
         );
 
         void GenerateDeserializationMethod(

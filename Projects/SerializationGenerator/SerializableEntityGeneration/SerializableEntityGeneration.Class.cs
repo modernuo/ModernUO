@@ -203,17 +203,6 @@ namespace SerializationGenerator
             source.GenerateSerialCtor(context, className, isOverride);
             source.AppendLine();
 
-            var fieldsArray = serializableFields.ToImmutableArray();
-
-            // Serialize Method
-            source.GenerateSerializeMethod(
-                compilation,
-                isOverride,
-                fieldsArray,
-                serializableTypes
-            );
-            source.AppendLine();
-
             var versionValue = int.Parse(version);
             List<SerializableMetadata> migrations;
 
@@ -237,6 +226,15 @@ namespace SerializationGenerator
             {
                 migrations = new List<SerializableMetadata>();
             }
+
+            // Serialize Method
+            source.GenerateSerializeMethod(
+                compilation,
+                isOverride,
+                serializableProperties,
+                serializableTypes
+            );
+            source.AppendLine();
 
             // Deserialize Method
             source.GenerateDeserializeMethod(

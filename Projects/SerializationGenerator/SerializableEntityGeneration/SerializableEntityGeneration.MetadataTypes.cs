@@ -25,6 +25,7 @@ namespace SerializationGenerator
         public const string ILIST_INTERFACE = "System.Collections.Generic.IList`1";
         public const string ISET_INTERFACE = "System.Collections.Generic.ISet`1";
         public const string IP_CLASS = "System.Net.IPAddress";
+        public const string KEYVALUEPAIR_STRUCT = "System.Collections.Generic.KeyValuePair";
 
         public const string SERIALIZABLE_ATTRIBUTE = "Server.SerializableAttribute";
         public const string SERIALIZABLE_FIELD_ATTRIBUTE = "Server.SerializableFieldAttribute";
@@ -98,20 +99,6 @@ namespace SerializationGenerator
                 );
         }
 
-        public static bool IsListOfSerializable(
-            this INamedTypeSymbol symbol,
-            Compilation compilation,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
-        ) => symbol.ContainsInterface(compilation.GetTypeByMetadataName("System.Collections.Generic.IList`1")) &&
-             symbol.TypeArguments[0].HasSerializableInterface(compilation, serializableTypes);
-
-        public static bool IsHashSetOfSerializable(
-            this INamedTypeSymbol symbol,
-            Compilation compilation,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
-        ) => symbol.ContainsInterface(compilation.GetTypeByMetadataName("System.Collections.Generic.ISet`1")) &&
-             symbol.TypeArguments[0].HasSerializableInterface(compilation, serializableTypes);
-
         public static bool IsPoint2D(this ISymbol symbol, Compilation compilation) =>
             symbol.Equals(
                 compilation.GetTypeByMetadataName(POINT2D_STRUCT),
@@ -153,5 +140,11 @@ namespace SerializationGenerator
                 compilation.GetTypeByMetadataName(MAP_CLASS),
                 SymbolEqualityComparer.Default
             );
+
+        public static bool IsKeyValuePair(this ISymbol symbol, Compilation compilation) =>
+            (symbol as INamedTypeSymbol)?.ConstructedFrom.Equals(
+                compilation.GetTypeByMetadataName(KEYVALUEPAIR_STRUCT),
+                SymbolEqualityComparer.Default
+            ) == true;
     }
 }
