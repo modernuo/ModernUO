@@ -70,7 +70,7 @@ namespace Server
         int Read(Span<byte> buffer);
         unsafe T ReadEnum<T>() where T : unmanaged, Enum
         {
-            switch (ReadByte())
+            switch (sizeof(T))
             {
                 case 1:
                     {
