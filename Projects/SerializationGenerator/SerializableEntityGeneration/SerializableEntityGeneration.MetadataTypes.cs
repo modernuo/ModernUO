@@ -23,7 +23,7 @@ namespace SerializationGenerator
     {
         public const string LIST_CLASS = "System.Collections.Generic.List`1";
         public const string HASHSET_CLASS = "System.Collections.Generic.HashSet`1";
-        public const string IP_CLASS = "System.Net.IPAddress";
+        public const string IPADDRESS_CLASS = "System.Net.IPAddress";
         public const string KEYVALUEPAIR_STRUCT = "System.Collections.Generic.KeyValuePair";
 
         public const string SERIALIZABLE_ATTRIBUTE = "Server.SerializableAttribute";
@@ -124,7 +124,7 @@ namespace SerializationGenerator
 
         public static bool IsIpAddress(this ISymbol symbol, Compilation compilation) =>
             symbol.Equals(
-                compilation.GetTypeByMetadataName(IP_CLASS),
+                compilation.GetTypeByMetadataName(IPADDRESS_CLASS),
                 SymbolEqualityComparer.Default
             );
 
