@@ -40,22 +40,23 @@ namespace SerializationGenerator
             }
 
             if (
-                symbol is not ITypeSymbol typeSymbol ||
-                typeSymbol.SpecialType is not
-                    SpecialType.System_Boolean or
-                    SpecialType.System_SByte or
-                    SpecialType.System_Int16 or
-                    SpecialType.System_Int32 or
-                    SpecialType.System_Int64 or
-                    SpecialType.System_Byte or
-                    SpecialType.System_UInt16 or
-                    SpecialType.System_UInt32 or
-                    SpecialType.System_UInt64 or
-                    SpecialType.System_Single or
-                    SpecialType.System_Double or
-                    SpecialType.System_String or
-                    SpecialType.System_Decimal or
-                    SpecialType.System_DateTime
+                symbol is not ITypeSymbol {
+                    SpecialType: not (not
+                    SpecialType.System_Boolean and not
+                    SpecialType.System_SByte and not
+                    SpecialType.System_Int16 and not
+                    SpecialType.System_Int32 and not
+                    SpecialType.System_Int64 and not
+                    SpecialType.System_Byte and not
+                    SpecialType.System_UInt16 and not
+                    SpecialType.System_UInt32 and not
+                    SpecialType.System_UInt64 and not
+                    SpecialType.System_Single and not
+                    SpecialType.System_Double and not
+                    SpecialType.System_String and not
+                    SpecialType.System_Decimal and not
+                    SpecialType.System_DateTime)
+                } typeSymbol
             )
             {
                 ruleArguments = null;
