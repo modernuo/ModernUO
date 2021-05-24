@@ -21,7 +21,8 @@ namespace Server
     public sealed class SerializableAttribute : Attribute
     {
         public int Version { get; }
+        public bool EncodedVersion { get; }
 
-        public SerializableAttribute(int version) => Version = version;
+        public SerializableAttribute(int version, bool encodedVersion = true) => Version = version;
     }
 }

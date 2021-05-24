@@ -83,10 +83,15 @@ namespace SerializationGenerator
                 return null;
             }
 
-            var version = classSymbol.GetAttributes()
+            var serializableAttribute = classSymbol.GetAttributes()
                 .FirstOrDefault(
                     attr => attr.AttributeClass?.Equals(serializableEntityAttribute, SymbolEqualityComparer.Default) ?? false
-                )?.ConstructorArguments.FirstOrDefault().Value?.ToString();
+                );
+
+            var version = serializableAttribute?.ConstructorArguments.FirstOrDefault().Value?.ToString();
+            var encodedVersion = (serializableAttribute?.ConstructorArguments.Length > 1
+                ? serializableAttribute.ConstructorArguments[1].Value?.ToString()
+                : serializableAttribute?.NamedArguments.FirstOrDefault(arg => arg.Key == "encodedVersion").Value.ToString()) != "false";
 
             if (version == null)
             {
@@ -231,6 +236,7 @@ namespace SerializationGenerator
             source.GenerateSerializeMethod(
                 compilation,
                 isOverride,
+                encodedVersion,
                 serializableProperties
             );
             source.AppendLine();
@@ -240,6 +246,7 @@ namespace SerializationGenerator
                 compilation,
                 isOverride,
                 versionValue,
+                encodedVersion,
                 migrations,
                 serializableProperties
             );

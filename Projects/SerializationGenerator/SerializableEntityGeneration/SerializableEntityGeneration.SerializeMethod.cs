@@ -26,6 +26,7 @@ namespace SerializationGenerator
             this StringBuilder source,
             Compilation compilation,
             bool isOverride,
+            bool encodedVersion,
             List<SerializableProperty> properties
         )
         {
@@ -50,7 +51,7 @@ namespace SerializationGenerator
 
             // Version
             source.AppendLine();
-            source.AppendLine($"{indent}writer.WriteEncodedInt(_version);");
+            source.AppendLine($"{indent}writer.{(encodedVersion ? "WriteEncodedInt" : "Write")}(_version);");
 
             foreach (var property in properties)
             {
