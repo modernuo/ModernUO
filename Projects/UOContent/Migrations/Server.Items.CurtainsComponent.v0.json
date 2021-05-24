@@ -6,9 +6,7 @@
       "name": "ClosedID",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": [
-        "System_Int32"
-      ]
+      "ruleArguments": []
     }
   ]
 }
