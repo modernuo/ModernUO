@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -54,17 +55,16 @@ namespace SerializationGenerator
             var jsonOptions = SerializableMigration.GetJsonSerializerOptions(context.Compilation);
             // List of types that _will_ become ISerializable
             var serializableList = receiver
-                .Fields
-                .GroupBy(f => f.ContainingType, SymbolEqualityComparer.Default)
-                .Select(g => g.Key as INamedTypeSymbol)
+                .ClassAndFields
+                .Select(g => g.Key)
                 .Where(t => t.WillBeSerializable(context))
                 .ToImmutableArray();
 
-            foreach (IGrouping<ISymbol, IFieldSymbol> group in receiver.Fields.GroupBy(f => f.ContainingType, SymbolEqualityComparer.Default))
+            foreach (var kvp in receiver.ClassAndFields)
             {
                 string classSource = SerializableEntityGeneration.GenerateSerializationPartialClass(
-                    group.Key as INamedTypeSymbol,
-                    group.ToList(),
+                    kvp.Key,
+                    kvp.Value,
                     context,
                     migrationPath,
                     jsonOptions,
@@ -73,7 +73,7 @@ namespace SerializationGenerator
 
                 if (classSource != null)
                 {
-                    context.AddSource($"{group.Key.Name}.Serialization.cs", SourceText.From(classSource, Encoding.UTF8));
+                    context.AddSource($"{kvp.Key.ToDisplayString()}.Serialization.cs", SourceText.From(classSource, Encoding.UTF8));
                 }
             }
         }
