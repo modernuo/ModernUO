@@ -118,32 +118,26 @@ namespace Server
         void Write(ReadOnlySpan<byte> bytes);
         unsafe void WriteEnum<T>(T value) where T : unmanaged, Enum
         {
-            var size = sizeof(T);
-
-            switch (size)
+            switch (sizeof(T))
             {
                 default: throw new ArgumentException($"Argument of type {typeof(T)} is not a normal enum");
                 case 1:
                     {
-                        Write((byte)1);
                         Write(*(byte*)&value);
                         break;
                     }
                 case 2:
                     {
-                        Write((byte)2);
                         Write(*(ushort*)&value);
                         break;
                     }
                 case 4:
                     {
-                        Write((byte)3);
                         WriteEncodedInt(*(int*)&value);
                         break;
                     }
                 case 8:
                     {
-                        Write((byte)4);
                         Write(*(ulong*)&value);
                         break;
                     }
