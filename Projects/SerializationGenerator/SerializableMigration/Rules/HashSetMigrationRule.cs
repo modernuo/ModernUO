@@ -22,6 +22,12 @@ namespace SerializationGenerator
 {
     public class HashSetMigrationRule : ISerializableMigrationRule
     {
+        static HashSetMigrationRule()
+        {
+            var rule = new HashSetMigrationRule();
+            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
+        }
+
         public string RuleName => nameof(HashSetMigrationRule);
 
         public bool GenerateRuleState(

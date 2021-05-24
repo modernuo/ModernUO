@@ -22,6 +22,12 @@ namespace SerializationGenerator
 {
     public class PrimitiveUOTypeMigrationRule : ISerializableMigrationRule
     {
+        static PrimitiveUOTypeMigrationRule()
+        {
+            var rule = new PrimitiveUOTypeMigrationRule();
+            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
+        }
+
         public string RuleName => nameof(PrimitiveUOTypeMigrationRule);
 
         public bool GenerateRuleState(

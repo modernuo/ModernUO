@@ -22,6 +22,12 @@ namespace SerializationGenerator
 {
     public class ArrayMigrationRule : ISerializableMigrationRule
     {
+        static ArrayMigrationRule()
+        {
+            var rule = new ArrayMigrationRule();
+            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
+        }
+
         public string RuleName => nameof(ArrayMigrationRule);
 
         public bool GenerateRuleState(

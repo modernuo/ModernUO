@@ -22,6 +22,12 @@ namespace SerializationGenerator
 {
     public class SerializationMethodSignatureMigrationRule : ISerializableMigrationRule
     {
+        static SerializationMethodSignatureMigrationRule()
+        {
+            var rule = new SerializationMethodSignatureMigrationRule();
+            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
+        }
+
         public string RuleName => nameof(SerializationMethodSignatureMigrationRule);
 
         public bool GenerateRuleState(

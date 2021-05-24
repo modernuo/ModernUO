@@ -22,6 +22,12 @@ namespace SerializationGenerator
 {
     public class KeyValuePairMigrationRule : ISerializableMigrationRule
     {
+        static KeyValuePairMigrationRule()
+        {
+            var rule = new KeyValuePairMigrationRule();
+            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
+        }
+
         public string RuleName => nameof(KeyValuePairMigrationRule);
 
         public bool GenerateRuleState(

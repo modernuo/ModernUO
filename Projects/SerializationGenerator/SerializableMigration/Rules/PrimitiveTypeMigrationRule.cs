@@ -23,6 +23,12 @@ namespace SerializationGenerator
 {
     public class PrimitiveTypeMigrationRule : ISerializableMigrationRule
     {
+        static PrimitiveTypeMigrationRule()
+        {
+            var rule = new PrimitiveTypeMigrationRule();
+            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
+        }
+
         public string RuleName => nameof(PrimitiveTypeMigrationRule);
 
         public bool GenerateRuleState(

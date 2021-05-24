@@ -22,6 +22,12 @@ namespace SerializationGenerator
 {
     public class SerializableInterfaceMigrationRule : ISerializableMigrationRule
     {
+        static SerializableInterfaceMigrationRule()
+        {
+            var rule = new SerializableInterfaceMigrationRule();
+            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
+        }
+
         public string RuleName => nameof(SerializableInterfaceMigrationRule);
 
         public bool GenerateRuleState(
