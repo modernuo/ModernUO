@@ -35,18 +35,13 @@ namespace SerializationGenerator
         {
             if (symbol.IsIpAddress(compilation))
             {
-                ruleArguments = new[] { "IPAddress" };
+                ruleArguments = Array.Empty<string>();
                 return true;
             }
 
-            if (symbol is not ITypeSymbol typeSymbol)
-            {
-                ruleArguments = null;
-                return false;
-            }
-
             if (
-                typeSymbol.SpecialType is
+                symbol is not ITypeSymbol typeSymbol ||
+                typeSymbol.SpecialType is not
                     SpecialType.System_Boolean or
                     SpecialType.System_SByte or
                     SpecialType.System_Int16 or
@@ -63,21 +58,20 @@ namespace SerializationGenerator
                     SpecialType.System_DateTime
             )
             {
-                ruleArguments = new[] { typeSymbol.SpecialType.ToString() };
-                return true;
+                ruleArguments = null;
+                return false;
             }
 
-            if (typeSymbol.SpecialType == SpecialType.System_DateTime)
+            if (typeSymbol.SpecialType == SpecialType.System_DateTime && attributes.Any(a => a.IsDeltaDateTime(compilation)))
             {
-                ruleArguments = attributes.Any(a => a.IsDeltaDateTime(compilation))
-                    ? new[] { typeSymbol.SpecialType.ToString(), "DeltaTime" }
-                    : new[] { typeSymbol.SpecialType.ToString() };
-
-                return true;
+                ruleArguments = new[] { "DeltaTime" };
+            }
+            else
+            {
+                ruleArguments = Array.Empty<string>();
             }
 
-            ruleArguments = null;
-            return false;
+            return true;
         }
 
         public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
@@ -90,41 +84,31 @@ namespace SerializationGenerator
             }
 
             var propertyName = property.Name;
-            var ruleType = property.RuleArguments[0];
             string readMethod;
 
-            if (ruleType == "IPAddress")
-            {
-                readMethod = "ReadIPAddress";
-            }
-            else
-            {
-                if (!Enum.TryParse<SpecialType>(ruleType, out var specialType))
-                {
-                    throw new ArgumentException($"Invalid rule state for property {propertyName} ({ruleType})");
-                }
+            const string ipAddress = SerializableEntityGeneration.IPADDRESS_CLASS;
 
-                readMethod = specialType switch
-                {
-                    SpecialType.System_Boolean => "ReadBool",
-                    SpecialType.System_SByte   => "ReadSByte",
-                    SpecialType.System_Int16   => "ReadShort",
-                    SpecialType.System_Int32   => "ReadInt",
-                    SpecialType.System_Int64   => "ReadLong",
-                    SpecialType.System_Byte    => "ReadByte",
-                    SpecialType.System_UInt16  => "ReadUShort",
-                    SpecialType.System_UInt32  => "ReadUInt",
-                    SpecialType.System_UInt64  => "ReadULong",
-                    SpecialType.System_Single  => "ReadFloat",
-                    SpecialType.System_Double  => "ReadDouble",
-                    SpecialType.System_String  => "ReadString",
-                    SpecialType.System_Decimal => "ReadDecimal",
-                    SpecialType.System_DateTime => property.RuleArguments.Length >= 2 &&
-                                                   property.RuleArguments[1] == "DeltaTime" ?
-                        "ReadDeltaTime" :
-                        "ReadDateTime"
-                };
-            }
+            readMethod = property.Type switch
+            {
+                "bool"    => "ReadBool",
+                "sbyte"   => "ReadSByte",
+                "short"   => "ReadShort",
+                "int"     => "ReadInt",
+                "long"    => "ReadLong",
+                "byte"    => "ReadByte",
+                "ushort"  => "ReadUShort",
+                "uint"    => "ReadUInt",
+                "ulong"   => "ReadULong",
+                "float"    => "ReadFloat",
+                "double"  => "ReadDouble",
+                "string"  => "ReadString",
+                "decimal" => "ReadDecimal",
+                ipAddress => "ReadIPAddress",
+                "System.DateTime" => property.RuleArguments.Length >= 1 &&
+                                     property.RuleArguments[0] == "DeltaTime" ?
+                    "ReadDeltaTime" :
+                    "ReadDateTime"
+            };
 
             source.AppendLine($"{indent}{propertyName} = reader.{readMethod}();");
         }
@@ -139,14 +123,8 @@ namespace SerializationGenerator
             }
 
             var propertyName = property.Name;
-            var ruleType = property.RuleArguments[0];
 
-            if (!Enum.TryParse<SpecialType>(ruleType, out var specialType))
-            {
-                throw new ArgumentException($"Invalid rule state for property {propertyName} ({ruleType})");
-            }
-
-            if (specialType == SpecialType.System_DateTime && property.RuleArguments[1] == "DeltaTime")
+            if (property.Type == "System.DateTime" && property.RuleArguments.Length >= 1 && property.RuleArguments[0] == "DeltaTime")
             {
                 source.AppendLine($"{indent}writer.WriteDeltaTime({propertyName});");
             }
