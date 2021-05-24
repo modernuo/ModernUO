@@ -22,7 +22,7 @@ namespace SerializationGenerator
 {
     public class ArrayMigrationRule : ISerializableMigrationRule
     {
-        public string RuleName => "ArrayMigrationRule";
+        public string RuleName => nameof(ArrayMigrationRule);
 
         public bool GenerateRuleState(
             Compilation compilation,
@@ -42,7 +42,7 @@ namespace SerializationGenerator
                 compilation,
                 "ArrayEntry",
                 arrayTypeSymbol.ElementType,
-                ImmutableArray<AttributeData>.Empty,
+                attributes,
                 serializableTypes
             );
 
@@ -62,14 +62,14 @@ namespace SerializationGenerator
             var arrayElementRuleArguments = new string[ruleArguments.Length - 2];
             Array.Copy(ruleArguments, 2, arrayElementRuleArguments, 0, ruleArguments.Length - 2);
 
+            var propertyIndex = $"{property.Name}Index";
             source.AppendLine($"{indent}{property.Name} = new {ruleArguments[0]}[reader.ReadEncodedInt()];");
-            source.AppendLine($"{indent}writer.WriteEncodedInt({property.Name}.Length);");
-            source.AppendLine($"{indent}for (var i = 0; i < {property.Name}.Length; i++)");
+            source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {property.Name}.Length; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 
             var serializableArrayElement = new SerializableProperty
             {
-                Name = $"{property.Name}[i]",
+                Name = $"{property.Name}[{propertyIndex}]",
                 Type = ruleArguments[0],
                 Rule = arrayElementRule.RuleName,
                 RuleArguments = arrayElementRuleArguments
@@ -87,13 +87,14 @@ namespace SerializationGenerator
             var arrayElementRuleArguments = new string[ruleArguments.Length - 2];
             Array.Copy(ruleArguments, 2, arrayElementRuleArguments, 0, ruleArguments.Length - 2);
 
+            var propertyIndex = $"{property.Name}Index";
             source.AppendLine($"{indent}writer.WriteEncodedInt({property.Name}.Length);");
-            source.AppendLine($"{indent}for (var i = 0; i < {property.Name}.Length; i++)");
+            source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {property.Name}.Length; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 
             var serializableArrayElement = new SerializableProperty
             {
-                Name = $"{property.Name}[i]",
+                Name = $"{property.Name}[{propertyIndex}]",
                 Type = ruleArguments[0],
                 Rule = arrayElementRule.RuleName,
                 RuleArguments = arrayElementRuleArguments

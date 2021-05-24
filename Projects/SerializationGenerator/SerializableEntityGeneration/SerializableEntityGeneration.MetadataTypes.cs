@@ -22,8 +22,8 @@ namespace SerializationGenerator
     public static partial class SerializableEntityGeneration
     {
         public const string ICOLLECTION_INTERFACE = "System.Collections.Generic.ICollection`1";
-        public const string ILIST_INTERFACE = "System.Collections.Generic.IList`1";
-        public const string ISET_INTERFACE = "System.Collections.Generic.ISet`1";
+        public const string LIST_CLASS = "System.Collections.Generic.List`1";
+        public const string HASHSET_CLASS = "System.Collections.Generic.HashSet`1";
         public const string IP_CLASS = "System.Net.IPAddress";
         public const string KEYVALUEPAIR_STRUCT = "System.Collections.Generic.KeyValuePair";
 
@@ -144,6 +144,18 @@ namespace SerializationGenerator
         public static bool IsKeyValuePair(this ISymbol symbol, Compilation compilation) =>
             (symbol as INamedTypeSymbol)?.ConstructedFrom.Equals(
                 compilation.GetTypeByMetadataName(KEYVALUEPAIR_STRUCT),
+                SymbolEqualityComparer.Default
+            ) == true;
+
+        public static bool IsList(this ISymbol symbol, Compilation compilation) =>
+            (symbol as INamedTypeSymbol)?.ConstructedFrom.Equals(
+                compilation.GetTypeByMetadataName(LIST_CLASS),
+                SymbolEqualityComparer.Default
+            ) == true;
+
+        public static bool IsHashSet(this ISymbol symbol, Compilation compilation) =>
+            (symbol as INamedTypeSymbol)?.ConstructedFrom.Equals(
+                compilation.GetTypeByMetadataName(HASHSET_CLASS),
                 SymbolEqualityComparer.Default
             ) == true;
     }
