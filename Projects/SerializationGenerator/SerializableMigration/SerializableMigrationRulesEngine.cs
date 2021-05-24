@@ -28,14 +28,15 @@ namespace SerializationGenerator
         {
             var rules = new ISerializableMigrationRule[]
             {
+                new EnumMigrationRule(),
+                new ListMigrationRule(),
                 new ArrayMigrationRule(),
                 new HashSetMigrationRule(),
                 new KeyValuePairMigrationRule(),
-                new ListMigrationRule(),
                 new PrimitiveTypeMigrationRule(),
                 new PrimitiveUOTypeMigrationRule(),
                 new SerializableInterfaceMigrationRule(),
-                new SerializationMethodSignatureMigrationRule()
+                new SerializationMethodSignatureMigrationRule(),
             };
 
             foreach (var rule in rules)

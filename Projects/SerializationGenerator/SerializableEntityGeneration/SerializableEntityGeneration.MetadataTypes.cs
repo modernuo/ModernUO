@@ -33,6 +33,7 @@ namespace SerializationGenerator
         public const string GENERIC_WRITER_INTERFACE = "Server.IGenericWriter";
         public const string GENERIC_READER_INTERFACE = "Server.IGenericReader";
         public const string DELTA_DATE_TIME_ATTRIBUTE = "Server.DeltaDateTimeAttribute";
+        public const string INTERN_STRING_ATTRIBUTE = "Server.InternStringAttribute";
         public const string POINT2D_STRUCT = "Server.Point2D";
         public const string POINT3D_STRUCT = "Server.Point3D";
         public const string RECTANGLE2D_STRUCT = "Server.Rectangle2D";
@@ -42,6 +43,9 @@ namespace SerializationGenerator
 
         public static bool IsDeltaDateTime(this AttributeData attr, Compilation compilation) =>
             attr?.IsAttribute(compilation.GetTypeByMetadataName(DELTA_DATE_TIME_ATTRIBUTE)) == true;
+
+        public static bool IsInternString(this AttributeData attr, Compilation compilation) =>
+            attr?.IsAttribute(compilation.GetTypeByMetadataName(INTERN_STRING_ATTRIBUTE)) == true;
 
         public static bool IsAttribute(this AttributeData attr, ISymbol symbol) =>
             attr?.AttributeClass?.Equals(symbol, SymbolEqualityComparer.Default) == true;

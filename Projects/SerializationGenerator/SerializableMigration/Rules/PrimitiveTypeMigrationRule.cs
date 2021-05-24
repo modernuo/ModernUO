@@ -67,6 +67,10 @@ namespace SerializationGenerator
             {
                 ruleArguments = new[] { "DeltaTime" };
             }
+            else if (typeSymbol.SpecialType == SpecialType.System_String && attributes.Any(a => a.IsInternString(compilation)))
+            {
+                ruleArguments = new[] { "InternString" };
+            }
             else
             {
                 ruleArguments = Array.Empty<string>();
@@ -111,7 +115,11 @@ namespace SerializationGenerator
                     "ReadDateTime"
             };
 
-            source.AppendLine($"{indent}{propertyName} = reader.{readMethod}();");
+            var readArgument = readMethod == "ReadString" &&
+                               property.RuleArguments.Length >= 1 &&
+                               property.RuleArguments[0] == "InternString" ? "true" : "";
+
+            source.AppendLine($"{indent}{propertyName} = reader.{readMethod}({readArgument});");
         }
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
