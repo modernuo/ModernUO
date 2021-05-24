@@ -88,15 +88,8 @@ namespace SerializationGenerator
                     attr => attr.AttributeClass?.Equals(serializableEntityAttribute, SymbolEqualityComparer.Default) ?? false
                 );
 
-            var version = serializableAttribute?.ConstructorArguments.FirstOrDefault().Value?.ToString();
-            var encodedVersion = (serializableAttribute?.ConstructorArguments.Length > 1
-                ? serializableAttribute.ConstructorArguments[1].Value?.ToString()
-                : serializableAttribute?.NamedArguments.FirstOrDefault(arg => arg.Key == "encodedVersion").Value.ToString()) != "false";
-
-            if (version == null)
-            {
-                return null; // We don't have the attribute
-            }
+            var version = (int)serializableAttribute?.ConstructorArguments[0].Value!;
+            var encodedVersion = (bool)serializableAttribute?.ConstructorArguments[1].Value!;
 
             var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
             var className = classSymbol.Name;
@@ -117,7 +110,7 @@ namespace SerializationGenerator
                 InstanceModifier.Const,
                 "int",
                 "_version",
-                version,
+                version.ToString(),
                 true
             );
             source.AppendLine();
@@ -205,22 +198,21 @@ namespace SerializationGenerator
             source.GenerateSerialCtor(context, className, isOverride);
             source.AppendLine();
 
-            var versionValue = int.Parse(version);
             List<SerializableMetadata> migrations;
 
-            if (versionValue > 0)
+            if (version > 0)
             {
                 migrations = SerializableMigration.GetMigrations(
                     migrationPath,
                     classSymbol,
-                    versionValue,
+                    version,
                     jsonSerializerOptions
                 );
 
                 for (var i = 0; i < migrations.Count; i++)
                 {
                     var migration = migrations[i];
-                    if (migration.Version < versionValue)
+                    if (migration.Version < version)
                     {
                         source.GenerateMigrationContentStruct(migration);
                         source.AppendLine();
@@ -245,7 +237,7 @@ namespace SerializationGenerator
             source.GenerateDeserializeMethod(
                 compilation,
                 isOverride,
-                versionValue,
+                version,
                 encodedVersion,
                 migrations,
                 serializableProperties
@@ -257,7 +249,7 @@ namespace SerializationGenerator
             // Write the migration file
             var newMigration = new SerializableMetadata
             {
-                Version = versionValue,
+                Version = version,
                 Type = classSymbol.ToDisplayString(),
                 Properties = serializableProperties
             };

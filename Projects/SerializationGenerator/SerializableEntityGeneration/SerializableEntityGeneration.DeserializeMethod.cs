@@ -44,6 +44,11 @@ namespace SerializationGenerator
 
             const string indent = "            ";
 
+            if (isOverride)
+            {
+                source.AppendLine($"{indent}base.Deserialize(reader);");
+            }
+
             // Version
             source.AppendLine($"{indent}var version = reader.{(encodedVersion ? "ReadEncodedInt" : "ReadInt")}();");
 

@@ -49,6 +49,12 @@ namespace SerializationGenerator
 {indent}    return;
 {indent}}}");
 
+            if (isOverride)
+            {
+                source.AppendLine();
+                source.AppendLine($"{indent}base.Serialize(writer);");
+            }
+
             // Version
             source.AppendLine();
             source.AppendLine($"{indent}writer.{(encodedVersion ? "WriteEncodedInt" : "Write")}(_version);");
