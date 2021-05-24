@@ -22,12 +22,29 @@ namespace SerializationGenerator
 {
     public class SerializerSyntaxReceiver : ISyntaxContextReceiver
     {
-        public List<IFieldSymbol> Fields { get; } = new();
+#pragma warning disable RS1024
+        public Dictionary<INamedTypeSymbol, List<IFieldSymbol>> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
+#pragma warning restore RS1024
 
         public static HashSet<string> AttributeTypes { get; } = new();
 
         public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
         {
+            if (context.Node is ClassDeclarationSyntax { AttributeLists: { Count: > 0 } } classDeclarationSyntax)
+            {
+                if (context.SemanticModel.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
+                {
+                    return;
+                }
+
+                if (!ClassAndFields.ContainsKey(classSymbol))
+                {
+                    ClassAndFields.Add(classSymbol, new List<IFieldSymbol>());
+                }
+
+                return;
+            }
+
             if (context.Node is FieldDeclarationSyntax { AttributeLists: { Count: > 0 } } fieldDeclarationSyntax)
             {
                 foreach (VariableDeclaratorSyntax variable in fieldDeclarationSyntax.Declaration.Variables)
@@ -39,7 +56,15 @@ namespace SerializationGenerator
 
                     if (fieldSymbol.GetAttributes().Any(ad => AttributeTypes.Contains(ad.AttributeClass?.ToDisplayString())))
                     {
-                        Fields.Add(fieldSymbol);
+                        var classSymbol = fieldSymbol.ContainingType;
+                        if (ClassAndFields.TryGetValue(classSymbol, out var fieldsList))
+                        {
+                            fieldsList.Add(fieldSymbol);
+                        }
+                        else
+                        {
+                            ClassAndFields.Add(classSymbol, new List<IFieldSymbol> { fieldSymbol });
+                        }
                     }
                 }
             }

@@ -126,7 +126,7 @@ namespace SerializationGenerator
                 };
             }
 
-            source.AppendLine($"{indent}{propertyName} = reader.{readMethod}()");
+            source.AppendLine($"{indent}{propertyName} = reader.{readMethod}();");
         }
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
