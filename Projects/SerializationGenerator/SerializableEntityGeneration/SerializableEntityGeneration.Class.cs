@@ -117,7 +117,6 @@ namespace SerializationGenerator
             );
             source.AppendLine();
 
-            var serializableFields = new List<IFieldSymbol>();
             var serializableProperties = new List<SerializableProperty>();
 
             foreach (IFieldSymbol fieldSymbol in fields)
@@ -132,8 +131,6 @@ namespace SerializationGenerator
 
                 if (hasAttribute)
                 {
-                    serializableFields.Add(fieldSymbol);
-
                     foreach (var attr in allAttributes)
                     {
                         if (!SymbolEqualityComparer.Default.Equals(attr.AttributeClass, serializableFieldAttrAttribute))
@@ -218,8 +215,11 @@ namespace SerializationGenerator
                 for (var i = 0; i < migrations.Count; i++)
                 {
                     var migration = migrations[i];
-                    source.GenerateMigrationContentStruct(migration);
-                    source.AppendLine();
+                    if (migration.Version < versionValue)
+                    {
+                        source.GenerateMigrationContentStruct(migration);
+                        source.AppendLine();
+                    }
                 }
             }
             else
@@ -231,8 +231,7 @@ namespace SerializationGenerator
             source.GenerateSerializeMethod(
                 compilation,
                 isOverride,
-                serializableProperties,
-                serializableTypes
+                serializableProperties
             );
             source.AppendLine();
 

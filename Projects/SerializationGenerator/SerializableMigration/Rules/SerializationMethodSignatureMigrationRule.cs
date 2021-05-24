@@ -22,12 +22,6 @@ namespace SerializationGenerator
 {
     public class SerializationMethodSignatureMigrationRule : ISerializableMigrationRule
     {
-        static SerializationMethodSignatureMigrationRule()
-        {
-            var rule = new SerializationMethodSignatureMigrationRule();
-            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
-        }
-
         public string RuleName => nameof(SerializationMethodSignatureMigrationRule);
 
         public bool GenerateRuleState(
@@ -57,13 +51,14 @@ namespace SerializationGenerator
 
         public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            var propertyName = property.Name;
-
-            if (property.Rule != nameof(PrimitiveTypeMigrationRule))
+            const string expectedRule = nameof(SerializationMethodSignatureMigrationRule);
+            var ruleName = property.Rule;
+            if (expectedRule != ruleName)
             {
-                throw new ArgumentException($"Invalid rule applied to property {propertyName}.");
+                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
             }
 
+            var propertyName = property.Name;
             var argument = property.RuleArguments.Length >= 1 &&
                            property.RuleArguments[0] == "DeserializationRequiresParent" ? ", this" : "";
 
@@ -72,14 +67,15 @@ namespace SerializationGenerator
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            var propertyName = property.Name;
-
-            if (property.Rule != nameof(PrimitiveTypeMigrationRule))
+            const string expectedRule = nameof(SerializationMethodSignatureMigrationRule);
+            var ruleName = property.Rule;
+            if (expectedRule != ruleName)
             {
-                throw new ArgumentException($"Invalid rule applied to property {propertyName}.");
+                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
             }
 
-            source.AppendLine($"{indent}{property.Name}.Serialize(writer);");
+            var propertyName = property.Name;
+            source.AppendLine($"{indent}{propertyName}.Serialize(writer);");
         }
     }
 }

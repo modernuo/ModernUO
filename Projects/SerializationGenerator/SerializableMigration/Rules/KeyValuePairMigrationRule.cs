@@ -22,12 +22,6 @@ namespace SerializationGenerator
 {
     public class KeyValuePairMigrationRule : ISerializableMigrationRule
     {
-        static KeyValuePairMigrationRule()
-        {
-            var rule = new KeyValuePairMigrationRule();
-            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
-        }
-
         public string RuleName => nameof(KeyValuePairMigrationRule);
 
         public bool GenerateRuleState(
@@ -80,6 +74,13 @@ namespace SerializationGenerator
 
         public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
+            const string expectedRule = nameof(KeyValuePairMigrationRule);
+            var ruleName = property.Rule;
+            if (expectedRule != ruleName)
+            {
+                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
+            }
+
             var ruleArguments = property.RuleArguments;
             var keyType = ruleArguments[0];
             var keyRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
@@ -127,6 +128,13 @@ namespace SerializationGenerator
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
+            const string expectedRule = nameof(KeyValuePairMigrationRule);
+            var ruleName = property.Rule;
+            if (expectedRule != ruleName)
+            {
+                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
+            }
+
             var ruleArguments = property.RuleArguments;
             var keyType = ruleArguments[0];
             var keyRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];

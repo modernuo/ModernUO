@@ -49,16 +49,16 @@ namespace SerializationGenerator
             if (version > 0)
             {
                 var nextVersion = 0;
-                var requiresOldSerialization = false;
 
                 for (var i = 0; i < migrations.Count; i++)
                 {
                     var migrationVersion = migrations[i].Version;
-                    if (!requiresOldSerialization && migrationVersion != nextVersion++)
+                    if (migrationVersion == nextVersion)
                     {
-                        requiresOldSerialization = true;
+                        nextVersion++;
                     }
 
+                    source.AppendLine();
                     source.AppendLine($"{indent}if (version == {migrationVersion})");
                     source.AppendLine($"{indent}{{");
                     source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader));");
@@ -67,11 +67,12 @@ namespace SerializationGenerator
                     source.AppendLine($"{indent}}}");
                 }
 
-                if (requiresOldSerialization)
+                if (nextVersion < version)
                 {
+                    source.AppendLine();
                     source.AppendLine($"{indent}if (version < _version)");
                     source.AppendLine($"{indent}{{");
-                    source.AppendLine($"{indent}    OldDeserialize(reader, version);");
+                    source.AppendLine($"{indent}    Deserialize(reader, version);");
                     source.AppendLine($"{indent}    ((Server.ISerializable)this).MarkDirty();");
                     source.AppendLine($"{indent}    return;");
                     source.AppendLine($"{indent}}}");
@@ -80,9 +81,10 @@ namespace SerializationGenerator
 
             foreach (var property in properties)
             {
+                source.AppendLine();
                 SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
                     source,
-                    $"{indent}    ",
+                    indent,
                     property
                 );
             }

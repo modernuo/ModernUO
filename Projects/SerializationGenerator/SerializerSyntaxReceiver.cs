@@ -28,8 +28,7 @@ namespace SerializationGenerator
 
         public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
         {
-            if (context.Node is FieldDeclarationSyntax fieldDeclarationSyntax
-                && fieldDeclarationSyntax.AttributeLists.Count > 0)
+            if (context.Node is FieldDeclarationSyntax { AttributeLists: { Count: > 0 } } fieldDeclarationSyntax)
             {
                 foreach (VariableDeclaratorSyntax variable in fieldDeclarationSyntax.Declaration.Variables)
                 {

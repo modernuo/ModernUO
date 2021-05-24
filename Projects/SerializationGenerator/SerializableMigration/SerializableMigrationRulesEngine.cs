@@ -24,21 +24,34 @@ namespace SerializationGenerator
     {
         public static readonly Dictionary<string, ISerializableMigrationRule> Rules = new();
 
+        static SerializableMigrationRulesEngine()
+        {
+            var rules = new ISerializableMigrationRule[]
+            {
+                new ArrayMigrationRule(),
+                new HashSetMigrationRule(),
+                new KeyValuePairMigrationRule(),
+                new ListMigrationRule(),
+                new PrimitiveTypeMigrationRule(),
+                new PrimitiveUOTypeMigrationRule(),
+                new SerializableInterfaceMigrationRule(),
+                new SerializationMethodSignatureMigrationRule()
+            };
+
+            foreach (var rule in rules)
+            {
+                Rules.Add(rule.RuleName, rule);
+            }
+        }
+
         public static SerializableProperty GenerateSerializableProperty(
             Compilation compilation,
             string propertyName,
-            ISymbol symbol,
+            ISymbol propertyType,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
-            ITypeSymbol propertyType = symbol switch
-            {
-                IFieldSymbol fieldSymbol => fieldSymbol.Type,
-                IPropertySymbol propertySymbol => propertySymbol.Type,
-                _ => throw new ArgumentException($"Invalid symbol type provided for {propertyName}")
-            };
-
             foreach (var rule in Rules.Values)
             {
                 if (rule.GenerateRuleState(
@@ -59,7 +72,7 @@ namespace SerializationGenerator
                 }
             }
 
-            throw new Exception($"No rule found for property {propertyName} of type {propertyType}");
+            throw new Exception($"No rule found for property {propertyName} of type {propertyType} ({Rules.Count})");
         }
     }
 }

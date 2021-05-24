@@ -21,7 +21,6 @@ namespace SerializationGenerator
 {
     public static partial class SerializableEntityGeneration
     {
-        public const string ICOLLECTION_INTERFACE = "System.Collections.Generic.ICollection`1";
         public const string LIST_CLASS = "System.Collections.Generic.List`1";
         public const string HASHSET_CLASS = "System.Collections.Generic.HashSet`1";
         public const string IP_CLASS = "System.Net.IPAddress";

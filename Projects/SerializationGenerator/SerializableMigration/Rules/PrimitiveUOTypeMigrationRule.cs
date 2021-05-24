@@ -22,12 +22,6 @@ namespace SerializationGenerator
 {
     public class PrimitiveUOTypeMigrationRule : ISerializableMigrationRule
     {
-        static PrimitiveUOTypeMigrationRule()
-        {
-            var rule = new PrimitiveUOTypeMigrationRule();
-            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
-        }
-
         public string RuleName => nameof(PrimitiveUOTypeMigrationRule);
 
         public bool GenerateRuleState(
@@ -54,25 +48,27 @@ namespace SerializationGenerator
 
         public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            var propertyName = property.Name;
-
-            if (property.Rule != nameof(PrimitiveTypeMigrationRule))
+            const string expectedRule = nameof(PrimitiveUOTypeMigrationRule);
+            var ruleName = property.Rule;
+            if (expectedRule != ruleName)
             {
-                throw new ArgumentException($"Invalid rule applied to property {propertyName}.");
+                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
             }
 
+            var propertyName = property.Name;
             source.AppendLine($"{indent}{propertyName} = reader.Read{property.RuleArguments[0]}()");
         }
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            var propertyName = property.Name;
-
-            if (property.Rule != nameof(PrimitiveTypeMigrationRule))
+            const string expectedRule = nameof(PrimitiveUOTypeMigrationRule);
+            var ruleName = property.Rule;
+            if (expectedRule != ruleName)
             {
-                throw new ArgumentException($"Invalid rule applied to property {propertyName}.");
+                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
             }
 
+            var propertyName = property.Name;
             source.AppendLine($"{indent}writer.Write({propertyName});");
         }
     }

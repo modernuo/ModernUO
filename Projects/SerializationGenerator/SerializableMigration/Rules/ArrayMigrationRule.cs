@@ -22,12 +22,6 @@ namespace SerializationGenerator
 {
     public class ArrayMigrationRule : ISerializableMigrationRule
     {
-        static ArrayMigrationRule()
-        {
-            var rule = new ArrayMigrationRule();
-            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
-        }
-
         public string RuleName => nameof(ArrayMigrationRule);
 
         public bool GenerateRuleState(
@@ -63,6 +57,12 @@ namespace SerializationGenerator
 
         public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
+            const string expectedRule = nameof(ArrayMigrationRule);
+            var ruleName = property.Rule;
+            if (expectedRule != ruleName)
+            {
+                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
+            }
             var ruleArguments = property.RuleArguments;
             var arrayElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
             var arrayElementRuleArguments = new string[ruleArguments.Length - 2];
@@ -88,6 +88,13 @@ namespace SerializationGenerator
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
+            const string expectedRule = nameof(ArrayMigrationRule);
+            var ruleName = property.Rule;
+            if (expectedRule != ruleName)
+            {
+                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
+            }
+
             var ruleArguments = property.RuleArguments;
             var arrayElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
             var arrayElementRuleArguments = new string[ruleArguments.Length - 2];

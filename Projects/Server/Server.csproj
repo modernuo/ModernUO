@@ -63,6 +63,9 @@
     <ItemGroup>
         <CompilerVisibleProperty Include="SerializableMigrationPath" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Migrations" />
+    </ItemGroup>
     <PropertyGroup>
         <SerializableMigrationPath>.\Migrations\</SerializableMigrationPath>
     </PropertyGroup>

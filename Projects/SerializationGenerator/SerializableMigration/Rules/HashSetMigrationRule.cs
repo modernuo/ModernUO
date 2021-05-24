@@ -22,12 +22,6 @@ namespace SerializationGenerator
 {
     public class HashSetMigrationRule : ISerializableMigrationRule
     {
-        static HashSetMigrationRule()
-        {
-            var rule = new HashSetMigrationRule();
-            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
-        }
-
         public string RuleName => nameof(HashSetMigrationRule);
 
         public bool GenerateRuleState(
@@ -65,16 +59,28 @@ namespace SerializationGenerator
 
         public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
+            const string expectedRule = nameof(HashSetMigrationRule);
+            var ruleName = property.Rule;
+            if (expectedRule != ruleName)
+            {
+                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
+            }
+
             var ruleArguments = property.RuleArguments;
             var setElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
             var setElementRuleArguments = new string[ruleArguments.Length - 2];
             Array.Copy(ruleArguments, 2, setElementRuleArguments, 0, ruleArguments.Length - 2);
 
-            var propertyIndex = $"{property.Name}Index";
-            var propertyEntry = $"{property.Name}Entry";
+            var propertyName = property.Name;
+            var propertyVarPrefix = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1, propertyName.Length - 1)}";
+            var propertyIndex = $"{propertyVarPrefix}Index";
+            var propertyEntry = $"{propertyVarPrefix}Entry";
+            var propertyCount = $"{propertyVarPrefix}Count";
+
             source.AppendLine($"{indent}{ruleArguments[0]} {propertyEntry};");
-            source.AppendLine($"{indent}{property.Name} = new {SerializableEntityGeneration.HASHSET_CLASS}<{ruleArguments[0]}>(reader.ReadEncodedInt());");
-            source.AppendLine($"{indent}for (var {propertyIndex} = 0; i < {property.Name}.Count; {propertyIndex}++)");
+            source.AppendLine($"{indent}var {propertyCount} = reader.ReadEncodedInt();");
+            source.AppendLine($"{indent}{property.Name} = new System.Collections.Generic.HashSet<{ruleArguments[0]}>({propertyCount});");
+            source.AppendLine($"{indent}for (var {propertyIndex} = 0; i < {propertyCount}; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 
             var serializableSetElement = new SerializableProperty
@@ -86,21 +92,30 @@ namespace SerializationGenerator
             };
 
             setElementRule.GenerateDeserializationMethod(source, $"{indent}    ", serializableSetElement);
-            source.AppendLine($"{indent}    {property.Name}.Add({propertyEntry})");
+            source.AppendLine($"{indent}    {property.Name}.Add({propertyEntry});");
 
             source.AppendLine($"{indent}}}");
         }
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
+            const string expectedRule = nameof(HashSetMigrationRule);
+            var ruleName = property.Rule;
+            if (expectedRule != ruleName)
+            {
+                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
+            }
+
             var ruleArguments = property.RuleArguments;
             var setElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
             var setElementRuleArguments = new string[ruleArguments.Length - 2];
             Array.Copy(ruleArguments, 2, setElementRuleArguments, 0, ruleArguments.Length - 2);
 
-            var propertyEntry = $"{property.Name}Entry";
+            var propertyName = property.Name;
+            var propertyVarPrefix = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1, propertyName.Length - 1)}";
+            var propertyEntry = $"{propertyVarPrefix}Entry";
             source.AppendLine($"{indent}writer.WriteEncodedInt({property.Name}.Count);");
-            source.AppendLine($"{indent}foreach (var {propertyEntry} in {property.Name})");
+            source.AppendLine($"{indent}foreach (var {propertyEntry} in {property.Name});");
             source.AppendLine($"{indent}{{");
 
             var serializableSetElement = new SerializableProperty

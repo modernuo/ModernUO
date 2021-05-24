@@ -26,8 +26,7 @@ namespace SerializationGenerator
             this StringBuilder source,
             Compilation compilation,
             bool isOverride,
-            List<SerializableProperty> properties,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            List<SerializableProperty> properties
         )
         {
             var genericWriterInterface = compilation.GetTypeByMetadataName(GENERIC_WRITER_INTERFACE);
@@ -50,13 +49,15 @@ namespace SerializationGenerator
 {indent}}}");
 
             // Version
+            source.AppendLine();
             source.AppendLine($"{indent}writer.WriteEncodedInt(_version);");
 
             foreach (var property in properties)
             {
+                source.AppendLine();
                 SerializableMigrationRulesEngine.Rules[property.Rule].GenerateSerializationMethod(
                     source,
-                    $"{indent}    ",
+                    indent,
                     property
                 );
             }

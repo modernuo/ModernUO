@@ -22,12 +22,6 @@ namespace SerializationGenerator
 {
     public class SerializableInterfaceMigrationRule : ISerializableMigrationRule
     {
-        static SerializableInterfaceMigrationRule()
-        {
-            var rule = new SerializableInterfaceMigrationRule();
-            SerializableMigrationRulesEngine.Rules.Add(rule.RuleName, rule);
-        }
-
         public string RuleName => nameof(SerializableInterfaceMigrationRule);
 
         public bool GenerateRuleState(
@@ -40,7 +34,7 @@ namespace SerializationGenerator
         {
             if (symbol is ITypeSymbol typeSymbol && typeSymbol.HasSerializableInterface(compilation, serializableTypes))
             {
-                ruleArguments = new[] { symbol.ToDisplayString() };
+                ruleArguments = Array.Empty<string>();
                 return true;
             }
 
@@ -50,25 +44,27 @@ namespace SerializationGenerator
 
         public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            var propertyName = property.Name;
-
-            if (property.Rule != nameof(PrimitiveTypeMigrationRule))
+            const string expectedRule = nameof(SerializableInterfaceMigrationRule);
+            var ruleName = property.Rule;
+            if (expectedRule != ruleName)
             {
-                throw new ArgumentException($"Invalid rule applied to property {propertyName}.");
+                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
             }
 
-            source.AppendLine($"{indent}{propertyName} = reader.ReadEntity<{property.RuleArguments[0]}>()");
+            var propertyName = property.Name;
+            source.AppendLine($"{indent}{propertyName} = reader.ReadEntity<{property.Type}>();");
         }
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            var propertyName = property.Name;
-
-            if (property.Rule != nameof(PrimitiveTypeMigrationRule))
+            const string expectedRule = nameof(SerializableInterfaceMigrationRule);
+            var ruleName = property.Rule;
+            if (expectedRule != ruleName)
             {
-                throw new ArgumentException($"Invalid rule applied to property {propertyName}.");
+                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
             }
 
+            var propertyName = property.Name;
             source.AppendLine($"{indent}writer.Write({propertyName});");
         }
     }

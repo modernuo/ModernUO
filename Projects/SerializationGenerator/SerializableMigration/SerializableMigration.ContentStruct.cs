@@ -33,7 +33,7 @@ namespace SerializationGenerator
                 source.AppendLine($"{indent}    internal readonly {serializableProperty.Type} {serializableProperty.Name};");
             }
 
-            source.AppendLine($"{indent}    public V{migration.Version}Content(IGenericReader reader)");
+            source.AppendLine($"{indent}    internal V{migration.Version}Content(IGenericReader reader)");
             source.AppendLine($"{indent}    {{");
 
             foreach (var serializableProperty in migration.Properties)

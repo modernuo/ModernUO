@@ -21,28 +21,6 @@ namespace SerializationGenerator
 {
     public static partial class SourceGeneration
     {
-        public static bool InheritsFrom<T>(this ITypeSymbol symbol) => symbol.InheritsFrom(typeof(T).FullName);
-
-        public static bool InheritsFrom(this ITypeSymbol symbol, string fullName)
-        {
-            while (true)
-            {
-                if (symbol.ToString() == fullName)
-                {
-                    return true;
-                }
-
-                if (symbol.BaseType != null)
-                {
-                    symbol = symbol.BaseType;
-                    continue;
-                }
-                break;
-            }
-
-            return false;
-        }
-
         public static void GenerateClassStart(this StringBuilder source, string className, ImmutableArray<ITypeSymbol> interfaces)
         {
             source.Append($"    public partial class {className}");
