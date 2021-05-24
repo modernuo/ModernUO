@@ -116,7 +116,7 @@ namespace Server
         void Write(Map value) => Write((byte)(value?.MapIndex ?? 0xFF));
         void Write(Race value) => Write((byte)(value?.RaceIndex ?? 0xFF));
         void Write(ReadOnlySpan<byte> bytes);
-        unsafe void Write<T>(T value) where T : unmanaged, Enum
+        unsafe void WriteEnum<T>(T value) where T : unmanaged, Enum
         {
             var size = sizeof(T);
 
@@ -149,6 +149,7 @@ namespace Server
                     }
             }
         }
+
         long Seek(long offset, SeekOrigin origin);
     }
 }

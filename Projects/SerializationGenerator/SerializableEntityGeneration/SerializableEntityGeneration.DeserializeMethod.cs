@@ -27,6 +27,7 @@ namespace SerializationGenerator
             Compilation compilation,
             bool isOverride,
             int version,
+            bool encodedVersion,
             List<SerializableMetadata> migrations,
             List<SerializableProperty> properties
         )
@@ -43,8 +44,13 @@ namespace SerializationGenerator
 
             const string indent = "            ";
 
+            if (isOverride)
+            {
+                source.AppendLine($"{indent}base.Deserialize(reader);");
+            }
+
             // Version
-            source.AppendLine($"{indent}var version = reader.ReadEncodedInt();");
+            source.AppendLine($"{indent}var version = reader.{(encodedVersion ? "ReadEncodedInt" : "ReadInt")}();");
 
             if (version > 0)
             {

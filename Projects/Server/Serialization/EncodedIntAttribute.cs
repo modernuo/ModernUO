@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SerializableEntityAttribute.cs                                  *
+ * File: EncodedIntAttribute.cs                                          *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -17,12 +17,11 @@ using System;
 
 namespace Server
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public sealed class SerializableAttribute : Attribute
+    /// <summary>
+    /// Hints to the source generator that a serializable int field or property should be encoded
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class EncodedIntAttribute : Attribute
     {
-        public int Version { get; }
-        public bool EncodedVersion { get; }
-
-        public SerializableAttribute(int version, bool encodedVersion = true) => Version = version;
     }
 }

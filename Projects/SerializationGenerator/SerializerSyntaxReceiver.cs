@@ -37,7 +37,7 @@ namespace SerializationGenerator
                     return;
                 }
 
-                if (!ClassAndFields.ContainsKey(classSymbol))
+                if (classSymbol.GetAttributes().Any(ad => AttributeTypes.Contains(ad.AttributeClass?.ToDisplayString()) && !ClassAndFields.ContainsKey(classSymbol)))
                 {
                     ClassAndFields.Add(classSymbol, new List<IFieldSymbol>());
                 }
