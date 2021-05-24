@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: InternalizeString.cs                                            *
+ * File: EncodedIntAttribute.cs                                          *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,10 +18,10 @@ using System;
 namespace Server
 {
     /// <summary>
-    /// Hints to the source generator that a serializable string field or property should be internalized on deserialization
+    /// Hints to the source generator that a serializable int field or property should be encoded
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class InternStringAttribute : Attribute
+    public class EncodedIntAttribute : Attribute
     {
     }
 }

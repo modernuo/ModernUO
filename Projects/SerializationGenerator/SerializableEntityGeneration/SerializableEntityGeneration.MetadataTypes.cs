@@ -34,12 +34,16 @@ namespace SerializationGenerator
         public const string GENERIC_READER_INTERFACE = "Server.IGenericReader";
         public const string DELTA_DATE_TIME_ATTRIBUTE = "Server.DeltaDateTimeAttribute";
         public const string INTERN_STRING_ATTRIBUTE = "Server.InternStringAttribute";
+        public const string ENCODED_INT_ATTRIBUTE = "Server.EncodedIntAttribute";
         public const string POINT2D_STRUCT = "Server.Point2D";
         public const string POINT3D_STRUCT = "Server.Point3D";
         public const string RECTANGLE2D_STRUCT = "Server.Rectangle2D";
         public const string RECTANGLE3D_STRUCT = "Server.Rectangle3D";
         public const string RACE_CLASS = "Server.Race";
         public const string MAP_CLASS = "Server.Map";
+
+        public static bool IsEncodedInt(this AttributeData attr, Compilation compilation) =>
+            attr?.IsAttribute(compilation.GetTypeByMetadataName(ENCODED_INT_ATTRIBUTE)) == true;
 
         public static bool IsDeltaDateTime(this AttributeData attr, Compilation compilation) =>
             attr?.IsAttribute(compilation.GetTypeByMetadataName(DELTA_DATE_TIME_ATTRIBUTE)) == true;
