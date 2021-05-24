@@ -3,19 +3,17 @@ using Server.Network;
 
 namespace Server.Items
 {
-    public class CurtainsComponent : AddonComponent, IDyable
+    [Serializable(0)]
+    public partial class CurtainsComponent : AddonComponent, IDyable
     {
         public CurtainsComponent(int itemID, int closedID) : base(itemID) => ClosedID = closedID;
-
-        public CurtainsComponent(Serial serial) : base(serial)
-        {
-        }
 
         public override int LabelNumber => 1076280; // Curtains
         public override bool DisplayWeight => false;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int ClosedID { get; set; }
+        [SerializableField(1)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _closedID;
 
         public virtual bool Dye(Mobile from, DyeTub sender)
         {
@@ -52,27 +50,10 @@ namespace Server.Items
                 }
             }
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(ClosedID);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            ClosedID = reader.ReadInt();
-        }
     }
 
-    public class CurtainsAddon : BaseAddon
+    [Serializable(0)]
+    public partial class CurtainsAddon : BaseAddon
     {
         [Constructible]
         public CurtainsAddon(bool east)
@@ -93,38 +74,17 @@ namespace Server.Items
             }
         }
 
-        public CurtainsAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new CurtainsDeed();
         public override bool RetainDeedHue => true;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class CurtainsDeed : BaseAddonDeed
+    [Serializable(0)]
+    public partial class CurtainsDeed : BaseAddonDeed
     {
         private bool m_East;
 
         [Constructible]
         public CurtainsDeed() => LootType = LootType.Blessed;
-
-        public CurtainsDeed(Serial serial) : base(serial)
-        {
-        }
 
         public override BaseAddon Addon => new CurtainsAddon(m_East);
         public override int LabelNumber => 1076280; // Curtains
@@ -145,20 +105,6 @@ namespace Server.Items
         private void SendTarget(Mobile m)
         {
             base.OnDoubleClick(m);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
         }
 
         private class InternalGump : Gump
