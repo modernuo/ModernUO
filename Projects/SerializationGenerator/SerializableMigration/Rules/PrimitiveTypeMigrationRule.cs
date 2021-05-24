@@ -63,14 +63,16 @@ namespace SerializationGenerator
                 return false;
             }
 
-            if (typeSymbol.SpecialType == SpecialType.System_DateTime && attributes.Any(a => a.IsDeltaDateTime(compilation)))
+            ruleArguments = typeSymbol.SpecialType switch
             {
-                ruleArguments = new[] { "DeltaTime" };
-            }
-            else
-            {
-                ruleArguments = Array.Empty<string>();
-            }
+                SpecialType.System_Int32 when attributes.Any(a => a.IsEncodedInt(compilation)) =>
+                    new[] { "EncodedInt" },
+                SpecialType.System_DateTime when attributes.Any(a => a.IsDeltaDateTime(compilation)) =>
+                    new[] { "DeltaTime" },
+                SpecialType.System_String when attributes.Any(a => a.IsInternString(compilation)) =>
+                    new[] { "InternString" },
+                _ => Array.Empty<string>()
+            };
 
             return true;
         }
@@ -85,11 +87,10 @@ namespace SerializationGenerator
             }
 
             var propertyName = property.Name;
-            string readMethod;
 
             const string ipAddress = SerializableEntityGeneration.IPADDRESS_CLASS;
 
-            readMethod = property.Type switch
+            var readMethod = property.Type switch
             {
                 "bool"    => "ReadBool",
                 "sbyte"   => "ReadSByte",
@@ -100,7 +101,7 @@ namespace SerializationGenerator
                 "ushort"  => "ReadUShort",
                 "uint"    => "ReadUInt",
                 "ulong"   => "ReadULong",
-                "float"    => "ReadFloat",
+                "float"   => "ReadFloat",
                 "double"  => "ReadDouble",
                 "string"  => "ReadString",
                 "decimal" => "ReadDecimal",
@@ -111,7 +112,11 @@ namespace SerializationGenerator
                     "ReadDateTime"
             };
 
-            source.AppendLine($"{indent}{propertyName} = reader.{readMethod}();");
+            var readArgument = readMethod == "ReadString" &&
+                               property.RuleArguments.Length >= 1 &&
+                               property.RuleArguments[0] == "InternString" ? "true" : "";
+
+            source.AppendLine($"{indent}{propertyName} = reader.{readMethod}({readArgument});");
         }
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
