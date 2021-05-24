@@ -13,15 +13,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+
 namespace Server
 {
     public interface IEntity : IPoint3D, ISerializable
     {
-        // Serial Serial { get; }
         Point3D Location { get; }
         Map Map { get; }
-        bool Deleted { get; }
-        void Delete();
         void MoveToWorld(Point3D location, Map map);
 
         void ProcessDelta();
@@ -45,6 +44,12 @@ namespace Server
             Deleted = false;
         }
 
+        public void SetTypeRef(Type type)
+        {
+        }
+
+        long ISerializable.SavePosition { get; set; }
+
         BufferWriter ISerializable.SaveBuffer { get; set; }
 
         public int TypeRef { get; } = -1;
@@ -61,7 +66,7 @@ namespace Server
 
         public Map Map { get; private set; }
 
-        public virtual void MoveToWorld(Point3D newLocation, Map map)
+        public void MoveToWorld(Point3D newLocation, Map map)
         {
             Location = newLocation;
             Map = map;

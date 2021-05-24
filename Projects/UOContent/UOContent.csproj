@@ -6,6 +6,8 @@
         <Product>ModernUO Content</Product>
         <PublishDir>..\..\Distribution\Assemblies</PublishDir>
         <OutDir>..\..\Distribution\Assemblies</OutDir>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution assemblies..." />
@@ -26,6 +28,7 @@
         <Delete Files="..\..\Distribution\Assemblies\libz.dylib" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\libz.so" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\ZLib.Bindings.dll" ContinueOnError="true" />
+        <RemoveDir Directories="Generated" />
     </Target>
     <ItemGroup>
         <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
@@ -36,4 +39,24 @@
         <PackageReference Include="Zlib.Bindings" Version="1.5.0" />
         <PackageReference Include="Argon2.Bindings" Version="1.9.1" />
     </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+    <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile">
+        <ItemGroup>
+            <Compile Include="Generated\**" />
+        </ItemGroup>
+    </Target>
+    <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile">
+        <ItemGroup>
+            <Compile Remove="Generated\**" />
+        </ItemGroup>
+        <RemoveDir Directories="Generated" />
+    </Target>
+    <ItemGroup>
+        <CompilerVisibleProperty Include="SerializableMigrationPath" />
+    </ItemGroup>
+    <PropertyGroup>
+        <SerializableMigrationPath>.\Migrations\</SerializableMigrationPath>
+    </PropertyGroup>
 </Project>

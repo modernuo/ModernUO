@@ -10,6 +10,8 @@
         <PublishDir>..\..\Distribution</PublishDir>
         <OutDir>..\..\Distribution</OutDir>
         <Version>0.0.0</Version>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution files..." />
@@ -30,6 +32,7 @@
         <Delete Files="..\..\Distribution\$(AssemblyName).pdb" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
+        <RemoveDir Directories="Generated" />
     </Target>
     <ItemGroup>
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.0.2" />
@@ -38,4 +41,32 @@
         <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
         <PackageReference Include="Zlib.Bindings" Version="1.5.0" />
     </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj">
+            <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+            <OutputItemType>Analyzer</OutputItemType>
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+            <PrivateAssets>all</PrivateAssets>
+        </ProjectReference>
+    </ItemGroup>
+    <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile">
+        <ItemGroup>
+            <Compile Include="Generated\**" />
+        </ItemGroup>
+    </Target>
+    <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile">
+        <ItemGroup>
+            <Compile Remove="Generated\**" />
+        </ItemGroup>
+        <RemoveDir Directories="Generated" />
+    </Target>
+    <ItemGroup>
+        <CompilerVisibleProperty Include="SerializableMigrationPath" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Migrations" />
+    </ItemGroup>
+    <PropertyGroup>
+        <SerializableMigrationPath>.\Migrations\</SerializableMigrationPath>
+    </PropertyGroup>
 </Project>

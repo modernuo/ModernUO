@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using Server.Accounting.Security;
 using Server.Misc;
@@ -10,7 +12,7 @@ using Server.Network;
 
 namespace Server.Accounting
 {
-    public class Account : IAccount, IComparable<Account>
+    public partial class Account : IAccount, IComparable<Account>
     {
         public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
         public static readonly TimeSpan InactiveDuration = TimeSpan.FromDays(180.0);
@@ -23,7 +25,6 @@ namespace Server.Accounting
         private List<AccountTag> m_Tags;
         private TimeSpan m_TotalGameTime;
         private Timer m_YoungTimer;
-        private BufferWriter _saveBuffer;
 
         public Account(string username, string password) : this(Accounts.NewAccount)
         {
@@ -48,28 +49,13 @@ namespace Server.Accounting
         {
             Serial = serial;
 
-            var ourType = GetType();
-            TypeRef = Accounts.Types.IndexOf(ourType);
-
-            if (TypeRef == -1)
-            {
-                Accounts.Types.Add(ourType);
-                TypeRef = Accounts.Types.Count - 1;
-            }
+            SetTypeRef(GetType());
         }
 
         public Account(XmlElement node)
         {
             Serial = Accounts.NewAccount;
-
-            var ourType = GetType();
-            TypeRef = Accounts.Types.IndexOf(ourType);
-
-            if (TypeRef == -1)
-            {
-                Accounts.Types.Add(ourType);
-                TypeRef = Accounts.Types.Count - 1;
-            }
+            SetTypeRef(GetType());
 
             Username = Utility.GetText(node["username"], "empty");
 
@@ -139,6 +125,17 @@ namespace Server.Accounting
             }
 
             Accounts.Add(this);
+        }
+
+        public void SetTypeRef(Type type)
+        {
+            TypeRef = Accounts.Types.IndexOf(type);
+
+            if (TypeRef == -1)
+            {
+                Accounts.Types.Add(type);
+                TypeRef = Accounts.Types.Count - 1;
+            }
         }
 
         /// <summary>
@@ -270,11 +267,9 @@ namespace Server.Accounting
             }
         }
 
-        BufferWriter ISerializable.SaveBuffer
-        {
-            get => _saveBuffer;
-            set => _saveBuffer = value;
-        }
+        long ISerializable.SavePosition { get; set; }
+
+        BufferWriter ISerializable.SaveBuffer { get; set; }
 
         public int TypeRef { get; private set; }
 
