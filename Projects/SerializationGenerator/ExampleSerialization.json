@@ -1,11 +1,12 @@
 {
-  "type": "Server.Items.TestItem1",
-  "version": 0,
+  "type": "Server.Items.TestItem",
+  "version": 1,
   "properties": [
     {
       "name": "SomeProperty",
-      "type": "List<Server.Item>",
-      "rules": ["is_generic_list", "of_serializable"]
+      "type": "Server.Item",
+      "rule": "SerializableInterfaceMigrationRule",
+      "ruleArguments": ["Server.Items.Item"]
     }
   ]
 }

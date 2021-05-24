@@ -48,25 +48,30 @@ namespace SerializationGenerator
 
             if (version > 0)
             {
-                // Old Deserialize
-                var oldVersion = migrations.Count > 0 ? migrations[0].Version : version;
+                var nextVersion = 0;
+                var requiresOldSerialization = false;
 
-                if (oldVersion > 0)
+                for (var i = 0; i < migrations.Count; i++)
                 {
-                    source.AppendLine($"{indent}if (version < {oldVersion})");
+                    var migrationVersion = migrations[i].Version;
+                    if (!requiresOldSerialization && migrationVersion != nextVersion++)
+                    {
+                        requiresOldSerialization = true;
+                    }
+
+                    source.AppendLine($"{indent}if (version == {migrationVersion})");
                     source.AppendLine($"{indent}{{");
-                    source.AppendLine($"{indent}    OldDeserialize(reader, version);");
+                    source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader));");
                     source.AppendLine($"{indent}    ((Server.ISerializable)this).MarkDirty();");
                     source.AppendLine($"{indent}    return;");
                     source.AppendLine($"{indent}}}");
                 }
 
-                for (var i = 0; i < migrations.Count; i++)
+                if (requiresOldSerialization)
                 {
-                    var migrationVersion = migrations[i].Version;
-                    source.AppendLine($"{indent}if (version == {migrationVersion})");
+                    source.AppendLine($"{indent}if (version < _version)");
                     source.AppendLine($"{indent}{{");
-                    source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader));");
+                    source.AppendLine($"{indent}    OldDeserialize(reader, version);");
                     source.AppendLine($"{indent}    ((Server.ISerializable)this).MarkDirty();");
                     source.AppendLine($"{indent}    return;");
                     source.AppendLine($"{indent}}}");
