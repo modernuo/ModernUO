@@ -236,6 +236,7 @@ namespace SerializationGenerator
             // Deserialize Method
             source.GenerateDeserializeMethod(
                 compilation,
+                classSymbol,
                 isOverride,
                 version,
                 encodedVersion,
