@@ -18,7 +18,8 @@ using System;
 namespace Server
 {
     /// <summary>
-    /// Hints to the source generator that a serializable DateTime field or property is for delta time (duration)
+    /// Hints to the source generator that this method should be executed after deserializing the object.
+    /// Method must have no parameters and return void.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class AfterDeserializationAttribute : Attribute
