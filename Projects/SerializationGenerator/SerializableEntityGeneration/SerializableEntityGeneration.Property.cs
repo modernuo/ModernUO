@@ -49,14 +49,13 @@ namespace SerializationGenerator
             const string indent = "                ";
             source.AppendLine($"{indent}if(value != {fieldName})");
             source.AppendLine($"{indent}{{");
+            source.AppendLine($"{indent}    {fieldName} = value;");
             source.AppendLine($"{indent}    ((ISerializable)this).MarkDirty();");
 
             if (invalidatePropertiesAttribute != null)
             {
                 source.AppendLine($"{indent}    InvalidateProperties();");
             }
-
-            source.AppendLine($"{indent}    {fieldName} = value;");
             source.AppendLine($"{indent}}}");
             source.GeneratePropertyGetSetEnd(false);
 
