@@ -13,20 +13,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
 namespace SerializationGenerator
 {
-    public class SerializableMetadata
+    public record SerializableMetadata
     {
         [JsonPropertyName("version")]
-        public int Version { get; set; }
+        public int Version { get; init; }
 
         [JsonPropertyName("type")]
-        public string Type { get; set; }
+        public string Type { get; init; }
 
         [JsonPropertyName("properties")]
-        public List<SerializableProperty> Properties { get; set; }
+        public ImmutableArray<SerializableProperty> Properties { get; init; }
     }
 }

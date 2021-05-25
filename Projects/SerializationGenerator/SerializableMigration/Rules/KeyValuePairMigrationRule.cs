@@ -44,6 +44,7 @@ namespace SerializationGenerator
                 compilation,
                 "key",
                 typeArguments[0],
+                0,
                 attributes,
                 serializableTypes
             );
@@ -52,6 +53,7 @@ namespace SerializationGenerator
                 compilation,
                 "value",
                 typeArguments[1],
+                1,
                 attributes,
                 serializableTypes
             );

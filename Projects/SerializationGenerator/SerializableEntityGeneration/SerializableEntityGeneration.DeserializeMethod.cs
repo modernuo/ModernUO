@@ -31,7 +31,7 @@ namespace SerializationGenerator
             int version,
             bool encodedVersion,
             List<SerializableMetadata> migrations,
-            List<SerializableProperty> properties
+            ImmutableArray<SerializableProperty> properties
         )
         {
             var genericReaderInterface = compilation.GetTypeByMetadataName(GENERIC_READER_INTERFACE);
@@ -106,12 +106,11 @@ namespace SerializationGenerator
                         m.ReturnsVoid &&
                         m.Parameters.Length == 0 &&
                         m.GetAttributes()
-                            .OfType<AttributeData>()
                             .Any(
-                                attr => attr.AttributeClass?.Equals(
-                                    compilation.GetTypeByMetadataName(AFTERDESERIALIZATION_ATTRIBUTE),
-                                    SymbolEqualityComparer.Default
-                                ) ?? false
+                                attr => SymbolEqualityComparer.Default.Equals(
+                                    attr.AttributeClass,
+                                    compilation.GetTypeByMetadataName(AFTERDESERIALIZATION_ATTRIBUTE)
+                                )
                             )
                 );
 
