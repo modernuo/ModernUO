@@ -21,7 +21,7 @@ namespace Server
     /// Hints to the source generator that a serializable DateTime field or property is for delta time (duration)
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public class AfterDeserialization : Attribute
+    public class AfterDeserializationAttribute : Attribute
     {
     }
 }

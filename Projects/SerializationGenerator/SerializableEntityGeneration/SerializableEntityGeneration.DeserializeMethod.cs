@@ -49,6 +49,7 @@ namespace SerializationGenerator
             if (isOverride)
             {
                 source.AppendLine($"{indent}base.Deserialize(reader);");
+                source.AppendLine();
             }
 
             // Version
@@ -116,7 +117,8 @@ namespace SerializationGenerator
 
             if (afterDeserialization != null)
             {
-                source.AppendLine($"{indent}Timer.DelayCall({afterDeserialization.Name})");
+                source.AppendLine();
+                source.AppendLine($"{indent}Timer.DelayCall({afterDeserialization.Name});");
             }
 
             source.GenerateMethodEnd();
