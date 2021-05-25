@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
@@ -22,10 +23,21 @@ namespace SerializationGenerator
     {
         public static void GenerateSerializableProperty(
             this StringBuilder source,
-            IFieldSymbol fieldSymbol
+            IFieldSymbol fieldSymbol,
+            Compilation compilation
         )
         {
             var fieldName = fieldSymbol.Name;
+
+            var invalidatePropertiesAttribute = fieldSymbol
+                .GetAttributes()
+                .OfType<AttributeData>()
+                .FirstOrDefault(
+                    attr => attr.AttributeClass?.Equals(
+                        compilation.GetTypeByMetadataName(INVALIDATEPROPERTIES_ATTRIBUTE),
+                        SymbolEqualityComparer.Default
+                    ) ?? false
+                );
 
             source.GeneratePropertyStart(AccessModifier.Public, fieldSymbol);
 
@@ -34,13 +46,17 @@ namespace SerializationGenerator
 
             // Setter
             source.GeneratePropertySetterStart(false);
-            source.AppendLine(
-                $@"                if (value != {fieldName})
-                {{
-                    ((ISerializable)this).MarkDirty();
-                    {fieldName} = value;
-                }}"
-            );
+            const string indent = "                ";
+            source.AppendLine($"{indent}if(value != {fieldName})");
+            source.AppendLine($"{indent}{{");
+            source.AppendLine($"{indent}    {fieldName} = value;");
+            source.AppendLine($"{indent}    ((ISerializable)this).MarkDirty();");
+
+            if (invalidatePropertiesAttribute != null)
+            {
+                source.AppendLine($"{indent}    InvalidateProperties();");
+            }
+            source.AppendLine($"{indent}}}");
             source.GeneratePropertyGetSetEnd(false);
 
             source.GeneratePropertyEnd();
