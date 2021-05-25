@@ -26,6 +26,7 @@ namespace SerializationGenerator
         public const string IPADDRESS_CLASS = "System.Net.IPAddress";
         public const string KEYVALUEPAIR_STRUCT = "System.Collections.Generic.KeyValuePair";
 
+        public const string INVALIDATEPROPERTIES_ATTRIBUTE = "Server.InvalidatePropertiesAttribute";
         public const string AFTERDESERIALIZATION_ATTRIBUTE = "Server.AfterDeserializationAttribute";
         public const string SERIALIZABLE_ATTRIBUTE = "Server.SerializableAttribute";
         public const string SERIALIZABLE_FIELD_ATTRIBUTE = "Server.SerializableFieldAttribute";

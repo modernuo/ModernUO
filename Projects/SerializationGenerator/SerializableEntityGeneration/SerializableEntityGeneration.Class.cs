@@ -155,7 +155,7 @@ namespace SerializationGenerator
                         }
                     }
 
-                    source.GenerateSerializableProperty(fieldSymbol);
+                    source.GenerateSerializableProperty(fieldSymbol, compilation);
                     source.AppendLine();
 
                     var serializableProperty = SerializableMigrationRulesEngine.GenerateSerializableProperty(
