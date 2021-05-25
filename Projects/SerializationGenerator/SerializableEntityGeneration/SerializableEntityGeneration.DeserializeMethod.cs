@@ -15,6 +15,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
@@ -25,6 +26,7 @@ namespace SerializationGenerator
         public static void GenerateDeserializeMethod(
             this StringBuilder source,
             Compilation compilation,
+            INamedTypeSymbol classSymbol,
             bool isOverride,
             int version,
             bool encodedVersion,
@@ -47,6 +49,7 @@ namespace SerializationGenerator
             if (isOverride)
             {
                 source.AppendLine($"{indent}base.Deserialize(reader);");
+                source.AppendLine();
             }
 
             // Version
@@ -93,6 +96,29 @@ namespace SerializationGenerator
                     indent,
                     property
                 );
+            }
+
+            var afterDeserialization = classSymbol
+                .GetMembers()
+                .OfType<IMethodSymbol>()
+                .FirstOrDefault(
+                    m =>
+                        m.ReturnsVoid &&
+                        m.Parameters.Length == 0 &&
+                        m.GetAttributes()
+                            .OfType<AttributeData>()
+                            .Any(
+                                attr => attr.AttributeClass?.Equals(
+                                    compilation.GetTypeByMetadataName(AFTERDESERIALIZATION_ATTRIBUTE),
+                                    SymbolEqualityComparer.Default
+                                ) ?? false
+                            )
+                );
+
+            if (afterDeserialization != null)
+            {
+                source.AppendLine();
+                source.AppendLine($"{indent}Timer.DelayCall({afterDeserialization.Name});");
             }
 
             source.GenerateMethodEnd();
