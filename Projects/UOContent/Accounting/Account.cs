@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Xml;
 using Server.Accounting.Security;
 using Server.Misc;
@@ -48,7 +46,6 @@ namespace Server.Accounting
         public Account(Serial serial)
         {
             Serial = serial;
-
             SetTypeRef(GetType());
         }
 

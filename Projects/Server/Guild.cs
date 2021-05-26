@@ -33,6 +33,7 @@ namespace Server.Guilds
             World.AddGuild(this);
 
             SetTypeRef(GetType());
+            ((ISerializable)this).MarkDirty();
         }
 
         protected BaseGuild(Serial serial)
