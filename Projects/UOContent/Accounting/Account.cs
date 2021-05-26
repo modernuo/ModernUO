@@ -41,6 +41,7 @@ namespace Server.Accounting
             LoginIPs = Array.Empty<IPAddress>();
 
             Accounts.Add(this);
+            ((ISerializable)this).MarkDirty();
         }
 
         public Account(Serial serial)
