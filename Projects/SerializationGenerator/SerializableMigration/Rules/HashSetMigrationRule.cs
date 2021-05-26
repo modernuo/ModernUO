@@ -44,6 +44,7 @@ namespace SerializationGenerator
                 compilation,
                 "SetEntry",
                 setTypeSymbol,
+                0,
                 attributes,
                 serializableTypes
             );

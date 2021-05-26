@@ -17,7 +17,7 @@ using System.Text.Json.Serialization;
 
 namespace SerializationGenerator
 {
-    public class SerializableProperty
+    public record SerializableProperty
     {
         [JsonPropertyName("name")]
         public string Name { get; init; }
@@ -30,5 +30,8 @@ namespace SerializationGenerator
 
         [JsonPropertyName("ruleArguments")]
         public string[] RuleArguments { get; init; }
+
+        [JsonIgnore]
+        public int Order { get; init; }
     }
 }

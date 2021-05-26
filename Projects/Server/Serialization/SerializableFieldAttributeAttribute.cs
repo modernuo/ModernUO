@@ -17,6 +17,12 @@ using System;
 
 namespace Server
 {
+    /// <summary>
+    /// Hints to the source generator that this field will need this attribute on the generated property
+    /// [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    /// -or-
+    /// [SerializableFieldAttr(typeof(CommandPropertyAttribute), AccessLevel.GameMaster)]
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class SerializableFieldAttrAttribute : Attribute
     {

@@ -49,6 +49,7 @@ namespace SerializationGenerator
             Compilation compilation,
             string propertyName,
             ISymbol propertyType,
+            int order,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )

@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -27,7 +26,7 @@ namespace SerializationGenerator
             Compilation compilation,
             bool isOverride,
             bool encodedVersion,
-            List<SerializableProperty> properties
+            ImmutableArray<SerializableProperty> properties
         )
         {
             var genericWriterInterface = compilation.GetTypeByMetadataName(GENERIC_WRITER_INTERFACE);

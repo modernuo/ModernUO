@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SerializablePropertyAttribute.cs                                *
+ * File: SerializablePropertyComparer.cs                                 *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,18 +13,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
+using System.Collections.Generic;
 
-namespace Server
+namespace SerializationGenerator
 {
-    /// <summary>
-    /// Marks a property as serializable. Requires a call to ISerializable.MarkDirty()
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public sealed class SerializablePropertyAttribute : Attribute
+    public class SerializablePropertyComparer : IComparer<SerializableProperty>
     {
-        public int Order { get; }
+        public int Compare(SerializableProperty x, SerializableProperty y)
+        {
+            if (Equals(x, y))
+            {
+                return 0;
+            }
 
-        public SerializablePropertyAttribute(int order) => Order = order;
+            if (Equals(null, y))
+            {
+                return 1;
+            }
+
+            if (Equals(null, x))
+            {
+                return -1;
+            }
+
+            return x.Order.CompareTo(y.Order);
+        }
     }
 }

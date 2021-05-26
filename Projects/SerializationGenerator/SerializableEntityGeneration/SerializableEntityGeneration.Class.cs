@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace SerializationGenerator
 
             var versionValue = classSymbol.GetAttributes()
                 .FirstOrDefault(
-                    attr => attr.AttributeClass?.Equals(serializableEntityAttribute, SymbolEqualityComparer.Default) ?? false
+                    attr => SymbolEqualityComparer.Default.Equals(attr.AttributeClass, serializableEntityAttribute)
                 )?.ConstructorArguments.FirstOrDefault().Value;
 
             return versionValue != null;
@@ -52,7 +53,7 @@ namespace SerializationGenerator
 
         public static string GenerateSerializationPartialClass(
             INamedTypeSymbol classSymbol,
-            IList<IFieldSymbol> fields,
+            ImmutableArray<ISymbol> fieldsAndProperties,
             GeneratorExecutionContext context,
             string migrationPath,
             JsonSerializerOptions jsonSerializerOptions,
@@ -85,11 +86,11 @@ namespace SerializationGenerator
 
             var serializableAttribute = classSymbol.GetAttributes()
                 .FirstOrDefault(
-                    attr => attr.AttributeClass?.Equals(serializableEntityAttribute, SymbolEqualityComparer.Default) ?? false
+                    attr => SymbolEqualityComparer.Default.Equals(attr.AttributeClass, serializableEntityAttribute)
                 );
 
             var version = (int)serializableAttribute?.ConstructorArguments[0].Value!;
-            var encodedVersion = (bool)serializableAttribute?.ConstructorArguments[1].Value!;
+            var encodedVersion = (bool)serializableAttribute.ConstructorArguments[1].Value!;
 
             var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
             var className = classSymbol.Name;
@@ -115,60 +116,85 @@ namespace SerializationGenerator
             );
             source.AppendLine();
 
-            var serializableProperties = new List<SerializableProperty>();
+            var serializablePropertySet = new SortedSet<SerializableProperty>();
 
-            foreach (IFieldSymbol fieldSymbol in fields)
+            foreach (var fieldOrPropertySymbol in fieldsAndProperties)
             {
-                var allAttributes = fieldSymbol.GetAttributes();
+                var allAttributes = fieldOrPropertySymbol.GetAttributes();
 
-                var hasAttribute = allAttributes
-                    .Any(
+                var serializableFieldAttr = allAttributes
+                    .FirstOrDefault(
                         attr =>
                             SymbolEqualityComparer.Default.Equals(attr.AttributeClass, serializableFieldAttribute)
                     );
 
-                if (hasAttribute)
+                if (serializableFieldAttr == null)
                 {
-                    foreach (var attr in allAttributes)
+                    continue;
+                }
+
+                var order = (int)serializableFieldAttr.ConstructorArguments[0].Value!;
+
+                foreach (var attr in allAttributes)
+                {
+                    if (!SymbolEqualityComparer.Default.Equals(attr.AttributeClass, serializableFieldAttrAttribute))
                     {
-                        if (!SymbolEqualityComparer.Default.Equals(attr.AttributeClass, serializableFieldAttrAttribute))
-                        {
-                            continue;
-                        }
-
-                        if (attr.AttributeClass == null)
-                        {
-                            continue;
-                        }
-
-                        var ctorArgs = attr.ConstructorArguments;
-                        var attrTypeArg = ctorArgs[0];
-
-                        if (attrTypeArg.Kind == TypedConstantKind.Primitive && attrTypeArg.Value is string attrStr)
-                        {
-                            source.AppendLine($"        {attrStr}");
-                        }
-                        else
-                        {
-                            var attrType = (ITypeSymbol)attrTypeArg.Value;
-                            source.GenerateAttribute(attrType.Name, ctorArgs[1].Values);
-                        }
+                        continue;
                     }
 
+                    if (attr.AttributeClass == null)
+                    {
+                        continue;
+                    }
+
+                    var ctorArgs = attr.ConstructorArguments;
+                    var attrTypeArg = ctorArgs[0];
+
+                    if (attrTypeArg.Kind == TypedConstantKind.Primitive && attrTypeArg.Value is string attrStr)
+                    {
+                        source.AppendLine($"        {attrStr}");
+                    }
+                    else
+                    {
+                        var attrType = (ITypeSymbol)attrTypeArg.Value;
+                        source.GenerateAttribute(attrType.Name, ctorArgs[1].Values);
+                    }
+                }
+
+                string propertyName;
+                ITypeSymbol propertyType;
+
+                if (fieldOrPropertySymbol is IFieldSymbol fieldSymbol)
+                {
                     source.GenerateSerializableProperty(fieldSymbol, compilation);
                     source.AppendLine();
 
-                    var serializableProperty = SerializableMigrationRulesEngine.GenerateSerializableProperty(
-                        compilation,
-                        fieldSymbol.GetPropertyName(),
-                        fieldSymbol.Type,
-                        allAttributes,
-                        serializableTypes
-                    );
-
-                    serializableProperties.Add(serializableProperty);
+                    propertyName = fieldSymbol.GetPropertyName();
+                    propertyType = fieldSymbol.Type;
                 }
+                else if (fieldOrPropertySymbol is IPropertySymbol propertySymbol)
+                {
+                    propertyName = fieldOrPropertySymbol.Name;
+                    propertyType = propertySymbol.Type;
+                }
+                else
+                {
+                    throw new Exception($"Invalid node {fieldOrPropertySymbol.Name}. Expecting a field or property node.");
+                }
+
+                var serializableProperty = SerializableMigrationRulesEngine.GenerateSerializableProperty(
+                    compilation,
+                    propertyName,
+                    propertyType,
+                    order,
+                    allAttributes,
+                    serializableTypes
+                );
+
+                serializablePropertySet.Add(serializableProperty);
             }
+
+            var serializableProperties = serializablePropertySet.ToImmutableArray();
 
             // If we are not inheriting ISerializable, then we need to define some stuff
             if (!isOverride)
