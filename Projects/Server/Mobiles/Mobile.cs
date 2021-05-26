@@ -559,8 +559,8 @@ namespace Server
             DefaultMobileInit();
 
             World.AddEntity(this);
-
             SetTypeRef(GetType());
+            ((ISerializable)this).MarkDirty();
         }
 
         public Mobile(Serial serial)

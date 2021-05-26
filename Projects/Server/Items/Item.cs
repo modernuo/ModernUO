@@ -231,6 +231,7 @@ namespace Server
 
             World.AddEntity(this);
             SetTypeRef(GetType());
+            ((ISerializable)this).MarkDirty();
         }
 
         public Item(Serial serial)

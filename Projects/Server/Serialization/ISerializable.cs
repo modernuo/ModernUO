@@ -39,6 +39,14 @@ namespace Server
         public void InitializeSaveBuffer(byte[] buffer)
         {
             SaveBuffer = new BufferWriter(buffer, true);
+            if (World.DirtyTrackingEnabled)
+            {
+                SavePosition = SaveBuffer.Position;
+            }
+            else
+            {
+                SavePosition = -1;
+            }
         }
 
         public void Serialize()
@@ -58,6 +66,10 @@ namespace Server
             if (World.DirtyTrackingEnabled)
             {
                 SavePosition = SaveBuffer.Position;
+            }
+            else
+            {
+                SavePosition = -1;
             }
         }
     }
