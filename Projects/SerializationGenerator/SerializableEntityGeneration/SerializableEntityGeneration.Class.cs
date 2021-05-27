@@ -221,33 +221,33 @@ namespace SerializationGenerator
                 );
 
                 // bool ISerializable.UseDirtyChecking { get; } = true;
-                source.GenerateAutoProperty(
-                    AccessModifier.None,
-                    "bool",
-                    "ISerializable.UseDirtyChecking",
-                    AccessModifier.None,
-                    null,
-                    indent,
-                    defaultValue: "true"
-                );
-                source.AppendLine();
+                // source.GenerateAutoProperty(
+                //     AccessModifier.None,
+                //     "bool",
+                //     "ISerializable.UseDirtyChecking",
+                //     AccessModifier.None,
+                //     null,
+                //     indent,
+                //     defaultValue: "true"
+                // );
+                // source.AppendLine();
             }
-            else
-            {
+            // else
+            // {
                 // If this type does not *directly* inherit `ISerializable`, then we assume it has an overridable `UseDirtyChecking`
                 // public override bool ISerializable.UseDirtyChecking { get; } = true;
-                source.GenerateAutoProperty(
-                    AccessModifier.Public,
-                    "bool",
-                    "UseDirtyChecking",
-                    AccessModifier.None,
-                    null,
-                    indent,
-                    defaultValue: "true",
-                    isOverride: true
-                );
-                source.AppendLine();
-            }
+                // source.GenerateAutoProperty(
+                //     AccessModifier.Public,
+                //     "bool",
+                //     "UseDirtyChecking",
+                //     AccessModifier.None,
+                //     null,
+                //     indent,
+                //     defaultValue: "true",
+                //     isOverride: true
+                // );
+                // source.AppendLine();
+            // }
 
             // Serial constructor
             source.GenerateSerialCtor(context, className, isOverride);
