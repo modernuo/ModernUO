@@ -101,10 +101,10 @@ namespace SerializationGenerator
 
             source.GenerateClassStart(
                 className,
-                isOverride ?
-                    ImmutableArray<ITypeSymbol>.Empty :
-                    ImmutableArray.Create<ITypeSymbol>(serializableInterface)
+                ImmutableArray<ITypeSymbol>.Empty
             );
+
+            const string indent = "        ";
 
             source.GenerateClassField(
                 AccessModifier.Private,
@@ -199,15 +199,16 @@ namespace SerializationGenerator
             // If we are not inheriting ISerializable, then we need to define some stuff
             if (!isOverride)
             {
-                // long ISerializable.SavePosition { get; set; }
+                // long ISerializable.SavePosition { get; set; } = -1;
                 source.GenerateAutoProperty(
                     AccessModifier.None,
                     "long",
                     "ISerializable.SavePosition",
                     AccessModifier.None,
-                    AccessModifier.None
+                    AccessModifier.None,
+                    indent,
+                    defaultValue: "-1"
                 );
-                source.AppendLine();
 
                 // BufferWriter ISerializable.SaveBuffer { get; set; }
                 source.GenerateAutoProperty(
@@ -215,7 +216,35 @@ namespace SerializationGenerator
                     "BufferWriter",
                     "ISerializable.SaveBuffer",
                     AccessModifier.None,
-                    AccessModifier.None
+                    AccessModifier.None,
+                    indent
+                );
+
+                // bool ISerializable.UseDirtyChecking { get; } = true;
+                source.GenerateAutoProperty(
+                    AccessModifier.None,
+                    "bool",
+                    "ISerializable.UseDirtyChecking",
+                    AccessModifier.None,
+                    null,
+                    indent,
+                    defaultValue: "true"
+                );
+                source.AppendLine();
+            }
+            else
+            {
+                // If this type does not *directly* inherit `ISerializable`, then we assume it has an overridable `UseDirtyChecking`
+                // public override bool ISerializable.UseDirtyChecking { get; } = true;
+                source.GenerateAutoProperty(
+                    AccessModifier.Public,
+                    "bool",
+                    "UseDirtyChecking",
+                    AccessModifier.None,
+                    null,
+                    indent,
+                    defaultValue: "true",
+                    isOverride: true
                 );
                 source.AppendLine();
             }

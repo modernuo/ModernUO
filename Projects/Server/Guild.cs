@@ -33,7 +33,6 @@ namespace Server.Guilds
             World.AddGuild(this);
 
             SetTypeRef(GetType());
-            ((ISerializable)this).MarkDirty();
         }
 
         protected BaseGuild(Serial serial)
@@ -64,7 +63,9 @@ namespace Server.Guilds
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
-        long ISerializable.SavePosition { get; set; }
+        bool ISerializable.UseDirtyChecking => false;
+
+        long ISerializable.SavePosition { get; set; } = -1;
 
         BufferWriter ISerializable.SaveBuffer { get; set; }
 
