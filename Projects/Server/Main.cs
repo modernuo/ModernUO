@@ -233,7 +233,7 @@ namespace Server
 
         public static bool EJ => Expansion >= Expansion.EJ;
 
-        public static string FindDataFile(string path, bool throwNotFound = true, bool warnNotFound = false)
+        public static string FindDataFile(string path, bool throwNotFound = true)
         {
             string fullPath = null;
 
@@ -249,16 +249,9 @@ namespace Server
                 fullPath = null;
             }
 
-            if (fullPath == null && (throwNotFound || warnNotFound))
+            if (fullPath == null && throwNotFound)
             {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine($"Data: {path} was not found");
-                Console.WriteLine("Make sure modernuo.json is properly configured");
-                Utility.PopColor();
-                if (throwNotFound)
-                {
-                    throw new FileNotFoundException($"Data: {path} was not found");
-                }
+                throw new FileNotFoundException($"Data: {path} was not found");
             }
 
             return fullPath;
@@ -562,18 +555,16 @@ namespace Server
 
         private static void VerifyType(Type type)
         {
-            var isItem = type.IsSubclassOf(typeof(Item));
-
-            if (!isItem && !type.IsSubclassOf(typeof(Mobile)))
+            if (!type.IsAssignableTo(typeof(ISerializable)) || type.IsInterface || type.IsAbstract)
             {
                 return;
             }
 
-            if (isItem)
+            if (type.IsSubclassOf(typeof(Item)))
             {
                 Interlocked.Increment(ref _itemCount);
             }
-            else
+            else if (!type.IsSubclassOf(typeof(Mobile)))
             {
                 Interlocked.Increment(ref _mobileCount);
             }

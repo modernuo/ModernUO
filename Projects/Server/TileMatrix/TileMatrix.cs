@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Server.Logging;
 
 namespace Server
 {
     public class TileMatrix
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(TileMatrix));
         private static readonly List<TileMatrix> _instances = new();
 
         private readonly StaticTile[][][][][] _staticTiles;
@@ -59,15 +61,9 @@ namespace Server
 
             _map = owner;
 
-#if DEBUG
-            const bool warnNotFound = true;
-#else
-            const bool warnNotFound = false;
-#endif
-
             if (fileIndex != 0x7F)
             {
-                var mapPath = Core.FindDataFile($"map{fileIndex}.mul", false, warnNotFound);
+                var mapPath = Core.FindDataFile($"map{fileIndex}.mul", false);
 
                 if (mapPath != null)
                 {
@@ -75,28 +71,40 @@ namespace Server
                 }
                 else
                 {
-                    mapPath = Core.FindDataFile($"map{fileIndex}LegacyMUL.uop", false, warnNotFound);
+                    mapPath = Core.FindDataFile($"map{fileIndex}LegacyMUL.uop", false);
 
                     if (mapPath != null)
                     {
                         MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                         _mapIndex = new UOPIndex(MapStream);
                     }
+                    else
+                    {
+                        logger.Warning($"map{fileIndex}.mul was not found.");
+                    }
                 }
 
-                var indexPath = Core.FindDataFile($"staidx{fileIndex}.mul", false, warnNotFound);
+                var indexPath = Core.FindDataFile($"staidx{fileIndex}.mul", false);
 
                 if (indexPath != null)
                 {
                     IndexStream = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                     IndexReader = new BinaryReader(IndexStream);
                 }
+                else
+                {
+                    logger.Warning($"staidx{fileIndex}.mul was not found.");
+                }
 
-                var staticsPath = Core.FindDataFile($"statics{fileIndex}.mul", false, warnNotFound);
+                var staticsPath = Core.FindDataFile($"statics{fileIndex}.mul", false);
 
                 if (staticsPath != null)
                 {
                     DataStream = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                else
+                {
+                    logger.Warning($"statics{fileIndex}.mul was not found.");
                 }
             }
 

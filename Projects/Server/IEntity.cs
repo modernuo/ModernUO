@@ -36,13 +36,14 @@ namespace Server
 
     public class Entity : IEntity
     {
-        public Entity(Serial serial, Point3D loc, Map map)
+        public Entity(Serial serial, Point3D loc, Map map) : this(serial)
         {
-            Serial = serial;
             Location = loc;
             Map = map;
             Deleted = false;
         }
+
+        public Entity(Serial serial) => Serial = serial;
 
         public void SetTypeRef(Type type)
         {
@@ -52,7 +53,7 @@ namespace Server
 
         BufferWriter ISerializable.SaveBuffer { get; set; }
 
-        public int TypeRef { get; } = -1;
+        public int TypeRef => -1;
 
         public Serial Serial { get; }
 
