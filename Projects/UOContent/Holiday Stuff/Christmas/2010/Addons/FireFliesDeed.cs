@@ -6,7 +6,8 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-    public class Fireflies : Item, IAddon
+    [Serializable(0)]
+    public partial class Fireflies : Item, IAddon
     {
         [Constructible]
         public Fireflies(int itemID = 0x1596)
@@ -16,35 +17,11 @@ namespace Server.Items
             Movable = false;
         }
 
-        public Fireflies(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1150061;
 
-        public bool FacingSouth
-        {
-            get
-            {
-                if (ItemID == 0x2336)
-                {
-                    return true;
-                }
+        public bool FacingSouth => ItemID == 0x2336;
 
-                return false;
-            }
-        }
-
-        public Item Deed
-        {
-            get
-            {
-                var deed = new FirefliesDeed();
-
-                return deed;
-            }
-        }
+        public Item Deed => new FirefliesDeed();
 
         public bool CouldFit(IPoint3D p, Map map)
         {
@@ -53,12 +30,9 @@ namespace Server.Items
                 return false;
             }
 
-            if (FacingSouth)
-            {
-                return BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map); // north wall
-            }
-
-            return BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map);     // west wall
+            return FacingSouth ?
+                BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map) :
+                BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map);
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -84,23 +58,10 @@ namespace Server.Items
                 from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             }
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class FirefliesDeed : Item
+    [Serializable(0)]
+    public partial class FirefliesDeed : Item
     {
         [Constructible]
         public FirefliesDeed()
@@ -108,11 +69,6 @@ namespace Server.Items
         {
             LootType = LootType.Blessed;
             Weight = 1.0;
-        }
-
-        public FirefliesDeed(Serial serial)
-            : base(serial)
-        {
         }
 
         public override int LabelNumber => 1150061;
@@ -141,20 +97,6 @@ namespace Server.Items
             {
                 from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
         }
 
         private class FacingGump : Gump
