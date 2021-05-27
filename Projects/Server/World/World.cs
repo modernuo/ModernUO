@@ -48,6 +48,7 @@ namespace Server
         private static string _tempSavePath; // Path to the temporary folder for the save
         private static string _savePath; // Path to "Saves" folder
 
+        public const bool DirtyTrackingEnabled = false;
         public const uint ItemOffset = 0x40000000;
         public const uint MaxItemSerial = 0x7FFFFFFF;
         public const uint MaxMobileSerial = ItemOffset - 1;

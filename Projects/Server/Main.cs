@@ -24,6 +24,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Server.Buffers;
 using Server.Json;
 using Server.Logging;
 using Server.Network;
@@ -232,7 +233,7 @@ namespace Server
 
         public static bool EJ => Expansion >= Expansion.EJ;
 
-        public static string FindDataFile(string path, bool throwNotFound = true, bool warnNotFound = false)
+        public static string FindDataFile(string path, bool throwNotFound = true)
         {
             string fullPath = null;
 
@@ -248,16 +249,9 @@ namespace Server
                 fullPath = null;
             }
 
-            if (fullPath == null && (throwNotFound || warnNotFound))
+            if (fullPath == null && throwNotFound)
             {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine($"Data: {path} was not found");
-                Console.WriteLine("Make sure modernuo.json is properly configured");
-                Utility.PopColor();
-                if (throwNotFound)
-                {
-                    throw new FileNotFoundException($"Data: {path} was not found");
-                }
+                throw new FileNotFoundException($"Data: {path} was not found");
             }
 
             return fullPath;
@@ -561,49 +555,57 @@ namespace Server
 
         private static void VerifyType(Type type)
         {
-            var isItem = type.IsSubclassOf(typeof(Item));
-
-            if (!isItem && !type.IsSubclassOf(typeof(Mobile)))
+            if (!type.IsAssignableTo(typeof(ISerializable)) || type.IsInterface || type.IsAbstract)
             {
                 return;
             }
 
-            if (isItem)
+            if (type.IsSubclassOf(typeof(Item)))
             {
                 Interlocked.Increment(ref _itemCount);
             }
-            else
+            else if (!type.IsSubclassOf(typeof(Mobile)))
             {
                 Interlocked.Increment(ref _mobileCount);
             }
 
-            StringBuilder warningSb = null;
+            ValueStringBuilder errors = new ValueStringBuilder();
 
             try
             {
+                if (World.DirtyTrackingEnabled)
+                {
+                    var manualDirtyCheckingAttribute = type.GetCustomAttribute<ManualDirtyCheckingAttribute>(false);
+                    var codeGennedAttribute = type.GetCustomAttribute<SerializableAttribute>(false);
+
+                    if (manualDirtyCheckingAttribute == null && codeGennedAttribute == null)
+                    {
+                        errors.AppendLine("       - No property tracking (dirty checking)");
+                    }
+                }
+
                 if (type.GetConstructor(_serialTypeArray) == null)
                 {
-                    warningSb = new StringBuilder();
-                    warningSb.AppendLine("       - No serialization constructor");
+                    errors.AppendLine("       - No serialization constructor");
                 }
 
                 const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic |
                                                   BindingFlags.Instance | BindingFlags.DeclaredOnly;
                 if (type.GetMethod("Serialize", bindingFlags) == null)
                 {
-                    warningSb ??= new StringBuilder();
-                    warningSb.AppendLine("       - No Serialize() method");
+                    errors.AppendLine("       - No Serialize() method");
                 }
 
                 if (type.GetMethod("Deserialize", bindingFlags) == null)
                 {
-                    warningSb ??= new StringBuilder();
-                    warningSb.AppendLine("       - No Deserialize() method");
+                    errors.AppendLine("       - No Deserialize() method");
                 }
 
-                if (warningSb?.Length > 0)
+                if (errors.Length > 0)
                 {
-                    Console.WriteLine("Warning: {0}\n{1}", type, warningSb);
+                    Utility.PushColor(ConsoleColor.Red);
+                    Console.WriteLine($"{type}\n{errors.ToString()}");
+                    Utility.PopColor();
                 }
             }
             catch

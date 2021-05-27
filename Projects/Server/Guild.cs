@@ -63,8 +63,6 @@ namespace Server.Guilds
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
-        bool ISerializable.UseDirtyChecking => false;
-
         long ISerializable.SavePosition { get; set; } = -1;
 
         BufferWriter ISerializable.SaveBuffer { get; set; }
