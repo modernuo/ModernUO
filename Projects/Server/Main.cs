@@ -24,6 +24,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Server.Buffers;
 using Server.Json;
 using Server.Logging;
 using Server.Network;
@@ -577,33 +578,43 @@ namespace Server
                 Interlocked.Increment(ref _mobileCount);
             }
 
-            StringBuilder warningSb = null;
+            ValueStringBuilder errors = new ValueStringBuilder();
 
             try
             {
+                if (World.DirtyTrackingEnabled)
+                {
+                    var manualDirtyCheckingAttribute = type.GetCustomAttribute<ManualDirtyCheckingAttribute>(false);
+                    var codeGennedAttribute = type.GetCustomAttribute<SerializableAttribute>(false);
+
+                    if (manualDirtyCheckingAttribute == null && codeGennedAttribute == null)
+                    {
+                        errors.AppendLine("       - No property tracking (dirty checking)");
+                    }
+                }
+
                 if (type.GetConstructor(_serialTypeArray) == null)
                 {
-                    warningSb = new StringBuilder();
-                    warningSb.AppendLine("       - No serialization constructor");
+                    errors.AppendLine("       - No serialization constructor");
                 }
 
                 const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic |
                                                   BindingFlags.Instance | BindingFlags.DeclaredOnly;
                 if (type.GetMethod("Serialize", bindingFlags) == null)
                 {
-                    warningSb ??= new StringBuilder();
-                    warningSb.AppendLine("       - No Serialize() method");
+                    errors.AppendLine("       - No Serialize() method");
                 }
 
                 if (type.GetMethod("Deserialize", bindingFlags) == null)
                 {
-                    warningSb ??= new StringBuilder();
-                    warningSb.AppendLine("       - No Deserialize() method");
+                    errors.AppendLine("       - No Deserialize() method");
                 }
 
-                if (warningSb?.Length > 0)
+                if (errors.Length > 0)
                 {
-                    Console.WriteLine("Warning: {0}\n{1}", type, warningSb);
+                    Utility.PushColor(ConsoleColor.Red);
+                    Console.WriteLine($"{type}\n{errors.ToString()}");
+                    Utility.PopColor();
                 }
             }
             catch

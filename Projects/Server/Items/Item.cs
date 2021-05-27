@@ -783,8 +783,6 @@ namespace Server
             AddNameProperties(list);
         }
 
-        public virtual bool UseDirtyChecking => false;
-
         long ISerializable.SavePosition { get; set; } = -1;
 
         BufferWriter ISerializable.SaveBuffer { get; set; }
