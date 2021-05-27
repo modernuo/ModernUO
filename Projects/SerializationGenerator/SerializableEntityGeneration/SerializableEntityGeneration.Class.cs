@@ -101,9 +101,7 @@ namespace SerializationGenerator
 
             source.GenerateClassStart(
                 className,
-                isOverride ?
-                    ImmutableArray<ITypeSymbol>.Empty :
-                    ImmutableArray.Create<ITypeSymbol>(serializableInterface)
+                ImmutableArray<ITypeSymbol>.Empty
             );
 
             const string indent = "        ";
@@ -211,7 +209,6 @@ namespace SerializationGenerator
                     indent,
                     defaultValue: "-1"
                 );
-                source.AppendLine();
 
                 // BufferWriter ISerializable.SaveBuffer { get; set; }
                 source.GenerateAutoProperty(
@@ -222,7 +219,6 @@ namespace SerializationGenerator
                     AccessModifier.None,
                     indent
                 );
-                source.AppendLine();
 
                 // bool ISerializable.UseDirtyChecking { get; } = true;
                 source.GenerateAutoProperty(

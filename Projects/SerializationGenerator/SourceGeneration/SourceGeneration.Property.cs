@@ -81,13 +81,14 @@ namespace SerializationGenerator
                 ? ""
                 : $"{setAccessor.Value.ToFriendlyString() ?? ""} ";
 
-            var setter = setterAccessor == "" ? "" : $"{getterSpace}{setterAccessor}{setOrInit}";
+            var setter = setAccessor == null ? "" : $"{getterSpace}{setterAccessor}{setOrInit}";
 
             var propertyAccessor = accessors == AccessModifier.None ? "" : $"{accessors.ToFriendlyString()} ";
-            var printOverride = isOverride ? "override " : " ";
-            var printDefaultValue = defaultValue != null ? $" = {defaultValue};" : "";
+            var printOverride = isOverride ? "override " : "";
+            var printDefaultValue = defaultValue != null ? $"{(setAccessor != null ? " =" : "")} {defaultValue};" : "";
+            var printGetterSetter = setAccessor == null ? "=>" : $"{{ {getter}{setter} }}";
 
-            source.AppendLine($"{indent}{propertyAccessor}{printOverride}{type} {propertyName} {{ {getter}{setter} }}{printDefaultValue}");
+            source.AppendLine($"{indent}{propertyAccessor}{printOverride}{type} {propertyName} {printGetterSetter}{printDefaultValue}");
         }
 
         public static void GeneratePropertyEnd(this StringBuilder source) => source.AppendLine("        }");

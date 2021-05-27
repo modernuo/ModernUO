@@ -40,7 +40,7 @@ namespace SerializationGenerator
 
             if (!isOverride)
             {
-                source.Append(@$"            Serial = serial;
+                source.AppendLine(@$"            Serial = serial;
             SetTypeRef(typeof({className}));");
             }
 
