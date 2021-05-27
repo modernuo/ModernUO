@@ -68,6 +68,7 @@ namespace SerializationGenerator
                     {
                         Name = propertyName,
                         Type = propertyType.ToDisplayString(),
+                        Order = order,
                         Rule = rule.RuleName,
                         RuleArguments = ruleArguments
                     };

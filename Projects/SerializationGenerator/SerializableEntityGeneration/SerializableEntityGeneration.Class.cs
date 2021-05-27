@@ -116,7 +116,7 @@ namespace SerializationGenerator
             );
             source.AppendLine();
 
-            var serializablePropertySet = new SortedSet<SerializableProperty>();
+            var serializablePropertySet = new SortedSet<SerializableProperty>(new SerializablePropertyComparer());
 
             foreach (var fieldOrPropertySymbol in fieldsAndProperties)
             {
@@ -253,7 +253,7 @@ namespace SerializationGenerator
             source.GenerateSerialCtor(context, className, isOverride);
             source.AppendLine();
 
-            List<SerializableMetadata> migrations;
+            List<SerializableMetadata> migrations = new List<SerializableMetadata>();
 
             if (version > 0)
             {
@@ -273,10 +273,6 @@ namespace SerializationGenerator
                         source.AppendLine();
                     }
                 }
-            }
-            else
-            {
-                migrations = new List<SerializableMetadata>();
             }
 
             // Serialize Method
