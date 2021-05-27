@@ -41,13 +41,6 @@ namespace SerializationGenerator
 
             const string indent = "            ";
 
-            source.AppendLine($"{indent}var savePosition = ((Server.ISerializable)this).SavePosition;");
-            source.AppendLine(@$"{indent}if (savePosition > -1)
-{indent}{{
-{indent}    writer.Seek(savePosition, System.IO.SeekOrigin.Begin);
-{indent}    return;
-{indent}}}");
-
             if (isOverride)
             {
                 source.AppendLine();

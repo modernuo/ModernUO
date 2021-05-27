@@ -265,6 +265,8 @@ namespace Server.Accounting
             }
         }
 
+        bool ISerializable.UseDirtyChecking => false;
+
         long ISerializable.SavePosition { get; set; }
 
         BufferWriter ISerializable.SaveBuffer { get; set; }

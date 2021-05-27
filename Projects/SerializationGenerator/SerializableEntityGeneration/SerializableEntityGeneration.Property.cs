@@ -47,7 +47,7 @@ namespace SerializationGenerator
             // Setter
             source.GeneratePropertySetterStart(false);
             const string indent = "                ";
-            source.AppendLine($"{indent}if(value != {fieldName})");
+            source.AppendLine($"{indent}if (value != {fieldName})");
             source.AppendLine($"{indent}{{");
             source.AppendLine($"{indent}    {fieldName} = value;");
             source.AppendLine($"{indent}    ((ISerializable)this).MarkDirty();");

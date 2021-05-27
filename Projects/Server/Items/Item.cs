@@ -231,7 +231,6 @@ namespace Server
 
             World.AddEntity(this);
             SetTypeRef(GetType());
-            ((ISerializable)this).MarkDirty();
         }
 
         public Item(Serial serial)
@@ -784,7 +783,9 @@ namespace Server
             AddNameProperties(list);
         }
 
-        long ISerializable.SavePosition { get; set; }
+        public virtual bool UseDirtyChecking => false;
+
+        long ISerializable.SavePosition { get; set; } = -1;
 
         BufferWriter ISerializable.SaveBuffer { get; set; }
 

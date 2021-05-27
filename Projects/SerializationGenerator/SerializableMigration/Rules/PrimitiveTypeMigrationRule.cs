@@ -87,34 +87,33 @@ namespace SerializationGenerator
             }
 
             var propertyName = property.Name;
+            var argument = property.RuleArguments.Length >= 1 ? property.RuleArguments[0] : null;
 
             const string ipAddress = SerializableEntityGeneration.IPADDRESS_CLASS;
+            const string date = "System.DateTime";
 
             var readMethod = property.Type switch
             {
-                "bool"    => "ReadBool",
-                "sbyte"   => "ReadSByte",
-                "short"   => "ReadShort",
-                "int"     => "ReadInt",
-                "long"    => "ReadLong",
-                "byte"    => "ReadByte",
-                "ushort"  => "ReadUShort",
-                "uint"    => "ReadUInt",
-                "ulong"   => "ReadULong",
-                "float"   => "ReadFloat",
-                "double"  => "ReadDouble",
-                "string"  => "ReadString",
-                "decimal" => "ReadDecimal",
-                ipAddress => "ReadIPAddress",
-                "System.DateTime" => property.RuleArguments.Length >= 1 &&
-                                     property.RuleArguments[0] == "DeltaTime" ?
-                    "ReadDeltaTime" :
-                    "ReadDateTime"
+                "bool"                              => "ReadBool",
+                "sbyte"                             => "ReadSByte",
+                "short"                             => "ReadShort",
+                "int" when argument == "EncodedInt" => "ReadEncodedInt",
+                "int"                               => "ReadInt",
+                "long"                              => "ReadLong",
+                "byte"                              => "ReadByte",
+                "ushort"                            => "ReadUShort",
+                "uint"                              => "ReadUInt",
+                "ulong"                             => "ReadULong",
+                "float"                              => "ReadFloat",
+                "double"                            => "ReadDouble",
+                "string"                            => "ReadString",
+                "decimal"                           => "ReadDecimal",
+                date when argument == "DeltaTime"   => "ReadDeltaTime",
+                date                                => "ReadDateTime",
+                ipAddress                           => "ReadIPAddress"
             };
 
-            var readArgument = readMethod == "ReadString" &&
-                               property.RuleArguments.Length >= 1 &&
-                               property.RuleArguments[0] == "InternString" ? "true" : "";
+            var readArgument = readMethod == "ReadString" && argument == "InternString" ? "true" : "";
 
             source.AppendLine($"{indent}{propertyName} = reader.{readMethod}({readArgument});");
         }
@@ -129,15 +128,16 @@ namespace SerializationGenerator
             }
 
             var propertyName = property.Name;
+            var argument = property.RuleArguments.Length >= 1 ? property.RuleArguments[0] : null;
 
-            if (property.Type == "System.DateTime" && property.RuleArguments.Length >= 1 && property.RuleArguments[0] == "DeltaTime")
+            var writeMethod = property.Type switch
             {
-                source.AppendLine($"{indent}writer.WriteDeltaTime({propertyName});");
-            }
-            else
-            {
-                source.AppendLine($"{indent}writer.Write({propertyName});");
-            }
+                "System.DateTime" when argument == "DeltaTime" => "WriteDeltaTime",
+                "int" when argument == "EncodedInt"            => "WriteEncodedInt",
+                _                                              => "Write"
+            };
+
+            source.AppendLine($"{indent}writer.{writeMethod}({propertyName});");
         }
     }
 }
