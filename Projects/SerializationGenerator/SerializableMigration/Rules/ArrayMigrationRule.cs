@@ -42,6 +42,7 @@ namespace SerializationGenerator
                 compilation,
                 "ArrayEntry",
                 arrayTypeSymbol.ElementType,
+                0,
                 attributes,
                 serializableTypes
             );

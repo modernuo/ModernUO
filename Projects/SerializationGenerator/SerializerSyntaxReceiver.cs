@@ -23,7 +23,7 @@ namespace SerializationGenerator
     public class SerializerSyntaxReceiver : ISyntaxContextReceiver
     {
 #pragma warning disable RS1024
-        public Dictionary<INamedTypeSymbol, List<IFieldSymbol>> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
+        public Dictionary<INamedTypeSymbol, List<ISymbol>> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
 #pragma warning restore RS1024
 
         public static HashSet<string> AttributeTypes { get; } = new();
@@ -39,7 +39,7 @@ namespace SerializationGenerator
 
                 if (classSymbol.GetAttributes().Any(ad => AttributeTypes.Contains(ad.AttributeClass?.ToDisplayString()) && !ClassAndFields.ContainsKey(classSymbol)))
                 {
-                    ClassAndFields.Add(classSymbol, new List<IFieldSymbol>());
+                    ClassAndFields.Add(classSymbol, new List<ISymbol>());
                 }
 
                 return;
@@ -47,25 +47,35 @@ namespace SerializationGenerator
 
             if (context.Node is FieldDeclarationSyntax { AttributeLists: { Count: > 0 } } fieldDeclarationSyntax)
             {
-                foreach (VariableDeclaratorSyntax variable in fieldDeclarationSyntax.Declaration.Variables)
+                foreach (var variable in fieldDeclarationSyntax.Declaration.Variables)
                 {
-                    if (context.SemanticModel.GetDeclaredSymbol(variable) is not IFieldSymbol fieldSymbol)
+                    if (context.SemanticModel.GetDeclaredSymbol(variable) is IFieldSymbol fieldSymbol)
                     {
-                        return;
+                        AddFieldOrProperty(fieldSymbol);
                     }
+                }
+            }
+            else if (context.Node is PropertyDeclarationSyntax { AttributeLists: { Count: > 0 } } propertyDeclarationSyntax)
+            {
+                if (context.SemanticModel.GetDeclaredSymbol(propertyDeclarationSyntax) is IPropertySymbol propertySymbol)
+                {
+                    AddFieldOrProperty(propertySymbol);
+                }
+            }
+        }
 
-                    if (fieldSymbol.GetAttributes().Any(ad => AttributeTypes.Contains(ad.AttributeClass?.ToDisplayString())))
-                    {
-                        var classSymbol = fieldSymbol.ContainingType;
-                        if (ClassAndFields.TryGetValue(classSymbol, out var fieldsList))
-                        {
-                            fieldsList.Add(fieldSymbol);
-                        }
-                        else
-                        {
-                            ClassAndFields.Add(classSymbol, new List<IFieldSymbol> { fieldSymbol });
-                        }
-                    }
+        private void AddFieldOrProperty(ISymbol symbol)
+        {
+            if (symbol.GetAttributes().Any(ad => AttributeTypes.Contains(ad.AttributeClass?.ToDisplayString())))
+            {
+                var classSymbol = symbol.ContainingType;
+                if (ClassAndFields.TryGetValue(classSymbol, out var fieldsList))
+                {
+                    fieldsList.Add(symbol);
+                }
+                else
+                {
+                    ClassAndFields.Add(classSymbol, new List<ISymbol> { symbol });
                 }
             }
         }

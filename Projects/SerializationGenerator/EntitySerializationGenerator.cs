@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -64,7 +63,7 @@ namespace SerializationGenerator
             {
                 string classSource = SerializableEntityGeneration.GenerateSerializationPartialClass(
                     kvp.Key,
-                    kvp.Value,
+                    kvp.Value.ToImmutableArray(),
                     context,
                     migrationPath,
                     jsonOptions,

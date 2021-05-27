@@ -20,6 +20,10 @@ namespace Server
 {
     public interface ISerializable
     {
+        // Make sure all properties that will be serialized are calling `MarkDirty()` when they get modified.
+        // This should be done manually or via code gen through SerializedField attribute.
+        // This attribute should be virtual for any base serializalbe type (Item, Mobile, etc) that can be opt-in per type.
+        bool UseDirtyChecking { get; }
         long SavePosition { get; protected set; }
         BufferWriter SaveBuffer { get; protected internal set; }
         int TypeRef { get; }
@@ -39,6 +43,14 @@ namespace Server
         public void InitializeSaveBuffer(byte[] buffer)
         {
             SaveBuffer = new BufferWriter(buffer, true);
+            if (UseDirtyChecking)
+            {
+                SavePosition = SaveBuffer.Position;
+            }
+            else
+            {
+                SavePosition = -1;
+            }
         }
 
         public void Serialize()
@@ -55,9 +67,13 @@ namespace Server
             SaveBuffer.Seek(0, SeekOrigin.Begin);
             Serialize(SaveBuffer);
 
-            if (World.DirtyTrackingEnabled)
+            if (UseDirtyChecking)
             {
                 SavePosition = SaveBuffer.Position;
+            }
+            else
+            {
+                SavePosition = -1;
             }
         }
     }

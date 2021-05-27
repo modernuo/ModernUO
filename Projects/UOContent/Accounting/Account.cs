@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Xml;
 using Server.Accounting.Security;
 using Server.Misc;
@@ -43,12 +41,12 @@ namespace Server.Accounting
             LoginIPs = Array.Empty<IPAddress>();
 
             Accounts.Add(this);
+            ((ISerializable)this).MarkDirty();
         }
 
         public Account(Serial serial)
         {
             Serial = serial;
-
             SetTypeRef(GetType());
         }
 
@@ -266,6 +264,8 @@ namespace Server.Accounting
                 return m_TotalGameTime;
             }
         }
+
+        bool ISerializable.UseDirtyChecking => false;
 
         long ISerializable.SavePosition { get; set; }
 

@@ -44,6 +44,7 @@ namespace SerializationGenerator
                 compilation,
                 "ListEntry",
                 listTypeSymbol,
+                0,
                 attributes,
                 serializableTypes
             );

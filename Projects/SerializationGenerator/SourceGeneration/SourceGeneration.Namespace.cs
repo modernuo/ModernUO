@@ -23,19 +23,6 @@ namespace SerializationGenerator
 {
     public static partial class SourceGeneration
     {
-        public static void GenerateUsings(this StringBuilder source, IImmutableList<ITypeSymbol> typesUsed)
-        {
-            var enumerable = typesUsed
-                .Select(t => t.ContainingNamespace.Name)
-                .Distinct()
-                .OrderByDescending(t => t);
-
-            foreach (var t in enumerable)
-            {
-                source.Insert(0, $"using {t}{Environment.NewLine}");
-            }
-        }
-
         public static void GenerateNamespaceStart(this StringBuilder source, string namespaceName)
         {
             source.AppendLine($@"namespace {namespaceName}

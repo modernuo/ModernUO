@@ -559,7 +559,6 @@ namespace Server
             DefaultMobileInit();
 
             World.AddEntity(this);
-
             SetTypeRef(GetType());
         }
 
@@ -2522,7 +2521,9 @@ namespace Server
             AddNameProperties(list);
         }
 
-        long ISerializable.SavePosition { get; set; }
+        public virtual bool UseDirtyChecking => false;
+
+        long ISerializable.SavePosition { get; set; } = -1;
 
         BufferWriter ISerializable.SaveBuffer { get; set; }
 

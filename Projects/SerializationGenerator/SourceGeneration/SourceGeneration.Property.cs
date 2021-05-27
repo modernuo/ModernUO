@@ -59,7 +59,10 @@ namespace SerializationGenerator
             string propertyName,
             AccessModifier? getAccessor,
             AccessModifier? setAccessor,
-            bool useInit = false
+            string indent,
+            bool useInit = false,
+            string defaultValue = null,
+            bool isOverride = false
         )
         {
             if (getAccessor == null && setAccessor == null)
@@ -74,12 +77,18 @@ namespace SerializationGenerator
             var getterSpace = getAccessor != null ? " " : "";
             var setOrInit = useInit ? "init;" : "set;";
 
-            var setterAccessor = setAccessor != AccessModifier.None ? $"{setAccessor?.ToFriendlyString() ?? ""} " : "";
-            var setter = setterAccessor == "" ? "" : $"{getterSpace}{setterAccessor}{setOrInit}";
+            var setterAccessor = setAccessor is null or AccessModifier.None
+                ? ""
+                : $"{setAccessor.Value.ToFriendlyString() ?? ""} ";
+
+            var setter = setAccessor == null ? "" : $"{getterSpace}{setterAccessor}{setOrInit}";
 
             var propertyAccessor = accessors == AccessModifier.None ? "" : $"{accessors.ToFriendlyString()} ";
+            var printOverride = isOverride ? "override " : "";
+            var printDefaultValue = defaultValue != null ? $"{(setAccessor != null ? " =" : "")} {defaultValue};" : "";
+            var printGetterSetter = setAccessor == null ? "=>" : $"{{ {getter}{setter} }}";
 
-            source.AppendLine($"{propertyAccessor}{type} {propertyName} {{ {getter}{setter} }}");
+            source.AppendLine($"{indent}{propertyAccessor}{printOverride}{type} {propertyName} {printGetterSetter}{printDefaultValue}");
         }
 
         public static void GeneratePropertyEnd(this StringBuilder source) => source.AppendLine("        }");

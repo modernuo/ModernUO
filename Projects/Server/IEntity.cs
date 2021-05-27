@@ -48,7 +48,9 @@ namespace Server
         {
         }
 
-        long ISerializable.SavePosition { get; set; }
+        bool ISerializable.UseDirtyChecking => false;
+
+        long ISerializable.SavePosition { get; set; } = -1;
 
         BufferWriter ISerializable.SaveBuffer { get; set; }
 
