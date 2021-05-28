@@ -230,8 +230,7 @@ namespace Server.Engines.Events
         }
     }
 
-    [Serializable(0, false)]
-    public partial class NaughtyTwin : BaseCreature
+    public class NaughtyTwin : BaseCreature
     {
         private static readonly Point3D[] Felucca_Locations =
         {
@@ -287,6 +286,11 @@ namespace Server.Engines.Events
             }
         }
 
+        public NaughtyTwin(Serial serial)
+            : base(serial)
+        {
+        }
+
         public override void OnThink()
         {
             if (m_From?.Deleted != false)
@@ -300,7 +304,12 @@ namespace Server.Engines.Events
             Type[] types =
                 { typeof(WrappedCandy), typeof(Lollipops), typeof(NougatSwirl), typeof(Taffy), typeof(JellyBeans) };
 
-            return TrickOrTreat.CheckMobile(target) ? target.Backpack.FindItemByType(types) : null;
+            if (TrickOrTreat.CheckMobile(target))
+            {
+                return target.Backpack.FindItemByType(types);
+            }
+
+            return null;
         }
 
         public static void StealCandyOrGate(Mobile target)
@@ -335,6 +344,18 @@ namespace Server.Engines.Events
                 4 => Tokuno_Locations.RandomElement(),
                 _ => Felucca_Locations.RandomElement()
             };
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write(0);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+            var version = reader.ReadInt();
         }
     }
 }

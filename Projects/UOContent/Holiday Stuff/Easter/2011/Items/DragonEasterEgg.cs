@@ -1,11 +1,15 @@
 ﻿namespace Server.Items
 {
-    [Serializable(0, false)]
-    public partial class DragonEasterEgg : Item, IDyable
+    public class DragonEasterEgg : Item, IDyable
     {
         [Constructible]
         public DragonEasterEgg()
             : base(0x47E6)
+        {
+        }
+
+        public DragonEasterEgg(Serial serial)
+            : base(serial)
         {
         }
 
@@ -21,6 +25,20 @@
             Hue = sender.DyedHue;
 
             return true;
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
         }
     }
 }

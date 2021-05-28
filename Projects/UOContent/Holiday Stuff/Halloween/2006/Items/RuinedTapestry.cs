@@ -1,7 +1,6 @@
 ﻿namespace Server.Items
 {
-    [Serializable(0, false)]
-    public partial class RuinedTapestry : Item
+    public class RuinedTapestry : Item
     {
         [Constructible]
         public RuinedTapestry()
@@ -9,6 +8,25 @@
         {
         }
 
+        public RuinedTapestry(Serial serial)
+            : base(serial)
+        {
+        }
+
         public override string DefaultName => "Ruined Tapestry ";
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 }
