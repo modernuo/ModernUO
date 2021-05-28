@@ -1,30 +1,49 @@
+using System;
 using Server.Targeting;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
-    public partial class CupidsArrow : Item
+    public class CupidsArrow : Item
     {
-        [InternString]
-        [InvalidateProperties]
-        [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private string _from;
-
-        [InternString]
-        [InvalidateProperties]
-        [SerializableField(1)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private string _to;
+        private string m_From;
+        private string m_To;
 
         [Constructible]
-        public CupidsArrow() : base(0x4F7F) => LootType = LootType.Blessed;
+        public CupidsArrow()
+            : base(0x4F7F) =>
+            LootType = LootType.Blessed;
 
+        public CupidsArrow(Serial serial)
+            : base(serial)
+        {
+        }
         // TODO: Check messages
 
         public override int LabelNumber => 1152270; // Cupid's Arrow 2012
 
-        public bool IsSigned => _from != null && _to != null;
+        [CommandProperty(AccessLevel.GameMaster)]
+        public string From
+        {
+            get => m_From;
+            set
+            {
+                m_From = value;
+                InvalidateProperties();
+            }
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public string To
+        {
+            get => m_To;
+            set
+            {
+                m_To = value;
+                InvalidateProperties();
+            }
+        }
+
+        public bool IsSigned => m_From != null && m_To != null;
 
         public override void AddNameProperty(ObjectPropertyList list)
         {
@@ -32,7 +51,7 @@ namespace Server.Items
 
             if (IsSigned)
             {
-                list.Add(1152273, $"{_from}\t{_to}"); // ~1_val~ is madly in love with ~2_val~
+                list.Add(1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
             }
         }
 
@@ -53,7 +72,7 @@ namespace Server.Items
 
             if (IsSigned)
             {
-                LabelTo(from, 1152273, $"{_from}\t{_to}"); // ~1_val~ is madly in love with ~2_val~
+                LabelTo(from, 1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
             }
         }
 
@@ -91,8 +110,8 @@ namespace Server.Items
                     return;
                 }
 
-                _from = from.Name;
-                _to = m.Name;
+                m_From = from.Name;
+                m_To = m.Name;
 
                 InvalidateProperties();
 
@@ -102,6 +121,26 @@ namespace Server.Items
             {
                 from.SendMessage("That is not a person.");
             }
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0);
+
+            writer.Write(m_From);
+            writer.Write(m_To);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+
+            m_From = Utility.Intern(reader.ReadString());
+            m_To = Utility.Intern(reader.ReadString());
         }
     }
 }

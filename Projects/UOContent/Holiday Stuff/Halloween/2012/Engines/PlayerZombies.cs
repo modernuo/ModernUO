@@ -175,9 +175,8 @@ namespace Server.Engines.Events
 
     public class ZombieSkeleton : BaseCreature
     {
-        private const string _name = "Zombie Skeleton";
+        private static readonly string m_Name = "Zombie Skeleton";
 
-        // TODO: Requires private modifier
         private PlayerMobile m_DeadPlayer;
 
         public ZombieSkeleton(PlayerMobile player = null)
@@ -185,7 +184,7 @@ namespace Server.Engines.Events
         {
             m_DeadPlayer = player;
 
-            Name = player != null ? $"{player.Name}'s {_name}" : _name;
+            Name = player != null ? $"{player.Name}'s {m_Name}" : m_Name;
 
             Body = 0x93;
             BaseSoundID = 0x1c3;

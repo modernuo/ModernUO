@@ -7,14 +7,15 @@ namespace Server.Items.Holiday
     {
         private static readonly string[] m_Staffers =
         {
-            "Owyn",
-            "Luthius",
-            "Kamron",
-            "Jaedan",
-            "Vorspire"
+            "Ryan",
+            "Mark",
+            "Krrios",
+            "Zippy",
+            "Athena",
+            "Eos",
+            "Xavier"
         };
 
-        // Todo: Requires private-only modifiers
         private string m_Staffer;
 
         public BasePaintedMask(int itemid) : this(m_Staffers.RandomElement(), itemid)

@@ -76,12 +76,10 @@ namespace SerializationGenerator
             var propertyVarPrefix = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1, propertyName.Length - 1)}";
             var propertyIndex = $"{propertyVarPrefix}Index";
             var propertyEntry = $"{propertyVarPrefix}Entry";
-            var propertyCount = $"{propertyVarPrefix}Count";
 
             source.AppendLine($"{indent}{ruleArguments[0]} {propertyEntry};");
-            source.AppendLine($"{indent}var {propertyCount} = reader.ReadEncodedInt();");
-            source.AppendLine($"{indent}{property.Name} = new System.Collections.Generic.HashSet<{ruleArguments[0]}>({propertyCount});");
-            source.AppendLine($"{indent}for (var {propertyIndex} = 0; i < {propertyCount}; {propertyIndex}++)");
+            source.AppendLine($"{indent}{propertyName} = new System.Collections.Generic.HashSet<{ruleArguments[0]}>(reader.ReadInt());");
+            source.AppendLine($"{indent}for (var {propertyIndex} = 0; i < {propertyName}.Count; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 
             var serializableSetElement = new SerializableProperty
@@ -115,7 +113,7 @@ namespace SerializationGenerator
             var propertyName = property.Name;
             var propertyVarPrefix = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1, propertyName.Length - 1)}";
             var propertyEntry = $"{propertyVarPrefix}Entry";
-            source.AppendLine($"{indent}writer.WriteEncodedInt({property.Name}.Count);");
+            source.AppendLine($"{indent}writer.Write({property.Name}.Count);");
             source.AppendLine($"{indent}foreach (var {propertyEntry} in {property.Name});");
             source.AppendLine($"{indent}{{");
 

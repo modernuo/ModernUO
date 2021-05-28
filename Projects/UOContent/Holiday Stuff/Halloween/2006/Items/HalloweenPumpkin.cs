@@ -2,16 +2,11 @@
 
 namespace Server.Items
 {
-    [Serializable(1, false)]
-    public partial class HalloweenPumpkin : Item
+    public class HalloweenPumpkin : Item
     {
         private static readonly string[] m_Staff =
         {
-            "Owyn",
-            "Luthius",
-            "Kamron",
-            "Jaedan",
-            "Vorspire"
+            "Ryan", "Mark", "Eos", "Athena", "Xavier", "Krrios", "Zippy"
         };
 
         [Constructible]
@@ -21,6 +16,11 @@ namespace Server.Items
             ItemID = Utility.RandomDouble() <= .02
                 ? Utility.RandomList(0x4694, 0x4698)
                 : Utility.RandomList(0xc6a, 0xc6b, 0xc6c);
+        }
+
+        public HalloweenPumpkin(Serial serial)
+            : base(serial)
+        {
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -78,8 +78,19 @@ namespace Server.Items
             return true;
         }
 
-        private void Deserialize(IGenericReader reader, int version)
+        public override void Serialize(IGenericWriter writer)
         {
+            base.Serialize(writer);
+
+            writer.Write(1); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+
             if (version == 0 && Name == null && ItemID == 0x4698)
             {
                 AssignRandomName();
