@@ -27,13 +27,6 @@ namespace SerializationGenerator
     {
         public void Initialize(GeneratorInitializationContext context)
         {
-#if DEBUG
-            if (!Debugger.IsAttached)
-            {
-                Debugger.Launch();
-            }
-#endif
-
             context.RegisterForPostInitialization(i =>
             {
                 SerializerSyntaxReceiver.AttributeTypes.Add("Server.SerializableAttribute");
