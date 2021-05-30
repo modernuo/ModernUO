@@ -14,22 +14,26 @@
  *************************************************************************/
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SourceGeneration;
 
 namespace SerializationGenerator
 {
     public class SerializerSyntaxReceiver : ISyntaxContextReceiver
     {
 #pragma warning disable RS1024
-        public Dictionary<INamedTypeSymbol, List<ISymbol>> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
+        public Dictionary<INamedTypeSymbol, (AttributeData?, List<ISymbol>)> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
 #pragma warning restore RS1024
 
-        public static HashSet<string> AttributeTypes { get; } = new();
+        public ImmutableArray<INamedTypeSymbol> SerializableList => ClassAndFields.Keys.ToImmutableArray();
 
         public void OnVisitSyntaxNode(SyntaxNode node, SemanticModel semanticModel)
         {
+            var compilation = semanticModel.Compilation;
+
             if (node is ClassDeclarationSyntax { AttributeLists: { Count: > 0 } } classDeclarationSyntax)
             {
                 if (semanticModel.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
@@ -37,9 +41,17 @@ namespace SerializationGenerator
                     return;
                 }
 
-                if (classSymbol.GetAttributes().Any(ad => AttributeTypes.Contains(ad.AttributeClass?.ToDisplayString()) && !ClassAndFields.ContainsKey(classSymbol)))
+                if (classSymbol.WillBeSerializable(compilation, out var attrData))
                 {
-                    ClassAndFields.Add(classSymbol, new List<ISymbol>());
+                    if (ClassAndFields.TryGetValue(classSymbol, out var value))
+                    {
+                        var (_, fieldsList) = value;
+                        ClassAndFields[classSymbol] = (attrData, fieldsList);
+                    }
+                    else
+                    {
+                        ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol>()));
+                    }
                 }
 
                 return;
@@ -51,7 +63,7 @@ namespace SerializationGenerator
                 {
                     if (semanticModel.GetDeclaredSymbol(variable) is IFieldSymbol fieldSymbol)
                     {
-                        AddFieldOrProperty(fieldSymbol);
+                        AddFieldOrProperty(fieldSymbol, compilation);
                     }
                 }
             }
@@ -59,7 +71,7 @@ namespace SerializationGenerator
             {
                 if (semanticModel.GetDeclaredSymbol(propertyDeclarationSyntax) is IPropertySymbol propertySymbol)
                 {
-                    AddFieldOrProperty(propertySymbol);
+                    AddFieldOrProperty(propertySymbol, compilation);
                 }
             }
         }
@@ -67,19 +79,26 @@ namespace SerializationGenerator
         public void OnVisitSyntaxNode(GeneratorSyntaxContext context) =>
             OnVisitSyntaxNode(context.Node, context.SemanticModel);
 
-        private void AddFieldOrProperty(ISymbol symbol)
+        private void AddFieldOrProperty(ISymbol symbol, Compilation compilation)
         {
-            if (symbol.GetAttributes().Any(ad => AttributeTypes.Contains(ad.AttributeClass?.ToDisplayString())))
+            var serializableFieldAttr = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTRIBUTE);
+
+            if (symbol.GetAttribute(serializableFieldAttr) == null)
             {
-                var classSymbol = symbol.ContainingType;
-                if (ClassAndFields.TryGetValue(classSymbol, out var fieldsList))
-                {
-                    fieldsList.Add(symbol);
-                }
-                else
-                {
-                    ClassAndFields.Add(classSymbol, new List<ISymbol> { symbol });
-                }
+                return;
+            }
+
+            var classSymbol = symbol.ContainingType;
+            if (ClassAndFields.TryGetValue(classSymbol, out var value))
+            {
+                var (_, fieldsList) = value;
+                fieldsList.Add(symbol);
+                return;
+            }
+
+            if (classSymbol.WillBeSerializable(compilation, out var attrData))
+            {
+                ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol> { symbol }));
             }
         }
     }

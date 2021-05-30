@@ -25,12 +25,12 @@ namespace SerializationGenerator
         private static readonly ImmutableArray<string> _baseParameters = new[] { "serial" }.ToImmutableArray();
         public static void GenerateSerialCtor(
             this StringBuilder source,
-            GeneratorExecutionContext context,
+            Compilation compilation,
             string className,
             bool isOverride
         )
         {
-            var serialType = (ITypeSymbol)context.Compilation.GetTypeByMetadataName("Server.Serial");
+            var serialType = (ITypeSymbol)compilation.GetTypeByMetadataName("Server.Serial");
 
             source.GenerateConstructorStart(
                 className,

@@ -27,45 +27,16 @@ namespace SerializationGenerator
 {
     public static partial class SerializableEntityGeneration
     {
-        public static bool WillBeSerializable(this INamedTypeSymbol classSymbol, GeneratorExecutionContext context)
-        {
-            var compilation = context.Compilation;
-
-            var serializableEntityAttribute =
-                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_ATTRIBUTE);
-            var serializableInterface = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_INTERFACE);
-
-            if (!classSymbol.ContainingSymbol.Equals(classSymbol.ContainingNamespace, SymbolEqualityComparer.Default))
-            {
-                return false;
-            }
-
-            if (!classSymbol.ContainsInterface(serializableInterface))
-            {
-                return false;
-            }
-
-            var versionValue = classSymbol.GetAttributes()
-                .FirstOrDefault(
-                    attr => SymbolEqualityComparer.Default.Equals(attr.AttributeClass, serializableEntityAttribute)
-                )?.ConstructorArguments.FirstOrDefault().Value;
-
-            return versionValue != null;
-        }
-
         public static string GenerateSerializationPartialClass(
             INamedTypeSymbol classSymbol,
+            AttributeData serializableAttr,
             ImmutableArray<ISymbol> fieldsAndProperties,
-            GeneratorExecutionContext context,
+            Compilation compilation,
             string migrationPath,
             JsonSerializerOptions jsonSerializerOptions,
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
-            var compilation = context.Compilation;
-
-            var serializableEntityAttribute =
-                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_ATTRIBUTE);
             var serializableFieldAttribute =
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTRIBUTE);
             var serializableFieldAttrAttribute =
@@ -86,13 +57,8 @@ namespace SerializationGenerator
                 return null;
             }
 
-            var serializableAttribute = classSymbol.GetAttributes()
-                .FirstOrDefault(
-                    attr => SymbolEqualityComparer.Default.Equals(attr.AttributeClass, serializableEntityAttribute)
-                );
-
-            var version = (int)serializableAttribute?.ConstructorArguments[0].Value!;
-            var encodedVersion = (bool)serializableAttribute.ConstructorArguments[1].Value!;
+            var version = (int)serializableAttr.ConstructorArguments[0].Value!;
+            var encodedVersion = (bool)serializableAttr.ConstructorArguments[1].Value!;
 
             var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
             var className = classSymbol.Name;
@@ -221,38 +187,10 @@ namespace SerializationGenerator
                     AccessModifier.None,
                     indent
                 );
-
-                // bool ISerializable.UseDirtyChecking { get; } = true;
-                // source.GenerateAutoProperty(
-                //     AccessModifier.None,
-                //     "bool",
-                //     "ISerializable.UseDirtyChecking",
-                //     AccessModifier.None,
-                //     null,
-                //     indent,
-                //     defaultValue: "true"
-                // );
-                // source.AppendLine();
             }
-            // else
-            // {
-                // If this type does not *directly* inherit `ISerializable`, then we assume it has an overridable `UseDirtyChecking`
-                // public override bool ISerializable.UseDirtyChecking { get; } = true;
-                // source.GenerateAutoProperty(
-                //     AccessModifier.Public,
-                //     "bool",
-                //     "UseDirtyChecking",
-                //     AccessModifier.None,
-                //     null,
-                //     indent,
-                //     defaultValue: "true",
-                //     isOverride: true
-                // );
-                // source.AppendLine();
-            // }
 
             // Serial constructor
-            source.GenerateSerialCtor(context, className, isOverride);
+            source.GenerateSerialCtor(compilation, className, isOverride);
             source.AppendLine();
 
             List<SerializableMetadata> migrations = new List<SerializableMetadata>();

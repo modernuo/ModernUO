@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -138,5 +139,29 @@ namespace SourceGeneration
                 compilation.GetTypeByMetadataName(MAP_CLASS),
                 SymbolEqualityComparer.Default
             );
+
+        public static AttributeData? GetAttribute(this ISymbol symbol, ISymbol attrSymbol) =>
+            symbol
+                .GetAttributes()
+                .FirstOrDefault(
+                    ad => ad.AttributeClass != null && SymbolEqualityComparer.Default.Equals(ad.AttributeClass, attrSymbol)
+                );
+
+        public static bool WillBeSerializable(this INamedTypeSymbol classSymbol, Compilation compilation, out AttributeData? attributeData)
+        {
+            var serializableInterface = compilation.GetTypeByMetadataName(SERIALIZABLE_INTERFACE);
+
+            if (!classSymbol.ContainsInterface(serializableInterface))
+            {
+                attributeData = null;
+                return false;
+            }
+
+            var serializableEntityAttribute =
+                compilation.GetTypeByMetadataName(SERIALIZABLE_ATTRIBUTE);
+
+            attributeData = classSymbol.GetAttribute(serializableEntityAttribute);
+            return attributeData != null;
+        }
     }
 }
