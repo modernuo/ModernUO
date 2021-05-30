@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SerializableMigration.cs                                        *
+ * File: SerializableMigrationSchema.cs                                  *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -22,7 +22,7 @@ using Microsoft.CodeAnalysis;
 
 namespace SerializableMigration
 {
-    public static partial class SerializableMigration
+    public static class SerializableMigrationSchema
     {
         public static JsonSerializerOptions GetJsonSerializerOptions(Compilation compilation) =>
             new()

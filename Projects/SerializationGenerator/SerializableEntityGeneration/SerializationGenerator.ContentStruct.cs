@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SerializableMigration.ContentStruct.cs                          *
+ * File: SerializationGenerator.ContentStruct.cs                         *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,10 +14,11 @@
  *************************************************************************/
 
 using System.Text;
+using SerializableMigration;
 
-namespace SerializableMigration
+namespace SerializationGenerator
 {
-    public static partial class SerializableMigration
+    public static partial class SerializableEntityGeneration
     {
         public static void GenerateMigrationContentStruct(
             this StringBuilder source,

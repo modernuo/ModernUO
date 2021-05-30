@@ -19,8 +19,9 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using CodeGeneration;
 using Microsoft.CodeAnalysis;
+using SerializableMigration;
+using SourceGeneration;
 
 namespace SerializationGenerator
 {
@@ -258,7 +259,7 @@ namespace SerializationGenerator
 
             if (version > 0)
             {
-                migrations = SerializableMigration.GetMigrations(
+                migrations = SerializableMigrationSchema.GetMigrations(
                     migrationPath,
                     classSymbol,
                     version,
@@ -306,7 +307,7 @@ namespace SerializationGenerator
                 Type = classSymbol.ToDisplayString(),
                 Properties = serializableProperties
             };
-            SerializableMigration.WriteMigration(migrationPath, newMigration, jsonSerializerOptions);
+            SerializableMigrationSchema.WriteMigration(migrationPath, newMigration, jsonSerializerOptions);
 
             return source.ToString();
         }

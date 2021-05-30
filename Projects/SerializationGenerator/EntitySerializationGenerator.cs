@@ -16,9 +16,9 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
-using CodeGeneration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using SerializableMigration;
 
 namespace SerializationGenerator
 {
@@ -43,8 +43,8 @@ namespace SerializationGenerator
                 return;
             }
 
-            var migrationPath = SerializableMigration.GetMigrationPath(context);
-            var jsonOptions = SerializableMigration.GetJsonSerializerOptions(context.Compilation);
+            var migrationPath = SerializableMigrationSchema.GetMigrationPath(context);
+            var jsonOptions = SerializableMigrationSchema.GetJsonSerializerOptions(context.Compilation);
             // List of types that _will_ become ISerializable
             var serializableList = receiver
                 .ClassAndFields

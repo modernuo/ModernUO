@@ -15,8 +15,9 @@
 
 using System.Collections.Immutable;
 using System.Text;
-using CodeGeneration;
 using Microsoft.CodeAnalysis;
+using SerializableMigration;
+using SourceGeneration;
 
 namespace SerializationGenerator
 {
