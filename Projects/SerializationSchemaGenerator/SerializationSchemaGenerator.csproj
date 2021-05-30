@@ -7,6 +7,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CodeGenerationShared\CodeGenerationShared.csproj" />
+    <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.9.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.9.0" />
   </ItemGroup>
 
 </Project>

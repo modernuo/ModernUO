@@ -28,11 +28,11 @@ namespace SerializationGenerator
 
         public static HashSet<string> AttributeTypes { get; } = new();
 
-        public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
+        public void OnVisitSyntaxNode(SyntaxNode node, SemanticModel semanticModel)
         {
-            if (context.Node is ClassDeclarationSyntax { AttributeLists: { Count: > 0 } } classDeclarationSyntax)
+            if (node is ClassDeclarationSyntax { AttributeLists: { Count: > 0 } } classDeclarationSyntax)
             {
-                if (context.SemanticModel.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
+                if (semanticModel.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
                 {
                     return;
                 }
@@ -45,24 +45,27 @@ namespace SerializationGenerator
                 return;
             }
 
-            if (context.Node is FieldDeclarationSyntax { AttributeLists: { Count: > 0 } } fieldDeclarationSyntax)
+            if (node is FieldDeclarationSyntax { AttributeLists: { Count: > 0 } } fieldDeclarationSyntax)
             {
                 foreach (var variable in fieldDeclarationSyntax.Declaration.Variables)
                 {
-                    if (context.SemanticModel.GetDeclaredSymbol(variable) is IFieldSymbol fieldSymbol)
+                    if (semanticModel.GetDeclaredSymbol(variable) is IFieldSymbol fieldSymbol)
                     {
                         AddFieldOrProperty(fieldSymbol);
                     }
                 }
             }
-            else if (context.Node is PropertyDeclarationSyntax { AttributeLists: { Count: > 0 } } propertyDeclarationSyntax)
+            else if (node is PropertyDeclarationSyntax { AttributeLists: { Count: > 0 } } propertyDeclarationSyntax)
             {
-                if (context.SemanticModel.GetDeclaredSymbol(propertyDeclarationSyntax) is IPropertySymbol propertySymbol)
+                if (semanticModel.GetDeclaredSymbol(propertyDeclarationSyntax) is IPropertySymbol propertySymbol)
                 {
                     AddFieldOrProperty(propertySymbol);
                 }
             }
         }
+
+        public void OnVisitSyntaxNode(GeneratorSyntaxContext context) =>
+            OnVisitSyntaxNode(context.Node, context.SemanticModel);
 
         private void AddFieldOrProperty(ISymbol symbol)
         {
