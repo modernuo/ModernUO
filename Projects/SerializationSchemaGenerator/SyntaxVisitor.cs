@@ -24,7 +24,7 @@ namespace SerializationSchemaGenerator
     {
         private readonly Action<SyntaxNode> _actionOnNode;
 
-        public SyntaxVisitor(Action<TypeDeclarationSyntax> action) => _actionOnNode = action;
+        public SyntaxVisitor(Action<SyntaxNode> action) => _actionOnNode = action;
 
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
         {
