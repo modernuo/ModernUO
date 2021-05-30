@@ -19,6 +19,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using CodeGeneration;
 using Microsoft.CodeAnalysis;
 
 namespace SerializationGenerator
@@ -30,8 +31,8 @@ namespace SerializationGenerator
             var compilation = context.Compilation;
 
             var serializableEntityAttribute =
-                compilation.GetTypeByMetadataName(SERIALIZABLE_ATTRIBUTE);
-            var serializableInterface = compilation.GetTypeByMetadataName(SERIALIZABLE_INTERFACE);
+                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_ATTRIBUTE);
+            var serializableInterface = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_INTERFACE);
 
             if (!classSymbol.ContainingSymbol.Equals(classSymbol.ContainingNamespace, SymbolEqualityComparer.Default))
             {
@@ -63,12 +64,12 @@ namespace SerializationGenerator
             var compilation = context.Compilation;
 
             var serializableEntityAttribute =
-                compilation.GetTypeByMetadataName(SERIALIZABLE_ATTRIBUTE);
+                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_ATTRIBUTE);
             var serializableFieldAttribute =
-                compilation.GetTypeByMetadataName(SERIALIZABLE_FIELD_ATTRIBUTE);
+                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTRIBUTE);
             var serializableFieldAttrAttribute =
-                compilation.GetTypeByMetadataName(SERIALIZABLE_FIELD_ATTR_ATTRIBUTE);
-            var serializableInterface = compilation.GetTypeByMetadataName(SERIALIZABLE_INTERFACE);
+                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTR_ATTRIBUTE);
+            var serializableInterface = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_INTERFACE);
 
             // This is a class symbol if the containing symbol is the namespace
             if (!classSymbol.ContainingSymbol.Equals(classSymbol.ContainingNamespace, SymbolEqualityComparer.Default))

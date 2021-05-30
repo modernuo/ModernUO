@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SerializableEntityGeneration.SerialCtor.cs                      *
+ * File: Helpers.cs                                                      *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,39 +13,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Text;
-using CodeGeneration;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace SerializationGenerator
+namespace CodeGeneration
 {
-    public static partial class SerializableEntityGeneration
+    public static class Helpers
     {
-        private static readonly ImmutableArray<string> _baseParameters = new[] { "serial" }.ToImmutableArray();
-        public static void GenerateSerialCtor(
-            this StringBuilder source,
-            GeneratorExecutionContext context,
-            string className,
-            bool isOverride
-        )
+        public static bool ContainsInterface(this ITypeSymbol symbol, ISymbol interfaceSymbol) =>
+            symbol.Interfaces.Any(i => i.ConstructedFrom.Equals(interfaceSymbol, SymbolEqualityComparer.Default)) ||
+            symbol.AllInterfaces.Any(i => i.ConstructedFrom.Equals(interfaceSymbol, SymbolEqualityComparer.Default));
+
+        public static ImmutableArray<IMethodSymbol> GetAllMethods(this ITypeSymbol symbol, string name)
         {
-            var serialType = (ITypeSymbol)context.Compilation.GetTypeByMetadataName("Server.Serial");
-
-            source.GenerateConstructorStart(
-                className,
-                AccessModifier.Public,
-                new []{ (serialType, "serial") }.ToImmutableArray(),
-                isOverride ? _baseParameters : ImmutableArray<string>.Empty
-            );
-
-            if (!isOverride)
+            var methods = symbol.GetMembers(name).OfType<IMethodSymbol>().ToImmutableArray();
+            if (symbol.ContainingSymbol is not ITypeSymbol typeSymbol)
             {
-                source.AppendLine(@$"            Serial = serial;
-            SetTypeRef(typeof({className}));");
+                return methods;
             }
 
-            source.GenerateMethodEnd();
+            var list = new List<IMethodSymbol>();
+            list.AddRange(methods.ToList());
+            list.AddRange(GetAllMethods(typeSymbol, name).ToList());
+
+            return list.ToImmutableArray();
         }
     }
 }

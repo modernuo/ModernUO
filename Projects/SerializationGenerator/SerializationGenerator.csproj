@@ -12,6 +12,10 @@
         <PackageReference Include="System.Text.Json" Version="4.7.2" GeneratePathProperty="true" PrivateAssets="all" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\CodeGenerationShared\CodeGenerationShared.csproj" GeneratePathProperty="true" PrivateAssets="all" />
+    </ItemGroup>
+
     <PropertyGroup>
         <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
     </PropertyGroup>
