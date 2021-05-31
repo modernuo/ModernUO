@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 
@@ -29,6 +30,8 @@ namespace SerializationSchemaGenerator
             {
                 throw new FileNotFoundException($"Could not open a valid solution at location {solutionPath}");
             }
+
+            MSBuildLocator.RegisterDefaults();
 
             var workspace = MSBuildWorkspace.Create();
 

@@ -14,8 +14,10 @@
  *************************************************************************/
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 
 namespace SerializableMigration
@@ -33,6 +35,8 @@ namespace SerializableMigration
 
         private static Dictionary<string, SerializableMetadata> _cache = new();
 
+        private static Regex _fileRegex = new(@"\S+\.v\d+\.json$");
+
         public static List<SerializableMetadata> GetMigrationsByAnalyzerConfig(
             this GeneratorExecutionContext context,
             INamedTypeSymbol typeSymbol,
@@ -45,7 +49,13 @@ namespace SerializableMigration
 
             foreach (var additionalText in context.AdditionalFiles)
             {
-                if (!_cache.TryGetValue(additionalText.Path, out var migration))
+                var fi = new FileInfo(additionalText.Path);
+                if (!_fileRegex.IsMatch(fi.Name))
+                {
+                    continue;
+                }
+
+                if (!_cache.TryGetValue(fi.Name, out var migration))
                 {
                     var text = additionalText.GetText(context.CancellationToken)?.ToString();
                     if (text == null)

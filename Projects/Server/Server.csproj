@@ -61,19 +61,15 @@
         <RemoveDir Directories="Generated" />
     </Target>
     <ItemGroup>
-        <AdditionalFiles Include="./Migrations/*.json" />
+        <AdditionalFiles Include="Migrations/*.v*.json" />
     </ItemGroup>
-<!--    <ItemGroup>-->
-<!--        <CompilerVisibleProperty Include="SerializableMigrations" />-->
-<!--    </ItemGroup>-->
-<!--    <ItemGroup>-->
-<!--      <Folder Include="Migrations" />-->
-<!--    </ItemGroup>-->
     <PropertyGroup>
         <SerializableMigrationPath>.\Migrations\</SerializableMigrationPath>
     </PropertyGroup>
-<!--    <Target Name="GenerateMigrationSchemas" AfterTargets="AfterBuild">-->
-<!--        <Exec Command="dotnet build -c Release $(ProjectDir)../SerializationSchemaGenerator/SerializationSchemaGenerator.csproj" />-->
-<!--        <Message Importance="high" Text="dotnet build -c Release $(ProjectDir)../SerializationSchemaGenerator/SerializationSchemaGenerator.csproj" />-->
-<!--    </Target>-->
+    <Target Name="GenerateMigrationSchemas" AfterTargets="AfterBuild">
+        <Message Importance="high" Text="Building serialization schema generator" />
+        <Exec Command="dotnet build -c Release $(ProjectDir)../SerializationSchemaGenerator/SerializationSchemaGenerator.csproj" />
+        <Message Importance="high" Text="Generating serialization schemas" />
+        <Exec Command="dotnet $(ProjectDir)../SerializationSchemaGenerator/Output/SerializationSchemaGenerator.dll $(ProjectDir)../../ModernUO.sln Server $(ProjectDir)Migrations" />
+    </Target>
 </Project>
