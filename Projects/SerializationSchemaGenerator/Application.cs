@@ -34,8 +34,6 @@ namespace SerializationSchemaGenerator
 
             var solutionPath = args[0];
 
-            var syntaxReceiver = new SerializerSyntaxReceiver();
-
             Parallel.ForEach(
                 SourceCodeAnalysis.GetCompilation(solutionPath),
                 (projectCompilation) =>
@@ -50,6 +48,8 @@ namespace SerializationSchemaGenerator
                     var projectPath = projectFile.Directory?.FullName;
                     var migrationPath = Path.Join(projectPath, "Migrations");
                     Directory.CreateDirectory(migrationPath);
+
+                    var syntaxReceiver = new SerializerSyntaxReceiver();
 
                     foreach (var syntaxTree in compilation.SyntaxTrees)
                     {

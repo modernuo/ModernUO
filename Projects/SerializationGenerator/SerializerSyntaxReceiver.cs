@@ -25,7 +25,7 @@ namespace SerializationGenerator
     public class SerializerSyntaxReceiver : ISyntaxContextReceiver
     {
 #pragma warning disable RS1024
-        public ConcurrentDictionary<INamedTypeSymbol, (AttributeData?, List<ISymbol>)> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
+        public Dictionary<INamedTypeSymbol, (AttributeData?, List<ISymbol>)> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
 #pragma warning restore RS1024
 
         public ImmutableArray<INamedTypeSymbol> SerializableList => ClassAndFields.Keys.ToImmutableArray();
@@ -50,7 +50,7 @@ namespace SerializationGenerator
                     }
                     else
                     {
-                        ClassAndFields.TryAdd(classSymbol, (attrData, new List<ISymbol>()));
+                        ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol>()));
                     }
                 }
 
@@ -98,7 +98,7 @@ namespace SerializationGenerator
 
             if (classSymbol.WillBeSerializable(compilation, out var attrData))
             {
-                ClassAndFields.TryAdd(classSymbol, (attrData, new List<ISymbol> { symbol }));
+                ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol> { symbol }));
             }
         }
     }
