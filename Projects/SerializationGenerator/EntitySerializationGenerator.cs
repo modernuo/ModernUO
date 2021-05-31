@@ -50,11 +50,10 @@ namespace SerializationGenerator
                     continue;
                 }
 
-                string classSource = SerializableEntityGeneration.GenerateSerializationPartialClass(
+                string classSource = compilation.GenerateSerializationPartialClass(
                     classSymbol,
                     serializableAttr,
                     fieldsList.ToImmutableArray(),
-                    compilation,
                     migrationPath,
                     jsonOptions,
                     serializableList

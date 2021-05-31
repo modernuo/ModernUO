@@ -14,8 +14,10 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Immutable;
 using System.IO;
 using Microsoft.CodeAnalysis;
+using SerializableMigration;
 using SerializationGenerator;
 
 namespace SerializationSchemaGenerator
@@ -24,16 +26,22 @@ namespace SerializationSchemaGenerator
     {
         public static void Main(string[] args)
         {
-            if (args.Length < 2)
+            if (args.Length < 3)
             {
-                throw new ArgumentException("Must specify the path to the solution and the name of the project");
+                throw new ArgumentException("Must specify the path to the solution, project name, and path to migrations");
             }
 
-            var compilation = SourceCodeAnalysis.GetCompilation(args[0], args[1]);
+            var solutionPath = args[0];
+            var projectName = args[1];
+            var migrationPath = args[2];
+
+            var compilation = SourceCodeAnalysis.GetCompilation(solutionPath, projectName);
             if (compilation == null)
             {
                 throw new FileLoadException("Unable to load solution and project.");
             }
+
+            Directory.CreateDirectory(migrationPath);
 
             var syntaxReceiver = new SerializerSyntaxReceiver();
 
@@ -49,6 +57,22 @@ namespace SerializationSchemaGenerator
 
                 var syntaxVisitor = new SyntaxVisitor(VisitSyntaxNode);
                 syntaxVisitor.Visit(root);
+            }
+
+            var jsonOptions = SerializableMigrationSchema.GetJsonSerializerOptions(compilation);
+
+            var serializableTypes = syntaxReceiver.SerializableList;
+
+            foreach (var (classSymbol, (attributeData, fieldsList)) in syntaxReceiver.ClassAndFields)
+            {
+                compilation.GenerateSchema(
+                    classSymbol,
+                    attributeData,
+                    fieldsList.ToImmutableArray(),
+                    migrationPath,
+                    jsonOptions,
+                    serializableTypes
+                );
             }
         }
     }

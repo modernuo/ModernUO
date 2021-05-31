@@ -28,10 +28,10 @@ namespace SerializationGenerator
     public static partial class SerializableEntityGeneration
     {
         public static string GenerateSerializationPartialClass(
+            this Compilation compilation,
             INamedTypeSymbol classSymbol,
             AttributeData serializableAttr,
             ImmutableArray<ISymbol> fieldsAndProperties,
-            Compilation compilation,
             string migrationPath,
             JsonSerializerOptions jsonSerializerOptions,
             ImmutableArray<INamedTypeSymbol> serializableTypes
@@ -42,12 +42,6 @@ namespace SerializationGenerator
             var serializableFieldAttrAttribute =
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTR_ATTRIBUTE);
             var serializableInterface = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_INTERFACE);
-
-            // This is a class symbol if the containing symbol is the namespace
-            if (!classSymbol.ContainingSymbol.Equals(classSymbol.ContainingNamespace, SymbolEqualityComparer.Default))
-            {
-                return null;
-            }
 
             // If we have a parent that is or derives from ISerializable, then we are in override
             var isOverride = classSymbol.BaseType.ContainsInterface(serializableInterface);
@@ -129,31 +123,15 @@ namespace SerializationGenerator
                     }
                 }
 
-                string propertyName;
-                ITypeSymbol propertyType;
-
                 if (fieldOrPropertySymbol is IFieldSymbol fieldSymbol)
                 {
                     source.GenerateSerializableProperty(fieldSymbol, compilation);
                     source.AppendLine();
-
-                    propertyName = fieldSymbol.GetPropertyName();
-                    propertyType = fieldSymbol.Type;
-                }
-                else if (fieldOrPropertySymbol is IPropertySymbol propertySymbol)
-                {
-                    propertyName = fieldOrPropertySymbol.Name;
-                    propertyType = propertySymbol.Type;
-                }
-                else
-                {
-                    throw new Exception($"Invalid node {fieldOrPropertySymbol.Name}. Expecting a field or property node.");
                 }
 
                 var serializableProperty = SerializableMigrationRulesEngine.GenerateSerializableProperty(
                     compilation,
-                    propertyName,
-                    propertyType,
+                    fieldOrPropertySymbol,
                     order,
                     allAttributes,
                     serializableTypes
@@ -237,15 +215,6 @@ namespace SerializationGenerator
 
             source.GenerateClassEnd();
             source.GenerateNamespaceEnd();
-
-            // Write the migration file
-            var newMigration = new SerializableMetadata
-            {
-                Version = version,
-                Type = classSymbol.ToDisplayString(),
-                Properties = serializableProperties
-            };
-            SerializableMigrationSchema.WriteMigration(migrationPath, newMigration, jsonSerializerOptions);
 
             return source.ToString();
         }
