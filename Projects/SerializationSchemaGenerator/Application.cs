@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Immutable;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using SerializationGenerator;
@@ -33,6 +34,8 @@ namespace SerializationSchemaGenerator
 
             var solutionPath = args[0];
 
+            var syntaxReceiver = new SerializerSyntaxReceiver();
+
             Parallel.ForEach(
                 SourceCodeAnalysis.GetCompilation(solutionPath),
                 (projectCompilation) =>
@@ -44,10 +47,9 @@ namespace SerializationSchemaGenerator
                     }
 
                     var projectFile = new FileInfo(project.FilePath!);
-                    var migrationPath = Path.Join(projectFile.Directory?.FullName, "Migrations");
+                    var projectPath = projectFile.Directory?.FullName;
+                    var migrationPath = Path.Join(projectPath, "Migrations");
                     Directory.CreateDirectory(migrationPath);
-
-                    var syntaxReceiver = new SerializerSyntaxReceiver();
 
                     foreach (var syntaxTree in compilation.SyntaxTrees)
                     {
@@ -64,21 +66,32 @@ namespace SerializationSchemaGenerator
                         ReadCommentHandling = JsonCommentHandling.Skip
                     };
 
+                    // var generatedSourcePath = Path.Join(projectPath, "Generated");
+
                     var serializableTypes = syntaxReceiver.SerializableList;
 
                     foreach (var (classSymbol, (attributeData, fieldsList)) in syntaxReceiver.ClassAndFields)
                     {
-                        compilation.GenerateSchema(
+                        var source = compilation.GenerateSerializationPartialClass(
                             classSymbol,
                             attributeData,
-                            fieldsList.ToImmutableArray(),
                             migrationPath,
                             jsonOptions,
+                            fieldsList.ToImmutableArray(),
                             serializableTypes
                         );
+
+                        // WriteSource(generatedSourcePath, classSymbol.ToDisplayString(), source);
                     }
                 }
             );
+        }
+
+        public static void WriteSource(string sourcePath, string className, string source)
+        {
+            Directory.CreateDirectory(sourcePath);
+            var filePath = Path.Combine(sourcePath, $"{className}.Serialization.cs");
+            File.WriteAllText(filePath, source, Encoding.UTF8);
         }
     }
 }

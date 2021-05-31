@@ -10,6 +10,8 @@
         <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
+        <Message Text="Deleting source generated files..." />
+        <Delete Files="Generated\**" ContinueOnError="true" />
         <Message Text="Removing distribution assemblies..." />
         <Delete Files="..\..\Distribution\Assemblies\Argon2.Bindings.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\BouncyCastle.Crypto.dll" ContinueOnError="true" />
@@ -40,12 +42,24 @@
         <PackageReference Include="Argon2.Bindings" Version="1.9.1" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj">
+            <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+            <OutputItemType>Analyzer</OutputItemType>
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+            <PrivateAssets>all</PrivateAssets>
+        </ProjectReference>
+    </ItemGroup>
+    <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile">
+        <ItemGroup>
+            <Compile Remove="Generated\**" />
+        </ItemGroup>
+    </Target>
+    <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile">
+        <ItemGroup>
+            <Compile Include="Generated\**" />
+        </ItemGroup>
+    </Target>
+    <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
     </ItemGroup>
-    <!--    <Target Name="GenerateMigrationSchemas" AfterTargets="AfterBuild">-->
-    <!--        <Message Importance="high" Text="Building serialization schema generator" />-->
-    <!--        <Exec Command="dotnet build -c Release $(ProjectDir)../SerializationSchemaGenerator/SerializationSchemaGenerator.csproj" />-->
-    <!--        <Message Importance="high" Text="Generating serialization schemas" />-->
-    <!--        <Exec Command="dotnet $(ProjectDir)../SerializationSchemaGenerator/Output/SerializationSchemaGenerator.dll $(ProjectDir)../../ModernUO.sln" />-->
-    <!--    </Target>-->
 </Project>

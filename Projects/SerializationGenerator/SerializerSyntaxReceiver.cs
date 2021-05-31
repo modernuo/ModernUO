@@ -13,9 +13,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceGeneration;
@@ -25,7 +25,7 @@ namespace SerializationGenerator
     public class SerializerSyntaxReceiver : ISyntaxContextReceiver
     {
 #pragma warning disable RS1024
-        public Dictionary<INamedTypeSymbol, (AttributeData?, List<ISymbol>)> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
+        public ConcurrentDictionary<INamedTypeSymbol, (AttributeData?, List<ISymbol>)> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
 #pragma warning restore RS1024
 
         public ImmutableArray<INamedTypeSymbol> SerializableList => ClassAndFields.Keys.ToImmutableArray();
@@ -50,7 +50,7 @@ namespace SerializationGenerator
                     }
                     else
                     {
-                        ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol>()));
+                        ClassAndFields.TryAdd(classSymbol, (attrData, new List<ISymbol>()));
                     }
                 }
 
@@ -98,7 +98,7 @@ namespace SerializationGenerator
 
             if (classSymbol.WillBeSerializable(compilation, out var attrData))
             {
-                ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol> { symbol }));
+                ClassAndFields.TryAdd(classSymbol, (attrData, new List<ISymbol> { symbol }));
             }
         }
     }
