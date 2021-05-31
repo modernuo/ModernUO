@@ -17,7 +17,6 @@ using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Text.Json;
-using Microsoft.CodeAnalysis;
 using SerializationGenerator;
 
 namespace SerializationSchemaGenerator
@@ -47,15 +46,8 @@ namespace SerializationSchemaGenerator
 
             foreach (var syntaxTree in compilation.SyntaxTrees)
             {
-                var semanticModel = compilation.GetSemanticModel(syntaxTree);
                 var root = syntaxTree.GetRoot();
-
-                void VisitSyntaxNode(SyntaxNode node)
-                {
-                    syntaxReceiver.OnVisitSyntaxNode(node, semanticModel);
-                }
-
-                var syntaxVisitor = new SyntaxVisitor(VisitSyntaxNode);
+                var syntaxVisitor = new SyntaxVisitor(compilation.GetSemanticModel(syntaxTree), syntaxReceiver);
                 syntaxVisitor.Visit(root);
             }
 

@@ -13,38 +13,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SerializationGenerator;
 
 namespace SerializationSchemaGenerator
 {
-    public class SyntaxVisitor : CSharpSyntaxRewriter
+    public class SyntaxVisitor : CSharpSyntaxWalker
     {
-        private readonly Action<SyntaxNode> _actionOnNode;
+        private readonly SemanticModel _semanticModel;
+        private readonly SerializerSyntaxReceiver _syntaxReceiver;
 
-        public SyntaxVisitor(Action<SyntaxNode> action) => _actionOnNode = action;
-
-        public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
+        public SyntaxVisitor(SemanticModel semanticModel, SerializerSyntaxReceiver syntaxReceiver)
         {
-            node = (ClassDeclarationSyntax)base.VisitClassDeclaration(node);
-            _actionOnNode(node);
-            return node;
+            _semanticModel = semanticModel;
+            _syntaxReceiver = syntaxReceiver;
         }
 
-        public override SyntaxNode? VisitFieldDeclaration(FieldDeclarationSyntax node)
+        public override void VisitClassDeclaration(ClassDeclarationSyntax node)
         {
-            node = (FieldDeclarationSyntax)base.VisitFieldDeclaration(node);
-            _actionOnNode(node);
-            return node;
+            _syntaxReceiver.OnVisitSyntaxNode(node, _semanticModel);
         }
 
-        public override SyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax node)
+        public override void VisitFieldDeclaration(FieldDeclarationSyntax node)
         {
-            node = (PropertyDeclarationSyntax)base.VisitPropertyDeclaration(node);
-            _actionOnNode(node);
-            return node;
+            _syntaxReceiver.OnVisitSyntaxNode(node, _semanticModel);
+        }
+
+        public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
+        {
+            _syntaxReceiver.OnVisitSyntaxNode(node, _semanticModel);
         }
     }
 }
