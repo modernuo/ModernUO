@@ -14,11 +14,10 @@
  *************************************************************************/
 
 using System.Collections.Immutable;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using SerializableMigration;
 
 namespace SerializationGenerator
 {
@@ -27,12 +26,6 @@ namespace SerializationGenerator
     {
         public void Initialize(GeneratorInitializationContext context)
         {
-            context.RegisterForPostInitialization(i =>
-            {
-                SerializerSyntaxReceiver.AttributeTypes.Add("Server.SerializableAttribute");
-                SerializerSyntaxReceiver.AttributeTypes.Add("Server.SerializableFieldAttribute");
-            });
-
             context.RegisterForSyntaxNotifications(() => new SerializerSyntaxReceiver());
         }
 
@@ -43,29 +36,28 @@ namespace SerializationGenerator
                 return;
             }
 
-            var migrationPath = SerializableMigration.GetMigrationPath(context);
-            var jsonOptions = SerializableMigration.GetJsonSerializerOptions(context.Compilation);
+            var jsonOptions = SerializableMigrationSchema.GetJsonSerializerOptions();
             // List of types that _will_ become ISerializable
-            var serializableList = receiver
-                .ClassAndFields
-                .Select(g => g.Key)
-                .Where(t => t.WillBeSerializable(context))
-                .ToImmutableArray();
+            var serializableList = receiver.SerializableList;
 
-            foreach (var kvp in receiver.ClassAndFields)
+            foreach (var (classSymbol, (serializableAttr, fieldsList)) in receiver.ClassAndFields)
             {
-                string classSource = SerializableEntityGeneration.GenerateSerializationPartialClass(
-                    kvp.Key,
-                    kvp.Value.ToImmutableArray(),
-                    context,
-                    migrationPath,
+                if (serializableAttr == null)
+                {
+                    continue;
+                }
+
+                string classSource = context.GenerateSerializationPartialClass(
+                    classSymbol,
+                    serializableAttr,
+                    fieldsList.ToImmutableArray(),
                     jsonOptions,
                     serializableList
                 );
 
                 if (classSource != null)
                 {
-                    context.AddSource($"{kvp.Key.ToDisplayString()}.Serialization.cs", SourceText.From(classSource, Encoding.UTF8));
+                    context.AddSource($"{classSymbol.ToDisplayString()}.Serialization.cs", SourceText.From(classSource, Encoding.UTF8));
                 }
             }
         }

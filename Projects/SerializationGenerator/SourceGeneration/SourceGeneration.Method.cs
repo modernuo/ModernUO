@@ -17,7 +17,7 @@ using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace SerializationGenerator
+namespace SourceGeneration
 {
     public static partial class SourceGeneration
     {

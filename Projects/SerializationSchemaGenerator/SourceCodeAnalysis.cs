@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: Helpers.cs                                                      *
+ * File: SourceCodeAnalysis.cs                                           *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,32 +13,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
+using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.MSBuild;
 
-namespace SourceGeneration
+namespace SerializationSchemaGenerator
 {
-    public static class Helpers
+    public static class SourceCodeAnalysis
     {
-        public static bool ContainsInterface(this ITypeSymbol symbol, ISymbol interfaceSymbol) =>
-            symbol.Interfaces.Any(i => i.ConstructedFrom.Equals(interfaceSymbol, SymbolEqualityComparer.Default)) ||
-            symbol.AllInterfaces.Any(i => i.ConstructedFrom.Equals(interfaceSymbol, SymbolEqualityComparer.Default));
-
-        public static ImmutableArray<IMethodSymbol> GetAllMethods(this ITypeSymbol symbol, string name)
+        public static List<(Project, Compilation)> GetCompilation(string solutionPath)
         {
-            var methods = symbol.GetMembers(name).OfType<IMethodSymbol>().ToImmutableArray();
-            if (symbol.ContainingSymbol is not ITypeSymbol typeSymbol)
+            if (!File.Exists(solutionPath) || !solutionPath.EndsWith(".sln", StringComparison.Ordinal))
             {
-                return methods;
+                throw new FileNotFoundException($"Could not open a valid solution at location {solutionPath}");
             }
 
-            var list = new List<IMethodSymbol>();
-            list.AddRange(methods.ToList());
-            list.AddRange(GetAllMethods(typeSymbol, name).ToList());
+            MSBuildLocator.RegisterDefaults();
 
-            return list.ToImmutableArray();
+            var workspace = MSBuildWorkspace.Create();
+
+            var solutionToAnalyze = workspace.OpenSolutionAsync(solutionPath).Result;
+
+            var results = solutionToAnalyze.Projects.AsParallel()
+                .Select((project) => (project, project?.GetCompilationAsync().Result))
+                .Where((value) => value.Result != null)
+                .ToList();
+
+            return results;
         }
     }
 }

@@ -39,24 +39,13 @@
         <PackageReference Include="Zlib.Bindings" Version="1.5.0" />
         <PackageReference Include="Argon2.Bindings" Version="1.9.1" />
     </ItemGroup>
-<!--    <ItemGroup>-->
-<!--        <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />-->
-<!--    </ItemGroup>-->
-<!--    <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile">-->
-<!--        <ItemGroup>-->
-<!--            <Compile Include="Generated\**" />-->
-<!--        </ItemGroup>-->
-<!--    </Target>-->
-<!--    <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile">-->
-<!--        <ItemGroup>-->
-<!--            <Compile Remove="Generated\**" />-->
-<!--        </ItemGroup>-->
-<!--        <RemoveDir Directories="Generated" />-->
-<!--    </Target>-->
-<!--    <ItemGroup>-->
-<!--        <CompilerVisibleProperty Include="SerializableMigrationPath" />-->
-<!--    </ItemGroup>-->
-<!--    <PropertyGroup>-->
-<!--        <SerializableMigrationPath>.\Migrations\</SerializableMigrationPath>-->
-<!--    </PropertyGroup>-->
+    <ItemGroup>
+        <AdditionalFiles Include="Migrations/*.v*.json" />
+    </ItemGroup>
+    <!--    <Target Name="GenerateMigrationSchemas" AfterTargets="AfterBuild">-->
+    <!--        <Message Importance="high" Text="Building serialization schema generator" />-->
+    <!--        <Exec Command="dotnet build -c Release $(ProjectDir)../SerializationSchemaGenerator/SerializationSchemaGenerator.csproj" />-->
+    <!--        <Message Importance="high" Text="Generating serialization schemas" />-->
+    <!--        <Exec Command="dotnet $(ProjectDir)../SerializationSchemaGenerator/Output/SerializationSchemaGenerator.dll $(ProjectDir)../../ModernUO.sln" />-->
+    <!--    </Target>-->
 </Project>

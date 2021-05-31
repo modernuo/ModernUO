@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SerializationGenerator
+namespace SerializableMigration
 {
     public class SerializableMetadataComparer : IComparer<SerializableMetadata>
     {

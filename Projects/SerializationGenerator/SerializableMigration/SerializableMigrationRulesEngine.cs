@@ -17,8 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using SourceGeneration;
 
-namespace SerializationGenerator
+namespace SerializableMigration
 {
     public static class SerializableMigrationRulesEngine
     {
@@ -43,6 +44,42 @@ namespace SerializationGenerator
             {
                 Rules.Add(rule.RuleName, rule);
             }
+        }
+
+        public static SerializableProperty? GenerateSerializableProperty(
+            Compilation compilation,
+            ISymbol fieldOrPropertySymbol,
+            int order,
+            ImmutableArray<AttributeData> attributes,
+            ImmutableArray<INamedTypeSymbol> serializableTypes
+        )
+        {
+            string propertyName;
+            ITypeSymbol propertyType;
+
+            if (fieldOrPropertySymbol is IFieldSymbol fieldSymbol)
+            {
+                propertyName = fieldSymbol.GetPropertyName();
+                propertyType = fieldSymbol.Type;
+            }
+            else if (fieldOrPropertySymbol is IPropertySymbol propertySymbol)
+            {
+                propertyName = fieldOrPropertySymbol.Name;
+                propertyType = propertySymbol.Type;
+            }
+            else
+            {
+                return null;
+            }
+
+            return GenerateSerializableProperty(
+                compilation,
+                propertyName,
+                propertyType,
+                order,
+                attributes,
+                serializableTypes
+            );
         }
 
         public static SerializableProperty GenerateSerializableProperty(

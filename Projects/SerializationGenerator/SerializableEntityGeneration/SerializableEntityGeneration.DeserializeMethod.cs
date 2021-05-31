@@ -18,6 +18,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using SerializableMigration;
+using SourceGeneration;
 
 namespace SerializationGenerator
 {
@@ -34,7 +36,7 @@ namespace SerializationGenerator
             ImmutableArray<SerializableProperty> properties
         )
         {
-            var genericReaderInterface = compilation.GetTypeByMetadataName(GENERIC_READER_INTERFACE);
+            var genericReaderInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_READER_INTERFACE);
 
             source.GenerateMethodStart(
                 "Deserialize",
@@ -109,7 +111,7 @@ namespace SerializationGenerator
                             .Any(
                                 attr => SymbolEqualityComparer.Default.Equals(
                                     attr.AttributeClass,
-                                    compilation.GetTypeByMetadataName(AFTERDESERIALIZATION_ATTRIBUTE)
+                                    compilation.GetTypeByMetadataName(SymbolMetadata.AFTERDESERIALIZATION_ATTRIBUTE)
                                 )
                             )
                 );

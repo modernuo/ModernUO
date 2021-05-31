@@ -14,69 +14,91 @@
  *************************************************************************/
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SourceGeneration;
 
 namespace SerializationGenerator
 {
     public class SerializerSyntaxReceiver : ISyntaxContextReceiver
     {
 #pragma warning disable RS1024
-        public Dictionary<INamedTypeSymbol, List<ISymbol>> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
+        public Dictionary<INamedTypeSymbol, (AttributeData?, List<ISymbol>)> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
 #pragma warning restore RS1024
 
-        public static HashSet<string> AttributeTypes { get; } = new();
+        public ImmutableArray<INamedTypeSymbol> SerializableList => ClassAndFields.Keys.ToImmutableArray();
 
-        public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
+        public void OnVisitSyntaxNode(SyntaxNode node, SemanticModel semanticModel)
         {
-            if (context.Node is ClassDeclarationSyntax { AttributeLists: { Count: > 0 } } classDeclarationSyntax)
+            var compilation = semanticModel.Compilation;
+
+            if (node is ClassDeclarationSyntax { AttributeLists: { Count: > 0 } } classDeclarationSyntax)
             {
-                if (context.SemanticModel.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
+                if (semanticModel.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
                 {
                     return;
                 }
 
-                if (classSymbol.GetAttributes().Any(ad => AttributeTypes.Contains(ad.AttributeClass?.ToDisplayString()) && !ClassAndFields.ContainsKey(classSymbol)))
+                if (classSymbol.WillBeSerializable(compilation, out var attrData))
                 {
-                    ClassAndFields.Add(classSymbol, new List<ISymbol>());
+                    if (ClassAndFields.TryGetValue(classSymbol, out var value))
+                    {
+                        var (_, fieldsList) = value;
+                        ClassAndFields[classSymbol] = (attrData, fieldsList);
+                    }
+                    else
+                    {
+                        ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol>()));
+                    }
                 }
 
                 return;
             }
 
-            if (context.Node is FieldDeclarationSyntax { AttributeLists: { Count: > 0 } } fieldDeclarationSyntax)
+            if (node is FieldDeclarationSyntax { AttributeLists: { Count: > 0 } } fieldDeclarationSyntax)
             {
                 foreach (var variable in fieldDeclarationSyntax.Declaration.Variables)
                 {
-                    if (context.SemanticModel.GetDeclaredSymbol(variable) is IFieldSymbol fieldSymbol)
+                    if (semanticModel.GetDeclaredSymbol(variable) is IFieldSymbol fieldSymbol)
                     {
-                        AddFieldOrProperty(fieldSymbol);
+                        AddFieldOrProperty(fieldSymbol, compilation);
                     }
                 }
             }
-            else if (context.Node is PropertyDeclarationSyntax { AttributeLists: { Count: > 0 } } propertyDeclarationSyntax)
+            else if (node is PropertyDeclarationSyntax { AttributeLists: { Count: > 0 } } propertyDeclarationSyntax)
             {
-                if (context.SemanticModel.GetDeclaredSymbol(propertyDeclarationSyntax) is IPropertySymbol propertySymbol)
+                if (semanticModel.GetDeclaredSymbol(propertyDeclarationSyntax) is IPropertySymbol propertySymbol)
                 {
-                    AddFieldOrProperty(propertySymbol);
+                    AddFieldOrProperty(propertySymbol, compilation);
                 }
             }
         }
 
-        private void AddFieldOrProperty(ISymbol symbol)
+        public void OnVisitSyntaxNode(GeneratorSyntaxContext context) =>
+            OnVisitSyntaxNode(context.Node, context.SemanticModel);
+
+        private void AddFieldOrProperty(ISymbol symbol, Compilation compilation)
         {
-            if (symbol.GetAttributes().Any(ad => AttributeTypes.Contains(ad.AttributeClass?.ToDisplayString())))
+            var serializableFieldAttr = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTRIBUTE);
+
+            if (symbol.GetAttribute(serializableFieldAttr) == null)
             {
-                var classSymbol = symbol.ContainingType;
-                if (ClassAndFields.TryGetValue(classSymbol, out var fieldsList))
-                {
-                    fieldsList.Add(symbol);
-                }
-                else
-                {
-                    ClassAndFields.Add(classSymbol, new List<ISymbol> { symbol });
-                }
+                return;
+            }
+
+            var classSymbol = symbol.ContainingType;
+            if (ClassAndFields.TryGetValue(classSymbol, out var value))
+            {
+                var (_, fieldsList) = value;
+                fieldsList.Add(symbol);
+                return;
+            }
+
+            if (classSymbol.WillBeSerializable(compilation, out var attrData))
+            {
+                ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol> { symbol }));
             }
         }
     }

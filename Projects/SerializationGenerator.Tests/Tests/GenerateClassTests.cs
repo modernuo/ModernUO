@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
-using SerializationGenerator;
+using SourceGeneration;
 using Xunit;
 
 namespace SerializationGeneratorTests

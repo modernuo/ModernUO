@@ -16,6 +16,7 @@
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using SourceGeneration;
 
 namespace SerializationGenerator
 {
@@ -34,7 +35,7 @@ namespace SerializationGenerator
                 .OfType<AttributeData>()
                 .FirstOrDefault(
                     attr => attr.AttributeClass?.Equals(
-                        compilation.GetTypeByMetadataName(INVALIDATEPROPERTIES_ATTRIBUTE),
+                        compilation.GetTypeByMetadataName(SymbolMetadata.INVALIDATEPROPERTIES_ATTRIBUTE),
                         SymbolEqualityComparer.Default
                     ) ?? false
                 );
