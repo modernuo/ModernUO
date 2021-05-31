@@ -17,6 +17,7 @@ using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 using SerializationGenerator;
 
 namespace SerializationSchemaGenerator
@@ -25,53 +26,59 @@ namespace SerializationSchemaGenerator
     {
         public static void Main(string[] args)
         {
-            if (args.Length < 3)
+            if (args.Length < 1)
             {
-                throw new ArgumentException("Must specify the path to the solution, project name, and path to migrations");
+                throw new ArgumentException("Usage: dotnet SerializationSchemaGenerator.dll <path to solution>");
             }
 
             var solutionPath = args[0];
-            var projectName = args[1];
-            var migrationPath = args[2];
 
-            var compilation = SourceCodeAnalysis.GetCompilation(solutionPath, projectName);
-            if (compilation == null)
-            {
-                throw new FileLoadException("Unable to load solution and project.");
-            }
+            Parallel.ForEach(
+                SourceCodeAnalysis.GetCompilation(solutionPath),
+                (projectCompilation) =>
+                {
+                    var (project, compilation) = projectCompilation;
+                    if (project.Name.EndsWith(".Tests", StringComparison.Ordinal) || project.Name == "Benchmarks")
+                    {
+                        return;
+                    }
 
-            Directory.CreateDirectory(migrationPath);
+                    var projectFile = new FileInfo(project.FilePath!);
+                    var migrationPath = Path.Join(projectFile.Directory?.FullName, "Migrations");
+                    Directory.CreateDirectory(migrationPath);
 
-            var syntaxReceiver = new SerializerSyntaxReceiver();
+                    var syntaxReceiver = new SerializerSyntaxReceiver();
 
-            foreach (var syntaxTree in compilation.SyntaxTrees)
-            {
-                var root = syntaxTree.GetRoot();
-                var syntaxVisitor = new SyntaxVisitor(compilation.GetSemanticModel(syntaxTree), syntaxReceiver);
-                syntaxVisitor.Visit(root);
-            }
+                    foreach (var syntaxTree in compilation.SyntaxTrees)
+                    {
+                        var root = syntaxTree.GetRoot();
+                        var syntaxVisitor = new SyntaxVisitor(compilation.GetSemanticModel(syntaxTree), syntaxReceiver);
+                        syntaxVisitor.Visit(root);
+                    }
 
-            var jsonOptions = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                AllowTrailingCommas = true,
-                IgnoreNullValues = true,
-                ReadCommentHandling = JsonCommentHandling.Skip
-            };
+                    var jsonOptions = new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        AllowTrailingCommas = true,
+                        IgnoreNullValues = true,
+                        ReadCommentHandling = JsonCommentHandling.Skip
+                    };
 
-            var serializableTypes = syntaxReceiver.SerializableList;
+                    var serializableTypes = syntaxReceiver.SerializableList;
 
-            foreach (var (classSymbol, (attributeData, fieldsList)) in syntaxReceiver.ClassAndFields)
-            {
-                compilation.GenerateSchema(
-                    classSymbol,
-                    attributeData,
-                    fieldsList.ToImmutableArray(),
-                    migrationPath,
-                    jsonOptions,
-                    serializableTypes
-                );
-            }
+                    foreach (var (classSymbol, (attributeData, fieldsList)) in syntaxReceiver.ClassAndFields)
+                    {
+                        compilation.GenerateSchema(
+                            classSymbol,
+                            attributeData,
+                            fieldsList.ToImmutableArray(),
+                            migrationPath,
+                            jsonOptions,
+                            serializableTypes
+                        );
+                    }
+                }
+            );
         }
     }
 }

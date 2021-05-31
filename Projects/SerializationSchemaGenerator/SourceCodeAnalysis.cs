@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Build.Locator;
@@ -24,7 +25,7 @@ namespace SerializationSchemaGenerator
 {
     public static class SourceCodeAnalysis
     {
-        public static Compilation GetCompilation(string solutionPath, string projectName)
+        public static List<(Project, Compilation)> GetCompilation(string solutionPath)
         {
             if (!File.Exists(solutionPath) || !solutionPath.EndsWith(".sln", StringComparison.Ordinal))
             {
@@ -35,14 +36,14 @@ namespace SerializationSchemaGenerator
 
             var workspace = MSBuildWorkspace.Create();
 
-            var solutionToAnalyze =
-                workspace.OpenSolutionAsync(solutionPath).Result;
+            var solutionToAnalyze = workspace.OpenSolutionAsync(solutionPath).Result;
 
-            var projectToAnalyze =
-                solutionToAnalyze.Projects
-                    .FirstOrDefault(proj => proj.Name == projectName);
+            var results = solutionToAnalyze.Projects.AsParallel()
+                .Select((project) => (project, project?.GetCompilationAsync().Result))
+                .Where((value) => value.Result != null)
+                .ToList();
 
-            return projectToAnalyze?.GetCompilationAsync().Result;
+            return results;
         }
     }
 }

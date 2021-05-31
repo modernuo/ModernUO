@@ -32,6 +32,11 @@ dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 
 echo dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
 dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
+echo Building schema generator
+dotnet build -c Release Projects/SerializationSchemaGenerator/SerializationSchemaGenerator.csproj
+echo Generating schemas
+dotnet Projects/SerializationSchemaGenerator/Output/SerializationSchemaGenerator.dll ModernUO.sln
+
 exit $?
 
 :CMDSCRIPT
@@ -57,3 +62,7 @@ dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 
 echo dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
 dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
+echo Building schema generator
+dotnet build -c Release Projects/SerializationSchemaGenerator/SerializationSchemaGenerator.csproj
+echo Generating schemas
+dotnet Projects/SerializationSchemaGenerator/Output/SerializationSchemaGenerator.dll ModernUO.sln
