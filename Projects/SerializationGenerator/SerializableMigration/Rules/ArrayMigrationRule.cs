@@ -70,7 +70,7 @@ namespace SerializableMigration
             Array.Copy(ruleArguments, 2, arrayElementRuleArguments, 0, ruleArguments.Length - 2);
 
             var propertyIndex = $"{property.Name}Index";
-            source.AppendLine($"{indent}{property.Name} = new {ruleArguments[0]}[reader.ReadInt()];");
+            source.AppendLine($"{indent}{property.Name} = new {ruleArguments[0]}[reader.ReadEncodedInt()];");
             source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {property.Name}.Length; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 
@@ -101,11 +101,9 @@ namespace SerializableMigration
             var arrayElementRuleArguments = new string[ruleArguments.Length - 2];
             Array.Copy(ruleArguments, 2, arrayElementRuleArguments, 0, ruleArguments.Length - 2);
 
-            var propertyName = property.Name;
-            var propertyVarPrefix = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1, propertyName.Length - 1)}";
-            var propertyIndex = $"{propertyVarPrefix}Index";
-            source.AppendLine($"{indent}writer.Write({property.Name}.Length);");
-            source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {propertyVarPrefix}.Length; {propertyIndex}++)");
+            var propertyIndex = $"{property.Name}Index";
+            source.AppendLine($"{indent}writer.WriteEncodedInt({property.Name}.Length);");
+            source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {property.Name}.Length; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 
             var serializableArrayElement = new SerializableProperty

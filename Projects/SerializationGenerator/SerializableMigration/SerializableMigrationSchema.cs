@@ -13,9 +13,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
@@ -35,7 +37,37 @@ namespace SerializableMigration
 
         private static Dictionary<string, SerializableMetadata> _cache = new();
 
-        private static Regex _fileRegex = new(@"\S+\.v\d+\.json$");
+        private static readonly Regex _fileRegex = new(@"\S+\.v\d+\.json$");
+
+        public static List<SerializableMetadata> GetMigrations(
+            INamedTypeSymbol typeSymbol,
+            int version,
+            string migrationPath,
+            JsonSerializerOptions options
+        )
+        {
+            var typeName = typeSymbol.ToDisplayString();
+            var migrations = new SortedSet<SerializableMetadata>(new SerializableMetadataComparer());
+
+            var migrationFiles = Directory.GetFiles(migrationPath, $"{typeName}.v*.json");
+
+            foreach (var file in migrationFiles)
+            {
+                var fi = new FileInfo(file);
+                if (!_cache.TryGetValue(fi.Name, out var migration))
+                {
+                    var text = File.ReadAllText(file, Encoding.UTF8);
+                    migration = JsonSerializer.Deserialize<SerializableMetadata>(text, options);
+                }
+
+                if (typeName == migration!.Type && version > migration.Version)
+                {
+                    migrations.Add(migration);
+                }
+            }
+
+            return migrations.ToList();
+        }
 
         public static List<SerializableMetadata> GetMigrationsByAnalyzerConfig(
             this GeneratorExecutionContext context,

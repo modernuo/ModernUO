@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -32,7 +31,7 @@ namespace SerializationGenerator
             bool isOverride,
             int version,
             bool encodedVersion,
-            List<SerializableMetadata> migrations,
+            ImmutableArray<SerializableMetadata> migrations,
             ImmutableArray<SerializableProperty> properties
         )
         {
@@ -61,7 +60,7 @@ namespace SerializationGenerator
             {
                 var nextVersion = 0;
 
-                for (var i = 0; i < migrations.Count; i++)
+                for (var i = 0; i < migrations.Length; i++)
                 {
                     var migrationVersion = migrations[i].Version;
                     if (migrationVersion == nextVersion)

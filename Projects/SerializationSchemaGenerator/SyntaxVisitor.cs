@@ -33,16 +33,19 @@ namespace SerializationSchemaGenerator
 
         public override void VisitClassDeclaration(ClassDeclarationSyntax node)
         {
+            base.VisitClassDeclaration(node);
             _syntaxReceiver.OnVisitSyntaxNode(node, _semanticModel);
         }
 
         public override void VisitFieldDeclaration(FieldDeclarationSyntax node)
         {
+            base.VisitFieldDeclaration(node);
             _syntaxReceiver.OnVisitSyntaxNode(node, _semanticModel);
         }
 
         public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
         {
+            base.VisitPropertyDeclaration(node);
             _syntaxReceiver.OnVisitSyntaxNode(node, _semanticModel);
         }
     }

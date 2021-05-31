@@ -13,9 +13,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -36,8 +36,66 @@ namespace SerializationGenerator
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
-            var compilation = context.Compilation;
+            var version = (int)serializableAttr.ConstructorArguments[0].Value!;
 
+            var migrations = context.GetMigrationsByAnalyzerConfig(
+                classSymbol,
+                version,
+                jsonSerializerOptions
+            );
+
+            return context.Compilation.GenerateSerializationPartialClass(
+                classSymbol,
+                serializableAttr,
+                null, // Do not generate schema
+                null,
+                migrations.ToImmutableArray(),
+                fieldsAndProperties,
+                serializableTypes
+            );
+        }
+
+        public static string GenerateSerializationPartialClass(
+            this Compilation compilation,
+            INamedTypeSymbol classSymbol,
+            AttributeData serializableAttr,
+            string? migrationPath,
+            JsonSerializerOptions? jsonSerializerOptions,
+            ImmutableArray<ISymbol> fieldsAndProperties,
+            ImmutableArray<INamedTypeSymbol> serializableTypes
+        )
+        {
+            var version = (int)serializableAttr.ConstructorArguments[0].Value!;
+
+            var migrations = SerializableMigrationSchema.GetMigrations(
+                classSymbol,
+                version,
+                migrationPath,
+                jsonSerializerOptions
+            );
+
+            return compilation.GenerateSerializationPartialClass(
+                classSymbol,
+                serializableAttr,
+                migrationPath,
+                jsonSerializerOptions,
+                migrations.ToImmutableArray(),
+                fieldsAndProperties,
+                serializableTypes
+            );
+        }
+
+        public static string GenerateSerializationPartialClass(
+            this Compilation compilation,
+            INamedTypeSymbol classSymbol,
+            AttributeData serializableAttr,
+            string? migrationPath,
+            JsonSerializerOptions? jsonSerializerOptions,
+            ImmutableArray<SerializableMetadata> migrations,
+            ImmutableArray<ISymbol> fieldsAndProperties,
+            ImmutableArray<INamedTypeSymbol> serializableTypes
+        )
+        {
             var serializableFieldAttribute =
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTRIBUTE);
             var serializableFieldAttrAttribute =
@@ -120,7 +178,7 @@ namespace SerializationGenerator
                     else
                     {
                         var attrType = (ITypeSymbol)attrTypeArg.Value;
-                        source.GenerateAttribute(attrType.Name, ctorArgs[1].Values);
+                        source.GenerateAttribute(attrType?.Name, ctorArgs[1].Values);
                     }
                 }
 
@@ -172,17 +230,9 @@ namespace SerializationGenerator
             source.GenerateSerialCtor(compilation, className, isOverride);
             source.AppendLine();
 
-            List<SerializableMetadata> migrations = new List<SerializableMetadata>();
-
             if (version > 0)
             {
-                migrations = context.GetMigrationsByAnalyzerConfig(
-                    classSymbol,
-                    version,
-                    jsonSerializerOptions
-                );
-
-                for (var i = 0; i < migrations.Count; i++)
+                for (var i = 0; i < migrations.Length; i++)
                 {
                     var migration = migrations[i];
                     if (migration.Version < version)
@@ -216,7 +266,27 @@ namespace SerializationGenerator
             source.GenerateClassEnd();
             source.GenerateNamespaceEnd();
 
+            if (migrationPath != null)
+            {
+                // Write the migration file
+                var newMigration = new SerializableMetadata
+                {
+                    Version = version,
+                    Type = classSymbol.ToDisplayString(),
+                    Properties = serializableProperties
+                };
+
+                WriteMigration(migrationPath, newMigration, jsonSerializerOptions);
+            }
+
             return source.ToString();
+        }
+
+        private static void WriteMigration(string migrationPath, SerializableMetadata metadata, JsonSerializerOptions options)
+        {
+            Directory.CreateDirectory(migrationPath);
+            var filePath = Path.Combine(migrationPath, $"{metadata.Type}.v{metadata.Version}.json");
+            File.WriteAllText(filePath, JsonSerializer.Serialize(metadata, options));
         }
     }
 }
