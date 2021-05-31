@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CodeGenerationShared\CodeGenerationShared.csproj" />
     <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj" />
   </ItemGroup>
 
