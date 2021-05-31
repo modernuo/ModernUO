@@ -28,15 +28,16 @@ namespace SerializationGenerator
     public static partial class SerializableEntityGeneration
     {
         public static string GenerateSerializationPartialClass(
-            this Compilation compilation,
+            this GeneratorExecutionContext context,
             INamedTypeSymbol classSymbol,
             AttributeData serializableAttr,
             ImmutableArray<ISymbol> fieldsAndProperties,
-            string migrationPath,
             JsonSerializerOptions jsonSerializerOptions,
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
+            var compilation = context.Compilation;
+
             var serializableFieldAttribute =
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTRIBUTE);
             var serializableFieldAttrAttribute =
@@ -175,8 +176,7 @@ namespace SerializationGenerator
 
             if (version > 0)
             {
-                migrations = SerializableMigrationSchema.GetMigrations(
-                    migrationPath,
+                migrations = context.GetMigrationsByAnalyzerConfig(
                     classSymbol,
                     version,
                     jsonSerializerOptions

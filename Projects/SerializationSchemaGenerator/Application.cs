@@ -16,8 +16,8 @@
 using System;
 using System.Collections.Immutable;
 using System.IO;
+using System.Text.Json;
 using Microsoft.CodeAnalysis;
-using SerializableMigration;
 using SerializationGenerator;
 
 namespace SerializationSchemaGenerator
@@ -59,7 +59,13 @@ namespace SerializationSchemaGenerator
                 syntaxVisitor.Visit(root);
             }
 
-            var jsonOptions = SerializableMigrationSchema.GetJsonSerializerOptions(compilation);
+            var jsonOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                AllowTrailingCommas = true,
+                IgnoreNullValues = true,
+                ReadCommentHandling = JsonCommentHandling.Skip
+            };
 
             var serializableTypes = syntaxReceiver.SerializableList;
 

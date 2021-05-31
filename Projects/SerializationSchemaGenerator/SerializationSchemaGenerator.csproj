@@ -1,17 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </ProjectReference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.9.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.9.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.9.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.9.0" />
+    </ItemGroup>
 
 </Project>

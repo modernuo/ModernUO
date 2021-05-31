@@ -36,10 +36,7 @@ namespace SerializationGenerator
                 return;
             }
 
-            var compilation = context.Compilation;
-
-            var migrationPath = SerializableMigrationSchema.GetMigrationPath(context);
-            var jsonOptions = SerializableMigrationSchema.GetJsonSerializerOptions(compilation);
+            var jsonOptions = SerializableMigrationSchema.GetJsonSerializerOptions();
             // List of types that _will_ become ISerializable
             var serializableList = receiver.SerializableList;
 
@@ -50,11 +47,10 @@ namespace SerializationGenerator
                     continue;
                 }
 
-                string classSource = compilation.GenerateSerializationPartialClass(
+                string classSource = context.GenerateSerializationPartialClass(
                     classSymbol,
                     serializableAttr,
                     fieldsList.ToImmutableArray(),
-                    migrationPath,
                     jsonOptions,
                     serializableList
                 );

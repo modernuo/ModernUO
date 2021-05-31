@@ -14,9 +14,7 @@
  *************************************************************************/
 
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using Microsoft.CodeAnalysis;
 
@@ -24,7 +22,7 @@ namespace SerializableMigration
 {
     public static class SerializableMigrationSchema
     {
-        public static JsonSerializerOptions GetJsonSerializerOptions(Compilation compilation) =>
+        public static JsonSerializerOptions GetJsonSerializerOptions() =>
             new()
             {
                 WriteIndented = true,
@@ -33,32 +31,31 @@ namespace SerializableMigration
                 ReadCommentHandling = JsonCommentHandling.Skip
             };
 
-        public static string GetMigrationPath(GeneratorExecutionContext context)
-        {
-            context.AnalyzerConfigOptions.GlobalOptions.TryGetValue(
-                "build_property.SerializableMigrationPath",
-                out var migrationPath
-            );
+        private static Dictionary<string, SerializableMetadata> _cache = new();
 
-            return migrationPath;
-        }
-
-        public static List<SerializableMetadata> GetMigrations(
-            string migrationPath,
+        public static List<SerializableMetadata> GetMigrationsByAnalyzerConfig(
+            this GeneratorExecutionContext context,
             INamedTypeSymbol typeSymbol,
             int version,
             JsonSerializerOptions options
         )
         {
             var typeName = typeSymbol.ToDisplayString();
-
             var migrations = new SortedSet<SerializableMetadata>(new SerializableMetadataComparer());
-            var migrationFiles = Directory.GetFiles(migrationPath, $"{typeName}.v*.json");
 
-            foreach (var migrationFile in migrationFiles)
+            foreach (var additionalText in context.AdditionalFiles)
             {
-                var text = File.ReadAllText(migrationFile, Encoding.UTF8);
-                var migration = JsonSerializer.Deserialize<SerializableMetadata>(text, options);
+                if (!_cache.TryGetValue(additionalText.Path, out var migration))
+                {
+                    var text = additionalText.GetText(context.CancellationToken)?.ToString();
+                    if (text == null)
+                    {
+                        continue;
+                    }
+
+                    migration = JsonSerializer.Deserialize<SerializableMetadata>(text, options);
+                }
+
                 if (typeName == migration!.Type && version > migration.Version)
                 {
                     migrations.Add(migration);
@@ -66,13 +63,6 @@ namespace SerializableMigration
             }
 
             return migrations.ToList();
-        }
-
-        public static void WriteMigration(string migrationPath, SerializableMetadata metadata, JsonSerializerOptions options)
-        {
-            Directory.CreateDirectory(migrationPath);
-            var filePath = Path.Combine(migrationPath, $"{metadata.Type}.v{metadata.Version}.json");
-            File.WriteAllText(filePath, JsonSerializer.Serialize(metadata, options));
         }
     }
 }

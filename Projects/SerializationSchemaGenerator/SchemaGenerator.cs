@@ -15,6 +15,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using Microsoft.CodeAnalysis;
@@ -39,7 +40,6 @@ namespace SerializationSchemaGenerator
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTRIBUTE);
 
             var version = (int)serializableAttr.ConstructorArguments[0].Value!;
-            var className = classSymbol.Name;
 
             var serializablePropertySet = new SortedSet<SerializableProperty>(new SerializablePropertyComparer());
 
@@ -68,11 +68,15 @@ namespace SerializationSchemaGenerator
                     serializableTypes
                 );
 
+                if (serializableProperty == null)
+                {
+                    continue;
+                }
+
                 serializablePropertySet.Add(serializableProperty);
             }
 
             var serializableProperties = serializablePropertySet.ToImmutableArray();
-
 
             // Write the migration file
             var newMigration = new SerializableMetadata
@@ -81,8 +85,14 @@ namespace SerializationSchemaGenerator
                 Type = classSymbol.ToDisplayString(),
                 Properties = serializableProperties
             };
-            SerializableMigrationSchema.WriteMigration(migrationPath, newMigration, jsonSerializerOptions);
+            WriteMigration(migrationPath, newMigration, jsonSerializerOptions);
+        }
 
+        public static void WriteMigration(string migrationPath, SerializableMetadata metadata, JsonSerializerOptions options)
+        {
+            Directory.CreateDirectory(migrationPath);
+            var filePath = Path.Combine(migrationPath, $"{metadata.Type}.v{metadata.Version}.json");
+            File.WriteAllText(filePath, JsonSerializer.Serialize(metadata, options));
         }
     }
 }

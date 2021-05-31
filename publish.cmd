@@ -30,8 +30,6 @@ fi
 echo dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 
-echo dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
-dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
 echo dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
 dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
 exit $?
@@ -57,7 +55,5 @@ IF "%~2" == "" (
 echo dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 
-echo dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution Projects\Server\Server.csproj
-dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution Projects\Server\Server.csproj
 echo dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
 dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
