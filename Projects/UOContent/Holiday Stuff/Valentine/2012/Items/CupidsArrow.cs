@@ -91,8 +91,8 @@ namespace Server.Items
                     return;
                 }
 
-                _from = from.Name;
-                _to = m.Name;
+                From = from.Name;
+                To = m.Name;
 
                 InvalidateProperties();
 

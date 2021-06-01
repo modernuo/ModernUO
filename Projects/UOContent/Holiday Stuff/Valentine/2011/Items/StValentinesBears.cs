@@ -33,7 +33,7 @@ namespace Server.Items
 
         public StValentinesBear(int itemid, string name) : base(itemid)
         {
-            _owner = name;
+            Owner = name;
             LootType = LootType.Blessed;
         }
 
