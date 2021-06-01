@@ -27,13 +27,19 @@ if [[ $os == *'centos'* || $os == *'rhel'* ]]; then
   export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 fi
 
+echo dotnet clean --verbosity quiet
+dotnet clean --verbosity quiet
 echo dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 
-echo dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
-dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
 echo dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
 dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
+
+echo dotnet build -c Release Projects/SerializationSchemaGenerator/SerializationSchemaGenerator.csproj
+dotnet build -c Release Projects/SerializationSchemaGenerator/SerializationSchemaGenerator.csproj
+echo Generating serialization schemas
+dotnet Projects/SerializationSchemaGenerator/Output/SerializationSchemaGenerator.dll ModernUO.sln
+
 exit $?
 
 :CMDSCRIPT
@@ -54,10 +60,15 @@ IF "%~2" == "" (
   SET os=-r %~2-x64
 )
 
+echo dotnet clean --verbosity quiet
+dotnet clean --verbosity quiet
 echo dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 
-echo dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution Projects\Server\Server.csproj
-dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution Projects\Server\Server.csproj
 echo dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
 dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
+
+echo dotnet build -c Release Projects/SerializationSchemaGenerator/SerializationSchemaGenerator.csproj
+dotnet build -c Release Projects/SerializationSchemaGenerator/SerializationSchemaGenerator.csproj
+echo Generating serialization schemas
+dotnet Projects/SerializationSchemaGenerator/Output/SerializationSchemaGenerator.dll ModernUO.sln

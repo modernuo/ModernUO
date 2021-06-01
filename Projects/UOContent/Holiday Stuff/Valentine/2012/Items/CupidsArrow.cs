@@ -94,6 +94,7 @@ namespace Server.Items
                 _from = from.Name;
                 _to = m.Name;
 
+                ((ISerializable)this).MarkDirty();
                 InvalidateProperties();
 
                 from.SendMessage("You inscribe the arrow.");

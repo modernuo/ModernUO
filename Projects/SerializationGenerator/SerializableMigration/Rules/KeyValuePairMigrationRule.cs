@@ -17,8 +17,9 @@ using System;
 using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using SourceGeneration;
 
-namespace SerializationGenerator
+namespace SerializableMigration
 {
     public class KeyValuePairMigrationRule : ISerializableMigrationRule
     {
@@ -124,7 +125,7 @@ namespace SerializationGenerator
             );
 
             source.AppendLine(
-                $"{indent}{property.Name} = new {SerializableEntityGeneration.KEYVALUEPAIR_STRUCT}<{keyType}, {valueType}>(key, value);"
+                $"{indent}{property.Name} = new {SymbolMetadata.KEYVALUEPAIR_STRUCT}<{keyType}, {valueType}>(key, value);"
             );
         }
 

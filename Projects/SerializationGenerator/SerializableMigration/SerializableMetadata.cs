@@ -16,7 +16,7 @@
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
-namespace SerializationGenerator
+namespace SerializableMigration
 {
     public record SerializableMetadata
     {

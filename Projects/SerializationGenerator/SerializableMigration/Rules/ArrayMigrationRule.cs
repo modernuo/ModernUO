@@ -18,7 +18,7 @@ using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace SerializationGenerator
+namespace SerializableMigration
 {
     public class ArrayMigrationRule : ISerializableMigrationRule
     {

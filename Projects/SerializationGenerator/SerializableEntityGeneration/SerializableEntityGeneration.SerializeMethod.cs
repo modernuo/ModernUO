@@ -16,6 +16,8 @@
 using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using SerializableMigration;
+using SourceGeneration;
 
 namespace SerializationGenerator
 {
@@ -29,7 +31,7 @@ namespace SerializationGenerator
             ImmutableArray<SerializableProperty> properties
         )
         {
-            var genericWriterInterface = compilation.GetTypeByMetadataName(GENERIC_WRITER_INTERFACE);
+            var genericWriterInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_WRITER_INTERFACE);
 
             source.GenerateMethodStart(
                 "Serialize",

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SerializableEntityGeneration.MetadataTypes.cs                   *
+ * File: SymbolMetadata.UO.cs                                            *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,19 +13,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace SerializationGenerator
+namespace SourceGeneration
 {
-    public static partial class SerializableEntityGeneration
+    public static partial class SymbolMetadata
     {
-        public const string LIST_CLASS = "System.Collections.Generic.List`1";
-        public const string HASHSET_CLASS = "System.Collections.Generic.HashSet`1";
-        public const string IPADDRESS_CLASS = "System.Net.IPAddress";
-        public const string KEYVALUEPAIR_STRUCT = "System.Collections.Generic.KeyValuePair";
-
         public const string INVALIDATEPROPERTIES_ATTRIBUTE = "Server.InvalidatePropertiesAttribute";
         public const string AFTERDESERIALIZATION_ATTRIBUTE = "Server.AfterDeserializationAttribute";
         public const string SERIALIZABLE_ATTRIBUTE = "Server.SerializableAttribute";
@@ -132,12 +128,6 @@ namespace SerializationGenerator
                 SymbolEqualityComparer.Default
             );
 
-        public static bool IsIpAddress(this ISymbol symbol, Compilation compilation) =>
-            symbol.Equals(
-                compilation.GetTypeByMetadataName(IPADDRESS_CLASS),
-                SymbolEqualityComparer.Default
-            );
-
         public static bool IsRace(this ISymbol symbol, Compilation compilation) =>
             symbol.Equals(
                 compilation.GetTypeByMetadataName(RACE_CLASS),
@@ -150,22 +140,28 @@ namespace SerializationGenerator
                 SymbolEqualityComparer.Default
             );
 
-        public static bool IsKeyValuePair(this ISymbol symbol, Compilation compilation) =>
-            (symbol as INamedTypeSymbol)?.ConstructedFrom.Equals(
-                compilation.GetTypeByMetadataName(KEYVALUEPAIR_STRUCT),
-                SymbolEqualityComparer.Default
-            ) == true;
+        public static AttributeData? GetAttribute(this ISymbol symbol, ISymbol attrSymbol) =>
+            symbol
+                .GetAttributes()
+                .FirstOrDefault(
+                    ad => ad.AttributeClass != null && SymbolEqualityComparer.Default.Equals(ad.AttributeClass, attrSymbol)
+                );
 
-        public static bool IsList(this ISymbol symbol, Compilation compilation) =>
-            (symbol as INamedTypeSymbol)?.ConstructedFrom.Equals(
-                compilation.GetTypeByMetadataName(LIST_CLASS),
-                SymbolEqualityComparer.Default
-            ) == true;
+        public static bool WillBeSerializable(this INamedTypeSymbol classSymbol, Compilation compilation, out AttributeData? attributeData)
+        {
+            var serializableInterface = compilation.GetTypeByMetadataName(SERIALIZABLE_INTERFACE);
 
-        public static bool IsHashSet(this ISymbol symbol, Compilation compilation) =>
-            (symbol as INamedTypeSymbol)?.ConstructedFrom.Equals(
-                compilation.GetTypeByMetadataName(HASHSET_CLASS),
-                SymbolEqualityComparer.Default
-            ) == true;
+            if (!classSymbol.ContainsInterface(serializableInterface))
+            {
+                attributeData = null;
+                return false;
+            }
+
+            var serializableEntityAttribute =
+                compilation.GetTypeByMetadataName(SERIALIZABLE_ATTRIBUTE);
+
+            attributeData = classSymbol.GetAttribute(serializableEntityAttribute);
+            return attributeData != null;
+        }
     }
 }

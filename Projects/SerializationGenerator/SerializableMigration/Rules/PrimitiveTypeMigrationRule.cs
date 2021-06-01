@@ -18,8 +18,9 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using SourceGeneration;
 
-namespace SerializationGenerator
+namespace SerializableMigration
 {
     public class PrimitiveTypeMigrationRule : ISerializableMigrationRule
     {
@@ -89,7 +90,7 @@ namespace SerializationGenerator
             var propertyName = property.Name;
             var argument = property.RuleArguments.Length >= 1 ? property.RuleArguments[0] : null;
 
-            const string ipAddress = SerializableEntityGeneration.IPADDRESS_CLASS;
+            const string ipAddress = SymbolMetadata.IPADDRESS_CLASS;
             const string date = "System.DateTime";
 
             var readMethod = property.Type switch

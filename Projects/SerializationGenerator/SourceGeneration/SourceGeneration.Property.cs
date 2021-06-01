@@ -18,7 +18,7 @@ using System.Text;
 using Humanizer;
 using Microsoft.CodeAnalysis;
 
-namespace SerializationGenerator
+namespace SourceGeneration
 {
     public static partial class SourceGeneration
     {

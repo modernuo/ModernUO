@@ -13,11 +13,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using SerializableMigration;
+using SourceGeneration;
 
 namespace SerializationGenerator
 {
@@ -30,11 +31,11 @@ namespace SerializationGenerator
             bool isOverride,
             int version,
             bool encodedVersion,
-            List<SerializableMetadata> migrations,
+            ImmutableArray<SerializableMetadata> migrations,
             ImmutableArray<SerializableProperty> properties
         )
         {
-            var genericReaderInterface = compilation.GetTypeByMetadataName(GENERIC_READER_INTERFACE);
+            var genericReaderInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_READER_INTERFACE);
 
             source.GenerateMethodStart(
                 "Deserialize",
@@ -59,7 +60,7 @@ namespace SerializationGenerator
             {
                 var nextVersion = 0;
 
-                for (var i = 0; i < migrations.Count; i++)
+                for (var i = 0; i < migrations.Length; i++)
                 {
                     var migrationVersion = migrations[i].Version;
                     if (migrationVersion == nextVersion)
@@ -109,7 +110,7 @@ namespace SerializationGenerator
                             .Any(
                                 attr => SymbolEqualityComparer.Default.Equals(
                                     attr.AttributeClass,
-                                    compilation.GetTypeByMetadataName(AFTERDESERIALIZATION_ATTRIBUTE)
+                                    compilation.GetTypeByMetadataName(SymbolMetadata.AFTERDESERIALIZATION_ATTRIBUTE)
                                 )
                             )
                 );
