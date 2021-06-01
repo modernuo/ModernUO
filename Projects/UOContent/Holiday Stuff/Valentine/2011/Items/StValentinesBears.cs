@@ -4,104 +4,62 @@ using Server.Network;
 
 namespace Server.Items
 {
-    public abstract class StValentinesBear : Item
+    [Serializable(0, false)]
+    public abstract partial class StValentinesBear : Item
     {
-        private string m_Line1;
-        private string m_Line2;
-        private string m_Line3;
+        [InternString]
+        [InvalidateProperties]
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private string _owner;
 
-        private string m_Owner;
+        [InternString]
+        [InvalidateProperties]
+        [SerializableField(1)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private string _line1;
 
-        public StValentinesBear(int itemid, string name)
-            : base(itemid)
+        [InternString]
+        [InvalidateProperties]
+        [SerializableField(2)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private string _line2;
+
+        [InternString]
+        [InvalidateProperties]
+        [SerializableField(3)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private string _line3;
+
+        public StValentinesBear(int itemid, string name) : base(itemid)
         {
-            m_Owner = name;
+            Owner = name;
             LootType = LootType.Blessed;
         }
 
-        public StValentinesBear(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override string DefaultName
-        {
-            get
-            {
-                if (m_Owner != null)
-                {
-                    return $"{m_Owner}'s St. Valentine Bear";
-                }
-
-                return "St. Valentine Bear";
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string Owner
-        {
-            get => m_Owner;
-            set
-            {
-                m_Owner = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string Line1
-        {
-            get => m_Line1;
-            set
-            {
-                m_Line1 = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string Line2
-        {
-            get => m_Line2;
-            set
-            {
-                m_Line2 = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string Line3
-        {
-            get => m_Line3;
-            set
-            {
-                m_Line3 = value;
-                InvalidateProperties();
-            }
-        }
+        public override string DefaultName => _owner != null ? $"{_owner}'s St. Valentine Bear" : "St. Valentine Bear";
 
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime EditLimit { get; set; }
 
-        public bool IsSigned => m_Line1 != null || m_Line2 != null || m_Line3 != null;
+        public bool IsSigned => _line1 != null || _line2 != null || _line3 != null;
 
         public bool CanSign => !IsSigned || Core.Now <= EditLimit;
 
         public override void AddNameProperty(ObjectPropertyList list)
         {
-            if (m_Owner != null)
+            if (_owner != null)
             {
-                list.Add(1150295, m_Owner); // ~1_NAME~'s St. Valentine Bear
+                list.Add(1150295, _owner); // ~1_NAME~'s St. Valentine Bear
             }
             else
             {
                 list.Add(1150294); // St. Valentine Bear
             }
 
-            AddLine(list, 1150301, m_Line1); // [ ~1_LINE0~ ]
-            AddLine(list, 1150302, m_Line2); // [ ~1_LINE1~ ]
-            AddLine(list, 1150303, m_Line3); // [ ~1_LINE2~ ]
+            AddLine(list, 1150301, _line1); // [ ~1_LINE0~ ]
+            AddLine(list, 1150302, _line2); // [ ~1_LINE1~ ]
+            AddLine(list, 1150303, _line3); // [ ~1_LINE2~ ]
         }
 
         private static void AddLine(ObjectPropertyList list, int cliloc, string line)
@@ -116,9 +74,9 @@ namespace Server.Items
         {
             base.OnSingleClick(from);
 
-            ShowLine(from, 1150301, m_Line1); // [ ~1_LINE0~ ]
-            ShowLine(from, 1150302, m_Line2); // [ ~1_LINE1~ ]
-            ShowLine(from, 1150303, m_Line3); // [ ~1_LINE2~ ]
+            ShowLine(from, 1150301, _line1); // [ ~1_LINE0~ ]
+            ShowLine(from, 1150302, _line2); // [ ~1_LINE1~ ]
+            ShowLine(from, 1150303, _line3); // [ ~1_LINE2~ ]
         }
 
         private void ShowLine(Mobile from, int cliloc, string line)
@@ -143,30 +101,6 @@ namespace Server.Items
             }
 
             from.SendGump(new InternalGump(this));
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-
-            writer.Write(m_Owner);
-            writer.Write(m_Line1);
-            writer.Write(m_Line2);
-            writer.Write(m_Line3);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            m_Owner = Utility.Intern(reader.ReadString());
-            m_Line1 = Utility.Intern(reader.ReadString());
-            m_Line2 = Utility.Intern(reader.ReadString());
-            m_Line3 = Utility.Intern(reader.ReadString());
         }
 
         private class InternalGump : Gump
@@ -256,61 +190,23 @@ namespace Server.Items
         }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x48E0, 0x48E1)]
-    public class StValentinesPanda : StValentinesBear
+    public partial class StValentinesPanda : StValentinesBear
     {
         [Constructible]
-        public StValentinesPanda(string name = null)
-            : base(0x48E0, name)
+        public StValentinesPanda(string name = null) : base(0x48E0, name)
         {
-        }
-
-        public StValentinesPanda(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x48E2, 0x48E3)]
-    public class StValentinesPolarBear : StValentinesBear
+    public partial class StValentinesPolarBear : StValentinesBear
     {
         [Constructible]
-        public StValentinesPolarBear(string name = null)
-            : base(0x48E2, name)
+        public StValentinesPolarBear(string name = null) : base(0x48E2, name)
         {
-        }
-
-        public StValentinesPolarBear(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

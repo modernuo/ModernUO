@@ -30,13 +30,12 @@ namespace Server.Events.Halloween
             typeof(NougatSwirl)
         };
 
-        public static DateTime StartHalloween // YY MM DD
-            => new(2012, 10, 24);
+        // YY MM DD
+        public static DateTime StartHalloween => new(2021, 10, 24);
 
-        public static DateTime FinishHalloween => new(2012, 11, 15);
+        public static DateTime FinishHalloween => new(2021, 11, 15);
 
-        public static Item RandomGMBeggerItem =>
-            m_GMBeggarTreats.RandomElement().CreateInstance<Item>();
+        public static Item RandomGMBeggerItem => m_GMBeggarTreats.RandomElement().CreateInstance<Item>();
 
         public static Item RandomTreat => m_Treats.RandomElement().CreateInstance<Item>();
     }
