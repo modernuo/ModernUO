@@ -116,7 +116,7 @@ namespace SerializableMigration
             var propertyName = property.Name;
             var propertyVarPrefix = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1, propertyName.Length - 1)}";
             var propertyEntry = $"{propertyVarPrefix}Entry";
-            source.AppendLine($"{indent}writer.WriteInt({property.Name}.Count);");
+            source.AppendLine($"{indent}writer.Write({property.Name}.Count);");
             source.AppendLine($"{indent}foreach (var {propertyEntry} in {property.Name});");
             source.AppendLine($"{indent}{{");
 
