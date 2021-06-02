@@ -15,7 +15,7 @@
 
 using System.Text;
 
-namespace SourceGeneration
+namespace SerializationGenerator
 {
     public static partial class SourceGeneration
     {

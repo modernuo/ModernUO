@@ -16,7 +16,6 @@
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
-using SourceGeneration;
 
 namespace SerializationGenerator
 {
@@ -24,8 +23,11 @@ namespace SerializationGenerator
     {
         public static void GenerateSerializableProperty(
             this StringBuilder source,
+            Compilation compilation,
             IFieldSymbol fieldSymbol,
-            Compilation compilation
+            Accessibility getter,
+            Accessibility? setter,
+            bool isVirtual
         )
         {
             var fieldName = fieldSymbol.Name;
@@ -40,27 +42,38 @@ namespace SerializationGenerator
                     ) ?? false
                 );
 
-            source.GeneratePropertyStart(AccessModifier.Public, fieldSymbol);
+            const string indent = "        ";
+            const string propertyIndent = "            ";
+
+            var propertyAccessor = setter > getter ? setter : getter;
+            var getterAccessor = getter == propertyAccessor ? Accessibility.NotApplicable : getter;
+
+            source.GeneratePropertyStart(indent, propertyAccessor.Value, isVirtual, fieldSymbol);
 
             // Getter
-            source.GeneratePropertyGetterReturnsField(fieldSymbol);
+            source.GeneratePropertyGetterReturnsField(propertyIndent, fieldSymbol, getterAccessor);
 
-            // Setter
-            source.GeneratePropertySetterStart(false);
-            const string indent = "                ";
-            source.AppendLine($"{indent}if (value != {fieldName})");
-            source.AppendLine($"{indent}{{");
-            source.AppendLine($"{indent}    {fieldName} = value;");
-            source.AppendLine($"{indent}    ((ISerializable)this).MarkDirty();");
-
-            if (invalidatePropertiesAttribute != null)
+            if (setter != null)
             {
-                source.AppendLine($"{indent}    InvalidateProperties();");
-            }
-            source.AppendLine($"{indent}}}");
-            source.GeneratePropertyGetSetEnd(false);
+                var setterAccessor = setter == propertyAccessor ? Accessibility.NotApplicable : setter;
 
-            source.GeneratePropertyEnd();
+                // Setter
+                source.GeneratePropertySetterStart(propertyIndent, false, setterAccessor.Value);
+                const string innerIndent = "                ";
+                source.AppendLine($"{innerIndent}if (value != {fieldName})");
+                source.AppendLine($"{innerIndent}{{");
+                source.AppendLine($"{innerIndent}    {fieldName} = value;");
+                source.AppendLine($"{innerIndent}    ((ISerializable)this).MarkDirty();");
+
+                if (invalidatePropertiesAttribute != null)
+                {
+                    source.AppendLine($"{innerIndent}    InvalidateProperties();");
+                }
+                source.AppendLine($"{innerIndent}}}");
+                source.GeneratePropertyGetSetEnd(propertyIndent, false);
+            }
+
+            source.GeneratePropertyEnd(indent);
         }
     }
 }

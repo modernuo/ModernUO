@@ -18,7 +18,6 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using SerializableMigration;
-using SourceGeneration;
 
 namespace SerializationGenerator
 {
@@ -39,7 +38,7 @@ namespace SerializationGenerator
 
             source.GenerateMethodStart(
                 "Deserialize",
-                AccessModifier.Public,
+                Accessibility.Public,
                 isOverride,
                 "void",
                 ImmutableArray.Create<(ITypeSymbol, string)>((genericReaderInterface, "reader"))

@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -58,6 +57,7 @@ namespace SerializableMigration
                 {
                     var text = File.ReadAllText(file, Encoding.UTF8);
                     migration = JsonSerializer.Deserialize<SerializableMetadata>(text, options);
+                    _cache[fi.Name] = migration;
                 }
 
                 if (typeName == migration!.Type && version > migration.Version)
@@ -96,6 +96,7 @@ namespace SerializableMigration
                     }
 
                     migration = JsonSerializer.Deserialize<SerializableMetadata>(text, options);
+                    _cache[fi.Name] = migration;
                 }
 
                 if (typeName == migration!.Type && version > migration.Version)
