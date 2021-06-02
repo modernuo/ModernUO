@@ -20,7 +20,7 @@ using System.Linq;
 using System.Text.Json;
 using Microsoft.CodeAnalysis;
 using SerializableMigration;
-using SourceGeneration;
+using SerializationGenerator;
 
 namespace SerializationSchemaGenerator
 {

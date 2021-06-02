@@ -26,7 +26,21 @@ namespace Server
     public sealed class SerializableFieldAttribute : Attribute
     {
         public int Order { get; }
+        public string PropertyGetter { get; }
+        public string? PropertySetter { get; }
+        public bool IsVirtual { get; }
 
-        public SerializableFieldAttribute(int order) => Order = order;
+        public SerializableFieldAttribute(
+            int order,
+            string getter = "public",
+            string setter = "public",
+            bool isVirtual = false
+        )
+        {
+            Order = order;
+            PropertyGetter = getter;
+            PropertySetter = setter;
+            IsVirtual = isVirtual;
+        }
     }
 }

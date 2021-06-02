@@ -17,7 +17,6 @@ using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using SerializableMigration;
-using SourceGeneration;
 
 namespace SerializationGenerator
 {
@@ -35,7 +34,7 @@ namespace SerializationGenerator
 
             source.GenerateMethodStart(
                 "Serialize",
-                AccessModifier.Public,
+                Accessibility.Public,
                 isOverride,
                 "void",
                 ImmutableArray.Create<(ITypeSymbol, string)>((genericWriterInterface, "writer"))

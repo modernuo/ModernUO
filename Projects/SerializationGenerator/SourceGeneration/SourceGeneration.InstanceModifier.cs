@@ -13,7 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace SourceGeneration
+namespace SerializationGenerator
 {
     public enum InstanceModifier
     {

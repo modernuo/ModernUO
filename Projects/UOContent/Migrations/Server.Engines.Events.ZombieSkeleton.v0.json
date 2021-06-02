@@ -1,0 +1,12 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Events.ZombieSkeleton",
+  "properties": [
+    {
+      "name": "DeadPlayer",
+      "type": "Server.Mobiles.PlayerMobile",
+      "rule": "SerializableInterfaceMigrationRule",
+      "ruleArguments": []
+    }
+  ]
+}

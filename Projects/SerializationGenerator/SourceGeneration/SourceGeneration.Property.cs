@@ -18,7 +18,7 @@ using System.Text;
 using Humanizer;
 using Microsoft.CodeAnalysis;
 
-namespace SourceGeneration
+namespace SerializationGenerator
 {
     public static partial class SourceGeneration
     {
@@ -42,23 +42,26 @@ namespace SourceGeneration
 
         public static void GeneratePropertyStart(
             this StringBuilder source,
-            AccessModifier accessors,
+            string indent,
+            Accessibility accessors,
+            bool isVirtual,
             IFieldSymbol fieldSymbol
         )
         {
             var propertyName = fieldSymbol.GetPropertyName();
+            var virt = isVirtual ? "virtual " : "";
 
-            source.AppendLine($@"        {accessors.ToFriendlyString()} {fieldSymbol.Type} {propertyName}
-        {{");
+            source.AppendLine($"{indent}{accessors.ToFriendlyString()} {virt}{fieldSymbol.Type} {propertyName}");
+            source.AppendLine($"{indent}{{");
         }
 
         public static void GenerateAutoProperty(
             this StringBuilder source,
-            AccessModifier accessors,
+            Accessibility accessors,
             string type,
             string propertyName,
-            AccessModifier? getAccessor,
-            AccessModifier? setAccessor,
+            Accessibility? getAccessor,
+            Accessibility? setAccessor,
             string indent,
             bool useInit = false,
             string defaultValue = null,
@@ -72,18 +75,18 @@ namespace SourceGeneration
 
             var getter = getAccessor == null ?
                 "" :
-                $"{(getAccessor != AccessModifier.None ? $"{getAccessor.Value.ToFriendlyString()} " : "")}get;";
+                $"{(getAccessor != Accessibility.NotApplicable ? $"{getAccessor.Value.ToFriendlyString()} " : "")}get;";
 
             var getterSpace = getAccessor != null ? " " : "";
             var setOrInit = useInit ? "init;" : "set;";
 
-            var setterAccessor = setAccessor is null or AccessModifier.None
+            var setterAccessor = setAccessor is null or Accessibility.NotApplicable
                 ? ""
                 : $"{setAccessor.Value.ToFriendlyString() ?? ""} ";
 
             var setter = setAccessor == null ? "" : $"{getterSpace}{setterAccessor}{setOrInit}";
 
-            var propertyAccessor = accessors == AccessModifier.None ? "" : $"{accessors.ToFriendlyString()} ";
+            var propertyAccessor = accessors == Accessibility.NotApplicable ? "" : $"{accessors.ToFriendlyString()} ";
             var printOverride = isOverride ? "override " : "";
             var printDefaultValue = defaultValue != null ? $"{(setAccessor != null ? " =" : "")} {defaultValue};" : "";
             var printGetterSetter = setAccessor == null ? "=>" : $"{{ {getter}{setter} }}";
@@ -91,26 +94,51 @@ namespace SourceGeneration
             source.AppendLine($"{indent}{propertyAccessor}{printOverride}{type} {propertyName} {printGetterSetter}{printDefaultValue}");
         }
 
-        public static void GeneratePropertyEnd(this StringBuilder source) => source.AppendLine("        }");
+        public static void GeneratePropertyEnd(this StringBuilder source, string indent) => source.AppendLine($"{indent}}}");
 
-        public static void GeneratePropertyGetterReturnsField(this StringBuilder source, IFieldSymbol fieldSymbol) =>
-            source.AppendLine($"            get => {fieldSymbol.Name};");
+        public static void GeneratePropertyGetterReturnsField(
+            this StringBuilder source,
+            string indent,
+            IFieldSymbol fieldSymbol,
+            Accessibility Accessibility
+        )
+        {
+            var accessor = Accessibility != Accessibility.NotApplicable ? $"{Accessibility.ToFriendlyString()} " : "";
+            source.AppendLine($"{indent}{accessor}get => {fieldSymbol.Name};");
+        }
 
-        public static void GeneratePropertyGetterStart(this StringBuilder source, bool useExpression) =>
-            source.AppendLine($"            get{(useExpression ? " => " : "\n            {")}");
+        public static void GeneratePropertyGetterStart(
+            this StringBuilder source,
+            string indent,
+            bool useExpression,
+            Accessibility Accessibility
+        )
+        {
+            var accessor = Accessibility != Accessibility.NotApplicable ? $"{Accessibility.ToFriendlyString()} " : "";
+            var expression = useExpression ? " => " : $"\n{indent}{{";
+            source.AppendLine($"{indent}{accessor}get{expression}");
+        }
 
-        public static void GeneratePropertyGetSetEnd(this StringBuilder source, bool useExpression)
+        public static void GeneratePropertyGetSetEnd(this StringBuilder source, string indent, bool useExpression)
         {
             if (!useExpression)
             {
-                source.AppendLine("            }");
+                source.AppendLine($"{indent}}}");
             }
         }
 
-        public static void GeneratePropertySetterSetsValue(this StringBuilder source, IFieldSymbol fieldSymbol) =>
-            source.AppendLine($"            set => {fieldSymbol.Name} = value;");
-
-        public static void GeneratePropertySetterStart(this StringBuilder source, bool useExpression, bool useInit = false) =>
-            source.AppendLine($"            {(useInit ? "init" : "set")}{(useExpression ? " => " : "\n            {")}");
+        public static void GeneratePropertySetterStart(
+            this StringBuilder source,
+            string indent,
+            bool useExpression,
+            Accessibility Accessibility,
+            bool useInit = false
+        )
+        {
+            var init = useInit ? "init" : "set";
+            var expression = useExpression ? " => " : $"\n{indent}{{";
+            var accessor = Accessibility != Accessibility.NotApplicable ? $"{Accessibility.ToFriendlyString()} " : "";
+            source.AppendLine($"{indent}{accessor}{init}{expression}");
+        }
     }
 }

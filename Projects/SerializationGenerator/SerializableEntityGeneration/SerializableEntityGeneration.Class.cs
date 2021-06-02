@@ -21,7 +21,6 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.CodeAnalysis;
 using SerializableMigration;
-using SourceGeneration;
 
 namespace SerializationGenerator
 {
@@ -128,7 +127,7 @@ namespace SerializationGenerator
             const string indent = "        ";
 
             source.GenerateClassField(
-                AccessModifier.Private,
+                Accessibility.Private,
                 InstanceModifier.Const,
                 "int",
                 "_version",
@@ -153,8 +152,6 @@ namespace SerializationGenerator
                 {
                     continue;
                 }
-
-                var order = (int)serializableFieldAttr.ConstructorArguments[0].Value!;
 
                 foreach (var attr in allAttributes)
                 {
@@ -182,9 +179,22 @@ namespace SerializationGenerator
                     }
                 }
 
+                var attrCtorArgs = serializableFieldAttr.ConstructorArguments;
+
+                var order = (int)attrCtorArgs[0].Value!;
+                var getterAccessor = Helpers.GetAccessibility(attrCtorArgs[1].Value!.ToString());
+                var setterAccessor = Helpers.GetAccessibility(attrCtorArgs[2].Value!.ToString());
+                var virtualProperty = (bool)attrCtorArgs[3].Value!;
+
                 if (fieldOrPropertySymbol is IFieldSymbol fieldSymbol)
                 {
-                    source.GenerateSerializableProperty(fieldSymbol, compilation);
+                    source.GenerateSerializableProperty(
+                        compilation,
+                        fieldSymbol,
+                        getterAccessor,
+                        setterAccessor,
+                        virtualProperty
+                    );
                     source.AppendLine();
                 }
 
@@ -206,22 +216,22 @@ namespace SerializationGenerator
             {
                 // long ISerializable.SavePosition { get; set; } = -1;
                 source.GenerateAutoProperty(
-                    AccessModifier.None,
+                    Accessibility.NotApplicable,
                     "long",
                     "ISerializable.SavePosition",
-                    AccessModifier.None,
-                    AccessModifier.None,
+                    Accessibility.NotApplicable,
+                    Accessibility.NotApplicable,
                     indent,
                     defaultValue: "-1"
                 );
 
                 // BufferWriter ISerializable.SaveBuffer { get; set; }
                 source.GenerateAutoProperty(
-                    AccessModifier.None,
+                    Accessibility.NotApplicable,
                     "BufferWriter",
                     "ISerializable.SaveBuffer",
-                    AccessModifier.None,
-                    AccessModifier.None,
+                    Accessibility.NotApplicable,
+                    Accessibility.NotApplicable,
                     indent
                 );
             }

@@ -17,11 +17,11 @@ using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace SourceGeneration
+namespace SerializationGenerator
 {
     public static partial class SourceGeneration
     {
-        public static void GenerateMethodStart(this StringBuilder source, string methodName, AccessModifier accessors, bool isOverride, string returnType, ImmutableArray<(ITypeSymbol, string)> parameters)
+        public static void GenerateMethodStart(this StringBuilder source, string methodName, Accessibility accessors, bool isOverride, string returnType, ImmutableArray<(ITypeSymbol, string)> parameters)
         {
             source.Append($"        {accessors.ToFriendlyString()}{(isOverride ? " override" : "")} {returnType} {methodName}(");
             source.GenerateSignatureArguments(parameters);
@@ -32,7 +32,7 @@ namespace SourceGeneration
         public static void GenerateMethodEnd(this StringBuilder source) => source.AppendLine(@"        }");
 
         public static void GenerateConstructorStart(
-            this StringBuilder source, string className, AccessModifier accessors, ImmutableArray<(ITypeSymbol, string)> parameters,
+            this StringBuilder source, string className, Accessibility accessors, ImmutableArray<(ITypeSymbol, string)> parameters,
             ImmutableArray<string> baseParameters, bool isOverload = false
         )
         {

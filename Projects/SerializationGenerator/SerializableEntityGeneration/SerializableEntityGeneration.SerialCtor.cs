@@ -16,7 +16,6 @@
 using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
-using SourceGeneration;
 
 namespace SerializationGenerator
 {
@@ -34,7 +33,7 @@ namespace SerializationGenerator
 
             source.GenerateConstructorStart(
                 className,
-                AccessModifier.Public,
+                Accessibility.Public,
                 new []{ (serialType, "serial") }.ToImmutableArray(),
                 isOverride ? _baseParameters : ImmutableArray<string>.Empty
             );
