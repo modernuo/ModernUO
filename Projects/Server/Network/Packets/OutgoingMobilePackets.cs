@@ -462,7 +462,11 @@ namespace Server.Network
             }
             else if (Core.ML && ns.SupportsExpansion(Expansion.ML))
             {
-                version = 5;
+                /*
+                 * For the ML era, the version value must be 5 if the original UO distribution
+                 * is used and the client is not lower than version 5
+                 */
+                version = ServerConfiguration.GetOrUpdateSetting("extendedStatus", 5);
             }
             else
             {
