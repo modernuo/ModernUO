@@ -21,7 +21,6 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.CodeAnalysis;
 using SerializableMigration;
-using SourceGeneration;
 
 namespace SerializationGenerator
 {
@@ -154,8 +153,6 @@ namespace SerializationGenerator
                     continue;
                 }
 
-                var order = (int)serializableFieldAttr.ConstructorArguments[0].Value!;
-
                 foreach (var attr in allAttributes)
                 {
                     if (!SymbolEqualityComparer.Default.Equals(attr.AttributeClass, serializableFieldAttrAttribute))
@@ -182,9 +179,13 @@ namespace SerializationGenerator
                     }
                 }
 
+                var order = (int)serializableFieldAttr.ConstructorArguments[0].Value!;
+                var getterAccessor = (AccessModifier)serializableFieldAttr.ConstructorArguments[1].Value!;
+                var setterAccessor = (AccessModifier)serializableFieldAttr.ConstructorArguments[2].Value!;
+
                 if (fieldOrPropertySymbol is IFieldSymbol fieldSymbol)
                 {
-                    source.GenerateSerializableProperty(fieldSymbol, compilation);
+                    source.GenerateSerializableProperty(compilation, fieldSymbol, getterAccessor, setterAccessor);
                     source.AppendLine();
                 }
 

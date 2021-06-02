@@ -18,7 +18,6 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using SerializableMigration;
-using SourceGeneration;
 
 namespace SerializationGenerator
 {

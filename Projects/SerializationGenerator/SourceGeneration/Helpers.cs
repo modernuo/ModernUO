@@ -18,7 +18,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace SourceGeneration
+namespace SerializationGenerator
 {
     public static class Helpers
     {

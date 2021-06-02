@@ -15,7 +15,7 @@
 
 using Microsoft.CodeAnalysis;
 
-namespace SourceGeneration
+namespace SerializationGenerator
 {
     public static partial class SymbolMetadata
     {

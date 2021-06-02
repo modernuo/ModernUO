@@ -16,7 +16,6 @@
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
-using SourceGeneration;
 
 namespace SerializationGenerator
 {
@@ -24,8 +23,10 @@ namespace SerializationGenerator
     {
         public static void GenerateSerializableProperty(
             this StringBuilder source,
+            Compilation compilation,
             IFieldSymbol fieldSymbol,
-            Compilation compilation
+            AccessModifier getter,
+            AccessModifier setter
         )
         {
             var fieldName = fieldSymbol.Name;
@@ -40,27 +41,33 @@ namespace SerializationGenerator
                     ) ?? false
                 );
 
-            source.GeneratePropertyStart(AccessModifier.Public, fieldSymbol);
+            const string indent = "        ";
+            const string propertyIndent = "            ";
+            var propertyAccessor = SourceGeneration.GetLeastRestrictiveModifier(getter, setter);
+            var getterAccessor = getter == propertyAccessor ? AccessModifier.None : getter;
+            var setterAccessor = setter == propertyAccessor ? AccessModifier.None : setter;
+
+            source.GeneratePropertyStart(indent, propertyAccessor, fieldSymbol);
 
             // Getter
-            source.GeneratePropertyGetterReturnsField(fieldSymbol);
+            source.GeneratePropertyGetterReturnsField(propertyIndent, fieldSymbol, getterAccessor);
 
             // Setter
-            source.GeneratePropertySetterStart(false);
-            const string indent = "                ";
-            source.AppendLine($"{indent}if (value != {fieldName})");
-            source.AppendLine($"{indent}{{");
-            source.AppendLine($"{indent}    {fieldName} = value;");
-            source.AppendLine($"{indent}    ((ISerializable)this).MarkDirty();");
+            source.GeneratePropertySetterStart(propertyIndent, false, setterAccessor);
+            const string innerIndent = "                ";
+            source.AppendLine($"{innerIndent}if (value != {fieldName})");
+            source.AppendLine($"{innerIndent}{{");
+            source.AppendLine($"{innerIndent}    {fieldName} = value;");
+            source.AppendLine($"{innerIndent}    ((ISerializable)this).MarkDirty();");
 
             if (invalidatePropertiesAttribute != null)
             {
-                source.AppendLine($"{indent}    InvalidateProperties();");
+                source.AppendLine($"{innerIndent}    InvalidateProperties();");
             }
-            source.AppendLine($"{indent}}}");
-            source.GeneratePropertyGetSetEnd(false);
+            source.AppendLine($"{innerIndent}}}");
+            source.GeneratePropertyGetSetEnd(propertyIndent, false);
 
-            source.GeneratePropertyEnd();
+            source.GeneratePropertyEnd(indent);
         }
     }
 }

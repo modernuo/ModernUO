@@ -13,8 +13,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace SerializationGenerator
+namespace Server
 {
+    // DO NOT REARRANGE THESE. THEY MUST BE IN LEAST RESTRICTIVE ORDER FOR SOURCE GENERATOR TO USE
     public enum AccessModifier
     {
         None,
@@ -31,16 +32,13 @@ namespace SerializationGenerator
         public static string ToFriendlyString(this AccessModifier modifier) =>
             modifier switch
             {
-                AccessModifier.Public => "public",
-                AccessModifier.Private => "private",
-                AccessModifier.Protected => "protected",
-                AccessModifier.Internal => "internal",
+                AccessModifier.Public            => "public",
+                AccessModifier.Private           => "private",
+                AccessModifier.Protected         => "protected",
+                AccessModifier.Internal          => "internal",
                 AccessModifier.ProtectedInternal => "protected internal",
-                AccessModifier.PrivateProtected => "private protected",
-                _ => ""
+                AccessModifier.PrivateProtected  => "private protected",
+                _                                => ""
             };
-
-        public static AccessModifier GetLeastRestrictiveModifier(AccessModifier a, AccessModifier b) => a > b ? a : b;
-
     }
 }

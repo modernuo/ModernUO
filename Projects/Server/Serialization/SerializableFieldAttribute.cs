@@ -27,6 +27,19 @@ namespace Server
     {
         public int Order { get; }
 
-        public SerializableFieldAttribute(int order) => Order = order;
+        public string PropertyGetter { get; }
+
+        public string PropertySetter { get; }
+
+        public SerializableFieldAttribute(
+            int order,
+            AccessModifier getter = AccessModifier.Public,
+            AccessModifier setter = AccessModifier.Public
+        )
+        {
+            Order = order;
+            PropertyGetter = getter.ToFriendlyString();
+            PropertySetter = setter.ToFriendlyString();
+        }
     }
 }

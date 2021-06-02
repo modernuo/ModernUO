@@ -18,7 +18,7 @@ using System.Text;
 using Humanizer;
 using Microsoft.CodeAnalysis;
 
-namespace SourceGeneration
+namespace SerializationGenerator
 {
     public static partial class SourceGeneration
     {
@@ -42,13 +42,14 @@ namespace SourceGeneration
 
         public static void GeneratePropertyStart(
             this StringBuilder source,
+            string indent,
             AccessModifier accessors,
             IFieldSymbol fieldSymbol
         )
         {
             var propertyName = fieldSymbol.GetPropertyName();
 
-            source.AppendLine($@"        {accessors.ToFriendlyString()} {fieldSymbol.Type} {propertyName}
+            source.AppendLine($@"{indent}{accessors.ToFriendlyString()} {fieldSymbol.Type} {propertyName}
         {{");
         }
 
@@ -91,26 +92,51 @@ namespace SourceGeneration
             source.AppendLine($"{indent}{propertyAccessor}{printOverride}{type} {propertyName} {printGetterSetter}{printDefaultValue}");
         }
 
-        public static void GeneratePropertyEnd(this StringBuilder source) => source.AppendLine("        }");
+        public static void GeneratePropertyEnd(this StringBuilder source, string indent) => source.AppendLine($"{indent}}}");
 
-        public static void GeneratePropertyGetterReturnsField(this StringBuilder source, IFieldSymbol fieldSymbol) =>
-            source.AppendLine($"            get => {fieldSymbol.Name};");
+        public static void GeneratePropertyGetterReturnsField(
+            this StringBuilder source,
+            string indent,
+            IFieldSymbol fieldSymbol,
+            AccessModifier accessModifier
+        )
+        {
+            var accessor = accessModifier != AccessModifier.None ? $"{accessModifier.ToFriendlyString()} " : "";
+            source.AppendLine($"{indent}{accessor}get => {fieldSymbol.Name};");
+        }
 
-        public static void GeneratePropertyGetterStart(this StringBuilder source, bool useExpression) =>
-            source.AppendLine($"            get{(useExpression ? " => " : "\n            {")}");
+        public static void GeneratePropertyGetterStart(
+            this StringBuilder source,
+            string indent,
+            bool useExpression,
+            AccessModifier accessModifier
+        )
+        {
+            var accessor = accessModifier != AccessModifier.None ? $"{accessModifier.ToFriendlyString()} " : "";
+            var expression = useExpression ? " => " : $"\n{indent}{{";
+            source.AppendLine($"{indent}{accessor}get{expression}");
+        }
 
-        public static void GeneratePropertyGetSetEnd(this StringBuilder source, bool useExpression)
+        public static void GeneratePropertyGetSetEnd(this StringBuilder source, string indent, bool useExpression)
         {
             if (!useExpression)
             {
-                source.AppendLine("            }");
+                source.AppendLine($"{indent}}}");
             }
         }
 
-        public static void GeneratePropertySetterSetsValue(this StringBuilder source, IFieldSymbol fieldSymbol) =>
-            source.AppendLine($"            set => {fieldSymbol.Name} = value;");
-
-        public static void GeneratePropertySetterStart(this StringBuilder source, bool useExpression, bool useInit = false) =>
-            source.AppendLine($"            {(useInit ? "init" : "set")}{(useExpression ? " => " : "\n            {")}");
+        public static void GeneratePropertySetterStart(
+            this StringBuilder source,
+            string indent,
+            bool useExpression,
+            AccessModifier accessModifier,
+            bool useInit = false
+        )
+        {
+            var init = useInit ? "init" : "set";
+            var expression = useExpression ? " => " : $"\n{indent}{{";
+            var accessor = accessModifier != AccessModifier.None ? $"{accessModifier.ToFriendlyString()} " : "";
+            source.AppendLine($"{indent}{accessor}{init}{expression}");
+        }
     }
 }
