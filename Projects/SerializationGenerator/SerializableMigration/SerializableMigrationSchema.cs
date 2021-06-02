@@ -57,6 +57,7 @@ namespace SerializableMigration
                 {
                     var text = File.ReadAllText(file, Encoding.UTF8);
                     migration = JsonSerializer.Deserialize<SerializableMetadata>(text, options);
+                    _cache[fi.Name] = migration;
                 }
 
                 if (typeName == migration!.Type && version > migration.Version)
@@ -95,6 +96,7 @@ namespace SerializableMigration
                     }
 
                     migration = JsonSerializer.Deserialize<SerializableMetadata>(text, options);
+                    _cache[fi.Name] = migration;
                 }
 
                 if (typeName == migration!.Type && version > migration.Version)

@@ -33,7 +33,7 @@ namespace SerializationGenerator
 
             source.GenerateConstructorStart(
                 className,
-                AccessModifier.Public,
+                Accessibility.Public,
                 new []{ (serialType, "serial") }.ToImmutableArray(),
                 isOverride ? _baseParameters : ImmutableArray<string>.Empty
             );

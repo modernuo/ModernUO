@@ -26,20 +26,21 @@ namespace Server
     public sealed class SerializableFieldAttribute : Attribute
     {
         public int Order { get; }
-
         public string PropertyGetter { get; }
-
-        public string PropertySetter { get; }
+        public string? PropertySetter { get; }
+        public bool IsVirtual { get; }
 
         public SerializableFieldAttribute(
             int order,
-            AccessModifier getter = AccessModifier.Public,
-            AccessModifier setter = AccessModifier.Public
+            string getter = "public",
+            string setter = "public",
+            bool isVirtual = false
         )
         {
             Order = order;
-            PropertyGetter = getter.ToFriendlyString();
-            PropertySetter = setter.ToFriendlyString();
+            PropertyGetter = getter;
+            PropertySetter = setter;
+            IsVirtual = isVirtual;
         }
     }
 }

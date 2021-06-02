@@ -43,23 +43,25 @@ namespace SerializationGenerator
         public static void GeneratePropertyStart(
             this StringBuilder source,
             string indent,
-            AccessModifier accessors,
+            Accessibility accessors,
+            bool isVirtual,
             IFieldSymbol fieldSymbol
         )
         {
             var propertyName = fieldSymbol.GetPropertyName();
+            var virt = isVirtual ? "virtual " : "";
 
-            source.AppendLine($@"{indent}{accessors.ToFriendlyString()} {fieldSymbol.Type} {propertyName}
-        {{");
+            source.AppendLine($"{indent}{accessors.ToFriendlyString()} {virt}{fieldSymbol.Type} {propertyName}");
+            source.AppendLine($"{indent}{{");
         }
 
         public static void GenerateAutoProperty(
             this StringBuilder source,
-            AccessModifier accessors,
+            Accessibility accessors,
             string type,
             string propertyName,
-            AccessModifier? getAccessor,
-            AccessModifier? setAccessor,
+            Accessibility? getAccessor,
+            Accessibility? setAccessor,
             string indent,
             bool useInit = false,
             string defaultValue = null,
@@ -73,18 +75,18 @@ namespace SerializationGenerator
 
             var getter = getAccessor == null ?
                 "" :
-                $"{(getAccessor != AccessModifier.None ? $"{getAccessor.Value.ToFriendlyString()} " : "")}get;";
+                $"{(getAccessor != Accessibility.NotApplicable ? $"{getAccessor.Value.ToFriendlyString()} " : "")}get;";
 
             var getterSpace = getAccessor != null ? " " : "";
             var setOrInit = useInit ? "init;" : "set;";
 
-            var setterAccessor = setAccessor is null or AccessModifier.None
+            var setterAccessor = setAccessor is null or Accessibility.NotApplicable
                 ? ""
                 : $"{setAccessor.Value.ToFriendlyString() ?? ""} ";
 
             var setter = setAccessor == null ? "" : $"{getterSpace}{setterAccessor}{setOrInit}";
 
-            var propertyAccessor = accessors == AccessModifier.None ? "" : $"{accessors.ToFriendlyString()} ";
+            var propertyAccessor = accessors == Accessibility.NotApplicable ? "" : $"{accessors.ToFriendlyString()} ";
             var printOverride = isOverride ? "override " : "";
             var printDefaultValue = defaultValue != null ? $"{(setAccessor != null ? " =" : "")} {defaultValue};" : "";
             var printGetterSetter = setAccessor == null ? "=>" : $"{{ {getter}{setter} }}";
@@ -98,10 +100,10 @@ namespace SerializationGenerator
             this StringBuilder source,
             string indent,
             IFieldSymbol fieldSymbol,
-            AccessModifier accessModifier
+            Accessibility Accessibility
         )
         {
-            var accessor = accessModifier != AccessModifier.None ? $"{accessModifier.ToFriendlyString()} " : "";
+            var accessor = Accessibility != Accessibility.NotApplicable ? $"{Accessibility.ToFriendlyString()} " : "";
             source.AppendLine($"{indent}{accessor}get => {fieldSymbol.Name};");
         }
 
@@ -109,10 +111,10 @@ namespace SerializationGenerator
             this StringBuilder source,
             string indent,
             bool useExpression,
-            AccessModifier accessModifier
+            Accessibility Accessibility
         )
         {
-            var accessor = accessModifier != AccessModifier.None ? $"{accessModifier.ToFriendlyString()} " : "";
+            var accessor = Accessibility != Accessibility.NotApplicable ? $"{Accessibility.ToFriendlyString()} " : "";
             var expression = useExpression ? " => " : $"\n{indent}{{";
             source.AppendLine($"{indent}{accessor}get{expression}");
         }
@@ -129,13 +131,13 @@ namespace SerializationGenerator
             this StringBuilder source,
             string indent,
             bool useExpression,
-            AccessModifier accessModifier,
+            Accessibility Accessibility,
             bool useInit = false
         )
         {
             var init = useInit ? "init" : "set";
             var expression = useExpression ? " => " : $"\n{indent}{{";
-            var accessor = accessModifier != AccessModifier.None ? $"{accessModifier.ToFriendlyString()} " : "";
+            var accessor = Accessibility != Accessibility.NotApplicable ? $"{Accessibility.ToFriendlyString()} " : "";
             source.AppendLine($"{indent}{accessor}{init}{expression}");
         }
     }

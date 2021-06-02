@@ -49,7 +49,7 @@ namespace SerializationGenerator
         // TODO: Generalize this to any field using dynamic indentation
         public static void GenerateClassField(
             this StringBuilder source,
-            AccessModifier accessors,
+            Accessibility accessors,
             InstanceModifier instance,
             string type,
             string variableName,
@@ -63,7 +63,7 @@ namespace SerializationGenerator
             }
 
             var instanceStr = instance == InstanceModifier.None ? "" : $"{instance.ToFriendlyString()} ";
-            var accessorStr = accessors == AccessModifier.None ? "" : $"{accessors.ToFriendlyString()} ";
+            var accessorStr = accessors == Accessibility.NotApplicable ? "" : $"{accessors.ToFriendlyString()} ";
             var valueStr = value == null ? "" : $" = {value}";
             source.AppendLine($"        {accessorStr}{instanceStr}{type} {variableName}{valueStr};");
 

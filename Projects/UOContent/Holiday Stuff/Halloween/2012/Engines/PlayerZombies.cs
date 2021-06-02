@@ -176,7 +176,7 @@ namespace Server.Engines.Events
     [Serializable(0, false)]
     public partial class ZombieSkeleton : BaseCreature
     {
-        [SerializableField(0, AccessModifier.Private, AccessModifier.Private)]
+        [SerializableField(0, "private", "private")]
         private PlayerMobile _deadPlayer;
 
         public override string DefaultName => _deadPlayer != null ? $"{_deadPlayer.Name}'s Zombie Skeleton" : "Zombie Skeleton";

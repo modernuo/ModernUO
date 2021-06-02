@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace SerializationGenerator
 {
@@ -40,5 +41,19 @@ namespace SerializationGenerator
 
             return list.ToImmutableArray();
         }
+
+        public static string ToFriendlyString(this Accessibility accessibility) => SyntaxFacts.GetText(accessibility);
+
+        public static Accessibility GetAccessibility(string value) =>
+            value switch
+            {
+                "private"            => Accessibility.Private,
+                "protected"          => Accessibility.Protected,
+                "internal"           => Accessibility.Internal,
+                "public"             => Accessibility.Public,
+                "protected internal" => Accessibility.ProtectedOrInternal,
+                "private protected"  => Accessibility.ProtectedAndInternal,
+                _                    => Accessibility.NotApplicable
+            };
     }
 }

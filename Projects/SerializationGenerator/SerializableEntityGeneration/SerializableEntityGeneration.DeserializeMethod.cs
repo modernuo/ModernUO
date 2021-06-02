@@ -38,7 +38,7 @@ namespace SerializationGenerator
 
             source.GenerateMethodStart(
                 "Deserialize",
-                AccessModifier.Public,
+                Accessibility.Public,
                 isOverride,
                 "void",
                 ImmutableArray.Create<(ITypeSymbol, string)>((genericReaderInterface, "reader"))
