@@ -37,6 +37,13 @@ namespace Server.Network
         public const int MobileStatusCompactLength = 43;
         public const int MobileStatusMaxLength = 121;
 
+        public static bool ExtendedStatus { get; set; }
+        
+        public static void Initialize()
+        {
+            ExtendedStatus = ServerConfiguration.GetOrUpdateSetting("extendedStatus", false);
+        }
+
         public static void CreateBondedStatus(Span<byte> buffer, Serial serial, bool bonded)
         {
             if (buffer[0] != 0)
@@ -466,7 +473,7 @@ namespace Server.Network
                  * For the ML era, the version value must be 5 if the original UO distribution
                  * is used and the client is not lower than version 5
                  */
-                version = ServerConfiguration.GetOrUpdateSetting("extendedStatus", 5);
+                version = ExtendedStatus ? 6 : 5;
             }
             else
             {
