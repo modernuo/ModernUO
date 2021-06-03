@@ -179,8 +179,6 @@ namespace Server
 
         public static List<Region> Regions { get; } = new();
 
-        public static Type DefaultRegionType { get; set; } = typeof(Region);
-
         public static TimeSpan StaffLogoutDelay { get; set; } = TimeSpan.Zero;
 
         public static TimeSpan DefaultLogoutDelay { get; set; } = TimeSpan.FromMinutes(5.0);

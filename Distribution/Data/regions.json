@@ -77,7 +77,7 @@
   },
   {
     "name": "Huntsman's Forest",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 1595, "y1": 550, "x2": 1715, "y2": 670 }]
@@ -111,7 +111,7 @@
   },
   {
     "name": "Blackthorn Castle",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "priority": 50,
@@ -121,7 +121,7 @@
     "entrance": { "x": 1523, "y": 1504 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "logoutDelay": false,
@@ -264,7 +264,7 @@
     "go": { "x": 1383, "y": 3815, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Jhelom",
     "logoutDelay": false,
@@ -291,7 +291,7 @@
     "go": { "x": 2466, "y": 544, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Minoc",
     "logoutDelay": false,
@@ -320,7 +320,7 @@
     "go": { "x": 3650, "y": 2519, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Ocllo",
     "logoutDelay": false,
@@ -347,7 +347,7 @@
     "go": { "x": 1867, "y": 2780, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Trinsic",
     "logoutDelay": false,
@@ -375,7 +375,7 @@
     "go": { "x": 2899, "y": 676, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Vesper",
     "logoutDelay": false,
@@ -405,7 +405,7 @@
     "go": { "x": 546, "y": 992, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Yew",
     "logoutDelay": false,
@@ -478,7 +478,7 @@
     "go": { "x": 5223, "y": 190, "z": 5 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Wind",
     "logoutDelay": false,
@@ -502,7 +502,7 @@
     "go": { "x": 3010, "y": 3371, "z": 15 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Serpent's Hold",
     "logoutDelay": false,
@@ -522,7 +522,7 @@
     "go": { "x": 632, "y": 2233, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Skara Brae",
     "logoutDelay": false,
@@ -544,7 +544,7 @@
     "go": { "x": 3732, "y": 1279, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Nujel'm",
     "logoutDelay": false,
@@ -599,7 +599,7 @@
     "go": { "x": 4442, "y": 1172, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Moonglow",
     "logoutDelay": false,
@@ -629,7 +629,7 @@
     "go": { "x": 3714, "y": 2220, "z": 20 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Magincia",
     "logoutDelay": false,
@@ -649,7 +649,7 @@
     "go": { "x": 2706, "y": 2163, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Buccaneer's Den",
     "logoutDelay": false,
@@ -764,7 +764,7 @@
   },
   {
     "name": "Cave 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [
@@ -777,7 +777,7 @@
   },
   {
     "name": "Cave 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 1887, "y1": 354, "x2": 1920, "y2": 377 }],
@@ -785,7 +785,7 @@
   },
   {
     "name": "Cave 3",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 1925, "y1": 307, "x2": 1943, "y2": 325 }],
@@ -793,7 +793,7 @@
   },
   {
     "name": "Cave 4",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 2323, "y1": 809, "x2": 2368, "y2": 851 }],
@@ -801,7 +801,7 @@
   },
   {
     "name": "Britain Mine 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 1436, "y1": 1215, "x2": 1465, "y2": 1252 }],
@@ -809,7 +809,7 @@
   },
   {
     "name": "Britain Mine 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 1611, "y1": 1175, "x2": 1662, "y2": 1204 }],
@@ -817,7 +817,7 @@
   },
   {
     "name": "Minoc Cave 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 2406, "y1": 168, "x2": 2428, "y2": 184 }],
@@ -825,7 +825,7 @@
   },
   {
     "name": "Minoc Cave 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 2418, "y1": 81, "x2": 2442, "y2": 113 }],
@@ -833,7 +833,7 @@
   },
   {
     "name": "Minoc Cave 3",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 2447, "y1": 39, "x2": 2489, "y2": 67 }],
@@ -841,7 +841,7 @@
   },
   {
     "name": "Minoc Mine",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [
@@ -852,7 +852,7 @@
   },
   {
     "name": "Avatar Isle Cave",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 4594, "y1": 3807, "x2": 4617, "y2": 3824 }],
@@ -860,7 +860,7 @@
   },
   {
     "name": "Ice Isle Cave 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 4018, "y1": 421, "x2": 4067, "y2": 470 }],
@@ -868,7 +868,7 @@
   },
   {
     "name": "Ice Isle Cave 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [
@@ -879,7 +879,7 @@
   },
   {
     "name": "North Territory Cave",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 1973, "y1": 251, "x2": 1994, "y2": 274 }],
@@ -887,7 +887,7 @@
   },
   {
     "name": "Yew Cave",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 766, "y1": 1683, "x2": 778, "y2": 1697 }],
@@ -895,7 +895,7 @@
   },
   {
     "name": "North Territory Mine 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 1713, "y1": 1055, "x2": 1753, "y2": 1080 }],
@@ -903,7 +903,7 @@
   },
   {
     "name": "North Territory Mine 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 1604, "y1": 958, "x2": 1650, "y2": 1009 }],
@@ -911,7 +911,7 @@
   },
   {
     "name": "Mt Kendall",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [
@@ -923,7 +923,7 @@
   },
   {
     "name": "Covetous Mine",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [
@@ -983,7 +983,7 @@
     "go": { "x": 5228, "y": 3978, "z": 37 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Delucia",
     "logoutDelay": false,
@@ -1001,7 +1001,7 @@
     "go": { "x": 5769, "y": 3176, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Papua",
     "logoutDelay": false,
@@ -1137,7 +1137,7 @@
   },
   {
     "name": "Shrine of Compassion",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 1851, "y1": 867, "x2": 1865, "y2": 881 }],
@@ -1145,7 +1145,7 @@
   },
   {
     "name": "Chaos Shrine",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 1456, "y1": 840, "x2": 1460, "y2": 847 }],
@@ -1153,7 +1153,7 @@
   },
   {
     "name": "Shrine of Honesty",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 37,
     "rects": [{ "x1": 4209, "y1": 560, "x2": 4216, "y2": 568 }],
@@ -1161,7 +1161,7 @@
   },
   {
     "name": "Shrine of Honor",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 1721, "y1": 3525, "x2": 1729, "y2": 3531 }],
@@ -1169,7 +1169,7 @@
   },
   {
     "name": "Shrine of Humility",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 4270, "y1": 3694, "x2": 4279, "y2": 3703 }],
@@ -1177,7 +1177,7 @@
   },
   {
     "name": "Shrine of Justice",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 1297, "y1": 629, "x2": 1306, "y2": 638 }],
@@ -1185,7 +1185,7 @@
   },
   {
     "name": "Shrine of Sacrifice",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 3352, "y1": 286, "x2": 3358, "y2": 293 }],
@@ -1193,7 +1193,7 @@
   },
   {
     "name": "Shrine of Spirituality",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [
@@ -1204,7 +1204,7 @@
   },
   {
     "name": "Shrine of Valor",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 37,
     "rects": [{ "x1": 2488, "y1": 3928, "x2": 2497, "y2": 3939 }],
@@ -1212,7 +1212,7 @@
   },
   {
     "name": "South Britannian Sea",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 688, "y1": 3700, "x2": 2100, "y2": 4080 }]
@@ -1336,14 +1336,14 @@
   },
   {
     "name": "Bravehorn's drinking pool",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1302, "y1": 2331, "x2": 1340, "y2": 2353 }]
   },
   {
     "name": "Huntsman's Forest",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1595, "y1": 550, "x2": 1715, "y2": 670 }]
@@ -1377,7 +1377,7 @@
     "go": { "x": 1495, "y": 1629, "z": 10 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Britain",
     "logoutDelay": false,
@@ -1520,7 +1520,7 @@
     "go": { "x": 1383, "y": 3815, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Jhelom",
     "logoutDelay": false,
@@ -1547,7 +1547,7 @@
     "go": { "x": 2466, "y": 544, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Minoc",
     "logoutDelay": false,
@@ -1583,7 +1583,7 @@
     "go": { "x": 1867, "y": 2780, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Trinsic",
     "logoutDelay": false,
@@ -1611,7 +1611,7 @@
     "go": { "x": 2899, "y": 676, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Vesper",
     "logoutDelay": false,
@@ -1641,7 +1641,7 @@
     "go": { "x": 546, "y": 992, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Yew",
     "logoutDelay": false,
@@ -1714,7 +1714,7 @@
     "go": { "x": 5223, "y": 190, "z": 5 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Wind",
     "logoutDelay": false,
@@ -1738,7 +1738,7 @@
     "go": { "x": 3010, "y": 3371, "z": 15 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Serpent's Hold",
     "logoutDelay": false,
@@ -1758,7 +1758,7 @@
     "go": { "x": 632, "y": 2233, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Skara Brae",
     "logoutDelay": false,
@@ -1780,7 +1780,7 @@
     "go": { "x": 3732, "y": 1279, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Nujel'm",
     "logoutDelay": false,
@@ -1836,7 +1836,7 @@
   },
   {
     "name": "The Scholar's Inn",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Moonglow",
     "logoutDelay": false,
@@ -1866,7 +1866,7 @@
     "go": { "x": 3714, "y": 2220, "z": 20 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Magincia",
     "logoutDelay": false,
@@ -1886,7 +1886,7 @@
     "go": { "x": 2706, "y": 2163, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Buccaneer's Den",
     "logoutDelay": false,
@@ -1991,7 +1991,7 @@
   },
   {
     "name": "Cave 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [
@@ -2004,7 +2004,7 @@
   },
   {
     "name": "Cave 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1887, "y1": 354, "x2": 1920, "y2": 377 }],
@@ -2012,7 +2012,7 @@
   },
   {
     "name": "Cave 3",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1925, "y1": 307, "x2": 1943, "y2": 325 }],
@@ -2020,7 +2020,7 @@
   },
   {
     "name": "Cave 4",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 2323, "y1": 809, "x2": 2368, "y2": 851 }],
@@ -2028,7 +2028,7 @@
   },
   {
     "name": "Britain Mine 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1436, "y1": 1215, "x2": 1465, "y2": 1252 }],
@@ -2036,7 +2036,7 @@
   },
   {
     "name": "Britain Mine 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1611, "y1": 1175, "x2": 1662, "y2": 1204 }],
@@ -2044,7 +2044,7 @@
   },
   {
     "name": "Minoc Cave 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 2406, "y1": 168, "x2": 2428, "y2": 184 }],
@@ -2052,7 +2052,7 @@
   },
   {
     "name": "Minoc Cave 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 2418, "y1": 81, "x2": 2442, "y2": 113 }],
@@ -2060,7 +2060,7 @@
   },
   {
     "name": "Minoc Cave 3",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 2447, "y1": 39, "x2": 2489, "y2": 67 }],
@@ -2068,7 +2068,7 @@
   },
   {
     "name": "Minoc Mine",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [
@@ -2079,7 +2079,7 @@
   },
   {
     "name": "Avatar Isle Cave",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 4594, "y1": 3807, "x2": 4617, "y2": 3824 }],
@@ -2087,7 +2087,7 @@
   },
   {
     "name": "Ice Isle Cave 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 4018, "y1": 421, "x2": 4067, "y2": 470 }],
@@ -2095,7 +2095,7 @@
   },
   {
     "name": "Ice Isle Cave 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [
@@ -2106,7 +2106,7 @@
   },
   {
     "name": "North Territory Cave",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1973, "y1": 251, "x2": 1994, "y2": 274 }],
@@ -2114,7 +2114,7 @@
   },
   {
     "name": "Yew Cave",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 766, "y1": 1683, "x2": 778, "y2": 1697 }],
@@ -2122,7 +2122,7 @@
   },
   {
     "name": "North Territory Mine 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1713, "y1": 1055, "x2": 1753, "y2": 1080 }],
@@ -2130,7 +2130,7 @@
   },
   {
     "name": "North Territory Mine 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1604, "y1": 958, "x2": 1650, "y2": 1009 }],
@@ -2138,7 +2138,7 @@
   },
   {
     "name": "Mt Kendall",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [
@@ -2150,7 +2150,7 @@
   },
   {
     "name": "Covetous Mine",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [
@@ -2210,7 +2210,7 @@
     "go": { "x": 5228, "y": 3978, "z": 37 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Delucia",
     "logoutDelay": false,
@@ -2228,7 +2228,7 @@
     "go": { "x": 5769, "y": 3176, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Papua",
     "logoutDelay": false,
@@ -2372,7 +2372,7 @@
   },
   {
     "name": "Shrine of Compassion",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1851, "y1": 867, "x2": 1865, "y2": 881 }],
@@ -2380,7 +2380,7 @@
   },
   {
     "name": "Chaos Shrine",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1456, "y1": 840, "x2": 1460, "y2": 847 }],
@@ -2388,7 +2388,7 @@
   },
   {
     "name": "Shrine of Honesty",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 37,
     "rects": [{ "x1": 4209, "y1": 560, "x2": 4216, "y2": 568 }],
@@ -2396,7 +2396,7 @@
   },
   {
     "name": "Shrine of Honor",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1721, "y1": 3525, "x2": 1729, "y2": 3531 }],
@@ -2404,7 +2404,7 @@
   },
   {
     "name": "Shrine of Humility",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 4270, "y1": 3694, "x2": 4279, "y2": 3703 }],
@@ -2412,7 +2412,7 @@
   },
   {
     "name": "Shrine of Justice",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 1297, "y1": 629, "x2": 1306, "y2": 638 }],
@@ -2420,7 +2420,7 @@
   },
   {
     "name": "Shrine of Sacrifice",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 3352, "y1": 286, "x2": 3358, "y2": 293 }],
@@ -2428,7 +2428,7 @@
   },
   {
     "name": "Shrine of Spirituality",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [
@@ -2439,7 +2439,7 @@
   },
   {
     "name": "Shrine of Valor",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 37,
     "rects": [{ "x1": 2488, "y1": 3928, "x2": 2497, "y2": 3939 }],
@@ -2447,7 +2447,7 @@
   },
   {
     "name": "South Britannian Sea",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 688, "y1": 3700, "x2": 2100, "y2": 4080 }]
@@ -2499,14 +2499,14 @@
   },
   {
     "name": "Sheep Farm",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 1303, "y1": 1312, "x2": 1333, "y2": 1342 }]
   },
   {
     "name": "Shrine of Valor",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 37,
     "rects": [{ "x1": 512, "y1": 200, "x2": 544, "y2": 232 }],
@@ -2514,7 +2514,7 @@
   },
   {
     "name": "Chaos Shrine",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 1736, "y1": 224, "x2": 1760, "y2": 248 }],
@@ -2522,7 +2522,7 @@
   },
   {
     "name": "Shrine of Sacrifice",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 1160, "y1": 1280, "x2": 1192, "y2": 1296 }],
@@ -2530,7 +2530,7 @@
   },
   {
     "name": "Shrine of Honesty",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 37,
     "rects": [{ "x1": 712, "y1": 1344, "x2": 736, "y2": 1376 }],
@@ -2538,7 +2538,7 @@
   },
   {
     "name": "Shrine of Compassion",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 1200, "y1": 448, "x2": 1232, "y2": 488 }],
@@ -2546,7 +2546,7 @@
   },
   {
     "name": "Shrine of Spirituality",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 1520, "y1": 1336, "x2": 1536, "y2": 1352 }],
@@ -2554,7 +2554,7 @@
   },
   {
     "name": "Shrine of Humility",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 272, "y1": 1008, "x2": 296, "y2": 1024 }],
@@ -2562,7 +2562,7 @@
   },
   {
     "name": "Shrine of Honor",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 736, "y1": 712, "x2": 760, "y2": 744 }],
@@ -2570,7 +2570,7 @@
   },
   {
     "name": "Terort Skitas",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 11,
     "rects": [{ "x1": 528, "y1": 376, "x2": 624, "y2": 464 }],
@@ -2578,7 +2578,7 @@
   },
   {
     "name": "Pormir Harm",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "music": "Stones2",
@@ -2587,7 +2587,7 @@
   },
   {
     "name": "Pormir Felwis",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 472, "y1": 336, "x2": 512, "y2": 368 }],
@@ -2595,7 +2595,7 @@
   },
   {
     "name": "Cyclops Temple",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 880, "y1": 1256, "x2": 936, "y2": 1368 }],
@@ -2603,7 +2603,7 @@
   },
   {
     "name": "Rat Fort",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 616, "y1": 792, "x2": 672, "y2": 848 }],
@@ -2611,7 +2611,7 @@
   },
   {
     "name": "Rat Fort Cellar",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 160, "y1": 736, "x2": 192, "y2": 768 }],
@@ -2619,7 +2619,7 @@
   },
   {
     "name": "Entrance to Central Ilshenar 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 1136, "y1": 584, "x2": 1152, "y2": 600 }],
@@ -2627,7 +2627,7 @@
   },
   {
     "name": "Entrance to Central Ilshenar 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 1232, "y1": 576, "x2": 1240, "y2": 592 }],
@@ -2649,7 +2649,7 @@
   },
   {
     "name": "Termir Flam",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 40,
     "rects": [
@@ -2679,7 +2679,7 @@
   },
   {
     "name": "Entrance to Rock Dungeon",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 2,
     "rects": [{ "x1": 1784, "y1": 560, "x2": 1792, "y2": 576 }],
@@ -2708,7 +2708,7 @@
   },
   {
     "name": "Entrance to Spider Cave",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 2,
     "rects": [{ "x1": 1400, "y1": 896, "x2": 1440, "y2": 920 }],
@@ -2728,14 +2728,14 @@
   },
   {
     "name": "Twin Oaks",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 48,
     "rects": [{ "x1": 1536, "y1": 1032, "x2": 1584, "y2": 1072 }],
     "go": { "x": 1560, "y": 1052, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "parent": "Twin Oaks",
     "logoutDelay": false,
@@ -2752,7 +2752,7 @@
   },
   {
     "name": "Entrance Spectre Dungeon",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 2,
     "rects": [{ "x1": 1360, "y1": 1030, "x2": 1366, "y2": 1034 }],
@@ -2769,7 +2769,7 @@
   },
   {
     "name": "Entrance Blood Dungeon",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 2,
     "rects": [{ "x1": 1736, "y1": 1224, "x2": 1760, "y2": 1240 }],
@@ -2786,7 +2786,7 @@
   },
   {
     "name": "Entrance Mushroom Cave",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 2,
     "rects": [{ "x1": 1448, "y1": 1320, "x2": 1464, "y2": 1336 }],
@@ -2794,7 +2794,7 @@
   },
   {
     "name": "Mushroom Cave",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 11,
     "rects": [{ "x1": 1392, "y1": 1448, "x2": 1496, "y2": 1568 }],
@@ -2811,7 +2811,7 @@
   },
   {
     "name": "Entrance Rat Cave",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 2,
     "rects": [{ "x1": 1024, "y1": 1152, "x2": 1032, "y2": 1160 }],
@@ -2819,7 +2819,7 @@
   },
   {
     "name": "Rat Cave Territory",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 2,
     "rects": [{ "x1": 1144, "y1": 1440, "x2": 1368, "y2": 1584 }],
@@ -2827,7 +2827,7 @@
   },
   {
     "name": "Ratman Cave",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 2,
     "rects": [
@@ -2858,7 +2858,7 @@
     "go": { "x": 818, "y": 1073, "z": -30 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "parent": "Mistas",
     "logoutDelay": false,
@@ -2866,7 +2866,7 @@
   },
   {
     "name": "Entrance Serpentine Passage",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 2,
     "rects": [{ "x1": 800, "y1": 864, "x2": 816, "y2": 880 }],
@@ -2874,7 +2874,7 @@
   },
   {
     "name": "Serpentine Passage",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 11,
     "rects": [{ "x1": 368, "y1": 1488, "x2": 560, "y2": 1592 }],
@@ -2894,7 +2894,7 @@
   },
   {
     "name": "Kirin passage",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 11,
     "rects": [{ "x1": 0, "y1": 800, "x2": 192, "y2": 1200 }],
@@ -2902,7 +2902,7 @@
   },
   {
     "name": "Entrance Lizards Passage",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 2,
     "rects": [{ "x1": 312, "y1": 1328, "x2": 320, "y2": 1336 }],
@@ -2929,7 +2929,7 @@
   },
   {
     "name": "Lizard Passage",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 11,
     "rects": [{ "x1": 256, "y1": 1560, "x2": 336, "y2": 1592 }],
@@ -2946,7 +2946,7 @@
   },
   {
     "name": "Lizard Man's Huts",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 48,
     "rects": [{ "x1": 264, "y1": 1280, "x2": 320, "y2": 1376 }],
@@ -2954,7 +2954,7 @@
   },
   {
     "name": "Nox Tereg",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 344, "y1": 1112, "x2": 488, "y2": 1240 }],
@@ -2977,7 +2977,7 @@
   },
   {
     "name": "Entrance Ancient Lair",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 936, "y1": 488, "x2": 944, "y2": 496 }],
@@ -2994,7 +2994,7 @@
   },
   {
     "name": "Gypsy Camp",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 480, "y1": 520, "x2": 536, "y2": 568 }],
@@ -3002,7 +3002,7 @@
   },
   {
     "name": "Gypsy Camp 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 1480, "y1": 600, "x2": 1536, "y2": 640 }],
@@ -3010,14 +3010,14 @@
   },
   {
     "name": "Gypsy Camp 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 48,
     "rects": [{ "x1": 1592, "y1": 528, "x2": 1632, "y2": 568 }],
     "go": { "x": 1612, "y": 548, "z": 0 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "parent": "Gypsy Camp 2",
     "logoutDelay": false,
@@ -3025,7 +3025,7 @@
   },
   {
     "name": "Juka Camp",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 1192, "y1": 656, "x2": 1304, "y2": 792 }],
@@ -3033,7 +3033,7 @@
   },
   {
     "name": "Gypsy Camp 3",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 928, "y1": 408, "x2": 968, "y2": 448 }],
@@ -3041,7 +3041,7 @@
   },
   {
     "name": "Gypsy Camp 4",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 840, "y1": 440, "x2": 880, "y2": 488 }],
@@ -3049,7 +3049,7 @@
   },
   {
     "name": "Gypsy Camp 5",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [
@@ -3060,7 +3060,7 @@
   },
   {
     "name": "Gypsy Camp 6",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 1376, "y1": 416, "x2": 1408, "y2": 448 }],
@@ -3068,7 +3068,7 @@
   },
   {
     "name": "Lord Blackthorn's Ilshenar Castle",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [
@@ -3079,7 +3079,7 @@
   },
   {
     "name": "Shrine of the Virtues",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 1072, "y1": 376, "x2": 1136, "y2": 432 }],
@@ -3087,7 +3087,7 @@
   },
   {
     "name": "Pass of Karnaugh",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [
@@ -3102,14 +3102,14 @@
   },
   {
     "name": "Vinculum Inn",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "priority": 50,
     "rects": [{ "x1": 658, "y1": 654, "x2": 671, "y2": 678 }],
     "go": { "x": 656, "y": 666, "z": -36 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Ilshenar",
     "parent": "Vinculum Inn",
     "logoutDelay": false,
@@ -3162,7 +3162,7 @@
     "go": { "x": 989, "y": 520, "z": -50 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Malas",
     "parent": "Luna",
     "logoutDelay": false,
@@ -3181,7 +3181,7 @@
     "go": { "x": 2049, "y": 1344, "z": -85 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Malas",
     "parent": "Umbra",
     "logoutDelay": false,
@@ -3209,7 +3209,7 @@
   },
   {
     "name": "Orc Fortress",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Malas",
     "priority": 50,
     "rects": [{ "x1": 1295, "y1": 1189, "x2": 1395, "y2": 1294 }],
@@ -3249,7 +3249,7 @@
   },
   {
     "name": "Hanse's Hostel",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Malas",
     "priority": 50,
     "logoutDelay": false,
@@ -3282,7 +3282,7 @@
   },
   {
     "name": "Samurai start location",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Malas",
     "priority": 50,
     "music": "Zento",
@@ -3290,7 +3290,7 @@
   },
   {
     "name": "Ninja start location",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Malas",
     "priority": 50,
     "music": "Zento",
@@ -3298,7 +3298,7 @@
   },
   {
     "name": "Ninja cave",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Malas",
     "priority": 50,
     "rects": [{ "x1": 360, "y1": 960, "x2": 460, "y2": 1175 }]
@@ -3333,7 +3333,7 @@
     "go": { "x": 736, "y": 1256, "z": 30 }
   },
   {
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Tokuno",
     "parent": "Zento",
     "logoutDelay": false,
@@ -3379,7 +3379,7 @@
   },
   {
     "name": "Abyssal Lair",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3388,7 +3388,7 @@
   },
   {
     "name": "MedusasLair",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 100,
@@ -3400,7 +3400,7 @@
   },
   {
     "name": "NPC Encampment",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 100,
@@ -3413,7 +3413,7 @@
   },
   {
     "name": "Cavern of the Discarded",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3430,7 +3430,7 @@
   },
   {
     "name": "Chamber of Virtue",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3439,7 +3439,7 @@
   },
   {
     "name": "Crimson Veins",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3448,7 +3448,7 @@
   },
   {
     "name": "Enslaved Goblins",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3464,7 +3464,7 @@
   },
   {
     "name": "Fairy Dragon Lair",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3473,7 +3473,7 @@
   },
   {
     "name": "Fire Temple Ruins",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3488,7 +3488,7 @@
   },
   {
     "name": "Fractured City",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3504,7 +3504,7 @@
   },
   {
     "name": "Lands of the Lich",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3516,7 +3516,7 @@
   },
   {
     "name": "Lava Caldera",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3525,7 +3525,7 @@
   },
   {
     "name": "Passage of Tears",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3534,7 +3534,7 @@
   },
   {
     "name": "Secret Garden",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3543,7 +3543,7 @@
   },
   {
     "name": "Serpents Lair",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3556,7 +3556,7 @@
   },
   {
     "name": "Silver Sapling",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3565,7 +3565,7 @@
   },
   {
     "name": "Skeletal Dragon",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3574,7 +3574,7 @@
   },
   {
     "name": "Sutek the Mage",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Abyss",
     "priority": 50,
@@ -3633,7 +3633,7 @@
   },
   {
     "name": "Holy City",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "priority": 50,
     "music": "Holycity",
@@ -3698,7 +3698,7 @@
   },
   {
     "name": "Queen's Palace",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Royal City",
     "music": "QueenPalace",
@@ -3707,7 +3707,7 @@
   },
   {
     "name": "Royal City Inn",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "parent": "Royal City",
     "logoutDelay": false,
@@ -3808,7 +3808,7 @@
   },
   {
     "name": "Shrine of Singularity",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "TerMur",
     "priority": 50,
     "music": "CodexShrine",
