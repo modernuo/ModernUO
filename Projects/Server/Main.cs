@@ -591,12 +591,33 @@ namespace Server
 
                 const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic |
                                                   BindingFlags.Instance | BindingFlags.DeclaredOnly;
-                if (type.GetMethod("Serialize", bindingFlags) == null)
+
+                var hasSerializeMethod = false;
+                var hasDeserializeMethod = false;
+
+                foreach (var method in type.GetMethods(bindingFlags))
+                {
+                    if (method.Name == "Serialize")
+                    {
+                        hasSerializeMethod = true;
+                    }
+
+                    if (method.Name == "Deserialize")
+                    {
+                        var parameters = method.GetParameters();
+                        if (parameters.Length == 1 && parameters[0].ParameterType == typeof(IGenericReader))
+                        {
+                            hasDeserializeMethod = true;
+                        }
+                    }
+                }
+
+                if (!hasSerializeMethod)
                 {
                     errors.AppendLine("       - No Serialize() method");
                 }
 
-                if (type.GetMethod("Deserialize", bindingFlags) == null)
+                if (!hasDeserializeMethod)
                 {
                     errors.AppendLine("       - No Deserialize() method");
                 }
@@ -608,9 +629,10 @@ namespace Server
                     Utility.PopColor();
                 }
             }
-            catch
+            catch (Exception e)
             {
                 Console.WriteLine("Warning: Exception in serialization verification of type {0}", type);
+                Console.WriteLine(e);
             }
         }
 
