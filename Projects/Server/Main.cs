@@ -629,10 +629,13 @@ namespace Server
                     Utility.PopColor();
                 }
             }
-            catch (Exception e)
+            catch (AmbiguousMatchException e)
+            {
+                // ignored
+            }
+            catch
             {
                 Console.WriteLine("Warning: Exception in serialization verification of type {0}", type);
-                Console.WriteLine(e);
             }
         }
 
