@@ -73,10 +73,10 @@ namespace SerializationGenerator
                 m => !m.IsStatic &&
                      m.MethodKind == MethodKind.Constructor &&
                      m.Parameters.Length <= 2 &&
-                     m.Parameters[0].Equals(genericReaderInterface, SymbolEqualityComparer.Default)
+                     SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, genericReaderInterface)
             );
 
-            requiresParent = genericCtor?.Parameters.Length == 2 && genericCtor.Parameters[1].Equals(symbol, SymbolEqualityComparer.Default);
+            requiresParent = genericCtor?.Parameters.Length == 2 && SymbolEqualityComparer.Default.Equals(genericCtor.Parameters[1].Type, symbol);
             return genericCtor != null;
         }
 
@@ -98,7 +98,7 @@ namespace SerializationGenerator
                     m => !m.IsStatic &&
                          m.ReturnsVoid &&
                          m.Parameters.Length == 1 &&
-                         m.Parameters[0].Equals(genericWriterInterface, SymbolEqualityComparer.Default) &&
+                         SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, genericWriterInterface) &&
                          m.DeclaredAccessibility == Accessibility.Public
                 );
         }
