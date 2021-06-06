@@ -164,6 +164,8 @@ namespace Server
                 throw new ArgumentException($"BufferReader does not support {nameof(offset)} beyond Int32.MaxValue");
             }
 
+            _position = (int)position;
+
             return _position;
         }
     }

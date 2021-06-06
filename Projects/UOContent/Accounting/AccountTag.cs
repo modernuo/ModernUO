@@ -48,18 +48,6 @@ namespace Server.Accounting
         /// <summary>
         ///     Serializes this AccountTag instance to an XmlTextWriter.
         /// </summary>
-        /// <param name="xml">The XmlTextWriter instance from which to serialize.</param>
-        public void Save(XmlTextWriter xml)
-        {
-            xml.WriteStartElement("tag");
-            xml.WriteAttributeString("name", Name);
-            xml.WriteString(Value);
-            xml.WriteEndElement();
-        }
-
-        /// <summary>
-        ///     Serializes this AccountTag instance to an XmlTextWriter.
-        /// </summary>
         /// <param name="xml">The serialization writer.</param>
         public void Serialize(IGenericWriter writer)
         {

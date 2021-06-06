@@ -1056,7 +1056,7 @@ namespace Server.Gumps
 
                         if (m_List == null)
                         {
-                            ipRestrictions = a.IPRestrictions.ToList();
+                            ipRestrictions = a.IpRestrictions.ToList();
                             m_List = ipRestrictions.ToList<object>();
                         }
                         else
@@ -3000,7 +3000,7 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        var list = a.IPRestrictions;
+                                        var list = a.IpRestrictions;
 
                                         var contains = false;
                                         for (var i = 0; !contains && i < list.Length; ++i)
@@ -3023,7 +3023,7 @@ namespace Server.Gumps
 
                                             newList[list.Length] = ip;
 
-                                            a.IPRestrictions = newList;
+                                            a.IpRestrictions = newList;
 
                                             notice = $"{ip} : Added to restriction list.";
                                         }
@@ -3888,9 +3888,9 @@ namespace Server.Gumps
                             }
                             else if (m_PageType == AdminGumpPage.AccountDetails_Access_Restrictions)
                             {
-                                var list = a.IPRestrictions.ToList();
+                                var list = a.IpRestrictions.ToList();
                                 list.Remove(m_List[index] as string);
-                                a.IPRestrictions = list.ToArray();
+                                a.IpRestrictions = list.ToArray();
 
                                 from.SendGump(
                                     new AdminGump(
