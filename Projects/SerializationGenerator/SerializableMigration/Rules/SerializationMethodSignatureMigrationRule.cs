@@ -34,7 +34,7 @@ namespace SerializableMigration
             out string[] ruleArguments
         )
         {
-            if (symbol is not ITypeSymbol typedSymbol || !typedSymbol.HasPublicSerializeMethod(compilation, serializableTypes))
+            if ((symbol as ITypeSymbol)?.HasPublicSerializeMethod(compilation, serializableTypes) != true)
             {
                 ruleArguments = null;
                 return false;
