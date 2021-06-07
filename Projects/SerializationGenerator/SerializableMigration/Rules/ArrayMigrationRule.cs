@@ -29,6 +29,7 @@ namespace SerializableMigration
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ISymbol? parentSymbol,
             out string[] ruleArguments
         )
         {
@@ -44,7 +45,8 @@ namespace SerializableMigration
                 arrayTypeSymbol.ElementType,
                 0,
                 attributes,
-                serializableTypes
+                serializableTypes,
+                parentSymbol
             );
 
             var length = serializableArrayType.RuleArguments.Length;

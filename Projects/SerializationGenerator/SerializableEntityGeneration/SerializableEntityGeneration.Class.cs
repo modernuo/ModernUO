@@ -203,7 +203,8 @@ namespace SerializationGenerator
                     fieldOrPropertySymbol,
                     order,
                     allAttributes,
-                    serializableTypes
+                    serializableTypes,
+                    classSymbol
                 );
 
                 serializablePropertySet.Add(serializableProperty);
