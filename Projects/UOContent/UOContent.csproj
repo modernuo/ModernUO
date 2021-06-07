@@ -30,7 +30,8 @@
         <Delete Files="..\..\Distribution\Assemblies\libz.dylib" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\libz.so" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\ZLib.Bindings.dll" ContinueOnError="true" />
-        <RemoveDir Directories="Generated" />
+        <Delete Files="Generated\**\*" ContinueOnError="true" />
+        <RemoveDir Directories="Generated" ContinueOnError="true" />
     </Target>
     <ItemGroup>
         <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
