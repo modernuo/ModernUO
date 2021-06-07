@@ -64,17 +64,17 @@ namespace Server.Accounting
         [SerializableField(10, setter: "private")]
         private List<AccountComment> _comments;
 
-        [SerializableField(10, setter: "private")]
+        [SerializableField(11, setter: "private")]
         private List<AccountTag> _tags;
 
-        [SerializableField(11)]
+        [SerializableField(12)]
         private IPAddress[] _loginIPs;
 
         /// <summary>
         ///     List of IP addresses for restricted access. '*' wildcard supported. If the array contains zero entries, all IP addresses
         ///     are allowed.
         /// </summary>
-        [SerializableField(12)]
+        [SerializableField(13)]
         private string[] _ipRestrictions;
 
         private TimeSpan _totalGameTime;
@@ -83,7 +83,7 @@ namespace Server.Accounting
         ///     Gets the total game time of this account, also considering the game time of characters
         ///     that have been deleted.
         /// </summary>
-        [SerializableField(13)]
+        [SerializableField(14)]
         public TimeSpan TotalGameTime
         {
             get
@@ -105,7 +105,7 @@ namespace Server.Accounting
             }
         }
 
-        [SerializableField(14)]
+        [SerializableField(15)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.Administrator)]")]
         private string _email;
 
@@ -345,8 +345,8 @@ namespace Server.Accounting
             _totalGold = reader.ReadInt();
             _totalPlat = reader.ReadInt();
 
-            _mobiles = new Mobile[7];
             var length = reader.ReadInt();
+            _mobiles = new Mobile[length];
             for (int i = 0; i < length; i++)
             {
                 _mobiles[i] = reader.ReadEntity<Mobile>();

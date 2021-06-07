@@ -34,7 +34,8 @@
         <Delete Files="..\..\Distribution\$(AssemblyName).pdb" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
-        <RemoveDir Directories="Generated" />
+        <Delete Files="Generated\**\*" ContinueOnError="true" />
+        <RemoveDir Directories="Generated" ContinueOnError="true" />
     </Target>
     <ItemGroup>
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.0.2" />
