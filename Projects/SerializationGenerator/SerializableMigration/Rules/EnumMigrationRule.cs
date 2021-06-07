@@ -64,7 +64,7 @@ namespace SerializableMigration
                 throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
             }
 
-            source.AppendLine($"{indent}{property.Name} = reader.WriteEnum<{property.Type}>({property.Name});");
+            source.AppendLine($"{indent}writer.WriteEnum<{property.Type}>({property.Name});");
         }
     }
 }

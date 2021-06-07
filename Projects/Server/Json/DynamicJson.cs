@@ -22,9 +22,11 @@ namespace Server.Json
 {
     public class DynamicJson
     {
-        [JsonPropertyName("type")] public string Type { get; set; }
+        [JsonPropertyName("type")]
+        public string Type { get; set; }
 
-        [JsonExtensionData] public Dictionary<string, JsonElement> data { get; set; }
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement> data { get; set; }
 
         public bool GetProperty<T>(string key, JsonSerializerOptions options, out T t)
         {

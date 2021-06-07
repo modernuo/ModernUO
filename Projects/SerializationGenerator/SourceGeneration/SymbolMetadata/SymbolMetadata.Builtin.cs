@@ -23,6 +23,13 @@ namespace SerializationGenerator
         public const string HASHSET_CLASS = "System.Collections.Generic.HashSet`1";
         public const string IPADDRESS_CLASS = "System.Net.IPAddress";
         public const string KEYVALUEPAIR_STRUCT = "System.Collections.Generic.KeyValuePair";
+        public const string TIMESPAN_STRUCT = "System.TimeSpan";
+
+        public static bool IsTimeSpan(this ISymbol symbol, Compilation compilation) =>
+            symbol.Equals(
+                compilation.GetTypeByMetadataName(TIMESPAN_STRUCT),
+                SymbolEqualityComparer.Default
+            );
 
         public static bool IsIpAddress(this ISymbol symbol, Compilation compilation) =>
             symbol.Equals(

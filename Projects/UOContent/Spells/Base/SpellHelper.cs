@@ -666,8 +666,8 @@ namespace Server.Spells
             }
 
             // Always allow monsters to teleport
-            if (caster is BaseCreature bc && !bc.Controlled && !bc.Summoned &&
-                (type == TravelCheckType.TeleportTo || type == TravelCheckType.TeleportFrom))
+            if (caster is BaseCreature { Controlled: false, Summoned: false } &&
+                type is TravelCheckType.TeleportTo or TravelCheckType.TeleportFrom)
             {
                 return true;
             }
@@ -681,7 +681,7 @@ namespace Server.Spells
             if (caster != null)
             {
                 var destination = Region.Find(loc, map) as BaseRegion;
-                var current = Region.Find(caster.Location, map) as BaseRegion;
+                var current = Region.Find(caster.Location, caster.Map) as BaseRegion;
 
                 if (destination?.CheckTravel(caster, loc, type) == false || current?.CheckTravel(caster, loc, type) == false)
                 {

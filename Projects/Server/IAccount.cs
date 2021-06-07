@@ -95,7 +95,7 @@ namespace Server.Accounting
         long GetTotalGold();
     }
 
-    public interface IAccount : IGoldAccount, IComparable<IAccount>, ISerializable
+    public interface IAccount : IGoldAccount, IComparable<IAccount>
     {
         string Username { get; set; }
         string Email { get; set; }
