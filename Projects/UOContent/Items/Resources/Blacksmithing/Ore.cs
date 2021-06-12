@@ -58,10 +58,10 @@ namespace Server.Items
         private static int RandomSize() =>
             Utility.RandomDouble() switch
             {
-                < 0.12 => 0x19B7,
-                < 0.18 => 0x19B8,
-                < 0.25 => 0x19BA,
-                _      => 0x19B9
+                < 0.12 => 0x19B7, // Small
+                < 0.18 => 0x19B8, // Medium clump
+                < 0.25 => 0x19BA, // Medium
+                _      => 0x19B9  // Large
             };
 
         public override bool CanStackWith(Item dropped) =>
@@ -130,7 +130,7 @@ namespace Server.Items
 
             private bool IsForge(object obj)
             {
-                if (Core.ML && obj is Mobile mobile && mobile.IsDeadBondedPet)
+                if (Core.ML && obj is Mobile { IsDeadBondedPet: true })
                 {
                     return false;
                 }
@@ -165,85 +165,7 @@ namespace Server.Items
 
                 if (targeted is BaseOre ore)
                 {
-                    if (!ore.Movable)
-                    {
-                        return;
-                    }
-
-                    if (m_Ore == ore)
-                    {
-                        from.SendLocalizedMessage(501972); // Select another pile or ore with which to combine this.
-                        from.Target = new InternalTarget(ore);
-                        return;
-                    }
-
-                    if (ore._resource != m_Ore._resource)
-                    {
-                        from.SendLocalizedMessage(501979); // You cannot combine ores of different metals.
-                        return;
-                    }
-
-                    var worth = ore.Amount * ore.ItemID switch
-                    {
-                        0x19B9 => 8,
-                        0x19B7 => 2,
-                        _      => 4
-                    };
-
-                    var sourceWorth = m_Ore.Amount * m_Ore.ItemID switch
-                    {
-                        0x19B9 => 8,
-                        0x19B7 => 2,
-                        _      => 4
-                    };
-
-                    worth += sourceWorth;
-
-                    var plusWeight = 0;
-                    var newID = ore.ItemID;
-
-                    if (ore.DefaultWeight != m_Ore.DefaultWeight)
-                    {
-                        if (ore.ItemID == 0x19B7 || m_Ore.ItemID == 0x19B7)
-                        {
-                            newID = 0x19B7;
-                        }
-                        else if (ore.ItemID == 0x19B9)
-                        {
-                            newID = m_Ore.ItemID;
-                            plusWeight = ore.Amount * 2;
-                        }
-                        else
-                        {
-                            plusWeight = m_Ore.Amount * 2;
-                        }
-                    }
-
-                    if (ore.ItemID == 0x19B9 && worth > 120000 ||
-                        ore.ItemID is 0x19B8 or 0x19BA && worth > 60000 ||
-                        ore.ItemID == 0x19B7 && worth > 30000)
-                    {
-                        from.SendLocalizedMessage(1062844); // There is too much ore to combine.
-                        return;
-                    }
-
-                    if (ore.RootParent is Mobile mobile &&
-                        plusWeight + mobile.Backpack.TotalWeight > mobile.Backpack.MaxWeight)
-                    {
-                        from.SendLocalizedMessage(501978); // The weight is too great to combine in a container.
-                        return;
-                    }
-
-                    ore.ItemID = newID;
-
-                    ore.Amount = ore.ItemID switch
-                    {
-                        0x19B9 => worth / 8,
-                        0x19B7 => worth / 2,
-                        _      => worth / 4
-                    };
-
-                    m_Ore.Delete();
+                    OnTargetOre(from, ore);
                     return;
                 }
 
@@ -287,44 +209,43 @@ namespace Server.Items
                         {
                             // There is not enough metal-bearing ore in this pile to make an ingot.
                             from.SendLocalizedMessage(501987);
+                            return;
+                        }
+
+                        if (toConsume > 30000)
+                        {
+                            toConsume = 30000;
+                        }
+
+                        int ingotAmount;
+
+                        if (m_Ore.ItemID == 0x19B7)
+                        {
+                            ingotAmount = toConsume / 2;
+
+                            if (toConsume % 2 != 0)
+                            {
+                                --toConsume;
+                            }
+                        }
+                        else if (m_Ore.ItemID == 0x19B9)
+                        {
+                            ingotAmount = toConsume * 2;
                         }
                         else
                         {
-                            if (toConsume > 30000)
-                            {
-                                toConsume = 30000;
-                            }
-
-                            int ingotAmount;
-
-                            if (m_Ore.ItemID == 0x19B7)
-                            {
-                                ingotAmount = toConsume / 2;
-
-                                if (toConsume % 2 != 0)
-                                {
-                                    --toConsume;
-                                }
-                            }
-                            else if (m_Ore.ItemID == 0x19B9)
-                            {
-                                ingotAmount = toConsume * 2;
-                            }
-                            else
-                            {
-                                ingotAmount = toConsume;
-                            }
-
-                            var ingot = m_Ore.GetIngot();
-                            ingot.Amount = ingotAmount;
-
-                            m_Ore.Consume(toConsume);
-                            from.AddToBackpack(ingot);
-                            // from.PlaySound( 0x57 );
-
-                            // You smelt the ore removing the impurities and put the metal in your backpack.
-                            from.SendLocalizedMessage(501988);
+                            ingotAmount = toConsume;
                         }
+
+                        var ingot = m_Ore.GetIngot();
+                        ingot.Amount = ingotAmount;
+
+                        m_Ore.Consume(toConsume);
+                        from.AddToBackpack(ingot);
+                        // from.PlaySound( 0x57 );
+
+                        // You smelt the ore removing the impurities and put the metal in your backpack.
+                        from.SendLocalizedMessage(501988);
                     }
                     else
                     {
@@ -341,6 +262,89 @@ namespace Server.Items
                         from.SendLocalizedMessage(501990);
                     }
                 }
+            }
+
+            private void OnTargetOre(Mobile from, BaseOre ore)
+            {
+                if (!ore.Movable)
+                {
+                    return;
+                }
+
+                if (m_Ore == ore)
+                {
+                    from.SendLocalizedMessage(501972); // Select another pile or ore with which to combine this.
+                    from.Target = new InternalTarget(ore);
+                    return;
+                }
+
+                if (ore._resource != m_Ore._resource)
+                {
+                    from.SendLocalizedMessage(501979); // You cannot combine ores of different metals.
+                    return;
+                }
+
+                var worth = ore.Amount * ore.ItemID switch
+                {
+                    0x19B9 => 8,
+                    0x19B7 => 2,
+                    _      => 4
+                };
+
+                var sourceWorth = m_Ore.Amount * m_Ore.ItemID switch
+                {
+                    0x19B9 => 8,
+                    0x19B7 => 2,
+                    _      => 4
+                };
+
+                worth += sourceWorth;
+
+                var plusWeight = 0;
+                var newID = ore.ItemID;
+
+                if (ore.DefaultWeight != m_Ore.DefaultWeight)
+                {
+                    if (ore.ItemID == 0x19B7 || m_Ore.ItemID == 0x19B7)
+                    {
+                        newID = 0x19B7;
+                    }
+                    else if (ore.ItemID == 0x19B9)
+                    {
+                        newID = m_Ore.ItemID;
+                        plusWeight = ore.Amount * 2;
+                    }
+                    else
+                    {
+                        plusWeight = m_Ore.Amount * 2;
+                    }
+                }
+
+                if (ore.ItemID == 0x19B9 && worth > 120000 ||
+                    ore.ItemID is 0x19B8 or 0x19BA && worth > 60000 ||
+                    ore.ItemID == 0x19B7 && worth > 30000)
+                {
+                    from.SendLocalizedMessage(1062844); // There is too much ore to combine.
+                    return;
+                }
+
+                if (ore.RootParent is Mobile mobile &&
+                    plusWeight + mobile.Backpack.TotalWeight > mobile.Backpack.MaxWeight)
+                {
+                    from.SendLocalizedMessage(501978); // The weight is too great to combine in a container.
+                    return;
+                }
+
+                ore.ItemID = newID;
+
+                ore.Amount = ore.ItemID switch
+                {
+                    0x19B9 => worth / 8,
+                    0x19B7 => worth / 2,
+                    _      => worth / 4
+                };
+
+                m_Ore.Delete();
             }
         }
     }
