@@ -6,14 +6,12 @@ namespace Server.Engines.BulkOrders
         {
             RequireExceptional = bod.RequireExceptional;
 
-            if (bod is LargeTailorBOD)
+            DeedType = bod switch
             {
-                DeedType = BODType.Tailor;
-            }
-            else if (bod is LargeSmithBOD)
-            {
-                DeedType = BODType.Smith;
-            }
+                LargeTailorBOD => BODType.Tailor,
+                LargeSmithBOD  => BODType.Smith,
+                _              => DeedType
+            };
 
             Material = bod.Material;
             AmountMax = bod.AmountMax;
@@ -68,16 +66,12 @@ namespace Server.Engines.BulkOrders
 
         public Item Reconstruct()
         {
-            LargeBOD bod = null;
-
-            if (DeedType == BODType.Smith)
+            LargeBOD bod = DeedType switch
             {
-                bod = new LargeSmithBOD(AmountMax, RequireExceptional, Material, ReconstructEntries());
-            }
-            else if (DeedType == BODType.Tailor)
-            {
-                bod = new LargeTailorBOD(AmountMax, RequireExceptional, Material, ReconstructEntries());
-            }
+                BODType.Smith  => new LargeSmithBOD(AmountMax, RequireExceptional, Material, ReconstructEntries()),
+                BODType.Tailor => new LargeTailorBOD(AmountMax, RequireExceptional, Material, ReconstructEntries()),
+                _              => null
+            };
 
             for (var i = 0; bod?.Entries.Length >= i; ++i)
             {

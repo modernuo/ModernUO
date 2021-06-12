@@ -1,6 +1,7 @@
 namespace Server.Engines.BulkOrders
 {
-    public class LargeTailorBOD : LargeBOD
+    [Serializable(0, false)]
+    public partial class LargeTailorBOD : LargeBOD
     {
         public static double[] m_TailoringMaterialChances =
         {
@@ -87,29 +88,11 @@ namespace Server.Engines.BulkOrders
         {
         }
 
-        public LargeTailorBOD(Serial serial) : base(serial)
-        {
-        }
-
         public override int ComputeFame() => TailorRewardCalculator.Instance.ComputeFame(this);
 
         public override int ComputeGold() => TailorRewardCalculator.Instance.ComputeGold(this);
 
         public override RewardGroup GetRewardGroup() =>
             TailorRewardCalculator.Instance.LookupRewards(TailorRewardCalculator.Instance.ComputePoints(this));
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -31,10 +31,11 @@ namespace SerializableMigration
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ISymbol? parentSymbol,
             out string[] ruleArguments
         )
         {
-            if (symbol.IsIpAddress(compilation))
+            if (symbol.IsIpAddress(compilation) || symbol.IsTimeSpan(compilation))
             {
                 ruleArguments = Array.Empty<string>();
                 return true;
@@ -91,6 +92,7 @@ namespace SerializableMigration
             var argument = property.RuleArguments.Length >= 1 ? property.RuleArguments[0] : null;
 
             const string ipAddress = SymbolMetadata.IPADDRESS_CLASS;
+            const string timeSpan = SymbolMetadata.TIMESPAN_STRUCT;
             const string date = "System.DateTime";
 
             var readMethod = property.Type switch
@@ -111,7 +113,8 @@ namespace SerializableMigration
                 "decimal"                           => "ReadDecimal",
                 date when argument == "DeltaTime"   => "ReadDeltaTime",
                 date                                => "ReadDateTime",
-                ipAddress                           => "ReadIPAddress"
+                ipAddress                           => "ReadIPAddress",
+                timeSpan                            => "ReadTimeSpan"
             };
 
             var readArgument = readMethod == "ReadString" && argument == "InternString" ? "true" : "";

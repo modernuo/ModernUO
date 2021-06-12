@@ -30,6 +30,7 @@ namespace SerializableMigration
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ISymbol? parentSymbol,
             out string[] ruleArguments
         )
         {
@@ -47,7 +48,8 @@ namespace SerializableMigration
                 listTypeSymbol,
                 0,
                 attributes,
-                serializableTypes
+                serializableTypes,
+                parentSymbol
             );
 
             var length = serializableListType.RuleArguments.Length;
@@ -114,10 +116,15 @@ namespace SerializableMigration
             Array.Copy(ruleArguments, 2, listElementRuleArguments, 0, ruleArguments.Length - 2);
 
             var propertyName = property.Name;
-            var propertyEntry = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1, propertyName.Length - 1)}Entry";
-            source.AppendLine($"{indent}writer.Write({propertyName}.Count);");
-            source.AppendLine($"{indent}foreach (var {propertyEntry} in {propertyName})");
+            var propertyVarPrefix = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1, propertyName.Length - 1)}";
+            var propertyEntry = $"{propertyVarPrefix}Entry";
+            var propertyCount = $"{propertyVarPrefix}Count";
+            source.AppendLine($"{indent}var {propertyCount} = {property.Name}?.Count ?? 0;");
+            source.AppendLine($"{indent}writer.Write({propertyCount});");
+            source.AppendLine($"{indent}if ({propertyCount} > 0)");
             source.AppendLine($"{indent}{{");
+            source.AppendLine($"{indent}    foreach (var {propertyEntry} in {property.Name}!)");
+            source.AppendLine($"{indent}    {{");
 
             var serializableListElement = new SerializableProperty
             {
@@ -127,8 +134,9 @@ namespace SerializableMigration
                 RuleArguments = listElementRuleArguments
             };
 
-            listElementRule.GenerateSerializationMethod(source, $"{indent}    ", serializableListElement);
+            listElementRule.GenerateSerializationMethod(source, $"{indent}        ", serializableListElement);
 
+            source.AppendLine($"{indent}    }}");
             source.AppendLine($"{indent}}}");
         }
     }

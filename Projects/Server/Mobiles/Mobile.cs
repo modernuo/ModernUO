@@ -2986,8 +2986,8 @@ namespace Server
             }
 
             const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
-            var width = OutgoingMobilePackets.MobileMovingPacketLength;
-            var height = OutgoingMobilePackets.MobileMovingPacketCacheHeight;
+            const int width = OutgoingMobilePackets.MobileMovingPacketLength;
+            const int height = OutgoingMobilePackets.MobileMovingPacketCacheHeight;
 
             var mobileMovingCache = stackalloc byte[cacheLength].AsSpan2D(height, width).InitializePackets();
 
@@ -3463,7 +3463,7 @@ namespace Server
 
         public virtual void AddNameProperties(ObjectPropertyList list)
         {
-            var name = Name ?? string.Empty;
+            var name = Name ?? "";
 
             string prefix;
 
@@ -8059,8 +8059,7 @@ namespace Server
         /// </summary>
         public virtual void OnSingleClick(Mobile from)
         {
-            if (Deleted ||
-                AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this)
+            if (Deleted || AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this)
             {
                 return;
             }
@@ -8109,7 +8108,7 @@ namespace Server
                 hue = Notoriety.GetHue(Notoriety.Compute(from, this));
             }
 
-            var name = Name ?? string.Empty;
+            var name = Name ?? "";
 
             var prefix = "";
 

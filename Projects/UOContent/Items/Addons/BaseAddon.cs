@@ -20,7 +20,8 @@ namespace Server.Items
         bool CouldFit(IPoint3D p, Map map);
     }
 
-    public abstract class BaseAddon : Item, IChoppable, IAddon
+    [Serializable(2, false)]
+    public abstract partial class BaseAddon : Item, IChoppable, IAddon
     {
         private CraftResource m_Resource;
 
@@ -32,15 +33,12 @@ namespace Server.Items
             Components = new List<AddonComponent>();
         }
 
-        public BaseAddon(Serial serial) : base(serial)
-        {
-        }
-
         public virtual bool RetainDeedHue => false;
 
         public virtual BaseAddonDeed Deed => null;
 
-        public List<AddonComponent> Components { get; private set; }
+        [SerializableField(0, setter: "private")]
+        private List<AddonComponent> _components;
 
         public virtual bool ShareHue => true;
 
@@ -66,6 +64,7 @@ namespace Server.Items
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
+        [SerializableField(1)]
         public CraftResource Resource
         {
             get => m_Resource;
@@ -77,6 +76,7 @@ namespace Server.Items
                     Hue = CraftResources.GetHue(m_Resource);
 
                     InvalidateProperties();
+                    ((ISerializable)this).MarkDirty();
                 }
             }
         }
@@ -277,30 +277,9 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(Components);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                case 0:
-                    {
-                        Components = reader.ReadEntityList<AddonComponent>();
-                        break;
-                    }
-            }
+            Components = reader.ReadEntityList<AddonComponent>();
 
             if (version < 1 && Weight == 0)
             {

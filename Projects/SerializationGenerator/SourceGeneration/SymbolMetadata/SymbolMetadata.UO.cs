@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -66,17 +67,22 @@ namespace SerializationGenerator
             symbol is INamedTypeSymbol namedSymbol &&
             symbols.Contains(namedSymbol, SymbolEqualityComparer.Default);
 
-        public static bool HasGenericReaderCtor(this INamedTypeSymbol symbol, Compilation compilation, out bool requiresParent)
+        public static bool HasGenericReaderCtor(
+            this INamedTypeSymbol symbol,
+            Compilation compilation,
+            ISymbol? parentSymbol,
+            out bool requiresParent
+        )
         {
             var genericReaderInterface = compilation.GetTypeByMetadataName(GENERIC_READER_INTERFACE);
             var genericCtor = symbol.Constructors.FirstOrDefault(
                 m => !m.IsStatic &&
                      m.MethodKind == MethodKind.Constructor &&
                      m.Parameters.Length <= 2 &&
-                     m.Parameters[0].Equals(genericReaderInterface, SymbolEqualityComparer.Default)
+                     SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, genericReaderInterface)
             );
 
-            requiresParent = genericCtor?.Parameters.Length == 2 && genericCtor.Parameters[1].Equals(symbol, SymbolEqualityComparer.Default);
+            requiresParent = genericCtor?.Parameters.Length == 2 && SymbolEqualityComparer.Default.Equals(genericCtor.Parameters[1].Type, parentSymbol);
             return genericCtor != null;
         }
 
@@ -98,7 +104,7 @@ namespace SerializationGenerator
                     m => !m.IsStatic &&
                          m.ReturnsVoid &&
                          m.Parameters.Length == 1 &&
-                         m.Parameters[0].Equals(genericWriterInterface, SymbolEqualityComparer.Default) &&
+                         SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, genericWriterInterface) &&
                          m.DeclaredAccessibility == Accessibility.Public
                 );
         }

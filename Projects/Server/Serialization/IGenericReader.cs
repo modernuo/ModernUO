@@ -82,12 +82,12 @@ namespace Server
                         var num = ReadShort();
                         return *(T*)&num;
                     }
-                case 3:
+                case 4:
                     {
                         var num = ReadEncodedInt();
                         return *(T*)&num;
                     }
-                case 4:
+                case 8:
                     {
                         var num = ReadLong();
                         return *(T*)&num;

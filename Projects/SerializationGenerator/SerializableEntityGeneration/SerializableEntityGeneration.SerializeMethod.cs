@@ -44,12 +44,11 @@ namespace SerializationGenerator
 
             if (isOverride)
             {
-                source.AppendLine();
                 source.AppendLine($"{indent}base.Serialize(writer);");
+                source.AppendLine();
             }
 
             // Version
-            source.AppendLine();
             source.AppendLine($"{indent}writer.{(encodedVersion ? "WriteEncodedInt" : "Write")}(_version);");
 
             foreach (var property in properties)

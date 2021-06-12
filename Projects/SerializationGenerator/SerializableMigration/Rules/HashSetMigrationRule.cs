@@ -30,6 +30,7 @@ namespace SerializableMigration
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ISymbol? parentSymbol,
             out string[] ruleArguments
         )
         {
@@ -47,7 +48,8 @@ namespace SerializableMigration
                 setTypeSymbol,
                 0,
                 attributes,
-                serializableTypes
+                serializableTypes,
+                parentSymbol
             );
 
             var length = serializableSetType.RuleArguments.Length;
@@ -116,9 +118,13 @@ namespace SerializableMigration
             var propertyName = property.Name;
             var propertyVarPrefix = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1, propertyName.Length - 1)}";
             var propertyEntry = $"{propertyVarPrefix}Entry";
-            source.AppendLine($"{indent}writer.Write({property.Name}.Count);");
-            source.AppendLine($"{indent}foreach (var {propertyEntry} in {property.Name});");
+            var propertyCount = $"{propertyVarPrefix}Count";
+            source.AppendLine($"{indent}var {propertyCount} = {property.Name}?.Count ?? 0;");
+            source.AppendLine($"{indent}writer.Write({propertyCount});");
+            source.AppendLine($"{indent}if ({propertyCount} > 0)");
             source.AppendLine($"{indent}{{");
+            source.AppendLine($"{indent}    foreach (var {propertyEntry} in {property.Name}!)");
+            source.AppendLine($"{indent}    {{");
 
             var serializableSetElement = new SerializableProperty
             {
@@ -128,8 +134,9 @@ namespace SerializableMigration
                 RuleArguments = setElementRuleArguments
             };
 
-            setElementRule.GenerateSerializationMethod(source, $"{indent}    ", serializableSetElement);
+            setElementRule.GenerateSerializationMethod(source, $"{indent}        ", serializableSetElement);
 
+            source.AppendLine($"{indent}    }}");
             source.AppendLine($"{indent}}}");
         }
     }

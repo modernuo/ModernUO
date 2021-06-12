@@ -29,6 +29,7 @@ namespace SerializableMigration
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ISymbol? parentSymbol,
             out string[] ruleArguments
         )
         {
@@ -44,7 +45,8 @@ namespace SerializableMigration
                 arrayTypeSymbol.ElementType,
                 0,
                 attributes,
-                serializableTypes
+                serializableTypes,
+                parentSymbol
             );
 
             var length = serializableArrayType.RuleArguments.Length;
@@ -101,14 +103,18 @@ namespace SerializableMigration
             var arrayElementRuleArguments = new string[ruleArguments.Length - 2];
             Array.Copy(ruleArguments, 2, arrayElementRuleArguments, 0, ruleArguments.Length - 2);
 
-            var propertyIndex = $"{property.Name}Index";
-            source.AppendLine($"{indent}writer.Write({property.Name}.Length);");
-            source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {property.Name}.Length; {propertyIndex}++)");
+            var propertyName = property.Name;
+            var propertyVarPrefix = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1, propertyName.Length - 1)}";
+            var propertyIndex = $"{propertyVarPrefix}Index";
+            var propertyLength = $"{propertyVarPrefix}Length";
+            source.AppendLine($"{indent}var {propertyLength} = {property.Name}?.Length ?? 0;");
+            source.AppendLine($"{indent}writer.Write({propertyLength});");
+            source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {propertyLength}; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 
             var serializableArrayElement = new SerializableProperty
             {
-                Name = $"{property.Name}[{propertyIndex}]",
+                Name = $"{property.Name}![{propertyIndex}]",
                 Type = ruleArguments[0],
                 Rule = arrayElementRule.RuleName,
                 RuleArguments = arrayElementRuleArguments

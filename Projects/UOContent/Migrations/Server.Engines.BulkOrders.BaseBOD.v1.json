@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "type": "Server.Engines.BulkOrders.BaseBOD",
+  "properties": [
+    {
+      "name": "AmountMax",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": []
+    },
+    {
+      "name": "RequireExceptional",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": []
+    }
+  ]
+}
