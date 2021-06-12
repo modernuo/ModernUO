@@ -66,8 +66,6 @@ namespace SerializationSchemaGenerator
                         ReadCommentHandling = JsonCommentHandling.Skip
                     };
 
-                    // var generatedSourcePath = Path.Join(projectPath, "Generated");
-
                     var serializableTypes = syntaxReceiver.SerializableList;
 
                     foreach (var (classSymbol, (attributeData, fieldsList)) in syntaxReceiver.ClassAndFields)
@@ -80,18 +78,9 @@ namespace SerializationSchemaGenerator
                             fieldsList.ToImmutableArray(),
                             serializableTypes
                         );
-
-                        // WriteSource(generatedSourcePath, classSymbol.ToDisplayString(), source);
                     }
                 }
             );
-        }
-
-        public static void WriteSource(string sourcePath, string className, string source)
-        {
-            Directory.CreateDirectory(sourcePath);
-            var filePath = Path.Combine(sourcePath, $"{className}.Serialization.cs");
-            File.WriteAllText(filePath, source, Encoding.UTF8);
         }
     }
 }

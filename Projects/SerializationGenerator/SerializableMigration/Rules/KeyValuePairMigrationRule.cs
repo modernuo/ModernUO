@@ -30,6 +30,7 @@ namespace SerializableMigration
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ISymbol? parentSymbol,
             out string[] ruleArguments
         )
         {
@@ -47,7 +48,8 @@ namespace SerializableMigration
                 typeArguments[0],
                 0,
                 attributes,
-                serializableTypes
+                serializableTypes,
+                parentSymbol
             );
 
             var valueSerializedProperty = SerializableMigrationRulesEngine.GenerateSerializableProperty(
@@ -56,7 +58,8 @@ namespace SerializableMigration
                 typeArguments[1],
                 1,
                 attributes,
-                serializableTypes
+                serializableTypes,
+                parentSymbol
             );
 
             // Key

@@ -51,7 +51,8 @@ namespace SerializableMigration
             ISymbol fieldOrPropertySymbol,
             int order,
             ImmutableArray<AttributeData> attributes,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ISymbol? parentSymbol = default
         )
         {
             string propertyName;
@@ -78,7 +79,8 @@ namespace SerializableMigration
                 propertyType,
                 order,
                 attributes,
-                serializableTypes
+                serializableTypes,
+                parentSymbol
             );
         }
 
@@ -88,7 +90,8 @@ namespace SerializableMigration
             ISymbol propertyType,
             int order,
             ImmutableArray<AttributeData> attributes,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ISymbol? parentSymbol = default
         )
         {
             foreach (var rule in Rules.Values)
@@ -98,6 +101,7 @@ namespace SerializableMigration
                     propertyType,
                     attributes,
                     serializableTypes,
+                    parentSymbol,
                     out var ruleArguments
                 ))
                 {

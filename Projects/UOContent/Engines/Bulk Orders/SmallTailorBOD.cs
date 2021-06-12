@@ -4,7 +4,8 @@ using Server.Engines.Craft;
 
 namespace Server.Engines.BulkOrders
 {
-    public class SmallTailorBOD : SmallBOD
+    [Serializable(0, false)]
+    public partial class SmallTailorBOD : SmallBOD
     {
         public static double[] m_TailoringMaterialChances =
         {
@@ -30,7 +31,6 @@ namespace Server.Engines.BulkOrders
                 return;
             }
 
-            var hue = 0x483;
             var amountMax = Utility.RandomList(10, 15, 20);
 
             var material = useMaterials
@@ -40,7 +40,7 @@ namespace Server.Engines.BulkOrders
             var reqExceptional = Utility.RandomBool() || material == BulkMaterialType.None;
             var entry = entries.RandomElement();
 
-            Hue = hue;
+            Hue = 0x483;
             AmountMax = amountMax;
             Type = entry.Type;
             Number = entry.Number;
@@ -53,10 +53,6 @@ namespace Server.Engines.BulkOrders
             int amountCur, int amountMax, Type type, int number, int graphic, bool reqExceptional,
             BulkMaterialType mat
         ) : base(0x483, amountCur, amountMax, type, number, graphic, reqExceptional, mat)
-        {
-        }
-
-        public SmallTailorBOD(Serial serial) : base(serial)
         {
         }
 
@@ -167,20 +163,6 @@ namespace Server.Engines.BulkOrders
             }
 
             return null;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }
