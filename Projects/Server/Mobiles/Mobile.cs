@@ -3465,8 +3465,6 @@ namespace Server
         {
             var name = Name ?? "";
 
-            Console.WriteLine("Name: {0}", name);
-
             string prefix;
 
             if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
