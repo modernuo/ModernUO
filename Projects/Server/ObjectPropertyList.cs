@@ -58,6 +58,8 @@ namespace Server
             _position = 15;
             _hash = 0;
             _strings = 0;
+            Header = 0;
+            HeaderArgs = null;
         }
 
         public void Flush()
