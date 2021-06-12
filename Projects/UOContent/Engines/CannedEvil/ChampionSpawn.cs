@@ -1171,7 +1171,7 @@ namespace Server.Engines.CannedEvil
 
         public void RegisterDamage(Mobile from, int amount)
         {
-            if (@from?.Player != true)
+            if (from?.Player != true)
             {
                 return;
             }

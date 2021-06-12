@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "type": "Server.Items.BaseOre",
+  "properties": [
+    {
+      "name": "Resource",
+      "type": "Server.Items.CraftResource",
+      "rule": "EnumMigrationRule",
+      "ruleArguments": []
+    }
+  ]
+}
