@@ -254,7 +254,7 @@ namespace Server.Items
 
                 bc.Home = p;
                 bc.RangeHome = 5;
-
+                bc.InitPackStats();
                 if (guardian && level == 0)
                 {
                     bc.Name = "a chest guardian";

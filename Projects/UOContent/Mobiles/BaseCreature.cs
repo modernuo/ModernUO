@@ -10,6 +10,7 @@ using Server.Engines.Spawners;
 using Server.Ethics;
 using Server.Factions;
 using Server.Items;
+using Server.Lootpack;
 using Server.Misc;
 using Server.Multis;
 using Server.Network;
@@ -330,6 +331,12 @@ namespace Server.Mobiles
 
         private int m_Team; // Monster Team
 
+        LootPack m_CustomPack = null;
+
+        private packLoader.InitStats StatsPack;
+
+        public int m_Minstr, m_Maxstr, m_Mindex, m_Maxdex, m_Minint, m_Maxint, m_Minhits, m_Maxhits;
+
         public BaseCreature(
             AIType ai,
             FightMode mode,
@@ -389,7 +396,26 @@ namespace Server.Mobiles
                 NameHue = 0x35;
             }
 
-            GenerateLoot(true);
+            InitLootPack(GetType().Name);
+        }
+
+        private void InitLootPack(string Name)
+        {
+            PackWorker.TryToCreatePack(Name, out m_CustomPack, out StatsPack);
+            if (m_CustomPack != null)
+            {
+                Backpack?.Delete();
+                var backpack = new Backpack { Movable = false };
+                AddItem(backpack);
+                GenerateCustomLoot(true);
+            }
+            else GenerateLoot(true);
+        }
+
+        void GenerateCustomLoot(bool spawn)
+        {
+            if (!spawn) m_KillersLuck = LootPack.GetLuckChanceForKiller(this);
+            m_CustomPack?.Generate(this, Backpack, spawn, m_KillersLuck);
         }
 
         public BaseCreature(Serial serial) : base(serial)
@@ -398,6 +424,72 @@ namespace Server.Mobiles
             m_SpellDefense = new List<Type>();
 
             Debug = false;
+        }
+
+        public int GetAttackValue()
+        {
+            var atkWeapon = this.Weapon as BaseWeapon;
+            var atkSkill = this.Skills[atkWeapon?.Skill ?? SkillName.Wrestling];
+            var attack = atkWeapon?.GetAttackSkillValue(this, this) ?? 0.0;
+            return (int)attack;
+        }
+
+        private bool IsValid(int min, int max) => min != -1 && max != -1;
+        private bool IsValid(double min, double max) => min != -1 && max != -1;
+
+        public void InitPackStats()
+        {
+            if (StatsPack is not null)
+            {
+                if (IsValid(StatsPack.minStr, StatsPack.maxStr))
+                    SetStr(StatsPack.minStr, StatsPack.maxStr);
+
+                if (IsValid(StatsPack.minDex, StatsPack.maxDex))
+                    SetDex(StatsPack.minDex, StatsPack.maxDex);
+
+                if (IsValid(StatsPack.minInt, StatsPack.maxInt))
+                    SetInt(StatsPack.minInt, StatsPack.maxInt);
+
+                if (IsValid(StatsPack.minHits, StatsPack.maxHits))
+                    SetHits(StatsPack.minHits, StatsPack.maxHits);
+
+                if (IsValid(StatsPack.minDmg, StatsPack.maxDmg))
+                    SetDamage(StatsPack.minDmg, StatsPack.maxDmg);
+
+                if (StatsPack.AgrRange != -1)
+                    RangePerception = StatsPack.AgrRange;
+
+                if (StatsPack.FightMode != -1)
+                    FightMode = (FightMode)StatsPack.FightMode;
+
+                if (StatsPack.VirtualArmor != -1)
+                    VirtualArmor = StatsPack.VirtualArmor;
+
+                if (StatsPack.atkSkill != -1)
+                {
+                    var atkWeapon = this.Weapon as BaseWeapon;
+                    var skill = atkWeapon?.Skill ?? SkillName.Wrestling;
+                    SetSkill(skill, StatsPack.atkSkill);
+                }
+
+                if (IsValid(StatsPack.PassiveSpeed, StatsPack.ActiveSpeed))
+                {
+                    HitPoisonChance = 40;
+                    ActiveSpeed = StatsPack.ActiveSpeed;
+                    PassiveSpeed = StatsPack.PassiveSpeed;
+                }
+
+
+                if (StatsPack.HitPoisonChance != -1)
+                {
+                    if (StatsPack.HitPoison > -1)
+                    {
+                        m_HitPoisonChance = StatsPack.HitPoisonChance / 100;
+                        m_HitPoison = Poison.GetPoison(StatsPack.HitPoison);
+                    }
+                    else m_HitPoison = null;
+                }
+            }
         }
 
         public virtual string DefaultName => null;
@@ -455,6 +547,16 @@ namespace Server.Mobiles
 
         public virtual double WeaponAbilityChance => 0.4;
 
+        [CommandProperty(AccessLevel.GameMaster)]//using unique monster in spawner
+        public string Pack
+        {
+            set
+            {
+                InitLootPack(value);
+                InitPackStats();
+            }
+        }
+
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsParagon
         {
@@ -497,8 +599,19 @@ namespace Server.Mobiles
 
         public virtual bool Commandable => true;
 
-        public virtual Poison HitPoison => null;
-        public virtual double HitPoisonChance => 0.5;
+        private Poison m_HitPoison = null;
+        public virtual Poison HitPoison
+        {
+            get { return m_HitPoison; }
+            set { m_HitPoison = value; }
+        }
+
+        private double m_HitPoisonChance = 0.5;
+        public virtual double HitPoisonChance
+        {
+            get { return m_HitPoisonChance; }
+            set { m_HitPoisonChance = value; }
+        }
         public virtual Poison PoisonImmune => null;
 
         public virtual bool BardImmune => false;

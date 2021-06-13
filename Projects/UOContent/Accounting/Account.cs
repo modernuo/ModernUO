@@ -293,12 +293,12 @@ namespace Server.Accounting
         [AfterDeserialization]
         private void AfterDeserialization()
         {
-            if (_comments.Count == 0)
+            if (_comments?.Count == 0)
             {
                 _comments = null;
             }
 
-            if (_tags.Count == 0)
+            if (_tags?.Count == 0)
             {
                 _tags = null;
             }
@@ -711,6 +711,9 @@ namespace Server.Accounting
         /// <param name="name">Name of the desired tag value.</param>
         public string GetTag(string name)
         {
+            if (_tags is null)
+                return null;
+
             for (var i = 0; i < _tags.Count; ++i)
             {
                 var tag = _tags[i];

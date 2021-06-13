@@ -8,6 +8,7 @@ using CPA = Server.CommandPropertyAttribute;
 
 using static Server.Attributes;
 using static Server.Types;
+using Server.Mobiles;
 
 namespace Server.Commands
 {
@@ -320,6 +321,9 @@ namespace Server.Commands
         )
         {
             var built = ctor.Invoke(values);
+
+            if (built is BaseCreature Instance)
+                Instance.InitPackStats();
 
             if (realProps != null)
             {

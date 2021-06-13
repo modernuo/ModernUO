@@ -26,8 +26,33 @@ namespace Server.Commands
         public static void Initialize()
         {
             CommandSystem.Register("Props", AccessLevel.Counselor, Props_OnCommand);
+            CommandSystem.Register("Lp", AccessLevel.GameMaster, LootPacks_OnCommand);
         }
+        private static void LootPacks_OnCommand(CommandEventArgs e)
+        {
+            if (e.Arguments.Length > 1)
+            {
+                var name = e.Arguments[1];
 
+                if (e.Arguments[0] == "s")
+                {
+                    var pck = packLoader.GetPackByName(name);
+                    if (pck is not null)
+                    {
+                        if (pck.Stats.Name == null) pck.Stats.Name = name;
+                        e.Mobile.SendGump(new LootPackItemEditor(e.Mobile, pck.Stats));
+                    }
+                    else e.Mobile.SendMessage("Pack not found");
+                }
+                else if (e.Arguments[0] == "l")
+                {
+                    var pck = packLoader.GetPackLootByName(name);
+                    if (pck != null) e.Mobile.SendGump(new LootPackCreationGump(name, pck));
+                    else e.Mobile.SendMessage("Pack not found");
+                }
+            }
+            else e.Mobile.SendGump(new LootPackGump());
+        }
         [Usage("Props [serial]")]
         [Description("Opens a menu where you can view and edit all properties of a targeted (or specified) object.")]
         private static void Props_OnCommand(CommandEventArgs e)
