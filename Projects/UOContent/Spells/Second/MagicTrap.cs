@@ -25,7 +25,7 @@ namespace Server.Spells.Second
         {
             if (!(item is TrappableContainer cont))
             {
-                Caster.SendMessage("You can't trap that"); // TODO: Localization for this?
+                Caster.SendLocalizedMessage(502942); //You can't trap this!
             }
             else if (!Caster.CanSee(item))
             {

@@ -54,9 +54,52 @@ namespace Server
         public static int GetMaxAmount(VirtueName virtue) =>
             virtue switch
             {
-                VirtueName.Honor     => 20000,
+                VirtueName.Honor => 20000,
                 VirtueName.Sacrifice => 22000,
-                _                    => 21000
+                _ => 21000
+            };
+
+
+        public static int GetGainedLocalizedMessage(VirtueName virtue) =>
+            virtue switch
+            {
+                VirtueName.Sacrifice => 1054160, //You have gained in sacrifice.
+                VirtueName.Compassion => 1053002, //You have gained in compassion.
+                VirtueName.Spirituality => 1155832, //You have gained in Spirituality.
+                VirtueName.Valor => 1054030, //You have gained in Valor!
+                VirtueName.Honor => 1063225, //You have gained in Honor.
+                VirtueName.Justice => 1049363, //You have gained in Justice.
+                VirtueName.Humility => 1052070, //You have gained in Humility.
+                VirtueName.Honesty => 0, //Doesn't find the message in cliloc.enu 
+                _ => 0
+            };
+
+        public static int GetGainedAPathLocalizedMessage(VirtueName virtue) =>
+            virtue switch
+            {
+                VirtueName.Sacrifice => 1052008, //You have gained a path in Sacrifice!
+                VirtueName.Compassion => 0, //Doesn't find the message in cliloc.enu
+                VirtueName.Spirituality => 1155833, //"You have gained a path in Spirituality!"
+                VirtueName.Valor => 1054032, //You have gained a path in Valor!
+                VirtueName.Honor => 1063226, //You have gained a path in Honor!
+                VirtueName.Justice => 1049367, //You have gained a path in Justice!
+                VirtueName.Humility => 1155811, //You have gained a path in Humility!
+                VirtueName.Honesty => 0, //Doesn't find the message in cliloc.enu
+                _ => 0
+            };
+
+        public static int GetHightestPathLocalizedMessage(VirtueName virtue) =>
+            virtue switch
+            {
+                VirtueName.Sacrifice => 0, //Doesn't find the message in cliloc.enu
+                VirtueName.Compassion => 1053003, //You have achieved the highest path of compassion and can no longer gain any further.
+                VirtueName.Spirituality => 0, //Doesn't find the message in cliloc.enu
+                VirtueName.Valor => 1054031, //You have achieved the highest path in Valor and can no longer gain any further.
+                VirtueName.Honor => 0, //Doesn't find the message in cliloc.enu
+                VirtueName.Justice => 0, //Doesn't find the message in cliloc.enu
+                VirtueName.Humility => 0, //Doesn't find the message in cliloc.enu
+                VirtueName.Honesty => 1153771, //You have achieved the highest path in Honesty and can no longer gain any further. 
+                _ => 0
             };
 
         public static bool Award(Mobile from, VirtueName virtue, int amount, ref bool gainedPath)
@@ -130,14 +173,29 @@ namespace Server
 
             if (Award(pm, virtue, amount, ref gainedPath))
             {
-                // TODO: Localize?
                 if (gainedPath)
                 {
-                    pm.SendMessage("You have gained a path in {0}!", virtueName);
+                    var localizedMessageSerial = GetGainedAPathLocalizedMessage(virtue);
+                    if (localizedMessageSerial != 0)
+                    {
+                        pm.SendLocalizedMessage(localizedMessageSerial);
+                    }
+                    else
+                    {
+                        pm.SendMessage("You have gained a path in {0}!", virtueName);
+                    }
                 }
                 else
                 {
-                    pm.SendMessage("You have gained in {0}.", virtueName);
+                    var localizedMessageSerial = GetGainedLocalizedMessage(virtue);
+                    if (localizedMessageSerial != 0)
+                    {
+                        pm.SendLocalizedMessage(localizedMessageSerial);
+                    }
+                    else
+                    {
+                        pm.SendMessage("You have gained in {0}.", virtueName);
+                    }
                 }
 
                 if (virtue == VirtueName.Compassion)
@@ -155,8 +213,16 @@ namespace Server
             }
             else
             {
-                // TODO: Localize?
-                pm.SendMessage("You have achieved the highest path of {0} and can no longer gain any further.", virtueName);
+                var localizedMessageSerial = GetHightestPathLocalizedMessage(virtue);
+                if (localizedMessageSerial != 0)
+                {
+                    pm.SendLocalizedMessage(localizedMessageSerial);
+                }
+                else
+                {
+                    pm.SendMessage("You have achieved the highest path of {0} and can no longer gain any further.", virtueName);
+                }
+
             }
         }
     }
