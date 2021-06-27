@@ -226,7 +226,6 @@ namespace Server.Spells.Sixth
 
                 public InternalTimer(Item item, TimeSpan duration) : base(duration)
                 {
-                    Priority = TimerPriority.OneSecond;
                     m_Item = item;
                 }
 

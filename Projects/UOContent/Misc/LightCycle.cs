@@ -92,8 +92,9 @@ namespace Server
 
         private class LightCycleTimer : Timer
         {
-            public LightCycleTimer() : base(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(5.0)) =>
-                Priority = TimerPriority.FiveSeconds;
+            public LightCycleTimer() : base(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(5.0))
+            {
+            }
 
             protected override void OnTick()
             {
@@ -111,7 +112,6 @@ namespace Server
             public NightSightTimer(Mobile owner) : base(TimeSpan.FromMinutes(Utility.Random(15, 25)))
             {
                 m_Owner = owner;
-                Priority = TimerPriority.OneMinute;
             }
 
             protected override void OnTick()

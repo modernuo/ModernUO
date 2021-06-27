@@ -120,7 +120,6 @@ namespace Server.Spells.Necromancy
         {
             m_Target = target;
             m_End = Core.Now + delay;
-            Priority = TimerPriority.TwoFiftyMS;
         }
 
         protected override void OnTick()

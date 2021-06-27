@@ -69,7 +69,6 @@ namespace Server.Spells.Necromancy
             public ExpireTimer(BaseWeapon weapon, TimeSpan delay) : base(delay)
             {
                 m_Weapon = weapon;
-                Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()
@@ -87,7 +86,6 @@ namespace Server.Spells.Necromancy
             public SoundEffectTimer(Mobile m) : base(TimeSpan.FromSeconds(0.75))
             {
                 m_Mobile = m;
-                Priority = TimerPriority.FiftyMS;
             }
 
             protected override void OnTick()

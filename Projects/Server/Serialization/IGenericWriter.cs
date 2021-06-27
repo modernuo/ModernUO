@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 
@@ -68,7 +69,8 @@ namespace Server
             }).Ticks;
 
             // Technically supports negative deltas for times in the past
-            Write(ticks - DateTime.UtcNow.Ticks);
+            var delta = ticks - DateTime.UtcNow.Ticks;
+            Write(delta);
         }
         void Write(IPAddress value)
         {

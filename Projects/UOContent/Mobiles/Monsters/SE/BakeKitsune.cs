@@ -242,7 +242,6 @@ namespace Server.Mobiles
             {
                 m_Mobile = m;
                 m_From = from;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             public void DoExpire()

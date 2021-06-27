@@ -211,8 +211,6 @@ namespace Server.Engines.ConPVP
                 m_Hill = hill;
                 Captures = 0;
                 m_Counter = 0;
-
-                Priority = TimerPriority.FiftyMS;
             }
 
             public int Captures { get; private set; }

@@ -552,8 +552,6 @@ namespace Server.Spells.Ninjitsu
             m_Body = body;
             m_Hue = hue;
             m_Counter = 0;
-
-            Priority = TimerPriority.FiftyMS;
         }
 
         protected override void OnTick()
