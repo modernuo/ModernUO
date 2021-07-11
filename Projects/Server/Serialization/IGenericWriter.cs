@@ -40,9 +40,9 @@ namespace Server
         {
             var ticks = (value.Kind switch
             {
-                DateTimeKind.Local       => value.ToUniversalTime(),
+                DateTimeKind.Local      => value.ToUniversalTime(),
                 DateTimeKind.Unspecified => value.ToLocalTime().ToUniversalTime(),
-                _                        => value
+                _                       => value
             }).Ticks;
 
             Write(ticks);
