@@ -39,12 +39,11 @@ namespace Server
 
         DateTime ReadDeltaTime()
         {
-            var delta = ReadLong();
-            return delta switch
+            return ReadLong() switch
             {
                 long.MinValue => DateTime.MinValue,
                 long.MaxValue => DateTime.MaxValue,
-                _             => new DateTime(delta + DateTime.UtcNow.Ticks, DateTimeKind.Utc)
+                var delta     => new DateTime(delta + DateTime.UtcNow.Ticks, DateTimeKind.Utc)
             };
         }
         decimal ReadDecimal() => new(stackalloc int[4] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });
