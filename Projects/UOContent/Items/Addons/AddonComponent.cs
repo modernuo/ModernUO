@@ -3,110 +3,41 @@ using Server.Engines.Craft;
 namespace Server.Items
 {
     [Anvil]
-    public class AnvilComponent : AddonComponent
+    [Serializable(0, false)]
+    public partial class AnvilComponent : AddonComponent
     {
         [Constructible]
         public AnvilComponent(int itemID) : base(itemID)
         {
         }
-
-        public AnvilComponent(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
     [Forge]
-    public class ForgeComponent : AddonComponent
+    [Serializable(0, false)]
+    public partial class ForgeComponent : AddonComponent
     {
         [Constructible]
         public ForgeComponent(int itemID) : base(itemID)
         {
         }
-
-        public ForgeComponent(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class LocalizedAddonComponent : AddonComponent
+    [Serializable(0, false)]
+    public partial class LocalizedAddonComponent : AddonComponent
     {
-        private int m_LabelNumber;
+        [InvalidateProperties]
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _number;
 
         [Constructible]
-        public LocalizedAddonComponent(int itemID, int labelNumber) : base(itemID) => m_LabelNumber = labelNumber;
+        public LocalizedAddonComponent(int itemID, int labelNumber) : base(itemID) => _number = labelNumber;
 
-        public LocalizedAddonComponent(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Number
-        {
-            get => m_LabelNumber;
-            set
-            {
-                m_LabelNumber = value;
-                InvalidateProperties();
-            }
-        }
-
-        public override int LabelNumber => m_LabelNumber;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_LabelNumber);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_LabelNumber = reader.ReadInt();
-                        break;
-                    }
-            }
-        }
+        public override int LabelNumber => _number;
     }
 
-    public class AddonComponent : Item, IChoppable
+    [Serializable(1, false)]
+    public partial class AddonComponent : Item, IChoppable
     {
         private static readonly LightEntry[] m_Entries =
         {
@@ -171,15 +102,13 @@ namespace Server.Items
             ApplyLightTo(this);
         }
 
-        public AddonComponent(Serial serial) : base(serial)
-        {
-        }
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        public BaseAddon _addon;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public BaseAddon Addon { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Point3D Offset { get; set; }
+        [SerializableField(1)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        public Point3D _offset;
 
         [Hue, CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
@@ -189,9 +118,9 @@ namespace Server.Items
             {
                 base.Hue = value;
 
-                if (Addon?.ShareHue == true)
+                if (_addon?.ShareHue == true)
                 {
-                    Addon.Hue = value;
+                    _addon.Hue = value;
                 }
             }
         }
@@ -201,9 +130,9 @@ namespace Server.Items
 
         public void OnChop(Mobile from)
         {
-            if (Addon != null && from.InRange(GetWorldLocation(), 3))
+            if (_addon != null && from.InRange(GetWorldLocation(), 3))
             {
-                Addon.OnChop(from);
+                _addon.OnChop(from);
             }
             else
             {
@@ -213,22 +142,22 @@ namespace Server.Items
 
         public override void OnDoubleClick(Mobile from)
         {
-            Addon?.OnComponentUsed(this, from);
+            _addon?.OnComponentUsed(this, from);
         }
 
         public override void OnLocationChange(Point3D old)
         {
-            if (Addon != null)
+            if (_addon != null)
             {
-                Addon.Location = new Point3D(X - Offset.X, Y - Offset.Y, Z - Offset.Z);
+                _addon.Location = new Point3D(X - _offset.X, Y - _offset.Y, Z - _offset.Z);
             }
         }
 
         public override void OnMapChange()
         {
-            if (Addon != null)
+            if (_addon != null)
             {
-                Addon.Map = Map;
+                _addon.Map = Map;
             }
         }
 
@@ -236,45 +165,22 @@ namespace Server.Items
         {
             base.OnAfterDelete();
 
-            Addon?.Delete();
+            _addon?.Delete();
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(Addon);
-            writer.Write(Offset);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                case 0:
-                    {
-                        Addon = reader.ReadEntity<BaseAddon>();
-                        Offset = reader.ReadPoint3D();
-
-                        Addon?.OnComponentLoaded(this);
-
-                        ApplyLightTo(this);
-
-                        break;
-                    }
-            }
-
             if (version < 1 && Weight == 0)
             {
                 Weight = -1;
             }
+        }
+
+        [AfterDeserialization]
+        private void AfterDeserialization()
+        {
+            _addon?.OnComponentLoaded(this);
+            ApplyLightTo(this);
         }
 
         public static void ApplyLightTo(Item item)

@@ -1,0 +1,12 @@
+{
+  "version": 0,
+  "type": "Server.Items.LocalizedAddonComponent",
+  "properties": [
+    {
+      "name": "Number",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": []
+    }
+  ]
+}
