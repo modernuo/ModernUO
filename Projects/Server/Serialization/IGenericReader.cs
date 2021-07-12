@@ -14,18 +14,14 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Net;
 
 namespace Server
 {
     public interface IGenericReader
     {
-        string ReadString();
-        DateTime ReadDateTime();
-        TimeSpan ReadTimeSpan();
-        DateTime ReadDeltaTime();
-        decimal ReadDecimal();
+        string ReadString(bool intern = false);
         long ReadLong();
         ulong ReadULong();
         int ReadInt();
@@ -37,17 +33,78 @@ namespace Server
         byte ReadByte();
         sbyte ReadSByte();
         bool ReadBool();
-        int ReadEncodedInt();
-        IPAddress ReadIPAddress();
-        Point3D ReadPoint3D();
-        Point2D ReadPoint2D();
-        Rectangle2D ReadRect2D();
-        Rectangle3D ReadRect3D();
-        Map ReadMap();
-        T ReadEntity<T>() where T : class, ISerializable;
-        List<T> ReadEntityList<T>() where T : class, ISerializable;
-        HashSet<T> ReadEntitySet<T>() where T : class, ISerializable;
-        Race ReadRace();
+
+        DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);
+        TimeSpan ReadTimeSpan() => new(ReadLong());
+
+        DateTime ReadDeltaTime()
+        {
+            return ReadLong() switch
+            {
+                long.MinValue => DateTime.MinValue,
+                long.MaxValue => DateTime.MaxValue,
+                var delta     => new DateTime(delta + DateTime.UtcNow.Ticks, DateTimeKind.Utc)
+            };
+        }
+        decimal ReadDecimal() => new(stackalloc int[4] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });
+        int ReadEncodedInt()
+        {
+            int v = 0, shift = 0;
+            byte b;
+
+            do
+            {
+                b = ReadByte();
+                v |= (b & 0x7F) << shift;
+                shift += 7;
+            }
+            while (b >= 0x80);
+
+            return v;
+        }
+        IPAddress ReadIPAddress()
+        {
+            byte length = ReadByte();
+            // Either 2 ushorts, or 8 ushorts
+            Span<byte> integer = stackalloc byte[length];
+            Read(integer);
+            return Utility.Intern(new IPAddress(integer));
+        }
+        Point3D ReadPoint3D() => new(ReadInt(), ReadInt(), ReadInt());
+        Point2D ReadPoint2D() => new(ReadInt(), ReadInt());
+        Rectangle2D ReadRect2D() => new(ReadPoint2D(), ReadPoint2D());
+        Rectangle3D ReadRect3D() => new(ReadPoint3D(), ReadPoint3D());
+        Map ReadMap() => Map.Maps[ReadByte()];
+        Race ReadRace() => Race.Races[ReadByte()];
         int Read(Span<byte> buffer);
+        unsafe T ReadEnum<T>() where T : unmanaged, Enum
+        {
+            switch (sizeof(T))
+            {
+                case 1:
+                    {
+                        var num = ReadByte();
+                        return *(T*)&num;
+                    }
+                case 2:
+                    {
+                        var num = ReadShort();
+                        return *(T*)&num;
+                    }
+                case 4:
+                    {
+                        var num = ReadEncodedInt();
+                        return *(T*)&num;
+                    }
+                case 8:
+                    {
+                        var num = ReadLong();
+                        return *(T*)&num;
+                    }
+            }
+
+            return default;
+        }
+        long Seek(long offset, SeekOrigin origin);
     }
 }

@@ -1,3 +1,19 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Email: hi@modernuo.com                                                *
+ * File: Guild.cs                                                        *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
+using System;
 using System.Collections.Generic;
 
 namespace Server.Guilds
@@ -11,31 +27,27 @@ namespace Server.Guilds
 
     public abstract class BaseGuild : ISerializable
     {
-        protected BaseGuild(Serial serial)
-        {
-            Serial = serial;
-
-            var ourType = GetType();
-            TypeRef = World.GuildTypes.IndexOf(ourType);
-
-            if (TypeRef == -1)
-            {
-                World.GuildTypes.Add(ourType);
-                TypeRef = World.GuildTypes.Count - 1;
-            }
-        }
-
         protected BaseGuild()
         {
             Serial = World.NewGuild;
             World.AddGuild(this);
 
-            var ourType = GetType();
-            TypeRef = World.GuildTypes.IndexOf(ourType);
+            SetTypeRef(GetType());
+        }
+
+        protected BaseGuild(Serial serial)
+        {
+            Serial = serial;
+            SetTypeRef(GetType());
+        }
+
+        public void SetTypeRef(Type type)
+        {
+            TypeRef = World.GuildTypes.IndexOf(type);
 
             if (TypeRef == -1)
             {
-                World.GuildTypes.Add(ourType);
+                World.GuildTypes.Add(type);
                 TypeRef = World.GuildTypes.Count - 1;
             }
         }
@@ -51,9 +63,11 @@ namespace Server.Guilds
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
+        long ISerializable.SavePosition { get; set; } = -1;
+
         BufferWriter ISerializable.SaveBuffer { get; set; }
 
-        public int TypeRef { get; }
+        public int TypeRef { get; private set; }
 
         public abstract void Serialize(IGenericWriter writer);
         public abstract void Deserialize(IGenericReader reader);

@@ -31,12 +31,12 @@ namespace Server.Regions
 
         public BaseRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
         {
-            if (json.data.TryGetValue("rune", out var runeName))
+            if (json.GetProperty<string>("rune", options, out var runeName))
             {
-                RuneName = runeName.GetString();
+                RuneName = runeName;
             }
 
-            NoLogoutDelay = json.data.TryGetValue("logoutDelay", out var logoutDelay) && !logoutDelay.GetBoolean();
+            NoLogoutDelay = json.GetProperty<bool>("logoutDelay", options, out var logoutDelay) && !logoutDelay;
         }
 
         public bool ExcludeFromParentSpawns { get; set; }
@@ -55,11 +55,6 @@ namespace Server.Regions
         public string RuneName { get; set; }
 
         public bool NoLogoutDelay { get; set; }
-
-        public static void Configure()
-        {
-            DefaultRegionType = typeof(BaseRegion);
-        }
 
         public static string GetRuneNameFor(Region region)
         {

@@ -173,18 +173,18 @@ namespace Server.Engines.Events
         }
     }
 
-    public class ZombieSkeleton : BaseCreature
+    [Serializable(0, false)]
+    public partial class ZombieSkeleton : BaseCreature
     {
-        private static readonly string m_Name = "Zombie Skeleton";
+        [SerializableField(0, "private", "private")]
+        private PlayerMobile _deadPlayer;
 
-        private PlayerMobile m_DeadPlayer;
+        public override string DefaultName => _deadPlayer != null ? $"{_deadPlayer.Name}'s Zombie Skeleton" : "Zombie Skeleton";
 
         public ZombieSkeleton(PlayerMobile player = null)
             : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
         {
-            m_DeadPlayer = player;
-
-            Name = player != null ? $"{player.Name}'s {m_Name}" : m_Name;
+            _deadPlayer = player;
 
             Body = 0x93;
             BaseSoundID = 0x1c3;
@@ -218,11 +218,6 @@ namespace Server.Engines.Events
             VirtualArmor = 18;
         }
 
-        public ZombieSkeleton(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a rotting corpse";
 
         public override bool BleedImmune => true;
@@ -231,7 +226,7 @@ namespace Server.Engines.Events
 
         public override void GenerateLoot()
         {
-            var deadPlayerExists = m_DeadPlayer?.Deleted == false;
+            var deadPlayerExists = _deadPlayer?.Deleted == false;
 
             PackItem(
                 Utility.Random(deadPlayerExists ? 8 : 10) switch
@@ -241,7 +236,7 @@ namespace Server.Engines.Events
                     2 => new Torso(),
                     3 => new Bone(),
                     4 => new RibCage(),
-                    9 => deadPlayerExists ? new PlayerBones(m_DeadPlayer.Name) : null,
+                    9 => deadPlayerExists ? new PlayerBones(_deadPlayer.Name) : null,
                     _ => null // 5-8, 10 (50%)
                 }
             );
@@ -251,26 +246,10 @@ namespace Server.Engines.Events
 
         public override void OnDelete()
         {
-            if (m_DeadPlayer?.Deleted == false)
+            if (_deadPlayer?.Deleted == false)
             {
-                HalloweenHauntings.ReAnimated?.Remove(m_DeadPlayer);
+                HalloweenHauntings.ReAnimated?.Remove(_deadPlayer);
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-
-            writer.Write(m_DeadPlayer);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            m_DeadPlayer = reader.ReadEntity<PlayerMobile>();
         }
     }
 }

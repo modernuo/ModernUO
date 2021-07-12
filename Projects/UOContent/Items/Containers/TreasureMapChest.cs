@@ -588,7 +588,6 @@ namespace Server.Items
             public DeleteTimer(Item item, DateTime time) : base(time - Core.Now)
             {
                 m_Item = item;
-                Priority = TimerPriority.OneMinute;
             }
 
             protected override void OnTick()

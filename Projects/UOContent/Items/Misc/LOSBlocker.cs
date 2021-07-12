@@ -45,15 +45,15 @@ namespace Server.Items
             if (ns.StygianAbyss)
             {
                 length = OutgoingEntityPackets.CreateWorldEntity(buffer, this, ns.HighSeas);
-                BinaryPrimitives.WriteUInt16BigEndian(buffer.Slice(8, 2), GMItemId);
+                BinaryPrimitives.WriteUInt16BigEndian(buffer[8..10], GMItemId);
             }
             else
             {
                 length = OutgoingItemPackets.CreateWorldItem(buffer, this);
-                BinaryPrimitives.WriteUInt16BigEndian(buffer.Slice(7, 2), GMItemId);
+                BinaryPrimitives.WriteUInt16BigEndian(buffer[7..2], GMItemId);
             }
 
-            ns.Send(buffer.SliceToLength(length));
+            ns.Send(buffer[..length]);
         }
 
         public override void Serialize(IGenericWriter writer)

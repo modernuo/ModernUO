@@ -48,6 +48,7 @@ namespace Server
         private static string _tempSavePath; // Path to the temporary folder for the save
         private static string _savePath; // Path to "Saves" folder
 
+        public const bool DirtyTrackingEnabled = false;
         public const uint ItemOffset = 0x40000000;
         public const uint MaxItemSerial = 0x7FFFFFFF;
         public const uint MaxMobileSerial = ItemOffset - 1;
@@ -153,6 +154,7 @@ namespace Server
             m_DiskWriteHandle.WaitOne();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EnqueueForDecay(Item item)
         {
             if (WorldState != WorldState.Saving)
@@ -183,7 +185,7 @@ namespace Server
 
                 if (length != buffer.Length)
                 {
-                    buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                    buffer = buffer[..length]; // Adjust to the actual size
                 }
 
                 ns.Send(buffer);
@@ -211,7 +213,7 @@ namespace Server
 
                 if (length != buffer.Length)
                 {
-                    buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                    buffer = buffer[..length]; // Adjust to the actual size
                 }
 
                 ns.Send(buffer);
@@ -296,7 +298,7 @@ namespace Server
             {
                 if (_pendingAdd.ContainsKey(entity.Serial))
                 {
-                    Console.Error.WriteLine("Entity {0} was both pending both deletion and addition after save", entity);
+                    logger.Warning("Entity {0} was both pending both deletion and addition after save", entity);
                 }
 
                 RemoveEntity(entity);
@@ -382,15 +384,13 @@ namespace Server
             try
             {
                 var watch = Stopwatch.StartNew();
-                logger.Information("Writing snapshot...");
+                logger.Information("Writing world save snapshot");
 
                 Persistence.WriteSnapshot(tempPath);
 
                 watch.Stop();
 
-                Utility.PushColor(ConsoleColor.Green);
-                Console.WriteLine("done ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
-                Utility.PopColor();
+                logger.Information("Writing world save snapshot done ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
             }
             catch (Exception ex)
             {
@@ -399,9 +399,7 @@ namespace Server
 
             if (exception != null)
             {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine("failed");
-                Utility.PopColor();
+                logger.Error(exception, "Writing world save snapshot failed.");
                 Persistence.TraceException(exception);
 
                 BroadcastStaff(0x35, true, "Writing world save snapshot failed.");
@@ -472,8 +470,6 @@ namespace Server
 
             Broadcast(0x35, true, "The world is saving, please wait.");
 
-            var now = DateTime.UtcNow;
-
             logger.Information("Saving world");
 
             var watch = Stopwatch.StartNew();
@@ -497,9 +493,7 @@ namespace Server
             if (exception == null)
             {
                 var duration = watch.Elapsed.TotalSeconds;
-                Utility.PushColor(ConsoleColor.Green);
-                Console.WriteLine("done ({0:F2} seconds)", duration);
-                Utility.PopColor();
+                logger.Information("World save completed ({0:F2} seconds)", duration);
 
                 // Only broadcast if it took at least 150ms
                 if (duration >= 0.15)
@@ -509,9 +503,7 @@ namespace Server
             }
             else
             {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine("failed");
-                Utility.PopColor();
+                logger.Error(exception, "World save failed");
                 Persistence.TraceException(exception);
 
                 BroadcastStaff(0x35, true, "World save failed.");
@@ -653,5 +645,86 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
+
+        public static T ReadEntity<T>(this IGenericReader reader) where T : class, ISerializable
+        {
+            Serial serial = reader.ReadUInt();
+            var typeT = typeof(T);
+
+            // Add to this list when creating new serializable types
+            if (typeof(BaseGuild).IsAssignableTo(typeT))
+            {
+                return FindGuild(serial) as T;
+            }
+
+            return FindEntity<IEntity>(serial) as T;
+        }
+
+        public static List<T> ReadEntityList<T>(this IGenericReader reader) where T : class, ISerializable
+        {
+            var count = reader.ReadInt();
+
+            var list = new List<T>(count);
+
+            for (var i = 0; i < count; ++i)
+            {
+                var entity = reader.ReadEntity<T>();
+                if (entity != null)
+                {
+                    list.Add(entity);
+                }
+            }
+
+            return list;
+        }
+
+        public static HashSet<T> ReadEntitySet<T>(this IGenericReader reader) where T : class, ISerializable
+        {
+            var count = reader.ReadInt();
+
+            var set = new HashSet<T>(count);
+
+            for (var i = 0; i < count; ++i)
+            {
+                var entity = reader.ReadEntity<T>();
+                if (entity != null)
+                {
+                    set.Add(entity);
+                }
+            }
+
+            return set;
+        }
+
+        public static void Write(this IGenericWriter writer, ISerializable value)
+        {
+            writer.Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
+        }
+
+        public static void Write<T>(this IGenericWriter writer, ICollection<T> coll) where T : class, ISerializable
+        {
+            writer.Write(coll.Count);
+            foreach (var entry in coll)
+            {
+                writer.Write(entry);
+            }
+        }
+
+        public static void Write<T>(
+            this IGenericWriter writer, ICollection<T> coll, Action<IGenericWriter, T> action
+        ) where T : class, ISerializable
+        {
+            if (coll == null)
+            {
+                writer.Write(0);
+                return;
+            }
+
+            writer.Write(coll.Count);
+            foreach (var entry in coll)
+            {
+                action(writer, entry);
+            }
+        }
     }
 }

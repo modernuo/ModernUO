@@ -858,7 +858,7 @@ namespace Server.Multis
 
             if (e.Speech.Length > 8)
             {
-                Rename(e.Speech.Substring(8).Trim().DefaultIfNullOrEmpty(null));
+                Rename(e.Speech[8..].Trim().DefaultIfNullOrEmpty(null));
             }
         }
 
@@ -871,7 +871,7 @@ namespace Server.Multis
 
             if (newName?.Length > 40)
             {
-                newName = newName.Substring(0, 40);
+                newName = newName[..40];
             }
 
             if (m_ShipName == newName)
@@ -1005,7 +1005,7 @@ namespace Server.Multis
 
             if (start != -1)
             {
-                var sNumber = navPoint.Substring(start);
+                var sNumber = navPoint[start..];
 
                 if (!int.TryParse(sNumber, out number))
                 {
@@ -2057,8 +2057,6 @@ namespace Server.Multis
             public DecayTimer(BaseBoat boat) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(5.0))
             {
                 m_Boat = boat;
-
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()
@@ -2086,7 +2084,6 @@ namespace Server.Multis
             public MoveTimer(BaseBoat boat, TimeSpan interval, bool single) : base(interval, interval, single ? 1 : 0)
             {
                 m_Boat = boat;
-                Priority = TimerPriority.TwentyFiveMS;
             }
 
             protected override void OnTick()

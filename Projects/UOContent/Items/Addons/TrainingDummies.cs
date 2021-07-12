@@ -144,7 +144,6 @@ namespace Server.Items
             public InternalTimer(TrainingDummy dummy) : base(TimeSpan.FromSeconds(0.25), TimeSpan.FromSeconds(2.75))
             {
                 m_Dummy = dummy;
-                Priority = TimerPriority.FiftyMS;
             }
 
             protected override void OnTick()

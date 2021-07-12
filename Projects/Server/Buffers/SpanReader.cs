@@ -58,7 +58,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public short ReadInt16()
         {
-            if (!BinaryPrimitives.TryReadInt16BigEndian(_buffer.Slice(Position), out var value))
+            if (!BinaryPrimitives.TryReadInt16BigEndian(_buffer[Position..], out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -70,7 +70,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public short ReadInt16LE()
         {
-            if (!BinaryPrimitives.TryReadInt16LittleEndian(_buffer.Slice(Position), out var value))
+            if (!BinaryPrimitives.TryReadInt16LittleEndian(_buffer[Position..], out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -82,7 +82,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ushort ReadUInt16()
         {
-            if (!BinaryPrimitives.TryReadUInt16BigEndian(_buffer.Slice(Position), out var value))
+            if (!BinaryPrimitives.TryReadUInt16BigEndian(_buffer[Position..], out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -94,7 +94,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ushort ReadUInt16LE()
         {
-            if (!BinaryPrimitives.TryReadUInt16LittleEndian(_buffer.Slice(Position), out var value))
+            if (!BinaryPrimitives.TryReadUInt16LittleEndian(_buffer[Position..], out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -106,7 +106,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadInt32()
         {
-            if (!BinaryPrimitives.TryReadInt32BigEndian(_buffer.Slice(Position), out var value))
+            if (!BinaryPrimitives.TryReadInt32BigEndian(_buffer[Position..], out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -118,7 +118,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint ReadUInt32()
         {
-            if (!BinaryPrimitives.TryReadUInt32BigEndian(_buffer.Slice(Position), out var value))
+            if (!BinaryPrimitives.TryReadUInt32BigEndian(_buffer[Position..], out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -130,7 +130,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint ReadUInt32LE()
         {
-            if (!BinaryPrimitives.TryReadUInt32LittleEndian(_buffer.Slice(Position), out var value))
+            if (!BinaryPrimitives.TryReadUInt32LittleEndian(_buffer[Position..], out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -142,7 +142,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long ReadInt64()
         {
-            if (!BinaryPrimitives.TryReadInt64BigEndian(_buffer.Slice(Position), out var value))
+            if (!BinaryPrimitives.TryReadInt64BigEndian(_buffer[Position..], out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -154,7 +154,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ulong ReadUInt64()
         {
-            if (!BinaryPrimitives.TryReadUInt64BigEndian(_buffer.Slice(Position), out var value))
+            if (!BinaryPrimitives.TryReadUInt64BigEndian(_buffer[Position..], out var value))
             {
                 throw new OutOfMemoryException();
             }
@@ -172,7 +172,6 @@ namespace System.Buffers
 
             var remaining = Remaining;
             int size;
-
             if (isFixedLength)
             {
                 size = fixedLength * sizeT;
@@ -183,13 +182,14 @@ namespace System.Buffers
             }
             else
             {
+                // In case the remaining is not evenly divisible
                 size = remaining - (remaining & (sizeT - 1));
+                int index = _buffer.Slice(Position, size).IndexOfTerminator(sizeT);
+                size = index < 0 ? size : index;
             }
 
-            int index = _buffer.Slice(Position, size).IndexOfTerminator(sizeT);
-
-            var span = _buffer.Slice(Position, index < 0 ? size : index);
-            Position += isFixedLength || index < 0 ? size : index + sizeT;
+            var span = _buffer.Slice(Position, size);
+            Position += size;
             return TextEncoding.GetString(span, encoding, safeString);
         }
 

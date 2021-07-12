@@ -2,18 +2,15 @@ using System.Collections.Generic;
 
 namespace Server.Engines.BulkOrders
 {
-    public abstract class BaseBOD : Item
+    [Serializable(1)]
+    public abstract partial class BaseBOD : Item
     {
-        private int m_AmountMax;
-        private BulkMaterialType m_Material;
-        private bool m_RequireExceptional;
-
         public BaseBOD(int hue, int amountMax, bool requireExeptional, BulkMaterialType material) : this()
         {
             Hue = hue;
-            AmountMax = amountMax;
-            RequireExceptional = requireExeptional;
-            Material = material;
+            _amountMax = amountMax;
+            _requireExceptional = requireExeptional;
+            _material = material;
         }
 
         public BaseBOD() : base(Core.AOS ? 0x2258 : 0x14EF)
@@ -22,47 +19,22 @@ namespace Server.Engines.BulkOrders
             LootType = LootType.Blessed;
         }
 
-        public BaseBOD(Serial serial) : base(serial)
-        {
-        }
-
         public abstract bool Complete { get; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public sealed override int Hue { get; set; }
+        [SerializableField(0)]
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _amountMax;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int AmountMax
-        {
-            get => m_AmountMax;
-            set
-            {
-                m_AmountMax = value;
-                InvalidateProperties();
-            }
-        }
+        [SerializableField(1)]
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _requireExceptional;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool RequireExceptional
-        {
-            get => m_RequireExceptional;
-            set
-            {
-                m_RequireExceptional = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public BulkMaterialType Material
-        {
-            get => m_Material;
-            set
-            {
-                m_Material = value;
-                InvalidateProperties();
-            }
-        }
+        [SerializableField(1)]
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private BulkMaterialType _material;
 
         public static BulkMaterialType GetRandomMaterial(BulkMaterialType start, double[] chances)
         {
@@ -141,38 +113,22 @@ namespace Server.Engines.BulkOrders
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(m_AmountMax);
-            writer.Write(m_RequireExceptional);
-            writer.Write((int)m_Material);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_AmountMax = reader.ReadInt();
-                        m_RequireExceptional = reader.ReadBool();
-                        m_Material = (BulkMaterialType)reader.ReadInt();
-                        break;
-                    }
-            }
-
             if (Parent == null && Map == Map.Internal && Location == Point3D.Zero)
             {
                 Delete();
             }
+        }
+
+        private void Deserialize(IGenericReader reader, int version)
+        {
+            AmountMax = reader.ReadInt();
+            RequireExceptional = reader.ReadBool();
+            Material = (BulkMaterialType)reader.ReadInt();
+
+            Timer.DelayCall(AfterDeserialization);
         }
     }
 }

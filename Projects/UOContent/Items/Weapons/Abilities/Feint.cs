@@ -65,7 +65,6 @@ namespace Server.Items
             {
                 m_Defender = defender;
                 SwingSpeedReduction = swingSpeedReduction;
-                Priority = TimerPriority.FiftyMS;
             }
 
             public int SwingSpeedReduction { get; }

@@ -121,7 +121,7 @@ namespace Server.Items
 
                 if (Region.Find(bc.Home, map) is ChampionSpawnRegion region)
                 {
-                    var spawn = region.ChampionSpawn;
+                    var spawn = region.Spawn;
 
                     if (spawn?.IsChampionSpawn(bc) == true)
                     {

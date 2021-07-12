@@ -7,11 +7,11 @@
         <TargetFramework>net5.0</TargetFramework>
         <Platforms>x64</Platforms>
         <PlatformTarget>x64</PlatformTarget>
-        <LangVersion>9</LangVersion>
+        <LangVersion>preview</LangVersion>
         <PublicRelease>true</PublicRelease>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <NoWarn>NU1603</NoWarn>
-        <RuntimeIdentifiers>win-x64;debian.10-x64;debian.9-x64;ubuntu.16.04-x64;ubuntu.18.04-x64;ubuntu.20.04-x64;centos.7-x64;centos.8-x64;osx-x64</RuntimeIdentifiers>
+        <RuntimeIdentifiers>win-x64;debian.10-x64;debian.9-x64;ubuntu.16.04-x64;ubuntu.18.04-x64;ubuntu.20.04-x64;centos.7-x64;centos.8-x64;fedora.32-x64;fedora.33-x64;rhel.7-x64;rhel.8-x64;osx-x64</RuntimeIdentifiers>
         <Configurations>Debug;Release;Analyze</Configurations>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -54,7 +54,10 @@
         <AnalysisLevel>latest</AnalysisLevel>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.3.37">
+        <PackageReference Include="Serilog" Version="2.10.0" />
+        <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.220">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

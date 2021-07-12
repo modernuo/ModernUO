@@ -1352,8 +1352,6 @@ namespace Server.Mobiles
             public PayTimer(PlayerVendor vendor, TimeSpan delay) : base(delay, GetInterval())
             {
                 m_Vendor = vendor;
-
-                Priority = TimerPriority.OneMinute;
             }
 
             public static TimeSpan GetInterval()
@@ -1443,13 +1441,13 @@ namespace Server.Mobiles
                 string firstWord;
 
                 var sep = text.IndexOfAny(new[] { ' ', ',' });
-                firstWord = sep >= 0 ? text.Substring(0, sep) : text;
+                firstWord = sep >= 0 ? text[..sep] : text;
 
                 string description;
 
                 if (int.TryParse(firstWord, out var price))
                 {
-                    description = sep >= 0 ? text.Substring(sep + 1).Trim() : "";
+                    description = sep >= 0 ? text[(sep + 1)..].Trim() : "";
                 }
                 else
                 {
@@ -1706,8 +1704,6 @@ namespace Server.Mobiles
             public ExpireTimer(PlayerVendorPlaceholder placeholder) : base(TimeSpan.FromMinutes(2.0))
             {
                 m_Placeholder = placeholder;
-
-                Priority = TimerPriority.FiveSeconds;
             }
 
             protected override void OnTick()

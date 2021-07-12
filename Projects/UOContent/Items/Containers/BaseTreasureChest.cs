@@ -203,7 +203,6 @@ namespace Server.Items
             )
             {
                 m_Chest = chest;
-                Priority = TimerPriority.OneMinute;
             }
 
             protected override void OnTick()

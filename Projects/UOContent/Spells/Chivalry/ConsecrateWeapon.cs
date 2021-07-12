@@ -106,7 +106,6 @@ namespace Server.Spells.Chivalry
             public ExpireTimer(BaseWeapon weapon, TimeSpan delay) : base(delay)
             {
                 m_Weapon = weapon;
-                Priority = TimerPriority.FiftyMS;
             }
 
             protected override void OnTick()

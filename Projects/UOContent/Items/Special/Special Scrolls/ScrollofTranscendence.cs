@@ -36,15 +36,7 @@ namespace Server.Items
         public override void GetProperties(ObjectPropertyList list)
         {
             base.GetProperties(list);
-
-            if (Value == 1)
-            {
-                list.Add(1076759, "{0}\t{1}.0 Skill Points", GetName(), Value);
-            }
-            else
-            {
-                list.Add(1076759, "{0}\t{1} Skill Points", GetName(), Value);
-            }
+            list.Add(1076759, $"{GetName()}\t{Value:0.#} Skill Points");
         }
 
         public override bool CanUse(Mobile from)

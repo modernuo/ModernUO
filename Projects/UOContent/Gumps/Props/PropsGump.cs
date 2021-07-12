@@ -229,8 +229,7 @@ namespace Server.Gumps
 
                     var cpa = GetCPA(prop);
 
-                    if (!prop.GetType().IsValueType && prop.CanWrite &&
-                        m_Mobile.AccessLevel >= cpa?.WriteLevel && !cpa.ReadOnly)
+                    if (cpa?.ReadOnly == false && m_Mobile.AccessLevel >= cpa.WriteLevel && (prop.CanWrite || cpa.CanModify))
                     {
                         AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 3);
                     }
@@ -294,10 +293,10 @@ namespace Server.Gumps
                             return;
                         }
 
-                        var attr = GetCPA(prop);
+                        var cpa = GetCPA(prop);
 
-                        if (prop.GetType().IsValueType || !prop.CanWrite || attr == null ||
-                            from.AccessLevel < attr.WriteLevel || attr.ReadOnly)
+                        if (cpa == null || !(prop.CanWrite || cpa.CanModify) || cpa.ReadOnly ||
+                            from.AccessLevel < cpa.WriteLevel)
                         {
                             return;
                         }
@@ -403,14 +402,11 @@ namespace Server.Gumps
                         {
                             var obj = prop.GetValue(m_Object, null);
 
-                            if (obj != null)
-                            {
-                                from.SendGump(new PropertiesGump(from, obj, m_Stack, new StackEntry(m_Object, prop)));
-                            }
-                            else
-                            {
-                                from.SendGump(new PropertiesGump(from, m_Object, m_Stack, m_List, m_Page));
-                            }
+                            from.SendGump(
+                                obj != null
+                                    ? new PropertiesGump(from, obj, m_Stack, new StackEntry(m_Object, prop))
+                                    : new PropertiesGump(from, m_Object, m_Stack, m_List, m_Page)
+                            );
                         }
 
                         break;
@@ -678,10 +674,10 @@ namespace Server.Gumps
                 {
                     if (t == typeof(ulong) || t == typeof(uint) || t == typeof(ushort) || t == typeof(byte))
                     {
-                        return Convert.ChangeType(Convert.ToUInt64(s.Substring(2), 16), t);
+                        return Convert.ChangeType(Convert.ToUInt64(s[2..], 16), t);
                     }
 
-                    return Convert.ChangeType(Convert.ToInt64(s.Substring(2), 16), t);
+                    return Convert.ChangeType(Convert.ToInt64(s[2..], 16), t);
                 }
 
                 return Convert.ChangeType(s, t);

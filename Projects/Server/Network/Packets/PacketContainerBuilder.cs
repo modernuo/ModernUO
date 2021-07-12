@@ -50,11 +50,11 @@ namespace Server.Network
         {
             if (!_finished)
             {
-                BinaryPrimitives.WriteUInt16BigEndian(_bytes.Slice(1, 2), (ushort)Length);
-                BinaryPrimitives.WriteUInt16BigEndian(_bytes.Slice(3, 2), (ushort)_count);
+                BinaryPrimitives.WriteUInt16BigEndian(_bytes[1..3], (ushort)Length);
+                BinaryPrimitives.WriteUInt16BigEndian(_bytes[3..5], (ushort)_count);
             }
 
-            return _bytes.SliceToLength(Length);
+            return _bytes[..Length];
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -70,7 +70,7 @@ namespace Server.Network
                 Grow(bytesNeeded);
             }
 
-            return _bytes.Slice(Length);
+            return _bytes[Length..];
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -91,7 +91,7 @@ namespace Server.Network
             var newLength = Math.Max(Length + additionalCapacityBeyondPos, _bytes.Length * 2);
             byte[] poolArray = ArrayPool<byte>.Shared.Rent(newLength);
 
-            _bytes.SliceToLength(Length).CopyTo(poolArray);
+            _bytes[..Length].CopyTo(poolArray);
 
             byte[] toReturn = _arrayToReturnToPool;
             _bytes = _arrayToReturnToPool = poolArray;

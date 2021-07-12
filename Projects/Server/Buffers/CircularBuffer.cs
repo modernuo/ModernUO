@@ -110,7 +110,7 @@ namespace System.Buffers
 
             if (_second.Length > 0)
             {
-                _second.CopyTo(bytes.Slice(_first.Length));
+                _second.CopyTo(bytes[_first.Length..]);
             }
         }
 

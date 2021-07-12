@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
@@ -25,9 +24,6 @@ namespace Server
         long Position { get; }
         void Close();
         void Write(string value);
-        void Write(DateTime value);
-        void Write(TimeSpan value);
-        void Write(decimal value);
         void Write(long value);
         void Write(ulong value);
         void Write(int value);
@@ -39,18 +35,125 @@ namespace Server
         void Write(byte value);
         void Write(sbyte value);
         void Write(bool value);
-        void WriteEncodedInt(int value);
-        void Write(IPAddress value);
-        void WriteDeltaTime(DateTime value);
-        void Write(Point3D value);
-        void Write(Point2D value);
-        void Write(Rectangle2D value);
-        void Write(Rectangle3D value);
-        void Write(Map value);
-        void Write(ISerializable value);
-        void Write(Race value);
-        void Write<T>(ICollection<T> list) where T : class, ISerializable;
+
+        void Write(DateTime value)
+        {
+            var ticks = (value.Kind switch
+            {
+                DateTimeKind.Local       => value.ToUniversalTime(),
+                DateTimeKind.Unspecified  => value.ToLocalTime().ToUniversalTime(),
+                _                        => value
+            }).Ticks;
+
+            Write(ticks);
+        }
+        void WriteDeltaTime(DateTime value)
+        {
+            if (value == DateTime.MinValue)
+            {
+                Write(long.MinValue);
+                return;
+            }
+
+            if (value == DateTime.MaxValue)
+            {
+                Write(long.MaxValue);
+            }
+
+            var ticks = (value.Kind switch
+            {
+                DateTimeKind.Local       => value.ToUniversalTime(),
+                DateTimeKind.Unspecified  => value.ToLocalTime().ToUniversalTime(),
+                _                        => value
+            }).Ticks;
+
+            // Technically supports negative deltas for times in the past
+            Write(ticks - DateTime.UtcNow.Ticks);
+        }
+        void Write(IPAddress value)
+        {
+            Span<byte> stack = stackalloc byte[16];
+            value.TryWriteBytes(stack, out var bytesWritten);
+            Write((byte)bytesWritten);
+            Write(stack[..bytesWritten]);
+        }
+        void Write(TimeSpan value)
+        {
+            Write(value.Ticks);
+        }
+
+        public void Write(decimal value)
+        {
+            var bits = decimal.GetBits(value);
+
+            for (var i = 0; i < 4; ++i)
+            {
+                Write(bits[i]);
+            }
+        }
+        void WriteEncodedInt(int value)
+        {
+            var v = (uint)value;
+
+            while (v >= 0x80)
+            {
+                Write((byte)(v | 0x80));
+                v >>= 7;
+            }
+
+            Write((byte)v);
+        }
+        void Write(Point3D value)
+        {
+            Write(value.m_X);
+            Write(value.m_Y);
+            Write(value.m_Z);
+        }
+        void Write(Point2D value)
+        {
+            Write(value.m_X);
+            Write(value.m_Y);
+        }
+        void Write(Rectangle2D value)
+        {
+            Write(value.Start);
+            Write(value.End);
+        }
+        void Write(Rectangle3D value)
+        {
+            Write(value.Start);
+            Write(value.End);
+        }
+        void Write(Map value) => Write((byte)(value?.MapIndex ?? 0xFF));
+        void Write(Race value) => Write((byte)(value?.RaceIndex ?? 0xFF));
         void Write(ReadOnlySpan<byte> bytes);
+        unsafe void WriteEnum<T>(T value) where T : unmanaged, Enum
+        {
+            switch (sizeof(T))
+            {
+                default: throw new ArgumentException($"Argument of type {typeof(T)} is not a normal enum");
+                case 1:
+                    {
+                        Write(*(byte*)&value);
+                        break;
+                    }
+                case 2:
+                    {
+                        Write(*(ushort*)&value);
+                        break;
+                    }
+                case 4:
+                    {
+                        WriteEncodedInt(*(int*)&value);
+                        break;
+                    }
+                case 8:
+                    {
+                        Write(*(ulong*)&value);
+                        break;
+                    }
+            }
+        }
 
         long Seek(long offset, SeekOrigin origin);
     }

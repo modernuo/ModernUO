@@ -188,7 +188,7 @@ namespace Server.Network
 
             // We are ok with the string being cut-off mid character. The alternative is very slow.
             var byteLength = Math.Min(29, TextEncoding.UTF8.GetBytes(textChars, textBuffer));
-            writer.Write(textBuffer.SliceToLength(byteLength));
+            writer.Write(textBuffer[..byteLength]);
             writer.Clear(30 - byteLength); // terminator
 
             ns.Send(writer.Span);
@@ -281,7 +281,7 @@ namespace Server.Network
             var tail = pad ? 2 : 1;
             var length = Math.Min(pad ? 253 : 254, text.GetBytesUtf8(buffer));
             writer.Write((byte)(length + tail));
-            writer.Write(buffer.SliceToLength(length));
+            writer.Write(buffer[..length]);
 
             if (pad)
             {

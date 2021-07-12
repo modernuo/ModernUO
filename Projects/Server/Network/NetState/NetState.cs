@@ -571,7 +571,7 @@ namespace Server.Network
                     int packetLength = length;
 
                     // These can arrive at any time and are only informational
-                    if (IncomingPackets.IsInfoPacket(packetId))
+                    if (_protocolState != ProtocolState.AwaitingSeed && IncomingPackets.IsInfoPacket(packetId))
                     {
                         _parserState = ParserState.ProcessingPacket;
                         _parserState = HandlePacket(packetReader, packetId, length, out packetLength);

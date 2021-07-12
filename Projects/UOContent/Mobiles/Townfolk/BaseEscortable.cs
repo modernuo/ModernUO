@@ -708,8 +708,6 @@ namespace Server.Mobiles
                 : base(delay)
             {
                 m_Mobile = m;
-
-                Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()

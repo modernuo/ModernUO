@@ -133,6 +133,8 @@ namespace Server
         {
             Map = json.GetProperty("map", options, out Map map) ? map : null;
             Parent = json.GetProperty("parent", options, out string parent) ? Find(parent, Map) : null;
+            Name = json.GetProperty("name", options, out string name) ? name : null;
+
             Dynamic = false;
 
             if (Parent == null)
@@ -146,9 +148,7 @@ namespace Server
                 Priority = Parent.Priority;
             }
 
-            Name = json.GetProperty("name", options, out string name) ? name : null;
-
-            Priority = json.GetProperty("priority", options, out int priority) ? priority : 0;
+            Priority = json.GetProperty("priority", options, out int priority) ? priority : Priority;
 
             Area = json.GetProperty("rects", options, out List<Rectangle3D> rects)
                 ? rects.ToArray()
@@ -178,8 +178,6 @@ namespace Server
         }
 
         public static List<Region> Regions { get; } = new();
-
-        public static Type DefaultRegionType { get; set; } = typeof(Region);
 
         public static TimeSpan StaffLogoutDelay { get; set; } = TimeSpan.Zero;
 
@@ -232,15 +230,8 @@ namespace Server
                 return 1;
             }
 
-            var thisPriority = Priority;
             var regPriority = reg.Priority;
-
-            if (thisPriority != regPriority)
-            {
-                return regPriority - thisPriority;
-            }
-
-            return reg.ChildLevel - ChildLevel;
+            return Priority != regPriority ? reg.Priority - Priority : reg.ChildLevel - ChildLevel;
         }
 
         // This is not optimized. Use sparingly

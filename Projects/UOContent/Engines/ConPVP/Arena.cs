@@ -23,7 +23,7 @@ namespace Server.Engines.ConPVP
         {
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public Arena Arena { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -475,7 +475,7 @@ namespace Server.Engines.ConPVP
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsOccupied => Players.Count > 0;
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public ArenaStartPoints Points { get; }
 
         public Item Teleporter { get; set; }

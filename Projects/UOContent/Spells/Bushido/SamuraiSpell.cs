@@ -45,7 +45,7 @@ namespace Server.Spells.Bushido
 
             if (Caster.Skills[CastSkill].Value < RequiredSkill)
             {
-                var args = $"{RequiredSkill:F1}\t{CastSkill.ToString()}\t ";
+                var args = $"{RequiredSkill:0.#}\t{CastSkill.ToString()}\t ";
                 Caster.SendLocalizedMessage(
                     1063013,
                     args

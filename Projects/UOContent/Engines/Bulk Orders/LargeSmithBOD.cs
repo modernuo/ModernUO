@@ -1,6 +1,7 @@
 namespace Server.Engines.BulkOrders
 {
-    public class LargeSmithBOD : LargeBOD
+    [Serializable(0, false)]
+    public partial class LargeSmithBOD : LargeBOD
     {
         public static double[] m_BlacksmithMaterialChances =
         {
@@ -61,29 +62,11 @@ namespace Server.Engines.BulkOrders
         {
         }
 
-        public LargeSmithBOD(Serial serial) : base(serial)
-        {
-        }
-
         public override int ComputeFame() => SmithRewardCalculator.Instance.ComputeFame(this);
 
         public override int ComputeGold() => SmithRewardCalculator.Instance.ComputeGold(this);
 
         public override RewardGroup GetRewardGroup() =>
             SmithRewardCalculator.Instance.LookupRewards(SmithRewardCalculator.Instance.ComputePoints(this));
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

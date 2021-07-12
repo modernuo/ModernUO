@@ -35,7 +35,7 @@ namespace Server.Json
                 Console.WriteLine("Invalid type {0} deserialized", typeName);
             }
 
-            return AssemblyHandler.FindTypeByName(reader.GetString());
+            return type;
         }
 
         public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options) =>

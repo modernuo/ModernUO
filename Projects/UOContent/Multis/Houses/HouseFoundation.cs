@@ -1964,13 +1964,12 @@ namespace Server.Multis
         }
 
         public void SendGeneralInfoTo(NetState state) => state.SendDesignStateGeneral(Foundation.Serial, Revision);
-        public void SendDetailedInfoTo(NetState state) => state?.Send(PacketCache ??= SendDetails(Foundation.Serial));
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte[] SendDetails(Serial house) => HousePackets.CreateHouseDesignStateDetailed(
-            house,
-            Revision,
-            Components
+        public void SendDetailedInfoTo(NetState state) => state?.Send(
+            PacketCache ??= HousePackets.CreateHouseDesignStateDetailed(
+                Foundation.Serial,
+                Revision,
+                Components
+            )
         );
 
         public void FreezeFixtures()

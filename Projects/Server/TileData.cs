@@ -14,11 +14,9 @@
  *************************************************************************/
 
 using System;
-using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Server.Network;
 
 namespace Server
 {
@@ -264,14 +262,12 @@ namespace Server
             Load();
         }
 
-        private static void Load()
+        private unsafe static void Load()
         {
             var filePath = Core.FindDataFile("tiledata.mul");
 
             using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length);
-            fs.Read(buffer);
-            var bin = new BufferReader(buffer);
+            using var bin = new BinaryReader(fs);
 
             bool is64BitFlags;
             const int landLength = 0x4000;
@@ -293,39 +289,47 @@ namespace Server
                 itemLength = 0x4000;
             }
 
+            Span<byte> buffer = stackalloc byte[20];
+
             for (var i = 0; i < landLength; i++)
             {
                 if (is64BitFlags ? i == 1 || i > 0 && (i & 0x1F) == 0 : (i & 0x1F) == 0)
                 {
-                    bin.ReadInt(); // header
+                    bin.ReadInt32(); // header
                 }
 
-                var flags = (TileFlag)(is64BitFlags ? bin.ReadULong() : bin.ReadUInt());
-                bin.ReadShort(); // skip 2 bytes -- textureID
+                var flags = (TileFlag)(is64BitFlags ? bin.ReadUInt64() : bin.ReadUInt32());
+                bin.ReadInt16(); // skip 2 bytes -- textureID
 
-                LandTable[i] = new LandData(bin.ReadAscii(20), flags);
+                bin.Read(buffer);
+                var terminator = buffer.IndexOfTerminator(1);
+                var name = Encoding.ASCII.GetString(buffer[..(terminator < 0 ? buffer.Length : terminator)]);
+                LandTable[i] = new LandData(Utility.Intern(name), flags);
             }
 
             for (var i = 0; i < itemLength; i++)
             {
                 if ((i & 0x1F) == 0)
                 {
-                    bin.ReadInt(); // header
+                    bin.ReadInt32(); // header
                 }
 
-                var flags = (TileFlag)(is64BitFlags ? bin.ReadULong() : bin.ReadUInt());
+                var flags = (TileFlag)(is64BitFlags ? bin.ReadUInt64() : bin.ReadUInt32());
                 int weight = bin.ReadByte();
                 int quality = bin.ReadByte();
-                int animation = bin.ReadUShort();
+                int animation = bin.ReadUInt16();
                 bin.ReadByte();
                 int quantity = bin.ReadByte();
-                bin.ReadInt();
+                bin.ReadInt32();
                 bin.ReadByte();
                 int value = bin.ReadByte();
                 int height = bin.ReadByte();
 
+                bin.Read(buffer);
+                var terminator = buffer.IndexOfTerminator(1);
+                var name = Encoding.ASCII.GetString(buffer[..(terminator < 0 ? buffer.Length : terminator)]);
                 ItemTable[i] = new ItemData(
-                    bin.ReadAscii(20),
+                    Utility.Intern(name),
                     flags,
                     weight,
                     quality,

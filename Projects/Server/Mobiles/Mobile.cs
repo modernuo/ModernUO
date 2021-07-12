@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 using Microsoft.Toolkit.HighPerformance;
 using Server.Accounting;
 using Server.Buffers;
@@ -379,22 +377,6 @@ namespace Server
         Cured
     }
 
-    [Serializable]
-    public class MobileNotConnectedException : Exception
-    {
-        public MobileNotConnectedException(Mobile source, string message)
-            : base(message) =>
-            Source = source.ToString();
-
-        public MobileNotConnectedException(Mobile source, string message, Exception innerException)
-            : base(message, innerException) =>
-            Source = source.ToString();
-
-        protected MobileNotConnectedException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
-    }
-
     public delegate bool SkillCheckTargetHandler(
         Mobile from, SkillName skill, object target, double minSkill,
         double maxSkill
@@ -413,8 +395,7 @@ namespace Server
     public delegate bool AllowHarmfulHandler(Mobile from, Mobile target);
 
     public delegate Container CreateCorpseHandler(
-        Mobile from, HairInfo hair, FacialHairInfo facialhair,
-        List<Item> initialContent, List<Item> equippedItems
+        Mobile from, HairInfo hair, FacialHairInfo facialhair, List<Item> initialContent, List<Item> equippedItems
     );
 
     public delegate int AOSStatusHandler(Mobile from, int index);
@@ -494,7 +475,6 @@ namespace Server
 
         private Timer m_ExpireAggrTimer;
         private Timer m_ExpireCombatant;
-        private Timer m_ExpireCriminal;
         private FacialHairInfo m_FacialHair;
         private int m_Fame, m_Karma;
         private bool m_Female, m_Warmode, m_Hidden, m_Blessed, m_Flying;
@@ -571,8 +551,16 @@ namespace Server
 
         private bool m_YellowHealthbar;
 
-        // Position in the save buffer where serialization ends. -1 if dirty
-        private int _savePosition = -1;
+        public Mobile()
+        {
+            m_Region = Map.Internal.DefaultRegion;
+            Serial = World.NewMobile;
+
+            DefaultMobileInit();
+
+            World.AddEntity(this);
+            SetTypeRef(GetType());
+        }
 
         public Mobile(Serial serial)
         {
@@ -583,31 +571,16 @@ namespace Server
             NextSkillTime = Core.TickCount;
             DamageEntries = new List<DamageEntry>();
 
-            var ourType = GetType();
-            TypeRef = World.MobileTypes.IndexOf(ourType);
-
-            if (TypeRef == -1)
-            {
-                World.MobileTypes.Add(ourType);
-                TypeRef = World.MobileTypes.Count - 1;
-            }
+            SetTypeRef(GetType());
         }
 
-        public Mobile()
+        public void SetTypeRef(Type type)
         {
-            m_Region = Map.Internal.DefaultRegion;
-            Serial = World.NewMobile;
-
-            DefaultMobileInit();
-
-            World.AddEntity(this);
-
-            var ourType = GetType();
-            TypeRef = World.MobileTypes.IndexOf(ourType);
+            TypeRef = World.MobileTypes.IndexOf(type);
 
             if (TypeRef == -1)
             {
-                World.MobileTypes.Add(ourType);
+                World.MobileTypes.Add(type);
                 TypeRef = World.MobileTypes.Count - 1;
             }
         }
@@ -1184,16 +1157,6 @@ namespace Server
             {
                 m_Player = value;
                 InvalidateProperties();
-
-                if (!m_Player && m_Dex <= 100 && m_CombatTimer != null)
-                {
-                    m_CombatTimer.Priority = TimerPriority.FiftyMS;
-                }
-                else if (m_CombatTimer != null)
-                {
-                    m_CombatTimer.Priority = TimerPriority.EveryTick;
-                }
-
                 CheckStatTimers();
             }
         }
@@ -1889,8 +1852,10 @@ namespace Server
             }
         }
 
+        public Timer ExpireCriminalTimer { get; set; }
+
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-        public bool Criminal
+        public virtual bool Criminal
         {
             get => m_Criminal;
             set
@@ -1904,21 +1869,21 @@ namespace Server
 
                 if (m_Criminal)
                 {
-                    if (m_ExpireCriminal == null)
+                    if (ExpireCriminalTimer == null)
                     {
-                        m_ExpireCriminal = Timer.DelayCall(ExpireCriminalDelay, ExpireCriminal);
+                        ExpireCriminalTimer = Timer.DelayCall(ExpireCriminalDelay, ExpireCriminal);
                     }
                     else
                     {
-                        m_ExpireCriminal.Stop();
+                        ExpireCriminalTimer.Stop();
                     }
 
-                    m_ExpireCriminal.Start();
+                    ExpireCriminalTimer.Start();
                 }
-                else if (m_ExpireCriminal != null)
+                else if (ExpireCriminalTimer != null)
                 {
-                    m_ExpireCriminal.Stop();
-                    m_ExpireCriminal = null;
+                    ExpireCriminalTimer.Stop();
+                    ExpireCriminalTimer = null;
                 }
             }
         }
@@ -2546,22 +2511,17 @@ namespace Server
             AddNameProperties(list);
         }
 
+        long ISerializable.SavePosition { get; set; } = -1;
+
         BufferWriter ISerializable.SaveBuffer { get; set; }
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
-        public int TypeRef { get; }
+        public int TypeRef { get; private set; }
 
         public virtual void Serialize(IGenericWriter writer)
         {
-            // The item is clean, so let's skip
-            if (_savePosition > -1)
-            {
-                writer.Seek(_savePosition, SeekOrigin.Begin);
-                return;
-            }
-
             writer.Write(32); // version
 
             writer.WriteDeltaTime(LastStrGain);
@@ -3016,8 +2976,8 @@ namespace Server
             }
 
             const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
-            var width = OutgoingMobilePackets.MobileMovingPacketLength;
-            var height = OutgoingMobilePackets.MobileMovingPacketCacheHeight;
+            const int width = OutgoingMobilePackets.MobileMovingPacketLength;
+            const int height = OutgoingMobilePackets.MobileMovingPacketCacheHeight;
 
             var mobileMovingCache = stackalloc byte[cacheLength].AsSpan2D(height, width).InitializePackets();
 
@@ -3493,7 +3453,7 @@ namespace Server
 
         public virtual void AddNameProperties(ObjectPropertyList list)
         {
-            var name = Name ?? string.Empty;
+            var name = Name ?? "";
 
             string prefix;
 
@@ -4809,7 +4769,7 @@ namespace Server
             m_CombatTimer?.Stop();
             m_ExpireCombatant?.Stop();
             m_LogoutTimer?.Stop();
-            m_ExpireCriminal?.Stop();
+            ExpireCriminalTimer?.Stop();
             m_WarmodeTimer?.Stop();
             m_ParaTimer?.Stop();
             m_FrozenTimer?.Stop();
@@ -5791,7 +5751,7 @@ namespace Server
 
                         if (length != regBuffer.Length)
                         {
-                            regBuffer = regBuffer.SliceToLength(length); // Adjust to the actual size
+                            regBuffer = regBuffer[..length]; // Adjust to the actual size
                         }
 
                         heard.OnSpeech(regArgs);
@@ -5805,7 +5765,7 @@ namespace Server
 
                         if (length != mutBuffer.Length)
                         {
-                            mutBuffer = mutBuffer.SliceToLength(length); // Adjust to the actual size
+                            mutBuffer = mutBuffer[..length]; // Adjust to the actual size
                         }
 
                         heard.OnSpeech(mutatedArgs);
@@ -6567,22 +6527,13 @@ namespace Server
 
                         if (m_Criminal)
                         {
-                            m_ExpireCriminal ??= Timer.DelayCall(ExpireCriminalDelay, ExpireCriminal);
-                            m_ExpireCriminal.Start();
+                            ExpireCriminalTimer ??= Timer.DelayCall(ExpireCriminalDelay, ExpireCriminal);
+                            ExpireCriminalTimer.Start();
                         }
 
                         if (ShouldCheckStatTimers)
                         {
                             CheckStatTimers();
-                        }
-
-                        if (!m_Player && m_Dex <= 100 && m_CombatTimer != null)
-                        {
-                            m_CombatTimer.Priority = TimerPriority.FiftyMS;
-                        }
-                        else if (m_CombatTimer != null)
-                        {
-                            m_CombatTimer.Priority = TimerPriority.EveryTick;
                         }
 
                         UpdateRegion();
@@ -8089,8 +8040,7 @@ namespace Server
         /// </summary>
         public virtual void OnSingleClick(Mobile from)
         {
-            if (Deleted ||
-                AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this)
+            if (Deleted || AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this)
             {
                 return;
             }
@@ -8139,7 +8089,7 @@ namespace Server
                 hue = Notoriety.GetHue(Notoriety.Compute(from, this));
             }
 
-            var name = Name ?? string.Empty;
+            var name = Name ?? "";
 
             var prefix = "";
 
@@ -8372,17 +8322,12 @@ namespace Server
         public void Yell(int number, string args = "") =>
             PublicOverheadMessage(MessageType.Yell, YellHue, number, args);
 
-        public bool SendHuePicker(HuePicker p, bool throwOnOffline = false)
+        public bool SendHuePicker(HuePicker p)
         {
             if (m_NetState != null)
             {
                 p.SendTo(m_NetState);
                 return true;
-            }
-
-            if (throwOnOffline)
-            {
-                throw new MobileNotConnectedException(this, "Hue picker could not be sent.");
             }
 
             return false;
@@ -9154,7 +9099,7 @@ namespace Server
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                        buffer = buffer[..length]; // Adjust to the actual size
                     }
 
                     state.Send(buffer);
@@ -9185,7 +9130,7 @@ namespace Server
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                        buffer = buffer[..length]; // Adjust to the actual size
                     }
 
                     state.Send(buffer);
@@ -9219,7 +9164,7 @@ namespace Server
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                        buffer = buffer[..length]; // Adjust to the actual size
                     }
 
                     state.Send(buffer);
@@ -9267,7 +9212,7 @@ namespace Server
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                        buffer = buffer[..length]; // Adjust to the actual size
                     }
 
                     state.Send(buffer);
@@ -9298,7 +9243,7 @@ namespace Server
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                        buffer = buffer[..length]; // Adjust to the actual size
                     }
 
                     state.Send(buffer);
@@ -9411,7 +9356,6 @@ namespace Server
             public ManaTimer(Mobile m)
                 : base(GetManaRegenRate(m), GetManaRegenRate(m))
             {
-                Priority = TimerPriority.FiftyMS;
                 m_Owner = m;
             }
 
@@ -9433,7 +9377,6 @@ namespace Server
             public HitsTimer(Mobile m)
                 : base(GetHitsRegenRate(m), GetHitsRegenRate(m))
             {
-                Priority = TimerPriority.FiftyMS;
                 m_Owner = m;
             }
 
@@ -9455,7 +9398,6 @@ namespace Server
             public StamTimer(Mobile m)
                 : base(GetStamRegenRate(m), GetStamRegenRate(m))
             {
-                Priority = TimerPriority.FiftyMS;
                 m_Owner = m;
             }
 
@@ -9487,15 +9429,8 @@ namespace Server
         {
             private readonly Mobile m_Mobile;
 
-            public CombatTimer(Mobile m) : base(TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(0.01))
-            {
+            public CombatTimer(Mobile m) : base(TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(0.01)) =>
                 m_Mobile = m;
-
-                if (!m_Mobile.m_Player && m_Mobile.m_Dex <= 100)
-                {
-                    Priority = TimerPriority.FiftyMS;
-                }
-            }
 
             protected override void OnTick()
             {

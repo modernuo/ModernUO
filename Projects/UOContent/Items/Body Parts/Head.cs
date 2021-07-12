@@ -81,17 +81,17 @@ namespace Server.Items
                     {
                         if (format.StartsWithOrdinal("the head of "))
                         {
-                            format = format.Substring(14); // "the head of|..."
+                            format = format[14..]; // "the head of|..."
                         }
 
                         if (format.EndsWithOrdinal(", taken in a duel"))
                         {
-                            format = format.Substring(0, format.Length - ", taken in a duel".Length);
+                            format = format[..^", taken in a duel".Length];
                             HeadType = HeadType.Duel;
                         }
                         else if (format.EndsWithOrdinal(", taken in a tournament"))
                         {
-                            format = format.Substring(0, format.Length - ", taken in a tournament".Length);
+                            format = format[..^", taken in a tournament".Length];
                             HeadType = HeadType.Tournament;
                         }
                     }

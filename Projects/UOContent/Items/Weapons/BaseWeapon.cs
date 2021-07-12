@@ -183,16 +183,16 @@ namespace Server.Items
 
         public virtual SkillName AccuracySkill => SkillName.Tactics;
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosAttributes Attributes { get; private set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosWeaponAttributes WeaponAttributes { get; private set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosSkillBonuses SkillBonuses { get; private set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosElementAttributes AosElementDamages { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster)]

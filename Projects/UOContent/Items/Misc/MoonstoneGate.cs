@@ -79,7 +79,6 @@ namespace Server.Items
             public InternalTimer(Item item) : base(TimeSpan.FromSeconds(30.0))
             {
                 m_Item = item;
-                Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()

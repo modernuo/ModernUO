@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Server.Json;
+using Server.Logging;
 using Server.Mobiles;
 using Server.Utilities;
 
@@ -10,6 +11,8 @@ namespace Server.Regions
 {
     public class GuardedRegion : BaseRegion
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(GuardedRegion));
+
         private static readonly object[] m_GuardParams = new object[1];
 
         private readonly Dictionary<Mobile, GuardTimer> m_GuardCandidates = new();
@@ -31,9 +34,7 @@ namespace Server.Regions
 
                 if (!typeof(BaseGuard).IsAssignableFrom(m_GuardType))
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Invalid guard type for region '{0}'", this);
-                    Console.ResetColor();
+                    logger.Warning("Invalid guard type for region '{0}'", this);
                     m_GuardType = DefaultGuardType;
                 }
             }
@@ -368,7 +369,6 @@ namespace Server.Regions
 
             public GuardTimer(Mobile m, Dictionary<Mobile, GuardTimer> table) : base(TimeSpan.FromSeconds(15.0))
             {
-                Priority = TimerPriority.TwoFiftyMS;
 
                 m_Mobile = m;
                 m_Table = table;

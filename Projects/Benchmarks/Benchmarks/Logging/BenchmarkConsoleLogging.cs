@@ -14,8 +14,8 @@ namespace Benchmarks
         private Logger logger;
         private Logger asyncLogger;
 
-        [IterationSetup]
-        public void IterationSetup()
+        [GlobalSetup]
+        public void GlobalSetup()
         {
             logger = new LoggerConfiguration()
                 .WriteTo.Console()
@@ -26,8 +26,8 @@ namespace Benchmarks
                 .CreateLogger();
         }
 
-        [IterationCleanup]
-        public void IterationCleanup()
+        [GlobalCleanup]
+        public void GlobalCleanup()
         {
             logger = null;
             asyncLogger = null;
@@ -36,7 +36,7 @@ namespace Benchmarks
         [Benchmark]
         public void TestConsoleWriteLine()
         {
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 Console.WriteLine(text);
             }
@@ -45,7 +45,7 @@ namespace Benchmarks
         [Benchmark]
         public void TestSerilogConsoleSink()
         {
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 logger.Information(text);
             }
@@ -54,7 +54,7 @@ namespace Benchmarks
         [Benchmark]
         public void TestSerilogAsyncConsoleSink()
         {
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 asyncLogger.Information(text);
             }

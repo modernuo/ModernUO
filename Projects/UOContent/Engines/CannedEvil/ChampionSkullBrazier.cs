@@ -1,26 +1,28 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: ChampionSkullBrazier.cs                                         *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using Server.Items;
-using Server.Mobiles;
 using Server.Targeting;
+using Server.Mobiles;
 
 namespace Server.Engines.CannedEvil
 {
     public class ChampionSkullBrazier : AddonComponent
     {
-        private Item m_Skull;
         private ChampionSkullType m_Type;
-
-        public ChampionSkullBrazier(ChampionSkullPlatform platform, ChampionSkullType type) : base(0x19BB)
-        {
-            Hue = 0x455;
-            Light = LightType.Circle300;
-
-            Platform = platform;
-            m_Type = type;
-        }
-
-        public ChampionSkullBrazier(Serial serial) : base(serial)
-        {
-        }
+        private Item m_Skull;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public ChampionSkullPlatform Platform { get; private set; }
@@ -49,6 +51,19 @@ namespace Server.Engines.CannedEvil
 
         public override int LabelNumber => 1049489 + (int)m_Type;
 
+        public ChampionSkullBrazier(ChampionSkullPlatform platform, ChampionSkullType type) : base(0x19BB)
+        {
+            Hue = 0x455;
+            Light = LightType.Circle300;
+
+            Platform = platform;
+            m_Type = type;
+        }
+
+        public ChampionSkullBrazier(Serial serial) : base(serial)
+        {
+        }
+
         public override void OnDoubleClick(Mobile from)
         {
             Platform?.Validate();
@@ -63,7 +78,7 @@ namespace Server.Engines.CannedEvil
                 return;
             }
 
-            if (m_Skull?.Deleted == true)
+            if (m_Skull is { Deleted: true })
             {
                 Skull = null;
             }
@@ -94,7 +109,7 @@ namespace Server.Engines.CannedEvil
                 return;
             }
 
-            if (m_Skull?.Deleted == true)
+            if (m_Skull is { Deleted: true })
             {
                 Skull = null;
             }
@@ -133,6 +148,17 @@ namespace Server.Engines.CannedEvil
                     SendLocalizedMessageTo(from, 1049488); // That is not my champions awakening skull!
                 }
             }
+        }
+
+        private class SacrificeTarget : Target
+        {
+            private readonly ChampionSkullBrazier m_Brazier;
+
+            public SacrificeTarget(ChampionSkullBrazier brazier) : base(12, false, TargetFlags.None) =>
+                m_Brazier = brazier;
+
+            protected override void OnTarget(Mobile from, object targeted) =>
+                m_Brazier.EndSacrifice(from, targeted as ChampionSkull);
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -177,18 +203,6 @@ namespace Server.Engines.CannedEvil
             if (Light != LightType.Circle300)
             {
                 Light = LightType.Circle300;
-            }
-        }
-
-        private class SacrificeTarget : Target
-        {
-            private readonly ChampionSkullBrazier m_Brazier;
-
-            public SacrificeTarget(ChampionSkullBrazier brazier) : base(12, false, TargetFlags.None) => m_Brazier = brazier;
-
-            protected override void OnTarget(Mobile from, object targeted)
-            {
-                m_Brazier.EndSacrifice(from, targeted as ChampionSkull);
             }
         }
     }

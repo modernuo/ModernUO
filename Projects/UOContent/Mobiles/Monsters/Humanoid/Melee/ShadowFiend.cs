@@ -105,7 +105,6 @@ namespace Server.Mobiles
             public UnhideTimer(ShadowFiend owner) : base(TimeSpan.FromSeconds(30.0))
             {
                 m_Owner = owner;
-                Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()

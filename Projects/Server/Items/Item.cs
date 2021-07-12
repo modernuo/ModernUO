@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.CompilerServices;
 using Server.ContextMenus;
 using Server.Items;
@@ -216,9 +215,6 @@ namespace Server
 
         private ObjectPropertyList m_PropertyList;
 
-        // Position in the save buffer where serialization ends. -1 if dirty
-        private int _savePosition = -1;
-
         [Constructible]
         public Item(int itemID = 0)
         {
@@ -234,27 +230,22 @@ namespace Server
             SetLastMoved();
 
             World.AddEntity(this);
-
-            var ourType = GetType();
-            TypeRef = World.ItemTypes.IndexOf(ourType);
-
-            if (TypeRef == -1)
-            {
-                World.ItemTypes.Add(ourType);
-                TypeRef = World.ItemTypes.Count - 1;
-            }
+            SetTypeRef(GetType());
         }
 
         public Item(Serial serial)
         {
             Serial = serial;
+            SetTypeRef(GetType());
+        }
 
-            var ourType = GetType();
-            TypeRef = World.ItemTypes.IndexOf(ourType);
+        public void SetTypeRef(Type type)
+        {
+            TypeRef = World.ItemTypes.IndexOf(type);
 
             if (TypeRef == -1)
             {
-                World.ItemTypes.Add(ourType);
+                World.ItemTypes.Add(type);
                 TypeRef = World.ItemTypes.Count - 1;
             }
         }
@@ -792,22 +783,17 @@ namespace Server
             AddNameProperties(list);
         }
 
+        long ISerializable.SavePosition { get; set; } = -1;
+
         BufferWriter ISerializable.SaveBuffer { get; set; }
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
-        public int TypeRef { get; }
+        public int TypeRef { get; private set; }
 
         public virtual void Serialize(IGenericWriter writer)
         {
-            // The item is clean, so let's skip
-            if (_savePosition > -1)
-            {
-                writer.Seek(_savePosition, SeekOrigin.Begin);
-                return;
-            }
-
             writer.Write(9); // version
 
             var flags = SaveFlag.None;
@@ -1150,7 +1136,7 @@ namespace Server
                                 var length = OutgoingEntityPackets.CreateWorldEntity(hsWorldItem, this, true);
                                 if (length != hsWorldItem.Length)
                                 {
-                                    hsWorldItem = hsWorldItem.SliceToLength(length);
+                                    hsWorldItem = hsWorldItem[..length];
                                 }
 
                                 SendInfoTo(state, hsWorldItem, opl);
@@ -1160,7 +1146,7 @@ namespace Server
                                 var length = OutgoingEntityPackets.CreateWorldEntity(saWorldItem, this, false);
                                 if (length != saWorldItem.Length)
                                 {
-                                    saWorldItem = saWorldItem.SliceToLength(length);
+                                    saWorldItem = saWorldItem[..length];
                                 }
 
                                 SendInfoTo(state, saWorldItem, opl);
@@ -1170,7 +1156,7 @@ namespace Server
                                 var length = OutgoingItemPackets.CreateWorldItem(oldWorldItem, this);
                                 if (length != oldWorldItem.Length)
                                 {
-                                    oldWorldItem = oldWorldItem.SliceToLength(length);
+                                    oldWorldItem = oldWorldItem[..length];
                                 }
 
                                 SendInfoTo(state, oldWorldItem, opl);
@@ -3330,7 +3316,7 @@ namespace Server
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                        buffer = buffer[..length]; // Adjust to the actual size
                     }
 
                     state.Send(buffer);
@@ -3364,7 +3350,7 @@ namespace Server
 
                     if (length != buffer.Length)
                     {
-                        buffer = buffer.SliceToLength(length); // Adjust to the actual size
+                        buffer = buffer[..length]; // Adjust to the actual size
                     }
 
                     state.Send(buffer);

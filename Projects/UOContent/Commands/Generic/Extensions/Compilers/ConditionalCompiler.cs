@@ -151,7 +151,7 @@ namespace Server.Commands.Generic
                     if (toParse.InsensitiveStartsWith("0x"))
                     {
                         style = NumberStyles.HexNumber;
-                        toParse = toParse.Substring(2);
+                        toParse = toParse[2..];
                     }
 
                     parseMethod = parseNumber;

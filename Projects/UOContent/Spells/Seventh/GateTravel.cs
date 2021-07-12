@@ -180,7 +180,6 @@ namespace Server.Spells.Seventh
 
                 public InternalTimer(Item item) : base(TimeSpan.FromSeconds(30.0))
                 {
-                    Priority = TimerPriority.OneSecond;
                     m_Item = item;
                 }
 

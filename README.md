@@ -12,7 +12,9 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 ![OSX](https://img.shields.io/badge/-big%20sur-222222?logo=apple&logoColor=white)
 ![Debian](https://img.shields.io/badge/-buster-A81D33?logo=debian)
 ![Ubuntu](https://img.shields.io/badge/-20LTS-E95420?logo=ubuntu&logoColor=white)
-![CentOS](https://img.shields.io/badge/-8.1-262577?logo=centos&logoColor=white)
+![CentOS](https://img.shields.io/badge/-8.3-262577?logo=centos&logoColor=white)
+![Fedora](https://img.shields.io/badge/-33-0B57A4?logo=fedora&logoColor=white)
+![RedHat](https://img.shields.io/badge/-8-BE0000?logo=red%20hat&logoColor=white)
 <br/>
 [![GitHub license](https://img.shields.io/github/license/modernuo/ModernUO?color=blue)](https://github.com/modernuo/ModernUO/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/stargazers)
@@ -33,6 +35,8 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
     - `ubuntu.16.04`, `ubuntu.18.04` `ubuntu.20.04` - Ubuntu LTS
     - `debian.9`, `debian.10` - Debian
     - `centos.7`, `centos.8` - CentOS
+    - `fedora.32`, `fedora.33` - Fedora
+    - `rhel.7`, `rhel.8` - Redhat
     - If blank, the operating system running the build is used
 
 ## Deploying / Running Server

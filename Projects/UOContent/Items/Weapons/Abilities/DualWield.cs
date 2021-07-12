@@ -60,7 +60,6 @@ namespace Server.Items
             {
                 m_Owner = owner;
                 BonusSwingSpeed = bonusSwingSpeed;
-                Priority = TimerPriority.FiftyMS;
             }
 
             public int BonusSwingSpeed { get; }

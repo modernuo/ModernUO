@@ -12,7 +12,6 @@ namespace Server.Spells
         {
             m_Caster = caster;
             m_Creature = creature;
-            Priority = TimerPriority.OneSecond;
         }
 
         protected override void OnTick()

@@ -102,13 +102,13 @@ namespace Server.Network
 
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryReadInt16BigEndian(_first.Slice(Position), out value))
+                if (!BinaryPrimitives.TryReadInt16BigEndian(_first[Position..], out value))
                 {
                     // Not enough space. Split the spans
                     return (short)((ReadByte() >> 8) | ReadByte());
                 }
             }
-            else if (!BinaryPrimitives.TryReadInt16BigEndian(_second.Slice(Position - _first.Length), out value))
+            else if (!BinaryPrimitives.TryReadInt16BigEndian(_second[(Position - _first.Length)..], out value))
             {
                 throw new OutOfMemoryException();
             }
@@ -124,13 +124,13 @@ namespace Server.Network
 
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryReadUInt16BigEndian(_first.Slice(Position), out value))
+                if (!BinaryPrimitives.TryReadUInt16BigEndian(_first[Position..], out value))
                 {
                     // Not enough space. Split the spans
                     return (ushort)((ReadByte() >> 8) | ReadByte());
                 }
             }
-            else if (!BinaryPrimitives.TryReadUInt16BigEndian(_second.Slice(Position - _first.Length), out value))
+            else if (!BinaryPrimitives.TryReadUInt16BigEndian(_second[(Position - _first.Length)..], out value))
             {
                 throw new OutOfMemoryException();
             }
@@ -146,13 +146,13 @@ namespace Server.Network
 
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryReadInt32BigEndian(_first.Slice(Position), out value))
+                if (!BinaryPrimitives.TryReadInt32BigEndian(_first[Position..], out value))
                 {
                     // Not enough space. Split the spans
                     return (ReadByte() >> 24) | (ReadByte() >> 16) | (ReadByte() >> 8) | ReadByte();
                 }
             }
-            else if (!BinaryPrimitives.TryReadInt32BigEndian(_second.Slice(Position - _first.Length), out value))
+            else if (!BinaryPrimitives.TryReadInt32BigEndian(_second[(Position - _first.Length)..], out value))
             {
                 throw new OutOfMemoryException();
             }
@@ -168,13 +168,13 @@ namespace Server.Network
 
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryReadUInt32BigEndian(_first.Slice(Position), out value))
+                if (!BinaryPrimitives.TryReadUInt32BigEndian(_first[Position..], out value))
                 {
                     // Not enough space. Split the spans
                     return (uint)((ReadByte() >> 24) | (ReadByte() >> 16) | (ReadByte() >> 8) | ReadByte());
                 }
             }
-            else if (!BinaryPrimitives.TryReadUInt32BigEndian(_second.Slice(Position - _first.Length), out value))
+            else if (!BinaryPrimitives.TryReadUInt32BigEndian(_second[(Position - _first.Length)..], out value))
             {
                 throw new OutOfMemoryException();
             }
@@ -190,7 +190,7 @@ namespace Server.Network
 
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryReadInt64BigEndian(_first.Slice(Position), out value))
+                if (!BinaryPrimitives.TryReadInt64BigEndian(_first[Position..], out value))
                 {
                     // Not enough space. Split the spans
                     return ((long)ReadByte() >> 56) |
@@ -203,7 +203,7 @@ namespace Server.Network
                            ReadByte();
                 }
             }
-            else if (!BinaryPrimitives.TryReadInt64BigEndian(_second.Slice(Position - _first.Length), out value))
+            else if (!BinaryPrimitives.TryReadInt64BigEndian(_second[(Position - _first.Length)..], out value))
             {
                 throw new OutOfMemoryException();
             }
@@ -219,7 +219,7 @@ namespace Server.Network
 
             if (Position < _first.Length)
             {
-                if (!BinaryPrimitives.TryReadUInt64BigEndian(_first.Slice(Position), out value))
+                if (!BinaryPrimitives.TryReadUInt64BigEndian(_first[Position..], out value))
                 {
                     // Not enough space. Split the spans
                     return ((ulong)ReadByte() >> 56) |
@@ -232,7 +232,7 @@ namespace Server.Network
                            ReadByte();
                 }
             }
-            else if (!BinaryPrimitives.TryReadUInt64BigEndian(_second.Slice(Position - _first.Length), out value))
+            else if (!BinaryPrimitives.TryReadUInt64BigEndian(_second[(Position - _first.Length)..], out value))
             {
                 throw new OutOfMemoryException();
             }
@@ -284,15 +284,15 @@ namespace Server.Network
                     }
                     else
                     {
-                        index = _second.SliceToLength(remaining).IndexOfTerminator(sizeT);
+                        index = _second[..remaining].IndexOfTerminator(sizeT);
 
                         int secondLength = index < 0 ? remaining : index;
                         int length = firstLength + secondLength;
 
                         // Assume no strings should be too long for the stack
                         Span<byte> bytes = stackalloc byte[length];
-                        _first.Slice(Position).CopyTo(bytes);
-                        _second.SliceToLength(secondLength).CopyTo(bytes.Slice(firstLength));
+                        _first[Position..].CopyTo(bytes);
+                        _second[..secondLength].CopyTo(bytes[firstLength..]);
 
                         Position += length + (index >= 0 ? sizeT : 0);
                         return TextEncoding.GetString(bytes, encoding, safeString);
@@ -309,7 +309,7 @@ namespace Server.Network
 
                 if (index >= 0)
                 {
-                    span = span.SliceToLength(index);
+                    span = span[..index];
                 }
                 else
                 {
@@ -388,7 +388,7 @@ namespace Server.Network
                 return false;
             }
 
-            return _second.Length <= 0 || _second.TryCopyTo(bytes.Slice(_first.Length));
+            return _second.Length <= 0 || _second.TryCopyTo(bytes[_first.Length..]);
         }
     }
 }

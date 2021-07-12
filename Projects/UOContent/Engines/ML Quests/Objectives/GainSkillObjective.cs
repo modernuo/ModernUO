@@ -71,11 +71,7 @@ namespace Server.Engines.MLQuests.Objectives
         public override void WriteToGump(Gump g, ref int y)
         {
             var skillLabel = AosSkillBonuses.GetLabel(Skill);
-            string args;
-
-            args = ThresholdFixed % 10 == 0
-                ? $"#{skillLabel}\t{ThresholdFixed / 10}"
-                : $"#{skillLabel}\t{(double)ThresholdFixed / 10:0.0}";
+            var args = $"#{skillLabel}\t{ThresholdFixed / 10.0:0.#}";
 
             g.AddHtmlLocalized(98, y, 312, 16, 1077485, args, 0x15F90); // Increase ~1_SKILL~ to ~2_VALUE~
             y += 16;

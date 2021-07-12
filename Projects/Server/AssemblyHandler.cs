@@ -67,7 +67,7 @@ namespace Server
             for (int i = 0; i < types.Length; i++)
             {
                 var m = types[i].GetMethod(method, BindingFlags.Static | BindingFlags.Public);
-                if (m != null)
+                if (m?.GetParameters().Length == 0)
                 {
                     list.Add(m);
                 }
@@ -90,124 +90,30 @@ namespace Server
             return m_TypeCaches[asm] = new TypeCache(asm);
         }
 
-        public static Type FindTypeByFullName(string name, bool ignoreCase = true)
+        public static Type FindTypeByFullName(string name, bool ignoreCase = true) =>
+            FindTypeByName(name, true, ignoreCase);
+
+        public static Type FindTypeByName(string name, bool fullName = false, bool ignoreCase = true)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 return null;
             }
 
-            if (ignoreCase)
-            {
-                name = name.ToLower();
-            }
-
             for (var i = 0; i < Assemblies.Length; i++)
             {
-                foreach (var type in GetTypeCache(Assemblies[i]).GetTypesByName(name, ignoreCase))
-                {
-                    if (type.FullName.EqualsOrdinal(name))
-                    {
-                        return type;
-                    }
-                }
-            }
-
-            foreach(var type in GetTypeCache(Core.Assembly).GetTypesByName(name, ignoreCase))
-            {
-                if (type.FullName.EqualsOrdinal(name))
+                foreach (var type in GetTypeCache(Assemblies[i]).GetTypesByName(name, fullName, ignoreCase))
                 {
                     return type;
                 }
             }
 
-            return null;
-        }
-
-        public static Type FindTypeByName(string name, bool ignoreCase = true)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return null;
-            }
-
-            if (ignoreCase)
-            {
-                name = name.ToLower();
-            }
-
-            for (var i = 0; i < Assemblies.Length; i++)
-            {
-                foreach (var type in GetTypeCache(Assemblies[i]).GetTypesByName(name, ignoreCase))
-                {
-                    return type;
-                }
-            }
-
-            foreach(var type in GetTypeCache(Core.Assembly).GetTypesByName(name, ignoreCase))
+            foreach(var type in GetTypeCache(Core.Assembly).GetTypesByName(name, fullName, ignoreCase))
             {
                 return type;
             }
 
             return null;
-        }
-
-        // TODO: Change to IEnumerable using another custom enumerator
-        public static List<Type> FindTypesByFullName(string name, bool ignoreCase = true)
-        {
-            var types = new List<Type>();
-
-            if (ignoreCase)
-            {
-                name = name.ToLower();
-            }
-
-            for (var i = 0; i < Assemblies.Length; i++)
-            {
-                foreach (var type in GetTypeCache(Assemblies[i]).GetTypesByName(name, ignoreCase))
-                {
-                    if (type.FullName.EqualsOrdinal(name))
-                    {
-                        types.Add(type);
-                    }
-                }
-            }
-
-            foreach(var type in GetTypeCache(Core.Assembly).GetTypesByName(name, ignoreCase))
-            {
-                if (type.FullName.EqualsOrdinal(name))
-                {
-                    types.Add(type);
-                }
-            }
-
-            return types;
-        }
-
-        // TODO: Change to IEnumerable using another custom enumerator
-        public static List<Type> FindTypesByName(string name, bool ignoreCase = true)
-        {
-            var types = new List<Type>();
-
-            if (ignoreCase)
-            {
-                name = name.ToLower();
-            }
-
-            for (var i = 0; i < Assemblies.Length; i++)
-            {
-                foreach (var type in GetTypeCache(Assemblies[i]).GetTypesByName(name, ignoreCase))
-                {
-                    types.Add(type);
-                }
-            }
-
-            foreach(var type in GetTypeCache(Core.Assembly).GetTypesByName(name, ignoreCase))
-            {
-                types.Add(type);
-            }
-
-            return types;
         }
 
         public static string EnsureDirectory(string dir)
@@ -223,6 +129,8 @@ namespace Server
     {
         private readonly Dictionary<string, int[]> _nameMap = new();
         private readonly Dictionary<string, int[]> _nameMapInsensitive = new();
+        private readonly Dictionary<string, int[]> _fullNameMap = new();
+        private readonly Dictionary<string, int[]> _fullNameMapInsensitive = new();
 
         public TypeCache(Assembly asm)
         {
@@ -230,43 +138,29 @@ namespace Server
 
             var nameMap = new Dictionary<string, HashSet<int>>();
             var nameMapInsensitive = new Dictionary<string, HashSet<int>>();
+            var fullNameMap = new Dictionary<string, HashSet<int>>();
+            var fullNameMapInsensitive = new Dictionary<string, HashSet<int>>();
 
-            void addToRefs(int index, string key, Dictionary<string, HashSet<int>> map)
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            void addTypeToRefs(int index, string fullTypeName)
             {
-                if (key == null)
-                {
-                    return;
-                }
-
-                if (map.TryGetValue(key, out var refs))
-                {
-                    refs.Add(index);
-                }
-                else
-                {
-                    refs = new HashSet<int> { index };
-                    map.Add(key, refs);
-                }
+                var typeName = fullTypeName[(fullTypeName.LastIndexOf('.') + 1)..];
+                AddToRefs(index, typeName, nameMap);
+                AddToRefs(index, typeName.ToLower(), nameMapInsensitive);
+                AddToRefs(index, fullTypeName, fullNameMap);
+                AddToRefs(index, fullTypeName.ToLower(), fullNameMapInsensitive);
             }
 
             var aliasType = typeof(TypeAliasAttribute);
             for (var i = 0; i < Types.Length; i++)
             {
                 var current = Types[i];
-                addToRefs(i, current.Name, nameMap);
-                addToRefs(i, current.Name.ToLower(), nameMapInsensitive);
-                addToRefs(i, current.FullName, nameMap);
-                addToRefs(i, current.FullName?.ToLower(), nameMapInsensitive);
+                addTypeToRefs(i, current.FullName);
                 if (current.GetCustomAttribute(aliasType, false) is TypeAliasAttribute alias)
                 {
                     for (var j = 0; j < alias.Aliases.Length; j++)
                     {
-                        var fullName = alias.Aliases[j];
-                        var name = fullName.Substring(fullName.LastIndexOf('.') + 1);
-                        addToRefs(i, fullName, nameMap);
-                        addToRefs(i, fullName.ToLower(), nameMapInsensitive);
-                        addToRefs(i, name, nameMap);
-                        addToRefs(i, name.ToLower(), nameMapInsensitive);
+                        addTypeToRefs(i, alias.Aliases[j]);
                     }
                 }
             }
@@ -280,29 +174,60 @@ namespace Server
             {
                 _nameMapInsensitive[key] = value.ToArray();
             }
+
+            foreach (var (key, value) in fullNameMap)
+            {
+                _fullNameMap[key] = value.ToArray();
+            }
+
+            foreach (var (key, value) in fullNameMapInsensitive)
+            {
+                _fullNameMapInsensitive[key] = value.ToArray();
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void AddToRefs(int index, string key, Dictionary<string, HashSet<int>> map)
+        {
+            if (key == null)
+            {
+                return;
+            }
+
+            if (map.TryGetValue(key, out var refs))
+            {
+                refs.Add(index);
+            }
+            else
+            {
+                refs = new HashSet<int> { index };
+                map.Add(key, refs);
+            }
         }
 
         public Type[] Types { get; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TypeEnumerable GetTypesByName(string name, bool ignoreCase) => new(name, this, ignoreCase);
+        public TypeEnumerable GetTypesByName(string name, bool full, bool ignoreCase) => new(name, this, full, ignoreCase);
 
         public ref struct TypeEnumerable
         {
             private readonly TypeCache _cache;
             private readonly string _name;
             private readonly bool _ignoreCase;
+            private readonly bool _full;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public TypeEnumerable(string name, TypeCache cache, bool ignoreCase)
+            public TypeEnumerable(string name, TypeCache cache, bool full, bool ignoreCase)
             {
                 _name = name;
                 _cache = cache;
                 _ignoreCase = ignoreCase;
+                _full = full;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public TypeEnumerator GetEnumerator() => new(_name, _cache, _ignoreCase);
+            public TypeEnumerator GetEnumerator() => new(_name, _cache, _full, _ignoreCase);
         }
 
         public ref struct TypeEnumerator
@@ -313,12 +238,21 @@ namespace Server
             private Type _current;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal TypeEnumerator(string name, TypeCache cache, bool ignoreCase)
+            internal TypeEnumerator(string name, TypeCache cache, bool full, bool ignoreCase)
             {
                 _cache = cache;
 
-                var map = ignoreCase ? _cache._nameMapInsensitive : _cache._nameMap;
-                _values = map.TryGetValue(name, out var values) ? values : Array.Empty<int>();
+                if (ignoreCase)
+                {
+                    var map = full ? _cache._fullNameMapInsensitive : _cache._nameMapInsensitive;
+                    _values = map.TryGetValue(name.ToLower(), out var values) ? values : Array.Empty<int>();
+                }
+                else
+                {
+                    var map = full ? _cache._fullNameMap : _cache._nameMap;
+                    _values = map.TryGetValue(name, out var values) ? values : Array.Empty<int>();
+                }
+
                 _index = 0;
                 _current = default;
             }

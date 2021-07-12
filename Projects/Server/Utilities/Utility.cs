@@ -10,7 +10,6 @@ using System.Text;
 using System.Xml;
 using Microsoft.Toolkit.HighPerformance;
 using Server.Buffers;
-using Server.Network;
 using Server.Random;
 
 namespace Server
@@ -387,7 +386,7 @@ namespace Server
             var sectionStart = 0;
             var hasCompressor = false;
 
-            var num = BinaryPrimitives.ReadUInt16BigEndian(ip.SliceToLength(2));
+            var num = BinaryPrimitives.ReadUInt16BigEndian(ip[..2]);
 
             for (int i = 0; i < end; i++)
             {
@@ -473,10 +472,10 @@ namespace Server
                     // IPv4 matching at the end
                     if (section == 6 && num == 0xFFFF)
                     {
-                        var ipv4 = val.Slice(i + 1);
+                        var ipv4 = val[(i + 1)..];
                         if (ipv4.Contains('.'))
                         {
-                            return IPv4Match(ipv4, ip.Slice(ip.Length - 4), out valid);
+                            return IPv4Match(ipv4, ip[^4..], out valid);
                         }
                     }
 
@@ -504,7 +503,7 @@ namespace Server
 
                     if (i + 1 < end)
                     {
-                        var remainingColons = val.Slice(i + 1).Count(':');
+                        var remainingColons = val[(i + 1)..].Count(':');
                         // double colon must be at least 2 sections
                         // we need at least 1 section remaining out of 8
                         // This means 8 - 2 would be 6 sections (5 colons)
@@ -555,9 +554,9 @@ namespace Server
 
         public static string FixHtml(string str)
         {
-            if (str == null)
+            if (string.IsNullOrEmpty(str))
             {
-                return "";
+                return str;
             }
 
             using var sb = new ValueStringBuilder(str, stackalloc char[Math.Min(40960, str.Length)]);
@@ -972,7 +971,7 @@ namespace Server
 #pragma warning disable CA1806 // Do not ignore method results
             if (value.StartsWithOrdinal("0x"))
             {
-                int.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i);
+                int.TryParse(value[2..], NumberStyles.HexNumber, null, out i);
             }
             else
             {
@@ -990,7 +989,7 @@ namespace Server
 #pragma warning disable CA1806 // Do not ignore method results
             if (value.InsensitiveStartsWith("0x"))
             {
-                uint.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i);
+                uint.TryParse(value[2..], NumberStyles.HexNumber, null, out i);
             }
             else
             {
@@ -1003,12 +1002,12 @@ namespace Server
 
         public static bool ToInt32(ReadOnlySpan<char> value, out int i) =>
             value.InsensitiveStartsWith("0x")
-                ? int.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i)
+                ? int.TryParse(value[2..], NumberStyles.HexNumber, null, out i)
                 : int.TryParse(value, out i);
 
         public static bool ToUInt32(ReadOnlySpan<char> value, out uint i) =>
             value.InsensitiveStartsWith("0x")
-                ? uint.TryParse(value.Slice(2), NumberStyles.HexNumber, null, out i)
+                ? uint.TryParse(value[2..], NumberStyles.HexNumber, null, out i)
                 : uint.TryParse(value, out i);
 
         public static int GetXMLInt32(string intString, int defaultValue)

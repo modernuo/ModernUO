@@ -357,13 +357,13 @@ namespace Server.Items
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosAttributes Attributes { get; private set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosArmorAttributes ArmorAttributes { get; private set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosSkillBonuses SkillBonuses { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
