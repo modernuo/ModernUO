@@ -100,7 +100,6 @@ namespace Server.Items
                     m_From = from;
                     m_Item = item;
                     m_Lockpick = lockpick;
-                    Priority = TimerPriority.TwoFiftyMS;
                 }
 
                 protected void BrokeLockPickTest()

@@ -2057,8 +2057,6 @@ namespace Server.Multis
             public DecayTimer(BaseBoat boat) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(5.0))
             {
                 m_Boat = boat;
-
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()
@@ -2086,7 +2084,6 @@ namespace Server.Multis
             public MoveTimer(BaseBoat boat, TimeSpan interval, bool single) : base(interval, interval, single ? 1 : 0)
             {
                 m_Boat = boat;
-                Priority = TimerPriority.TwentyFiveMS;
             }
 
             protected override void OnTick()

@@ -36,7 +36,6 @@ namespace Server
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(Core));
 
         private static bool _crashed;
-        private static Thread _timerThread;
         private static string _baseDirectory;
 
         private static bool _profiling;
@@ -127,8 +126,8 @@ namespace Server
 
         // For Unix Stopwatch.Frequency is normalized to 1ns
         // We don't anticipate needing this for Windows/OSX
-        private static long _maxTickCountBeforePrecisionLoss = long.MaxValue / 1000L;
-        private static long _ticksPerMillisecond = Stopwatch.Frequency / 1000L;
+        private const long _maxTickCountBeforePrecisionLoss = long.MaxValue / 1000L;
+        private static readonly long _ticksPerMillisecond = Stopwatch.Frequency / 1000L;
 
         public static long TickCount
         {
@@ -145,6 +144,8 @@ namespace Server
                     // No precision loss
                     : 1000L * timestamp / Stopwatch.Frequency;
             }
+            // Setting this to a value lower than the previous is bad. Timers will become delayed
+            // until time catches up.
             set => _tickCount = value;
         }
 
@@ -358,8 +359,6 @@ namespace Server
             {
                 EventSink.InvokeShutdown();
             }
-
-            Timer.TimerThread.Set();
         }
 
         public static void Main(string[] args)
@@ -420,12 +419,6 @@ namespace Server
 
             logger.Information($"Running on {RuntimeInformation.FrameworkDescription}");
 
-            var ttObj = new Timer.TimerThread();
-            _timerThread = new Thread(ttObj.TimerMain)
-            {
-                Name = "Timer Thread"
-            };
-
             var s = Arguments;
 
             if (s.Length > 0)
@@ -474,6 +467,8 @@ namespace Server
 
             VerifySerialization();
 
+            Timer.Initialize(TickCount);
+
             AssemblyHandler.Invoke("Configure");
 
             TileMatrixLoader.LoadTileMatrix();
@@ -482,8 +477,6 @@ namespace Server
             World.Load();
 
             AssemblyHandler.Invoke("Initialize");
-
-            _timerThread.Start();
 
             TcpServer.Start();
             EventSink.InvokeServerStarted();
@@ -504,7 +497,7 @@ namespace Server
 
                     var events = Mobile.ProcessDeltaQueue();
                     events += Item.ProcessDeltaQueue();
-                    events += Timer.Slice();
+                    events += Timer.Slice(_tickCount);
 
                     // Handle networking
                     events += TcpServer.Slice();

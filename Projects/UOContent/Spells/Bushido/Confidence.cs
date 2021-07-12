@@ -97,7 +97,6 @@ namespace Server.Spells.Bushido
             public InternalTimer(Mobile m) : base(TimeSpan.FromSeconds(15.0))
             {
                 m_Mobile = m;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()
@@ -117,7 +116,6 @@ namespace Server.Spells.Bushido
             {
                 m_Mobile = m;
                 m_Hits = 15 + m.Skills.Bushido.Fixed * m.Skills.Bushido.Fixed / 57600;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()

@@ -188,7 +188,7 @@ namespace Server.Engines.Spawners
         [CommandProperty(AccessLevel.Developer)]
         public TimeSpan NextSpawn
         {
-            get => m_Running && m_Timer?.Running == true ? End - Core.Now : TimeSpan.FromSeconds(0);
+            get => m_Running && m_Timer?.Running == true ? End - Core.Now : TimeSpan.Zero;
             set
             {
                 Start();
@@ -1003,12 +1003,7 @@ namespace Server.Engines.Spawners
                         m_HomeRange = reader.ReadInt();
                         m_Running = reader.ReadBool();
 
-                        var ts = TimeSpan.Zero;
-
-                        if (m_Running)
-                        {
-                            ts = reader.ReadDeltaTime() - Core.Now;
-                        }
+                        var ts = m_Running ? reader.ReadDeltaTime() - Core.Now : TimeSpan.Zero;
 
                         if (version < 7)
                         {
@@ -1083,12 +1078,7 @@ namespace Server.Engines.Spawners
         {
             private readonly BaseSpawner m_Spawner;
 
-            public InternalTimer(BaseSpawner spawner, TimeSpan delay) : base(delay)
-            {
-                Priority = spawner.IsFull ? TimerPriority.FiveSeconds : TimerPriority.OneSecond;
-
-                m_Spawner = spawner;
-            }
+            public InternalTimer(BaseSpawner spawner, TimeSpan delay) : base(delay) => m_Spawner = spawner;
 
             protected override void OnTick()
             {

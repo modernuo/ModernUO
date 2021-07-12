@@ -37,8 +37,6 @@ namespace Server
                 : base(TimeSpan.FromMinutes(1.0))
             {
                 m_Mobile = m;
-
-                Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()
@@ -1132,8 +1130,6 @@ namespace Server.Spells
                 {
                     m_Spell.StartDelayedDamageContext(target, this);
                 }
-
-                Priority = TimerPriority.TwentyFiveMS;
             }
 
             protected override void OnTick()
@@ -1182,8 +1178,6 @@ namespace Server.Spells
                 {
                     m_Spell.StartDelayedDamageContext(target, this);
                 }
-
-                Priority = TimerPriority.TwentyFiveMS;
             }
 
             protected override void OnTick()
@@ -1455,8 +1449,6 @@ namespace Server.Spells
         {
             m_Mobile = from;
             m_Spell = spell;
-
-            Priority = TimerPriority.TwoFiftyMS;
         }
 
         protected override void OnTick()

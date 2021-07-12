@@ -1157,16 +1157,6 @@ namespace Server
             {
                 m_Player = value;
                 InvalidateProperties();
-
-                if (!m_Player && m_Dex <= 100 && m_CombatTimer != null)
-                {
-                    m_CombatTimer.Priority = TimerPriority.FiftyMS;
-                }
-                else if (m_CombatTimer != null)
-                {
-                    m_CombatTimer.Priority = TimerPriority.EveryTick;
-                }
-
                 CheckStatTimers();
             }
         }
@@ -6546,15 +6536,6 @@ namespace Server
                             CheckStatTimers();
                         }
 
-                        if (!m_Player && m_Dex <= 100 && m_CombatTimer != null)
-                        {
-                            m_CombatTimer.Priority = TimerPriority.FiftyMS;
-                        }
-                        else if (m_CombatTimer != null)
-                        {
-                            m_CombatTimer.Priority = TimerPriority.EveryTick;
-                        }
-
                         UpdateRegion();
 
                         UpdateResistances();
@@ -9375,7 +9356,6 @@ namespace Server
             public ManaTimer(Mobile m)
                 : base(GetManaRegenRate(m), GetManaRegenRate(m))
             {
-                Priority = TimerPriority.FiftyMS;
                 m_Owner = m;
             }
 
@@ -9397,7 +9377,6 @@ namespace Server
             public HitsTimer(Mobile m)
                 : base(GetHitsRegenRate(m), GetHitsRegenRate(m))
             {
-                Priority = TimerPriority.FiftyMS;
                 m_Owner = m;
             }
 
@@ -9419,7 +9398,6 @@ namespace Server
             public StamTimer(Mobile m)
                 : base(GetStamRegenRate(m), GetStamRegenRate(m))
             {
-                Priority = TimerPriority.FiftyMS;
                 m_Owner = m;
             }
 
@@ -9451,15 +9429,8 @@ namespace Server
         {
             private readonly Mobile m_Mobile;
 
-            public CombatTimer(Mobile m) : base(TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(0.01))
-            {
+            public CombatTimer(Mobile m) : base(TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(0.01)) =>
                 m_Mobile = m;
-
-                if (!m_Mobile.m_Player && m_Mobile.m_Dex <= 100)
-                {
-                    Priority = TimerPriority.FiftyMS;
-                }
-            }
 
             protected override void OnTick()
             {

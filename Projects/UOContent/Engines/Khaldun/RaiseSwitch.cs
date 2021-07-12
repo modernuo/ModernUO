@@ -131,8 +131,6 @@ namespace Server.Items
             public ResetTimer(RaiseSwitch raiseSwitch, TimeSpan delay) : base(delay)
             {
                 m_RaiseSwitch = raiseSwitch;
-
-                Priority = ComputePriority(delay);
             }
 
             protected override void OnTick()

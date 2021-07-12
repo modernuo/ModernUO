@@ -62,7 +62,6 @@ namespace Server.Items
             public AttackTimer(Mobile player) : base(AttackEffectDuration)
             {
                 m_Player = player;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()
@@ -78,7 +77,6 @@ namespace Server.Items
             public DefenseTimer(Mobile player) : base(DefenseEffectDuration)
             {
                 m_Player = player;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()

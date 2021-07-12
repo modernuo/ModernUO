@@ -550,8 +550,6 @@ namespace Server.Items
                 m_Panel = panel;
                 m_To = to;
                 m_Step = 0;
-
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()

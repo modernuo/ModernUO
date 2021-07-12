@@ -110,8 +110,6 @@ namespace Server.Items
 
                 m_DamageRemaining = totalDamage;
                 DamagePerTick = (double)totalDamage / 12 + 0.01;
-
-                Priority = TimerPriority.TwentyFiveMS;
             }
 
             protected override void OnTick()

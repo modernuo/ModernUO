@@ -156,7 +156,6 @@ namespace Server.Items
             public EndActionTimer(Mobile from) : base(TimeSpan.FromMinutes(3.0))
             {
                 m_From = from;
-                Priority = TimerPriority.FiveSeconds;
             }
 
             protected override void OnTick()
@@ -289,8 +288,6 @@ namespace Server.Items
             Location = location;
             Map = map;
             From = from;
-
-            Priority = TimerPriority.TwoFiftyMS;
         }
 
         public Point3D Location { get; }
@@ -806,7 +803,6 @@ namespace Server.Items
             public InternalTimer(GreenThornsSHTeleporter teleporter) : base(TimeSpan.FromMinutes(1.0))
             {
                 m_Teleporter = teleporter;
-                Priority = TimerPriority.FiveSeconds;
             }
 
             protected override void OnTick()

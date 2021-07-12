@@ -57,7 +57,6 @@ namespace Server.Items
             public ShowStew(AddonComponent ac) : base(TimeSpan.FromSeconds(30))
             {
                 stew = ac;
-                Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()
