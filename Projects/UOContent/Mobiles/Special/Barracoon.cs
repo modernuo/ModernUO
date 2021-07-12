@@ -236,8 +236,6 @@ namespace Server.Mobiles
             public ExpirePolymorphTimer(Mobile owner) : base(TimeSpan.FromMinutes(3.0))
             {
                 m_Owner = owner;
-
-                Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()

@@ -95,7 +95,6 @@ namespace Server.Spells.Necromancy
 
             public InternalTimer(Mobile m, double toRestore) : base(TimeSpan.FromSeconds(10.0))
             {
-                Priority = TimerPriority.OneSecond;
 
                 m_Mobile = m;
                 m_ToRestore = (int)toRestore;

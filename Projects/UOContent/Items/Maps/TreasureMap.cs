@@ -791,8 +791,6 @@ namespace Server.Items
                 m_NextSpellTime = from.NextSpellTime;
                 m_NextActionTime = from.NextActionTime;
                 m_LastMoveTime = from.LastMoveTime;
-
-                Priority = TimerPriority.TenMS;
             }
 
             private void Terminate()
@@ -932,8 +930,6 @@ namespace Server.Items
                 {
                     m_From = from;
                     m_SoundID = soundID;
-
-                    Priority = TimerPriority.TenMS;
                 }
 
                 protected override void OnTick()

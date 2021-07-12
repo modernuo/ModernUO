@@ -108,8 +108,6 @@ namespace Server.Mobiles
             public ExpireTimer(VendorInventory inventory, TimeSpan delay) : base(delay)
             {
                 m_Inventory = inventory;
-
-                Priority = TimerPriority.OneMinute;
             }
 
             protected override void OnTick()

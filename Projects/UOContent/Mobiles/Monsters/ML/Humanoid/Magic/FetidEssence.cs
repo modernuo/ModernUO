@@ -79,14 +79,13 @@ namespace Server.Mobiles
           private Mobile m_From;
           private Mobile m_Mobile;
           private int m_Count;
-    
+
           public InternalTimer( Mobile from, Mobile m ) : base( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ) )
           {
             m_From = from;
             m_Mobile = m;
-            Priority = TimerPriority.TwoFiftyMS;
           }
-    
+
         }*/
     }
 }

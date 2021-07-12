@@ -609,7 +609,6 @@ namespace Server.Items
             public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(6.0))
             {
                 m_From = from;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()

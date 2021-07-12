@@ -29,6 +29,9 @@ namespace Server
 
     public partial class Timer
     {
+        private static string FormatDelegate(Delegate callback) =>
+            callback == null ? "null" : $"{callback.Method.DeclaringType?.FullName ?? ""}.{callback.Method.Name}";
+
         public static Timer DelayCall(TimerCallback callback) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
 
         public static Timer DelayCall(TimeSpan delay, TimerCallback callback) =>
@@ -40,8 +43,6 @@ namespace Server
         public static Timer DelayCall(TimeSpan delay, TimeSpan interval, int count, TimerCallback callback)
         {
             Timer t = new DelayCallTimer(delay, interval, count, callback);
-
-            t.Priority = ComputePriority(count == 1 ? delay : interval);
             t.Start();
 
             return t;
@@ -62,9 +63,6 @@ namespace Server
         )
         {
             Timer t = new DelayStateCallTimer<T>(delay, interval, count, callback, state);
-
-            t.Priority = ComputePriority(count == 1 ? delay : interval);
-
             t.Start();
 
             return t;
@@ -87,9 +85,6 @@ namespace Server
         )
         {
             Timer t = new DelayStateCallTimer<T1, T2>(delay, interval, count, callback, t1, t2);
-
-            t.Priority = ComputePriority(count == 1 ? delay : interval);
-
             t.Start();
 
             return t;
@@ -114,9 +109,6 @@ namespace Server
         )
         {
             Timer t = new DelayStateCallTimer<T1, T2, T3>(delay, interval, count, callback, t1, t2, t3);
-
-            t.Priority = ComputePriority(count == 1 ? delay : interval);
-
             t.Start();
 
             return t;
@@ -144,9 +136,6 @@ namespace Server
         )
         {
             Timer t = new DelayStateCallTimer<T1, T2, T3, T4>(delay, interval, count, callback, t1, t2, t3, t4);
-
-            t.Priority = ComputePriority(count == 1 ? delay : interval);
-
             t.Start();
 
             return t;
@@ -161,12 +150,9 @@ namespace Server
             )
             {
                 Callback = callback;
-                RegCreation();
             }
 
             public TimerCallback Callback { get; }
-
-            public override bool DefRegCreation => false;
 
             protected override void OnTick()
             {
@@ -185,13 +171,9 @@ namespace Server
             {
                 Callback = callback;
                 m_State = state;
-
-                RegCreation();
             }
 
             public TimerStateCallback<T> Callback { get; }
-
-            public override bool DefRegCreation => false;
 
             protected override void OnTick()
             {
@@ -214,13 +196,9 @@ namespace Server
                 Callback = callback;
                 m_T1 = t1;
                 m_T2 = t2;
-
-                RegCreation();
             }
 
             public TimerStateCallback<T1, T2> Callback { get; }
-
-            public override bool DefRegCreation => false;
 
             protected override void OnTick()
             {
@@ -245,13 +223,9 @@ namespace Server
                 m_T1 = t1;
                 m_T2 = t2;
                 m_T3 = t3;
-
-                RegCreation();
             }
 
             public TimerStateCallback<T1, T2, T3> Callback { get; }
-
-            public override bool DefRegCreation => false;
 
             protected override void OnTick()
             {
@@ -278,13 +252,9 @@ namespace Server
                 m_T2 = t2;
                 m_T3 = t3;
                 m_T4 = t4;
-
-                RegCreation();
             }
 
             public TimerStateCallback<T1, T2, T3, T4> Callback { get; }
-
-            public override bool DefRegCreation => false;
 
             protected override void OnTick()
             {

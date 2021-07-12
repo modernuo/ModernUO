@@ -262,23 +262,6 @@ namespace Server.Targeting
             {
                 m_Target = target;
                 m_Mobile = m;
-
-                if (delay >= ThirtySeconds)
-                {
-                    Priority = TimerPriority.FiveSeconds;
-                }
-                else if (delay >= TenSeconds)
-                {
-                    Priority = TimerPriority.OneSecond;
-                }
-                else if (delay >= OneSecond)
-                {
-                    Priority = TimerPriority.TwoFiftyMS;
-                }
-                else
-                {
-                    Priority = TimerPriority.TwentyFiveMS;
-                }
             }
 
             protected override void OnTick()

@@ -271,7 +271,6 @@ namespace Server.Menus.Questions
                 TimeSpan.FromSeconds(1.0)
             )
             {
-                Priority = TimerPriority.TwoFiftyMS;
 
                 m_Mobile = mobile;
                 m_Destination = destination;

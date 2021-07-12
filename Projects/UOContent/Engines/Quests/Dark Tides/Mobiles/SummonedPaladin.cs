@@ -172,7 +172,6 @@ namespace Server.Engines.Quests.Necro
 
             public SummonTimer(PlayerMobile player) : base(TimeSpan.FromSeconds(4.0))
             {
-                Priority = TimerPriority.FiftyMS;
 
                 m_Player = player;
             }

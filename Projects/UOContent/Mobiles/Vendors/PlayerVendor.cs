@@ -1352,8 +1352,6 @@ namespace Server.Mobiles
             public PayTimer(PlayerVendor vendor, TimeSpan delay) : base(delay, GetInterval())
             {
                 m_Vendor = vendor;
-
-                Priority = TimerPriority.OneMinute;
             }
 
             public static TimeSpan GetInterval()
@@ -1706,8 +1704,6 @@ namespace Server.Mobiles
             public ExpireTimer(PlayerVendorPlaceholder placeholder) : base(TimeSpan.FromMinutes(2.0))
             {
                 m_Placeholder = placeholder;
-
-                Priority = TimerPriority.FiveSeconds;
             }
 
             protected override void OnTick()

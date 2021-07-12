@@ -142,7 +142,6 @@ namespace Server.Items
             public InternalTimer(PickpocketDip dip) : base(TimeSpan.FromSeconds(3.0))
             {
                 m_Dip = dip;
-                Priority = TimerPriority.FiftyMS;
             }
 
             protected override void OnTick()

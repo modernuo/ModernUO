@@ -563,7 +563,6 @@ namespace Server.Items
 
             public InternalTimer(BaseDoor door) : base(TimeSpan.FromSeconds(20.0), TimeSpan.FromSeconds(10.0))
             {
-                Priority = TimerPriority.OneSecond;
                 m_Door = door;
             }
 

@@ -61,7 +61,6 @@ namespace Server.Engines.CannedEvil
 
         public CannedEvilTimer() : base(TimeSpan.Zero, TimeSpan.FromMinutes(1.0))
         {
-            Priority = TimerPriority.OneMinute;
             _sliceTime = Core.Now;
         }
 
