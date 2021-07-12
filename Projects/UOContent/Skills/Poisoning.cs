@@ -117,7 +117,6 @@ namespace Server.SkillHandlers
                         m_Poison = potion.Poison;
                         m_MinSkill = potion.MinPoisoningSkill;
                         m_MaxSkill = potion.MaxPoisoningSkill;
-                        Priority = TimerPriority.TwoFiftyMS;
                     }
 
                     protected override void OnTick()

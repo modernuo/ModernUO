@@ -18,12 +18,15 @@ namespace Server.Tests
             // Configure the world
             World.Configure();
 
+            Timer.Initialize(0);
+
             // Load the world
             World.Load();
         }
 
         public void Dispose()
         {
+            Timer.Initialize(0);
         }
     }
 }

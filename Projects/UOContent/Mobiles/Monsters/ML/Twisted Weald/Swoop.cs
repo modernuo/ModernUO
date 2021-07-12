@@ -47,7 +47,7 @@ namespace Server.Mobiles
         public override void OnDeath( Container c )
         {
           base.OnDeath( c );
-    
+
           if (Utility.RandomDouble() < 0.025)
           {
             switch ( Utility.Random( 18 ) )
@@ -72,7 +72,7 @@ namespace Server.Mobiles
               case 17: c.DropItem( new GreymistGloves() ); break;
             }
           }
-    
+
           if (Utility.RandomDouble() < 0.1)
             c.DropItem( new ParrotItem() );
         }
@@ -153,7 +153,6 @@ namespace Server.Mobiles
             {
                 m_Mobile = m;
                 m_Mod = mod;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             public void DoExpire()

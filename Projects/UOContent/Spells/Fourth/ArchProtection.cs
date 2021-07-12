@@ -125,7 +125,6 @@ namespace Server.Spells.Fourth
                 }
 
                 Delay = TimeSpan.FromSeconds(time);
-                Priority = TimerPriority.OneSecond;
 
                 m_Owner = target;
             }

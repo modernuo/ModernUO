@@ -365,8 +365,6 @@ namespace Server.Mobiles
             public RentalExpireTimer(RentedVendor vendor, TimeSpan delay) : base(delay, vendor.RentalDuration.Duration)
             {
                 m_Vendor = vendor;
-
-                Priority = TimerPriority.OneMinute;
             }
 
             protected override void OnTick()

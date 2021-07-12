@@ -67,7 +67,6 @@ namespace Server.Items
                 : base(TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30))
             {
                 Eater = eater;
-                Priority = TimerPriority.FiveSeconds;
                 Start();
             }
 

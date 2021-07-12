@@ -346,7 +346,6 @@ namespace Server.Items
             public CloseTimer(Plank plank) : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0))
             {
                 m_Plank = plank;
-                Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()

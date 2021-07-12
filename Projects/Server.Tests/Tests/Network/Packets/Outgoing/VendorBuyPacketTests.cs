@@ -6,6 +6,7 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
+    [Collection("Sequential Tests")]
     public class VendorBuyPacketTests : IClassFixture<ServerFixture>
     {
         [Theory]

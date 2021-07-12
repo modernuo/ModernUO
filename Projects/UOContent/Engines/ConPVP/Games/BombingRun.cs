@@ -798,7 +798,6 @@ namespace Server.Engines.ConPVP
             {
                 m_Bomb = bomb;
                 m_Count = 0;
-                Priority = TimerPriority.FiftyMS;
             }
 
             protected override void OnTick()
