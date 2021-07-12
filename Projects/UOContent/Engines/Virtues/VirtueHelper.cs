@@ -61,7 +61,8 @@ namespace Server
                 VirtueName.Valor        => "Valor",
                 VirtueName.Honor        => "Honor",
                 VirtueName.Justice      => "Justice",
-                VirtueName.Honesty      => "Honesty"
+                VirtueName.Honesty      => "Honesty",
+                _                       => ""
             };
 
         public static int GetMaxAmount(VirtueName virtue) =>
