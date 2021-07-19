@@ -876,7 +876,7 @@ namespace Server.Engines.Craft
         }
 
         public bool CheckSkills(
-            Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality, ref bool allRequiredSkills
+            Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality, out bool allRequiredSkills
         ) =>
             CheckSkills(from, typeRes, craftSystem, ref quality, out allRequiredSkills, true);
 
@@ -1132,9 +1132,7 @@ namespace Server.Engines.Craft
             var ignored = 1;
             var endquality = 1;
 
-            var allRequiredSkills = true;
-
-            if (CheckSkills(from, typeRes, craftSystem, ref ignored, ref allRequiredSkills))
+            if (CheckSkills(from, typeRes, craftSystem, ref ignored, out var allRequiredSkills))
             {
                 // Resource
                 var resHue = 0;

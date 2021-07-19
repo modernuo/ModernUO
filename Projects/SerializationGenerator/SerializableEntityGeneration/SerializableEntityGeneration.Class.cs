@@ -117,6 +117,7 @@ namespace SerializationGenerator
 
             StringBuilder source = new StringBuilder();
 
+            source.AppendLine("// ReSharper disable all\n");
             source.GenerateNamespaceStart(namespaceName);
 
             source.GenerateClassStart(

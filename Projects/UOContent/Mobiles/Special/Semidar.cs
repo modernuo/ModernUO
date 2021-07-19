@@ -71,10 +71,7 @@ namespace Server.Mobiles
 
         public override void CheckReflect(Mobile caster, ref bool reflect)
         {
-            if (caster.Body.IsMale)
-            {
-                reflect = true; // Always reflect if caster isn't female
-            }
+            reflect = reflect || caster.Body.IsMale;
         }
 
         public override void AlterDamageScalarFrom(Mobile caster, ref double scalar)

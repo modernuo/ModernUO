@@ -331,7 +331,7 @@ namespace Server.Gumps
         public ItemTileButtonInfo(Item i) : base(
             i.ItemID,
             i.Hue,
-            i.Name == null || i.Name.Length <= 0 ? (TextDefinition)i.LabelNumber : (TextDefinition)i.Name
+            i.Name == null || i.Name.Length <= 0 ? i.LabelNumber : i.Name
         ) =>
             Item = i;
 

@@ -114,7 +114,7 @@ namespace Server.Spells
 
             var t = m_Types[spellID];
 
-            if (t == null || !t.IsSubclassOf(typeof(SpecialMove)))
+            if (t?.IsSubclassOf(typeof(SpecialMove)) != true)
             {
                 return null;
             }

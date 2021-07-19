@@ -30,7 +30,7 @@ namespace Server.Factions
         {
             base.InitOutfit();
 
-            AddItem(Utility.RandomBool() ? new QuarterStaff() : (Item)new ShepherdsCrook());
+            AddItem(Utility.RandomBool() ? new QuarterStaff() : new ShepherdsCrook());
         }
 
         public override void VendorBuy(Mobile from)

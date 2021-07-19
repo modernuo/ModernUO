@@ -168,8 +168,6 @@ namespace Server.Engines.Harvest
             return type;
         }
 
-        private static Map SafeMap(Map map) => map == null || map == Map.Internal ? Map.Trammel : map;
-
         public override bool CheckResources(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc, bool timed)
         {
             return from?.Backpack?.FindItemsByType<SOS>()
