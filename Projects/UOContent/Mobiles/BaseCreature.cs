@@ -1511,7 +1511,6 @@ namespace Server.Mobiles
 
         public virtual void CheckReflect(Mobile caster, ref bool reflect)
         {
-            reflect = false;
         }
 
         public virtual void OnCarve(Mobile from, Corpse corpse, Item with)
