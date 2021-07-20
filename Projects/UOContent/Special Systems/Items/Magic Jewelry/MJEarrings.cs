@@ -305,7 +305,7 @@ namespace Server.Items
             public InternalTimer(Mobile from, TimeSpan duration)
                 : base(duration)
             {
-                Priority = TimerPriority.OneSecond;
+                //Priority = TimerPriority.OneSecond;
                 m_Mobile = from;
             }
 

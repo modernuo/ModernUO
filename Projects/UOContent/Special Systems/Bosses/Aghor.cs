@@ -504,7 +504,7 @@ namespace Server.Mobiles
                 m_Mobile.CantWalk = true;
                 m_Item = new FrozenItem();
                 m_Item.MoveToWorld(m_Mobile.Location, m_Mobile.Map);
-                Priority = TimerPriority.TwoFiftyMS;
+                //Priority = TimerPriority.TwoFiftyMS;
             }
 
             public void DoExpire()

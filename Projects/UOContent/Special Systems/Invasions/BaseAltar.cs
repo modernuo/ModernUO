@@ -348,7 +348,8 @@ namespace Server
                             //Decay Timer
                             if (m_BaseAltar.DecayTimer != null)
                             {
-                                Timer.TimerThread.RemoveTimer(m_BaseAltar.DecayTimer);
+                                //Timer.TimerThread.RemoveTimer(m_BaseAltar.DecayTimer);
+                                m_BaseAltar.DecayTimer.Stop();
                             }
                             m_BaseAltar.DecayTimer = Timer.DelayCall(
                                 TimeSpan.FromSeconds(10),

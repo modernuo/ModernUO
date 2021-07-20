@@ -437,7 +437,7 @@ namespace Server.Mobiles
                 m_Boat = boat;
                 m_mobile = m;
 
-                Priority = TimerPriority.TwoFiftyMS;
+                //Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()
