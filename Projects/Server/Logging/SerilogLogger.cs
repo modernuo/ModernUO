@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server.Logging
 {
@@ -24,33 +25,43 @@ namespace Server.Logging
         public SerilogLogger(Serilog.ILogger serilogLogger) =>
             this.serilogLogger = serilogLogger;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Debug(string message, params object[] args) =>
             serilogLogger.Debug(message, args);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Debug(Exception exception, string message, params object[] args) =>
             serilogLogger.Debug(exception, message, args);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Information(string message, params object[] args) =>
             serilogLogger.Information(message, args);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Information(Exception exception, string message, params object[] args) =>
             serilogLogger.Information(exception, message, args);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Warning(string message, params object[] args) =>
             serilogLogger.Warning(message, args);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Warning(Exception exception, string message, params object[] args) =>
             serilogLogger.Information(exception, message, args);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Error(string message, params object[] args) =>
             serilogLogger.Error(message, args);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Error(Exception exception, string message, params object[] args) =>
             serilogLogger.Error(exception, message, args);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Fatal(string message, params object[] args) =>
             serilogLogger.Fatal(message, args);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Fatal(Exception exception, string message, params object[] args) =>
             serilogLogger.Fatal(exception, message, args);
     }

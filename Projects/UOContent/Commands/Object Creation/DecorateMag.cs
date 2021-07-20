@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Server.Engines.Quests.Haven;
@@ -73,7 +72,7 @@ namespace Server.Commands
         private static readonly Type typeofCannon = typeof(Cannon);
         private static readonly Type typeofSerpentPillar = typeof(SerpentPillar);
 
-        private static readonly Queue m_DeleteQueue = new();
+        private static readonly Queue<Item> m_DeleteQueue = new();
 
         private static readonly string[] m_EmptyParams = Array.Empty<string>();
         private List<DecorationEntryMag> m_Entries;
@@ -1143,7 +1142,7 @@ namespace Server.Commands
 
             while (m_DeleteQueue.Count > 0)
             {
-                ((Item)m_DeleteQueue.Dequeue())?.Delete();
+                m_DeleteQueue.Dequeue()?.Delete();
             }
 
             return res;

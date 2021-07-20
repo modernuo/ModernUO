@@ -20,7 +20,7 @@ namespace Server
 
         public static void CheckAtrophy(Mobile from)
         {
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return;
             }

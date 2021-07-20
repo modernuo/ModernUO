@@ -1924,24 +1924,7 @@ namespace Server.Engines.ConPVP
             var rx = dx - dy;
             var ry = dx + dy;
 
-            bool eastToWest;
-
-            if (rx >= 0 && ry >= 0)
-            {
-                eastToWest = false;
-            }
-            else if (rx >= 0)
-            {
-                eastToWest = true;
-            }
-            else if (ry >= 0)
-            {
-                eastToWest = true;
-            }
-            else
-            {
-                eastToWest = false;
-            }
+            bool eastToWest = rx == 0 && ry >= 0 || rx >= 0 && ry == 0;
 
             Effects.PlaySound(wall, Arena.Facet, 0x1F6);
 

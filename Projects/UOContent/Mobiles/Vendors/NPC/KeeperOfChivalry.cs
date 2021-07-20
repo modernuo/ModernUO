@@ -58,7 +58,7 @@ namespace Server.Mobiles
 
             AddItem(new MetalKiteShield { Hue = Utility.RandomNondyedHue() });
 
-            AddItem(Utility.RandomBool() ? (Item)new Boots() : new ThighBoots());
+            AddItem(Utility.RandomBool() ? new Boots() : new ThighBoots());
 
             PackGold(100, 200);
         }

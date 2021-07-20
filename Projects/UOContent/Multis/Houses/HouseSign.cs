@@ -90,7 +90,7 @@ namespace Server.Multis
 
         public override void OnSingleClick(Mobile from)
         {
-            if (Owner != null && BaseHouse.DecayEnabled && Owner.DecayPeriod != TimeSpan.Zero)
+            if (BaseHouse.DecayEnabled && Owner != null && Owner.DecayPeriod != TimeSpan.Zero)
             {
                 var message = Owner.DecayLevel switch
                 {

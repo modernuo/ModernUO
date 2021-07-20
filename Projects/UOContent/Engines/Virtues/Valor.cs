@@ -26,7 +26,7 @@ namespace Server
 
         public static void CheckAtrophy(Mobile from)
         {
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return;
             }
@@ -51,7 +51,7 @@ namespace Server
 
         public static void Valor(Mobile from, object targ)
         {
-            if (!(targ is IdolOfTheChampion idol) || idol.Deleted || idol.Spawn?.Deleted != false)
+            if (targ is not IdolOfTheChampion idol || idol.Deleted || idol.Spawn?.Deleted != false)
             {
                 from.SendLocalizedMessage(1054035); // You must target a Champion Idol to challenge the Champion's spawn!
             }
@@ -103,17 +103,15 @@ namespace Server
                     if (from.Virtues.GetValue((int)VirtueName.Valor) >= needed)
                     {
                         VirtueHelper.Atrophy(from, VirtueName.Valor, consumed);
-                        from.SendLocalizedMessage(
-                            1054037
-                        ); // Your challenge is heard by the Champion of this region! Beware its wrath!
+                        // Your challenge is heard by the Champion of this region! Beware its wrath!
+                        from.SendLocalizedMessage(1054037);
                         idol.Spawn.HasBeenAdvanced = true;
                         idol.Spawn.AdvanceLevel();
                     }
                     else
                     {
-                        from.SendLocalizedMessage(
-                            1054039
-                        ); // The Champion of this region ignores your challenge. You must further prove your valor.
+                        // The Champion of this region ignores your challenge. You must further prove your valor.
+                        from.SendLocalizedMessage(1054039);
                     }
                 }
                 else
@@ -121,17 +119,15 @@ namespace Server
                     if (vl == VirtueLevel.Knight)
                     {
                         VirtueHelper.Atrophy(from, VirtueName.Valor, 11000);
-                        from.SendLocalizedMessage(
-                            1054037
-                        ); // Your challenge is heard by the Champion of this region! Beware its wrath!
+                        // Your challenge is heard by the Champion of this region! Beware its wrath!
+                        from.SendLocalizedMessage(1054037);
                         idol.Spawn.EndRestart();
                         idol.Spawn.HasBeenAdvanced = true;
                     }
                     else
                     {
-                        from.SendLocalizedMessage(
-                            1054036
-                        ); // You must be a Knight of Valor to summon the champion's spawn in this manner!
+                        // You must be a Knight of Valor to summon the champion's spawn in this manner!
+                        from.SendLocalizedMessage(1054036);
                     }
                 }
             }

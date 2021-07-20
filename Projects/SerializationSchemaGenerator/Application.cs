@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Immutable;
 using System.IO;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using SerializationGenerator;

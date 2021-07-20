@@ -550,7 +550,7 @@ namespace Server.Items
                 Effects.PlaySound(from.Location, from.Map, 0x243);
 
                 Effects.SendMovingParticles(
-                    new Entity(Server.Serial.Zero, new Point3D(from.X - 6, from.Y - 6, from.Z + 15), from.Map),
+                    new Entity(Serial.Zero, new Point3D(from.X - 6, from.Y - 6, from.Z + 15), from.Map),
                     from,
                     0x36D4,
                     7,
@@ -797,7 +797,7 @@ namespace Server.Items
                 Effects.PlaySound(from.Location, from.Map, 0x243);
 
                 Effects.SendMovingParticles(
-                    new Entity(Server.Serial.Zero, new Point3D(from.X - 6, from.Y - 6, from.Z + 15), from.Map),
+                    new Entity(Serial.Zero, new Point3D(from.X - 6, from.Y - 6, from.Z + 15), from.Map),
                     from,
                     0x36D4,
                     7,

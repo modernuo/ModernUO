@@ -435,14 +435,11 @@ namespace Server
 
         public int GetAverageZ(int x, int y)
         {
-            int z = 0, avg = 0, top = 0;
-
-            GetAverageZ(x, y, ref z, ref avg, ref top);
-
+            GetAverageZ(x, y, out _, out var avg, out _);
             return avg;
         }
 
-        public void GetAverageZ(int x, int y, ref int z, ref int avg, ref int top)
+        public void GetAverageZ(int x, int y, out int z, out int avg, out int top)
         {
             var zTop = Tiles.GetLandTile(x, y).Z;
             var zLeft = Tiles.GetLandTile(x, y + 1).Z;
@@ -556,8 +553,7 @@ namespace Server
             var landTile = Tiles.GetLandTile(x, y);
             var tiles = Tiles.GetStaticTiles(x, y, true);
 
-            int landZ = 0, landAvg = 0, landTop = 0;
-            GetAverageZ(x, y, ref landZ, ref landAvg, ref landTop);
+            GetAverageZ(x, y, out _, out var landAvg, out _);
 
             var items = AcquireFixItems(this, x, y);
 
@@ -1010,8 +1006,7 @@ namespace Server
             {
                 p = target.Location;
 
-                int low = 0, avg = 0, top = 0;
-                GetAverageZ(p.X, p.Y, ref low, ref avg, ref top);
+                GetAverageZ(p.X, p.Y, out _, out _, out var top);
 
                 p.Z = top + 1;
             }
@@ -1108,9 +1103,7 @@ namespace Server
             var hasSurface = false;
 
             var lt = Tiles.GetLandTile(x, y);
-            int lowZ = 0, avgZ = 0, topZ = 0;
-
-            GetAverageZ(x, y, ref lowZ, ref avgZ, ref topZ);
+            GetAverageZ(x, y, out var lowZ, out var avgZ, out _);
             var landFlags = TileData.LandTable[lt.ID & TileData.MaxLandValue].Flags;
 
             if ((landFlags & TileFlag.Impassable) != 0 && avgZ > z && z + height > lowZ)
@@ -1327,8 +1320,7 @@ namespace Server
                 var pointTop = point.m_Z + 1;
 
                 var landTile = Tiles.GetLandTile(point.X, point.Y);
-                int landZ = 0, landAvg = 0, landTop = 0;
-                GetAverageZ(point.m_X, point.m_Y, ref landZ, ref landAvg, ref landTop);
+                GetAverageZ(point.m_X, point.m_Y, out var landZ, out _, out var landTop);
 
                 if (landZ <= pointTop && landTop >= point.m_Z &&
                     (point.m_X != end.m_X || point.m_Y != end.m_Y || landZ > endTop || landTop < end.m_Z) &&
