@@ -40,24 +40,7 @@ namespace Server.Spells.Third
                 var rx = (dx - dy) * 44;
                 var ry = (dx + dy) * 44;
 
-                bool eastToWest;
-
-                if (rx >= 0 && ry >= 0)
-                {
-                    eastToWest = false;
-                }
-                else if (rx >= 0)
-                {
-                    eastToWest = true;
-                }
-                else if (ry >= 0)
-                {
-                    eastToWest = true;
-                }
-                else
-                {
-                    eastToWest = false;
-                }
+                bool eastToWest = rx == 0 && ry >= 0 || rx >= 0 && ry == 0;
 
                 Effects.PlaySound(new Point3D(p), Caster.Map, 0x1F6);
 

@@ -6,7 +6,6 @@ using System.Threading;
 using Server.Accounting;
 using Server.Buffers;
 using Server.Commands;
-using Server.Items;
 using Server.Misc;
 using Server.Multis;
 using Server.Network;

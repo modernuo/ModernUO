@@ -6,8 +6,6 @@
         <Product>ModernUO Content</Product>
         <PublishDir>..\..\Distribution\Assemblies</PublishDir>
         <OutDir>..\..\Distribution\Assemblies</OutDir>
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Deleting source generated files..." />
@@ -50,17 +48,21 @@
             <PrivateAssets>all</PrivateAssets>
         </ProjectReference>
     </ItemGroup>
-    <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile">
+    <ItemGroup>
+        <AdditionalFiles Include="Migrations/*.v*.json" />
+    </ItemGroup>
+    <PropertyGroup Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+    <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile" Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
         <ItemGroup>
             <Compile Remove="Generated\**" />
         </ItemGroup>
     </Target>
-    <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile">
+    <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile" Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
         <ItemGroup>
             <Compile Include="Generated\**" />
         </ItemGroup>
     </Target>
-    <ItemGroup>
-        <AdditionalFiles Include="Migrations/*.v*.json" />
-    </ItemGroup>
 </Project>

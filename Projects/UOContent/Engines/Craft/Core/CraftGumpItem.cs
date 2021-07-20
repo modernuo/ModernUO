@@ -143,9 +143,9 @@ namespace Server.Engines.Craft
         {
             return expansion switch
             {
-                Expansion.SE => (TextDefinition)1063363, // * Requires the "Samurai Empire" expansion
-                Expansion.ML => (TextDefinition)1072651, // * Requires the "Mondain's Legacy" expansion
-                _            => (TextDefinition)$"* Requires the \"{ExpansionInfo.GetInfo(expansion).Name}\" expansion"
+                Expansion.SE => 1063363, // * Requires the "Samurai Empire" expansion
+                Expansion.ML => 1072651, // * Requires the "Mondain's Legacy" expansion
+                _            => $"* Requires the \"{ExpansionInfo.GetInfo(expansion).Name}\" expansion"
             };
         }
 

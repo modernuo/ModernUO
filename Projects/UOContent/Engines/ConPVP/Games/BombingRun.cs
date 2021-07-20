@@ -456,8 +456,7 @@ namespace Server.Engines.ConPVP
                     var point = m_Path[i];
 
                     var landTile = Map.Tiles.GetLandTile(point.X, point.Y);
-                    int landZ = 0, landAvg = 0, landTop = 0;
-                    Map.GetAverageZ(point.X, point.Y, ref landZ, ref landAvg, ref landTop);
+                    Map.GetAverageZ(point.X, point.Y, out var landZ, out _, out var landTop);
 
                     if (landZ <= point.Z && landTop >= point.Z && !landTile.Ignored)
                     {

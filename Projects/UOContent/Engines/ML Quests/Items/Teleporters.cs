@@ -87,7 +87,7 @@ namespace Server.Engines.MLQuests.Items
 
             writer.Write(0); // version
 
-            writer.Write(m_QuestType != null ? m_QuestType.FullName : null);
+            writer.Write(m_QuestType?.FullName);
             TextDefinition.Serialize(writer, Message);
         }
 

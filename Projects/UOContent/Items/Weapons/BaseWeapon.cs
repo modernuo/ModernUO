@@ -1847,24 +1847,24 @@ namespace Server.Items
             }
 
             AddBlood(attacker, defender, damage);
+            int phys, fire, cold, pois, nrgy, chaos, direct;
 
-            GetDamageTypes(
-                attacker,
-                out var phys,
-                out var fire,
-                out var cold,
-                out var pois,
-                out var nrgy,
-                out var chaos,
-                out var direct
-            );
-
-            if (Core.ML && this is BaseRanged)
+            if (Core.ML && this is BaseRanged && attacker.FindItemOnLayer(Layer.Cloak) is BaseQuiver quiver)
             {
-                if (attacker.FindItemOnLayer(Layer.Cloak) is BaseQuiver quiver)
-                {
-                    quiver.AlterBowDamage(ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct);
-                }
+                quiver.AlterBowDamage(out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct);
+            }
+            else
+            {
+                GetDamageTypes(
+                    attacker,
+                    out phys,
+                    out fire,
+                    out cold,
+                    out pois,
+                    out nrgy,
+                    out chaos,
+                    out direct
+                );
             }
 
             if (Consecrated)
@@ -1930,8 +1930,6 @@ namespace Server.Items
                 ImmolatingWeaponSpell.DoEffect(this, defender);
             }
 
-            var damageGiven = damage;
-
             if (a?.OnBeforeDamage(attacker, defender) == false)
             {
                 WeaponAbility.ClearCurrentAbility(attacker);
@@ -1946,7 +1944,7 @@ namespace Server.Items
 
             var ignoreArmor = a is ArmorIgnore || move?.IgnoreArmor(attacker) == true;
 
-            damageGiven = AOS.Damage(
+            var damageGiven = AOS.Damage(
                 defender,
                 attacker,
                 damage,

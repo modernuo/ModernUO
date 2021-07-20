@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Items;
@@ -212,8 +211,8 @@ namespace Server.Movement
             var tiles = map.Tiles.GetStaticTiles(x, y, true);
             var landTile = map.Tiles.GetLandTile(x, y);
             var landData = TileData.LandTable[landTile.ID & TileData.MaxLandValue];
-            var landBlocks = (landData.Flags & TileFlag.Impassable) != 0;
             var considerLand = !landTile.Ignored;
+            var landBlocks = (landData.Flags & TileFlag.Impassable) != 0;
 
             if (landBlocks && canSwim && (landData.Flags & TileFlag.Wet) != 0)
             {
@@ -224,9 +223,7 @@ namespace Server.Movement
                 landBlocks = true;
             }
 
-            int landZ = 0, landCenter = 0, landTop = 0;
-
-            map.GetAverageZ(x, y, ref landZ, ref landCenter, ref landTop);
+            map.GetAverageZ(x, y, out var landZ, out var landCenter, out _);
 
             var moveIsOk = false;
 
@@ -490,9 +487,7 @@ namespace Server.Movement
                 landBlocks = true;
             }
 
-            int landZ = 0, landCenter = 0, landTop = 0;
-
-            map.GetAverageZ(xCheck, yCheck, ref landZ, ref landCenter, ref landTop);
+            map.GetAverageZ(xCheck, yCheck, out var landZ, out var landCenter, out var landTop);
 
             var considerLand = !landTile.Ignored;
 

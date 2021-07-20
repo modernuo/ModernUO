@@ -53,24 +53,13 @@ namespace SerializationGenerator
             InstanceModifier instance,
             string type,
             string variableName,
-            string value,
-            bool unusedPragma = false
+            string value
         )
         {
-            if (unusedPragma)
-            {
-                source.AppendLine("#pragma warning disable 0414"); // assigned, but never used
-            }
-
             var instanceStr = instance == InstanceModifier.None ? "" : $"{instance.ToFriendlyString()} ";
             var accessorStr = accessors == Accessibility.NotApplicable ? "" : $"{accessors.ToFriendlyString()} ";
             var valueStr = value == null ? "" : $" = {value}";
             source.AppendLine($"        {accessorStr}{instanceStr}{type} {variableName}{valueStr};");
-
-            if (unusedPragma)
-            {
-                source.AppendLine("#pragma warning restore 0414");
-            }
         }
     }
 }

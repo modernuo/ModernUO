@@ -104,7 +104,7 @@ namespace Server.Gumps
                     }
                     else
                     {
-                        Item toGive = null;
+                        Item toGive;
 
                         if (m_House.IsAosRules)
                         {

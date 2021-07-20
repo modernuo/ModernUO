@@ -38,7 +38,7 @@ namespace Server.Mobiles
 
             AddItem(
                 Utility.RandomBool()
-                    ? (Item)new SkullCap(Utility.RandomNeutralHue())
+                    ? new SkullCap(Utility.RandomNeutralHue())
                     : new Bandana(Utility.RandomNeutralHue())
             );
 

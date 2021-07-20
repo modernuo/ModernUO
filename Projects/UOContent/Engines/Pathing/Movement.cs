@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Server.Items;
 using Server.Mobiles;
@@ -429,9 +428,7 @@ namespace Server.Movement
 
             var considerLand = !landTile.Ignored;
 
-            int landZ = 0, landCenter = 0, landTop = 0;
-
-            map.GetAverageZ(x, y, ref landZ, ref landCenter, ref landTop);
+            map.GetAverageZ(x, y, out var landZ, out var landCenter, out _);
 
             var moveIsOk = false;
 
@@ -630,14 +627,13 @@ namespace Server.Movement
             int xCheck = loc.X, yCheck = loc.Y;
 
             var landTile = map.Tiles.GetLandTile(xCheck, yCheck);
-            int landZ = 0, landCenter = 0, landTop = 0;
             var flags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
             var impassable = (flags & TileFlag.Impassable) != 0;
 
             // Impassable + swim on water is ok, otherwise block if cannot walk or impassable
             var landBlocks = (m.CantWalk || impassable) && !(impassable && m.CanSwim && (flags & TileFlag.Wet) != 0);
 
-            map.GetAverageZ(xCheck, yCheck, ref landZ, ref landCenter, ref landTop);
+            map.GetAverageZ(xCheck, yCheck, out var landZ, out var landCenter, out var landTop);
 
             var considerLand = !landTile.Ignored;
 

@@ -24,7 +24,7 @@ namespace Server.Mobiles
                 Body = 0x191;
                 Name = NameList.RandomName("female");
 
-                AddItem(Utility.RandomBool() ? (Item)new LeatherSkirt() : new LeatherShorts());
+                AddItem(Utility.RandomBool() ? new LeatherSkirt() : new LeatherShorts());
 
                 AddItem(
                     Utility.Random(5) switch

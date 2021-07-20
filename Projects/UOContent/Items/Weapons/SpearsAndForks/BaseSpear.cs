@@ -42,10 +42,10 @@ namespace Server.Items
                 attacker.Skills.Anatomy.Value / 400.0 >= Utility.RandomDouble() &&
                 DuelContext.AllowSpecialAbility(attacker, "Paralyzing Blow", false))
             {
-                defender.SendMessage("You receive a paralyzing blow!"); // Is this not localized?
+                defender.SendLocalizedMessage(1072221); // You have been hit by a paralyzing blow!
                 defender.Freeze(TimeSpan.FromSeconds(2.0));
 
-                attacker.SendMessage("You deliver a paralyzing blow!"); // Is this not localized?
+                attacker.SendLocalizedMessage(1060163); // You deliver a paralyzing blow!
                 attacker.PlaySound(0x11C);
             }
 

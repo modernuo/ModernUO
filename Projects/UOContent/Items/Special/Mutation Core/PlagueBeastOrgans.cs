@@ -350,8 +350,6 @@ namespace Server.Items
     {
         private Item m_Gland;
 
-        private Timer m_Timer;
-
         public PlagueBeastBackupOrgan() : base(0x1362, 0x6)
         {
         }
@@ -407,7 +405,7 @@ namespace Server.Items
             if (to.Hue == 0x1 && m_Gland == null && item is PlagueBeastGland)
             {
                 m_Gland = item;
-                m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3), FinishHealing);
+                Timer.DelayCall(TimeSpan.FromSeconds(3), FinishHealing);
                 from.SendAsciiMessage(0x3B2, "* You place the healthy gland inside the organ sac *");
                 item.Movable = false;
 
@@ -437,7 +435,7 @@ namespace Server.Items
                 Components[i].Hue = 0x6;
             }
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(2), OpenOrgan);
+            Timer.DelayCall(TimeSpan.FromSeconds(2), OpenOrgan);
         }
 
         public void OpenOrgan()
