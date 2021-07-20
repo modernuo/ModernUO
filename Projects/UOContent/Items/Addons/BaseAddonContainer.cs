@@ -246,7 +246,7 @@ namespace Server.Items
                     return AddonFitResult.Blocked;
                 }
 
-                if (!BaseAddon.CheckHouse(from, p3D, map, c.ItemData.Height, ref house))
+                if (!BaseAddon.CheckHouse(from, p3D, map, c.ItemData.Height, out house))
                 {
                     return AddonFitResult.NotInHouse;
                 }
@@ -269,7 +269,7 @@ namespace Server.Items
                 return AddonFitResult.Blocked;
             }
 
-            if (!BaseAddon.CheckHouse(from, p3, map, ItemData.Height, ref house))
+            if (!BaseAddon.CheckHouse(from, p3, map, ItemData.Height, out house))
             {
                 return AddonFitResult.NotInHouse;
             }

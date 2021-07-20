@@ -683,7 +683,7 @@ namespace Server.Mobiles
                 return AddonFitResult.Blocked;
             }
 
-            if (!BaseAddon.CheckHouse(from, p, map, 20, ref house))
+            if (!BaseAddon.CheckHouse(from, p, map, 20, out house))
             {
                 return AddonFitResult.NotInHouse;
             }

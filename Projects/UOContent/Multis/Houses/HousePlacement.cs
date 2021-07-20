@@ -164,9 +164,7 @@ namespace Server.Multis
                         }
                     }
 
-                    int landStartZ = 0, landAvgZ = 0, landTopZ = 0;
-
-                    map.GetAverageZ(tileX, tileY, ref landStartZ, ref landAvgZ, ref landTopZ);
+                    map.GetAverageZ(tileX, tileY, out var landStartZ, out var landAvgZ, out _);
 
                     var hasFoundation = false;
 

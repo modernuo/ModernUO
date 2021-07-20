@@ -56,12 +56,10 @@ namespace Server.Guilds
         {
             base.OnResponse(sender, info);
 
-            if (!(sender.Mobile is PlayerMobile pm) || !IsMember(pm, guild))
+            if (sender.Mobile is not PlayerMobile pm || !IsMember(pm, guild))
             {
                 return;
             }
-
-            var display = m_Display;
 
             if (info.ButtonID == 5)
             {
@@ -69,7 +67,7 @@ namespace Server.Guilds
                 {
                     if (info.IsSwitched(i))
                     {
-                        display = (GuildDisplayType)i;
+                        var display = (GuildDisplayType)i;
                         m_Callback(display);
                         break;
                     }

@@ -23,7 +23,6 @@ namespace Server.Engines.ConPVP
     public class TournamentBracketGump : Gump
     {
         private const int BlackColor32 = 0x000008;
-        private const int LabelColor32 = 0xFFFFFF;
         private readonly Mobile m_From;
         private List<object> m_List;
         private readonly object m_Object;

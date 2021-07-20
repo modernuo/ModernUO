@@ -265,10 +265,15 @@ namespace Server.Items
                 list.Add(1074762, prop.ToString()); // Damage modifier: ~1_PERCENT~%
             }
 
-            int phys, fire, cold, pois, nrgy, chaos, direct;
-            phys = fire = cold = pois = nrgy = chaos = direct = 0;
-
-            AlterBowDamage(ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct);
+            AlterBowDamage(
+                out var phys,
+                out var fire,
+                out var cold,
+                out var pois,
+                out var nrgy,
+                out var chaos,
+                out var direct
+            );
 
             if (phys != 0)
             {
@@ -372,7 +377,7 @@ namespace Server.Items
                 list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
             }
 
-            if ((prop = Attributes.NightSight) != 0)
+            if (Attributes.NightSight != 0)
             {
                 list.Add(1060441); // night sight
             }
@@ -547,10 +552,11 @@ namespace Server.Items
         }
 
         public virtual void AlterBowDamage(
-            ref int phys, ref int fire, ref int cold, ref int pois, ref int nrgy,
-            ref int chaos, ref int direct
+            out int phys, out int fire, out int cold, out int pois, out int nrgy,
+            out int chaos, out int direct
         )
         {
+            phys = fire = cold = pois = nrgy = chaos = direct = 0;
         }
 
         public void InvalidateWeight()

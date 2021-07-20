@@ -117,7 +117,7 @@ namespace Server.Regions
                     m.Location = House.BanLocation;
                     m.SendLocalizedMessage(1061637); // You are not allowed to access this.
                 }
-                else if (House is HouseFoundation foundation && foundation?.Customizer != null &&
+                else if (House is HouseFoundation foundation && foundation.Customizer != null &&
                          foundation.Customizer != m &&
                          House.IsInside(m))
                 {

@@ -161,7 +161,7 @@ namespace Server.Items
                     return AddonFitResult.Blocked;
                 }
 
-                if (!CheckHouse(from, p3D, map, c.ItemData.Height, ref house))
+                if (!CheckHouse(from, p3D, map, c.ItemData.Height, out house))
                 {
                     return AddonFitResult.NotInHouse;
                 }
@@ -203,7 +203,7 @@ namespace Server.Items
             return AddonFitResult.Valid;
         }
 
-        public static bool CheckHouse(Mobile from, Point3D p, Map map, int height, ref BaseHouse house)
+        public static bool CheckHouse(Mobile from, Point3D p, Map map, int height, out BaseHouse house)
         {
             house = BaseHouse.FindHouseAt(p, map, height);
 
