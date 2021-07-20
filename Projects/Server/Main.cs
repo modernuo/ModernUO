@@ -474,6 +474,7 @@ namespace Server
             TileMatrixLoader.LoadTileMatrix();
 
             RegionLoader.LoadRegions();
+            packLoader.LoadPacks();
             World.Load();
 
             AssemblyHandler.Invoke("Initialize");

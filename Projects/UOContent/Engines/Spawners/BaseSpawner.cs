@@ -637,6 +637,9 @@ namespace Server.Engines.Spawners
                     return false;
                 }
 
+                if (entity is BaseCreature Instance)
+                    Instance.InitPackStats();
+
                 for (var i = 0; i < realProps.Length; i++)
                 {
                     if (realProps[i] != null)
