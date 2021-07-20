@@ -6,8 +6,6 @@
         <Product>ModernUO Content</Product>
         <PublishDir>..\..\Distribution\Assemblies</PublishDir>
         <OutDir>..\..\Distribution\Assemblies</OutDir>
-<!--        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
-<!--        <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>-->
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Deleting source generated files..." />
