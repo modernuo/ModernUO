@@ -16,8 +16,6 @@
 using System;
 using System.Collections.Generic;
 using Server.Commands.Generic;
-using Server.Network;
-
 using static Server.Types;
 
 namespace Server.Engines.Spawners
@@ -36,7 +34,7 @@ namespace Server.Engines.Spawners
             Supports = CommandSupport.Complex | CommandSupport.Simple;
             Commands = new[] { "EditSpawner" };
             ObjectTypes = ObjectTypes.Items;
-            Usage = "EditSpawner <type> <arguments> set <properties>";
+            Usage = "EditSpawner <type> <arguments> set <properties> where <properties>";
             Description = "Modifies spawners arguments and properties for the given type";
             ListOptimized = true;
         }
@@ -69,7 +67,7 @@ namespace Server.Engines.Spawners
 
             var argSpan = e.ArgString.AsSpan(name.Length + 1);
             var setIndex = argSpan.InsensitiveIndexOf("set ");
-            var where = argSpan.InsensitiveIndexOf("match ");
+            var where = argSpan.InsensitiveIndexOf("where ");
 
             ReadOnlySpan<char> props = null, findmatch = null;
 
@@ -80,19 +78,18 @@ namespace Server.Engines.Spawners
                 findmatch = argSpan.Slice(len < argSpan.Length ? len + 6 : argSpan.Length);
                 if (setIndex > -1)
                 {
-                    props = argSpan.Slice(start, len - start);
-                    argSpan = argSpan.SliceToLength(setIndex);
+                    props = argSpan[start..^len];
+                    argSpan = argSpan[..setIndex];
                 }
                 else
                 {
-                    argSpan = argSpan.SliceToLength(argSpan.Length - len);
+                    argSpan = argSpan[..^len];
                 }
             }
 
             var argStr = argSpan.ToString().DefaultIfNullOrEmpty(null);
             var propsStr = props.ToString().DefaultIfNullOrEmpty(null);
             var whereStr = findmatch.ToString().DefaultIfNullOrEmpty(null);
-
 
             e.Mobile.SendMessage("Updating spawners...");
 
@@ -112,27 +109,24 @@ namespace Server.Engines.Spawners
             foreach (var entry in spawner.Entries)
             {
                 // TODO: Should cache spawn type on the entry
-                if (entry.SpawnedName.InsensitiveEquals(name))
+                if (!entry.SpawnedName.InsensitiveEquals(name))
                 {
-                    if (find != null)
-                    {
-                        var found = entry.Properties?.LastIndexOf(find, StringComparison.OrdinalIgnoreCase);
-                        if (found != -1)
-                        {
-                            if ((found + find.Length) == entry.Properties.Length ||
-                                char.IsWhiteSpace(entry.Properties[(int)found + find.Length]))
-                            {
-                                if (arguments != null) entry.Parameters = arguments;
-                                entry.Properties = properties;
-                            }
+                    continue;
+                }
 
-                        }
-                    }
-                    else
+                var found = find != null ? entry.Properties?.LastIndexOf(find, StringComparison.OrdinalIgnoreCase) : null;
+                var shouldUpdate = find == null || found > -1 &&
+                    (found + find.Length == entry.Properties.Length ||
+                     char.IsWhiteSpace(entry.Properties[(int)found + find.Length]));
+
+                if (shouldUpdate)
+                {
+                    if (arguments != null)
                     {
-                        if (arguments != null) entry.Parameters = arguments;
-                        entry.Properties = properties;
+                        entry.Parameters = arguments;
                     }
+
+                    entry.Properties = properties;
                 }
             }
         }
