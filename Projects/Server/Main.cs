@@ -557,7 +557,7 @@ namespace Server
             {
                 Interlocked.Increment(ref _itemCount);
             }
-            else if (!type.IsSubclassOf(typeof(Mobile)))
+            else if (type.IsSubclassOf(typeof(Mobile)))
             {
                 Interlocked.Increment(ref _mobileCount);
             }
