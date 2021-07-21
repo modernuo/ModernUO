@@ -18,7 +18,7 @@ namespace Server.Engines.CannedEvil
     public class DungeonChampionSpawn : ChampionSpawn
     {
         [Constructible]
-        public DungeonChampionSpawn() : base()
+        public DungeonChampionSpawn()
         {
             CannedEvilTimer.AddSpawn(this);
         }

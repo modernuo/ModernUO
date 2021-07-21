@@ -9,7 +9,7 @@ namespace Server
     {
         private static readonly INativeReader m_NativeReader;
 
-        static NativeReader() => m_NativeReader = Core.Unix ? (INativeReader)new NativeReaderUnix() : new NativeReaderWin32();
+        static NativeReader() => m_NativeReader = Core.Unix ? new NativeReaderUnix() : new NativeReaderWin32();
 
         public static unsafe int Read(FileStream source, void* buffer, int length) =>
             m_NativeReader.Read(source, buffer, length);

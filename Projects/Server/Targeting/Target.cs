@@ -252,9 +252,6 @@ namespace Server.Targeting
 
         private class TimeoutTimer : Timer
         {
-            private static readonly TimeSpan ThirtySeconds = TimeSpan.FromSeconds(30.0);
-            private static readonly TimeSpan TenSeconds = TimeSpan.FromSeconds(10.0);
-            private static readonly TimeSpan OneSecond = TimeSpan.FromSeconds(1.0);
             private readonly Mobile m_Mobile;
             private readonly Target m_Target;
 

@@ -800,7 +800,7 @@ namespace Server.Mobiles
                 {
                     --buttonID;
 
-                    if (buttonID >= 0 && buttonID < m_Entries.Length)
+                    if (buttonID < m_Entries.Length)
                     {
                         m_Barkeeper.EndChangeTitle(m_From, m_Entries[buttonID].m_Title, m_Entries[buttonID].m_Vendor);
                     }

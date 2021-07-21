@@ -34,7 +34,7 @@ namespace Server.Commands
 
         public CAGCategory Parent { get; set; }
 
-        public override string Title => Type == null ? "bad type" : Type.Name;
+        public override string Title => Type?.Name ?? "bad type";
 
         public override void OnClick(Mobile from, int page)
         {

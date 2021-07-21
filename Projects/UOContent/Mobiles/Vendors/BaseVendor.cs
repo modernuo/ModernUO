@@ -816,7 +816,7 @@ namespace Server.Mobiles
             }
             else
             {
-                AddItem(Utility.RandomBool() ? (Item)new LongPants(GetRandomHue()) : new ShortPants(GetRandomHue()));
+                AddItem(Utility.RandomBool() ? new LongPants(GetRandomHue()) : new ShortPants(GetRandomHue()));
             }
 
             PackGold(100, 200);
@@ -875,7 +875,7 @@ namespace Server.Mobiles
                     new BuyItemState(
                         buyItem.Name,
                         cont.Serial,
-                        disp?.Serial ?? (Serial)0x7FC0FFEE,
+                        disp?.Serial ?? 0x7FC0FFEE,
                         buyItem.Price,
                         buyItem.Amount,
                         buyItem.ItemID,
