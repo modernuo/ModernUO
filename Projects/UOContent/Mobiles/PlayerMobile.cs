@@ -1257,7 +1257,7 @@ namespace Server.Mobiles
 
                     if (from.NetState != null)
                     {
-                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), from.NetState.Disconnect, "Server is locked down");
+                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => from.NetState.Disconnect("Server is locked down"));
                     }
                 }
                 else if (from.AccessLevel >= AccessLevel.Administrator)
@@ -1548,7 +1548,7 @@ namespace Server.Mobiles
 
             DisguiseTimers.StartTimer(m);
 
-            Timer.DelayCall(SpecialMove.ClearAllMoves, m);
+            Timer.DelayCall(() => SpecialMove.ClearAllMoves(m));
         }
 
         private static void EventSink_Disconnected(Mobile from)
@@ -4642,7 +4642,7 @@ namespace Server.Mobiles
             {
                 m_Type = type;
 
-                m_Timer = Timer.DelayCall(duration, RemoveBlock, mobile);
+                m_Timer = Timer.DelayCall(duration, () => RemoveBlock(mobile));
             }
 
             private void RemoveBlock(Mobile mobile)
