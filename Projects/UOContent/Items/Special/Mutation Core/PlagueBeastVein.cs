@@ -21,7 +21,7 @@ namespace Server.Items
             {
                 if (!Cut && m_Timer == null)
                 {
-                    m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3), CuttingDone, from);
+                    m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3), () => CuttingDone(from));
                     scissors.PublicOverheadMessage(
                         MessageType.Regular,
                         0x3B2,
@@ -48,14 +48,7 @@ namespace Server.Items
         {
             Cut = true;
 
-            if (ItemID == 0x1B1C)
-            {
-                ItemID = 0x1B1B;
-            }
-            else
-            {
-                ItemID = 0x1B1C;
-            }
+            ItemID = ItemID == 0x1B1C ? 0x1B1B : 0x1B1C;
 
             Owner?.PlaySound(0x199);
 

@@ -473,7 +473,7 @@ namespace Server.Mobiles
                 if (version < 1)
                 {
                     m_ShopName = "Shop Not Yet Named";
-                    Timer.DelayCall(UpgradeFromVersion0, newVendorSystemActivated);
+                    Timer.DelayCall(() => UpgradeFromVersion0(newVendorSystemActivated));
                 }
                 else
                 {
@@ -917,7 +917,7 @@ namespace Server.Mobiles
             {
                 if (GetVendorItem(item) == null)
                 {
-                    Timer.DelayCall(OnItemGiven, from, item);
+                    Timer.DelayCall(() => OnItemGiven(from, item));
                 }
 
                 return true;

@@ -320,7 +320,7 @@ namespace Server.Items
                 }
 
                 Potion.Internalize();
-                Timer.DelayCall(TimeSpan.FromSeconds(1.0), Potion.Reposition_OnTick, from, new Point3D(p), map);
+                Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => Potion.Reposition_OnTick(from, new Point3D(p), map));
             }
         }
     }

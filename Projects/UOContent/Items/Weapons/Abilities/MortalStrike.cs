@@ -48,7 +48,7 @@ namespace Server.Items
                 timer?.Stop();
             }
 
-            _table[m] = timer = Timer.DelayCall(duration, EndWound, m);
+            _table[m] = timer = Timer.DelayCall(duration, () => EndWound(m));
             timer.Start();
 
             m.YellowHealthbar = true;

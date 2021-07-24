@@ -108,7 +108,7 @@ namespace Server.Items
         {
             m_Delay.TryGetValue(m, out var timer);
             timer?.Stop();
-            m_Delay[m] = Timer.DelayCall(TimeSpan.FromSeconds(30), EndDelay, m);
+            m_Delay[m] = Timer.DelayCall(TimeSpan.FromSeconds(30), () => EndDelay(m));
         }
 
         public static int GetDelay(Mobile m)
@@ -166,7 +166,7 @@ namespace Server.Items
                 }
 
                 Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue);
-                Timer.DelayCall(TimeSpan.FromSeconds(1.5), Potion.Explode, from, new Point3D(p), from.Map);
+                Timer.DelayCall(TimeSpan.FromSeconds(1.5), () => Potion.Explode(from, new Point3D(p), from.Map));
             }
         }
 

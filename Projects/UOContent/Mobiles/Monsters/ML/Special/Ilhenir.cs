@@ -226,14 +226,14 @@ namespace Server.Mobiles
                 to.PlaySound(0x584);
 
                 m_Table.Add(to);
-                Timer.DelayCall(TimeSpan.FromSeconds(30), CacophonicEnd, to);
+                Timer.DelayCall(TimeSpan.FromSeconds(30),
+                    () =>
+                    {
+                        m_Table.Remove(to);
+                        to.NetState.SendSpeedControl(SpeedControlSetting.Disable);
+                    }
+                );
             }
-        }
-
-        public virtual void CacophonicEnd(Mobile from)
-        {
-            m_Table.Remove(from);
-            from.NetState.SendSpeedControl(SpeedControlSetting.Disable);
         }
 
         public static bool UnderCacophonicAttack(Mobile from) => m_Table.Contains(from);

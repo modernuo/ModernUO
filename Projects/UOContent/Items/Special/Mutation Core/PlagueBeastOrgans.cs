@@ -54,7 +54,7 @@ namespace Server.Items
             {
                 if (!Opened && m_Timer == null)
                 {
-                    m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3), FinishOpening, from);
+                    m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3), () => FinishOpening(from));
                     scissors.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1071897); // You carefully cut into the organ.
                     return true;
                 }
@@ -80,7 +80,6 @@ namespace Server.Items
         public virtual void FinishOpening(Mobile from)
         {
             Opened = true;
-
             Owner?.PlaySound(0x50);
         }
 

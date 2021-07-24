@@ -234,7 +234,7 @@ namespace Server.Items
             }
             else
             {
-                Timer.DelayCall(m_Delay, DoTeleport, m);
+                Timer.DelayCall(m_Delay, () => DoTeleport(m));
             }
         }
 
@@ -454,7 +454,7 @@ namespace Server.Items
                         );
                     }
 
-                    Timer.DelayCall(TimeSpan.FromSeconds(5.0), m.EndAction, this);
+                    Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => m.EndAction(this));
                 }
 
                 return false;
@@ -731,11 +731,6 @@ namespace Server.Items
             return $"{s} second{(s == 1 ? "" : "s")}";
         }
 
-        private void EndLock(Mobile m)
-        {
-            m.EndAction(this);
-        }
-
         public override void StartTeleport(Mobile m)
         {
             if (m_Table.TryGetValue(m, out var info))
@@ -758,7 +753,7 @@ namespace Server.Items
                             m.SendMessage("Time remaining: {0}", FormatTime(info.Timer.Next - Core.Now));
                         }
 
-                        Timer.DelayCall(TimeSpan.FromSeconds(5), EndLock, m);
+                        Timer.DelayCall(TimeSpan.FromSeconds(5), () => m.EndAction(this));
                     }
 
                     return;
@@ -782,7 +777,7 @@ namespace Server.Items
             }
             else
             {
-                m_Table[m] = new TeleportingInfo(this, Timer.DelayCall(Delay, DoTeleport, m));
+                m_Table[m] = new TeleportingInfo(this, Timer.DelayCall(Delay, () => DoTeleport(m)));
             }
         }
 
@@ -867,7 +862,7 @@ namespace Server.Items
                 t.Stop();
             }
 
-            m_Teleporting[m] = Timer.DelayCall(delay, StartTeleport, m);
+            m_Teleporting[m] = Timer.DelayCall(delay, () => StartTeleport(m));
         }
 
         public void StopTimer(Mobile m)

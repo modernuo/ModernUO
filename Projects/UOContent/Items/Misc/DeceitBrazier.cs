@@ -180,7 +180,7 @@ namespace Server.Items
 
                         DoEffect(spawnLoc, map);
 
-                        Timer.DelayCall(TimeSpan.FromSeconds(1), SummonCreatureToWorld, bc, spawnLoc, map);
+                        Timer.DelayCall(TimeSpan.FromSeconds(1), () => SummonCreatureToWorld(bc, spawnLoc, map));
 
                         NextSpawn = Core.Now + NextSpawnDelay;
                     }

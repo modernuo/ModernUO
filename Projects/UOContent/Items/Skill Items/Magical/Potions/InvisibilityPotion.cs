@@ -31,7 +31,7 @@ namespace Server.Items
             }
 
             Consume();
-            m_Table[from] = Timer.DelayCall(TimeSpan.FromSeconds(2), Hide, from);
+            m_Table[from] = Timer.DelayCall(TimeSpan.FromSeconds(2), () => Hide(from));
             PlayDrinkEffect(from);
         }
 
@@ -53,7 +53,7 @@ namespace Server.Items
 
             RemoveTimer(m);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(30), EndHide, m);
+            Timer.DelayCall(TimeSpan.FromSeconds(30), () => EndHide(m));
         }
 
         public static void EndHide(Mobile m)
