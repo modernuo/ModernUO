@@ -145,7 +145,7 @@ namespace Server.Misc
                 return;
             }
 
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), EventSink_Login_Callback, m);
+            Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => EventSink_Login_Callback(m));
         }
 
         private static void EventSink_Login_Callback(Mobile from)
@@ -524,12 +524,7 @@ namespace Server.Misc
                 {
                     Timer.DelayCall(
                         TimeSpan.FromSeconds(1.0),
-                        data =>
-                        {
-                            var (mobile, poller, polls) = data;
-                            m_From.SendGump(new ShardPollGump(mobile, poller, false, polls));
-                        },
-                        (m_From, shardPoller, m_Polls)
+                        () => m_From.SendGump(new ShardPollGump(m_From, shardPoller, false, m_Polls))
                     );
                 }
             }

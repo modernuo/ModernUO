@@ -63,7 +63,7 @@ namespace Server.Spells.Spellweaving
                         continue;
                     }
 
-                    m_Table[m] = Timer.DelayCall(duration, DoExpire, m);
+                    m_Table[m] = Timer.DelayCall(duration, () => DoExpire(m));
 
                     BuffInfo.AddBuff(
                         m,

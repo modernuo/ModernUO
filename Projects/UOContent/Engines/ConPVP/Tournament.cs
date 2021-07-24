@@ -992,18 +992,18 @@ namespace Server.Engines.ConPVP
 
         public void Alert(Arena arena, params string[] alerts)
         {
-            if (arena?.Announcer != null)
+            if (arena?.Announcer == null)
             {
-                for (var j = 0; j < alerts.Length; ++j)
-                {
-                    Timer.DelayCall(
-                        TimeSpan.FromSeconds(Math.Max(j - 0.5, 0.0)),
-                        (announcer, alert) => announcer.PublicOverheadMessage(MessageType.Regular, 0x35, false, alert),
-                        arena.Announcer,
-                        alerts[j]
-                    );
-                }
+                return;
             }
+
+            Timer.DelayCall(
+                TimeSpan.FromSeconds(0.5), alerts.Length,
+                timer =>
+                {
+                    arena.Announcer.PublicOverheadMessage(MessageType.Regular, 0x35, false, alerts[timer.Index]);
+                }
+            );
         }
     }
 }

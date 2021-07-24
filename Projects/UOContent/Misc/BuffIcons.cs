@@ -31,7 +31,7 @@ namespace Server
             TimeLength = length;
             TimeStart = Core.TickCount;
 
-            Timer = Timer.DelayCall(length, RemoveBuff, m, this);
+            Timer = Timer.DelayCall(length, () => RemoveBuff(m, this));
         }
 
         public BuffInfo(BuffIcon iconID, int titleCliloc, TextDefinition args)

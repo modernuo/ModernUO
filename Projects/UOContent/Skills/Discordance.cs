@@ -292,8 +292,7 @@ namespace Server.SkillHandlers
                             info.m_Timer = Timer.DelayCall(
                                 TimeSpan.Zero,
                                 TimeSpan.FromSeconds(1.25),
-                                ProcessDiscordance,
-                                info
+                                () => ProcessDiscordance(info)
                             );
 
                             m_Table[targ] = info;

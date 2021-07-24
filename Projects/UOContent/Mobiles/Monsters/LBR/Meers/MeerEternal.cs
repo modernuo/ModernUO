@@ -129,7 +129,7 @@ namespace Server.Mobiles
         {
             Say(true, message);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(0.5), DoFocusedLeech_Stage1, combatant);
+            Timer.DelayCall(TimeSpan.FromSeconds(0.5), () => DoFocusedLeech_Stage1(combatant));
         }
 
         private void DoFocusedLeech_Stage1(Mobile combatant)
@@ -140,7 +140,7 @@ namespace Server.Mobiles
                 MovingParticles(combatant, 0x0001, 1, 0, false, true, 1108, 0, 9533, 9534, 0, (EffectLayer)255, 0);
                 PlaySound(0x1FB);
 
-                Timer.DelayCall(TimeSpan.FromSeconds(1.0), DoFocusedLeech_Stage2, combatant);
+                Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => DoFocusedLeech_Stage2(combatant));
             }
         }
 

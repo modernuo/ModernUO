@@ -41,7 +41,7 @@ namespace Server.Spells.Chivalry
 
                 var delay = Math.Clamp(ComputePowerValue(1) / 60.0, 1.5, 3.5);
 
-                m_Table[Caster] = Timer.DelayCall(TimeSpan.FromMinutes(delay), Expire_Callback, Caster);
+                m_Table[Caster] = Timer.DelayCall(TimeSpan.FromMinutes(delay), () => Expire_Callback(Caster));
 
                 if (Caster is PlayerMobile mobile)
                 {

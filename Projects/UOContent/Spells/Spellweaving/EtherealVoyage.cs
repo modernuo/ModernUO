@@ -67,7 +67,7 @@ namespace Server.Spells.Spellweaving
 
             var duration = TimeSpan.FromSeconds(12 + (int)(skill / 24) + FocusLevel * 2);
 
-            Timer.DelayCall(duration, RemoveEffect, Caster);
+            Timer.DelayCall(duration, () => RemoveEffect(Caster));
 
             Caster.BeginAction(
                 typeof(EtherealVoyageSpell)

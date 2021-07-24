@@ -159,11 +159,7 @@ namespace Server.Mobiles
 
                         Timer.DelayCall(
                             TimeSpan.FromSeconds(20.0),
-                            Unbuff,
-                            toBuff,
-                            toBuff.HitsMaxSeed,
-                            toBuff.RawStr,
-                            toBuff.RawDex
+                            () => Unbuff(toBuff, toBuff.HitsMaxSeed, toBuff.RawStr, toBuff.RawDex)
                         );
                     }
                 }

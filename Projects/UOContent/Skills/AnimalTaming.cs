@@ -262,7 +262,7 @@ namespace Server.SkillHandlers
 
                     if (creature.BardPacified && Utility.RandomDouble() > .24)
                     {
-                        Timer.DelayCall(TimeSpan.FromSeconds(2.0), Pacify, creature);
+                        Timer.DelayCall(TimeSpan.FromSeconds(2.0), () => Pacify(creature));
                     }
                     else
                     {

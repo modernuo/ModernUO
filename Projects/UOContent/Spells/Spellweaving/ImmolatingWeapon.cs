@@ -75,7 +75,7 @@ namespace Server.Spells.Spellweaving
             {
                 timer.Stop();
 
-                Timer.DelayCall(TimeSpan.FromSeconds(0.25), FinishEffect, target, timer);
+                Timer.DelayCall(TimeSpan.FromSeconds(0.25), () => FinishEffect(target, timer));
             }
         }
 

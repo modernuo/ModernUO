@@ -51,7 +51,7 @@ namespace Server.Spells.Fourth
                 {
                     var duration = SpellHelper.GetDuration(Caster, m);
                     m_UnderEffect.Add(m);
-                    Timer.DelayCall(duration, RemoveEffect, m);
+                    Timer.DelayCall(duration, () => RemoveEffect(m));
                     m.UpdateResistances();
                 }
 

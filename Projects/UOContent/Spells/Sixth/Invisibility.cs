@@ -65,16 +65,16 @@ namespace Server.Spells.Sixth
                 BuffInfo.RemoveBuff(m, BuffIcon.HidingAndOrStealth);
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825, duration, m)); // Invisibility/Invisible
 
-                m_Table[m] = Timer.DelayCall(duration, EndInvisiblity, m);
+                m_Table[m] = Timer.DelayCall(duration,
+                    () =>
+                    {
+                        m.RevealingAction();
+                        RemoveTimer(m);
+                    }
+                );
             }
 
             FinishSequence();
-        }
-
-        private static void EndInvisiblity(Mobile m)
-        {
-            m.RevealingAction();
-            RemoveTimer(m);
         }
 
         public override bool CheckCast()

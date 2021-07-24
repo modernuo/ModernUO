@@ -42,7 +42,16 @@ namespace Server.Spells.Chivalry
 
                 var delay = Math.Clamp(ComputePowerValue(10), 7, 24);
 
-                m_Table[Caster] = Timer.DelayCall(TimeSpan.FromSeconds(delay), Expire_Callback, Caster);
+                m_Table[Caster] = Timer.DelayCall(TimeSpan.FromSeconds(delay),
+                    () =>
+                    {
+                        m_Table.Remove(Caster);
+
+                        Caster.Delta(MobileDelta.WeaponDamage);
+                        Caster.PlaySound(0xF8);
+                    }
+                );
+
                 Caster.Delta(MobileDelta.WeaponDamage);
 
                 BuffInfo.AddBuff(
@@ -55,13 +64,5 @@ namespace Server.Spells.Chivalry
         }
 
         public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
-
-        private static void Expire_Callback(Mobile m)
-        {
-            m_Table.Remove(m);
-
-            m.Delta(MobileDelta.WeaponDamage);
-            m.PlaySound(0xF8);
-        }
     }
 }

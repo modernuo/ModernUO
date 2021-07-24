@@ -1275,7 +1275,7 @@ namespace Server.Multis
 
             m_TurnTimer?.Stop();
 
-            m_TurnTimer = Timer.DelayCall(TimeSpan.FromMilliseconds(500), Turn, offset);
+            m_TurnTimer = Timer.DelayCall(TimeSpan.FromMilliseconds(500), () => Turn(offset));
             m_TurnTimer.Start();
 
             if (message)

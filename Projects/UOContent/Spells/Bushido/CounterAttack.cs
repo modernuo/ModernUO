@@ -78,7 +78,13 @@ namespace Server.Spells.Bushido
             m_Table.TryGetValue(m, out var timer);
             timer?.Stop();
 
-            m_Table[m] = Timer.DelayCall(TimeSpan.FromSeconds(30.0), EndCountering, m);
+            m_Table[m] = Timer.DelayCall(TimeSpan.FromSeconds(30.0),
+                () =>
+                {
+                    StopCountering(m);
+                    m.SendLocalizedMessage(1063119); // You return to your normal stance.
+                }
+            );
         }
 
         public static void StopCountering(Mobile m)
@@ -89,12 +95,6 @@ namespace Server.Spells.Bushido
             }
 
             OnEffectEnd(m, typeof(CounterAttack));
-        }
-
-        private static void EndCountering(Mobile m)
-        {
-            StopCountering(m);
-            m.SendLocalizedMessage(1063119); // You return to your normal stance.
         }
     }
 }

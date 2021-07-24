@@ -1615,24 +1615,13 @@ namespace Server.Engines.ConPVP
 
         private Timer m_FinishTimer;
 
-        private TimerCallback m_UnhideCallback;
+        private Action m_UnhideCallback;
 
         public BRGame(BRController controller, DuelContext context) : base(context) => Controller = controller;
 
         public BRController Controller { get; }
 
-        public Map Facet
-        {
-            get
-            {
-                if (m_Context.Arena != null)
-                {
-                    return m_Context.Arena.Facet;
-                }
-
-                return Controller.Map;
-            }
-        }
+        public Map Facet => m_Context.Arena != null ? m_Context.Arena.Facet : Controller.Map;
 
         public override bool CantDoAnything(Mobile mob) =>
             mob.Backpack?.FindItemByType<BRBomb>() != null && GetTeamInfo(mob) != null;
@@ -1727,7 +1716,7 @@ namespace Server.Engines.ConPVP
 
         public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
         {
-            Timer.DelayCall(ts, DelayBounce_Callback, mob, corpse);
+            Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
         }
 
         private void DelayBounce_Callback(Mobile mob, Container corpse)

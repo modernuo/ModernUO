@@ -70,7 +70,7 @@ namespace Server.Engines.ConPVP
                     m.NetState
                 );
                 m.BeginAction(this);
-                Timer.DelayCall(TimeSpan.FromSeconds(10.0), ReleaseLock_Callback, m);
+                Timer.DelayCall(TimeSpan.FromSeconds(10.0), () => ReleaseLock_Callback(m));
             }
         }
 
