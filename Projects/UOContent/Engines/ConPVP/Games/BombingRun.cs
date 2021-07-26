@@ -1615,8 +1615,6 @@ namespace Server.Engines.ConPVP
 
         private Timer m_FinishTimer;
 
-        private TimerCallback m_UnhideCallback;
-
         public BRGame(BRController controller, DuelContext context) : base(context) => Controller = controller;
 
         public BRController Controller { get; }
@@ -1641,10 +1639,9 @@ namespace Server.Engines.ConPVP
         {
             if (m_Bomb != null && Controller != null)
             {
-                m_UnhideCallback ??= UnhideBomb;
                 m_Bomb.Visible = false;
                 m_Bomb.MoveToWorld(Controller.BombHome, Controller.Map);
-                Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 15)), m_UnhideCallback);
+                Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 15)), UnhideBomb);
             }
         }
 
