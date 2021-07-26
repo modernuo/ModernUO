@@ -60,6 +60,7 @@ namespace Server
         public TimeSpan Interval { get; set; }
         public int Index { get; private set; }
         public int Count { get; private set; }
+        public int RemainingCount => Count - Index;
         public bool Running { get; private set; }
 
         public TimerProfile GetProfile() => !Core.Profiling ? null : TimerProfile.Acquire(ToString() ?? "null");
