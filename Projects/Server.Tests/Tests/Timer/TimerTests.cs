@@ -23,7 +23,7 @@ namespace Server.Tests
                 timerTicks.ExecutedCount++;
             }
 
-            Timer.Initialize(timerTicks.Ticks);
+            Timer.Init(timerTicks.Ticks);
 
             var timer = Timer.DelayCall(TimeSpan.FromMilliseconds(ticks), action);
             timer.Start();
@@ -51,7 +51,7 @@ namespace Server.Tests
                 Assert.Equal(timerTicks.ExpectedTicks, timerTicks.Ticks);
             }
 
-            Timer.Initialize(timerTicks.Ticks);
+            Timer.Init(timerTicks.Ticks);
 
             var timer = Timer.DelayCall(TimeSpan.FromMilliseconds(delay), TimeSpan.FromMilliseconds(interval), count, action);
             timer.Start();
