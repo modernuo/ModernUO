@@ -122,7 +122,7 @@ namespace Server
                 timer.OnTick();
                 prof?.Finish();
 
-                if (!finished)
+                if (timer.Running && !finished)
                 {
                     timer.Delay = timer.Interval;
                     timer.Next = Core.Now + timer.Interval;
