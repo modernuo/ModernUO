@@ -30,9 +30,9 @@ namespace Server.Engines.ConPVP
 
         private readonly List<Item> m_Walls = new();
 
-        private Timer m_AutoTieTimer;
+        private Timer.DelayCallTimer m_AutoTieTimer;
 
-        private Timer m_Countdown;
+        private Timer.DelayCallTimerWithTimer m_Countdown;
 
         public EventGame m_EventGame;
         private Map m_GateFacet;
@@ -42,7 +42,7 @@ namespace Server.Engines.ConPVP
 
         public Arena m_OverrideArena;
 
-        private Timer m_SDWarnTimer, m_SDActivateTimer;
+        private Timer.DelayCallTimer m_SDWarnTimer, m_SDActivateTimer;
         public Tournament m_Tournament;
 
         private bool m_Yielding;
@@ -1058,23 +1058,26 @@ namespace Server.Engines.ConPVP
         public void StartCountdown(int count, CountdownCallback cb)
         {
             cb(count);
-            m_Countdown = Timer.DelayCall(
+            m_Countdown = Timer.DelayCallReturnTimer(
                 TimeSpan.FromSeconds(1.0),
                 TimeSpan.FromSeconds(1.0),
-                count,
-                () => Countdown_Callback(--count, cb)
+                count - 1,
+                timer => Countdown_Callback(timer, cb)
             );
         }
 
         public void StopCountdown()
         {
             m_Countdown?.Stop();
+            m_Countdown?.Return();
             m_Countdown = null;
         }
 
-        private void Countdown_Callback(int count, CountdownCallback cb)
+        private void Countdown_Callback(Timer timer, CountdownCallback cb)
         {
-            if (count == 0)
+            int count = timer.Count - timer.Index;
+
+            if (count > 0)
             {
                 StopCountdown();
             }
@@ -1085,11 +1088,11 @@ namespace Server.Engines.ConPVP
         public void StopSDTimers()
         {
             m_SDWarnTimer?.Stop();
-
+            m_SDWarnTimer?.Return();
             m_SDWarnTimer = null;
 
             m_SDActivateTimer?.Stop();
-
+            m_SDActivateTimer?.Return();
             m_SDActivateTimer = null;
         }
 
@@ -1097,11 +1100,11 @@ namespace Server.Engines.ConPVP
         {
             m_SDWarnTimer?.Stop();
 
-            m_SDWarnTimer = Timer.DelayCall(TimeSpan.FromMinutes(timeUntilActive.TotalMinutes * 0.9), WarnSuddenDeath);
+            m_SDWarnTimer = Timer.DelayCallReturnTimer(TimeSpan.FromMinutes(timeUntilActive.TotalMinutes * 0.9), WarnSuddenDeath);
 
             m_SDActivateTimer?.Stop();
 
-            m_SDActivateTimer = Timer.DelayCall(timeUntilActive, ActivateSuddenDeath);
+            m_SDActivateTimer = Timer.DelayCallReturnTimer(timeUntilActive, ActivateSuddenDeath);
         }
 
         public void WarnSuddenDeath()
@@ -1128,7 +1131,7 @@ namespace Server.Engines.ConPVP
             m_Tournament?.Alert(Arena, "Sudden death will be active soon!");
 
             m_SDWarnTimer?.Stop();
-
+            m_SDWarnTimer?.Return();
             m_SDWarnTimer = null;
         }
 
@@ -1164,19 +1167,25 @@ namespace Server.Engines.ConPVP
             IsSuddenDeath = true;
 
             m_SDActivateTimer?.Stop();
-
+            m_SDActivateTimer?.Return();
             m_SDActivateTimer = null;
         }
 
         public void BeginAutoTie()
         {
-            m_AutoTieTimer?.Stop();
-
             var ts = m_Tournament == null || m_Tournament.TourneyType == TourneyType.Standard
                 ? AutoTieDelay
                 : TimeSpan.FromMinutes(90.0);
 
-            m_AutoTieTimer = Timer.DelayCall(ts, InvokeAutoTie);
+            if (m_AutoTieTimer == null)
+            {
+                m_AutoTieTimer = Timer.DelayCallReturnTimer(ts, InvokeAutoTie);
+            }
+            else
+            {
+                m_AutoTieTimer.Stop();
+                m_AutoTieTimer.Init(ts, InvokeAutoTie);
+            }
         }
 
         public void EndAutoTie()
@@ -1640,9 +1649,7 @@ namespace Server.Engines.ConPVP
                         }
                         else
                         {
-                            pm.DuelContext.m_Countdown?.Stop();
-                            pm.DuelContext.m_Countdown = null;
-
+                            pm.DuelContext.StopCountdown();
                             pm.DuelContext.StartedReadyCountdown = false;
                             p.Broadcast(0x22, null, "{0} has yielded.", "You have yielded.");
 

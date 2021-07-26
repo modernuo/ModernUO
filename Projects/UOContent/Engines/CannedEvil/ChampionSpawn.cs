@@ -42,9 +42,10 @@ namespace Server.Engines.CannedEvil
 
         //Goes back each level, below level 0 and it goes off!
 
-        private Timer m_Timer;
+        private Timer.DelayCallTimer m_Timer;
 
         private IdolOfTheChampion m_Idol;
+        private Timer.DelayCallTimer _restartTimer;
 
         public virtual string BroadcastMessage => "The Champion has sensed your presence!  Beware its wrath!";
         public virtual bool ProximitySpawn => false;
@@ -58,7 +59,20 @@ namespace Server.Engines.CannedEvil
 
         public Dictionary<Mobile, int> DamageEntries { get; private set; }
 
-        public Timer RestartTimer { get; set; }
+        public Timer.DelayCallTimer RestartTimer
+        {
+            get => _restartTimer;
+            set
+            {
+                if (value == null)
+                {
+                    _restartTimer?.Stop();
+                    _restartTimer?.Return();
+                }
+
+                _restartTimer = value;
+            }
+        }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool ConfinedRoaming { get; set; }
@@ -303,12 +317,8 @@ namespace Server.Engines.CannedEvil
             HasBeenAdvanced = false;
             m_MaxLevel = 16 + Utility.Random(3);
 
-            m_Timer?.Stop();
+            Timer.DelayCallInit(ref m_Timer, TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnSlice);
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.0),  TimeSpan.FromSeconds(1.0), OnSlice);
-            m_Timer.Start();
-
-            RestartTimer?.Stop();
             RestartTimer = null;
 
             if (m_Altar != null)
@@ -337,10 +347,9 @@ namespace Server.Engines.CannedEvil
             m_MaxLevel = 0;
 
             m_Timer?.Stop();
-
+            m_Timer?.Return();
             m_Timer = null;
 
-            RestartTimer?.Stop();
             RestartTimer = null;
 
             if (m_Altar != null)
@@ -368,12 +377,8 @@ namespace Server.Engines.CannedEvil
 
         public void BeginRestart(TimeSpan ts)
         {
-            RestartTimer?.Stop();
-
             RestartTime = Core.Now + ts;
-
-            RestartTimer = Timer.DelayCall(ts, EndRestart);
-            RestartTimer.Start();
+            Timer.DelayCallInit(ref _restartTimer, ts, EndRestart);
         }
 
         public void EndRestart()
