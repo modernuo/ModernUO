@@ -32,7 +32,8 @@ namespace Server.Mobiles
             SetSkill(SkillName.Wrestling, 98.1, 99.0);
 
             VirtualArmor = 58;
-            ControlSlots = Core.SE ? 4 : 5;
+            //ControlSlots = Core.SE ? 4 : 5;
+            ControlSlots = 4;
         }
 
         public SummonedDaemon(Serial serial) : base(serial)

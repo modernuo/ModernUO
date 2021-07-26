@@ -14,8 +14,8 @@ namespace Server.Mobiles
 {
     public class MageAI : BaseAI
     {
-        private const double HealChance = 0.10;     // 10% chance to heal at gm magery
-        private const double TeleportChance = 0.05; // 5% chance to teleport at gm magery
+        private const double HealChance = 0.05;     // 0.10 10% chance to heal at gm magery
+        private const double TeleportChance = 0.00; // 0.05 5% chance to teleport at gm magery
         private const double DispelChance = 0.75;   // 75% chance to dispel at gm magery
 
         private static readonly int[] m_Offsets =

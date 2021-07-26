@@ -98,7 +98,11 @@ namespace Server.SkillHandlers
         {
             private bool m_SetSkillTime = true;
 
-            public InternalTarget() : base(Core.AOS ? 3 : 2, false, TargetFlags.None)
+            //public InternalTarget() : base(Core.AOS ? 3 : 2, false, TargetFlags.None)
+            //{
+            //}
+
+            public InternalTarget() : base(3, false, TargetFlags.None)
             {
             }
 

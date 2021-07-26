@@ -34,6 +34,7 @@ using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
 using Server.Targeting;
 using Server.Utilities;
+using Server.Poker;
 using BaseQuestGump = Server.Engines.MLQuests.Gumps.BaseQuestGump;
 using CalcMoves = Server.Movement.Movement;
 using QuestOfferGump = Server.Engines.MLQuests.Gumps.QuestOfferGump;
@@ -202,6 +203,15 @@ namespace Server.Mobiles
         private DateTime[] m_StuckMenuUses;
 
         private QuestArrow m_QuestArrow;
+
+        ///////////////////////////////////////////////POKER
+        private PokerGame m_PokerGame; //Edit for Poker System
+        public PokerGame PokerGame
+        {
+            get { return m_PokerGame; }
+            set { m_PokerGame = value; }
+        }
+        ///////////////////////////////////////////////////////
 
 
         public PlayerMobile()
@@ -2432,15 +2442,15 @@ namespace Server.Mobiles
 
             base.Resurrect();
 
-            if (Alive && !wasAlive)
-            {
-                Item deathRobe = new DeathRobe();
+            //if (Alive && !wasAlive)
+            //{
+            //    Item deathRobe = new DeathRobe();
 
-                if (!EquipItem(deathRobe))
-                {
-                    deathRobe.Delete();
-                }
-            }
+            //    if (!EquipItem(deathRobe))
+            //    {
+            //        deathRobe.Delete();
+            //    }
+            //}
         }
 
         public override void OnWarmodeChanged()
@@ -3635,6 +3645,15 @@ namespace Server.Mobiles
 
         protected override bool OnMove(Direction d)
         {
+            if (m_PokerGame != null) //Start Edit For Poker
+            {
+                if (!HasGump<PokerLeaveGump>())
+                {
+                    SendGump(new PokerLeaveGump(this, m_PokerGame));
+                    return false;
+                }
+            } //End Edit For Poker
+
             if (!Core.SE)
             {
                 return base.OnMove(d);

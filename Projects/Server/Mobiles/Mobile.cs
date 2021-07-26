@@ -1121,7 +1121,8 @@ namespace Server
 
         public static CreateCorpseHandler CreateCorpseHandler { get; set; }
 
-        public virtual bool RetainPackLocsOnDeath => Core.AOS;
+        //public virtual bool RetainPackLocsOnDeath => Core.AOS;
+        public virtual bool RetainPackLocsOnDeath => true;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public Container Corpse { get; set; }
