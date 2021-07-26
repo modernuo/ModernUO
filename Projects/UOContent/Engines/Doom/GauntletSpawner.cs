@@ -22,7 +22,7 @@ namespace Server.Engines.Doom
 
         private GauntletSpawnerState m_State;
 
-        private Timer m_Timer;
+        private Timer.DelayCallTimer m_Timer;
 
         [Constructible]
         public GauntletSpawner(string typeName = null) : base(0x36FE)
@@ -136,7 +136,7 @@ namespace Server.Engines.Doom
                     CreateRegion();
                     FullSpawn();
 
-                    m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Slice);
+                    m_Timer = Timer.DelayCallReturnTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Slice);
                 }
                 else
                 {
@@ -177,6 +177,7 @@ namespace Server.Engines.Doom
             DestroyRegion();
 
             m_Timer?.Stop();
+            m_Timer?.Return();
             m_Timer = null;
         }
 

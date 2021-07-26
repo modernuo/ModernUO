@@ -864,7 +864,7 @@ namespace Server.Engines.ConPVP
 
     public sealed class KHGame : EventGame
     {
-        private Timer m_FinishTimer;
+        private Timer.DelayCallTimer m_FinishTimer;
 
         public KHGame(KHController controller, DuelContext context) : base(context) => Controller = controller;
 
@@ -1067,6 +1067,7 @@ namespace Server.Engines.ConPVP
                 );
             }
 
+            // TODO: Is this even needed?
             m_FinishTimer?.Stop();
 
             for (var i = 0; i < Controller.Hills.Length; i++)
@@ -1085,7 +1086,7 @@ namespace Server.Engines.ConPVP
                 }
             }
 
-            m_FinishTimer = Timer.DelayCall(Controller.Duration, Finish_Callback);
+            Timer.DelayCallInit(ref m_FinishTimer, Controller.Duration, Finish_Callback);
         }
 
         private void Finish_Callback()
@@ -1311,6 +1312,7 @@ namespace Server.Engines.ConPVP
             }
 
             m_FinishTimer?.Stop();
+            m_FinishTimer?.Return();
             m_FinishTimer = null;
         }
     }
