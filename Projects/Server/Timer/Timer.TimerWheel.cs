@@ -33,7 +33,7 @@ namespace Server
         private static readonly Timer[][] _rings = new Timer[_ringLayers][];
         private static readonly int[] _ringIndexes = new int[_ringLayers];
 
-        public static void Initialize(long tickCount)
+        public static void Init(long tickCount)
         {
             _lastTickTurned = tickCount;
 
@@ -107,21 +107,26 @@ namespace Server
             {
                 var next = timer._nextTimer;
                 var prof = timer.GetProfile();
+                var finished = timer.Count != 0 && ++timer.Index >= timer.Count;
+
+                // We remove it before `OnTick()` so time references can be nulled and returned to cache safely from within OnTick.
+                // This can be done in OnTick by checking if Index < Count - 1 (still more iterations left)
+                RemoveTimer(timer);
+
+                if (finished)
+                {
+                    timer.InternalStop();
+                }
 
                 prof?.Start();
                 timer.OnTick();
                 prof?.Finish();
 
-                if (timer.Running)
+                if (timer.Running && !finished)
                 {
-                    RemoveTimer(timer);
-
-                    if (timer.Count == 0 || ++timer.Index < timer.Count)
-                    {
-                        timer.Delay = timer.Interval;
-                        timer.Next = Core.Now + timer.Interval;
-                        AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
-                    }
+                    timer.Delay = timer.Interval;
+                    timer.Next = Core.Now + timer.Interval;
+                    AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
                 }
 
                 timer = next;
@@ -166,12 +171,7 @@ namespace Server
                         slot -= _ringSize;
                     }
 
-                    timer._nextTimer = _rings[i][slot];
-                    if (timer._nextTimer != null)
-                    {
-                        timer._nextTimer._prevTimer = timer;
-                    }
-
+                    timer.Attach(_rings[i][slot]);
                     timer._remaining = remaining;
                     timer._ring = i;
                     timer._slot = (int)slot;
@@ -188,22 +188,12 @@ namespace Server
 
         private static void RemoveTimer(Timer timer)
         {
-            if (timer._prevTimer != null)
-            {
-                timer._prevTimer._nextTimer = timer._nextTimer;
-            }
-            else
+            if (timer._prevTimer == null)
             {
                 _rings[timer._ring][timer._slot] = timer._nextTimer;
             }
 
-            if (timer._nextTimer != null)
-            {
-                timer._nextTimer._prevTimer = timer._prevTimer;
-            }
-
-            timer._nextTimer = null;
-            timer._prevTimer = null;
+            timer.Detach();
         }
 
         public static void DumpInfo(TextWriter tw)

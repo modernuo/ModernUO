@@ -15,11 +15,14 @@
 
 using System;
 using Server.Diagnostics;
+using Server.Logging;
 
 namespace Server
 {
     public partial class Timer
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Timer));
+
         // We need to know what ring/slot we are in so we can be removed if we are "head" of the link list.
         private int _ring;
         private int _slot;
@@ -32,8 +35,11 @@ namespace Server
         {
         }
 
-        public Timer(TimeSpan delay, TimeSpan interval, int count = 0)
+        public Timer(TimeSpan delay, TimeSpan interval, int count = 0) => Init(delay, interval, count);
+
+        public void Init(TimeSpan delay, TimeSpan interval, int count)
         {
+            Running = false;
             Delay = delay;
             Interval = interval;
             Count = count;
@@ -53,7 +59,8 @@ namespace Server
         public TimeSpan Delay { get; set; }
         public TimeSpan Interval { get; set; }
         public int Index { get; private set; }
-        public int Count { get; }
+        public int Count { get; private set; }
+        public int RemainingCount => Count - Index;
         public bool Running { get; private set; }
 
         public TimerProfile GetProfile() => !Core.Profiling ? null : TimerProfile.Acquire(ToString() ?? "null");
@@ -87,21 +94,50 @@ namespace Server
                 return this;
             }
 
-            Running = false;
             RemoveTimer(this);
+            InternalStop();
 
+            return this;
+        }
+
+        private void InternalStop()
+        {
+            Running = false;
             var prof = GetProfile();
 
             if (prof != null)
             {
                 prof.Stopped++;
             }
-
-            return this;
         }
 
         protected virtual void OnTick()
         {
+        }
+
+        private void Attach(Timer timer)
+        {
+            _nextTimer = timer;
+            if (timer != null)
+            {
+                timer._prevTimer = this;
+            }
+        }
+
+        private void Detach()
+        {
+            if (_prevTimer != null)
+            {
+                _prevTimer._nextTimer = _nextTimer;
+            }
+
+            if (_nextTimer != null)
+            {
+                _nextTimer._prevTimer = _prevTimer;
+            }
+
+            _nextTimer = null;
+            _prevTimer = null;
         }
     }
 }

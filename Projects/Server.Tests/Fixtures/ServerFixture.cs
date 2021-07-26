@@ -18,7 +18,7 @@ namespace Server.Tests
             // Configure the world
             World.Configure();
 
-            Timer.Initialize(0);
+            Timer.Init(0);
 
             // Load the world
             World.Load();
@@ -26,7 +26,7 @@ namespace Server.Tests
 
         public void Dispose()
         {
-            Timer.Initialize(0);
+            Timer.Init(0);
         }
     }
 }
