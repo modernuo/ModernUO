@@ -12,9 +12,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UOContent.Tests", "Projects
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks", "Projects\Benchmarks\Benchmarks.csproj", "{38B7E4A1-FDDD-486C-98EE-BA7B13712528}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializationGenerator", "Projects\SerializationGenerator\SerializationGenerator.csproj", "{07DDB8CF-F926-44F4-A584-FF2997D2C9D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SerializationGenerator", "Projects\SerializationGenerator\SerializationGenerator.csproj", "{07DDB8CF-F926-44F4-A584-FF2997D2C9D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializationSchemaGenerator", "Projects\SerializationSchemaGenerator\SerializationSchemaGenerator.csproj", "{A30150A3-796C-4C6D-B3E4-B7BEB0021701}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SerializationSchemaGenerator", "Projects\SerializationSchemaGenerator\SerializationSchemaGenerator.csproj", "{A30150A3-796C-4C6D-B3E4-B7BEB0021701}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

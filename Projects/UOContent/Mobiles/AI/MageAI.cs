@@ -491,18 +491,18 @@ namespace Server.Mobiles
                             spell = GetRandomManaDrainSpell();
                             break;
                         }
-                    case 7: // Invis ourselves
-                        {
-                            if (Utility.RandomBool())
-                            {
-                                goto default;
-                            }
+                    //case 7: // Invis ourselves
+                    //    {
+                    //        if (Utility.RandomBool())
+                    //        {
+                    //            goto default;
+                    //        }
 
-                            m_Mobile.DebugSay("Attempting to invis myself");
+                    //        m_Mobile.DebugSay("Attempting to invis myself");
 
-                            spell = new InvisibilitySpell(m_Mobile);
-                            break;
-                        }
+                    //        spell = new InvisibilitySpell(m_Mobile);
+                    //        break;
+                    //    }
                     default: // Damage them
                         {
                             m_Mobile.DebugSay("Just doing damage");
