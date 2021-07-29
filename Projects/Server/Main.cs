@@ -467,7 +467,7 @@ namespace Server
 
             VerifySerialization();
 
-            Timer.Initialize(TickCount);
+            Timer.Init(TickCount);
 
             AssemblyHandler.Invoke("Configure");
 

@@ -17,8 +17,6 @@ using System;
 
 namespace Server
 {
-    public delegate void TimerCallback();
-
     public delegate void TimerStateCallback<in T>(T state);
 
     public delegate void TimerStateCallback<in T1, in T2>(T1 t1, T2 t2);
@@ -32,15 +30,15 @@ namespace Server
         private static string FormatDelegate(Delegate callback) =>
             callback == null ? "null" : $"{callback.Method.DeclaringType?.FullName ?? ""}.{callback.Method.Name}";
 
-        public static Timer DelayCall(TimerCallback callback) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
+        public static Timer DelayCall(Action callback) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
 
-        public static Timer DelayCall(TimeSpan delay, TimerCallback callback) =>
+        public static Timer DelayCall(TimeSpan delay, Action callback) =>
             DelayCall(delay, TimeSpan.Zero, 1, callback);
 
-        public static Timer DelayCall(TimeSpan delay, TimeSpan interval, TimerCallback callback) =>
+        public static Timer DelayCall(TimeSpan delay, TimeSpan interval, Action callback) =>
             DelayCall(delay, interval, 0, callback);
 
-        public static Timer DelayCall(TimeSpan delay, TimeSpan interval, int count, TimerCallback callback)
+        public static Timer DelayCall(TimeSpan delay, TimeSpan interval, int count, Action callback)
         {
             Timer t = new DelayCallTimer(delay, interval, count, callback);
             t.Start();
@@ -143,7 +141,7 @@ namespace Server
 
         private class DelayCallTimer : Timer
         {
-            public DelayCallTimer(TimeSpan delay, TimeSpan interval, int count, TimerCallback callback) : base(
+            public DelayCallTimer(TimeSpan delay, TimeSpan interval, int count, Action callback) : base(
                 delay,
                 interval,
                 count
@@ -152,7 +150,7 @@ namespace Server
                 Callback = callback;
             }
 
-            public TimerCallback Callback { get; }
+            public Action Callback { get; }
 
             protected override void OnTick()
             {
