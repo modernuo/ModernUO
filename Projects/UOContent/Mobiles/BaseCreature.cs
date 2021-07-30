@@ -3803,15 +3803,16 @@ namespace Server.Mobiles
 
             foreach (var m in master.GetMobilesInRange(3))
             {
-                if (m is BaseCreature pet)
+                if (
+                    m is BaseCreature {
+                        Controlled: true,
+                        ControlOrder: OrderType.Guard or OrderType.Follow or OrderType.Come
+                    } pet
+                )
                 {
-                    if (pet.Controlled && pet.ControlMaster == master && !onlyBonded || pet.IsBonded)
+                    if (pet.ControlMaster == master && (!onlyBonded || pet.IsBonded))
                     {
-                        if (pet.ControlOrder == OrderType.Guard || pet.ControlOrder == OrderType.Follow ||
-                            pet.ControlOrder == OrderType.Come)
-                        {
-                            move.Add(pet);
-                        }
+                        move.Add(pet);
                     }
                 }
             }

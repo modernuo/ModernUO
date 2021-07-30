@@ -110,22 +110,19 @@ namespace Server
                 var finished = timer.Count != 0 && ++timer.Index >= timer.Count;
 
                 // We remove it before `OnTick()` so time references can be nulled and returned to cache safely from within OnTick.
-                // This can be done by checking if Index < Count - 1 (still more iterations)
-                if (timer.Running)
-                {
-                    RemoveTimer(timer);
+                // This can be done in OnTick by checking if Index < Count - 1 (still more iterations left)
+                RemoveTimer(timer);
 
-                    if (finished)
-                    {
-                        timer.InternalStop();
-                    }
+                if (finished)
+                {
+                    timer.InternalStop();
                 }
 
                 prof?.Start();
                 timer.OnTick();
                 prof?.Finish();
 
-                if (!finished)
+                if (timer.Running && !finished)
                 {
                     timer.Delay = timer.Interval;
                     timer.Next = Core.Now + timer.Interval;
