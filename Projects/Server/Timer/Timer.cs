@@ -37,7 +37,7 @@ namespace Server
 
         public Timer(TimeSpan delay, TimeSpan interval, int count = 0) => Init(delay, interval, count);
 
-        public void Init(TimeSpan delay, TimeSpan interval, int count)
+        protected void Init(TimeSpan delay, TimeSpan interval, int count)
         {
             Running = false;
             Delay = delay;
@@ -87,17 +87,15 @@ namespace Server
             return this;
         }
 
-        public Timer Stop()
+        public virtual void Stop()
         {
             if (!Running)
             {
-                return this;
+                return;
             }
 
             RemoveTimer(this);
             InternalStop();
-
-            return this;
         }
 
         private void InternalStop()
