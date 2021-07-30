@@ -47,7 +47,7 @@ namespace Server
 
         private static int _itemCount;
         private static int _mobileCount;
-        private static EventLoopContext _eventLoopContext;
+        public static EventLoopContext LoopContext { get; private set; }
 
         private static readonly Type[] _serialTypeArray = { typeof(Serial) };
 
@@ -366,9 +366,9 @@ namespace Server
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
-            _eventLoopContext = new EventLoopContext();
+            LoopContext = new EventLoopContext();
 
-            SynchronizationContext.SetSynchronizationContext(_eventLoopContext);
+            SynchronizationContext.SetSynchronizationContext(LoopContext);
 
             foreach (var a in args)
             {
@@ -505,7 +505,7 @@ namespace Server
                     events += NetState.Slice();
 
                     // Execute captured post-await methods (like Timer.Pause)
-                    events += _eventLoopContext.ExecuteTasks();
+                    events += LoopContext.ExecuteTasks();
 
                     _tickCount = 0;
                     _now = DateTime.MinValue;

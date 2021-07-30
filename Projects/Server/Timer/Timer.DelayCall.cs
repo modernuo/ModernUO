@@ -59,23 +59,23 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer DelayCallReturnTimer(Action callback) =>
-            DelayCallReturnTimer(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
+        public static DelayCallTimer DelayCallWithTimer(Action callback) =>
+            DelayCallWithTimer(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer DelayCallReturnTimer(TimeSpan delay, Action callback) =>
-            DelayCallReturnTimer(delay, TimeSpan.Zero, 1, callback);
+        public static DelayCallTimer DelayCallWithTimer(TimeSpan delay, Action callback) =>
+            DelayCallWithTimer(delay, TimeSpan.Zero, 1, callback);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer DelayCallReturnTimer(TimeSpan delay, TimeSpan interval, Action callback) =>
-            DelayCallReturnTimer(delay, interval, 0, callback);
+        public static DelayCallTimer DelayCallWithTimer(TimeSpan delay, TimeSpan interval, Action callback) =>
+            DelayCallWithTimer(delay, interval, 0, callback);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer DelayCallReturnTimer(TimeSpan interval, int count, Action callback) =>
-            DelayCallReturnTimer(TimeSpan.Zero, interval, count, callback);
+        public static DelayCallTimer DelayCallWithTimer(TimeSpan interval, int count, Action callback) =>
+            DelayCallWithTimer(TimeSpan.Zero, interval, count, callback);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer DelayCallReturnTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
+        public static DelayCallTimer DelayCallWithTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
         {
             DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
             t.Start();
@@ -103,7 +103,7 @@ namespace Server
         {
             if (timer == null)
             {
-                timer = DelayCallReturnTimer(delay, interval, count, callback);
+                timer = DelayCallWithTimer(delay, interval, count, callback);
             }
             else
             {
@@ -118,13 +118,20 @@ namespace Server
             private static DelayCallTimer _poolHead;
             public static int PoolOffset { get; private set; }
 
+            private Action _continuation;
+            private bool _complete;
+
             internal DelayCallTimer(TimeSpan delay, TimeSpan interval, int count, Action callback) : base(
                 delay,
                 interval,
                 count
-            ) => Callback = callback;
+            )
+            {
+                _complete = true;
+                _continuation = callback;
+            }
 
-            public Action Callback { get; private set; }
+            internal DelayCallTimer(TimeSpan delay) : base(delay) => Start();
 
             public void Init(Action callback) => Init(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
 
@@ -138,13 +145,10 @@ namespace Server
             public void Init(TimeSpan delay, TimeSpan interval, int count, Action callback)
             {
                 Init(delay, interval, count);
-                Callback = callback;
+                _continuation = callback;
             }
 
-            protected override void OnTick()
-            {
-                Callback?.Invoke();
-            }
+            protected override void OnTick() => _continuation?.Invoke();
 
             public override void Return()
             {
@@ -173,8 +177,24 @@ namespace Server
                 return new DelayCallTimer(delay, interval, count, callback);
             }
 
-            public override string ToString() => $"DelayCallTimer[{FormatDelegate(Callback)}]";
+            public override string ToString() => $"DelayCallTimer[{FormatDelegate(_continuation)}]";
+
+            public DelayCallTimer GetAwaiter() => this;
+
+            public bool IsCompleted => _complete;
+
+            public void OnCompleted(Action continuation) => _continuation = continuation;
+
+            public void GetResult()
+            {
+            }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer Pause(TimeSpan ms) => new(ms);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer Pause(int ms) => Pause(TimeSpan.FromMilliseconds(ms));
 
         public static void DelayCall(Action<Timer> callback) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
 
@@ -192,54 +212,24 @@ namespace Server
             t.Start();
         }
 
-        public static DelayCallTimerWithTimer DelayCallReturnTimer(Action<Timer> callback) =>
-            DelayCallReturnTimer(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
+        public static DelayCallTimerWithTimer DelayCallWithTimer(Action<Timer> callback) =>
+            DelayCallWithTimer(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
 
-        public static DelayCallTimerWithTimer DelayCallReturnTimer(TimeSpan delay, Action<Timer> callback) =>
-            DelayCallReturnTimer(delay, TimeSpan.Zero, 1, callback);
+        public static DelayCallTimerWithTimer DelayCallWithTimer(TimeSpan delay, Action<Timer> callback) =>
+            DelayCallWithTimer(delay, TimeSpan.Zero, 1, callback);
 
-        public static DelayCallTimerWithTimer DelayCallReturnTimer(TimeSpan delay, TimeSpan interval, Action<Timer> callback) =>
-            DelayCallReturnTimer(delay, interval, 0, callback);
+        public static DelayCallTimerWithTimer DelayCallWithTimer(TimeSpan delay, TimeSpan interval, Action<Timer> callback) =>
+            DelayCallWithTimer(delay, interval, 0, callback);
 
-        public static DelayCallTimerWithTimer DelayCallReturnTimer(TimeSpan interval, int count, Action<Timer> callback) =>
-            DelayCallReturnTimer(TimeSpan.Zero, interval, count, callback);
+        public static DelayCallTimerWithTimer DelayCallWithTimer(TimeSpan interval, int count, Action<Timer> callback) =>
+            DelayCallWithTimer(TimeSpan.Zero, interval, count, callback);
 
-        public static DelayCallTimerWithTimer DelayCallReturnTimer(TimeSpan delay, TimeSpan interval, int count, Action<Timer> callback)
+        public static DelayCallTimerWithTimer DelayCallWithTimer(TimeSpan delay, TimeSpan interval, int count, Action<Timer> callback)
         {
             DelayCallTimerWithTimer t = DelayCallTimerWithTimer.GetTimer(delay, interval, count, callback);
             t.Start();
 
             return t;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCallInit(ref DelayCallTimerWithTimer timer, Action<Timer> callback) =>
-            DelayCallInit(ref timer, TimeSpan.Zero, TimeSpan.Zero, 1, callback);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCallInit(ref DelayCallTimerWithTimer timer, TimeSpan delay, Action<Timer> callback) =>
-            DelayCallInit(ref timer, delay, TimeSpan.Zero, 1, callback);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCallInit(ref DelayCallTimerWithTimer timer, TimeSpan delay, TimeSpan interval, Action<Timer> callback) =>
-            DelayCallInit(ref timer, delay, interval, 0, callback);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCallInit(ref DelayCallTimerWithTimer timer, TimeSpan interval, int count, Action<Timer> callback) =>
-            DelayCallInit(ref timer, TimeSpan.Zero, interval, count, callback);
-
-        public static void DelayCallInit(ref DelayCallTimerWithTimer timer, TimeSpan delay, TimeSpan interval, int count, Action<Timer> callback)
-        {
-            if (timer == null)
-            {
-                timer = DelayCallReturnTimer(delay, interval, count, callback);
-            }
-            else
-            {
-                timer.Stop();
-                timer.Init(delay, interval, count, callback);
-                timer.Start();
-            }
         }
 
         public sealed class DelayCallTimerWithTimer : PooledTimer
