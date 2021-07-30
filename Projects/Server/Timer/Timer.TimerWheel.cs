@@ -113,11 +113,6 @@ namespace Server
                 // This can be done in OnTick by checking if Index < Count - 1 (still more iterations left)
                 RemoveTimer(timer);
 
-                if (finished)
-                {
-                    timer.InternalStop();
-                }
-
                 prof?.Start();
                 timer.OnTick();
                 prof?.Finish();
@@ -127,6 +122,10 @@ namespace Server
                     timer.Delay = timer.Interval;
                     timer.Next = Core.Now + timer.Interval;
                     AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
+                }
+                else
+                {
+                    timer.Stop();
                 }
 
                 timer = next;

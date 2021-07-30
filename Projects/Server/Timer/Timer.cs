@@ -95,11 +95,6 @@ namespace Server
             }
 
             RemoveTimer(this);
-            InternalStop();
-        }
-
-        private void InternalStop()
-        {
             Running = false;
             var prof = GetProfile();
 

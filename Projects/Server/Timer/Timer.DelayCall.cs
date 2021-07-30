@@ -41,6 +41,7 @@ namespace Server
             public override void Stop()
             {
                 base.Stop();
+
                 if (_selfReturn)
                 {
                     Return();
@@ -235,19 +236,15 @@ namespace Server
             private static int _maxPoolSize = 1024;
             private static int _poolSize;
             private static DelayCallTimerWithTimer _poolHead;
+            private Action<Timer> _callback;
 
             internal DelayCallTimerWithTimer(TimeSpan delay, TimeSpan interval, int count, Action<Timer> callback) : base(
                 delay,
                 interval,
                 count
-            ) => Callback = callback;
+            ) => _callback = callback;
 
-            public Action<Timer> Callback { get; private set; }
-
-            protected override void OnTick()
-            {
-                Callback?.Invoke(this);
-            }
+            protected override void OnTick() => _callback?.Invoke(this);
 
             public override void Return()
             {
@@ -277,7 +274,7 @@ namespace Server
                     var timer = _poolHead;
                     timer.Detach();
                     timer.Init(delay, interval, count);
-                    timer.Callback = callback;
+                    timer._callback = callback;
                     timer._selfReturn = false;
 
                     return timer;
@@ -287,7 +284,7 @@ namespace Server
                 return new DelayCallTimerWithTimer(delay, interval, count, callback);
             }
 
-            public override string ToString() => $"DelayCallTimerWithTimer[{FormatDelegate(Callback)}]";
+            public override string ToString() => $"DelayCallTimerWithTimer[{FormatDelegate(_callback)}]";
         }
     }
 }
