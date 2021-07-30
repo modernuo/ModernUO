@@ -26,13 +26,15 @@ namespace Server
 
         public abstract class PooledTimer : Timer
         {
-            private readonly bool _selfReturn;
+            internal bool _selfReturn;
             internal bool _allowFinalization;
 
-            internal PooledTimer(TimeSpan delay, bool selfReturn = true) : base(delay) => _selfReturn = selfReturn;
+            internal PooledTimer(TimeSpan delay) : base(delay)
+            {
+            }
 
-            internal PooledTimer(TimeSpan delay, TimeSpan interval, int count = 0, bool selfReturn = false)
-                : base(delay, interval, count) => _selfReturn = selfReturn;
+            internal PooledTimer(TimeSpan delay, TimeSpan interval, int count = 0) : base(delay, interval, count)
+            {}
 
             public abstract void Return();
 
@@ -72,6 +74,7 @@ namespace Server
         public static void DelayCall(TimeSpan delay, TimeSpan interval, int count, Action callback)
         {
             DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
+            t._selfReturn = true;
             t.Start();
         }
 
@@ -152,6 +155,7 @@ namespace Server
                     timer.Detach();
                     timer.Init(delay, interval, count);
                     timer._continuation = callback;
+                    timer._selfReturn = false;
 
                     return timer;
                 }
@@ -197,6 +201,7 @@ namespace Server
         public static void DelayCall(TimeSpan delay, TimeSpan interval, int count, Action<Timer> callback)
         {
             DelayCallTimerWithTimer t = DelayCallTimerWithTimer.GetTimer(delay, interval, count, callback);
+            t._selfReturn = true;
             t.Start();
         }
 
@@ -273,6 +278,7 @@ namespace Server
                     timer.Detach();
                     timer.Init(delay, interval, count);
                     timer.Callback = callback;
+                    timer._selfReturn = false;
 
                     return timer;
                 }
