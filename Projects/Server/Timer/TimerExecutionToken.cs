@@ -23,7 +23,7 @@ namespace Server
 
         internal TimerExecutionToken(Timer.DelayCallTimer timer) => _timer = timer;
 
-        public bool CanCancel
+        public bool Running
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _timer?.Running == true;

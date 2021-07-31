@@ -8,7 +8,7 @@ namespace Server.Engines.Quests
     {
         private int m_Charges;
 
-        private Timer m_PlayTimer;
+        private TimerExecutionToken _playTokenTimer;
 
         [Constructible]
         public HornOfRetreat() : base(0xFC4)
@@ -62,7 +62,7 @@ namespace Server.Engines.Quests
                 {
                     from.SendLocalizedMessage(1076154); // You can only use this in Trammel and Malas.
                 }
-                else if (m_PlayTimer != null)
+                else if (_playTokenTimer.Running)
                 {
                     SendLocalizedMessageTo(from, 1042144); // This is currently in use.
                 }
@@ -74,7 +74,7 @@ namespace Server.Engines.Quests
 
                     --Charges;
 
-                    m_PlayTimer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => PlayTimer_Callback(from));
+                    Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => PlayTimer_Callback(from), out _playTokenTimer);
                 }
                 else
                 {
@@ -89,7 +89,7 @@ namespace Server.Engines.Quests
 
         public virtual void PlayTimer_Callback(Mobile from)
         {
-            m_PlayTimer = null;
+            _playTokenTimer = null;
 
             var gate = new HornOfRetreatMoongate(DestLoc, DestMap, from, Hue);
 

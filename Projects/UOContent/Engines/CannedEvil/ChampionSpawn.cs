@@ -1303,7 +1303,7 @@ namespace Server.Engines.CannedEvil
             writer.Write(Champion);
             writer.Write(RestartDelay);
 
-            if (_restartTimerToken.CanCancel)
+            if (_restartTimerToken.Running)
             {
                 writer.Write(true);
                 writer.WriteDeltaTime(RestartTime);
