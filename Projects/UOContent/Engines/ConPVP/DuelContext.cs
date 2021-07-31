@@ -1058,7 +1058,7 @@ namespace Server.Engines.ConPVP
         public void StartCountdown(int count, CountdownCallback cb)
         {
             cb(count);
-            m_Countdown = Timer.DelayCallWithTimer(
+            m_Countdown = Timer.GetDelayCallTimer(
                 TimeSpan.FromSeconds(1.0),
                 TimeSpan.FromSeconds(1.0),
                 count - 1,
@@ -1100,11 +1100,11 @@ namespace Server.Engines.ConPVP
         {
             m_SDWarnTimer?.Stop();
 
-            m_SDWarnTimer = Timer.DelayCallWithTimer(TimeSpan.FromMinutes(timeUntilActive.TotalMinutes * 0.9), WarnSuddenDeath);
+            m_SDWarnTimer = Timer.GetDelayCallTimer(TimeSpan.FromMinutes(timeUntilActive.TotalMinutes * 0.9), WarnSuddenDeath);
 
             m_SDActivateTimer?.Stop();
 
-            m_SDActivateTimer = Timer.DelayCallWithTimer(timeUntilActive, ActivateSuddenDeath);
+            m_SDActivateTimer = Timer.GetDelayCallTimer(timeUntilActive, ActivateSuddenDeath);
         }
 
         public void WarnSuddenDeath()
@@ -1179,7 +1179,7 @@ namespace Server.Engines.ConPVP
 
             if (m_AutoTieTimer == null)
             {
-                m_AutoTieTimer = Timer.DelayCallWithTimer(ts, InvokeAutoTie);
+                m_AutoTieTimer = Timer.GetDelayCallTimer(ts, InvokeAutoTie);
             }
             else
             {

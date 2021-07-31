@@ -21,7 +21,7 @@ namespace Server
 {
     public partial class Timer
     {
-        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Timer));
+        protected internal static readonly ILogger logger = LogFactory.GetLogger(typeof(Timer));
 
         // We need to know what ring/slot we are in so we can be removed if we are "head" of the link list.
         private int _ring;

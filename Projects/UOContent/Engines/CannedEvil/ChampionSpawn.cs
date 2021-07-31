@@ -42,10 +42,10 @@ namespace Server.Engines.CannedEvil
 
         //Goes back each level, below level 0 and it goes off!
 
-        private Timer.DelayCallTimer m_Timer;
+        private TimerExecutionToken m_Timer;
 
         private IdolOfTheChampion m_Idol;
-        private Timer.DelayCallTimer _restartTimer;
+        private TimerExecutionToken _restartTimerToken;
 
         public virtual string BroadcastMessage => "The Champion has sensed your presence!  Beware its wrath!";
         public virtual bool ProximitySpawn => false;
@@ -58,21 +58,6 @@ namespace Server.Engines.CannedEvil
         public virtual bool HasStarRoomGate => true;
 
         public Dictionary<Mobile, int> DamageEntries { get; private set; }
-
-        public Timer.DelayCallTimer RestartTimer
-        {
-            get => _restartTimer;
-            set
-            {
-                if (value == null)
-                {
-                    _restartTimer?.Stop();
-                    _restartTimer?.Return();
-                }
-
-                _restartTimer = value;
-            }
-        }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool ConfinedRoaming { get; set; }
@@ -317,9 +302,10 @@ namespace Server.Engines.CannedEvil
             HasBeenAdvanced = false;
             m_MaxLevel = 16 + Utility.Random(3);
 
-            Timer.DelayCallInit(ref m_Timer, TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnSlice);
+            m_Timer.Cancel();
+            Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnSlice, out m_Timer);
 
-            RestartTimer = null;
+            _restartTimerToken.Cancel();
 
             if (m_Altar != null)
             {
@@ -346,11 +332,8 @@ namespace Server.Engines.CannedEvil
             HasBeenAdvanced = false;
             m_MaxLevel = 0;
 
-            m_Timer?.Stop();
-            m_Timer?.Return();
-            m_Timer = null;
-
-            RestartTimer = null;
+            m_Timer.Cancel();
+            _restartTimerToken.Cancel();
 
             if (m_Altar != null)
             {
@@ -378,7 +361,8 @@ namespace Server.Engines.CannedEvil
         public void BeginRestart(TimeSpan ts)
         {
             RestartTime = Core.Now + ts;
-            Timer.DelayCallInit(ref _restartTimer, ts, EndRestart);
+            _restartTimerToken.Cancel();
+            Timer.DelayCall(ts, EndRestart, out _restartTimerToken);
         }
 
         public void EndRestart()
@@ -1319,11 +1303,14 @@ namespace Server.Engines.CannedEvil
             writer.Write(Champion);
             writer.Write(RestartDelay);
 
-            writer.Write(RestartTimer != null);
-
-            if (RestartTimer != null)
+            if (_restartTimerToken.CanCancel)
             {
+                writer.Write(true);
                 writer.WriteDeltaTime(RestartTime);
+            }
+            else
+            {
+                writer.Write(false);
             }
         }
 

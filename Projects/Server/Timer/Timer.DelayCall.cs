@@ -24,41 +24,6 @@ namespace Server
         private static string FormatDelegate(Delegate callback) =>
             callback == null ? "null" : $"{callback.Method.DeclaringType?.FullName ?? ""}.{callback.Method.Name}";
 
-        public abstract class PooledTimer : Timer
-        {
-            internal bool _selfReturn;
-            internal bool _allowFinalization;
-
-            internal PooledTimer(TimeSpan delay) : base(delay)
-            {
-            }
-
-            internal PooledTimer(TimeSpan delay, TimeSpan interval, int count = 0) : base(delay, interval, count)
-            {}
-
-            public abstract void Return();
-
-            public override void Stop()
-            {
-                base.Stop();
-
-                if (_selfReturn)
-                {
-                    Return();
-                }
-            }
-
-#if DEBUG
-            ~PooledTimer()
-            {
-                if (!_allowFinalization)
-                {
-                    logger.Warning($"{this} was not returned to the pool.\n{new StackTrace()}");
-                }
-            }
-#endif
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DelayCall(Action callback) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
 
@@ -82,28 +47,28 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer DelayCallWithTimer(Action callback) =>
-            DelayCallWithTimer(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
+        public static void DelayCall(Action callback, out TimerExecutionToken token) =>
+            DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, out token);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer DelayCallWithTimer(TimeSpan delay, Action callback) =>
-            DelayCallWithTimer(delay, TimeSpan.Zero, 1, callback);
+        public static void DelayCall(TimeSpan delay, Action callback, out TimerExecutionToken token) =>
+            DelayCall(delay, TimeSpan.Zero, 1, callback, out token);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer DelayCallWithTimer(TimeSpan delay, TimeSpan interval, Action callback) =>
-            DelayCallWithTimer(delay, interval, 0, callback);
+        public static void DelayCall(TimeSpan delay, TimeSpan interval, Action callback, out TimerExecutionToken token) =>
+            DelayCall(delay, interval, 0, callback, out token);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer DelayCallWithTimer(TimeSpan interval, int count, Action callback) =>
-            DelayCallWithTimer(TimeSpan.Zero, interval, count, callback);
+        public static void DelayCall(TimeSpan interval, int count, Action callback, out TimerExecutionToken token) =>
+            DelayCall(TimeSpan.Zero, interval, count, callback, out token);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer DelayCallWithTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
+        public static void DelayCall(TimeSpan delay, TimeSpan interval, int count, Action callback, out TimerExecutionToken token)
         {
             DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
             t.Start();
 
-            return t;
+            token = new TimerExecutionToken(t);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -112,7 +77,7 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DelayCallTimer Pause(int ms) => Pause(TimeSpan.FromMilliseconds(ms));
 
-        public sealed class DelayCallTimer : PooledTimer, INotifyCompletion
+        public sealed class DelayCallTimer : Timer, INotifyCompletion
         {
             private static int _maxPoolSize = 1024;
             private static int _poolSize;
@@ -128,6 +93,10 @@ namespace Server
                 }
             }
 
+            internal bool _selfReturn;
+#if DEBUG
+            internal bool _allowFinalization;
+#endif
             private Action _continuation;
             private bool _complete;
 
@@ -145,7 +114,17 @@ namespace Server
                 _continuation?.Invoke();
             }
 
-            public override void Return()
+            public override void Stop()
+            {
+                base.Stop();
+
+                if (_selfReturn)
+                {
+                    Return();
+                }
+            }
+
+            internal void Return()
             {
                 if (Running)
                 {
@@ -155,8 +134,10 @@ namespace Server
 
                 if (_poolSize > _maxPoolSize)
                 {
+#if DEBUG
                     logger.Debug($"DelayCallTimer pool reached maximum of {_maxPoolSize} timers");
                     _allowFinalization = true;
+#endif
                     return;
                 }
 
@@ -184,6 +165,16 @@ namespace Server
             }
 
             public override string ToString() => $"DelayCallTimer[{FormatDelegate(_continuation)}]";
+
+#if DEBUG
+            ~DelayCallTimer()
+            {
+                if (!_allowFinalization)
+                {
+                    logger.Warning($"{this} was not returned to the pool.");
+                }
+            }
+#endif
 
             public DelayCallTimer GetAwaiter() => this;
 

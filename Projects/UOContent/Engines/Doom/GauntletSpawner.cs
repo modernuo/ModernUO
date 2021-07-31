@@ -136,7 +136,7 @@ namespace Server.Engines.Doom
                     CreateRegion();
                     FullSpawn();
 
-                    m_Timer = Timer.DelayCallWithTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Slice);
+                    m_Timer = Timer.GetDelayCallTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Slice);
                 }
                 else
                 {
