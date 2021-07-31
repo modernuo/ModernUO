@@ -48,13 +48,15 @@ namespace Server
                 }
             }
 
+#if DEBUG
             ~PooledTimer()
             {
                 if (!_allowFinalization)
                 {
-                    logger.Debug($"{this} was not returned to the pool.\n{new StackTrace()}");
+                    logger.Warning($"{this} was not returned to the pool.\n{new StackTrace()}");
                 }
             }
+#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
