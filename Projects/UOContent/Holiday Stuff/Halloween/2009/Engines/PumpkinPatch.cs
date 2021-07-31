@@ -7,7 +7,7 @@ namespace Server.Engines.Events
 {
     public static class PumpkinPatchSpawner
     {
-        private static Timer m_Timer;
+        private static TimerExecutionToken _timerToken;
 
         private static readonly Rectangle2D[] m_PumpkinFields =
         {
@@ -27,7 +27,7 @@ namespace Server.Engines.Events
 
             if (now >= HolidaySettings.StartHalloween && now <= HolidaySettings.FinishHalloween)
             {
-                m_Timer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(30), 0, PumpkinPatchSpawnerCallback);
+                Timer.DelayCall(TimeSpan.FromSeconds(30), 0, PumpkinPatchSpawnerCallback, out _timerToken);
             }
         }
 

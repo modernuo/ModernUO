@@ -47,6 +47,29 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer StartTimer(Action callback) => StartTimer(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer StartTimer(TimeSpan delay, Action callback) => StartTimer(delay, TimeSpan.Zero, 1, callback);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer StartTimer(TimeSpan delay, TimeSpan interval, Action callback) =>
+            StartTimer(delay, interval, 0, callback);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer StartTimer(TimeSpan interval, int count, Action callback) =>
+            StartTimer(TimeSpan.Zero, interval, count, callback);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer StartTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
+        {
+            DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
+            t.Start();
+
+            return t;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DelayCall(Action callback, out TimerExecutionToken token) =>
             DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, out token);
 
@@ -131,6 +154,8 @@ namespace Server
                     logger.Error($"Timer is returned while still running! {new StackTrace()}");
                     return;
                 }
+
+                Version++; // Increment the version so if this is called from OnTick() and another timer is started, we don't have a problem
 
                 if (_poolSize > _maxPoolSize)
                 {

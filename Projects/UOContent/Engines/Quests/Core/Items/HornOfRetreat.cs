@@ -89,7 +89,7 @@ namespace Server.Engines.Quests
 
         public virtual void PlayTimer_Callback(Mobile from)
         {
-            _playTokenTimer = null;
+            _playTokenTimer.Cancel();
 
             var gate = new HornOfRetreatMoongate(DestLoc, DestMap, from, Hue);
 

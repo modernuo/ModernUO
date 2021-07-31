@@ -8,8 +8,8 @@ namespace Server.Engines.Events
 {
     public static class HalloweenHauntings
     {
-        private static Timer m_Timer;
-        private static Timer m_ClearTimer;
+        private static TimerExecutionToken _timerToken;
+        private static TimerExecutionToken _clearTimerToken;
 
         private static int m_TotalZombieLimit;
         private static int m_DeathQueueLimit;
@@ -57,9 +57,8 @@ namespace Server.Engines.Events
 
             if (today >= HolidaySettings.StartHalloween && today <= HolidaySettings.FinishHalloween)
             {
-                m_Timer = Timer.DelayCall(tick, tick, Timer_Callback);
-
-                m_ClearTimer = Timer.DelayCall(clear, clear, Clear_Callback);
+                Timer.DelayCall(tick, tick, Timer_Callback, out _timerToken);
+                Timer.DelayCall(clear, clear, Clear_Callback, out _clearTimerToken);
 
                 EventSink.PlayerDeath += EventSink_PlayerDeath;
             }
@@ -67,8 +66,8 @@ namespace Server.Engines.Events
 
         public static void EventSink_PlayerDeath(Mobile m)
         {
-            if (m is PlayerMobile pm && !pm.Deleted && m_Timer.Running && !m_DeathQueue.Contains(pm) &&
-                m_DeathQueue.Count < m_DeathQueueLimit)
+            if (m is PlayerMobile { Deleted: false } pm &&
+                _timerToken.Running && !m_DeathQueue.Contains(pm) && m_DeathQueue.Count < m_DeathQueueLimit)
             {
                 m_DeathQueue.Add(pm);
             }
@@ -82,7 +81,7 @@ namespace Server.Engines.Events
 
             if (Core.Now <= HolidaySettings.FinishHalloween)
             {
-                m_ClearTimer.Stop();
+                _clearTimerToken.Cancel();
             }
         }
 
@@ -90,42 +89,41 @@ namespace Server.Engines.Events
         {
             PlayerMobile player = null;
 
-            if (Core.Now <= HolidaySettings.FinishHalloween)
+            if (Core.Now > HolidaySettings.FinishHalloween)
             {
-                for (var index = 0; m_DeathQueue.Count > 0 && index < m_DeathQueue.Count; index++)
+                _timerToken.Cancel();
+                return;
+            }
+
+            for (var index = 0; m_DeathQueue.Count > 0 && index < m_DeathQueue.Count; index++)
+            {
+                var entry = m_DeathQueue[index];
+
+                if (!ReAnimated.ContainsKey(entry))
                 {
-                    var entry = m_DeathQueue[index];
-
-                    if (!ReAnimated.ContainsKey(entry))
-                    {
-                        player = entry;
-                        break;
-                    }
-                }
-
-                if (player?.Deleted == false && ReAnimated.Count < m_TotalZombieLimit)
-                {
-                    var map = Utility.RandomBool() ? Map.Trammel : Map.Felucca;
-
-                    var home = GetRandomPointInRect(m_Cemetaries.RandomElement(), map);
-
-                    if (map.CanSpawnMobile(home))
-                    {
-                        var zombieskel = new ZombieSkeleton(player);
-
-                        ReAnimated.Add(player, zombieskel);
-                        zombieskel.Home = home;
-                        zombieskel.RangeHome = 10;
-
-                        zombieskel.MoveToWorld(home, map);
-
-                        m_DeathQueue.Remove(player);
-                    }
+                    player = entry;
+                    break;
                 }
             }
-            else
+
+            if (player?.Deleted == false && ReAnimated.Count < m_TotalZombieLimit)
             {
-                m_Timer.Stop();
+                var map = Utility.RandomBool() ? Map.Trammel : Map.Felucca;
+
+                var home = GetRandomPointInRect(m_Cemetaries.RandomElement(), map);
+
+                if (map.CanSpawnMobile(home))
+                {
+                    var zombieskel = new ZombieSkeleton(player);
+
+                    ReAnimated.Add(player, zombieskel);
+                    zombieskel.Home = home;
+                    zombieskel.RangeHome = 10;
+
+                    zombieskel.MoveToWorld(home, map);
+
+                    m_DeathQueue.Remove(player);
+                }
             }
         }
 

@@ -38,7 +38,7 @@ namespace Server.Engines.Quests
             typeof(TerribleHatchlingsQuest)
         };
 
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         public QuestSystem(PlayerMobile from)
         {
@@ -69,19 +69,17 @@ namespace Server.Engines.Quests
 
         public virtual void StartTimer()
         {
-            if (m_Timer != null)
+            if (_timerToken.Running)
             {
                 return;
             }
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), Slice);
+            Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), Slice, out _timerToken);
         }
 
         public virtual void StopTimer()
         {
-            m_Timer?.Stop();
-
-            m_Timer = null;
+            _timerToken.Cancel();
         }
 
         public virtual void Slice()

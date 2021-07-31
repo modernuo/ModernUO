@@ -26,7 +26,6 @@ namespace Server
         // We need to know what ring/slot we are in so we can be removed if we are "head" of the link list.
         private int _ring;
         private int _slot;
-
         private long _remaining;
         private Timer _nextTimer;
         private Timer _prevTimer;
@@ -54,6 +53,8 @@ namespace Server
                 prof.Created++;
             }
         }
+
+        protected int Version { get; set; } // Used to determine if a timer was altered and we should abandon it.
 
         public DateTime Next { get; private set; }
         public TimeSpan Delay { get; set; }

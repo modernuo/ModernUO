@@ -9,7 +9,7 @@ namespace Server.Items
         private static Type[] m_TypesOfEntries;
         private StealableInstance[] m_Artifacts;
 
-        private Timer m_RespawnTimer;
+        private TimerExecutionToken _respawnTimerToken;
         private Dictionary<Item, StealableInstance> m_Table;
 
         private StealableArtifactsSpawner() : base(1)
@@ -24,7 +24,7 @@ namespace Server.Items
                 m_Artifacts[i] = new StealableInstance(Entries[i]);
             }
 
-            m_RespawnTimer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMinutes(15.0), CheckRespawn);
+            Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMinutes(15.0), CheckRespawn, out _respawnTimerToken);
         }
 
         public StealableArtifactsSpawner(Serial serial) : base(serial) => Instance = this;
@@ -244,11 +244,7 @@ namespace Server.Items
         {
             base.OnDelete();
 
-            if (m_RespawnTimer != null)
-            {
-                m_RespawnTimer.Stop();
-                m_RespawnTimer = null;
-            }
+            _respawnTimerToken.Cancel();
 
             foreach (var si in m_Artifacts)
             {
@@ -316,7 +312,7 @@ namespace Server.Items
                 m_Artifacts[i] = new StealableInstance(Entries[i]);
             }
 
-            m_RespawnTimer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMinutes(15.0), CheckRespawn);
+            Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMinutes(15.0), CheckRespawn, out _respawnTimerToken);
         }
 
         public class StealableEntry

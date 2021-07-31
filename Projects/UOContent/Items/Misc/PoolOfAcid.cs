@@ -10,7 +10,7 @@ namespace Server.Items
         private readonly TimeSpan m_Duration;
         private readonly int m_MaxDamage;
         private readonly int m_MinDamage;
-        private readonly Timer m_Timer;
+        private TimerExecutionToken _timerToken;
         private bool m_Drying;
 
         [Constructible]
@@ -30,7 +30,7 @@ namespace Server.Items
             m_Created = Core.Now;
             m_Duration = duration;
 
-            m_Timer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick);
+            Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
         }
 
         public PoolOfAcid(Serial serial) : base(serial)
@@ -41,7 +41,7 @@ namespace Server.Items
 
         public override void OnAfterDelete()
         {
-            m_Timer?.Stop();
+            _timerToken.Cancel();
         }
 
         private void OnTick()

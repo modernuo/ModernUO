@@ -113,15 +113,17 @@ namespace Server
                 // This can be done in OnTick by checking if Index < Count - 1 (still more iterations left)
                 RemoveTimer(timer);
 
+                var version = timer.Version;
+
                 prof?.Start();
                 timer.OnTick();
                 prof?.Finish();
 
-                if (timer.Running)
+                // If the timer has not been stopped, and it has not been altered (shared timers)
+                if (timer.Running && timer.Version == version)
                 {
                     if (finished)
                     {
-                        // Stop wasn't called in `OnTick()` so it is safe to stop it here.
                         timer.Stop();
                     }
                     else

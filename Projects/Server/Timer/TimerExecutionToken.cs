@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Runtime.CompilerServices;
 
 namespace Server
@@ -39,6 +40,12 @@ namespace Server
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _timer?.RemainingCount ?? 0;
+        }
+
+        public DateTime Next
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _timer?.Next ?? DateTime.MinValue;
         }
 
         public void Cancel()

@@ -33,7 +33,7 @@ namespace Server.Items
         private bool m_RewardAvailable;
 
         // evaluate timer
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         // vacation info
         private int m_VacationLeft;
@@ -68,7 +68,7 @@ namespace Server.Items
 
             Events = new List<int>();
 
-            m_Timer = Timer.DelayCall(EvaluationInterval, EvaluationInterval, Evaluate);
+            Timer.DelayCall(EvaluationInterval, EvaluationInterval, Evaluate, out _timerToken);
         }
 
         public Aquarium(Serial serial) : base(serial)
@@ -193,11 +193,7 @@ namespace Server.Items
 
         public override void OnDelete()
         {
-            if (m_Timer != null)
-            {
-                m_Timer.Stop();
-                m_Timer = null;
-            }
+            _timerToken.Cancel();
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -529,14 +525,7 @@ namespace Server.Items
             writer.Write(3); // Version
 
             // version 1
-            if (m_Timer != null)
-            {
-                writer.Write(m_Timer.Next);
-            }
-            else
-            {
-                writer.Write(Core.Now + EvaluationInterval);
-            }
+            writer.Write(_timerToken.Running ? _timerToken.Next : Core.Now + EvaluationInterval);
 
             // version 0
             writer.Write(LiveCreatures);
@@ -574,7 +563,7 @@ namespace Server.Items
                             next = Core.Now;
                         }
 
-                        m_Timer = Timer.DelayCall(next - Core.Now, EvaluationInterval, Evaluate);
+                        Timer.DelayCall(next - Core.Now, EvaluationInterval, Evaluate, out _timerToken);
 
                         goto case 0;
                     }

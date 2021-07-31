@@ -11,7 +11,7 @@ namespace Server.Items
     {
         private Mobile m_LitBy;
         private int m_Ticks;
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
         private List<Mobile> m_Users;
 
         [Constructible]
@@ -55,15 +55,15 @@ namespace Server.Items
                 return;
             }
 
-            if (m_Timer == null)
+            if (_timerToken.Running)
             {
-                m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), OnFirebombTimerTick);
-                m_LitBy = from;
-                from.SendLocalizedMessage(1060582); // You light the firebomb.  Throw it now!
+                from.SendLocalizedMessage(1060581); // You've already lit it!  Better throw it now!
             }
             else
             {
-                from.SendLocalizedMessage(1060581); // You've already lit it!  Better throw it now!
+                Timer.DelayCall(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), OnFirebombTimerTick, out _timerToken);
+                m_LitBy = from;
+                from.SendLocalizedMessage(1060582); // You light the firebomb.  Throw it now!
             }
 
             m_Users ??= new List<Mobile>();
@@ -80,7 +80,7 @@ namespace Server.Items
         {
             if (Deleted)
             {
-                m_Timer.Stop();
+                _timerToken.Cancel();
                 return;
             }
 
@@ -158,7 +158,7 @@ namespace Server.Items
                             new FirebombField(m_LitBy, toDamage).MoveToWorld(Location, Map);
                         }
 
-                        m_Timer.Stop();
+                        _timerToken.Cancel();
                         Delete();
                         break;
                     }
@@ -172,7 +172,7 @@ namespace Server.Items
                 return;
             }
 
-            if (!(obj is IPoint3D p))
+            if (obj is not IPoint3D p)
             {
                 return;
             }
@@ -219,7 +219,7 @@ namespace Server.Items
         private readonly List<Mobile> m_Burning;
         private readonly DateTime m_Expire;
         private readonly Mobile m_LitBy;
-        private readonly Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         public FirebombField(Mobile litBy, List<Mobile> toDamage) : base(0x376A)
         {
@@ -227,7 +227,7 @@ namespace Server.Items
             m_LitBy = litBy;
             m_Expire = Core.Now + TimeSpan.FromSeconds(10);
             m_Burning = toDamage;
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnFirebombFieldTimerTick);
+            Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnFirebombFieldTimerTick, out _timerToken);
         }
 
         public FirebombField(Serial serial) : base(serial)
@@ -266,7 +266,7 @@ namespace Server.Items
         {
             if (Deleted)
             {
-                m_Timer.Stop();
+                _timerToken.Cancel();
                 return;
             }
 
@@ -297,7 +297,7 @@ namespace Server.Items
 
             if (Core.Now >= m_Expire)
             {
-                m_Timer.Stop();
+                _timerToken.Cancel();
                 Delete();
             }
         }
