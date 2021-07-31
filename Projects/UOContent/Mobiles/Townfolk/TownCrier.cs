@@ -299,8 +299,8 @@ namespace Server.Mobiles
 
     public class TownCrier : Mobile, ITownCrierEntryList
     {
-        private Timer m_AutoShoutTimer;
-        private Timer m_NewsTimer;
+        private TimerExecutionToken _autoShoutTimerToken;
+        private TimerExecutionToken _newsTimerToken;
 
         [Constructible]
         public TownCrier()
@@ -404,7 +404,7 @@ namespace Server.Mobiles
 
             Entries.Add(tce);
 
-            m_AutoShoutTimer ??= Timer.DelayCall(TimeSpan.FromSeconds(5.0), TimeSpan.FromMinutes(1.0), AutoShout_Callback);
+            ForceBeginAutoShout();
 
             return tce;
         }
@@ -425,15 +425,16 @@ namespace Server.Mobiles
 
             if (Entries == null && GlobalTownCrierEntryList.Instance.IsEmpty)
             {
-                m_AutoShoutTimer?.Stop();
-
-                m_AutoShoutTimer = null;
+                _autoShoutTimerToken.Cancel();
             }
         }
 
         public void ForceBeginAutoShout()
         {
-            m_AutoShoutTimer ??= Timer.DelayCall(TimeSpan.FromSeconds(5.0), TimeSpan.FromMinutes(1.0), AutoShout_Callback);
+            if (!_autoShoutTimerToken.Running)
+            {
+                Timer.DelayCall(TimeSpan.FromSeconds(5.0), TimeSpan.FromMinutes(1.0), AutoShout_Callback, out _autoShoutTimerToken);
+            }
         }
 
         private void AutoShout_Callback()
@@ -442,28 +443,28 @@ namespace Server.Mobiles
 
             if (tce == null)
             {
-                m_AutoShoutTimer?.Stop();
-
-                m_AutoShoutTimer = null;
+                _autoShoutTimerToken.Cancel();
             }
-            else if (m_NewsTimer == null)
+            else if (!_newsTimerToken.Running)
             {
-                m_NewsTimer = Timer.DelayCall(
+                Timer.DelayCall(
                     TimeSpan.FromSeconds(1.0),
                     TimeSpan.FromSeconds(3.0),
-                    () => ShoutNews_Callback(tce, 0)
+                    tce.Lines.Length,
+                    () => ShoutNews_Callback(tce),
+                    out _newsTimerToken
                 );
 
                 PublicOverheadMessage(MessageType.Regular, 0x3B2, 502976); // Hear ye! Hear ye!
             }
         }
 
-        private void ShoutNews_Callback(TownCrierEntry tce, int index)
+        private void ShoutNews_Callback(TownCrierEntry tce)
         {
-            if (index < 0 || index >= tce.Lines.Length)
+            var index = _newsTimerToken.Index;
+            if (index >= tce.Lines.Length)
             {
-                m_NewsTimer?.Stop();
-                m_NewsTimer = null;
+                _newsTimerToken.Cancel();
             }
             else
             {
@@ -483,11 +484,11 @@ namespace Server.Mobiles
             }
         }
 
-        public override bool HandlesOnSpeech(Mobile from) => m_NewsTimer == null && from.Alive && InRange(from, 12);
+        public override bool HandlesOnSpeech(Mobile from) => !_newsTimerToken.Running && from.Alive && InRange(from, 12);
 
         public override void OnSpeech(SpeechEventArgs e)
         {
-            if (m_NewsTimer == null && e.HasKeyword(0x30) && e.Mobile.Alive && InRange(e.Mobile, 12)) // *news*
+            if (!_newsTimerToken.Running == false && e.HasKeyword(0x30) && e.Mobile.Alive && InRange(e.Mobile, 12)) // *news*
             {
                 Direction = GetDirectionTo(e.Mobile);
 
@@ -499,10 +500,12 @@ namespace Server.Mobiles
                 }
                 else
                 {
-                    m_NewsTimer = Timer.DelayCall(
+                    Timer.DelayCall(
                         TimeSpan.FromSeconds(1.0),
                         TimeSpan.FromSeconds(3.0),
-                        () => ShoutNews_Callback(tce, 0)
+                        tce.Lines.Length,
+                        () => ShoutNews_Callback(tce),
+                        out _newsTimerToken
                     );
 
                     PublicOverheadMessage(MessageType.Regular, 0x3B2, 502978); // Some of the latest news!

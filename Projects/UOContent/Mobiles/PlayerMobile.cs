@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
@@ -147,6 +148,7 @@ namespace Server.Mobiles
         private List<Mobile> m_AllFollowers;
         private int m_BeardModID = -1, m_BeardModHue;
 
+        // TODO: Pool BuffInfo objects
         private Dictionary<BuffIcon, BuffInfo> m_BuffTable;
 
         private DuelPlayer m_DuelPlayer;
@@ -1094,7 +1096,8 @@ namespace Server.Mobiles
             }
         }
 
-        private static bool CheckBlock(MountBlock block) => block?.m_Timer.Running == true;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool CheckBlock(MountBlock block) => block?._timerToken.Running == true;
 
         public void SetMountBlock(BlockMountType type, TimeSpan duration, bool dismount)
         {
@@ -1110,7 +1113,7 @@ namespace Server.Mobiles
                 }
             }
 
-            if (m_MountBlock?.m_Timer.Running != true || m_MountBlock.m_Timer.Next < Core.Now + duration)
+            if (!CheckBlock(m_MountBlock) || m_MountBlock._timerToken.Next < Core.Now + duration)
             {
                 m_MountBlock = new MountBlock(duration, type, this);
             }
@@ -4600,10 +4603,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (info.Timer?.Running == true)
-            {
-                info.Timer.Stop();
-            }
+            info.TimerToken.Cancel();
 
             if (NetState?.BuffIcon == true)
             {
@@ -4635,14 +4635,14 @@ namespace Server.Mobiles
 
         private class MountBlock
         {
-            public readonly Timer m_Timer;
+            public TimerExecutionToken _timerToken;
             public readonly BlockMountType m_Type;
 
             public MountBlock(TimeSpan duration, BlockMountType type, Mobile mobile)
             {
                 m_Type = type;
 
-                m_Timer = Timer.DelayCall(duration, () => RemoveBlock(mobile));
+                Timer.DelayCall(duration, () => RemoveBlock(mobile), out _timerToken);
             }
 
             private void RemoveBlock(Mobile mobile)
@@ -4651,6 +4651,8 @@ namespace Server.Mobiles
                 {
                     pm.m_MountBlock = null;
                 }
+
+                _timerToken.Cancel();
             }
         }
 
