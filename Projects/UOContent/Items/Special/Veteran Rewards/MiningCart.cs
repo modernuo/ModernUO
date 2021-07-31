@@ -16,7 +16,7 @@ namespace Server.Items
 
     public class MiningCart : BaseAddon, IRewardItem
     {
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         [Constructible]
         public MiningCart(MiningCartType type)
@@ -67,7 +67,7 @@ namespace Server.Items
                     break;
             }
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromDays(1), TimeSpan.FromDays(1), GiveResources);
+            Timer.DelayCall(TimeSpan.FromDays(1), TimeSpan.FromDays(1), GiveResources, out _timerToken);
         }
 
         public MiningCart(Serial serial) : base(serial)
@@ -101,6 +101,11 @@ namespace Server.Items
 
         private void GiveResources()
         {
+            if (Deleted)
+            {
+                _timerToken.Cancel();
+            }
+
             switch (CartType)
             {
                 case MiningCartType.OreSouth:
@@ -249,9 +254,9 @@ namespace Server.Items
             writer.Write(Gems);
             writer.Write(Ore);
 
-            if (m_Timer != null)
+            if (_timerToken.Running)
             {
-                writer.Write(m_Timer.Next);
+                writer.Write(_timerToken.Next);
             }
             else
             {
@@ -282,7 +287,7 @@ namespace Server.Items
                         next = Core.Now;
                     }
 
-                    m_Timer = Timer.DelayCall(next - Core.Now, TimeSpan.FromDays(1), GiveResources);
+                    Timer.DelayCall(next - Core.Now, TimeSpan.FromDays(1), GiveResources, out _timerToken);
                     break;
             }
         }
