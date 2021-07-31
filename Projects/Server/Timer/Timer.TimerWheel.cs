@@ -119,17 +119,17 @@ namespace Server
 
                 if (timer.Running)
                 {
-                    if (!finished)
+                    if (finished)
+                    {
+                        // Stop wasn't called in `OnTick()` so it is safe to stop it here.
+                        timer.Stop();
+                    }
+                    else
                     {
                         timer.Delay = timer.Interval;
                         timer.Next = Core.Now + timer.Interval;
                         AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
                     }
-                }
-                else if (finished)
-                {
-                    // Stop wasn't called in `OnTick()` so it is safe to stop it here.
-                    timer.Stop();
                 }
 
                 timer = next;
