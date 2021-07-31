@@ -7,7 +7,7 @@ namespace Server.Items
 {
     public abstract class BaseConflagrationPotion : BasePotion
     {
-        private static readonly Dictionary<Mobile, Timer> m_Delay = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Delay = new();
         private readonly List<Mobile> m_Users = new();
 
         public BaseConflagrationPotion(PotionEffect effect) : base(0xF06, effect) => Hue = 0x489;
@@ -107,8 +107,10 @@ namespace Server.Items
         public static void AddDelay(Mobile m)
         {
             m_Delay.TryGetValue(m, out var timer);
-            timer?.Stop();
-            m_Delay[m] = Timer.DelayCall(TimeSpan.FromSeconds(30), () => EndDelay(m));
+            timer.Cancel();
+
+            Timer.DelayCall(TimeSpan.FromSeconds(30), () => EndDelay(m), out timer);
+            m_Delay[m] = timer;
         }
 
         public static int GetDelay(Mobile m)
@@ -125,7 +127,7 @@ namespace Server.Items
         {
             if (m_Delay.Remove(m, out var timer))
             {
-                timer.Stop();
+                timer.Cancel();
             }
         }
 

@@ -5,7 +5,7 @@ namespace Server.Items
 {
     public class PlagueBeastVein : PlagueBeastComponent
     {
-        private Timer m_Timer;
+        private bool _cutting;
 
         public PlagueBeastVein(int itemID, int hue) : base(itemID, hue) => Cut = false;
 
@@ -19,14 +19,15 @@ namespace Server.Items
         {
             if (IsAccessibleTo(from))
             {
-                if (!Cut && m_Timer == null)
+                if (!Cut && !_cutting)
                 {
-                    m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3), () => CuttingDone(from));
+                    _cutting = true;
+                    Timer.DelayCall(TimeSpan.FromSeconds(3), () => CuttingDone(from));
                     scissors.PublicOverheadMessage(
                         MessageType.Regular,
                         0x3B2,
-                        1071899
-                    ); // You begin cutting through the vein.
+                        1071899 // You begin cutting through the vein.
+                    );
                     return true;
                 }
 
@@ -36,16 +37,9 @@ namespace Server.Items
             return false;
         }
 
-        public override void OnAfterDelete()
-        {
-            if (m_Timer?.Running == true)
-            {
-                m_Timer.Stop();
-            }
-        }
-
         private void CuttingDone(Mobile from)
         {
+            _cutting = false;
             Cut = true;
 
             ItemID = ItemID == 0x1B1C ? 0x1B1B : 0x1B1C;
