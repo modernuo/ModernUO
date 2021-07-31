@@ -30,9 +30,10 @@ namespace Server.Engines.ConPVP
 
         private readonly List<Item> m_Walls = new();
 
-        private Timer.DelayCallTimer m_AutoTieTimer;
-
-        private Timer.DelayCallTimerWithTimer m_Countdown;
+        private TimerExecutionToken _autoTieTimerToken;
+        private TimerExecutionToken _countdownTimerToken;
+        private TimerExecutionToken _SdWarnTimerToken;
+        private TimerExecutionToken _SdActivateTimerToken;
 
         public EventGame m_EventGame;
         private Map m_GateFacet;
@@ -42,7 +43,6 @@ namespace Server.Engines.ConPVP
 
         public Arena m_OverrideArena;
 
-        private Timer.DelayCallTimer m_SDWarnTimer, m_SDActivateTimer;
         public Tournament m_Tournament;
 
         private bool m_Yielding;
@@ -766,7 +766,7 @@ namespace Server.Engines.ConPVP
                 return;
             }
 
-            EndAutoTie();
+            _autoTieTimerToken.Cancel();
             StopSDTimers();
 
             Finished = true;
@@ -1057,27 +1057,21 @@ namespace Server.Engines.ConPVP
 
         public void StartCountdown(int count, CountdownCallback cb)
         {
-            cb(count);
-            m_Countdown = Timer.GetDelayCallTimer(
+            Timer.DelayCall(
                 TimeSpan.FromSeconds(1.0),
-                TimeSpan.FromSeconds(1.0),
-                count - 1,
-                timer => Countdown_Callback(timer, cb)
+                count,
+                () => Countdown_Callback(cb),
+                out _countdownTimerToken
             );
         }
 
-        public void StopCountdown()
-        {
-            m_Countdown?.Stop();
-            m_Countdown?.Return();
-            m_Countdown = null;
-        }
+        public void StopCountdown() => _countdownTimerToken.Cancel();
 
-        private void Countdown_Callback(Timer timer, CountdownCallback cb)
+        private void Countdown_Callback(CountdownCallback cb)
         {
-            int count = timer.Count - timer.Index;
+            var count = _countdownTimerToken.RemainingCount;
 
-            if (count > 0)
+            if (count == 0)
             {
                 StopCountdown();
             }
@@ -1087,24 +1081,17 @@ namespace Server.Engines.ConPVP
 
         public void StopSDTimers()
         {
-            m_SDWarnTimer?.Stop();
-            m_SDWarnTimer?.Return();
-            m_SDWarnTimer = null;
-
-            m_SDActivateTimer?.Stop();
-            m_SDActivateTimer?.Return();
-            m_SDActivateTimer = null;
+            _SdWarnTimerToken.Cancel();
+            _SdActivateTimerToken.Cancel();
         }
 
         public void StartSuddenDeath(TimeSpan timeUntilActive)
         {
-            m_SDWarnTimer?.Stop();
+            _SdWarnTimerToken.Cancel();
+            Timer.DelayCall(TimeSpan.FromMinutes(timeUntilActive.TotalMinutes * 0.9), WarnSuddenDeath, out _SdWarnTimerToken);
 
-            m_SDWarnTimer = Timer.GetDelayCallTimer(TimeSpan.FromMinutes(timeUntilActive.TotalMinutes * 0.9), WarnSuddenDeath);
-
-            m_SDActivateTimer?.Stop();
-
-            m_SDActivateTimer = Timer.GetDelayCallTimer(timeUntilActive, ActivateSuddenDeath);
+            _SdActivateTimerToken.Cancel();
+            Timer.DelayCall(timeUntilActive, ActivateSuddenDeath, out _SdActivateTimerToken);
         }
 
         public void WarnSuddenDeath()
@@ -1130,9 +1117,7 @@ namespace Server.Engines.ConPVP
 
             m_Tournament?.Alert(Arena, "Sudden death will be active soon!");
 
-            m_SDWarnTimer?.Stop();
-            m_SDWarnTimer?.Return();
-            m_SDWarnTimer = null;
+            _SdWarnTimerToken.Cancel();
         }
 
         public static bool CheckSuddenDeath(Mobile mob) => mob is PlayerMobile pm && pm.DuelPlayer?.Eliminated == false &&
@@ -1166,9 +1151,7 @@ namespace Server.Engines.ConPVP
 
             IsSuddenDeath = true;
 
-            m_SDActivateTimer?.Stop();
-            m_SDActivateTimer?.Return();
-            m_SDActivateTimer = null;
+            _SdActivateTimerToken.Cancel();
         }
 
         public void BeginAutoTie()
@@ -1177,27 +1160,13 @@ namespace Server.Engines.ConPVP
                 ? AutoTieDelay
                 : TimeSpan.FromMinutes(90.0);
 
-            if (m_AutoTieTimer == null)
-            {
-                m_AutoTieTimer = Timer.GetDelayCallTimer(ts, InvokeAutoTie);
-            }
-            else
-            {
-                m_AutoTieTimer.Stop();
-                m_AutoTieTimer.Init(ts, InvokeAutoTie);
-            }
-        }
-
-        public void EndAutoTie()
-        {
-            m_AutoTieTimer?.Stop();
-
-            m_AutoTieTimer = null;
+            _autoTieTimerToken.Cancel();
+            Timer.DelayCall(ts, InvokeAutoTie, out _autoTieTimerToken);
         }
 
         public void InvokeAutoTie()
         {
-            m_AutoTieTimer = null;
+            _autoTieTimerToken.Cancel();
 
             if (!Started || Finished)
             {

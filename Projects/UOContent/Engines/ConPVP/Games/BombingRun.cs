@@ -1613,7 +1613,7 @@ namespace Server.Engines.ConPVP
     {
         private BRBomb m_Bomb;
 
-        private Timer m_FinishTimer;
+        private TimerExecutionToken _finishTimerToken;
 
         public BRGame(BRController controller, DuelContext context) : base(context) => Controller = controller;
 
@@ -1810,12 +1810,12 @@ namespace Server.Engines.ConPVP
                 );
             }
 
-            m_FinishTimer?.Stop();
+            _finishTimerToken.Cancel();
 
             m_Bomb = new BRBomb(this);
             ReturnBomb();
 
-            m_FinishTimer = Timer.DelayCall(Controller.Duration, Finish_Callback);
+            Timer.DelayCall(Controller.Duration, Finish_Callback, out _finishTimerToken);
         }
 
         private void Finish_Callback()
@@ -2036,8 +2036,7 @@ namespace Server.Engines.ConPVP
                 ApplyHues(m_Context.Participants[i], -1);
             }
 
-            m_FinishTimer?.Stop();
-            m_FinishTimer = null;
+            _finishTimerToken.Cancel();
         }
     }
 }

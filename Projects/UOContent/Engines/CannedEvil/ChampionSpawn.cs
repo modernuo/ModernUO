@@ -42,7 +42,7 @@ namespace Server.Engines.CannedEvil
 
         //Goes back each level, below level 0 and it goes off!
 
-        private TimerExecutionToken m_Timer;
+        private TimerExecutionToken _timerToken;
 
         private IdolOfTheChampion m_Idol;
         private TimerExecutionToken _restartTimerToken;
@@ -302,8 +302,8 @@ namespace Server.Engines.CannedEvil
             HasBeenAdvanced = false;
             m_MaxLevel = 16 + Utility.Random(3);
 
-            m_Timer.Cancel();
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnSlice, out m_Timer);
+            _timerToken.Cancel();
+            Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnSlice, out _timerToken);
 
             _restartTimerToken.Cancel();
 
@@ -332,7 +332,7 @@ namespace Server.Engines.CannedEvil
             HasBeenAdvanced = false;
             m_MaxLevel = 0;
 
-            m_Timer.Cancel();
+            _timerToken.Cancel();
             _restartTimerToken.Cancel();
 
             if (m_Altar != null)
