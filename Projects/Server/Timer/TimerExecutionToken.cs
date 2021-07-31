@@ -29,6 +29,12 @@ namespace Server
             get => _timer?.Running == true;
         }
 
+        public int Index
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _timer?.Index ?? 0;
+        }
+
         public int RemainingCount
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -25,8 +25,7 @@ namespace Server.Engines.ConPVP
             Name = "the hill";
         }
 
-        public HillOfTheKing(Serial s)
-            : base(s)
+        public HillOfTheKing(Serial s) : base(s)
         {
         }
 
@@ -49,18 +48,7 @@ namespace Server.Engines.ConPVP
         [CommandProperty(AccessLevel.GameMaster)]
         public int ScoreInterval { get; set; }
 
-        public int CapturesSoFar
-        {
-            get
-            {
-                if (m_KingTimer != null)
-                {
-                    return m_KingTimer.Captures;
-                }
-
-                return 0;
-            }
-        }
+        public int CapturesSoFar => m_KingTimer?.Captures ?? 0;
 
         public override void Deserialize(IGenericReader reader)
         {
@@ -864,7 +852,7 @@ namespace Server.Engines.ConPVP
 
     public sealed class KHGame : EventGame
     {
-        private Timer.DelayCallTimer m_FinishTimer;
+        private TimerExecutionToken _finishTimerToken;
 
         public KHGame(KHController controller, DuelContext context) : base(context) => Controller = controller;
 
@@ -1067,9 +1055,6 @@ namespace Server.Engines.ConPVP
                 );
             }
 
-            // TODO: Is this even needed?
-            m_FinishTimer?.Stop();
-
             for (var i = 0; i < Controller.Hills.Length; i++)
             {
                 if (Controller.Hills[i] != null)
@@ -1086,7 +1071,8 @@ namespace Server.Engines.ConPVP
                 }
             }
 
-            Timer.DelayCallInit(ref m_FinishTimer, Controller.Duration, Finish_Callback);
+            _finishTimerToken.Cancel();
+            Timer.DelayCall(Controller.Duration, Finish_Callback, out _finishTimerToken);
         }
 
         private void Finish_Callback()
@@ -1311,9 +1297,7 @@ namespace Server.Engines.ConPVP
                 ApplyHues(m_Context.Participants[i], -1);
             }
 
-            m_FinishTimer?.Stop();
-            m_FinishTimer?.Return();
-            m_FinishTimer = null;
+            _finishTimerToken.Cancel();
         }
     }
 }
