@@ -109,7 +109,7 @@ namespace Server.Items
                 !Utility.InRange(oldLocation, Location, 1) &&
                 m.Player && !(m.AccessLevel > AccessLevel.Player || m.Hidden) && !_timerToken.Running)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(2), HeedWarning, out _timerToken);
+                Timer.StartTimer(TimeSpan.FromSeconds(2), HeedWarning, out _timerToken);
             }
 
             base.OnMovement(m, oldLocation);
@@ -179,7 +179,7 @@ namespace Server.Items
 
                         DoEffect(spawnLoc, map);
 
-                        Timer.DelayCall(TimeSpan.FromSeconds(1), () => SummonCreatureToWorld(bc, spawnLoc, map));
+                        Timer.StartTimer(TimeSpan.FromSeconds(1), () => SummonCreatureToWorld(bc, spawnLoc, map));
 
                         NextSpawn = Core.Now + NextSpawnDelay;
                     }

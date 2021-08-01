@@ -85,7 +85,7 @@ namespace Server.Items
         public static void BeginImmunity(Mobile m, TimeSpan duration)
         {
             EndImmunity(m);
-            Timer.DelayCall(duration, () => EndImmunity(m), out var timerToken);
+            Timer.StartTimer(duration, () => EndImmunity(m), out var timerToken);
             _table[m] = timerToken;
         }
 

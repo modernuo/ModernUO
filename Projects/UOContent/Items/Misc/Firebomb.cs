@@ -61,7 +61,7 @@ namespace Server.Items
             }
             else
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), OnFirebombTimerTick, out _timerToken);
+                Timer.StartTimer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), OnFirebombTimerTick, out _timerToken);
                 m_LitBy = from;
                 from.SendLocalizedMessage(1060582); // You light the firebomb.  Throw it now!
             }
@@ -185,7 +185,7 @@ namespace Server.Items
 
             Effects.SendMovingEffect(from, to, ItemID, 7, 0, false, false, Hue);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0),
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0),
                 () =>
                 {
                     if (Deleted)
@@ -227,7 +227,7 @@ namespace Server.Items
             m_LitBy = litBy;
             m_Expire = Core.Now + TimeSpan.FromSeconds(10);
             m_Burning = toDamage;
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnFirebombFieldTimerTick, out _timerToken);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnFirebombFieldTimerTick, out _timerToken);
         }
 
         public FirebombField(Serial serial) : base(serial)

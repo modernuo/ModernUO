@@ -55,7 +55,7 @@ namespace Server.Items
         {
             m_Charges = charges;
 
-            Timer.DelayCall(RechargeTime, RechargeTime, Recharge, out _timerToken);
+            Timer.StartTimer(RechargeTime, RechargeTime, Recharge, out _timerToken);
         }
 
         public FountainOfLife(Serial serial)
@@ -159,11 +159,11 @@ namespace Server.Items
 
             if (next < now)
             {
-                Timer.DelayCall(RechargeTime, Recharge, out _timerToken);
+                Timer.StartTimer(RechargeTime, Recharge, out _timerToken);
             }
             else
             {
-                Timer.DelayCall(next - now, RechargeTime, Recharge, out _timerToken);
+                Timer.StartTimer(next - now, RechargeTime, Recharge, out _timerToken);
             }
         }
 

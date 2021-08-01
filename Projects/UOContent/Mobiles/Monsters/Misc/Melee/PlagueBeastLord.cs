@@ -116,7 +116,7 @@ namespace Server.Mobiles
                     0x21,
                     1071904 // * You slice through the plague beast's amorphous tissue *
                 );
-                Timer.DelayCall(() => pack.Open(from));
+                Timer.StartTimer(() => pack.Open(from));
             }
         }
 
@@ -231,7 +231,7 @@ namespace Server.Mobiles
             m_Timer = new DecayTimer(this);
             m_Timer.Start();
 
-            Timer.DelayCall(BroadcastMessage);
+            Timer.StartTimer(BroadcastMessage);
         }
 
         private void BroadcastMessage()

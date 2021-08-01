@@ -52,7 +52,7 @@ namespace Server.Items
             attacker.AddResistanceMod(mod);
 
             info = new DefenseMasteryInfo(attacker, 80 - modifier, mod);
-            Timer.DelayCall(TimeSpan.FromSeconds(3.0), () => EndDefense(info), out info._timerToken);
+            Timer.StartTimer(TimeSpan.FromSeconds(3.0), () => EndDefense(info), out info._timerToken);
 
             _table[attacker] = info;
 

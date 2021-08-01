@@ -13,7 +13,7 @@ namespace Server.Items
             CreationTime = Core.Now;
             LifeSpan = lifeSpan;
 
-            Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
+            Timer.StartTimer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
         }
 
         public TransientItem(Serial serial)
@@ -102,7 +102,7 @@ namespace Server.Items
             LifeSpan = reader.ReadTimeSpan();
             CreationTime = reader.ReadDateTime();
 
-            Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
+            Timer.StartTimer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
         }
     }
 }

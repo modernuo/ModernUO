@@ -65,7 +65,7 @@ namespace Server.Spells.Spellweaving
 
                     StopTimer(m);
 
-                    Timer.DelayCall(duration, () => DoExpire(m), out var timerToken);
+                    Timer.StartTimer(duration, () => DoExpire(m), out var timerToken);
                     m_Table[m] = timerToken;
 
                     BuffInfo.AddBuff(

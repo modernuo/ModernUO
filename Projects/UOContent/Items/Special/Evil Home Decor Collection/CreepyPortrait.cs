@@ -38,7 +38,7 @@ namespace Server.Items
                     if (ItemID == 0x2A69 || ItemID == 0x2A6D)
                     {
                         Up();
-                        Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 2, Up);
+                        Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 2, Up);
                     }
                 }
                 else if (Utility.InRange(old, Location, 2) && !Utility.InRange(m.Location, Location, 2))
@@ -46,7 +46,7 @@ namespace Server.Items
                     if (ItemID == 0x2A6C || ItemID == 0x2A70)
                     {
                         Down();
-                        Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 2, Down);
+                        Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 2, Down);
                     }
                 }
             }

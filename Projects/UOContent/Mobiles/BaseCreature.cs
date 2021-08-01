@@ -1491,7 +1491,7 @@ namespace Server.Mobiles
             }
             else if (from is PlayerMobile mobile)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(10), mobile.RecoverAmmo);
+                Timer.StartTimer(TimeSpan.FromSeconds(10), mobile.RecoverAmmo);
             }
 
             base.OnDamage(amount, from, willKill);
@@ -2804,10 +2804,10 @@ namespace Server.Mobiles
                 Say(1013037 + Utility.Random(16));
                 guardedRegion.CallGuards(Location);
 
-                Timer.DelayCall(TimeSpan.FromSeconds(5.0), ReleaseGuardLock);
+                Timer.StartTimer(TimeSpan.FromSeconds(5.0), ReleaseGuardLock);
 
                 m_NoDupeGuards = m;
-                Timer.DelayCall(ReleaseGuardDupeLock);
+                Timer.StartTimer(ReleaseGuardDupeLock);
             }
         }
 
@@ -3890,7 +3890,7 @@ namespace Server.Mobiles
         {
             if (!Deleted && ReturnsToHome && IsSpawnerBound() && !InRange(Home, RangeHome + 5))
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(Utility.Random(45) + 15), GoHome_Callback);
+                Timer.StartTimer(TimeSpan.FromSeconds(Utility.Random(45) + 15), GoHome_Callback);
 
                 m_ReturnQueued = true;
             }
@@ -4000,7 +4000,7 @@ namespace Server.Mobiles
 
             Direction = GetDirectionTo(target);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(BreathEffectDelay), () => BreathEffect_Callback(target));
+            Timer.StartTimer(TimeSpan.FromSeconds(BreathEffectDelay), () => BreathEffect_Callback(target));
         }
 
         public virtual void BreathStallMovement()
@@ -4031,7 +4031,7 @@ namespace Server.Mobiles
             BreathPlayEffectSound();
             BreathPlayEffect(target);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(BreathDamageDelay), () => BreathDamage_Callback(target));
+            Timer.StartTimer(TimeSpan.FromSeconds(BreathDamageDelay), () => BreathDamage_Callback(target));
         }
 
         public virtual void BreathPlayEffectSound()
@@ -5397,7 +5397,7 @@ namespace Server.Mobiles
 
             var seconds = (onSelf ? HealDelay : HealOwnerDelay) + (patient.Alive ? 0.0 : 5.0);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(seconds), () => Heal(patient), out _healTimerToken);
+            Timer.StartTimer(TimeSpan.FromSeconds(seconds), () => Heal(patient), out _healTimerToken);
         }
 
         public virtual void Heal(Mobile patient)

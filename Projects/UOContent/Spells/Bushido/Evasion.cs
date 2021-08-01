@@ -133,7 +133,7 @@ namespace Server.Spells.Bushido
                 BeginEvasion(Caster);
 
                 Caster.BeginAction<Evasion>();
-                Timer.DelayCall(TimeSpan.FromSeconds(20.0), Caster.EndAction<Evasion>);
+                Timer.StartTimer(TimeSpan.FromSeconds(20.0), Caster.EndAction<Evasion>);
             }
 
             FinishSequence();

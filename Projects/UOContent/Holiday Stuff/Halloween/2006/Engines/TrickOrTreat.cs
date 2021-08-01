@@ -65,7 +65,7 @@ namespace Server.Engines.Events
             {
                 target.SolidHueOverride = Utility.RandomMinMax(2501, 2644);
 
-                Timer.DelayCall(TimeSpan.FromSeconds(10), () => RemoveHueMod(target));
+                Timer.StartTimer(TimeSpan.FromSeconds(10), () => RemoveHueMod(target));
             }
         }
 
@@ -114,7 +114,7 @@ namespace Server.Engines.Events
 
                 twin.MoveToWorld(m_From.Map.CanSpawnMobile(point) ? point : m_From.Location, m_From.Map);
 
-                Timer.DelayCall(TimeSpan.FromSeconds(5), () => DeleteTwin(twin));
+                Timer.StartTimer(TimeSpan.FromSeconds(5), () => DeleteTwin(twin));
             }
         }
 
@@ -216,15 +216,15 @@ namespace Server.Engines.Events
 
                         if (action == 0)
                         {
-                            Timer.DelayCall(OneSecond, OneSecond, 10, () => Bleeding(from));
+                            Timer.StartTimer(OneSecond, OneSecond, 10, () => Bleeding(from));
                         }
                         else if (action == 1)
                         {
-                            Timer.DelayCall(TimeSpan.FromSeconds(2), () => SolidHueMobile(from));
+                            Timer.StartTimer(TimeSpan.FromSeconds(2), () => SolidHueMobile(from));
                         }
                         else
                         {
-                            Timer.DelayCall(TimeSpan.FromSeconds(2), () => MakeTwin(from));
+                            Timer.StartTimer(TimeSpan.FromSeconds(2), () => MakeTwin(from));
                         }
                     }
                 }
@@ -285,7 +285,7 @@ namespace Server.Engines.Events
                 m_From = from;
                 Name = $"{from.Name}\'s Naughty Twin";
 
-                Timer.DelayCall(TrickOrTreat.OneSecond, () => StealCandyOrGate(m_From));
+                Timer.StartTimer(TrickOrTreat.OneSecond, () => StealCandyOrGate(m_From));
             }
         }
 

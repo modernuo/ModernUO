@@ -17,7 +17,7 @@ namespace Server.Items
         {
             AddComponent(new AddonComponent(itemID), 0, 0, 0);
 
-            Timer.DelayCall(TimeSpan.FromDays(1), TimeSpan.FromDays(1), GiveLogs, out _timerToken);
+            Timer.StartTimer(TimeSpan.FromDays(1), TimeSpan.FromDays(1), GiveLogs, out _timerToken);
         }
 
         public TreeStump(Serial serial) : base(serial)
@@ -170,7 +170,7 @@ namespace Server.Items
                 next = Core.Now;
             }
 
-            Timer.DelayCall(next - Core.Now, TimeSpan.FromDays(1), GiveLogs, out _timerToken);
+            Timer.StartTimer(next - Core.Now, TimeSpan.FromDays(1), GiveLogs, out _timerToken);
         }
     }
 

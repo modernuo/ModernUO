@@ -71,7 +71,7 @@ namespace Server.Items
                 return;
             }
 
-            Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => FinishWorking_Callback(from));
+            Timer.StartTimer(TimeSpan.FromSeconds(5.0), () => FinishWorking_Callback(from));
             IsWorking = true;
             UpdateStage();
         }

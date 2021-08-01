@@ -403,7 +403,7 @@ namespace Server.Items
 
             if (m_UsesRemaining != oldUses)
             {
-                Timer.DelayCall(InvalidateProperties);
+                Timer.StartTimer(InvalidateProperties);
             }
         }
 

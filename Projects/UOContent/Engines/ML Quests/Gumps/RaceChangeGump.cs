@@ -279,7 +279,7 @@ namespace Server.Engines.MLQuests.Gumps
             {
                 m_Owner = owner;
                 m_TargetRace = targetRace;
-                Timer.DelayCall(m_TimeoutDelay, () => Timeout(ns), out _timeoutToken);
+                Timer.StartTimer(m_TimeoutDelay, () => Timeout(ns), out _timeoutToken);
             }
         }
     }

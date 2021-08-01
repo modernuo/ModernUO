@@ -22,7 +22,7 @@ namespace Server.Items
                 if (!Cut && !_cutting)
                 {
                     _cutting = true;
-                    Timer.DelayCall(TimeSpan.FromSeconds(3), () => CuttingDone(from));
+                    Timer.StartTimer(TimeSpan.FromSeconds(3), () => CuttingDone(from));
                     scissors.PublicOverheadMessage(
                         MessageType.Regular,
                         0x3B2,

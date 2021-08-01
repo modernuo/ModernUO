@@ -156,7 +156,7 @@ namespace Server.Items
                         {
                             if (!_recoveryTimerToken.Running)
                             {
-                                Timer.DelayCall(TimeSpan.FromSeconds(10),
+                                Timer.StartTimer(TimeSpan.FromSeconds(10),
                                     () =>
                                     {
                                         _recoveryTimerToken.Cancel();

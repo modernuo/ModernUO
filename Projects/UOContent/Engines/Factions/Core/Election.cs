@@ -109,7 +109,7 @@ namespace Server.Factions
 
         public void StartTimer()
         {
-            Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), Slice, out _timerToken);
+            Timer.StartTimer(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), Slice, out _timerToken);
         }
 
         public void Serialize(IGenericWriter writer)

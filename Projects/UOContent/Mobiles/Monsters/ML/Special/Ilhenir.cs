@@ -226,7 +226,7 @@ namespace Server.Mobiles
                 to.PlaySound(0x584);
 
                 m_Table.Add(to);
-                Timer.DelayCall(TimeSpan.FromSeconds(30),
+                Timer.StartTimer(TimeSpan.FromSeconds(30),
                     () =>
                     {
                         m_Table.Remove(to);
@@ -305,7 +305,7 @@ namespace Server.Mobiles
             Hue = 0x95;
 
             Corrosive = corrosive;
-            Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
+            Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
             m_Ticks = 0;
         }
 
@@ -410,7 +410,7 @@ namespace Server.Mobiles
 
             Corrosive = reader.ReadBool();
 
-            Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
+            Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
             m_Ticks = ItemID == 0x122A ? 0 : 30;
         }
     }

@@ -111,7 +111,7 @@ namespace Server.Spells.Fifth
                     var timeVal = Math.Min(6 * Caster.Skills.Magery.Fixed / 50 + 1, 144);
 
                     var length = TimeSpan.FromSeconds(timeVal);
-                    Timer.DelayCall(length, () => EndIncognito(Caster), out var timerToken);
+                    Timer.StartTimer(length, () => EndIncognito(Caster), out var timerToken);
                     m_Table[Caster] = timerToken;
 
                     BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.Incognito, 1075819, length, Caster));

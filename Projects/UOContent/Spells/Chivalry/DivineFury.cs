@@ -41,7 +41,7 @@ namespace Server.Spells.Chivalry
 
                 var delay = Math.Clamp(ComputePowerValue(10), 7, 24);
 
-                Timer.DelayCall(TimeSpan.FromSeconds(delay),
+                Timer.StartTimer(TimeSpan.FromSeconds(delay),
                     () => { StopDivineFury(Caster); },
                     out var timerToken
                 );

@@ -350,7 +350,7 @@ namespace Server.Engines.Doom
 
             if ((TheirKey = (ushort)(code | (TheirKey <<= 4))) < 0x0FFF)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(30.0), ResetPuzzle, out _resetTimerToken);
+                Timer.StartTimer(TimeSpan.FromSeconds(30.0), ResetPuzzle, out _resetTimerToken);
                 return;
             }
 

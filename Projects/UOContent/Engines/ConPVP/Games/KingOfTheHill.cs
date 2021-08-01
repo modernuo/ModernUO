@@ -957,7 +957,7 @@ namespace Server.Engines.ConPVP
 
         public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
         {
-            Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
+            Timer.StartTimer(ts, () => DelayBounce_Callback(mob, corpse));
         }
 
         private void DelayBounce_Callback(Mobile mob, Container corpse)
@@ -982,7 +982,7 @@ namespace Server.Engines.ConPVP
 
             if (corpse?.Deleted == false)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(30), corpse.Delete);
+                Timer.StartTimer(TimeSpan.FromSeconds(30), corpse.Delete);
             }
         }
 
@@ -1072,7 +1072,7 @@ namespace Server.Engines.ConPVP
             }
 
             _finishTimerToken.Cancel();
-            Timer.DelayCall(Controller.Duration, Finish_Callback, out _finishTimerToken);
+            Timer.StartTimer(Controller.Duration, Finish_Callback, out _finishTimerToken);
         }
 
         private void Finish_Callback()

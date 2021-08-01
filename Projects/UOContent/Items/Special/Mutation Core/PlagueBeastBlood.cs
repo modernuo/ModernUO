@@ -7,7 +7,7 @@ namespace Server.Items
     {
         public PlagueBeastBlood() : base(0x122C, 0)
         {
-            Timer.DelayCall(
+            Timer.StartTimer(
                 TimeSpan.FromSeconds(1.5),
                 TimeSpan.FromSeconds(1.5),
                 3,

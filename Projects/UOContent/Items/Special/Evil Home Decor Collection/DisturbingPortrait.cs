@@ -10,7 +10,7 @@ namespace Server.Items
 
         public DisturbingPortraitComponent() : base(0x2A5D)
         {
-            Timer.DelayCall(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), Change, out _timerToken);
+            Timer.StartTimer(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), Change, out _timerToken);
         }
 
         public DisturbingPortraitComponent(Serial serial) : base(serial)
@@ -51,7 +51,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            Timer.DelayCall(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), Change, out _timerToken);
+            Timer.StartTimer(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), Change, out _timerToken);
         }
 
         private void Change()

@@ -52,7 +52,7 @@ namespace Server.Items
         public static void BeginWound(Mobile m, TimeSpan duration)
         {
             StopTimer(m);
-            Timer.DelayCall(duration, () => EndWound(m), out var timerToken);
+            Timer.StartTimer(duration, () => EndWound(m), out var timerToken);
             _table[m] = timerToken;
 
             m.YellowHealthbar = true;

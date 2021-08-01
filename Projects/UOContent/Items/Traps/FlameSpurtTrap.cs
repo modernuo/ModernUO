@@ -20,7 +20,7 @@ namespace Server.Items
         {
             if (!_timerToken.Running)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Refresh, out _timerToken);
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Refresh, out _timerToken);
             }
         }
 

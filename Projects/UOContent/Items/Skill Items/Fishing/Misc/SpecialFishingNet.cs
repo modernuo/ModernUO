@@ -181,7 +181,7 @@ namespace Server.Items
 
                 var index = 0;
 
-                Timer.DelayCall(
+                Timer.StartTimer(
                     TimeSpan.FromSeconds(1.0),
                     TimeSpan.FromSeconds(1.25),
                     14,

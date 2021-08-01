@@ -169,7 +169,7 @@ namespace Server.Spells.Seventh
 
                             var duration = Math.Max((int)caster.Skills.Magery.Value, 120);
 
-                            Timer.DelayCall(TimeSpan.FromSeconds(duration), () => EndPolymorph(caster), out var timerToken);
+                            Timer.StartTimer(TimeSpan.FromSeconds(duration), () => EndPolymorph(caster), out var timerToken);
                             m_Table[caster] = timerToken;
                         }
                     }

@@ -71,7 +71,7 @@ namespace Server.Engines.ConPVP
                     }
             }
 
-            Timer.DelayCall(Delete); // delete this after the world loads
+            Timer.StartTimer(Delete); // delete this after the world loads
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -243,7 +243,7 @@ namespace Server.Engines.ConPVP
             m_Path.Clear();
             m_PathIdx = 0;
 
-            Timer.DelayCall(TimeSpan.FromSeconds(0.05), ContinueFlight);
+            Timer.StartTimer(TimeSpan.FromSeconds(0.05), ContinueFlight);
         }
 
         private bool CheckCatch(Mobile m, Point3D myLoc)
@@ -640,7 +640,7 @@ namespace Server.Engines.ConPVP
                     DoAnim(GetWorldLocation(), m_Path[m_PathIdx - 1], Map);
                 }
 
-                Timer.DelayCall(TimeSpan.FromSeconds(0.1), ContinueFlight);
+                Timer.StartTimer(TimeSpan.FromSeconds(0.1), ContinueFlight);
             }
             else
             {
@@ -864,7 +864,7 @@ namespace Server.Engines.ConPVP
                 // has to be delayed in case some other target canceled us...
                 if (m_Resend)
                 {
-                    Timer.DelayCall(ResendBombTarget);
+                    Timer.StartTimer(ResendBombTarget);
                 }
             }
 
@@ -1630,7 +1630,7 @@ namespace Server.Engines.ConPVP
             {
                 m_Bomb.Visible = false;
                 m_Bomb.MoveToWorld(Controller.BombHome, Controller.Map);
-                Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 15)), UnhideBomb);
+                Timer.StartTimer(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 15)), UnhideBomb);
             }
         }
 
@@ -1713,7 +1713,7 @@ namespace Server.Engines.ConPVP
 
         public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
         {
-            Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
+            Timer.StartTimer(ts, () => DelayBounce_Callback(mob, corpse));
         }
 
         private void DelayBounce_Callback(Mobile mob, Container corpse)
@@ -1815,7 +1815,7 @@ namespace Server.Engines.ConPVP
             m_Bomb = new BRBomb(this);
             ReturnBomb();
 
-            Timer.DelayCall(Controller.Duration, Finish_Callback, out _finishTimerToken);
+            Timer.StartTimer(Controller.Duration, Finish_Callback, out _finishTimerToken);
         }
 
         private void Finish_Callback()

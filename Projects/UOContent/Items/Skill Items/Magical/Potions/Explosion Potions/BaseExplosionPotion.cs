@@ -102,7 +102,7 @@ namespace Server.Items
                 if (Core.ML)
                 {
                     // 3.6 seconds explosion delay
-                    Timer.DelayCall(
+                    Timer.StartTimer(
                         TimeSpan.FromSeconds(1.0),
                         TimeSpan.FromSeconds(1.25),
                         5, // TODO: Should this be 4?
@@ -113,7 +113,7 @@ namespace Server.Items
                 else
                 {
                     // 2.6 seconds explosion delay
-                    Timer.DelayCall(
+                    Timer.StartTimer(
                         TimeSpan.FromSeconds(0.75),
                         TimeSpan.FromSeconds(1.0),
                         4,
@@ -324,7 +324,7 @@ namespace Server.Items
                 }
 
                 Potion.Internalize();
-                Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => Potion.Reposition_OnTick(from, new Point3D(p), map));
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => Potion.Reposition_OnTick(from, new Point3D(p), map));
             }
         }
     }

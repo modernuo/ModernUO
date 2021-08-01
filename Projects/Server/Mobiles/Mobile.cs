@@ -916,8 +916,8 @@ namespace Server
                     else
                     {
                         m_NetState.SendChangeCombatant(m_Combatant.Serial);
-                        Timer.DelayCall(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
-                        Timer.DelayCall(TimeSpan.FromSeconds(0.01), 0, CheckCombatTime, out _combatTimerToken);
+                        Timer.StartTimer(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
+                        Timer.StartTimer(TimeSpan.FromSeconds(0.01), 0, CheckCombatTime, out _combatTimerToken);
 
                         if (CanBeHarmful(m_Combatant, false))
                         {
@@ -1466,7 +1466,7 @@ namespace Server
                     EventSink.InvokeDisconnected(this);
 
                     // Disconnected, start the logout timer
-                    Timer.DelayCall(GetLogoutDelay(), Logout, out _logoutTimerToken);
+                    Timer.StartTimer(GetLogoutDelay(), Logout, out _logoutTimerToken);
                 }
                 else
                 {
@@ -1500,7 +1500,7 @@ namespace Server
                             }
                         }
 
-                        Timer.DelayCall(item.Delete);
+                        Timer.StartTimer(item.Delete);
                     }
                 }
 
@@ -1875,7 +1875,7 @@ namespace Server
 
                 if (m_Criminal)
                 {
-                    Timer.DelayCall(ExpireCriminalDelay, ExpireCriminal, out _expireCriminalTimerToken);
+                    Timer.StartTimer(ExpireCriminalDelay, ExpireCriminal, out _expireCriminalTimerToken);
                 }
             }
         }
@@ -3518,7 +3518,7 @@ namespace Server
             }
             else if (!_expireAggrTimerToken.Running)
             {
-                Timer.DelayCall(ExpireAggressorsDelay, ExpireAggressorsDelay, ExpireAggr, out _expireAggrTimerToken);
+                Timer.StartTimer(ExpireAggressorsDelay, ExpireAggressorsDelay, ExpireAggr, out _expireAggrTimerToken);
             }
         }
 
@@ -3703,7 +3703,7 @@ namespace Server
             }
             else if (m_WarmodeChanges++ == WarmodeCatchCount)
             {
-                Timer.DelayCall(WarmodeSpamDelay, WarmodeSpamTimeout);
+                Timer.StartTimer(WarmodeSpamDelay, WarmodeSpamTimeout);
                 return;
             }
 
@@ -3778,7 +3778,7 @@ namespace Server
             if (!m_Paralyzed)
             {
                 Paralyzed = true;
-                Timer.DelayCall(duration, ExpireParalyzed, out _paraTimerToken);
+                Timer.StartTimer(duration, ExpireParalyzed, out _paraTimerToken);
             }
         }
 
@@ -3792,7 +3792,7 @@ namespace Server
             if (!m_Frozen)
             {
                 Frozen = true;
-                Timer.DelayCall(duration, ExpireFrozen, out _frozenTimerToken);
+                Timer.StartTimer(duration, ExpireFrozen, out _frozenTimerToken);
             }
         }
 
@@ -3905,7 +3905,7 @@ namespace Server
             if (Combatant == aggressor)
             {
                 _expireCombatantTimerToken.Cancel();
-                Timer.DelayCall(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
+                Timer.StartTimer(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
             }
 
             var addAggressor = true;
@@ -5524,7 +5524,7 @@ namespace Server
         {
             Warmode = true;
             _autoManifestTimerToken.Cancel();
-            Timer.DelayCall(delay, AutoManifest, out _autoManifestTimerToken);
+            Timer.StartTimer(delay, AutoManifest, out _autoManifestTimerToken);
         }
 
         public virtual bool CheckSpeechManifest()
@@ -6492,7 +6492,7 @@ namespace Server
 
                         if (m_Criminal)
                         {
-                            Timer.DelayCall(ExpireCriminalDelay, ExpireCriminal, out _expireCriminalTimerToken);
+                            Timer.StartTimer(ExpireCriminalDelay, ExpireCriminal, out _expireCriminalTimerToken);
                         }
 
                         if (ShouldCheckStatTimers)
@@ -8511,7 +8511,7 @@ namespace Server
             }
 
             _expireCombatantTimerToken.Cancel();
-            Timer.DelayCall(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
+            Timer.StartTimer(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
         }
 
         public virtual bool HarmfulCheck(Mobile target)

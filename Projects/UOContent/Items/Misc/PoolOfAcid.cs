@@ -30,7 +30,7 @@ namespace Server.Items
             m_Created = Core.Now;
             m_Duration = duration;
 
-            Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
+            Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
         }
 
         public PoolOfAcid(Serial serial) : base(serial)

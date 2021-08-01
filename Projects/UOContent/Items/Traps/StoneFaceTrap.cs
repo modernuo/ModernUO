@@ -100,8 +100,8 @@ namespace Server.Items
 
             Breathing = true;
 
-            Timer.DelayCall(TimeSpan.FromSeconds(2.0), FinishBreath);
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), TriggerDamage);
+            Timer.StartTimer(TimeSpan.FromSeconds(2.0), FinishBreath);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), TriggerDamage);
         }
 
         public virtual void FinishBreath()

@@ -287,7 +287,7 @@ namespace Server.Mobiles
 
                 m_Mobiles = new List<Mobile>(); // This cannot be null in case it is referenced before disposing
 
-                Timer.DelayCall(() =>
+                Timer.StartTimer(() =>
                     {
                         foreach (var entity in entities)
                         {

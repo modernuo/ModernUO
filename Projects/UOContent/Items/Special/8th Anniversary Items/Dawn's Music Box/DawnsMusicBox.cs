@@ -224,7 +224,7 @@ namespace Server.Items
             }
 
             m.NetState.SendPlayMusic(music);
-            Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 4, Animate, out _timerToken);
+            Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 4, Animate, out _timerToken);
         }
 
         public void EndMusic(Mobile m)

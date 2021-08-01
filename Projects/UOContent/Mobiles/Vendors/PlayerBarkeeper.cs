@@ -275,7 +275,7 @@ namespace Server.Mobiles
                     }
                     else
                     {
-                        Timer.DelayCall(
+                        Timer.StartTimer(
                             TimeSpan.FromSeconds(1.0),
                             TimeSpan.FromSeconds(3.0),
                             tce.Lines.Length,
@@ -608,7 +608,7 @@ namespace Server.Mobiles
 
             if (version < 1)
             {
-                Timer.DelayCall(UpgradeFromVersion0);
+                Timer.StartTimer(UpgradeFromVersion0);
             }
         }
 

@@ -166,7 +166,7 @@ namespace Server.Mobiles
                         Effects.PlaySound(to, map, 0x1FE);
 
                         m_HasTeleportedAway = true;
-                        Timer.DelayCall(
+                        Timer.StartTimer(
                             TimeSpan.FromSeconds(5.0),
                             TimeSpan.FromSeconds(2.5),
                             SendTrackingSound,

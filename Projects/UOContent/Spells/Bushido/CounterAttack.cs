@@ -85,7 +85,7 @@ namespace Server.Spells.Bushido
         {
             RemoveTimer(m);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(30.0),
+            Timer.StartTimer(TimeSpan.FromSeconds(30.0),
                 () =>
                 {
                     StopCountering(m);

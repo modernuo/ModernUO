@@ -33,7 +33,7 @@ namespace Server
             TimeLength = length;
             TimeStart = Core.TickCount;
 
-            Timer.DelayCall(length, () => RemoveBuff(m, this), out _timerToken);
+            Timer.StartTimer(length, () => RemoveBuff(m, this), out _timerToken);
         }
 
         public BuffInfo(BuffIcon iconID, int titleCliloc, TextDefinition args)
@@ -128,7 +128,7 @@ namespace Server
         {
             if (ns.Mobile is PlayerMobile pm)
             {
-                Timer.DelayCall(pm.ResendBuffs);
+                Timer.StartTimer(pm.ResendBuffs);
             }
         }
 

@@ -195,7 +195,7 @@ namespace Server.Factions
 
             if (TimeOfPlacement + decayPeriod < Core.Now)
             {
-                Timer.DelayCall(Delete);
+                Timer.StartTimer(Delete);
                 return true;
             }
 
@@ -205,7 +205,7 @@ namespace Server.Factions
         public virtual void BeginConceal()
         {
             _concealingTimerToken.Cancel();
-            Timer.DelayCall(ConcealPeriod, Conceal, out _concealingTimerToken);
+            Timer.StartTimer(ConcealPeriod, Conceal, out _concealingTimerToken);
         }
 
         public virtual void Conceal()

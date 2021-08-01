@@ -83,7 +83,7 @@ namespace Server.Items
                 m_Entry = entry;
                 m_Bedroll = bedroll;
 
-                Timer.DelayCall(TimeSpan.FromSeconds(10.0), CloseGump, out _closeTimerToken);
+                Timer.StartTimer(TimeSpan.FromSeconds(10.0), CloseGump, out _closeTimerToken);
 
                 AddBackground(0, 0, 400, 350, 0xA28);
 

@@ -54,7 +54,7 @@ namespace Server.Items
                 {
                     from.Location = Location;
 
-                    Timer.DelayCall(TimeSpan.FromSeconds(0.5), () => Activate(c, from));
+                    Timer.StartTimer(TimeSpan.FromSeconds(0.5), () => Activate(c, from));
                 }
                 else
                 {
@@ -135,7 +135,7 @@ namespace Server.Items
             ); // Hmm... you suspect that if you used this again, it might hurt.
             SpellHelper.Damage(TimeSpan.Zero, from, Utility.Dice(2, 10, 5));
 
-            Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 2, () => Deactivate(c));
+            Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 2, () => Deactivate(c));
         }
 
         private void Deactivate(AddonComponent c)

@@ -293,17 +293,17 @@ namespace Server.Items
 
             if (SoundID > 0)
             {
-                Timer.DelayCall(SoundDelay, () => PlaySound(trigger));
+                Timer.StartTimer(SoundDelay, () => PlaySound(trigger));
             }
 
             if (Sequence != null)
             {
-                Timer.DelayCall(TriggerDelay, () => Sequence.DoEffect(trigger));
+                Timer.StartTimer(TriggerDelay, () => Sequence.DoEffect(trigger));
             }
 
             if (EffectType != ECEffectType.None)
             {
-                Timer.DelayCall(EffectDelay, () => InternalDoEffect(trigger));
+                Timer.StartTimer(EffectDelay, () => InternalDoEffect(trigger));
             }
         }
 

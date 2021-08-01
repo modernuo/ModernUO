@@ -34,7 +34,7 @@ namespace Server.Spells.Ninjitsu
             if (valid)
             {
                 attacker.BeginAction<Stealth>();
-                Timer.DelayCall(TimeSpan.FromSeconds(5.0), attacker.EndAction<Stealth>);
+                Timer.StartTimer(TimeSpan.FromSeconds(5.0), attacker.EndAction<Stealth>);
             }
 
             return valid;
@@ -60,7 +60,7 @@ namespace Server.Spells.Ninjitsu
             var malus = ninjitsu / 60 + (int)Tracking.GetStalkingBonus(attacker, defender);
 
             var info = new SurpriseAttackInfo(defender, malus);
-            Timer.DelayCall(TimeSpan.FromSeconds(8.0), () => EndSurprise(info), out info._timerToken);
+            Timer.StartTimer(TimeSpan.FromSeconds(8.0), () => EndSurprise(info), out info._timerToken);
 
             m_Table[defender] = info;
 

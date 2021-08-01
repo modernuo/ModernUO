@@ -28,7 +28,7 @@ namespace Server.Items
         private void StartTimer()
         {
             _timerToken.Cancel();
-            Timer.DelayCall(TimeSpan.FromMinutes(3), Empty, out _timerToken);
+            Timer.StartTimer(TimeSpan.FromMinutes(3), Empty, out _timerToken);
         }
 
         public override bool OnDragDrop(Mobile from, Item dropped)

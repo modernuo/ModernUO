@@ -65,7 +65,7 @@ namespace Server.Spells.Sixth
                 BuffInfo.RemoveBuff(m, BuffIcon.HidingAndOrStealth);
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825, duration, m)); // Invisibility/Invisible
 
-                Timer.DelayCall(duration,
+                Timer.StartTimer(duration,
                     () =>
                     {
                         m.RevealingAction();

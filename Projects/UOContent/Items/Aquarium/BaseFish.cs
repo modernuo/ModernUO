@@ -24,7 +24,7 @@ namespace Server.Items
         public virtual void StartTimer()
         {
             _timerToken.Cancel();
-            Timer.DelayCall(DeathDelay, Kill, out _timerToken);
+            Timer.StartTimer(DeathDelay, Kill, out _timerToken);
 
             InvalidateProperties();
         }

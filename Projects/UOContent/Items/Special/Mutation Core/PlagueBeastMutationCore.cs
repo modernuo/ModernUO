@@ -41,7 +41,7 @@ namespace Server.Items
 
                 if (owner != null)
                 {
-                    Timer.DelayCall(TimeSpan.FromSeconds(1),
+                    Timer.StartTimer(TimeSpan.FromSeconds(1),
                         () =>
                         {
                             owner.Unfreeze();

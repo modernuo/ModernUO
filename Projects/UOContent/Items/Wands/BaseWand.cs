@@ -104,7 +104,7 @@ namespace Server.Items
         public virtual void ApplyDelayTo(Mobile from)
         {
             from.BeginAction<BaseWand>();
-            Timer.DelayCall(GetUseDelay,
+            Timer.StartTimer(GetUseDelay,
                 () =>
                 {
                     from.EndAction<BaseWand>();

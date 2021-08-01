@@ -20,7 +20,7 @@ namespace Server.Multis
             m_DecayDelay = TimeSpan.FromMinutes(30.0);
             RefreshDecay(true);
 
-            Timer.DelayCall(CheckAddComponents);
+            Timer.StartTimer(CheckAddComponents);
         }
 
         public BaseCamp(Serial serial) : base(serial)
@@ -68,7 +68,7 @@ namespace Server.Multis
             }
 
             _decayTimerToken.Cancel();
-            Timer.DelayCall(DecayDelay, Delete, out _decayTimerToken);
+            Timer.StartTimer(DecayDelay, Delete, out _decayTimerToken);
         }
 
         public virtual void AddItem(Item item, int xOffset, int yOffset, int zOffset)

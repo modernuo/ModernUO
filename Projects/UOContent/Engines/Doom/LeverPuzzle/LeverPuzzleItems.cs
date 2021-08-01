@@ -38,7 +38,7 @@ namespace Server.Engines.Doom
                 m_Wanderer = new WandererOfTheVoid();
                 m_Wanderer.MoveToWorld(LeverPuzzleController.lr_Enter, Map.Malas);
                 m_Wanderer.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1060002); // I am the guardian of...
-                Timer.DelayCall(TimeSpan.FromSeconds(5.0), CallBackMessage);
+                Timer.StartTimer(TimeSpan.FromSeconds(5.0), CallBackMessage);
             }
         }
 

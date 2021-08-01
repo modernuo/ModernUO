@@ -571,7 +571,7 @@ namespace Server.Mobiles
             Hue = 0x480;
             BaseSoundID = 0xC9;
 
-            Timer.DelayCall(TimeSpan.FromMinutes(30.0), BeginTunnel);
+            Timer.StartTimer(TimeSpan.FromMinutes(30.0), BeginTunnel);
         }
 
         public SummonedVorpalBunny(Serial serial) : base(serial)
@@ -593,7 +593,7 @@ namespace Server.Mobiles
             Say("* The bunny begins to dig a tunnel back to its underground lair *");
             PlaySound(0x247);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(5.0), Delete);
+            Timer.StartTimer(TimeSpan.FromSeconds(5.0), Delete);
         }
 
         public override void Serialize(IGenericWriter writer)

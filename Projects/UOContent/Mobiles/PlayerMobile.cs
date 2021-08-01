@@ -985,7 +985,7 @@ namespace Server.Mobiles
 
             if (Core.SE)
             {
-                Timer.DelayCall(CheckPets);
+                Timer.StartTimer(CheckPets);
             }
         }
 
@@ -1260,7 +1260,7 @@ namespace Server.Mobiles
 
                     if (from.NetState != null)
                     {
-                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => from.NetState.Disconnect("Server is locked down"));
+                        Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => from.NetState.Disconnect("Server is locked down"));
                     }
                 }
                 else if (from.AccessLevel >= AccessLevel.Administrator)
@@ -1296,7 +1296,7 @@ namespace Server.Mobiles
             }
 
             m_NoDeltaRecursion = true;
-            Timer.DelayCall(ValidateEquipment_Sandbox);
+            Timer.StartTimer(ValidateEquipment_Sandbox);
         }
 
         private void ValidateEquipment_Sandbox()
@@ -1551,7 +1551,7 @@ namespace Server.Mobiles
 
             DisguiseTimers.StartTimer(m);
 
-            Timer.DelayCall(() => SpecialMove.ClearAllMoves(m));
+            Timer.StartTimer(() => SpecialMove.ClearAllMoves(m));
         }
 
         private static void EventSink_Disconnected(Mobile from)
@@ -2406,7 +2406,7 @@ namespace Server.Mobiles
 
             if (willKill && from is PlayerMobile mobile)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(10), mobile.RecoverAmmo);
+                Timer.StartTimer(TimeSpan.FromSeconds(10), mobile.RecoverAmmo);
             }
 
             base.OnDamage(amount, from, willKill);
@@ -2433,7 +2433,7 @@ namespace Server.Mobiles
         {
             if (!Warmode)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(10), RecoverAmmo);
+                Timer.StartTimer(TimeSpan.FromSeconds(10), RecoverAmmo);
             }
         }
 
@@ -2698,7 +2698,7 @@ namespace Server.Mobiles
             {
                 if (YoungDeathTeleport())
                 {
-                    Timer.DelayCall(TimeSpan.FromSeconds(2.5), SendYoungDeathNotice);
+                    Timer.StartTimer(TimeSpan.FromSeconds(2.5), SendYoungDeathNotice);
                 }
             }
 
@@ -3672,7 +3672,7 @@ namespace Server.Mobiles
                         if (pet.Map != Map)
                         {
                             pet.PlaySound(pet.GetAngerSound());
-                            Timer.DelayCall(pet.Delete);
+                            Timer.StartTimer(pet.Delete);
                         }
 
                         continue;
@@ -4642,7 +4642,7 @@ namespace Server.Mobiles
             {
                 m_Type = type;
 
-                Timer.DelayCall(duration, () => RemoveBlock(mobile), out _timerToken);
+                Timer.StartTimer(duration, () => RemoveBlock(mobile), out _timerToken);
             }
 
             private void RemoveBlock(Mobile mobile)

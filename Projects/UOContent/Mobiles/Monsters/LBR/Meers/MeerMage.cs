@@ -138,7 +138,7 @@ namespace Server.Mobiles
                         Say(true, "I call a plague of insects to sting your flesh!");
 
                         var count = 0;
-                        Timer.DelayCall(
+                        Timer.StartTimer(
                             TimeSpan.FromSeconds(0.5),
                             TimeSpan.FromSeconds(7.0),
                             () => DoEffect(combatant, count++),

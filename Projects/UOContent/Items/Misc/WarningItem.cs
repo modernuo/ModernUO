@@ -129,7 +129,7 @@ namespace Server.Items
                 }
             }
 
-            Timer.DelayCall(StopBroadcasting);
+            Timer.StartTimer(StopBroadcasting);
         }
 
         private void StopBroadcasting()

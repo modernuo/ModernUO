@@ -78,7 +78,7 @@ namespace Server.Mobiles
         {
             if (Combatant == null && !IsBodyMod && !Controlled && !_disguiseTimerToken.Running && Utility.RandomBool())
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(15, 30)), Disguise, out _disguiseTimerToken);
+                Timer.StartTimer(TimeSpan.FromSeconds(Utility.RandomMinMax(15, 30)), Disguise, out _disguiseTimerToken);
             }
         }
 
@@ -151,7 +151,7 @@ namespace Server.Mobiles
                 SetResistance(ResistanceType.Energy, 40, 60);
             }
 
-            Timer.DelayCall(RemoveDisguise);
+            Timer.StartTimer(RemoveDisguise);
         }
 
         public void Disguise()
@@ -203,7 +203,7 @@ namespace Server.Mobiles
             AddItem(new Robe(Utility.RandomNondyedHue()));
 
             _disguiseTimerToken.Cancel();
-            Timer.DelayCall(TimeSpan.FromSeconds(75), RemoveDisguise, out _disguiseTimerToken);
+            Timer.StartTimer(TimeSpan.FromSeconds(75), RemoveDisguise, out _disguiseTimerToken);
         }
 
         public void RemoveDisguise()

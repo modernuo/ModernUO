@@ -289,7 +289,7 @@ namespace Server.SkillHandlers
                             }
 
                             var info = new DiscordanceInfo(from, targ, effect.Abs(), mods);
-                            Timer.DelayCall(
+                            Timer.StartTimer(
                                 TimeSpan.Zero,
                                 TimeSpan.FromSeconds(1.25),
                                 () => ProcessDiscordance(info),

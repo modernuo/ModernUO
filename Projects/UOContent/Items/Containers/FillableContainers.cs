@@ -124,7 +124,7 @@ namespace Server.Items
                     var delay = TimeSpan.FromMinutes(mins);
 
                     m_NextRespawnTime = Core.Now + delay;
-                    Timer.DelayCall(delay, Respawn, out _respawnTimerToken);
+                    Timer.StartTimer(delay, Respawn, out _respawnTimerToken);
                 }
             }
             else if (_respawnTimerToken.Running)
@@ -269,7 +269,7 @@ namespace Server.Items
                             m_NextRespawnTime = reader.ReadDeltaTime();
 
                             var delay = m_NextRespawnTime - Core.Now;
-                            Timer.DelayCall(delay, Respawn, out _respawnTimerToken);
+                            Timer.StartTimer(delay, Respawn, out _respawnTimerToken);
                         }
                         else
                         {
@@ -330,7 +330,7 @@ namespace Server.Items
 
             if (version == 0 && m_Content == null)
             {
-                Timer.DelayCall(AcquireContent);
+                Timer.StartTimer(AcquireContent);
             }
         }
     }

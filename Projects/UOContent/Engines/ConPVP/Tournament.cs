@@ -107,7 +107,7 @@ namespace Server.Engines.ConPVP
                     }
             }
 
-            Timer.DelayCall(SliceInterval, SliceInterval, Slice);
+            Timer.StartTimer(SliceInterval, SliceInterval, Slice);
         }
 
         public Tournament()
@@ -122,7 +122,7 @@ namespace Server.Engines.ConPVP
             Arenas = new List<Arena>();
             SignupPeriod = TimeSpan.FromMinutes(10.0);
 
-            Timer.DelayCall(SliceInterval, SliceInterval, Slice);
+            Timer.StartTimer(SliceInterval, SliceInterval, Slice);
         }
 
         public bool IsNotoRestricted => TourneyType != TourneyType.Standard;
@@ -999,7 +999,7 @@ namespace Server.Engines.ConPVP
 
             var count = 0;
 
-            Timer.DelayCall(TimeSpan.FromSeconds(0.5), alerts.Length,
+            Timer.StartTimer(TimeSpan.FromSeconds(0.5), alerts.Length,
                 () =>
                 {
                     arena.Announcer.PublicOverheadMessage(MessageType.Regular, 0x35, false, alerts[count++]);

@@ -600,7 +600,7 @@ namespace Server.Spells.Ninjitsu
                             m_Mobile.Freeze(TimeSpan.FromSeconds(1));
                             m_Mobile.PlaySound(0x16A);
 
-                            DelayCall(TimeSpan.FromSeconds(1.3), () => BreathEffect_Callback(m_LastTarget));
+                            StartTimer(TimeSpan.FromSeconds(1.3), () => BreathEffect_Callback(m_LastTarget));
                         }
 
                         m_Counter = Math.Min((int)m_Mobile.GetDistanceToSqrt(m_LastTarget), 10);
@@ -617,7 +617,7 @@ namespace Server.Spells.Ninjitsu
                 m_Mobile.PlaySound(0x227);
                 Effects.SendMovingEffect(m_Mobile, target, 0x36D4, 5, 0);
 
-                DelayCall(TimeSpan.FromSeconds(1), () => BreathDamage_Callback(target));
+                StartTimer(TimeSpan.FromSeconds(1), () => BreathDamage_Callback(target));
             }
         }
 

@@ -127,7 +127,7 @@ namespace Server.Items
                     }
             }
 
-            Timer.DelayCall(Refresh);
+            Timer.StartTimer(Refresh);
         }
     }
 }

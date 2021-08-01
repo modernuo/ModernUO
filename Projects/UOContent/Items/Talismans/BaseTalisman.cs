@@ -1028,7 +1028,7 @@ namespace Server.Items
         {
             if (!_timerToken.Running)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10), Slice, out _timerToken);
+                Timer.StartTimer(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10), Slice, out _timerToken);
             }
         }
 

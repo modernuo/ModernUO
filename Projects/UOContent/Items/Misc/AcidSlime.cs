@@ -28,7 +28,7 @@ namespace Server.Items
             m_MaxDamage = maxDamage;
             m_Created = Core.Now;
             m_Duration = duration;
-            Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
+            Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
         }
 
         public AcidSlime(Serial serial) : base(serial)

@@ -30,7 +30,7 @@ namespace Server.Items
             m_Entries = new List<CampfireEntry>();
 
             Created = Core.Now;
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnTick, out _timerToken);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnTick, out _timerToken);
         }
 
         public Campfire(Serial serial) : base(serial)

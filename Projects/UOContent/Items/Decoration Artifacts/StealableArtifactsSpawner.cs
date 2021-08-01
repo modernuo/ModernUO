@@ -24,7 +24,7 @@ namespace Server.Items
                 m_Artifacts[i] = new StealableInstance(Entries[i]);
             }
 
-            Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMinutes(15.0), CheckRespawn, out _respawnTimerToken);
+            Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromMinutes(15.0), CheckRespawn, out _respawnTimerToken);
         }
 
         public StealableArtifactsSpawner(Serial serial) : base(serial) => Instance = this;
@@ -312,7 +312,7 @@ namespace Server.Items
                 m_Artifacts[i] = new StealableInstance(Entries[i]);
             }
 
-            Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMinutes(15.0), CheckRespawn, out _respawnTimerToken);
+            Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromMinutes(15.0), CheckRespawn, out _respawnTimerToken);
         }
 
         public class StealableEntry

@@ -93,7 +93,7 @@ namespace Server.Items
 
             Geometry.Circle2D(loc, map, Radius, BlastEffect, 270, 90);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(0.3), () => CircleEffect2(loc, map));
+            Timer.StartTimer(TimeSpan.FromSeconds(0.3), () => CircleEffect2(loc, map));
 
             foreach (var mobile in map.GetMobilesInRange(loc, Radius))
             {
@@ -127,7 +127,7 @@ namespace Server.Items
             m_Delay.TryGetValue(m, out var timer);
             timer.Cancel();
 
-            Timer.DelayCall(TimeSpan.FromSeconds(60), () => EndDelay(m), out timer);
+            Timer.StartTimer(TimeSpan.FromSeconds(60), () => EndDelay(m), out timer);
             m_Delay[m] = timer;
         }
 
@@ -186,7 +186,7 @@ namespace Server.Items
                 }
 
                 Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue);
-                Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => Potion.Explode(from, new Point3D(p), from.Map));
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => Potion.Explode(from, new Point3D(p), from.Map));
             }
         }
     }

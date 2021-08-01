@@ -66,7 +66,7 @@ namespace Server.Items
             }
 
             from.BeginAction<FireHorn>();
-            Timer.DelayCall(Core.AOS ? TimeSpan.FromSeconds(6.0) : TimeSpan.FromSeconds(12.0),
+            Timer.StartTimer(Core.AOS ? TimeSpan.FromSeconds(6.0) : TimeSpan.FromSeconds(12.0),
                 () =>
                 {
                     from.EndAction<FireHorn>();

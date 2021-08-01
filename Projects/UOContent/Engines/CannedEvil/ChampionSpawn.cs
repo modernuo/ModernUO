@@ -91,7 +91,7 @@ namespace Server.Engines.CannedEvil
             RestartDelay = TimeSpan.FromMinutes(30.0);
             DamageEntries = new Dictionary<Mobile, int>();
 
-            Timer.DelayCall(TimeSpan.Zero, SetInitialSpawnArea);
+            Timer.StartTimer(TimeSpan.Zero, SetInitialSpawnArea);
         }
 
         public void SetInitialSpawnArea()
@@ -303,7 +303,7 @@ namespace Server.Engines.CannedEvil
             m_MaxLevel = 16 + Utility.Random(3);
 
             _timerToken.Cancel();
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnSlice, out _timerToken);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnSlice, out _timerToken);
 
             _restartTimerToken.Cancel();
 
@@ -355,14 +355,14 @@ namespace Server.Engines.CannedEvil
                 NextProximityTime = Core.Now + TimeSpan.FromHours(6.0);
             }
 
-            Timer.DelayCall(TimeSpan.FromMinutes(10.0), ExpireCreatures);
+            Timer.StartTimer(TimeSpan.FromMinutes(10.0), ExpireCreatures);
         }
 
         public void BeginRestart(TimeSpan ts)
         {
             RestartTime = Core.Now + ts;
             _restartTimerToken.Cancel();
-            Timer.DelayCall(ts, EndRestart, out _restartTimerToken);
+            Timer.StartTimer(ts, EndRestart, out _restartTimerToken);
         }
 
         public void EndRestart()
@@ -1448,7 +1448,7 @@ namespace Server.Engines.CannedEvil
                     }
             }
 
-            Timer.DelayCall(TimeSpan.Zero, UpdateRegion);
+            Timer.StartTimer(TimeSpan.Zero, UpdateRegion);
         }
     }
 

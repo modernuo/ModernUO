@@ -29,47 +29,21 @@ namespace Server
             callback == null ? "null" : $"{callback.Method.DeclaringType?.FullName ?? ""}.{callback.Method.Name}";
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCall(Action callback) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
+        public static DelayCallTimer DelayCall(Action callback) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCall(TimeSpan delay, Action callback) => DelayCall(delay, TimeSpan.Zero, 1, callback);
+        public static DelayCallTimer DelayCall(TimeSpan delay, Action callback) => DelayCall(delay, TimeSpan.Zero, 1, callback);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCall(TimeSpan delay, TimeSpan interval, Action callback) =>
+        public static DelayCallTimer DelayCall(TimeSpan delay, TimeSpan interval, Action callback) =>
             DelayCall(delay, interval, 0, callback);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCall(TimeSpan interval, int count, Action callback) =>
+        public static DelayCallTimer DelayCall(TimeSpan interval, int count, Action callback) =>
             DelayCall(TimeSpan.Zero, interval, count, callback);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCall(TimeSpan delay, TimeSpan interval, int count, Action callback)
-        {
-            DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
-            t._selfReturn = true;
-            t.Start();
-
-#if DEBUG_TIMERS
-            DelayCallTimer._stackTraces[t.GetHashCode()] = new StackTrace().ToString();
-#endif
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer StartTimer(Action callback) => StartTimer(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer StartTimer(TimeSpan delay, Action callback) => StartTimer(delay, TimeSpan.Zero, 1, callback);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer StartTimer(TimeSpan delay, TimeSpan interval, Action callback) =>
-            StartTimer(delay, interval, 0, callback);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer StartTimer(TimeSpan interval, int count, Action callback) =>
-            StartTimer(TimeSpan.Zero, interval, count, callback);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DelayCallTimer StartTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
+        public static DelayCallTimer DelayCall(TimeSpan delay, TimeSpan interval, int count, Action callback)
         {
             DelayCallTimer t = new DelayCallTimer(delay, interval, count, callback);
             t.Start();
@@ -81,23 +55,49 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCall(Action callback, out TimerExecutionToken token) =>
-            DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, out token);
+        public static void StartTimer(Action callback) => StartTimer(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCall(TimeSpan delay, Action callback, out TimerExecutionToken token) =>
-            DelayCall(delay, TimeSpan.Zero, 1, callback, out token);
+        public static void StartTimer(TimeSpan delay, Action callback) => StartTimer(delay, TimeSpan.Zero, 1, callback);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCall(TimeSpan delay, TimeSpan interval, Action callback, out TimerExecutionToken token) =>
-            DelayCall(delay, interval, 0, callback, out token);
+        public static void StartTimer(TimeSpan delay, TimeSpan interval, Action callback) =>
+            StartTimer(delay, interval, 0, callback);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCall(TimeSpan interval, int count, Action callback, out TimerExecutionToken token) =>
-            DelayCall(TimeSpan.Zero, interval, count, callback, out token);
+        public static void StartTimer(TimeSpan interval, int count, Action callback) =>
+            StartTimer(TimeSpan.Zero, interval, count, callback);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DelayCall(TimeSpan delay, TimeSpan interval, int count, Action callback, out TimerExecutionToken token)
+        public static void StartTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
+        {
+            DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
+            t._selfReturn = true;
+            t.Start();
+
+#if DEBUG_TIMERS
+            DelayCallTimer._stackTraces[t.GetHashCode()] = new StackTrace().ToString();
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(Action callback, out TimerExecutionToken token) =>
+            StartTimer(TimeSpan.Zero, TimeSpan.Zero, 1, callback, out token);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(TimeSpan delay, Action callback, out TimerExecutionToken token) =>
+            StartTimer(delay, TimeSpan.Zero, 1, callback, out token);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(TimeSpan delay, TimeSpan interval, Action callback, out TimerExecutionToken token) =>
+            StartTimer(delay, interval, 0, callback, out token);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(TimeSpan interval, int count, Action callback, out TimerExecutionToken token) =>
+            StartTimer(TimeSpan.Zero, interval, count, callback, out token);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(TimeSpan delay, TimeSpan interval, int count, Action callback, out TimerExecutionToken token)
         {
             DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
             t.Start();

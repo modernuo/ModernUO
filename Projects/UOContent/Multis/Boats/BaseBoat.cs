@@ -1086,7 +1086,7 @@ namespace Server.Multis
             Order = single ? BoatOrder.Single : BoatOrder.Course;
 
             _moveTimerToken.Cancel();
-            Timer.DelayCall(FastInterval, FastInterval, StopBoat, out _moveTimerToken);
+            Timer.StartTimer(FastInterval, FastInterval, StopBoat, out _moveTimerToken);
 
             if (message)
             {
@@ -1277,7 +1277,7 @@ namespace Server.Multis
             }
 
             _turnTimerToken.Cancel();
-            Timer.DelayCall(TimeSpan.FromMilliseconds(500), () => Turn(offset), out _turnTimerToken);
+            Timer.StartTimer(TimeSpan.FromMilliseconds(500), () => Turn(offset), out _turnTimerToken);
 
             if (message)
             {
@@ -1342,7 +1342,7 @@ namespace Server.Multis
             Order = BoatOrder.Move;
 
             _moveTimerToken.Cancel();
-            Timer.DelayCall(interval, StopBoat, out _moveTimerToken);
+            Timer.StartTimer(interval, StopBoat, out _moveTimerToken);
 
             return true;
         }

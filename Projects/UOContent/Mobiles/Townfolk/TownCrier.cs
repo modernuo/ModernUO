@@ -433,7 +433,7 @@ namespace Server.Mobiles
         {
             if (!_autoShoutTimerToken.Running)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(5.0), TimeSpan.FromMinutes(1.0), AutoShout_Callback, out _autoShoutTimerToken);
+                Timer.StartTimer(TimeSpan.FromSeconds(5.0), TimeSpan.FromMinutes(1.0), AutoShout_Callback, out _autoShoutTimerToken);
             }
         }
 
@@ -447,7 +447,7 @@ namespace Server.Mobiles
             }
             else if (!_newsTimerToken.Running)
             {
-                Timer.DelayCall(
+                Timer.StartTimer(
                     TimeSpan.FromSeconds(1.0),
                     TimeSpan.FromSeconds(3.0),
                     tce.Lines.Length,
@@ -500,7 +500,7 @@ namespace Server.Mobiles
                 }
                 else
                 {
-                    Timer.DelayCall(
+                    Timer.StartTimer(
                         TimeSpan.FromSeconds(1.0),
                         TimeSpan.FromSeconds(3.0),
                         tce.Lines.Length,

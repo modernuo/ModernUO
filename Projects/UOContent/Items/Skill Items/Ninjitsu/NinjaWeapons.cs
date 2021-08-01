@@ -69,10 +69,10 @@ namespace Server.Items
 
                     if (CombatCheck(from, target))
                     {
-                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => OnHit(from, target, weapon));
+                        Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => OnHit(from, target, weapon));
                     }
 
-                    Timer.DelayCall(TimeSpan.FromSeconds(2.5), () => from.NinjaWepCooldown = false);
+                    Timer.StartTimer(TimeSpan.FromSeconds(2.5), () => from.NinjaWepCooldown = false);
                 }
                 else
                 {

@@ -52,7 +52,7 @@ namespace Server.Engines.MLQuests
 
             if (timed)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), Slice, out _timerToken);
+                Timer.StartTimer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), Slice, out _timerToken);
             }
         }
 

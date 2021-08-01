@@ -109,7 +109,7 @@ namespace Server.Engines.ConPVP
 
         public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
         {
-            Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
+            Timer.StartTimer(ts, () => DelayBounce_Callback(mob, corpse));
         }
 
         public static bool AllowSpecialMove(Mobile from, string name, SpecialMove move) =>
@@ -844,7 +844,7 @@ namespace Server.Engines.ConPVP
 
             m_EventGame?.OnStop();
 
-            Timer.DelayCall(TimeSpan.FromSeconds(9.0), UnregisterRematch);
+            Timer.StartTimer(TimeSpan.FromSeconds(9.0), UnregisterRematch);
         }
 
         public void Award(Mobile us, Mobile them, bool won)
@@ -1057,7 +1057,7 @@ namespace Server.Engines.ConPVP
 
         public void StartCountdown(int count, CountdownCallback cb)
         {
-            Timer.DelayCall(
+            Timer.StartTimer(
                 TimeSpan.FromSeconds(1.0),
                 count,
                 () => Countdown_Callback(cb),
@@ -1088,10 +1088,10 @@ namespace Server.Engines.ConPVP
         public void StartSuddenDeath(TimeSpan timeUntilActive)
         {
             _SdWarnTimerToken.Cancel();
-            Timer.DelayCall(TimeSpan.FromMinutes(timeUntilActive.TotalMinutes * 0.9), WarnSuddenDeath, out _SdWarnTimerToken);
+            Timer.StartTimer(TimeSpan.FromMinutes(timeUntilActive.TotalMinutes * 0.9), WarnSuddenDeath, out _SdWarnTimerToken);
 
             _SdActivateTimerToken.Cancel();
-            Timer.DelayCall(timeUntilActive, ActivateSuddenDeath, out _SdActivateTimerToken);
+            Timer.StartTimer(timeUntilActive, ActivateSuddenDeath, out _SdActivateTimerToken);
         }
 
         public void WarnSuddenDeath()
@@ -1161,7 +1161,7 @@ namespace Server.Engines.ConPVP
                 : TimeSpan.FromMinutes(90.0);
 
             _autoTieTimerToken.Cancel();
-            Timer.DelayCall(ts, InvokeAutoTie, out _autoTieTimerToken);
+            Timer.StartTimer(ts, InvokeAutoTie, out _autoTieTimerToken);
         }
 
         public void InvokeAutoTie()
@@ -1236,7 +1236,7 @@ namespace Server.Engines.ConPVP
 
             m_Tournament?.HandleTie(Arena, m_Match, remaining);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(10.0), Unregister);
+            Timer.StartTimer(TimeSpan.FromSeconds(10.0), Unregister);
         }
 
         public static void Initialize()
@@ -2753,7 +2753,7 @@ namespace Server.Engines.ConPVP
                 TitleColor = 0x7800;
                 TitleNumber = 1062051; // Gate Warning
 
-                Timer.DelayCall(TimeSpan.FromSeconds(10.0), Delete);
+                Timer.StartTimer(TimeSpan.FromSeconds(10.0), Delete);
             }
 
             public ArenaMoongate(Serial serial) : base(serial)

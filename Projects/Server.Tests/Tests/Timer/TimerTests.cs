@@ -25,7 +25,7 @@ namespace Server.Tests
 
             Timer.Init(timerTicks.Ticks);
 
-            Timer.DelayCall(TimeSpan.FromMilliseconds(ticks), action);
+            Timer.StartTimer(TimeSpan.FromMilliseconds(ticks), action);
 
             var tickCount = expectedTicks / 8;
 
@@ -52,7 +52,7 @@ namespace Server.Tests
 
             Timer.Init(timerTicks.Ticks);
 
-            Timer.DelayCall(TimeSpan.FromMilliseconds(delay), TimeSpan.FromMilliseconds(interval), count, action);
+            Timer.StartTimer(TimeSpan.FromMilliseconds(delay), TimeSpan.FromMilliseconds(interval), count, action);
 
             var tickCount = (expectedDelayTicks + (expectedIntervalTicks * count - 1)) / 8;
 

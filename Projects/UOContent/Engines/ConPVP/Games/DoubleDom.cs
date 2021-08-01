@@ -586,7 +586,7 @@ namespace Server.Engines.ConPVP
 
         public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
         {
-            Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
+            Timer.StartTimer(ts, () => DelayBounce_Callback(mob, corpse));
         }
 
         private void DelayBounce_Callback(Mobile mob, Container corpse)
@@ -697,7 +697,7 @@ namespace Server.Engines.ConPVP
             }
 
             _finishTimerToken.Cancel();
-            Timer.DelayCall(Controller.Duration, Finish_Callback, out _finishTimerToken);
+            Timer.StartTimer(Controller.Duration, Finish_Callback, out _finishTimerToken);
         }
 
         private void Finish_Callback()
@@ -961,7 +961,7 @@ namespace Server.Engines.ConPVP
             if (!wasDom && isDom)
             {
                 m_CapStage = 0;
-                Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1.0), CaptureTick, out _captureTimerToken);
+                Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromSeconds(1.0), CaptureTick, out _captureTimerToken);
             }
         }
 
@@ -1006,7 +1006,7 @@ namespace Server.Engines.ConPVP
                     Controller.PointB.SetUncapturableHue();
                 }
 
-                Timer.DelayCall(TimeSpan.FromSeconds(30.0), UncaptureTick, out _uncaptureTimerToken);
+                Timer.StartTimer(TimeSpan.FromSeconds(30.0), UncaptureTick, out _uncaptureTimerToken);
             }
         }
 

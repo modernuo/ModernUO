@@ -68,7 +68,7 @@ namespace Server.Items
 
             Events = new List<int>();
 
-            Timer.DelayCall(EvaluationInterval, EvaluationInterval, Evaluate, out _timerToken);
+            Timer.StartTimer(EvaluationInterval, EvaluationInterval, Evaluate, out _timerToken);
         }
 
         public Aquarium(Serial serial) : base(serial)
@@ -563,7 +563,7 @@ namespace Server.Items
                             next = Core.Now;
                         }
 
-                        Timer.DelayCall(next - Core.Now, EvaluationInterval, Evaluate, out _timerToken);
+                        Timer.StartTimer(next - Core.Now, EvaluationInterval, Evaluate, out _timerToken);
 
                         goto case 0;
                     }

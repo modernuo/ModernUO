@@ -40,7 +40,7 @@ namespace Server.Spells.Chivalry
 
                 var delay = Math.Clamp(ComputePowerValue(1) / 60.0, 1.5, 3.5);
 
-                Timer.DelayCall(TimeSpan.FromMinutes(delay), () => Expire_Callback(Caster), out var timerToken);
+                Timer.StartTimer(TimeSpan.FromMinutes(delay), () => Expire_Callback(Caster), out var timerToken);
 
                 m_Table[Caster] = timerToken;
 
