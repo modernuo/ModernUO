@@ -386,14 +386,9 @@ namespace Server.Mobiles
                 }
             }
 
-            if (Entries == null || Entries.Count == 0)
-            {
-                return GlobalTownCrierEntryList.Instance.GetRandomEntry();
-            }
-
             var entry = GlobalTownCrierEntryList.Instance.GetRandomEntry();
 
-            return entry ?? (Utility.RandomBool() ? Entries.RandomElement() : null);
+            return entry ?? (Entries?.Count > 0 && Utility.RandomBool() ? Entries.RandomElement() : null);
         }
 
         public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
@@ -444,7 +439,7 @@ namespace Server.Mobiles
                 _autoShoutTimer.Stop();
                 _autoShoutTimer = null;
             }
-            else if (!_newsTimer.Running)
+            else if (_newsTimer == null)
             {
                 _newsTimer = Timer.DelayCall(
                     TimeSpan.FromSeconds(1.0),
@@ -483,11 +478,11 @@ namespace Server.Mobiles
             }
         }
 
-        public override bool HandlesOnSpeech(Mobile from) => !_newsTimer.Running && from.Alive && InRange(from, 12);
+        public override bool HandlesOnSpeech(Mobile from) => _newsTimer == null && from.Alive && InRange(from, 12);
 
         public override void OnSpeech(SpeechEventArgs e)
         {
-            if (!_newsTimer.Running == false && e.HasKeyword(0x30) && e.Mobile.Alive && InRange(e.Mobile, 12)) // *news*
+            if (_newsTimer == null && e.HasKeyword(0x30) && e.Mobile.Alive && InRange(e.Mobile, 12)) // *news*
             {
                 Direction = GetDirectionTo(e.Mobile);
 

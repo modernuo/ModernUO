@@ -144,7 +144,7 @@ namespace Server.Mobiles
         private readonly List<SBInfo> m_SBInfos = new();
         private BaseHouse m_House;
 
-        private TimerExecutionToken _newsTimerToken;
+        private Timer _newsTimer;
 
         public PlayerBarkeeper(Mobile owner, BaseHouse house) : base("the barkeeper")
         {
@@ -224,10 +224,11 @@ namespace Server.Mobiles
 
         private void ShoutNews_Callback(TownCrierEntry tce)
         {
-            var index = _newsTimerToken.Index;
+            var index = _newsTimer.Index;
             if (index >= tce.Lines.Length)
             {
-                _newsTimerToken.Cancel();
+                _newsTimer.Stop();
+                _newsTimer = null;
             }
             else
             {
@@ -265,7 +266,7 @@ namespace Server.Mobiles
 
             if (!e.Handled && InRange(e.Mobile, 3))
             {
-                if (!_newsTimerToken.Running && e.HasKeyword(0x30)) // *news*
+                if (_newsTimer == null && e.HasKeyword(0x30)) // *news*
                 {
                     var tce = GlobalTownCrierEntryList.Instance.GetRandomEntry();
 
@@ -275,12 +276,11 @@ namespace Server.Mobiles
                     }
                     else
                     {
-                        Timer.StartTimer(
+                        _newsTimer = Timer.DelayCall(
                             TimeSpan.FromSeconds(1.0),
                             TimeSpan.FromSeconds(3.0),
                             tce.Lines.Length,
-                            () => ShoutNews_Callback(tce),
-                            out _newsTimerToken
+                            () => ShoutNews_Callback(tce)
                         );
 
                         PublicOverheadMessage(MessageType.Regular, 0x3B2, 502978); // Some of the latest news!
