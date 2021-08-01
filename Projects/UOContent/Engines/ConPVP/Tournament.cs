@@ -997,14 +997,14 @@ namespace Server.Engines.ConPVP
                 return;
             }
 
-            TimerExecutionToken token;
+            var count = 0;
 
-            void Announce()
-            {
-                arena.Announcer.PublicOverheadMessage(MessageType.Regular, 0x35, false, alerts[token.Index]);
-            }
-
-            Timer.DelayCall(TimeSpan.FromSeconds(0.5), alerts.Length, Announce, out token);
+            Timer.DelayCall(TimeSpan.FromSeconds(0.5), alerts.Length,
+                () =>
+                {
+                    arena.Announcer.PublicOverheadMessage(MessageType.Regular, 0x35, false, alerts[count++]);
+                }
+            );
         }
     }
 }
