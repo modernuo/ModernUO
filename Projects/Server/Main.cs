@@ -47,7 +47,7 @@ namespace Server
 
         private static int _itemCount;
         private static int _mobileCount;
-        public static EventLoopContext LoopContext { get; private set; }
+        public static EventLoopContext LoopContext { get; set; }
 
         private static readonly Type[] _serialTypeArray = { typeof(Serial) };
 
