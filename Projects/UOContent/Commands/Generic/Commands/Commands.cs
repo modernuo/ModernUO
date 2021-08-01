@@ -538,7 +538,7 @@ namespace Server.Commands.Generic
                     }
                     else
                     {
-                        e.Mobile.SendGump(new AddGump(e.Mobile, match, 0, AddGump.Match(match).ToArray(), true));
+                        e.Mobile.SendGump(new AddGump(e.Mobile, match, 0, AddGump.Match(match), true));
                     }
                 }
                 else
