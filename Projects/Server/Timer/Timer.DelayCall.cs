@@ -117,16 +117,18 @@ namespace Server
         public sealed class DelayCallTimer : Timer, INotifyCompletion
         {
             private static int _maxPoolSize;
+            private static int _baseMaxPoolSize;
             private static int _poolSize;
             private static DelayCallTimer _poolHead;
 
             public static void Configure()
             {
-                _maxPoolSize = ServerConfiguration.GetOrUpdateSetting("timer.maxPoolSize", 1024);
+                _baseMaxPoolSize = ServerConfiguration.GetOrUpdateSetting("timer.maxPoolSize", 1024);
+                _maxPoolSize = _baseMaxPoolSize * 16;
 
-                RefillPool(_maxPoolSize, out _poolHead, out _);
+                RefillPool(_baseMaxPoolSize, out _poolHead, out _);
 
-                _poolSize = _maxPoolSize;
+                _poolSize = _baseMaxPoolSize;
             }
 
             internal bool _selfReturn;
@@ -169,10 +171,11 @@ namespace Server
 
             private static void RefillPoolAsync()
             {
+                var amountToRefill = Math.Min(_maxPoolSize, _baseMaxPoolSize * 2);
                 ThreadPool.UnsafeQueueUserWorkItem(
-                    _ =>
+                    static amount =>
                     {
-                        RefillPool(_maxPoolSize, out var head, out var tail);
+                        RefillPool(amount, out var head, out var tail);
                         Core.LoopContext.Post(
                             state =>
                             {
@@ -184,11 +187,14 @@ namespace Server
                                 var (listHead, listTail) = ((DelayCallTimer, DelayCallTimer))state;
                                 listTail.Attach(_poolHead);
                                 _poolHead = listHead;
+                                _poolSize += amount;
+                                _baseMaxPoolSize = amount;
                             },
                             (head, tail)
                         );
                     },
-                    null
+                    amountToRefill,
+                    false
                 );
             }
 
@@ -234,7 +240,7 @@ namespace Server
 
                 Version++; // Increment the version so if this is called from OnTick() and another timer is started, we don't have a problem
 
-                if (_poolSize > _maxPoolSize)
+                if (_poolSize >= _baseMaxPoolSize)
                 {
 #if DEBUG_TIMERS
                     logger.Warning($"DelayCallTimer pool reached maximum of {_maxPoolSize} timers");
