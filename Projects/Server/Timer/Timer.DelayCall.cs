@@ -125,6 +125,8 @@ namespace Server
                     timer.Attach(_poolHead);
                     _poolHead = timer;
                 }
+
+                _poolSize = _maxPoolSize;
             }
 
             internal bool _selfReturn;
