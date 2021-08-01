@@ -14,7 +14,9 @@
  *************************************************************************/
 
 using System;
+#if DEBUG_TIMERS
 using System.Collections.Generic;
+#endif
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -46,7 +48,7 @@ namespace Server
             t._selfReturn = true;
             t.Start();
 
-#if DEBUG
+#if DEBUG_TIMERS
             DelayCallTimer._stackTraces[t.GetHashCode()] = new StackTrace().ToString();
 #endif
         }
@@ -70,7 +72,7 @@ namespace Server
         {
             DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
             t.Start();
-#if DEBUG
+#if DEBUG_TIMERS
             t._allowFinalization = true;
 #endif
 
@@ -99,7 +101,7 @@ namespace Server
             DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
             t.Start();
 
-#if DEBUG
+#if DEBUG_TIMERS
             DelayCallTimer._stackTraces[t.GetHashCode()] = new StackTrace().ToString();
 #endif
             token = new TimerExecutionToken(t);
@@ -130,7 +132,7 @@ namespace Server
             }
 
             internal bool _selfReturn;
-#if DEBUG
+#if DEBUG_TIMERS
             internal bool _allowFinalization;
 #endif
             private Action _continuation;
@@ -173,7 +175,7 @@ namespace Server
 
                 if (_poolSize > _maxPoolSize)
                 {
-#if DEBUG
+#if DEBUG_TIMERS
                     logger.Warning($"DelayCallTimer pool reached maximum of {_maxPoolSize} timers");
                     _allowFinalization = true;
                     _stackTraces.Remove(GetHashCode());
@@ -201,22 +203,22 @@ namespace Server
                     timer.Init(delay, interval, count);
                     timer._continuation = callback;
                     timer._selfReturn = false;
-#if DEBUG
+#if DEBUG_TIMERS
                     timer._allowFinalization = false;
 #endif
 
                     return timer;
                 }
 
-#if DEBUG
-                logger.Warning("DelayCallTimer pool depleted and timer was allocated.");
+#if DEBUG_TIMERS
+                logger.Warning("DelayCallTimer pool depleted and timer was allocated.\n{new StackTrace()});
 #endif
                 return new DelayCallTimer(delay, interval, count, callback);
             }
 
             public override string ToString() => $"DelayCallTimer[{FormatDelegate(_continuation)}]";
 
-#if DEBUG
+#if DEBUG_TIMERS
             internal static Dictionary<int, string> _stackTraces = new();
 
             ~DelayCallTimer()
