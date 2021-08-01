@@ -77,18 +77,38 @@ namespace Server.Items
             get
             {
                 GiveResources();
-                return new MiningCartDeed { IsRewardItem = IsRewardItem, Gems = Gems, Ore = Ore };
+                return new MiningCartDeed { IsRewardItem = IsRewardItem, Gems = _gems, Ore = _ore };
             }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public MiningCartType CartType { get; private set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Gems { get; set; }
+        private int _gems;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public int Ore { get; set; }
+        public int Gems
+        {
+            get
+            {
+                GiveResources();
+                return _gems;
+            }
+            set => _gems = value;
+        }
+
+        private int _ore;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Ore
+        {
+            get
+            {
+                GiveResources();
+                return _ore;
+            }
+            set => _ore = value;
+        }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsRewardItem { get; set; }
@@ -105,11 +125,11 @@ namespace Server.Items
             {
                 case MiningCartType.OreSouth:
                 case MiningCartType.OreEast:
-                    Ore = Math.Min(100, Ore + amount * 10);
+                    _ore = Math.Min(100, _ore + amount * 10);
                     break;
                 case MiningCartType.GemSouth:
                 case MiningCartType.GemEast:
-                    Gems = Math.Min(50, Gems + amount * 5);
+                    _gems = Math.Min(50, _gems + amount * 5);
                     break;
             }
 
@@ -159,7 +179,7 @@ namespace Server.Items
             {
                 case MiningCartType.OreSouth:
                 case MiningCartType.OreEast:
-                    if (Ore > 0)
+                    if (_ore > 0)
                     {
                         var ingots = Utility.Random(9) switch
                         {
@@ -174,7 +194,7 @@ namespace Server.Items
                             _ => new ValoriteIngot(),
                         };
 
-                        var amount = Math.Min(10, Ore);
+                        var amount = Math.Min(10, _ore);
                         ingots.Amount = amount;
 
                         if (!from.PlaceInBackpack(ingots))
@@ -187,7 +207,7 @@ namespace Server.Items
                         else
                         {
                             PublicOverheadMessage(MessageType.Regular, 0, 1094724, amount.ToString()); // Ore: ~1_COUNT~
-                            Ore -= amount;
+                            _ore -= amount;
                         }
                     }
                     else
@@ -198,7 +218,7 @@ namespace Server.Items
                     break;
                 case MiningCartType.GemSouth:
                 case MiningCartType.GemEast:
-                    if (Gems > 0)
+                    if (_gems > 0)
                     {
                         Item gems = Utility.Random(15) switch
                         {
@@ -221,7 +241,7 @@ namespace Server.Items
                             _  => new BlueDiamond() // 14
                         };
 
-                        var amount = Math.Min(5, Gems);
+                        var amount = Math.Min(5, _gems);
                         gems.Amount = amount;
 
                         if (!from.PlaceInBackpack(gems))
@@ -234,7 +254,7 @@ namespace Server.Items
                         else
                         {
                             PublicOverheadMessage(MessageType.Regular, 0, 1094723, amount.ToString()); // Gems: ~1_COUNT~
-                            Gems -= amount;
+                            _gems -= amount;
                         }
                     }
                     else
@@ -255,8 +275,8 @@ namespace Server.Items
             writer.Write((int)CartType);
 
             writer.Write(IsRewardItem);
-            writer.Write(Gems);
-            writer.Write(Ore);
+            writer.Write(_gems);
+            writer.Write(_ore);
 
             writer.Write(_lastResourceTime);
         }
@@ -275,12 +295,14 @@ namespace Server.Items
                     goto case 0;
                 case 0:
                     IsRewardItem = reader.ReadBool();
-                    Gems = reader.ReadInt();
-                    Ore = reader.ReadInt();
+                    _gems = reader.ReadInt();
+                    _ore = reader.ReadInt();
 
                     _lastResourceTime = reader.ReadDateTime() - (version < 2 ? TimeSpan.FromDays(1.0) : TimeSpan.Zero);
                     break;
             }
+
+            GiveResources();
         }
     }
 
