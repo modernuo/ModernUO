@@ -19,6 +19,7 @@ using System.Collections.Generic;
 #endif
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace Server
 {
@@ -70,7 +71,7 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DelayCallTimer StartTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
         {
-            DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
+            DelayCallTimer t = new DelayCallTimer(delay, interval, count, callback);
             t.Start();
 #if DEBUG_TIMERS
             t._allowFinalization = true;
@@ -115,18 +116,15 @@ namespace Server
 
         public sealed class DelayCallTimer : Timer, INotifyCompletion
         {
-            private static int _maxPoolSize = 1024;
+            private static int _maxPoolSize;
             private static int _poolSize;
             private static DelayCallTimer _poolHead;
 
             public static void Configure()
             {
-                for (var i = 0; i < _maxPoolSize; i++)
-                {
-                    var timer = new DelayCallTimer(TimeSpan.Zero, TimeSpan.Zero, 0, null);
-                    timer.Attach(_poolHead);
-                    _poolHead = timer;
-                }
+                _maxPoolSize = ServerConfiguration.GetOrUpdateSetting("timer.maxPoolSize", 1024);
+
+                RefillPool(_maxPoolSize, out _poolHead, out _);
 
                 _poolSize = _maxPoolSize;
             }
@@ -145,7 +143,13 @@ namespace Server
             ) =>
                 _continuation = callback;
 
-            internal DelayCallTimer(TimeSpan delay) : base(delay) => Start();
+            internal DelayCallTimer(TimeSpan delay) : base(delay)
+            {
+#if DEBUG_TIMERS
+            t._allowFinalization = true;
+#endif
+                Start();
+            }
 
             protected override void OnTick()
             {
@@ -160,6 +164,63 @@ namespace Server
                 if (_selfReturn)
                 {
                     Return();
+                }
+            }
+
+            private static void RefillPoolAsync()
+            {
+                ThreadPool.UnsafeQueueUserWorkItem(
+                    _ =>
+                    {
+                        RefillPool(_maxPoolSize, out var head, out var tail);
+                        Core.LoopContext.Post(
+                            state =>
+                            {
+                                if (state == null)
+                                {
+                                    return;
+                                }
+
+                                var (listHead, listTail) = ((DelayCallTimer, DelayCallTimer))state;
+                                listTail.Attach(_poolHead);
+                                _poolHead = listHead;
+                            },
+                            (head, tail)
+                        );
+                    },
+                    null
+                );
+            }
+
+            private static void RefillPool(int amount, out DelayCallTimer head, out DelayCallTimer tail)
+            {
+#if DEBUG_TIMERS
+                logger.Information($"Filling pool with {_maxPoolSize} timers.");
+#endif
+
+                DelayCallTimer current = null;
+                head = null;
+                tail = null;
+
+                for (var i = 0; i < amount; i++)
+                {
+                    var timer = new DelayCallTimer(TimeSpan.Zero, TimeSpan.Zero, 0, null);
+                    timer.Attach(current);
+
+                    if (i == amount - 1)
+                    {
+                        tail = timer;
+                    }
+                    else
+                    {
+                        if (i == 0)
+                        {
+                            head = timer;
+                            tail = timer;
+                        }
+
+                        current = timer;
+                    }
                 }
             }
 
@@ -210,8 +271,10 @@ namespace Server
                     return timer;
                 }
 
+                RefillPoolAsync();
+
 #if DEBUG_TIMERS
-                logger.Warning("DelayCallTimer pool depleted and timer was allocated.\n{new StackTrace()});
+                logger.Warning($"Timer pool depleted and timer was allocated.\n{new StackTrace()});
 #endif
                 return new DelayCallTimer(delay, interval, count, callback);
             }
@@ -225,7 +288,7 @@ namespace Server
             {
                 if (!_allowFinalization)
                 {
-                    logger.Warning($"Pooled Timer was not returned to the pool.\n{_stackTraces[GetHashCode()]}");
+                    logger.Warning($"Pooled timer was not returned to the pool.\n{_stackTraces[GetHashCode()]}");
                 }
             }
 #endif
