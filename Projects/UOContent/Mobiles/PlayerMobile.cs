@@ -1607,7 +1607,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            InvisibilitySpell.RemoveTimer(this);
+            InvisibilitySpell.StopTimer(this);
 
             base.RevealingAction();
 

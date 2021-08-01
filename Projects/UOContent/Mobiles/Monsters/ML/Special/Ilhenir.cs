@@ -296,7 +296,7 @@ namespace Server.Mobiles
     public class StainedOoze : Item
     {
         private int m_Ticks;
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         [Constructible]
         public StainedOoze(bool corrosive = false) : base(0x122A)
@@ -305,7 +305,7 @@ namespace Server.Mobiles
             Hue = 0x95;
 
             Corrosive = corrosive;
-            m_Timer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick);
+            Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
             m_Ticks = 0;
         }
 
@@ -319,11 +319,7 @@ namespace Server.Mobiles
 
         public override void OnAfterDelete()
         {
-            if (m_Timer != null)
-            {
-                m_Timer.Stop();
-                m_Timer = null;
-            }
+            _timerToken.Cancel();
         }
 
         private void OnTick()
@@ -388,8 +384,8 @@ namespace Server.Mobiles
                     m.LocalOverheadMessage(
                         MessageType.Regular,
                         0x21,
-                        1072070
-                    ); // The infernal ooze scorches you, setting you and your equipment ablaze!
+                        1072070 // The infernal ooze scorches you, setting you and your equipment ablaze!
+                    );
                     return;
                 }
             }
@@ -414,7 +410,7 @@ namespace Server.Mobiles
 
             Corrosive = reader.ReadBool();
 
-            m_Timer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick);
+            Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
             m_Ticks = ItemID == 0x122A ? 0 : 30;
         }
     }

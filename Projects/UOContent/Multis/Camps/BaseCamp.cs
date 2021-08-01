@@ -9,7 +9,7 @@ namespace Server.Multis
     {
         private TimeSpan m_DecayDelay;
         private DateTime m_DecayTime;
-        private Timer m_DecayTimer;
+        private TimerExecutionToken _decayTimerToken;
         private List<Item> m_Items;
         private List<Mobile> m_Mobiles;
 
@@ -62,14 +62,13 @@ namespace Server.Multis
                 return;
             }
 
-            m_DecayTimer?.Stop();
-
             if (setDecayTime)
             {
                 m_DecayTime = Core.Now + DecayDelay;
             }
 
-            m_DecayTimer = Timer.DelayCall(DecayDelay, Delete);
+            _decayTimerToken.Cancel();
+            Timer.DelayCall(DecayDelay, Delete, out _decayTimerToken);
         }
 
         public virtual void AddItem(Item item, int xOffset, int yOffset, int zOffset)

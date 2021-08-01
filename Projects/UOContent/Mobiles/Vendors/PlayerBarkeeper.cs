@@ -144,7 +144,7 @@ namespace Server.Mobiles
         private readonly List<SBInfo> m_SBInfos = new();
         private BaseHouse m_House;
 
-        private Timer m_NewsTimer;
+        private TimerExecutionToken _newsTimerToken;
 
         public PlayerBarkeeper(Mobile owner, BaseHouse house) : base("the barkeeper")
         {
@@ -222,12 +222,12 @@ namespace Server.Mobiles
 
         public override bool HandlesOnSpeech(Mobile from) => InRange(from, 3) || base.HandlesOnSpeech(from);
 
-        private void ShoutNews_Callback(TownCrierEntry tce, int index)
+        private void ShoutNews_Callback(TownCrierEntry tce)
         {
-            if (index < 0 || index >= tce.Lines.Length)
+            var index = _newsTimerToken.Index;
+            if (index >= tce.Lines.Length)
             {
-                m_NewsTimer?.Stop();
-                m_NewsTimer = null;
+                _newsTimerToken.Cancel();
             }
             else
             {
@@ -265,7 +265,7 @@ namespace Server.Mobiles
 
             if (!e.Handled && InRange(e.Mobile, 3))
             {
-                if (m_NewsTimer == null && e.HasKeyword(0x30)) // *news*
+                if (!_newsTimerToken.Running && e.HasKeyword(0x30)) // *news*
                 {
                     var tce = GlobalTownCrierEntryList.Instance.GetRandomEntry();
 
@@ -275,11 +275,12 @@ namespace Server.Mobiles
                     }
                     else
                     {
-                        var index = 0;
-                        m_NewsTimer = Timer.DelayCall(
+                        Timer.DelayCall(
                             TimeSpan.FromSeconds(1.0),
                             TimeSpan.FromSeconds(3.0),
-                            () => ShoutNews_Callback(tce, index)
+                            tce.Lines.Length,
+                            () => ShoutNews_Callback(tce),
+                            out _newsTimerToken
                         );
 
                         PublicOverheadMessage(MessageType.Regular, 0x3B2, 502978); // Some of the latest news!

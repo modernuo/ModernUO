@@ -286,7 +286,7 @@ namespace Server.Mobiles
         private int m_FireResistance;
 
         private bool m_HasGeneratedLoot; // have we generated our loot yet?
-        private Timer m_HealTimer;
+        private TimerExecutionToken _healTimerToken;
 
         private Point3D m_Home; // The home position of the creature, used by some AI
 
@@ -1138,7 +1138,7 @@ namespace Server.Mobiles
         public virtual double HealOwnerInterval => 30.0;
         public virtual bool HealOwnerFully => false;
 
-        public bool IsHealing => m_HealTimer != null;
+        public bool IsHealing => _healTimerToken.Running;
 
         public virtual bool HasAura => false;
         public virtual TimeSpan AuraInterval => TimeSpan.FromSeconds(5);
@@ -2208,7 +2208,7 @@ namespace Server.Mobiles
 
         public override void RevealingAction()
         {
-            InvisibilitySpell.RemoveTimer(this);
+            InvisibilitySpell.StopTimer(this);
 
             base.RevealingAction();
         }
@@ -3585,8 +3585,8 @@ namespace Server.Mobiles
                 m_NextRummageTime = tc + (int)TimeSpan.FromMinutes(delay).TotalMilliseconds;
             }
 
-            if (CanBreath && tc - m_NextBreathTime >= 0
-            ) // tested: controlled dragons do breath fire, what about summoned skeletal dragons?
+            // tested: controlled dragons do breath fire, what about summoned skeletal dragons?
+            if (CanBreath && tc - m_NextBreathTime >= 0)
             {
                 var target = Combatant;
 
@@ -5397,7 +5397,7 @@ namespace Server.Mobiles
 
             var seconds = (onSelf ? HealDelay : HealOwnerDelay) + (patient.Alive ? 0.0 : 5.0);
 
-            m_HealTimer = Timer.DelayCall(TimeSpan.FromSeconds(seconds), () => Heal(patient));
+            Timer.DelayCall(TimeSpan.FromSeconds(seconds), () => Heal(patient), out _healTimerToken);
         }
 
         public virtual void Heal(Mobile patient)
@@ -5479,9 +5479,7 @@ namespace Server.Mobiles
 
         public virtual void StopHeal()
         {
-            m_HealTimer?.Stop();
-
-            m_HealTimer = null;
+            _healTimerToken.Cancel();
         }
 
         public virtual void HealEffect(Mobile patient)

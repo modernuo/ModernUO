@@ -12,7 +12,7 @@ namespace Server.Spells.Chivalry
             9002
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
         public DivineFurySpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {
@@ -37,20 +37,16 @@ namespace Server.Spells.Chivalry
 
                 Caster.Stam = Caster.StamMax;
 
-                m_Table.TryGetValue(Caster, out var timer);
-                timer?.Stop();
+                RemoveTimer(Caster);
 
                 var delay = Math.Clamp(ComputePowerValue(10), 7, 24);
 
-                m_Table[Caster] = Timer.DelayCall(TimeSpan.FromSeconds(delay),
-                    () =>
-                    {
-                        m_Table.Remove(Caster);
-
-                        Caster.Delta(MobileDelta.WeaponDamage);
-                        Caster.PlaySound(0xF8);
-                    }
+                Timer.DelayCall(TimeSpan.FromSeconds(delay),
+                    () => { StopDivineFury(Caster); },
+                    out var timerToken
                 );
+
+                m_Table[Caster] = timerToken;
 
                 Caster.Delta(MobileDelta.WeaponDamage);
 
@@ -61,6 +57,21 @@ namespace Server.Spells.Chivalry
             }
 
             FinishSequence();
+        }
+
+        private static void RemoveTimer(Mobile m)
+        {
+            if (m_Table.Remove(m, out var timerToken))
+            {
+                timerToken.Cancel();
+            }
+        }
+
+        public static void StopDivineFury(Mobile m)
+        {
+            RemoveTimer(m);
+            m.Delta(MobileDelta.WeaponDamage);
+            m.PlaySound(0xF8);
         }
 
         public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
