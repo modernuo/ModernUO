@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Server.Engines.VeteranRewards;
 using Server.Gumps;
 using Server.Multis;
@@ -16,7 +17,45 @@ namespace Server.Items
 
     public class MiningCart : BaseAddon, IRewardItem
     {
-        private TimerExecutionToken _timerToken;
+        private class CartTimerComparer : IComparer<MiningCart>
+        {
+            public int Compare(MiningCart x, MiningCart y) =>
+                x?._nextResourceTime.CompareTo(y?._nextResourceTime) ?? (y != null ? 1 : 0);
+        }
+
+        private static SortedSet<MiningCart> _carts = new(new CartTimerComparer());
+        private static Timer _resourceTimer;
+
+        private static void AddCartToTimer(MiningCart cart)
+        {
+            _carts.Add(cart);
+            _resourceTimer ??= Timer.StartTimer(TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30), GiveCartResources);
+        }
+
+        private static void RemoveCartFromTimer(MiningCart cart)
+        {
+            _carts.Remove(cart);
+            if (_carts.Count == 0)
+            {
+                _resourceTimer?.Stop();
+                _resourceTimer = null;
+            }
+        }
+
+        private static void GiveCartResources()
+        {
+            foreach (var cart in _carts)
+            {
+                if (cart._nextResourceTime > Core.Now)
+                {
+                    return;
+                }
+
+                cart.GiveResources();
+            }
+        }
+
+        private DateTime _nextResourceTime;
 
         [Constructible]
         public MiningCart(MiningCartType type)
@@ -67,25 +106,19 @@ namespace Server.Items
                     break;
             }
 
-            Timer.DelayCall(TimeSpan.FromDays(1), TimeSpan.FromDays(1), GiveResources, out _timerToken);
+            AddCartToTimer(this);
         }
 
         public MiningCart(Serial serial) : base(serial)
         {
         }
 
-        public override BaseAddonDeed Deed
+        public override void OnDelete()
         {
-            get
-            {
-                var deed = new MiningCartDeed();
-                deed.IsRewardItem = IsRewardItem;
-                deed.Gems = Gems;
-                deed.Ore = Ore;
-
-                return deed;
-            }
+            RemoveCartFromTimer(this);
         }
+
+        public override BaseAddonDeed Deed => new MiningCartDeed { IsRewardItem = IsRewardItem, Gems = Gems, Ore = Ore };
 
         [CommandProperty(AccessLevel.GameMaster)]
         public MiningCartType CartType { get; private set; }
@@ -103,7 +136,7 @@ namespace Server.Items
         {
             if (Deleted)
             {
-                _timerToken.Cancel();
+                return;
             }
 
             switch (CartType)
@@ -117,6 +150,8 @@ namespace Server.Items
                     Gems = Math.Min(50, Gems + 5);
                     break;
             }
+
+            _nextResourceTime = Core.Now + TimeSpan.FromDays(1.0);
         }
 
         public override void OnComponentUsed(AddonComponent c, Mobile from)
@@ -254,14 +289,7 @@ namespace Server.Items
             writer.Write(Gems);
             writer.Write(Ore);
 
-            if (_timerToken.Running)
-            {
-                writer.Write(_timerToken.Next);
-            }
-            else
-            {
-                writer.Write(Core.Now + TimeSpan.FromDays(1));
-            }
+            writer.Write(_nextResourceTime);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -287,9 +315,11 @@ namespace Server.Items
                         next = Core.Now;
                     }
 
-                    Timer.DelayCall(next - Core.Now, TimeSpan.FromDays(1), GiveResources, out _timerToken);
+                    _nextResourceTime = next;
                     break;
             }
+
+            AddCartToTimer(this);
         }
     }
 
