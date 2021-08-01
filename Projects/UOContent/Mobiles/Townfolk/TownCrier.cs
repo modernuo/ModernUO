@@ -20,7 +20,7 @@ namespace Server.Mobiles
     {
         private static GlobalTownCrierEntryList m_Instance;
 
-        public static GlobalTownCrierEntryList Instance => m_Instance ?? (m_Instance = new GlobalTownCrierEntryList());
+        public static GlobalTownCrierEntryList Instance => m_Instance ??= new GlobalTownCrierEntryList();
 
         public bool IsEmpty => Entries == null || Entries.Count == 0;
 
@@ -299,8 +299,8 @@ namespace Server.Mobiles
 
     public class TownCrier : Mobile, ITownCrierEntryList
     {
-        private TimerExecutionToken _autoShoutTimerToken;
-        private TimerExecutionToken _newsTimerToken;
+        private Timer _autoShoutTimer;
+        private Timer _newsTimer;
 
         [Constructible]
         public TownCrier()
@@ -425,16 +425,14 @@ namespace Server.Mobiles
 
             if (Entries == null && GlobalTownCrierEntryList.Instance.IsEmpty)
             {
-                _autoShoutTimerToken.Cancel();
+                _autoShoutTimer.Stop();
+                _autoShoutTimer = null;
             }
         }
 
         public void ForceBeginAutoShout()
         {
-            if (!_autoShoutTimerToken.Running)
-            {
-                Timer.StartTimer(TimeSpan.FromSeconds(5.0), TimeSpan.FromMinutes(1.0), AutoShout_Callback, out _autoShoutTimerToken);
-            }
+            _autoShoutTimer ??= Timer.DelayCall(TimeSpan.FromSeconds(5.0), TimeSpan.FromMinutes(1.0), AutoShout_Callback);
         }
 
         private void AutoShout_Callback()
@@ -443,16 +441,16 @@ namespace Server.Mobiles
 
             if (tce == null)
             {
-                _autoShoutTimerToken.Cancel();
+                _autoShoutTimer.Stop();
+                _autoShoutTimer = null;
             }
-            else if (!_newsTimerToken.Running)
+            else if (!_newsTimer.Running)
             {
-                Timer.StartTimer(
+                _newsTimer = Timer.DelayCall(
                     TimeSpan.FromSeconds(1.0),
                     TimeSpan.FromSeconds(3.0),
                     tce.Lines.Length,
-                    () => ShoutNews_Callback(tce),
-                    out _newsTimerToken
+                    () => ShoutNews_Callback(tce)
                 );
 
                 PublicOverheadMessage(MessageType.Regular, 0x3B2, 502976); // Hear ye! Hear ye!
@@ -461,10 +459,11 @@ namespace Server.Mobiles
 
         private void ShoutNews_Callback(TownCrierEntry tce)
         {
-            var index = _newsTimerToken.Index;
+            var index = _newsTimer.Index;
             if (index >= tce.Lines.Length)
             {
-                _newsTimerToken.Cancel();
+                _newsTimer.Stop();
+                _newsTimer = null;
             }
             else
             {
@@ -484,11 +483,11 @@ namespace Server.Mobiles
             }
         }
 
-        public override bool HandlesOnSpeech(Mobile from) => !_newsTimerToken.Running && from.Alive && InRange(from, 12);
+        public override bool HandlesOnSpeech(Mobile from) => !_newsTimer.Running && from.Alive && InRange(from, 12);
 
         public override void OnSpeech(SpeechEventArgs e)
         {
-            if (!_newsTimerToken.Running == false && e.HasKeyword(0x30) && e.Mobile.Alive && InRange(e.Mobile, 12)) // *news*
+            if (!_newsTimer.Running == false && e.HasKeyword(0x30) && e.Mobile.Alive && InRange(e.Mobile, 12)) // *news*
             {
                 Direction = GetDirectionTo(e.Mobile);
 
@@ -500,12 +499,11 @@ namespace Server.Mobiles
                 }
                 else
                 {
-                    Timer.StartTimer(
+                    _newsTimer = Timer.DelayCall(
                         TimeSpan.FromSeconds(1.0),
                         TimeSpan.FromSeconds(3.0),
                         tce.Lines.Length,
-                        () => ShoutNews_Callback(tce),
-                        out _newsTimerToken
+                        () => ShoutNews_Callback(tce)
                     );
 
                     PublicOverheadMessage(MessageType.Regular, 0x3B2, 502978); // Some of the latest news!

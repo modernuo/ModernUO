@@ -4,6 +4,7 @@ using Server.Mobiles;
 
 namespace Server.Items
 {
+    [TypeAlias("Server.Items.AcidSlime")]
     public class PoolOfAcid : Item
     {
         private readonly DateTime m_Created;
@@ -39,7 +40,7 @@ namespace Server.Items
 
         public override string DefaultName => "a pool of acid";
 
-        public override void OnAfterDelete()
+        public override void OnDelete()
         {
             _timerToken.Cancel();
         }

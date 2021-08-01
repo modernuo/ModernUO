@@ -32,7 +32,6 @@ namespace Server.Items
         public virtual void StopTimer()
         {
             _timerToken.Cancel();
-
             InvalidateProperties();
         }
 
