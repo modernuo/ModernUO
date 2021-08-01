@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -44,6 +45,10 @@ namespace Server
             DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
             t._selfReturn = true;
             t.Start();
+
+#if DEBUG
+            DelayCallTimer._stackTraces[t.GetHashCode()] = new StackTrace().ToString();
+#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -65,6 +70,9 @@ namespace Server
         {
             DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
             t.Start();
+#if DEBUG
+            t._allowFinalization = true;
+#endif
 
             return t;
         }
@@ -91,6 +99,9 @@ namespace Server
             DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
             t.Start();
 
+#if DEBUG
+            DelayCallTimer._stackTraces[t.GetHashCode()] = new StackTrace().ToString();
+#endif
             token = new TimerExecutionToken(t);
         }
 
@@ -106,7 +117,7 @@ namespace Server
             private static int _poolSize;
             private static DelayCallTimer _poolHead;
 
-            static DelayCallTimer()
+            public static void Configure()
             {
                 for (var i = 0; i < _maxPoolSize; i++)
                 {
@@ -127,7 +138,8 @@ namespace Server
                 delay,
                 interval,
                 count
-            ) => _continuation = callback;
+            ) =>
+                _continuation = callback;
 
             internal DelayCallTimer(TimeSpan delay) : base(delay) => Start();
 
@@ -160,8 +172,9 @@ namespace Server
                 if (_poolSize > _maxPoolSize)
                 {
 #if DEBUG
-                    logger.Debug($"DelayCallTimer pool reached maximum of {_maxPoolSize} timers");
+                    logger.Warning($"DelayCallTimer pool reached maximum of {_maxPoolSize} timers");
                     _allowFinalization = true;
+                    _stackTraces.Remove(GetHashCode());
 #endif
                     return;
                 }
@@ -169,6 +182,7 @@ namespace Server
                 Attach(_poolHead);
                 _poolHead = this;
                 _poolSize++;
+                logger.Information($"Timer Pool: {_poolSize}");
             }
 
             public static DelayCallTimer GetTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
@@ -176,27 +190,38 @@ namespace Server
                 if (_poolHead != null)
                 {
                     _poolSize--;
+                    logger.Information($"Timer Pool: {_poolSize}");
                     var timer = _poolHead;
+                    var nextTimer = _poolHead._nextTimer;
                     timer.Detach();
+                    _poolHead = (DelayCallTimer)nextTimer;
+
                     timer.Init(delay, interval, count);
                     timer._continuation = callback;
                     timer._selfReturn = false;
+#if DEBUG
+                    timer._allowFinalization = false;
+#endif
 
                     return timer;
                 }
 
-                logger.Debug($"DelayCallTimer pool depleted and timer was allocated.");
+#if DEBUG
+                logger.Warning("DelayCallTimer pool depleted and timer was allocated.");
+#endif
                 return new DelayCallTimer(delay, interval, count, callback);
             }
 
             public override string ToString() => $"DelayCallTimer[{FormatDelegate(_continuation)}]";
 
 #if DEBUG
+            internal static Dictionary<int, string> _stackTraces = new();
+
             ~DelayCallTimer()
             {
                 if (!_allowFinalization)
                 {
-                    logger.Warning($"{this} was not returned to the pool.\n{new StackTrace()}");
+                    logger.Warning($"Pooled Timer was not returned to the pool.\n{_stackTraces[GetHashCode()]}");
                 }
             }
 #endif
