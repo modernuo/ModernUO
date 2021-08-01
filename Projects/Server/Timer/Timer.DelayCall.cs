@@ -196,7 +196,7 @@ namespace Server
             {
                 if (!_allowFinalization)
                 {
-                    logger.Warning($"{this} was not returned to the pool.");
+                    logger.Warning($"{this} was not returned to the pool.\n{new StackTrace()}");
                 }
             }
 #endif

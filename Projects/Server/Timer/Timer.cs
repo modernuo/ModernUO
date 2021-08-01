@@ -40,6 +40,7 @@ namespace Server
         {
             Running = false;
             Delay = delay;
+            Index = 0;
             Interval = interval;
             Count = count;
             _nextTimer = null;
