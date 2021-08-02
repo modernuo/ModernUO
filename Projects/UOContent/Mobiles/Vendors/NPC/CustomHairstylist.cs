@@ -416,9 +416,9 @@ namespace Server.Mobiles
                                     m_Vendor.PrivateOverheadMessage(
                                         MessageType.Regular,
                                         0x3B2,
-                                        1042293,
+                                        1042293, // You cannot afford my services for that style.
                                         m_From.NetState
-                                    ); // You cannot afford my services for that style.
+                                    );
                                     return;
                                 }
 
@@ -439,9 +439,9 @@ namespace Server.Mobiles
                                 m_Vendor.PrivateOverheadMessage(
                                     MessageType.Regular,
                                     0x3B2,
-                                    502623,
+                                    502623, // You have no hair to dye and you cannot use this.
                                     m_From.NetState
-                                ); // You have no hair to dye and you cannot use this.
+                                );
                             }
                         }
                     }
@@ -638,9 +638,9 @@ namespace Server.Mobiles
                                 m_Vendor.PrivateOverheadMessage(
                                     MessageType.Regular,
                                     0x3B2,
-                                    1042293,
+                                    1042293, // You cannot afford my services for that style.
                                     m_From.NetState
-                                ); // You cannot afford my services for that style.
+                                );
                             }
                         }
                         else
