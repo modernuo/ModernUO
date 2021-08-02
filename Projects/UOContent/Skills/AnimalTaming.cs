@@ -546,7 +546,7 @@ namespace Server.SkillHandlers
                 {
                     IPoint3D p = m_Tamer;
 
-                    return p != null && (m_Creature.InRange(new Point3D(p), 1) ||
+                    return p != null && (m_Creature.InRange(new Point3D(p), 2) ||
                                          new MovementPath(m_Creature, new Point3D(p)).Success);
                 }
             }

@@ -14,6 +14,7 @@ namespace EvolutionPetSystem.Abilities
     }
     public abstract class BaseAbility
     {
+        private string m_Name;
         private byte m_Icon;
         private AbilityType m_AbilityType;
         private int m_Stage;
@@ -23,6 +24,7 @@ namespace EvolutionPetSystem.Abilities
         public AbilityType AbilityType { get => m_AbilityType; set => m_AbilityType = value; }
         public int Stage { get => m_Stage; set => m_Stage = value; }
         public int XP { get => m_XP; set => m_XP = value; }
+        public string Name { get => m_Name; set => m_Name = value; }
 
         public BaseAbility()
         {
@@ -36,6 +38,7 @@ namespace EvolutionPetSystem.Abilities
         {
 
             writer.Write(0); // version
+            writer.Write(m_Name);
             writer.Write(m_Icon);
             writer.Write((int)m_AbilityType);
             writer.Write(m_XP);
@@ -45,6 +48,7 @@ namespace EvolutionPetSystem.Abilities
         public void Deserialize(IGenericReader reader)
         {
             int version = reader.ReadInt();
+            m_Name = reader.ReadString();
             m_Icon = reader.ReadByte();
             m_AbilityType = (AbilityType)reader.ReadInt();
             m_XP = reader.ReadInt();

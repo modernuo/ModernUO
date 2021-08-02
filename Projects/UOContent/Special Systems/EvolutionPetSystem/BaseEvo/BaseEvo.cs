@@ -27,7 +27,7 @@ namespace EvolutionPetSystem
         protected BaseAI m_ForcedAI;
 
         //Ability System
-        protected int 
+         
 
         // Implement these 3 in your subclass to return BaseEvoSpec & BaseEvoEgg subclasses & Dust Type
         public abstract BaseEvoSpec GetEvoSpec();
