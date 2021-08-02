@@ -25,6 +25,10 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void InvokeWorldSave() => WorldSave?.Invoke();
 
+        public static event Action<double> WorldSaveDone;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvokeWorldSaveDone(double duration) => WorldSaveDone?.Invoke(duration);
+
         public static event Action<WorldSavePostSnapshotEventArgs> WorldSavePostSnapshot;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void InvokeWorldSavePostSnapshot(string oldSavePath, string newSavePath) =>

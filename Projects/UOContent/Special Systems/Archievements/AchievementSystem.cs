@@ -454,7 +454,7 @@ namespace Scripts.Systems.Achievements
             }
         }
 
-        [Usage("feats"), Aliases("ach", "achievement", "achs", "achievements")]
+        [Usage("achievements"), Aliases("ach", "achievement", "achs", "achievements")]
         [Description("Opens the Achievements gump")]
         private static void OpenGumpCommand(CommandEventArgs e)
         {

@@ -507,6 +507,8 @@ namespace Server
                 var duration = watch.Elapsed.TotalSeconds;
                 logger.Information("World save completed ({0:F2} seconds)", duration);
 
+                EventSink.InvokeWorldSaveDone(duration);
+
                 // Only broadcast if it took at least 150ms
                 if (duration >= 0.15)
                 {
