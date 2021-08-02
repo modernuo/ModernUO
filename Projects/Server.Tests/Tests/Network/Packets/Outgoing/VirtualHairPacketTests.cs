@@ -12,11 +12,13 @@ namespace Server.Tests
         {
             var m = new Mobile(0x1024u);
             m.DefaultMobileInit();
+            m.HairHue = 0x1000;
+            m.HairItemID = 0x2000;
 
             var expected = new HairEquipUpdate(m).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendHairEquipUpdatePacket(m, HairInfo.FakeSerial(m.Serial), Layer.Hair);
+            ns.SendHairEquipUpdatePacket(m, HairInfo.FakeSerial(m.Serial), m.HairItemID, m.HairHue, Layer.Hair);
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
