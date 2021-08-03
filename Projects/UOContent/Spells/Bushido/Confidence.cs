@@ -96,7 +96,7 @@ namespace Server.Spells.Bushido
             // RunUO says this goes for 5 seconds, but UOGuide says 4 seconds during normal regeneration
             var hits = (15 + m.Skills.Bushido.Fixed * m.Skills.Bushido.Fixed / 57600) / 4;
 
-            TimerExecutionToken timerToken;
+            TimerExecutionToken timerToken = default;
             Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), 4,
                 () =>
                 {
