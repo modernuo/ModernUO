@@ -23,6 +23,11 @@ namespace Server
     {
         protected internal static readonly ILogger logger = LogFactory.GetLogger(typeof(Timer));
 
+        public static void Configure()
+        {
+            ConfigureTimerPool();
+        }
+
         // We need to know what ring/slot we are in so we can be removed if we are "head" of the link list.
         private int _ring;
         private int _slot;

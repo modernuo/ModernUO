@@ -25,43 +25,6 @@ namespace Server
 {
     public partial class Timer
     {
-        private const int _timerPoolDepletionThreshold = 128; // Maximum timers allocated in a single tick before we force adjust
-        private static int _timerPoolDepletionAmount;         // Amount the pool has been depleted by
-        private static int _maxPoolSize;
-        private static int _poolSize;
-        private static int _poolCount;
-        private static DelayCallTimer _poolHead;
-
-        public static void CheckTimerPool()
-        {
-            // Anything less than this threshold and we are ok with the number of allocations.
-            if (_timerPoolDepletionAmount < _timerPoolDepletionThreshold)
-            {
-                _timerPoolDepletionAmount = 0;
-                return;
-            }
-
-            var growthFactor = Math.DivRem(_timerPoolDepletionAmount, _poolSize, out var rem);
-            var amountToGrow = _poolSize * (growthFactor + (rem > 0 ? 1 : 0));
-            var amountToRefill = Math.Min(_maxPoolSize, amountToGrow);
-
-            var maximumHit = amountToGrow > amountToRefill ? " Maximum pool size has been reached." : "";
-
-            logger.Warning($"Timer pool depleted by {_timerPoolDepletionAmount}. Refilling with {amountToRefill}.{maximumHit}");
-            DelayCallTimer.RefillPoolAsync(amountToRefill);
-            _timerPoolDepletionAmount = 0;
-        }
-
-        public static void Configure()
-        {
-            _poolSize = ServerConfiguration.GetOrUpdateSetting("timer.intialPoolSize", 1024);
-            _maxPoolSize = ServerConfiguration.GetOrUpdateSetting("timer.maxPoolSize", _poolSize * 16);
-
-            DelayCallTimer.RefillPool(_poolSize);
-
-            _poolCount = _poolSize;
-        }
-
         private static string FormatDelegate(Delegate callback) =>
             callback == null ? "null" : $"{callback.Method.DeclaringType?.FullName ?? ""}.{callback.Method.Name}";
 
@@ -191,76 +154,6 @@ namespace Server
                 }
             }
 
-            internal static void RefillPoolAsync(int amountToRefill)
-            {
-                ThreadPool.UnsafeQueueUserWorkItem(
-                    static amount =>
-                    {
-                        RefillPool(amount, out var head, out var tail);
-
-                        // Run this on the core thread
-                        Core.LoopContext.Post(
-                            state =>
-                            {
-                                if (state == null)
-                                {
-                                    return;
-                                }
-
-                                var (listHead, listTail) = ((DelayCallTimer, DelayCallTimer))state;
-                                listTail.Attach(_poolHead);
-                                _poolHead = listHead;
-                                _poolCount += amount;
-                                _poolSize = amount;
-                            },
-                            (head, tail)
-                        );
-                    },
-                    amountToRefill,
-                    false
-                );
-            }
-
-            internal static void RefillPool(int amount)
-            {
-                RefillPool(amount, out var head, out var tail);
-
-                tail.Attach(_poolHead);
-                _poolHead = head;
-            }
-
-            private static void RefillPool(int amount, out DelayCallTimer head, out DelayCallTimer tail)
-            {
-#if DEBUG_TIMERS
-                logger.Information($"Filling pool with {_maxPoolSize} timers.");
-#endif
-
-                DelayCallTimer current = null;
-                head = null;
-                tail = null;
-
-                for (var i = 0; i < amount; i++)
-                {
-                    var timer = new DelayCallTimer(TimeSpan.Zero, TimeSpan.Zero, 0, null);
-                    timer.Attach(current);
-
-                    if (i == amount - 1)
-                    {
-                        tail = timer;
-                    }
-                    else
-                    {
-                        if (i == 0)
-                        {
-                            head = timer;
-                            tail = timer;
-                        }
-
-                        current = timer;
-                    }
-                }
-            }
-
             internal void Return()
             {
                 if (Running)
@@ -281,9 +174,7 @@ namespace Server
                     return;
                 }
 
-                Attach(_poolHead);
-                _poolHead = this;
-                _poolCount++;
+                AttachToPool(1, this, this);
             }
 
             public static DelayCallTimer GetTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
@@ -292,10 +183,7 @@ namespace Server
                 {
                     _poolCount--;
 
-                    var timer = _poolHead;
-                    var nextTimer = _poolHead._nextTimer;
-                    timer.Detach();
-                    _poolHead = (DelayCallTimer)nextTimer;
+                    var timer = GetFromPool();
 
                     timer.Init(delay, interval, count);
                     timer._continuation = callback;
