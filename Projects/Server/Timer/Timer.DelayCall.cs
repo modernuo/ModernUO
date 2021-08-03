@@ -26,7 +26,7 @@ namespace Server
     public partial class Timer
     {
         private const int _timerPoolDepletionThreshold = 128; // Maximum timers allocated in a single tick before we force adjust
-        private static int _timerPoolDepletionAmount;          // Amount the pool has been depleted by
+        private static int _timerPoolDepletionAmount;         // Amount the pool has been depleted by
         private static int _maxPoolSize;
         private static int _poolSize;
         private static int _poolCount;
