@@ -2967,6 +2967,20 @@ namespace Server
                 sendFacialHair = true;
             }
 
+            var hairSerial = HairInfo.FakeSerial(Serial);
+            var hairLength = removeHair
+                ? OutgoingVirtualHairPackets.RemovePacketLength
+                : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
+
+            Span<byte> hairPacket = stackalloc byte[hairLength].InitializePacket();
+
+            var facialHairSerial = FacialHairInfo.FakeSerial(Serial);
+            var facialHairLength = removeFacialHair
+                ? OutgoingVirtualHairPackets.RemovePacketLength
+                : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
+
+            Span<byte> facialhairPacket = stackalloc byte[facialHairLength].InitializePacket();
+
             const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
             const int width = OutgoingMobilePackets.MobileMovingPacketLength;
             const int height = OutgoingMobilePackets.MobileMovingPacketCacheHeight;
@@ -3052,24 +3066,41 @@ namespace Server
                 {
                     if (removeHair)
                     {
-                        ourState.SendRemoveHairPacket(HairInfo.FakeSerial(Serial));
+                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(hairPacket, hairSerial);
                     }
                     else
                     {
-                        ourState.SendHairEquipUpdatePacket(this, HairInfo.FakeSerial(Serial), Layer.Hair);
+                        OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
+                            hairPacket,
+                            this,
+                            hairSerial,
+                            HairItemID,
+                            HairHue,
+                            Layer.Hair
+                        );
                     }
+
+                    ourState.Send(hairPacket);
                 }
 
                 if (sendFacialHair)
                 {
                     if (removeFacialHair)
                     {
-                        ourState.SendRemoveHairPacket(FacialHairInfo.FakeSerial(Serial));
+                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialhairPacket, facialHairSerial);
                     }
                     else
                     {
-                        ourState.SendHairEquipUpdatePacket(this, FacialHairInfo.FakeSerial(Serial), Layer.FacialHair);
+                        OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
+                            facialhairPacket,
+                            this,
+                            facialHairSerial,
+                            FacialHairItemID,
+                            FacialHairHue,
+                            Layer.FacialHair
+                        );
                     }
+                    ourState.Send(facialhairPacket);
                 }
 
                 if (sendOPLUpdate)
@@ -3104,18 +3135,6 @@ namespace Server
             Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
             Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
             Span<byte> hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
-
-            var hairLength = removeHair
-                ? OutgoingVirtualHairPackets.RemovePacketLength
-                : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
-
-            Span<byte> hairPacket = stackalloc byte[hairLength].InitializePacket();
-
-            var facialHairLength = removeFacialHair
-                ? OutgoingVirtualHairPackets.RemovePacketLength
-                : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
-
-            Span<byte> facialhairPacket = stackalloc byte[facialHairLength].InitializePacket();
 
             foreach (var state in eable)
             {
@@ -3184,7 +3203,6 @@ namespace Server
 
                 if (sendHair)
                 {
-                    var hairSerial = HairInfo.FakeSerial(Serial);
                     if (removeHair)
                     {
                         OutgoingVirtualHairPackets.CreateRemoveHairPacket(hairPacket, hairSerial);
@@ -3195,6 +3213,8 @@ namespace Server
                             hairPacket,
                             this,
                             hairSerial,
+                            HairItemID,
+                            HairHue,
                             Layer.Hair
                         );
                     }
@@ -3204,17 +3224,18 @@ namespace Server
 
                 if (sendFacialHair)
                 {
-                    var hairSerial = HairInfo.FakeSerial(Serial);
                     if (removeFacialHair)
                     {
-                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialhairPacket, hairSerial);
+                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialhairPacket, facialHairSerial);
                     }
                     else
                     {
                         OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
                             facialhairPacket,
                             this,
-                            hairSerial,
+                            facialHairSerial,
+                            FacialHairItemID,
+                            FacialHairHue,
                             Layer.FacialHair
                         );
                     }
