@@ -62,8 +62,8 @@ namespace Server.Network
 
                 var desc = bis.Description ?? "";
 
-                Stream.Write((byte)desc.Length);
-                Stream.WriteAsciiFixed(desc, desc.Length);
+                Stream.Write((byte)(desc.Length + 1));
+                Stream.WriteAsciiNull(desc);
             }
         }
     }
