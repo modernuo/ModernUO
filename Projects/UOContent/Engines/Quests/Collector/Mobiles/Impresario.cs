@@ -161,22 +161,14 @@ namespace Server.Engines.Quests.Collector
                         return;
                     }
 
-                    if (player.Backpack?.ConsumeTotal(typeof(Gold), 10) == true)
+                    if (player.Backpack?.ConsumeTotal(typeof(Gold), 10) == true || Banker.Withdraw(player, 10))
                     {
                         obj.Complete();
                     }
                     else
                     {
-                        if (player.FindBankNoCreate()?.ConsumeTotal(typeof(Gold), 10) == true)
-                        {
-                            obj.Complete();
-                        }
-                        else
-                        {
-                            player.SendLocalizedMessage(
-                                1055108
-                            ); // You don't have enough gold to buy the sheet music.
-                        }
+                        // You don't have enough gold to buy the sheet music.
+                        player.SendLocalizedMessage(1055108);
                     }
                 }
             }
