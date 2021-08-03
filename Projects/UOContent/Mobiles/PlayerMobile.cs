@@ -2394,10 +2394,7 @@ namespace Server.Mobiles
                 c?.Slip();
             }
 
-            if (Confidence.IsRegenerating(this))
-            {
-                Confidence.StopRegenerating(this);
-            }
+            Confidence.StopRegenerating(this);
 
             WeightOverloading.FatigueOnDamage(this, amount);
 

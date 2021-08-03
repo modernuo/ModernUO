@@ -73,17 +73,20 @@ namespace Server.Spells.Bushido
 
         public static bool IsCountering(Mobile m) => m_Table.ContainsKey(m);
 
-        private static void RemoveTimer(Mobile m)
+        private static bool StopCounterTimer(Mobile m)
         {
             if (m_Table.Remove(m, out var timerToken))
             {
                 timerToken.Cancel();
+                return true;
             }
+
+            return false;
         }
 
         public static void StartCountering(Mobile m)
         {
-            RemoveTimer(m);
+            StopCounterTimer(m);
 
             Timer.StartTimer(TimeSpan.FromSeconds(30.0),
                 () =>
@@ -99,8 +102,10 @@ namespace Server.Spells.Bushido
 
         public static void StopCountering(Mobile m)
         {
-            RemoveTimer(m);
-            OnEffectEnd(m, typeof(CounterAttack));
+            if (StopCounterTimer(m))
+            {
+                OnEffectEnd(m, typeof(CounterAttack));
+            }
         }
     }
 }
