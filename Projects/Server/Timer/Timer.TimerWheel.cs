@@ -205,8 +205,8 @@ namespace Server
         {
             var now = DateTime.UtcNow;
 
-            tw.WriteLine("Date: {0}", now);
-            tw.WriteLine();
+            tw.WriteLine("Date: {0}\n", now);
+            tw.WriteLine("Pool - Count: {0}; Size {1}\n", _poolCount - _timerPoolDepletionAmount, _poolSize);
 
             var total = 0.0;
             var hash = new Dictionary<string, int>();
@@ -226,9 +226,11 @@ namespace Server
                 }
             }
 
+            tw.WriteLine("Timers:");
+
             foreach (var (name, count) in hash.OrderByDescending(o => o.Value))
             {
-                tw.WriteLine($"Type: {name}; Count: {count}; Percent: {count / total}%");
+                tw.WriteLine($"- Type: {name}; Count: {count}; Percent: {count / total}%");
             }
 
             tw.WriteLine();

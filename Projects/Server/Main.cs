@@ -507,6 +507,8 @@ namespace Server
                     // Execute captured post-await methods (like Timer.Pause)
                     events += LoopContext.ExecuteTasks();
 
+                    Timer.CheckTimerPool(); // Check for pool depletion so we can async refill it.
+
                     _tickCount = 0;
                     _now = DateTime.MinValue;
 
