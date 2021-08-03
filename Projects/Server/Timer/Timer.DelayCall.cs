@@ -167,7 +167,7 @@ namespace Server
                 if (_poolCount >= _poolSize)
                 {
 #if DEBUG_TIMERS
-                    logger.Warning($"DelayCallTimer pool reached maximum of {_maxPoolSize} timers");
+                    logger.Warning($"DelayCallTimer pool reached maximum of {_poolSize} timers");
                     _allowFinalization = true;
                     _stackTraces.Remove(GetHashCode());
 #endif
