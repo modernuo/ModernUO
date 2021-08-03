@@ -102,7 +102,7 @@ namespace Server.Network
                 var desc = bis.Description ?? "";
 
                 writer.Write((byte)(desc.Length + 1));
-                writer.WriteAsciiNull(desc); // Doesn't look like it is used anymore
+                writer.WriteAsciiNull(desc);
             }
 
             ns.Send(writer.Span);
