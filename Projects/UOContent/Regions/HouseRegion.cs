@@ -209,11 +209,23 @@ namespace Server.Regions
         public override bool OnDecay(Item item) =>
             (!House.HasLockedDownItem(item) && !House.HasSecureItem(item) || !House.IsInside(item)) && base.OnDecay(item);
 
-        public override TimeSpan GetLogoutDelay(Mobile m) =>
-            House.IsFriend(m) && House.IsInside(m)
-                ? m.Aggressed.Any(info => info.Defender.Player && Core.Now - info.LastCombatTime < CombatHeatDelay) ?
-                    base.GetLogoutDelay(m) : TimeSpan.Zero
-                : base.GetLogoutDelay(m);
+        public override TimeSpan GetLogoutDelay(Mobile m)
+        {
+            if (!House.IsFriend(m) || !House.IsInside(m))
+            {
+                return base.GetLogoutDelay(m);
+            }
+
+            foreach (var info in m.Aggressed)
+            {
+                if (info.Defender.Player && Core.Now - info.LastCombatTime < CombatHeatDelay)
+                {
+                    return base.GetLogoutDelay(m);
+                }
+            }
+
+            return TimeSpan.Zero;
+        }
 
         public override void OnSpeech(SpeechEventArgs e)
         {

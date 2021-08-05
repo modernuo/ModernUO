@@ -84,22 +84,24 @@ namespace Server.Items
                 return;
             }
 
-            var foundPlayer = GetMobilesInRange(3)
-                .Where(mob => mob.Player && mob.Alive && mob.AccessLevel <= AccessLevel.Player)
-                .Any(mob => Z + 8 >= mob.Z && mob.Z + 16 > Z);
-
-            if (!foundPlayer)
+            foreach (var mob in GetMobilesInRange(3))
             {
-                m_Spurt?.Delete();
-                m_Spurt = null;
-            }
-            else if (m_Spurt?.Deleted != false)
-            {
-                m_Spurt = new Static(0x3709);
-                m_Spurt.MoveToWorld(Location, Map);
+                if (mob.Player && mob.Alive && mob.AccessLevel <= AccessLevel.Player && Z + 8 >= mob.Z && mob.Z + 16 > Z)
+                {
+                    if (m_Spurt?.Deleted != false)
+                    {
+                        m_Spurt = new Static(0x3709);
+                        m_Spurt.MoveToWorld(Location, Map);
 
-                Effects.PlaySound(GetWorldLocation(), Map, 0x309);
+                        Effects.PlaySound(GetWorldLocation(), Map, 0x309);
+                    }
+
+                    return;
+                }
             }
+
+            m_Spurt?.Delete();
+            m_Spurt = null;
         }
 
         public override bool OnMoveOver(Mobile m)

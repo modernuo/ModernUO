@@ -197,7 +197,15 @@ namespace Server.Items
                                 var north = BaseAddon.IsWall(p3d.X, p3d.Y - 1, p3d.Z, map);
                                 var west = BaseAddon.IsWall(p3d.X - 1, p3d.Y, p3d.Z, map);
 
-                                var isclear = !Map.Malas.GetItemsInRange(p3d, 0).OfType<Fireflies>().Any();
+                                bool isclear = true;
+
+                                foreach (Item item in Map.Malas.GetItemsInRange(p3d, 0))
+                                {
+                                    if (item is Fireflies)
+                                    {
+                                        isclear = false;
+                                    }
+                                }
 
                                 if ((m_ItemID == 0x2336 && north || m_ItemID == 0x2332 && west) && isclear)
                                 {
