@@ -1092,11 +1092,13 @@ namespace Server.Engines.ConPVP
 
                             if (ourFlagCarrier != null && GetTeamInfo(ourFlagCarrier) == teamInfo)
                             {
-                                if (ourFlagCarrier.Aggressors.Any(
-                                    aggr => aggr.Defender == ourFlagCarrier && aggr.Attacker == mob
-                                ))
+                                foreach (var aggr in ourFlagCarrier.Aggressors)
                                 {
-                                    playerInfo.Score += 2; // helped defend guy capturing enemy flag
+                                    if (aggr.Defender == ourFlagCarrier && aggr.Attacker == mob)
+                                    {
+                                        playerInfo.Score += 2; // helped defend guy capturing enemy flag
+                                        break;
+                                    }
                                 }
 
                                 if (mob.Map == ourFlagCarrier.Map && ourFlagCarrier.InRange(mob, 12))

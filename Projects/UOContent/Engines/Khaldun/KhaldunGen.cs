@@ -17,11 +17,16 @@ namespace Server.Commands
         {
             var eable = Map.Felucca.GetItemsInRange(new Point3D(x, y, z), 0);
 
-            var found = eable.Any(
-                item => item is MorphItem morphItem && morphItem.Z == z &&
-                        morphItem.InactiveItemID == inactiveItemID &&
-                        morphItem.ActiveItemID == activeItemID
-            );
+            var found = false;
+            foreach (var item in eable)
+            {
+                if (item is MorphItem morphItem && morphItem.Z == z && morphItem.InactiveItemID == inactiveItemID && morphItem.ActiveItemID == activeItemID)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
             eable.Free();
             return found;
         }
@@ -30,7 +35,16 @@ namespace Server.Commands
         {
             var eable = Map.Felucca.GetItemsInRange(new Point3D(x, y, z), 0);
 
-            var found = eable.Any(item => item is EffectController && item.Z == z);
+            var found = false;
+            foreach (var item in eable)
+            {
+                if (item is EffectController && item.Z == z)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
             eable.Free();
             return found;
         }

@@ -80,7 +80,19 @@ namespace Server.Items
 
         public void Refresh()
         {
-            var found = GetMobilesInRange(CurrentRange).Any(mob => !mob.Hidden || mob.AccessLevel <= AccessLevel.Player);
+            var found = false;
+            var eable = GetMobilesInRange(CurrentRange);
+            foreach (var mob in eable)
+            {
+                if (!mob.Hidden || mob.AccessLevel <= AccessLevel.Player)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            eable.Free();
+
             ItemID = found ? ActiveItemID : InactiveItemID;
 
             Visible = ItemID != 0x1;

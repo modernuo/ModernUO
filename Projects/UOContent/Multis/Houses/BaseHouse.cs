@@ -709,11 +709,21 @@ namespace Server.Multis
 
         public override bool InRange(IPoint2D from, int range)
         {
-            return Region?.Area.Any(
-                rect =>
-                    from.X >= rect.Start.X - range && from.Y >= rect.Start.Y - range && from.X < rect.End.X + range &&
-                    from.Y < rect.End.Y + range
-            ) == true;
+            if (Region == null)
+            {
+                return false;
+            }
+
+
+            foreach (var rect in Region.Area)
+            {
+                if (from.X >= rect.Start.X - range && from.Y >= rect.Start.Y - range && from.X < rect.End.X + range && from.Y < rect.End.Y + range)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public virtual int GetNewVendorSystemMaxVendors()
@@ -766,8 +776,18 @@ namespace Server.Multis
         public List<Mobile> AvailableVendorsFor(Mobile m) =>
             PlayerVendors.Where(vendor => vendor.CanInteractWith(m, false)).ToList<Mobile>();
 
-        public bool AreThereAvailableVendorsFor(Mobile m) =>
-            PlayerVendors.Any(vendor => vendor.CanInteractWith(m, false));
+        public bool AreThereAvailableVendorsFor(Mobile m)
+        {
+            foreach (var vendor in PlayerVendors)
+            {
+                if (vendor.CanInteractWith(m, false))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public void MoveAllToCrate()
         {
@@ -3446,8 +3466,23 @@ namespace Server.Multis
             AllHouses.Remove(this);
         }
 
-        public static bool HasHouse(Mobile m) =>
-            m != null && m_Table.TryGetValue(m, out var list) && list.Any(h => !h.Deleted);
+        public static bool HasHouse(Mobile m)
+        {
+            if (m == null || !m_Table.TryGetValue(m, out var list))
+            {
+                return false;
+            }
+
+            foreach (var h in list)
+            {
+                if (!h.Deleted)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public static bool HasAccountHouse(Mobile m)
         {
