@@ -26,14 +26,6 @@ namespace Server.Engines.MLQuests.Definitions
         }
 
         public override Type NextQuest => typeof(TheGoldenHorn);
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "LorekeeperBroolol"), new Point3D(7011, 375, 0), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "LorekeeperBroolol"), new Point3D(7011, 375, 0), Map.Felucca);
-        }
     }
 
     public class TheGoldenHorn : MLQuest

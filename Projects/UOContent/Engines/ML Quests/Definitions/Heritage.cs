@@ -1,7 +1,6 @@
 ﻿using System;
 using Server.Engines.MLQuests.Objectives;
 using Server.Engines.MLQuests.Rewards;
-using Server.Engines.Spawners;
 using Server.Items;
 using Server.Mobiles;
 
@@ -35,17 +34,6 @@ namespace Server.Engines.MLQuests.Definitions
             ); // You have gained the boon of Maul!  Your understanding of the seasons grows.  You are one step closer to claiming your elven heritage.
             instance.ClaimRewards(); // skip gump
         }
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Darius"), new Point3D(4310, 954, 10), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Darius"), new Point3D(4310, 954, 10), Map.Trammel);
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "MaulTheBear"), new Point3D(1730, 257, 16), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "MaulTheBear"), new Point3D(1730, 257, 16), Map.Trammel);
-        }
     }
 
     public class CaretakerOfTheLand : MLQuest
@@ -77,25 +65,6 @@ namespace Server.Engines.MLQuests.Definitions
             ); // You have gained the boon of Strongroot!  You have been approved by one whose roots touch the bones of Sosaria.  You are one step closer to claiming your elven heritage.
             instance.ClaimRewards(); // skip gump
         }
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Strongroot"), new Point3D(597, 1744, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Strongroot"), new Point3D(597, 1744, 0), Map.Trammel);
-
-            PutSpawner(
-                new Spawner(1, TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(2), 0, 12, "SapOfSosaria"),
-                new Point3D(757, 1004, 0),
-                Map.Felucca
-            );
-            PutSpawner(
-                new Spawner(1, TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(2), 0, 12, "SapOfSosaria"),
-                new Point3D(757, 1004, 0),
-                Map.Trammel
-            );
-        }
     }
 
     public class WisdomOfTheSphynx : MLQuest
@@ -126,14 +95,6 @@ namespace Server.Engines.MLQuests.Definitions
                 0x2A
             ); // You have gained the boon of Enigma!  You are wise enough to know how little you know.  You are one step closer to claiming your elven heritage.
             instance.ClaimRewards(); // skip gump
-        }
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Enigma"), new Point3D(1828, 961, 7), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Enigma"), new Point3D(1828, 961, 7), Map.Trammel);
         }
 
         private class InternalObjective : CollectObjective
@@ -180,33 +141,6 @@ namespace Server.Engines.MLQuests.Definitions
             ); // You have gained the boon of Bravehorn!  You have glimpsed the nobility of those that sacrifice themselves for their people.  You are one step closer to claiming your elven heritage.
             instance.ClaimRewards(); // skip gump
         }
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(
-                new Spawner(1, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(90), 0, 5, "Bravehorn"),
-                new Point3D(1193, 2467, 0),
-                Map.Felucca
-            );
-            PutSpawner(
-                new Spawner(1, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(90), 0, 5, "Bravehorn"),
-                new Point3D(1193, 2467, 0),
-                Map.Trammel
-            );
-
-            PutSpawner(
-                new Spawner(5, TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(30), 0, 8, "BravehornsMate"),
-                new Point3D(1192, 2467, 0),
-                Map.Felucca
-            );
-            PutSpawner(
-                new Spawner(5, TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(30), 0, 8, "BravehornsMate"),
-                new Point3D(1192, 2467, 0),
-                Map.Trammel
-            );
-        }
     }
 
     public class TheBalanceOfNature : MLQuest
@@ -243,25 +177,6 @@ namespace Server.Engines.MLQuests.Definitions
             ); // You have gained the boon of the Huntsman!  You have been given a taste of the bittersweet duty of those who guard the balance.  You are one step closer to claiming your elven heritage.
             instance.ClaimRewards(); // skip gump
         }
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Huntsman"), new Point3D(1676, 593, 16), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Huntsman"), new Point3D(1676, 593, 16), Map.Trammel);
-
-            PutSpawner(
-                new Spawner(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(15), 0, 10, "TimberWolf"),
-                new Point3D(1671, 592, 16),
-                Map.Felucca
-            );
-            PutSpawner(
-                new Spawner(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(15), 0, 10, "TimberWolf"),
-                new Point3D(1671, 592, 16),
-                Map.Trammel
-            );
-        }
     }
 
     public class TheJoysOfLife : MLQuest
@@ -291,24 +206,6 @@ namespace Server.Engines.MLQuests.Definitions
                 0x2A
             ); // You have gained the boon of Arielle!  You have been taught the importance of laughter and light spirits.  You are one step closer to claiming your elven heritage.
             instance.ClaimRewards(); // skip gump
-        }
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Arielle"), new Point3D(1560, 1182, -27), Map.Ilshenar);
-            PutSpawner(
-                new Spawner(1, 5, 10, 0, 5, "Arielle"),
-                new Point3D(3366, 292, 9),
-                Map.Felucca
-            ); // Felucca spawn for reds
-
-            PutSpawner(
-                new Spawner(6, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(30), 0, 20, "ABauble"),
-                new Point3D(1585, 1212, -13),
-                Map.Ilshenar
-            );
         }
     }
 
@@ -604,17 +501,6 @@ namespace Server.Engines.MLQuests.Definitions
             ); // You have demonstrated your ingenuity!  Humans are jacks of all trades and know a little about a lot of things.  You are one step closer to achieving humanity.
             instance.ClaimRewards(); // skip gump
         }
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Nedrick"), new Point3D(2958, 3466, 15), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Nedrick"), new Point3D(2958, 3466, 15), Map.Trammel);
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Sledge"), new Point3D(2673, 2129, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Sledge"), new Point3D(2673, 2129, 0), Map.Trammel);
-        }
     }
 
     public class HeaveHo : MLQuest
@@ -654,14 +540,6 @@ namespace Server.Engines.MLQuests.Definitions
                 0x2A
             ); // You have demonstrated your physical strength!  Humans can carry vast loads without complaint.  You are one step closer to achieving humanity.
             instance.ClaimRewards(); // skip gump
-        }
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Patricus"), new Point3D(3007, 823, -2), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Patricus"), new Point3D(3007, 823, -2), Map.Trammel);
         }
     }
 
@@ -731,14 +609,6 @@ namespace Server.Engines.MLQuests.Definitions
                 0x2A
             ); // You have demonstrated your toughness!  Humans are able to endure unimaginable hardships in pursuit of their goals.  You are one step closer to achieving humanity.
             instance.ClaimRewards(); // skip gump
-        }
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Belulah"), new Point3D(3782, 1266, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 5, "Belulah"), new Point3D(3782, 1266, 0), Map.Trammel);
         }
     }
 
