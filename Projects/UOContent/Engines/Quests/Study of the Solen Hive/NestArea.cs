@@ -75,7 +75,15 @@ namespace Server.Engines.Quests.Naturalist
 
         public bool Contains(IPoint2D p)
         {
-            return m_Rects.Any(rect => rect.Contains(p));
+            foreach (var rect in m_Rects)
+            {
+                if (rect.Contains(p))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

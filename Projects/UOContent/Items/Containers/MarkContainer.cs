@@ -116,10 +116,19 @@ namespace Server.Items
         private static bool FindMarkContainer(Point3D p, Map map)
         {
             var eable = map.GetItemsInRange<MarkContainer>(p, 0);
-            var found = eable.Any(item => item.Z == p.Z);
-            eable.Free();
 
-            return found;
+            foreach (var item in eable)
+            {
+                if (item.Z == p.Z)
+                {
+                    eable.Free();
+                    return true;
+                    break;
+                }
+            }
+
+            eable.Free();
+            return false;
         }
 
         private static void CreateMalasPassage(

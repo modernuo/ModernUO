@@ -34,13 +34,6 @@ namespace Server.Engines.MLQuests.Definitions
         }
 
         public override Type NextQuest => typeof(YouScratchMyBack);
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 4, "Aernya"), new Point3D(2095, 1380, -90), Map.Malas);
-        }
     }
 
     public class YouScratchMyBack : MLQuest
@@ -67,13 +60,6 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override Type NextQuest => typeof(FoolingAernya);
         public override bool IsChainTriggered => true;
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 4, "Gorrow"), new Point3D(993, 512, -50), Map.Malas);
-        }
     }
 
     public class FoolingAernya : MLQuest
@@ -173,13 +159,6 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override Type NextQuest => typeof(TuitionReimbursement);
         public override bool IsChainTriggered => true;
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 3, "MasterGnosos"), new Point3D(87, 1639, 0), Map.Malas);
-        }
     }
 
     public class TuitionReimbursement : MLQuest

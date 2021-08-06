@@ -114,48 +114,6 @@ namespace Server.Engines.MLQuests.Definitions
         }
 
         public override Type NextQuest => typeof(NeedsOfTheManyHeartwood1);
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 3, "Aeluva"), new Point3D(7064, 349, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 3, "Aeluva"), new Point3D(7064, 349, 0), Map.Trammel);
-
-            // Split up to prevent stacking on the spawner
-            PutSpawner(
-                new Spawner(20, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(30), 0, 30, "MiniatureMushroom"),
-                new Point3D(7015, 366, 0),
-                Map.Felucca
-            );
-            PutSpawner(
-                new Spawner(20, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(30), 0, 30, "MiniatureMushroom"),
-                new Point3D(7015, 366, 0),
-                Map.Trammel
-            );
-
-            PutSpawner(
-                new Spawner(5, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(30), 0, 20, "MiniatureMushroom"),
-                new Point3D(7081, 373, 0),
-                Map.Felucca
-            );
-            PutSpawner(
-                new Spawner(5, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(30), 0, 20, "MiniatureMushroom"),
-                new Point3D(7081, 373, 0),
-                Map.Trammel
-            );
-
-            PutSpawner(
-                new Spawner(15, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(30), 0, 20, "MiniatureMushroom"),
-                new Point3D(7052, 414, 0),
-                Map.Felucca
-            );
-            PutSpawner(
-                new Spawner(15, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(30), 0, 20, "MiniatureMushroom"),
-                new Point3D(7052, 414, 0),
-                Map.Trammel
-            );
-        }
     }
 
     public class NeedsOfTheManyHeartwood1 : MLQuest
@@ -279,14 +237,6 @@ namespace Server.Engines.MLQuests.Definitions
         }
 
         public override Type NextQuest => typeof(NeedsOfTheManySanctuary);
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Koole"), new Point3D(6257, 110, -10), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Koole"), new Point3D(6257, 110, -10), Map.Trammel);
-        }
     }
 
     public class NeedsOfTheManySanctuary : MLQuest
@@ -406,14 +356,6 @@ namespace Server.Engines.MLQuests.Definitions
         }
 
         public override Type NextQuest => typeof(TokenOfFriendship);
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 3, "Synaeva"), new Point3D(7064, 350, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 3, "Synaeva"), new Point3D(7064, 350, 0), Map.Trammel);
-        }
     }
 
     public class TokenOfFriendship : MLQuest
@@ -496,14 +438,6 @@ namespace Server.Engines.MLQuests.Definitions
         }
 
         public override Type NextQuest => typeof(CrackingTheWhipI);
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "ElderBrae"), new Point3D(6266, 124, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "ElderBrae"), new Point3D(6266, 124, 0), Map.Trammel);
-        }
     }
 
     // TODO: Verify
@@ -604,7 +538,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             /*
              * 1074206 - Excuse me please traveler, might I have a little of your time?
-             * 1074207 - Good day to you friend! Allow me to offer you a fabulous opportunity!  Thrills and adventure await!
+             * 1074207 - Good day to you friend! Allow me to offer you a fabulous opportunity!  Thrills and adventure await!
              */
             MLQuestSystem.Tell(this, pm, Utility.Random(1074206, 2));
         }

@@ -1349,7 +1349,14 @@ namespace Server
                 {
                     var eable = GetItemsInRange(point, 0);
 
-                    contains = !eable.Any(item => item.Visible);
+                    foreach (Item item in eable)
+                    {
+                        if (item.Visible)
+                        {
+                            contains = false;
+                            break;
+                        }
+                    }
 
                     eable.Free();
 
