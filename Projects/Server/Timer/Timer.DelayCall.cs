@@ -174,7 +174,8 @@ namespace Server
                     return;
                 }
 
-                AttachToPool(1, this, this);
+                _continuation = null;
+                ReturnToPool(1, this, this);
             }
 
             public static DelayCallTimer GetTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)

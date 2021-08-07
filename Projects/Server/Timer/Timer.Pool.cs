@@ -53,10 +53,10 @@ namespace Server
             _maxPoolCapacity = ServerConfiguration.GetOrUpdateSetting("timer.maxPoolCapacity", _poolCapacity * 16);
 
             RefillPool(_poolCapacity, out var head, out var tail);
-            AttachToPool(_poolCapacity, head, tail);
+            ReturnToPool(_poolCapacity, head, tail);
         }
 
-        private static void AttachToPool(int amount, DelayCallTimer head, DelayCallTimer tail)
+        private static void ReturnToPool(int amount, DelayCallTimer head, DelayCallTimer tail)
         {
             tail.Attach(_poolHead);
             _poolHead = head;
@@ -114,7 +114,7 @@ namespace Server
                             }
 
                             var (listHead, listTail) = ((DelayCallTimer, DelayCallTimer))state;
-                            AttachToPool(amount, listHead, listTail);
+                            ReturnToPool(amount, listHead, listTail);
                             _poolCapacity = amount;
                         },
                         (head, tail)
