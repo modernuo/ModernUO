@@ -80,29 +80,20 @@ namespace Server
                 logger.Information($"Filling pool with {amount} timers.");
 #endif
 
-            DelayCallTimer current = null;
             head = null;
             tail = null;
 
             for (var i = 0; i < amount; i++)
             {
                 var timer = new DelayCallTimer(TimeSpan.Zero, TimeSpan.Zero, 0, null);
-                timer.Attach(current);
+                timer.Attach(head);
 
-                if (i == amount - 1)
+                if (i == 0)
                 {
                     tail = timer;
                 }
-                else
-                {
-                    if (i == 0)
-                    {
-                        head = timer;
-                        tail = timer;
-                    }
 
-                    current = timer;
-                }
+                head = timer;
             }
         }
 
