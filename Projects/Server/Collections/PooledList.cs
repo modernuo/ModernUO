@@ -16,7 +16,6 @@ namespace System.Collections.Generic
     //
     [DebuggerDisplay("Count = {Count}")]
     [Serializable]
-    [TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     public class PooledList<T> : IList<T>, IList, IReadOnlyList<T>, IDisposable
     {
         private const int MaxLength = int.MaxValue;
@@ -117,13 +116,13 @@ namespace System.Collections.Generic
 
                         if (_items.Length > 0)
                         {
-                            ArrayPool<T>.Shared.Return(_items);
+                            ArrayPool<T>.Shared.Return(_items, true);
                         }
                         _items = newItems;
                     }
                     else
                     {
-                        ArrayPool<T>.Shared.Return(_items);
+                        ArrayPool<T>.Shared.Return(_items, true);
                         _items = s_emptyArray;
                     }
                 }
@@ -1233,13 +1232,13 @@ namespace System.Collections.Generic
 
         public void Dispose()
         {
-            ArrayPool<T>.Shared.Return(_items);
+            ArrayPool<T>.Shared.Return(_items, true);
             GC.SuppressFinalize(this);
         }
 
         ~PooledList()
         {
-            ArrayPool<T>.Shared.Return(_items);
+            ArrayPool<T>.Shared.Return(_items, true);
         }
     }
 }
