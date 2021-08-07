@@ -798,12 +798,10 @@ namespace System.Collections.Generic
             }
             else
             {
-                using (IEnumerator<T> en = collection.GetEnumerator())
+                using IEnumerator<T> en = collection.GetEnumerator();
+                while (en.MoveNext())
                 {
-                    while (en.MoveNext())
-                    {
-                        Insert(index++, en.Current);
-                    }
+                    Insert(index++, en.Current);
                 }
             }
             _version++;
