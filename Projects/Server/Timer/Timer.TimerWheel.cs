@@ -206,7 +206,7 @@ namespace Server
             var now = DateTime.UtcNow;
 
             tw.WriteLine("Date: {0}\n", now);
-            tw.WriteLine("Pool - Count: {0}; Size {1}\n", _poolCount - _timerPoolDepletionAmount, _poolSize);
+            tw.WriteLine("Pool - Count: {0}; Size {1}\n", _poolCount - _timerPoolDepletionAmount, _poolCapacity);
 
             var total = 0.0;
             var hash = new Dictionary<string, int>();

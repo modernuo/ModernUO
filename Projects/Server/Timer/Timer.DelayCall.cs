@@ -164,7 +164,7 @@ namespace Server
 
                 Version++; // Increment the version so if this is called from OnTick() and another timer is started, we don't have a problem
 
-                if (_poolCount >= _poolSize)
+                if (_poolCount >= _poolCapacity)
                 {
 #if DEBUG_TIMERS
                     logger.Warning($"DelayCallTimer pool reached maximum of {_poolSize} timers");
@@ -182,6 +182,9 @@ namespace Server
                 if (_poolHead != null)
                 {
                     _poolCount--;
+#if DEBUG_TIMERS
+                    logger.Information($"Pool count changed: {_poolCount} ({_poolCapacity})");
+#endif
 
                     var timer = GetFromPool();
 

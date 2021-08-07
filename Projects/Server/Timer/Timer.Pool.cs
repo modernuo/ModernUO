@@ -22,8 +22,8 @@ namespace Server
     {
         private const int _timerPoolDepletionThreshold = 128; // Maximum timers allocated in a single tick before we force adjust
         private static int _timerPoolDepletionAmount;         // Amount the pool has been depleted by
-        private static int _maxPoolSize;
-        private static int _poolSize;
+        private static int _maxPoolCapacity;
+        private static int _poolCapacity;
         private static int _poolCount;
         private static DelayCallTimer _poolHead;
 
@@ -36,9 +36,9 @@ namespace Server
                 return;
             }
 
-            var growthFactor = Math.DivRem(_timerPoolDepletionAmount, _poolSize, out var rem);
-            var amountToGrow = _poolSize * (growthFactor + (rem > 0 ? 1 : 0));
-            var amountToRefill = Math.Min(_maxPoolSize, amountToGrow);
+            var growthFactor = Math.DivRem(_timerPoolDepletionAmount, _poolCapacity, out var rem);
+            var amountToGrow = _poolCapacity * (growthFactor + (rem > 0 ? 1 : 0));
+            var amountToRefill = Math.Min(_maxPoolCapacity, amountToGrow);
 
             var maximumHit = amountToGrow > amountToRefill ? " Maximum pool size has been reached." : "";
 
@@ -49,11 +49,11 @@ namespace Server
 
         public static void ConfigureTimerPool()
         {
-            _poolSize = ServerConfiguration.GetOrUpdateSetting("timer.intialPoolSize", 1024);
-            _maxPoolSize = ServerConfiguration.GetOrUpdateSetting("timer.maxPoolSize", _poolSize * 16);
+            _poolCapacity = ServerConfiguration.GetOrUpdateSetting("timer.intialPoolCapacity", 1024);
+            _maxPoolCapacity = ServerConfiguration.GetOrUpdateSetting("timer.maxPoolCapacity", _poolCapacity * 16);
 
-            RefillPool(_poolSize, out var head, out var tail);
-            AttachToPool(_poolSize, head, tail);
+            RefillPool(_poolCapacity, out var head, out var tail);
+            AttachToPool(_poolCapacity, head, tail);
         }
 
         private static void AttachToPool(int amount, DelayCallTimer head, DelayCallTimer tail)
@@ -61,6 +61,9 @@ namespace Server
             tail.Attach(_poolHead);
             _poolHead = head;
             _poolCount += amount;
+#if DEBUG_TIMERS
+            logger.Information($"Pool count changed: {_poolCount} ({_poolCapacity})");
+#endif
         }
 
         private static DelayCallTimer GetFromPool()
@@ -121,7 +124,7 @@ namespace Server
 
                             var (listHead, listTail) = ((DelayCallTimer, DelayCallTimer))state;
                             AttachToPool(amount, listHead, listTail);
-                            _poolSize = amount;
+                            _poolCapacity = amount;
                         },
                         (head, tail)
                     );
