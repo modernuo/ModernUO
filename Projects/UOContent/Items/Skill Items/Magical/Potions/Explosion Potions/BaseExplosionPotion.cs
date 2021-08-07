@@ -286,7 +286,7 @@ namespace Server.Items
                     return;
                 }
 
-                if (!(targeted is IPoint3D p))
+                if (targeted is not IPoint3D p)
                 {
                     return;
                 }
@@ -299,16 +299,17 @@ namespace Server.Items
                 }
 
                 SpellHelper.GetSurfaceTop(ref p);
+                var loc = new Point3D(p);
 
                 from.RevealingAction();
 
-                IEntity to = new Entity(Serial.Zero, new Point3D(p), map);
+                IEntity to = new Entity(Serial.Zero, loc, map);
 
                 if (p is Mobile m)
                 {
                     if (!RelativeLocation) // explosion location = current mob location.
                     {
-                        p = m.Location;
+                        loc = m.Location;
                     }
                     else
                     {
@@ -324,7 +325,7 @@ namespace Server.Items
                 }
 
                 Potion.Internalize();
-                Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => Potion.Reposition_OnTick(from, new Point3D(p), map));
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => Potion.Reposition_OnTick(from, loc, map));
             }
         }
     }

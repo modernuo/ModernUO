@@ -68,10 +68,11 @@ namespace Server.Items
                 }
 
                 var p = new Point3D(Location);
+                var map = Map;
 
-                if (SpellHelper.FindValidSpawnLocation(Map, ref p, true))
+                if (SpellHelper.FindValidSpawnLocation(map, ref p, true))
                 {
-                    Timer.StartTimer(TimeSpan.FromSeconds(0), () => m.MoveToWorld(p, m.Map));
+                    Timer.StartTimer(TimeSpan.FromSeconds(0), () => m.MoveToWorld(p, map));
                 }
 
                 action = 21 + Utility.Random(2);
