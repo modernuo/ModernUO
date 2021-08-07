@@ -144,7 +144,7 @@ namespace Server.Items
                     return;
                 }
 
-                if (!(targeted is IPoint3D p) || from.Map == null)
+                if (targeted is not IPoint3D p || from.Map == null)
                 {
                     return;
                 }
@@ -153,6 +153,8 @@ namespace Server.Items
                 AddDelay(from);
 
                 SpellHelper.GetSurfaceTop(ref p);
+                var loc = new Point3D(p);
+                var map = from.Map;
 
                 from.RevealingAction();
 
@@ -164,11 +166,11 @@ namespace Server.Items
                 }
                 else
                 {
-                    to = new Entity(Serial.Zero, new Point3D(p), from.Map);
+                    to = new Entity(Serial.Zero, loc, map);
                 }
 
                 Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue);
-                Timer.StartTimer(TimeSpan.FromSeconds(1.5), () => Potion.Explode(from, new Point3D(p), from.Map));
+                Timer.StartTimer(TimeSpan.FromSeconds(1.5), () => Potion.Explode(from, loc, map));
             }
         }
 
