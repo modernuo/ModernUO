@@ -15,7 +15,7 @@ namespace Server.Items
         private static readonly bool InstantExplosion = false; // Should explosion potions explode on impact?
         private static readonly bool RelativeLocation = false; // Is the explosion target location relative for mobiles?
 
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         public BaseExplosionPotion(PotionEffect effect) : base(0xF0D, effect)
         {
@@ -93,7 +93,7 @@ namespace Server.Items
 
             from.Target = new ThrowTarget(this);
 
-            if (m_Timer == null)
+            if (!_timerToken.Running)
             {
                 from.SendLocalizedMessage(500236); // You should throw it now!
 
@@ -101,21 +101,25 @@ namespace Server.Items
 
                 if (Core.ML)
                 {
-                    m_Timer = Timer.DelayCall(
+                    // 3.6 seconds explosion delay
+                    Timer.StartTimer(
                         TimeSpan.FromSeconds(1.0),
                         TimeSpan.FromSeconds(1.25),
-                        5,
-                        () => Detonate_OnTick(from, timer--)
-                    ); // 3.6 seconds explosion delay
+                        5, // TODO: Should this be 4?
+                        () => Detonate_OnTick(from, timer--),
+                        out _timerToken
+                    );
                 }
                 else
                 {
-                    m_Timer = Timer.DelayCall(
+                    // 2.6 seconds explosion delay
+                    Timer.StartTimer(
                         TimeSpan.FromSeconds(0.75),
                         TimeSpan.FromSeconds(1.0),
                         4,
-                        () => Detonate_OnTick(from, timer--)
-                    ); // 2.6 seconds explosion delay
+                        () => Detonate_OnTick(from, timer--),
+                        out _timerToken
+                    );
                 }
             }
         }
@@ -150,7 +154,7 @@ namespace Server.Items
                 }
 
                 Explode(from, true, loc, map);
-                m_Timer = null;
+                _timerToken.Cancel();
             }
             else
             {
@@ -282,7 +286,7 @@ namespace Server.Items
                     return;
                 }
 
-                if (!(targeted is IPoint3D p))
+                if (targeted is not IPoint3D p)
                 {
                     return;
                 }
@@ -295,16 +299,17 @@ namespace Server.Items
                 }
 
                 SpellHelper.GetSurfaceTop(ref p);
+                var loc = new Point3D(p);
 
                 from.RevealingAction();
 
-                IEntity to = new Entity(Serial.Zero, new Point3D(p), map);
+                IEntity to = new Entity(Serial.Zero, loc, map);
 
                 if (p is Mobile m)
                 {
                     if (!RelativeLocation) // explosion location = current mob location.
                     {
-                        p = m.Location;
+                        loc = m.Location;
                     }
                     else
                     {
@@ -320,7 +325,7 @@ namespace Server.Items
                 }
 
                 Potion.Internalize();
-                Timer.DelayCall(TimeSpan.FromSeconds(1.0), Potion.Reposition_OnTick, from, new Point3D(p), map);
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => Potion.Reposition_OnTick(from, loc, map));
             }
         }
     }

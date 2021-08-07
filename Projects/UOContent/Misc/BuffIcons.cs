@@ -7,6 +7,8 @@ namespace Server
 {
     public class BuffInfo
     {
+        private TimerExecutionToken _timerToken;
+
         public BuffInfo(BuffIcon iconID, int titleCliloc)
             : this(iconID, titleCliloc, titleCliloc + 1)
         {
@@ -31,7 +33,7 @@ namespace Server
             TimeLength = length;
             TimeStart = Core.TickCount;
 
-            Timer = Timer.DelayCall(length, RemoveBuff, m, this);
+            Timer.StartTimer(length, () => RemoveBuff(m, this), out _timerToken);
         }
 
         public BuffInfo(BuffIcon iconID, int titleCliloc, TextDefinition args)
@@ -103,7 +105,7 @@ namespace Server
 
         public long TimeStart { get; }
 
-        public Timer Timer { get; }
+        public TimerExecutionToken TimerToken => _timerToken;
 
         public bool RetainThroughDeath { get; }
 
@@ -126,7 +128,7 @@ namespace Server
         {
             if (ns.Mobile is PlayerMobile pm)
             {
-                Timer.DelayCall(pm.ResendBuffs);
+                Timer.StartTimer(pm.ResendBuffs);
             }
         }
 

@@ -67,7 +67,7 @@ namespace Server.Spells.Spellweaving
 
             var duration = TimeSpan.FromSeconds(12 + (int)(skill / 24) + FocusLevel * 2);
 
-            Timer.DelayCall(duration, RemoveEffect, Caster);
+            Timer.StartTimer(duration, () => RemoveEffect(Caster));
 
             Caster.BeginAction(
                 typeof(EtherealVoyageSpell)
@@ -82,7 +82,7 @@ namespace Server.Spells.Spellweaving
 
             TransformationSpellHelper.RemoveContext(m, true);
 
-            Timer.DelayCall(TimeSpan.FromMinutes(5), m.EndAction<EtherealVoyageSpell>);
+            Timer.StartTimer(TimeSpan.FromMinutes(5), m.EndAction<EtherealVoyageSpell>);
 
             BuffInfo.RemoveBuff(m, BuffIcon.EtherealVoyage);
         }

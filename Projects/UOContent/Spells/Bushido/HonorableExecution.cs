@@ -27,6 +27,8 @@ namespace Server.Spells.Bushido
             ClearCurrentMove(attacker);
             RemovePenalty(attacker);
 
+            HonorableExecutionTimer timer;
+
             if (!defender.Alive)
             {
                 attacker.FixedParticles(0x373A, 1, 17, 0x7E2, EffectLayer.Waist);
@@ -38,7 +40,7 @@ namespace Server.Spells.Bushido
 
                 var swingBonus = Math.Max(1, (int)(bushido / 720.0));
 
-                m_Table[attacker] = new HonorableExecutionTimer(attacker, swingBonus);
+                timer = new HonorableExecutionTimer(attacker, swingBonus);
             }
             else
             {
@@ -58,8 +60,11 @@ namespace Server.Spells.Bushido
                     mods.Add(new DefaultSkillMod(SkillName.MagicResist, true, -resSpells));
                 }
 
-                m_Table[attacker] = new HonorableExecutionTimer(attacker, mods);
+                timer = new HonorableExecutionTimer(attacker, mods);
             }
+
+            m_Table[attacker] = timer;
+            timer.Start();
 
             attacker.Delta(MobileDelta.WeaponDamage);
             CheckGain(attacker);

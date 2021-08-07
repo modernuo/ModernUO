@@ -10,7 +10,7 @@ namespace Server.Engines.ConPVP
         [Constructible]
         public TournamentRegistrar()
         {
-            Timer.DelayCall(TimeSpan.FromSeconds(30.0), TimeSpan.FromSeconds(30.0), Announce_Callback);
+            Timer.StartTimer(TimeSpan.FromSeconds(30.0), TimeSpan.FromSeconds(30.0), Announce_Callback);
         }
 
         public TournamentRegistrar(Serial serial) : base(serial)
@@ -70,7 +70,7 @@ namespace Server.Engines.ConPVP
                     m.NetState
                 );
                 m.BeginAction(this);
-                Timer.DelayCall(TimeSpan.FromSeconds(10.0), ReleaseLock_Callback, m);
+                Timer.StartTimer(TimeSpan.FromSeconds(10.0), () => ReleaseLock_Callback(m));
             }
         }
 
@@ -103,7 +103,7 @@ namespace Server.Engines.ConPVP
                     }
             }
 
-            Timer.DelayCall(TimeSpan.FromSeconds(30.0), TimeSpan.FromSeconds(30.0), Announce_Callback);
+            Timer.StartTimer(TimeSpan.FromSeconds(30.0), TimeSpan.FromSeconds(30.0), Announce_Callback);
         }
     }
 }

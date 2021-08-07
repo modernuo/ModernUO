@@ -252,7 +252,7 @@ namespace Server.Engines.ConPVP
 
         public Mobile m_Returner;
         public DateTime m_ReturnTime;
-        private Timer m_ReturnTimer;
+        private TimerExecutionToken _returnTimerToken;
         public CTFTeamInfo m_TeamInfo;
 
         [Constructible]
@@ -370,18 +370,11 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        private void StopCountdown()
-        {
-            m_ReturnTimer?.Stop();
-
-            m_ReturnTimer = null;
-        }
-
         private void BeginCountdown(int returnCount)
         {
-            StopCountdown();
+            _returnTimerToken.Cancel();
 
-            m_ReturnTimer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Countdown_OnTick);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Countdown_OnTick, out _returnTimerToken);
             m_ReturnCount = returnCount;
         }
 
@@ -518,7 +511,7 @@ namespace Server.Engines.ConPVP
 
         public void SendHome()
         {
-            StopCountdown();
+            _returnTimerToken.Cancel();
 
             if (m_TeamInfo == null)
             {
@@ -897,7 +890,7 @@ namespace Server.Engines.ConPVP
 
     public sealed class CTFGame : EventGame
     {
-        private Timer m_FinishTimer;
+        private TimerExecutionToken _finishTimerToken;
 
         public CTFGame(CTFController controller, DuelContext context) : base(context) => Controller = controller;
 
@@ -1004,7 +997,7 @@ namespace Server.Engines.ConPVP
 
         public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
         {
-            Timer.DelayCall(ts, DelayBounce_Callback, mob, corpse);
+            Timer.StartTimer(ts, () => DelayBounce_Callback(mob, corpse));
         }
 
         private void DelayBounce_Callback(Mobile mob, Container corpse)
@@ -1135,9 +1128,8 @@ namespace Server.Engines.ConPVP
                 ApplyHues(m_Context.Participants[i], Controller.TeamInfo[i % 8].Color);
             }
 
-            m_FinishTimer?.Stop();
-
-            m_FinishTimer = Timer.DelayCall(Controller.Duration, Finish_Callback);
+            _finishTimerToken.Cancel();
+            Timer.StartTimer(Controller.Duration, Finish_Callback, out _finishTimerToken);
         }
 
         private void Finish_Callback()
@@ -1364,9 +1356,7 @@ namespace Server.Engines.ConPVP
                 ApplyHues(m_Context.Participants[i], -1);
             }
 
-            m_FinishTimer?.Stop();
-
-            m_FinishTimer = null;
+            _finishTimerToken.Cancel();
         }
     }
 }

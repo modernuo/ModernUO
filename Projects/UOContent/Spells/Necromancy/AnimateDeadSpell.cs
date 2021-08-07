@@ -191,7 +191,7 @@ namespace Server.Spells.Necromancy
                                     0
                                 );
 
-                                Timer.DelayCall(
+                                Timer.StartTimer(
                                     TimeSpan.FromSeconds(2.0),
                                     () => SummonDelay_Callback(Caster, c, p, map, group)
                                 );
@@ -279,10 +279,10 @@ namespace Server.Spells.Necromancy
 
             if (list.Count > 3)
             {
-                Timer.DelayCall(list[0].Kill);
+                Timer.StartTimer(list[0].Kill);
             }
 
-            Timer.DelayCall(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0), Summoned_Damage, summoned);
+            Timer.StartTimer(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0), () => Summoned_Damage(summoned));
         }
 
         private static void Summoned_Damage(Mobile mob)

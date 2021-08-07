@@ -1337,7 +1337,7 @@ namespace Server.Guilds
             AcceptedWars ??= new List<WarDeclaration>();
             PendingWars ??= new List<WarDeclaration>();
 
-            Timer.DelayCall(VerifyGuild_Callback);
+            Timer.StartTimer(VerifyGuild_Callback);
         }
 
         private void VerifyGuild_Callback()

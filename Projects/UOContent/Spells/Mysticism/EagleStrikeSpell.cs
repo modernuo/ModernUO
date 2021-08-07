@@ -46,7 +46,7 @@ namespace Server.Spells.Mysticism
                 Caster.MovingParticles(m, 0x407A, 7, 0, false, true, 0, 0, 0xBBE, 0xFA6, 0xFFFF, 0);
                 Caster.PlaySound(0x2EE);
 
-                Timer.DelayCall(TimeSpan.FromSeconds(1.0), Damage, m);
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => Damage(m));
             }
 
             FinishSequence();

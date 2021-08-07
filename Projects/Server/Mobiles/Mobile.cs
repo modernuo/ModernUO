@@ -454,7 +454,7 @@ namespace Server
         private List<object> _actions;
         private AccessLevel m_AccessLevel;
 
-        private Timer m_AutoManifestTimer;
+        private TimerExecutionToken _autoManifestTimerToken;
 
         private Container m_Backpack;
 
@@ -465,7 +465,7 @@ namespace Server
 
         private int m_ChangingCombatant;
         private Mobile m_Combatant;
-        private Timer m_CombatTimer;
+        private TimerExecutionToken _combatTimerToken;
         private ContextMenu m_ContextMenu;
         private bool m_Criminal;
 
@@ -473,14 +473,15 @@ namespace Server
         private Direction m_Direction;
         private bool m_DisplayGuildTitle;
 
-        private Timer m_ExpireAggrTimer;
-        private Timer m_ExpireCombatant;
+        private TimerExecutionToken _expireAggrTimerToken;
+        private TimerExecutionToken _expireCombatantTimerToken;
+        private TimerExecutionToken _expireCriminalTimerToken;
         private FacialHairInfo m_FacialHair;
         private int m_Fame, m_Karma;
         private bool m_Female, m_Warmode, m_Hidden, m_Blessed, m_Flying;
         private int m_Followers, m_FollowersMax;
         private bool m_Frozen;
-        private Timer m_FrozenTimer;
+        private TimerExecutionToken _frozenTimerToken;
         private BaseGuild m_Guild;
         private string m_GuildTitle;
 
@@ -498,7 +499,7 @@ namespace Server
         private string m_Language;
         private int m_LightLevel;
         private Point3D m_Location;
-        private Timer m_LogoutTimer;
+        private TimerExecutionToken _logoutTimerToken;
         private Timer m_ManaTimer, m_HitsTimer, m_StamTimer;
 
         private Map m_Map;
@@ -525,7 +526,7 @@ namespace Server
         private NetState m_NetState;
         private DateTime m_NextWarmodeChange;
         private bool m_Paralyzed;
-        private Timer m_ParaTimer;
+        private TimerExecutionToken _paraTimerToken;
         private bool m_Player;
         private Poison m_Poison;
         private Prompt m_Prompt;
@@ -546,7 +547,7 @@ namespace Server
         private int m_VirtualArmor;
         private int m_VirtualArmorMod;
         private int m_WarmodeChanges;
-        private WarmodeTimer m_WarmodeTimer;
+        private bool _warmodeSpamValue;
         private IWeapon m_Weapon;
 
         private bool m_YellowHealthbar;
@@ -768,12 +769,7 @@ namespace Server
                     Delta(MobileDelta.Flags);
 
                     SendLocalizedMessage(m_Paralyzed ? 502381 : 502382);
-
-                    if (m_ParaTimer != null)
-                    {
-                        m_ParaTimer.Stop();
-                        m_ParaTimer = null;
-                    }
+                    _paraTimerToken.Cancel();
                 }
             }
         }
@@ -794,12 +790,7 @@ namespace Server
                 {
                     m_Frozen = value;
                     Delta(MobileDelta.Flags);
-
-                    if (m_FrozenTimer != null)
-                    {
-                        m_FrozenTimer.Stop();
-                        m_FrozenTimer = null;
-                    }
+                    _frozenTimerToken.Cancel();
                 }
             }
         }
@@ -880,7 +871,11 @@ namespace Server
 
         public bool ChangingCombatant => m_ChangingCombatant > 0;
 
-        private void ExpireCombatant() => Combatant = null;
+        private void ExpireCombatant()
+        {
+            Combatant = null;
+            _expireCombatantTimerToken.Cancel();
+        }
 
         /// <summary>
         ///     Overridable. Gets or sets which Mobile that this Mobile is currently engaged in combat with.
@@ -915,20 +910,14 @@ namespace Server
                     if (m_Combatant == null)
                     {
                         m_NetState.SendChangeCombatant(Serial.Zero);
-                        m_ExpireCombatant?.Stop();
-                        m_CombatTimer?.Stop();
-
-                        m_ExpireCombatant = null;
-                        m_CombatTimer = null;
+                        _expireCombatantTimerToken.Cancel();
+                        _combatTimerToken.Cancel();
                     }
                     else
                     {
                         m_NetState.SendChangeCombatant(m_Combatant.Serial);
-                        m_ExpireCombatant ??= Timer.DelayCall(ExpireCombatantDelay, ExpireCombatant);
-                        m_ExpireCombatant.Start();
-
-                        m_CombatTimer ??= new CombatTimer(this);
-                        m_CombatTimer.Start();
+                        Timer.StartTimer(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
+                        Timer.StartTimer(TimeSpan.FromSeconds(0.01), 0, CheckCombatTime, out _combatTimerToken);
 
                         if (CanBeHarmful(m_Combatant, false))
                         {
@@ -940,6 +929,40 @@ namespace Server
                     OnCombatantChange();
                     --m_ChangingCombatant;
                 }
+            }
+        }
+
+        private void CheckCombatTime()
+        {
+            if (Core.TickCount - NextCombatTime < 0)
+            {
+                return;
+            }
+
+            var combatant = Combatant;
+
+            // If no combatant, wrong map, one of us is a ghost, or cannot see, or deleted, then stop combat
+            if (combatant?.Deleted != false || Deleted || combatant.m_Map != m_Map ||
+                !combatant.Alive || !Alive || !CanSee(combatant) || combatant.IsDeadBondedPet ||
+                IsDeadBondedPet)
+            {
+                Combatant = null;
+                return;
+            }
+
+            var weapon = Weapon;
+
+            if (!InRange(combatant, weapon.MaxRange))
+            {
+                return;
+            }
+
+            if (InLOS(combatant))
+            {
+                weapon.OnBeforeSwing(this, combatant);
+                RevealingAction();
+                NextCombatTime =
+                    Core.TickCount + (int)weapon.OnSwing(this, combatant).TotalMilliseconds;
             }
         }
 
@@ -1347,11 +1370,7 @@ namespace Server
 
                 if (m_Warmode != value)
                 {
-                    if (m_AutoManifestTimer != null)
-                    {
-                        m_AutoManifestTimer.Stop();
-                        m_AutoManifestTimer = null;
-                    }
+                    _autoManifestTimerToken.Cancel();
 
                     m_Warmode = value;
                     Delta(MobileDelta.Flags);
@@ -1439,6 +1458,7 @@ namespace Server
                 }
 
                 m_NetState = value;
+                _logoutTimerToken.Cancel();
 
                 if (m_NetState == null)
                 {
@@ -1446,26 +1466,12 @@ namespace Server
                     EventSink.InvokeDisconnected(this);
 
                     // Disconnected, start the logout timer
-                    if (m_LogoutTimer == null)
-                    {
-                        m_LogoutTimer = Timer.DelayCall(GetLogoutDelay(), Logout);
-                    }
-                    else
-                    {
-                        m_LogoutTimer.Stop();
-                        m_LogoutTimer.Delay = GetLogoutDelay();
-                        m_LogoutTimer.Start();
-                    }
+                    Timer.StartTimer(GetLogoutDelay(), Logout, out _logoutTimerToken);
                 }
                 else
                 {
                     OnConnected();
                     EventSink.InvokeConnected(this);
-
-                    // Connected, stop the logout timer and if needed, move to the world
-                    m_LogoutTimer?.Stop();
-
-                    m_LogoutTimer = null;
 
                     if (m_Map == Map.Internal && LogoutMap != null)
                     {
@@ -1494,7 +1500,7 @@ namespace Server
                             }
                         }
 
-                        Timer.DelayCall(item.Delete);
+                        Timer.StartTimer(item.Delete);
                     }
                 }
 
@@ -1852,8 +1858,6 @@ namespace Server
             }
         }
 
-        public Timer ExpireCriminalTimer { get; set; }
-
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public virtual bool Criminal
         {
@@ -1867,23 +1871,11 @@ namespace Server
                     InvalidateProperties();
                 }
 
+                _expireCriminalTimerToken.Cancel();
+
                 if (m_Criminal)
                 {
-                    if (ExpireCriminalTimer == null)
-                    {
-                        ExpireCriminalTimer = Timer.DelayCall(ExpireCriminalDelay, ExpireCriminal);
-                    }
-                    else
-                    {
-                        ExpireCriminalTimer.Stop();
-                    }
-
-                    ExpireCriminalTimer.Start();
-                }
-                else if (ExpireCriminalTimer != null)
-                {
-                    ExpireCriminalTimer.Stop();
-                    ExpireCriminalTimer = null;
+                    Timer.StartTimer(ExpireCriminalDelay, ExpireCriminal, out _expireCriminalTimerToken);
                 }
             }
         }
@@ -3545,10 +3537,9 @@ namespace Server
             {
                 StopAggrExpire();
             }
-            else if (m_ExpireAggrTimer == null)
+            else if (!_expireAggrTimerToken.Running)
             {
-                m_ExpireAggrTimer = Timer.DelayCall(ExpireAggressorsDelay, ExpireAggressorsDelay, ExpireAggr);
-                m_ExpireAggrTimer.Start();
+                Timer.StartTimer(ExpireAggressorsDelay, ExpireAggressorsDelay, ExpireAggr, out _expireAggrTimerToken);
             }
         }
 
@@ -3566,8 +3557,7 @@ namespace Server
 
         private void StopAggrExpire()
         {
-            m_ExpireAggrTimer?.Stop();
-            m_ExpireAggrTimer = null;
+            _expireAggrTimerToken.Cancel();
         }
 
         private void CheckAggrExpire()
@@ -3712,9 +3702,10 @@ namespace Server
 
         public void DelayChangeWarmode(bool value)
         {
-            if (m_WarmodeTimer != null)
+            if (m_WarmodeChanges > WarmodeCatchCount)
             {
-                m_WarmodeTimer.Value = value;
+                _warmodeSpamValue = value;
+                m_WarmodeChanges++;
                 return;
             }
 
@@ -3731,19 +3722,19 @@ namespace Server
                 m_WarmodeChanges = 1;
                 m_NextWarmodeChange = now + WarmodeSpamCatch;
             }
-            else if (m_WarmodeChanges == WarmodeCatchCount)
+            else if (m_WarmodeChanges++ == WarmodeCatchCount)
             {
-                m_WarmodeTimer = new WarmodeTimer(this, value);
-                m_WarmodeTimer.Start();
-
+                Timer.StartTimer(WarmodeSpamDelay, WarmodeSpamTimeout);
                 return;
-            }
-            else
-            {
-                ++m_WarmodeChanges;
             }
 
             Warmode = value;
+        }
+
+        private void WarmodeSpamTimeout()
+        {
+            Warmode = _warmodeSpamValue;
+            m_WarmodeChanges = 0;
         }
 
         public bool InLOS(Mobile target) =>
@@ -3808,9 +3799,7 @@ namespace Server
             if (!m_Paralyzed)
             {
                 Paralyzed = true;
-
-                m_ParaTimer = Timer.DelayCall(duration, ExpireParalyzed);
-                m_ParaTimer.Start();
+                Timer.StartTimer(duration, ExpireParalyzed, out _paraTimerToken);
             }
         }
 
@@ -3824,9 +3813,7 @@ namespace Server
             if (!m_Frozen)
             {
                 Frozen = true;
-
-                m_FrozenTimer = Timer.DelayCall(duration, ExpireFrozen);
-                m_FrozenTimer.Start();
+                Timer.StartTimer(duration, ExpireFrozen, out _frozenTimerToken);
             }
         }
 
@@ -3938,16 +3925,8 @@ namespace Server
 
             if (Combatant == aggressor)
             {
-                if (m_ExpireCombatant == null)
-                {
-                    m_ExpireCombatant = Timer.DelayCall(ExpireCombatantDelay, ExpireCombatant);
-                }
-                else
-                {
-                    m_ExpireCombatant.Stop();
-                }
-
-                m_ExpireCombatant.Start();
+                _expireCombatantTimerToken.Cancel();
+                Timer.StartTimer(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
             }
 
             var addAggressor = true;
@@ -4787,14 +4766,13 @@ namespace Server
             m_HitsTimer?.Stop();
             m_StamTimer?.Stop();
             m_ManaTimer?.Stop();
-            m_CombatTimer?.Stop();
-            m_ExpireCombatant?.Stop();
-            m_LogoutTimer?.Stop();
-            ExpireCriminalTimer?.Stop();
-            m_WarmodeTimer?.Stop();
-            m_ParaTimer?.Stop();
-            m_FrozenTimer?.Stop();
-            m_AutoManifestTimer?.Stop();
+            _combatTimerToken.Cancel();
+            _expireCombatantTimerToken.Cancel();
+            _logoutTimerToken.Cancel();
+            _expireCriminalTimerToken.Cancel();
+            _paraTimerToken.Cancel();
+            _frozenTimerToken.Cancel();
+            _autoManifestTimerToken.Cancel();
         }
 
         public virtual bool AllowSkillUse(SkillName name) => true;
@@ -4864,15 +4842,11 @@ namespace Server
             if (Paralyzed)
             {
                 Paralyzed = false;
-
-                m_ParaTimer?.Stop();
             }
 
             if (Frozen)
             {
                 Frozen = false;
-
-                m_FrozenTimer?.Stop();
             }
 
             var content = new List<Item>();
@@ -5570,17 +5544,8 @@ namespace Server
         public virtual void Manifest(TimeSpan delay)
         {
             Warmode = true;
-
-            if (m_AutoManifestTimer == null)
-            {
-                m_AutoManifestTimer = Timer.DelayCall(delay, AutoManifest);
-            }
-            else
-            {
-                m_AutoManifestTimer.Stop();
-            }
-
-            m_AutoManifestTimer.Start();
+            _autoManifestTimerToken.Cancel();
+            Timer.StartTimer(delay, AutoManifest, out _autoManifestTimerToken);
         }
 
         public virtual bool CheckSpeechManifest()
@@ -5592,7 +5557,7 @@ namespace Server
 
             var delay = AutoManifestTimeout;
 
-            if (delay > TimeSpan.Zero && (!Warmode || m_AutoManifestTimer != null))
+            if (delay > TimeSpan.Zero && (!Warmode || _autoManifestTimerToken.Running))
             {
                 Manifest(delay);
                 return true;
@@ -6548,8 +6513,7 @@ namespace Server
 
                         if (m_Criminal)
                         {
-                            ExpireCriminalTimer ??= Timer.DelayCall(ExpireCriminalDelay, ExpireCriminal);
-                            ExpireCriminalTimer.Start();
+                            Timer.StartTimer(ExpireCriminalDelay, ExpireCriminal, out _expireCriminalTimerToken);
                         }
 
                         if (ShouldCheckStatTimers)
@@ -8186,27 +8150,6 @@ namespace Server
         {
         }
 
-        private class WarmodeTimer : Timer
-        {
-            private Mobile m_Mobile;
-
-            public WarmodeTimer(Mobile m, bool value) : base(WarmodeSpamDelay)
-            {
-                m_Mobile = m;
-                Value = value;
-            }
-
-            public bool Value{ get; set; }
-
-            protected override void OnTick()
-            {
-                m_Mobile.Warmode = Value;
-                m_Mobile.m_WarmodeChanges = 0;
-
-                m_Mobile.m_WarmodeTimer = null;
-            }
-        }
-
         public static TimeSpan GetHitsRegenRate(Mobile m) => HitsRegenRateHandler?.Invoke(m) ?? DefaultHitsRate;
 
         public static TimeSpan GetStamRegenRate(Mobile m) => StamRegenRateHandler?.Invoke(m) ?? DefaultStamRate;
@@ -8588,16 +8531,8 @@ namespace Server
                 Combatant = target;
             }
 
-            if (m_ExpireCombatant == null)
-            {
-                m_ExpireCombatant = Timer.DelayCall(ExpireCombatantDelay, ExpireCombatant);
-            }
-            else
-            {
-                m_ExpireCombatant.Stop();
-            }
-
-            m_ExpireCombatant.Start();
+            _expireCombatantTimerToken.Cancel();
+            Timer.StartTimer(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
         }
 
         public virtual bool HarmfulCheck(Mobile target)
@@ -9443,48 +9378,6 @@ namespace Server
                 LogoutMap = m_Map;
 
                 Internalize();
-            }
-        }
-
-        private class CombatTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public CombatTimer(Mobile m) : base(TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(0.01)) =>
-                m_Mobile = m;
-
-            protected override void OnTick()
-            {
-                if (Core.TickCount - m_Mobile.NextCombatTime < 0)
-                {
-                    return;
-                }
-
-                var combatant = m_Mobile.Combatant;
-
-                // If no combatant, wrong map, one of us is a ghost, or cannot see, or deleted, then stop combat
-                if (combatant?.Deleted != false || m_Mobile.Deleted || combatant.m_Map != m_Mobile.m_Map ||
-                    !combatant.Alive || !m_Mobile.Alive || !m_Mobile.CanSee(combatant) || combatant.IsDeadBondedPet ||
-                    m_Mobile.IsDeadBondedPet)
-                {
-                    m_Mobile.Combatant = null;
-                    return;
-                }
-
-                var weapon = m_Mobile.Weapon;
-
-                if (!m_Mobile.InRange(combatant, weapon.MaxRange))
-                {
-                    return;
-                }
-
-                if (m_Mobile.InLOS(combatant))
-                {
-                    weapon.OnBeforeSwing(m_Mobile, combatant);
-                    m_Mobile.RevealingAction();
-                    m_Mobile.NextCombatTime =
-                        Core.TickCount + (int)weapon.OnSwing(m_Mobile, combatant).TotalMilliseconds;
-                }
             }
         }
 

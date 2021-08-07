@@ -94,7 +94,7 @@ namespace Server.Engines.Quests.Hag
         {
             PublicOverheadMessage(MessageType.Regular, 0x3B2, 500849); // *hic*
 
-            Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(60, 180)), Heave);
+            Timer.StartTimer(TimeSpan.FromSeconds(Utility.RandomMinMax(60, 180)), Heave);
         }
 
         public override void Serialize(IGenericWriter writer)

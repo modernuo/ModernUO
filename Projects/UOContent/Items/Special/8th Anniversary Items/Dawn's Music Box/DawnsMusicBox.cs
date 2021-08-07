@@ -99,7 +99,7 @@ namespace Server.Items
         private int m_Count;
         private int m_ItemID;
 
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         [Constructible]
         public DawnsMusicBox() : base(0x2AF9)
@@ -214,7 +214,7 @@ namespace Server.Items
 
         public void PlayMusic(Mobile m, MusicName music)
         {
-            if (m_Timer?.Running == true)
+            if (_timerToken.Running)
             {
                 EndMusic(m);
             }
@@ -224,16 +224,12 @@ namespace Server.Items
             }
 
             m.NetState.SendPlayMusic(music);
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 4, Animate);
+            Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 4, Animate, out _timerToken);
         }
 
         public void EndMusic(Mobile m)
         {
-            if (m_Timer?.Running == true)
-            {
-                m_Timer.Stop();
-            }
-
+            _timerToken.Cancel();
             m.NetState.SendStopMusic();
 
             if (m_Count > 0)

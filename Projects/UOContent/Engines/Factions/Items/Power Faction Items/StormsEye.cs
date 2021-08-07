@@ -60,7 +60,7 @@ namespace Server
                         Hue - 1
                     );
 
-                    Timer.DelayCall(TimeSpan.FromSeconds(0.5), OnDelay, from, stormsEye, origin, facet);
+                    Timer.StartTimer(TimeSpan.FromSeconds(0.5), () => OnDelay(from, stormsEye, origin, facet));
                 },
                 this
             );
@@ -85,7 +85,7 @@ namespace Server
                 2
             );
 
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, from, origin, facet);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => OnHit(from, origin, facet));
         }
 
         private static void OnHit(Mobile from, Point3D origin, Map facet)
@@ -165,7 +165,7 @@ namespace Server
                     100
                 );
 
-                Timer.DelayCall(TimeSpan.FromSeconds(0.50), mob.PlaySound, 0x1FB);
+                Timer.StartTimer(TimeSpan.FromSeconds(0.50), () => mob.PlaySound(0x1FB));
             }
         }
 

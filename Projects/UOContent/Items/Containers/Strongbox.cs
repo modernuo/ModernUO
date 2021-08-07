@@ -77,7 +77,7 @@ namespace Server.Items
                     }
             }
 
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), Validate);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), Validate);
         }
 
         private void Validate()

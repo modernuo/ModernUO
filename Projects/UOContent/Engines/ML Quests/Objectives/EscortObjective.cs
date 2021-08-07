@@ -98,14 +98,14 @@ namespace Server.Engines.MLQuests.Objectives
         private readonly BaseCreature m_Escort;
         private readonly EscortObjective m_Objective;
         private DateTime m_LastSeenEscorter;
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         public EscortObjectiveInstance(EscortObjective objective, MLQuestInstance instance)
             : base(instance, objective)
         {
             m_Objective = objective;
             HasCompleted = false;
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckDestination);
+            Timer.StartTimer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckDestination, out _timerToken);
             m_LastSeenEscorter = Core.Now;
             m_Escort = instance.Quester as BaseCreature;
 
@@ -183,11 +183,7 @@ namespace Server.Engines.MLQuests.Objectives
 
         private void StopTimer()
         {
-            if (m_Timer != null)
-            {
-                m_Timer.Stop();
-                m_Timer = null;
-            }
+            _timerToken.Cancel();
         }
 
         public static void BeginFollow(BaseCreature quester, PlayerMobile pm)

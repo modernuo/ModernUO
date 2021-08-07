@@ -333,12 +333,12 @@ namespace Server.Engines.ConPVP
 
             if (IsOccupied)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(2.0), Evict);
+                Timer.StartTimer(TimeSpan.FromSeconds(2.0), Evict);
             }
 
             if (m_Tournament != null)
             {
-                Timer.DelayCall(AttachToTournament_Sandbox);
+                Timer.StartTimer(AttachToTournament_Sandbox);
             }
         }
 

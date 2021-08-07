@@ -153,8 +153,7 @@ namespace Server.Items
 
                             var delay = m_CloseTime - Core.Now;
 
-                            static void start(Timer timer) => timer.Start();
-                            DelayCall(delay, start, this);
+                            StartTimer(delay, () => Start());
 
                             return;
                         }

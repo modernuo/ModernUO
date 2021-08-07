@@ -68,7 +68,7 @@ namespace Server.SkillHandlers
 
             if (ends && info.m_Ending && info.m_EndTime < Core.Now)
             {
-                info.m_Timer?.Stop();
+                info._timerToken.Cancel();
 
                 info.Clear();
                 m_Table.Remove(targ);
@@ -98,7 +98,7 @@ namespace Server.SkillHandlers
             public readonly List<object> m_Mods;
             public bool m_Ending;
             public DateTime m_EndTime;
-            public Timer m_Timer;
+            public TimerExecutionToken _timerToken;
 
             public DiscordanceInfo(Mobile from, Mobile creature, int effect, List<object> mods)
             {
@@ -289,11 +289,11 @@ namespace Server.SkillHandlers
                             }
 
                             var info = new DiscordanceInfo(from, targ, effect.Abs(), mods);
-                            info.m_Timer = Timer.DelayCall(
+                            Timer.StartTimer(
                                 TimeSpan.Zero,
                                 TimeSpan.FromSeconds(1.25),
-                                ProcessDiscordance,
-                                info
+                                () => ProcessDiscordance(info),
+                                out info._timerToken
                             );
 
                             m_Table[targ] = info;

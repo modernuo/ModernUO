@@ -38,7 +38,7 @@ namespace Server.Spells.Ninjitsu
             if (valid)
             {
                 attacker.BeginAction<Stealth>();
-                Timer.DelayCall(TimeSpan.FromSeconds(5.0), attacker.EndAction<Stealth>);
+                Timer.StartTimer(TimeSpan.FromSeconds(5.0), attacker.EndAction<Stealth>);
             }
 
             return valid;

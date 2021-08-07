@@ -95,7 +95,7 @@ namespace Server.Spells.Spellweaving
         {
             if (m_Table.ContainsKey(m))
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(2, 4)), HandleDeath_OnCallback, m);
+                Timer.StartTimer(TimeSpan.FromSeconds(Utility.RandomMinMax(2, 4)), () => HandleDeath_OnCallback(m));
             }
         }
 

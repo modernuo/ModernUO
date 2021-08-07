@@ -41,7 +41,7 @@ namespace Server.Mobiles
 
             if (Items.Count == 0 && Gold == 0)
             {
-                Timer.DelayCall(Delete);
+                Timer.StartTimer(Delete);
             }
             else
             {

@@ -156,7 +156,7 @@ namespace Server
 
                 from.SendLocalizedMessage(1052010); // You have set the creature free.
 
-                Timer.DelayCall(TimeSpan.FromSeconds(1.0), targ.Delete);
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), targ.Delete);
 
                 pm.LastSacrificeGain = Core.Now;
 

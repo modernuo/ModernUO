@@ -9,7 +9,7 @@ namespace Server.Items
 {
     public abstract class BaseConfusionBlastPotion : BasePotion
     {
-        private static readonly Dictionary<Mobile, Timer> m_Delay = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Delay = new();
         private readonly List<Mobile> m_Users = new();
 
         public BaseConfusionBlastPotion(PotionEffect effect) : base(0xF06, effect) => Hue = 0x48D;
@@ -93,7 +93,7 @@ namespace Server.Items
 
             Geometry.Circle2D(loc, map, Radius, BlastEffect, 270, 90);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(0.3), CircleEffect2, loc, map);
+            Timer.StartTimer(TimeSpan.FromSeconds(0.3), () => CircleEffect2(loc, map));
 
             foreach (var mobile in map.GetMobilesInRange(loc, Radius))
             {
@@ -125,8 +125,10 @@ namespace Server.Items
         public static void AddDelay(Mobile m)
         {
             m_Delay.TryGetValue(m, out var timer);
-            timer?.Stop();
-            m_Delay[m] = Timer.DelayCall(TimeSpan.FromSeconds(60), EndDelay, m);
+            timer.Cancel();
+
+            Timer.StartTimer(TimeSpan.FromSeconds(60), () => EndDelay(m), out timer);
+            m_Delay[m] = timer;
         }
 
         public static int GetDelay(Mobile m)
@@ -143,7 +145,7 @@ namespace Server.Items
         {
             if (m_Delay.Remove(m, out var timer))
             {
-                timer.Stop();
+                timer.Cancel();
             }
         }
 
@@ -169,6 +171,8 @@ namespace Server.Items
                 AddDelay(from);
 
                 SpellHelper.GetSurfaceTop(ref p);
+                var loc = new Point3D(p);
+                var map = from.Map;
 
                 from.RevealingAction();
 
@@ -180,11 +184,11 @@ namespace Server.Items
                 }
                 else
                 {
-                    to = new Entity(Serial.Zero, new Point3D(p), from.Map);
+                    to = new Entity(Serial.Zero, loc, map);
                 }
 
                 Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue);
-                Timer.DelayCall(TimeSpan.FromSeconds(1.0), Potion.Explode, from, new Point3D(p), from.Map);
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => Potion.Explode(from, loc, map));
             }
         }
     }

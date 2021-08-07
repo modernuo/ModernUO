@@ -6,13 +6,17 @@ namespace Server.Items
     [Flippable(0x2A65, 0x2A67)]
     public class UnsettlingPortraitComponent : AddonComponent
     {
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
-        public UnsettlingPortraitComponent() : base(0x2A65) => m_Timer = Timer.DelayCall(
-            TimeSpan.FromMinutes(3),
-            TimeSpan.FromMinutes(3),
-            ChangeDirection
-        );
+        public UnsettlingPortraitComponent() : base(0x2A65)
+        {
+            Timer.StartTimer(
+                TimeSpan.FromMinutes(3),
+                TimeSpan.FromMinutes(3),
+                ChangeDirection,
+                out _timerToken
+            );
+        }
 
         public UnsettlingPortraitComponent(Serial serial) : base(serial)
         {
@@ -36,7 +40,7 @@ namespace Server.Items
         {
             base.OnAfterDelete();
 
-            m_Timer?.Stop();
+            _timerToken.Cancel();
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -52,7 +56,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), ChangeDirection);
+            Timer.StartTimer(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), ChangeDirection, out _timerToken);
         }
 
         private void ChangeDirection()

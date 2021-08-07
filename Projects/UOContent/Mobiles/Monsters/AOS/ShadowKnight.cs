@@ -7,7 +7,7 @@ namespace Server.Mobiles
     {
         private bool m_HasTeleportedAway;
 
-        private Timer m_SoundTimer;
+        private TimerExecutionToken _soundTimerToken;
 
         [Constructible]
         public ShadowKnight() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -111,15 +111,13 @@ namespace Server.Mobiles
             else
             {
                 Frozen = false;
-
-                m_SoundTimer?.Stop();
-
-                m_SoundTimer = null;
+                _soundTimerToken.Cancel();
             }
         }
 
         public override void OnThink()
         {
+            // TODO: Can the shadow knight teleport twice? What if it heals completely and enough time has passed?
             if (!m_HasTeleportedAway && Hits < HitsMax / 2)
             {
                 var map = Map;
@@ -168,10 +166,11 @@ namespace Server.Mobiles
                         Effects.PlaySound(to, map, 0x1FE);
 
                         m_HasTeleportedAway = true;
-                        m_SoundTimer = Timer.DelayCall(
+                        Timer.StartTimer(
                             TimeSpan.FromSeconds(5.0),
                             TimeSpan.FromSeconds(2.5),
-                            SendTrackingSound
+                            SendTrackingSound,
+                            out _soundTimerToken
                         );
 
                         Frozen = true;

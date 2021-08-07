@@ -7,6 +7,8 @@ namespace Server.Tests
         // Global setup
         static ServerFixture()
         {
+            Core.LoopContext = new EventLoopContext();
+
             Core.Expansion = Expansion.EJ;
 
             // Load Configurations

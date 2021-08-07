@@ -108,7 +108,7 @@ namespace Server
         public void Deserialize(IGenericReader reader)
         {
             // Should not actually be saved
-            Timer.DelayCall(Delete);
+            Timer.StartTimer(Delete);
         }
 
         public void Serialize(IGenericWriter writer)

@@ -268,7 +268,7 @@ namespace Server.Ethics
 
                             if (pl.Mobile != null)
                             {
-                                Timer.DelayCall(pl.CheckAttach);
+                                Timer.StartTimer(pl.CheckAttach);
                             }
                         }
 

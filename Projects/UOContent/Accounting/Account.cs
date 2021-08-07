@@ -405,7 +405,7 @@ namespace Server.Accounting
 
             _totalGameTime = reader.ReadTimeSpan();
 
-            Timer.DelayCall(AfterDeserialization);
+            Timer.StartTimer(AfterDeserialization);
         }
 
         /// <summary>
