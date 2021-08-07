@@ -1023,7 +1023,7 @@ namespace Server.Items
         {
             Movable = false;
 
-            Timer.DelayCall(TimeSpan.FromMinutes(2.0), Delete);
+            Timer.StartTimer(TimeSpan.FromMinutes(2.0), Delete);
         }
 
         public TreasureChestDirt(Serial serial) : base(serial)

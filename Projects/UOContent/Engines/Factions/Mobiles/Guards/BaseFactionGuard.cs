@@ -468,7 +468,7 @@ namespace Server.Factions
             m_Town = Town.ReadReference(reader);
             Orders = new Orders(this, reader);
 
-            Timer.DelayCall(Register);
+            Timer.StartTimer(Register);
         }
     }
 

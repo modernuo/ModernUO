@@ -131,7 +131,7 @@ namespace Server.Mobiles
                 if (defender.Alive)
                 {
                     defender.Frozen = true;
-                    Timer.DelayCall(TimeSpan.FromSeconds(5.0), Recover_Callback, defender);
+                    Timer.StartTimer(TimeSpan.FromSeconds(5.0), () => Recover_Callback(defender));
                 }
             }
         }

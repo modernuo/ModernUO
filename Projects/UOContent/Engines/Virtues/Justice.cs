@@ -171,7 +171,7 @@ namespace Server
 
             if (protector.BeginAction<JusticeVirtue>())
             {
-                Timer.DelayCall(TimeSpan.FromMinutes(15.0), protector.EndAction<JusticeVirtue>);
+                Timer.StartTimer(TimeSpan.FromMinutes(15.0), protector.EndAction<JusticeVirtue>);
             }
         }
 

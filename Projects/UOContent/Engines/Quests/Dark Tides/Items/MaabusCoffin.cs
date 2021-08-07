@@ -44,7 +44,7 @@ namespace Server.Engines.Quests.Necro
             Maabus = new Maabus { Location = SpawnLocation, Map = Map };
             Maabus.Direction = Maabus.GetDirectionTo(caller);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(7.5), BeginSleep);
+            Timer.StartTimer(TimeSpan.FromSeconds(7.5), BeginSleep);
         }
 
         public void BeginSleep()
@@ -56,7 +56,7 @@ namespace Server.Engines.Quests.Necro
 
             Effects.PlaySound(Maabus.Location, Maabus.Map, 0x48E);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(2.5), Sleep);
+            Timer.StartTimer(TimeSpan.FromSeconds(2.5), Sleep);
         }
 
         public void Sleep()

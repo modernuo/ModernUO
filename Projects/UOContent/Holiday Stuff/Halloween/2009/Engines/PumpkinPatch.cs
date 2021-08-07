@@ -7,7 +7,7 @@ namespace Server.Engines.Events
 {
     public static class PumpkinPatchSpawner
     {
-        private static Timer m_Timer;
+        private static Timer _timer;
 
         private static readonly Rectangle2D[] m_PumpkinFields =
         {
@@ -25,9 +25,10 @@ namespace Server.Engines.Events
         {
             var now = Core.Now;
 
+            // TODO: World timer to turn these on/off
             if (now >= HolidaySettings.StartHalloween && now <= HolidaySettings.FinishHalloween)
             {
-                m_Timer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(30), 0, PumpkinPatchSpawnerCallback);
+                _timer = Timer.DelayCall(TimeSpan.FromSeconds(30), 0, PumpkinPatchSpawnerCallback);
             }
         }
 
@@ -35,6 +36,12 @@ namespace Server.Engines.Events
         {
             AddPumpkin(Map.Felucca);
             AddPumpkin(Map.Trammel);
+
+            if (Core.Now > HolidaySettings.FinishHalloween)
+            {
+                _timer.Stop();
+                _timer = null;
+            }
         }
 
         private static void AddPumpkin(Map map)

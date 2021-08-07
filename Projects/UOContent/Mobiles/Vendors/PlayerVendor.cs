@@ -473,11 +473,11 @@ namespace Server.Mobiles
                 if (version < 1)
                 {
                     m_ShopName = "Shop Not Yet Named";
-                    Timer.DelayCall(UpgradeFromVersion0, newVendorSystemActivated);
+                    Timer.StartTimer(() => UpgradeFromVersion0(newVendorSystemActivated));
                 }
                 else
                 {
-                    Timer.DelayCall(FixDresswear);
+                    Timer.StartTimer(FixDresswear);
                 }
 
                 NextPayTime = Core.Now + PayTimer.GetInterval();
@@ -917,7 +917,7 @@ namespace Server.Mobiles
             {
                 if (GetVendorItem(item) == null)
                 {
-                    Timer.DelayCall(OnItemGiven, from, item);
+                    Timer.StartTimer(() => OnItemGiven(from, item));
                 }
 
                 return true;
@@ -1694,7 +1694,7 @@ namespace Server.Mobiles
 
             Vendor = (PlayerVendor)reader.ReadEntity<Mobile>();
 
-            Timer.DelayCall(Delete);
+            Timer.StartTimer(Delete);
         }
 
         private class ExpireTimer : Timer

@@ -7,7 +7,7 @@ namespace Server.Items
 {
     public class DeceitBrazier : Item
     {
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         [Constructible]
         public DeceitBrazier() : base(0xE31)
@@ -95,22 +95,21 @@ namespace Server.Items
             PublicOverheadMessage(
                 MessageType.Regular,
                 0x3B2,
-                500761
-            ); // Heed this warning well, and use this brazier at your own peril.
+                500761 // Heed this warning well, and use this brazier at your own peril.
+            );
+
+            _timerToken.Cancel();
         }
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
-            if (NextSpawn < Core.Now) // means we haven't spawned anything if the next spawn is below
+            // means we haven't spawned anything if the next spawn is below
+            if (NextSpawn < Core.Now &&
+                Utility.InRange(m.Location, Location, 1) &&
+                !Utility.InRange(oldLocation, Location, 1) &&
+                m.Player && !(m.AccessLevel > AccessLevel.Player || m.Hidden) && !_timerToken.Running)
             {
-                if (Utility.InRange(m.Location, Location, 1) && !Utility.InRange(oldLocation, Location, 1) && m.Player &&
-                    !(m.AccessLevel > AccessLevel.Player || m.Hidden))
-                {
-                    if (m_Timer?.Running != true)
-                    {
-                        m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(2), HeedWarning);
-                    }
-                }
+                Timer.StartTimer(TimeSpan.FromSeconds(2), HeedWarning, out _timerToken);
             }
 
             base.OnMovement(m, oldLocation);
@@ -180,7 +179,7 @@ namespace Server.Items
 
                         DoEffect(spawnLoc, map);
 
-                        Timer.DelayCall(TimeSpan.FromSeconds(1), SummonCreatureToWorld, bc, spawnLoc, map);
+                        Timer.StartTimer(TimeSpan.FromSeconds(1), () => SummonCreatureToWorld(bc, spawnLoc, map));
 
                         NextSpawn = Core.Now + NextSpawnDelay;
                     }

@@ -38,7 +38,7 @@ namespace Server.Engines.Quests
             typeof(TerribleHatchlingsQuest)
         };
 
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         public QuestSystem(PlayerMobile from)
         {
@@ -69,19 +69,18 @@ namespace Server.Engines.Quests
 
         public virtual void StartTimer()
         {
-            if (m_Timer != null)
+            if (_timerToken.Running)
             {
                 return;
             }
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), Slice);
+            // TODO: Find out if this can go on forever. We should not allow timers to leak if this is the case.
+            Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), Slice, out _timerToken);
         }
 
         public virtual void StopTimer()
         {
-            m_Timer?.Stop();
-
-            m_Timer = null;
+            _timerToken.Cancel();
         }
 
         public virtual void Slice()
@@ -344,36 +343,38 @@ namespace Server.Engines.Quests
         {
             StopTimer();
 
-            if (From.Quest == this)
+            if (From.Quest != this)
             {
-                From.Quest = null;
+                return;
+            }
 
-                var restartDelay = RestartDelay;
+            From.Quest = null;
 
-                if (completed && restartDelay > TimeSpan.Zero || !completed && restartDelay == TimeSpan.MaxValue)
+            var restartDelay = RestartDelay;
+
+            if (completed && restartDelay > TimeSpan.Zero || !completed && restartDelay == TimeSpan.MaxValue)
+            {
+                From.DoneQuests ??= new List<QuestRestartInfo>();
+
+                var found = false;
+
+                var ourQuestType = GetType();
+
+                for (var i = 0; i < From.DoneQuests.Count; ++i)
                 {
-                    From.DoneQuests ??= new List<QuestRestartInfo>();
+                    var restartInfo = From.DoneQuests[i];
 
-                    var found = false;
-
-                    var ourQuestType = GetType();
-
-                    for (var i = 0; i < From.DoneQuests.Count; ++i)
+                    if (restartInfo.QuestType == ourQuestType)
                     {
-                        var restartInfo = From.DoneQuests[i];
-
-                        if (restartInfo.QuestType == ourQuestType)
-                        {
-                            restartInfo.Reset(restartDelay);
-                            found = true;
-                            break;
-                        }
+                        restartInfo.Reset(restartDelay);
+                        found = true;
+                        break;
                     }
+                }
 
-                    if (!found)
-                    {
-                        From.DoneQuests.Add(new QuestRestartInfo(ourQuestType, restartDelay));
-                    }
+                if (!found)
+                {
+                    From.DoneQuests.Add(new QuestRestartInfo(ourQuestType, restartDelay));
                 }
             }
         }

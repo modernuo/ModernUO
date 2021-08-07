@@ -100,14 +100,14 @@ namespace Server.Misc
             if (WarningDelay > TimeSpan.Zero)
             {
                 Warning_Callback();
-                DelayCall(WarningDelay, WarningDelay, Warning_Callback);
+                StartTimer(WarningDelay, WarningDelay, Warning_Callback);
             }
 
             AutoSave.Save();
 
             Restarting = true;
 
-            DelayCall(RestartDelay, Restart_Callback);
+            StartTimer(RestartDelay, Restart_Callback);
         }
     }
 }

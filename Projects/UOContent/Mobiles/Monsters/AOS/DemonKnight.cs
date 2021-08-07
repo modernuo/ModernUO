@@ -246,7 +246,7 @@ namespace Server.Mobiles
 
                 if (Utility.RandomDouble() < 0.05)
                 {
-                    Timer.DelayCall(TimeSpan.FromSeconds(1.0), CreateBones_Callback, from);
+                    Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => CreateBones_Callback(from));
                 }
 
                 m_InHere = false;

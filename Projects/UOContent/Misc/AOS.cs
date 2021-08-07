@@ -1230,30 +1230,14 @@ namespace Server
                 }
             }
 
-            if (!m.CanBeginAction<PolymorphSpell>() && m.Skills.Magery.Value < 66.1)
+            if (m.Skills.Magery.Value < 66.1)
             {
-                m.BodyMod = 0;
-                m.HueMod = -1;
-                m.NameMod = null;
-                m.EndAction<PolymorphSpell>();
-                BaseArmor.ValidateMobile(m);
-                BaseClothing.ValidateMobile(m);
+                PolymorphSpell.EndPolymorph(m);
             }
 
-            if (!m.CanBeginAction<IncognitoSpell>() && m.Skills.Magery.Value < 38.1)
+            if (m.Skills.Magery.Value < 38.1)
             {
-                if (m is PlayerMobile mobile)
-                {
-                    mobile.SetHairMods(-1, -1);
-                }
-
-                m.BodyMod = 0;
-                m.HueMod = -1;
-                m.NameMod = null;
-                m.EndAction<IncognitoSpell>();
-                BaseArmor.ValidateMobile(m);
-                BaseClothing.ValidateMobile(m);
-                BuffInfo.RemoveBuff(m, BuffIcon.Incognito);
+                IncognitoSpell.EndIncognito(m);
             }
         }
     }

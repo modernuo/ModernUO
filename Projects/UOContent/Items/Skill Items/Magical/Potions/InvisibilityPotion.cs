@@ -5,7 +5,7 @@ namespace Server.Items
 {
     public class InvisibilityPotion : BasePotion
     {
-        private static readonly Dictionary<Mobile, Timer> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
         [Constructible]
         public InvisibilityPotion() : base(0xF0A, PotionEffect.Invisibility) => Hue = 0x48D;
@@ -31,7 +31,8 @@ namespace Server.Items
             }
 
             Consume();
-            m_Table[from] = Timer.DelayCall(TimeSpan.FromSeconds(2), Hide, from);
+            Timer.StartTimer(TimeSpan.FromSeconds(2), () => Hide(from), out var timerToken);
+            m_Table[from] = timerToken;
             PlayDrinkEffect(from);
         }
 
@@ -53,7 +54,7 @@ namespace Server.Items
 
             RemoveTimer(m);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(30), EndHide, m);
+            Timer.StartTimer(TimeSpan.FromSeconds(30), () => EndHide(m));
         }
 
         public static void EndHide(Mobile m)
@@ -73,7 +74,7 @@ namespace Server.Items
                     m.SendLocalizedMessage(1073187); // The invisibility effect is interrupted.
                 }
 
-                timer.Stop();
+                timer.Cancel();
             }
         }
 

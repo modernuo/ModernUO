@@ -16,8 +16,6 @@ namespace Server.Items
 
     public class MiningCart : BaseAddon, IRewardItem
     {
-        private Timer m_Timer;
-
         [Constructible]
         public MiningCart(MiningCartType type)
         {
@@ -67,7 +65,7 @@ namespace Server.Items
                     break;
             }
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromDays(1), TimeSpan.FromDays(1), GiveResources);
+            _lastResourceTime = Core.Now;
         }
 
         public MiningCart(Serial serial) : base(serial)
@@ -78,41 +76,67 @@ namespace Server.Items
         {
             get
             {
-                var deed = new MiningCartDeed();
-                deed.IsRewardItem = IsRewardItem;
-                deed.Gems = Gems;
-                deed.Ore = Ore;
-
-                return deed;
+                GiveResources();
+                return new MiningCartDeed { IsRewardItem = IsRewardItem, Gems = _gems, Ore = _ore };
             }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public MiningCartType CartType { get; private set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Gems { get; set; }
+        private int _gems;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public int Ore { get; set; }
+        public int Gems
+        {
+            get
+            {
+                GiveResources();
+                return _gems;
+            }
+            set => _gems = value;
+        }
+
+        private int _ore;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Ore
+        {
+            get
+            {
+                GiveResources();
+                return _ore;
+            }
+            set => _ore = value;
+        }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsRewardItem { get; set; }
 
         private void GiveResources()
         {
+            var amount = (Core.Now - _lastResourceTime).Days;
+            if (amount <= 0)
+            {
+                return;
+            }
+
             switch (CartType)
             {
                 case MiningCartType.OreSouth:
                 case MiningCartType.OreEast:
-                    Ore = Math.Min(100, Ore + 10);
+                    _ore = Math.Min(100, _ore + amount * 10);
                     break;
                 case MiningCartType.GemSouth:
                 case MiningCartType.GemEast:
-                    Gems = Math.Min(50, Gems + 5);
+                    _gems = Math.Min(50, _gems + amount * 5);
                     break;
             }
+
+            _lastResourceTime += TimeSpan.FromDays(amount);
         }
+
+        private DateTime _lastResourceTime;
 
         public override void OnComponentUsed(AddonComponent c, Mobile from)
         {
@@ -140,100 +164,105 @@ namespace Server.Items
             if (!from.InRange(GetWorldLocation(), 2) || !from.InLOS(this) || !(from.Z - Z > -3 && from.Z - Z < 3))
             {
                 from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                return;
             }
-            else if (house?.HasSecureAccess(from, SecureLevel.Friends) == true)
-            {
-                switch (CartType)
-                {
-                    case MiningCartType.OreSouth:
-                    case MiningCartType.OreEast:
-                        if (Ore > 0)
-                        {
-                            var ingots = Utility.Random(9) switch
-                            {
-                                0 => (Item)new IronIngot(),
-                                1 => new DullCopperIngot(),
-                                2 => new ShadowIronIngot(),
-                                3 => new CopperIngot(),
-                                4 => new BronzeIngot(),
-                                5 => new GoldIngot(),
-                                6 => new AgapiteIngot(),
-                                7 => new VeriteIngot(),
-                                8 => new ValoriteIngot(),
-                                _ => null
-                            };
 
-                            var amount = Math.Min(10, Ore);
-                            // ReSharper disable once PossibleNullReferenceException
-                            ingots.Amount = amount;
-
-                            if (!from.PlaceInBackpack(ingots))
-                            {
-                                ingots.Delete();
-                                from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
-                            }
-                            else
-                            {
-                                PublicOverheadMessage(MessageType.Regular, 0, 1094724, amount.ToString()); // Ore: ~1_COUNT~
-                                Ore -= amount;
-                            }
-                        }
-                        else
-                        {
-                            from.SendLocalizedMessage(1094725); // There are no more resources available at this time.
-                        }
-
-                        break;
-                    case MiningCartType.GemSouth:
-                    case MiningCartType.GemEast:
-                        if (Gems > 0)
-                        {
-                            Item gems = Utility.Random(15) switch
-                            {
-                                0 => new Amber(),
-                                1 => new Amethyst(),
-                                2 => new Citrine(),
-                                3 => new Diamond(),
-                                4 => new Emerald(),
-                                5 => new Ruby(),
-                                6 => new Sapphire(),
-                                7 => new StarSapphire(),
-                                8 => new Tourmaline(),
-
-                                // Mondain's Legacy gems
-                                9  => new PerfectEmerald(),
-                                10 => new DarkSapphire(),
-                                11 => new Turquoise(),
-                                12 => new EcruCitrine(),
-                                13 => new FireRuby(),
-                                _  => new BlueDiamond() // 14
-                            };
-
-                            var amount = Math.Min(5, Gems);
-                            gems.Amount = amount;
-
-                            if (!from.PlaceInBackpack(gems))
-                            {
-                                gems.Delete();
-                                from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
-                            }
-                            else
-                            {
-                                PublicOverheadMessage(MessageType.Regular, 0, 1094723, amount.ToString()); // Gems: ~1_COUNT~
-                                Gems -= amount;
-                            }
-                        }
-                        else
-                        {
-                            from.SendLocalizedMessage(1094725); // There are no more resources available at this time.
-                        }
-
-                        break;
-                }
-            }
-            else
+            if (house?.HasSecureAccess(from, SecureLevel.Friends) != true)
             {
                 from.SendLocalizedMessage(1061637); // You are not allowed to access this.
+                return;
+            }
+
+            GiveResources();
+
+            switch (CartType)
+            {
+                case MiningCartType.OreSouth:
+                case MiningCartType.OreEast:
+                    if (_ore > 0)
+                    {
+                        var ingots = Utility.Random(9) switch
+                        {
+                            0 => (Item)new IronIngot(),
+                            1 => new DullCopperIngot(),
+                            2 => new ShadowIronIngot(),
+                            3 => new CopperIngot(),
+                            4 => new BronzeIngot(),
+                            5 => new GoldIngot(),
+                            6 => new AgapiteIngot(),
+                            7 => new VeriteIngot(),
+                            _ => new ValoriteIngot(),
+                        };
+
+                        var amount = Math.Min(10, _ore);
+                        ingots.Amount = amount;
+
+                        if (!from.PlaceInBackpack(ingots))
+                        {
+                            ingots.Delete();
+                            from.SendLocalizedMessage(
+                                1078837
+                            ); // Your backpack is full! Please make room and try again.
+                        }
+                        else
+                        {
+                            PublicOverheadMessage(MessageType.Regular, 0, 1094724, amount.ToString()); // Ore: ~1_COUNT~
+                            _ore -= amount;
+                        }
+                    }
+                    else
+                    {
+                        from.SendLocalizedMessage(1094725); // There are no more resources available at this time.
+                    }
+
+                    break;
+                case MiningCartType.GemSouth:
+                case MiningCartType.GemEast:
+                    if (_gems > 0)
+                    {
+                        Item gems = Utility.Random(15) switch
+                        {
+                            0 => new Amber(),
+                            1 => new Amethyst(),
+                            2 => new Citrine(),
+                            3 => new Diamond(),
+                            4 => new Emerald(),
+                            5 => new Ruby(),
+                            6 => new Sapphire(),
+                            7 => new StarSapphire(),
+                            8 => new Tourmaline(),
+
+                            // Mondain's Legacy gems
+                            9  => new PerfectEmerald(),
+                            10 => new DarkSapphire(),
+                            11 => new Turquoise(),
+                            12 => new EcruCitrine(),
+                            13 => new FireRuby(),
+                            _  => new BlueDiamond() // 14
+                        };
+
+                        var amount = Math.Min(5, _gems);
+                        gems.Amount = amount;
+
+                        if (!from.PlaceInBackpack(gems))
+                        {
+                            gems.Delete();
+                            from.SendLocalizedMessage(
+                                1078837 // Your backpack is full! Please make room and try again.
+                            );
+                        }
+                        else
+                        {
+                            PublicOverheadMessage(MessageType.Regular, 0, 1094723, amount.ToString()); // Gems: ~1_COUNT~
+                            _gems -= amount;
+                        }
+                    }
+                    else
+                    {
+                        from.SendLocalizedMessage(1094725); // There are no more resources available at this time.
+                    }
+
+                    break;
             }
         }
 
@@ -241,22 +270,15 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.WriteEncodedInt(1); // version
+            writer.WriteEncodedInt(2); // version
 
             writer.Write((int)CartType);
 
             writer.Write(IsRewardItem);
-            writer.Write(Gems);
-            writer.Write(Ore);
+            writer.Write(_gems);
+            writer.Write(_ore);
 
-            if (m_Timer != null)
-            {
-                writer.Write(m_Timer.Next);
-            }
-            else
-            {
-                writer.Write(Core.Now + TimeSpan.FromDays(1));
-            }
+            writer.Write(_lastResourceTime);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -267,24 +289,20 @@ namespace Server.Items
 
             switch (version)
             {
+                case 2:
                 case 1:
                     CartType = (MiningCartType)reader.ReadInt();
                     goto case 0;
                 case 0:
                     IsRewardItem = reader.ReadBool();
-                    Gems = reader.ReadInt();
-                    Ore = reader.ReadInt();
+                    _gems = reader.ReadInt();
+                    _ore = reader.ReadInt();
 
-                    var next = reader.ReadDateTime();
-
-                    if (next < Core.Now)
-                    {
-                        next = Core.Now;
-                    }
-
-                    m_Timer = Timer.DelayCall(next - Core.Now, TimeSpan.FromDays(1), GiveResources);
+                    _lastResourceTime = reader.ReadDateTime() - (version < 2 ? TimeSpan.FromDays(1.0) : TimeSpan.Zero);
                     break;
             }
+
+            GiveResources();
         }
     }
 
@@ -303,18 +321,8 @@ namespace Server.Items
 
         public override int LabelNumber => 1080385; // deed for a mining cart decoration
 
-        public override BaseAddon Addon
-        {
-            get
-            {
-                var addon = new MiningCart(m_CartType);
-                addon.IsRewardItem = m_IsRewardItem;
-                addon.Gems = Gems;
-                addon.Ore = Ore;
-
-                return addon;
-            }
-        }
+        public override BaseAddon Addon =>
+            new MiningCart(m_CartType) { IsRewardItem = m_IsRewardItem, Gems = Gems, Ore = Ore };
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int Gems { get; set; }

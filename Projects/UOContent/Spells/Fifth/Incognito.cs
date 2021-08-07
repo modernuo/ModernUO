@@ -19,7 +19,7 @@ namespace Server.Spells.Fifth
             Reagent.Nightshade
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
         public IncognitoSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {
@@ -111,7 +111,8 @@ namespace Server.Spells.Fifth
                     var timeVal = Math.Min(6 * Caster.Skills.Magery.Fixed / 50 + 1, 144);
 
                     var length = TimeSpan.FromSeconds(timeVal);
-                    m_Table[Caster] = Timer.DelayCall(length, EndIncognito, Caster);
+                    Timer.StartTimer(length, () => EndIncognito(Caster), out var timerToken);
+                    m_Table[Caster] = timerToken;
 
                     BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.Incognito, 1075819, length, Caster));
                 }
@@ -126,16 +127,15 @@ namespace Server.Spells.Fifth
 
         public static void StopTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var t))
+            if (m_Table.Remove(m, out var timerToken))
             {
-                t.Stop();
-
+                timerToken.Cancel();
             }
-            
+
             BuffInfo.RemoveBuff(m, BuffIcon.Incognito);
         }
 
-        private static void EndIncognito(Mobile m)
+        public static void EndIncognito(Mobile m)
         {
             if (m.CanBeginAction<IncognitoSpell>())
             {
@@ -148,9 +148,10 @@ namespace Server.Spells.Fifth
             m.HueMod = -1;
             m.NameMod = null;
             m.EndAction<IncognitoSpell>();
-
             BaseArmor.ValidateMobile(m);
             BaseClothing.ValidateMobile(m);
+
+            StopTimer(m);
         }
     }
 }

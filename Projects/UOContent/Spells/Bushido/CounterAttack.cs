@@ -13,7 +13,7 @@ namespace Server.Spells.Bushido
             9002
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
         public CounterAttack(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
         {
@@ -73,28 +73,39 @@ namespace Server.Spells.Bushido
 
         public static bool IsCountering(Mobile m) => m_Table.ContainsKey(m);
 
+        private static bool StopCounterTimer(Mobile m)
+        {
+            if (m_Table.Remove(m, out var timerToken))
+            {
+                timerToken.Cancel();
+                return true;
+            }
+
+            return false;
+        }
+
         public static void StartCountering(Mobile m)
         {
-            m_Table.TryGetValue(m, out var timer);
-            timer?.Stop();
+            StopCounterTimer(m);
 
-            m_Table[m] = Timer.DelayCall(TimeSpan.FromSeconds(30.0), EndCountering, m);
+            Timer.StartTimer(TimeSpan.FromSeconds(30.0),
+                () =>
+                {
+                    StopCountering(m);
+                    m.SendLocalizedMessage(1063119); // You return to your normal stance.
+                },
+                out var timerToken
+            );
+
+            m_Table[m] = timerToken;
         }
 
         public static void StopCountering(Mobile m)
         {
-            if (m_Table.Remove(m, out var timer))
+            if (StopCounterTimer(m))
             {
-                timer.Stop();
+                OnEffectEnd(m, typeof(CounterAttack));
             }
-
-            OnEffectEnd(m, typeof(CounterAttack));
-        }
-
-        private static void EndCountering(Mobile m)
-        {
-            StopCountering(m);
-            m.SendLocalizedMessage(1063119); // You return to your normal stance.
         }
     }
 }

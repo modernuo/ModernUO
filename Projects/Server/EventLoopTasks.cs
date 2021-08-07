@@ -32,6 +32,8 @@ namespace Server
 
         public override SynchronizationContext CreateCopy() => new EventLoopContext();
 
+        public void Post(Action d) => _queue.Enqueue(d);
+
         public override void Post(SendOrPostCallback d, object state) => _queue.Enqueue(() => d(state));
 
         public override void Send(SendOrPostCallback d, object state)

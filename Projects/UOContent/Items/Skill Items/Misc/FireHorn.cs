@@ -66,7 +66,13 @@ namespace Server.Items
             }
 
             from.BeginAction<FireHorn>();
-            Timer.DelayCall(Core.AOS ? TimeSpan.FromSeconds(6.0) : TimeSpan.FromSeconds(12.0), EndAction, from);
+            Timer.StartTimer(Core.AOS ? TimeSpan.FromSeconds(6.0) : TimeSpan.FromSeconds(12.0),
+                () =>
+                {
+                    from.EndAction<FireHorn>();
+                    from.SendLocalizedMessage(1049621); // You catch your breath.
+                }
+            );
 
             var music = from.Skills.Musicianship.Fixed;
 
@@ -197,12 +203,6 @@ namespace Server.Items
                 from.SendLocalizedMessage(1049619); // The fire horn crumbles in your hands.
                 Delete();
             }
-        }
-
-        private static void EndAction(Mobile m)
-        {
-            m?.EndAction<FireHorn>();
-            m?.SendLocalizedMessage(1049621); // You catch your breath.
         }
 
         public override void Serialize(IGenericWriter writer)

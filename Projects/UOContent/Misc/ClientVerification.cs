@@ -138,7 +138,7 @@ namespace Server.Misc
                 state.Mobile.SendMessage(0x22, kickMessage);
                 state.Mobile.SendMessage(0x22, "You will be disconnected in {0} seconds.", KickDelay.TotalSeconds);
 
-                Timer.DelayCall(KickDelay, OnKick, state);
+                Timer.StartTimer(KickDelay, () => OnKick(state));
             }
             else if (Required != null && version < Required)
             {
@@ -190,7 +190,7 @@ namespace Server.Misc
                 );
             }
 
-            Timer.DelayCall(TimeSpan.FromMinutes(Utility.Random(5, 15)), SendAnnoyGump, from);
+            Timer.StartTimer(TimeSpan.FromMinutes(Utility.Random(5, 15)), () => SendAnnoyGump(from));
         }
 
         private static void SendAnnoyGump(Mobile m)

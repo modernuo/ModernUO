@@ -51,13 +51,10 @@ namespace Server.Spells.Fifth
 
                     var damage = Math.Min((int)((Caster.Skills.Magery.Value + Caster.Int) / 5), 60);
 
-                    Timer.DelayCall(
-                        TimeSpan.FromSeconds(1.0),
-                        AosDelay_Callback,
-                        Caster,
-                        target,
-                        m,
-                        damage
+                    Timer.StartTimer(TimeSpan.FromSeconds(1.0), () =>
+                        {
+                            AosDelay_Callback(Caster, target, m, damage);
+                        }
                     );
                 }
             }

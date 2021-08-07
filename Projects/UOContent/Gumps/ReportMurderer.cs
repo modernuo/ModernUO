@@ -146,7 +146,7 @@ namespace Server.Gumps
                             if (Core.SE)
                             {
                                 from.RecentlyReported.Add(killer);
-                                Timer.DelayCall(TimeSpan.FromMinutes(10), ReportedListExpiry_Callback, from, killer);
+                                Timer.StartTimer(TimeSpan.FromMinutes(10), () => ReportedListExpiry_Callback(from, killer));
                             }
 
                             if (killer is PlayerMobile pk)

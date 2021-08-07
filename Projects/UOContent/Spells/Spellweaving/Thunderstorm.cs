@@ -11,7 +11,7 @@ namespace Server.Spells.Spellweaving
             -1
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
         public ThunderstormSpell(Mobile caster, Item scroll = null)
             : base(caster, scroll, m_Info)
@@ -63,7 +63,10 @@ namespace Server.Spells.Spellweaving
                         continue;
                     }
 
-                    m_Table[m] = Timer.DelayCall(duration, DoExpire, m);
+                    StopTimer(m);
+
+                    Timer.StartTimer(duration, () => DoExpire(m), out var timerToken);
+                    m_Table[m] = timerToken;
 
                     BuffInfo.AddBuff(
                         m,
@@ -79,15 +82,17 @@ namespace Server.Spells.Spellweaving
 
         public static int GetCastRecoveryMalus(Mobile m) => m_Table.ContainsKey(m) ? 6 : 0;
 
+        private static void StopTimer(Mobile m)
+        {
+            if (m_Table.Remove(m, out var timerToken))
+            {
+                timerToken.Cancel();
+            }
+        }
+
         public static void DoExpire(Mobile m)
         {
-            if (!m_Table.Remove(m, out var t))
-            {
-                return;
-            }
-
-            t.Stop();
-
+            StopTimer(m);
             BuffInfo.RemoveBuff(m, BuffIcon.Thunderstorm);
         }
     }

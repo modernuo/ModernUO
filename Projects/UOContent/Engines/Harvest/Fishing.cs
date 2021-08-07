@@ -487,7 +487,7 @@ namespace Server.Engines.Harvest
 
             if (GetHarvestDetails(from, tool, toHarvest, out _, out var map, out var loc))
             {
-                Timer.DelayCall(
+                Timer.StartTimer(
                     TimeSpan.FromSeconds(1.5),
                     () =>
                     {

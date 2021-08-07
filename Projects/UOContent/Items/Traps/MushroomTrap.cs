@@ -32,7 +32,7 @@ namespace Server.Items
 
             SpellHelper.Damage(TimeSpan.FromSeconds(0.5), from, from, Utility.Dice(2, 4, 0));
 
-            Timer.DelayCall(TimeSpan.FromSeconds(2.0), OnMushroomReset);
+            Timer.StartTimer(TimeSpan.FromSeconds(2.0), OnMushroomReset);
         }
 
         public virtual void OnMushroomReset()

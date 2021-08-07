@@ -15,7 +15,7 @@ namespace Server.Factions
 
     public abstract class BaseFactionTrap : BaseTrap
     {
-        private Timer m_Concealing;
+        private TimerExecutionToken _concealingTimerToken;
 
         public BaseFactionTrap(Faction f, Mobile m, int itemID) : base(itemID)
         {
@@ -52,18 +52,7 @@ namespace Server.Factions
 
         public virtual TimeSpan ConcealPeriod => TimeSpan.FromMinutes(1.0);
 
-        public virtual TimeSpan DecayPeriod
-        {
-            get
-            {
-                if (Core.AOS)
-                {
-                    return TimeSpan.FromDays(1.0);
-                }
-
-                return TimeSpan.MaxValue; // no decay
-            }
-        }
+        public virtual TimeSpan DecayPeriod => Core.AOS ? TimeSpan.FromDays(1.0) : TimeSpan.MaxValue;
 
         public override void OnTrigger(Mobile from)
         {
@@ -206,7 +195,7 @@ namespace Server.Factions
 
             if (TimeOfPlacement + decayPeriod < Core.Now)
             {
-                Timer.DelayCall(Delete);
+                Timer.StartTimer(Delete);
                 return true;
             }
 
@@ -215,16 +204,13 @@ namespace Server.Factions
 
         public virtual void BeginConceal()
         {
-            m_Concealing?.Stop();
-
-            m_Concealing = Timer.DelayCall(ConcealPeriod, Conceal);
+            _concealingTimerToken.Cancel();
+            Timer.StartTimer(ConcealPeriod, Conceal, out _concealingTimerToken);
         }
 
         public virtual void Conceal()
         {
-            m_Concealing?.Stop();
-
-            m_Concealing = null;
+            _concealingTimerToken.Cancel();
 
             if (!Deleted)
             {

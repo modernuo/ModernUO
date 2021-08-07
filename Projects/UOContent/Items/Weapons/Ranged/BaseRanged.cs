@@ -9,7 +9,7 @@ namespace Server.Items
     {
         private bool m_Balanced;
 
-        private Timer m_RecoveryTimer; // so we don't start too many timers
+        private TimerExecutionToken _recoveryTimerToken;
         private int m_Velocity;
 
         public BaseRanged(int itemID) : base(itemID)
@@ -154,11 +154,16 @@ namespace Server.Items
 
                         if (!pm.Warmode)
                         {
-                            m_RecoveryTimer ??= Timer.DelayCall(TimeSpan.FromSeconds(10), pm.RecoverAmmo);
-
-                            if (!m_RecoveryTimer.Running)
+                            if (!_recoveryTimerToken.Running)
                             {
-                                m_RecoveryTimer.Start();
+                                Timer.StartTimer(TimeSpan.FromSeconds(10),
+                                    () =>
+                                    {
+                                        _recoveryTimerToken.Cancel();
+                                        pm.RecoverAmmo();
+                                    },
+                                    out _recoveryTimerToken
+                                );
                             }
                         }
                     }

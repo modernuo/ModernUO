@@ -3027,7 +3027,7 @@ namespace Server
 
             if (HeldBy != null)
             {
-                Timer.DelayCall(FixHolding_Sandbox);
+                Timer.StartTimer(FixHolding_Sandbox);
             }
 
             // if (version < 9)

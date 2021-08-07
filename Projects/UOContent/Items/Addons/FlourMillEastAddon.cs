@@ -26,7 +26,6 @@ namespace Server.Items
         };
 
         private int m_Flour;
-        private Timer m_Timer;
 
         [Constructible]
         public FlourMillEastAddon()
@@ -49,7 +48,7 @@ namespace Server.Items
         public bool IsFull => m_Flour >= MaxFlour;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsWorking => m_Timer != null;
+        public bool IsWorking { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int MaxFlour => 2;
@@ -72,17 +71,14 @@ namespace Server.Items
                 return;
             }
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), FinishWorking_Callback, from);
+            Timer.StartTimer(TimeSpan.FromSeconds(5.0), () => FinishWorking_Callback(from));
+            IsWorking = true;
             UpdateStage();
         }
 
         private void FinishWorking_Callback(Mobile from)
         {
-            if (m_Timer != null)
-            {
-                m_Timer.Stop();
-                m_Timer = null;
-            }
+            IsWorking = false;
 
             if (from?.Deleted == false && !Deleted && IsFull)
             {

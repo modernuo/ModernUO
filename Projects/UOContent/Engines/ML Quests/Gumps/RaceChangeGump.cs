@@ -104,7 +104,7 @@ namespace Server.Engines.MLQuests.Gumps
         {
             if (m_Pending.TryGetValue(ns, out var state))
             {
-                state.m_Timeout.Stop();
+                state._timeoutToken.Cancel();
                 m_Pending.Remove(ns);
             }
 
@@ -273,13 +273,13 @@ namespace Server.Engines.MLQuests.Gumps
 
             public readonly IRaceChanger m_Owner;
             public readonly Race m_TargetRace;
-            public readonly Timer m_Timeout;
+            public TimerExecutionToken _timeoutToken;
 
             public RaceChangeState(IRaceChanger owner, NetState ns, Race targetRace)
             {
                 m_Owner = owner;
                 m_TargetRace = targetRace;
-                m_Timeout = Timer.DelayCall(m_TimeoutDelay, Timeout, ns);
+                Timer.StartTimer(m_TimeoutDelay, () => Timeout(ns), out _timeoutToken);
             }
         }
     }

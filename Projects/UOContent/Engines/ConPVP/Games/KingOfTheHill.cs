@@ -25,8 +25,7 @@ namespace Server.Engines.ConPVP
             Name = "the hill";
         }
 
-        public HillOfTheKing(Serial s)
-            : base(s)
+        public HillOfTheKing(Serial s) : base(s)
         {
         }
 
@@ -49,18 +48,7 @@ namespace Server.Engines.ConPVP
         [CommandProperty(AccessLevel.GameMaster)]
         public int ScoreInterval { get; set; }
 
-        public int CapturesSoFar
-        {
-            get
-            {
-                if (m_KingTimer != null)
-                {
-                    return m_KingTimer.Captures;
-                }
-
-                return 0;
-            }
-        }
+        public int CapturesSoFar => m_KingTimer?.Captures ?? 0;
 
         public override void Deserialize(IGenericReader reader)
         {
@@ -864,7 +852,7 @@ namespace Server.Engines.ConPVP
 
     public sealed class KHGame : EventGame
     {
-        private Timer m_FinishTimer;
+        private TimerExecutionToken _finishTimerToken;
 
         public KHGame(KHController controller, DuelContext context) : base(context) => Controller = controller;
 
@@ -969,7 +957,7 @@ namespace Server.Engines.ConPVP
 
         public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
         {
-            Timer.DelayCall(ts, DelayBounce_Callback, mob, corpse);
+            Timer.StartTimer(ts, () => DelayBounce_Callback(mob, corpse));
         }
 
         private void DelayBounce_Callback(Mobile mob, Container corpse)
@@ -994,7 +982,7 @@ namespace Server.Engines.ConPVP
 
             if (corpse?.Deleted == false)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(30), corpse.Delete);
+                Timer.StartTimer(TimeSpan.FromSeconds(30), corpse.Delete);
             }
         }
 
@@ -1067,8 +1055,6 @@ namespace Server.Engines.ConPVP
                 );
             }
 
-            m_FinishTimer?.Stop();
-
             for (var i = 0; i < Controller.Hills.Length; i++)
             {
                 if (Controller.Hills[i] != null)
@@ -1085,7 +1071,8 @@ namespace Server.Engines.ConPVP
                 }
             }
 
-            m_FinishTimer = Timer.DelayCall(Controller.Duration, Finish_Callback);
+            _finishTimerToken.Cancel();
+            Timer.StartTimer(Controller.Duration, Finish_Callback, out _finishTimerToken);
         }
 
         private void Finish_Callback()
@@ -1310,8 +1297,7 @@ namespace Server.Engines.ConPVP
                 ApplyHues(m_Context.Participants[i], -1);
             }
 
-            m_FinishTimer?.Stop();
-            m_FinishTimer = null;
+            _finishTimerToken.Cancel();
         }
     }
 }
