@@ -178,10 +178,12 @@ namespace Server.Items
             }
 
             SpellHelper.GetSurfaceTop(ref p);
+            var loc = new Point3D(p);
+            var map = Map;
 
             from.RevealingAction();
 
-            var to = p as IEntity ?? new Entity(Serial.Zero, new Point3D(p), Map);
+            var to = p as IEntity ?? new Entity(Serial.Zero, loc, map);
 
             Effects.SendMovingEffect(from, to, ItemID, 7, 0, false, false, Hue);
 
@@ -193,7 +195,7 @@ namespace Server.Items
                         return;
                     }
 
-                    MoveToWorld(new Point3D(p), Map);
+                    MoveToWorld(loc, map);
                 }
             );
             Internalize();
