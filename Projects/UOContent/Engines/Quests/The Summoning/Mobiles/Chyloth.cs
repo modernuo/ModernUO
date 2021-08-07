@@ -56,7 +56,7 @@ namespace Server.Engines.Quests.Doom
                 return;
             }
 
-            Timer.DelayCall(TimeSpan.FromSeconds(4.0), EndGiveWarning);
+            Timer.StartTimer(TimeSpan.FromSeconds(4.0), EndGiveWarning);
         }
 
         public virtual void EndGiveWarning()
@@ -84,12 +84,12 @@ namespace Server.Engines.Quests.Doom
                 return;
             }
 
-            Timer.DelayCall(TimeSpan.FromSeconds(30.0), EndSummonDragon);
+            Timer.StartTimer(TimeSpan.FromSeconds(30.0), EndSummonDragon);
         }
 
         public virtual void BeginRemove(TimeSpan delay)
         {
-            Timer.DelayCall(delay, EndRemove);
+            Timer.StartTimer(delay, EndRemove);
         }
 
         public virtual void EndRemove()

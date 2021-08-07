@@ -21,12 +21,16 @@ namespace Server
 {
     public partial class Timer
     {
-        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Timer));
+        protected internal static readonly ILogger logger = LogFactory.GetLogger(typeof(Timer));
+
+        public static void Configure()
+        {
+            ConfigureTimerPool();
+        }
 
         // We need to know what ring/slot we are in so we can be removed if we are "head" of the link list.
         private int _ring;
         private int _slot;
-
         private long _remaining;
         private Timer _nextTimer;
         private Timer _prevTimer;
@@ -37,10 +41,11 @@ namespace Server
 
         public Timer(TimeSpan delay, TimeSpan interval, int count = 0) => Init(delay, interval, count);
 
-        public void Init(TimeSpan delay, TimeSpan interval, int count)
+        protected void Init(TimeSpan delay, TimeSpan interval, int count)
         {
             Running = false;
             Delay = delay;
+            Index = 0;
             Interval = interval;
             Count = count;
             _nextTimer = null;
@@ -54,6 +59,8 @@ namespace Server
                 prof.Created++;
             }
         }
+
+        protected int Version { get; set; } // Used to determine if a timer was altered and we should abandon it.
 
         public DateTime Next { get; private set; }
         public TimeSpan Delay { get; set; }
@@ -87,21 +94,14 @@ namespace Server
             return this;
         }
 
-        public Timer Stop()
+        public virtual void Stop()
         {
             if (!Running)
             {
-                return this;
+                return;
             }
 
             RemoveTimer(this);
-            InternalStop();
-
-            return this;
-        }
-
-        private void InternalStop()
-        {
             Running = false;
             var prof = GetProfile();
 

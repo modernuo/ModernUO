@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
     public class MeerMage : BaseCreature
     {
-        private static readonly Dictionary<Mobile, Timer> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
         private DateTime m_NextAbilityTime;
 
@@ -135,14 +135,17 @@ namespace Server.Mobiles
                     }
                     else if (combatant.Player)
                     {
-                        var count = 0;
-
                         Say(true, "I call a plague of insects to sting your flesh!");
-                        m_Table[combatant] = Timer.DelayCall(
+
+                        var count = 0;
+                        Timer.StartTimer(
                             TimeSpan.FromSeconds(0.5),
                             TimeSpan.FromSeconds(7.0),
-                            () => DoEffect(combatant, count++)
+                            () => DoEffect(combatant, count++),
+                            out var timerToken
                         );
+
+                        m_Table[combatant] = timerToken;
                     }
                 }
             }
@@ -166,51 +169,49 @@ namespace Server.Mobiles
                     );
                 }
 
-                timer.Stop();
+                timer.Cancel();
             }
         }
 
-        public void DoEffect(Mobile m, int count)
+        private void DoEffect(Mobile m, int count)
         {
             if (!m.Alive)
             {
                 StopEffect(m, false);
+                return;
             }
-            else
+
+            if (m.FindItemOnLayer(Layer.TwoHanded) is Torch { Burning: true })
             {
-                if (m.FindItemOnLayer(Layer.TwoHanded) is Torch torch && torch.Burning)
-                {
-                    StopEffect(m, true);
-                }
-                else
-                {
-                    if (count % 4 == 0)
-                    {
-                        m.LocalOverheadMessage(
-                            MessageType.Emote,
-                            m.SpeechHue,
-                            true,
-                            "* The swarm of insects bites and stings your flesh! *"
-                        );
-                        m.NonlocalOverheadMessage(
-                            MessageType.Emote,
-                            m.SpeechHue,
-                            true,
-                            $"* {m.Name} is stung by a swarm of insects *"
-                        );
-                    }
+                StopEffect(m, true);
+                return;
+            }
 
-                    m.FixedParticles(0x91C, 10, 180, 9539, EffectLayer.Waist);
-                    m.PlaySound(0x00E);
-                    m.PlaySound(0x1BC);
+            if (count % 4 == 0)
+            {
+                m.LocalOverheadMessage(
+                    MessageType.Emote,
+                    m.SpeechHue,
+                    true,
+                    "* The swarm of insects bites and stings your flesh! *"
+                );
+                m.NonlocalOverheadMessage(
+                    MessageType.Emote,
+                    m.SpeechHue,
+                    true,
+                    $"* {m.Name} is stung by a swarm of insects *"
+                );
+            }
 
-                    AOS.Damage(m, this, Utility.RandomMinMax(30, 40) - (Core.AOS ? 0 : 10), 100, 0, 0, 0, 0);
+            m.FixedParticles(0x91C, 10, 180, 9539, EffectLayer.Waist);
+            m.PlaySound(0x00E);
+            m.PlaySound(0x1BC);
 
-                    if (!m.Alive)
-                    {
-                        StopEffect(m, false);
-                    }
-                }
+            AOS.Damage(m, this, Utility.RandomMinMax(30, 40) - (Core.AOS ? 0 : 10), 100, 0, 0, 0, 0);
+
+            if (!m.Alive)
+            {
+                StopEffect(m, false);
             }
         }
 

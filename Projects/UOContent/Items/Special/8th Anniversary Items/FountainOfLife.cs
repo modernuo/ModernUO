@@ -47,7 +47,7 @@ namespace Server.Items
     {
         private int m_Charges;
 
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         [Constructible]
         public FountainOfLife(int charges = 10)
@@ -55,7 +55,7 @@ namespace Server.Items
         {
             m_Charges = charges;
 
-            m_Timer = Timer.DelayCall(RechargeTime, RechargeTime, Recharge);
+            Timer.StartTimer(RechargeTime, RechargeTime, Recharge, out _timerToken);
         }
 
         public FountainOfLife(Serial serial)
@@ -130,7 +130,7 @@ namespace Server.Items
 
         public override void OnDelete()
         {
-            m_Timer?.Stop();
+            _timerToken.Cancel();
 
             base.OnDelete();
         }
@@ -142,7 +142,7 @@ namespace Server.Items
             writer.WriteEncodedInt(0); // version
 
             writer.Write(m_Charges);
-            writer.Write(m_Timer.Next);
+            writer.Write(_timerToken.Next);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -159,11 +159,11 @@ namespace Server.Items
 
             if (next < now)
             {
-                m_Timer = Timer.DelayCall(RechargeTime, Recharge);
+                Timer.StartTimer(RechargeTime, Recharge, out _timerToken);
             }
             else
             {
-                m_Timer = Timer.DelayCall(next - now, RechargeTime, Recharge);
+                Timer.StartTimer(next - now, RechargeTime, Recharge, out _timerToken);
             }
         }
 

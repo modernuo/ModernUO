@@ -128,7 +128,7 @@ namespace Server.Engines.BulkOrders
             RequireExceptional = reader.ReadBool();
             Material = (BulkMaterialType)reader.ReadInt();
 
-            Timer.DelayCall(AfterDeserialization);
+            Timer.StartTimer(AfterDeserialization);
         }
     }
 }

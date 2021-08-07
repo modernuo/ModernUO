@@ -263,7 +263,14 @@ namespace Server.Mobiles
 
                 m_Mobiles = new List<Mobile>(); // This cannot be null in case it is referenced before disposing
 
-                Timer.DelayCall(DeleteEntities, entities);
+                Timer.StartTimer(() =>
+                    {
+                        foreach (var entity in entities)
+                        {
+                            entity.Delete();
+                        }
+                    }
+                );
 
                 m_Table = new Dictionary<Type, IEntity>();
 
@@ -274,14 +281,6 @@ namespace Server.Mobiles
                 else
                 {
                     Delete();
-                }
-            }
-
-            private static void DeleteEntities(List<IEntity> entities)
-            {
-                foreach (var entity in entities)
-                {
-                    entity.Delete();
                 }
             }
         }

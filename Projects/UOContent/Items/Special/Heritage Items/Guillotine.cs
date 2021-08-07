@@ -54,15 +54,15 @@ namespace Server.Items
                 {
                     from.Location = Location;
 
-                    Timer.DelayCall(TimeSpan.FromSeconds(0.5), Activate, c, from);
+                    Timer.StartTimer(TimeSpan.FromSeconds(0.5), () => Activate(c, from));
                 }
                 else
                 {
                     from.LocalOverheadMessage(
                         MessageType.Regular,
                         0,
-                        501777
-                    ); // Hmm... you suspect that if you used this again, it might hurt.
+                        501777 // Hmm... you suspect that if you used this again, it might hurt.
+                    );
                 }
             }
             else
@@ -135,27 +135,19 @@ namespace Server.Items
             ); // Hmm... you suspect that if you used this again, it might hurt.
             SpellHelper.Damage(TimeSpan.Zero, from, Utility.Dice(2, 10, 5));
 
-            Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 2, Deactivate, c);
+            Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 2, () => Deactivate(c));
         }
 
         private void Deactivate(AddonComponent c)
         {
-            if (c.ItemID == 0x1269)
+            c.ItemID = c.ItemID switch
             {
-                c.ItemID = 0x1260;
-            }
-            else if (c.ItemID == 0x1260)
-            {
-                c.ItemID = 0x125E;
-            }
-            else if (c.ItemID == 0x1247)
-            {
-                c.ItemID = 0x1246;
-            }
-            else if (c.ItemID == 0x1246)
-            {
-                c.ItemID = 0x1230;
-            }
+                0x1269 => 0x1260,
+                0x1260 => 0x125E,
+                0x1247 => 0x1246,
+                0x1246 => 0x1230,
+                _      => c.ItemID
+            };
         }
     }
 

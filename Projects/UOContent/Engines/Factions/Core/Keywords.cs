@@ -176,7 +176,7 @@ namespace Server.Factions
 
                             if (pl != null)
                             {
-                                Timer.DelayCall(ShowScore_Sandbox, pl);
+                                Timer.StartTimer(() => ShowScore_Sandbox(pl));
                             }
 
                             break;

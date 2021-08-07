@@ -109,7 +109,7 @@ namespace Server
                     "The object vanishes from your hands as you touch it."
                 );
 
-                Timer.DelayCall(
+                Timer.StartTimer(
                     TimeSpan.FromSeconds(1.0),
                     () => from.LocalOverheadMessage(
                         MessageType.Regular,
@@ -119,7 +119,7 @@ namespace Server
                     )
                 );
 
-                Timer.DelayCall(
+                Timer.StartTimer(
                     TimeSpan.FromSeconds(4.0),
                     () => { from.LocalOverheadMessage(MessageType.Regular, 2118, false, "Your skin begins to burn."); }
                 );

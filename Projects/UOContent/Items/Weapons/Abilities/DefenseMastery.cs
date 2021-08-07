@@ -52,7 +52,7 @@ namespace Server.Items
             attacker.AddResistanceMod(mod);
 
             info = new DefenseMasteryInfo(attacker, 80 - modifier, mod);
-            info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3.0), EndDefense, info);
+            Timer.StartTimer(TimeSpan.FromSeconds(3.0), () => EndDefense(info), out info._timerToken);
 
             _table[attacker] = info;
 
@@ -77,7 +77,7 @@ namespace Server.Items
                 info.m_From.RemoveResistanceMod(info.m_Mod);
             }
 
-            info.m_Timer?.Stop();
+            info._timerToken.Cancel();
 
             // No message is sent to the player.
 
@@ -91,7 +91,7 @@ namespace Server.Items
             public readonly int m_DamageMalus;
             public readonly Mobile m_From;
             public readonly ResistanceMod m_Mod;
-            public Timer m_Timer;
+            public TimerExecutionToken _timerToken;
 
             public DefenseMasteryInfo(Mobile from, int damageMalus, ResistanceMod mod)
             {

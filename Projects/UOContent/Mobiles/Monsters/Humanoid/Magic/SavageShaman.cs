@@ -165,7 +165,7 @@ namespace Server.Mobiles
                     }
                 }
 
-                Timer.DelayCall(TimeSpan.FromSeconds(1.0), EndSavageDance);
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), EndSavageDance);
             }
         }
 

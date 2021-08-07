@@ -88,7 +88,7 @@ namespace Server
             pm.HonorActive = true;
             pm.SendLocalizedMessage(1063235); // You embrace your honor
 
-            Timer.DelayCall(
+            Timer.StartTimer(
                 TimeSpan.FromSeconds(duration),
                 () =>
                 {
@@ -227,7 +227,7 @@ namespace Server
             m_Timer.Start();
             source.m_hontime = Core.Now + TimeSpan.FromMinutes(40);
 
-            Timer.DelayCall(
+            Timer.StartTimer(
                 TimeSpan.FromMinutes(40),
                 () =>
                 {

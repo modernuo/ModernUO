@@ -92,16 +92,12 @@ namespace Server.Mobiles
             }
         }
 
-        public override Item NewHarmfulItem()
-        {
-            Item bad = new AcidSlime(TimeSpan.FromSeconds(10), 25, 30);
-
-            bad.Name = "gooey nasty pumpkin hummus";
-
-            bad.Hue = 144;
-
-            return bad;
-        }
+        public override Item NewHarmfulItem() =>
+            new PoolOfAcid(TimeSpan.FromSeconds(10), 25, 30)
+            {
+                Name = "gooey nasty pumpkin hummus",
+                Hue = 144
+            };
 
         public override void OnDamage(int amount, Mobile from, bool willKill)
         {

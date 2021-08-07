@@ -113,20 +113,25 @@ namespace Server
                 // This can be done in OnTick by checking if Index < Count - 1 (still more iterations left)
                 RemoveTimer(timer);
 
-                if (finished)
-                {
-                    timer.InternalStop();
-                }
+                var version = timer.Version;
 
                 prof?.Start();
                 timer.OnTick();
                 prof?.Finish();
 
-                if (timer.Running && !finished)
+                // If the timer has not been stopped, and it has not been altered (shared timers)
+                if (timer.Running && timer.Version == version)
                 {
-                    timer.Delay = timer.Interval;
-                    timer.Next = Core.Now + timer.Interval;
-                    AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
+                    if (finished)
+                    {
+                        timer.Stop();
+                    }
+                    else
+                    {
+                        timer.Delay = timer.Interval;
+                        timer.Next = Core.Now + timer.Interval;
+                        AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
+                    }
                 }
 
                 timer = next;
@@ -200,8 +205,8 @@ namespace Server
         {
             var now = DateTime.UtcNow;
 
-            tw.WriteLine("Date: {0}", now);
-            tw.WriteLine();
+            tw.WriteLine("Date: {0}\n", now);
+            tw.WriteLine("Pool - Count: {0}; Size {1}\n", _poolCount - _timerPoolDepletionAmount, _poolCapacity);
 
             var total = 0.0;
             var hash = new Dictionary<string, int>();
@@ -221,9 +226,11 @@ namespace Server
                 }
             }
 
+            tw.WriteLine("Timers:");
+
             foreach (var (name, count) in hash.OrderByDescending(o => o.Value))
             {
-                tw.WriteLine($"Type: {name}; Count: {count}; Percent: {count / total}%");
+                tw.WriteLine($"- Type: {name}; Count: {count}; Percent: {count / total}%");
             }
 
             tw.WriteLine();

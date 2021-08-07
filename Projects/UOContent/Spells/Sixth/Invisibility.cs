@@ -18,7 +18,7 @@ namespace Server.Spells.Sixth
             Reagent.Nightshade
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
         public InvisibilitySpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {
@@ -58,23 +58,26 @@ namespace Server.Spells.Sixth
                 m.Combatant = null;
                 m.Warmode = false;
 
-                RemoveTimer(m);
+                StopTimer(m);
 
                 var duration = TimeSpan.FromSeconds(1.2 * Caster.Skills.Magery.Fixed / 10);
 
                 BuffInfo.RemoveBuff(m, BuffIcon.HidingAndOrStealth);
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825, duration, m)); // Invisibility/Invisible
 
-                m_Table[m] = Timer.DelayCall(duration, EndInvisiblity, m);
+                Timer.StartTimer(duration,
+                    () =>
+                    {
+                        m.RevealingAction();
+                        StopTimer(m);
+                    },
+                    out var timerToken
+                );
+
+                m_Table[m] = timerToken;
             }
 
             FinishSequence();
-        }
-
-        private static void EndInvisiblity(Mobile m)
-        {
-            m.RevealingAction();
-            RemoveTimer(m);
         }
 
         public override bool CheckCast()
@@ -95,11 +98,11 @@ namespace Server.Spells.Sixth
 
         public static bool HasTimer(Mobile m) => m_Table.ContainsKey(m);
 
-        public static void RemoveTimer(Mobile m)
+        public static void StopTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var t))
+            if (m_Table.Remove(m, out var timerToken))
             {
-                t.Stop();
+                timerToken.Cancel();
             }
         }
     }

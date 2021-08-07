@@ -7,7 +7,7 @@ namespace Server.Items
     public class FlameSpurtTrap : BaseTrap
     {
         private Item m_Spurt;
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         [Constructible]
         public FlameSpurtTrap() : base(0x1B71) => Visible = false;
@@ -18,14 +18,15 @@ namespace Server.Items
 
         public virtual void StartTimer()
         {
-            m_Timer ??= Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Refresh);
+            if (!_timerToken.Running)
+            {
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Refresh, out _timerToken);
+            }
         }
 
         public virtual void StopTimer()
         {
-            m_Timer?.Stop();
-
-            m_Timer = null;
+            _timerToken.Cancel();
         }
 
         public virtual void CheckTimer()

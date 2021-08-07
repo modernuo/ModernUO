@@ -77,7 +77,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            Timer.DelayCall(FixMovingCrate);
+            Timer.StartTimer(FixMovingCrate);
         }
 
         private void FixMovingCrate()

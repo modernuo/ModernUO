@@ -4,7 +4,7 @@ namespace Server.Items
 {
     public class TransientItem : Item
     {
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         [Constructible]
         public TransientItem(int itemID, TimeSpan lifeSpan)
@@ -13,7 +13,7 @@ namespace Server.Items
             CreationTime = Core.Now;
             LifeSpan = lifeSpan;
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry);
+            Timer.StartTimer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
         }
 
         public TransientItem(Serial serial)
@@ -60,8 +60,7 @@ namespace Server.Items
 
         public override void OnDelete()
         {
-            m_Timer?.Stop();
-
+            _timerToken.Cancel();
             base.OnDelete();
         }
 
@@ -103,7 +102,7 @@ namespace Server.Items
             LifeSpan = reader.ReadTimeSpan();
             CreationTime = reader.ReadDateTime();
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry);
+            Timer.StartTimer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
         }
     }
 }

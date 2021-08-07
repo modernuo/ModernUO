@@ -214,7 +214,7 @@ namespace Server.Mobiles
 
             if (version <= 1)
             {
-                Timer.DelayCall(Fix, version);
+                Timer.StartTimer(() => Fix(version));
             }
 
             if (version < 2)

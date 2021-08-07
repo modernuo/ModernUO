@@ -81,7 +81,7 @@ namespace Server.Items
                 attacker.PlaySound(0x2A1);
             }
 
-            Timer.DelayCall(TimeSpan.FromSeconds(2.0), RepeatEffect, attacker);
+            Timer.StartTimer(TimeSpan.FromSeconds(2.0), () => RepeatEffect(attacker));
         }
 
         private void RepeatEffect(Mobile attacker)

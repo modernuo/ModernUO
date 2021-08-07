@@ -158,7 +158,7 @@ namespace Server.Items
 
             if (Guild.NewGuildSystem && m_BeforeChangeover)
             {
-                Timer.DelayCall(AddToHouse);
+                Timer.StartTimer(AddToHouse);
             }
 
             if (!Guild.NewGuildSystem && Guild == null)

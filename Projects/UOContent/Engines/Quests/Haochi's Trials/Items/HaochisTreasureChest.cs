@@ -82,7 +82,7 @@ namespace Server.Engines.Quests.Samurai
                 }
             }
 
-            Timer.DelayCall(TimeSpan.FromMinutes(2.0), GenerateTreasure);
+            Timer.StartTimer(TimeSpan.FromMinutes(2.0), GenerateTreasure);
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -98,7 +98,7 @@ namespace Server.Engines.Quests.Samurai
 
             var version = reader.ReadEncodedInt();
 
-            Timer.DelayCall(GenerateTreasure);
+            Timer.StartTimer(GenerateTreasure);
         }
     }
 }

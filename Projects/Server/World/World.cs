@@ -419,7 +419,7 @@ namespace Server
 
             m_DiskWriteHandle.Set();
 
-            Timer.DelayCall(FinishWorldSave);
+            Timer.StartTimer(FinishWorldSave);
         }
 
         private static void ProcessDecay()

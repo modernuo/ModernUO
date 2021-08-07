@@ -495,10 +495,9 @@ namespace Server.Engines.ConPVP
         private int m_CapStage;
 
         private bool m_Capturable = true;
-        private Timer m_CaptureTimer;
-
-        private Timer m_FinishTimer;
-        private Timer m_UncaptureTimer;
+        private TimerExecutionToken _captureTimerToken;
+        private TimerExecutionToken _finishTimerToken;
+        private TimerExecutionToken _uncaptureTimerToken;
 
         public DDGame(DDController controller, DuelContext context) : base(context) => Controller = controller;
 
@@ -587,7 +586,7 @@ namespace Server.Engines.ConPVP
 
         public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
         {
-            Timer.DelayCall(ts, DelayBounce_Callback, mob, corpse);
+            Timer.StartTimer(ts, () => DelayBounce_Callback(mob, corpse));
         }
 
         private void DelayBounce_Callback(Mobile mob, Container corpse)
@@ -668,17 +667,8 @@ namespace Server.Engines.ConPVP
         {
             m_Capturable = true;
 
-            if (m_CaptureTimer != null)
-            {
-                m_CaptureTimer.Stop();
-                m_CaptureTimer = null;
-            }
-
-            if (m_UncaptureTimer != null)
-            {
-                m_UncaptureTimer.Stop();
-                m_UncaptureTimer = null;
-            }
+            _captureTimerToken.Cancel();
+            _uncaptureTimerToken.Cancel();
 
             for (var i = 0; i < Controller.TeamInfo.Length; ++i)
             {
@@ -706,8 +696,8 @@ namespace Server.Engines.ConPVP
                 );
             }
 
-            m_FinishTimer?.Stop();
-            m_FinishTimer = Timer.DelayCall(Controller.Duration, Finish_Callback);
+            _finishTimerToken.Cancel();
+            Timer.StartTimer(Controller.Duration, Finish_Callback, out _finishTimerToken);
         }
 
         private void Finish_Callback()
@@ -933,25 +923,15 @@ namespace Server.Engines.ConPVP
 
             m_Capturable = false;
 
-            if (m_CaptureTimer != null)
-            {
-                m_CaptureTimer.Stop();
-                m_CaptureTimer = null;
-            }
-
-            if (m_UncaptureTimer != null)
-            {
-                m_UncaptureTimer.Stop();
-                m_UncaptureTimer = null;
-            }
+            _captureTimerToken.Cancel();
+            _uncaptureTimerToken.Cancel();
 
             for (var i = 0; i < m_Context.Participants.Count; ++i)
             {
                 ApplyHues(m_Context.Participants[i], -1);
             }
 
-            m_FinishTimer?.Stop();
-            m_FinishTimer = null;
+            _finishTimerToken.Cancel();
         }
 
         public void Dominate(DDWayPoint point, Mobile from, DDTeamInfo team)
@@ -975,14 +955,13 @@ namespace Server.Engines.ConPVP
 
                 Controller.PointA?.SetNonCaptureHue();
                 Controller.PointB?.SetNonCaptureHue();
-                m_CaptureTimer?.Stop();
-                m_CaptureTimer = null;
+                _captureTimerToken.Cancel();
             }
 
             if (!wasDom && isDom)
             {
                 m_CapStage = 0;
-                m_CaptureTimer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1.0), CaptureTick);
+                Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromSeconds(1.0), CaptureTick, out _captureTimerToken);
             }
         }
 
@@ -993,8 +972,7 @@ namespace Server.Engines.ConPVP
             if (team == null)
             {
                 m_Capturable = true;
-                m_CaptureTimer?.Stop();
-                m_CaptureTimer = null;
+                _captureTimerToken.Cancel();
                 return;
             }
 
@@ -1014,8 +992,7 @@ namespace Server.Engines.ConPVP
 
                 m_Capturable = false;
                 m_CapStage = 0;
-                m_CaptureTimer.Stop();
-                m_CaptureTimer = null;
+                _captureTimerToken.Cancel();
 
                 if (Controller.PointA != null)
                 {
@@ -1029,8 +1006,7 @@ namespace Server.Engines.ConPVP
                     Controller.PointB.SetUncapturableHue();
                 }
 
-                m_UncaptureTimer = Timer.DelayCall(TimeSpan.FromSeconds(30.0), UncaptureTick);
-                m_UncaptureTimer.Start();
+                Timer.StartTimer(TimeSpan.FromSeconds(30.0), UncaptureTick, out _uncaptureTimerToken);
             }
         }
 
@@ -1038,17 +1014,8 @@ namespace Server.Engines.ConPVP
         {
             m_Capturable = true;
 
-            if (m_CaptureTimer != null)
-            {
-                m_CaptureTimer.Stop();
-                m_CaptureTimer = null;
-            }
-
-            if (m_UncaptureTimer != null)
-            {
-                m_UncaptureTimer.Stop();
-                m_UncaptureTimer = null;
-            }
+            _captureTimerToken.Cancel();
+            _uncaptureTimerToken.Cancel();
 
             if (Controller.PointA != null)
             {

@@ -224,7 +224,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            Timer.DelayCall(Refresh);
+            Timer.StartTimer(Refresh);
         }
     }
 }

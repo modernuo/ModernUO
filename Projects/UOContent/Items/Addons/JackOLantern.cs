@@ -60,7 +60,7 @@ namespace Server.Items
 
             if (version <= 1)
             {
-                Timer.DelayCall(Fix, version);
+                Timer.StartTimer(() => Fix(version));
             }
         }
 

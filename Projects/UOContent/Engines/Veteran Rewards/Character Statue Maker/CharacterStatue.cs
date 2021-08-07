@@ -247,7 +247,7 @@ namespace Server.Mobiles
 
             if (m_SculptedBy == null || Map == Map.Internal) // Remove preview statues
             {
-                Timer.DelayCall(Delete);
+                Timer.StartTimer(Delete);
             }
         }
 

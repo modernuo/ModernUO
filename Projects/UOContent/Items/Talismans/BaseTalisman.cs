@@ -144,7 +144,7 @@ namespace Server.Items
 
         private TalismanAttribute m_Summoner;
 
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         public BaseTalisman()
             : this(GetRandomItemID())
@@ -1026,20 +1026,25 @@ namespace Server.Items
 
         public virtual void StartTimer()
         {
-            if (m_Timer?.Running != true)
+            if (!_timerToken.Running)
             {
-                m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10), Slice);
+                Timer.StartTimer(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10), Slice, out _timerToken);
             }
         }
 
         public virtual void StopTimer()
         {
-            m_Timer?.Stop();
-            m_Timer = null;
+            _timerToken.Cancel();
         }
 
         public virtual void Slice()
         {
+            if (Deleted)
+            {
+                StopTimer();
+                return;
+            }
+
             if (m_ChargeTime - 10 > 0)
             {
                 m_ChargeTime -= 10;
@@ -1197,9 +1202,9 @@ namespace Server.Items
                 if (m_Talisman.ChargeTime > 0)
                 {
                     from.SendLocalizedMessage(
-                        1074882,
+                        1074882, // You must wait ~1_val~ seconds for this to recharge.
                         m_Talisman.ChargeTime.ToString()
-                    ); // You must wait ~1_val~ seconds for this to recharge.
+                    );
                     return;
                 }
 

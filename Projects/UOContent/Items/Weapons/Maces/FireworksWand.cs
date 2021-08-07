@@ -83,7 +83,7 @@ namespace Server.Items
                 0
             );
 
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), FinishLaunch, endLoc, map);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => FinishLaunch(endLoc, map));
         }
 
         private static void FinishLaunch(Point3D endLoc, Map map)

@@ -69,21 +69,16 @@ namespace Server.Items
 
                     if (CombatCheck(from, target))
                     {
-                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, from, target, weapon);
+                        Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => OnHit(from, target, weapon));
                     }
 
-                    Timer.DelayCall(TimeSpan.FromSeconds(2.5), ResetUsing, from);
+                    Timer.StartTimer(TimeSpan.FromSeconds(2.5), () => from.NinjaWepCooldown = false);
                 }
                 else
                 {
                     from.SendLocalizedMessage(1063303); // Your target is too close!
                 }
             }
-        }
-
-        private static void ResetUsing(PlayerMobile from)
-        {
-            from.NinjaWepCooldown = false;
         }
 
         private static void Unload(Mobile from, INinjaWeapon weapon)
