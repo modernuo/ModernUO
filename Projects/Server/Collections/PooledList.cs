@@ -254,11 +254,9 @@ namespace System.Collections.Generic
         // required, the capacity of the list is increased to twice the previous
         // capacity or the new size, whichever is larger.
         //
-        public void AddRange(IEnumerable<T> collection)
-            => InsertRange(_size, collection);
+        public void AddRange(IEnumerable<T> collection) => InsertRange(_size, collection);
 
-        public ReadOnlyCollection<T> AsReadOnly()
-            => new ReadOnlyCollection<T>(this);
+        public ReadOnlyCollection<T> AsReadOnly() => new(this);
 
         // Searches a section of the list for a given element using a binary search
         // algorithm. Elements of the list are compared to the search value using
@@ -300,11 +298,9 @@ namespace System.Collections.Generic
             return Array.BinarySearch(_items, index, count, item, comparer);
         }
 
-        public int BinarySearch(T item)
-            => BinarySearch(0, Count, item, null);
+        public int BinarySearch(T item) => BinarySearch(0, Count, item, null);
 
-        public int BinarySearch(T item, IComparer<T>? comparer)
-            => BinarySearch(0, Count, item, comparer);
+        public int BinarySearch(T item, IComparer<T>? comparer) => BinarySearch(0, Count, item, comparer);
 
         // Clears the contents of List.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -367,8 +363,7 @@ namespace System.Collections.Generic
 
         // Copies this List into array, which must be of a
         // compatible array type.
-        public void CopyTo(T[] array)
-            => CopyTo(array, 0);
+        public void CopyTo(T[] array) => CopyTo(array, 0);
 
         // Copies this List into array, which must be of a
         // compatible array type.
@@ -452,8 +447,7 @@ namespace System.Collections.Generic
             Capacity = newcapacity;
         }
 
-        public bool Exists(Predicate<T> match)
-            => FindIndex(match) != -1;
+        public bool Exists(Predicate<T> match) => FindIndex(match) != -1;
 
         public T? Find(Predicate<T> match)
         {
@@ -490,11 +484,9 @@ namespace System.Collections.Generic
             return list;
         }
 
-        public int FindIndex(Predicate<T> match)
-            => FindIndex(0, _size, match);
+        public int FindIndex(Predicate<T> match) => FindIndex(0, _size, match);
 
-        public int FindIndex(int startIndex, Predicate<T> match)
-            => FindIndex(startIndex, _size - startIndex, match);
+        public int FindIndex(int startIndex, Predicate<T> match) => FindIndex(startIndex, _size - startIndex, match);
 
         public int FindIndex(int startIndex, int count, Predicate<T> match)
         {
@@ -541,11 +533,9 @@ namespace System.Collections.Generic
             return default;
         }
 
-        public int FindLastIndex(Predicate<T> match)
-            => FindLastIndex(_size - 1, _size, match);
+        public int FindLastIndex(Predicate<T> match) => FindLastIndex(_size - 1, _size, match);
 
-        public int FindLastIndex(int startIndex, Predicate<T> match)
-            => FindLastIndex(startIndex, startIndex + 1, match);
+        public int FindLastIndex(int startIndex, Predicate<T> match) => FindLastIndex(startIndex, startIndex + 1, match);
 
         public int FindLastIndex(int startIndex, int count, Predicate<T> match)
         {
@@ -617,7 +607,7 @@ namespace System.Collections.Generic
         // while an enumeration is in progress, the MoveNext and
         // GetObject methods of the enumerator will throw an exception.
         //
-        public Enumerator GetEnumerator() => new Enumerator(this);
+        public Enumerator GetEnumerator() => new(this);
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => new Enumerator(this);
 
@@ -1011,8 +1001,7 @@ namespace System.Collections.Generic
         }
 
         // Reverses the elements in this list.
-        public void Reverse()
-            => Reverse(0, Count);
+        public void Reverse() => Reverse(0, Count);
 
         // Reverses the elements in a range of this list. Following a call to this
         // method, an element in the range given by index and count
