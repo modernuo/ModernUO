@@ -127,7 +127,7 @@ namespace Server.Network
                 layoutWriter.Write(Gump.NoResize);
             }
 
-            using var stringsList = new PooledRefOrderedHashSet<string>(32);
+            var stringsList = new PooledRefOrderedHashSet<string>(32);
 
             foreach (var entry in gump.Entries)
             {
@@ -142,6 +142,8 @@ namespace Server.Network
                 stringsWriter.Write((ushort)s.Length);
                 stringsWriter.WriteBigUni(s);
             }
+
+            stringsList.Dispose();
 
             int maxLength;
             if (packed)
@@ -184,6 +186,9 @@ namespace Server.Network
             writer.WritePacketLength();
 
             ns.Send(writer.Span);
+
+            layoutWriter.Dispose(); // Just in case
+            stringsWriter.Dispose(); // Just in case
         }
 
         public static void SendDisplaySignGump(this NetState ns, Serial serial, int gumpId, string unknown, string caption)
