@@ -1,17 +1,18 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System;
 using System.Buffers;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace System.Collections.Generic
+namespace Server.Collections
 {
     // A simple Queue of generic objects.  Internally it is implemented as a
     // circular buffer, so Enqueue can be O(n).  Dequeue is O(1).
     [DebuggerDisplay("Count = {Count}")]
-    [Serializable]
+    [System.Serializable]
     public ref struct PooledRefQueue<T>
     {
         private T[] _array;
@@ -29,7 +30,7 @@ namespace System.Collections.Generic
         {
             _array = capacity switch
             {
-                < 0 => throw new ArgumentOutOfRangeException(nameof(capacity), capacity, "Non-negative number required."),
+                < 0 => throw new ArgumentOutOfRangeException(nameof(capacity), capacity, CollectionThrowStrings.ArgumentOutOfRange_NeedNonNegNum),
                 0   => Array.Empty<T>(),
                 _   => ArrayPool<T>.Shared.Rent(capacity)
             };
@@ -74,17 +75,17 @@ namespace System.Collections.Generic
         {
             if (array == null)
             {
-                throw new ArgumentNullException(nameof(array), "Array cannot be null.");
+                throw new ArgumentNullException(nameof(array));
             }
 
             if (arrayIndex < 0 || arrayIndex > array.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(arrayIndex), arrayIndex, "Index was out of range. Must be non-negative and less than the size of the collection.");
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex), arrayIndex, CollectionThrowStrings.ArgumentOutOfRange_Index);
             }
 
             if (array.Length - arrayIndex < _size)
             {
-                throw new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
+                throw new ArgumentException(CollectionThrowStrings.Argument_InvalidOffLen);
             }
 
             int numToCopy = _size;
@@ -305,16 +306,7 @@ namespace System.Collections.Generic
         private void ThrowForEmptyQueue()
         {
             Debug.Assert(_size == 0);
-            throw new InvalidOperationException("Queue empty.");
-        }
-
-        public void TrimExcess()
-        {
-            int threshold = (int)(_array.Length * 0.9);
-            if (_size < threshold)
-            {
-                SetCapacity(_size);
-            }
+            throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EmptyQueue);
         }
 
         /// <summary>
@@ -325,7 +317,7 @@ namespace System.Collections.Generic
         {
             if (capacity < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(capacity), capacity, "Non-negative number required.");
+                throw new ArgumentOutOfRangeException(nameof(capacity), capacity, CollectionThrowStrings.ArgumentOutOfRange_NeedNonNegNum);
             }
 
             if (_array.Length < capacity)
@@ -338,10 +330,8 @@ namespace System.Collections.Generic
 
         private void Grow(int capacity)
         {
-            Debug.Assert(_array.Length < capacity);
-
             const int GrowFactor = 2;
-            const int MinimumGrow = 32;
+            const int MinimumGrow = 4;
 
             int newcapacity = GrowFactor * _array.Length;
 
@@ -405,7 +395,7 @@ namespace System.Collections.Generic
             {
                 if (_version != _q._version)
                 {
-                    throw new InvalidOperationException("Collection was modified after the enumerator was instantiated.");
+                    throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
                 }
 
                 if (_index == -2)
@@ -462,14 +452,14 @@ namespace System.Collections.Generic
             private void ThrowEnumerationNotStartedOrEnded()
             {
                 Debug.Assert(_index == -1 || _index == -2);
-                throw new InvalidOperationException(_index == -1 ? "Enumeration has not started. Call MoveNext." : "Enumeration already finished.");
+                throw new InvalidOperationException(_index == -1 ? CollectionThrowStrings.InvalidOperation_EnumNotStarted : CollectionThrowStrings.InvalidOperation_EnumEnded);
             }
 
             public void Reset()
             {
                 if (_version != _q._version)
                 {
-                    throw new InvalidOperationException("Collection was modified after the enumerator was instantiated.");
+                    throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
                 }
 
                 _index = -1;
