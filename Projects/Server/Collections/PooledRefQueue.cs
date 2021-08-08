@@ -20,24 +20,19 @@ namespace System.Collections.Generic
         private int _size;       // Number of elements.
         private int _version;
 
-        public static PooledRefQueue<T> New<T>() => new(32);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static PooledRefQueue<T> Create() => new(32);
 
         // Creates a queue with room for capacity objects. The default grow factor
         // is used.
         public PooledRefQueue(int capacity)
         {
-            if (capacity < 0)
+            _array = capacity switch
             {
-                throw new ArgumentOutOfRangeException(nameof(capacity), capacity, "Non-negative number required.");
-            }
-            else if (capacity == 0)
-            {
-                _array = Array.Empty<T>();
-            }
-            else
-            {
-                _array = ArrayPool<T>.Shared.Rent(capacity);
-            }
+                < 0 => throw new ArgumentOutOfRangeException(nameof(capacity), capacity, "Non-negative number required."),
+                0   => Array.Empty<T>(),
+                _   => ArrayPool<T>.Shared.Rent(capacity)
+            };
 
             _head = 0;
             _tail = 0;
@@ -104,57 +99,6 @@ namespace System.Collections.Generic
             if (numToCopy > 0)
             {
                 Array.Copy(_array, 0, array, arrayIndex + _array.Length - _head, numToCopy);
-            }
-        }
-
-        public void CopyTo(Array array, int index)
-        {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array), "Array cannot be null.");
-            }
-
-            if (array.Rank != 1)
-            {
-                throw new ArgumentException("Only single dimensional arrays are supported for the requested action.", nameof(array));
-            }
-
-            if (array.GetLowerBound(0) != 0)
-            {
-                throw new ArgumentException("The lower bound of target array must be zero.", nameof(array));
-            }
-
-            int arrayLen = array.Length;
-            if (index < 0 || index > arrayLen)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), index, "Index was out of range. Must be non-negative and less than the size of the collection.");
-            }
-
-            if (arrayLen - index < _size)
-            {
-                throw new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
-            }
-
-            int numToCopy = _size;
-            if (numToCopy == 0)
-            {
-                return;
-            }
-
-            try
-            {
-                int firstPart = _array.Length - _head < numToCopy ? _array.Length - _head : numToCopy;
-                Array.Copy(_array, _head, array, index, firstPart);
-                numToCopy -= firstPart;
-
-                if (numToCopy > 0)
-                {
-                    Array.Copy(_array, 0, array, index + _array.Length - _head, numToCopy);
-                }
-            }
-            catch (ArrayTypeMismatchException)
-            {
-                throw new ArgumentException("Target array type is not compatible with the type of items in the collection.", nameof(array));
             }
         }
 
