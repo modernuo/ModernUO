@@ -30,10 +30,15 @@ namespace System.Collections.Generic
             {
                 throw new ArgumentOutOfRangeException(nameof(capacity), capacity, "Non-negative number required.");
             }
+            else if (capacity == 0)
+            {
+                _array = Array.Empty<T>();
+            }
+            else
+            {
+                _array = ArrayPool<T>.Shared.Rent(capacity);
+            }
 
-            _array = ArrayPool<T>.Shared.Rent(capacity);
-
-            _array = Array.Empty<T>();
             _head = 0;
             _tail = 0;
             _size = 0;
