@@ -26,7 +26,7 @@ namespace System.Collections.Generic
         {
             if (capacity < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(capacity));
+                throw new ArgumentOutOfRangeException(nameof(capacity), capacity, "Non-negative number required.");
             }
 
             _array = ArrayPool<T>.Shared.Rent(capacity);
@@ -72,12 +72,12 @@ namespace System.Collections.Generic
         {
             if (array == null)
             {
-                throw new ArgumentNullException(nameof(array));
+                throw new ArgumentNullException(nameof(array), "Array cannot be null.");
             }
 
             if (arrayIndex < 0 || arrayIndex > array.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex), arrayIndex, "Index was out of range. Must be non-negative and less than the size of the collection.");
             }
 
             if (array.Length - arrayIndex < _size)
@@ -104,7 +104,7 @@ namespace System.Collections.Generic
         {
             if (array == null)
             {
-                throw new ArgumentNullException(nameof(array));
+                throw new ArgumentNullException(nameof(array), "Array cannot be null.");
             }
 
             if (array.Rank != 1)
