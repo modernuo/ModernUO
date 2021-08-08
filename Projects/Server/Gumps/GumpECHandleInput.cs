@@ -23,7 +23,9 @@ namespace Server.Gumps
         public static readonly byte[] LayoutName = Gump.StringToBuffer("echandleinput");
         public override string Compile(PooledRefOrderedHashSet<string> strings) => "{ echandleinput }";
 
-        public override void AppendTo(ref SpanWriter writer, PooledRefOrderedHashSet<string> strings, ref int entries, ref int switches)
+        public override void AppendTo(
+            ref SpanWriter writer, ref PooledRefOrderedHashSet<string> strings, ref int entries, ref int switches
+        )
         {
             writer.WriteAscii("{ echandleinput }");
         }

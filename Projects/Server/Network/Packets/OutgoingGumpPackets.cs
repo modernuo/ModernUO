@@ -127,11 +127,11 @@ namespace Server.Network
                 layoutWriter.Write(Gump.NoResize);
             }
 
-            var stringsList = new PooledRefOrderedHashSet<string>(32);
+            using var stringsList = new PooledRefOrderedHashSet<string>(32);
 
             foreach (var entry in gump.Entries)
             {
-                entry.AppendTo(ref layoutWriter, stringsList, ref entries, ref switches);
+                entry.AppendTo(ref layoutWriter, ref stringsList, ref entries, ref switches);
             }
 
             var stringsWriter = new SpanWriter(_stringsBuffer);

@@ -27,6 +27,6 @@ namespace Server.Gumps
 
         // TODO: Replace OrderedHashSet with InsertOnlyHashSet, a copy of HashSet that is ReadOnly compatible, but includes
         // a public AddIfNotPresent function that returns the index of the element
-        public abstract void AppendTo(ref SpanWriter writer, PooledRefOrderedHashSet<string> strings, ref int entries, ref int switches);
+        public abstract void AppendTo(ref SpanWriter writer, ref PooledRefOrderedHashSet<string> strings, ref int entries, ref int switches);
     }
 }
