@@ -20,6 +20,8 @@ namespace System.Collections.Generic
         private int _size;       // Number of elements.
         private int _version;
 
+        public static PooledRefQueue<T> New<T>() => new(32);
+
         // Creates a queue with room for capacity objects. The default grow factor
         // is used.
         public PooledRefQueue(int capacity)
@@ -390,7 +392,7 @@ namespace System.Collections.Generic
             Debug.Assert(_array.Length < capacity);
 
             const int GrowFactor = 2;
-            const int MinimumGrow = 4;
+            const int MinimumGrow = 32;
 
             int newcapacity = GrowFactor * _array.Length;
 
