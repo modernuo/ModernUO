@@ -46,10 +46,10 @@ namespace Server.Gumps
         public int SX { get; set; }
 
         public int SY { get; set; }
-        public override string Compile(OrderedHashSet<string> strings) =>
+        public override string Compile(PooledRefOrderedHashSet<string> strings) =>
             $"{{ picinpic {X} {Y} {GumpID} {Width} {Height} {SX} {SY} }}";
 
-        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+        public override void AppendTo(ref SpanWriter writer, PooledRefOrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
             writer.Write(LayoutName);

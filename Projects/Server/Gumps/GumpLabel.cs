@@ -37,9 +37,9 @@ namespace Server.Gumps
         public int Hue { get; set; }
 
         public string Text { get; set; }
-        public override string Compile(OrderedHashSet<string> strings) => $"{{ text {X} {Y} {Hue} {strings.GetOrAdd(Text ?? "")} }}";
+        public override string Compile(PooledRefOrderedHashSet<string> strings) => $"{{ text {X} {Y} {Hue} {strings.GetOrAdd(Text ?? "")} }}";
 
-        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+        public override void AppendTo(ref SpanWriter writer, PooledRefOrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
             writer.Write(LayoutName);

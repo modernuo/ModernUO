@@ -127,7 +127,7 @@ namespace Server.Network
                 layoutWriter.Write(Gump.NoResize);
             }
 
-            var stringsList = new OrderedHashSet<string>(11);
+            var stringsList = new PooledRefOrderedHashSet<string>(32);
 
             foreach (var entry in gump.Entries)
             {

@@ -104,7 +104,7 @@ namespace Server.Gumps
 
         public GumpHtmlLocalizedType Type { get; set; }
 
-        public override string Compile(OrderedHashSet<string> strings) =>
+        public override string Compile(PooledRefOrderedHashSet<string> strings) =>
             Type switch
             {
                 GumpHtmlLocalizedType.Plain =>
@@ -115,7 +115,7 @@ namespace Server.Gumps
                     $"{{ xmfhtmltok {X} {Y} {Width} {Height} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} {Color} {Number} @{Args}@ }}"
             };
 
-        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+        public override void AppendTo(ref SpanWriter writer, PooledRefOrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
 

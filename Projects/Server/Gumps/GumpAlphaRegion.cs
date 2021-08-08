@@ -38,9 +38,9 @@ namespace Server.Gumps
 
         public int Height { get; set; }
 
-        public override string Compile(OrderedHashSet<string> strings) => $"{{ checkertrans {X} {Y} {Width} {Height} }}";
+        public override string Compile(PooledRefOrderedHashSet<string> strings) => $"{{ checkertrans {X} {Y} {Width} {Height} }}";
 
-        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+        public override void AppendTo(ref SpanWriter writer, PooledRefOrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
             writer.Write(LayoutName);
