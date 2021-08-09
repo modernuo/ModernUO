@@ -316,7 +316,7 @@ namespace Server.Collections
             IEqualityComparer<TValue>? comparer = _comparer;
             if (comparer == null)
             {
-                hashCode = (uint)value.GetHashCode();
+                hashCode = (uint)(value?.GetHashCode() ?? 0);
                 bucket = ref GetBucketRef(hashCode);
                 i = bucket - 1;
 
