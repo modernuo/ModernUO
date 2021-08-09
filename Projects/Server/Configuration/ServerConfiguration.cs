@@ -253,6 +253,9 @@ namespace Server
                 var input = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(input) || input.InsensitiveStartsWith("n"))
                 {
+                    Utility.PushColor(ConsoleColor.Yellow);
+                    Console.WriteLine("New Haven chosen with no map diffs.");
+                    Utility.PopColor();
                     return;
                 }
 
@@ -260,6 +263,10 @@ namespace Server
                 {
                     SetSetting("maps.enablePre6000Trammel", true.ToString());
                     SetSetting("maps.enableMapDiffPatches", true.ToString());
+
+                    Utility.PushColor(ConsoleColor.Yellow);
+                    Console.WriteLine("Old Haven chosen with map diffs.");
+                    Utility.PopColor();
                     return;
                 }
 
@@ -267,7 +274,7 @@ namespace Server
                 Utility.PushColor(ConsoleColor.Red);
                 Console.Write(input);
                 Utility.PopColor();
-                Console.WriteLine(".");
+                Console.WriteLine(". Press y for yes or n for no.");
             } while (true);
         }
 
@@ -287,7 +294,7 @@ namespace Server
 
             do
             {
-                Console.Write("[{0}]> ", maxExpansionName);
+                Console.Write("[enter for {0}]> ", maxExpansionName);
                 var input = Console.ReadLine();
                 Expansion expansion;
 
@@ -326,7 +333,7 @@ namespace Server
 
             do
             {
-                Console.Write("{0}> ", directories.Count > 0 ? "[enter to finish] " : " ");
+                Console.Write("{0}> ", directories.Count > 0 ? "[enter to finish]" : " ");
                 var directory = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(directory))
                 {
