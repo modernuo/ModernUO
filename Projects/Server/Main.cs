@@ -384,7 +384,7 @@ namespace Server
 
             if (Assembly == null)
             {
-                throw new Exception("Core: Assembly entry is missing.");
+                throw new Exception("Assembly entry is missing.");
             }
 
             if (Thread != null)
@@ -417,6 +417,17 @@ namespace Server
             ".TrimMultiline());
             Utility.PopColor();
 
+            ProcessorCount = Environment.ProcessorCount;
+
+            if (ProcessorCount > 1)
+            {
+                MultiProcessor = true;
+            }
+
+            Console.CancelKeyPress += Console_CancelKeyPressed;
+
+            ServerConfiguration.Load();
+
             logger.Information($"Running on {RuntimeInformation.FrameworkDescription}");
 
             var s = Arguments;
@@ -426,19 +437,10 @@ namespace Server
                 logger.Information($"Running with arguments: {s}");
             }
 
-            ProcessorCount = Environment.ProcessorCount;
-
-            if (ProcessorCount > 1)
-            {
-                MultiProcessor = true;
-            }
-
             if (MultiProcessor)
             {
                 logger.Information($"Optimizing for {ProcessorCount} processor{(ProcessorCount == 1 ? "" : "s")}");
             }
-
-            Console.CancelKeyPress += Console_CancelKeyPressed;
 
             if (GCSettings.IsServerGC)
             {
@@ -446,8 +448,6 @@ namespace Server
             }
 
             logger.Information($"High resolution timing ({(Stopwatch.IsHighResolution ? "Supported" : "Unsupported")})");
-
-            ServerConfiguration.Load();
 
             var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
