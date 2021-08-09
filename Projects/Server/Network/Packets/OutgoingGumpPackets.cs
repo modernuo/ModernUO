@@ -186,7 +186,11 @@ namespace Server.Network
 
             layoutWriter.Dispose(); // Just in case
             stringsWriter.Dispose(); // Just in case
-            _stringsList.Clear();
+
+            if (_stringsList.Count > 0)
+            {
+                _stringsList.Clear();
+            }
         }
 
         public static void SendDisplaySignGump(this NetState ns, Serial serial, int gumpId, string unknown, string caption)
