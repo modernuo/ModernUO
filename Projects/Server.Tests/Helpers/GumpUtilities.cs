@@ -11,8 +11,16 @@ namespace Server.Tests.Network
 
         public static Packet Compile(this Gump g, NetState ns = null)
         {
-            IGumpWriter disp = new DisplayGumpFast(g);
-            // IGumpWriter disp = new DisplayGumpPacked(g);
+            IGumpWriter disp;
+
+            if (ns?.Unpack == true)
+            {
+                disp = new DisplayGumpPacked(g);
+            }
+            else
+            {
+                disp = new DisplayGumpFast(g);
+            }
 
             if (!g.Draggable)
             {
