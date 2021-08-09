@@ -25,6 +25,39 @@ namespace Server
 {
     public static class AssemblyHandler
     {
+        private class OrderedStringComparer : EqualityComparer<(string, string)>
+        {
+            public override bool Equals((string, string) x, (string, string) y) => x.Item1.Equals(y.Item1, System.StringComparison.Ordinal);
+
+            public override int GetHashCode((string, string) obj) => obj.Item1.GetHashCode();
+        }
+
+        public static void Configure()
+        {
+            string[] _iterations = new string[64];
+
+            for (var i = 0; i < _iterations.Length; i++)
+            {
+                _iterations[i] = i.ToString();
+            }
+
+            var ordered = new HashSet<(string, string)>(new OrderedStringComparer());
+            for (int i = 0; i < _iterations.Length / 2; i++)
+            {
+                ordered.Add(($"f-{_iterations[i]}", _iterations[i]));
+            }
+
+            for (int i = 0; i < _iterations.Length; i++)
+            {
+                ordered.Add(($"f-{_iterations[i]}", _iterations[i]));
+            }
+
+            foreach (var str in ordered)
+            {
+                Console.WriteLine("{0} and {1}", str.Item2, str.Item1);
+            }
+        }
+
         private static readonly Dictionary<Assembly, TypeCache> m_TypeCaches = new();
         private static TypeCache m_NullCache;
         public static Assembly[] Assemblies { get; set; }

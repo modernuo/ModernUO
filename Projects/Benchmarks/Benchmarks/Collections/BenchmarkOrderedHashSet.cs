@@ -9,51 +9,37 @@ namespace Benchmarks
     [SimpleJob(RuntimeMoniker.NetCoreApp50)]
     public class BenchmarkOrderedHashSet
     {
-        private List<string> _list;
-        private OrderedHashSet<string> _ordered;
-        private HashSet<string> _hashSet;
-        private const int iterations = 16;
+        private readonly string[] _iterations = new string[16];
 
         [IterationSetup]
         public void IterationSetup()
         {
-            _list = new List<string>();
-            _ordered = new OrderedHashSet<string>();
-            _hashSet = new HashSet<string>();
-        }
-
-        [IterationCleanup]
-        public void IterationCleanup()
-        {
-            _list = null;
-            _ordered = null;
-            _hashSet = null;
+            for (var i = 0; i < _iterations.Length; i++)
+            {
+                _iterations[i] = i.ToString();
+            }
         }
 
         [Benchmark]
         public int UsingList()
         {
-            for (int i = 0; i < iterations / 2; i++)
+            var list = new List<string>();
+            for (int i = 0; i < _iterations.Length / 2; i++)
             {
-                AddIfNotPresent(_list, i.ToString());
+                AddIfNotPresent(list, _iterations[i]);
             }
 
-            for (int i = 0; i < iterations; i++)
+            for (int i = 0; i < _iterations.Length; i++)
             {
-                AddIfNotPresent(_list, i.ToString());
+                AddIfNotPresent(list, _iterations[i]);
             }
 
-            for (int i = 0; i < iterations * 2; i++)
+            for (int i = 0; i < list.Count; i++)
             {
-                AddIfNotPresent(_list, i.ToString());
+                list[i].ToString();
             }
 
-            for (int i = 0; i < _list.Count; i++)
-            {
-                _list[i].ToString();
-            }
-
-            return _list.Count;
+            return list.Count;
         }
 
         private static int AddIfNotPresent<T>(List<T> list, T item)
@@ -71,53 +57,74 @@ namespace Benchmarks
         [Benchmark]
         public int UsingOrderedHashSet()
         {
-            for (int i = 0; i < iterations / 2; i++)
+            var ordered = new OrderedHashSet<string>();
+            for (int i = 0; i < _iterations.Length / 2; i++)
             {
-                _ordered.GetOrAdd(i.ToString());
+                ordered.GetOrAdd(_iterations[i]).ToString();
             }
 
-            for (int i = 0; i < iterations; i++)
+            for (int i = 0; i < _iterations.Length; i++)
             {
-                _ordered.GetOrAdd(i.ToString());
+                ordered.GetOrAdd(_iterations[i]).ToString();
             }
 
-            for (int i = 0; i < iterations * 2; i++)
-            {
-                _ordered.GetOrAdd(i.ToString());
-            }
-
-            foreach (var str in _ordered)
+            foreach (var str in ordered)
             {
                 str.ToString();
             }
 
-            return _ordered.Count;
+            return ordered.Count;
+        }
+
+        [Benchmark]
+        public int UsingPooledOrderedHashSet()
+        {
+            var ordered = new PooledOrderedHashSet<string>();
+            for (int i = 0; i < _iterations.Length / 2; i++)
+            {
+                ordered.GetOrAdd(_iterations[i]).ToString();
+            }
+
+            for (int i = 0; i < _iterations.Length; i++)
+            {
+                ordered.GetOrAdd(_iterations[i]).ToString();
+            }
+
+            foreach (var str in ordered)
+            {
+                str.ToString();
+            }
+
+            return ordered.Count;
         }
 
         [Benchmark]
         public int UsingHashSet()
         {
-            for (int i = 0; i < iterations / 2; i++)
+            var hashSet = new HashSet<(string, int)>(new OrderedStringComparer());
+            for (int i = 0; i < _iterations.Length / 2; i++)
             {
-                _hashSet.Add(i.ToString());
+                hashSet.Add((_iterations[i], i));
             }
 
-            for (int i = 0; i < iterations; i++)
+            for (int i = 0; i < _iterations.Length; i++)
             {
-                _hashSet.Add(i.ToString());
+                hashSet.Add((_iterations[i], i));
             }
 
-            for (int i = 0; i < iterations * 2; i++)
-            {
-                _hashSet.Add(i.ToString());
-            }
-
-            foreach (var str in _hashSet)
+            foreach (var str in hashSet)
             {
                 str.ToString();
             }
 
-            return _hashSet.Count;
+            return hashSet.Count;
+        }
+
+        private class OrderedStringComparer : EqualityComparer<(string, int)>
+        {
+            public override bool Equals((string, int) x, (string, int) y) => x.Item1.Equals(y.Item1, System.StringComparison.Ordinal);
+
+            public override int GetHashCode((string, int) obj) => obj.Item1.GetHashCode();
         }
     }
 }

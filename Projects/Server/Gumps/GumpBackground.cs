@@ -41,11 +41,9 @@ namespace Server.Gumps
 
         public int GumpID { get; set; }
 
-        public override string Compile(PooledRefOrderedHashSet<string> strings) => $"{{ resizepic {X} {Y} {GumpID} {Width} {Height} }}";
+        public override string Compile(OrderedHashSet<string> strings) => $"{{ resizepic {X} {Y} {GumpID} {Width} {Height} }}";
 
-        public override void AppendTo(
-            ref SpanWriter writer, ref PooledRefOrderedHashSet<string> strings, ref int entries, ref int switches
-        )
+        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
             writer.Write(LayoutName);
