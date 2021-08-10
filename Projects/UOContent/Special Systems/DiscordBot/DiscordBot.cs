@@ -17,9 +17,9 @@ namespace Server.DiscordBot
             Client.Events.DataReceived += DataReceived;
 
             // let's go!
-            //Client.Connect();
+            Client.Connect();
 
-            //EventSink.GameLogin += EventSink_GameLogin;
+            
             EventSink.CharacterCreated += EventSink_CharacterCreated;
             EventSink.WorldSaveDone += EventSink_WorldSaveDone;
             

@@ -6,6 +6,8 @@ using Server.Gumps;
 using Server.Network;
 using Server.Targeting;
 using Xanthos.Interfaces;
+using EvolutionPetSystem.Abilities;
+using System.Collections.Generic;
 
 namespace EvolutionPetSystem
 {
@@ -26,8 +28,14 @@ namespace EvolutionPetSystem
         protected DateTime m_NextHappyTime;
         protected BaseAI m_ForcedAI;
 
-        //Ability System
-         
+
+        // Ability System
+        protected int m_Activeabilities;
+        protected List<BaseAbility> m_Abilities;
+        
+        public delegate void OnAlterMeleeDamageToHandler(Mobile to, int damage);
+        
+        public event OnAlterMeleeDamageToHandler OnAlterMeleeDamageToEvent;
 
         // Implement these 3 in your subclass to return BaseEvoSpec & BaseEvoEgg subclasses & Dust Type
         public abstract BaseEvoSpec GetEvoSpec();
@@ -52,6 +60,8 @@ namespace EvolutionPetSystem
             get { return m_Stage; }
         }
 
+        
+
         public BaseEvo(string name, AIType ai, double dActiveSpeed) : base(ai, FightMode.Closest, 10, 1, dActiveSpeed, 0.4)
         {
             Name = name;
@@ -66,6 +76,11 @@ namespace EvolutionPetSystem
 
         protected virtual void Init()
         {
+            // Abililities
+            m_Abilities = new List<BaseAbility>();
+
+            new RageAbility(this);
+
             BaseEvoSpec spec = GetEvoSpec();
 
             if (null != spec && null != spec.Stages)
@@ -107,6 +122,8 @@ namespace EvolutionPetSystem
 
         protected override BaseAI ForcedAI { get { return m_ForcedAI; } }
 
+        
+
         private void InitAI()
         {
             switch (AI)
@@ -130,6 +147,7 @@ namespace EvolutionPetSystem
 
         public override void AlterMeleeDamageTo(Mobile to, ref int damage)
         {
+            OnAlterMeleeDamageToEvent?.Invoke(to, damage);
             if (to is PlayerMobile)
             {
                 if (this.Controlled)
@@ -172,6 +190,8 @@ namespace EvolutionPetSystem
 
         public override void OnGaveMeleeAttack(Mobile defender)
         {
+            
+
             if (AddPointsOnMelee)
                 AddPoints(defender);
 
@@ -323,6 +343,10 @@ namespace EvolutionPetSystem
             writer.Write((int)0);
             writer.Write((int)m_Ep);
             writer.Write((int)m_Stage);
+            writer.Write((int)m_Activeabilities);
+
+            
+            
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -331,6 +355,16 @@ namespace EvolutionPetSystem
             int version = reader.ReadInt();
             m_Ep = reader.ReadInt();
             m_Stage = reader.ReadInt();
+            m_Activeabilities = reader.ReadInt();
+
+            if (m_Activeabilities != null | m_Activeabilities != 0)
+            {
+                for (int i = 0; i < m_Activeabilities; i++)
+                {
+
+                }
+            }
+
             LoadSpecValues();
         }
     }
