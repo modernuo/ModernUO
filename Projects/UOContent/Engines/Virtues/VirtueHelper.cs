@@ -51,12 +51,60 @@ namespace Server
             return (VirtueLevel)vl;
         }
 
+        public static string GetName(this VirtueName virtue) =>
+            virtue switch
+            {
+                VirtueName.Humility     => "Humility",
+                VirtueName.Sacrifice    => "Sacrifice",
+                VirtueName.Compassion   => "Compassion",
+                VirtueName.Spirituality => "Spirituality",
+                VirtueName.Valor        => "Valor",
+                VirtueName.Honor        => "Honor",
+                VirtueName.Justice      => "Justice",
+                VirtueName.Honesty      => "Honesty",
+                _                       => ""
+            };
+
         public static int GetMaxAmount(VirtueName virtue) =>
             virtue switch
             {
-                VirtueName.Honor     => 20000,
+                VirtueName.Honor => 20000,
                 VirtueName.Sacrifice => 22000,
-                _                    => 21000
+                _ => 21000
+            };
+
+        public static int GetGainedLocalizedMessage(VirtueName virtue) =>
+            virtue switch
+            {
+                VirtueName.Sacrifice    => 1054160, // You have gained in sacrifice.
+                VirtueName.Compassion   => 1053002, // You have gained in compassion.
+                VirtueName.Spirituality => 1155832, // You have gained in Spirituality.
+                VirtueName.Valor        => 1054030, // You have gained in Valor!
+                VirtueName.Honor        => 1063225, // You have gained in Honor.
+                VirtueName.Justice      => 1049363, // You have gained in Justice.
+                VirtueName.Humility     => 1052070, // You have gained in Humility.
+                _                       => 0
+            };
+
+        public static int GetGainedAPathLocalizedMessage(VirtueName virtue) =>
+            virtue switch
+            {
+                VirtueName.Sacrifice    => 1052008, // You have gained a path in Sacrifice!
+                VirtueName.Spirituality => 1155833, // You have gained a path in Spirituality!
+                VirtueName.Valor        => 1054032, // You have gained a path in Valor!
+                VirtueName.Honor        => 1063226, // You have gained a path in Honor!
+                VirtueName.Justice      => 1049367, // You have gained a path in Justice!
+                VirtueName.Humility     => 1155811, // You have gained a path in Humility!
+                _                       => 0
+            };
+
+        public static int GetHightestPathLocalizedMessage(VirtueName virtue) =>
+            virtue switch
+            {
+                VirtueName.Compassion => 1053003, // You have achieved the highest path of compassion and can no longer gain any further.
+                VirtueName.Valor => 1054031, // You have achieved the highest path in Valor and can no longer gain any further.
+                VirtueName.Honesty => 1153771, // You have achieved the highest path in Honesty and can no longer gain any further.
+                _ => 0
             };
 
         public static bool Award(Mobile from, VirtueName virtue, int amount, ref bool gainedPath)
@@ -126,37 +174,58 @@ namespace Server
             }
 
             var gainedPath = false;
-            var virtueName = Enum.GetName(typeof(VirtueName), virtue);
+            var virtueName = virtue.GetName();
 
             if (Award(pm, virtue, amount, ref gainedPath))
             {
-                // TODO: Localize?
                 if (gainedPath)
                 {
-                    pm.SendMessage("You have gained a path in {0}!", virtueName);
+                    var gainedPathMessage = GetGainedAPathLocalizedMessage(virtue);
+                    if (gainedPathMessage != 0)
+                    {
+                        pm.SendLocalizedMessage(gainedPathMessage);
+                    }
+                    else
+                    {
+                        pm.SendMessage("You have gained a path in {0}!", virtueName);
+                    }
                 }
                 else
                 {
-                    pm.SendMessage("You have gained in {0}.", virtueName);
+                    var gainMessage = GetGainedLocalizedMessage(virtue);
+                    if (gainMessage != 0)
+                    {
+                        pm.SendLocalizedMessage(gainMessage);
+                    }
+                    else
+                    {
+                        pm.SendMessage("You have gained in {0}.", virtueName);
+                    }
                 }
 
                 if (virtue == VirtueName.Compassion)
                 {
                     pm.NextCompassionDay = Core.Now + TimeSpan.FromDays(1.0);
-                    ++pm.CompassionGains;
 
-                    if (pm.CompassionGains >= 5)
+                    if (++pm.CompassionGains >= 5)
                     {
-                        pm.SendLocalizedMessage(
-                            1053004
-                        ); // You must wait about a day before you can gain in compassion again.
+                        // You must wait about a day before you can gain in compassion again.
+                        pm.SendLocalizedMessage(1053004);
                     }
                 }
             }
             else
             {
-                // TODO: Localize?
-                pm.SendMessage("You have achieved the highest path of {0} and can no longer gain any further.", virtueName);
+                var highestPathMessage = GetHightestPathLocalizedMessage(virtue);
+                if (highestPathMessage != 0)
+                {
+                    pm.SendLocalizedMessage(highestPathMessage);
+                }
+                else
+                {
+                    pm.SendMessage("You have achieved the highest path in {0} and can no longer gain any further.", virtueName);
+                }
+
             }
         }
     }

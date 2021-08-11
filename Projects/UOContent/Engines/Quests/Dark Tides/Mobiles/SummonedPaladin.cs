@@ -91,7 +91,7 @@ namespace Server.Engines.Quests.Necro
 
                     m_ToDelete = true;
 
-                    Timer.DelayCall(TimeSpan.FromSeconds(5.0), Delete);
+                    Timer.StartTimer(TimeSpan.FromSeconds(5.0), Delete);
                 }
                 else if (m_Necromancer.Map != Map || GetDistanceToSqrt(m_Necromancer) > RangePerception + 1)
                 {
@@ -172,7 +172,6 @@ namespace Server.Engines.Quests.Necro
 
             public SummonTimer(PlayerMobile player) : base(TimeSpan.FromSeconds(4.0))
             {
-                Priority = TimerPriority.FiftyMS;
 
                 m_Player = player;
             }
@@ -240,7 +239,7 @@ namespace Server.Engines.Quests.Necro
             Hue = 0x482;
             Light = LightType.Circle300;
 
-            Timer.DelayCall(TimeSpan.FromSeconds(10.0), Delete);
+            Timer.StartTimer(TimeSpan.FromSeconds(10.0), Delete);
         }
 
         public SummonedPaladinMoongate(Serial serial) : base(serial)

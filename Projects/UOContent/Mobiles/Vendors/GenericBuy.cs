@@ -106,23 +106,7 @@ namespace Server.Mobiles
         {
             if (m_Amount <= 0)
             {
-                /*
-                  Core.ML using this vendor system is undefined behavior, so being
-                  as it lends itself to an abusable exploit to cause ingame havok
-                  and the stackable items are not found to be over 20 items, this is
-                  changed until there is a better solution.
-                */
-
-                object Obj_Disp = GetDisplayEntity();
-
-                if (Core.ML && Obj_Disp is Item item && !item.Stackable)
-                {
-                    MaxAmount = Math.Min(20, MaxAmount);
-                }
-                else
-                {
-                    MaxAmount = Math.Min(999, MaxAmount * 2);
-                }
+                MaxAmount = Math.Min(999, MaxAmount * 2);
             }
             else
             {
@@ -152,22 +136,15 @@ namespace Server.Mobiles
             m_Amount = MaxAmount;
         }
 
-        private bool IsDeleted(IEntity obj) => obj.Deleted;
-
         public void DeleteDisplayEntity()
         {
-            if (m_DisplayEntity == null)
-            {
-                return;
-            }
-
-            m_DisplayEntity.Delete();
+            m_DisplayEntity?.Delete();
             m_DisplayEntity = null;
         }
 
         public IEntity GetDisplayEntity()
         {
-            if (m_DisplayEntity != null && !IsDeleted(m_DisplayEntity))
+            if (m_DisplayEntity?.Deleted == false)
             {
                 return m_DisplayEntity;
             }
@@ -179,12 +156,11 @@ namespace Server.Mobiles
                 m_DisplayEntity = DisplayCache.Cache.Lookup(Type);
             }
 
-            if (m_DisplayEntity == null || IsDeleted(m_DisplayEntity))
+            if (m_DisplayEntity?.Deleted != false)
             {
                 m_DisplayEntity = GetEntity();
+                DisplayCache.Cache.Store(Type, m_DisplayEntity, canCache);
             }
-
-            DisplayCache.Cache.Store(Type, m_DisplayEntity, canCache);
 
             return m_DisplayEntity;
         }
@@ -196,7 +172,7 @@ namespace Server.Mobiles
 
             private Dictionary<Type, IEntity> m_Table;
 
-            public DisplayCache() : base(0)
+            private DisplayCache() : base(0)
             {
                 m_Table = new Dictionary<Type, IEntity>();
                 m_Mobiles = new List<Mobile>();
@@ -287,7 +263,14 @@ namespace Server.Mobiles
 
                 m_Mobiles = new List<Mobile>(); // This cannot be null in case it is referenced before disposing
 
-                Timer.DelayCall(DeleteEntities, entities);
+                Timer.StartTimer(() =>
+                    {
+                        foreach (var entity in entities)
+                        {
+                            entity.Delete();
+                        }
+                    }
+                );
 
                 m_Table = new Dictionary<Type, IEntity>();
 
@@ -298,14 +281,6 @@ namespace Server.Mobiles
                 else
                 {
                     Delete();
-                }
-            }
-
-            private void DeleteEntities(List<IEntity> entities)
-            {
-                foreach (var entity in entities)
-                {
-                    entity.Delete();
                 }
             }
         }

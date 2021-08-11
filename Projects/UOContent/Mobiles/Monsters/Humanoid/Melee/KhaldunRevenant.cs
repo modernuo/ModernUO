@@ -81,10 +81,18 @@ namespace Server.Mobiles
                 lastKiller = creature.GetMaster();
             }
 
-            if (IsInsideKhaldun(m) && IsInsideKhaldun(lastKiller) && lastKiller.Player && !m_Set.Contains(lastKiller) &&
-                m.Aggressors.Any(ai => ai.Attacker == lastKiller && ai.CanReportMurder))
+            if (!IsInsideKhaldun(m) || !IsInsideKhaldun(lastKiller) || !lastKiller.Player || m_Set.Contains(lastKiller))
             {
-                SummonRevenant(m, lastKiller);
+                return;
+            }
+
+            foreach (var ai in m.Aggressors)
+            {
+                if (ai.Attacker == lastKiller && ai.CanReportMurder)
+                {
+                    SummonRevenant(m, lastKiller);
+                    return;
+                }
             }
         }
 

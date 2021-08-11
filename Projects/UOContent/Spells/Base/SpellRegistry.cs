@@ -114,7 +114,7 @@ namespace Server.Spells
 
             var t = m_Types[spellID];
 
-            if (t == null || !t.IsSubclassOf(typeof(SpecialMove)))
+            if (t?.IsSubclassOf(typeof(SpecialMove)) != true)
             {
                 return null;
             }
@@ -156,9 +156,9 @@ namespace Server.Spells
 
             for (var i = 0; i < m_CircleNames.Length; ++i)
             {
-                var t =
-                    AssemblyHandler.FindTypeByName($"Server.Spells.{m_CircleNames[i]}.{name}") ??
-                    AssemblyHandler.FindTypeByName($"Server.Spells.{m_CircleNames[i]}.{name}Spell");
+                var t = name.InsensitiveEndsWith("spell") ?
+                    AssemblyHandler.FindTypeByFullName($"Server.Spells.{m_CircleNames[i]}.{name}") :
+                    AssemblyHandler.FindTypeByFullName($"Server.Spells.{m_CircleNames[i]}.{name}Spell");
 
                 if (t?.IsSubclassOf(typeof(SpecialMove)) == false)
                 {

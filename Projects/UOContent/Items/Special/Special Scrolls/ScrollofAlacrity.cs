@@ -97,7 +97,7 @@ namespace Server.Items
             Effects.SendTargetParticles(from, 0x373A, 35, 45, 0x00, 0x00, 9502, (EffectLayer)255, 0x100);
 
             pm.AcceleratedStart = Core.Now + TimeSpan.FromMinutes(15);
-            Timer.DelayCall(TimeSpan.FromMinutes(15), Expire_Callback, from);
+            Timer.StartTimer(TimeSpan.FromMinutes(15), () => Expire_Callback(from));
 
             pm.AcceleratedSkill = Skill;
 

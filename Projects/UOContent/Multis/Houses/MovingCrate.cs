@@ -253,11 +253,11 @@ namespace Server.Multis
             if (House != null)
             {
                 House.MovingCrate = this;
-                Timer.DelayCall(Hide);
+                Timer.StartTimer(Hide);
             }
             else
             {
-                Timer.DelayCall(Delete);
+                Timer.StartTimer(Delete);
             }
 
             if (version == 0)
@@ -273,8 +273,6 @@ namespace Server.Multis
             public InternalizeTimer(MovingCrate crate) : base(TimeSpan.FromMinutes(5.0))
             {
                 m_Crate = crate;
-
-                Priority = TimerPriority.FiveSeconds;
             }
 
             protected override void OnTick()

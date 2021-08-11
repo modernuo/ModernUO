@@ -7,7 +7,7 @@ namespace Server.Items
     public class FlameSpurtTrap : BaseTrap
     {
         private Item m_Spurt;
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         [Constructible]
         public FlameSpurtTrap() : base(0x1B71) => Visible = false;
@@ -18,14 +18,15 @@ namespace Server.Items
 
         public virtual void StartTimer()
         {
-            m_Timer ??= Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Refresh);
+            if (!_timerToken.Running)
+            {
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Refresh, out _timerToken);
+            }
         }
 
         public virtual void StopTimer()
         {
-            m_Timer?.Stop();
-
-            m_Timer = null;
+            _timerToken.Cancel();
         }
 
         public virtual void CheckTimer()
@@ -84,22 +85,24 @@ namespace Server.Items
                 return;
             }
 
-            var foundPlayer = GetMobilesInRange(3)
-                .Where(mob => mob.Player && mob.Alive && mob.AccessLevel <= AccessLevel.Player)
-                .Any(mob => Z + 8 >= mob.Z && mob.Z + 16 > Z);
-
-            if (!foundPlayer)
+            foreach (var mob in GetMobilesInRange(3))
             {
-                m_Spurt?.Delete();
-                m_Spurt = null;
-            }
-            else if (m_Spurt?.Deleted != false)
-            {
-                m_Spurt = new Static(0x3709);
-                m_Spurt.MoveToWorld(Location, Map);
+                if (mob.Player && mob.Alive && mob.AccessLevel <= AccessLevel.Player && Z + 8 >= mob.Z && mob.Z + 16 > Z)
+                {
+                    if (m_Spurt?.Deleted != false)
+                    {
+                        m_Spurt = new Static(0x3709);
+                        m_Spurt.MoveToWorld(Location, Map);
 
-                Effects.PlaySound(GetWorldLocation(), Map, 0x309);
+                        Effects.PlaySound(GetWorldLocation(), Map, 0x309);
+                    }
+
+                    return;
+                }
             }
+
+            m_Spurt?.Delete();
+            m_Spurt = null;
         }
 
         public override bool OnMoveOver(Mobile m)

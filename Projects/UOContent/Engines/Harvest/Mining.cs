@@ -379,59 +379,61 @@ namespace Server.Engines.Harvest
             HarvestBank bank, HarvestResource resource, object harvested
         )
         {
-            if (tool is GargoylesPickaxe && def == OreAndStone && Utility.RandomDouble() < 0.1)
+            if (tool is not GargoylesPickaxe || def != OreAndStone || !(Utility.RandomDouble() < 0.1))
             {
-                var res = vein.PrimaryResource;
+                return;
+            }
 
-                if (res == resource && res.Types.Length >= 3)
+            var res = vein.PrimaryResource;
+
+            if (res == resource && res.Types.Length >= 3)
+            {
+                var map = from.Map;
+
+                if (map == null)
                 {
-                    var map = from.Map;
+                    return;
+                }
 
-                    if (map == null)
+                try
+                {
+                    var spawned = res.Types[2].CreateEntityInstance<BaseCreature>(25);
+                    if (spawned != null)
                     {
-                        return;
-                    }
+                        var offset = Utility.Random(8) * 2;
 
-                    try
-                    {
-                        var spawned = res.Types[2].CreateEntityInstance<BaseCreature>(25);
-                        if (spawned != null)
+                        for (var i = 0; i < m_Offsets.Length; i += 2)
                         {
-                            var offset = Utility.Random(8) * 2;
+                            var x = from.X + m_Offsets[(offset + i) % m_Offsets.Length];
+                            var y = from.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
 
-                            for (var i = 0; i < m_Offsets.Length; i += 2)
+                            if (map.CanSpawnMobile(x, y, from.Z))
                             {
-                                var x = from.X + m_Offsets[(offset + i) % m_Offsets.Length];
-                                var y = from.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
-
-                                if (map.CanSpawnMobile(x, y, from.Z))
-                                {
-                                    spawned.OnBeforeSpawn(new Point3D(x, y, from.Z), map);
-                                    spawned.MoveToWorld(new Point3D(x, y, from.Z), map);
-                                    spawned.Combatant = from;
-                                    return;
-                                }
-
-                                var z = map.GetAverageZ(x, y);
-
-                                if ((z - from.Z).Abs() < 10 && map.CanSpawnMobile(x, y, z))
-                                {
-                                    spawned.OnBeforeSpawn(new Point3D(x, y, z), map);
-                                    spawned.MoveToWorld(new Point3D(x, y, z), map);
-                                    spawned.Combatant = from;
-                                    return;
-                                }
+                                spawned.OnBeforeSpawn(new Point3D(x, y, from.Z), map);
+                                spawned.MoveToWorld(new Point3D(x, y, from.Z), map);
+                                spawned.Combatant = from;
+                                return;
                             }
 
-                            spawned.OnBeforeSpawn(from.Location, from.Map);
-                            spawned.MoveToWorld(from.Location, from.Map);
-                            spawned.Combatant = from;
+                            var z = map.GetAverageZ(x, y);
+
+                            if ((z - from.Z).Abs() < 10 && map.CanSpawnMobile(x, y, z))
+                            {
+                                spawned.OnBeforeSpawn(new Point3D(x, y, z), map);
+                                spawned.MoveToWorld(new Point3D(x, y, z), map);
+                                spawned.Combatant = from;
+                                return;
+                            }
                         }
+
+                        spawned.OnBeforeSpawn(from.Location, from.Map);
+                        spawned.MoveToWorld(from.Location, from.Map);
+                        spawned.Combatant = from;
                     }
-                    catch
-                    {
-                        // ignored
-                    }
+                }
+                catch
+                {
+                    // ignored
                 }
             }
         }

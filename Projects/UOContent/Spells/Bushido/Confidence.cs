@@ -12,8 +12,8 @@ namespace Server.Spells.Bushido
             9002
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new();
-        private static readonly Dictionary<Mobile, Timer> m_RegenTable = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_RegenTable = new();
 
         public Confidence(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
         {
@@ -53,84 +53,72 @@ namespace Server.Spells.Bushido
 
         public static void BeginConfidence(Mobile m)
         {
-            m_Table.TryGetValue(m, out var timer);
-            timer?.Stop();
-            m_Table[m] = timer = new InternalTimer(m);
+            StopConfidenceTimer(m);
 
-            timer.Start();
+            Timer.StartTimer(TimeSpan.FromSeconds(30.0),
+                () =>
+                {
+                    EndConfidence(m);
+                    m.SendLocalizedMessage(1063116); // Your confidence wanes.
+                },
+                out var timerToken
+            );
+
+            m_Table[m] = timerToken;
+        }
+
+        private static bool StopConfidenceTimer(Mobile m)
+        {
+            if (m_Table.Remove(m, out var timerToken))
+            {
+                timerToken.Cancel();
+                return true;
+            }
+
+            return false;
         }
 
         public static void EndConfidence(Mobile m)
         {
-            if (m_Table.Remove(m, out var timer))
+            if (StopConfidenceTimer(m))
             {
-                timer.Stop();
+                OnEffectEnd(m, typeof(Confidence));
             }
-
-            OnEffectEnd(m, typeof(Confidence));
         }
 
         public static bool IsRegenerating(Mobile m) => m_RegenTable.ContainsKey(m);
 
+        // TODO: Move this to a central regeneration so it actually works properly
         public static void BeginRegenerating(Mobile m)
         {
-            m_RegenTable.TryGetValue(m, out var timer);
-            timer?.Stop();
+            StopRegenerating(m);
 
-            m_RegenTable[m] = timer = new RegenTimer(m);
+            // RunUO says this goes for 5 seconds, but UOGuide says 4 seconds during normal regeneration
+            var hits = (15 + m.Skills.Bushido.Fixed * m.Skills.Bushido.Fixed / 57600) / 4;
 
-            timer.Start();
+            TimerExecutionToken timerToken = default;
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), 4,
+                () =>
+                {
+                    // ReSharper disable once AccessToModifiedClosure
+                    if (timerToken.RemainingCount == 0)
+                    {
+                        StopRegenerating(m);
+                    }
+
+                    m.Hits += hits;
+                },
+                out timerToken
+            );
+
+            m_RegenTable[m] = timerToken;
         }
 
         public static void StopRegenerating(Mobile m)
         {
             if (m_RegenTable.Remove(m, out var timer))
             {
-                timer.Stop();
-            }
-        }
-
-        private class InternalTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public InternalTimer(Mobile m) : base(TimeSpan.FromSeconds(15.0))
-            {
-                m_Mobile = m;
-                Priority = TimerPriority.TwoFiftyMS;
-            }
-
-            protected override void OnTick()
-            {
-                EndConfidence(m_Mobile);
-                m_Mobile.SendLocalizedMessage(1063116); // Your confidence wanes.
-            }
-        }
-
-        private class RegenTimer : Timer
-        {
-            private readonly int m_Hits;
-            private readonly Mobile m_Mobile;
-            private int m_Ticks;
-
-            public RegenTimer(Mobile m) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
-            {
-                m_Mobile = m;
-                m_Hits = 15 + m.Skills.Bushido.Fixed * m.Skills.Bushido.Fixed / 57600;
-                Priority = TimerPriority.TwoFiftyMS;
-            }
-
-            protected override void OnTick()
-            {
-                ++m_Ticks;
-
-                if (m_Ticks >= 5)
-                {
-                    m_Mobile.Hits += m_Hits - m_Hits * 4 / 5;
-                    StopRegenerating(m_Mobile);
-                }
-
-                m_Mobile.Hits += m_Hits / 5;
+                timer.Cancel();
             }
         }
     }

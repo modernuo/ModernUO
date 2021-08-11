@@ -74,7 +74,7 @@ namespace Server.Items
         private class LogoutGump : Gump
         {
             private readonly Bedroll m_Bedroll;
-            private readonly Timer m_CloseTimer;
+            private TimerExecutionToken _closeTimerToken;
 
             private readonly CampfireEntry m_Entry;
 
@@ -83,7 +83,7 @@ namespace Server.Items
                 m_Entry = entry;
                 m_Bedroll = bedroll;
 
-                m_CloseTimer = Timer.DelayCall(TimeSpan.FromSeconds(10.0), CloseGump);
+                Timer.StartTimer(TimeSpan.FromSeconds(10.0), CloseGump, out _closeTimerToken);
 
                 AddBackground(0, 0, 400, 350, 0xA28);
 
@@ -108,7 +108,7 @@ namespace Server.Items
             {
                 var pm = m_Entry.Player;
 
-                m_CloseTimer.Stop();
+                _closeTimerToken.Cancel();
 
                 if (Campfire.GetEntry(pm) != m_Entry)
                 {

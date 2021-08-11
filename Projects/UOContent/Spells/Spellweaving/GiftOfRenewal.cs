@@ -91,7 +91,7 @@ namespace Server.Spells.Spellweaving
             if (m_Table.Remove(m, out var timer))
             {
                 timer.Stop();
-                Timer.DelayCall(TimeSpan.FromSeconds(60), timer.m_Caster.EndAction<GiftOfRenewalSpell>);
+                Timer.StartTimer(TimeSpan.FromSeconds(60), timer.m_Caster.EndAction<GiftOfRenewalSpell>);
                 return true;
             }
 

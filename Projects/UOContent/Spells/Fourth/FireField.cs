@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
@@ -43,24 +43,7 @@ namespace Server.Spells.Fourth
                 var rx = (dx - dy) * 44;
                 var ry = (dx + dy) * 44;
 
-                bool eastToWest;
-
-                if (rx >= 0 && ry >= 0)
-                {
-                    eastToWest = false;
-                }
-                else if (rx >= 0)
-                {
-                    eastToWest = true;
-                }
-                else if (ry >= 0)
-                {
-                    eastToWest = true;
-                }
-                else
-                {
-                    eastToWest = false;
-                }
+                bool eastToWest = rx == 0 && ry >= 0 || rx >= 0 && ry == 0;
 
                 Effects.PlaySound(new Point3D(p), Caster.Map, 0x20C);
 
@@ -216,21 +199,16 @@ namespace Server.Spells.Fourth
 
             private class InternalTimer : Timer
             {
-                private static readonly Queue m_Queue = new();
+                private static Queue<Mobile> m_Queue;
                 private readonly bool m_CanFit;
                 private readonly bool m_InLOS;
                 private readonly FireFieldItem m_Item;
 
-                public InternalTimer(FireFieldItem item, TimeSpan delay, bool inLOS, bool canFit) : base(
-                    delay,
-                    TimeSpan.FromSeconds(1.0)
-                )
+                public InternalTimer(FireFieldItem item, TimeSpan delay, bool inLOS, bool canFit) : base(delay, TimeSpan.FromSeconds(1.0))
                 {
                     m_Item = item;
                     m_InLOS = inLOS;
                     m_CanFit = canFit;
-
-                    Priority = TimerPriority.FiftyMS;
                 }
 
                 protected override void OnTick()
@@ -283,13 +261,14 @@ namespace Server.Spells.Fourth
                             if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
                                 SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))
                             {
+                                m_Queue ??= new Queue<Mobile>();
                                 m_Queue.Enqueue(m);
                             }
                         }
 
-                        while (m_Queue.Count > 0)
+                        while (m_Queue?.Count > 0)
                         {
-                            var m = m_Queue.Dequeue() as Mobile;
+                            var m = m_Queue.Dequeue();
                             if (m == null)
                             {
                                 continue;

@@ -124,7 +124,7 @@ namespace Server.Network
 
         public static void Initialize()
         {
-            Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1.5), CheckAllAlive);
+            Timer.StartTimer(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1.5), CheckAllAlive);
         }
 
         public NetState(ISocket connection)

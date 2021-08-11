@@ -321,7 +321,20 @@ namespace Server.Items
 
         public static bool HasDiggingTool(Mobile m)
         {
-            return m.Backpack?.FindItemsByType<BaseHarvestTool>().Any(tool => tool.HarvestSystem == Mining.System) == true;
+            if (m.Backpack == null)
+            {
+                return false;
+            }
+
+            foreach (var tool in m.Backpack.FindItemsByType<BaseHarvestTool>())
+            {
+                if (tool.HarvestSystem == Mining.System)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public void OnBeginDig(Mobile from)
@@ -791,8 +804,6 @@ namespace Server.Items
                 m_NextSpellTime = from.NextSpellTime;
                 m_NextActionTime = from.NextActionTime;
                 m_LastMoveTime = from.LastMoveTime;
-
-                Priority = TimerPriority.TenMS;
             }
 
             private void Terminate()
@@ -932,8 +943,6 @@ namespace Server.Items
                 {
                     m_From = from;
                     m_SoundID = soundID;
-
-                    Priority = TimerPriority.TenMS;
                 }
 
                 protected override void OnTick()
@@ -1014,7 +1023,7 @@ namespace Server.Items
         {
             Movable = false;
 
-            Timer.DelayCall(TimeSpan.FromMinutes(2.0), Delete);
+            Timer.StartTimer(TimeSpan.FromMinutes(2.0), Delete);
         }
 
         public TreasureChestDirt(Serial serial) : base(serial)

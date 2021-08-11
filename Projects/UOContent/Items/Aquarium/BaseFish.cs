@@ -6,7 +6,7 @@ namespace Server.Items
     {
         private static readonly TimeSpan DeathDelay = TimeSpan.FromMinutes(5);
 
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         [Constructible]
         public BaseFish(int itemID) : base(itemID)
@@ -23,19 +23,15 @@ namespace Server.Items
 
         public virtual void StartTimer()
         {
-            m_Timer?.Stop();
-
-            m_Timer = Timer.DelayCall(DeathDelay, Kill);
+            _timerToken.Cancel();
+            Timer.StartTimer(DeathDelay, Kill, out _timerToken);
 
             InvalidateProperties();
         }
 
         public virtual void StopTimer()
         {
-            m_Timer?.Stop();
-
-            m_Timer = null;
-
+            _timerToken.Cancel();
             InvalidateProperties();
         }
 
@@ -74,7 +70,7 @@ namespace Server.Items
 
             list.Add(GetDescription());
 
-            if (!Dead && m_Timer != null)
+            if (!Dead && _timerToken.Running)
             {
                 list.Add(1074507); // Gasping for air
             }

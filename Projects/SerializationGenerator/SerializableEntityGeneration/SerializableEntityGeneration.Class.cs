@@ -117,6 +117,7 @@ namespace SerializationGenerator
 
             StringBuilder source = new StringBuilder();
 
+            source.AppendLine("#pragma warning disable\n");
             source.GenerateNamespaceStart(namespaceName);
 
             source.GenerateClassStart(
@@ -131,8 +132,7 @@ namespace SerializationGenerator
                 InstanceModifier.Const,
                 "int",
                 "_version",
-                version.ToString(),
-                true
+                version.ToString()
             );
             source.AppendLine();
 
@@ -203,7 +203,8 @@ namespace SerializationGenerator
                     fieldOrPropertySymbol,
                     order,
                     allAttributes,
-                    serializableTypes
+                    serializableTypes,
+                    classSymbol
                 );
 
                 serializablePropertySet.Add(serializableProperty);

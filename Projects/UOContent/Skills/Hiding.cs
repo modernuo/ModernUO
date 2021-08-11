@@ -63,10 +63,17 @@ namespace Server.SkillHandlers
             {
                 if (!CombatOverride)
                 {
-                    if (m.GetMobilesInRange(range).Any(check => check.InLOS(m) && check.Combatant == m))
+                    var eable = m.GetMobilesInRange(range);
+                    foreach (var check in eable)
                     {
-                        badCombat = true;
+                        if (check.InLOS(m) && check.Combatant == m)
+                        {
+                            badCombat = true;
+                            break;
+                        }
                     }
+
+                    eable.Free();
                 }
 
                 ok = !badCombat && m.CheckSkill(SkillName.Hiding, 0.0 - bonus, 100.0 - bonus);

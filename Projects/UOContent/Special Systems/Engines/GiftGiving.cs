@@ -69,7 +69,7 @@ namespace Server.Misc
 
         public virtual void DelayGiveGift(TimeSpan delay, Mobile mob)
         {
-            Timer.DelayCall(delay, GiveGift, mob);
+            Timer.StartTimer(delay, () => GiveGift(mob));
         }
 
         public virtual GiftResult GiveGift(Mobile mob, Item item)

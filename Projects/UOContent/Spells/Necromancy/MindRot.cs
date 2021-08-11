@@ -99,7 +99,7 @@ namespace Server.Spells.Necromancy
         {
             if (!m_Table.ContainsKey(target))
             {
-                var tmpB = new MRBucket(scalar, new MRExpireTimer(caster, target, duration));
+                var tmpB = new MRBucket(scalar, new MRExpireTimer(target, duration));
                 m_Table.Add(target, tmpB);
                 BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Mindrot, 1075665, duration, target));
                 tmpB.m_MRExpireTimer.Start();
@@ -113,14 +113,13 @@ namespace Server.Spells.Necromancy
         private readonly DateTime m_End;
         private readonly Mobile m_Target;
 
-        public MRExpireTimer(Mobile caster, Mobile target, TimeSpan delay) : base(
+        public MRExpireTimer(Mobile target, TimeSpan delay) : base(
             TimeSpan.FromSeconds(1.0),
             TimeSpan.FromSeconds(1.0)
         )
         {
             m_Target = target;
             m_End = Core.Now + delay;
-            Priority = TimerPriority.TwoFiftyMS;
         }
 
         protected override void OnTick()

@@ -6,13 +6,12 @@ namespace Server.Items
     [Flippable(0x2A5D, 0x2A61)]
     public class DisturbingPortraitComponent : AddonComponent
     {
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
-        public DisturbingPortraitComponent() : base(0x2A5D) => m_Timer = Timer.DelayCall(
-            TimeSpan.FromMinutes(3),
-            TimeSpan.FromMinutes(3),
-            Change
-        );
+        public DisturbingPortraitComponent() : base(0x2A5D)
+        {
+            Timer.StartTimer(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), Change, out _timerToken);
+        }
 
         public DisturbingPortraitComponent(Serial serial) : base(serial)
         {
@@ -36,10 +35,7 @@ namespace Server.Items
         {
             base.OnAfterDelete();
 
-            if (m_Timer?.Running == true)
-            {
-                m_Timer.Stop();
-            }
+            _timerToken.Cancel();
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -55,7 +51,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), Change);
+            Timer.StartTimer(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), Change, out _timerToken);
         }
 
         private void Change()

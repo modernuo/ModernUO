@@ -111,7 +111,6 @@ namespace Server.Engines.Quests.Necro
 
             public CallingTimer(PlayerMobile player) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0), 6)
             {
-                Priority = TimerPriority.TwentyFiveMS;
 
                 m_Player = player;
                 m_Step = 0;

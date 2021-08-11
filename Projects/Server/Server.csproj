@@ -10,8 +10,6 @@
         <PublishDir>..\..\Distribution</PublishDir>
         <OutDir>..\..\Distribution</OutDir>
         <Version>0.0.0</Version>
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Deleting source generated files..." />
@@ -39,9 +37,6 @@
     </Target>
     <ItemGroup>
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.0.2" />
-        <PackageReference Include="Serilog" Version="2.10.0" />
-        <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
-        <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
         <PackageReference Include="Zlib.Bindings" Version="1.5.0" />
     </ItemGroup>
     <ItemGroup>
@@ -60,17 +55,21 @@
             <PrivateAssets>all</PrivateAssets>
         </ProjectReference>
     </ItemGroup>
-    <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile">
+    <ItemGroup>
+        <AdditionalFiles Include="Migrations/*.v*.json" />
+    </ItemGroup>
+    <PropertyGroup Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+    <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile" Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
         <ItemGroup>
             <Compile Remove="Generated\**" />
         </ItemGroup>
     </Target>
-    <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile">
+    <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile" Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
         <ItemGroup>
             <Compile Include="Generated\**" />
         </ItemGroup>
     </Target>
-    <ItemGroup>
-        <AdditionalFiles Include="Migrations/*.v*.json" />
-    </ItemGroup>
 </Project>

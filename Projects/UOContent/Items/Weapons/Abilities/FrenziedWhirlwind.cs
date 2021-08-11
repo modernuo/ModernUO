@@ -81,7 +81,7 @@ namespace Server.Items
                 attacker.PlaySound(0x2A1);
             }
 
-            Timer.DelayCall(TimeSpan.FromSeconds(2.0), RepeatEffect, attacker);
+            Timer.StartTimer(TimeSpan.FromSeconds(2.0), () => RepeatEffect(attacker));
         }
 
         private void RepeatEffect(Mobile attacker)
@@ -110,8 +110,6 @@ namespace Server.Items
 
                 m_DamageRemaining = totalDamage;
                 DamagePerTick = (double)totalDamage / 12 + 0.01;
-
-                Priority = TimerPriority.TwentyFiveMS;
             }
 
             protected override void OnTick()

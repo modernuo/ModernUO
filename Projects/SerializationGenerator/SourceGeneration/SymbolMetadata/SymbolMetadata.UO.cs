@@ -66,7 +66,12 @@ namespace SerializationGenerator
             symbol is INamedTypeSymbol namedSymbol &&
             symbols.Contains(namedSymbol, SymbolEqualityComparer.Default);
 
-        public static bool HasGenericReaderCtor(this INamedTypeSymbol symbol, Compilation compilation, out bool requiresParent)
+        public static bool HasGenericReaderCtor(
+            this INamedTypeSymbol symbol,
+            Compilation compilation,
+            ISymbol? parentSymbol,
+            out bool requiresParent
+        )
         {
             var genericReaderInterface = compilation.GetTypeByMetadataName(GENERIC_READER_INTERFACE);
             var genericCtor = symbol.Constructors.FirstOrDefault(
@@ -76,7 +81,7 @@ namespace SerializationGenerator
                      SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, genericReaderInterface)
             );
 
-            requiresParent = genericCtor?.Parameters.Length == 2 && SymbolEqualityComparer.Default.Equals(genericCtor.Parameters[1].Type, symbol);
+            requiresParent = genericCtor?.Parameters.Length == 2 && SymbolEqualityComparer.Default.Equals(genericCtor.Parameters[1].Type, parentSymbol);
             return genericCtor != null;
         }
 

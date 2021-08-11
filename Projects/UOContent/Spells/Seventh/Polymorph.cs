@@ -19,7 +19,7 @@ namespace Server.Spells.Seventh
             Reagent.MandrakeRoot
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
         private readonly int m_NewBody;
 
@@ -158,14 +158,7 @@ namespace Server.Spells.Seventh
 
                         caster.BodyMod = m_NewBody;
 
-                        if (m_NewBody == 400 || m_NewBody == 401)
-                        {
-                            caster.HueMod = caster.Race.RandomSkinHue();
-                        }
-                        else
-                        {
-                            caster.HueMod = 0;
-                        }
+                        caster.HueMod = m_NewBody is 400 or 401 ? caster.Race.RandomSkinHue() : 0;
 
                         BaseArmor.ValidateMobile(caster);
                         BaseClothing.ValidateMobile(caster);
@@ -176,7 +169,8 @@ namespace Server.Spells.Seventh
 
                             var duration = Math.Max((int)caster.Skills.Magery.Value, 120);
 
-                            m_Table[caster] = Timer.DelayCall(TimeSpan.FromSeconds(duration), EndPolymorph, caster);
+                            Timer.StartTimer(TimeSpan.FromSeconds(duration), () => EndPolymorph(caster), out var timerToken);
+                            m_Table[caster] = timerToken;
                         }
                     }
                 }
@@ -193,11 +187,11 @@ namespace Server.Spells.Seventh
         {
             if (m_Table.Remove(m, out var timer))
             {
-                timer.Stop();
+                timer.Cancel();
             }
         }
 
-        private static void EndPolymorph(Mobile m)
+        public static void EndPolymorph(Mobile m)
         {
             if (m.CanBeginAction<PolymorphSpell>())
             {
@@ -206,10 +200,13 @@ namespace Server.Spells.Seventh
 
             m.BodyMod = 0;
             m.HueMod = -1;
+            m.NameMod = null;
             m.EndAction<PolymorphSpell>();
 
             BaseArmor.ValidateMobile(m);
             BaseClothing.ValidateMobile(m);
+
+            StopTimer(m);
         }
     }
 }

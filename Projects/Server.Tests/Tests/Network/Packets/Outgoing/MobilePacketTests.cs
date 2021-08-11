@@ -4,6 +4,7 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
+    [Collection("Sequential Tests")]
     public class MobilePacketTests : IClassFixture<ServerFixture>
     {
         [Fact]
@@ -328,11 +329,7 @@ namespace Server.Tests.Network
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
-    }
 
-    [Collection("Sequential Tests")]
-    public class SequentialMobilePacketTests : IClassFixture<ServerFixture>
-    {
         [Fact]
         public void TestMobileHits()
         {

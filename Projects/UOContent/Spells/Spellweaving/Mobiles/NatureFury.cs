@@ -55,7 +55,7 @@ namespace Server.Mobiles
         public override void MoveToWorld(Point3D loc, Map map)
         {
             base.MoveToWorld(loc, map);
-            Timer.DelayCall(DoEffects);
+            Timer.StartTimer(DoEffects);
         }
 
         public void DoEffects()
@@ -66,7 +66,7 @@ namespace Server.Mobiles
 
             if (Alive && !Deleted)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(7.0), DoEffects);
+                Timer.StartTimer(TimeSpan.FromSeconds(7.0), DoEffects);
             }
         }
 

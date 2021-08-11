@@ -42,7 +42,6 @@ namespace Server.Items
 
             public InternalTimer(Item blood) : base(TimeSpan.FromSeconds(5.0))
             {
-                Priority = TimerPriority.OneSecond;
 
                 m_Blood = blood;
             }

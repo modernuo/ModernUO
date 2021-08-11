@@ -4,7 +4,8 @@ using Server.Engines.Craft;
 
 namespace Server.Engines.BulkOrders
 {
-    public class SmallSmithBOD : SmallBOD
+    [Serializable(0, false)]
+    public partial class SmallSmithBOD : SmallBOD
     {
         public static double[] m_BlacksmithMaterialChances =
         {
@@ -60,10 +61,6 @@ namespace Server.Engines.BulkOrders
             int amountCur, int amountMax, Type type, int number, int graphic, bool reqExceptional,
             BulkMaterialType mat
         ) : base(0x44E, amountCur, amountMax, type, number, graphic, reqExceptional, mat)
-        {
-        }
-
-        public SmallSmithBOD(Serial serial) : base(serial)
         {
         }
 
@@ -164,20 +161,6 @@ namespace Server.Engines.BulkOrders
 
             var entry = validEntries.RandomElement();
             return new SmallSmithBOD(entry, material, amountMax, reqExceptional);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

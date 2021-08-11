@@ -11,12 +11,10 @@ namespace Server.Gumps
     {
         private readonly List<Mobile> m_Killers;
         private int m_Idx;
-        private Mobile m_Victum;
 
-        private ReportMurdererGump(Mobile victum, List<Mobile> killers, int idx = 0) : base(0, 0)
+        private ReportMurdererGump(List<Mobile> killers, int idx = 0) : base(0, 0)
         {
             m_Killers = killers;
-            m_Victum = victum;
             m_Idx = idx;
             BuildGump();
         }
@@ -148,7 +146,7 @@ namespace Server.Gumps
                             if (Core.SE)
                             {
                                 from.RecentlyReported.Add(killer);
-                                Timer.DelayCall(TimeSpan.FromMinutes(10), ReportedListExpiry_Callback, from, killer);
+                                Timer.StartTimer(TimeSpan.FromMinutes(10), () => ReportedListExpiry_Callback(from, killer));
                             }
 
                             if (killer is PlayerMobile pk)
@@ -178,7 +176,7 @@ namespace Server.Gumps
             m_Idx++;
             if (m_Idx < m_Killers.Count)
             {
-                from.SendGump(new ReportMurdererGump(from, m_Killers, m_Idx));
+                from.SendGump(new ReportMurdererGump( m_Killers, m_Idx));
             }
         }
 
@@ -195,7 +193,7 @@ namespace Server.Gumps
 
             protected override void OnTick()
             {
-                m_Victim.SendGump(new ReportMurdererGump(m_Victim, m_Killers));
+                m_Victim.SendGump(new ReportMurdererGump(m_Killers));
             }
         }
     }

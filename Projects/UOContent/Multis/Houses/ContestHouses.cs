@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Items;
@@ -138,8 +137,28 @@ namespace Server.Multis
             Fixtures.Add(item);
         }
 
-        public override bool IsInside(Point3D p, int height) =>
-            base.IsInside(p, height) || Fixtures?.OfType<HouseTeleporter>().Any(fix => fix.Location == p) == true;
+        public override bool IsInside(Point3D p, int height)
+        {
+            if (base.IsInside(p, height))
+            {
+                return true;
+            }
+
+            if (Fixtures == null)
+            {
+                return false;
+            }
+
+            foreach (Item fixture in Fixtures)
+            {
+                if (fixture is HouseTeleporter fix && fix.Location == p)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public virtual void AutoAddFixtures()
         {

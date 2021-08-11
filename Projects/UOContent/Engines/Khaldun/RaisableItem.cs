@@ -123,8 +123,6 @@ namespace Server.Items
                 m_Item = item;
                 m_CloseTime = Core.Now + item.CloseDelay;
                 m_Up = true;
-
-                Priority = TimerPriority.TenMS;
             }
 
             protected override void OnTick()
@@ -154,7 +152,8 @@ namespace Server.Items
                             m_Step = 0;
 
                             var delay = m_CloseTime - Core.Now;
-                            DelayCall(delay > TimeSpan.Zero ? delay : TimeSpan.Zero, Start);
+
+                            StartTimer(delay, () => Start());
 
                             return;
                         }

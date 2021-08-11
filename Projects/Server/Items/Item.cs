@@ -3027,7 +3027,7 @@ namespace Server
 
             if (HeldBy != null)
             {
-                Timer.DelayCall(FixHolding_Sandbox);
+                Timer.StartTimer(FixHolding_Sandbox);
             }
 
             // if (version < 9)
@@ -3553,8 +3553,7 @@ namespace Server
             var landTile = map.Tiles.GetLandTile(x, y);
             var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
 
-            int landZ = 0, landAvg = 0, landTop = 0;
-            map.GetAverageZ(x, y, ref landZ, ref landAvg, ref landTop);
+            map.GetAverageZ(x, y, out var landZ, out var landAvg, out _);
 
             if (!landTile.Ignored && (landFlags & TileFlag.Impassable) == 0)
             {

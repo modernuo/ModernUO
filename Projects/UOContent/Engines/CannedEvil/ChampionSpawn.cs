@@ -42,9 +42,10 @@ namespace Server.Engines.CannedEvil
 
         //Goes back each level, below level 0 and it goes off!
 
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         private IdolOfTheChampion m_Idol;
+        private TimerExecutionToken _restartTimerToken;
 
         public virtual string BroadcastMessage => "The Champion has sensed your presence!  Beware its wrath!";
         public virtual bool ProximitySpawn => false;
@@ -57,8 +58,6 @@ namespace Server.Engines.CannedEvil
         public virtual bool HasStarRoomGate => true;
 
         public Dictionary<Mobile, int> DamageEntries { get; private set; }
-
-        public Timer RestartTimer { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool ConfinedRoaming { get; set; }
@@ -92,7 +91,7 @@ namespace Server.Engines.CannedEvil
             RestartDelay = TimeSpan.FromMinutes(30.0);
             DamageEntries = new Dictionary<Mobile, int>();
 
-            Timer.DelayCall(TimeSpan.Zero, SetInitialSpawnArea);
+            Timer.StartTimer(TimeSpan.Zero, SetInitialSpawnArea);
         }
 
         public void SetInitialSpawnArea()
@@ -303,13 +302,10 @@ namespace Server.Engines.CannedEvil
             HasBeenAdvanced = false;
             m_MaxLevel = 16 + Utility.Random(3);
 
-            m_Timer?.Stop();
+            _timerToken.Cancel();
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnSlice, out _timerToken);
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.0),  TimeSpan.FromSeconds(1.0), OnSlice);
-            m_Timer.Start();
-
-            RestartTimer?.Stop();
-            RestartTimer = null;
+            _restartTimerToken.Cancel();
 
             if (m_Altar != null)
             {
@@ -336,12 +332,8 @@ namespace Server.Engines.CannedEvil
             HasBeenAdvanced = false;
             m_MaxLevel = 0;
 
-            m_Timer?.Stop();
-
-            m_Timer = null;
-
-            RestartTimer?.Stop();
-            RestartTimer = null;
+            _timerToken.Cancel();
+            _restartTimerToken.Cancel();
 
             if (m_Altar != null)
             {
@@ -363,17 +355,14 @@ namespace Server.Engines.CannedEvil
                 NextProximityTime = Core.Now + TimeSpan.FromHours(6.0);
             }
 
-            Timer.DelayCall(TimeSpan.FromMinutes(10.0), ExpireCreatures);
+            Timer.StartTimer(TimeSpan.FromMinutes(10.0), ExpireCreatures);
         }
 
         public void BeginRestart(TimeSpan ts)
         {
-            RestartTimer?.Stop();
-
             RestartTime = Core.Now + ts;
-
-            RestartTimer = Timer.DelayCall(ts, EndRestart);
-            RestartTimer.Start();
+            _restartTimerToken.Cancel();
+            Timer.StartTimer(ts, EndRestart, out _restartTimerToken);
         }
 
         public void EndRestart()
@@ -1171,7 +1160,7 @@ namespace Server.Engines.CannedEvil
 
         public void RegisterDamage(Mobile from, int amount)
         {
-            if (@from?.Player != true)
+            if (from?.Player != true)
             {
                 return;
             }
@@ -1314,11 +1303,14 @@ namespace Server.Engines.CannedEvil
             writer.Write(Champion);
             writer.Write(RestartDelay);
 
-            writer.Write(RestartTimer != null);
-
-            if (RestartTimer != null)
+            if (_restartTimerToken.Running)
             {
+                writer.Write(true);
                 writer.WriteDeltaTime(RestartTime);
+            }
+            else
+            {
+                writer.Write(false);
             }
         }
 
@@ -1456,7 +1448,7 @@ namespace Server.Engines.CannedEvil
                     }
             }
 
-            Timer.DelayCall(TimeSpan.Zero, UpdateRegion);
+            Timer.StartTimer(TimeSpan.Zero, UpdateRegion);
         }
     }
 

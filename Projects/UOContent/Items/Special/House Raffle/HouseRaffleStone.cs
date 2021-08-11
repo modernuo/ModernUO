@@ -5,6 +5,7 @@ using System.Text;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Gumps;
+using Server.Mobiles;
 using Server.Network;
 using Server.Regions;
 
@@ -274,7 +275,7 @@ namespace Server.Items
                 }
             }
 
-            Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckEnd_OnTick);
+            Timer.StartTimer(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckEnd_OnTick);
         }
 
         public bool ValidLocation() =>
@@ -518,7 +519,7 @@ namespace Server.Items
                 Container bank = from.FindBankNoCreate();
 
                 if (m_TicketPrice == 0 || from.Backpack?.ConsumeTotal(typeof(Gold), m_TicketPrice) == true ||
-                    bank?.ConsumeTotal(typeof(Gold), m_TicketPrice) == true)
+                    Banker.Withdraw(from, m_TicketPrice))
                 {
                     Entries.Add(new RaffleEntry(from));
 

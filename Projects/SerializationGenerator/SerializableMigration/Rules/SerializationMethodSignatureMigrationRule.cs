@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using SerializationGenerator;
@@ -31,6 +30,7 @@ namespace SerializableMigration
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ISymbol? parentSymbol,
             out string[] ruleArguments
         )
         {
@@ -41,7 +41,7 @@ namespace SerializableMigration
             }
 
             if (symbol is not INamedTypeSymbol namedTypeSymbol ||
-                !namedTypeSymbol.HasGenericReaderCtor(compilation, out var requiresParent))
+                !namedTypeSymbol.HasGenericReaderCtor(compilation, parentSymbol, out var requiresParent))
             {
                 ruleArguments = null;
                 return false;

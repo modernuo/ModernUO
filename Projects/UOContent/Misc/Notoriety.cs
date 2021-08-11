@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Server.Engines.ConPVP;
 using Server.Engines.PartySystem;
@@ -258,7 +257,7 @@ namespace Server.Misc
                 return true; // Guild allies or enemies can be harmful
             }
 
-            if (bcTarg?.Controlled == true || bcTarg?.Summoned == true && bcTarg?.SummonMaster != from)
+            if (bcTarg?.Controlled == true || bcTarg?.Summoned == true && bcTarg.SummonMaster != from)
             {
                 return false; // Cannot harm other controlled mobiles
             }

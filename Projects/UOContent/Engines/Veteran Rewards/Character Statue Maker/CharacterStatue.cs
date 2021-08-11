@@ -247,7 +247,7 @@ namespace Server.Mobiles
 
             if (m_SculptedBy == null || Map == Map.Internal) // Remove preview statues
             {
-                Timer.DelayCall(Delete);
+                Timer.StartTimer(Delete);
             }
         }
 
@@ -683,7 +683,7 @@ namespace Server.Mobiles
                 return AddonFitResult.Blocked;
             }
 
-            if (!BaseAddon.CheckHouse(from, p, map, 20, ref house))
+            if (!BaseAddon.CheckHouse(from, p, map, 20, out house))
             {
                 return AddonFitResult.NotInHouse;
             }

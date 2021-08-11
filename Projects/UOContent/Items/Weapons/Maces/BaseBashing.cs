@@ -51,7 +51,7 @@ namespace Server.Items
             {
                 damage *= 1.5;
 
-                attacker.SendMessage("You deliver a crushing blow!"); // Is this not localized?
+                attacker.SendLocalizedMessage(1060090); // You have delivered a crushing blow!
                 attacker.PlaySound(0x11C);
             }
 

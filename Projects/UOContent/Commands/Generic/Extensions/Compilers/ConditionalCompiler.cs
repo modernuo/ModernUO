@@ -109,7 +109,7 @@ namespace Server.Commands.Generic
 
         public void Acquire(TypeBuilder typeBuilder, ILGenerator il, string fieldName)
         {
-            if (!(Value is string toParse))
+            if (Value is not string toParse)
             {
                 return;
             }

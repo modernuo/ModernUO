@@ -12,7 +12,7 @@ namespace Server.Factions
         public static readonly TimeSpan TaxChangePeriod = TimeSpan.FromHours(12.0);
         public static readonly TimeSpan IncomePeriod = TimeSpan.FromDays(1.0);
 
-        private Timer m_IncomeTimer;
+        private Timer _incomeTimer;
         private TownState m_State;
 
         public Town()
@@ -222,16 +222,12 @@ namespace Server.Factions
 
         public void StartIncomeTimer()
         {
-            m_IncomeTimer?.Stop();
-
-            m_IncomeTimer = Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckIncome);
+            _incomeTimer ??= Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckIncome);
         }
 
-        public void StopIncomeTimer()
+        public void Delete()
         {
-            m_IncomeTimer?.Stop();
-
-            m_IncomeTimer = null;
+            _incomeTimer?.Stop();
         }
 
         public void CheckIncome()

@@ -73,14 +73,14 @@ namespace Server.Mobiles
             var rand = Utility.Random(527);
 
             /*
-      
+
             500 527 No Hue Color 94.88% 0
             10 527 Green   1.90% 0x8295
             10 527 Green   1.90% 0x8163 (Very Close to Above Green) //this one is an approximation
             5 527 Dark Green  0.95% 0x87D4
             1 527 Valorite  0.19% 0x88AB
             1 527 Midnight Blue 0.19% 0x8258
-      
+
              * */
 
             if (rand <= 0)
@@ -216,7 +216,7 @@ namespace Server.Mobiles
 
             if (version <= 1)
             {
-                Timer.DelayCall(Fix, version);
+                Timer.StartTimer(() => Fix(version));
             }
 
             if (version < 2)
@@ -264,7 +264,6 @@ namespace Server.Mobiles
             {
                 m_Mobile = m;
                 m_Mod = mod;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             public void DoExpire()

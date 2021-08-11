@@ -36,7 +36,6 @@ namespace Server
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(Core));
 
         private static bool _crashed;
-        private static Thread _timerThread;
         private static string _baseDirectory;
 
         private static bool _profiling;
@@ -48,7 +47,7 @@ namespace Server
 
         private static int _itemCount;
         private static int _mobileCount;
-        private static EventLoopContext _eventLoopContext;
+        public static EventLoopContext LoopContext { get; set; }
 
         private static readonly Type[] _serialTypeArray = { typeof(Serial) };
 
@@ -127,8 +126,8 @@ namespace Server
 
         // For Unix Stopwatch.Frequency is normalized to 1ns
         // We don't anticipate needing this for Windows/OSX
-        private static long _maxTickCountBeforePrecisionLoss = long.MaxValue / 1000L;
-        private static long _ticksPerMillisecond = Stopwatch.Frequency / 1000L;
+        private const long _maxTickCountBeforePrecisionLoss = long.MaxValue / 1000L;
+        private static readonly long _ticksPerMillisecond = Stopwatch.Frequency / 1000L;
 
         public static long TickCount
         {
@@ -145,6 +144,8 @@ namespace Server
                     // No precision loss
                     : 1000L * timestamp / Stopwatch.Frequency;
             }
+            // Setting this to a value lower than the previous is bad. Timers will become delayed
+            // until time catches up.
             set => _tickCount = value;
         }
 
@@ -358,8 +359,6 @@ namespace Server
             {
                 EventSink.InvokeShutdown();
             }
-
-            Timer.TimerThread.Set();
         }
 
         public static void Main(string[] args)
@@ -367,9 +366,9 @@ namespace Server
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
-            _eventLoopContext = new EventLoopContext();
+            LoopContext = new EventLoopContext();
 
-            SynchronizationContext.SetSynchronizationContext(_eventLoopContext);
+            SynchronizationContext.SetSynchronizationContext(LoopContext);
 
             foreach (var a in args)
             {
@@ -385,7 +384,7 @@ namespace Server
 
             if (Assembly == null)
             {
-                throw new Exception("Core: Assembly entry is missing.");
+                throw new Exception("Assembly entry is missing.");
             }
 
             if (Thread != null)
@@ -418,13 +417,18 @@ namespace Server
             ".TrimMultiline());
             Utility.PopColor();
 
-            logger.Information($"Running on {RuntimeInformation.FrameworkDescription}");
+            ProcessorCount = Environment.ProcessorCount;
 
-            var ttObj = new Timer.TimerThread();
-            _timerThread = new Thread(ttObj.TimerMain)
+            if (ProcessorCount > 1)
             {
-                Name = "Timer Thread"
-            };
+                MultiProcessor = true;
+            }
+
+            Console.CancelKeyPress += Console_CancelKeyPressed;
+
+            ServerConfiguration.Load();
+
+            logger.Information($"Running on {RuntimeInformation.FrameworkDescription}");
 
             var s = Arguments;
 
@@ -433,19 +437,10 @@ namespace Server
                 logger.Information($"Running with arguments: {s}");
             }
 
-            ProcessorCount = Environment.ProcessorCount;
-
-            if (ProcessorCount > 1)
-            {
-                MultiProcessor = true;
-            }
-
             if (MultiProcessor)
             {
                 logger.Information($"Optimizing for {ProcessorCount} processor{(ProcessorCount == 1 ? "" : "s")}");
             }
-
-            Console.CancelKeyPress += Console_CancelKeyPressed;
 
             if (GCSettings.IsServerGC)
             {
@@ -453,8 +448,6 @@ namespace Server
             }
 
             logger.Information($"High resolution timing ({(Stopwatch.IsHighResolution ? "Supported" : "Unsupported")})");
-
-            ServerConfiguration.Load();
 
             var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
@@ -474,6 +467,8 @@ namespace Server
 
             VerifySerialization();
 
+            Timer.Init(TickCount);
+
             AssemblyHandler.Invoke("Configure");
 
             TileMatrixLoader.LoadTileMatrix();
@@ -482,8 +477,6 @@ namespace Server
             World.Load();
 
             AssemblyHandler.Invoke("Initialize");
-
-            _timerThread.Start();
 
             TcpServer.Start();
             EventSink.InvokeServerStarted();
@@ -504,7 +497,7 @@ namespace Server
 
                     var events = Mobile.ProcessDeltaQueue();
                     events += Item.ProcessDeltaQueue();
-                    events += Timer.Slice();
+                    events += Timer.Slice(_tickCount);
 
                     // Handle networking
                     events += TcpServer.Slice();
@@ -512,7 +505,9 @@ namespace Server
                     events += NetState.Slice();
 
                     // Execute captured post-await methods (like Timer.Pause)
-                    events += _eventLoopContext.ExecuteTasks();
+                    events += LoopContext.ExecuteTasks();
+
+                    Timer.CheckTimerPool(); // Check for pool depletion so we can async refill it.
 
                     _tickCount = 0;
                     _now = DateTime.MinValue;
@@ -564,7 +559,7 @@ namespace Server
             {
                 Interlocked.Increment(ref _itemCount);
             }
-            else if (!type.IsSubclassOf(typeof(Mobile)))
+            else if (type.IsSubclassOf(typeof(Mobile)))
             {
                 Interlocked.Increment(ref _mobileCount);
             }

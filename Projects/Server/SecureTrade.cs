@@ -138,8 +138,8 @@ namespace Server
 
             ns?.RemoveTrade(this);
 
-            Timer.DelayCall(From.Dispose);
-            Timer.DelayCall(To.Dispose);
+            Timer.StartTimer(From.Dispose);
+            Timer.StartTimer(To.Dispose);
         }
 
         public void UpdateFromCurrency()

@@ -88,7 +88,7 @@ namespace Server.Engines.Doom
     {
         public Mobile m_Occupant;
 
-        public LeverPuzzleRegion(LeverPuzzleController controller, int[] loc)
+        public LeverPuzzleRegion(int[] loc)
             : base(null, Map.Malas, Find(LeverPuzzleController.lr_Enter, Map.Malas), new Rectangle2D(loc[0], loc[1], 1, 1))
         {
             Register();

@@ -6,7 +6,7 @@ namespace Server.Items
 {
     public class PlagueBeastOrgan : PlagueBeastInnard
     {
-        private Timer m_Timer;
+        private bool _opening;
 
         public PlagueBeastOrgan(int itemID = 1, int hue = 0) : base(itemID, hue)
         {
@@ -15,7 +15,7 @@ namespace Server.Items
             Movable = false;
             Visible = itemID <= 1;
 
-            Timer.DelayCall(Initialize);
+            Timer.StartTimer(Initialize);
         }
 
         public PlagueBeastOrgan(Serial serial) : base(serial)
@@ -52,9 +52,20 @@ namespace Server.Items
         {
             if (IsCuttable && IsAccessibleTo(from))
             {
-                if (!Opened && m_Timer == null)
+                if (!Opened && !_opening)
                 {
-                    m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3), FinishOpening, from);
+                    _opening = true;
+                    void Open()
+                    {
+                        _opening = false;
+                        if (!Deleted)
+                        {
+                            FinishOpening(from);
+                        }
+                    }
+
+                    Timer.StartTimer(TimeSpan.FromSeconds(3), Open);
+
                     scissors.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1071897); // You carefully cut into the organ.
                     return true;
                 }
@@ -65,14 +76,6 @@ namespace Server.Items
             return false;
         }
 
-        public override void OnAfterDelete()
-        {
-            if (m_Timer?.Running == true)
-            {
-                m_Timer.Stop();
-            }
-        }
-
         public virtual bool OnLifted(Mobile from, PlagueBeastComponent c) => c.IsGland || c.IsBrain;
 
         public virtual bool OnDropped(Mobile from, Item item, PlagueBeastComponent to) => false;
@@ -80,7 +83,6 @@ namespace Server.Items
         public virtual void FinishOpening(Mobile from)
         {
             Opened = true;
-
             Owner?.PlaySound(0x50);
         }
 
@@ -177,8 +179,8 @@ namespace Server.Items
                 with.PublicOverheadMessage(
                     MessageType.Regular,
                     0x3B2,
-                    1071896
-                ); // This is too crude an implement for such a procedure.
+                    1071896 // This is too crude an implement for such a procedure.
+                );
             }
         }
 
@@ -314,8 +316,8 @@ namespace Server.Items
                 from.LocalOverheadMessage(
                     MessageType.Regular,
                     0x3B2,
-                    1071901
-                ); // * As you cut the vein, a cloud of poison is expelled from the plague beast's organ, and the plague beast dissolves into a puddle of goo *
+                    1071901 // * As you cut the vein, a cloud of poison is expelled from the plague beast's organ, and the plague beast dissolves into a puddle of goo *
+                );
                 from.ApplyPoison(from, Poison.Greater);
                 from.PlaySound(0x22F);
 
@@ -350,8 +352,6 @@ namespace Server.Items
     {
         private Item m_Gland;
 
-        private Timer m_Timer;
-
         public PlagueBeastBackupOrgan() : base(0x1362, 0x6)
         {
         }
@@ -380,8 +380,8 @@ namespace Server.Items
                 with.PublicOverheadMessage(
                     MessageType.Regular,
                     0x3B2,
-                    1071896
-                ); // This is too crude an implement for such a procedure.
+                    1071896 // This is too crude an implement for such a procedure.
+                );
             }
         }
 
@@ -407,7 +407,7 @@ namespace Server.Items
             if (to.Hue == 0x1 && m_Gland == null && item is PlagueBeastGland)
             {
                 m_Gland = item;
-                m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3), FinishHealing);
+                Timer.StartTimer(TimeSpan.FromSeconds(3), FinishHealing);
                 from.SendAsciiMessage(0x3B2, "* You place the healthy gland inside the organ sac *");
                 item.Movable = false;
 
@@ -437,7 +437,7 @@ namespace Server.Items
                 Components[i].Hue = 0x6;
             }
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(2), OpenOrgan);
+            Timer.StartTimer(TimeSpan.FromSeconds(2), OpenOrgan);
         }
 
         public void OpenOrgan()
@@ -526,8 +526,8 @@ namespace Server.Items
                 from.LocalOverheadMessage(
                     MessageType.Regular,
                     0x34,
-                    1071913
-                ); // You place the organ in the fleshy receptacle near the core.
+                    1071913 // You place the organ in the fleshy receptacle near the core.
+                );
 
                 if (Owner != null)
                 {
@@ -538,8 +538,8 @@ namespace Server.Items
                         from.LocalOverheadMessage(
                             MessageType.Regular,
                             0x34,
-                            1071922
-                        ); // The plague beast is still bleeding from open wounds.  You must seal any bleeding wounds before the core will open!
+                            1071922 // The plague beast is still bleeding from open wounds.  You must seal any bleeding wounds before the core will open!
+                        );
                         return true;
                     }
                 }

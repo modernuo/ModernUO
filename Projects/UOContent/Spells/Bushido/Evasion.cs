@@ -13,7 +13,7 @@ namespace Server.Spells.Bushido
             9002
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
         public Evasion(Mobile caster, Item scroll)
             : base(caster, scroll, m_Info)
@@ -133,7 +133,7 @@ namespace Server.Spells.Bushido
                 BeginEvasion(Caster);
 
                 Caster.BeginAction<Evasion>();
-                Timer.DelayCall(TimeSpan.FromSeconds(20.0), Caster.EndAction<Evasion>);
+                Timer.StartTimer(TimeSpan.FromSeconds(20.0), Caster.EndAction<Evasion>);
             }
 
             FinishSequence();
@@ -206,38 +206,36 @@ namespace Server.Spells.Bushido
 
         public static void BeginEvasion(Mobile m)
         {
-            m_Table.TryGetValue(m, out var timer);
-            timer?.Stop();
+            StopEvasionTimer(m);
 
-            m_Table[m] = timer = new InternalTimer(m, GetEvadeDuration(m));
-            timer.Start();
+            Timer.StartTimer(GetEvadeDuration(m),
+                () =>
+                {
+                    EndEvasion(m);
+                    m.SendLocalizedMessage(1063121); // You no longer feel that you could deflect any attack.
+                },
+                out var timerToken
+            );
+
+            m_Table[m] = timerToken;
+        }
+
+        private static bool StopEvasionTimer(Mobile m)
+        {
+            if (m_Table.Remove(m, out var timer))
+            {
+                timer.Cancel();
+                return true;
+            }
+
+            return false;
         }
 
         public static void EndEvasion(Mobile m)
         {
-            if (m_Table.Remove(m, out var timer))
+            if (StopEvasionTimer(m))
             {
-                timer.Stop();
-            }
-
-            OnEffectEnd(m, typeof(Evasion));
-        }
-
-        private class InternalTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public InternalTimer(Mobile m, TimeSpan delay)
-                : base(delay)
-            {
-                m_Mobile = m;
-                Priority = TimerPriority.TwoFiftyMS;
-            }
-
-            protected override void OnTick()
-            {
-                EndEvasion(m_Mobile);
-                m_Mobile.SendLocalizedMessage(1063121); // You no longer feel that you could deflect any attack.
+                OnEffectEnd(m, typeof(Evasion));
             }
         }
     }

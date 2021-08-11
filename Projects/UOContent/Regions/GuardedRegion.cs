@@ -369,7 +369,6 @@ namespace Server.Regions
 
             public GuardTimer(Mobile m, Dictionary<Mobile, GuardTimer> table) : base(TimeSpan.FromSeconds(15.0))
             {
-                Priority = TimerPriority.TwoFiftyMS;
 
                 m_Mobile = m;
                 m_Table = table;

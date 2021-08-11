@@ -5,7 +5,7 @@ namespace Server.Items
     [FlippableAddon(Direction.South, Direction.East)]
     public class SacrificialAltarAddon : BaseAddonContainer
     {
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         [Constructible]
         public SacrificialAltarAddon() : base(0x2A9B)
@@ -25,6 +25,12 @@ namespace Server.Items
         public override int DefaultGumpID => 0x107;
         public override int DefaultDropSound => 0x42;
 
+        private void StartTimer()
+        {
+            _timerToken.Cancel();
+            Timer.StartTimer(TimeSpan.FromMinutes(3), Empty, out _timerToken);
+        }
+
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
             if (!base.OnDragDrop(from, dropped))
@@ -41,9 +47,7 @@ namespace Server.Items
             {
                 SendLocalizedMessageTo(from, 1010442); // The item will be deleted in three minutes
 
-                m_Timer?.Stop();
-
-                m_Timer = Timer.DelayCall(TimeSpan.FromMinutes(3), Empty);
+                StartTimer();
             }
 
             return true;
@@ -65,9 +69,7 @@ namespace Server.Items
             {
                 SendLocalizedMessageTo(from, 1010442); // The item will be deleted in three minutes
 
-                m_Timer?.Stop();
-
-                m_Timer = Timer.DelayCall(TimeSpan.FromMinutes(3), Empty);
+                StartTimer();
             }
 
             return true;
@@ -88,7 +90,7 @@ namespace Server.Items
 
             if (Items.Count > 0)
             {
-                m_Timer = Timer.DelayCall(TimeSpan.FromMinutes(3), Empty);
+                StartTimer();
             }
         }
 
@@ -131,9 +133,7 @@ namespace Server.Items
                 }
             }
 
-            m_Timer?.Stop();
-
-            m_Timer = null;
+            _timerToken.Cancel();
         }
     }
 

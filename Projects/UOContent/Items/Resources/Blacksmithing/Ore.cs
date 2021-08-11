@@ -4,41 +4,30 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-    public abstract class BaseOre : Item
+    [Serializable(1, false)]
+    public abstract partial class BaseOre : Item
     {
-        private CraftResource m_Resource;
-
         public BaseOre(CraftResource resource, int amount = 1) : base(RandomSize())
         {
             Stackable = true;
             Amount = amount;
             Hue = CraftResources.GetHue(resource);
 
-            m_Resource = resource;
+            _resource = resource;
         }
 
-        public BaseOre(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public CraftResource Resource
-        {
-            get => m_Resource;
-            set
-            {
-                m_Resource = value;
-                InvalidateProperties();
-            }
-        }
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializableField(0)]
+        private CraftResource _resource;
 
         public override int LabelNumber
         {
             get
             {
-                if (m_Resource >= CraftResource.DullCopper && m_Resource <= CraftResource.Valorite)
+                if (_resource >= CraftResource.DullCopper && _resource <= CraftResource.Valorite)
                 {
-                    return 1042845 + (m_Resource - CraftResource.DullCopper);
+                    return 1042845 + (_resource - CraftResource.DullCopper);
                 }
 
                 return 1042853; // iron ore;
@@ -47,71 +36,33 @@ namespace Server.Items
 
         public abstract BaseIngot GetIngot();
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
+            var info = reader.ReadInt() switch
+            {
+                0 => OreInfo.Iron,
+                1 => OreInfo.DullCopper,
+                2 => OreInfo.ShadowIron,
+                3 => OreInfo.Copper,
+                4 => OreInfo.Bronze,
+                5 => OreInfo.Gold,
+                6 => OreInfo.Agapite,
+                7 => OreInfo.Verite,
+                8 => OreInfo.Valorite,
+                _ => null
+            };
 
-            writer.Write(1); // version
-
-            writer.Write((int)m_Resource);
+            Resource = CraftResources.GetFromOreInfo(info);
         }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
+        private static int RandomSize() =>
+            Utility.RandomDouble() switch
             {
-                case 1:
-                    {
-                        m_Resource = (CraftResource)reader.ReadInt();
-                        break;
-                    }
-                case 0:
-                    {
-                        var info = reader.ReadInt() switch
-                        {
-                            0 => OreInfo.Iron,
-                            1 => OreInfo.DullCopper,
-                            2 => OreInfo.ShadowIron,
-                            3 => OreInfo.Copper,
-                            4 => OreInfo.Bronze,
-                            5 => OreInfo.Gold,
-                            6 => OreInfo.Agapite,
-                            7 => OreInfo.Verite,
-                            8 => OreInfo.Valorite,
-                            _ => null
-                        };
-
-                        m_Resource = CraftResources.GetFromOreInfo(info);
-                        break;
-                    }
-            }
-        }
-
-        private static int RandomSize()
-        {
-            var rand = Utility.RandomDouble();
-
-            if (rand < 0.12)
-            {
-                return 0x19B7;
-            }
-
-            if (rand < 0.18)
-            {
-                return 0x19B8;
-            }
-
-            if (rand < 0.25)
-            {
-                return 0x19BA;
-            }
-
-            return 0x19B9;
-        }
+                < 0.12 => 0x19B7, // Small
+                < 0.18 => 0x19B8, // Medium clump
+                < 0.25 => 0x19BA, // Medium
+                _      => 0x19B9  // Large
+            };
 
         public override bool CanStackWith(Item dropped) =>
             dropped.Stackable && Stackable && dropped.GetType() == GetType() && dropped.Hue == Hue &&
@@ -133,9 +84,9 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (!CraftResources.IsStandard(m_Resource))
+            if (!CraftResources.IsStandard(_resource))
             {
-                var num = CraftResources.GetLocalizationNumber(m_Resource);
+                var num = CraftResources.GetLocalizationNumber(_resource);
 
                 if (num > 0)
                 {
@@ -143,7 +94,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    list.Add(CraftResources.GetName(m_Resource));
+                    list.Add(CraftResources.GetName(_resource));
                 }
             }
         }
@@ -161,9 +112,8 @@ namespace Server.Items
             }
             else if (from.InRange(GetWorldLocation(), 2))
             {
-                from.SendLocalizedMessage(
-                    501971
-                ); // Select the forge on which to smelt the ore, or another pile of ore with which to combine it.
+                // Select the forge on which to smelt the ore, or another pile of ore with which to combine it.
+                from.SendLocalizedMessage(501971);
                 from.Target = new InternalTarget(this);
             }
             else
@@ -180,7 +130,7 @@ namespace Server.Items
 
             private bool IsForge(object obj)
             {
-                if (Core.ML && obj is Mobile mobile && mobile.IsDeadBondedPet)
+                if (Core.ML && obj is Mobile { IsDeadBondedPet: true })
                 {
                     return false;
                 }
@@ -190,16 +140,12 @@ namespace Server.Items
                     return true;
                 }
 
-                var itemID = 0;
-
-                if (obj is Item item)
+                var itemID = obj switch
                 {
-                    itemID = item.ItemID;
-                }
-                else if (obj is StaticTarget target)
-                {
-                    itemID = target.ItemID;
-                }
+                    Item item           => item.ItemID,
+                    StaticTarget target => target.ItemID,
+                    _                   => 0
+                };
 
                 return itemID == 4017 || itemID >= 6522 && itemID <= 6569;
             }
@@ -219,113 +165,13 @@ namespace Server.Items
 
                 if (targeted is BaseOre ore)
                 {
-                    if (!ore.Movable)
-                    {
-                        return;
-                    }
-
-                    if (m_Ore == ore)
-                    {
-                        from.SendLocalizedMessage(501972); // Select another pile or ore with which to combine this.
-                        from.Target = new InternalTarget(ore);
-                        return;
-                    }
-
-                    if (ore.Resource != m_Ore.Resource)
-                    {
-                        from.SendLocalizedMessage(501979); // You cannot combine ores of different metals.
-                        return;
-                    }
-
-                    var worth = ore.Amount;
-
-                    if (ore.ItemID == 0x19B9)
-                    {
-                        worth *= 8;
-                    }
-                    else if (ore.ItemID == 0x19B7)
-                    {
-                        worth *= 2;
-                    }
-                    else
-                    {
-                        worth *= 4;
-                    }
-
-                    var sourceWorth = m_Ore.Amount;
-
-                    if (m_Ore.ItemID == 0x19B9)
-                    {
-                        sourceWorth *= 8;
-                    }
-                    else if (m_Ore.ItemID == 0x19B7)
-                    {
-                        sourceWorth *= 2;
-                    }
-                    else
-                    {
-                        sourceWorth *= 4;
-                    }
-
-                    worth += sourceWorth;
-
-                    var plusWeight = 0;
-                    var newID = ore.ItemID;
-
-                    if (ore.DefaultWeight != m_Ore.DefaultWeight)
-                    {
-                        if (ore.ItemID == 0x19B7 || m_Ore.ItemID == 0x19B7)
-                        {
-                            newID = 0x19B7;
-                        }
-                        else if (ore.ItemID == 0x19B9)
-                        {
-                            newID = m_Ore.ItemID;
-                            plusWeight = ore.Amount * 2;
-                        }
-                        else
-                        {
-                            plusWeight = m_Ore.Amount * 2;
-                        }
-                    }
-
-                    if (ore.ItemID == 0x19B9 && worth > 120000 ||
-                        (ore.ItemID == 0x19B8 || ore.ItemID == 0x19BA) && worth > 60000 ||
-                        ore.ItemID == 0x19B7 && worth > 30000)
-                    {
-                        from.SendLocalizedMessage(1062844); // There is too much ore to combine.
-                        return;
-                    }
-
-                    if (ore.RootParent is Mobile mobile &&
-                        plusWeight + mobile.Backpack.TotalWeight > mobile.Backpack.MaxWeight)
-                    {
-                        from.SendLocalizedMessage(501978); // The weight is too great to combine in a container.
-                        return;
-                    }
-
-                    ore.ItemID = newID;
-
-                    if (ore.ItemID == 0x19B9)
-                    {
-                        ore.Amount = worth / 8;
-                    }
-                    else if (ore.ItemID == 0x19B7)
-                    {
-                        ore.Amount = worth / 2;
-                    }
-                    else
-                    {
-                        ore.Amount = worth / 4;
-                    }
-
-                    m_Ore.Delete();
+                    OnTargetOre(from, ore);
                     return;
                 }
 
                 if (IsForge(targeted))
                 {
-                    var difficulty = m_Ore.Resource switch
+                    var difficulty = m_Ore._resource switch
                     {
                         CraftResource.DullCopper => 65.0,
                         CraftResource.ShadowIron => 70.0,
@@ -361,77 +207,150 @@ namespace Server.Items
 
                         if (toConsume <= 0)
                         {
-                            from.SendLocalizedMessage(
-                                501987
-                            ); // There is not enough metal-bearing ore in this pile to make an ingot.
+                            // There is not enough metal-bearing ore in this pile to make an ingot.
+                            from.SendLocalizedMessage(501987);
+                            return;
+                        }
+
+                        if (toConsume > 30000)
+                        {
+                            toConsume = 30000;
+                        }
+
+                        int ingotAmount;
+
+                        if (m_Ore.ItemID == 0x19B7)
+                        {
+                            ingotAmount = toConsume / 2;
+
+                            if (toConsume % 2 != 0)
+                            {
+                                --toConsume;
+                            }
+                        }
+                        else if (m_Ore.ItemID == 0x19B9)
+                        {
+                            ingotAmount = toConsume * 2;
                         }
                         else
                         {
-                            if (toConsume > 30000)
-                            {
-                                toConsume = 30000;
-                            }
-
-                            int ingotAmount;
-
-                            if (m_Ore.ItemID == 0x19B7)
-                            {
-                                ingotAmount = toConsume / 2;
-
-                                if (toConsume % 2 != 0)
-                                {
-                                    --toConsume;
-                                }
-                            }
-                            else if (m_Ore.ItemID == 0x19B9)
-                            {
-                                ingotAmount = toConsume * 2;
-                            }
-                            else
-                            {
-                                ingotAmount = toConsume;
-                            }
-
-                            var ingot = m_Ore.GetIngot();
-                            ingot.Amount = ingotAmount;
-
-                            m_Ore.Consume(toConsume);
-                            from.AddToBackpack(ingot);
-                            // from.PlaySound( 0x57 );
-
-                            from.SendLocalizedMessage(
-                                501988
-                            ); // You smelt the ore removing the impurities and put the metal in your backpack.
+                            ingotAmount = toConsume;
                         }
+
+                        var ingot = m_Ore.GetIngot();
+                        ingot.Amount = ingotAmount;
+
+                        m_Ore.Consume(toConsume);
+                        from.AddToBackpack(ingot);
+                        // from.PlaySound( 0x57 );
+
+                        // You smelt the ore removing the impurities and put the metal in your backpack.
+                        from.SendLocalizedMessage(501988);
                     }
                     else
                     {
                         if (m_Ore.Amount < 2)
                         {
-                            if (m_Ore.ItemID == 0x19B9)
-                            {
-                                m_Ore.ItemID = 0x19B8;
-                            }
-                            else
-                            {
-                                m_Ore.ItemID = 0x19B7;
-                            }
+                            m_Ore.ItemID = m_Ore.ItemID == 0x19B9 ? 0x19B8 : 0x19B7;
                         }
                         else
                         {
                             m_Ore.Amount /= 2;
                         }
 
-                        from.SendLocalizedMessage(
-                            501990
-                        ); // You burn away the impurities but are left with less useable metal.
+                        // You burn away the impurities but are left with less useable metal.
+                        from.SendLocalizedMessage(501990);
                     }
                 }
+            }
+
+            private void OnTargetOre(Mobile from, BaseOre ore)
+            {
+                if (!ore.Movable)
+                {
+                    return;
+                }
+
+                if (m_Ore == ore)
+                {
+                    from.SendLocalizedMessage(501972); // Select another pile or ore with which to combine this.
+                    from.Target = new InternalTarget(ore);
+                    return;
+                }
+
+                if (ore._resource != m_Ore._resource)
+                {
+                    from.SendLocalizedMessage(501979); // You cannot combine ores of different metals.
+                    return;
+                }
+
+                var worth = ore.Amount * ore.ItemID switch
+                {
+                    0x19B9 => 8,
+                    0x19B7 => 2,
+                    _      => 4
+                };
+
+                var sourceWorth = m_Ore.Amount * m_Ore.ItemID switch
+                {
+                    0x19B9 => 8,
+                    0x19B7 => 2,
+                    _      => 4
+                };
+
+                worth += sourceWorth;
+
+                var plusWeight = 0;
+                var newID = ore.ItemID;
+
+                if (ore.DefaultWeight != m_Ore.DefaultWeight)
+                {
+                    if (ore.ItemID == 0x19B7 || m_Ore.ItemID == 0x19B7)
+                    {
+                        newID = 0x19B7;
+                    }
+                    else if (ore.ItemID == 0x19B9)
+                    {
+                        newID = m_Ore.ItemID;
+                        plusWeight = ore.Amount * 2;
+                    }
+                    else
+                    {
+                        plusWeight = m_Ore.Amount * 2;
+                    }
+                }
+
+                if (ore.ItemID == 0x19B9 && worth > 120000 ||
+                    ore.ItemID is 0x19B8 or 0x19BA && worth > 60000 ||
+                    ore.ItemID == 0x19B7 && worth > 30000)
+                {
+                    from.SendLocalizedMessage(1062844); // There is too much ore to combine.
+                    return;
+                }
+
+                if (ore.RootParent is Mobile mobile &&
+                    plusWeight + mobile.Backpack.TotalWeight > mobile.Backpack.MaxWeight)
+                {
+                    from.SendLocalizedMessage(501978); // The weight is too great to combine in a container.
+                    return;
+                }
+
+                ore.ItemID = newID;
+
+                ore.Amount = ore.ItemID switch
+                {
+                    0x19B9 => worth / 8,
+                    0x19B7 => worth / 2,
+                    _      => worth / 4
+                };
+
+                m_Ore.Delete();
             }
         }
     }
 
-    public class IronOre : BaseOre
+    [Serializable(0, false)]
+    public partial class IronOre : BaseOre
     {
         [Constructible]
         public IronOre(int amount = 1) : base(CraftResource.Iron, amount)
@@ -446,246 +365,92 @@ namespace Server.Items
             }
         }
 
-        public IronOre(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
         public override BaseIngot GetIngot() => new IronIngot();
     }
 
-    public class DullCopperOre : BaseOre
+    [Serializable(0, false)]
+    public partial class DullCopperOre : BaseOre
     {
         [Constructible]
         public DullCopperOre(int amount = 1) : base(CraftResource.DullCopper, amount)
         {
         }
 
-        public DullCopperOre(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
         public override BaseIngot GetIngot() => new DullCopperIngot();
     }
 
-    public class ShadowIronOre : BaseOre
+    [Serializable(0, false)]
+    public partial class ShadowIronOre : BaseOre
     {
         [Constructible]
         public ShadowIronOre(int amount = 1) : base(CraftResource.ShadowIron, amount)
         {
         }
 
-        public ShadowIronOre(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
         public override BaseIngot GetIngot() => new ShadowIronIngot();
     }
 
-    public class CopperOre : BaseOre
+    [Serializable(0, false)]
+    public partial class CopperOre : BaseOre
     {
         [Constructible]
         public CopperOre(int amount = 1) : base(CraftResource.Copper, amount)
         {
         }
 
-        public CopperOre(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
         public override BaseIngot GetIngot() => new CopperIngot();
     }
 
-    public class BronzeOre : BaseOre
+    [Serializable(0, false)]
+    public partial class BronzeOre : BaseOre
     {
         [Constructible]
         public BronzeOre(int amount = 1) : base(CraftResource.Bronze, amount)
         {
         }
 
-        public BronzeOre(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
         public override BaseIngot GetIngot() => new BronzeIngot();
     }
 
-    public class GoldOre : BaseOre
+    [Serializable(0, false)]
+    public partial class GoldOre : BaseOre
     {
         [Constructible]
         public GoldOre(int amount = 1) : base(CraftResource.Gold, amount)
         {
         }
 
-        public GoldOre(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
         public override BaseIngot GetIngot() => new GoldIngot();
     }
 
-    public class AgapiteOre : BaseOre
+    [Serializable(0, false)]
+    public partial class AgapiteOre : BaseOre
     {
         [Constructible]
         public AgapiteOre(int amount = 1) : base(CraftResource.Agapite, amount)
         {
         }
 
-        public AgapiteOre(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
         public override BaseIngot GetIngot() => new AgapiteIngot();
     }
 
-    public class VeriteOre : BaseOre
+    [Serializable(0, false)]
+    public partial class VeriteOre : BaseOre
     {
         [Constructible]
         public VeriteOre(int amount = 1) : base(CraftResource.Verite, amount)
         {
         }
 
-        public VeriteOre(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
         public override BaseIngot GetIngot() => new VeriteIngot();
     }
 
-    public class ValoriteOre : BaseOre
+    [Serializable(0, false)]
+    public partial class ValoriteOre : BaseOre
     {
         [Constructible]
         public ValoriteOre(int amount = 1) : base(CraftResource.Valorite, amount)
         {
-        }
-
-        public ValoriteOre(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         public override BaseIngot GetIngot() => new ValoriteIngot();

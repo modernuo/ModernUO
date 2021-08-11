@@ -13,7 +13,7 @@ namespace Server.Items
 
         public static readonly TimeSpan FreezeDelayDuration = TimeSpan.FromSeconds(8.0);
 
-        private static readonly Dictionary<Mobile, Timer> _table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
 
         public override int BaseMana => 30;
 
@@ -84,20 +84,16 @@ namespace Server.Items
 
         public static void BeginImmunity(Mobile m, TimeSpan duration)
         {
-            if (_table.TryGetValue(m, out var timer))
-            {
-                timer?.Stop();
-            }
-
-            _table[m] = timer = Timer.DelayCall(duration, EndImmunity, m);
-            timer.Start();
+            EndImmunity(m);
+            Timer.StartTimer(duration, () => EndImmunity(m), out var timerToken);
+            _table[m] = timerToken;
         }
 
         public static void EndImmunity(Mobile m)
         {
-            if (_table.Remove(m, out var timer))
+            if (_table.Remove(m, out var timerToken))
             {
-                timer?.Stop();
+                timerToken.Cancel();
             }
         }
     }

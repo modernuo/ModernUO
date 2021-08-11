@@ -2,31 +2,20 @@ using Server.Mobiles;
 
 namespace Server.Engines.BulkOrders
 {
-    public abstract class LargeBOD : BaseBOD
+    [Serializable(0)]
+    public abstract partial class LargeBOD : BaseBOD
     {
-        private LargeBulkEntry[] m_Entries;
+        [InvalidateProperties]
+        [SerializableField(0)]
+        private LargeBulkEntry[] _entries;
 
         public LargeBOD(
             int hue, int amountMax, bool requireExeptional, BulkMaterialType material, LargeBulkEntry[] entries
         ) : base(hue, amountMax, requireExeptional, material) =>
-            m_Entries = entries;
+            _entries = entries;
 
         public LargeBOD()
         {
-        }
-
-        public LargeBOD(Serial serial) : base(serial)
-        {
-        }
-
-        public LargeBulkEntry[] Entries
-        {
-            get => m_Entries;
-            set
-            {
-                m_Entries = value;
-                InvalidateProperties();
-            }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -34,9 +23,9 @@ namespace Server.Engines.BulkOrders
         {
             get
             {
-                for (var i = 0; i < m_Entries.Length; ++i)
+                for (var i = 0; i < _entries.Length; ++i)
                 {
-                    if (m_Entries[i].Amount < AmountMax)
+                    if (_entries[i].Amount < AmountMax)
                     {
                         return false;
                     }
@@ -66,9 +55,9 @@ namespace Server.Engines.BulkOrders
 
             list.Add(1060656, AmountMax.ToString()); // amount to make: ~1_val~
 
-            for (var i = 0; i < m_Entries.Length; ++i)
+            for (var i = 0; i < _entries.Length; ++i)
             {
-                list.Add(1060658 + i, "#{0}\t{1}", m_Entries[i].Details.Number, m_Entries[i].Amount); // ~1_val~: ~2_val~
+                list.Add(1060658 + i, "#{0}\t{1}", _entries[i].Details.Number, _entries[i].Amount); // ~1_val~: ~2_val~
             }
         }
 
@@ -96,7 +85,7 @@ namespace Server.Engines.BulkOrders
 
         public override void EndCombine(Mobile from, Item item)
         {
-            if (!(item is SmallBOD small))
+            if (item is not SmallBOD small)
             {
                 from.SendLocalizedMessage(1045159); // That is not a bulk order.
                 return;
@@ -104,11 +93,11 @@ namespace Server.Engines.BulkOrders
 
             LargeBulkEntry entry = null;
 
-            for (var i = 0; i < m_Entries.Length; ++i)
+            for (var i = 0; i < _entries.Length; ++i)
             {
-                if (m_Entries[i].Details.Type == small.Type)
+                if (_entries[i].Details.Type == small.Type)
                 {
-                    entry = m_Entries[i];
+                    entry = _entries[i];
                     break;
                 }
             }
@@ -157,42 +146,6 @@ namespace Server.Engines.BulkOrders
                 {
                     BeginCombine(from);
                 }
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(m_Entries.Length);
-
-            for (var i = 0; i < m_Entries.Length; ++i)
-            {
-                m_Entries[i].Serialize(writer);
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_Entries = new LargeBulkEntry[reader.ReadInt()];
-
-                        for (var i = 0; i < m_Entries.Length; ++i)
-                        {
-                            m_Entries[i] = new LargeBulkEntry(this, reader);
-                        }
-
-                        break;
-                    }
             }
         }
     }

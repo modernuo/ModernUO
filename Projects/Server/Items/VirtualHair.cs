@@ -10,7 +10,7 @@ namespace Server
         public const int EquipUpdatePacketLength = 15;
         public const int RemovePacketLength = 5;
 
-        public static void SendHairEquipUpdatePacket(this NetState ns, Mobile m, Serial hairSerial, Layer layer)
+        public static void SendHairEquipUpdatePacket(this NetState ns, Mobile m, Serial hairSerial,  int itemId, int hue, Layer layer)
         {
             if (ns == null)
             {
@@ -18,28 +18,26 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[EquipUpdatePacketLength];
-            CreateHairEquipUpdatePacket(buffer, m, hairSerial, layer);
+            CreateHairEquipUpdatePacket(buffer, m, hairSerial, itemId, hue, layer);
             ns.Send(buffer);
         }
 
-        public static void CreateHairEquipUpdatePacket(Span<byte> buffer, Mobile m, Serial hairSerial, Layer layer)
+        public static void CreateHairEquipUpdatePacket(Span<byte> buffer, Mobile m, Serial hairSerial, int itemId, int hue, Layer layer)
         {
             if (buffer[0] != 0)
             {
                 return;
             }
 
-            var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.HairHue;
-
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x2E); // Packet ID
 
             writer.Write(hairSerial);
-            writer.Write((short)m.HairItemID);
+            writer.Write((short)itemId);
             writer.Write((byte)0);
             writer.Write((byte)layer);
             writer.Write(m.Serial);
-            writer.Write((short)hue);
+            writer.Write((short)(m.SolidHueOverride >= 0 ? m.SolidHueOverride : hue));
         }
 
         public static void SendRemoveHairPacket(this NetState ns, Serial hairSerial)

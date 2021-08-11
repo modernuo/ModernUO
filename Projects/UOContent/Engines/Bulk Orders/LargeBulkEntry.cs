@@ -14,7 +14,7 @@ namespace Server.Engines.BulkOrders
             Details = details;
         }
 
-        public LargeBulkEntry(LargeBOD owner, IGenericReader reader)
+        public LargeBulkEntry(IGenericReader reader, LargeBOD owner)
         {
             Owner = owner;
             m_Amount = reader.ReadInt();

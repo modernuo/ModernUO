@@ -333,12 +333,12 @@ namespace Server.Engines.ConPVP
 
             if (IsOccupied)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(2.0), Evict);
+                Timer.StartTimer(TimeSpan.FromSeconds(2.0), Evict);
             }
 
             if (m_Tournament != null)
             {
-                Timer.DelayCall(AttachToTournament_Sandbox);
+                Timer.StartTimer(AttachToTournament_Sandbox);
             }
         }
 
@@ -772,11 +772,7 @@ namespace Server.Engines.ConPVP
                 {
                     var pe = prefs.Find(players[j]);
 
-                    if (pe.Disliked.Contains(ae.m_Arena.Name))
-                    {
-                        ++ae.m_VotesAgainst;
-                    }
-                    else
+                    if (!pe.Disliked.Contains(ae.m_Arena.Name))
                     {
                         ++ae.m_VotesFor;
                     }
@@ -827,7 +823,6 @@ namespace Server.Engines.ConPVP
         private class ArenaEntry
         {
             public readonly Arena m_Arena;
-            public int m_VotesAgainst;
             public int m_VotesFor;
 
             public ArenaEntry(Arena arena) => m_Arena = arena;

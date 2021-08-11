@@ -38,7 +38,7 @@ namespace Server
 
         public static void CheckAtrophy(Mobile from)
         {
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return;
             }
@@ -71,7 +71,7 @@ namespace Server
                 return;
             }
 
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return;
             }
@@ -106,12 +106,12 @@ namespace Server
                 return;
             }
 
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return;
             }
 
-            if (!(targeted is Mobile targ))
+            if (targeted is not Mobile targ)
             {
                 return;
             }
@@ -142,20 +142,12 @@ namespace Server
             }
             else
             {
-                int toGain;
-
-                if (from.Fame < 5000)
+                int toGain = from.Fame switch
                 {
-                    toGain = 500;
-                }
-                else if (from.Fame < 10000)
-                {
-                    toGain = 1000;
-                }
-                else
-                {
-                    toGain = 2000;
-                }
+                    < 5000  => 500,
+                    < 10000 => 1000,
+                    _       => 2000
+                };
 
                 from.Fame = 0;
 
@@ -164,7 +156,7 @@ namespace Server
 
                 from.SendLocalizedMessage(1052010); // You have set the creature free.
 
-                Timer.DelayCall(TimeSpan.FromSeconds(1.0), targ.Delete);
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), targ.Delete);
 
                 pm.LastSacrificeGain = Core.Now;
 

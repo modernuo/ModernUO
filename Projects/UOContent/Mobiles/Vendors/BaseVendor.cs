@@ -8,6 +8,7 @@ using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
 using Server.Regions;
+using Server.Text;
 
 namespace Server.Mobiles
 {
@@ -26,8 +27,8 @@ namespace Server.Mobiles
 
         private static readonly TimeSpan InventoryDecayTime = TimeSpan.FromHours(1.0);
 
-        private readonly List<IBuyItemInfo> m_ArmorBuyInfo = new();
-        private readonly List<IShopSellInfo> m_ArmorSellInfo = new();
+        private readonly List<IBuyItemInfo> _buyInfo = new();
+        private readonly List<IShopSellInfo> _sellInfo = new();
 
         public BaseVendor(string title = null)
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
@@ -77,7 +78,7 @@ namespace Server.Mobiles
         {
             get
             {
-                if (!(FindItemOnLayer(Layer.ShopBuy) is Container pack))
+                if (FindItemOnLayer(Layer.ShopBuy) is not Container pack)
                 {
                     pack = new Backpack { Layer = Layer.ShopBuy, Visible = false };
                     AddItem(pack);
@@ -130,7 +131,6 @@ namespace Server.Mobiles
             var info = GetSellInfo();
             var totalCost = 0;
             var validBuy = new List<BuyItemResponse>(list.Count);
-            bool bought;
             var fromBank = false;
             var fullPurchase = true;
             var controlSlots = buyer.FollowersMax - buyer.Followers;
@@ -213,7 +213,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            bought = buyer.AccessLevel >= AccessLevel.GameMaster;
+            var bought = buyer.AccessLevel >= AccessLevel.GameMaster;
 
             var cont = buyer.Backpack;
             if (!bought && cont != null)
@@ -230,8 +230,7 @@ namespace Server.Mobiles
 
             if (!bought && totalCost >= 2000)
             {
-                cont = buyer.FindBankNoCreate();
-                if (cont?.ConsumeTotal(typeof(Gold), totalCost) == true)
+                if (Banker.Withdraw(buyer, totalCost))
                 {
                     bought = true;
                     fromBank = true;
@@ -338,18 +337,17 @@ namespace Server.Mobiles
                 {
                     SayTo(
                         buyer,
-                        1151638,
-                        totalCost
-                            .ToString()
-                    ); // The total of your purchase is ~1_val~ gold, which has been drawn from your bank account.  My thanks for the patronage.
+                        1151638, // The total of your purchase is ~1_val~ gold, which has been drawn from your bank account.  My thanks for the patronage.
+                        totalCost.ToString()
+                    );
                 }
                 else
                 {
                     SayTo(
                         buyer,
-                        1151639,
+                        1151639, // The total of your purchase is ~1_val~ gold.  My thanks for the patronage.
                         totalCost.ToString()
-                    ); // The total of your purchase is ~1_val~ gold.  My thanks for the patronage.
+                    );
                 }
             }
             else
@@ -449,48 +447,45 @@ namespace Server.Mobiles
 
                 foreach (var ssi in info)
                 {
-                    if (ssi.IsSellable(resp.Item))
+                    if (!ssi.IsSellable(resp.Item))
                     {
-                        var amount = resp.Amount;
+                        continue;
+                    }
 
-                        if (amount > resp.Item.Amount)
+                    var amount = resp.Amount;
+
+                    if (amount > resp.Item.Amount)
+                    {
+                        amount = resp.Item.Amount;
+                    }
+
+                    if (ssi.IsResellable(resp.Item))
+                    {
+                        var found = false;
+
+                        foreach (var bii in buyInfo)
                         {
-                            amount = resp.Item.Amount;
+                            if (bii.Restock(resp.Item, amount))
+                            {
+                                resp.Item.Consume(amount);
+                                found = true;
+
+                                break;
+                            }
                         }
 
-                        if (ssi.IsResellable(resp.Item))
+                        if (!found)
                         {
-                            var found = false;
+                            var cont = BuyPack;
 
-                            foreach (var bii in buyInfo)
+                            if (amount < resp.Item.Amount)
                             {
-                                if (bii.Restock(resp.Item, amount))
+                                var item = LiftItemDupe(resp.Item, resp.Item.Amount - amount);
+
+                                if (item != null)
                                 {
-                                    resp.Item.Consume(amount);
-                                    found = true;
-
-                                    break;
-                                }
-                            }
-
-                            if (!found)
-                            {
-                                var cont = BuyPack;
-
-                                if (amount < resp.Item.Amount)
-                                {
-                                    var item = LiftItemDupe(resp.Item, resp.Item.Amount - amount);
-
-                                    if (item != null)
-                                    {
-                                        item.SetLastMoved();
-                                        cont.DropItem(item);
-                                    }
-                                    else
-                                    {
-                                        resp.Item.SetLastMoved();
-                                        cont.DropItem(resp.Item);
-                                    }
+                                    item.SetLastMoved();
+                                    cont.DropItem(item);
                                 }
                                 else
                                 {
@@ -498,22 +493,27 @@ namespace Server.Mobiles
                                     cont.DropItem(resp.Item);
                                 }
                             }
+                            else
+                            {
+                                resp.Item.SetLastMoved();
+                                cont.DropItem(resp.Item);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (amount < resp.Item.Amount)
+                        {
+                            resp.Item.Amount -= amount;
                         }
                         else
                         {
-                            if (amount < resp.Item.Amount)
-                            {
-                                resp.Item.Amount -= amount;
-                            }
-                            else
-                            {
-                                resp.Item.Delete();
-                            }
+                            resp.Item.Delete();
                         }
-
-                        GiveGold += ssi.GetSellPriceFor(resp.Item) * amount;
-                        break;
                     }
+
+                    GiveGold += ssi.GetSellPriceFor(resp.Item) * amount;
+                    break;
                 }
             }
 
@@ -567,9 +567,9 @@ namespace Server.Mobiles
         {
             LastRestock = Core.Now;
 
-            for (var i = 0; i < m_ArmorBuyInfo.Count; ++i)
+            for (var i = 0; i < _buyInfo.Count; ++i)
             {
-                if (m_ArmorBuyInfo[i] is GenericBuyInfo buy)
+                if (_buyInfo[i] is GenericBuyInfo buy)
                 {
                     buy.DeleteDisplayEntity();
                 }
@@ -579,14 +579,14 @@ namespace Server.Mobiles
 
             InitSBInfo();
 
-            m_ArmorBuyInfo.Clear();
-            m_ArmorSellInfo.Clear();
+            _buyInfo.Clear();
+            _sellInfo.Clear();
 
             for (var i = 0; i < SBInfos.Count; i++)
             {
                 var sbInfo = SBInfos[i];
-                m_ArmorBuyInfo.AddRange(sbInfo.BuyInfo);
-                m_ArmorSellInfo.Add(sbInfo.SellInfo);
+                _buyInfo.AddRange(sbInfo.BuyInfo);
+                _sellInfo.Add(sbInfo.SellInfo);
             }
         }
 
@@ -816,7 +816,7 @@ namespace Server.Mobiles
             }
             else
             {
-                AddItem(Utility.RandomBool() ? (Item)new LongPants(GetRandomHue()) : new ShortPants(GetRandomHue()));
+                AddItem(Utility.RandomBool() ? new LongPants(GetRandomHue()) : new ShortPants(GetRandomHue()));
             }
 
             PackGold(100, 200);
@@ -853,7 +853,7 @@ namespace Server.Mobiles
             var list = new List<BuyItemState>(buyInfo.Length);
             var cont = BuyPack;
 
-            var opls = new List<ObjectPropertyList>();
+            var opls = ObjectPropertyList.Enabled ? new List<ObjectPropertyList>(buyInfo.Length) : null;
 
             for (var idx = 0; idx < buyInfo.Length; idx++)
             {
@@ -864,7 +864,7 @@ namespace Server.Mobiles
                     continue;
                 }
 
-                if (!(buyItem is GenericBuyInfo gbi))
+                if (buyItem is not GenericBuyInfo gbi)
                 {
                     return;
                 }
@@ -875,7 +875,7 @@ namespace Server.Mobiles
                     new BuyItemState(
                         buyItem.Name,
                         cont.Serial,
-                        disp?.Serial ?? (Serial)0x7FC0FFEE,
+                        disp?.Serial ?? 0x7FC0FFEE,
                         buyItem.Price,
                         buyItem.Amount,
                         buyItem.ItemID,
@@ -885,7 +885,7 @@ namespace Server.Mobiles
 
                 if (disp is IPropertyListObject obj)
                 {
-                    opls.Add(obj.PropertyList);
+                    opls?.Add(obj.PropertyList);
                 }
             }
 
@@ -926,7 +926,7 @@ namespace Server.Mobiles
                 if (name != null && list.Count < 250)
                 {
                     list.Add(new BuyItemState(name, cont.Serial, item.Serial, price, item.Amount, item.ItemID, item.Hue));
-                    opls.Add(item.PropertyList);
+                    opls?.Add(item.PropertyList);
                 }
             }
 
@@ -955,9 +955,12 @@ namespace Server.Mobiles
             from.NetState.SendDisplayBuyList(Serial);
             from.NetState.SendMobileStatus(from); // make sure their gold amount is sent
 
-            for (var i = 0; i < opls.Count; ++i)
+            if (opls != null)
             {
-                from.NetState?.Send(opls[i].Buffer);
+                for (var i = 0; i < opls.Count; ++i)
+                {
+                    from.NetState?.Send(opls[i].Buffer);
+                }
             }
 
             SayTo(from, 500186); // Greetings.  Have a look around.
@@ -1358,7 +1361,7 @@ namespace Server.Mobiles
                 IsParagon = false;
             }
 
-            Timer.DelayCall(CheckMorph);
+            Timer.StartTimer(CheckMorph);
         }
 
         public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
@@ -1384,9 +1387,9 @@ namespace Server.Mobiles
             base.AddCustomContextEntries(from, list);
         }
 
-        public virtual IShopSellInfo[] GetSellInfo() => m_ArmorSellInfo.ToArray();
+        public virtual IShopSellInfo[] GetSellInfo() => _sellInfo.ToArray();
 
-        public virtual IBuyItemInfo[] GetBuyInfo() => m_ArmorBuyInfo.ToArray();
+        public virtual IBuyItemInfo[] GetBuyInfo() => _buyInfo.ToArray();
 
         public virtual int GetPriceScalar() => 100 + Town.FromRegion(Region)?.Tax ?? 0;
 
@@ -1394,7 +1397,7 @@ namespace Server.Mobiles
         {
             var priceScalar = GetPriceScalar();
 
-            foreach (var info in m_ArmorBuyInfo.ToArray())
+            foreach (var info in _buyInfo.ToArray())
             {
                 info.PriceScalar = priceScalar;
             }

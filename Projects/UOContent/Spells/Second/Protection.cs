@@ -172,7 +172,6 @@ namespace Server.Spells.Second
 
                 m_Caster = caster;
                 Delay = TimeSpan.FromSeconds(val);
-                Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()

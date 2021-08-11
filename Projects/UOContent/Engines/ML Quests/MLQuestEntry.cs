@@ -20,7 +20,7 @@ namespace Server.Engines.MLQuests
         private MLQuestInstanceFlags m_Flags;
         private IQuestGiver m_Quester;
 
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         public MLQuestInstance(MLQuest quest, IQuestGiver quester, PlayerMobile player)
         {
@@ -52,7 +52,7 @@ namespace Server.Engines.MLQuests
 
             if (timed)
             {
-                m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), Slice);
+                Timer.StartTimer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), Slice, out _timerToken);
             }
         }
 
@@ -476,13 +476,7 @@ namespace Server.Engines.MLQuests
 
         private void StopTimer()
         {
-            if (m_Timer == null)
-            {
-                return;
-            }
-
-            m_Timer.Stop();
-            m_Timer = null;
+            _timerToken.Cancel();
         }
 
         public void OnQuesterDeleted()

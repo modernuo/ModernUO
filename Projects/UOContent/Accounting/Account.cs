@@ -61,11 +61,31 @@ namespace Server.Accounting
         [SerializableField(9, "private", "private")]
         private Mobile[] _mobiles;
 
-        [SerializableField(10, setter: "private")]
         private List<AccountComment> _comments;
 
-        [SerializableField(11, setter: "private")]
+        [SerializableField(10)]
+        public List<AccountComment> Comments
+        {
+            get => _comments ??= new List<AccountComment>();
+            private set
+            {
+                _comments = value;
+                ((ISerializable)this).MarkDirty();
+            }
+        }
+
         private List<AccountTag> _tags;
+
+        [SerializableField(11)]
+        public List<AccountTag> Tags
+        {
+            get => _tags ??= new List<AccountTag>();
+            private set
+            {
+                _tags = value;
+                ((ISerializable)this).MarkDirty();
+            }
+        }
 
         [SerializableField(12)]
         private IPAddress[] _loginIPs;
@@ -293,12 +313,12 @@ namespace Server.Accounting
         [AfterDeserialization]
         private void AfterDeserialization()
         {
-            if (_comments.Count == 0)
+            if (_comments?.Count == 0)
             {
                 _comments = null;
             }
 
-            if (_tags.Count == 0)
+            if (_tags?.Count == 0)
             {
                 _tags = null;
             }
@@ -384,6 +404,8 @@ namespace Server.Accounting
             }
 
             _totalGameTime = reader.ReadTimeSpan();
+
+            Timer.StartTimer(AfterDeserialization);
         }
 
         /// <summary>
@@ -654,7 +676,7 @@ namespace Server.Accounting
         /// <param name="value">New tag value.</param>
         public void AddTag(string name, string value)
         {
-            _tags.Add(new AccountTag(name, value));
+            Tags.Add(new AccountTag(name, value));
             ((ISerializable)this).MarkDirty();
         }
 
@@ -675,7 +697,7 @@ namespace Server.Accounting
 
                 if (tag.Name == name)
                 {
-                    _tags.RemoveAt(i);
+                    _tags?.RemoveAt(i);
                     ((ISerializable)this).MarkDirty();
                 }
             }
@@ -688,7 +710,7 @@ namespace Server.Accounting
         /// <param name="value">Tag value.</param>
         public void SetTag(string name, string value)
         {
-            for (var i = 0; i < _tags.Count; ++i)
+            for (var i = 0; i < Tags.Count; ++i)
             {
                 var tag = _tags[i];
 
@@ -709,7 +731,7 @@ namespace Server.Accounting
         /// <param name="name">Name of the desired tag value.</param>
         public string GetTag(string name)
         {
-            for (var i = 0; i < _tags.Count; ++i)
+            for (var i = 0; i < Tags.Count; ++i)
             {
                 var tag = _tags[i];
 
@@ -1201,8 +1223,6 @@ namespace Server.Accounting
                 : base(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0))
             {
                 m_Account = account;
-
-                Priority = TimerPriority.FiveSeconds;
             }
 
             protected override void OnTick()

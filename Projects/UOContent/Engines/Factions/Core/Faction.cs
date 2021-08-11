@@ -621,9 +621,9 @@ namespace Server.Factions
             EventSink.Login += EventSink_Login;
             EventSink.Logout += EventSink_Logout;
 
-            Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(10.0), HandleAtrophy);
+            Timer.StartTimer(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(10.0), HandleAtrophy);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(30.0), TimeSpan.FromSeconds(30.0), ProcessTick);
+            Timer.StartTimer(TimeSpan.FromSeconds(30.0), TimeSpan.FromSeconds(30.0), ProcessTick);
 
             CommandSystem.Register("FactionElection", AccessLevel.GameMaster, FactionElection_OnCommand);
             CommandSystem.Register("FactionCommander", AccessLevel.Administrator, FactionCommander_OnCommand);
@@ -1332,7 +1332,7 @@ namespace Server.Factions
                 }
             }
 
-            context.m_Timer = Timer.DelayCall(SkillLossPeriod, ClearSkillLoss_Event, mob);
+            Timer.StartTimer(SkillLossPeriod, () => ClearSkillLoss_Event(mob), out context._timerToken);
         }
 
         private static void ClearSkillLoss_Event(Mobile mob) => ClearSkillLoss(mob);
@@ -1353,7 +1353,7 @@ namespace Server.Factions
                 mob.RemoveSkillMod(mods[i]);
             }
 
-            context.m_Timer.Stop();
+            context._timerToken.Cancel();
 
             return true;
         }
@@ -1373,7 +1373,7 @@ namespace Server.Factions
         private class SkillLossContext
         {
             public List<SkillMod> m_Mods;
-            public Timer m_Timer;
+            public TimerExecutionToken _timerToken;
         }
     }
 

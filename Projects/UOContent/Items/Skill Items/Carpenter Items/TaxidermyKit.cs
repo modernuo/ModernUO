@@ -307,7 +307,7 @@ namespace Server.Items
                     }
             }
 
-            Timer.DelayCall(FixMovingCrate);
+            Timer.StartTimer(FixMovingCrate);
         }
 
         private void FixMovingCrate()

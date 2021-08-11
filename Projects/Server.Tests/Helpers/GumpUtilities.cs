@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Network;
 
@@ -42,141 +43,155 @@ namespace Server.Tests.Network
             }
 
             var count = g.Entries.Count;
+            var strings = new List<string>();
 
             for (var i = 0; i < count; ++i)
             {
                 var e = g.Entries[i];
 
                 disp.AppendLayout(m_BeginLayout);
-                e.AppendToByType(disp);
+                e.AppendToByType(disp, strings);
                 disp.AppendLayout(m_EndLayout);
             }
 
-            disp.WriteStrings(g.Strings);
+            disp.WriteStrings(strings);
 
             disp.Flush();
 
             return (Packet)disp;
         }
 
-        public static void AppendToByType(this GumpEntry e, IGumpWriter disp)
+        public static int Intern(this List<string> strings, string value)
+        {
+            var indexOf = strings.IndexOf(value);
+
+            if (indexOf >= 0)
+            {
+                return indexOf;
+            }
+
+            strings.Add(value);
+            return strings.Count - 1;
+        }
+
+        public static void AppendToByType(this GumpEntry e, IGumpWriter disp, List<string> strings)
         {
             switch (e)
             {
                 case GumpAlphaRegion g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpBackground g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpButton g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpCheck g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpGroup g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpECHandleInput g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpHtml g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpHtmlLocalized g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpImage g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpImageTileButton g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpImageTiled g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpItem g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpItemProperty g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpLabel g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpLabelCropped g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpMasterGump g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpPage g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpRadio g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpSpriteImage g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpTextEntry g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpTextEntryLimited g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
                 case GumpTooltip g:
                     {
-                        g.AppendTo(disp);
+                        g.AppendTo(disp, strings);
                         break;
                     }
             }
         }
 
-        public static void AppendTo(this GumpAlphaRegion g, IGumpWriter disp)
+        public static void AppendTo(this GumpAlphaRegion g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpAlphaRegion.LayoutName);
             disp.AppendLayout(g.X);
@@ -185,7 +200,7 @@ namespace Server.Tests.Network
             disp.AppendLayout(g.Height);
         }
 
-        public static void AppendTo(this GumpBackground g, IGumpWriter disp)
+        public static void AppendTo(this GumpBackground g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpBackground.LayoutName);
             disp.AppendLayout(g.X);
@@ -195,7 +210,7 @@ namespace Server.Tests.Network
             disp.AppendLayout(g.Height);
         }
 
-        public static void AppendTo(this GumpButton g, IGumpWriter disp)
+        public static void AppendTo(this GumpButton g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpButton.LayoutName);
             disp.AppendLayout(g.X);
@@ -207,7 +222,7 @@ namespace Server.Tests.Network
             disp.AppendLayout(g.ButtonID);
         }
 
-        public static void AppendTo(this GumpCheck g, IGumpWriter disp)
+        public static void AppendTo(this GumpCheck g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpButton.LayoutName);
             disp.AppendLayout(g.X);
@@ -220,30 +235,30 @@ namespace Server.Tests.Network
             disp.Switches++;
         }
 
-        public static void AppendTo(this GumpGroup g, IGumpWriter disp)
+        public static void AppendTo(this GumpGroup g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpGroup.LayoutName);
             disp.AppendLayout(g.Group);
         }
 
-        public static void AppendTo(this GumpECHandleInput g, IGumpWriter disp)
+        public static void AppendTo(this GumpECHandleInput g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpECHandleInput.LayoutName);
         }
 
-        public static void AppendTo(this GumpHtml g, IGumpWriter disp)
+        public static void AppendTo(this GumpHtml g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpHtml.LayoutName);
             disp.AppendLayout(g.X);
             disp.AppendLayout(g.Y);
             disp.AppendLayout(g.Width);
             disp.AppendLayout(g.Height);
-            disp.AppendLayout(g.Parent.Intern(g.Text));
+            disp.AppendLayout(strings.Intern(g.Text));
             disp.AppendLayout(g.Background);
             disp.AppendLayout(g.Scrollbar);
         }
 
-        public static void AppendTo(this GumpHtmlLocalized g, IGumpWriter disp)
+        public static void AppendTo(this GumpHtmlLocalized g, IGumpWriter disp, List<string> strings)
         {
             switch (g.Type)
             {
@@ -297,7 +312,7 @@ namespace Server.Tests.Network
             }
         }
 
-        public static void AppendTo(this GumpImage g, IGumpWriter disp)
+        public static void AppendTo(this GumpImage g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpImage.LayoutName);
             disp.AppendLayout(g.X);
@@ -317,7 +332,7 @@ namespace Server.Tests.Network
             }
         }
 
-        public static void AppendTo(this GumpImageTileButton g, IGumpWriter disp)
+        public static void AppendTo(this GumpImageTileButton g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpImageTileButton.LayoutName);
             disp.AppendLayout(g.X);
@@ -340,7 +355,7 @@ namespace Server.Tests.Network
             }
         }
 
-        public static void AppendTo(this GumpImageTiled g, IGumpWriter disp)
+        public static void AppendTo(this GumpImageTiled g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpImageTiled.LayoutName);
             disp.AppendLayout(g.X);
@@ -350,7 +365,7 @@ namespace Server.Tests.Network
             disp.AppendLayout(g.GumpID);
         }
 
-        public static void AppendTo(this GumpItem g, IGumpWriter disp)
+        public static void AppendTo(this GumpItem g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(g.Hue == 0 ? GumpItem.LayoutName : GumpItem.LayoutNameHue);
             disp.AppendLayout(g.X);
@@ -363,22 +378,22 @@ namespace Server.Tests.Network
             }
         }
 
-        public static void AppendTo(this GumpItemProperty g, IGumpWriter disp)
+        public static void AppendTo(this GumpItemProperty g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpItemProperty.LayoutName);
             disp.AppendLayout(g.Serial);
         }
 
-        public static void AppendTo(this GumpLabel g, IGumpWriter disp)
+        public static void AppendTo(this GumpLabel g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpLabel.LayoutName);
             disp.AppendLayout(g.X);
             disp.AppendLayout(g.Y);
             disp.AppendLayout(g.Hue);
-            disp.AppendLayout(g.Parent.Intern(g.Text));
+            disp.AppendLayout(strings.Intern(g.Text));
         }
 
-        public static void AppendTo(this GumpLabelCropped g, IGumpWriter disp)
+        public static void AppendTo(this GumpLabelCropped g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpLabelCropped.LayoutName);
             disp.AppendLayout(g.X);
@@ -386,22 +401,22 @@ namespace Server.Tests.Network
             disp.AppendLayout(g.Width);
             disp.AppendLayout(g.Height);
             disp.AppendLayout(g.Hue);
-            disp.AppendLayout(g.Parent.Intern(g.Text));
+            disp.AppendLayout(strings.Intern(g.Text));
         }
 
-        public static void AppendTo(this GumpMasterGump g, IGumpWriter disp)
+        public static void AppendTo(this GumpMasterGump g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpMasterGump.LayoutName);
             disp.AppendLayout(g.GumpID);
         }
 
-        public static void AppendTo(this GumpPage g, IGumpWriter disp)
+        public static void AppendTo(this GumpPage g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpPage.LayoutName);
             disp.AppendLayout(g.Page);
         }
 
-        public static void AppendTo(this GumpRadio g, IGumpWriter disp)
+        public static void AppendTo(this GumpRadio g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpRadio.LayoutName);
             disp.AppendLayout(g.X);
@@ -414,7 +429,7 @@ namespace Server.Tests.Network
             disp.Switches++;
         }
 
-        public static void AppendTo(this GumpSpriteImage g, IGumpWriter disp)
+        public static void AppendTo(this GumpSpriteImage g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpSpriteImage.LayoutName);
             disp.AppendLayout(g.X);
@@ -426,7 +441,7 @@ namespace Server.Tests.Network
             disp.AppendLayout(g.SY);
         }
 
-        public static void AppendTo(this GumpTextEntry g, IGumpWriter disp)
+        public static void AppendTo(this GumpTextEntry g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpTextEntry.LayoutName);
             disp.AppendLayout(g.X);
@@ -435,12 +450,12 @@ namespace Server.Tests.Network
             disp.AppendLayout(g.Height);
             disp.AppendLayout(g.Hue);
             disp.AppendLayout(g.EntryID);
-            disp.AppendLayout(g.Parent.Intern(g.InitialText));
+            disp.AppendLayout(strings.Intern(g.InitialText));
 
             disp.TextEntries++;
         }
 
-        public static void AppendTo(this GumpTextEntryLimited g, IGumpWriter disp)
+        public static void AppendTo(this GumpTextEntryLimited g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpTextEntryLimited.LayoutName);
             disp.AppendLayout(g.X);
@@ -449,13 +464,13 @@ namespace Server.Tests.Network
             disp.AppendLayout(g.Height);
             disp.AppendLayout(g.Hue);
             disp.AppendLayout(g.EntryID);
-            disp.AppendLayout(g.Parent.Intern(g.InitialText));
+            disp.AppendLayout(strings.Intern(g.InitialText));
             disp.AppendLayout(g.Size);
 
             disp.TextEntries++;
         }
 
-        public static void AppendTo(this GumpTooltip g, IGumpWriter disp)
+        public static void AppendTo(this GumpTooltip g, IGumpWriter disp, List<string> strings)
         {
             disp.AppendLayout(GumpTooltip.LayoutName);
             disp.AppendLayout(g.Number);

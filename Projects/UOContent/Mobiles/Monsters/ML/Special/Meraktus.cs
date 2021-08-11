@@ -51,7 +51,7 @@ namespace Server.Mobiles
                 PackTalismans(5);
             }
 
-            Timer.DelayCall(TimeSpan.FromSeconds(1), SpawnTormented);
+            Timer.StartTimer(TimeSpan.FromSeconds(1), SpawnTormented);
         }
 
         public Meraktus(Serial serial) : base(serial)

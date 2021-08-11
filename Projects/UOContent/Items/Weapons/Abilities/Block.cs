@@ -80,7 +80,6 @@ namespace Server.Items
             {
                 m_Bonus = bonus;
                 m_Mobile = m;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()
