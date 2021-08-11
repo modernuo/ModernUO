@@ -90,35 +90,14 @@ namespace Server.Items
         }
     }
 
-    public class LocalizedContainerComponent : AddonContainerComponent
+    [Serializable(0, false)]
+    public partial class LocalizedContainerComponent : AddonContainerComponent
     {
-        // TODO: Requires private access modifiers
-        private int m_LabelNumber;
+        [SerializableField(0, setter: "private")]
+        private int _number;
 
-        public LocalizedContainerComponent(int itemID, int labelNumber) : base(itemID) => m_LabelNumber = labelNumber;
+        public LocalizedContainerComponent(int itemID, int labelNumber) : base(itemID) => _number = labelNumber;
 
-        public LocalizedContainerComponent(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => m_LabelNumber > 0 ? m_LabelNumber : base.LabelNumber;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_LabelNumber);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            m_LabelNumber = reader.ReadInt();
-        }
+        public override int LabelNumber => _number > 0 ? _number : base.LabelNumber;
     }
 }

@@ -71,8 +71,8 @@ namespace Server.Items
                 from.AddToBackpack(new Bolt(_bolts));
             }
 
-            _arrows = 0;
-            _bolts = 0;
+            Arrows = 0;
+            Bolts = 0;
 
             m_Entries = null;
         }
@@ -91,7 +91,7 @@ namespace Server.Items
 
         public void Fire(Mobile from)
         {
-            if (!(from.Weapon is BaseRanged bow))
+            if (@from.Weapon is not BaseRanged bow)
             {
                 SendLocalizedMessageTo(from, 500593); // You must practice with ranged weapons on this.
                 return;
@@ -249,11 +249,11 @@ namespace Server.Items
 
                 if (isArrow)
                 {
-                    ++_arrows;
+                    ++Arrows;
                 }
                 else if (isBolt)
                 {
-                    ++_bolts;
+                    ++Bolts;
                 }
             }
 
