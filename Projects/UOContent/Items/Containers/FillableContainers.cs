@@ -9,7 +9,7 @@ namespace Server.Items
         protected FillableContent m_Content;
 
         protected DateTime m_NextRespawnTime;
-        protected TimerExecutionToken _respawnTimerToken;
+        protected Timer _respawnTimer;
 
         public FillableContainer(int itemID) : base(itemID) => Movable = false;
 
@@ -96,7 +96,8 @@ namespace Server.Items
         {
             base.OnAfterDelete();
 
-            _respawnTimerToken.Cancel();
+            _respawnTimer?.Stop();
+            _respawnTimer = null;
         }
 
         public int GetItemsCount()
@@ -118,24 +119,26 @@ namespace Server.Items
 
             if (canSpawn)
             {
-                if (!_respawnTimerToken.Running)
+                if (_respawnTimer?.Running != true)
                 {
                     var mins = Utility.RandomMinMax(MinRespawnMinutes, MaxRespawnMinutes);
                     var delay = TimeSpan.FromMinutes(mins);
 
                     m_NextRespawnTime = Core.Now + delay;
-                    Timer.StartTimer(delay, Respawn, out _respawnTimerToken);
+                    _respawnTimer = Timer.DelayCall(delay, Respawn);
                 }
             }
-            else if (_respawnTimerToken.Running)
+            else
             {
-                _respawnTimerToken.Cancel();
+                _respawnTimer?.Stop();
+                _respawnTimer = null;
             }
         }
 
         public void Respawn()
         {
-            _respawnTimerToken.Cancel();
+            _respawnTimer?.Stop();
+            _respawnTimer = null;
 
             if (m_Content == null || Deleted)
             {
@@ -217,7 +220,7 @@ namespace Server.Items
                 {
                     var subItem = list[j];
 
-                    if (!(subItem is Container) && subItem.StackWith(null, item, false))
+                    if (subItem is not Container && subItem.StackWith(null, item, false))
                     {
                         break;
                     }
@@ -238,7 +241,7 @@ namespace Server.Items
 
             writer.Write((int)ContentType);
 
-            if (_respawnTimerToken.Running)
+            if (_respawnTimer?.Running == true)
             {
                 writer.Write(true);
                 writer.WriteDeltaTime(m_NextRespawnTime);
@@ -269,7 +272,7 @@ namespace Server.Items
                             m_NextRespawnTime = reader.ReadDeltaTime();
 
                             var delay = m_NextRespawnTime - Core.Now;
-                            Timer.StartTimer(delay, Respawn, out _respawnTimerToken);
+                            Timer.DelayCall(delay, Respawn);
                         }
                         else
                         {

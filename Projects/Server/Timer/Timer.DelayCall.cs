@@ -133,7 +133,7 @@ namespace Server
             internal DelayCallTimer(TimeSpan delay) : base(delay)
             {
 #if DEBUG_TIMERS
-            t._allowFinalization = true;
+                _allowFinalization = true;
 #endif
                 Start();
             }
@@ -164,12 +164,15 @@ namespace Server
 
                 Version++; // Increment the version so if this is called from OnTick() and another timer is started, we don't have a problem
 
+#if DEBUG_TIMERS
+                _stackTraces.Remove(GetHashCode());
+#endif
+
                 if (_poolCount >= _poolCapacity)
                 {
 #if DEBUG_TIMERS
-                    logger.Warning($"DelayCallTimer pool reached maximum of {_poolSize} timers");
+                    logger.Warning($"DelayCallTimer pool reached maximum of {_poolCapacity} timers");
                     _allowFinalization = true;
-                    _stackTraces.Remove(GetHashCode());
 #endif
                     return;
                 }
@@ -184,7 +187,7 @@ namespace Server
                 {
                     _poolCount--;
 #if DEBUG_TIMERS
-                    logger.Information($"Pool count changed: {_poolCount} ({_poolCapacity})");
+                    logger.Information($"Pool count: {_poolCount} / {_poolCapacity}");
 #endif
 
                     var timer = GetFromPool();
@@ -202,7 +205,7 @@ namespace Server
                 _timerPoolDepletionAmount++;
 
 #if DEBUG_TIMERS
-                logger.Warning($"Timer pool depleted and timer was allocated.\n{new StackTrace()});
+                logger.Warning($"Timer pool depleted and timer was allocated.\n{new StackTrace()}");
 #endif
                 return new DelayCallTimer(delay, interval, count, callback);
             }
