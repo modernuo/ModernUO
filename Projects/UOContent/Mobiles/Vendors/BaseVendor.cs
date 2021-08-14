@@ -30,6 +30,18 @@ namespace Server.Mobiles
         private readonly List<IBuyItemInfo> _buyInfo = new();
         private readonly List<IShopSellInfo> _sellInfo = new();
 
+        public static void Initialize()
+        {
+            // This is technically more work than making timers, but we don't to deplete the timer pool immediately.
+            foreach (var m in World.Mobiles.Values)
+            {
+                if (m is BaseVendor bv)
+                {
+                    bv.CheckMorph();
+                }
+            }
+        }
+
         public BaseVendor(string title = null)
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
@@ -1360,8 +1372,6 @@ namespace Server.Mobiles
             {
                 IsParagon = false;
             }
-
-            Timer.StartTimer(CheckMorph);
         }
 
         public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)

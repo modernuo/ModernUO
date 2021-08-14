@@ -151,7 +151,7 @@ namespace Server.Mobiles
                 SetResistance(ResistanceType.Energy, 40, 60);
             }
 
-            Timer.StartTimer(RemoveDisguise);
+            Timer.StartTimer(RemoveDisguise, out _disguiseTimerToken);
         }
 
         public void Disguise()
@@ -208,6 +208,8 @@ namespace Server.Mobiles
 
         public void RemoveDisguise()
         {
+            _disguiseTimerToken.Cancel();
+
             if (!IsBodyMod)
             {
                 return;
@@ -224,8 +226,6 @@ namespace Server.Mobiles
 
             DeleteItemOnLayer(Layer.OuterTorso);
             DeleteItemOnLayer(Layer.Shoes);
-
-            _disguiseTimerToken.Cancel();
         }
 
         public void DeleteItemOnLayer(Layer layer)

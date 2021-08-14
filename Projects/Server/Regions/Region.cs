@@ -509,11 +509,12 @@ namespace Server
             {
                 var sector = Sectors[i];
 
-                foreach (var player in sector.Players)
+                foreach (var ns in sector.Clients)
                 {
-                    if (player.Region.IsPartOf(this))
+                    var player = ns.Mobile;
+                    if (player?.Deleted == false && player.Region.IsPartOf(this))
                     {
-                        list.Add(player);
+                        list.Add(ns.Mobile);
                     }
                 }
             }
@@ -529,9 +530,10 @@ namespace Server
             {
                 var sector = Sectors[i];
 
-                foreach (var player in sector.Players)
+                foreach (var ns in sector.Clients)
                 {
-                    if (player.Region.IsPartOf(this))
+                    var player = ns.Mobile;
+                    if (player?.Deleted == false && player.Region.IsPartOf(this))
                     {
                         count++;
                     }

@@ -275,7 +275,7 @@ namespace Server.Items
                 }
             }
 
-            Timer.StartTimer(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckEnd_OnTick);
+            Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckEnd_OnTick);
         }
 
         public bool ValidLocation() =>

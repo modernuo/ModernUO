@@ -25,11 +25,11 @@ namespace Server.Items
         [SerializableField(0, setter: "private")]
         private string[] _topic;
 
-        // TODO: Tidy list
+        [Tidy]
         [SerializableField(1, setter: "private")]
         private List<Mobile> _yes;
 
-        // TODO: Tidy list
+        [Tidy]
         [SerializableField(2, setter: "private")]
         private List<Mobile> _no;
 
@@ -60,9 +60,8 @@ namespace Server.Items
         {
             if (Yes.Count > 0 || No.Count > 0)
             {
-                ((ISerializable)this).MarkDirty();
-                Yes.Clear();
-                No.Clear();
+                this.Clear(_yes);
+                this.Clear(_no);
             }
         }
 
@@ -228,8 +227,7 @@ namespace Server.Items
                                 }
                                 else
                                 {
-                                    m_Box.Yes.Add(from);
-                                    ((ISerializable)m_Box).MarkDirty();
+                                    m_Box.Add(m_Box._yes, from);
                                     from.SendLocalizedMessage(500373); // Your vote has been registered.
                                 }
                             }
@@ -246,8 +244,7 @@ namespace Server.Items
                                 }
                                 else
                                 {
-                                    m_Box.No.Add(from);
-                                    ((ISerializable)m_Box).MarkDirty();
+                                    m_Box.Add(m_Box._no, from);
                                     from.SendLocalizedMessage(500373); // Your vote has been registered.
                                 }
                             }

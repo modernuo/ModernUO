@@ -1197,7 +1197,7 @@ namespace Server.Multis
             LockedDownFlag = 1;
             SecureFlag = 2;
 
-            Timer.StartTimer(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), Decay_OnTick);
+            Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), Decay_OnTick);
         }
 
         public virtual int GetAosCurLockdowns()

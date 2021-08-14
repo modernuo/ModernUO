@@ -43,6 +43,7 @@ namespace SerializationGenerator
                 );
 
             const string indent = "        ";
+            const string innerIndent = "                ";
             const string propertyIndent = "            ";
 
             var propertyAccessor = setter > getter ? setter : getter;
@@ -59,7 +60,6 @@ namespace SerializationGenerator
 
                 // Setter
                 source.GeneratePropertySetterStart(propertyIndent, false, setterAccessor.Value);
-                const string innerIndent = "                ";
                 source.AppendLine($"{innerIndent}if (value != {fieldName})");
                 source.AppendLine($"{innerIndent}{{");
                 source.AppendLine($"{innerIndent}    {fieldName} = value;");

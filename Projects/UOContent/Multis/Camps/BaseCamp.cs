@@ -9,7 +9,7 @@ namespace Server.Multis
     {
         private TimeSpan m_DecayDelay;
         private DateTime m_DecayTime;
-        private TimerExecutionToken _decayTimerToken;
+        private Timer _decayTimer;
         private List<Item> m_Items;
         private List<Mobile> m_Mobiles;
 
@@ -55,6 +55,12 @@ namespace Server.Multis
         {
         }
 
+        public override void OnDelete()
+        {
+            _decayTimer?.Stop();
+            _decayTimer = null;
+        }
+
         public virtual void RefreshDecay(bool setDecayTime)
         {
             if (Deleted)
@@ -67,8 +73,8 @@ namespace Server.Multis
                 m_DecayTime = Core.Now + DecayDelay;
             }
 
-            _decayTimerToken.Cancel();
-            Timer.StartTimer(DecayDelay, Delete, out _decayTimerToken);
+            _decayTimer?.Stop();
+            _decayTimer = Timer.DelayCall(DecayDelay, Delete);
         }
 
         public virtual void AddItem(Item item, int xOffset, int yOffset, int zOffset)
