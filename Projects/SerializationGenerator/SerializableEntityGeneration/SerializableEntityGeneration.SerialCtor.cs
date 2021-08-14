@@ -32,6 +32,7 @@ namespace SerializationGenerator
             var serialType = (ITypeSymbol)compilation.GetTypeByMetadataName("Server.Serial");
 
             source.GenerateConstructorStart(
+                "        ",
                 className,
                 Accessibility.Public,
                 new []{ (serialType, "serial") }.ToImmutableArray(),
@@ -44,7 +45,7 @@ namespace SerializationGenerator
             SetTypeRef(typeof({className}));");
             }
 
-            source.GenerateMethodEnd();
+            source.GenerateMethodEnd("        ");
         }
     }
 }

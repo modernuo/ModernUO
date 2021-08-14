@@ -621,9 +621,8 @@ namespace Server.Factions
             EventSink.Login += EventSink_Login;
             EventSink.Logout += EventSink_Logout;
 
-            Timer.StartTimer(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(10.0), HandleAtrophy);
-
-            Timer.StartTimer(TimeSpan.FromSeconds(30.0), TimeSpan.FromSeconds(30.0), ProcessTick);
+            Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(10.0), HandleAtrophy);
+            Timer.DelayCall(TimeSpan.FromSeconds(30.0), TimeSpan.FromSeconds(30.0), ProcessTick);
 
             CommandSystem.Register("FactionElection", AccessLevel.GameMaster, FactionElection_OnCommand);
             CommandSystem.Register("FactionCommander", AccessLevel.Administrator, FactionCommander_OnCommand);

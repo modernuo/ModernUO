@@ -49,9 +49,10 @@ namespace Server.Network
         private static readonly byte[] _layoutBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
         private static readonly byte[] _stringsBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
         private static readonly byte[] _packBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
+        private static readonly OrderedHashSet<string> _stringsList = new(32);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WritePacked(ReadOnlySpan<byte> span, ref SpanWriter writer)
+        public static void WritePacked(ReadOnlySpan<byte> span, ref SpanWriter writer)
         {
             var length = span.Length;
 
@@ -127,16 +128,14 @@ namespace Server.Network
                 layoutWriter.Write(Gump.NoResize);
             }
 
-            var stringsList = new OrderedHashSet<string>(11);
-
             foreach (var entry in gump.Entries)
             {
-                entry.AppendTo(ref layoutWriter, stringsList, ref entries, ref switches);
+                entry.AppendTo(ref layoutWriter, _stringsList, ref entries, ref switches);
             }
 
             var stringsWriter = new SpanWriter(_stringsBuffer);
 
-            foreach (var str in stringsList)
+            foreach (var str in _stringsList)
             {
                 var s = str ?? "";
                 stringsWriter.Write((ushort)s.Length);
@@ -155,7 +154,7 @@ namespace Server.Network
                 maxLength = 23 + layoutWriter.BytesWritten + stringsWriter.BytesWritten;
             }
 
-            var writer = new SpanWriter(stackalloc byte[maxLength]);
+            var writer = new SpanWriter(maxLength);
             writer.Write((byte)(packed ? 0xDD : 0xB0)); // Packet ID
             writer.Seek(2, SeekOrigin.Current);
 
@@ -169,7 +168,7 @@ namespace Server.Network
                 layoutWriter.Write((byte)0); // Layout text terminator
                 WritePacked(layoutWriter.Span, ref writer);
 
-                writer.Write(stringsList.Count);
+                writer.Write(_stringsList.Count);
                 WritePacked(stringsWriter.Span, ref writer);
             }
             else
@@ -177,18 +176,26 @@ namespace Server.Network
                 writer.Write((ushort)layoutWriter.BytesWritten);
                 writer.Write(layoutWriter.Span);
 
-                writer.Write((ushort)stringsList.Count);
+                writer.Write((ushort)_stringsList.Count);
                 writer.Write(stringsWriter.Span);
             }
 
             writer.WritePacketLength();
 
             ns.Send(writer.Span);
+
+            layoutWriter.Dispose(); // Just in case
+            stringsWriter.Dispose(); // Just in case
+
+            if (_stringsList.Count > 0)
+            {
+                _stringsList.Clear();
+            }
         }
 
         public static void SendDisplaySignGump(this NetState ns, Serial serial, int gumpId, string unknown, string caption)
         {
-            if (ns == null || !ns.GetSendBuffer(out var buffer))
+            if (ns == null)
             {
                 return;
             }

@@ -203,9 +203,7 @@ namespace Server
 
         public static void DumpInfo(TextWriter tw)
         {
-            var now = DateTime.UtcNow;
-
-            tw.WriteLine("Date: {0}\n", now);
+            tw.WriteLine("Date: {0}\n", Core.Now.ToLocalTime());
             tw.WriteLine("Pool - Count: {0}; Size {1}\n", _poolCount - _timerPoolDepletionAmount, _poolCapacity);
 
             var total = 0.0;
@@ -216,6 +214,10 @@ namespace Server
                 for (var j = 0; j < _ringSize; j++)
                 {
                     var t = _rings[i][j];
+                    if (t == null)
+                    {
+                        continue;
+                    }
 
                     var name = t.ToString();
 
@@ -230,8 +232,21 @@ namespace Server
 
             foreach (var (name, count) in hash.OrderByDescending(o => o.Value))
             {
-                tw.WriteLine($"- Type: {name}; Count: {count}; Percent: {count / total}%");
+                var percent = count / total;
+                var line = $"{count:#,0} ({percent:P1})";
+                // 6 - 15 / 8 = 1
+                var tabs = new string('\t', line.Length < 12 ? 2 : 1);
+                tw.WriteLine($"{line}{tabs}{name}");
             }
+
+#if DEBUG_TIMERS
+            tw.WriteLine("\nStack Traces:");
+            foreach (var kvp in DelayCallTimer._stackTraces)
+            {
+                tw.WriteLine(kvp.Value);
+                tw.WriteLine();
+            }
+#endif
 
             tw.WriteLine();
             tw.WriteLine();

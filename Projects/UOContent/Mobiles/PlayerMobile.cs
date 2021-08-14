@@ -1067,7 +1067,7 @@ namespace Server.Mobiles
 
         public static void UnequipMacro(Mobile m, List<Layer> layers)
         {
-            if (m is PlayerMobile pm && pm.Backpack != null && pm.Alive)
+            if (m is PlayerMobile { Alive: true } pm && pm.Backpack != null)
             {
                 var pack = pm.Backpack;
                 var eq = m.Items;

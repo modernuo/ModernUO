@@ -33,6 +33,7 @@ namespace SerializationGenerator
             var genericWriterInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_WRITER_INTERFACE);
 
             source.GenerateMethodStart(
+                "        ",
                 "Serialize",
                 Accessibility.Public,
                 isOverride,
@@ -61,7 +62,7 @@ namespace SerializationGenerator
                 );
             }
 
-            source.GenerateMethodEnd();
+            source.GenerateMethodEnd("        ");
         }
     }
 }
