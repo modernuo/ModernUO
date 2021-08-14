@@ -47,7 +47,7 @@ namespace SerializableMigration
                 return false;
             }
 
-            ruleArguments = requiresParent ? new[] { "DeserializationRequiresParent" } : Array.Empty<string>();
+            ruleArguments = new[] { requiresParent ? "DeserializationRequiresParent" : "" };
             return true;
         }
 
