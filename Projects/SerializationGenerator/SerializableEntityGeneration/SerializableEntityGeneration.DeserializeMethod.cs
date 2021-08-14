@@ -37,6 +37,7 @@ namespace SerializationGenerator
             var genericReaderInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_READER_INTERFACE);
 
             source.GenerateMethodStart(
+                "        ",
                 "Deserialize",
                 Accessibility.Public,
                 isOverride,
@@ -120,7 +121,7 @@ namespace SerializationGenerator
                 source.AppendLine($"{indent}Timer.DelayCall({afterDeserialization.Name});");
             }
 
-            source.GenerateMethodEnd();
+            source.GenerateMethodEnd("        ");
         }
     }
 }

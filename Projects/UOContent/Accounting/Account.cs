@@ -70,7 +70,7 @@ namespace Server.Accounting
             private set
             {
                 _comments = value;
-                ((ISerializable)this).MarkDirty();
+                this.MarkDirty();
             }
         }
 
@@ -83,7 +83,7 @@ namespace Server.Accounting
             private set
             {
                 _tags = value;
-                ((ISerializable)this).MarkDirty();
+                this.MarkDirty();
             }
         }
 
@@ -121,7 +121,7 @@ namespace Server.Accounting
             private set
             {
                 _totalGameTime = value;
-                ((ISerializable)this).MarkDirty();
+                this.MarkDirty();
             }
         }
 
@@ -148,7 +148,7 @@ namespace Server.Accounting
             _loginIPs = Array.Empty<IPAddress>();
 
             Accounts.Add(this);
-            ((ISerializable)this).MarkDirty();
+            this.MarkDirty();
         }
 
         public Account(XmlElement node)
@@ -224,7 +224,7 @@ namespace Server.Accounting
             }
 
             Accounts.Add(this);
-            ((ISerializable)this).MarkDirty();
+            this.MarkDirty();
         }
 
         public void SetTypeRef(Type type)
@@ -527,7 +527,7 @@ namespace Server.Accounting
                     // outside of an entire account deletion.
                     m.Account = null;
                     _mobiles[index] = null;
-                    ((ISerializable)this).MarkDirty();
+                    this.MarkDirty();
                 }
 
                 return null;
@@ -542,7 +542,7 @@ namespace Server.Accounting
                     }
 
                     _mobiles[index] = value;
-                    ((ISerializable)this).MarkDirty();
+                    this.MarkDirty();
 
                     if (_mobiles[index] != null)
                     {
@@ -677,7 +677,7 @@ namespace Server.Accounting
         public void AddTag(string name, string value)
         {
             Tags.Add(new AccountTag(name, value));
-            ((ISerializable)this).MarkDirty();
+            this.MarkDirty();
         }
 
         /// <summary>
@@ -698,7 +698,7 @@ namespace Server.Accounting
                 if (tag.Name == name)
                 {
                     _tags?.RemoveAt(i);
-                    ((ISerializable)this).MarkDirty();
+                    this.MarkDirty();
                 }
             }
         }
@@ -717,7 +717,7 @@ namespace Server.Accounting
                 if (tag.Name == name)
                 {
                     tag.Value = value;
-                    ((ISerializable)this).MarkDirty();
+                    this.MarkDirty();
                     return;
                 }
             }
