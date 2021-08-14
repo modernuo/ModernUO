@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Server.Items;
 using Server.Network;
 
@@ -37,7 +38,6 @@ namespace Server
         private List<Item> m_Items;
         private List<Mobile> m_Mobiles;
         private List<BaseMulti> m_Multis;
-        private List<Mobile> m_Players;
         private List<RegionRect> m_RegionRects;
 
         public Sector(int x, int y, Map owner)
@@ -58,8 +58,6 @@ namespace Server
 
         public List<NetState> Clients => m_Clients ?? m_DefaultClientList;
 
-        public List<Mobile> Players => m_Players ?? m_DefaultMobileList;
-
         public bool Active => m_Active && Owner != Map.Internal;
 
         public Map Owner { get; }
@@ -68,6 +66,7 @@ namespace Server
 
         public int Y { get; }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Add<T>(ref List<T> list, T value)
         {
             list ??= new List<T>();
@@ -75,7 +74,8 @@ namespace Server
             list.Add(value);
         }
 
-        private void Remove<T>(ref List<T> list, T value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void Remove<T>(ref List<T> list, T value)
         {
             if (list != null)
             {
@@ -88,7 +88,8 @@ namespace Server
             }
         }
 
-        private void Replace<T>(ref List<T> list, T oldValue, T newValue)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void Replace<T>(ref List<T> list, T oldValue, T newValue)
         {
             if (oldValue != null && newValue != null)
             {
@@ -135,16 +136,8 @@ namespace Server
             if (mob.NetState != null)
             {
                 Add(ref m_Clients, mob.NetState);
-            }
 
-            if (mob.Player)
-            {
-                if (m_Players == null)
-                {
-                    Owner.ActivateSectors(X, Y);
-                }
-
-                Add(ref m_Players, mob);
+                Owner.ActivateSectors(X, Y);
             }
         }
 
@@ -155,16 +148,8 @@ namespace Server
             if (mob.NetState != null)
             {
                 Remove(ref m_Clients, mob.NetState);
-            }
 
-            if (mob.Player && m_Players != null)
-            {
-                Remove(ref m_Players, mob);
-
-                if (m_Players == null)
-                {
-                    Owner.DeactivateSectors(X, Y);
-                }
+                Owner.DeactivateSectors(X, Y);
             }
         }
 

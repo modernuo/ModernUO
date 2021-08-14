@@ -792,7 +792,7 @@ namespace Server
                 for (var y = sect.Y - range; y <= sect.Y + range; ++y)
                 {
                     var check = GetRealSector(x, y);
-                    if (check != InvalidSector && check.Players.Count > 0)
+                    if (check != InvalidSector && check.Clients.Count > 0)
                     {
                         return true;
                     }
