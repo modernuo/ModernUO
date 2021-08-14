@@ -66,76 +66,28 @@ namespace Server
 
         public int Y { get; }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Add<T>(ref List<T> list, T value)
-        {
-            list ??= new List<T>();
-
-            list.Add(value);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Remove<T>(ref List<T> list, T value)
-        {
-            if (list != null)
-            {
-                list.Remove(value);
-
-                if (list.Count == 0)
-                {
-                    list = null;
-                }
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Replace<T>(ref List<T> list, T oldValue, T newValue)
-        {
-            if (oldValue != null && newValue != null)
-            {
-                var index = list?.IndexOf(oldValue) ?? -1;
-
-                if (index >= 0)
-                {
-                    list![index] = newValue;
-                }
-                else
-                {
-                    Add(ref list, newValue);
-                }
-            }
-            else if (oldValue != null)
-            {
-                Remove(ref list, oldValue);
-            }
-            else if (newValue != null)
-            {
-                Add(ref list, newValue);
-            }
-        }
-
         public void OnClientChange(NetState oldState, NetState newState)
         {
-            Replace(ref m_Clients, oldState, newState);
+            Utility.Replace(ref m_Clients, oldState, newState);
         }
 
         public void OnEnter(Item item)
         {
-            Add(ref m_Items, item);
+            Utility.Add(ref m_Items, item);
         }
 
         public void OnLeave(Item item)
         {
-            Remove(ref m_Items, item);
+            Utility.Remove(ref m_Items, item);
         }
 
         public void OnEnter(Mobile mob)
         {
-            Add(ref m_Mobiles, mob);
+            Utility.Add(ref m_Mobiles, mob);
 
             if (mob.NetState != null)
             {
-                Add(ref m_Clients, mob.NetState);
+                Utility.Add(ref m_Clients, mob.NetState);
 
                 Owner.ActivateSectors(X, Y);
             }
@@ -143,11 +95,11 @@ namespace Server
 
         public void OnLeave(Mobile mob)
         {
-            Remove(ref m_Mobiles, mob);
+            Utility.Remove(ref m_Mobiles, mob);
 
             if (mob.NetState != null)
             {
-                Remove(ref m_Clients, mob.NetState);
+                Utility.Remove(ref m_Clients, mob.NetState);
 
                 Owner.DeactivateSectors(X, Y);
             }
@@ -155,7 +107,7 @@ namespace Server
 
         public void OnEnter(Region region, Rectangle3D rect)
         {
-            Add(ref m_RegionRects, new RegionRect(region, rect));
+            Utility.Add(ref m_RegionRects, new RegionRect(region, rect));
 
             m_RegionRects.Sort();
 
@@ -200,12 +152,12 @@ namespace Server
 
         public void OnMultiEnter(BaseMulti multi)
         {
-            Add(ref m_Multis, multi);
+            Utility.Add(ref m_Multis, multi);
         }
 
         public void OnMultiLeave(BaseMulti multi)
         {
-            Remove(ref m_Multis, multi);
+            Utility.Remove(ref m_Multis, multi);
         }
 
         public void Activate()

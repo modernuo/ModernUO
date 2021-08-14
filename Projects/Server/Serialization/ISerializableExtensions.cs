@@ -21,6 +21,12 @@ namespace Server
     public static class ISerializableExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void MarkDirty(this ISerializable entity)
+        {
+            entity.SavePosition = -1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Add<T>(this ISerializable entity, ICollection<T> list, T value)
         {
             list.Add(value);
@@ -28,7 +34,7 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void AddOrUpdate<K, V>(this ISerializable entity, IDictionary<K, V> dict, K key, V value)
+        public static void Add<K, V>(this ISerializable entity, IDictionary<K, V> dict, K key, V value)
         {
             dict[key] = value;
             entity.MarkDirty();
@@ -54,6 +60,18 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Remove<K, V>(this ISerializable entity, IDictionary<K, V> dict, K key, out V value)
+        {
+            if (dict.Remove(key, out value))
+            {
+                entity.MarkDirty();
+                return true;
+            }
+
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RemoveAt<T>(this ISerializable entity, IList<T> list, int index)
         {
             list.RemoveAt(index);
@@ -68,9 +86,50 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MarkDirty(this ISerializable entity)
+        public static void Add<T>(this ISerializable entity, ref List<T> list, T value)
         {
-            entity.SavePosition = -1;
+            Utility.Add(ref list, value);
+            entity.MarkDirty();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Add<K, V>(this ISerializable entity, ref Dictionary<K, V> dict, K key, V value)
+        {
+            Utility.Add(ref dict, key, value);
+            entity.MarkDirty();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Remove<T>(this ISerializable entity, ref List<T> list, T value)
+        {
+            if (Utility.Remove(ref list, value))
+            {
+                entity.MarkDirty();
+                return true;
+            }
+
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Clear<T>(this ISerializable entity, ref List<T> list)
+        {
+            Utility.Clear(ref list);
+            entity.MarkDirty();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Clear<T>(this ISerializable entity, ref HashSet<T> set)
+        {
+            Utility.Clear(ref set);
+            entity.MarkDirty();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Clear<K, V>(this ISerializable entity, ref Dictionary<K, V> dict)
+        {
+            Utility.Clear(ref dict);
+            entity.MarkDirty();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Server.Collections
         private int _version;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static PooledRefQueue<T> Create() => new(32);
+        public static PooledRefQueue<T> Create(int capacity = 32) => new(capacity);
 
         // Creates a queue with room for capacity objects. The default grow factor
         // is used.
