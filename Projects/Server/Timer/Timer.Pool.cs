@@ -62,7 +62,7 @@ namespace Server
             _poolHead = head;
             _poolCount += amount;
 #if DEBUG_TIMERS
-            logger.Information($"Pool count changed: {_poolCount} ({_poolCapacity})");
+            logger.Information($"Pool count: {_poolCount} / {_poolCapacity}");
 #endif
         }
 

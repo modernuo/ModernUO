@@ -182,8 +182,8 @@ namespace SerializationGenerator
                 var attrCtorArgs = serializableFieldAttr.ConstructorArguments;
 
                 var order = (int)attrCtorArgs[0].Value!;
-                var getterAccessor = Helpers.GetAccessibility(attrCtorArgs[1].Value!.ToString());
-                var setterAccessor = Helpers.GetAccessibility(attrCtorArgs[2].Value!.ToString());
+                var getterAccessor = Helpers.GetAccessibility(attrCtorArgs[1].Value?.ToString());
+                var setterAccessor = Helpers.GetAccessibility(attrCtorArgs[2].Value?.ToString());
                 var virtualProperty = (bool)attrCtorArgs[3].Value!;
 
                 if (fieldOrPropertySymbol is IFieldSymbol fieldSymbol)

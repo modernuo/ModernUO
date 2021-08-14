@@ -1492,5 +1492,159 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetTimeStamp() => Core.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Add<T>(ref List<T> list, T value)
+        {
+            list ??= new List<T>();
+            list.Add(value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Add<T>(ref HashSet<T> set, T value)
+        {
+            set ??= new HashSet<T>();
+            set.Add(value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Add<K, V>(ref Dictionary<K, V> dict, K key, V value)
+        {
+            dict ??= new Dictionary<K, V>();
+            dict.Add(key, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Remove<T>(ref List<T> list, T value)
+        {
+            if (list != null)
+            {
+                var removed = list.Remove(value);
+
+                if (list.Count == 0)
+                {
+                    list = null;
+                }
+
+                return removed;
+            }
+
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Remove<T>(ref HashSet<T> set, T value)
+        {
+            if (set != null)
+            {
+                var removed = set.Remove(value);
+
+                if (set.Count == 0)
+                {
+                    set = null;
+                }
+
+                return removed;
+            }
+
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Remove<K, V>(ref Dictionary<K, V> dict, K key)
+        {
+            if (dict != null)
+            {
+                var removed = dict.Remove(key);
+
+                if (dict.Count == 0)
+                {
+                    dict = null;
+                }
+
+                return removed;
+            }
+
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Remove<K, V>(ref Dictionary<K, V> dict, K key, out V value)
+        {
+            if (dict != null)
+            {
+                var removed = dict.Remove(key, out value);
+
+                if (dict.Count == 0)
+                {
+                    dict = null;
+                }
+
+                return removed;
+            }
+
+            value = default;
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Replace<T>(ref List<T> list, T oldValue, T newValue)
+        {
+            if (oldValue != null && newValue != null)
+            {
+                var index = list?.IndexOf(oldValue) ?? -1;
+
+                if (index >= 0)
+                {
+                    list![index] = newValue;
+                }
+                else
+                {
+                    Add(ref list, newValue);
+                }
+            }
+            else if (oldValue != null)
+            {
+                Remove(ref list, oldValue);
+            }
+            else if (newValue != null)
+            {
+                Add(ref list, newValue);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Replace<K, V>(ref Dictionary<K, V> dict, K key, V oldValue, V newValue)
+        {
+            if (newValue != null)
+            {
+                Add(ref dict, key, newValue);
+            }
+            else if (oldValue != null)
+            {
+                Remove(ref dict, key);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Clear<T>(ref List<T> list)
+        {
+            list.Clear();
+            list = null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Clear<T>(ref HashSet<T> set)
+        {
+            set.Clear();
+            set = null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Clear<K, V>(ref Dictionary<K, V> dict)
+        {
+            dict.Clear();
+            dict = null;
+        }
     }
 }

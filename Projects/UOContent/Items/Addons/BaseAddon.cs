@@ -76,7 +76,7 @@ namespace Server.Items
                     Hue = CraftResources.GetHue(m_Resource);
 
                     InvalidateProperties();
-                    ((ISerializable)this).MarkDirty();
+                    this.MarkDirty();
                 }
             }
         }

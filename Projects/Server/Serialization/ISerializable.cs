@@ -20,7 +20,7 @@ namespace Server
 {
     public interface ISerializable
     {
-        long SavePosition { get; protected set; }
+        long SavePosition { get; protected internal set; }
         BufferWriter SaveBuffer { get; protected internal set; }
         int TypeRef { get; }
         Serial Serial { get; }
@@ -28,11 +28,6 @@ namespace Server
         void Serialize(IGenericWriter writer);
         void Delete();
         bool Deleted { get; }
-
-        void MarkDirty()
-        {
-            SavePosition = -1;
-        }
 
         void SetTypeRef(Type type);
 

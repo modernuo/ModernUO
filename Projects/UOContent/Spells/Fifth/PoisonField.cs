@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
@@ -192,7 +193,6 @@ namespace Server.Spells.Fifth
 
             private class InternalTimer : Timer
             {
-                private static Queue<Mobile> m_Queue;
                 private readonly bool m_CanFit;
                 private readonly bool m_InLOS;
                 private readonly InternalItem m_Item;
@@ -259,21 +259,21 @@ namespace Server.Spells.Fifth
                                 )
                             );
 
+                            using var queue = PooledRefQueue<Mobile>.Create();
                             foreach (var m in eable)
                             {
                                 if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
                                     SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))
                                 {
-                                    m_Queue ??= new Queue<Mobile>();
-                                    m_Queue.Enqueue(m);
+                                    queue.Enqueue(m);
                                 }
                             }
 
                             eable.Free();
 
-                            while (m_Queue?.Count > 0)
+                            while (queue.Count > 0)
                             {
-                                var m = m_Queue.Dequeue();
+                                var m = queue.Dequeue();
 
                                 caster.DoHarmful(m);
 

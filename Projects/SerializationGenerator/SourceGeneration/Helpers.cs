@@ -44,7 +44,7 @@ namespace SerializationGenerator
 
         public static string ToFriendlyString(this Accessibility accessibility) => SyntaxFacts.GetText(accessibility);
 
-        public static Accessibility GetAccessibility(string value) =>
+        public static Accessibility GetAccessibility(string? value) =>
             value switch
             {
                 "private"            => Accessibility.Private,
