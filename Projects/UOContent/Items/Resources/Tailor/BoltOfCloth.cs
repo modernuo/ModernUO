@@ -2,8 +2,9 @@ using Server.Network;
 
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0xF95, 0xF96, 0xF97, 0xF98, 0xF99, 0xF9A, 0xF9B, 0xF9C)]
-    public class BoltOfCloth : Item, IScissorable, IDyable, ICommodity
+    public partial class BoltOfCloth : Item, IScissorable, IDyable, ICommodity
     {
         [Constructible]
         public BoltOfCloth(int amount = 1) : base(0xF95)
@@ -11,10 +12,6 @@ namespace Server.Items
             Stackable = true;
             Weight = 5.0;
             Amount = amount;
-        }
-
-        public BoltOfCloth(Serial serial) : base(serial)
-        {
         }
 
         int ICommodity.DescriptionNumber => LabelNumber;
@@ -42,20 +39,6 @@ namespace Server.Items
             ScissorHelper(from, new Cloth(), 50);
 
             return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         public override void OnSingleClick(Mobile from)

@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "type": "Server.Items.BaseOre",
+  "version": 2,
+  "type": "Server.Items.Log",
   "properties": [
     {
       "name": "Resource",

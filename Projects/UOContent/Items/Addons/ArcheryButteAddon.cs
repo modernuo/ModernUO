@@ -91,7 +91,7 @@ namespace Server.Items
 
         public void Fire(Mobile from)
         {
-            if (@from.Weapon is not BaseRanged bow)
+            if (from.Weapon is not BaseRanged bow)
             {
                 SendLocalizedMessageTo(from, 500593); // You must practice with ranged weapons on this.
                 return;

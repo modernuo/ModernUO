@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-    [Serializable(1, false)]
+    [Serializable(2, false)]
     public abstract partial class BaseOre : Item
     {
         public BaseOre(CraftResource resource, int amount = 1) : base(RandomSize())
@@ -38,21 +38,33 @@ namespace Server.Items
 
         private void Deserialize(IGenericReader reader, int version)
         {
-            var info = reader.ReadInt() switch
+            switch (version)
             {
-                0 => OreInfo.Iron,
-                1 => OreInfo.DullCopper,
-                2 => OreInfo.ShadowIron,
-                3 => OreInfo.Copper,
-                4 => OreInfo.Bronze,
-                5 => OreInfo.Gold,
-                6 => OreInfo.Agapite,
-                7 => OreInfo.Verite,
-                8 => OreInfo.Valorite,
-                _ => null
-            };
+                case 1:
+                    {
+                        _resource = (CraftResource)reader.ReadInt();
+                        break;
+                    }
+                case 0:
+                    {
+                        var info = reader.ReadInt() switch
+                        {
+                            0 => OreInfo.Iron,
+                            1 => OreInfo.DullCopper,
+                            2 => OreInfo.ShadowIron,
+                            3 => OreInfo.Copper,
+                            4 => OreInfo.Bronze,
+                            5 => OreInfo.Gold,
+                            6 => OreInfo.Agapite,
+                            7 => OreInfo.Verite,
+                            8 => OreInfo.Valorite,
+                            _ => null
+                        };
 
-            Resource = CraftResources.GetFromOreInfo(info);
+                        _resource = CraftResources.GetFromOreInfo(info);
+                        break;
+                    }
+            }
         }
 
         private static int RandomSize() =>

@@ -2,8 +2,13 @@ using Server.Engines.VeteranRewards;
 
 namespace Server.Items
 {
-    public class RewardBlackDyeTub : DyeTub, IRewardItem
+    [Serializable(1, false)]
+    public partial class RewardBlackDyeTub : DyeTub, IRewardItem
     {
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _isRewardItem;
+
         [Constructible]
         public RewardBlackDyeTub()
         {
@@ -12,18 +17,11 @@ namespace Server.Items
             LootType = LootType.Blessed;
         }
 
-        public RewardBlackDyeTub(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1006008; // Black Dye Tub
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsRewardItem { get; set; }
 
         public override void OnDoubleClick(Mobile from)
         {
-            if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            if (_isRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
             {
                 return;
             }
@@ -35,34 +33,17 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (Core.ML && IsRewardItem)
+            if (Core.ML && _isRewardItem)
             {
                 list.Add(1076217); // 1st Year Veteran Reward
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(IsRewardItem);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
+            if (LootType == LootType.Regular)
             {
-                case 1:
-                    {
-                        IsRewardItem = reader.ReadBool();
-                        break;
-                    }
+                LootType = LootType.Blessed;
             }
         }
     }

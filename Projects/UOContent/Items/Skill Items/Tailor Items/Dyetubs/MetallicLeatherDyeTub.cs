@@ -1,14 +1,10 @@
 namespace Server.Items
 {
-    public class MetallicLeatherDyeTub : LeatherDyeTub
+    [Serializable(0, false)]
+    public partial class MetallicLeatherDyeTub : LeatherDyeTub
     {
         [Constructible]
         public MetallicLeatherDyeTub() => LootType = LootType.Blessed;
-
-        public MetallicLeatherDyeTub(Serial serial)
-            : base(serial)
-        {
-        }
 
         public override CustomHuePicker CustomHuePicker => null;
 
@@ -24,20 +20,6 @@ namespace Server.Items
             {
                 list.Add(1076221); // 5th Year Veteran Reward
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }
