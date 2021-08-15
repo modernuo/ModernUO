@@ -2,17 +2,14 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-    public abstract class BaseClothMaterial : Item, IDyable
+    [Serializable(0, false)]
+    public abstract partial class BaseClothMaterial : Item, IDyable
     {
         public BaseClothMaterial(int itemID, int amount = 1) : base(itemID)
         {
             Stackable = true;
             Weight = 1.0;
             Amount = amount;
-        }
-
-        public BaseClothMaterial(Serial serial) : base(serial)
-        {
         }
 
         public bool Dye(Mobile from, DyeTub sender)
@@ -25,20 +22,6 @@ namespace Server.Items
             Hue = sender.DyedHue;
 
             return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -108,107 +91,39 @@ namespace Server.Items
         }
     }
 
-    public class DarkYarn : BaseClothMaterial
+    [Serializable(0, false)]
+    public partial class DarkYarn : BaseClothMaterial
     {
         [Constructible]
         public DarkYarn(int amount = 1) : base(0xE1D, amount)
         {
         }
-
-        public DarkYarn(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class LightYarn : BaseClothMaterial
+    [Serializable(0, false)]
+    public partial class LightYarn : BaseClothMaterial
     {
         [Constructible]
         public LightYarn(int amount = 1) : base(0xE1E, amount)
         {
         }
-
-        public LightYarn(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class LightYarnUnraveled : BaseClothMaterial
+    [Serializable(0, false)]
+    public partial class LightYarnUnraveled : BaseClothMaterial
     {
         [Constructible]
         public LightYarnUnraveled(int amount = 1) : base(0xE1F, amount)
         {
         }
-
-        public LightYarnUnraveled(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class SpoolOfThread : BaseClothMaterial
+    [Serializable(0, false)]
+    public partial class SpoolOfThread : BaseClothMaterial
     {
         [Constructible]
         public SpoolOfThread(int amount = 1) : base(0xFA0, amount)
         {
-        }
-
-        public SpoolOfThread(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

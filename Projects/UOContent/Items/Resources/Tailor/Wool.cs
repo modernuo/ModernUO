@@ -2,7 +2,8 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-    public class Wool : Item, IDyable
+    [Serializable(0, false)]
+    public partial class Wool : Item, IDyable
     {
         [Constructible]
         public Wool(int amount = 1) : base(0xDF8)
@@ -10,10 +11,6 @@ namespace Server.Items
             Stackable = true;
             Weight = 4.0;
             Amount = amount;
-        }
-
-        public Wool(Serial serial) : base(serial)
-        {
         }
 
         public bool Dye(Mobile from, DyeTub sender)
@@ -26,20 +23,6 @@ namespace Server.Items
             Hue = sender.DyedHue;
 
             return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -108,7 +91,8 @@ namespace Server.Items
         }
     }
 
-    public class TaintedWool : Wool
+    [Serializable(0, false)]
+    public partial class TaintedWool : Wool
     {
         [Constructible]
         public TaintedWool(int amount = 1) : base(0x101F)
@@ -116,24 +100,6 @@ namespace Server.Items
             Stackable = true;
             Weight = 4.0;
             Amount = amount;
-        }
-
-        public TaintedWool(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         public override void OnSpun(ISpinningWheel wheel, Mobile from, int hue)

@@ -2,18 +2,15 @@ using Server.Network;
 
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x1765, 0x1767)]
-    public class UncutCloth : Item, IScissorable, IDyable, ICommodity
+    public partial class UncutCloth : Item, IScissorable, IDyable, ICommodity
     {
         [Constructible]
         public UncutCloth(int amount = 1) : base(0x1767)
         {
             Stackable = true;
             Amount = amount;
-        }
-
-        public UncutCloth(Serial serial) : base(serial)
-        {
         }
 
         public override double DefaultWeight => 0.1;
@@ -42,20 +39,6 @@ namespace Server.Items
             ScissorHelper(from, new Bandage(), 1);
 
             return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         public override void OnSingleClick(Mobile from)
