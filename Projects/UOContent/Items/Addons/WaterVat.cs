@@ -26,19 +26,7 @@ namespace Server.Items
         {
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
     public class WaterVatSouth : BaseAddon
@@ -67,18 +55,6 @@ namespace Server.Items
         {
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

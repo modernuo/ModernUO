@@ -2,14 +2,11 @@ using Server.Network;
 
 namespace Server.Items
 {
-    public class DartBoard : AddonComponent
+    [Serializable(0)]
+    public partial class DartBoard : AddonComponent
     {
         [Constructible]
         public DartBoard(bool east = true) : base(east ? 0x1E2F : 0x1E2E)
-        {
-        }
-
-        public DartBoard(Serial serial) : base(serial)
         {
         }
 
@@ -75,163 +72,65 @@ namespace Server.Items
 
             var rand = Utility.RandomDouble();
 
-            int message;
-            if (rand < 0.05)
+            int message = rand switch
             {
-                message = 500752; // BULLSEYE! 50 Points!
-            }
-            else if (rand < 0.20)
-            {
-                message = 500753; // Just missed the center! 20 points.
-            }
-            else if (rand < 0.45)
-            {
-                message = 500754; // 10 point shot.
-            }
-            else if (rand < 0.70)
-            {
-                message = 500755; // 5 pointer.
-            }
-            else if (rand < 0.85)
-            {
-                message = 500756; // 1 point.  Bad throw.
-            }
-            else
-            {
-                message = 500757; // Missed.
-            }
+                < 0.05 => 500752,
+                < 0.20 => 500753,
+                < 0.45 => 500754,
+                < 0.70 => 500755,
+                < 0.85 => 500756,
+                _      => 500757
+            };
 
             PublicOverheadMessage(MessageType.Regular, 0x3B2, message);
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class DartBoardEastAddon : BaseAddon
+    [Serializable(0)]
+    public partial class DartBoardEastAddon : BaseAddon
     {
         public DartBoardEastAddon()
         {
             AddComponent(new DartBoard(), 0, 0, 0);
         }
 
-        public DartBoardEastAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new DartBoardEastDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class DartBoardEastDeed : BaseAddonDeed
+    [Serializable(0)]
+    public partial class DartBoardEastDeed : BaseAddonDeed
     {
         [Constructible]
         public DartBoardEastDeed()
         {
         }
 
-        public DartBoardEastDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new DartBoardEastAddon();
 
         public override int LabelNumber => 1044326; // dartboard (east)
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class DartBoardSouthAddon : BaseAddon
+    [Serializable(0)]
+    public partial class DartBoardSouthAddon : BaseAddon
     {
         public DartBoardSouthAddon()
         {
             AddComponent(new DartBoard(false), 0, 0, 0);
         }
 
-        public DartBoardSouthAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new DartBoardSouthDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class DartBoardSouthDeed : BaseAddonDeed
+    [Serializable(0)]
+    public partial class DartBoardSouthDeed : BaseAddonDeed
     {
         [Constructible]
         public DartBoardSouthDeed()
         {
         }
 
-        public DartBoardSouthDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new DartBoardSouthAddon();
 
         public override int LabelNumber => 1044325; // dartboard (south)
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

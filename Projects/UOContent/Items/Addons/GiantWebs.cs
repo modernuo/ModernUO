@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class GiantWeb1 : BaseAddon
+    [Serializable(0)]
+    public partial class GiantWeb1 : BaseAddon
     {
         [Constructible]
         public GiantWeb1()
@@ -18,28 +19,10 @@ namespace Server.Items
                 );
             }
         }
-
-        public GiantWeb1(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write((byte)0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            int version = reader.ReadByte();
-        }
     }
 
-    public class GiantWeb2 : BaseAddon
+    [Serializable(0)]
+    public partial class GiantWeb2 : BaseAddon
     {
         [Constructible]
         public GiantWeb2()
@@ -57,28 +40,10 @@ namespace Server.Items
                 );
             }
         }
-
-        public GiantWeb2(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write((byte)0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            int version = reader.ReadByte();
-        }
     }
 
-    public class GiantWeb3 : BaseAddon
+    [Serializable(0)]
+    public partial class GiantWeb3 : BaseAddon
     {
         [Constructible]
         public GiantWeb3()
@@ -96,28 +61,10 @@ namespace Server.Items
                 );
             }
         }
-
-        public GiantWeb3(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write((byte)0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            int version = reader.ReadByte();
-        }
     }
 
-    public class GiantWeb4 : BaseAddon
+    [Serializable(0)]
+    public partial class GiantWeb4 : BaseAddon
     {
         [Constructible]
         public GiantWeb4()
@@ -135,28 +82,10 @@ namespace Server.Items
                 );
             }
         }
-
-        public GiantWeb4(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write((byte)0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            int version = reader.ReadByte();
-        }
     }
 
-    public class GiantWeb5 : BaseAddon
+    [Serializable(0)]
+    public partial class GiantWeb5 : BaseAddon
     {
         [Constructible]
         public GiantWeb5()
@@ -174,28 +103,10 @@ namespace Server.Items
                 );
             }
         }
-
-        public GiantWeb5(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write((byte)0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            int version = reader.ReadByte();
-        }
     }
 
-    public class GiantWeb6 : BaseAddon
+    [Serializable(0)]
+    public partial class GiantWeb6 : BaseAddon
     {
         [Constructible]
         public GiantWeb6()
@@ -212,25 +123,6 @@ namespace Server.Items
                     0
                 );
             }
-        }
-
-        public GiantWeb6(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write((byte)0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            int version = reader.ReadByte();
         }
     }
 }

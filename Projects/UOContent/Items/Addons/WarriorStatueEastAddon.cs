@@ -14,19 +14,7 @@ namespace Server.Items
 
         public override BaseAddonDeed Deed => new WarriorStatueEastDeed();
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
     public class WarriorStatueEastDeed : BaseAddonDeed
@@ -43,18 +31,6 @@ namespace Server.Items
         public override BaseAddon Addon => new WarriorStatueEastAddon();
         public override int LabelNumber => 1072888; // warrior statue (east)
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }
