@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "type": "Server.Items.LoomSouthAddon",
+  "properties": [
+    {
+      "name": "Phase",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": []
+    }
+  ]
+}
