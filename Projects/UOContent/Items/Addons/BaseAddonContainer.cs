@@ -3,8 +3,11 @@ using Server.Multis;
 
 namespace Server.Items
 {
-    public abstract class BaseAddonContainer : BaseContainer, IChoppable, IAddon
+    [Serializable(1, false)]
+    public abstract partial class BaseAddonContainer : BaseContainer, IChoppable, IAddon
     {
+        [SerializableField(0, setter: "private")]
+        private List<AddonContainerComponent> _components;
         private CraftResource m_Resource;
 
         public BaseAddonContainer(int itemID) : base(itemID)
@@ -12,10 +15,6 @@ namespace Server.Items
             AddonComponent.ApplyLightTo(this);
 
             Components = new List<AddonContainerComponent>();
-        }
-
-        public BaseAddonContainer(Serial serial) : base(serial)
-        {
         }
 
         public override bool DisplayWeight => false;
@@ -41,6 +40,7 @@ namespace Server.Items
             }
         }
 
+        [SerializableField(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public CraftResource Resource
         {
@@ -62,8 +62,6 @@ namespace Server.Items
         public virtual bool ShareHue => true;
         public virtual Point3D WallPosition => Point3D.Zero;
         public virtual BaseAddonContainerDeed Deed => null;
-
-        public List<AddonContainerComponent> Components { get; private set; }
 
         Item IAddon.Deed => Deed;
 
@@ -186,25 +184,16 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        // Handles v0 with old Enum -> Int casting
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(Components);
-            writer.Write((int)m_Resource);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
             Components = reader.ReadEntityList<AddonContainerComponent>();
             m_Resource = (CraftResource)reader.ReadInt();
+        }
 
+        [AfterDeserialization]
+        private void AfterDeserialization()
+        {
             AddonComponent.ApplyLightTo(this);
         }
 
@@ -223,7 +212,7 @@ namespace Server.Items
                 return;
             }
 
-            Components.Add(c);
+            this.Add(Components, c);
 
             c.Addon = this;
             c.Offset = new Point3D(x, y, z);
