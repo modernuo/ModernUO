@@ -54,7 +54,7 @@ namespace Server.Items
 
         public override bool OnDragDrop(Mobile from, Item dropped) => _addon?.OnDragDrop(from, dropped) == true;
 
-        public override void OnDoubleClick(Mobile from) => _addon?.OnComponentUsed(this, @from);
+        public override void OnDoubleClick(Mobile from) => _addon?.OnComponentUsed(this, from);
 
         public override void OnLocationChange(Point3D old)
         {

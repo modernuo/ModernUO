@@ -35,7 +35,6 @@ namespace Server.Items
         int ICommodity.DescriptionNumber => LabelNumber;
         bool ICommodity.IsDeedable => true;
 
-        [AfterDeserialization]
         private void Deserialize(IGenericReader reader, int version)
         {
             switch (version)

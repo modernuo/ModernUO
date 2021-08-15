@@ -36,7 +36,6 @@ namespace Server.Items
 
         public abstract BaseIngot GetIngot();
 
-        [AfterDeserialization]
         private void Deserialize(IGenericReader reader, int version)
         {
             switch (version)
