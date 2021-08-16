@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-    [Serializable(1, false)]
+    [Serializable(0, false)]
     public partial class InquisitorsResolution : PlateGloves
     {
         [Constructible]
@@ -20,9 +20,5 @@ namespace Server.Items
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
-        }
     }
 }

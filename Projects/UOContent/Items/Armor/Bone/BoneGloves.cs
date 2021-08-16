@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x1450, 0x1455)]
-    public class BoneGloves : BaseArmor
+    public partial class BoneGloves : BaseArmor
     {
         [Constructible]
         public BoneGloves() : base(0x1450) => Weight = 2.0;
-
-        public BoneGloves(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;
@@ -29,22 +26,5 @@ namespace Server.Items
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Bone;
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-
-            if (Weight == 1.0)
-            {
-                Weight = 2.0;
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class AnthropomorphistGlasses : ElvenGlasses
+    [Serializable(0, false)]
+    public partial class AnthropomorphistGlasses : ElvenGlasses
     {
         [Constructible]
         public AnthropomorphistGlasses()
@@ -10,10 +11,6 @@ namespace Server.Items
             Attributes.ReflectPhysical = 20;
 
             Hue = 0x80;
-        }
-
-        public AnthropomorphistGlasses(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1073379; // Anthropomorphist Reading Glasses
@@ -26,22 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (version == 0 && Hue == 0)
-            {
-                Hue = 0x80;
-            }
-        }
     }
 }
