@@ -1,15 +1,12 @@
 namespace Server.Items
 {
-    public class VacationWafer : Item
+    [Serializable(1, false)]
+    public partial class VacationWafer : Item
     {
         public const int VacationDays = 7;
 
         [Constructible]
         public VacationWafer() : base(0x973)
-        {
-        }
-
-        public VacationWafer(Serial serial) : base(serial)
         {
         }
 
@@ -22,23 +19,8 @@ namespace Server.Items
             list.Add(1074432, VacationDays.ToString()); // Vacation days: ~1_DAYS~
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1 && ItemID == 0x971)
-            {
-                ItemID = 0x973;
-            }
         }
     }
 }

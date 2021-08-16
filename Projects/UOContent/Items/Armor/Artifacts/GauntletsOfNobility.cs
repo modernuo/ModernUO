@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class GauntletsOfNobility : RingmailGloves
+    [Serializable(1, false)]
+    public partial class GauntletsOfNobility : RingmailGloves
     {
         [Constructible]
         public GauntletsOfNobility()
@@ -9,10 +10,6 @@ namespace Server.Items
             Attributes.BonusStr = 8;
             Attributes.Luck = 100;
             Attributes.WeaponDamage = 20;
-        }
-
-        public GauntletsOfNobility(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1061092; // Gauntlets of Nobility
@@ -24,29 +21,8 @@ namespace Server.Items
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1)
-            {
-                if (Hue == 0x562)
-                {
-                    Hue = 0x4FE;
-                }
-
-                PhysicalBonus = 0;
-                PoisonBonus = 0;
-            }
         }
     }
 }

@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class InquisitorsResolution : PlateGloves
+    [Serializable(1, false)]
+    public partial class InquisitorsResolution : PlateGloves
     {
         [Constructible]
         public InquisitorsResolution()
@@ -9,10 +10,6 @@ namespace Server.Items
             Attributes.CastRecovery = 3;
             Attributes.LowerManaCost = 8;
             ArmorAttributes.MageArmor = 1;
-        }
-
-        public InquisitorsResolution(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1060206; // The Inquisitor's Resolution
@@ -24,24 +21,8 @@ namespace Server.Items
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1)
-            {
-                ColdBonus = 0;
-                EnergyBonus = 0;
-            }
         }
     }
 }
