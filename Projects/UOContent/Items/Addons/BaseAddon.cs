@@ -279,7 +279,7 @@ namespace Server.Items
 
         private void Deserialize(IGenericReader reader, int version)
         {
-            Components = reader.ReadEntityList<AddonComponent>();
+            _components = reader.ReadEntityList<AddonComponent>();
 
             if (version < 1 && Weight == 0)
             {

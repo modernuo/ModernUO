@@ -6,13 +6,17 @@
       "name": "MinSkill",
       "type": "double",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     },
     {
       "name": "MaxSkill",
       "type": "double",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     }
   ]
 }

@@ -21,46 +21,43 @@ namespace Server.Items
     }
 
     [PropertyObject]
-    public class AquariumState
+    [EmbeddedSerializable(0, false)]
+    public partial class AquariumState
     {
-        private int m_State;
+        [SerializableParent]
+        private Aquarium _aquarium;
 
+        private int _state;
+
+        public AquariumState(Aquarium parent) => _aquarium = parent;
+
+        [SerializableField(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int State
         {
-            get => m_State;
-            set => m_State = Math.Clamp(value, 0, 4);
+            get => _state;
+            set
+            {
+                if (_state != value)
+                {
+                    _state = Math.Clamp(value, 0, 4);
+                    _aquarium.MarkDirty();
+                }
+            }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Maintain { get; set; }
+        [SerializableField(1)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _maintain;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Improve { get; set; }
+        [SerializableField(2)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _improve;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Added { get; set; }
+        [SerializableField(3)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _added;
 
         public override string ToString() => "...";
-
-        public virtual void Serialize(IGenericWriter writer)
-        {
-            writer.Write(0); // version
-
-            writer.Write(m_State);
-            writer.Write(Maintain);
-            writer.Write(Improve);
-            writer.Write(Added);
-        }
-
-        public virtual void Deserialize(IGenericReader reader)
-        {
-            var version = reader.ReadInt();
-
-            m_State = reader.ReadInt();
-            Maintain = reader.ReadInt();
-            Improve = reader.ReadInt();
-            Added = reader.ReadInt();
-        }
     }
 }

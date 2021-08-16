@@ -31,6 +31,7 @@ namespace SerializableMigration
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
             ISymbol? parentSymbol,
             out string[] ruleArguments
         )
@@ -73,7 +74,7 @@ namespace SerializableMigration
                     new[] { "DeltaTime" },
                 SpecialType.System_String when attributes.Any(a => a.IsInternString(compilation)) =>
                     new[] { "InternString" },
-                _ => Array.Empty<string>()
+                _ => new[] { "" }
             };
 
             return true;
@@ -81,7 +82,7 @@ namespace SerializableMigration
 
         public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            const string expectedRule = nameof(PrimitiveTypeMigrationRule);
+            var expectedRule = RuleName;
             var ruleName = property.Rule;
             if (expectedRule != ruleName)
             {
@@ -124,7 +125,7 @@ namespace SerializableMigration
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            const string expectedRule = nameof(PrimitiveTypeMigrationRule);
+            var expectedRule = RuleName;
             var ruleName = property.Rule;
             if (expectedRule != ruleName)
             {

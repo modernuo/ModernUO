@@ -66,6 +66,7 @@ namespace SerializationSchemaGenerator
                     };
 
                     var serializableTypes = syntaxReceiver.SerializableList;
+                    var embeddedSerializableTypes = syntaxReceiver.EmbeddedSerializableList;
 
                     foreach (var (classSymbol, (attributeData, fieldsList)) in syntaxReceiver.ClassAndFields)
                     {
@@ -73,9 +74,25 @@ namespace SerializationSchemaGenerator
                             classSymbol,
                             attributeData,
                             migrationPath,
+                            false,
                             jsonOptions,
                             fieldsList.ToImmutableArray(),
-                            serializableTypes
+                            serializableTypes,
+                            embeddedSerializableTypes
+                        );
+                    }
+
+                    foreach (var (classSymbol, (attributeData, fieldsList)) in syntaxReceiver.EmbeddedClassAndFields)
+                    {
+                        var source = compilation.GenerateSerializationPartialClass(
+                            classSymbol,
+                            attributeData,
+                            migrationPath,
+                            true,
+                            jsonOptions,
+                            fieldsList.ToImmutableArray(),
+                            serializableTypes,
+                            embeddedSerializableTypes
                         );
                     }
                 }

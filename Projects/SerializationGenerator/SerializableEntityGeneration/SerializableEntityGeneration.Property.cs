@@ -27,7 +27,8 @@ namespace SerializationGenerator
             IFieldSymbol fieldSymbol,
             Accessibility getter,
             Accessibility? setter,
-            bool isVirtual
+            bool isVirtual,
+            ISymbol? parentFieldOrProperty = null
         )
         {
             var fieldName = fieldSymbol.Name;
@@ -54,16 +55,18 @@ namespace SerializationGenerator
             // Getter
             source.GeneratePropertyGetterReturnsField(propertyIndent, fieldSymbol, getterAccessor);
 
-            if (setter != null)
+            if (setter != null && setter != Accessibility.NotApplicable)
             {
                 var setterAccessor = setter == propertyAccessor ? Accessibility.NotApplicable : setter;
+
+                var parentSymbol = parentFieldOrProperty?.Name ?? "this";
 
                 // Setter
                 source.GeneratePropertySetterStart(propertyIndent, false, setterAccessor.Value);
                 source.AppendLine($"{innerIndent}if (value != {fieldName})");
                 source.AppendLine($"{innerIndent}{{");
                 source.AppendLine($"{innerIndent}    {fieldName} = value;");
-                source.AppendLine($"{innerIndent}    ((ISerializable)this).MarkDirty();");
+                source.AppendLine($"{innerIndent}    {parentSymbol}.MarkDirty();");
 
                 if (invalidatePropertiesAttribute != null)
                 {

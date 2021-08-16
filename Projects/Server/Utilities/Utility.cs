@@ -1183,6 +1183,20 @@ namespace Server
         public static T RandomElement<T>(this IList<T> list) => list.RandomElement(default);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T TakeRandomElement<T>(this IList<T> list)
+        {
+            if (list.Count == 0)
+            {
+                return default;
+            }
+
+            var index = Random(list.Count);
+            var value = list[index];
+            list.RemoveAt(index);
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T RandomElement<T>(this IList<T> list, T valueIfZero) =>
             list.Count == 0 ? valueIfZero : list[Random(list.Count)];
 

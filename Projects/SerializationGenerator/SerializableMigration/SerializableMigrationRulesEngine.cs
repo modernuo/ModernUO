@@ -38,6 +38,8 @@ namespace SerializableMigration
                 new PrimitiveUOTypeMigrationRule(),
                 new SerializableInterfaceMigrationRule(),
                 new SerializationMethodSignatureMigrationRule(),
+                new EmbeddedSerializableMigrationRule(),
+                new TimerMigrationRule()
             };
 
             foreach (var rule in rules)
@@ -52,6 +54,7 @@ namespace SerializableMigration
             int order,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
             ISymbol? parentSymbol = default
         )
         {
@@ -80,6 +83,7 @@ namespace SerializableMigration
                 order,
                 attributes,
                 serializableTypes,
+                embeddedSerializableTypes,
                 parentSymbol
             );
         }
@@ -91,6 +95,7 @@ namespace SerializableMigration
             int order,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
             ISymbol? parentSymbol = default
         )
         {
@@ -101,6 +106,7 @@ namespace SerializableMigration
                     propertyType,
                     attributes,
                     serializableTypes,
+                    embeddedSerializableTypes,
                     parentSymbol,
                     out var ruleArguments
                 ))

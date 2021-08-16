@@ -6,7 +6,9 @@
       "name": "Active",
       "type": "bool",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     },
     {
       "name": "TeleDest",

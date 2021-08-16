@@ -30,9 +30,11 @@ namespace SerializationGenerator
             this GeneratorExecutionContext context,
             INamedTypeSymbol classSymbol,
             AttributeData serializableAttr,
+            bool embedded,
             ImmutableArray<ISymbol> fieldsAndProperties,
             JsonSerializerOptions jsonSerializerOptions,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes
         )
         {
             var version = (int)serializableAttr.ConstructorArguments[0].Value!;
@@ -47,10 +49,12 @@ namespace SerializationGenerator
                 classSymbol,
                 serializableAttr,
                 null, // Do not generate schema
+                embedded,
                 null,
                 migrations.ToImmutableArray(),
                 fieldsAndProperties,
-                serializableTypes
+                serializableTypes,
+                embeddedSerializableTypes
             );
         }
 
@@ -59,9 +63,11 @@ namespace SerializationGenerator
             INamedTypeSymbol classSymbol,
             AttributeData serializableAttr,
             string? migrationPath,
+            bool embedded,
             JsonSerializerOptions? jsonSerializerOptions,
             ImmutableArray<ISymbol> fieldsAndProperties,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes
         )
         {
             var version = (int)serializableAttr.ConstructorArguments[0].Value!;
@@ -77,10 +83,12 @@ namespace SerializationGenerator
                 classSymbol,
                 serializableAttr,
                 migrationPath,
+                embedded,
                 jsonSerializerOptions,
                 migrations.ToImmutableArray(),
                 fieldsAndProperties,
-                serializableTypes
+                serializableTypes,
+                embeddedSerializableTypes
             );
         }
 
@@ -89,22 +97,27 @@ namespace SerializationGenerator
             INamedTypeSymbol classSymbol,
             AttributeData serializableAttr,
             string? migrationPath,
+            bool embedded,
             JsonSerializerOptions? jsonSerializerOptions,
             ImmutableArray<SerializableMetadata> migrations,
             ImmutableArray<ISymbol> fieldsAndProperties,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes
         )
         {
             var serializableFieldAttribute =
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTRIBUTE);
             var serializableFieldAttrAttribute =
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTR_ATTRIBUTE);
-            var serializableInterface = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_INTERFACE);
+            var serializableInterface =
+                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_INTERFACE);
+            var parentSerializableAttribute =
+                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_PARENT_ATTRIBUTE);
 
             // If we have a parent that is or derives from ISerializable, then we are in override
             var isOverride = classSymbol.BaseType.ContainsInterface(serializableInterface);
 
-            if (!isOverride && !classSymbol.ContainsInterface(serializableInterface))
+            if (!(embedded || isOverride || classSymbol.ContainsInterface(serializableInterface)))
             {
                 return null;
             }
@@ -120,10 +133,7 @@ namespace SerializationGenerator
             source.AppendLine("#pragma warning disable\n");
             source.GenerateNamespaceStart(namespaceName);
 
-            source.GenerateClassStart(
-                className,
-                ImmutableArray<ITypeSymbol>.Empty
-            );
+            source.GenerateClassStart(className, ImmutableArray<ITypeSymbol>.Empty);
 
             const string indent = "        ";
 
@@ -135,6 +145,14 @@ namespace SerializationGenerator
                 version.ToString()
             );
             source.AppendLine();
+
+            var parentFieldOrProperty = embedded ? fieldsAndProperties.FirstOrDefault(
+                fieldOrPropertySymbol => fieldOrPropertySymbol.GetAttributes()
+                    .FirstOrDefault(
+                        attr =>
+                            SymbolEqualityComparer.Default.Equals(attr.AttributeClass, parentSerializableAttribute)
+                    ) != null
+            ) : null;
 
             var serializablePropertySet = new SortedSet<SerializableProperty>(new SerializablePropertyComparer());
 
@@ -193,7 +211,8 @@ namespace SerializationGenerator
                         fieldSymbol,
                         getterAccessor,
                         setterAccessor,
-                        virtualProperty
+                        virtualProperty,
+                        parentFieldOrProperty
                     );
                     source.AppendLine();
                 }
@@ -204,6 +223,7 @@ namespace SerializationGenerator
                     order,
                     allAttributes,
                     serializableTypes,
+                    embeddedSerializableTypes,
                     classSymbol
                 );
 
@@ -213,7 +233,7 @@ namespace SerializationGenerator
             var serializableProperties = serializablePropertySet.ToImmutableArray();
 
             // If we are not inheriting ISerializable, then we need to define some stuff
-            if (!isOverride)
+            if (!(isOverride || embedded))
             {
                 // long ISerializable.SavePosition { get; set; } = -1;
                 source.GenerateAutoProperty(
@@ -237,9 +257,12 @@ namespace SerializationGenerator
                 );
             }
 
-            // Serial constructor
-            source.GenerateSerialCtor(compilation, className, isOverride);
-            source.AppendLine();
+            if (!embedded)
+            {
+                // Serial constructor
+                source.GenerateSerialCtor(compilation, className, isOverride);
+                source.AppendLine();
+            }
 
             if (version > 0)
             {
@@ -271,7 +294,8 @@ namespace SerializationGenerator
                 version,
                 encodedVersion,
                 migrations,
-                serializableProperties
+                serializableProperties,
+                parentFieldOrProperty
             );
 
             source.GenerateClassEnd();

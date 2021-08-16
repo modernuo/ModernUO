@@ -6,7 +6,9 @@
       "name": "Number",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     }
   ]
 }

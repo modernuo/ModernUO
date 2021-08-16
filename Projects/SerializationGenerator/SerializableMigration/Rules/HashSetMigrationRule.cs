@@ -31,6 +31,7 @@ namespace SerializableMigration
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
             ISymbol? parentSymbol,
             out string[] ruleArguments
         )
@@ -50,6 +51,7 @@ namespace SerializableMigration
                 0,
                 attributes,
                 serializableTypes,
+                embeddedSerializableTypes,
                 parentSymbol
             );
 
@@ -71,7 +73,7 @@ namespace SerializableMigration
 
         public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            const string expectedRule = nameof(HashSetMigrationRule);
+            var expectedRule = RuleName;
             var ruleName = property.Rule;
             if (expectedRule != ruleName)
             {
@@ -114,7 +116,7 @@ namespace SerializableMigration
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            const string expectedRule = nameof(HashSetMigrationRule);
+            var expectedRule = RuleName;
             var ruleName = property.Rule;
             if (expectedRule != ruleName)
             {

@@ -6,7 +6,9 @@
       "name": "IsRewardItem",
       "type": "bool",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     }
   ]
 }
