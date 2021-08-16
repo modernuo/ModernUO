@@ -31,18 +31,6 @@ namespace Server.Items
 
         public AquariumState(Aquarium parent) => _aquarium = parent;
 
-        [SerializableField(1)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private int _maintain;
-
-        [SerializableField(2)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private int _improve;
-
-        [SerializableField(3)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private int _added;
-
         [SerializableField(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int State
@@ -57,6 +45,18 @@ namespace Server.Items
                 }
             }
         }
+
+        [SerializableField(1)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _maintain;
+
+        [SerializableField(2)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _improve;
+
+        [SerializableField(3)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _added;
 
         public override string ToString() => "...";
     }
