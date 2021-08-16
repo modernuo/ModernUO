@@ -12,7 +12,8 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new SquirrelStatueSouthDeed();
     }
 
-    public class SquirrelStatueSouthDeed : BaseAddonDeed
+    [Serializable(0)]
+    public partial class SquirrelStatueSouthDeed : BaseAddonDeed
     {
         [Constructible]
         public SquirrelStatueSouthDeed()

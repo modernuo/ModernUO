@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-    [Serializable(1, false)]
+    [Serializable(0, false)]
     public partial class LoomSouthAddon : BaseAddon, ILoom
     {
         [SerializableField(0)]
@@ -14,10 +14,6 @@ namespace Server.Items
         }
 
         public override BaseAddonDeed Deed => new LoomSouthDeed();
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
-        }
     }
 
     [Serializable(0, false)]

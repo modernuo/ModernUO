@@ -42,6 +42,8 @@ namespace Server.Items
             {
                 case 1:
                     {
+                        // Use this line instead if you are getting world loading issues
+                        // _resource = (CraftResource)reader.ReadByte();
                         _resource = (CraftResource)reader.ReadInt();
                         break;
                     }

@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class FancyElvenTableEastAddon : BaseAddon
+    [Serializable(0)]
+    public partial class FancyElvenTableEastAddon : BaseAddon
     {
         [Constructible]
         public FancyElvenTableEastAddon()
@@ -10,29 +11,18 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x3092), 1, 0, 0);
         }
 
-        public FancyElvenTableEastAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new FancyElvenTableEastDeed();
-
-
     }
 
-    public class FancyElvenTableEastDeed : BaseAddonDeed
+    [Serializable(0)]
+    public partial class FancyElvenTableEastDeed : BaseAddonDeed
     {
         [Constructible]
         public FancyElvenTableEastDeed()
         {
         }
 
-        public FancyElvenTableEastDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new FancyElvenTableEastAddon();
         public override int LabelNumber => 1073386; // hardwood table (east)
-
-
     }
 }
