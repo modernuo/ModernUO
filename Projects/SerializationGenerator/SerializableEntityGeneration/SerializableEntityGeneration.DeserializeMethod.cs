@@ -53,6 +53,22 @@ namespace SerializationGenerator
                 source.AppendLine();
             }
 
+            var afterDeserialization = classSymbol
+                .GetMembers()
+                .OfType<IMethodSymbol>()
+                .FirstOrDefault(
+                    m =>
+                        m.ReturnsVoid &&
+                        m.Parameters.Length == 0 &&
+                        m.GetAttributes()
+                            .Any(
+                                attr => SymbolEqualityComparer.Default.Equals(
+                                    attr.AttributeClass,
+                                    compilation.GetTypeByMetadataName(SymbolMetadata.AFTERDESERIALIZATION_ATTRIBUTE)
+                                )
+                            )
+                );
+
             // Version
             source.AppendLine($"{indent}var version = reader.{(encodedVersion ? "ReadEncodedInt" : "ReadInt")}();");
 
@@ -73,6 +89,10 @@ namespace SerializationGenerator
                     source.AppendLine($"{indent}{{");
                     source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader));");
                     source.AppendLine($"{indent}    ((Server.ISerializable)this).MarkDirty();");
+                    if (afterDeserialization != null)
+                    {
+                        source.AppendLine($"{indent}    Timer.DelayCall({afterDeserialization.Name});");
+                    }
                     source.AppendLine($"{indent}    return;");
                     source.AppendLine($"{indent}}}");
                 }
@@ -84,6 +104,10 @@ namespace SerializationGenerator
                     source.AppendLine($"{indent}{{");
                     source.AppendLine($"{indent}    Deserialize(reader, version);");
                     source.AppendLine($"{indent}    ((Server.ISerializable)this).MarkDirty();");
+                    if (afterDeserialization != null)
+                    {
+                        source.AppendLine($"{indent}    Timer.DelayCall({afterDeserialization.Name});");
+                    }
                     source.AppendLine($"{indent}    return;");
                     source.AppendLine($"{indent}}}");
                 }
@@ -98,22 +122,6 @@ namespace SerializationGenerator
                     property
                 );
             }
-
-            var afterDeserialization = classSymbol
-                .GetMembers()
-                .OfType<IMethodSymbol>()
-                .FirstOrDefault(
-                    m =>
-                        m.ReturnsVoid &&
-                        m.Parameters.Length == 0 &&
-                        m.GetAttributes()
-                            .Any(
-                                attr => SymbolEqualityComparer.Default.Equals(
-                                    attr.AttributeClass,
-                                    compilation.GetTypeByMetadataName(SymbolMetadata.AFTERDESERIALIZATION_ATTRIBUTE)
-                                )
-                            )
-                );
 
             if (afterDeserialization != null)
             {

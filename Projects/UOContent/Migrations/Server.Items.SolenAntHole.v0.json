@@ -1,0 +1,16 @@
+{
+  "version": 0,
+  "type": "Server.Items.SolenAntHole",
+  "properties": [
+    {
+      "name": "Spawned",
+      "type": "System.Collections.Generic.List\u003CServer.Mobile\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "",
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}

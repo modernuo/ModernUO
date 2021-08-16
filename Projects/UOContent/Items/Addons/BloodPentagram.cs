@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class BloodPentagram : BaseAddon
+    [Serializable(0, false)]
+    public partial class BloodPentagram : BaseAddon
     {
         [Constructible]
         public BloodPentagram()
@@ -44,24 +45,6 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x1D01), 5, 2, 0);
             AddComponent(new AddonComponent(0x1D02), 5, 3, 0);
             AddComponent(new AddonComponent(0x1D03), 5, 4, 0);
-        }
-
-        public BloodPentagram(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

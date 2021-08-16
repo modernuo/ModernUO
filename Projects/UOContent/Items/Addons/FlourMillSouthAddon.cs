@@ -3,7 +3,8 @@ using Server.Network;
 
 namespace Server.Items
 {
-    public class FlourMillSouthAddon : BaseAddon, IFlourMill
+    [Serializable(1, false)]
+    public partial class FlourMillSouthAddon : BaseAddon, IFlourMill
     {
         private static readonly int[][] m_StageTable =
         {
@@ -20,10 +21,6 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x192C), 0, -1, 0);
             AddComponent(new AddonComponent(0x192E), 0, 0, 0);
             AddComponent(new AddonComponent(0x1930), 0, 1, 0);
-        }
-
-        public FlourMillSouthAddon(Serial serial) : base(serial)
-        {
         }
 
         public override BaseAddonDeed Deed => new FlourMillSouthDeed();
@@ -154,60 +151,26 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(m_Flour);
         }
 
-        public override void Deserialize(IGenericReader reader)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        m_Flour = reader.ReadInt();
-                        break;
-                    }
-            }
-
             UpdateStage();
         }
     }
 
-    public class FlourMillSouthDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class FlourMillSouthDeed : BaseAddonDeed
     {
         [Constructible]
         public FlourMillSouthDeed()
         {
         }
 
-        public FlourMillSouthDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new FlourMillSouthAddon();
         public override int LabelNumber => 1044348; // flour mill (south)
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

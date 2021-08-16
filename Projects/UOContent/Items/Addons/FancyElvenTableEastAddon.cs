@@ -16,19 +16,7 @@ namespace Server.Items
 
         public override BaseAddonDeed Deed => new FancyElvenTableEastDeed();
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
     public class FancyElvenTableEastDeed : BaseAddonDeed
@@ -45,18 +33,6 @@ namespace Server.Items
         public override BaseAddon Addon => new FancyElvenTableEastAddon();
         public override int LabelNumber => 1073386; // hardwood table (east)
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

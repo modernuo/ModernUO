@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class LargeBedEastAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class LargeBedEastAddon : BaseAddon
     {
         [Constructible]
         public LargeBedEastAddon()
@@ -11,25 +12,7 @@ namespace Server.Items
             AddComponent(new AddonComponent(0xA78), 1, 1, 0);
         }
 
-        public LargeBedEastAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new LargeBedEastDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
     public class LargeBedEastDeed : BaseAddonDeed

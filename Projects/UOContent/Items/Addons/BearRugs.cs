@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class BrownBearRugEastAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class BrownBearRugEastAddon : BaseAddon
     {
         [Constructible]
         public BrownBearRugEastAddon()
@@ -16,57 +17,23 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x1E48), -1, -1, 0);
         }
 
-        public BrownBearRugEastAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new BrownBearRugEastDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class BrownBearRugEastDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class BrownBearRugEastDeed : BaseAddonDeed
     {
         [Constructible]
         public BrownBearRugEastDeed()
         {
         }
 
-        public BrownBearRugEastDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new BrownBearRugEastAddon();
         public override int LabelNumber => 1049397; // a brown bear rug deed facing east
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class BrownBearRugSouthAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class BrownBearRugSouthAddon : BaseAddon
     {
         [Constructible]
         public BrownBearRugSouthAddon()
@@ -82,57 +49,23 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x1E3E), -1, -1, 0);
         }
 
-        public BrownBearRugSouthAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new BrownBearRugSouthDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class BrownBearRugSouthDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class BrownBearRugSouthDeed : BaseAddonDeed
     {
         [Constructible]
         public BrownBearRugSouthDeed()
         {
         }
 
-        public BrownBearRugSouthDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new BrownBearRugSouthAddon();
         public override int LabelNumber => 1049398; // a brown bear rug deed facing south
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PolarBearRugEastAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class PolarBearRugEastAddon : BaseAddon
     {
         [Constructible]
         public PolarBearRugEastAddon()
@@ -148,57 +81,23 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x1E5B), -1, -1, 0);
         }
 
-        public PolarBearRugEastAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new PolarBearRugEastDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PolarBearRugEastDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class PolarBearRugEastDeed : BaseAddonDeed
     {
         [Constructible]
         public PolarBearRugEastDeed()
         {
         }
 
-        public PolarBearRugEastDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new PolarBearRugEastAddon();
         public override int LabelNumber => 1049399; // a polar bear rug deed facing east
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PolarBearRugSouthAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class PolarBearRugSouthAddon : BaseAddon
     {
         [Constructible]
         public PolarBearRugSouthAddon()
@@ -214,53 +113,18 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x1E51), -1, -1, 0);
         }
 
-        public PolarBearRugSouthAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new PolarBearRugSouthDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PolarBearRugSouthDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class PolarBearRugSouthDeed : BaseAddonDeed
     {
         [Constructible]
         public PolarBearRugSouthDeed()
         {
         }
 
-        public PolarBearRugSouthDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new PolarBearRugSouthAddon();
         public override int LabelNumber => 1049400; // a polar bear rug deed facing south
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

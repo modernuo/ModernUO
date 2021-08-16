@@ -15,19 +15,7 @@ namespace Server.Items
 
         public override BaseAddonDeed Deed => new ElvenWashBasinEastDeed();
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
     public class ElvenWashBasinEastDeed : BaseAddonDeed
@@ -44,18 +32,6 @@ namespace Server.Items
         public override BaseAddon Addon => new ElvenWashBasinEastAddon();
         public override int LabelNumber => 1073387; // elven wash basin (east)
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

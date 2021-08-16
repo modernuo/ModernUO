@@ -53,6 +53,7 @@ namespace Server.Items
                     Hue = CraftResources.GetHue(m_Resource);
 
                     InvalidateProperties();
+                    this.MarkDirty();
                 }
             }
         }
