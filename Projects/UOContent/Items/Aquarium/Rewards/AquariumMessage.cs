@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class AquariumMessage : MessageInABottle
+    [Serializable(0, false)]
+    public partial class AquariumMessage : MessageInABottle
     {
         [Constructible]
         public AquariumMessage()
-        {
-        }
-
-        public AquariumMessage(Serial serial) : base(serial)
         {
         }
 
@@ -18,20 +15,6 @@ namespace Server.Items
             base.AddNameProperties(list);
 
             list.Add(1073634); // An aquarium decoration
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

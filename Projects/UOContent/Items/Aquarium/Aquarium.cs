@@ -626,20 +626,13 @@ namespace Server.Items
             RecountLiveCreatures();
         }
 
-        public int FoodNumber()
-        {
-            if (m_Food.State == (int)FoodState.Full)
+        public int FoodNumber() =>
+            m_Food.State switch
             {
-                return 1074240;
-            }
-
-            if (m_Food.State == (int)FoodState.Overfed)
-            {
-                return 1074239;
-            }
-
-            return 1074236 + m_Food.State;
-        }
+                (int)FoodState.Full    => 1074240,
+                (int)FoodState.Overfed => 1074239,
+                _                      => 1074236 + m_Food.State
+            };
 
         public int WaterNumber() => 1074242 + m_Water.State;
 
