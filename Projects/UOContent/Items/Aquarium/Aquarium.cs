@@ -301,9 +301,9 @@ namespace Server.Items
                 LabelTo(from, 1074430, _vacationLeft.ToString()); // Vacation days left: ~1_DAYS
             }
 
-            if (Events.Count > 0)
+            if (_events.Count > 0)
             {
-                LabelTo(from, 1074426, Events.Count.ToString()); // ~1_NUM~ event(s) to view!
+                LabelTo(from, 1074426, _events.Count.ToString()); // ~1_NUM~ event(s) to view!
             }
 
             if (_rewardAvailable)
@@ -372,9 +372,9 @@ namespace Server.Items
                 list.Add(1074430, _vacationLeft.ToString()); // Vacation days left: ~1_DAYS
             }
 
-            if (Events.Count > 0)
+            if (_events.Count > 0)
             {
-                list.Add(1074426, Events.Count.ToString()); // ~1_NUM~ event(s) to view!
+                list.Add(1074426, _events.Count.ToString()); // ~1_NUM~ event(s) to view!
             }
 
             if (_rewardAvailable)
@@ -455,7 +455,7 @@ namespace Server.Items
                         list.Add(new CollectRewardEntry(this));
                     }
 
-                    if (Events.Count > 0)
+                    if (_events.Count > 0)
                     {
                         list.Add(new ViewEventEntry(this));
                     }
@@ -518,7 +518,7 @@ namespace Server.Items
                 LiveCreatures = Math.Max(LiveCreatures - 1, 0);
 
                 // An unfortunate accident has left a creature floating upside-down.  It is starting to smell.
-                Events.Add(1074366);
+                this.Add(_events, 1074366);
             }
         }
 
@@ -964,7 +964,7 @@ namespace Server.Items
 
             public override void OnClick()
             {
-                if (m_Aquarium.Deleted || !m_Aquarium.HasAccess(Owner.From) || m_Aquarium.Events.Count == 0)
+                if (m_Aquarium.Deleted || !m_Aquarium.HasAccess(Owner.From) || m_Aquarium._events.Count == 0)
                 {
                     return;
                 }
