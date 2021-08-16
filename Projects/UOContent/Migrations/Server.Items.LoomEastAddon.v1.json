@@ -6,7 +6,9 @@
       "name": "Phase",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     }
   ]
 }

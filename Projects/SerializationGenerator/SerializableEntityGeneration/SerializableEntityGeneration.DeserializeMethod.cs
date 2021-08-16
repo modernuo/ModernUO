@@ -31,7 +31,8 @@ namespace SerializationGenerator
             int version,
             bool encodedVersion,
             ImmutableArray<SerializableMetadata> migrations,
-            ImmutableArray<SerializableProperty> properties
+            ImmutableArray<SerializableProperty> properties,
+            ISymbol parentFieldOrProperty
         )
         {
             var genericReaderInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_READER_INTERFACE);
@@ -74,6 +75,7 @@ namespace SerializationGenerator
 
             if (version > 0)
             {
+                var parent = parentFieldOrProperty?.Name ?? "this";
                 var nextVersion = 0;
 
                 for (var i = 0; i < migrations.Length; i++)
@@ -88,7 +90,7 @@ namespace SerializationGenerator
                     source.AppendLine($"{indent}if (version == {migrationVersion})");
                     source.AppendLine($"{indent}{{");
                     source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader));");
-                    source.AppendLine($"{indent}    ((Server.ISerializable)this).MarkDirty();");
+                    source.AppendLine($"{indent}    {parent}.MarkDirty();");
                     if (afterDeserialization != null)
                     {
                         source.AppendLine($"{indent}    Timer.DelayCall({afterDeserialization.Name});");
@@ -103,7 +105,7 @@ namespace SerializationGenerator
                     source.AppendLine($"{indent}if (version < _version)");
                     source.AppendLine($"{indent}{{");
                     source.AppendLine($"{indent}    Deserialize(reader, version);");
-                    source.AppendLine($"{indent}    ((Server.ISerializable)this).MarkDirty();");
+                    source.AppendLine($"{indent}    {parent}.MarkDirty();");
                     if (afterDeserialization != null)
                     {
                         source.AppendLine($"{indent}    Timer.DelayCall({afterDeserialization.Name});");
@@ -116,11 +118,14 @@ namespace SerializationGenerator
             foreach (var property in properties)
             {
                 source.AppendLine();
-                SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
+                var rule = SerializableMigrationRulesEngine.Rules[property.Rule];
+                rule.GenerateDeserializationMethod(
                     source,
                     indent,
                     property
                 );
+
+                (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, indent, property, compilation, classSymbol);
             }
 
             if (afterDeserialization != null)

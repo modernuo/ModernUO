@@ -6,7 +6,9 @@
       "name": "Username",
       "type": "string",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     },
     {
       "name": "PasswordAlgorithm",
@@ -18,7 +20,9 @@
       "name": "Password",
       "type": "string",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     },
     {
       "name": "AccessLevel",
@@ -30,31 +34,41 @@
       "name": "Flags",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     },
     {
       "name": "Created",
       "type": "System.DateTime",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     },
     {
       "name": "LastLogin",
       "type": "System.DateTime",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     },
     {
       "name": "TotalGold",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     },
     {
       "name": "TotalPlat",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     },
     {
       "name": "Mobiles",
@@ -102,7 +116,8 @@
       "rule": "ArrayMigrationRule",
       "ruleArguments": [
         "string",
-        "PrimitiveTypeMigrationRule"
+        "PrimitiveTypeMigrationRule",
+        ""
       ]
     },
     {
@@ -115,7 +130,9 @@
       "name": "Email",
       "type": "string",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     }
   ]
 }

@@ -6,13 +6,17 @@
       "name": "AmountMax",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     },
     {
       "name": "RequireExceptional",
       "type": "bool",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     }
   ]
 }

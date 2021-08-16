@@ -1,25 +1,9 @@
 {
   "version": 0,
-  "type": "Server.Items.ArcheryButte",
+  "type": "Server.Items.AquariumState",
   "properties": [
     {
-      "name": "MinSkill",
-      "type": "double",
-      "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": [
-        ""
-      ]
-    },
-    {
-      "name": "MaxSkill",
-      "type": "double",
-      "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": [
-        ""
-      ]
-    },
-    {
-      "name": "Arrows",
+      "name": "State",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
@@ -27,7 +11,23 @@
       ]
     },
     {
-      "name": "Bolts",
+      "name": "Maintain",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Improve",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Added",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [

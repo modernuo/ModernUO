@@ -6,7 +6,9 @@
       "name": "External",
       "type": "bool",
       "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "ruleArguments": [
+        ""
+      ]
     },
     {
       "name": "UpTele",

@@ -24,6 +24,8 @@ namespace SerializationGenerator
         public const string INVALIDATEPROPERTIES_ATTRIBUTE = "Server.InvalidatePropertiesAttribute";
         public const string AFTERDESERIALIZATION_ATTRIBUTE = "Server.AfterDeserializationAttribute";
         public const string SERIALIZABLE_ATTRIBUTE = "Server.SerializableAttribute";
+        public const string EMBEDDED_SERIALIZABLE_ATTRIBUTE = "Server.EmbeddedSerializableAttribute";
+        public const string SERIALIZABLE_PARENT_ATTRIBUTE = "Server.SerializableParentAttribute";
         public const string SERIALIZABLE_FIELD_ATTRIBUTE = "Server.SerializableFieldAttribute";
         public const string SERIALIZABLE_FIELD_ATTR_ATTRIBUTE = "Server.SerializableFieldAttrAttribute";
         public const string SERIALIZABLE_INTERFACE = "Server.ISerializable";
@@ -39,6 +41,15 @@ namespace SerializationGenerator
         public const string RECTANGLE3D_STRUCT = "Server.Rectangle3D";
         public const string RACE_CLASS = "Server.Race";
         public const string MAP_CLASS = "Server.Map";
+        public const string TIMER_CLASS = "Server.Timer";
+        public const string TIMER_DRIFT_ATTRIBUTE = "Server.TimerDriftAttribute";
+        public const string DESERIALIZE_TIMER_FIELD_ATTRIBUTE = "Server.DeserializeTimerFieldAttribute";
+
+        public static bool IsTimerDrift(this AttributeData attr, Compilation compilation) =>
+            attr?.IsAttribute(compilation.GetTypeByMetadataName(TIMER_DRIFT_ATTRIBUTE)) == true;
+
+        public static bool IsTimer(this ITypeSymbol symbol, Compilation compilation) =>
+            symbol.CanBeConstructedFrom(compilation.GetTypeByMetadataName(TIMER_CLASS));
 
         public static bool IsEncodedInt(this AttributeData attr, Compilation compilation) =>
             attr?.IsAttribute(compilation.GetTypeByMetadataName(ENCODED_INT_ATTRIBUTE)) == true;
@@ -112,6 +123,29 @@ namespace SerializationGenerator
                 );
         }
 
+        public static bool HasPublicDeserializeMethod(
+            this ITypeSymbol symbol,
+            Compilation compilation,
+            ImmutableArray<INamedTypeSymbol> serializableTypes
+        )
+        {
+            if (symbol.HasSerializableInterface(compilation, serializableTypes))
+            {
+                return true;
+            }
+
+            var genericReaderInterface = compilation.GetTypeByMetadataName(GENERIC_READER_INTERFACE);
+
+            return symbol.GetAllMethods("Deserialize")
+                .Any(
+                    m => !m.IsStatic &&
+                         m.ReturnsVoid &&
+                         m.Parameters.Length == 1 &&
+                         SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, genericReaderInterface) &&
+                         m.DeclaredAccessibility == Accessibility.Public
+                );
+        }
+
         public static bool IsPoint2D(this ISymbol symbol, Compilation compilation) =>
             symbol.Equals(
                 compilation.GetTypeByMetadataName(POINT2D_STRUCT),
@@ -169,6 +203,15 @@ namespace SerializationGenerator
                 compilation.GetTypeByMetadataName(SERIALIZABLE_ATTRIBUTE);
 
             attributeData = classSymbol.GetAttribute(serializableEntityAttribute);
+            return attributeData != null;
+        }
+
+        public static bool IsEmbeddedSerializable(this INamedTypeSymbol classSymbol, Compilation compilation, out AttributeData? attributeData)
+        {
+            var embeddedSerializableEntityAttribute =
+                compilation.GetTypeByMetadataName(EMBEDDED_SERIALIZABLE_ATTRIBUTE);
+
+            attributeData = classSymbol.GetAttribute(embeddedSerializableEntityAttribute);
             return attributeData != null;
         }
     }

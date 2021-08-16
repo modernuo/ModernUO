@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: EnumMigrationRule.cs                                            *
+ * File: EmbeddedSerializableMigrationRule.cs                            *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -21,9 +21,9 @@ using SerializationGenerator;
 
 namespace SerializableMigration
 {
-    public class EnumMigrationRule : ISerializableMigrationRule
+    public class EmbeddedSerializableMigrationRule : ISerializableMigrationRule
     {
-        public string RuleName => nameof(EnumMigrationRule);
+        public string RuleName => nameof(EmbeddedSerializableMigrationRule);
 
         public bool GenerateRuleState(
             Compilation compilation,
@@ -35,13 +35,19 @@ namespace SerializableMigration
             out string[] ruleArguments
         )
         {
-            if (symbol is not ITypeSymbol typeSymbol || !typeSymbol.IsEnum())
+            if (symbol is not INamedTypeSymbol namedTypeSymbol)
             {
                 ruleArguments = null;
                 return false;
             }
 
-            ruleArguments = Array.Empty<string>();
+            if (!embeddedSerializableTypes.Contains(namedTypeSymbol))
+            {
+                ruleArguments = null;
+                return false;
+            }
+
+            ruleArguments = new[] { "" };
             return true;
         }
 
@@ -54,7 +60,9 @@ namespace SerializableMigration
                 throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
             }
 
-            source.AppendLine($"{indent}{property.Name} = reader.ReadEnum<{property.Type}>();");
+            var propertyName = property.Name;
+            source.AppendLine($"{indent}{propertyName} = new {property.Type}(this);");
+            source.AppendLine($"{indent}{propertyName}.Deserialize(reader);");
         }
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
@@ -66,7 +74,8 @@ namespace SerializableMigration
                 throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
             }
 
-            source.AppendLine($"{indent}writer.WriteEnum<{property.Type}>({property.Name});");
+            var propertyName = property.Name;
+            source.AppendLine($"{indent}{propertyName}.Serialize(writer);");
         }
     }
 }

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SerializableMigrationRule.cs                                    *
+ * File: TimerDriftAttribute.cs                                          *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,36 +13,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Immutable;
-using System.Text;
-using Microsoft.CodeAnalysis;
+using System;
 
-namespace SerializableMigration
+namespace Server
 {
-    public interface ISerializableMigrationRule
+    /// <summary>
+    /// Hints to the source generator that this serializable timer field or property will drift
+    /// during deserialization.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class TimerDriftAttribute : Attribute
     {
-        string RuleName { get; }
-
-        bool GenerateRuleState(
-            Compilation compilation,
-            ISymbol symbol,
-            ImmutableArray<AttributeData> attributes,
-            ImmutableArray<INamedTypeSymbol> serializableTypes,
-            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
-            ISymbol? parentSymbol,
-            out string[] ruleArguments
-        );
-
-        void GenerateDeserializationMethod(
-            StringBuilder source,
-            string indent,
-            SerializableProperty property
-        );
-
-        void GenerateSerializationMethod(
-            StringBuilder source,
-            string indent,
-            SerializableProperty property
-        );
     }
 }
