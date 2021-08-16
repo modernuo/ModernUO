@@ -12,14 +12,11 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new ElvenStoveSouthDeed();
     }
 
-    public class ElvenStoveSouthDeed : BaseAddonDeed
+    [Serializable(0)]
+    public partial class ElvenStoveSouthDeed : BaseAddonDeed
     {
         [Constructible]
         public ElvenStoveSouthDeed()
-        {
-        }
-
-        public ElvenStoveSouthDeed(Serial serial) : base(serial)
         {
         }
 

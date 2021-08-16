@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-    [Serializable(1, false)]
+    [Serializable(0, false)]
     public partial class VacationWafer : Item
     {
         public const int VacationDays = 7;
@@ -17,10 +17,6 @@ namespace Server.Items
             base.AddNameProperties(list);
 
             list.Add(1074432, VacationDays.ToString()); // Vacation days: ~1_DAYS~
-        }
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
         }
     }
 }

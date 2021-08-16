@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-    [Serializable(2, false)]
+    [Serializable(0, false)]
     public partial class LeggingsOfBane : ChainLegs
     {
         [Constructible]
@@ -21,9 +21,5 @@ namespace Server.Items
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
-        }
     }
 }

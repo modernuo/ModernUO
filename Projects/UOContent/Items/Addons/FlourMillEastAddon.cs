@@ -16,7 +16,7 @@ namespace Server.Items
         Working
     }
 
-    [Serializable(1, false)]
+    [Serializable(0, false)]
     public partial class FlourMillEastAddon : BaseAddon, IFlourMill
     {
         private static readonly int[][] m_StageTable =
@@ -162,10 +162,6 @@ namespace Server.Items
             {
                 StartWorking(from);
             }
-        }
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
         }
 
         [AfterDeserialization]

@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-    [Serializable(1, false)]
+    [Serializable(0, false)]
     public partial class FishBowl : BaseContainer
     {
         [Constructible]
@@ -100,10 +100,6 @@ namespace Server.Items
             {
                 list.Add(new RemoveCreature(this));
             }
-        }
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
         }
 
         private class RemoveCreature : ContextMenuEntry

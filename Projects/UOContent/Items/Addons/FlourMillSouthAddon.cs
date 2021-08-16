@@ -3,7 +3,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-    [Serializable(1, false)]
+    [Serializable(0, false)]
     public partial class FlourMillSouthAddon : BaseAddon, IFlourMill
     {
         private static readonly int[][] m_StageTable =
@@ -13,7 +13,7 @@ namespace Server.Items
             new[] { 0x1930, 0x1930, 0x1934 }
         };
 
-        private int m_Flour;
+        private int _flour;
 
         [Constructible]
         public FlourMillSouthAddon()
@@ -26,10 +26,10 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new FlourMillSouthDeed();
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool HasFlour => m_Flour > 0;
+        public bool HasFlour => _flour > 0;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsFull => m_Flour >= MaxFlour;
+        public bool IsFull => _flour >= MaxFlour;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsWorking { get; private set; }
@@ -37,13 +37,14 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public int MaxFlour => 2;
 
+        [SerializableField(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int CurFlour
         {
-            get => m_Flour;
+            get => _flour;
             set
             {
-                m_Flour = Math.Max(0, Math.Min(value, MaxFlour));
+                _flour = Math.Max(0, Math.Min(value, MaxFlour));
                 UpdateStage();
             }
         }
@@ -72,7 +73,7 @@ namespace Server.Items
 
                 if (from.PlaceInBackpack(flour))
                 {
-                    m_Flour = 0;
+                    _flour = 0;
                 }
                 else
                 {
@@ -149,10 +150,6 @@ namespace Server.Items
             {
                 StartWorking(from);
             }
-        }
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
         }
 
         [AfterDeserialization]
