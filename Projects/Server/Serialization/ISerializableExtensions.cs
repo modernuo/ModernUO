@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -86,6 +87,33 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Stop(this ISerializable entity, Timer timer)
+        {
+            timer?.Stop();
+            entity.MarkDirty();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Start(this ISerializable entity, Timer timer)
+        {
+            timer?.Start();
+            entity.MarkDirty();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Restart(this ISerializable entity, Timer timer, TimeSpan delay, TimeSpan interval)
+        {
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Delay = delay;
+                timer.Interval = interval;
+                timer.Start();
+                entity.MarkDirty();
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Add<T>(this ISerializable entity, ref List<T> list, T value)
         {
             Utility.Add(ref list, value);
@@ -129,6 +157,14 @@ namespace Server
         public static void Clear<K, V>(this ISerializable entity, ref Dictionary<K, V> dict)
         {
             Utility.Clear(ref dict);
+            entity.MarkDirty();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Stop(this ISerializable entity, ref Timer timer)
+        {
+            timer?.Stop();
+            timer = null;
             entity.MarkDirty();
         }
     }
