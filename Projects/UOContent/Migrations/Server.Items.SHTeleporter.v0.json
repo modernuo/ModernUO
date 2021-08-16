@@ -1,0 +1,36 @@
+{
+  "version": 0,
+  "type": "Server.Items.SHTeleporter",
+  "properties": [
+    {
+      "name": "External",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": []
+    },
+    {
+      "name": "UpTele",
+      "type": "Server.Items.SHTeleComponent",
+      "rule": "SerializableInterfaceMigrationRule",
+      "ruleArguments": []
+    },
+    {
+      "name": "RightTele",
+      "type": "Server.Items.SHTeleComponent",
+      "rule": "SerializableInterfaceMigrationRule",
+      "ruleArguments": []
+    },
+    {
+      "name": "DownTele",
+      "type": "Server.Items.SHTeleComponent",
+      "rule": "SerializableInterfaceMigrationRule",
+      "ruleArguments": []
+    },
+    {
+      "name": "LeftTele",
+      "type": "Server.Items.SHTeleComponent",
+      "rule": "SerializableInterfaceMigrationRule",
+      "ruleArguments": []
+    }
+  ]
+}

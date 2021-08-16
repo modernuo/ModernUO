@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class TallElvenBedEastAddon : BaseAddon
+    [Serializable(0)]
+    public partial class TallElvenBedEastAddon : BaseAddon
     {
         [Constructible]
         public TallElvenBedEastAddon()
@@ -11,29 +12,18 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x3052), 2, 0, 0);
         }
 
-        public TallElvenBedEastAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new TallElvenBedEastDeed();
-
-
     }
 
-    public class TallElvenBedEastDeed : BaseAddonDeed
+    [Serializable(0)]
+    public partial class TallElvenBedEastDeed : BaseAddonDeed
     {
         [Constructible]
         public TallElvenBedEastDeed()
         {
         }
 
-        public TallElvenBedEastDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new TallElvenBedEastAddon();
         public override int LabelNumber => 1072859; // tall elven bed (east)
-
-
     }
 }

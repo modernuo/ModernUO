@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class SerpentPillarAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class SerpentPillarAddon : BaseAddon
     {
         [Constructible]
         public SerpentPillarAddon()
@@ -23,25 +24,6 @@ namespace Server.Items
 
             AddComponent(new AddonComponent(9033), +1, +0, 0);
             AddComponent(new AddonComponent(9034), +1, -1, 0);
-        }
-
-        public SerpentPillarAddon(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write((byte)0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            int version = reader.ReadByte();
         }
     }
 }

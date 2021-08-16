@@ -59,6 +59,7 @@ namespace Server.Items
             {
                 _flour = Math.Clamp(value, 0, MaxFlour);
                 UpdateStage();
+                this.MarkDirty();
             }
         }
 
