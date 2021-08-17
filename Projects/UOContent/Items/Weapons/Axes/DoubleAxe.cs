@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0xf4b, 0xf4c)]
-    public class DoubleAxe : BaseAxe
+    public partial class DoubleAxe : BaseAxe
     {
         [Constructible]
         public DoubleAxe() : base(0xF4B) => Weight = 8.0;
-
-        public DoubleAxe(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.WhirlwindAttack;
@@ -26,19 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 110;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
