@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class ZyronicClaw : ExecutionersAxe
+    [Serializable(0, false)]
+    public partial class ZyronicClaw : ExecutionersAxe
     {
         [Constructible]
         public ZyronicClaw()
@@ -10,10 +11,6 @@ namespace Server.Items
             WeaponAttributes.HitLeechMana = 50;
             Attributes.AttackChance = 30;
             Attributes.WeaponDamage = 50;
-        }
-
-        public ZyronicClaw(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1061593; // Zyronic Claw
@@ -29,25 +26,6 @@ namespace Server.Items
         {
             chaos = direct = 0;
             phys = fire = cold = pois = nrgy = 20;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Slayer == SlayerName.None)
-            {
-                Slayer = SlayerName.ElementalBan;
-            }
         }
     }
 }
