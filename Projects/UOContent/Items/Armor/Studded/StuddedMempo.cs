@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class StuddedMempo : BaseArmor
+    [Serializable(0, false)]
+    public partial class StuddedMempo : BaseArmor
     {
         [Constructible]
         public StuddedMempo() : base(0x279D) => Weight = 2.0;
-
-        public StuddedMempo(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;
@@ -25,17 +22,5 @@ namespace Server.Items
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Studded;
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }
