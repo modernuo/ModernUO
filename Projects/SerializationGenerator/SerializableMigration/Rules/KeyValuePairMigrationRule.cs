@@ -67,18 +67,28 @@ namespace SerializableMigration
                 null
             );
 
+            var keyArgumentsLength = keySerializedProperty.RuleArguments?.Length ?? 0;
+            var valueArgumentsLength = valueSerializedProperty.RuleArguments?.Length ?? 0;
+            var index = 0;
+
             // Key
-            ruleArguments = new string[5 + keySerializedProperty.RuleArguments.Length + valueSerializedProperty.RuleArguments.Length];
-            ruleArguments[0] = typeArguments[0].ToDisplayString();
-            ruleArguments[1] = keySerializedProperty.Rule;
-            ruleArguments[2] = keySerializedProperty.RuleArguments.Length.ToString();
-            Array.Copy(keySerializedProperty.RuleArguments, 0, ruleArguments, 2, keySerializedProperty.RuleArguments.Length);
+            ruleArguments = new string[5 + keyArgumentsLength + valueArgumentsLength];
+            ruleArguments[index++] = typeArguments[0].ToDisplayString();
+            ruleArguments[index++] = keySerializedProperty.Rule;
+            ruleArguments[index++] = keyArgumentsLength.ToString();
+            if (keyArgumentsLength > 0)
+            {
+                Array.Copy(keySerializedProperty.RuleArguments!, 0, ruleArguments, index, keyArgumentsLength);
+            }
 
             // Value
-            var valueIndex = 3 + keySerializedProperty.RuleArguments.Length;
-            ruleArguments[valueIndex++] = typeArguments[1].ToDisplayString();
-            ruleArguments[valueIndex++] = valueSerializedProperty.Rule;
-            Array.Copy(valueSerializedProperty.RuleArguments, 0, ruleArguments, valueIndex, valueSerializedProperty.RuleArguments.Length);
+            ruleArguments[index++] = typeArguments[1].ToDisplayString();
+            ruleArguments[index++] = valueSerializedProperty.Rule;
+
+            if (valueArgumentsLength > 0)
+            {
+                Array.Copy(valueSerializedProperty.RuleArguments!, 0, ruleArguments, index, valueArgumentsLength);
+            }
 
             return true;
         }
@@ -93,7 +103,7 @@ namespace SerializableMigration
             }
 
             var ruleArguments = property.RuleArguments;
-            var keyType = ruleArguments[0];
+            var keyType = ruleArguments![0];
             var keyRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
             var keyRuleArguments = new string[int.Parse(ruleArguments[2])];
             Array.Copy(ruleArguments, 3, keyRuleArguments, 0, keyRuleArguments.Length);
@@ -149,7 +159,7 @@ namespace SerializableMigration
             }
 
             var ruleArguments = property.RuleArguments;
-            var keyType = ruleArguments[0];
+            var keyType = ruleArguments![0];
             var keyRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
             var keyRuleArguments = new string[int.Parse(ruleArguments[2])];
             Array.Copy(ruleArguments, 3, keyRuleArguments, 0, keyRuleArguments.Length);

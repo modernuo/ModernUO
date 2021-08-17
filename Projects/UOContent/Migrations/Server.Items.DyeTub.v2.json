@@ -5,8 +5,7 @@
     {
       "name": "Level",
       "type": "Server.Multis.SecureLevel",
-      "rule": "EnumMigrationRule",
-      "ruleArguments": []
+      "rule": "EnumMigrationRule"
     },
     {
       "name": "Redyable",

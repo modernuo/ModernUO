@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.DaemonBone",
-  "properties": []
+  "type": "Server.Items.DaemonBone"
 }

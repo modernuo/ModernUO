@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.Garlic",
-  "properties": []
+  "type": "Server.Items.Garlic"
 }

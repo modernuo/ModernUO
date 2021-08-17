@@ -90,7 +90,7 @@ namespace SerializableMigration
             }
 
             var propertyName = property.Name;
-            var argument = property.RuleArguments.Length >= 1 ? property.RuleArguments[0] : null;
+            var argument = property.RuleArguments?.Length >= 1 ? property.RuleArguments[0] : null;
 
             const string ipAddress = SymbolMetadata.IPADDRESS_CLASS;
             const string timeSpan = SymbolMetadata.TIMESPAN_STRUCT;
@@ -133,7 +133,7 @@ namespace SerializableMigration
             }
 
             var propertyName = property.Name;
-            var argument = property.RuleArguments.Length >= 1 ? property.RuleArguments[0] : null;
+            var argument = property.RuleArguments?.Length >= 1 ? property.RuleArguments[0] : null;
 
             var writeMethod = property.Type switch
             {

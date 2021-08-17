@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.DullCopperOre",
-  "properties": []
+  "type": "Server.Items.DullCopperOre"
 }

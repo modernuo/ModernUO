@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.IslandStatue",
-  "properties": []
+  "type": "Server.Items.IslandStatue"
 }

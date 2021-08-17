@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Engines.BulkOrders.LargeTailorBOD",
-  "properties": []
+  "type": "Server.Engines.BulkOrders.LargeTailorBOD"
 }

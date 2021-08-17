@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.DragonEasterEgg",
-  "properties": []
+  "type": "Server.Items.DragonEasterEgg"
 }

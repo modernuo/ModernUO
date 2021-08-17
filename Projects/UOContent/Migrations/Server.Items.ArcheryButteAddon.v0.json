@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.ArcheryButteAddon",
-  "properties": []
+  "type": "Server.Items.ArcheryButteAddon"
 }

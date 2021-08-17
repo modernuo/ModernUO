@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.DaemonChest",
-  "properties": []
+  "type": "Server.Items.DaemonChest"
 }
