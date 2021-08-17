@@ -1,13 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x457E, 0x457F)]
     public partial class GargishLeatherWingArmor : BaseArmor
     {
         [Constructible]
         public GargishLeatherWingArmor() : base(0x457E) => Weight = 2.0;
-        public GargishLeatherWingArmor(Serial serial) : base(serial)
-        {
-        }
 
         public override Race RequiredRace => Race.Gargoyle;
         public override int PhysicalResistance => 0;
@@ -24,16 +22,5 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            int version = reader.ReadInt();
-        }
     }
 }
