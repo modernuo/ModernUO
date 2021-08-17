@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.DartBoard",
-  "properties": []
+  "type": "Server.Items.DartBoard"
 }

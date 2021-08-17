@@ -13,8 +13,7 @@
     {
       "name": "PasswordAlgorithm",
       "type": "Server.Accounting.Security.PasswordProtectionAlgorithm",
-      "rule": "EnumMigrationRule",
-      "ruleArguments": []
+      "rule": "EnumMigrationRule"
     },
     {
       "name": "Password",
@@ -27,8 +26,7 @@
     {
       "name": "AccessLevel",
       "type": "Server.AccessLevel",
-      "rule": "EnumMigrationRule",
-      "ruleArguments": []
+      "rule": "EnumMigrationRule"
     },
     {
       "name": "Flags",
@@ -123,8 +121,7 @@
     {
       "name": "TotalGameTime",
       "type": "System.TimeSpan",
-      "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": []
+      "rule": "PrimitiveTypeMigrationRule"
     },
     {
       "name": "Email",

@@ -27,6 +27,6 @@ namespace SerializableMigration
         public string Type { get; init; }
 
         [JsonPropertyName("properties")]
-        public ImmutableArray<SerializableProperty> Properties { get; init; }
+        public ImmutableArray<SerializableProperty>? Properties { get; init; }
     }
 }

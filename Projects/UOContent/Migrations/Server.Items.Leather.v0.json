@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.Leather",
-  "properties": []
+  "type": "Server.Items.Leather"
 }

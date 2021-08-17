@@ -121,7 +121,7 @@ namespace SerializableMigration
                         Order = order,
                         UsesSaveFlag = serializablePropertyFlagGetter != null ? true : null,
                         Rule = rule.RuleName,
-                        RuleArguments = ruleArguments
+                        RuleArguments = ruleArguments.Length > 0 ? ruleArguments : null
                     };
                 }
             }

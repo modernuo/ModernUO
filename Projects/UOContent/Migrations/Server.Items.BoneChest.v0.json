@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.BoneChest",
-  "properties": []
+  "type": "Server.Items.BoneChest"
 }

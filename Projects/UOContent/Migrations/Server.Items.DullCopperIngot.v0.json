@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.DullCopperIngot",
-  "properties": []
+  "type": "Server.Items.DullCopperIngot"
 }

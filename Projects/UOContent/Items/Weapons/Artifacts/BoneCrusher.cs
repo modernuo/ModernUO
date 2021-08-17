@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class BoneCrusher : WarMace
+    [Serializable(0, false)]
+    public partial class BoneCrusher : WarMace
     {
         [Constructible]
         public BoneCrusher()
@@ -12,38 +13,10 @@ namespace Server.Items
             Attributes.WeaponDamage = 75;
         }
 
-        public BoneCrusher(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1061596; // Bone Crusher
         public override int ArtifactRarity => 11;
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Hue == 0x604)
-            {
-                Hue = 0x60C;
-            }
-
-            if (ItemID == 0x1407)
-            {
-                ItemID = 0x1406;
-            }
-        }
     }
 }

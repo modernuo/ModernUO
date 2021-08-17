@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.BaseMagicFish",
-  "properties": []
+  "type": "Server.Items.BaseMagicFish"
 }

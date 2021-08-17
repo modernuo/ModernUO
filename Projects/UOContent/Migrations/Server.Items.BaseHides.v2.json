@@ -5,8 +5,7 @@
     {
       "name": "Resource",
       "type": "Server.Items.CraftResource",
-      "rule": "EnumMigrationRule",
-      "ruleArguments": []
+      "rule": "EnumMigrationRule"
     }
   ]
 }

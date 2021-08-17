@@ -5,8 +5,7 @@
     {
       "name": "DeadPlayer",
       "type": "Server.Mobiles.PlayerMobile",
-      "rule": "SerializableInterfaceMigrationRule",
-      "ruleArguments": []
+      "rule": "SerializableInterfaceMigrationRule"
     }
   ]
 }

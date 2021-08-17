@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.BoneArms",
-  "properties": []
+  "type": "Server.Items.BoneArms"
 }

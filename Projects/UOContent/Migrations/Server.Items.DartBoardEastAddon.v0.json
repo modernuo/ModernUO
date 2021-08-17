@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.DartBoardEastAddon",
-  "properties": []
+  "type": "Server.Items.DartBoardEastAddon"
 }

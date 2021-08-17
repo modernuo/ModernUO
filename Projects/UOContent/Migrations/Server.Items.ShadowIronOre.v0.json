@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.ShadowIronOre",
-  "properties": []
+  "type": "Server.Items.ShadowIronOre"
 }

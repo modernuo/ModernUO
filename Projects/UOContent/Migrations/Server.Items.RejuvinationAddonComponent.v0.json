@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.RejuvinationAddonComponent",
-  "properties": []
+  "type": "Server.Items.RejuvinationAddonComponent"
 }

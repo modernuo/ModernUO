@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.DreadHornMane",
-  "properties": []
+  "type": "Server.Items.DreadHornMane"
 }

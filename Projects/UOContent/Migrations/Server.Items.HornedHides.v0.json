@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.HornedHides",
-  "properties": []
+  "type": "Server.Items.HornedHides"
 }

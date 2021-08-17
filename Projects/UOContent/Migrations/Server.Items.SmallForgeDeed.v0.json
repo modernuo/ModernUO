@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.SmallForgeDeed",
-  "properties": []
+  "type": "Server.Items.SmallForgeDeed"
 }

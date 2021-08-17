@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.PristineDreadHorn",
-  "properties": []
+  "type": "Server.Items.PristineDreadHorn"
 }

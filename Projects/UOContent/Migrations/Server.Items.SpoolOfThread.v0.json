@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.SpoolOfThread",
-  "properties": []
+  "type": "Server.Items.SpoolOfThread"
 }

@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.BrocadeGozaMatEastAddon",
-  "properties": []
+  "type": "Server.Items.BrocadeGozaMatEastAddon"
 }

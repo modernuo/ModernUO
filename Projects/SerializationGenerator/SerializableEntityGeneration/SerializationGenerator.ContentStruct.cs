@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -32,14 +33,16 @@ namespace SerializationGenerator
 
             source.AppendLine($"{indent}ref struct V{migration.Version}Content");
             source.AppendLine($"{indent}{{");
-            foreach (var serializableProperty in migration.Properties)
+            var properties = migration.Properties ?? ImmutableArray<SerializableProperty>.Empty;
+
+            foreach (var serializableProperty in properties)
             {
                 source.AppendLine($"{indent}    internal readonly {serializableProperty.Type} {serializableProperty.Name};");
             }
 
             var innerIndent = $"{indent}        ";
 
-            var usesSaveFlags = migration.Properties.Any(p => p.UsesSaveFlag == true);
+            var usesSaveFlags = properties.Any(p => p.UsesSaveFlag == true);
 
             if (usesSaveFlags)
             {
@@ -53,7 +56,7 @@ namespace SerializationGenerator
 
                 int index = 0;
                 source.GenerateEnumValue(innerIndent, true, "None", index++);
-                foreach (var property in migration.Properties)
+                foreach (var property in properties)
                 {
                     if (property.UsesSaveFlag == true)
                     {
@@ -72,10 +75,10 @@ namespace SerializationGenerator
                 source.AppendLine($"{innerIndent}var saveFlags = reader.ReadEnum<V{migration.Version}SaveFlag>();");
             }
 
-            if (migration.Properties.Length > 0)
+            if (properties.Length > 0)
             {
                 source.AppendLine();
-                foreach (var property in migration.Properties)
+                foreach (var property in properties)
                 {
                     if (property.UsesSaveFlag == true)
                     {
