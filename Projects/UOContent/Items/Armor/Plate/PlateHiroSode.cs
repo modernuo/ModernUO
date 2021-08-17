@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class PlateHiroSode : BaseArmor
+    [Serializable(0, false)]
+    public partial class PlateHiroSode : BaseArmor
     {
         [Constructible]
         public PlateHiroSode() : base(0x2780) => Weight = 3.0;
-
-        public PlateHiroSode(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;
@@ -24,17 +21,5 @@ namespace Server.Items
         public override int ArmorBase => 3;
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Plate;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

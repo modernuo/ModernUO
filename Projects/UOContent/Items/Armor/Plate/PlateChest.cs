@@ -1,7 +1,7 @@
 namespace Server.Items
 {
     [Flippable(0x1415, 0x1416)]
-    public class PlateChest : BaseArmor
+    public partial class PlateChest : BaseArmor
     {
         [Constructible]
         public PlateChest() : base(0x1415) => Weight = 10.0;
