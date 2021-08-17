@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class MaritimeGlasses : ElvenGlasses
+    [Serializable(0, false)]
+    public partial class MaritimeGlasses : ElvenGlasses
     {
         [Constructible]
         public MaritimeGlasses()
@@ -10,10 +11,6 @@ namespace Server.Items
             Attributes.ReflectPhysical = 20;
 
             Hue = 0x581;
-        }
-
-        public MaritimeGlasses(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1073364; // Maritime Reading Glasses
@@ -26,22 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (version == 0 && Hue == 0)
-            {
-                Hue = 0x581;
-            }
-        }
     }
 }

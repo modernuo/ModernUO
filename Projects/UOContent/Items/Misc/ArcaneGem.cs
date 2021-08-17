@@ -36,17 +36,12 @@ namespace Server.Items
         {
             var v = (int)(m.Skills.Tailoring.Value / 5);
 
-            if (v < 16)
+            return v switch
             {
-                return 16;
-            }
-
-            if (v > 24)
-            {
-                return 24;
-            }
-
-            return v;
+                < 16 => 16,
+                > 24 => 24,
+                _    => v
+            };
         }
 
         public void OnTarget(Mobile from, object obj)

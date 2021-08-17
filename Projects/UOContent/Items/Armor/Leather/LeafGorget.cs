@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class LeafGorget : BaseArmor
+    [Serializable(0)]
+    public partial class LeafGorget : BaseArmor
     {
         [Constructible]
         public LeafGorget() : base(0x2FC7) => Weight = 2.0;
-
-        public LeafGorget(Serial serial) : base(serial)
-        {
-        }
 
         public override Race RequiredRace => Race.Elf;
         public override int BasePhysicalResistance => 2;
@@ -28,19 +25,5 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }
