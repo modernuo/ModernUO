@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: EmbeddedSerializableAttribute.cs                                *
+ * File: SerializableFieldSaveFlagAttribute.cs                           *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -17,18 +17,14 @@ using System;
 
 namespace Server
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public sealed class EmbeddedSerializableAttribute : Attribute
+    /// <summary>
+    /// Hints to the source generator that the field with the same order value should use a save flag.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class SerializableFieldSaveFlagAttribute : Attribute
     {
-        public int Version { get; }
-        public bool EncodedVersion { get; }
-        public bool EncodedSaveFlag { get; }
+        public int Order { get; }
 
-        public EmbeddedSerializableAttribute(int version, bool encodedVersion = true, bool encodedSaveFlag = true)
-        {
-            Version = version;
-            EncodedVersion = encodedVersion;
-            EncodedSaveFlag = encodedSaveFlag;
-        }
+        public SerializableFieldSaveFlagAttribute(int order) => Order = order;
     }
 }

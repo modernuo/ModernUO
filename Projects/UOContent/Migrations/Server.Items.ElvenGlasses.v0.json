@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.ElvenGlasses",
+  "properties": [
+    {
+      "name": "WeaponAttributes",
+      "type": "Server.AosWeaponAttributes",
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

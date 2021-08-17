@@ -30,9 +30,11 @@ namespace SerializationGenerator
             bool isOverride,
             int version,
             bool encodedVersion,
+            bool encodedSaveFlag,
             ImmutableArray<SerializableMetadata> migrations,
             ImmutableArray<SerializableProperty> properties,
-            ISymbol parentFieldOrProperty
+            ISymbol parentFieldOrProperty,
+            ImmutableArray<(IMethodSymbol, int)> propertyFlagGetters
         )
         {
             var genericReaderInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_READER_INTERFACE);
@@ -47,6 +49,7 @@ namespace SerializationGenerator
             );
 
             const string indent = "            ";
+            const string innerIndent = $"{indent}    ";
 
             if (isOverride)
             {
@@ -115,17 +118,43 @@ namespace SerializationGenerator
                 }
             }
 
-            foreach (var property in properties)
+            if (propertyFlagGetters.Length > 0)
             {
                 source.AppendLine();
-                var rule = SerializableMigrationRulesEngine.Rules[property.Rule];
-                rule.GenerateDeserializationMethod(
-                    source,
-                    indent,
-                    property
+                source.AppendLine(
+                    encodedSaveFlag
+                        ? $"{indent}var saveFlags = reader.ReadEnum<SaveFlag>();"
+                        : $"{indent}var saveFlags = (SaveFlag)reader.ReadInt()"
                 );
+            }
 
-                (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, indent, property, compilation, classSymbol);
+            foreach (var property in properties)
+            {
+                var usesSaveFlag = propertyFlagGetters.Any(m => m.Item2 == property.Order);
+                var rule = SerializableMigrationRulesEngine.Rules[property.Rule];
+
+                if (usesSaveFlag)
+                {
+                    source.AppendLine($"\n{indent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{indent}{{");
+                    rule.GenerateDeserializationMethod(
+                        source,
+                        innerIndent,
+                        property
+                    );
+                    (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, innerIndent, property, compilation, classSymbol);
+
+                    source.AppendLine($"{indent}}}");
+                }
+                else
+                {
+                    source.AppendLine();
+                    rule.GenerateDeserializationMethod(
+                        source,
+                        indent,
+                        property
+                    );
+                    (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, indent, property, compilation, classSymbol);
+                }
             }
 
             if (afterDeserialization != null)

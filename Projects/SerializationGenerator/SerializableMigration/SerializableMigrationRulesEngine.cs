@@ -38,7 +38,7 @@ namespace SerializableMigration
                 new PrimitiveUOTypeMigrationRule(),
                 new SerializableInterfaceMigrationRule(),
                 new SerializationMethodSignatureMigrationRule(),
-                new EmbeddedSerializableMigrationRule(),
+                new RawSerializableMigrationRule(),
                 new TimerMigrationRule()
             };
 

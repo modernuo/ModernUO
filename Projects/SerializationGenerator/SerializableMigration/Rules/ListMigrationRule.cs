@@ -96,7 +96,7 @@ namespace SerializableMigration
             var propertyCount = $"{propertyVarPrefix}Count";
 
             source.AppendLine($"{indent}{ruleArguments[argumentsOffset]} {propertyEntry};");
-            source.AppendLine($"{indent}var {propertyCount} = reader.ReadInt();");
+            source.AppendLine($"{indent}var {propertyCount} = reader.ReadEncodedInt();");
             source.AppendLine($"{indent}{propertyName} = new System.Collections.Generic.List<{ruleArguments[argumentsOffset]}>({propertyCount});");
             source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {propertyCount}; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
@@ -143,7 +143,7 @@ namespace SerializableMigration
                 source.AppendLine($"{indent}{property.Name}?.Tidy();");
             }
             source.AppendLine($"{indent}var {propertyCount} = {property.Name}?.Count ?? 0;");
-            source.AppendLine($"{indent}writer.Write({propertyCount});");
+            source.AppendLine($"{indent}writer.WriteEncodedInt({propertyCount});");
             source.AppendLine($"{indent}if ({propertyCount} > 0)");
             source.AppendLine($"{indent}{{");
             source.AppendLine($"{indent}    foreach (var {propertyEntry} in {property.Name}!)");

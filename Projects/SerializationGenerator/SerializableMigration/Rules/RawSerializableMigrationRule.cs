@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: EmbeddedSerializableMigrationRule.cs                            *
+ * File: RawSerializableMigrationRule.cs                                 *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -21,9 +21,9 @@ using SerializationGenerator;
 
 namespace SerializableMigration
 {
-    public class EmbeddedSerializableMigrationRule : ISerializableMigrationRule
+    public class RawSerializableMigrationRule : ISerializableMigrationRule
     {
-        public string RuleName => nameof(EmbeddedSerializableMigrationRule);
+        public string RuleName => nameof(RawSerializableMigrationRule);
 
         public bool GenerateRuleState(
             Compilation compilation,
@@ -35,13 +35,13 @@ namespace SerializableMigration
             out string[] ruleArguments
         )
         {
-            if (symbol is not INamedTypeSymbol namedTypeSymbol)
+            if (symbol is not ITypeSymbol typeSymbol)
             {
                 ruleArguments = null;
                 return false;
             }
 
-            if (!embeddedSerializableTypes.Contains(namedTypeSymbol))
+            if (!typeSymbol.HasRawSerializableInterface(compilation, embeddedSerializableTypes))
             {
                 ruleArguments = null;
                 return false;

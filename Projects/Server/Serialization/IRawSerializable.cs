@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: EmbeddedSerializableAttribute.cs                                *
+ * File: IRawSerializable.cs                                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,22 +13,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
-
 namespace Server
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public sealed class EmbeddedSerializableAttribute : Attribute
+    public interface IRawSerializable
     {
-        public int Version { get; }
-        public bool EncodedVersion { get; }
-        public bool EncodedSaveFlag { get; }
-
-        public EmbeddedSerializableAttribute(int version, bool encodedVersion = true, bool encodedSaveFlag = true)
-        {
-            Version = version;
-            EncodedVersion = encodedVersion;
-            EncodedSaveFlag = encodedSaveFlag;
-        }
+        void Deserialize(IGenericReader reader);
+        void Serialize(IGenericWriter writer);
     }
 }

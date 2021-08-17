@@ -3,12 +3,13 @@ using Server.Multis;
 
 namespace Server.Items
 {
-    [Serializable(1, false)]
+    [Serializable(2, false)]
     public abstract partial class BaseAddonContainer : BaseContainer, IChoppable, IAddon
     {
         [SerializableField(0, setter: "private")]
         private List<AddonContainerComponent> _components;
-        private CraftResource m_Resource;
+
+        private CraftResource _resource;
 
         public BaseAddonContainer(int itemID) : base(itemID)
         {
@@ -44,13 +45,13 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public CraftResource Resource
         {
-            get => m_Resource;
+            get => _resource;
             set
             {
-                if (m_Resource != value)
+                if (_resource != value)
                 {
-                    m_Resource = value;
-                    Hue = CraftResources.GetHue(m_Resource);
+                    _resource = value;
+                    Hue = CraftResources.GetHue(_resource);
 
                     InvalidateProperties();
                     this.MarkDirty();
@@ -169,9 +170,9 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (!CraftResources.IsStandard(m_Resource))
+            if (!CraftResources.IsStandard(_resource))
             {
-                list.Add(CraftResources.GetLocalizationNumber(m_Resource));
+                list.Add(CraftResources.GetLocalizationNumber(_resource));
             }
         }
 
@@ -188,8 +189,8 @@ namespace Server.Items
         // Handles v0 with old Enum -> Int casting
         private void Deserialize(IGenericReader reader, int version)
         {
-            Components = reader.ReadEntityList<AddonContainerComponent>();
-            m_Resource = (CraftResource)reader.ReadInt();
+            _components = reader.ReadEntityList<AddonContainerComponent>();
+            _resource = version == 1 ? reader.ReadEnum<CraftResource>() : (CraftResource)reader.ReadInt();
         }
 
         [AfterDeserialization]

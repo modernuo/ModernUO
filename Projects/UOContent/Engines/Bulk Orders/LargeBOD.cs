@@ -2,7 +2,7 @@ using Server.Mobiles;
 
 namespace Server.Engines.BulkOrders
 {
-    [Serializable(0)]
+    [Serializable(1)]
     public abstract partial class LargeBOD : BaseBOD
     {
         [InvalidateProperties]
@@ -146,6 +146,15 @@ namespace Server.Engines.BulkOrders
                 {
                     BeginCombine(from);
                 }
+            }
+        }
+
+        private void Deserialize(IGenericReader reader, int version)
+        {
+            _entries = new LargeBulkEntry[reader.ReadInt()];
+            for (var i = 0; i < _entries.Length; i++)
+            {
+                _entries[i] = new LargeBulkEntry(reader, this);
             }
         }
     }

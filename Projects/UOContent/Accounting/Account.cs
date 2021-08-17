@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Xml;
 using Server.Accounting.Security;
@@ -11,7 +10,7 @@ using Server.Network;
 
 namespace Server.Accounting
 {
-    [Serializable(2)]
+    [Serializable(3)]
     public partial class Account : IAccount, IComparable<Account>, ISerializable
     {
         public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
@@ -348,16 +347,12 @@ namespace Server.Accounting
             }
         }
 
-        // Handle old deserialization before codegen
         private void Deserialize(IGenericReader reader, int version)
         {
-            // Due to a bug where we were not versioning at all, reset so we don't have an issue deserializing
-            reader.Seek(0, SeekOrigin.Begin);
-
             _username = reader.ReadString();
-            _passwordAlgorithm = (PasswordProtectionAlgorithm)reader.ReadInt();
+            _passwordAlgorithm = version < 2 ? (PasswordProtectionAlgorithm)reader.ReadInt() : reader.ReadEnum<PasswordProtectionAlgorithm>();
             _password = reader.ReadString();
-            _accessLevel = (AccessLevel)reader.ReadInt();
+            _accessLevel = version < 2 ? (AccessLevel)reader.ReadInt() : reader.ReadEnum<AccessLevel>();
             _flags = reader.ReadInt();
             _created = reader.ReadDateTime();
             _lastLogin = reader.ReadDateTime();
@@ -404,6 +399,8 @@ namespace Server.Accounting
             }
 
             _totalGameTime = reader.ReadTimeSpan();
+
+            _email = reader.ReadString();
 
             Timer.StartTimer(AfterDeserialization);
         }

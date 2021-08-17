@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -113,6 +114,8 @@ namespace SerializationGenerator
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_INTERFACE);
             var parentSerializableAttribute =
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_PARENT_ATTRIBUTE);
+            var serializableFieldSaveFlagAttribute =
+                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_SAVE_FLAG_ATTRIBUTE);
 
             // If we have a parent that is or derives from ISerializable, then we are in override
             var isOverride = classSymbol.BaseType.ContainsInterface(serializableInterface);
@@ -122,8 +125,27 @@ namespace SerializationGenerator
                 return null;
             }
 
+            var isRawSerializable = classSymbol.HasRawSerializableInterface(compilation, ImmutableArray<INamedTypeSymbol>.Empty);
+
             var version = (int)serializableAttr.ConstructorArguments[0].Value!;
             var encodedVersion = (bool)serializableAttr.ConstructorArguments[1].Value!;
+            var encodedSaveFlag = (bool)serializableAttr.ConstructorArguments[2].Value!;
+
+            // Let's find out if we need to do serialization flags
+            var serializablePropertyFlagGettersSet = new SortedSet<(IMethodSymbol, int)>(new SerializableFieldFlagComparer());
+            foreach (var m in classSymbol.GetMembers().OfType<IMethodSymbol>())
+            {
+                var getSaveFlagAttribute = m.GetAttribute(serializableFieldSaveFlagAttribute);
+                if (getSaveFlagAttribute == null)
+                {
+                    continue;
+                }
+
+                var attrCtorArgs = getSaveFlagAttribute.ConstructorArguments;
+                var order = (int)attrCtorArgs[0].Value!;
+
+                serializablePropertyFlagGettersSet.Add((m, order));
+            }
 
             var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
             var className = classSymbol.Name;
@@ -133,7 +155,11 @@ namespace SerializationGenerator
             source.AppendLine("#pragma warning disable\n");
             source.GenerateNamespaceStart(namespaceName);
 
-            source.GenerateClassStart(className, ImmutableArray<ITypeSymbol>.Empty);
+            var interfaces = !embedded || isRawSerializable
+                ? Array.Empty<ITypeSymbol>()
+                : new ITypeSymbol[] { compilation.GetTypeByMetadataName(SymbolMetadata.RAW_SERIALIZABLE_INTERFACE) };
+
+            source.GenerateClassStart(className, "    ", interfaces.ToImmutableArray());
 
             const string indent = "        ";
 
@@ -231,6 +257,7 @@ namespace SerializationGenerator
             }
 
             var serializableProperties = serializablePropertySet.ToImmutableArray();
+            var serializablePropertyFlagGetters = serializablePropertyFlagGettersSet.ToImmutableArray();
 
             // If we are not inheriting ISerializable, then we need to define some stuff
             if (!(isOverride || embedded))
@@ -282,7 +309,9 @@ namespace SerializationGenerator
                 compilation,
                 isOverride,
                 encodedVersion,
-                serializableProperties
+                encodedSaveFlag,
+                serializableProperties,
+                serializablePropertyFlagGetters
             );
             source.AppendLine();
 
@@ -293,12 +322,35 @@ namespace SerializationGenerator
                 isOverride,
                 version,
                 encodedVersion,
+                encodedSaveFlag,
                 migrations,
                 serializableProperties,
-                parentFieldOrProperty
+                parentFieldOrProperty,
+                serializablePropertyFlagGetters
             );
 
-            source.GenerateClassEnd();
+            // Serialize SaveFlag enum class
+            if (serializablePropertyFlagGetters.Length > 0)
+            {
+                source.AppendLine();
+                source.GenerateEnumStart(
+                    "SaveFlag",
+                    "        ",
+                    true,
+                    Accessibility.Private
+                );
+
+                int index = 0;
+                source.GenerateEnumValue("            ", true, "None", index++);
+                foreach (var (_, order) in serializablePropertyFlagGetters)
+                {
+                    source.GenerateEnumValue("            ", true, serializableProperties[order].Name, index++);
+                }
+
+                source.GenerateEnumEnd("        ");
+            }
+
+            source.GenerateClassEnd("    ");
             source.GenerateNamespaceEnd();
 
             if (migrationPath != null)

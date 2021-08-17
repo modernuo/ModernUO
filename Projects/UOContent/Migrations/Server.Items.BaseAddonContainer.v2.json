@@ -1,14 +1,14 @@
 {
   "version": 2,
-  "type": "Server.Items.BaseAddon",
+  "type": "Server.Items.BaseAddonContainer",
   "properties": [
     {
       "name": "Components",
-      "type": "System.Collections.Generic.List\u003CServer.Items.AddonComponent\u003E",
+      "type": "System.Collections.Generic.List\u003CServer.Items.AddonContainerComponent\u003E",
       "rule": "ListMigrationRule",
       "ruleArguments": [
         "",
-        "Server.Items.AddonComponent",
+        "Server.Items.AddonContainerComponent",
         "SerializableInterfaceMigrationRule"
       ]
     },
