@@ -51,9 +51,6 @@
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Migrations" />
-    </ItemGroup>
     <PropertyGroup Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
