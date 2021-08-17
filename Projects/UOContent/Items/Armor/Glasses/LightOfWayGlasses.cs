@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class LightOfWayGlasses : ElvenGlasses
+    [Serializable(0, false)]
+    public partial class LightOfWayGlasses : ElvenGlasses
     {
         [Constructible]
         public LightOfWayGlasses()
@@ -10,10 +11,6 @@ namespace Server.Items
             Attributes.WeaponDamage = 30;
 
             Hue = 0x256;
-        }
-
-        public LightOfWayGlasses(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1073378; // Light Of Way Reading Glasses
@@ -26,22 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (version == 0 && Hue == 0)
-            {
-                Hue = 0x256;
-            }
-        }
     }
 }

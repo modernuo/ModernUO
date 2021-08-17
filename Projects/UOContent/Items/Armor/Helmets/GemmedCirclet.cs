@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x2B70, 0x3167)]
-    public class GemmedCirclet : BaseArmor
+    [Serializable(0, false)]
+    public partial class GemmedCirclet : BaseArmor
     {
         [Constructible]
         public GemmedCirclet() : base(0x2B70) => Weight = 2.0;
-
-        public GemmedCirclet(Serial serial) : base(serial)
-        {
-        }
 
         public override Race RequiredRace => Race.Elf;
 
@@ -29,19 +26,5 @@ namespace Server.Items
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Plate;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }
