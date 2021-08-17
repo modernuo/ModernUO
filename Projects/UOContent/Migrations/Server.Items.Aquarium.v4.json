@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "type": "Server.Items.Aquarium",
   "properties": [
     {
@@ -29,7 +29,7 @@
     {
       "name": "Food",
       "type": "Server.Items.AquariumState",
-      "rule": "EmbeddedSerializableMigrationRule",
+      "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
         ""
       ]
@@ -37,7 +37,7 @@
     {
       "name": "Water",
       "type": "Server.Items.AquariumState",
-      "rule": "EmbeddedSerializableMigrationRule",
+      "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
         ""
       ]

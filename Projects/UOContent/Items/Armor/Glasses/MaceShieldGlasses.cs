@@ -5,7 +5,7 @@ namespace Server.Items
         [Constructible]
         public MaceShieldGlasses()
         {
-            WeaponAttributes.HitLowerDefend = 30;
+            _weaponAttributes.HitLowerDefend = 30;
             Attributes.BonusStr = 10;
             Attributes.BonusDex = 5;
 

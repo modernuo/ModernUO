@@ -940,8 +940,10 @@ namespace Server.Items
                     }
                 case 1:
                     {
-                        Attributes = new AosAttributes(this, reader);
-                        SkillBonuses = new AosSkillBonuses(this, reader);
+                        Attributes = new AosAttributes(this);
+                        Attributes.Deserialize(reader);
+                        SkillBonuses = new AosSkillBonuses(this);
+                        SkillBonuses.Deserialize(reader);
 
                         goto case 0;
                     }

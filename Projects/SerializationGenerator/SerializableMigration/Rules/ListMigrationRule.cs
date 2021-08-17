@@ -52,7 +52,8 @@ namespace SerializableMigration
                 attributes,
                 serializableTypes,
                 embeddedSerializableTypes,
-                parentSymbol
+                parentSymbol,
+                null
             );
 
             var extraOptions = "";
@@ -71,7 +72,7 @@ namespace SerializableMigration
             return true;
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
+        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
         {
             var expectedRule = RuleName;
             var ruleName = property.Rule;
@@ -96,7 +97,7 @@ namespace SerializableMigration
             var propertyCount = $"{propertyVarPrefix}Count";
 
             source.AppendLine($"{indent}{ruleArguments[argumentsOffset]} {propertyEntry};");
-            source.AppendLine($"{indent}var {propertyCount} = reader.ReadInt();");
+            source.AppendLine($"{indent}var {propertyCount} = reader.ReadEncodedInt();");
             source.AppendLine($"{indent}{propertyName} = new System.Collections.Generic.List<{ruleArguments[argumentsOffset]}>({propertyCount});");
             source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {propertyCount}; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
@@ -109,7 +110,7 @@ namespace SerializableMigration
                 RuleArguments = listElementRuleArguments
             };
 
-            listElementRule.GenerateDeserializationMethod(source, $"{indent}    ", serializableListElement);
+            listElementRule.GenerateDeserializationMethod(source, $"{indent}    ", serializableListElement, parentReference);
             source.AppendLine($"{indent}    {propertyName}.Add({propertyEntry});");
 
             source.AppendLine($"{indent}}}");
@@ -143,7 +144,7 @@ namespace SerializableMigration
                 source.AppendLine($"{indent}{property.Name}?.Tidy();");
             }
             source.AppendLine($"{indent}var {propertyCount} = {property.Name}?.Count ?? 0;");
-            source.AppendLine($"{indent}writer.Write({propertyCount});");
+            source.AppendLine($"{indent}writer.WriteEncodedInt({propertyCount});");
             source.AppendLine($"{indent}if ({propertyCount} > 0)");
             source.AppendLine($"{indent}{{");
             source.AppendLine($"{indent}    foreach (var {propertyEntry} in {property.Name}!)");

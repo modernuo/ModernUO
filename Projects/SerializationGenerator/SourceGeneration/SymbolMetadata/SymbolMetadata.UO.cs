@@ -44,6 +44,8 @@ namespace SerializationGenerator
         public const string TIMER_CLASS = "Server.Timer";
         public const string TIMER_DRIFT_ATTRIBUTE = "Server.TimerDriftAttribute";
         public const string DESERIALIZE_TIMER_FIELD_ATTRIBUTE = "Server.DeserializeTimerFieldAttribute";
+        public const string SERIALIZABLE_FIELD_SAVE_FLAG_ATTRIBUTE = "Server.SerializableFieldSaveFlagAttribute";
+        public const string RAW_SERIALIZABLE_INTERFACE = "Server.IRawSerializable";
 
         public static bool IsTimerDrift(this AttributeData attr, Compilation compilation) =>
             attr?.IsAttribute(compilation.GetTypeByMetadataName(TIMER_DRIFT_ATTRIBUTE)) == true;
@@ -77,9 +79,17 @@ namespace SerializationGenerator
             symbol.ContainsInterface(compilation.GetTypeByMetadataName(SERIALIZABLE_INTERFACE)) ||
             serializableTypes.Contains(symbol);
 
-        public static bool Contains(this ImmutableArray<INamedTypeSymbol> symbols, ITypeSymbol symbol) =>
+        public static bool HasRawSerializableInterface(
+            this ITypeSymbol symbol,
+            Compilation compilation,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes
+        ) =>
+            symbol.ContainsInterface(compilation.GetTypeByMetadataName(RAW_SERIALIZABLE_INTERFACE)) ||
+            embeddedSerializableTypes.Contains(symbol);
+
+        public static bool Contains(this ImmutableArray<INamedTypeSymbol> symbols, ITypeSymbol? symbol) =>
             symbol is INamedTypeSymbol namedSymbol &&
-            symbols.Contains(namedSymbol, SymbolEqualityComparer.Default);
+            symbols.Contains(namedSymbol, SymbolEqualityComparer.Default) || symbols.Contains(symbol?.BaseType);
 
         public static bool HasGenericReaderCtor(
             this INamedTypeSymbol symbol,
@@ -106,11 +116,6 @@ namespace SerializationGenerator
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
-            if (symbol.HasSerializableInterface(compilation, serializableTypes))
-            {
-                return true;
-            }
-
             var genericWriterInterface = compilation.GetTypeByMetadataName(GENERIC_WRITER_INTERFACE);
 
             return symbol.GetAllMethods("Serialize")
@@ -129,11 +134,6 @@ namespace SerializationGenerator
             ImmutableArray<INamedTypeSymbol> serializableTypes
         )
         {
-            if (symbol.HasSerializableInterface(compilation, serializableTypes))
-            {
-                return true;
-            }
-
             var genericReaderInterface = compilation.GetTypeByMetadataName(GENERIC_READER_INTERFACE);
 
             return symbol.GetAllMethods("Deserialize")

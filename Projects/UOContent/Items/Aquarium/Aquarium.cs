@@ -7,7 +7,7 @@ using Server.Utilities;
 
 namespace Server.Items
 {
-    [Serializable(3, false)]
+    [Serializable(4, false)]
     public partial class Aquarium : BaseAddonContainer
     {
         public static readonly TimeSpan EvaluationInterval = TimeSpan.FromDays(1);
@@ -479,7 +479,44 @@ namespace Server.Items
 
         private void Deserialize(IGenericReader reader, int version)
         {
-            // If you are deserializing such an old version, you should validate all of the properties. RunUO had bugs.
+            switch (version)
+            {
+                case 3:
+                case 2:
+                case 1:
+                    {
+                        var next = reader.ReadDateTime();
+
+                        if (next < Core.Now)
+                        {
+                            next = Core.Now;
+                        }
+
+                        _evaluateTimer = Timer.DelayCall(next - Core.Now, EvaluationInterval, Evaluate);
+
+                        goto case 0;
+                    }
+                case 0:
+                    {
+                        _liveCreatures = reader.ReadInt();
+                        _vacationLeft = reader.ReadInt();
+
+                        _food = new AquariumState(this);
+                        _food.Deserialize(reader);
+                        _water = new AquariumState(this);
+                        _water.Deserialize(reader);
+
+                        _events = new List<int>();
+                        var count = reader.ReadInt();
+                        for (var i = 0; i < count; i++)
+                        {
+                            _events.Add(reader.ReadInt());
+                        }
+
+                        _rewardAvailable = reader.ReadBool();
+                        break;
+                    }
+            }
         }
 
         public int FoodNumber() =>

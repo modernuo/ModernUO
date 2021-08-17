@@ -48,7 +48,8 @@ namespace SerializableMigration
                 attributes,
                 serializableTypes,
                 embeddedSerializableTypes,
-                parentSymbol
+                parentSymbol,
+                null
             );
 
             var length = serializableArrayType.RuleArguments.Length;
@@ -60,7 +61,7 @@ namespace SerializableMigration
             return true;
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
+        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
         {
             var expectedRule = RuleName;
             var ruleName = property.Rule;
@@ -74,7 +75,7 @@ namespace SerializableMigration
             Array.Copy(ruleArguments, 2, arrayElementRuleArguments, 0, ruleArguments.Length - 2);
 
             var propertyIndex = $"{property.Name}Index";
-            source.AppendLine($"{indent}{property.Name} = new {ruleArguments[0]}[reader.ReadInt()];");
+            source.AppendLine($"{indent}{property.Name} = new {ruleArguments[0]}[reader.ReadEncodedInt()];");
             source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {property.Name}.Length; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 
@@ -86,7 +87,7 @@ namespace SerializableMigration
                 RuleArguments = arrayElementRuleArguments
             };
 
-            arrayElementRule.GenerateDeserializationMethod(source, $"{indent}    ", serializableArrayElement);
+            arrayElementRule.GenerateDeserializationMethod(source, $"{indent}    ", serializableArrayElement, parentReference);
 
             source.AppendLine($"{indent}}}");
         }
@@ -110,7 +111,7 @@ namespace SerializableMigration
             var propertyIndex = $"{propertyVarPrefix}Index";
             var propertyLength = $"{propertyVarPrefix}Length";
             source.AppendLine($"{indent}var {propertyLength} = {property.Name}?.Length ?? 0;");
-            source.AppendLine($"{indent}writer.Write({propertyLength});");
+            source.AppendLine($"{indent}writer.WriteEncodedInt({propertyLength});");
             source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {propertyLength}; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SerializableProperty.cs                                         *
+ * File: SerializableFieldSaveFlagAttribute.cs                           *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,28 +13,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Text.Json.Serialization;
+using System;
 
-namespace SerializableMigration
+namespace Server
 {
-    public record SerializableProperty
+    /// <summary>
+    /// Hints to the source generator that the field with the same order value should use a save flag.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class SerializableFieldSaveFlagAttribute : Attribute
     {
-        [JsonPropertyName("name")]
-        public string Name { get; init; }
+        public int Order { get; }
 
-        [JsonPropertyName("type")]
-        public string Type { get; init; }
-
-        [JsonPropertyName("usesSaveFlag")]
-        public bool? UsesSaveFlag { get; init; }
-
-        [JsonPropertyName("rule")]
-        public string Rule { get; init; }
-
-        [JsonPropertyName("ruleArguments")]
-        public string[] RuleArguments { get; init; }
-
-        [JsonIgnore]
-        public int Order { get; init; }
+        public SerializableFieldSaveFlagAttribute(int order) => Order = order;
     }
 }

@@ -13,7 +13,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Linq;
 using System.Text;
+using Microsoft.CodeAnalysis;
 using SerializableMigration;
 
 namespace SerializationGenerator
@@ -22,7 +24,8 @@ namespace SerializationGenerator
     {
         public static void GenerateMigrationContentStruct(
             this StringBuilder source,
-            SerializableMetadata migration
+            SerializableMetadata migration,
+            INamedTypeSymbol classSymbol
         )
         {
             const string indent = "        ";
@@ -34,16 +37,69 @@ namespace SerializationGenerator
                 source.AppendLine($"{indent}    internal readonly {serializableProperty.Type} {serializableProperty.Name};");
             }
 
-            source.AppendLine($"{indent}    internal V{migration.Version}Content(IGenericReader reader)");
+            var innerIndent = $"{indent}        ";
+
+            var usesSaveFlags = migration.Properties.Any(p => p.UsesSaveFlag == true);
+
+            if (usesSaveFlags)
+            {
+                source.AppendLine();
+                source.GenerateEnumStart(
+                    $"V{migration.Version}SaveFlag",
+                    $"{indent}    ",
+                    true,
+                    Accessibility.Private
+                );
+
+                int index = 0;
+                source.GenerateEnumValue(innerIndent, true, "None", index++);
+                foreach (var property in migration.Properties)
+                {
+                    if (property.UsesSaveFlag == true)
+                    {
+                        source.GenerateEnumValue(innerIndent, true, property.Name, index++);
+                    }
+                }
+
+                source.GenerateEnumEnd($"{indent}    ");
+            }
+
+            source.AppendLine($"{indent}    internal V{migration.Version}Content(IGenericReader reader, {classSymbol.ToDisplayString()} entity)");
             source.AppendLine($"{indent}    {{");
 
-            foreach (var serializableProperty in migration.Properties)
+            if (usesSaveFlags)
             {
-                SerializableMigrationRulesEngine.Rules[serializableProperty.Rule].GenerateDeserializationMethod(
-                    source,
-                    $"{indent}        ",
-                    serializableProperty
-                );
+                source.AppendLine($"{innerIndent}var saveFlags = reader.ReadEnum<V{migration.Version}SaveFlag>();");
+            }
+
+            if (migration.Properties.Length > 0)
+            {
+                source.AppendLine();
+                foreach (var property in migration.Properties)
+                {
+                    if (property.UsesSaveFlag == true)
+                    {
+                        source.AppendLine($"\n{innerIndent}if ((saveFlags & V{migration.Version}SaveFlag.{property.Name}) != 0)\n{innerIndent}{{");
+                        SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
+                            source,
+                            $"{innerIndent}    ",
+                            property,
+                            "entity"
+                        );
+                        source.AppendLine($"{innerIndent}}}\n{innerIndent}else\n{innerIndent}{{");
+                        source.AppendLine($"{innerIndent}    {property.Name} = default;");
+                        source.AppendLine($"{innerIndent}}}");
+                    }
+                    else
+                    {
+                        SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
+                            source,
+                            innerIndent,
+                            property,
+                            "entity"
+                        );
+                    }
+                }
             }
 
             source.AppendLine($"{indent}    }}");
