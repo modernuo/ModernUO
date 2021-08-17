@@ -1173,22 +1173,18 @@ namespace Server.Items
                     {
                         var flags = (SaveFlag)reader.ReadEncodedInt();
 
+                        Attributes = new AosAttributes(this);
+
                         if (GetSaveFlag(flags, SaveFlag.Attributes))
                         {
-                            Attributes = new AosAttributes(this, reader);
+                            Attributes.Deserialize(reader);
                         }
-                        else
-                        {
-                            Attributes = new AosAttributes(this);
-                        }
+
+                        ArmorAttributes = new AosArmorAttributes(this);
 
                         if (GetSaveFlag(flags, SaveFlag.ArmorAttributes))
                         {
-                            ArmorAttributes = new AosArmorAttributes(this, reader);
-                        }
-                        else
-                        {
-                            ArmorAttributes = new AosArmorAttributes(this);
+                            ArmorAttributes.Deserialize(reader);
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.PhysicalBonus))
@@ -1356,9 +1352,11 @@ namespace Server.Items
                             m_Meditate = (AMA)(-1);
                         }
 
+                        SkillBonuses = new AosSkillBonuses(this);
+
                         if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
                         {
-                            SkillBonuses = new AosSkillBonuses(this, reader);
+                            SkillBonuses.Deserialize(reader);
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.PlayerConstructed))
@@ -1370,8 +1368,11 @@ namespace Server.Items
                     }
                 case 4:
                     {
-                        Attributes = new AosAttributes(this, reader);
-                        ArmorAttributes = new AosArmorAttributes(this, reader);
+                        Attributes = new AosAttributes(this);
+                        Attributes.Deserialize(reader);
+
+                        ArmorAttributes = new AosArmorAttributes(this);
+                        ArmorAttributes.Deserialize(reader);
                         goto case 3;
                     }
                 case 3:

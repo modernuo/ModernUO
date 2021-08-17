@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SerializableMigrationRule.cs                                    *
+ * File: SourceGeneration.Enum.cs                                        *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,37 +13,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace SerializableMigration
+namespace SerializationGenerator
 {
-    public interface ISerializableMigrationRule
+    public static partial class SourceGeneration
     {
-        string RuleName { get; }
-
-        bool GenerateRuleState(
-            Compilation compilation,
-            ISymbol symbol,
-            ImmutableArray<AttributeData> attributes,
-            ImmutableArray<INamedTypeSymbol> serializableTypes,
-            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
-            ISymbol? parentSymbol,
-            out string[] ruleArguments
-        );
-
-        void GenerateDeserializationMethod(
-            StringBuilder source,
+        public static void GenerateEnumStart(
+            this StringBuilder source,
+            string enumName,
             string indent,
-            SerializableProperty property,
-            string? parentReference
-        );
+            bool useFlags,
+            Accessibility accessor = Accessibility.Public
+        )
+        {
+            if (useFlags)
+            {
+                source.AppendLine($"{indent}[System.Flags]");
+            }
+            source.AppendLine($"{indent}{accessor.ToFriendlyString()} enum {enumName}\n{indent}{{");
+        }
 
-        void GenerateSerializationMethod(
-            StringBuilder source,
-            string indent,
-            SerializableProperty property
-        );
+        public static void GenerateEnumValue(this StringBuilder source, string indent, bool isFlag, string name, int value)
+        {
+            var valueStr = isFlag ? $"0x{1 << value:X8}" : value.ToString();
+            source.AppendLine($"{indent}{name} = {valueStr},");
+        }
+
+        public static void GenerateEnumEnd(this StringBuilder source, string indent)
+        {
+            source.AppendLine($"{indent}}}");
+        }
     }
 }

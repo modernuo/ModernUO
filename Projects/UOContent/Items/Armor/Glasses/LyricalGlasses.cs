@@ -5,7 +5,7 @@ namespace Server.Items
         [Constructible]
         public LyricalGlasses()
         {
-            WeaponAttributes.HitLowerDefend = 20;
+            _weaponAttributes.HitLowerDefend = 20;
             Attributes.NightSight = 1;
             Attributes.ReflectPhysical = 15;
 

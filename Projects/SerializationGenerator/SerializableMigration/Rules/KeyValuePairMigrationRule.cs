@@ -51,7 +51,8 @@ namespace SerializableMigration
                 attributes,
                 serializableTypes,
                 embeddedSerializableTypes,
-                parentSymbol
+                parentSymbol,
+                null
             );
 
             var valueSerializedProperty = SerializableMigrationRulesEngine.GenerateSerializableProperty(
@@ -62,7 +63,8 @@ namespace SerializableMigration
                 attributes,
                 serializableTypes,
                 embeddedSerializableTypes,
-                parentSymbol
+                parentSymbol,
+                null
             );
 
             // Key
@@ -81,7 +83,7 @@ namespace SerializableMigration
             return true;
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
+        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
         {
             var expectedRule = RuleName;
             var ruleName = property.Rule;
@@ -107,7 +109,8 @@ namespace SerializableMigration
             keyRule.GenerateDeserializationMethod(
                 source,
                 indent,
-                serializableKeyProperty
+                serializableKeyProperty,
+                parentReference
             );
 
             var valueIndex = 3 + keyRuleArguments.Length;
@@ -127,7 +130,8 @@ namespace SerializableMigration
             keyRule.GenerateDeserializationMethod(
                 source,
                 indent,
-                serializableValueProperty
+                serializableValueProperty,
+                parentReference
             );
 
             source.AppendLine(

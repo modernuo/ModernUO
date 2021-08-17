@@ -20,10 +20,10 @@ namespace Server.Items
         bool CouldFit(IPoint3D p, Map map);
     }
 
-    [Serializable(2, false)]
+    [Serializable(3, false)]
     public abstract partial class BaseAddon : Item, IChoppable, IAddon
     {
-        private CraftResource m_Resource;
+        private CraftResource _resource;
 
         public BaseAddon() : base(1)
         {
@@ -67,13 +67,13 @@ namespace Server.Items
         [SerializableField(1)]
         public CraftResource Resource
         {
-            get => m_Resource;
+            get => _resource;
             set
             {
-                if (m_Resource != value)
+                if (_resource != value)
                 {
-                    m_Resource = value;
-                    Hue = CraftResources.GetHue(m_Resource);
+                    _resource = value;
+                    Hue = CraftResources.GetHue(_resource);
 
                     InvalidateProperties();
                     this.MarkDirty();
@@ -281,9 +281,9 @@ namespace Server.Items
         {
             _components = reader.ReadEntityList<AddonComponent>();
 
-            if (version < 1 && Weight == 0)
+            if (version == 2)
             {
-                Weight = -1;
+                _resource = (CraftResource)reader.ReadEncodedInt();
             }
         }
     }

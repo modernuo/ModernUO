@@ -36,7 +36,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [Serializable(1)]
     public partial class SolenAntHole : BaseAddon
     {
         [SerializableField(0, getter: "private", setter: "private")]
@@ -152,6 +152,11 @@ namespace Server.Items
             }
 
             return _spawned.Count < 2;
+        }
+
+        private void Deserialize(IGenericReader reader, int version)
+        {
+            _spawned = reader.ReadEntityList<Mobile>();
         }
     }
 }

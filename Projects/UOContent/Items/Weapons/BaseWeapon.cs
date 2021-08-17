@@ -4036,22 +4036,18 @@ namespace Server.Items
                             m_Resource = CraftResource.Iron;
                         }
 
+                        Attributes = new AosAttributes(this);
+
                         if (GetSaveFlag(flags, SaveFlag.xAttributes))
                         {
-                            Attributes = new AosAttributes(this, reader);
+                            Attributes.Deserialize(reader);
                         }
-                        else
-                        {
-                            Attributes = new AosAttributes(this);
-                        }
+
+                        WeaponAttributes = new AosWeaponAttributes(this);
 
                         if (GetSaveFlag(flags, SaveFlag.xWeaponAttributes))
                         {
-                            WeaponAttributes = new AosWeaponAttributes(this, reader);
-                        }
-                        else
-                        {
-                            WeaponAttributes = new AosWeaponAttributes(this);
+                            WeaponAttributes.Deserialize(reader);
                         }
 
                         if (UseSkillMod && m_AccuracyLevel != WeaponAccuracyLevel.Regular && parentMobile != null)
@@ -4077,13 +4073,11 @@ namespace Server.Items
                             PlayerConstructed = true;
                         }
 
+                        SkillBonuses = new AosSkillBonuses(this);
+
                         if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
                         {
-                            SkillBonuses = new AosSkillBonuses(this, reader);
-                        }
-                        else
-                        {
-                            SkillBonuses = new AosSkillBonuses(this);
+                            SkillBonuses.Deserialize(reader);
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.Slayer2))
@@ -4091,13 +4085,11 @@ namespace Server.Items
                             m_Slayer2 = (SlayerName)reader.ReadInt();
                         }
 
+                        AosElementDamages = new AosElementAttributes(this);
+
                         if (GetSaveFlag(flags, SaveFlag.ElementalDamages))
                         {
-                            AosElementDamages = new AosElementAttributes(this, reader);
-                        }
-                        else
-                        {
-                            AosElementDamages = new AosElementAttributes(this);
+                            AosElementDamages.Deserialize(reader);
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.EngravedText))

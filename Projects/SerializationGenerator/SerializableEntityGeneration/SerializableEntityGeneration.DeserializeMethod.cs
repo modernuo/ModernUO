@@ -32,7 +32,8 @@ namespace SerializationGenerator
             bool encodedVersion,
             ImmutableArray<SerializableMetadata> migrations,
             ImmutableArray<SerializableProperty> properties,
-            ISymbol parentFieldOrProperty
+            ISymbol parentFieldOrProperty,
+            ImmutableArray<(IMethodSymbol, int)> propertyFlagGetters
         )
         {
             var genericReaderInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_READER_INTERFACE);
@@ -47,6 +48,7 @@ namespace SerializationGenerator
             );
 
             const string indent = "            ";
+            const string innerIndent = $"{indent}    ";
 
             if (isOverride)
             {
@@ -89,7 +91,7 @@ namespace SerializationGenerator
                     source.AppendLine();
                     source.AppendLine($"{indent}if (version == {migrationVersion})");
                     source.AppendLine($"{indent}{{");
-                    source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader));");
+                    source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader, this));");
                     source.AppendLine($"{indent}    {parent}.MarkDirty();");
                     if (afterDeserialization != null)
                     {
@@ -115,17 +117,41 @@ namespace SerializationGenerator
                 }
             }
 
-            foreach (var property in properties)
+            if (propertyFlagGetters.Length > 0)
             {
                 source.AppendLine();
-                var rule = SerializableMigrationRulesEngine.Rules[property.Rule];
-                rule.GenerateDeserializationMethod(
-                    source,
-                    indent,
-                    property
-                );
+                source.AppendLine($"{indent}var saveFlags = reader.ReadEnum<SaveFlag>();");
+            }
 
-                (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, indent, property, compilation, classSymbol);
+            foreach (var property in properties)
+            {
+                var usesSaveFlag = propertyFlagGetters.Any(m => m.Item2 == property.Order);
+                var rule = SerializableMigrationRulesEngine.Rules[property.Rule];
+
+                if (usesSaveFlag)
+                {
+                    source.AppendLine($"\n{indent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{indent}{{");
+                    rule.GenerateDeserializationMethod(
+                        source,
+                        innerIndent,
+                        property,
+                        "this"
+                    );
+                    (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, innerIndent, property, compilation, classSymbol);
+
+                    source.AppendLine($"{indent}}}");
+                }
+                else
+                {
+                    source.AppendLine();
+                    rule.GenerateDeserializationMethod(
+                        source,
+                        indent,
+                        property,
+                        "this"
+                    );
+                    (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, indent, property, compilation, classSymbol);
+                }
             }
 
             if (afterDeserialization != null)
