@@ -10,8 +10,17 @@ using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items
 {
-    public abstract class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability
+    [Serializable(8, false)]
+    public abstract partial class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
+        [SerializableField(0, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        private AosAttributes _attributes;
+
+        [SerializableField(1, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        private AosArmorAttributes _armorAttributes;
+
         // Overridable values. These values are provided to override the defaults which get defined in the individual armor scripts.
         private int m_ArmorBase = -1;
         private Mobile m_Crafter;
@@ -45,10 +54,6 @@ namespace Server.Items
         private CraftResource m_Resource;
         private int m_StrBonus = -1, m_DexBonus = -1, m_IntBonus = -1;
         private int m_StrReq = -1, m_DexReq = -1, m_IntReq = -1;
-
-        public BaseArmor(Serial serial) : base(serial)
-        {
-        }
 
         public BaseArmor(int itemID) : base(itemID)
         {
@@ -356,12 +361,6 @@ namespace Server.Items
                 }
             }
         }
-
-        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-        public AosAttributes Attributes { get; private set; }
-
-        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-        public AosArmorAttributes ArmorAttributes { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosSkillBonuses SkillBonuses { get; private set; }
@@ -772,17 +771,12 @@ namespace Server.Items
 
         public int ComputeStatBonus(StatType type)
         {
-            if (type == StatType.Str)
+            return type switch
             {
-                return StrBonus + Attributes.BonusStr;
-            }
-
-            if (type == StatType.Dex)
-            {
-                return DexBonus + Attributes.BonusDex;
-            }
-
-            return IntBonus + Attributes.BonusInt;
+                StatType.Str => StrBonus + Attributes.BonusStr,
+                StatType.Dex => DexBonus + Attributes.BonusDex,
+                _            => IntBonus + Attributes.BonusInt
+            };
         }
 
         public void DistributeBonuses(int amount)
