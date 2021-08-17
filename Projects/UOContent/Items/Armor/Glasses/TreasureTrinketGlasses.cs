@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class TreasureTrinketGlasses : ElvenGlasses
+    [Serializable(0, false)]
+    public partial class TreasureTrinketGlasses : ElvenGlasses
     {
         [Constructible]
         public TreasureTrinketGlasses()
@@ -10,10 +11,6 @@ namespace Server.Items
             Attributes.SpellDamage = 10;
 
             Hue = 0x1C2;
-        }
-
-        public TreasureTrinketGlasses(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1073373; // Treasures and Trinkets Reading Glasses
@@ -26,22 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (version == 0 && Hue == 0)
-            {
-                Hue = 0x1C2;
-            }
-        }
     }
 }

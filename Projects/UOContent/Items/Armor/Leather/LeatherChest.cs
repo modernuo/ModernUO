@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x13cc, 0x13d3)]
-    public class LeatherChest : BaseArmor
+    public partial class LeatherChest : BaseArmor
     {
         [Constructible]
         public LeatherChest() : base(0x13CC) => Weight = 6.0;
-
-        public LeatherChest(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;
@@ -28,22 +25,5 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (Weight == 1.0)
-            {
-                Weight = 6.0;
-            }
-        }
     }
 }
