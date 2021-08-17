@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Items
 {
     [Serializable(0, false)]
