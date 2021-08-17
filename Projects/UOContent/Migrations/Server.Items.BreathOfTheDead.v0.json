@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.BreathOfTheDead",
-  "properties": []
+  "type": "Server.Items.BreathOfTheDead"
 }

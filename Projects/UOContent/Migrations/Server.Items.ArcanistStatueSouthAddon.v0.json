@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.ArcanistStatueSouthAddon",
-  "properties": []
+  "type": "Server.Items.ArcanistStatueSouthAddon"
 }

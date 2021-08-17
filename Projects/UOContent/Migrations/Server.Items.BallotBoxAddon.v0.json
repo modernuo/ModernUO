@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.BallotBoxAddon",
-  "properties": []
+  "type": "Server.Items.BallotBoxAddon"
 }

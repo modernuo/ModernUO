@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.SolenAntHoleComponent",
-  "properties": []
+  "type": "Server.Items.SolenAntHoleComponent"
 }

@@ -5,8 +5,7 @@
     {
       "name": "Fisher",
       "type": "Server.Mobile",
-      "rule": "SerializableInterfaceMigrationRule",
-      "ruleArguments": []
+      "rule": "SerializableInterfaceMigrationRule"
     }
   ]
 }

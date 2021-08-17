@@ -62,7 +62,7 @@ namespace SerializableMigration
                 extraOptions += "@Tidy";
             }
 
-            var length = serializableSetType.RuleArguments.Length;
+            var length = serializableSetType.RuleArguments?.Length ?? 0;
             ruleArguments = new string[length + 3];
             ruleArguments[0] = extraOptions;
             ruleArguments[1] = setTypeSymbol.ToDisplayString();
@@ -82,7 +82,7 @@ namespace SerializableMigration
             }
 
             var ruleArguments = property.RuleArguments;
-            var hasExtraOptions = ruleArguments[0] == "" || ruleArguments[0].StartsWith("@", StringComparison.Ordinal);
+            var hasExtraOptions = ruleArguments![0] == "" || ruleArguments[0].StartsWith("@", StringComparison.Ordinal);
             var argumentsOffset = hasExtraOptions ? 1 : 0;
 
             var setElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1 + argumentsOffset]];
@@ -125,7 +125,7 @@ namespace SerializableMigration
             }
 
             var ruleArguments = property.RuleArguments;
-            var hasExtraOptions = ruleArguments[0] == "" || ruleArguments[0].StartsWith("@", StringComparison.Ordinal);
+            var hasExtraOptions = ruleArguments![0] == "" || ruleArguments[0].StartsWith("@", StringComparison.Ordinal);
             var shouldTidy = hasExtraOptions && ruleArguments[0].Contains("@Tidy");
             var argumentsOffset = hasExtraOptions ? 1 : 0;
 

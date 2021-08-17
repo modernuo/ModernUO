@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.SandstoneFountainAddon",
-  "properties": []
+  "type": "Server.Items.SandstoneFountainAddon"
 }

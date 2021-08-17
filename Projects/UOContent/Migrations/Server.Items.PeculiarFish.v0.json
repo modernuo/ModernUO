@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.PeculiarFish",
-  "properties": []
+  "type": "Server.Items.PeculiarFish"
 }

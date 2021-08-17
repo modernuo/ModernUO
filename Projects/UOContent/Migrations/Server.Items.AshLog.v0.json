@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.AshLog",
-  "properties": []
+  "type": "Server.Items.AshLog"
 }

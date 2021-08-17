@@ -32,7 +32,7 @@ namespace SerializableMigration
         public string Rule { get; init; }
 
         [JsonPropertyName("ruleArguments")]
-        public string[] RuleArguments { get; init; }
+        public string[]? RuleArguments { get; init; }
 
         [JsonIgnore]
         public int Order { get; init; }

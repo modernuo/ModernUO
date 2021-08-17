@@ -60,7 +60,7 @@ namespace SerializableMigration
 
             var propertyName = property.Name;
             var ruleArguments = property.RuleArguments;
-            var driftTimer = ruleArguments[0].Contains("@TimerDrift");
+            var driftTimer = ruleArguments![0].Contains("@TimerDrift");
 
             var readTimer = driftTimer ? "reader.ReadDeltaTime()" : "reader.ReadDateTime()";
             source.AppendLine($"{indent}var {propertyName}Delay = {readTimer} - Core.Now;");
@@ -77,7 +77,7 @@ namespace SerializableMigration
 
             var propertyName = property.Name;
             var ruleArguments = property.RuleArguments;
-            var driftTimer = ruleArguments[0].Contains("@TimerDrift");
+            var driftTimer = ruleArguments![0].Contains("@TimerDrift");
 
             var writerMethod = driftTimer ? "WriteDeltaTime" : "Write";
             source.AppendLine($"{indent}writer.{writerMethod}({propertyName}.Next);");

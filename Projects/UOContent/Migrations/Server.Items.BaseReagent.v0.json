@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.BaseReagent",
-  "properties": []
+  "type": "Server.Items.BaseReagent"
 }
