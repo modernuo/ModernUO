@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Xml;
 using Server.Accounting.Security;
@@ -349,6 +350,12 @@ namespace Server.Accounting
 
         private void Deserialize(IGenericReader reader, int version)
         {
+            if (version != 2)
+            {
+                // Due to a bug where we were not versioning at all, reset so we don't have an issue deserializing
+                reader.Seek(0, SeekOrigin.Begin);
+            }
+
             _username = reader.ReadString();
             _passwordAlgorithm = version < 2 ? (PasswordProtectionAlgorithm)reader.ReadInt() : reader.ReadEnum<PasswordProtectionAlgorithm>();
             _password = reader.ReadString();
@@ -385,9 +392,16 @@ namespace Server.Accounting
             _loginIPs = new IPAddress[length];
             for (int i = 0; i < length; i++)
             {
-                if (IPAddress.TryParse(reader.ReadString(), out var address))
+                if (version < 2)
                 {
-                    _loginIPs[i] = Utility.Intern(address);
+                    if (IPAddress.TryParse(reader.ReadString(), out var address))
+                    {
+                        _loginIPs[i] = Utility.Intern(address);
+                    }
+                }
+                else
+                {
+                    _loginIPs[i] = reader.ReadIPAddress();
                 }
             }
 
