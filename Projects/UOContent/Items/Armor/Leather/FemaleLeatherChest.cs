@@ -1,7 +1,7 @@
 namespace Server.Items
 {
     [Flippable(0x1c06, 0x1c07)]
-    public class FemaleLeatherChest : BaseArmor
+    public partial class FemaleLeatherChest : BaseArmor
     {
         [Constructible]
         public FemaleLeatherChest() : base(0x1C06) => Weight = 1.0;
@@ -31,16 +31,5 @@ namespace Server.Items
 
         public override bool AllowMaleWearer => false;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

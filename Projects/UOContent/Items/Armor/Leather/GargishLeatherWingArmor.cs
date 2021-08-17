@@ -1,7 +1,7 @@
 namespace Server.Items
 {
     [Flippable(0x457E, 0x457F)]
-    public class GargishLeatherWingArmor : BaseArmor
+    public partial class GargishLeatherWingArmor : BaseArmor
     {
         [Constructible]
         public GargishLeatherWingArmor() : base(0x457E) => Weight = 2.0;

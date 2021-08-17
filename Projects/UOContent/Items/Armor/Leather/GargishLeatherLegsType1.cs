@@ -1,7 +1,7 @@
 namespace Server.Items
 {
     [TypeAlias("Server.Items.GargishLeatherLegs")]
-    public class GargishLeatherLegsType1 : BaseArmor
+    public partial class GargishLeatherLegsType1 : BaseArmor
     {
         [Constructible]
         public GargishLeatherLegsType1() : base(0x305) => Weight = 4.0;
