@@ -13,26 +13,22 @@
     {
       "name": "UpTele",
       "type": "Server.Items.SHTeleComponent",
-      "rule": "SerializableInterfaceMigrationRule",
-      "ruleArguments": []
+      "rule": "SerializableInterfaceMigrationRule"
     },
     {
       "name": "RightTele",
       "type": "Server.Items.SHTeleComponent",
-      "rule": "SerializableInterfaceMigrationRule",
-      "ruleArguments": []
+      "rule": "SerializableInterfaceMigrationRule"
     },
     {
       "name": "DownTele",
       "type": "Server.Items.SHTeleComponent",
-      "rule": "SerializableInterfaceMigrationRule",
-      "ruleArguments": []
+      "rule": "SerializableInterfaceMigrationRule"
     },
     {
       "name": "LeftTele",
       "type": "Server.Items.SHTeleComponent",
-      "rule": "SerializableInterfaceMigrationRule",
-      "ruleArguments": []
+      "rule": "SerializableInterfaceMigrationRule"
     }
   ]
 }

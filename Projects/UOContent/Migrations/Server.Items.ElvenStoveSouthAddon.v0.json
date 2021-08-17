@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.ElvenStoveSouthAddon",
-  "properties": []
+  "type": "Server.Items.ElvenStoveSouthAddon"
 }

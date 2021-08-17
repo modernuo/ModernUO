@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.AgapiteIngot",
-  "properties": []
+  "type": "Server.Items.AgapiteIngot"
 }

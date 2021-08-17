@@ -62,7 +62,7 @@ namespace SerializableMigration
             }
 
             var propertyName = property.Name;
-            var argument = property.RuleArguments.Length >= 1 &&
+            var argument = property.RuleArguments?.Length >= 1 &&
                            property.RuleArguments[0] == "DeserializationRequiresParent" ? ", this" : "";
 
             source.AppendLine($"{indent}{propertyName} = new {property.Type}(reader{argument});");

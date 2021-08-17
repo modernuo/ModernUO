@@ -358,7 +358,7 @@ namespace SerializationGenerator
                 {
                     Version = version,
                     Type = classSymbol.ToDisplayString(),
-                    Properties = serializableProperties
+                    Properties = serializableProperties.Length > 0 ? serializableProperties : null
                 };
 
                 WriteMigration(migrationPath, newMigration, jsonSerializerOptions);

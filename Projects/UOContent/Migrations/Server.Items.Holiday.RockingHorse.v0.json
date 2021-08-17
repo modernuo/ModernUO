@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.Holiday.RockingHorse",
-  "properties": []
+  "type": "Server.Items.Holiday.RockingHorse"
 }

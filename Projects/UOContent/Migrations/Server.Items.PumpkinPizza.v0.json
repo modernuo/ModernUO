@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.PumpkinPizza",
-  "properties": []
+  "type": "Server.Items.PumpkinPizza"
 }

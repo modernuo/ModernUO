@@ -52,11 +52,14 @@ namespace SerializableMigration
                 null
             );
 
-            var length = serializableArrayType.RuleArguments.Length;
+            var length = serializableArrayType.RuleArguments?.Length?? 0;
             ruleArguments = new string[length + 2];
             ruleArguments[0] = arrayTypeSymbol.ElementType.ToDisplayString();
             ruleArguments[1] = serializableArrayType.Rule;
-            Array.Copy(serializableArrayType.RuleArguments, 0, ruleArguments, 2, length);
+            if (length > 0)
+            {
+                Array.Copy(serializableArrayType.RuleArguments!, 0, ruleArguments, 2, length);
+            }
 
             return true;
         }
@@ -70,7 +73,7 @@ namespace SerializableMigration
                 throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
             }
             var ruleArguments = property.RuleArguments;
-            var arrayElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
+            var arrayElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments![1]];
             var arrayElementRuleArguments = new string[ruleArguments.Length - 2];
             Array.Copy(ruleArguments, 2, arrayElementRuleArguments, 0, ruleArguments.Length - 2);
 
@@ -102,7 +105,7 @@ namespace SerializableMigration
             }
 
             var ruleArguments = property.RuleArguments;
-            var arrayElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
+            var arrayElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments![1]];
             var arrayElementRuleArguments = new string[ruleArguments.Length - 2];
             Array.Copy(ruleArguments, 2, arrayElementRuleArguments, 0, ruleArguments.Length - 2);
 

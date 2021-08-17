@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.HeartShapedBox",
-  "properties": []
+  "type": "Server.Items.HeartShapedBox"
 }

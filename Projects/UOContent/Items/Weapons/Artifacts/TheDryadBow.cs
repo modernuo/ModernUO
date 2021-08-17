@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class TheDryadBow : Bow
+    [Serializable(0, false)]
+    public partial class TheDryadBow : Bow
     {
         private static readonly SkillName[] m_PossibleBonusSkills =
         {
@@ -24,33 +25,10 @@ namespace Server.Items
             WeaponAttributes.ResistPoisonBonus = 15;
         }
 
-        public TheDryadBow(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1061090; // The Dryad Bow
         public override int ArtifactRarity => 11;
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1)
-            {
-                SkillBonuses.SetValues(0, m_PossibleBonusSkills.RandomElement(), Utility.Random(4) == 0 ? 10.0 : 5.0);
-            }
-        }
     }
 }

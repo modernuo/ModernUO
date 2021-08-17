@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.ValoriteOre",
-  "properties": []
+  "type": "Server.Items.ValoriteOre"
 }

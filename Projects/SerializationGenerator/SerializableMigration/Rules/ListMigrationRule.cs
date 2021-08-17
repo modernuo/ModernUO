@@ -62,12 +62,16 @@ namespace SerializableMigration
                 extraOptions += "@Tidy";
             }
 
-            var length = serializableListType.RuleArguments.Length;
+            var length = serializableListType.RuleArguments?.Length ?? 0;
             ruleArguments = new string[length + 3];
             ruleArguments[0] = extraOptions;
             ruleArguments[1] = listTypeSymbol.ToDisplayString();
             ruleArguments[2] = serializableListType.Rule;
-            Array.Copy(serializableListType.RuleArguments, 0, ruleArguments, 3, length);
+
+            if (length > 0)
+            {
+                Array.Copy(serializableListType.RuleArguments!, 0, ruleArguments, 3, length);
+            }
 
             return true;
         }
@@ -82,7 +86,7 @@ namespace SerializableMigration
             }
 
             var ruleArguments = property.RuleArguments;
-            var hasExtraOptions = ruleArguments[0] == "" || ruleArguments[0].StartsWith("@", StringComparison.Ordinal);
+            var hasExtraOptions = ruleArguments![0] == "" || ruleArguments[0].StartsWith("@", StringComparison.Ordinal);
             var argumentsOffset = hasExtraOptions ? 1 : 0;
 
             var listElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[argumentsOffset + 1]];
@@ -126,7 +130,7 @@ namespace SerializableMigration
             }
 
             var ruleArguments = property.RuleArguments;
-            var hasExtraOptions = ruleArguments[0] == "" || ruleArguments[0].StartsWith("@", StringComparison.Ordinal);
+            var hasExtraOptions = ruleArguments![0] == "" || ruleArguments[0].StartsWith("@", StringComparison.Ordinal);
             var shouldTidy = hasExtraOptions && ruleArguments[0].Contains("@Tidy");
             var argumentsOffset = hasExtraOptions ? 1 : 0;
 

@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.BatWing",
-  "properties": []
+  "type": "Server.Items.BatWing"
 }

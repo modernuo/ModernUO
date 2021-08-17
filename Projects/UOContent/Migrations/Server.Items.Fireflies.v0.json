@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.Fireflies",
-  "properties": []
+  "type": "Server.Items.Fireflies"
 }

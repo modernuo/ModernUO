@@ -13,8 +13,7 @@
     {
       "name": "TeleDest",
       "type": "Server.Items.SHTeleComponent",
-      "rule": "SerializableInterfaceMigrationRule",
-      "ruleArguments": []
+      "rule": "SerializableInterfaceMigrationRule"
     },
     {
       "name": "TeleOffset",

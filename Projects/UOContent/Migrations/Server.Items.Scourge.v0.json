@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.Scourge",
-  "properties": []
+  "type": "Server.Items.Scourge"
 }
