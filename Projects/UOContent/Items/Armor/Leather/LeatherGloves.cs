@@ -1,7 +1,7 @@
 namespace Server.Items
 {
     [Flippable]
-    [Serializable(1, false)]
+    [Serializable(2, false)]
     public partial class LeatherGloves : BaseArmor, IArcaneEquip
     {
         private int _maxArcaneCharges;
