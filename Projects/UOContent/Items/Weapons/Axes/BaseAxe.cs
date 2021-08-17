@@ -12,7 +12,7 @@ namespace Server.Items
         bool Axe(Mobile from, BaseAxe axe);
     }
 
-    [Serializable(2)]
+    [Serializable(0, false)]
     public abstract partial class BaseAxe : BaseMeleeWeapon
     {
         [SerializableField(0)]
@@ -52,7 +52,7 @@ namespace Server.Items
 
             var scale = GetUsesScalar();
 
-            _usesRemaining = (_usesRemaining * 100 + (scale - 1)) / scale;
+            UsesRemaining = (_usesRemaining * 100 + (scale - 1)) / scale;
             InvalidateProperties();
         }
 
@@ -62,7 +62,7 @@ namespace Server.Items
 
             var scale = GetUsesScalar();
 
-            _usesRemaining = (_usesRemaining * scale + 99) / 100;
+            UsesRemaining = (_usesRemaining * scale + 99) / 100;
             InvalidateProperties();
         }
 
