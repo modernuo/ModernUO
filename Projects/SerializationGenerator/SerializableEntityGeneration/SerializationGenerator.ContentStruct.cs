@@ -83,14 +83,23 @@ namespace SerializationGenerator
                     if (property.UsesSaveFlag == true)
                     {
                         source.AppendLine($"\n{innerIndent}if ((saveFlags & V{migration.Version}SaveFlag.{property.Name}) != 0)\n{innerIndent}{{");
-                        SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
-                            source,
-                            $"{innerIndent}    ",
-                            property,
-                            "entity"
-                        );
-                        source.AppendLine($"{innerIndent}}}\n{innerIndent}else\n{innerIndent}{{");
-                        source.AppendLine($"{innerIndent}    {property.Name} = default;");
+                        // Special case
+                        if (property.Type == "bool")
+                        {
+                            source.AppendLine($"{innerIndent}    {property.Name} = true;");
+                        }
+                        else
+                        {
+                            SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
+                                source,
+                                $"{innerIndent}    ",
+                                property,
+                                "entity"
+                            );
+
+                            source.AppendLine($"{innerIndent}}}\n{innerIndent}else\n{innerIndent}{{");
+                            source.AppendLine($"{innerIndent}    {property.Name} = default;");
+                        }
                         source.AppendLine($"{innerIndent}}}");
                     }
                     else

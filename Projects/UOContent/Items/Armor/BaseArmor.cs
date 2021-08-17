@@ -17,9 +17,72 @@ namespace Server.Items
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
         private AosAttributes _attributes;
 
+        [SerializableFieldSaveFlag(0)]
+        private bool ShouldSerializeAosAttributes() => !_attributes.IsEmpty;
+
         [SerializableField(1, setter: "private")]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
         private AosArmorAttributes _armorAttributes;
+
+        [SerializableFieldSaveFlag(1)]
+        private bool ShouldSerializeArmorAttributes() => !_armorAttributes.IsEmpty;
+
+        [InvalidateProperties]
+        [SerializableField(2)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _physicalBonus;
+
+        [SerializableFieldSaveFlag(2)]
+        private bool ShouldSerializePhysicalBonus() => _physicalBonus != 0;
+
+        [InvalidateProperties]
+        [SerializableField(3)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _fireBonus;
+
+        [SerializableFieldSaveFlag(3)]
+        private bool ShouldSerializeFireBonus() => _fireBonus != 0;
+
+        [InvalidateProperties]
+        [SerializableField(4)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _coldBonus;
+
+        [SerializableFieldSaveFlag(4)]
+        private bool ShouldSerializeColdBonus() => _coldBonus != 0;
+
+        [InvalidateProperties]
+        [SerializableField(5)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _poisonBonus;
+
+        [SerializableFieldSaveFlag(5)]
+        private bool ShouldSerializePoisonBonus() => _poisonBonus != 0;
+
+        [InvalidateProperties]
+        [SerializableField(6)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _energyBonus;
+
+        [SerializableFieldSaveFlag(6)]
+        private bool ShouldSerializeEnergyBonus() => _energyBonus != 0;
+
+        [SerializableField(7)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _identified;
+
+        [SerializableFieldSaveFlag(7)]
+        private bool ShouldSerializeIdentified() => _identified;
+
+        [SerializableField(8)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _maxHitPoints;
+
+        [SerializableFieldSaveFlag(8)]
+        private bool ShouldSerializeMaxHitPoints() => _maxHitPoints != 0;
+
+        // Field 9
+        private int _hitPoints;
 
         // Overridable values. These values are provided to override the defaults which get defined in the individual armor scripts.
         private int m_ArmorBase = -1;
@@ -27,28 +90,8 @@ namespace Server.Items
         private ArmorDurabilityLevel m_Durability;
 
         private FactionItem m_FactionState;
-        private int m_HitPoints;
-        private bool m_Identified;
 
-        /* Armor internals work differently now (Jun 19 2003)
-         *
-         * The attributes defined below default to -1.
-         * If the value is -1, the corresponding virtual 'Aos/Old' property is used.
-         * If not, the attribute value itself is used. Here's the list:
-         *  - ArmorBase
-         *  - StrBonus
-         *  - DexBonus
-         *  - IntBonus
-         *  - StrReq
-         *  - DexReq
-         *  - IntReq
-         *  - MeditationAllowance
-         */
-
-        // Instance values. These values must are unique to each armor piece.
-        private int m_MaxHitPoints;
         private AMA m_Meditate = (AMA)(-1);
-        private int m_PhysicalBonus, m_FireBonus, m_ColdBonus, m_PoisonBonus, m_EnergyBonus;
         private ArmorProtectionLevel m_Protection;
         private ArmorQuality m_Quality;
         private CraftResource m_Resource;
@@ -64,7 +107,7 @@ namespace Server.Items
             m_Resource = DefaultResource;
             Hue = CraftResources.GetHue(m_Resource);
 
-            m_HitPoints = m_MaxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
+            _hitPoints = _maxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
 
             Layer = (Layer)ItemData.Quality;
 
@@ -109,15 +152,7 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public int BaseArmorRating
         {
-            get
-            {
-                if (m_ArmorBase == -1)
-                {
-                    return ArmorBase;
-                }
-
-                return m_ArmorBase;
-            }
+            get => m_ArmorBase == -1 ? ArmorBase : m_ArmorBase;
             set
             {
                 m_ArmorBase = value;
@@ -249,17 +284,6 @@ namespace Server.Items
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool Identified
-        {
-            get => m_Identified;
-            set
-            {
-                m_Identified = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
         public bool PlayerConstructed { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -365,61 +389,6 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosSkillBonuses SkillBonuses { get; private set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int PhysicalBonus
-        {
-            get => m_PhysicalBonus;
-            set
-            {
-                m_PhysicalBonus = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int FireBonus
-        {
-            get => m_FireBonus;
-            set
-            {
-                m_FireBonus = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int ColdBonus
-        {
-            get => m_ColdBonus;
-            set
-            {
-                m_ColdBonus = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int PoisonBonus
-        {
-            get => m_PoisonBonus;
-            set
-            {
-                m_PoisonBonus = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int EnergyBonus
-        {
-            get => m_EnergyBonus;
-            set
-            {
-                m_EnergyBonus = value;
-                InvalidateProperties();
-            }
-        }
-
         public virtual int BasePhysicalResistance => 0;
         public virtual int BaseFireResistance => 0;
         public virtual int BaseColdResistance => 0;
@@ -427,19 +396,19 @@ namespace Server.Items
         public virtual int BaseEnergyResistance => 0;
 
         public override int PhysicalResistance => BasePhysicalResistance + GetProtOffset() +
-                                                  GetResourceAttrs().ArmorPhysicalResist + m_PhysicalBonus;
+                                                  GetResourceAttrs().ArmorPhysicalResist + _physicalBonus;
 
         public override int FireResistance =>
-            BaseFireResistance + GetProtOffset() + GetResourceAttrs().ArmorFireResist + m_FireBonus;
+            BaseFireResistance + GetProtOffset() + GetResourceAttrs().ArmorFireResist + _fireBonus;
 
         public override int ColdResistance =>
-            BaseColdResistance + GetProtOffset() + GetResourceAttrs().ArmorColdResist + m_ColdBonus;
+            BaseColdResistance + GetProtOffset() + GetResourceAttrs().ArmorColdResist + _coldBonus;
 
         public override int PoisonResistance =>
-            BasePoisonResistance + GetProtOffset() + GetResourceAttrs().ArmorPoisonResist + m_PoisonBonus;
+            BasePoisonResistance + GetProtOffset() + GetResourceAttrs().ArmorPoisonResist + _poisonBonus;
 
         public override int EnergyResistance =>
-            BaseEnergyResistance + GetProtOffset() + GetResourceAttrs().ArmorEnergyResist + m_EnergyBonus;
+            BaseEnergyResistance + GetProtOffset() + GetResourceAttrs().ArmorEnergyResist + _energyBonus;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public ArmorBodyType BodyPosition
@@ -525,19 +494,19 @@ namespace Server.Items
                         switch (Utility.Random(5))
                         {
                             case 0:
-                                m_PhysicalBonus++;
+                                _physicalBonus++;
                                 break;
                             case 1:
-                                m_FireBonus++;
+                                _fireBonus++;
                                 break;
                             case 2:
-                                m_ColdBonus++;
+                                _coldBonus++;
                                 break;
                             case 3:
-                                m_EnergyBonus++;
+                                _energyBonus++;
                                 break;
                             case 4:
-                                m_PoisonBonus++;
+                                _poisonBonus++;
                                 break;
                         }
                     }
@@ -609,40 +578,36 @@ namespace Server.Items
 
         public virtual bool CanFortify => true;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int MaxHitPoints
-        {
-            get => m_MaxHitPoints;
-            set
-            {
-                m_MaxHitPoints = value;
-                InvalidateProperties();
-            }
-        }
-
+        [SerializableField(9)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int HitPoints
         {
-            get => m_HitPoints;
+            get => _hitPoints;
             set
             {
-                if (value != m_HitPoints && MaxHitPoints > 0)
+                if (value != _hitPoints && MaxHitPoints > 0)
                 {
-                    m_HitPoints = value;
+                    _hitPoints = value;
 
-                    if (m_HitPoints < 0)
+                    if (_hitPoints < 0)
                     {
                         Delete();
+                        return;
                     }
-                    else if (m_HitPoints > MaxHitPoints)
+
+                    if (_hitPoints > MaxHitPoints)
                     {
-                        m_HitPoints = MaxHitPoints;
+                        _hitPoints = MaxHitPoints;
                     }
 
                     InvalidateProperties();
+                    this.MarkDirty();
                 }
             }
         }
+
+        [SerializableFieldSaveFlag(9)]
+        private bool ShouldSerializeHitPoints() => _hitPoints != 0;
 
         public virtual int InitMinHits => 0;
         public virtual int InitMaxHits => 0;
@@ -651,8 +616,8 @@ namespace Server.Items
         {
             var scale = 100 + GetDurabilityBonus();
 
-            m_HitPoints = (m_HitPoints * 100 + (scale - 1)) / scale;
-            m_MaxHitPoints = (m_MaxHitPoints * 100 + (scale - 1)) / scale;
+            _hitPoints = (_hitPoints * 100 + (scale - 1)) / scale;
+            _maxHitPoints = (_maxHitPoints * 100 + (scale - 1)) / scale;
             InvalidateProperties();
         }
 
@@ -660,8 +625,8 @@ namespace Server.Items
         {
             var scale = 100 + GetDurabilityBonus();
 
-            m_HitPoints = (m_HitPoints * scale + 99) / 100;
-            m_MaxHitPoints = (m_MaxHitPoints * scale + 99) / 100;
+            _hitPoints = (_hitPoints * scale + 99) / 100;
+            _maxHitPoints = (_maxHitPoints * scale + 99) / 100;
             InvalidateProperties();
         }
 
@@ -697,9 +662,9 @@ namespace Server.Items
                         wear = Utility.Random(2);
                     }
 
-                    if (wear > 0 && m_MaxHitPoints > 0)
+                    if (wear > 0 && _maxHitPoints > 0)
                     {
-                        if (m_HitPoints >= wear)
+                        if (_hitPoints >= wear)
                         {
                             HitPoints -= wear;
                             wear = 0;
@@ -712,7 +677,7 @@ namespace Server.Items
 
                         if (wear > 0)
                         {
-                            if (m_MaxHitPoints > wear)
+                            if (_maxHitPoints > wear)
                             {
                                 MaxHitPoints -= wear;
 
@@ -786,19 +751,19 @@ namespace Server.Items
                 switch (Utility.Random(5))
                 {
                     case 0:
-                        ++m_PhysicalBonus;
+                        ++_physicalBonus;
                         break;
                     case 1:
-                        ++m_FireBonus;
+                        ++_fireBonus;
                         break;
                     case 2:
-                        ++m_ColdBonus;
+                        ++_coldBonus;
                         break;
                     case 3:
-                        ++m_PoisonBonus;
+                        ++_poisonBonus;
                         break;
                     case 4:
-                        ++m_EnergyBonus;
+                        ++_energyBonus;
                         break;
                 }
             }
@@ -978,9 +943,9 @@ namespace Server.Items
         {
             var scale = 100;
 
-            if (m_MaxHitPoints > 0 && m_HitPoints < m_MaxHitPoints)
+            if (_maxHitPoints > 0 && _hitPoints < _maxHitPoints)
             {
-                scale = 50 + 50 * m_HitPoints / m_MaxHitPoints;
+                scale = 50 + 50 * _hitPoints / _maxHitPoints;
             }
 
             return armor * scale / 100;
@@ -1011,14 +976,14 @@ namespace Server.Items
 
             SetSaveFlag(ref flags, SaveFlag.Attributes, !Attributes.IsEmpty);
             SetSaveFlag(ref flags, SaveFlag.ArmorAttributes, !ArmorAttributes.IsEmpty);
-            SetSaveFlag(ref flags, SaveFlag.PhysicalBonus, m_PhysicalBonus != 0);
-            SetSaveFlag(ref flags, SaveFlag.FireBonus, m_FireBonus != 0);
-            SetSaveFlag(ref flags, SaveFlag.ColdBonus, m_ColdBonus != 0);
-            SetSaveFlag(ref flags, SaveFlag.PoisonBonus, m_PoisonBonus != 0);
-            SetSaveFlag(ref flags, SaveFlag.EnergyBonus, m_EnergyBonus != 0);
-            SetSaveFlag(ref flags, SaveFlag.Identified, m_Identified);
-            SetSaveFlag(ref flags, SaveFlag.MaxHitPoints, m_MaxHitPoints != 0);
-            SetSaveFlag(ref flags, SaveFlag.HitPoints, m_HitPoints != 0);
+            SetSaveFlag(ref flags, SaveFlag.PhysicalBonus, _physicalBonus != 0);
+            SetSaveFlag(ref flags, SaveFlag.FireBonus, _fireBonus != 0);
+            SetSaveFlag(ref flags, SaveFlag.ColdBonus, _coldBonus != 0);
+            SetSaveFlag(ref flags, SaveFlag.PoisonBonus, _poisonBonus != 0);
+            SetSaveFlag(ref flags, SaveFlag.EnergyBonus, _energyBonus != 0);
+            SetSaveFlag(ref flags, SaveFlag.Identified, _identified);
+            SetSaveFlag(ref flags, SaveFlag.MaxHitPoints, _maxHitPoints != 0);
+            SetSaveFlag(ref flags, SaveFlag.HitPoints, _hitPoints != 0);
             SetSaveFlag(ref flags, SaveFlag.Crafter, m_Crafter != null);
             SetSaveFlag(ref flags, SaveFlag.Quality, m_Quality != ArmorQuality.Regular);
             SetSaveFlag(ref flags, SaveFlag.Durability, m_Durability != ArmorDurabilityLevel.Regular);
@@ -1049,37 +1014,37 @@ namespace Server.Items
 
             if (GetSaveFlag(flags, SaveFlag.PhysicalBonus))
             {
-                writer.WriteEncodedInt(m_PhysicalBonus);
+                writer.WriteEncodedInt(_physicalBonus);
             }
 
             if (GetSaveFlag(flags, SaveFlag.FireBonus))
             {
-                writer.WriteEncodedInt(m_FireBonus);
+                writer.WriteEncodedInt(_fireBonus);
             }
 
             if (GetSaveFlag(flags, SaveFlag.ColdBonus))
             {
-                writer.WriteEncodedInt(m_ColdBonus);
+                writer.WriteEncodedInt(_coldBonus);
             }
 
             if (GetSaveFlag(flags, SaveFlag.PoisonBonus))
             {
-                writer.WriteEncodedInt(m_PoisonBonus);
+                writer.WriteEncodedInt(_poisonBonus);
             }
 
             if (GetSaveFlag(flags, SaveFlag.EnergyBonus))
             {
-                writer.WriteEncodedInt(m_EnergyBonus);
+                writer.WriteEncodedInt(_energyBonus);
             }
 
             if (GetSaveFlag(flags, SaveFlag.MaxHitPoints))
             {
-                writer.WriteEncodedInt(m_MaxHitPoints);
+                writer.WriteEncodedInt(_maxHitPoints);
             }
 
             if (GetSaveFlag(flags, SaveFlag.HitPoints))
             {
-                writer.WriteEncodedInt(m_HitPoints);
+                writer.WriteEncodedInt(_hitPoints);
             }
 
             if (GetSaveFlag(flags, SaveFlag.Crafter))
@@ -1183,42 +1148,42 @@ namespace Server.Items
 
                         if (GetSaveFlag(flags, SaveFlag.PhysicalBonus))
                         {
-                            m_PhysicalBonus = reader.ReadEncodedInt();
+                            _physicalBonus = reader.ReadEncodedInt();
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.FireBonus))
                         {
-                            m_FireBonus = reader.ReadEncodedInt();
+                            _fireBonus = reader.ReadEncodedInt();
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.ColdBonus))
                         {
-                            m_ColdBonus = reader.ReadEncodedInt();
+                            _coldBonus = reader.ReadEncodedInt();
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.PoisonBonus))
                         {
-                            m_PoisonBonus = reader.ReadEncodedInt();
+                            _poisonBonus = reader.ReadEncodedInt();
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.EnergyBonus))
                         {
-                            m_EnergyBonus = reader.ReadEncodedInt();
+                            _energyBonus = reader.ReadEncodedInt();
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.Identified))
                         {
-                            m_Identified = version >= 7 || reader.ReadBool();
+                            _identified = version >= 7 || reader.ReadBool();
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.MaxHitPoints))
                         {
-                            m_MaxHitPoints = reader.ReadEncodedInt();
+                            _maxHitPoints = reader.ReadEncodedInt();
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.HitPoints))
                         {
-                            m_HitPoints = reader.ReadEncodedInt();
+                            _hitPoints = reader.ReadEncodedInt();
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.Crafter))
@@ -1371,24 +1336,24 @@ namespace Server.Items
                     }
                 case 3:
                     {
-                        m_PhysicalBonus = reader.ReadInt();
-                        m_FireBonus = reader.ReadInt();
-                        m_ColdBonus = reader.ReadInt();
-                        m_PoisonBonus = reader.ReadInt();
-                        m_EnergyBonus = reader.ReadInt();
+                        _physicalBonus = reader.ReadInt();
+                        _fireBonus = reader.ReadInt();
+                        _coldBonus = reader.ReadInt();
+                        _poisonBonus = reader.ReadInt();
+                        _energyBonus = reader.ReadInt();
                         goto case 2;
                     }
                 case 2:
                 case 1:
                     {
-                        m_Identified = reader.ReadBool();
+                        _identified = reader.ReadBool();
                         goto case 0;
                     }
                 case 0:
                     {
                         m_ArmorBase = reader.ReadInt();
-                        m_MaxHitPoints = reader.ReadInt();
-                        m_HitPoints = reader.ReadInt();
+                        _maxHitPoints = reader.ReadInt();
+                        _hitPoints = reader.ReadInt();
                         m_Crafter = reader.ReadEntity<Mobile>();
                         m_Quality = (ArmorQuality)reader.ReadInt();
                         m_Durability = (ArmorDurabilityLevel)reader.ReadInt();
@@ -1495,9 +1460,9 @@ namespace Server.Items
                             };
                         }
 
-                        if (m_MaxHitPoints == 0 && m_HitPoints == 0)
+                        if (_maxHitPoints == 0 && _hitPoints == 0)
                         {
-                            m_HitPoints = m_MaxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
+                            _hitPoints = _maxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
                         }
 
                         break;
@@ -1958,9 +1923,9 @@ namespace Server.Items
                 list.Add(1061170, prop.ToString()); // strength requirement ~1_val~
             }
 
-            if (m_HitPoints >= 0 && m_MaxHitPoints > 0)
+            if (_hitPoints >= 0 && _maxHitPoints > 0)
             {
-                list.Add(1060639, "{0}\t{1}", m_HitPoints, m_MaxHitPoints); // durability ~1_val~ / ~2_val~
+                list.Add(1060639, "{0}\t{1}", _hitPoints, _maxHitPoints); // durability ~1_val~ / ~2_val~
             }
         }
 
@@ -1990,7 +1955,7 @@ namespace Server.Items
                 attrs.Add(new EquipInfoAttribute(1018305 - (int)m_Quality));
             }
 
-            if (m_Identified || from.AccessLevel >= AccessLevel.GameMaster)
+            if (_identified || from.AccessLevel >= AccessLevel.GameMaster)
             {
                 if (m_Durability != ArmorDurabilityLevel.Regular)
                 {

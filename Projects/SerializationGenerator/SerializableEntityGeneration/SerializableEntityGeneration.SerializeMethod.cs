@@ -79,13 +79,17 @@ namespace SerializationGenerator
 
                 if (usesSaveFlag)
                 {
-                    source.AppendLine($"\n{indent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{indent}{{");
-                    SerializableMigrationRulesEngine.Rules[property.Rule].GenerateSerializationMethod(
-                        source,
-                        innerIndent,
-                        property
-                    );
-                    source.AppendLine($"{indent}}}");
+                    // Special case
+                    if (property.Type != "bool")
+                    {
+                        source.AppendLine($"\n{indent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{indent}{{");
+                        SerializableMigrationRulesEngine.Rules[property.Rule].GenerateSerializationMethod(
+                            source,
+                            innerIndent,
+                            property
+                        );
+                        source.AppendLine($"{indent}}}");
+                    }
                 }
                 else
                 {

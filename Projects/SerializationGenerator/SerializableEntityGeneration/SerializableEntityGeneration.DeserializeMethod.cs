@@ -131,13 +131,22 @@ namespace SerializationGenerator
                 if (usesSaveFlag)
                 {
                     source.AppendLine($"\n{indent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{indent}{{");
-                    rule.GenerateDeserializationMethod(
-                        source,
-                        innerIndent,
-                        property,
-                        "this"
-                    );
-                    (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, innerIndent, property, compilation, classSymbol);
+
+                    // Special case
+                    if (property.Type == "bool")
+                    {
+                        source.AppendLine($"{innerIndent}{property.Name} = true;");
+                    }
+                    else
+                    {
+                        rule.GenerateDeserializationMethod(
+                            source,
+                            innerIndent,
+                            property,
+                            "this"
+                        );
+                        (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, innerIndent, property, compilation, classSymbol);
+                    }
 
                     source.AppendLine($"{indent}}}");
                 }
