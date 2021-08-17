@@ -22,13 +22,11 @@ namespace Server
     {
         public int Version { get; }
         public bool EncodedVersion { get; }
-        public bool EncodedSaveFlag { get; }
 
-        public SerializableAttribute(int version, bool encodedVersion = true, bool encodedSaveFlag = true)
+        public SerializableAttribute(int version, bool encodedVersion = true)
         {
             Version = version;
             EncodedVersion = encodedVersion;
-            EncodedSaveFlag = encodedSaveFlag;
         }
     }
 }

@@ -80,7 +80,7 @@ namespace SerializableMigration
             return true;
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
+        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
         {
             var expectedRule = RuleName;
             var ruleName = property.Rule;

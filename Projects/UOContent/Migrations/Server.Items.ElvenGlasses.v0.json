@@ -5,6 +5,7 @@
     {
       "name": "WeaponAttributes",
       "type": "Server.AosWeaponAttributes",
+      "usesSaveFlag": true,
       "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
         ""

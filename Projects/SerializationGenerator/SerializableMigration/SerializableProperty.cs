@@ -25,6 +25,9 @@ namespace SerializableMigration
         [JsonPropertyName("type")]
         public string Type { get; init; }
 
+        [JsonPropertyName("usesSaveFlag")]
+        public bool? UsesSaveFlag { get; init; }
+
         [JsonPropertyName("rule")]
         public string Rule { get; init; }
 

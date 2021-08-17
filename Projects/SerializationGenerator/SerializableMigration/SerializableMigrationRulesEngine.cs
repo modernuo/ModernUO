@@ -55,7 +55,8 @@ namespace SerializableMigration
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
             ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
-            ISymbol? parentSymbol = default
+            ISymbol? parentSymbol,
+            IMethodSymbol? serializablePropertyFlagGetter
         )
         {
             string propertyName;
@@ -84,7 +85,8 @@ namespace SerializableMigration
                 attributes,
                 serializableTypes,
                 embeddedSerializableTypes,
-                parentSymbol
+                parentSymbol,
+                serializablePropertyFlagGetter
             );
         }
 
@@ -96,7 +98,8 @@ namespace SerializableMigration
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
             ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
-            ISymbol? parentSymbol = default
+            ISymbol? parentSymbol,
+            IMethodSymbol? serializablePropertyFlagGetter
         )
         {
             foreach (var rule in Rules.Values)
@@ -116,6 +119,7 @@ namespace SerializableMigration
                         Name = propertyName,
                         Type = propertyType.ToDisplayString(),
                         Order = order,
+                        UsesSaveFlag = serializablePropertyFlagGetter != null ? true : null,
                         Rule = rule.RuleName,
                         RuleArguments = ruleArguments
                     };

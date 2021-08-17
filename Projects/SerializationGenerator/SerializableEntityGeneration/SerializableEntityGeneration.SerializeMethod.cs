@@ -28,7 +28,6 @@ namespace SerializationGenerator
             Compilation compilation,
             bool isOverride,
             bool encodedVersion,
-            bool encodedSaveFlag,
             ImmutableArray<SerializableProperty> properties,
             ImmutableArray<(IMethodSymbol, int)> propertyFlagGetters
         )
@@ -71,11 +70,7 @@ namespace SerializationGenerator
                     source.AppendLine($"{indent}}}");
                 }
 
-                source.AppendLine(
-                    encodedSaveFlag
-                        ? $"{indent}writer.WriteEnum(saveFlags);"
-                        : $"{indent}writer.Write((int)saveFlags);"
-                );
+                source.AppendLine($"{indent}writer.WriteEnum(saveFlags);");
             }
 
             foreach (var property in properties)

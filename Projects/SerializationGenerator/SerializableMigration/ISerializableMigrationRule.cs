@@ -36,7 +36,8 @@ namespace SerializableMigration
         void GenerateDeserializationMethod(
             StringBuilder source,
             string indent,
-            SerializableProperty property
+            SerializableProperty property,
+            string? parentReference
         );
 
         void GenerateSerializationMethod(

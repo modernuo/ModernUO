@@ -48,7 +48,8 @@ namespace SerializableMigration
                 attributes,
                 serializableTypes,
                 embeddedSerializableTypes,
-                parentSymbol
+                parentSymbol,
+                null
             );
 
             var length = serializableArrayType.RuleArguments.Length;
@@ -60,7 +61,7 @@ namespace SerializableMigration
             return true;
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
+        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
         {
             var expectedRule = RuleName;
             var ruleName = property.Rule;
@@ -86,7 +87,7 @@ namespace SerializableMigration
                 RuleArguments = arrayElementRuleArguments
             };
 
-            arrayElementRule.GenerateDeserializationMethod(source, $"{indent}    ", serializableArrayElement);
+            arrayElementRule.GenerateDeserializationMethod(source, $"{indent}    ", serializableArrayElement, parentReference);
 
             source.AppendLine($"{indent}}}");
         }

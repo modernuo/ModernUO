@@ -30,7 +30,6 @@ namespace SerializationGenerator
             bool isOverride,
             int version,
             bool encodedVersion,
-            bool encodedSaveFlag,
             ImmutableArray<SerializableMetadata> migrations,
             ImmutableArray<SerializableProperty> properties,
             ISymbol parentFieldOrProperty,
@@ -92,7 +91,7 @@ namespace SerializationGenerator
                     source.AppendLine();
                     source.AppendLine($"{indent}if (version == {migrationVersion})");
                     source.AppendLine($"{indent}{{");
-                    source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader));");
+                    source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader, this));");
                     source.AppendLine($"{indent}    {parent}.MarkDirty();");
                     if (afterDeserialization != null)
                     {
@@ -121,11 +120,7 @@ namespace SerializationGenerator
             if (propertyFlagGetters.Length > 0)
             {
                 source.AppendLine();
-                source.AppendLine(
-                    encodedSaveFlag
-                        ? $"{indent}var saveFlags = reader.ReadEnum<SaveFlag>();"
-                        : $"{indent}var saveFlags = (SaveFlag)reader.ReadInt()"
-                );
+                source.AppendLine($"{indent}var saveFlags = reader.ReadEnum<SaveFlag>();");
             }
 
             foreach (var property in properties)
@@ -139,7 +134,8 @@ namespace SerializationGenerator
                     rule.GenerateDeserializationMethod(
                         source,
                         innerIndent,
-                        property
+                        property,
+                        "this"
                     );
                     (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, innerIndent, property, compilation, classSymbol);
 
@@ -151,7 +147,8 @@ namespace SerializationGenerator
                     rule.GenerateDeserializationMethod(
                         source,
                         indent,
-                        property
+                        property,
+                        "this"
                     );
                     (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, indent, property, compilation, classSymbol);
                 }

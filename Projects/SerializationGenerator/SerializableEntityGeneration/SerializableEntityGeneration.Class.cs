@@ -129,7 +129,6 @@ namespace SerializationGenerator
 
             var version = (int)serializableAttr.ConstructorArguments[0].Value!;
             var encodedVersion = (bool)serializableAttr.ConstructorArguments[1].Value!;
-            var encodedSaveFlag = (bool)serializableAttr.ConstructorArguments[2].Value!;
 
             // Let's find out if we need to do serialization flags
             var serializablePropertyFlagGettersSet = new SortedSet<(IMethodSymbol, int)>(new SerializableFieldFlagComparer());
@@ -146,6 +145,7 @@ namespace SerializationGenerator
 
                 serializablePropertyFlagGettersSet.Add((m, order));
             }
+            var serializablePropertyFlagGetters = serializablePropertyFlagGettersSet.ToImmutableArray();
 
             var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
             var className = classSymbol.Name;
@@ -250,14 +250,14 @@ namespace SerializationGenerator
                     allAttributes,
                     serializableTypes,
                     embeddedSerializableTypes,
-                    classSymbol
+                    classSymbol,
+                    serializablePropertyFlagGetters.FirstOrDefault(m => m.Item2 == order).Item1
                 );
 
                 serializablePropertySet.Add(serializableProperty);
             }
 
             var serializableProperties = serializablePropertySet.ToImmutableArray();
-            var serializablePropertyFlagGetters = serializablePropertyFlagGettersSet.ToImmutableArray();
 
             // If we are not inheriting ISerializable, then we need to define some stuff
             if (!(isOverride || embedded))
@@ -298,7 +298,7 @@ namespace SerializationGenerator
                     var migration = migrations[i];
                     if (migration.Version < version)
                     {
-                        source.GenerateMigrationContentStruct(migration);
+                        source.GenerateMigrationContentStruct(migration, classSymbol);
                         source.AppendLine();
                     }
                 }
@@ -309,7 +309,6 @@ namespace SerializationGenerator
                 compilation,
                 isOverride,
                 encodedVersion,
-                encodedSaveFlag,
                 serializableProperties,
                 serializablePropertyFlagGetters
             );
@@ -322,7 +321,6 @@ namespace SerializationGenerator
                 isOverride,
                 version,
                 encodedVersion,
-                encodedSaveFlag,
                 migrations,
                 serializableProperties,
                 parentFieldOrProperty,

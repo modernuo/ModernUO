@@ -51,7 +51,7 @@ namespace SerializableMigration
             return true;
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
+        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
         {
             var expectedRule = RuleName;
             var ruleName = property.Rule;
@@ -61,7 +61,7 @@ namespace SerializableMigration
             }
 
             var propertyName = property.Name;
-            source.AppendLine($"{indent}{propertyName} = new {property.Type}(this);");
+            source.AppendLine($"{indent}{propertyName} = new {property.Type}({parentReference ?? "this"});");
             source.AppendLine($"{indent}{propertyName}.Deserialize(reader);");
         }
 
