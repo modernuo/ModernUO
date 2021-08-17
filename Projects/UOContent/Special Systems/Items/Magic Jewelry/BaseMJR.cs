@@ -85,7 +85,8 @@ namespace Server.Items
         public virtual void ApplyDelayTo(Mobile from)
         {
             from.BeginAction(typeof(BaseMJR));
-            Timer.DelayCall(GetUseDelay, new TimerStateCallback<Mobile>(ReleaseMJRLock_Callback), from);
+            //Timer.DelayCall(GetUseDelay, new TimerStateCallback<Mobile>(ReleaseMJRLock_Callback), from);
+            Timer.DelayCall(GetUseDelay, () => ReleaseMJRLock_Callback(from));
         }
 
         public virtual void ReleaseMJRLock_Callback(object state)

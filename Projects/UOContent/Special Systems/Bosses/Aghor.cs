@@ -205,7 +205,8 @@ namespace Server.Mobiles
         public void DoIceNova()
         {
             AbilityCollection.AreaEffect(TimeSpan.FromSeconds(0.1), TimeSpan.FromSeconds(0.1), 0.1, Map, Location, 14000, 13, 1151, 4, 12, 3, false, true, false);
-            Timer.DelayCall(TimeSpan.FromSeconds(1.5), new TimerStateCallback<object>(IceNova_Callback), new object[]{this, Location});
+            //Timer.DelayCall(TimeSpan.FromSeconds(1.5), new TimerStateCallback<object>(IceNova_Callback), new object[]{this, Location});
+            Timer.DelayCall(TimeSpan.FromSeconds(1.5), () => IceNova_Callback(new object[] { this, Location }));
         }
 
         public static void IceNova_Callback(object state)
@@ -272,8 +273,8 @@ namespace Server.Mobiles
                 if (Map.CanFit(loc, 0, true))
                 {
                     double delay = 5 * Utility.RandomDouble();
-                    Timer.DelayCall(TimeSpan.FromSeconds(delay), new TimerStateCallback<object>(BlizzardEffect_Callback), new object[]{this, loc});
-                    Timer.DelayCall(TimeSpan.FromSeconds(delay + 2.5), new TimerStateCallback<object>(BlizzardDamage_Callback), new object[] { this, loc });
+                    //Timer.DelayCall(TimeSpan.FromSeconds(delay), new TimerStateCallback<object>(BlizzardEffect_Callback), new object[]{this, loc});
+                    Timer.DelayCall(TimeSpan.FromSeconds(delay + 2.5), () => BlizzardDamage_Callback(new object[] { this, loc }));
                 }
             }
         }

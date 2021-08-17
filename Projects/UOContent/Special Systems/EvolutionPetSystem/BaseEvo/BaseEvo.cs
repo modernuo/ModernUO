@@ -357,13 +357,13 @@ namespace EvolutionPetSystem
             m_Stage = reader.ReadInt();
             m_Activeabilities = reader.ReadInt();
 
-            if (m_Activeabilities != null | m_Activeabilities != 0)
-            {
-                for (int i = 0; i < m_Activeabilities; i++)
-                {
+            //if (m_Activeabilities != null | m_Activeabilities != 0)
+            //{
+            //    for (int i = 0; i < m_Activeabilities; i++)
+            //    {
 
-                }
-            }
+            //    }
+            //}
 
             LoadSpecValues();
         }

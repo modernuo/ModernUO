@@ -4960,6 +4960,8 @@ namespace Server.Mobiles
 
         public virtual void GenerateLoot()
         {
+
+            
         }
 
         public virtual void AddLoot(LootPack pack, int amount)

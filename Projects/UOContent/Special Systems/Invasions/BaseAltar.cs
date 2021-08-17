@@ -448,7 +448,9 @@ namespace Server
             {
                 if (m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned) || m.Player)
                 {
-                    Timer.DelayCall(TimeSpan.FromMilliseconds(300 * (GetDist(m_StartingLocation, m.Location) / 3)), new TimerStateCallback<object>(Hurt), m);
+                    //Timer.DelayCall(TimeSpan.FromMilliseconds(300 * (GetDist(m_StartingLocation, m.Location) / 3)), new TimerStateCallback<object>(Hurt), m);
+                    Timer.DelayCall(TimeSpan.FromMilliseconds(300 * (GetDist(m_StartingLocation, m.Location) / 3)), () => Hurt(m));
+
                 }
             }
         }
