@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [Serializable(0)]
     [Flippable(0x2B6E, 0x3165)]
     public partial class Circlet : BaseArmor
     {

@@ -1,7 +1,7 @@
 namespace Server.Items
 {
     [Flippable(0x2B70, 0x3167)]
-    [Serializable(0, false)]
+    [Serializable(0)]
     public partial class GemmedCirclet : BaseArmor
     {
         [Constructible]
