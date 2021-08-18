@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class GlacialStaff : BlackStaff
+    [Serializable(0, false)]
+    public partial class GlacialStaff : BlackStaff
     {
         [Constructible]
         public GlacialStaff()
@@ -12,25 +13,7 @@ namespace Server.Items
             AosElementDamages[AosElementAttribute.Cold] = 20 + 5 * Utility.RandomMinMax(0, 6);
         }
 
-        public GlacialStaff(Serial serial) : base(serial)
-        {
-        }
-
         // TODO: Pre-AoS stuff
         public override int LabelNumber => 1017413; // Glacial Staff
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
