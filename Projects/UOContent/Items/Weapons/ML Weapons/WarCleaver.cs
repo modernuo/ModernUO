@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x2D2F, 0x2D23)]
-    public class WarCleaver : BaseKnife
+    [Serializable(0)]
+    public partial class WarCleaver : BaseKnife
     {
         [Constructible]
         public WarCleaver() : base(0x2D2F) => Weight = 10.0;
-
-        public WarCleaver(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Disarm;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Bladeweave;
@@ -33,19 +30,5 @@ namespace Server.Items
         public override SkillName DefSkill => SkillName.Fencing;
         public override WeaponType DefType => WeaponType.Piercing;
         public override WeaponAnimation DefAnimation => WeaponAnimation.Pierce1H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }
