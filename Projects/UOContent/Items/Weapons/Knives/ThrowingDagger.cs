@@ -4,7 +4,8 @@ using Server.Targeting;
 namespace Server.Items
 {
     [Flippable(0xF52, 0xF51)]
-    public class ThrowingDagger : Item
+    [Serializable(0, false)]
+    public partial class ThrowingDagger : Item
     {
         [Constructible]
         public ThrowingDagger() : base(0xF52)
@@ -13,25 +14,7 @@ namespace Server.Items
             Layer = Layer.OneHanded;
         }
 
-        public ThrowingDagger(Serial serial) : base(serial)
-        {
-        }
-
         public override string DefaultName => "a throwing dagger";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
 
         public override void OnDoubleClick(Mobile from)
         {
