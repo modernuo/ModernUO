@@ -3,14 +3,11 @@ using System;
 namespace Server.Items
 {
     [Flippable(0x26C3, 0x26CD)]
-    public class RepeatingCrossbow : BaseRanged
+    [Serializable(0, false)]
+    public partial class RepeatingCrossbow : BaseRanged
     {
         [Constructible]
         public RepeatingCrossbow() : base(0x26C3) => Weight = 6.0;
-
-        public RepeatingCrossbow(Serial serial) : base(serial)
-        {
-        }
 
         public override int EffectID => 0x1BFE;
         public override Type AmmoType => typeof(Bolt);
@@ -34,19 +31,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 80;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
