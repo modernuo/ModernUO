@@ -2,15 +2,11 @@ using Server.Engines.MLQuests.Items;
 
 namespace Server.Items
 {
-    public class BoneMachete : ElvenMachete, ITicket
+    [Serializable(0)]
+    public partial class BoneMachete : ElvenMachete, ITicket
     {
         [Constructible]
         public BoneMachete() => ItemID = 0x20E;
-
-        public BoneMachete(Serial serial)
-            : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => null;
         public override WeaponAbility SecondaryAbility => null;
@@ -39,20 +35,6 @@ namespace Server.Items
                     1075008
                 ); // Your bone handled machete has grown dull but you still manage to force your way past the venomous branches.
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
         }
     }
 }
