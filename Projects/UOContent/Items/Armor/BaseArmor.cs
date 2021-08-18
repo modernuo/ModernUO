@@ -93,13 +93,13 @@ namespace Server.Items
         private bool ShouldSerializeCrafter() => _crafter != null;
 
         // Field 11
-        private ArmorQuality _quality;
+        private ArmorQuality _quality = ArmorQuality.Regular;
 
         // Field 12
-        private ArmorDurabilityLevel _durability;
+        private ArmorDurabilityLevel _durability = ArmorDurabilityLevel.Regular;
 
         // Field 13
-        private ArmorProtectionLevel _protection;
+        private ArmorProtectionLevel _protection = ArmorProtectionLevel.Regular;
 
         // Field 14
         private CraftResource _resource;
@@ -146,8 +146,6 @@ namespace Server.Items
 
         public BaseArmor(int itemID) : base(itemID)
         {
-            _quality = ArmorQuality.Regular;
-            _durability = ArmorDurabilityLevel.Regular;
             _crafter = null;
 
             _resource = DefaultResource;
@@ -197,10 +195,7 @@ namespace Server.Items
             {
                 UnscaleDurability();
                 _quality = value;
-                Invalidate();
-                InvalidateProperties();
                 ScaleDurability();
-                this.MarkDirty();
             }
         }
 
@@ -217,8 +212,6 @@ namespace Server.Items
                 UnscaleDurability();
                 _durability = value;
                 ScaleDurability();
-                InvalidateProperties();
-                this.MarkDirty();
             }
         }
 
@@ -267,12 +260,8 @@ namespace Server.Items
                     }
 
                     Invalidate();
-                    InvalidateProperties();
-
                     (Parent as Mobile)?.UpdateResistances();
-
                     ScaleDurability();
-                    this.MarkDirty();
                 }
             }
         }
@@ -586,19 +575,19 @@ namespace Server.Items
                         switch (Utility.Random(5))
                         {
                             case 0:
-                                _physicalBonus++;
+                                PhysicalBonus++;
                                 break;
                             case 1:
-                                _fireBonus++;
+                                FireBonus++;
                                 break;
                             case 2:
-                                _coldBonus++;
+                                ColdBonus++;
                                 break;
                             case 3:
-                                _energyBonus++;
+                                EnergyBonus++;
                                 break;
                             case 4:
-                                _poisonBonus++;
+                                PoisonBonus++;
                                 break;
                         }
                     }
@@ -708,18 +697,20 @@ namespace Server.Items
         {
             var scale = 100 + GetDurabilityBonus();
 
-            _hitPoints = (_hitPoints * 100 + (scale - 1)) / scale;
             _maxHitPoints = (_maxHitPoints * 100 + (scale - 1)) / scale;
+            _hitPoints = (_hitPoints * 100 + (scale - 1)) / scale;
             InvalidateProperties();
+            this.MarkDirty();
         }
 
         public void ScaleDurability()
         {
             var scale = 100 + GetDurabilityBonus();
 
-            _hitPoints = (_hitPoints * scale + 99) / 100;
             _maxHitPoints = (_maxHitPoints * scale + 99) / 100;
+            _hitPoints = (_hitPoints * scale + 99) / 100;
             InvalidateProperties();
+            this.MarkDirty();
         }
 
         public virtual int OnHit(BaseWeapon weapon, int damageTaken)
@@ -843,19 +834,19 @@ namespace Server.Items
                 switch (Utility.Random(5))
                 {
                     case 0:
-                        ++_physicalBonus;
+                        ++PhysicalBonus;
                         break;
                     case 1:
-                        ++_fireBonus;
+                        ++FireBonus;
                         break;
                     case 2:
-                        ++_coldBonus;
+                        ++ColdBonus;
                         break;
                     case 3:
-                        ++_poisonBonus;
+                        ++PoisonBonus;
                         break;
                     case 4:
-                        ++_energyBonus;
+                        ++EnergyBonus;
                         break;
                 }
             }
@@ -1048,14 +1039,6 @@ namespace Server.Items
             (Parent as Mobile)?.Delta(MobileDelta.Armor); // Tell them armor rating has changed
         }
 
-        private static void SetSaveFlag(ref OldSaveFlag flags, OldSaveFlag toSet, bool setIf)
-        {
-            if (setIf)
-            {
-                flags |= toSet;
-            }
-        }
-
         private static bool GetSaveFlag(OldSaveFlag flags, OldSaveFlag toGet) => (flags & toGet) != 0;
 
         [AfterDeserialization]
@@ -1145,10 +1128,7 @@ namespace Server.Items
                 _energyBonus = reader.ReadEncodedInt();
             }
 
-            if (GetSaveFlag(flags, OldSaveFlag.Identified))
-            {
-                _identified = version >= 7 || reader.ReadBool();
-            }
+            _identified = GetSaveFlag(flags, OldSaveFlag.Identified);
 
             if (GetSaveFlag(flags, OldSaveFlag.MaxHitPoints))
             {
@@ -1461,19 +1441,7 @@ namespace Server.Items
             return Attributes.SpellChanneling != 0;
         }
 
-        public virtual int GetLuckBonus()
-        {
-            var resInfo = CraftResources.GetInfo(_resource);
-
-            var attrInfo = resInfo?.AttributeInfo;
-
-            if (attrInfo == null)
-            {
-                return 0;
-            }
-
-            return attrInfo.ArmorLuck;
-        }
+        public virtual int GetLuckBonus() => CraftResources.GetInfo(_resource)?.AttributeInfo?.ArmorLuck ?? 0;
 
         public override void GetProperties(ObjectPropertyList list)
         {
