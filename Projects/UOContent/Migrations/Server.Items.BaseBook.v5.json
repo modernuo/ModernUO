@@ -1,0 +1,49 @@
+{
+  "version": 5,
+  "type": "Server.Items.BaseBook",
+  "properties": [
+    {
+      "name": "Level",
+      "type": "Server.Multis.SecureLevel",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Title",
+      "type": "string",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "InternString"
+      ]
+    },
+    {
+      "name": "Author",
+      "type": "string",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Writable",
+      "type": "bool",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Pages",
+      "type": "Server.Items.BookPageInfo[]",
+      "usesSaveFlag": true,
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "Server.Items.BookPageInfo",
+        "SerializationMethodSignatureMigrationRule",
+        ""
+      ]
+    }
+  ]
+}

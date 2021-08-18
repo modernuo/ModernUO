@@ -102,6 +102,7 @@ namespace SerializationGenerator
             var genericCtor = symbol.Constructors.FirstOrDefault(
                 m => !m.IsStatic &&
                      m.MethodKind == MethodKind.Constructor &&
+                     m.Parameters.Length >= 1 &&
                      m.Parameters.Length <= 2 &&
                      SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, genericReaderInterface)
             );
