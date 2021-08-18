@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0)]
     [Flippable(0x2FC5, 0x317B)]
-    public class LeafChest : BaseArmor
+    public partial class LeafChest : BaseArmor
     {
         [Constructible]
         public LeafChest() : base(0x2FC5) => Weight = 2.0;
-
-        public LeafChest(Serial serial) : base(serial)
-        {
-        }
 
         public override Race RequiredRace => Race.Elf;
         public override int BasePhysicalResistance => 2;
@@ -29,19 +26,5 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

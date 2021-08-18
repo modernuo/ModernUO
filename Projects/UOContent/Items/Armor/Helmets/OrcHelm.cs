@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class OrcHelm : BaseArmor
+    [Serializable(0, false)]
+    public partial class OrcHelm : BaseArmor
     {
         [Constructible]
         public OrcHelm() : base(0x1F0B)
-        {
-        }
-
-        public OrcHelm(Serial serial) : base(serial)
         {
         }
 
@@ -31,22 +28,5 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.None;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (version == 0 && (Weight == 1 || Weight == 5))
-            {
-                Weight = -1;
-            }
-        }
     }
 }

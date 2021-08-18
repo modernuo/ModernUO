@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0)]
     [Flippable(0x2B6C, 0x3163)]
-    public class WoodlandArms : BaseArmor
+    public partial class WoodlandArms : BaseArmor
     {
         [Constructible]
         public WoodlandArms() : base(0x2B6C) => Weight = 5.0;
-
-        public WoodlandArms(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;
@@ -26,19 +23,5 @@ namespace Server.Items
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Plate;
         public override Race RequiredRace => Race.Elf;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

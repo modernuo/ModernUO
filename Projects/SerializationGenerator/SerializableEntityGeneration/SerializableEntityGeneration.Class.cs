@@ -338,8 +338,8 @@ namespace SerializationGenerator
                     Accessibility.Private
                 );
 
+                source.GenerateEnumValue("            ", true, "None", -1);
                 int index = 0;
-                source.GenerateEnumValue("            ", true, "None", index++);
                 foreach (var (_, order) in serializablePropertyFlagGetters)
                 {
                     source.GenerateEnumValue("            ", true, serializableProperties[order].Name, index++);

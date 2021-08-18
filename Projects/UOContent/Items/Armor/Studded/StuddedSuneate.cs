@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class StuddedSuneate : BaseArmor
+    [Serializable(0, false)]
+    public partial class StuddedSuneate : BaseArmor
     {
         [Constructible]
         public StuddedSuneate() : base(0x27D2) => Weight = 5.0;
-
-        public StuddedSuneate(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;
@@ -25,17 +22,5 @@ namespace Server.Items
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Studded;
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

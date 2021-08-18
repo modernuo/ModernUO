@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class LeatherNinjaMitts : BaseArmor
+    [Serializable(0, false)]
+    public partial class LeatherNinjaMitts : BaseArmor
     {
         [Constructible]
         public LeatherNinjaMitts() : base(0x2792) => Weight = 2.0;
-
-        public LeatherNinjaMitts(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;
@@ -27,34 +24,5 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(2);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        if (reader.ReadBool())
-                        {
-                            reader.ReadInt();
-                            reader.ReadInt();
-                        }
-
-                        Weight = 2.0;
-                        ItemID = 0x2792;
-
-                        break;
-                    }
-            }
-        }
     }
 }

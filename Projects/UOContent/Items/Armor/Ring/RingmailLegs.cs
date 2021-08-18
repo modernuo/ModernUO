@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x13f0, 0x13f1)]
-    public class RingmailLegs : BaseArmor
+    public partial class RingmailLegs : BaseArmor
     {
         [Constructible]
         public RingmailLegs() : base(0x13F0) => Weight = 15.0;
-
-        public RingmailLegs(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;
@@ -27,17 +24,5 @@ namespace Server.Items
         public override int ArmorBase => 22;
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Ringmail;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

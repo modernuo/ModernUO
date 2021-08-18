@@ -54,8 +54,8 @@ namespace SerializationGenerator
                     Accessibility.Private
                 );
 
+                source.GenerateEnumValue("            ", true, "None", -1);
                 int index = 0;
-                source.GenerateEnumValue(innerIndent, true, "None", index++);
                 foreach (var property in properties)
                 {
                     if (property.UsesSaveFlag == true)
@@ -82,16 +82,26 @@ namespace SerializationGenerator
                 {
                     if (property.UsesSaveFlag == true)
                     {
-                        source.AppendLine($"\n{innerIndent}if ((saveFlags & V{migration.Version}SaveFlag.{property.Name}) != 0)\n{innerIndent}{{");
-                        SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
-                            source,
-                            $"{innerIndent}    ",
-                            property,
-                            "entity"
-                        );
-                        source.AppendLine($"{innerIndent}}}\n{innerIndent}else\n{innerIndent}{{");
-                        source.AppendLine($"{innerIndent}    {property.Name} = default;");
-                        source.AppendLine($"{innerIndent}}}");
+                        source.AppendLine();
+                        // Special case
+                        if (property.Type == "bool")
+                        {
+                            source.AppendLine($"{innerIndent}{property.Name} = (saveFlags & SaveFlag.{property.Name}) != 0;");
+                        }
+                        else
+                        {
+                            source.AppendLine($"{innerIndent}if ((saveFlags & V{migration.Version}SaveFlag.{property.Name}) != 0)\n{innerIndent}{{");
+                            SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
+                                source,
+                                $"{innerIndent}    ",
+                                property,
+                                "entity"
+                            );
+
+                            source.AppendLine($"{innerIndent}}}\n{innerIndent}else\n{innerIndent}{{");
+                            source.AppendLine($"{innerIndent}    {property.Name} = default;");
+                            source.AppendLine($"{innerIndent}}}");
+                        }
                     }
                     else
                     {

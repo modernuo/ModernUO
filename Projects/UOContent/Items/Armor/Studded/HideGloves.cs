@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0)]
     [Flippable(0x2B75, 0x316C)]
-    public class HideGloves : BaseArmor
+    public partial class HideGloves : BaseArmor
     {
         [Constructible]
         public HideGloves() : base(0x2B75) => Weight = 2.0;
-
-        public HideGloves(Serial serial) : base(serial)
-        {
-        }
 
         public override Race RequiredRace => Race.Elf;
 
@@ -30,19 +27,5 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.Half;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }
