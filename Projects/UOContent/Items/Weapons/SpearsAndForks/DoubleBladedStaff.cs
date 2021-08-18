@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x26BF, 0x26C9)]
-    public class DoubleBladedStaff : BaseSpear
+    [Serializable(0, false)]
+    public partial class DoubleBladedStaff : BaseSpear
     {
         [Constructible]
         public DoubleBladedStaff() : base(0x26BF) => Weight = 2.0;
-
-        public DoubleBladedStaff(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.InfectiousStrike;
@@ -26,19 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 80;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
