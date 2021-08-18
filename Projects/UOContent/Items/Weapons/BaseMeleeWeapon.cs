@@ -2,13 +2,10 @@ using Server.Spells.Spellweaving;
 
 namespace Server.Items
 {
-    public abstract class BaseMeleeWeapon : BaseWeapon
+    [Serializable(0, false)]
+    public abstract partial class BaseMeleeWeapon : BaseWeapon
     {
         public BaseMeleeWeapon(int itemID) : base(itemID)
-        {
-        }
-
-        public BaseMeleeWeapon(Serial serial) : base(serial)
         {
         }
 
@@ -53,18 +50,6 @@ namespace Server.Items
             }
 
             return damage;
-        }
-
-        // ReSharper disable once RedundantOverriddenMember
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-        }
-
-        // ReSharper disable once RedundantOverriddenMember
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
         }
     }
 }
