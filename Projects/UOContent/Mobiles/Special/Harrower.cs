@@ -248,6 +248,11 @@ namespace Server.Mobiles
 
         public void GivePowerScrolls()
         {
+            if (Map != Map.Felucca)
+            {
+                return;
+            }
+
             var toGive = new List<Mobile>();
             var rights = GetLootingRights(DamageEntries, HitsMax);
 
@@ -266,68 +271,224 @@ namespace Server.Mobiles
                 return;
             }
 
-            toGive.Shuffle();
-
-            for (var i = 0; i < 16; ++i)
+            for (var i = 0; i < toGive.Count; i++)
             {
-                int level;
-                var random = Utility.RandomDouble();
+                var m = toGive[i];
 
-                if (random <= 0.1)
+                if (!(m is PlayerMobile))
                 {
-                    level = 25;
+                    continue;
                 }
-                else if (random <= 0.25)
+
+                var gainedPath = false;
+
+                var pointsToGain = 800;
+
+                if (VirtueHelper.Award(m, VirtueName.Valor, pointsToGain, ref gainedPath))
                 {
-                    level = 20;
+                    if (gainedPath)
+                    {
+                        m.SendLocalizedMessage(1054032); // You have gained a path in Valor!
+                    }
+                    else
+                    {
+                        m.SendLocalizedMessage(1054030); // You have gained in Valor!
+                    }
+
+                    // No delay on Valor gains
                 }
-                else if (random <= 0.45)
+            }
+
+            // Randomize
+            toGive.Shuffle();
+            #region PowerScrollAmount
+            for (var i = 0; i < 6; ++i)
+            {
+                var m = toGive[i % toGive.Count];
+
+                var ps = CreateRandomPowerScroll();
+
+                GivePowerScrollTo(m, ps);
+            }
+            #endregion
+
+        }
+
+        private PowerScroll CreateRandomPowerScroll()
+        {
+            int level;
+            var random = Utility.RandomDouble();
+
+            if (random <= 0.05)
+            {
+                level = 20;
+            }
+            else if (random <= 0.4)
+            {
+                level = 15;
+            }
+            else
+            {
+                level = 10;
+            }
+
+            return PowerScroll.CreateRandomForHarrower(level, level);
+        }
+
+        public static void GivePowerScrollTo(Mobile m, PowerScroll ps)
+        {
+            if (ps == null || m == null) // sanity
+            {
+                return;
+            }
+
+            m.SendLocalizedMessage(1049524); // You have received a scroll of power!
+
+            if (!Core.SE || m.Alive)
+            {
+                m.AddToBackpack(ps);
+            }
+            else
+            {
+                if (m.Corpse?.Deleted == false)
                 {
-                    level = 15;
-                }
-                else if (random <= 0.70)
-                {
-                    level = 10;
+                    m.Corpse.DropItem(ps);
                 }
                 else
                 {
-                    level = 5;
+                    m.AddToBackpack(ps);
+                }
+            }
+
+            if (!(m is PlayerMobile pm))
+            {
+                return;
+            }
+
+            for (var j = 0; j < pm.JusticeProtectors.Count; ++j)
+            {
+                var prot = pm.JusticeProtectors[j];
+
+                if (prot.Map != pm.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion(pm, prot))
+                {
+                    continue;
                 }
 
-                var m = toGive[i % toGive.Count];
-
-                m.SendLocalizedMessage(1049524); // You have received a scroll of power!
-                m.AddToBackpack(new StatCapScroll(225 + level));
-
-                if (m is PlayerMobile pm)
+                var chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
                 {
-                    for (var j = 0; j < pm.JusticeProtectors.Count; ++j)
+                    VirtueLevel.Seeker => 60,
+                    VirtueLevel.Follower => 80,
+                    VirtueLevel.Knight => 100,
+                    _ => 0
+                };
+
+                if (chance > Utility.Random(100))
+                {
+                    var powerScroll = new PowerScroll(ps.Skill, ps.Value);
+
+                    prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
+
+                    if (!Core.SE || prot.Alive)
                     {
-                        var prot = pm.JusticeProtectors[j];
-
-                        if (prot.Map != pm.Map || prot.Kills >= 5 || prot.Criminal ||
-                            !JusticeVirtue.CheckMapRegion(pm, prot))
+                        prot.AddToBackpack(powerScroll);
+                    }
+                    else
+                    {
+                        if (prot.Corpse?.Deleted == false)
                         {
-                            continue;
+                            prot.Corpse.DropItem(powerScroll);
                         }
-
-                        var chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
+                        else
                         {
-                            VirtueLevel.Seeker   => 60,
-                            VirtueLevel.Follower => 80,
-                            VirtueLevel.Knight   => 100,
-                            _                    => 0
-                        };
-
-                        if (chance > Utility.Random(100))
-                        {
-                            prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
-                            prot.AddToBackpack(new StatCapScroll(225 + level));
+                            prot.AddToBackpack(powerScroll);
                         }
                     }
                 }
             }
         }
+
+        //public void GivePowerScrolls()
+        //{
+        //    var toGive = new List<Mobile>();
+        //    var rights = GetLootingRights(DamageEntries, HitsMax);
+
+        //    for (var i = rights.Count - 1; i >= 0; --i)
+        //    {
+        //        var ds = rights[i];
+
+        //        if (ds.m_HasRight)
+        //        {
+        //            toGive.Add(ds.m_Mobile);
+        //        }
+        //    }
+
+        //    if (toGive.Count == 0)
+        //    {
+        //        return;
+        //    }
+
+        //    toGive.Shuffle();
+
+        //    for (var i = 0; i < 16; ++i)
+        //    {
+        //        int level;
+        //        var random = Utility.RandomDouble();
+
+        //        if (random <= 0.1)
+        //        {
+        //            level = 25;
+        //        }
+        //        else if (random <= 0.25)
+        //        {
+        //            level = 20;
+        //        }
+        //        else if (random <= 0.45)
+        //        {
+        //            level = 15;
+        //        }
+        //        else if (random <= 0.70)
+        //        {
+        //            level = 10;
+        //        }
+        //        else
+        //        {
+        //            level = 5;
+        //        }
+
+        //        var m = toGive[i % toGive.Count];
+
+        //        m.SendLocalizedMessage(1049524); // You have received a scroll of power!
+        //        m.AddToBackpack(new StatCapScroll(225 + level));
+
+        //        if (m is PlayerMobile pm)
+        //        {
+        //            for (var j = 0; j < pm.JusticeProtectors.Count; ++j)
+        //            {
+        //                var prot = pm.JusticeProtectors[j];
+
+        //                if (prot.Map != pm.Map || prot.Kills >= 5 || prot.Criminal ||
+        //                    !JusticeVirtue.CheckMapRegion(pm, prot))
+        //                {
+        //                    continue;
+        //                }
+
+        //                var chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
+        //                {
+        //                    VirtueLevel.Seeker   => 60,
+        //                    VirtueLevel.Follower => 80,
+        //                    VirtueLevel.Knight   => 100,
+        //                    _                    => 0
+        //                };
+
+        //                if (chance > Utility.Random(100))
+        //                {
+        //                    prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
+        //                    prot.AddToBackpack(new StatCapScroll(225 + level));
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         public override bool OnBeforeDeath()
         {

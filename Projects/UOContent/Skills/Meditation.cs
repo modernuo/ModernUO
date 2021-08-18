@@ -70,12 +70,13 @@ namespace Server.SkillHandlers
                 return TimeSpan.FromSeconds(2.5);
             }
 
-            var skillVal = m.Skills.Meditation.Value;
-            var chance = (50.0 + (skillVal - (m.ManaMax - m.Mana)) * 2) / 100;
+            //var skillVal = m.Skills.Meditation.Value;
+            //var chance = (50.0 + (skillVal - (m.ManaMax - m.Mana)) * 2) / 100;
 
-            if (chance > Utility.RandomDouble())
+            //if (chance > Utility.RandomDouble())
+            if (m.CheckSkill(SkillName.Meditation, 0.0, 100.0))
             {
-                m.CheckSkill(SkillName.Meditation, 0.0, 100.0);
+                //m.CheckSkill(SkillName.Meditation, 0.0, 100.0);
 
                 m.SendLocalizedMessage(501851); // You enter a meditative trance.
                 m.Meditating = true;
