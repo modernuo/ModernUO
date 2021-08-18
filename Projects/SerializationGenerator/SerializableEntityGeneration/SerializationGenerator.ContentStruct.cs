@@ -54,8 +54,8 @@ namespace SerializationGenerator
                     Accessibility.Private
                 );
 
+                source.GenerateEnumValue("            ", true, "None", -1);
                 int index = 0;
-                source.GenerateEnumValue(innerIndent, true, "None", index++);
                 foreach (var property in properties)
                 {
                     if (property.UsesSaveFlag == true)

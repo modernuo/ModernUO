@@ -37,7 +37,8 @@ namespace SerializationGenerator
 
         public static void GenerateEnumValue(this StringBuilder source, string indent, bool isFlag, string name, int value)
         {
-            var valueStr = isFlag ? $"0x{1 << value:X8}" : value.ToString();
+            var number = value < 0 ? 0 : 1 << value;
+            var valueStr = isFlag ? $"0x{number:X8}" : value.ToString();
             source.AppendLine($"{indent}{name} = {valueStr},");
         }
 
