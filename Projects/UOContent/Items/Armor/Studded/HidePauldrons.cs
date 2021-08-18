@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [Serializable(0)]
     [Flippable(0x2B77, 0x316E)]
     public partial class HidePauldrons : BaseArmor
     {

@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [Serializable(0)]
     [Flippable(0x2B79, 0x3170)]
     public partial class HideFemaleChest : BaseArmor
     {
