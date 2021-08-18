@@ -37,8 +37,9 @@ namespace Server.SkillHandlers
         }
 
         public static bool CheckMastery(Mobile tamer, BaseCreature creature) =>
-            SummonFamiliarSpell.Table.TryGetValue(tamer, out var bc) && bc is DarkWolfFamiliar familiar &&
-            !familiar.Deleted && creature is DireWolf or GreyWolf or TimberWolf or WhiteWolf or BakeKitsune;
+            SummonFamiliarSpell.Table.TryGetValue(tamer, out var bc)
+            && bc is DarkWolfFamiliar { Deleted: false }
+            && creature is DireWolf or GreyWolf or TimberWolf or WhiteWolf or BakeKitsune;
 
         public static bool MustBeSubdued(BaseCreature bc) =>
             bc.Owners.Count <= 0 && bc.SubdueBeforeTame && bc.Hits > bc.HitsMax / 10;

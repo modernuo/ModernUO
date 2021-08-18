@@ -44,7 +44,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
     - If blank, the operating system running the build is used
 
 ## Deploying / Running Server
-- Follow the [publish](https://github.com/modernuo/ModernUO#publishing-a-build) instructions
+- Follow the [publish](https://github.com/modernuo/ModernUO#publishing-builds) instructions
 - Copy `Distribution` directory to the production server
 
 #### Requirements
