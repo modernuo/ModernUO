@@ -6,7 +6,7 @@ using Server.Engines.Harvest;
 
 namespace Server.Items
 {
-    [Serializable(0)]
+    [Serializable(0, false)]
     public abstract partial class BasePoleArm : BaseMeleeWeapon, IUsesRemaining
     {
         [SerializableField(0)]
