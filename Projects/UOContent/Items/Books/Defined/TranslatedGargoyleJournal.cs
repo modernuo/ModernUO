@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class TranslatedGargoyleJournal : BlueBook
+    [Serializable(0)]
+    public partial class TranslatedGargoyleJournal : BlueBook
     {
         public static readonly BookContent Content = new(
             "Translated Journal",
@@ -113,10 +114,6 @@ namespace Server.Items
         {
         }
 
-        public TranslatedGargoyleJournal(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
 
         public override void AddNameProperty(ObjectPropertyList list)
@@ -127,20 +124,6 @@ namespace Server.Items
         public override void OnSingleClick(Mobile from)
         {
             LabelTo(from, "Translated Gargoyle Journal");
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
         }
     }
 }
