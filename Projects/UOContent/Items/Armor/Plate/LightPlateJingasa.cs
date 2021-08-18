@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class LightPlateJingasa : BaseArmor
+    [Serializable(0, false)]
+    public partial class LightPlateJingasa : BaseArmor
     {
         [Constructible]
         public LightPlateJingasa() : base(0x2781) => Weight = 5.0;
-
-        public LightPlateJingasa(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 7;
         public override int BaseFireResistance => 2;
@@ -24,17 +21,5 @@ namespace Server.Items
         public override int ArmorBase => 4;
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Plate;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

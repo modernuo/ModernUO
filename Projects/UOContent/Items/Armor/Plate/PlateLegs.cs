@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x1411, 0x141a)]
-    public class PlateLegs : BaseArmor
+    public partial class PlateLegs : BaseArmor
     {
         [Constructible]
         public PlateLegs() : base(0x1411) => Weight = 7.0;
-
-        public PlateLegs(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;
@@ -27,17 +24,5 @@ namespace Server.Items
         public override int ArmorBase => 40;
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Plate;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }
