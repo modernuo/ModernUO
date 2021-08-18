@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.Hatchet",
-  "properties": []
+  "type": "Server.Items.Hatchet"
 }
