@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x143B, 0x143A)]
-    public class Maul : BaseBashing
+    [Serializable(0, false)]
+    public partial class Maul : BaseBashing
     {
         [Constructible]
         public Maul() : base(0x143B) => Weight = 10.0;
-
-        public Maul(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;
@@ -26,24 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 70;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Weight == 14.0)
-            {
-                Weight = 10.0;
-            }
-        }
     }
 }
