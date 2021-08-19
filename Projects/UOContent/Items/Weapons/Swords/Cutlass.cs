@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x1441, 0x1440)]
-    public class Cutlass : BaseSword
+    [Serializable(0, false)]
+    public partial class Cutlass : BaseSword
     {
         [Constructible]
         public Cutlass() : base(0x1441) => Weight = 8.0;
-
-        public Cutlass(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ShadowStrike;
@@ -29,19 +26,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 70;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

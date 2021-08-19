@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x26C1, 0x26CB)]
-    public class CrescentBlade : BaseSword
+    [Serializable(0, false)]
+    public partial class CrescentBlade : BaseSword
     {
         [Constructible]
         public CrescentBlade() : base(0x26C1) => Weight = 1.0;
-
-        public CrescentBlade(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;
@@ -29,19 +26,5 @@ namespace Server.Items
 
         public override int InitMinHits => 51;
         public override int InitMaxHits => 80;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

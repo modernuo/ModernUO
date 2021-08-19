@@ -1,17 +1,14 @@
 namespace Server.Items
 {
     [Flippable(0x27A6, 0x27F1)]
-    public class Tetsubo : BaseBashing
+    [Serializable(0, false)]
+    public partial class Tetsubo : BaseBashing
     {
         [Constructible]
         public Tetsubo() : base(0x27A6)
         {
             Weight = 8.0;
             Layer = Layer.TwoHanded;
-        }
-
-        public Tetsubo(Serial serial) : base(serial)
-        {
         }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.FrenziedWhirlwind;
@@ -35,19 +32,5 @@ namespace Server.Items
         public override int InitMaxHits => 65;
 
         public override WeaponAnimation DefAnimation => WeaponAnimation.Bash2H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

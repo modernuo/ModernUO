@@ -3,17 +3,14 @@ using System;
 namespace Server.Items
 {
     [Flippable(0x27A5, 0x27F0)]
-    public class Yumi : BaseRanged
+    [Serializable(0, false)]
+    public partial class Yumi : BaseRanged
     {
         [Constructible]
         public Yumi() : base(0x27A5)
         {
             Weight = 9.0;
             Layer = Layer.TwoHanded;
-        }
-
-        public Yumi(Serial serial) : base(serial)
-        {
         }
 
         public override int EffectID => 0xF42;
@@ -40,24 +37,5 @@ namespace Server.Items
         public override int InitMaxHits => 60;
 
         public override WeaponAnimation DefAnimation => WeaponAnimation.ShootBow;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Weight == 7.0)
-            {
-                Weight = 6.0;
-            }
-        }
     }
 }

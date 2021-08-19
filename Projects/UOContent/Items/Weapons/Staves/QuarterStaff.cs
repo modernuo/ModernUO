@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0xE89, 0xE8a)]
-    public class QuarterStaff : BaseStaff
+    [Serializable(0, false)]
+    public partial class QuarterStaff : BaseStaff
     {
         [Constructible]
         public QuarterStaff() : base(0xE89) => Weight = 4.0;
-
-        public QuarterStaff(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;
@@ -26,19 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 60;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

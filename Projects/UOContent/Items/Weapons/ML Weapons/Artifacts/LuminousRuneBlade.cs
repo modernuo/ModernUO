@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class LuminousRuneBlade : RuneBlade
+    [Serializable(0)]
+    public partial class LuminousRuneBlade : RuneBlade
     {
         [Constructible]
         public LuminousRuneBlade()
@@ -14,10 +15,6 @@ namespace Server.Items
             Hue = GetElementalDamageHue();
         }
 
-        public LuminousRuneBlade(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1072922; // Luminous Rune Blade
 
         public override void GetDamageTypes(
@@ -27,20 +24,6 @@ namespace Server.Items
         {
             phys = fire = cold = pois = chaos = direct = 0;
             nrgy = 100;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
         }
     }
 }

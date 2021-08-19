@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0xDF1, 0xDF0)]
-    public class BlackStaff : BaseStaff
+    [Serializable(0, false)]
+    public partial class BlackStaff : BaseStaff
     {
         [Constructible]
         public BlackStaff() : base(0xDF0) => Weight = 6.0;
-
-        public BlackStaff(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;
@@ -26,19 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 70;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
