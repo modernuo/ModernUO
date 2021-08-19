@@ -42,7 +42,7 @@ namespace Server.Network
         {
             var m = World.FindMobile(reader.ReadUInt32());
 
-            if (m != null && Utility.InUpdateRange(state.Mobile, m) && state.Mobile.CanSee(m))
+            if (m != null && Utility.InUpdateRange(state.Mobile.Location, m.Location) && state.Mobile.CanSee(m))
             {
                 state.SendMobileName(m);
             }

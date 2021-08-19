@@ -58,7 +58,7 @@ namespace Server.Engines.Quests.Necro
                 }
                 else if (qs.IsObjectiveInProgress(typeof(UseCallingScrollObjective)))
                 {
-                    if (pm.Map == m_WellOfTearsMap && m_WellOfTearsArea.Contains(pm))
+                    if (pm.Map == m_WellOfTearsMap && m_WellOfTearsArea.Contains(pm.Location))
                     {
                         QuestObjective obj = qs.FindObjective<UseCallingScrollObjective>();
 

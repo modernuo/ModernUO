@@ -1606,23 +1606,9 @@ namespace Server
             set => Location = new Point3D(m_Location.m_X, m_Location.m_Y, value);
         }
 
-        public virtual bool InRange(Point2D p, int range) =>
-            p.m_X >= Location.m_X - range
-            && p.m_X <= Location.m_X + range
-            && p.m_Y >= Location.m_Y - range
-            && p.m_Y <= Location.m_Y + range;
+        public virtual bool InRange(Point2D p, int range) => Utility.InRange(p.X, p.Y, X, Y, range);
 
-        public virtual bool InRange(Point3D p, int range) =>
-            p.m_X >= Location.m_X - range
-            && p.m_X <= Location.m_X + range
-            && p.m_Y >= Location.m_Y - range
-            && p.m_Y <= Location.m_Y + range;
-
-        public virtual bool InRange(IPoint2D p, int range) =>
-            p.X >= Location.m_X - range
-            && p.X <= Location.m_X + range
-            && p.Y >= Location.m_Y - range
-            && p.Y <= Location.m_Y + range;
+        public virtual bool InRange(Point3D p, int range) => Utility.InRange(p.X, p.Y, X, Y, range);
 
         public ExpandFlag GetExpandFlags()
         {
