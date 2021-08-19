@@ -36,7 +36,7 @@ namespace Server.Network
 
             var flag = reader.ReadByte();
 
-            if (!vendor.Deleted && Utility.RangeCheck(vendor.Location, state.Mobile.Location, 10) && flag == 0x02)
+            if (!vendor.Deleted && Utility.InRange(vendor.Location, state.Mobile.Location, 10) && flag == 0x02)
             {
                 var msgSize = packetLength - 8; // Remaining bytes
 
@@ -75,7 +75,7 @@ namespace Server.Network
                 return;
             }
 
-            if (vendor.Deleted || !Utility.RangeCheck(vendor.Location, state.Mobile.Location, 10))
+            if (vendor.Deleted || !Utility.InRange(vendor.Location, state.Mobile.Location, 10))
             {
                 state.SendEndVendorSell(vendor.Serial);
                 return;

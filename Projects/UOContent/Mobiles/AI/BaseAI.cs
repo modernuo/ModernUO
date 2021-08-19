@@ -121,7 +121,7 @@ namespace Server.Mobiles
             {
                 activate = false;
             }
-            else if (m.Map == null || m.Map == Map.Internal || !m.Map.GetSector(m).Active)
+            else if (m.Map == null || m.Map == Map.Internal || !m.Map.GetSector(m.Location).Active)
             {
                 activate = false;
             }
@@ -3040,7 +3040,7 @@ namespace Server.Mobiles
 
                 if (m_Owner.m_Mobile.PlayerRangeSensitive) // have to check this in the timer....
                 {
-                    var sect = m_Owner.m_Mobile.Map.GetSector(m_Owner.m_Mobile);
+                    var sect = m_Owner.m_Mobile.Map.GetSector(m_Owner.m_Mobile.Location);
                     if (!sect.Active)
                     {
                         m_Owner.Deactivate();

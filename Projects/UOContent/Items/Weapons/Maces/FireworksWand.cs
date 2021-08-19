@@ -88,32 +88,15 @@ namespace Server.Items
 
         private static void FinishLaunch(Point3D endLoc, Map map)
         {
-            var hue = Utility.Random(40);
-
-            if (hue < 8)
+            var hue = Utility.Random(40) switch
             {
-                hue = 0x66D;
-            }
-            else if (hue < 10)
-            {
-                hue = 0x482;
-            }
-            else if (hue < 12)
-            {
-                hue = 0x47E;
-            }
-            else if (hue < 16)
-            {
-                hue = 0x480;
-            }
-            else if (hue < 20)
-            {
-                hue = 0x47F;
-            }
-            else
-            {
-                hue = 0;
-            }
+                < 8  => 0x66D,
+                < 10 => 0x482,
+                < 12 => 0x47E,
+                < 16 => 0x480,
+                < 20 => 0x47F,
+                _    => 0
+            };
 
             if (Utility.RandomBool())
             {

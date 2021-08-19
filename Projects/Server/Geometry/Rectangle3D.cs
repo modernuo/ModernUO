@@ -118,6 +118,18 @@ namespace Server
             && p.m_Z >= m_Start.m_Z
             && p.m_Z < m_End.m_Z;
 
+        public bool Contains(Point2D p) =>
+            p.m_X >= m_Start.m_X
+            && p.m_X < m_End.m_X
+            && p.m_Y >= m_Start.m_Y
+            && p.m_Y < m_End.m_Y;
+
+        public bool Contains(IPoint2D p) =>
+            p.X >= m_Start.m_X
+            && p.X < m_End.m_X
+            && p.Y >= m_Start.m_Y
+            && p.Y < m_End.m_Y;
+
         public bool Contains(IPoint3D p) =>
             p.X >= m_Start.m_X
             && p.X < m_End.m_X
