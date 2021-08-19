@@ -571,10 +571,14 @@ namespace Server
 
         public static bool InsensitiveStartsWith(string first, string second) => first.InsensitiveStartsWith(second);
 
-        public static Direction GetDirection(IPoint2D from, IPoint2D to)
+        public static Direction GetDirection(Point3D from, Point3D to) => GetDirection(from.X, from.Y, to.X, to.Y);
+
+        public static Direction GetDirection(Point2D from, Point2D to) => GetDirection(from.X, from.Y, to.X, to.Y);
+
+        public static Direction GetDirection(int fromX, int fromY, int toX, int toY)
         {
-            var dx = to.X - from.X;
-            var dy = to.Y - from.Y;
+            var dx = toX - fromX;
+            var dy = toY - fromY;
 
             var adx = Abs(dx);
             var ady = Abs(dy);
@@ -615,31 +619,19 @@ namespace Server
         {
             if (bottom.m_X < top.m_X)
             {
-                var swap = top.m_X;
-                top.m_X = bottom.m_X;
-                bottom.m_X = swap;
+                (top.m_X, bottom.m_X) = (bottom.m_X, top.m_X);
             }
 
             if (bottom.m_Y < top.m_Y)
             {
-                var swap = top.m_Y;
-                top.m_Y = bottom.m_Y;
-                bottom.m_Y = swap;
+                (top.m_Y, bottom.m_Y) = (bottom.m_Y, top.m_Y);
             }
 
             if (bottom.m_Z < top.m_Z)
             {
-                var swap = top.m_Z;
-                top.m_Z = bottom.m_Z;
-                bottom.m_Z = swap;
+                (top.m_Z, bottom.m_Z) = (bottom.m_Z, top.m_Z);
             }
         }
-
-        public static bool RangeCheck(IPoint2D p1, IPoint2D p2, int range) =>
-            p1.X >= p2.X - range
-            && p1.X <= p2.X + range
-            && p1.Y >= p2.Y - range
-            && p2.Y <= p2.Y + range;
 
         public static void FormatBuffer(TextWriter output, Stream input, int length)
         {
@@ -874,9 +866,7 @@ namespace Server
         {
             if (bound1 > bound2)
             {
-                var i = bound1;
-                bound1 = bound2;
-                bound2 = i;
+                (bound1, bound2) = (bound2, bound1);
             }
 
             return num < bound2 + allowance && num > bound1 - allowance;
@@ -1063,29 +1053,26 @@ namespace Server
 
         public static string GetText(XmlElement node, string defaultValue) => node?.InnerText ?? defaultValue;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InRange(int p1X, int p1Y, int p2X, int p2Y, int range) =>
+            p1X >= p2X - range
+            && p1X <= p2X + range
+            && p1Y >= p2Y - range
+            && p1Y <= p2Y + range;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InRange(Point2D p1, Point2D p2, int range) =>
+            InRange(p1.m_X, p1.m_Y, p2.m_X, p2.m_Y, range);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InUpdateRange(Point2D p1, Point2D p2) => InRange(p1, p2, 18);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool InRange(Point3D p1, Point3D p2, int range) =>
-            p1.m_X >= p2.m_X - range
-            && p1.m_X <= p2.m_X + range
-            && p1.m_Y >= p2.m_Y - range
-            && p1.m_Y <= p2.m_Y + range;
+            InRange(p1.m_X, p1.m_Y, p2.m_X, p2.m_Y, range);
 
-        public static bool InUpdateRange(Point3D p1, Point3D p2) =>
-            p1.m_X >= p2.m_X - 18
-            && p1.m_X <= p2.m_X + 18
-            && p1.m_Y >= p2.m_Y - 18
-            && p1.m_Y <= p2.m_Y + 18;
-
-        public static bool InUpdateRange(Point2D p1, Point2D p2) =>
-            p1.m_X >= p2.m_X - 18
-            && p1.m_X <= p2.m_X + 18
-            && p1.m_Y >= p2.m_Y - 18
-            && p1.m_Y <= p2.m_Y + 18;
-
-        public static bool InUpdateRange(IPoint2D p1, IPoint2D p2) =>
-            p1.X >= p2.X - 18
-            && p1.X <= p2.X + 18
-            && p1.Y >= p2.Y - 18
-            && p1.Y <= p2.Y + 18;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InUpdateRange(Point3D p1, Point3D p2) => InRange(p1, p2, 18);
 
         // 4d6+8 would be: Utility.Dice( 4, 6, 8 )
         public static int Dice(uint amount, uint sides, int bonus)
@@ -1106,9 +1093,7 @@ namespace Server
             for (var i = 0; i < count; i++)
             {
                 var r = RandomMinMax(i, count - 1);
-                var swap = list[r];
-                list[r] = list[i];
-                list[i] = swap;
+                (list[r], list[i]) = (list[i], list[r]);
             }
         }
 
@@ -1118,9 +1103,7 @@ namespace Server
             for (var i = 0; i < count; i++)
             {
                 var r = RandomMinMax(i, count - 1);
-                var swap = list[r];
-                list[r] = list[i];
-                list[i] = swap;
+                (list[r], list[i]) = (list[i], list[r]);
             }
         }
 
@@ -1208,9 +1191,7 @@ namespace Server
         {
             if (min > max)
             {
-                var copy = min;
-                min = max;
-                max = copy;
+                (min, max) = (max, min);
             }
             else if (min == max)
             {
@@ -1225,9 +1206,7 @@ namespace Server
         {
             if (min > max)
             {
-                var copy = min;
-                min = max;
-                max = copy;
+                (min, max) = (max, min);
             }
             else if (min == max)
             {
