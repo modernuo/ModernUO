@@ -101,7 +101,13 @@ namespace Server
                 return;
             }
 
-            RemoveTimer(this);
+            // We are at the head
+            if (_rings[_ring][_slot] == this)
+            {
+                _rings[_ring][_slot] = _nextTimer;
+            }
+
+            Detach();
             Running = false;
             var prof = GetProfile();
 
