@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: DeserializeTimerField.cs                                        *
+ * File: ManualDirtyCheckingAttribute.cs                                 *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,17 +18,11 @@ using System;
 namespace Server
 {
     /// <summary>
-    /// Hints to the source generator that the specified serializable field, which must be a timer,
-    /// can be deserialized by this method. The method signature should look like this:
-    ///
-    /// [DeserializeTimerField(0)]
-    /// private void DeserializeTimer(TimeSpan delay)
+    /// Indicates that the applied class has dirty checking. This is necessary for classes that are not code genned.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method)]
-    public sealed class DeserializeTimerFieldAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class)]
+    public class ManualDirtyCheckingAttribute : Attribute
     {
-        public int Order { get; }
 
-        public DeserializeTimerFieldAttribute(int order) => Order = order;
     }
 }

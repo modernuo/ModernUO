@@ -172,7 +172,7 @@ namespace Server.Items
           base.PlaySwingAnimation( attacker );
         }*/
 
-        [AfterDeserialization]
+        [AfterDeserialization(false)]
         private void OnAfterDeserialization()
         {
             Delete();
