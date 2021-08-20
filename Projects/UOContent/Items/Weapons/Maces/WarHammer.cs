@@ -1,17 +1,14 @@
 namespace Server.Items
 {
     [Flippable(0x1439, 0x1438)]
-    public class WarHammer : BaseBashing
+    [Serializable(0, false)]
+    public partial class WarHammer : BaseBashing
     {
         [Constructible]
         public WarHammer() : base(0x1439)
         {
             Weight = 10.0;
             Layer = Layer.TwoHanded;
-        }
-
-        public WarHammer(Serial serial) : base(serial)
-        {
         }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
@@ -32,19 +29,5 @@ namespace Server.Items
         public override int InitMaxHits => 110;
 
         public override WeaponAnimation DefAnimation => WeaponAnimation.Bash2H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

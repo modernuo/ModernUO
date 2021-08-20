@@ -21,12 +21,6 @@ namespace Server
         private Point2D m_Start;
         private Point2D m_End;
 
-        public Rectangle2D(IPoint2D start, IPoint2D end)
-        {
-            m_Start = new Point2D(start);
-            m_End = new Point2D(end);
-        }
-
         public Rectangle2D(Point2D start, Point2D end)
         {
             m_Start = start;
@@ -141,7 +135,8 @@ namespace Server
         public readonly bool Contains(Point2D p) =>
             m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
 
-        public readonly bool Contains(IPoint2D p) => m_Start <= p && m_End > p;
+        public readonly bool Contains(int x, int y) =>
+            m_Start.m_X <= x && m_Start.m_Y <= y && m_End.m_X > x && m_End.m_Y > y;
 
         public override string ToString() => $"({X}, {Y})+({Width}, {Height})";
     }

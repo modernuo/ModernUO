@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0xEC3, 0xEC2)]
-    public class Cleaver : BaseKnife
+    [Serializable(0, false)]
+    public partial class Cleaver : BaseKnife
     {
         [Constructible]
         public Cleaver() : base(0xEC3) => Weight = 2.0;
-
-        public Cleaver(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.InfectiousStrike;
@@ -26,24 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 50;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Weight == 1.0)
-            {
-                Weight = 2.0;
-            }
-        }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using Server.Collections;
 using Server.Items;
 using Server.Network;
 
@@ -141,11 +141,15 @@ namespace Server
         {
             if (m_Mobiles != null)
             {
-                var sandbox = new List<Mobile>(m_Mobiles);
-
-                foreach (var mob in sandbox)
+                using var queue = PooledRefQueue<Mobile>.Create(m_Mobiles.Count);
+                foreach (var mob in m_Mobiles)
                 {
-                    mob.UpdateRegion();
+                    queue.Enqueue(mob);
+                }
+
+                while (queue.Count > 0)
+                {
+                    queue.Dequeue().UpdateRegion();
                 }
             }
         }
@@ -162,7 +166,7 @@ namespace Server
 
         public void Activate()
         {
-            if (!Active && Owner != Map.Internal)
+            if (!Active)
             {
                 if (m_Items != null)
                 {

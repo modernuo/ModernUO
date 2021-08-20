@@ -887,15 +887,13 @@ namespace Server.Mobiles
         public virtual bool CanBreath => HasBreath && !Summoned;
         public virtual bool IsDispellable => Summoned && !IsAnimatedDead;
 
-        public virtual bool
-            PlayerRangeSensitive // If they are following a waypoint, they'll continue to follow it even if players aren't around
-            => CurrentWayPoint == null;
+        // If they are following a waypoint, they'll continue to follow it even if players aren't around
+        public virtual bool PlayerRangeSensitive => CurrentWayPoint == null;
 
         public virtual bool ReturnsToHome =>
             SeeksHome && Home != Point3D.Zero && !m_ReturnQueued && !Controlled && !Summoned;
 
         // used for deleting untamed creatures [in houses]
-
         [CommandProperty(AccessLevel.GameMaster)]
         public bool RemoveIfUntamed { get; set; }
 
@@ -3895,16 +3893,13 @@ namespace Server.Mobiles
 
         public void GoHome_Callback()
         {
-            if (m_ReturnQueued && IsSpawnerBound())
+            if (m_ReturnQueued && IsSpawnerBound() && !Map.GetSector(X, Y).Active)
             {
+                SetLocation(Home, true);
+
                 if (!Map.GetSector(X, Y).Active)
                 {
-                    SetLocation(Home, true);
-
-                    if (!Map.GetSector(X, Y).Active)
-                    {
-                        AIObject?.Deactivate();
-                    }
+                    AIObject?.Deactivate();
                 }
             }
 

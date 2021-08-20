@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class BlightGrippedLongbow : ElvenCompositeLongbow
+    [Serializable(0)]
+    public partial class BlightGrippedLongbow : ElvenCompositeLongbow
     {
         [Constructible]
         public BlightGrippedLongbow()
@@ -14,24 +15,6 @@ namespace Server.Items
             Attributes.WeaponDamage = 35;
         }
 
-        public BlightGrippedLongbow(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1072907; // Blight Gripped Longbow
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }
