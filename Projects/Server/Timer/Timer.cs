@@ -81,6 +81,7 @@ namespace Server
                 return this;
             }
 
+            Index = 0;
             Running = true;
             AddTimer(this, (long)Delay.TotalMilliseconds);
 
