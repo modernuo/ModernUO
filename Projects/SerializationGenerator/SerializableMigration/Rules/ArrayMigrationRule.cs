@@ -29,6 +29,7 @@ namespace SerializableMigration
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
             ISymbol? parentSymbol,
             out string[] ruleArguments
         )
@@ -46,33 +47,38 @@ namespace SerializableMigration
                 0,
                 attributes,
                 serializableTypes,
-                parentSymbol
+                embeddedSerializableTypes,
+                parentSymbol,
+                null
             );
 
-            var length = serializableArrayType.RuleArguments.Length;
+            var length = serializableArrayType.RuleArguments?.Length?? 0;
             ruleArguments = new string[length + 2];
             ruleArguments[0] = arrayTypeSymbol.ElementType.ToDisplayString();
             ruleArguments[1] = serializableArrayType.Rule;
-            Array.Copy(serializableArrayType.RuleArguments, 0, ruleArguments, 2, length);
+            if (length > 0)
+            {
+                Array.Copy(serializableArrayType.RuleArguments!, 0, ruleArguments, 2, length);
+            }
 
             return true;
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
+        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
         {
-            const string expectedRule = nameof(ArrayMigrationRule);
+            var expectedRule = RuleName;
             var ruleName = property.Rule;
             if (expectedRule != ruleName)
             {
                 throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
             }
             var ruleArguments = property.RuleArguments;
-            var arrayElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
+            var arrayElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments![1]];
             var arrayElementRuleArguments = new string[ruleArguments.Length - 2];
             Array.Copy(ruleArguments, 2, arrayElementRuleArguments, 0, ruleArguments.Length - 2);
 
             var propertyIndex = $"{property.Name}Index";
-            source.AppendLine($"{indent}{property.Name} = new {ruleArguments[0]}[reader.ReadInt()];");
+            source.AppendLine($"{indent}{property.Name} = new {ruleArguments[0]}[reader.ReadEncodedInt()];");
             source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {property.Name}.Length; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 
@@ -84,14 +90,14 @@ namespace SerializableMigration
                 RuleArguments = arrayElementRuleArguments
             };
 
-            arrayElementRule.GenerateDeserializationMethod(source, $"{indent}    ", serializableArrayElement);
+            arrayElementRule.GenerateDeserializationMethod(source, $"{indent}    ", serializableArrayElement, parentReference);
 
             source.AppendLine($"{indent}}}");
         }
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            const string expectedRule = nameof(ArrayMigrationRule);
+            var expectedRule = RuleName;
             var ruleName = property.Rule;
             if (expectedRule != ruleName)
             {
@@ -99,7 +105,7 @@ namespace SerializableMigration
             }
 
             var ruleArguments = property.RuleArguments;
-            var arrayElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
+            var arrayElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments![1]];
             var arrayElementRuleArguments = new string[ruleArguments.Length - 2];
             Array.Copy(ruleArguments, 2, arrayElementRuleArguments, 0, ruleArguments.Length - 2);
 
@@ -108,7 +114,7 @@ namespace SerializableMigration
             var propertyIndex = $"{propertyVarPrefix}Index";
             var propertyLength = $"{propertyVarPrefix}Length";
             source.AppendLine($"{indent}var {propertyLength} = {property.Name}?.Length ?? 0;");
-            source.AppendLine($"{indent}writer.Write({propertyLength});");
+            source.AppendLine($"{indent}writer.WriteEncodedInt({propertyLength});");
             source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {propertyLength}; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 

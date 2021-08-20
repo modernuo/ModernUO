@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class WaterVatEast : BaseAddon
+    [Serializable(0)]
+    public partial class WaterVatEast : BaseAddon
     {
         [Constructible]
         public WaterVatEast()
@@ -21,27 +22,10 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x21A4), -1, 2, 0);
             AddComponent(new AddonComponent(0x21A4), 0, 3, 0);
         }
-
-        public WaterVatEast(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class WaterVatSouth : BaseAddon
+    [Serializable(0)]
+    public partial class WaterVatSouth : BaseAddon
     {
         [Constructible]
         public WaterVatSouth()
@@ -61,24 +45,6 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x21A4), 3, 0, 0);
             AddComponent(new AddonComponent(0x21A4), -1, 2, 0);
             AddComponent(new AddonComponent(0x21A4), 0, 3, 0);
-        }
-
-        public WaterVatSouth(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
         }
     }
 }

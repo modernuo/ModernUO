@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.AnvilEastAddon",
-  "properties": []
+  "type": "Server.Items.AnvilEastAddon"
 }

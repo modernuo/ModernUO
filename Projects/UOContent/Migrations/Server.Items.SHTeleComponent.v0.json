@@ -1,0 +1,27 @@
+{
+  "version": 0,
+  "type": "Server.Items.SHTeleComponent",
+  "properties": [
+    {
+      "name": "Active",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "TeleDest",
+      "type": "Server.Items.SHTeleComponent",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "TeleOffset",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    }
+  ]
+}

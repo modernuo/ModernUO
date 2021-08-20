@@ -511,13 +511,11 @@ namespace Server.Items
 
             var flags = (SaveFlag)reader.ReadEncodedInt();
 
+            Attributes = new AosAttributes(this);
+
             if (GetSaveFlag(flags, SaveFlag.Attributes))
             {
-                Attributes = new AosAttributes(this, reader);
-            }
-            else
-            {
-                Attributes = new AosAttributes(this);
+                Attributes.Deserialize(reader);
             }
 
             if (GetSaveFlag(flags, SaveFlag.LowerAmmoCost))

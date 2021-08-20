@@ -1,17 +1,14 @@
 namespace Server.Items
 {
     [Flippable(0x2D20, 0x2D2C)]
-    public class ElvenSpellblade : BaseKnife
+    [Serializable(0)]
+    public partial class ElvenSpellblade : BaseKnife
     {
         [Constructible]
         public ElvenSpellblade() : base(0x2D20)
         {
             Weight = 5.0;
             Layer = Layer.TwoHanded;
-        }
-
-        public ElvenSpellblade(Serial serial) : base(serial)
-        {
         }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.PsychicAttack;
@@ -32,19 +29,5 @@ namespace Server.Items
 
         public override int InitMinHits => 30; // TODO
         public override int InitMaxHits => 60; // TODO
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

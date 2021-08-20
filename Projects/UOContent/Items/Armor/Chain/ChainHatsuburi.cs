@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class ChainHatsuburi : BaseArmor
+    [Serializable(0, false)]
+    public partial class ChainHatsuburi : BaseArmor
     {
         [Constructible]
         public ChainHatsuburi() : base(0x2774) => Weight = 7.0;
-
-        public ChainHatsuburi(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 2;
@@ -24,17 +21,5 @@ namespace Server.Items
         public override int ArmorBase => 3;
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Chainmail;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

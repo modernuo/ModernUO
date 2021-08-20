@@ -39,7 +39,7 @@ namespace Server.Items
                 c.Delete();
             }
 
-            Components.Clear();
+            this.Clear(Components);
 
             var info = MiniHouseInfo.GetInfo(m_Type);
 

@@ -15,9 +15,9 @@ namespace Server.Items
         [Constructible]
         public BallotBox() : base(0x9A8)
         {
-            Topic = Array.Empty<string>();
-            Yes = new List<Mobile>();
-            No = new List<Mobile>();
+            _topic = Array.Empty<string>();
+            _yes = new List<Mobile>();
+            _no = new List<Mobile>();
         }
 
         public override int LabelNumber => 1041006; // a ballot box

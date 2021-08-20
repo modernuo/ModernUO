@@ -3,14 +3,11 @@ using System;
 namespace Server.Items
 {
     [Flippable(0x26C2, 0x26CC)]
-    public class CompositeBow : BaseRanged
+    [Serializable(0, false)]
+    public partial class CompositeBow : BaseRanged
     {
         [Constructible]
         public CompositeBow() : base(0x26C2) => Weight = 5.0;
-
-        public CompositeBow(Serial serial) : base(serial)
-        {
-        }
 
         public override int EffectID => 0xF42;
         public override Type AmmoType => typeof(Arrow);
@@ -36,19 +33,5 @@ namespace Server.Items
         public override int InitMaxHits => 70;
 
         public override WeaponAnimation DefAnimation => WeaponAnimation.ShootBow;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

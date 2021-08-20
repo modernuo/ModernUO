@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class VoiceOfTheFallenKing : LeatherGorget
+    [Serializable(0, false)]
+    public partial class VoiceOfTheFallenKing : LeatherGorget
     {
         [Constructible]
         public VoiceOfTheFallenKing()
@@ -11,10 +12,6 @@ namespace Server.Items
             Attributes.RegenStam = 3;
         }
 
-        public VoiceOfTheFallenKing(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1061094; // Voice of the Fallen King
         public override int ArtifactRarity => 11;
 
@@ -23,30 +20,5 @@ namespace Server.Items
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1)
-            {
-                if (Hue == 0x551)
-                {
-                    Hue = 0x76D;
-                }
-
-                ColdBonus = 0;
-                EnergyBonus = 0;
-            }
-        }
     }
 }

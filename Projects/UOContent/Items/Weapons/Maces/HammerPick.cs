@@ -1,17 +1,14 @@
 namespace Server.Items
 {
     [Flippable(0x143D, 0x143C)]
-    public class HammerPick : BaseBashing
+    [Serializable(0, false)]
+    public partial class HammerPick : BaseBashing
     {
         [Constructible]
         public HammerPick() : base(0x143D)
         {
             Weight = 9.0;
             Layer = Layer.OneHanded;
-        }
-
-        public HammerPick(Serial serial) : base(serial)
-        {
         }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
@@ -30,19 +27,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 70;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

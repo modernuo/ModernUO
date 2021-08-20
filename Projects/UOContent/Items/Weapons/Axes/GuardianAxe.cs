@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class GuardianAxe : OrnateAxe
+    [Serializable(0)]
+    public partial class GuardianAxe : OrnateAxe
     {
         [Constructible]
         public GuardianAxe()
@@ -9,24 +10,6 @@ namespace Server.Items
             Attributes.RegenHits = 1;
         }
 
-        public GuardianAxe(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1073545; // guardian axe
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.AlchemistTableSouthAddon",
-  "properties": []
+  "type": "Server.Items.AlchemistTableSouthAddon"
 }

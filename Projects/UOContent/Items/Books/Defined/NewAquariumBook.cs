@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class NewAquariumBook : BlueBook
+    [Serializable(0)]
+    public partial class NewAquariumBook : BlueBook
     {
         public static readonly BookContent Content = new(
             "Your New Aquarium",
@@ -94,24 +95,6 @@ namespace Server.Items
         [Constructible]
         public NewAquariumBook() : base(false) => Hue = 0;
 
-        public NewAquariumBook(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

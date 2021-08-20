@@ -893,90 +893,88 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            switch (version)
+            var flags = (SaveFlag)reader.ReadEncodedInt();
+
+            Attributes = new AosAttributes(this);
+            if (GetSaveFlag(flags, SaveFlag.Attributes))
             {
-                case 0:
-                    {
-                        var flags = (SaveFlag)reader.ReadEncodedInt();
-
-                        Attributes = GetSaveFlag(flags, SaveFlag.Attributes)
-                            ? new AosAttributes(this, reader)
-                            : new AosAttributes(this);
-                        SkillBonuses = GetSaveFlag(flags, SaveFlag.SkillBonuses)
-                            ? new AosSkillBonuses(this, reader)
-                            : new AosSkillBonuses(this);
-
-                        // Backward compatibility
-                        if (GetSaveFlag(flags, SaveFlag.Owner))
-                        {
-                            BlessedFor = reader.ReadEntity<Mobile>();
-                        }
-
-                        m_Protection = GetSaveFlag(flags, SaveFlag.Protection)
-                            ? new TalismanAttribute(reader)
-                            : new TalismanAttribute();
-                        m_Killer = GetSaveFlag(flags, SaveFlag.Killer)
-                            ? new TalismanAttribute(reader)
-                            : new TalismanAttribute();
-                        m_Summoner = GetSaveFlag(flags, SaveFlag.Summoner)
-                            ? new TalismanAttribute(reader)
-                            : new TalismanAttribute();
-
-                        if (GetSaveFlag(flags, SaveFlag.Removal))
-                        {
-                            m_Removal = (TalismanRemoval)reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.OldKarmaLoss))
-                        {
-                            Attributes.IncreasedKarmaLoss = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.Skill))
-                        {
-                            m_Skill = (SkillName)reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.SuccessBonus))
-                        {
-                            m_SuccessBonus = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.ExceptionalBonus))
-                        {
-                            m_ExceptionalBonus = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.MaxCharges))
-                        {
-                            m_MaxCharges = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.Charges))
-                        {
-                            m_Charges = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.MaxChargeTime))
-                        {
-                            m_MaxChargeTime = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.ChargeTime))
-                        {
-                            m_ChargeTime = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.Slayer))
-                        {
-                            m_Slayer = (TalismanSlayerName)reader.ReadEncodedInt();
-                        }
-
-                        m_Blessed = GetSaveFlag(flags, SaveFlag.Blessed);
-
-                        break;
-                    }
+                Attributes.Deserialize(reader);
             }
+
+            SkillBonuses = new AosSkillBonuses(this);
+            if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
+            {
+                SkillBonuses.Deserialize(reader);
+            }
+
+            // Backward compatibility
+            if (GetSaveFlag(flags, SaveFlag.Owner))
+            {
+                BlessedFor = reader.ReadEntity<Mobile>();
+            }
+
+            m_Protection = GetSaveFlag(flags, SaveFlag.Protection)
+                ? new TalismanAttribute(reader)
+                : new TalismanAttribute();
+            m_Killer = GetSaveFlag(flags, SaveFlag.Killer)
+                ? new TalismanAttribute(reader)
+                : new TalismanAttribute();
+            m_Summoner = GetSaveFlag(flags, SaveFlag.Summoner)
+                ? new TalismanAttribute(reader)
+                : new TalismanAttribute();
+
+            if (GetSaveFlag(flags, SaveFlag.Removal))
+            {
+                m_Removal = (TalismanRemoval)reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, SaveFlag.OldKarmaLoss))
+            {
+                Attributes.IncreasedKarmaLoss = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, SaveFlag.Skill))
+            {
+                m_Skill = (SkillName)reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, SaveFlag.SuccessBonus))
+            {
+                m_SuccessBonus = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, SaveFlag.ExceptionalBonus))
+            {
+                m_ExceptionalBonus = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, SaveFlag.MaxCharges))
+            {
+                m_MaxCharges = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, SaveFlag.Charges))
+            {
+                m_Charges = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, SaveFlag.MaxChargeTime))
+            {
+                m_MaxChargeTime = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, SaveFlag.ChargeTime))
+            {
+                m_ChargeTime = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, SaveFlag.Slayer))
+            {
+                m_Slayer = (TalismanSlayerName)reader.ReadEncodedInt();
+            }
+
+            m_Blessed = GetSaveFlag(flags, SaveFlag.Blessed);
+
 
             if (Parent is Mobile m)
             {

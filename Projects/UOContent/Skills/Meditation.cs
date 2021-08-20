@@ -11,30 +11,10 @@ namespace Server.SkillHandlers
             SkillInfo.Table[46].Callback = OnUse;
         }
 
-        public static bool CheckOkayHolding(Item item)
-        {
-            if (item == null)
-            {
-                return true;
-            }
-
-            if (item is Spellbook || item is Runebook)
-            {
-                return true;
-            }
-
-            if (Core.AOS && item is BaseWeapon weapon && weapon.Attributes.SpellChanneling != 0)
-            {
-                return true;
-            }
-
-            if (Core.AOS && item is BaseArmor armor && armor.Attributes.SpellChanneling != 0)
-            {
-                return true;
-            }
-
-            return false;
-        }
+        public static bool CheckOkayHolding(Item item) =>
+            item is null or Spellbook or Runebook
+            || Core.AOS && item is BaseWeapon weapon && weapon.Attributes.SpellChanneling != 0
+            || Core.AOS && item is BaseArmor armor && armor.Attributes.SpellChanneling != 0;
 
         public static TimeSpan OnUse(Mobile m)
         {

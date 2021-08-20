@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x2657, 0x2658)]
-    public class DragonArms : BaseArmor
+    public partial class DragonArms : BaseArmor
     {
         [Constructible]
         public DragonArms() : base(0x2657) => Weight = 5.0;
-
-        public DragonArms(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;
@@ -28,22 +25,5 @@ namespace Server.Items
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Dragon;
         public override CraftResource DefaultResource => CraftResource.RedScales;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (Weight == 1.0)
-            {
-                Weight = 15.0;
-            }
-        }
     }
 }

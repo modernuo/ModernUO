@@ -2,8 +2,9 @@ using Server.Engines.Harvest;
 
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0xE86, 0xE85)]
-    public class Pickaxe : BaseAxe, IUsesRemaining
+    public partial class Pickaxe : BaseAxe, IUsesRemaining
     {
         [Constructible]
         public Pickaxe() : base(0xE86)
@@ -11,10 +12,6 @@ namespace Server.Items
             Weight = 11.0;
             UsesRemaining = 50;
             ShowUsesRemaining = true;
-        }
-
-        public Pickaxe(Serial serial) : base(serial)
-        {
         }
 
         public override HarvestSystem HarvestSystem => Mining.System;
@@ -37,20 +34,5 @@ namespace Server.Items
         public override int InitMaxHits => 60;
 
         public override WeaponAnimation DefAnimation => WeaponAnimation.Slash1H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-            ShowUsesRemaining = true;
-        }
     }
 }

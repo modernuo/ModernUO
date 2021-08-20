@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class FropozJournal : RedBook
+    [Serializable(0)]
+    public partial class FropozJournal : RedBook
     {
         public static readonly BookContent Content = new(
             "Journal",
@@ -132,10 +133,6 @@ namespace Server.Items
         {
         }
 
-        public FropozJournal(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
 
         public override void AddNameProperty(ObjectPropertyList list)
@@ -146,20 +143,6 @@ namespace Server.Items
         public override void OnSingleClick(Mobile from)
         {
             LabelTo(from, "Fropoz's Journal");
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
         }
     }
 }

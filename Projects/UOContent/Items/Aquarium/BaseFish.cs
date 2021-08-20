@@ -2,7 +2,8 @@ using System;
 
 namespace Server.Items
 {
-    public class BaseFish : Item
+    [Serializable(0, false)]
+    public abstract partial class BaseFish : Item
     {
         private static readonly TimeSpan DeathDelay = TimeSpan.FromMinutes(5);
 
@@ -12,10 +13,6 @@ namespace Server.Items
         public BaseFish(int itemID) : base(itemID)
         {
             StartTimer();
-        }
-
-        public BaseFish(Serial serial) : base(serial)
-        {
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -44,8 +41,6 @@ namespace Server.Items
         {
             ItemID = 0x3B0C;
             StopTimer();
-
-            InvalidateProperties();
         }
 
         public int GetDescription()
@@ -76,20 +71,10 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (!(Parent is Aquarium) && !(Parent is FishBowl))
+            if (Parent is not Aquarium && Parent is not FishBowl)
             {
                 StartTimer();
             }

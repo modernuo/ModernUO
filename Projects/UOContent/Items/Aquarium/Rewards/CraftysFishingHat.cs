@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class CraftysFishingHat : BaseHat
+    [Serializable(0, false)]
+    public partial class CraftysFishingHat : BaseHat
     {
         [Constructible]
         public CraftysFishingHat() : base(0x1713)
-        {
-        }
-
-        public CraftysFishingHat(Serial serial) : base(serial)
         {
         }
 
@@ -27,20 +24,6 @@ namespace Server.Items
             base.AddNameProperties(list);
 
             list.Add(1073634); // An aquarium decoration
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

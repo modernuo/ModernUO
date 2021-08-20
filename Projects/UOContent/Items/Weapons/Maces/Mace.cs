@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0xF5C, 0xF5D)]
-    public class Mace : BaseBashing
+    [Serializable(0, false)]
+    public partial class Mace : BaseBashing
     {
         [Constructible]
         public Mace() : base(0xF5C) => Weight = 14.0;
-
-        public Mace(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ConcussionBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
@@ -26,19 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 70;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

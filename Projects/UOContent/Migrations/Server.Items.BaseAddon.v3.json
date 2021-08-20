@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "type": "Server.Items.BaseAddon",
+  "properties": [
+    {
+      "name": "Components",
+      "type": "System.Collections.Generic.List\u003CServer.Items.AddonComponent\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "",
+        "Server.Items.AddonComponent",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Resource",
+      "type": "Server.Items.CraftResource",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

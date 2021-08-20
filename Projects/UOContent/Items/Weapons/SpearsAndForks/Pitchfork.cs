@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0xE87, 0xE88)]
-    public class Pitchfork : BaseSpear
+    [Serializable(0, false)]
+    public partial class Pitchfork : BaseSpear
     {
         [Constructible]
         public Pitchfork() : base(0xE87) => Weight = 11.0;
-
-        public Pitchfork(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Dismount;
@@ -26,24 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 60;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Weight == 10.0)
-            {
-                Weight = 11.0;
-            }
-        }
     }
 }

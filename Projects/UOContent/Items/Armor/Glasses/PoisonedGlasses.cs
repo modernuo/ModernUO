@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class PoisonedGlasses : ElvenGlasses
+    [Serializable(0, false)]
+    public partial class PoisonedGlasses : ElvenGlasses
     {
         [Constructible]
         public PoisonedGlasses()
@@ -9,10 +10,6 @@ namespace Server.Items
             Attributes.RegenStam = 4;
 
             Hue = 0x113;
-        }
-
-        public PoisonedGlasses(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1073376; // Poisoned Reading Glasses
@@ -25,22 +22,5 @@ namespace Server.Items
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (version == 0 && Hue == 0)
-            {
-                Hue = 0x113;
-            }
-        }
     }
 }

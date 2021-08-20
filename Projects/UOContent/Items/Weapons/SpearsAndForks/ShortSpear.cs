@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x1403, 0x1402)]
-    public class ShortSpear : BaseSpear
+    [Serializable(0, false)]
+    public partial class ShortSpear : BaseSpear
     {
         [Constructible]
         public ShortSpear() : base(0x1403) => Weight = 4.0;
-
-        public ShortSpear(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ShadowStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;
@@ -28,19 +25,5 @@ namespace Server.Items
         public override int InitMaxHits => 70;
 
         public override WeaponAnimation DefAnimation => WeaponAnimation.Pierce1H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class ColdForgedBlade : ElvenSpellblade
+    [Serializable(0)]
+    public partial class ColdForgedBlade : ElvenSpellblade
     {
         [Constructible]
         public ColdForgedBlade()
@@ -14,10 +15,6 @@ namespace Server.Items
             Hue = GetElementalDamageHue();
         }
 
-        public ColdForgedBlade(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1072916; // Cold Forged Blade
 
         public override void GetDamageTypes(
@@ -27,20 +24,6 @@ namespace Server.Items
         {
             phys = fire = pois = nrgy = chaos = direct = 0;
             cold = 100;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
         }
     }
 }

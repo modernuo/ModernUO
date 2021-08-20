@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Items.TrainingDummy",
+  "properties": [
+    {
+      "name": "MinSkill",
+      "type": "double",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MaxSkill",
+      "type": "double",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

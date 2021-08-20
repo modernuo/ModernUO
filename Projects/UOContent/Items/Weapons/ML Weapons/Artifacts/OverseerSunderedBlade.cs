@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class OverseerSunderedBlade : RadiantScimitar
+    [Serializable(0)]
+    public partial class OverseerSunderedBlade : RadiantScimitar
     {
         [Constructible]
         public OverseerSunderedBlade()
@@ -16,10 +17,6 @@ namespace Server.Items
             Hue = GetElementalDamageHue();
         }
 
-        public OverseerSunderedBlade(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1072920; // Overseer Sundered Blade
 
         public override void GetDamageTypes(
@@ -29,20 +26,6 @@ namespace Server.Items
         {
             phys = cold = pois = nrgy = chaos = direct = 0;
             fire = 100;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
         }
     }
 }

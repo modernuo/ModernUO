@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Items.BaseRanged",
+  "properties": [
+    {
+      "name": "Balanced",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Velocity",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

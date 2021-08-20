@@ -1,16 +1,14 @@
 namespace Server.Items
 {
     [Flippable]
-    public class LeatherGloves : BaseArmor, IArcaneEquip
+    [Serializable(2, false)]
+    public partial class LeatherGloves : BaseArmor, IArcaneEquip
     {
-        private int m_MaxArcaneCharges, m_CurArcaneCharges;
+        private int _maxArcaneCharges;
+        private int _curArcaneCharges;
 
         [Constructible]
         public LeatherGloves() : base(0x13C6) => Weight = 1.0;
-
-        public LeatherGloves(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;
@@ -31,74 +29,43 @@ namespace Server.Items
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int MaxArcaneCharges
-        {
-            get => m_MaxArcaneCharges;
-            set
-            {
-                m_MaxArcaneCharges = value;
-                InvalidateProperties();
-                Update();
-            }
-        }
-
+        [EncodedInt]
+        [SerializableField(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int CurArcaneCharges
         {
-            get => m_CurArcaneCharges;
+            get => _curArcaneCharges;
             set
             {
-                m_CurArcaneCharges = value;
+                _curArcaneCharges = value;
+                InvalidateProperties();
+                Update();
+            }
+        }
+
+        [EncodedInt]
+        [SerializableField(1)]
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int MaxArcaneCharges
+        {
+            get => _maxArcaneCharges;
+            set
+            {
+                _maxArcaneCharges = value;
                 InvalidateProperties();
                 Update();
             }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsArcane => m_MaxArcaneCharges > 0 && m_CurArcaneCharges >= 0;
+        public bool IsArcane => _maxArcaneCharges > 0 && _curArcaneCharges >= 0;
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            if (IsArcane)
+            if (reader.ReadBool())
             {
-                writer.Write(true);
-                writer.Write(m_CurArcaneCharges);
-                writer.Write(m_MaxArcaneCharges);
-            }
-            else
-            {
-                writer.Write(false);
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        if (reader.ReadBool())
-                        {
-                            m_CurArcaneCharges = reader.ReadInt();
-                            m_MaxArcaneCharges = reader.ReadInt();
-
-                            if (Hue == 2118)
-                            {
-                                Hue = ArcaneGem.DefaultArcaneHue;
-                            }
-                        }
-
-                        break;
-                    }
+                _curArcaneCharges = reader.ReadInt();
+                _maxArcaneCharges = reader.ReadInt();
             }
         }
 
@@ -125,7 +92,7 @@ namespace Server.Items
 
             if (IsArcane)
             {
-                list.Add(1061837, "{0}\t{1}", m_CurArcaneCharges, m_MaxArcaneCharges); // arcane charges: ~1_val~ / ~2_val~
+                list.Add(1061837, "{0}\t{1}", _curArcaneCharges, _maxArcaneCharges); // arcane charges: ~1_val~ / ~2_val~
             }
         }
 
@@ -135,20 +102,18 @@ namespace Server.Items
 
             if (IsArcane)
             {
-                LabelTo(from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
+                LabelTo(from, 1061837, $"{_curArcaneCharges}\t{_maxArcaneCharges}");
             }
         }
 
         public void Flip()
         {
-            if (ItemID == 0x13C6)
+            ItemID = ItemID switch
             {
-                ItemID = 0x13CE;
-            }
-            else if (ItemID == 0x13CE)
-            {
-                ItemID = 0x13C6;
-            }
+                0x13C6 => 0x13CE,
+                0x13CE => 0x13C6,
+                _      => ItemID
+            };
         }
     }
 }

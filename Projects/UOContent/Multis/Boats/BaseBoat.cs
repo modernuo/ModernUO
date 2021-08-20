@@ -239,7 +239,7 @@ namespace Server.Multis
 
         public override bool AllowsRelativeDrop => true;
 
-        public static BaseBoat FindBoatAt(IPoint2D loc, Map map)
+        public static BaseBoat FindBoatAt(Point3D loc, Map map)
         {
             var sector = map.GetSector(loc);
 
@@ -1512,7 +1512,7 @@ namespace Server.Multis
             var adx = dx.Abs();
             var ady = dy.Abs();
 
-            var dir = Utility.GetDirection(this, new Point2D(x, y));
+            var dir = Utility.GetDirection(Location.X, Location.Y, x, y);
             var iDir = (int)dir;
 
             // Compute the maximum distance we can travel without going too far away

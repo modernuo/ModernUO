@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.IronOre",
-  "properties": []
+  "type": "Server.Items.IronOre"
 }

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "type": "Server.Items.StatuetteDyeTub",
+  "properties": [
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

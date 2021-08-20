@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "type": "Server.Items.BigFish",
+  "properties": [
+    {
+      "name": "Fisher",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

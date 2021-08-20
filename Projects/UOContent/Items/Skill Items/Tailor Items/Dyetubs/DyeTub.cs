@@ -11,20 +11,24 @@ namespace Server.Items
         bool Dye(Mobile from, DyeTub sender);
     }
 
-    public class DyeTub : Item, ISecurable
+    [Serializable(2, false)]
+    public partial class DyeTub : Item, ISecurable
     {
-        private int m_DyedHue;
-        private bool m_Redyable;
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private SecureLevel _level;
+
+        [SerializableField(1, isVirtual: true)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _redyable;
+
+        private int _dyedHue;
 
         [Constructible]
         public DyeTub() : base(0xFAB)
         {
             Weight = 10.0;
-            m_Redyable = true;
-        }
-
-        public DyeTub(Serial serial) : base(serial)
-        {
+            _redyable = true;
         }
 
         public virtual CustomHuePicker CustomHuePicker => null;
@@ -39,22 +43,16 @@ namespace Server.Items
 
         public virtual bool AllowDyables => true;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public virtual bool Redyable
-        {
-            get => m_Redyable;
-            set => m_Redyable = value;
-        }
-
+        [SerializableField(2)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int DyedHue
         {
-            get => m_DyedHue;
+            get => _dyedHue;
             set
             {
-                if (m_Redyable)
+                if (_redyable)
                 {
-                    m_DyedHue = value;
+                    _dyedHue = value;
                     Hue = value;
                 }
             }
@@ -69,26 +67,8 @@ namespace Server.Items
         // You can not dye that.
         public virtual int FailMessage => 1042083;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public SecureLevel Level { get; set; }
-
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write((int)Level);
-            writer.Write(m_Redyable);
-            writer.Write(m_DyedHue);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
             switch (version)
             {
                 case 1:
@@ -98,8 +78,8 @@ namespace Server.Items
                     }
                 case 0:
                     {
-                        m_Redyable = reader.ReadBool();
-                        m_DyedHue = reader.ReadInt();
+                        _redyable = reader.ReadBool();
+                        _dyedHue = reader.ReadInt();
 
                         break;
                     }

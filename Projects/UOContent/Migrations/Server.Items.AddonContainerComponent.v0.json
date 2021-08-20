@@ -5,8 +5,7 @@
     {
       "name": "Addon",
       "type": "Server.Items.BaseAddonContainer",
-      "rule": "SerializableInterfaceMigrationRule",
-      "ruleArguments": []
+      "rule": "SerializableInterfaceMigrationRule"
     },
     {
       "name": "Offset",

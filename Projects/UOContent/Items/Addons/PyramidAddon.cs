@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class PyramidAddon : BaseAddon
+    [Serializable(0)]
+    public partial class PyramidAddon : BaseAddon
     {
         [Constructible]
         public PyramidAddon()
@@ -29,25 +30,6 @@ namespace Server.Items
             AddComponent(new AddonComponent(1010), -1, 0, 5);
         }
 
-        public PyramidAddon(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override bool ShareHue => false;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write((byte)0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            int version = reader.ReadByte();
-        }
     }
 }

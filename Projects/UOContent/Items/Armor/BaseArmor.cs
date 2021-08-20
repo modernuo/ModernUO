@@ -10,56 +10,163 @@ using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items
 {
-    public abstract class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability
+    [Serializable(8, false)]
+    public abstract partial class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
-        // Overridable values. These values are provided to override the defaults which get defined in the individual armor scripts.
-        private int m_ArmorBase = -1;
-        private Mobile m_Crafter;
-        private ArmorDurabilityLevel m_Durability;
+        [SerializableField(0, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        private AosAttributes _attributes;
+
+        [SerializableFieldSaveFlag(0)]
+        private bool ShouldSerializeAosAttributes() => !_attributes.IsEmpty;
+
+        [SerializableFieldDefault(0)]
+        private AosAttributes AttributesDefaultValue() => new(this);
+
+        [SerializableField(1, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        private AosArmorAttributes _armorAttributes;
+
+        [SerializableFieldSaveFlag(1)]
+        private bool ShouldSerializeArmorAttributes() => !_armorAttributes.IsEmpty;
+
+        [SerializableFieldDefault(1)]
+        private AosArmorAttributes ArmorAttributesDefaultValue() => new(this);
+
+        [EncodedInt]
+        [InvalidateProperties]
+        [SerializableField(2)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _physicalBonus;
+
+        [SerializableFieldSaveFlag(2)]
+        private bool ShouldSerializePhysicalBonus() => _physicalBonus != 0;
+
+        [EncodedInt]
+        [InvalidateProperties]
+        [SerializableField(3)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _fireBonus;
+
+        [SerializableFieldSaveFlag(3)]
+        private bool ShouldSerializeFireBonus() => _fireBonus != 0;
+
+        [EncodedInt]
+        [InvalidateProperties]
+        [SerializableField(4)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _coldBonus;
+
+        [SerializableFieldSaveFlag(4)]
+        private bool ShouldSerializeColdBonus() => _coldBonus != 0;
+
+        [EncodedInt]
+        [InvalidateProperties]
+        [SerializableField(5)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _poisonBonus;
+
+        [SerializableFieldSaveFlag(5)]
+        private bool ShouldSerializePoisonBonus() => _poisonBonus != 0;
+
+        [EncodedInt]
+        [InvalidateProperties]
+        [SerializableField(6)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _energyBonus;
+
+        [SerializableFieldSaveFlag(6)]
+        private bool ShouldSerializeEnergyBonus() => _energyBonus != 0;
+
+        [SerializableField(7)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _identified;
+
+        [SerializableFieldSaveFlag(7)]
+        private bool ShouldSerializeIdentified() => _identified;
+
+        [EncodedInt]
+        [SerializableField(8)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _maxHitPoints;
+
+        [SerializableFieldSaveFlag(8)]
+        private bool ShouldSerializeMaxHitPoints() => _maxHitPoints != 0;
+
+        // Field 9
+        private int _hitPoints;
+
+        [InvalidateProperties]
+        [SerializableField(10)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private Mobile _crafter;
+
+        [SerializableFieldSaveFlag(10)]
+        private bool ShouldSerializeCrafter() => _crafter != null;
+
+        // Field 11
+        private ArmorQuality _quality = ArmorQuality.Regular;
+
+        // Field 12
+        private ArmorDurabilityLevel _durability = ArmorDurabilityLevel.Regular;
+
+        // Field 13
+        private ArmorProtectionLevel _protection = ArmorProtectionLevel.Regular;
+
+        // Field 14
+        private CraftResource _resource;
+
+        // Field 15
+        private int _armorBase = -1;
+
+        // Field 16
+        private int _strBonus = -1;
+
+        // Field 17
+        private int _dexBonus = -1;
+
+        // Field 18
+        private int _intBonus = -1;
+
+        // Field 19
+        private int _strReq = -1;
+
+        // Field 20
+        private int _dexReq = -1;
+
+        // Field 21
+        private int _intReq = -1;
+
+        // Field 22
+        private AMA _meditate = (AMA)(-1);
+
+        [SerializableField(23, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        public AosSkillBonuses _skillBonuses;
+
+        [SerializableFieldSaveFlag(23)]
+        private bool ShouldSerializeSkillBonuses() => !_skillBonuses.IsEmpty;
+
+        [SerializableFieldDefault(23)]
+        private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
+
+        [SerializableField(24)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        public bool _playerConstructed;
+
+        [SerializableFieldSaveFlag(24)]
+        private bool ShouldSerializePlayerConstructed() => _playerConstructed;
 
         private FactionItem m_FactionState;
-        private int m_HitPoints;
-        private bool m_Identified;
-
-        /* Armor internals work differently now (Jun 19 2003)
-         *
-         * The attributes defined below default to -1.
-         * If the value is -1, the corresponding virtual 'Aos/Old' property is used.
-         * If not, the attribute value itself is used. Here's the list:
-         *  - ArmorBase
-         *  - StrBonus
-         *  - DexBonus
-         *  - IntBonus
-         *  - StrReq
-         *  - DexReq
-         *  - IntReq
-         *  - MeditationAllowance
-         */
-
-        // Instance values. These values must are unique to each armor piece.
-        private int m_MaxHitPoints;
-        private AMA m_Meditate = (AMA)(-1);
-        private int m_PhysicalBonus, m_FireBonus, m_ColdBonus, m_PoisonBonus, m_EnergyBonus;
-        private ArmorProtectionLevel m_Protection;
-        private ArmorQuality m_Quality;
-        private CraftResource m_Resource;
-        private int m_StrBonus = -1, m_DexBonus = -1, m_IntBonus = -1;
-        private int m_StrReq = -1, m_DexReq = -1, m_IntReq = -1;
-
-        public BaseArmor(Serial serial) : base(serial)
-        {
-        }
 
         public BaseArmor(int itemID) : base(itemID)
         {
-            m_Quality = ArmorQuality.Regular;
-            m_Durability = ArmorDurabilityLevel.Regular;
-            m_Crafter = null;
+            _crafter = null;
 
-            m_Resource = DefaultResource;
-            Hue = CraftResources.GetHue(m_Resource);
+            _resource = DefaultResource;
+            Hue = CraftResources.GetHue(_resource);
 
-            m_HitPoints = m_MaxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
+            _hitPoints = _maxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
 
             Layer = (Layer)ItemData.Quality;
 
@@ -94,31 +201,111 @@ namespace Server.Items
         public virtual int OldDexReq => 0;
         public virtual int OldIntReq => 0;
 
+        [SerializableField(11)]
         [CommandProperty(AccessLevel.GameMaster)]
-        public AMA MeditationAllowance
+        public ArmorQuality Quality
         {
-            get => m_Meditate == (AMA)(-1) ? Core.AOS ? AosMedAllowance : OldMedAllowance : m_Meditate;
-            set => m_Meditate = value;
+            get => _quality;
+            set
+            {
+                UnscaleDurability();
+                _quality = value;
+                ScaleDurability();
+            }
         }
 
+        [SerializableFieldSaveFlag(11)]
+        private bool ShouldSerializeArmorQuality() => _quality != ArmorQuality.Regular;
+
+        [SerializableField(12)]
+        [CommandProperty(AccessLevel.GameMaster)]
+        public ArmorDurabilityLevel Durability
+        {
+            get => _durability;
+            set
+            {
+                UnscaleDurability();
+                _durability = value;
+                ScaleDurability();
+            }
+        }
+
+        [SerializableFieldSaveFlag(12)]
+        private bool ShouldSerializeDurability() => _durability != ArmorDurabilityLevel.Regular;
+
+        [SerializableField(13)]
+        [CommandProperty(AccessLevel.GameMaster)]
+        public ArmorProtectionLevel ProtectionLevel
+        {
+            get => _protection;
+            set
+            {
+                if (_protection != value)
+                {
+                    _protection = value;
+
+                    Invalidate();
+                    InvalidateProperties();
+
+                    (Parent as Mobile)?.UpdateResistances();
+                    this.MarkDirty();
+                }
+            }
+        }
+
+        [SerializableFieldSaveFlag(13)]
+        private bool ShouldSerializeProtectionLevel() => _protection != ArmorProtectionLevel.Regular;
+
+        [SerializableField(14)]
+        [CommandProperty(AccessLevel.GameMaster)]
+        public CraftResource Resource
+        {
+            get => _resource;
+            set
+            {
+                if (_resource != value)
+                {
+                    UnscaleDurability();
+
+                    _resource = value;
+
+                    if (CraftItem.RetainsColor(GetType()))
+                    {
+                        Hue = CraftResources.GetHue(_resource);
+                    }
+
+                    Invalidate();
+                    (Parent as Mobile)?.UpdateResistances();
+                    ScaleDurability();
+                }
+            }
+        }
+
+        [SerializableFieldSaveFlag(14)]
+        private bool ShouldSerializeResource() => _resource != DefaultResource;
+
+        [SerializableFieldDefault(14)]
+        private CraftResource ResourceDefaultValue() => DefaultResource;
+
+        [EncodedInt]
+        [SerializableField(15)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int BaseArmorRating
         {
-            get
-            {
-                if (m_ArmorBase == -1)
-                {
-                    return ArmorBase;
-                }
-
-                return m_ArmorBase;
-            }
+            get => _armorBase == -1 ? ArmorBase : _armorBase;
             set
             {
-                m_ArmorBase = value;
+                _armorBase = value;
                 Invalidate();
+                this.MarkDirty();
             }
         }
+
+        [SerializableFieldSaveFlag(15)]
+        private bool ShouldSerializeArmorBase() => _armorBase != -1;
+
+        [SerializableFieldDefault(15)]
+        private int ArmorBaseDefaultValue() => -1;
 
         public double BaseArmorRatingScaled => BaseArmorRating * ArmorScalar;
 
@@ -128,12 +315,12 @@ namespace Server.Items
             {
                 var ar = BaseArmorRating;
 
-                if (m_Protection != ArmorProtectionLevel.Regular)
+                if (_protection != ArmorProtectionLevel.Regular)
                 {
-                    ar += 10 + 5 * (int)m_Protection;
+                    ar += 10 + 5 * (int)_protection;
                 }
 
-                switch (m_Resource)
+                switch (_resource)
                 {
                     case CraftResource.DullCopper:
                         ar += 2;
@@ -170,119 +357,147 @@ namespace Server.Items
                         break;
                 }
 
-                ar += -8 + 8 * (int)m_Quality;
+                ar += -8 + 8 * (int)_quality;
                 return ScaleArmorByDurability(ar);
             }
         }
 
         public double ArmorRatingScaled => ArmorRating * ArmorScalar;
 
+        [EncodedInt]
+        [SerializableField(16)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int StrBonus
         {
-            get => m_StrBonus == -1 ? Core.AOS ? AosStrBonus : OldStrBonus : m_StrBonus;
+            get => _strBonus == -1 ? Core.AOS ? AosStrBonus : OldStrBonus : _strBonus;
             set
             {
-                m_StrBonus = value;
+                _strBonus = value;
                 InvalidateProperties();
+                this.MarkDirty();
             }
         }
 
+        [SerializableFieldSaveFlag(16)]
+        private bool ShouldSerializeStrBonus() => _strBonus != -1;
+
+        [SerializableFieldDefault(16)]
+        private int StrBonusDefaultValue() => -1;
+
+        [EncodedInt]
+        [SerializableField(17)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int DexBonus
         {
-            get => m_DexBonus == -1 ? Core.AOS ? AosDexBonus : OldDexBonus : m_DexBonus;
+            get => _dexBonus == -1 ? Core.AOS ? AosDexBonus : OldDexBonus : _dexBonus;
             set
             {
-                m_DexBonus = value;
+                _dexBonus = value;
                 InvalidateProperties();
+                this.MarkDirty();
             }
         }
 
+        [SerializableFieldSaveFlag(17)]
+        private bool ShouldSerializeDexBonus() => _dexBonus != -1;
+
+        [SerializableFieldDefault(17)]
+        private int DexBonusDefaultValue() => -1;
+
+        [EncodedInt]
+        [SerializableField(18)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int IntBonus
         {
-            get => m_IntBonus == -1 ? Core.AOS ? AosIntBonus : OldIntBonus : m_IntBonus;
+            get => _intBonus == -1 ? Core.AOS ? AosIntBonus : OldIntBonus : _intBonus;
             set
             {
-                m_IntBonus = value;
+                _intBonus = value;
                 InvalidateProperties();
+                this.MarkDirty();
             }
         }
 
+        [SerializableFieldSaveFlag(18)]
+        private bool ShouldSerializeIntBonus() => _intBonus != -1;
+
+        [SerializableFieldDefault(18)]
+        private int IntBonusDefaultValue() => -1;
+
+        [EncodedInt]
+        [SerializableField(19)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int StrRequirement
         {
-            get => m_StrReq == -1 ? Core.AOS ? AosStrReq : OldStrReq : m_StrReq;
+            get => _strReq == -1 ? Core.AOS ? AosStrReq : OldStrReq : _strReq;
             set
             {
-                m_StrReq = value;
+                _strReq = value;
                 InvalidateProperties();
+                this.MarkDirty();
             }
         }
 
+        [SerializableFieldSaveFlag(19)]
+        private bool ShouldSerializeStrReq() => _strReq != -1;
+
+        [SerializableFieldDefault(19)]
+        private int StrReqDefaultValue() => -1;
+
+        [EncodedInt]
+        [SerializableField(20)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int DexRequirement
         {
-            get => m_DexReq == -1 ? Core.AOS ? AosDexReq : OldDexReq : m_DexReq;
+            get => _dexReq == -1 ? Core.AOS ? AosDexReq : OldDexReq : _dexReq;
             set
             {
-                m_DexReq = value;
+                _dexReq = value;
                 InvalidateProperties();
+                this.MarkDirty();
             }
         }
 
+        [SerializableFieldSaveFlag(20)]
+        private bool ShouldSerializeDexReq() => _dexReq != -1;
+
+        [SerializableFieldDefault(20)]
+        private int DexReqDefaultValue() => -1;
+
+        [EncodedInt]
+        [SerializableField(21)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int IntRequirement
         {
-            get => m_IntReq == -1 ? Core.AOS ? AosIntReq : OldIntReq : m_IntReq;
+            get => _intReq == -1 ? Core.AOS ? AosIntReq : OldIntReq : _intReq;
             set
             {
-                m_IntReq = value;
+                _intReq = value;
                 InvalidateProperties();
+                this.MarkDirty();
             }
         }
 
+        [SerializableFieldSaveFlag(21)]
+        private bool ShouldSerializeIntReq() => _intReq != -1;
+
+        [SerializableFieldDefault(21)]
+        private int IntReqDefaultValue() => -1;
+
+        [SerializableField(22)]
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool Identified
+        public AMA MeditationAllowance
         {
-            get => m_Identified;
+            get => _meditate < AMA.All ? Core.AOS ? AosMedAllowance : OldMedAllowance : _meditate;
             set
             {
-                m_Identified = value;
-                InvalidateProperties();
+                _meditate = value;
+                this.MarkDirty();
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool PlayerConstructed { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public CraftResource Resource
-        {
-            get => m_Resource;
-            set
-            {
-                if (m_Resource != value)
-                {
-                    UnscaleDurability();
-
-                    m_Resource = value;
-
-                    if (CraftItem.RetainsColor(GetType()))
-                    {
-                        Hue = CraftResources.GetHue(m_Resource);
-                    }
-
-                    Invalidate();
-                    InvalidateProperties();
-
-                    (Parent as Mobile)?.UpdateResistances();
-
-                    ScaleDurability();
-                }
-            }
-        }
+        [SerializableFieldSaveFlag(22)]
+        private bool ShouldSerializeMeditationAllowance() => _meditate >= AMA.All;
 
         public virtual double ArmorScalar
         {
@@ -299,127 +514,7 @@ namespace Server.Items
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile Crafter
-        {
-            get => m_Crafter;
-            set
-            {
-                m_Crafter = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public ArmorQuality Quality
-        {
-            get => m_Quality;
-            set
-            {
-                UnscaleDurability();
-                m_Quality = value;
-                Invalidate();
-                InvalidateProperties();
-                ScaleDurability();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public ArmorDurabilityLevel Durability
-        {
-            get => m_Durability;
-            set
-            {
-                UnscaleDurability();
-                m_Durability = value;
-                ScaleDurability();
-                InvalidateProperties();
-            }
-        }
-
         public virtual int ArtifactRarity => 0;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public ArmorProtectionLevel ProtectionLevel
-        {
-            get => m_Protection;
-            set
-            {
-                if (m_Protection != value)
-                {
-                    m_Protection = value;
-
-                    Invalidate();
-                    InvalidateProperties();
-
-                    (Parent as Mobile)?.UpdateResistances();
-                }
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-        public AosAttributes Attributes { get; private set; }
-
-        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-        public AosArmorAttributes ArmorAttributes { get; private set; }
-
-        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-        public AosSkillBonuses SkillBonuses { get; private set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int PhysicalBonus
-        {
-            get => m_PhysicalBonus;
-            set
-            {
-                m_PhysicalBonus = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int FireBonus
-        {
-            get => m_FireBonus;
-            set
-            {
-                m_FireBonus = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int ColdBonus
-        {
-            get => m_ColdBonus;
-            set
-            {
-                m_ColdBonus = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int PoisonBonus
-        {
-            get => m_PoisonBonus;
-            set
-            {
-                m_PoisonBonus = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int EnergyBonus
-        {
-            get => m_EnergyBonus;
-            set
-            {
-                m_EnergyBonus = value;
-                InvalidateProperties();
-            }
-        }
 
         public virtual int BasePhysicalResistance => 0;
         public virtual int BaseFireResistance => 0;
@@ -428,19 +523,19 @@ namespace Server.Items
         public virtual int BaseEnergyResistance => 0;
 
         public override int PhysicalResistance => BasePhysicalResistance + GetProtOffset() +
-                                                  GetResourceAttrs().ArmorPhysicalResist + m_PhysicalBonus;
+                                                  GetResourceAttrs().ArmorPhysicalResist + _physicalBonus;
 
         public override int FireResistance =>
-            BaseFireResistance + GetProtOffset() + GetResourceAttrs().ArmorFireResist + m_FireBonus;
+            BaseFireResistance + GetProtOffset() + GetResourceAttrs().ArmorFireResist + _fireBonus;
 
         public override int ColdResistance =>
-            BaseColdResistance + GetProtOffset() + GetResourceAttrs().ArmorColdResist + m_ColdBonus;
+            BaseColdResistance + GetProtOffset() + GetResourceAttrs().ArmorColdResist + _coldBonus;
 
         public override int PoisonResistance =>
-            BasePoisonResistance + GetProtOffset() + GetResourceAttrs().ArmorPoisonResist + m_PoisonBonus;
+            BasePoisonResistance + GetProtOffset() + GetResourceAttrs().ArmorPoisonResist + _poisonBonus;
 
         public override int EnergyResistance =>
-            BaseEnergyResistance + GetProtOffset() + GetResourceAttrs().ArmorEnergyResist + m_EnergyBonus;
+            BaseEnergyResistance + GetProtOffset() + GetResourceAttrs().ArmorEnergyResist + _energyBonus;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public ArmorBodyType BodyPosition
@@ -526,19 +621,19 @@ namespace Server.Items
                         switch (Utility.Random(5))
                         {
                             case 0:
-                                m_PhysicalBonus++;
+                                PhysicalBonus++;
                                 break;
                             case 1:
-                                m_FireBonus++;
+                                FireBonus++;
                                 break;
                             case 2:
-                                m_ColdBonus++;
+                                ColdBonus++;
                                 break;
                             case 3:
-                                m_EnergyBonus++;
+                                EnergyBonus++;
                                 break;
                             case 4:
-                                m_PoisonBonus++;
+                                PoisonBonus++;
                                 break;
                         }
                     }
@@ -593,7 +688,7 @@ namespace Server.Items
             {
                 try
                 {
-                    var res = CraftResources.GetInfo(m_Resource).ResourceTypes[0].CreateInstance<Item>();
+                    var res = CraftResources.GetInfo(_resource).ResourceTypes[0].CreateInstance<Item>();
 
                     ScissorHelper(from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
                     return true;
@@ -610,40 +705,37 @@ namespace Server.Items
 
         public virtual bool CanFortify => true;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int MaxHitPoints
-        {
-            get => m_MaxHitPoints;
-            set
-            {
-                m_MaxHitPoints = value;
-                InvalidateProperties();
-            }
-        }
-
+        [EncodedInt]
+        [SerializableField(9)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int HitPoints
         {
-            get => m_HitPoints;
+            get => _hitPoints;
             set
             {
-                if (value != m_HitPoints && MaxHitPoints > 0)
+                if (value != _hitPoints && MaxHitPoints > 0)
                 {
-                    m_HitPoints = value;
+                    _hitPoints = value;
 
-                    if (m_HitPoints < 0)
+                    if (_hitPoints < 0)
                     {
                         Delete();
+                        return;
                     }
-                    else if (m_HitPoints > MaxHitPoints)
+
+                    if (_hitPoints > MaxHitPoints)
                     {
-                        m_HitPoints = MaxHitPoints;
+                        _hitPoints = MaxHitPoints;
                     }
 
                     InvalidateProperties();
+                    this.MarkDirty();
                 }
             }
         }
+
+        [SerializableFieldSaveFlag(9)]
+        private bool ShouldSerializeHitPoints() => _hitPoints != 0;
 
         public virtual int InitMinHits => 0;
         public virtual int InitMaxHits => 0;
@@ -652,18 +744,20 @@ namespace Server.Items
         {
             var scale = 100 + GetDurabilityBonus();
 
-            m_HitPoints = (m_HitPoints * 100 + (scale - 1)) / scale;
-            m_MaxHitPoints = (m_MaxHitPoints * 100 + (scale - 1)) / scale;
+            _maxHitPoints = (_maxHitPoints * 100 + (scale - 1)) / scale;
+            _hitPoints = (_hitPoints * 100 + (scale - 1)) / scale;
             InvalidateProperties();
+            this.MarkDirty();
         }
 
         public void ScaleDurability()
         {
             var scale = 100 + GetDurabilityBonus();
 
-            m_HitPoints = (m_HitPoints * scale + 99) / 100;
-            m_MaxHitPoints = (m_MaxHitPoints * scale + 99) / 100;
+            _maxHitPoints = (_maxHitPoints * scale + 99) / 100;
+            _hitPoints = (_hitPoints * scale + 99) / 100;
             InvalidateProperties();
+            this.MarkDirty();
         }
 
         public virtual int OnHit(BaseWeapon weapon, int damageTaken)
@@ -698,9 +792,9 @@ namespace Server.Items
                         wear = Utility.Random(2);
                     }
 
-                    if (wear > 0 && m_MaxHitPoints > 0)
+                    if (wear > 0 && _maxHitPoints > 0)
                     {
-                        if (m_HitPoints >= wear)
+                        if (_hitPoints >= wear)
                         {
                             HitPoints -= wear;
                             wear = 0;
@@ -713,7 +807,7 @@ namespace Server.Items
 
                         if (wear > 0)
                         {
-                            if (m_MaxHitPoints > wear)
+                            if (_maxHitPoints > wear)
                             {
                                 MaxHitPoints -= wear;
 
@@ -772,17 +866,12 @@ namespace Server.Items
 
         public int ComputeStatBonus(StatType type)
         {
-            if (type == StatType.Str)
+            return type switch
             {
-                return StrBonus + Attributes.BonusStr;
-            }
-
-            if (type == StatType.Dex)
-            {
-                return DexBonus + Attributes.BonusDex;
-            }
-
-            return IntBonus + Attributes.BonusInt;
+                StatType.Str => StrBonus + Attributes.BonusStr,
+                StatType.Dex => DexBonus + Attributes.BonusDex,
+                _            => IntBonus + Attributes.BonusInt
+            };
         }
 
         public void DistributeBonuses(int amount)
@@ -792,19 +881,19 @@ namespace Server.Items
                 switch (Utility.Random(5))
                 {
                     case 0:
-                        ++m_PhysicalBonus;
+                        ++PhysicalBonus;
                         break;
                     case 1:
-                        ++m_FireBonus;
+                        ++FireBonus;
                         break;
                     case 2:
-                        ++m_ColdBonus;
+                        ++ColdBonus;
                         break;
                     case 3:
-                        ++m_PoisonBonus;
+                        ++PoisonBonus;
                         break;
                     case 4:
-                        ++m_EnergyBonus;
+                        ++EnergyBonus;
                         break;
                 }
             }
@@ -814,7 +903,7 @@ namespace Server.Items
 
         public CraftAttributeInfo GetResourceAttrs()
         {
-            var info = CraftResources.GetInfo(m_Resource);
+            var info = CraftResources.GetInfo(_resource);
 
             if (info == null)
             {
@@ -826,7 +915,7 @@ namespace Server.Items
 
         public int GetProtOffset()
         {
-            return m_Protection switch
+            return _protection switch
             {
                 ArmorProtectionLevel.Guarding        => 1,
                 ArmorProtectionLevel.Hardening       => 2,
@@ -840,12 +929,12 @@ namespace Server.Items
         {
             var bonus = 0;
 
-            if (m_Quality == ArmorQuality.Exceptional)
+            if (_quality == ArmorQuality.Exceptional)
             {
                 bonus += 20;
             }
 
-            switch (m_Durability)
+            switch (_durability)
             {
                 case ArmorDurabilityLevel.Durable:
                     bonus += 20;
@@ -868,7 +957,7 @@ namespace Server.Items
             {
                 bonus += ArmorAttributes.DurabilityBonus;
 
-                var resInfo = CraftResources.GetInfo(m_Resource);
+                var resInfo = CraftResources.GetInfo(_resource);
                 CraftAttributeInfo attrInfo = null;
 
                 if (resInfo != null)
@@ -950,7 +1039,7 @@ namespace Server.Items
 
             var v = ArmorAttributes.LowerStatReq;
 
-            var info = CraftResources.GetInfo(m_Resource);
+            var info = CraftResources.GetInfo(_resource);
 
             var attrInfo = info?.AttributeInfo;
 
@@ -984,9 +1073,9 @@ namespace Server.Items
         {
             var scale = 100;
 
-            if (m_MaxHitPoints > 0 && m_HitPoints < m_MaxHitPoints)
+            if (_maxHitPoints > 0 && _hitPoints < _maxHitPoints)
             {
-                scale = 50 + 50 * m_HitPoints / m_MaxHitPoints;
+                scale = 50 + 50 * _hitPoints / _maxHitPoints;
             }
 
             return armor * scale / 100;
@@ -997,525 +1086,21 @@ namespace Server.Items
             (Parent as Mobile)?.Delta(MobileDelta.Armor); // Tell them armor rating has changed
         }
 
-        private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
+        private static bool GetSaveFlag(OldSaveFlag flags, OldSaveFlag toGet) => (flags & toGet) != 0;
+
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            if (setIf)
-            {
-                flags |= toSet;
-            }
-        }
-
-        private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(7); // version
-
-            var flags = SaveFlag.None;
-
-            SetSaveFlag(ref flags, SaveFlag.Attributes, !Attributes.IsEmpty);
-            SetSaveFlag(ref flags, SaveFlag.ArmorAttributes, !ArmorAttributes.IsEmpty);
-            SetSaveFlag(ref flags, SaveFlag.PhysicalBonus, m_PhysicalBonus != 0);
-            SetSaveFlag(ref flags, SaveFlag.FireBonus, m_FireBonus != 0);
-            SetSaveFlag(ref flags, SaveFlag.ColdBonus, m_ColdBonus != 0);
-            SetSaveFlag(ref flags, SaveFlag.PoisonBonus, m_PoisonBonus != 0);
-            SetSaveFlag(ref flags, SaveFlag.EnergyBonus, m_EnergyBonus != 0);
-            SetSaveFlag(ref flags, SaveFlag.Identified, m_Identified);
-            SetSaveFlag(ref flags, SaveFlag.MaxHitPoints, m_MaxHitPoints != 0);
-            SetSaveFlag(ref flags, SaveFlag.HitPoints, m_HitPoints != 0);
-            SetSaveFlag(ref flags, SaveFlag.Crafter, m_Crafter != null);
-            SetSaveFlag(ref flags, SaveFlag.Quality, m_Quality != ArmorQuality.Regular);
-            SetSaveFlag(ref flags, SaveFlag.Durability, m_Durability != ArmorDurabilityLevel.Regular);
-            SetSaveFlag(ref flags, SaveFlag.Protection, m_Protection != ArmorProtectionLevel.Regular);
-            SetSaveFlag(ref flags, SaveFlag.Resource, m_Resource != DefaultResource);
-            SetSaveFlag(ref flags, SaveFlag.BaseArmor, m_ArmorBase != -1);
-            SetSaveFlag(ref flags, SaveFlag.StrBonus, m_StrBonus != -1);
-            SetSaveFlag(ref flags, SaveFlag.DexBonus, m_DexBonus != -1);
-            SetSaveFlag(ref flags, SaveFlag.IntBonus, m_IntBonus != -1);
-            SetSaveFlag(ref flags, SaveFlag.StrReq, m_StrReq != -1);
-            SetSaveFlag(ref flags, SaveFlag.DexReq, m_DexReq != -1);
-            SetSaveFlag(ref flags, SaveFlag.IntReq, m_IntReq != -1);
-            SetSaveFlag(ref flags, SaveFlag.MedAllowance, m_Meditate != (AMA)(-1));
-            SetSaveFlag(ref flags, SaveFlag.SkillBonuses, !SkillBonuses.IsEmpty);
-            SetSaveFlag(ref flags, SaveFlag.PlayerConstructed, PlayerConstructed);
-
-            writer.WriteEncodedInt((int)flags);
-
-            if (GetSaveFlag(flags, SaveFlag.Attributes))
-            {
-                Attributes.Serialize(writer);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.ArmorAttributes))
-            {
-                ArmorAttributes.Serialize(writer);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.PhysicalBonus))
-            {
-                writer.WriteEncodedInt(m_PhysicalBonus);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.FireBonus))
-            {
-                writer.WriteEncodedInt(m_FireBonus);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.ColdBonus))
-            {
-                writer.WriteEncodedInt(m_ColdBonus);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.PoisonBonus))
-            {
-                writer.WriteEncodedInt(m_PoisonBonus);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.EnergyBonus))
-            {
-                writer.WriteEncodedInt(m_EnergyBonus);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.MaxHitPoints))
-            {
-                writer.WriteEncodedInt(m_MaxHitPoints);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.HitPoints))
-            {
-                writer.WriteEncodedInt(m_HitPoints);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.Crafter))
-            {
-                writer.Write(m_Crafter);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.Quality))
-            {
-                writer.WriteEncodedInt((int)m_Quality);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.Durability))
-            {
-                writer.WriteEncodedInt((int)m_Durability);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.Protection))
-            {
-                writer.WriteEncodedInt((int)m_Protection);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.Resource))
-            {
-                writer.WriteEncodedInt((int)m_Resource);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.BaseArmor))
-            {
-                writer.WriteEncodedInt(m_ArmorBase);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.StrBonus))
-            {
-                writer.WriteEncodedInt(m_StrBonus);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.DexBonus))
-            {
-                writer.WriteEncodedInt(m_DexBonus);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.IntBonus))
-            {
-                writer.WriteEncodedInt(m_IntBonus);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.StrReq))
-            {
-                writer.WriteEncodedInt(m_StrReq);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.DexReq))
-            {
-                writer.WriteEncodedInt(m_DexReq);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.IntReq))
-            {
-                writer.WriteEncodedInt(m_IntReq);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.MedAllowance))
-            {
-                writer.WriteEncodedInt((int)m_Meditate);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
-            {
-                SkillBonuses.Serialize(writer);
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 7:
-                case 6:
-                case 5:
-                    {
-                        var flags = (SaveFlag)reader.ReadEncodedInt();
-
-                        if (GetSaveFlag(flags, SaveFlag.Attributes))
-                        {
-                            Attributes = new AosAttributes(this, reader);
-                        }
-                        else
-                        {
-                            Attributes = new AosAttributes(this);
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.ArmorAttributes))
-                        {
-                            ArmorAttributes = new AosArmorAttributes(this, reader);
-                        }
-                        else
-                        {
-                            ArmorAttributes = new AosArmorAttributes(this);
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.PhysicalBonus))
-                        {
-                            m_PhysicalBonus = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.FireBonus))
-                        {
-                            m_FireBonus = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.ColdBonus))
-                        {
-                            m_ColdBonus = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.PoisonBonus))
-                        {
-                            m_PoisonBonus = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.EnergyBonus))
-                        {
-                            m_EnergyBonus = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.Identified))
-                        {
-                            m_Identified = version >= 7 || reader.ReadBool();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.MaxHitPoints))
-                        {
-                            m_MaxHitPoints = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.HitPoints))
-                        {
-                            m_HitPoints = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.Crafter))
-                        {
-                            m_Crafter = reader.ReadEntity<Mobile>();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.Quality))
-                        {
-                            m_Quality = (ArmorQuality)reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_Quality = ArmorQuality.Regular;
-                        }
-
-                        if (version == 5 && m_Quality == ArmorQuality.Low)
-                        {
-                            m_Quality = ArmorQuality.Regular;
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.Durability))
-                        {
-                            m_Durability = (ArmorDurabilityLevel)reader.ReadEncodedInt();
-
-                            if (m_Durability > ArmorDurabilityLevel.Indestructible)
-                            {
-                                m_Durability = ArmorDurabilityLevel.Durable;
-                            }
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.Protection))
-                        {
-                            m_Protection = (ArmorProtectionLevel)reader.ReadEncodedInt();
-
-                            if (m_Protection > ArmorProtectionLevel.Invulnerability)
-                            {
-                                m_Protection = ArmorProtectionLevel.Defense;
-                            }
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.Resource))
-                        {
-                            m_Resource = (CraftResource)reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_Resource = DefaultResource;
-                        }
-
-                        if (m_Resource == CraftResource.None)
-                        {
-                            m_Resource = DefaultResource;
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.BaseArmor))
-                        {
-                            m_ArmorBase = reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_ArmorBase = -1;
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.StrBonus))
-                        {
-                            m_StrBonus = reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_StrBonus = -1;
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.DexBonus))
-                        {
-                            m_DexBonus = reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_DexBonus = -1;
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.IntBonus))
-                        {
-                            m_IntBonus = reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_IntBonus = -1;
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.StrReq))
-                        {
-                            m_StrReq = reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_StrReq = -1;
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.DexReq))
-                        {
-                            m_DexReq = reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_DexReq = -1;
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.IntReq))
-                        {
-                            m_IntReq = reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_IntReq = -1;
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.MedAllowance))
-                        {
-                            m_Meditate = (AMA)reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_Meditate = (AMA)(-1);
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
-                        {
-                            SkillBonuses = new AosSkillBonuses(this, reader);
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.PlayerConstructed))
-                        {
-                            PlayerConstructed = true;
-                        }
-
-                        break;
-                    }
-                case 4:
-                    {
-                        Attributes = new AosAttributes(this, reader);
-                        ArmorAttributes = new AosArmorAttributes(this, reader);
-                        goto case 3;
-                    }
-                case 3:
-                    {
-                        m_PhysicalBonus = reader.ReadInt();
-                        m_FireBonus = reader.ReadInt();
-                        m_ColdBonus = reader.ReadInt();
-                        m_PoisonBonus = reader.ReadInt();
-                        m_EnergyBonus = reader.ReadInt();
-                        goto case 2;
-                    }
-                case 2:
-                case 1:
-                    {
-                        m_Identified = reader.ReadBool();
-                        goto case 0;
-                    }
-                case 0:
-                    {
-                        m_ArmorBase = reader.ReadInt();
-                        m_MaxHitPoints = reader.ReadInt();
-                        m_HitPoints = reader.ReadInt();
-                        m_Crafter = reader.ReadEntity<Mobile>();
-                        m_Quality = (ArmorQuality)reader.ReadInt();
-                        m_Durability = (ArmorDurabilityLevel)reader.ReadInt();
-                        m_Protection = (ArmorProtectionLevel)reader.ReadInt();
-
-                        var mat = (AMT)reader.ReadInt();
-
-                        if (m_ArmorBase == RevertArmorBase)
-                        {
-                            m_ArmorBase = -1;
-                        }
-
-                        /*m_BodyPos = (ArmorBodyType)*/
-                        reader.ReadInt();
-
-                        if (version < 4)
-                        {
-                            Attributes = new AosAttributes(this);
-                            ArmorAttributes = new AosArmorAttributes(this);
-                        }
-
-                        if (version < 3 && m_Quality == ArmorQuality.Exceptional)
-                        {
-                            DistributeBonuses(6);
-                        }
-
-                        if (version >= 2)
-                        {
-                            m_Resource = (CraftResource)reader.ReadInt();
-                        }
-                        else
-                        {
-                            var info = reader.ReadInt() switch
-                            {
-                                0 => OreInfo.Iron,
-                                1 => OreInfo.DullCopper,
-                                2 => OreInfo.ShadowIron,
-                                3 => OreInfo.Copper,
-                                4 => OreInfo.Bronze,
-                                5 => OreInfo.Gold,
-                                6 => OreInfo.Agapite,
-                                7 => OreInfo.Verite,
-                                8 => OreInfo.Valorite,
-                                _ => OreInfo.Iron
-                            };
-
-                            m_Resource = CraftResources.GetFromOreInfo(info, mat);
-                        }
-
-                        m_StrBonus = reader.ReadInt();
-                        m_DexBonus = reader.ReadInt();
-                        m_IntBonus = reader.ReadInt();
-                        m_StrReq = reader.ReadInt();
-                        m_DexReq = reader.ReadInt();
-                        m_IntReq = reader.ReadInt();
-
-                        if (m_StrBonus == OldStrBonus)
-                        {
-                            m_StrBonus = -1;
-                        }
-
-                        if (m_DexBonus == OldDexBonus)
-                        {
-                            m_DexBonus = -1;
-                        }
-
-                        if (m_IntBonus == OldIntBonus)
-                        {
-                            m_IntBonus = -1;
-                        }
-
-                        if (m_StrReq == OldStrReq)
-                        {
-                            m_StrReq = -1;
-                        }
-
-                        if (m_DexReq == OldDexReq)
-                        {
-                            m_DexReq = -1;
-                        }
-
-                        if (m_IntReq == OldIntReq)
-                        {
-                            m_IntReq = -1;
-                        }
-
-                        m_Meditate = (AMA)reader.ReadInt();
-
-                        if (m_Meditate == OldMedAllowance)
-                        {
-                            m_Meditate = (AMA)(-1);
-                        }
-
-                        if (m_Resource == CraftResource.None)
-                        {
-                            m_Resource = mat switch
-                            {
-                                ArmorMaterialType.Studded => CraftResource.RegularLeather,
-                                ArmorMaterialType.Leather => CraftResource.RegularLeather,
-                                ArmorMaterialType.Spined  => CraftResource.SpinedLeather,
-                                ArmorMaterialType.Horned  => CraftResource.HornedLeather,
-                                ArmorMaterialType.Barbed  => CraftResource.BarbedLeather,
-                                _                         => CraftResource.Iron
-                            };
-                        }
-
-                        if (m_MaxHitPoints == 0 && m_HitPoints == 0)
-                        {
-                            m_HitPoints = m_MaxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
-                        }
-
-                        break;
-                    }
-            }
-
-            SkillBonuses ??= new AosSkillBonuses(this);
-
             var m = Parent as Mobile;
 
             if (Core.AOS && m != null)
             {
                 SkillBonuses.AddTo(m);
+            }
+
+            if (_resource == CraftResource.None)
+            {
+                _resource = DefaultResource;
             }
 
             var strBonus = ComputeStatBonus(StatType.Str);
@@ -1543,10 +1128,140 @@ namespace Server.Items
             }
 
             m?.CheckStatTimers();
+        }
 
-            if (version < 7)
+        private void Deserialize(IGenericReader reader, int version)
+        {
+            var flags = (OldSaveFlag)reader.ReadEncodedInt();
+
+            if (GetSaveFlag(flags, OldSaveFlag.Attributes))
             {
-                PlayerConstructed = true; // we don't know, so, assume it's crafted
+                Attributes = new AosAttributes(this);
+                Attributes.Deserialize(reader);
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.ArmorAttributes))
+            {
+                ArmorAttributes = new AosArmorAttributes(this);
+                ArmorAttributes.Deserialize(reader);
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.PhysicalBonus))
+            {
+                _physicalBonus = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.FireBonus))
+            {
+                _fireBonus = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.ColdBonus))
+            {
+                _coldBonus = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.PoisonBonus))
+            {
+                _poisonBonus = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.EnergyBonus))
+            {
+                _energyBonus = reader.ReadEncodedInt();
+            }
+
+            _identified = GetSaveFlag(flags, OldSaveFlag.Identified);
+
+            if (GetSaveFlag(flags, OldSaveFlag.MaxHitPoints))
+            {
+                _maxHitPoints = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.HitPoints))
+            {
+                _hitPoints = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.Crafter))
+            {
+                _crafter = reader.ReadEntity<Mobile>();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.Quality))
+            {
+                _quality = (ArmorQuality)reader.ReadEncodedInt();
+            }
+            else
+            {
+                _quality = ArmorQuality.Regular;
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.Durability))
+            {
+                _durability = (ArmorDurabilityLevel)reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.Protection))
+            {
+                _protection = (ArmorProtectionLevel)reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.Resource))
+            {
+                _resource = (CraftResource)reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.BaseArmor))
+            {
+                _armorBase = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.StrBonus))
+            {
+                _strBonus = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.DexBonus))
+            {
+                _dexBonus = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.IntBonus))
+            {
+                _intBonus = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.StrReq))
+            {
+                _strReq = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.DexReq))
+            {
+                _dexReq = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.IntReq))
+            {
+                _intReq = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.MedAllowance))
+            {
+                _meditate = (AMA)reader.ReadEncodedInt();
+            }
+
+            SkillBonuses = new AosSkillBonuses(this);
+
+            if (GetSaveFlag(flags, OldSaveFlag.SkillBonuses))
+            {
+                SkillBonuses.Deserialize(reader);
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.PlayerConstructed))
+            {
+                PlayerConstructed = true;
             }
         }
 
@@ -1709,7 +1424,7 @@ namespace Server.Items
 
         public override void AddNameProperty(ObjectPropertyList list)
         {
-            var oreType = m_Resource switch
+            var oreType = _resource switch
             {
                 CraftResource.DullCopper    => 1053108,
                 CraftResource.ShadowIron    => 1053107,
@@ -1731,7 +1446,7 @@ namespace Server.Items
                 _                           => 0
             };
 
-            if (m_Quality == ArmorQuality.Exceptional)
+            if (_quality == ArmorQuality.Exceptional)
             {
                 if (oreType != 0)
                 {
@@ -1769,27 +1484,15 @@ namespace Server.Items
             return Attributes.SpellChanneling != 0;
         }
 
-        public virtual int GetLuckBonus()
-        {
-            var resInfo = CraftResources.GetInfo(m_Resource);
-
-            var attrInfo = resInfo?.AttributeInfo;
-
-            if (attrInfo == null)
-            {
-                return 0;
-            }
-
-            return attrInfo.ArmorLuck;
-        }
+        public virtual int GetLuckBonus() => CraftResources.GetInfo(_resource)?.AttributeInfo?.ArmorLuck ?? 0;
 
         public override void GetProperties(ObjectPropertyList list)
         {
             base.GetProperties(list);
 
-            if (m_Crafter != null)
+            if (_crafter != null)
             {
-                list.Add(1050043, m_Crafter.Name); // crafted by ~1_NAME~
+                list.Add(1050043, _crafter.Name); // crafted by ~1_NAME~
             }
 
             if (m_FactionState != null)
@@ -1963,9 +1666,9 @@ namespace Server.Items
                 list.Add(1061170, prop.ToString()); // strength requirement ~1_val~
             }
 
-            if (m_HitPoints >= 0 && m_MaxHitPoints > 0)
+            if (_hitPoints >= 0 && _maxHitPoints > 0)
             {
-                list.Add(1060639, "{0}\t{1}", m_HitPoints, m_MaxHitPoints); // durability ~1_val~ / ~2_val~
+                list.Add(1060639, "{0}\t{1}", _hitPoints, _maxHitPoints); // durability ~1_val~ / ~2_val~
             }
         }
 
@@ -1990,25 +1693,25 @@ namespace Server.Items
                 attrs.Add(new EquipInfoAttribute(1041350)); // faction item
             }
 
-            if (m_Quality == ArmorQuality.Exceptional)
+            if (_quality == ArmorQuality.Exceptional)
             {
-                attrs.Add(new EquipInfoAttribute(1018305 - (int)m_Quality));
+                attrs.Add(new EquipInfoAttribute(1018305 - (int)_quality));
             }
 
-            if (m_Identified || from.AccessLevel >= AccessLevel.GameMaster)
+            if (_identified || from.AccessLevel >= AccessLevel.GameMaster)
             {
-                if (m_Durability != ArmorDurabilityLevel.Regular)
+                if (_durability != ArmorDurabilityLevel.Regular)
                 {
-                    attrs.Add(new EquipInfoAttribute(1038000 + (int)m_Durability));
+                    attrs.Add(new EquipInfoAttribute(1038000 + (int)_durability));
                 }
 
-                if (m_Protection > ArmorProtectionLevel.Regular && m_Protection <= ArmorProtectionLevel.Invulnerability)
+                if (_protection > ArmorProtectionLevel.Regular && _protection <= ArmorProtectionLevel.Invulnerability)
                 {
-                    attrs.Add(new EquipInfoAttribute(1038005 + (int)m_Protection));
+                    attrs.Add(new EquipInfoAttribute(1038005 + (int)_protection));
                 }
             }
-            else if (m_Durability != ArmorDurabilityLevel.Regular || m_Protection > ArmorProtectionLevel.Regular &&
-                m_Protection <= ArmorProtectionLevel.Invulnerability)
+            else if (_durability != ArmorDurabilityLevel.Regular || _protection > ArmorProtectionLevel.Regular &&
+                _protection <= ArmorProtectionLevel.Invulnerability)
             {
                 attrs.Add(new EquipInfoAttribute(1038000)); // Unidentified
             }
@@ -2030,11 +1733,11 @@ namespace Server.Items
                 return;
             }
 
-            from.NetState.SendDisplayEquipmentInfo(Serial, number, m_Crafter?.RawName, false, attrs);
+            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter?.RawName, false, attrs);
         }
 
         [Flags]
-        private enum SaveFlag
+        private enum OldSaveFlag
         {
             None = 0x00000000,
             Attributes = 0x00000001,

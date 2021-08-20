@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "type": "Server.Items.Head",
+  "properties": [
+    {
+      "name": "PlayerName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "HeadType",
+      "type": "Server.Items.HeadType",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.ForgeComponent",
-  "properties": []
+  "type": "Server.Items.ForgeComponent"
 }

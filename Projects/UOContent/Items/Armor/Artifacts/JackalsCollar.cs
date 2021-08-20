@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class JackalsCollar : PlateGorget
+    [Serializable(0, false)]
+    public partial class JackalsCollar : PlateGorget
     {
         [Constructible]
         public JackalsCollar()
@@ -8,10 +9,6 @@ namespace Server.Items
             Hue = 0x6D1;
             Attributes.BonusDex = 15;
             Attributes.RegenHits = 2;
-        }
-
-        public JackalsCollar(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1061594; // Jackal's Collar
@@ -22,30 +19,5 @@ namespace Server.Items
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1)
-            {
-                if (Hue == 0x54B)
-                {
-                    Hue = 0x6D1;
-                }
-
-                FireBonus = 0;
-                ColdBonus = 0;
-            }
-        }
     }
 }

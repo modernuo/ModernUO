@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class NorseHelm : BaseArmor
+    [Serializable(0, false)]
+    public partial class NorseHelm : BaseArmor
     {
         [Constructible]
         public NorseHelm() : base(0x140E) => Weight = 5.0;
-
-        public NorseHelm(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 4;
         public override int BaseFireResistance => 1;
@@ -24,22 +21,5 @@ namespace Server.Items
         public override int ArmorBase => 30;
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Plate;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (Weight == 1.0)
-            {
-                Weight = 5.0;
-            }
-        }
     }
 }

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "type": "Server.Items.Log",
+  "properties": [
+    {
+      "name": "Resource",
+      "type": "Server.Items.CraftResource",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

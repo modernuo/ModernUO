@@ -130,10 +130,7 @@ namespace Server.Items
                         null
                     ); // * You rip the organ out of the plague beast's flesh *
 
-                    if (Organ.Components.Contains(this))
-                    {
-                        Organ.Components.Remove(this);
-                    }
+                    Organ.Remove(Organ.Components, this);
 
                     Organ = null;
                     from.PlaySound(0x1CA);

@@ -55,5 +55,11 @@ namespace SerializationGenerator
                 "private protected"  => Accessibility.ProtectedAndInternal,
                 _                    => Accessibility.NotApplicable
             };
+
+        public static bool CanBeConstructedFrom(this ITypeSymbol? symbol, ISymbol classSymbol) =>
+            symbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.ConstructedFrom.Equals(
+                classSymbol,
+                SymbolEqualityComparer.Default
+            ) || symbol != null && CanBeConstructedFrom(symbol.BaseType, classSymbol);
     }
 }

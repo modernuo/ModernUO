@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.ArcaneBookshelfSouthAddon",
-  "properties": []
+  "type": "Server.Items.ArcaneBookshelfSouthAddon"
 }
