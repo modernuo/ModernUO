@@ -347,7 +347,7 @@ namespace Server.Network
             {
                 var m = World.FindMobile(s);
 
-                if (m != null && from.CanSee(m) && Utility.InUpdateRange(from, m))
+                if (m != null && from.CanSee(m) && Utility.InUpdateRange(from.Location, m.Location))
                 {
                     m.SendPropertiesTo(from);
                 }

@@ -234,7 +234,7 @@ namespace Server.Items
             }
             else
             {
-                Timer.DelayCall(m_Delay, DoTeleport, m);
+                Timer.StartTimer(m_Delay, () => DoTeleport(m));
             }
         }
 
@@ -454,7 +454,7 @@ namespace Server.Items
                         );
                     }
 
-                    Timer.DelayCall(TimeSpan.FromSeconds(5.0), m.EndAction, this);
+                    Timer.StartTimer(TimeSpan.FromSeconds(5.0), () => m.EndAction(this));
                 }
 
                 return false;
@@ -671,7 +671,7 @@ namespace Server.Items
 
     public class WaitTeleporter : KeywordTeleporter
     {
-        private static Dictionary<Mobile, TeleportingInfo> m_Table;
+        private static Dictionary<Mobile, TeleportingInfo> m_Table = new Dictionary<Mobile, TeleportingInfo>();
 
         [Constructible]
         public WaitTeleporter()
@@ -700,8 +700,6 @@ namespace Server.Items
 
         public static void Initialize()
         {
-            m_Table = new Dictionary<Mobile, TeleportingInfo>();
-
             EventSink.Logout += EventSink_Logout;
         }
 
@@ -709,7 +707,7 @@ namespace Server.Items
         {
             if (from != null && m_Table.Remove(from, out var info))
             {
-                info.Timer.Stop();
+                info.TimerToken.Cancel();
             }
         }
 
@@ -731,11 +729,6 @@ namespace Server.Items
             return $"{s} second{(s == 1 ? "" : "s")}";
         }
 
-        private void EndLock(Mobile m)
-        {
-            m.EndAction(this);
-        }
-
         public override void StartTeleport(Mobile m)
         {
             if (m_Table.TryGetValue(m, out var info))
@@ -755,16 +748,16 @@ namespace Server.Items
 
                         if (ShowTimeRemaining)
                         {
-                            m.SendMessage("Time remaining: {0}", FormatTime(info.Timer.Next - Core.Now));
+                            m.SendMessage("Time remaining: {0}", FormatTime(info.TimerToken.Next - Core.Now));
                         }
 
-                        Timer.DelayCall(TimeSpan.FromSeconds(5), EndLock, m);
+                        Timer.StartTimer(TimeSpan.FromSeconds(5), () => m.EndAction(this));
                     }
 
                     return;
                 }
 
-                info.Timer.Stop();
+                info.TimerToken.Cancel();
             }
 
             if (StartMessage != null)
@@ -782,7 +775,8 @@ namespace Server.Items
             }
             else
             {
-                m_Table[m] = new TeleportingInfo(this, Timer.DelayCall(Delay, DoTeleport, m));
+                Timer.StartTimer(Delay, () => DoTeleport(m), out var timerToken);
+                m_Table[m] = new TeleportingInfo(this, timerToken);
             }
         }
 
@@ -821,21 +815,21 @@ namespace Server.Items
 
         private class TeleportingInfo
         {
-            public TeleportingInfo(WaitTeleporter tele, Timer t)
+            public TeleportingInfo(WaitTeleporter tele, TimerExecutionToken token)
             {
                 Teleporter = tele;
-                Timer = t;
+                TimerToken = token;
             }
 
             public WaitTeleporter Teleporter { get; }
 
-            public Timer Timer { get; }
+            public TimerExecutionToken TimerToken { get; }
         }
     }
 
     public class TimeoutTeleporter : Teleporter
     {
-        private Dictionary<Mobile, Timer> m_Teleporting;
+        private Dictionary<Mobile, TimerExecutionToken> m_Teleporting;
 
         [Constructible]
         public TimeoutTeleporter() : this(new Point3D(0, 0, 0))
@@ -845,7 +839,7 @@ namespace Server.Items
         [Constructible]
         public TimeoutTeleporter(Point3D pointDest, Map mapDest = null, bool creatures = false)
             : base(pointDest, mapDest, creatures) =>
-            m_Teleporting = new Dictionary<Mobile, Timer>();
+            m_Teleporting = new Dictionary<Mobile, TimerExecutionToken>();
 
         public TimeoutTeleporter(Serial serial)
             : base(serial)
@@ -862,19 +856,16 @@ namespace Server.Items
 
         private void StartTimer(Mobile m, TimeSpan delay)
         {
-            if (m_Teleporting.TryGetValue(m, out var t))
-            {
-                t.Stop();
-            }
-
-            m_Teleporting[m] = Timer.DelayCall(delay, StartTeleport, m);
+            StopTimer(m);
+            Timer.StartTimer(delay, () => StartTeleport(m), out var timerToken);
+            m_Teleporting[m] = timerToken;
         }
 
         public void StopTimer(Mobile m)
         {
             if (m_Teleporting.Remove(m, out var t))
             {
-                t.Stop();
+                t.Cancel();
             }
         }
 
@@ -923,7 +914,7 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             TimeoutDelay = reader.ReadTimeSpan();
-            m_Teleporting = new Dictionary<Mobile, Timer>();
+            m_Teleporting = new Dictionary<Mobile, TimerExecutionToken>();
 
             var count = reader.ReadInt();
 

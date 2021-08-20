@@ -1,15 +1,11 @@
 namespace Server.Items
 {
-    // Is this a filler-type item? the clilocs don't match up and at a glacnce I can't find direct reference of it
+    [Serializable(0)]
     [Flippable(0x2B6D, 0x3164)]
-    public class FemaleElvenPlateChest : BaseArmor
+    public partial class FemaleElvenPlateChest : BaseArmor
     {
         [Constructible]
         public FemaleElvenPlateChest() : base(0x2B6D) => Weight = 8.0;
-
-        public FemaleElvenPlateChest(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;
@@ -28,19 +24,5 @@ namespace Server.Items
         public override int ArmorBase => 30;
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Plate;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

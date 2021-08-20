@@ -11,7 +11,7 @@ namespace Server.Items
     {
         private Mobile m_LitBy;
         private int m_Ticks;
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
         private List<Mobile> m_Users;
 
         [Constructible]
@@ -55,15 +55,15 @@ namespace Server.Items
                 return;
             }
 
-            if (m_Timer == null)
+            if (_timerToken.Running)
             {
-                m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), OnFirebombTimerTick);
-                m_LitBy = from;
-                from.SendLocalizedMessage(1060582); // You light the firebomb.  Throw it now!
+                from.SendLocalizedMessage(1060581); // You've already lit it!  Better throw it now!
             }
             else
             {
-                from.SendLocalizedMessage(1060581); // You've already lit it!  Better throw it now!
+                Timer.StartTimer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), OnFirebombTimerTick, out _timerToken);
+                m_LitBy = from;
+                from.SendLocalizedMessage(1060582); // You light the firebomb.  Throw it now!
             }
 
             m_Users ??= new List<Mobile>();
@@ -80,7 +80,7 @@ namespace Server.Items
         {
             if (Deleted)
             {
-                m_Timer.Stop();
+                _timerToken.Cancel();
                 return;
             }
 
@@ -158,7 +158,7 @@ namespace Server.Items
                             new FirebombField(m_LitBy, toDamage).MoveToWorld(Location, Map);
                         }
 
-                        m_Timer.Stop();
+                        _timerToken.Cancel();
                         Delete();
                         break;
                     }
@@ -172,31 +172,33 @@ namespace Server.Items
                 return;
             }
 
-            if (!(obj is IPoint3D p))
+            if (obj is not IPoint3D p)
             {
                 return;
             }
 
             SpellHelper.GetSurfaceTop(ref p);
+            var loc = new Point3D(p);
+            var map = Map;
 
             from.RevealingAction();
 
-            var to = p as IEntity ?? new Entity(Serial.Zero, new Point3D(p), Map);
+            var to = p as IEntity ?? new Entity(Serial.Zero, loc, map);
 
             Effects.SendMovingEffect(from, to, ItemID, 7, 0, false, false, Hue);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), FirebombReposition_OnTick, p, Map);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0),
+                () =>
+                {
+                    if (Deleted)
+                    {
+                        return;
+                    }
+
+                    MoveToWorld(loc, map);
+                }
+            );
             Internalize();
-        }
-
-        private void FirebombReposition_OnTick(IPoint3D p, Map map)
-        {
-            if (Deleted)
-            {
-                return;
-            }
-
-            MoveToWorld(new Point3D(p), map);
         }
 
         private class ThrowTarget : Target
@@ -219,7 +221,7 @@ namespace Server.Items
         private readonly List<Mobile> m_Burning;
         private readonly DateTime m_Expire;
         private readonly Mobile m_LitBy;
-        private readonly Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         public FirebombField(Mobile litBy, List<Mobile> toDamage) : base(0x376A)
         {
@@ -227,7 +229,7 @@ namespace Server.Items
             m_LitBy = litBy;
             m_Expire = Core.Now + TimeSpan.FromSeconds(10);
             m_Burning = toDamage;
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnFirebombFieldTimerTick);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnFirebombFieldTimerTick, out _timerToken);
         }
 
         public FirebombField(Serial serial) : base(serial)
@@ -266,7 +268,7 @@ namespace Server.Items
         {
             if (Deleted)
             {
-                m_Timer.Stop();
+                _timerToken.Cancel();
                 return;
             }
 
@@ -297,7 +299,7 @@ namespace Server.Items
 
             if (Core.Now >= m_Expire)
             {
-                m_Timer.Stop();
+                _timerToken.Cancel();
                 Delete();
             }
         }

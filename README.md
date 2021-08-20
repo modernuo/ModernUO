@@ -26,6 +26,10 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 ## Building the server
 #### Requirements
 - [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
+- [Visual Studio 2019/2022 (v16.10 or higher)](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community) or [Rider 2021.2 or higher](https://www.jetbrains.com/rider/download)
+  - Older versions will show code errors.
+  - Build the solution in the IDE to make errors go away.
+  - Visual Studio must be restarted once after the first build as well.
 
 #### Publishing Builds
 - Using terminal or powershell: `./publish.cmd [release|debug (default: release)] [os]`
@@ -40,7 +44,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
     - If blank, the operating system running the build is used
 
 ## Deploying / Running Server
-- Follow the [publish](https://github.com/modernuo/ModernUO#publishing-a-build) instructions
+- Follow the [publish](https://github.com/modernuo/ModernUO#publishing-builds) instructions
 - Copy `Distribution` directory to the production server
 
 #### Requirements

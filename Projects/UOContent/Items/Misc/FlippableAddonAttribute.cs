@@ -120,7 +120,7 @@ namespace Server.Items
                     c.Delete();
                 }
 
-                addon.Components.Clear();
+                addon.Clear(addon.Components);
             }
             else if (item is BaseAddonContainer addonContainer)
             {
@@ -130,7 +130,7 @@ namespace Server.Items
                     c.Delete();
                 }
 
-                addonContainer.Components.Clear();
+                addonContainer.Clear(addonContainer.Components);
             }
         }
     }

@@ -1039,40 +1039,32 @@ namespace Server.Items
                             m_Resource = DefaultResource;
                         }
 
+                        Attributes = new AosAttributes(this);
+
                         if (GetSaveFlag(flags, SaveFlag.Attributes))
                         {
-                            Attributes = new AosAttributes(this, reader);
+                            Attributes.Deserialize(reader);
                         }
-                        else
-                        {
-                            Attributes = new AosAttributes(this);
-                        }
+
+                        ClothingAttributes = new AosArmorAttributes(this);
 
                         if (GetSaveFlag(flags, SaveFlag.ClothingAttributes))
                         {
-                            ClothingAttributes = new AosArmorAttributes(this, reader);
+                            ClothingAttributes.Deserialize(reader);
                         }
-                        else
-                        {
-                            ClothingAttributes = new AosArmorAttributes(this);
-                        }
+
+                        SkillBonuses = new AosSkillBonuses(this);
 
                         if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
                         {
-                            SkillBonuses = new AosSkillBonuses(this, reader);
+                            SkillBonuses.Deserialize(reader);
                         }
-                        else
-                        {
-                            SkillBonuses = new AosSkillBonuses(this);
-                        }
+
+                        Resistances = new AosElementAttributes(this);
 
                         if (GetSaveFlag(flags, SaveFlag.Resistances))
                         {
-                            Resistances = new AosElementAttributes(this, reader);
-                        }
-                        else
-                        {
-                            Resistances = new AosElementAttributes(this);
+                            Resistances.Deserialize(reader);
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.MaxHitPoints))
@@ -1123,10 +1115,17 @@ namespace Server.Items
                     }
                 case 3:
                     {
-                        Attributes = new AosAttributes(this, reader);
-                        ClothingAttributes = new AosArmorAttributes(this, reader);
-                        SkillBonuses = new AosSkillBonuses(this, reader);
-                        Resistances = new AosElementAttributes(this, reader);
+                        Attributes = new AosAttributes(this);
+                        Attributes.Deserialize(reader);
+
+                        ClothingAttributes = new AosArmorAttributes(this);
+                        ClothingAttributes.Deserialize(reader);
+
+                        SkillBonuses = new AosSkillBonuses(this);
+                        SkillBonuses.Deserialize(reader);
+
+                        Resistances = new AosElementAttributes(this);
+                        Resistances.Deserialize(reader);
 
                         goto case 2;
                     }

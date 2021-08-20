@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class TheTaskmaster : WarFork
+    [Serializable(0, false)]
+    public partial class TheTaskmaster : WarFork
     {
         [Constructible]
         public TheTaskmaster()
@@ -10,10 +11,6 @@ namespace Server.Items
             Attributes.BonusDex = 5;
             Attributes.AttackChance = 15;
             Attributes.WeaponDamage = 50;
-        }
-
-        public TheTaskmaster(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1061110; // The Taskmaster
@@ -29,20 +26,6 @@ namespace Server.Items
         {
             phys = fire = cold = nrgy = chaos = direct = 0;
             pois = 100;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

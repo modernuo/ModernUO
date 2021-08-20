@@ -4,7 +4,8 @@ using Server.Network;
 
 namespace Server.Items
 {
-    public class FishBowl : BaseContainer
+    [Serializable(0, false)]
+    public partial class FishBowl : BaseContainer
     {
         [Constructible]
         public FishBowl() : base(0x241C)
@@ -13,28 +14,13 @@ namespace Server.Items
             MaxItems = 1;
         }
 
-        public FishBowl(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1074499; // A fish bowl
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Empty => Items.Count == 0;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public BaseFish Fish
-        {
-            get
-            {
-                if (Empty)
-                {
-                    return null;
-                }
-
-                return Items[0] as BaseFish;
-            }
-        }
+        public BaseFish Fish => Empty ? null : Items[0] as BaseFish;
 
         public override double DefaultWeight => 2.0;
 
@@ -78,15 +64,7 @@ namespace Server.Items
             return false;
         }
 
-        public override bool CheckItemUse(Mobile from, Item item)
-        {
-            if (item != this)
-            {
-                return false;
-            }
-
-            return base.CheckItemUse(from, item);
-        }
+        public override bool CheckItemUse(Mobile from, Item item) => item == this && base.CheckItemUse(from, item);
 
         public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
         {
@@ -124,32 +102,11 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version == 0)
-            {
-                Weight = DefaultWeight;
-            }
-        }
-
         private class RemoveCreature : ContextMenuEntry
         {
             private readonly FishBowl m_Bowl;
 
-            public RemoveCreature(FishBowl bowl) : base(6242, 3) // Remove creature
-                =>
-                    m_Bowl = bowl;
+            public RemoveCreature(FishBowl bowl) : base(6242, 3) => m_Bowl = bowl;
 
             public override void OnClick()
             {

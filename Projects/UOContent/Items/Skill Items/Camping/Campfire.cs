@@ -20,7 +20,7 @@ namespace Server.Items
 
         private readonly List<CampfireEntry> m_Entries;
 
-        private readonly Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         public Campfire() : base(0xDE3)
         {
@@ -30,7 +30,7 @@ namespace Server.Items
             m_Entries = new List<CampfireEntry>();
 
             Created = Core.Now;
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnTick);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnTick, out _timerToken);
         }
 
         public Campfire(Serial serial) : base(serial)
@@ -161,7 +161,7 @@ namespace Server.Items
 
         public override void OnAfterDelete()
         {
-            m_Timer?.Stop();
+            _timerToken.Cancel();
 
             ClearEntries();
         }

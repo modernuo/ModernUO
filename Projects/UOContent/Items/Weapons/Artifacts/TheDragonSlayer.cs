@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class TheDragonSlayer : Lance
+    [Serializable(0, false)]
+    public partial class TheDragonSlayer : Lance
     {
         [Constructible]
         public TheDragonSlayer()
@@ -11,10 +12,6 @@ namespace Server.Items
             Attributes.WeaponDamage = 50;
             WeaponAttributes.ResistFireBonus = 20;
             WeaponAttributes.UseBestSkill = 1;
-        }
-
-        public TheDragonSlayer(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1061248; // The Dragon Slayer
@@ -30,25 +27,6 @@ namespace Server.Items
         {
             phys = fire = cold = pois = chaos = direct = 0;
             nrgy = 100;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Slayer == SlayerName.None)
-            {
-                Slayer = SlayerName.DragonSlaying;
-            }
         }
     }
 }

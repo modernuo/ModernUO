@@ -4,8 +4,9 @@ using Server.Targeting;
 
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x14F0, 0x14EF)]
-    public abstract class BaseAddonDeed : Item
+    public abstract partial class BaseAddonDeed : Item
     {
         private CraftResource m_Resource;
 
@@ -17,10 +18,6 @@ namespace Server.Items
             {
                 LootType = LootType.Newbied;
             }
-        }
-
-        public BaseAddonDeed(Serial serial) : base(serial)
-        {
         }
 
         public abstract BaseAddon Addon { get; }
@@ -38,25 +35,6 @@ namespace Server.Items
 
                     InvalidateProperties();
                 }
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Weight == 0.0)
-            {
-                Weight = 1.0;
             }
         }
 
@@ -93,7 +71,11 @@ namespace Server.Items
                     return;
                 }
 
-                if (m_Deed.IsChildOf(from.Backpack))
+                if (!m_Deed.IsChildOf(from.Backpack))
+                {
+                    from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+                }
+                else
                 {
                     var addon = m_Deed.Addon;
 
@@ -133,10 +115,6 @@ namespace Server.Items
                     {
                         addon.Delete();
                     }
-                }
-                else
-                {
-                    from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
                 }
             }
         }

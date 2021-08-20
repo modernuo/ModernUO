@@ -262,7 +262,7 @@ namespace Server.Engines.Craft
                                     toDelete = true;
 
                                     from.BeginAction<Golem>();
-                                    Timer.DelayCall(TimeSpan.FromSeconds(12.0), from.EndAction<Golem>);
+                                    Timer.StartTimer(TimeSpan.FromSeconds(12.0), from.EndAction<Golem>);
                                 }
                                 else
                                 {

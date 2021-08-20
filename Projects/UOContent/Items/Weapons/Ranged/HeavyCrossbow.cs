@@ -3,17 +3,14 @@ using System;
 namespace Server.Items
 {
     [Flippable(0x13FD, 0x13FC)]
-    public class HeavyCrossbow : BaseRanged
+    [Serializable(0, false)]
+    public partial class HeavyCrossbow : BaseRanged
     {
         [Constructible]
         public HeavyCrossbow() : base(0x13FD)
         {
             Weight = 9.0;
             Layer = Layer.TwoHanded;
-        }
-
-        public HeavyCrossbow(Serial serial) : base(serial)
-        {
         }
 
         public override int EffectID => 0x1BFE;
@@ -38,19 +35,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 100;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

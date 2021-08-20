@@ -5,13 +5,10 @@ using Server.Spells;
 
 namespace Server.Items
 {
-    public class SolenAntHoleComponent : AddonComponent
+    [Serializable(0)]
+    public partial class SolenAntHoleComponent : AddonComponent
     {
         public SolenAntHoleComponent(int itemID) : base(itemID)
-        {
-        }
-
-        public SolenAntHoleComponent(Serial serial) : base(serial)
         {
         }
 
@@ -37,30 +34,18 @@ namespace Server.Items
                 from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             }
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class SolenAntHole : BaseAddon
+    [Serializable(1)]
+    public partial class SolenAntHole : BaseAddon
     {
-        private List<Mobile> m_Spawned;
+        [SerializableField(0, getter: "private", setter: "private")]
+        private List<Mobile> _spawned;
 
         [Constructible]
         public SolenAntHole()
         {
-            m_Spawned = new List<Mobile>();
+            _spawned = new List<Mobile>();
 
             AddComponent(new AddonComponent(0x914), "dirt", 0, 0, 0, 0);
             AddComponent(new SolenAntHoleComponent(0x122A), "a hole", 0x1, 0, 0, 0);
@@ -72,10 +57,6 @@ namespace Server.Items
             AddComponent(new AddonComponent(0xEE2), "dirt", 0, -1, 0, 0);
             AddComponent(new AddonComponent(0x1B26), "dirt", 0x970, -1, 1, 0);
             AddComponent(new AddonComponent(0xED3), "dirt", 0, 0, 1, 0);
-        }
-
-        public SolenAntHole(Serial serial) : base(serial)
-        {
         }
 
         public override bool ShareHue => false;
@@ -142,7 +123,7 @@ namespace Server.Items
 
         public void SpawnAnt(BaseCreature ant)
         {
-            m_Spawned.Add(ant);
+            this.Add(_spawned, ant);
 
             var map = Map;
             var p = Location;
@@ -162,33 +143,20 @@ namespace Server.Items
 
         public bool SpawnKilled()
         {
-            for (var i = m_Spawned.Count - 1; i >= 0; i--)
+            for (var i = _spawned.Count - 1; i >= 0; i--)
             {
-                if (!m_Spawned[i].Alive || m_Spawned[i].Deleted)
+                if (!_spawned[i].Alive || _spawned[i].Deleted)
                 {
-                    m_Spawned.RemoveAt(i);
+                    this.RemoveAt(_spawned, i);
                 }
             }
 
-            return m_Spawned.Count < 2;
+            return _spawned.Count < 2;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(m_Spawned);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            m_Spawned = reader.ReadEntityList<Mobile>();
+            _spawned = reader.ReadEntityList<Mobile>();
         }
     }
 }

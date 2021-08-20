@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x13bf, 0x13c4)]
-    public class ChainChest : BaseArmor
+    public partial class ChainChest : BaseArmor
     {
         [Constructible]
         public ChainChest() : base(0x13BF) => Weight = 7.0;
-
-        public ChainChest(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 4;
         public override int BaseFireResistance => 4;
@@ -27,17 +24,5 @@ namespace Server.Items
         public override int ArmorBase => 28;
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Chainmail;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

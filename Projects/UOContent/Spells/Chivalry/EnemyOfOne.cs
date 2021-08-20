@@ -13,7 +13,7 @@ namespace Server.Spells.Chivalry
             9002
         );
 
-        private static readonly Dictionary<Mobile, Timer> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
         public EnemyOfOneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
         {
@@ -36,12 +36,13 @@ namespace Server.Spells.Chivalry
                 Caster.FixedParticles(0x375A, 1, 30, 9966, 33, 2, EffectLayer.Head);
                 Caster.FixedParticles(0x37B9, 1, 30, 9502, 43, 3, EffectLayer.Head);
 
-                m_Table.TryGetValue(Caster, out var timer);
-                timer?.Stop();
+                RemoveTimer(Caster);
 
                 var delay = Math.Clamp(ComputePowerValue(1) / 60.0, 1.5, 3.5);
 
-                m_Table[Caster] = Timer.DelayCall(TimeSpan.FromMinutes(delay), Expire_Callback, Caster);
+                Timer.StartTimer(TimeSpan.FromMinutes(delay), () => Expire_Callback(Caster), out var timerToken);
+
+                m_Table[Caster] = timerToken;
 
                 if (Caster is PlayerMobile mobile)
                 {
@@ -58,9 +59,17 @@ namespace Server.Spells.Chivalry
             FinishSequence();
         }
 
+        private static void RemoveTimer(Mobile m)
+        {
+            if (m_Table.Remove(m, out var timerToken))
+            {
+                timerToken.Cancel();
+            }
+        }
+
         private static void Expire_Callback(Mobile m)
         {
-            m_Table.Remove(m);
+            RemoveTimer(m);
 
             m.PlaySound(0x1F8);
 

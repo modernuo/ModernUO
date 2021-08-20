@@ -14,14 +14,16 @@
  *************************************************************************/
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Server.Collections
 {
     public static class CollectionHelpers
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void AddNotNull<T>(this ICollection<T> coll, T t) where T : class
         {
-            if (t != default)
+            if (t != null)
             {
                 coll.Add(t);
             }

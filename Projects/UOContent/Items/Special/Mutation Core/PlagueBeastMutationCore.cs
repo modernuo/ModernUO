@@ -41,19 +41,19 @@ namespace Server.Items
 
                 if (owner != null)
                 {
-                    Timer.DelayCall(TimeSpan.FromSeconds(1), KillParent, owner);
+                    Timer.StartTimer(TimeSpan.FromSeconds(1),
+                        () =>
+                        {
+                            owner.Unfreeze();
+                            owner.Kill();
+                        }
+                    );
                 }
 
                 return true;
             }
 
             return false;
-        }
-
-        private void KillParent(PlagueBeastLord parent)
-        {
-            parent.Unfreeze();
-            parent.Kill();
         }
 
         public override void Serialize(IGenericWriter writer)

@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class CaptainBlackheartsFishingPole : FishingPole
+    [Serializable(0, false)]
+    public partial class CaptainBlackheartsFishingPole : FishingPole
     {
         [Constructible]
         public CaptainBlackheartsFishingPole()
-        {
-        }
-
-        public CaptainBlackheartsFishingPole(Serial serial) : base(serial)
         {
         }
 
@@ -18,20 +15,6 @@ namespace Server.Items
             base.AddNameProperties(list);
 
             list.Add(1073634); // An aquarium decoration
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

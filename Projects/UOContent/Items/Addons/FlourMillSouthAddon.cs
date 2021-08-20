@@ -3,7 +3,8 @@ using Server.Network;
 
 namespace Server.Items
 {
-    public class FlourMillSouthAddon : BaseAddon, IFlourMill
+    [Serializable(0, false)]
+    public partial class FlourMillSouthAddon : BaseAddon, IFlourMill
     {
         private static readonly int[][] m_StageTable =
         {
@@ -12,8 +13,7 @@ namespace Server.Items
             new[] { 0x1930, 0x1930, 0x1934 }
         };
 
-        private int m_Flour;
-        private Timer m_Timer;
+        private int _flour;
 
         [Constructible]
         public FlourMillSouthAddon()
@@ -23,31 +23,28 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x1930), 0, 1, 0);
         }
 
-        public FlourMillSouthAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new FlourMillSouthDeed();
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool HasFlour => m_Flour > 0;
+        public bool HasFlour => _flour > 0;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsFull => m_Flour >= MaxFlour;
+        public bool IsFull => _flour >= MaxFlour;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsWorking => m_Timer != null;
+        public bool IsWorking { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int MaxFlour => 2;
 
+        [SerializableField(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int CurFlour
         {
-            get => m_Flour;
+            get => _flour;
             set
             {
-                m_Flour = Math.Max(0, Math.Min(value, MaxFlour));
+                _flour = Math.Max(0, Math.Min(value, MaxFlour));
                 UpdateStage();
             }
         }
@@ -59,17 +56,14 @@ namespace Server.Items
                 return;
             }
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), FinishWorking_Callback, from);
+            Timer.StartTimer(TimeSpan.FromSeconds(5.0), () => FinishWorking_Callback(from));
+            IsWorking = true;
             UpdateStage();
         }
 
         private void FinishWorking_Callback(Mobile from)
         {
-            if (m_Timer != null)
-            {
-                m_Timer.Stop();
-                m_Timer = null;
-            }
+            IsWorking = false;
 
             if (from?.Deleted == false && !Deleted && IsFull)
             {
@@ -79,7 +73,7 @@ namespace Server.Items
 
                 if (from.PlaceInBackpack(flour))
                 {
-                    m_Flour = 0;
+                    _flour = 0;
                 }
                 else
                 {
@@ -158,60 +152,22 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(m_Flour);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        m_Flour = reader.ReadInt();
-                        break;
-                    }
-            }
-
             UpdateStage();
         }
     }
 
-    public class FlourMillSouthDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class FlourMillSouthDeed : BaseAddonDeed
     {
         [Constructible]
         public FlourMillSouthDeed()
         {
         }
 
-        public FlourMillSouthDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new FlourMillSouthAddon();
         public override int LabelNumber => 1044348; // flour mill (south)
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

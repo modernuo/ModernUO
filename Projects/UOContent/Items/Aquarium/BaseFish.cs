@@ -2,11 +2,12 @@ using System;
 
 namespace Server.Items
 {
-    public class BaseFish : Item
+    [Serializable(0, false)]
+    public abstract partial class BaseFish : Item
     {
         private static readonly TimeSpan DeathDelay = TimeSpan.FromMinutes(5);
 
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         [Constructible]
         public BaseFish(int itemID) : base(itemID)
@@ -14,28 +15,20 @@ namespace Server.Items
             StartTimer();
         }
 
-        public BaseFish(Serial serial) : base(serial)
-        {
-        }
-
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Dead => ItemID == 0x3B0C;
 
         public virtual void StartTimer()
         {
-            m_Timer?.Stop();
-
-            m_Timer = Timer.DelayCall(DeathDelay, Kill);
+            _timerToken.Cancel();
+            Timer.StartTimer(DeathDelay, Kill, out _timerToken);
 
             InvalidateProperties();
         }
 
         public virtual void StopTimer()
         {
-            m_Timer?.Stop();
-
-            m_Timer = null;
-
+            _timerToken.Cancel();
             InvalidateProperties();
         }
 
@@ -48,8 +41,6 @@ namespace Server.Items
         {
             ItemID = 0x3B0C;
             StopTimer();
-
-            InvalidateProperties();
         }
 
         public int GetDescription()
@@ -74,26 +65,16 @@ namespace Server.Items
 
             list.Add(GetDescription());
 
-            if (!Dead && m_Timer != null)
+            if (!Dead && _timerToken.Running)
             {
                 list.Add(1074507); // Gasping for air
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (!(Parent is Aquarium) && !(Parent is FishBowl))
+            if (Parent is not Aquarium && Parent is not FishBowl)
             {
                 StartTimer();
             }

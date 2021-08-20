@@ -7,7 +7,8 @@ using Server.Utilities;
 
 namespace Server.Items
 {
-    public class Aquarium : BaseAddonContainer
+    [Serializable(4, false)]
+    public partial class Aquarium : BaseAddonContainer
     {
         public static readonly TimeSpan EvaluationInterval = TimeSpan.FromDays(1);
 
@@ -26,18 +27,41 @@ namespace Server.Items
 
         private bool m_EvaluateDay;
 
-        // aquarium state
-        private AquariumState m_Food;
+        [SerializableField(0, setter: "private")]
+        private Timer _evaluateTimer;
 
-        // events
-        private bool m_RewardAvailable;
+        [DeserializeTimerField(0)]
+        private void DeserializeEvaluateTimer(TimeSpan delay)
+        {
+            _evaluateTimer = Timer.DelayCall(delay, EvaluationInterval, Evaluate);
+        }
 
-        // evaluate timer
-        private Timer m_Timer;
+        [SerializableField(1, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _liveCreatures;
 
-        // vacation info
-        private int m_VacationLeft;
-        private AquariumState m_Water;
+        [InvalidateProperties]
+        [SerializableField(2, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _vacationLeft;
+
+        [InvalidateProperties]
+        [SerializableField(3, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private AquariumState _food;
+
+        [InvalidateProperties]
+        [SerializableField(4, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private AquariumState _water;
+
+        [SerializableField(5, setter: "private")]
+        private List<int> _events;
+
+        [InvalidateProperties]
+        [SerializableField(6)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _rewardAvailable;
 
         public Aquarium(int itemID) : base(itemID)
         {
@@ -55,30 +79,21 @@ namespace Server.Items
 
             MaxItems = 30;
 
-            m_Food = new AquariumState();
-            m_Water = new AquariumState();
+            _food = new AquariumState(this);
+            _water = new AquariumState(this);
 
-            m_Food.State = (int)FoodState.Full;
-            m_Water.State = (int)WaterState.Strong;
+            _food.State = (int)FoodState.Full;
+            _water.State = (int)WaterState.Strong;
 
-            m_Food.Maintain = Utility.RandomMinMax(1, 2);
-            m_Food.Improve = m_Food.Maintain + Utility.RandomMinMax(1, 2);
+            _food.Maintain = Utility.RandomMinMax(1, 2);
+            _food.Improve = _food.Maintain + Utility.RandomMinMax(1, 2);
 
-            m_Water.Maintain = Utility.RandomMinMax(1, 3);
+            _water.Maintain = Utility.RandomMinMax(1, 3);
 
-            Events = new List<int>();
+            _events = new List<int>();
 
-            m_Timer = Timer.DelayCall(EvaluationInterval, EvaluationInterval, Evaluate);
+            _evaluateTimer = Timer.DelayCall(EvaluationInterval, EvaluationInterval, Evaluate);
         }
-
-        public Aquarium(Serial serial) : base(serial)
-        {
-        }
-
-        // items info
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int LiveCreatures { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int DeadCreatures
@@ -109,9 +124,9 @@ namespace Server.Items
         {
             get
             {
-                var state = m_Food.State == (int)FoodState.Overfed ? 1 : (int)FoodState.Full - m_Food.State;
+                var state = _food.State == (int)FoodState.Overfed ? 1 : (int)FoodState.Full - _food.State;
 
-                state += (int)WaterState.Strong - m_Water.State;
+                state += (int)WaterState.Strong - _water.State;
 
                 state = (int)Math.Pow(state, 1.75);
 
@@ -123,81 +138,21 @@ namespace Server.Items
         public bool IsFull => Items.Count >= MaxItems;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public int VacationLeft
-        {
-            get => m_VacationLeft;
-            set
-            {
-                m_VacationLeft = value;
-                InvalidateProperties();
-            }
-        }
+        public bool OptimalState => _food.State == (int)FoodState.Full && _water.State == (int)WaterState.Strong;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public AquariumState Food
-        {
-            get => m_Food;
-            set
-            {
-                m_Food = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public AquariumState Water
-        {
-            get => m_Water;
-            set
-            {
-                m_Water = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool OptimalState => m_Food.State == (int)FoodState.Full && m_Water.State == (int)WaterState.Strong;
-
-        public List<int> Events { get; private set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool RewardAvailable
-        {
-            get => m_RewardAvailable;
-            set
-            {
-                m_RewardAvailable = value;
-                InvalidateProperties();
-            }
-        }
-
-        public override BaseAddonContainerDeed Deed
-        {
-            get
-            {
-                if (ItemID == 0x3062)
-                {
-                    return new AquariumEastDeed();
-                }
-
-                return new AquariumNorthDeed();
-            }
-        }
+        public override BaseAddonContainerDeed Deed => ItemID == 0x3062 ? new AquariumEastDeed() : new AquariumNorthDeed();
 
         public override double DefaultWeight => 10.0;
 
-        public static int[] FishHues { get; } =
+        private static int[] FishHues =
         {
             0x1C2, 0x1C3, 0x2A3, 0x47E, 0x51D
         };
 
         public override void OnDelete()
         {
-            if (m_Timer != null)
-            {
-                m_Timer.Stop();
-                m_Timer = null;
-            }
+            _evaluateTimer.Stop();
+            _evaluateTimer = null;
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -218,7 +173,7 @@ namespace Server.Items
                 return false;
             }
 
-            if (m_VacationLeft > 0)
+            if (_vacationLeft > 0)
             {
                 from.SendLocalizedMessage(1074427); // The aquarium is in vacation mode.
                 return false;
@@ -246,17 +201,17 @@ namespace Server.Items
             }
             else if (dropped is VacationWafer)
             {
-                m_VacationLeft = VacationWafer.VacationDays;
+                _vacationLeft = VacationWafer.VacationDays;
                 dropped.Delete();
 
                 from.SendLocalizedMessage(
                     1074428,
-                    m_VacationLeft.ToString()
+                    _vacationLeft.ToString()
                 ); // The aquarium will be in vacation mode for ~1_DAYS~ days
             }
             else if (dropped is AquariumFood)
             {
-                m_Food.Added += 1;
+                _food.Added += 1;
                 dropped.Delete();
 
                 from.SendLocalizedMessage(1074259, "1"); // ~1_NUM~ unit(s) of food have been added to the aquarium.
@@ -269,7 +224,7 @@ namespace Server.Items
                     return false;
                 }
 
-                m_Water.Added += 1;
+                _water.Added += 1;
                 beverage.Quantity -= 1;
 
                 from.PlaySound(0x4E);
@@ -341,17 +296,17 @@ namespace Server.Items
 
             base.OnSingleClick(from);
 
-            if (m_VacationLeft > 0)
+            if (_vacationLeft > 0)
             {
-                LabelTo(from, 1074430, m_VacationLeft.ToString()); // Vacation days left: ~1_DAYS
+                LabelTo(from, 1074430, _vacationLeft.ToString()); // Vacation days left: ~1_DAYS
             }
 
-            if (Events.Count > 0)
+            if (_events.Count > 0)
             {
-                LabelTo(from, 1074426, Events.Count.ToString()); // ~1_NUM~ event(s) to view!
+                LabelTo(from, 1074426, _events.Count.ToString()); // ~1_NUM~ event(s) to view!
             }
 
-            if (m_RewardAvailable)
+            if (_rewardAvailable)
             {
                 LabelTo(from, 1074362); // A reward is available!
             }
@@ -367,43 +322,43 @@ namespace Server.Items
 
             if (decorations > 0)
             {
-                LabelTo(from, 1074249, (Items.Count - LiveCreatures - DeadCreatures).ToString()); // Decorations: ~1_NUM~
+                LabelTo(from, 1074249, decorations.ToString()); // Decorations: ~1_NUM~
             }
 
             LabelTo(from, 1074250, $"#{FoodNumber()}");  // Food state: ~1_STATE~
             LabelTo(from, 1074251, $"#{WaterNumber()}"); // Water state: ~1_STATE~
 
-            if (m_Food.State == (int)FoodState.Dead)
+            if (_food.State == (int)FoodState.Dead)
             {
-                LabelTo(from, 1074577, $"{m_Food.Added}\t{m_Food.Improve}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+                LabelTo(from, 1074577, $"{_food.Added}\t{_food.Improve}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
             }
-            else if (m_Food.State == (int)FoodState.Overfed)
+            else if (_food.State == (int)FoodState.Overfed)
             {
-                LabelTo(from, 1074577, $"{m_Food.Added}\t{m_Food.Maintain}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+                LabelTo(from, 1074577, $"{_food.Added}\t{_food.Maintain}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
             }
             else
             {
                 LabelTo(
                     from,
-                    1074253,
-                    $"{m_Food.Added}\t{m_Food.Maintain}\t{m_Food.Improve}"
-                ); // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
+                    1074253, // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
+                    $"{_food.Added}\t{_food.Maintain}\t{_food.Improve}"
+                );
             }
 
-            if (m_Water.State == (int)WaterState.Dead)
+            if (_water.State == (int)WaterState.Dead)
             {
-                LabelTo(from, 1074578, $"{m_Water.Added}\t{m_Water.Improve}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+                LabelTo(from, 1074578, $"{_water.Added}\t{_water.Improve}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
             }
-            else if (m_Water.State == (int)WaterState.Strong)
+            else if (_water.State == (int)WaterState.Strong)
             {
-                LabelTo(from, 1074578, $"{m_Water.Added}\t{m_Water.Maintain}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+                LabelTo(from, 1074578, $"{_water.Added}\t{_water.Maintain}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
             }
             else
             {
                 LabelTo(
                     from,
                     1074254,
-                    $"{m_Water.Added}\t{m_Water.Maintain}\t{m_Water.Improve}"
+                    $"{_water.Added}\t{_water.Maintain}\t{_water.Improve}"
                 ); // Water Added: ~1_CUR~ Maintain: ~2_NEED~ Improve: ~3_GROW~
             }
         }
@@ -412,17 +367,17 @@ namespace Server.Items
         {
             base.AddNameProperties(list);
 
-            if (m_VacationLeft > 0)
+            if (_vacationLeft > 0)
             {
-                list.Add(1074430, m_VacationLeft.ToString()); // Vacation days left: ~1_DAYS
+                list.Add(1074430, _vacationLeft.ToString()); // Vacation days left: ~1_DAYS
             }
 
-            if (Events.Count > 0)
+            if (_events.Count > 0)
             {
-                list.Add(1074426, Events.Count.ToString()); // ~1_NUM~ event(s) to view!
+                list.Add(1074426, _events.Count.ToString()); // ~1_NUM~ event(s) to view!
             }
 
-            if (m_RewardAvailable)
+            if (_rewardAvailable)
             {
                 list.Add(1074362); // A reward is available!
             }
@@ -446,42 +401,42 @@ namespace Server.Items
             list.Add(1074250, "#{0}", FoodNumber());  // Food state: ~1_STATE~
             list.Add(1074251, "#{0}", WaterNumber()); // Water state: ~1_STATE~
 
-            if (m_Food.State == (int)FoodState.Dead)
+            if (_food.State == (int)FoodState.Dead)
             {
-                list.Add(1074577, "{0}\t{1}", m_Food.Added, m_Food.Improve); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+                list.Add(1074577, "{0}\t{1}", _food.Added, _food.Improve); // Food Added: ~1_CUR~ Needed: ~2_NEED~
             }
-            else if (m_Food.State == (int)FoodState.Overfed)
+            else if (_food.State == (int)FoodState.Overfed)
             {
-                list.Add(1074577, "{0}\t{1}", m_Food.Added, m_Food.Maintain); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+                list.Add(1074577, "{0}\t{1}", _food.Added, _food.Maintain); // Food Added: ~1_CUR~ Needed: ~2_NEED~
             }
             else
             {
                 list.Add(
-                    1074253,
+                    1074253, // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
                     "{0}\t{1}\t{2}",
-                    m_Food.Added,
-                    m_Food.Maintain,
-                    m_Food.Improve
-                ); // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
+                    _food.Added,
+                    _food.Maintain,
+                    _food.Improve
+                );
             }
 
-            if (m_Water.State == (int)WaterState.Dead)
+            if (_water.State == (int)WaterState.Dead)
             {
-                list.Add(1074578, "{0}\t{1}", m_Water.Added, m_Water.Improve); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+                list.Add(1074578, "{0}\t{1}", _water.Added, _water.Improve); // Water Added: ~1_CUR~ Needed: ~2_NEED~
             }
-            else if (m_Water.State == (int)WaterState.Strong)
+            else if (_water.State == (int)WaterState.Strong)
             {
-                list.Add(1074578, "{0}\t{1}", m_Water.Added, m_Water.Maintain); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+                list.Add(1074578, "{0}\t{1}", _water.Added, _water.Maintain); // Water Added: ~1_CUR~ Needed: ~2_NEED~
             }
             else
             {
                 list.Add(
-                    1074254,
+                    1074254, // Water Added: ~1_CUR~ Maintain: ~2_NEED~ Improve: ~3_GROW~
                     "{0}\t{1}\t{2}",
-                    m_Water.Added,
-                    m_Water.Maintain,
-                    m_Water.Improve
-                ); // Water Added: ~1_CUR~ Maintain: ~2_NEED~ Improve: ~3_GROW~
+                    _water.Added,
+                    _water.Maintain,
+                    _water.Improve
+                );
             }
         }
 
@@ -495,17 +450,17 @@ namespace Server.Items
 
                 if (HasAccess(from))
                 {
-                    if (m_RewardAvailable)
+                    if (_rewardAvailable)
                     {
                         list.Add(new CollectRewardEntry(this));
                     }
 
-                    if (Events.Count > 0)
+                    if (_events.Count > 0)
                     {
                         list.Add(new ViewEventEntry(this));
                     }
 
-                    if (m_VacationLeft > 0)
+                    if (_vacationLeft > 0)
                     {
                         list.Add(new CancelVacationMode(this));
                     }
@@ -522,45 +477,8 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(3); // Version
-
-            // version 1
-            if (m_Timer != null)
-            {
-                writer.Write(m_Timer.Next);
-            }
-            else
-            {
-                writer.Write(Core.Now + EvaluationInterval);
-            }
-
-            // version 0
-            writer.Write(LiveCreatures);
-            writer.Write(m_VacationLeft);
-
-            m_Food.Serialize(writer);
-            m_Water.Serialize(writer);
-
-            writer.Write(Events.Count);
-
-            for (var i = 0; i < Events.Count; i++)
-            {
-                writer.Write(Events[i]);
-            }
-
-            writer.Write(m_RewardAvailable);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
             switch (version)
             {
                 case 3:
@@ -574,85 +492,42 @@ namespace Server.Items
                             next = Core.Now;
                         }
 
-                        m_Timer = Timer.DelayCall(next - Core.Now, EvaluationInterval, Evaluate);
+                        _evaluateTimer = Timer.DelayCall(next - Core.Now, EvaluationInterval, Evaluate);
 
                         goto case 0;
                     }
                 case 0:
                     {
-                        LiveCreatures = reader.ReadInt();
-                        m_VacationLeft = reader.ReadInt();
+                        _liveCreatures = reader.ReadInt();
+                        _vacationLeft = reader.ReadInt();
 
-                        m_Food = new AquariumState();
-                        m_Water = new AquariumState();
+                        _food = new AquariumState(this);
+                        _food.Deserialize(reader);
+                        _water = new AquariumState(this);
+                        _water.Deserialize(reader);
 
-                        m_Food.Deserialize(reader);
-                        m_Water.Deserialize(reader);
-
-                        Events = new List<int>();
-
+                        _events = new List<int>();
                         var count = reader.ReadInt();
-
                         for (var i = 0; i < count; i++)
                         {
-                            Events.Add(reader.ReadInt());
+                            _events.Add(reader.ReadInt());
                         }
 
-                        m_RewardAvailable = reader.ReadBool();
-
+                        _rewardAvailable = reader.ReadBool();
                         break;
                     }
             }
-
-            if (version < 2)
-            {
-                Weight = DefaultWeight;
-                Movable = false;
-            }
-
-            if (version < 3)
-            {
-                ValidationQueue<Aquarium>.Add(this);
-            }
         }
 
-        private void RecountLiveCreatures()
-        {
-            LiveCreatures = 0;
-
-            FindItemsByType<BaseFish>()
-                .ForEach(
-                    fish =>
-                    {
-                        if (!fish.Dead)
-                        {
-                            ++LiveCreatures;
-                        }
-                    }
-                );
-        }
-
-        public void Validate()
-        {
-            RecountLiveCreatures();
-        }
-
-        public int FoodNumber()
-        {
-            if (m_Food.State == (int)FoodState.Full)
+        public int FoodNumber() =>
+            _food.State switch
             {
-                return 1074240;
-            }
+                (int)FoodState.Full    => 1074240,
+                (int)FoodState.Overfed => 1074239,
+                _                      => 1074236 + _food.State
+            };
 
-            if (m_Food.State == (int)FoodState.Overfed)
-            {
-                return 1074239;
-            }
-
-            return 1074236 + m_Food.State;
-        }
-
-        public int WaterNumber() => 1074242 + m_Water.State;
+        public int WaterNumber() => 1074242 + _water.State;
 
         public virtual void KillFish(int amount)
         {
@@ -673,73 +548,71 @@ namespace Server.Items
 
             while (amount > 0 && toKill.Count > 0)
             {
-                var kill = toKill.RandomElement();
+                var kill = toKill.TakeRandomElement();
                 kill.Kill();
-                toKill.Remove(kill);
 
                 amount -= 1;
                 LiveCreatures = Math.Max(LiveCreatures - 1, 0);
 
-                Events.Add(
-                    1074366
-                ); // An unfortunate accident has left a creature floating upside-down.  It is starting to smell.
+                // An unfortunate accident has left a creature floating upside-down.  It is starting to smell.
+                this.Add(_events, 1074366);
             }
         }
 
         public virtual void Evaluate()
         {
-            if (m_VacationLeft > 0)
+            if (_vacationLeft > 0)
             {
-                m_VacationLeft -= 1;
+                _vacationLeft -= 1;
             }
             else if (m_EvaluateDay)
             {
                 // reset events
-                Events = new List<int>();
+                this.Clear(_events);
 
                 // food events
                 if (
-                    m_Food.Added < m_Food.Maintain && m_Food.State != (int)FoodState.Overfed &&
-                    m_Food.State != (int)FoodState.Dead ||
-                    m_Food.Added >= m_Food.Improve && m_Food.State == (int)FoodState.Full)
+                    _food.Added < _food.Maintain && _food.State != (int)FoodState.Overfed &&
+                    _food.State != (int)FoodState.Dead ||
+                    _food.Added >= _food.Improve && _food.State == (int)FoodState.Full)
                 {
-                    Events.Add(1074368); // The tank looks worse than it did yesterday.
+                    this.Add(_events, 1074368); // The tank looks worse than it did yesterday.
                 }
 
                 if (
-                    m_Food.Added >= m_Food.Improve && m_Food.State != (int)FoodState.Full &&
-                    m_Food.State != (int)FoodState.Overfed ||
-                    m_Food.Added < m_Food.Maintain && m_Food.State == (int)FoodState.Overfed)
+                    _food.Added >= _food.Improve && _food.State != (int)FoodState.Full &&
+                    _food.State != (int)FoodState.Overfed ||
+                    _food.Added < _food.Maintain && _food.State == (int)FoodState.Overfed)
                 {
-                    Events.Add(1074367); // The tank looks healthier today.
+                    this.Add(_events, 1074367); // The tank looks healthier today.
                 }
 
                 // water events
-                if (m_Water.Added < m_Water.Maintain && m_Water.State != (int)WaterState.Dead)
+                if (_water.Added < _water.Maintain && _water.State != (int)WaterState.Dead)
                 {
-                    Events.Add(1074370); // This tank can use more water.
+                    this.Add(_events, 1074370); // This tank can use more water.
                 }
 
-                if (m_Water.Added >= m_Water.Improve && m_Water.State != (int)WaterState.Strong)
+                if (_water.Added >= _water.Improve && _water.State != (int)WaterState.Strong)
                 {
-                    Events.Add(1074369); // The water looks clearer today.
+                    this.Add(_events, 1074369); // The water looks clearer today.
                 }
 
                 UpdateFoodState();
                 UpdateWaterState();
 
                 // reward
-                if (LiveCreatures > 0)
+                if (_liveCreatures > 0)
                 {
-                    m_RewardAvailable = true;
+                    RewardAvailable = true;
                 }
             }
             else
             {
                 // new fish
-                if (OptimalState && LiveCreatures < MaxLiveCreatures)
+                if (OptimalState && _liveCreatures < MaxLiveCreatures)
                 {
-                    if (Utility.RandomDouble() < 0.005 * LiveCreatures)
+                    if (Utility.RandomDouble() < 0.005 * _liveCreatures)
                     {
                         BaseFish fish;
                         int message;
@@ -795,7 +668,7 @@ namespace Server.Items
 
                         if (AddFish(fish))
                         {
-                            Events.Add(message);
+                            this.Add(_events, message);
                         }
                         else
                         {
@@ -805,7 +678,7 @@ namespace Server.Items
                 }
 
                 // kill fish *grins*
-                if (LiveCreatures < MaxLiveCreatures)
+                if (_liveCreatures < MaxLiveCreatures)
                 {
                     if (Utility.RandomDouble() < 0.01)
                     {
@@ -814,7 +687,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    KillFish(LiveCreatures - MaxLiveCreatures);
+                    KillFish(_liveCreatures - MaxLiveCreatures);
                 }
             }
 
@@ -824,12 +697,12 @@ namespace Server.Items
 
         public virtual void GiveReward(Mobile to)
         {
-            if (!m_RewardAvailable)
+            if (!_rewardAvailable)
             {
                 return;
             }
 
-            var max = (int)((double)LiveCreatures / 30 * m_Decorations.Length);
+            var max = (int)((double)_liveCreatures / 30 * m_Decorations.Length);
 
             var random = max <= 0 ? 0 : Utility.Random(max);
 
@@ -864,59 +737,59 @@ namespace Server.Items
             to.SendLocalizedMessage(1074360, $"#{item.LabelNumber}"); // You receive a reward: ~1_REWARD~
             to.PlaySound(0x5A3);
 
-            m_RewardAvailable = false;
+            RewardAvailable = false;
 
             InvalidateProperties();
         }
 
         public virtual void UpdateFoodState()
         {
-            if (m_Food.Added < m_Food.Maintain)
+            if (_food.Added < _food.Maintain)
             {
-                m_Food.State = m_Food.State <= 0 ? 0 : m_Food.State - 1;
+                _food.State = _food.State <= 0 ? 0 : _food.State - 1;
             }
-            else if (m_Food.Added >= m_Food.Improve)
+            else if (_food.Added >= _food.Improve)
             {
-                m_Food.State = m_Food.State >= (int)FoodState.Overfed ? (int)FoodState.Overfed : m_Food.State + 1;
+                _food.State = _food.State >= (int)FoodState.Overfed ? (int)FoodState.Overfed : _food.State + 1;
             }
 
-            m_Food.Maintain = Utility.Random((int)FoodState.Overfed + 1 - m_Food.State, 2);
+            _food.Maintain = Utility.Random((int)FoodState.Overfed + 1 - _food.State, 2);
 
-            if (m_Food.State == (int)FoodState.Overfed)
+            if (_food.State == (int)FoodState.Overfed)
             {
-                m_Food.Improve = 0;
+                _food.Improve = 0;
             }
             else
             {
-                m_Food.Improve = m_Food.Maintain + 2;
+                _food.Improve = _food.Maintain + 2;
             }
 
-            m_Food.Added = 0;
+            _food.Added = 0;
         }
 
         public virtual void UpdateWaterState()
         {
-            if (m_Water.Added < m_Water.Maintain)
+            if (_water.Added < _water.Maintain)
             {
-                m_Water.State = m_Water.State <= 0 ? 0 : m_Water.State - 1;
+                _water.State = _water.State <= 0 ? 0 : _water.State - 1;
             }
-            else if (m_Water.Added >= m_Water.Improve)
+            else if (_water.Added >= _water.Improve)
             {
-                m_Water.State = m_Water.State >= (int)WaterState.Strong ? (int)WaterState.Strong : m_Water.State + 1;
+                _water.State = _water.State >= (int)WaterState.Strong ? (int)WaterState.Strong : _water.State + 1;
             }
 
-            m_Water.Maintain = Utility.Random((int)WaterState.Strong + 2 - m_Water.State, 2);
+            _water.Maintain = Utility.Random((int)WaterState.Strong + 2 - _water.State, 2);
 
-            if (m_Water.State == (int)WaterState.Strong)
+            if (_water.State == (int)WaterState.Strong)
             {
-                m_Water.Improve = 0;
+                _water.Improve = 0;
             }
             else
             {
-                m_Water.Improve = m_Water.Maintain + 2;
+                _water.Improve = _water.Maintain + 2;
             }
 
-            m_Water.Added = 0;
+            _water.Added = 0;
         }
 
         public virtual bool RemoveItem(Mobile from, int at)
@@ -998,7 +871,7 @@ namespace Server.Items
                 return false;
             }
 
-            if (IsFull || LiveCreatures >= MaxLiveCreatures || fish.Dead)
+            if (IsFull || _liveCreatures >= MaxLiveCreatures || fish.Dead)
             {
                 from?.SendLocalizedMessage(1073633); // The aquarium can not hold the creature.
 
@@ -1128,7 +1001,7 @@ namespace Server.Items
 
             public override void OnClick()
             {
-                if (m_Aquarium.Deleted || !m_Aquarium.HasAccess(Owner.From) || m_Aquarium.Events.Count == 0)
+                if (m_Aquarium.Deleted || !m_Aquarium.HasAccess(Owner.From) || m_Aquarium._events.Count == 0)
                 {
                     return;
                 }
@@ -1140,7 +1013,7 @@ namespace Server.Items
                     Owner.From.PlaySound(0x5A2);
                 }
 
-                m_Aquarium.Events.RemoveAt(0);
+                m_Aquarium.RemoveAt(m_Aquarium._events, 0);
                 m_Aquarium.InvalidateProperties();
             }
         }
@@ -1171,9 +1044,7 @@ namespace Server.Items
         {
             private readonly Aquarium m_Aquarium;
 
-            public GMAddFood(Aquarium aquarium) : base(6231) // GM Add Food
-                =>
-                    m_Aquarium = aquarium;
+            public GMAddFood(Aquarium aquarium) : base(6231) => m_Aquarium = aquarium;
 
             public override void OnClick()
             {
@@ -1191,9 +1062,7 @@ namespace Server.Items
         {
             private readonly Aquarium m_Aquarium;
 
-            public GMAddWater(Aquarium aquarium) : base(6232) // GM Add Water
-                =>
-                    m_Aquarium = aquarium;
+            public GMAddWater(Aquarium aquarium) : base(6232) => m_Aquarium = aquarium;
 
             public override void OnClick()
             {
@@ -1211,9 +1080,7 @@ namespace Server.Items
         {
             private readonly Aquarium m_Aquarium;
 
-            public GMForceEvaluate(Aquarium aquarium) : base(6233) // GM Force Evaluate
-                =>
-                    m_Aquarium = aquarium;
+            public GMForceEvaluate(Aquarium aquarium) : base(6233) => m_Aquarium = aquarium;
 
             public override void OnClick()
             {
@@ -1230,9 +1097,7 @@ namespace Server.Items
         {
             private readonly Aquarium m_Aquarium;
 
-            public GMOpen(Aquarium aquarium) : base(6234) // GM Open Container
-                =>
-                    m_Aquarium = aquarium;
+            public GMOpen(Aquarium aquarium) : base(6234) => m_Aquarium = aquarium;
 
             public override void OnClick()
             {
@@ -1249,9 +1114,7 @@ namespace Server.Items
         {
             private readonly Aquarium m_Aquarium;
 
-            public GMFill(Aquarium aquarium) : base(6236) // GM Fill Food and Water
-                =>
-                    m_Aquarium = aquarium;
+            public GMFill(Aquarium aquarium) : base(6236) => m_Aquarium = aquarium;
 
             public override void OnClick()
             {
@@ -1267,61 +1130,27 @@ namespace Server.Items
         }
     }
 
-    public class AquariumEastDeed : BaseAddonContainerDeed
+    [Serializable(0, false)]
+    public partial class AquariumEastDeed : BaseAddonContainerDeed
     {
         [Constructible]
         public AquariumEastDeed()
         {
         }
 
-        public AquariumEastDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonContainer Addon => new Aquarium(0x3062);
         public override int LabelNumber => 1074501; // Large Aquarium (east)
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // Version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class AquariumNorthDeed : BaseAddonContainerDeed
+    [Serializable(0, false)]
+    public partial class AquariumNorthDeed : BaseAddonContainerDeed
     {
         [Constructible]
         public AquariumNorthDeed()
         {
         }
 
-        public AquariumNorthDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonContainer Addon => new Aquarium(0x3060);
         public override int LabelNumber => 1074497; // Large Aquarium (north)
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // Version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -196,7 +196,14 @@ namespace Server.Items
 
         public void Refresh()
         {
-            Visible = GetMobilesInRange(CurrentRange).Any(mob => !mob.Hidden || mob.AccessLevel <= AccessLevel.Player);
+            foreach (var mob in GetMobilesInRange(CurrentRange))
+            {
+                if (!mob.Hidden || mob.AccessLevel <= AccessLevel.Player)
+                {
+                    Visible = true;
+                    break;
+                }
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -217,7 +224,7 @@ namespace Server.Items
 
             var version = reader.ReadEncodedInt();
 
-            Timer.DelayCall(Refresh);
+            Timer.StartTimer(Refresh);
         }
     }
 }

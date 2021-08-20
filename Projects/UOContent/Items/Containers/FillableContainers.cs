@@ -9,11 +9,9 @@ namespace Server.Items
         protected FillableContent m_Content;
 
         protected DateTime m_NextRespawnTime;
-        protected Timer m_RespawnTimer;
+        protected Timer _respawnTimer;
 
-        public FillableContainer(int itemID)
-            : base(itemID) =>
-            Movable = false;
+        public FillableContainer(int itemID) : base(itemID) => Movable = false;
 
         public FillableContainer(Serial serial)
             : base(serial)
@@ -98,11 +96,8 @@ namespace Server.Items
         {
             base.OnAfterDelete();
 
-            if (m_RespawnTimer != null)
-            {
-                m_RespawnTimer.Stop();
-                m_RespawnTimer = null;
-            }
+            _respawnTimer?.Stop();
+            _respawnTimer = null;
         }
 
         public int GetItemsCount()
@@ -124,29 +119,26 @@ namespace Server.Items
 
             if (canSpawn)
             {
-                if (m_RespawnTimer == null)
+                if (_respawnTimer?.Running != true)
                 {
                     var mins = Utility.RandomMinMax(MinRespawnMinutes, MaxRespawnMinutes);
                     var delay = TimeSpan.FromMinutes(mins);
 
                     m_NextRespawnTime = Core.Now + delay;
-                    m_RespawnTimer = Timer.DelayCall(delay, Respawn);
+                    _respawnTimer = Timer.DelayCall(delay, Respawn);
                 }
             }
-            else if (m_RespawnTimer != null)
+            else
             {
-                m_RespawnTimer.Stop();
-                m_RespawnTimer = null;
+                _respawnTimer?.Stop();
+                _respawnTimer = null;
             }
         }
 
         public void Respawn()
         {
-            if (m_RespawnTimer != null)
-            {
-                m_RespawnTimer.Stop();
-                m_RespawnTimer = null;
-            }
+            _respawnTimer?.Stop();
+            _respawnTimer = null;
 
             if (m_Content == null || Deleted)
             {
@@ -228,7 +220,7 @@ namespace Server.Items
                 {
                     var subItem = list[j];
 
-                    if (!(subItem is Container) && subItem.StackWith(null, item, false))
+                    if (subItem is not Container && subItem.StackWith(null, item, false))
                     {
                         break;
                     }
@@ -249,7 +241,7 @@ namespace Server.Items
 
             writer.Write((int)ContentType);
 
-            if (m_RespawnTimer != null)
+            if (_respawnTimer?.Running == true)
             {
                 writer.Write(true);
                 writer.WriteDeltaTime(m_NextRespawnTime);
@@ -280,7 +272,7 @@ namespace Server.Items
                             m_NextRespawnTime = reader.ReadDeltaTime();
 
                             var delay = m_NextRespawnTime - Core.Now;
-                            m_RespawnTimer = Timer.DelayCall(delay > TimeSpan.Zero ? delay : TimeSpan.Zero, Respawn);
+                            Timer.DelayCall(delay, Respawn);
                         }
                         else
                         {
@@ -341,7 +333,7 @@ namespace Server.Items
 
             if (version == 0 && m_Content == null)
             {
-                Timer.DelayCall(AcquireContent);
+                Timer.StartTimer(AcquireContent);
             }
         }
     }

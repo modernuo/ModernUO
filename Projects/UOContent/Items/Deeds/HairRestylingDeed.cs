@@ -46,7 +46,7 @@ namespace Server.Items
 
         private class InternalGump : Gump
         {
-            private readonly int[][] ElvenArray =
+            private static readonly int[][] ElvenArray =
             {
                 new[] { 0 },
                 new[] { 1011064, 1011064, 0, 0, 0, 0 },                     // bald
@@ -63,7 +63,7 @@ namespace Server.Items
             /*
                 racial arrays are: cliloc_F, cliloc_M, ItemID_F, ItemID_M, gump_img_F, gump_img_M
             */
-            private readonly int[][] HumanArray = /* why on earth cant these utilies be consistent with hex/dec */
+            private static readonly int[][] HumanArray = /* why on earth cant these utilities be consistent with hex/dec */
             {
                 new[] { 0 },
                 new[] { 1011064, 1011064, 0, 0, 0, 0 },                     // bald
@@ -77,11 +77,11 @@ namespace Server.Items
                 new[] { 1011050, 1011050, 0x204A, 0x204A, 0xED29, 0xED29 }, // Topknot
                 new[] { 1011396, 1011396, 0x2047, 0x2047, 0xed25, 0xc618 }  // Curly
             };
+
             /*
                 gump data: bgX, bgY, htmlX, htmlY, imgX, imgY, butX, butY
             */
-
-            private readonly int[][] LayoutArray =
+            private static readonly int[][] LayoutArray =
             {
                 new[] { 0 }, /* padding: its more efficient than code to ++ the index/buttonid */
                 new[] { 425, 280, 342, 295, 000, 000, 310, 292 },

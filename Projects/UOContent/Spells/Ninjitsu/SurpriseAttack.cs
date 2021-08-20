@@ -34,7 +34,7 @@ namespace Server.Spells.Ninjitsu
             if (valid)
             {
                 attacker.BeginAction<Stealth>();
-                Timer.DelayCall(TimeSpan.FromSeconds(5.0), attacker.EndAction<Stealth>);
+                Timer.StartTimer(TimeSpan.FromSeconds(5.0), attacker.EndAction<Stealth>);
             }
 
             return valid;
@@ -53,17 +53,14 @@ namespace Server.Spells.Ninjitsu
 
             attacker.RevealingAction();
 
-            if (m_Table.Remove(defender, out var info))
-            {
-                info.m_Timer?.Stop();
-            }
+            StopTimer(defender);
 
             var ninjitsu = attacker.Skills.Ninjitsu.Fixed;
 
             var malus = ninjitsu / 60 + (int)Tracking.GetStalkingBonus(attacker, defender);
 
-            info = new SurpriseAttackInfo(defender, malus);
-            info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(8.0), EndSurprise, info);
+            var info = new SurpriseAttackInfo(defender, malus);
+            Timer.StartTimer(TimeSpan.FromSeconds(8.0), () => EndSurprise(info), out info._timerToken);
 
             m_Table[defender] = info;
 
@@ -90,19 +87,25 @@ namespace Server.Spells.Ninjitsu
             return true;
         }
 
+        private static void StopTimer(Mobile m)
+        {
+            if (m_Table.Remove(m, out var info))
+            {
+                info._timerToken.Cancel();
+            }
+        }
+
         private static void EndSurprise(SurpriseAttackInfo info)
         {
-            info.m_Timer?.Stop();
+            StopTimer(info.m_Target);
             info.m_Target.SendLocalizedMessage(1063131); // Your defenses have returned to normal.
-
-            m_Table.Remove(info.m_Target);
         }
 
         private class SurpriseAttackInfo
         {
             public readonly int m_Malus;
             public readonly Mobile m_Target;
-            public Timer m_Timer;
+            public TimerExecutionToken _timerToken;
 
             public SurpriseAttackInfo(Mobile target, int effect)
             {

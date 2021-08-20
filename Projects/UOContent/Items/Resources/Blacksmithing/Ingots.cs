@@ -1,8 +1,12 @@
 namespace Server.Items
 {
-    public abstract class BaseIngot : Item, ICommodity
+    [Serializable(2, false)]
+    public abstract partial class BaseIngot : Item, ICommodity
     {
-        private CraftResource m_Resource;
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializableField(0)]
+        private CraftResource _resource;
 
         public BaseIngot(CraftResource resource, int amount = 1) : base(0x1BF2)
         {
@@ -10,22 +14,7 @@ namespace Server.Items
             Amount = amount;
             Hue = CraftResources.GetHue(resource);
 
-            m_Resource = resource;
-        }
-
-        public BaseIngot(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public CraftResource Resource
-        {
-            get => m_Resource;
-            set
-            {
-                m_Resource = value;
-                InvalidateProperties();
-            }
+            _resource = resource;
         }
 
         public override double DefaultWeight => 0.1;
@@ -34,9 +23,9 @@ namespace Server.Items
         {
             get
             {
-                if (m_Resource >= CraftResource.DullCopper && m_Resource <= CraftResource.Valorite)
+                if (_resource >= CraftResource.DullCopper && _resource <= CraftResource.Valorite)
                 {
-                    return 1042684 + (m_Resource - CraftResource.DullCopper);
+                    return 1042684 + (_resource - CraftResource.DullCopper);
                 }
 
                 return 1042692;
@@ -46,26 +35,13 @@ namespace Server.Items
         int ICommodity.DescriptionNumber => LabelNumber;
         bool ICommodity.IsDeedable => true;
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write((int)m_Resource);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
             switch (version)
             {
                 case 1:
                     {
-                        m_Resource = (CraftResource)reader.ReadInt();
+                        _resource = (CraftResource)reader.ReadInt();
                         break;
                     }
                 case 0:
@@ -84,7 +60,7 @@ namespace Server.Items
                             _ => null
                         };
 
-                        m_Resource = CraftResources.GetFromOreInfo(info);
+                        _resource = CraftResources.GetFromOreInfo(info);
                         break;
                     }
             }
@@ -106,9 +82,9 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (!CraftResources.IsStandard(m_Resource))
+            if (!CraftResources.IsStandard(_resource))
             {
-                var num = CraftResources.GetLocalizationNumber(m_Resource);
+                var num = CraftResources.GetLocalizationNumber(_resource);
 
                 if (num > 0)
                 {
@@ -116,252 +92,99 @@ namespace Server.Items
                 }
                 else
                 {
-                    list.Add(CraftResources.GetName(m_Resource));
+                    list.Add(CraftResources.GetName(_resource));
                 }
             }
         }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1BF2, 0x1BEF)]
-    public class IronIngot : BaseIngot
+    public partial class IronIngot : BaseIngot
     {
         [Constructible]
         public IronIngot(int amount = 1) : base(CraftResource.Iron, amount)
         {
         }
-
-        public IronIngot(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1BF2, 0x1BEF)]
-    public class DullCopperIngot : BaseIngot
+    public partial class DullCopperIngot : BaseIngot
     {
         [Constructible]
         public DullCopperIngot(int amount = 1) : base(CraftResource.DullCopper, amount)
         {
         }
-
-        public DullCopperIngot(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1BF2, 0x1BEF)]
-    public class ShadowIronIngot : BaseIngot
+    public partial class ShadowIronIngot : BaseIngot
     {
         [Constructible]
         public ShadowIronIngot(int amount = 1) : base(CraftResource.ShadowIron, amount)
         {
         }
-
-        public ShadowIronIngot(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1BF2, 0x1BEF)]
-    public class CopperIngot : BaseIngot
+    public partial class CopperIngot : BaseIngot
     {
         [Constructible]
         public CopperIngot(int amount = 1) : base(CraftResource.Copper, amount)
         {
         }
-
-        public CopperIngot(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1BF2, 0x1BEF)]
-    public class BronzeIngot : BaseIngot
+    public partial class BronzeIngot : BaseIngot
     {
         [Constructible]
         public BronzeIngot(int amount = 1) : base(CraftResource.Bronze, amount)
         {
         }
-
-        public BronzeIngot(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1BF2, 0x1BEF)]
-    public class GoldIngot : BaseIngot
+    public partial class GoldIngot : BaseIngot
     {
         [Constructible]
         public GoldIngot(int amount = 1) : base(CraftResource.Gold, amount)
         {
         }
-
-        public GoldIngot(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1BF2, 0x1BEF)]
-    public class AgapiteIngot : BaseIngot
+    public partial class AgapiteIngot : BaseIngot
     {
         [Constructible]
         public AgapiteIngot(int amount = 1) : base(CraftResource.Agapite, amount)
         {
         }
-
-        public AgapiteIngot(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1BF2, 0x1BEF)]
-    public class VeriteIngot : BaseIngot
+    public partial class VeriteIngot : BaseIngot
     {
         [Constructible]
         public VeriteIngot(int amount = 1) : base(CraftResource.Verite, amount)
         {
         }
-
-        public VeriteIngot(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1BF2, 0x1BEF)]
-    public class ValoriteIngot : BaseIngot
+    public partial class ValoriteIngot : BaseIngot
     {
         [Constructible]
         public ValoriteIngot(int amount = 1) : base(CraftResource.Valorite, amount)
         {
-        }
-
-        public ValoriteIngot(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

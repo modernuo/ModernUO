@@ -1,10 +1,10 @@
 namespace Server.Items
 {
-    public class JackOLantern : BaseAddon
+    [Serializable(0)]
+    public partial class JackOLantern : BaseAddon
     {
         [Constructible]
-        public JackOLantern()
-            : this(Utility.Random(2) < 1)
+        public JackOLantern() : this(Utility.Random(2) < 1)
         {
         }
 
@@ -14,7 +14,6 @@ namespace Server.Items
             AddComponent(new AddonComponent(5703), 0, 0, +0);
 
             const int hue = 1161;
-            // ( 1 > Utility.Random( 5 ) ? 2118 : 1161 );
 
             if (!south)
             {
@@ -30,11 +29,6 @@ namespace Server.Items
             }
         }
 
-        public JackOLantern(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override bool ShareHue => false;
 
         private static AddonComponent GetComponent(int itemID, int hue) =>
@@ -44,47 +38,16 @@ namespace Server.Items
                 Name = "jack-o-lantern"
             };
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write((byte)2); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            int version = reader.ReadByte();
-
-
-            if (version <= 1)
-            {
-                Timer.DelayCall(Fix, version);
-            }
-        }
-
-        private void Fix(int version)
+        private void Deserialize(IGenericReader reader, int version)
         {
             for (var i = 0; i < Components.Count; ++i)
             {
                 var ac = Components[i];
-                switch (version)
-                {
-                    case 1:
-                        {
-                            ac.Name = "jack-o-lantern";
-                            goto case 0;
-                        }
-                    case 0:
-                        {
-                            if (ac.Hue == 2118)
-                            {
-                                ac.Hue = 1161;
-                            }
+                ac.Name = "jack-o-lantern";
 
-                            break;
-                        }
+                if (ac.Hue == 2118)
+                {
+                    ac.Hue = 1161;
                 }
             }
         }

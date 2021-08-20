@@ -27,8 +27,8 @@ namespace Server
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(ServerConfiguration));
 
-        private const string m_RelPath = "Configuration/modernuo.json";
-        private static readonly string m_FilePath = Path.Join(Core.BaseDirectory, m_RelPath);
+        private const string _relPath = "Configuration/modernuo.json";
+        private static readonly string m_FilePath = Path.Join(Core.BaseDirectory, _relPath);
         private static ServerSettings m_Settings;
         private static bool m_Mocked;
 
@@ -181,16 +181,16 @@ namespace Server
 
             if (File.Exists(m_FilePath))
             {
-                logger.Information($"Reading server configuration from {m_RelPath}...");
+                logger.Information($"Reading server configuration from {_relPath}...");
                 m_Settings = JsonConfig.Deserialize<ServerSettings>(m_FilePath);
 
                 if (m_Settings == null)
                 {
-                    logger.Error($"Reading server configuration failed");
+                    logger.Error("Reading server configuration failed");
                     throw new FileNotFoundException($"Failed to deserialize {m_FilePath}.");
                 }
 
-                logger.Information($"Reading server configuration done");
+                logger.Information("Reading server configuration done");
             }
             else
             {
@@ -236,7 +236,10 @@ namespace Server
             if (updated)
             {
                 Save();
-                logger.Information($"Server configuration saved to {m_RelPath}.");
+                Console.Write("Server configuration saved to ");
+                Utility.PushColor(ConsoleColor.Green);
+                Console.WriteLine($"{_relPath}.");
+                Utility.PopColor();
             }
         }
 
@@ -250,6 +253,9 @@ namespace Server
                 var input = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(input) || input.InsensitiveStartsWith("n"))
                 {
+                    Utility.PushColor(ConsoleColor.Yellow);
+                    Console.WriteLine("New Haven chosen with no map diffs.");
+                    Utility.PopColor();
                     return;
                 }
 
@@ -257,10 +263,18 @@ namespace Server
                 {
                     SetSetting("maps.enablePre6000Trammel", true.ToString());
                     SetSetting("maps.enableMapDiffPatches", true.ToString());
+
+                    Utility.PushColor(ConsoleColor.Yellow);
+                    Console.WriteLine("Old Haven chosen with map diffs.");
+                    Utility.PopColor();
                     return;
                 }
 
-                logger.Information($"Invalid option. ({input})");
+                Console.Write("Invalid option ");
+                Utility.PushColor(ConsoleColor.Red);
+                Console.Write(input);
+                Utility.PopColor();
+                Console.WriteLine(". Press y for yes or n for no.");
             } while (true);
         }
 
@@ -280,25 +294,34 @@ namespace Server
 
             do
             {
-                Console.Write("[{0}]> ", maxExpansionName);
+                Console.Write("[enter for {0}]> ", maxExpansionName);
                 var input = Console.ReadLine();
+                Expansion expansion;
+
                 if (string.IsNullOrWhiteSpace(input))
                 {
-                    return maxExpansion;
+                    expansion = maxExpansion;
                 }
-
-                if (int.TryParse(input, NumberStyles.Integer, null, out var number) && number >= 0 &&
-                    number < expansions.Length)
+                else if (int.TryParse(input, NumberStyles.Integer, null, out var number) &&
+                         number >= 0 && number < expansions.Length)
                 {
-                    return (Expansion)number;
+                    expansion = (Expansion)number;
                 }
-
-                if (Enum.TryParse<Expansion>(input, out var expansion))
+                else if (!Enum.TryParse(input, out expansion))
                 {
-                    return expansion;
+                    Utility.PushColor(ConsoleColor.Red);
+                    Console.Write(input);
+                    Utility.PopColor();
+                    Console.WriteLine(" is an invalid expansion option.");
+                    continue;
                 }
 
-                logger.Information($"Invalid expansion. ({input})");
+                Console.Write("Expansion set to ");
+                Utility.PushColor(ConsoleColor.Green);
+                Console.Write(ExpansionInfo.GetInfo(expansion).Name);
+                Utility.PopColor();
+                Console.WriteLine(".");
+                return expansion;
             } while (true);
         }
 
@@ -310,7 +333,7 @@ namespace Server
 
             do
             {
-                Console.Write("{0}> ", directories.Count > 0 ? "[finish] " : " ");
+                Console.Write("{0}> ", directories.Count > 0 ? "[enter to finish]" : " ");
                 var directory = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(directory))
                 {
@@ -320,11 +343,18 @@ namespace Server
                 if (Directory.Exists(directory))
                 {
                     directories.Add(directory);
-                    logger.Information($"Path {directory} added.");
+                    Console.Write("Added ");
+                    Utility.PushColor(ConsoleColor.Green);
+                    Console.Write(directory);
+                    Utility.PopColor();
+                    Console.WriteLine(".");
                 }
                 else
                 {
-                    logger.Information($"Path does not exist. ({directory})");
+                    Utility.PushColor(ConsoleColor.Red);
+                    Console.Write(directory);
+                    Utility.PopColor();
+                    Console.WriteLine(" does not exist.");
                 }
             } while (true);
 
@@ -342,33 +372,43 @@ namespace Server
             do
             {
                 // IP:Port?
-                Console.Write("[{0}]> ", ips.Count > 0 ? "finish" : "0.0.0.0:2593");
+                Console.Write("[{0}]> ", ips.Count > 0 ? "enter to finish" : "0.0.0.0:2593");
                 var ipStr = Console.ReadLine();
+
+                IPEndPoint ip;
                 if (string.IsNullOrWhiteSpace(ipStr))
                 {
-                    break;
-                }
+                    if (ips.Count > 0)
+                    {
+                        break;
+                    }
 
-                if (!ipStr.ContainsOrdinal(':'))
-                {
-                    ipStr += ":2593";
-                }
-
-                if (IPEndPoint.TryParse(ipStr, out var ip))
-                {
-                    ips.Add(ip);
-                    logger.Information($"Core: {ipStr} added.");
+                    ip = new IPEndPoint(IPAddress.Any, 2593);
                 }
                 else
                 {
-                    logger.Information($"{ipStr} is not a valid IP or port");
-                }
-            } while (true);
+                    if (!ipStr.ContainsOrdinal(':'))
+                    {
+                        ipStr += ":2593";
+                    }
 
-            if (ips.Count == 0)
-            {
-                ips.Add(new IPEndPoint(IPAddress.Any, 2593));
-            }
+                    if (!IPEndPoint.TryParse(ipStr, out ip))
+                    {
+                        Utility.PushColor(ConsoleColor.Red);
+                        Console.Write(ipStr);
+                        Utility.PopColor();
+                        Console.WriteLine(" is not a valid IP or port.");
+                        continue;
+                    }
+                }
+
+                ips.Add(ip);
+                Console.Write("Added ");
+                Utility.PushColor(ConsoleColor.Green);
+                Console.Write(ip);
+                Utility.PopColor();
+                Console.WriteLine(".");
+            } while (true);
 
             return ips;
         }

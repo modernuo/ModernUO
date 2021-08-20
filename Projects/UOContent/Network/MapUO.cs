@@ -79,7 +79,7 @@ namespace Server.Network
                     continue;
                 }
 
-                if (sendLocations && Utility.InUpdateRange(from, m) && from.CanSee(m))
+                if (sendLocations && Utility.InUpdateRange(from.Location, m.Location) && from.CanSee(m))
                 {
                     continue;
                 }
@@ -139,7 +139,7 @@ namespace Server.Network
                     continue;
                 }
 
-                if (Utility.InUpdateRange(from, mob) && from.CanSee(mob))
+                if (Utility.InUpdateRange(from.Location, mob.Location) && from.CanSee(mob))
                 {
                     continue;
                 }

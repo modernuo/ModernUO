@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class PlateBattleKabuto : BaseArmor
+    [Serializable(0, false)]
+    public partial class PlateBattleKabuto : BaseArmor
     {
         [Constructible]
         public PlateBattleKabuto() : base(0x2785) => Weight = 6.0;
-
-        public PlateBattleKabuto(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 6;
         public override int BaseFireResistance => 2;
@@ -24,17 +21,5 @@ namespace Server.Items
         public override int ArmorBase => 3;
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Plate;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

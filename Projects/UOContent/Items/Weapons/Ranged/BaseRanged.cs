@@ -5,18 +5,22 @@ using Server.Spells;
 
 namespace Server.Items
 {
-    public abstract class BaseRanged : BaseMeleeWeapon
+    [Serializable(0, false)]
+    public abstract partial class BaseRanged : BaseMeleeWeapon
     {
-        private bool m_Balanced;
+        [SerializableField(0)]
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _balanced;
 
-        private Timer m_RecoveryTimer; // so we don't start too many timers
-        private int m_Velocity;
+        [SerializableField(1)]
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _velocity;
+
+        private TimerExecutionToken _recoveryTimerToken;
 
         public BaseRanged(int itemID) : base(itemID)
-        {
-        }
-
-        public BaseRanged(Serial serial) : base(serial)
         {
         }
 
@@ -32,28 +36,6 @@ namespace Server.Items
         public override WeaponAnimation DefAnimation => WeaponAnimation.ShootXBow;
 
         public override SkillName AccuracySkill => SkillName.Archery;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool Balanced
-        {
-            get => m_Balanced;
-            set
-            {
-                m_Balanced = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Velocity
-        {
-            get => m_Velocity;
-            set
-            {
-                m_Velocity = value;
-                InvalidateProperties();
-            }
-        }
 
         public override TimeSpan OnSwing(Mobile attacker, Mobile defender)
         {
@@ -116,11 +98,11 @@ namespace Server.Items
                 defender.AddToBackpack(Ammo);
             }
 
-            if (Core.ML && m_Velocity > 0)
+            if (Core.ML && _velocity > 0)
             {
                 var bonus = (int)attacker.GetDistanceToSqrt(defender);
 
-                if (bonus > 0 && m_Velocity > Utility.Random(100))
+                if (bonus > 0 && _velocity > Utility.Random(100))
                 {
                     AOS.Damage(defender, attacker, bonus * 3, 100, 0, 0, 0, 0);
 
@@ -154,11 +136,16 @@ namespace Server.Items
 
                         if (!pm.Warmode)
                         {
-                            m_RecoveryTimer ??= Timer.DelayCall(TimeSpan.FromSeconds(10), pm.RecoverAmmo);
-
-                            if (!m_RecoveryTimer.Running)
+                            if (!_recoveryTimerToken.Running)
                             {
-                                m_RecoveryTimer.Start();
+                                Timer.StartTimer(TimeSpan.FromSeconds(10),
+                                    () =>
+                                    {
+                                        _recoveryTimerToken.Cancel();
+                                        pm.RecoverAmmo();
+                                    },
+                                    out _recoveryTimerToken
+                                );
                             }
                         }
                     }
@@ -208,51 +195,6 @@ namespace Server.Items
             attacker.MovingEffect(defender, EffectID, 18, 1, false, false);
 
             return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(3); // version
-
-            writer.Write(m_Balanced);
-            writer.Write(m_Velocity);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 3:
-                    {
-                        m_Balanced = reader.ReadBool();
-                        m_Velocity = reader.ReadInt();
-
-                        goto case 2;
-                    }
-                case 2:
-                case 1:
-                    {
-                        break;
-                    }
-                case 0:
-                    {
-                        /*m_EffectID =*/
-                        reader.ReadInt();
-                        break;
-                    }
-            }
-
-            if (version < 2)
-            {
-                WeaponAttributes.MageWeapon = 0;
-                WeaponAttributes.UseBestSkill = 0;
-            }
         }
     }
 }

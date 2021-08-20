@@ -437,9 +437,12 @@ namespace Server.Items
                     }
                 case 1:
                     {
-                        Attributes = new AosAttributes(this, reader);
-                        Resistances = new AosElementAttributes(this, reader);
-                        SkillBonuses = new AosSkillBonuses(this, reader);
+                        Attributes = new AosAttributes(this);
+                        Attributes.Deserialize(reader);
+                        Resistances = new AosElementAttributes(this);
+                        Resistances.Deserialize(reader);
+                        SkillBonuses = new AosSkillBonuses(this);
+                        SkillBonuses.Deserialize(reader);
 
                         var m = Parent as Mobile;
 

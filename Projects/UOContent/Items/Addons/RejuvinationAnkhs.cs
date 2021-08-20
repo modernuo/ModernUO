@@ -2,13 +2,10 @@ using System;
 
 namespace Server.Items
 {
-    public class RejuvinationAddonComponent : AddonComponent
+    [Serializable(0, false)]
+    public partial class RejuvinationAddonComponent : AddonComponent
     {
         public RejuvinationAddonComponent(int itemID) : base(itemID)
-        {
-        }
-
-        public RejuvinationAddonComponent(Serial serial) : base(serial)
         {
         }
 
@@ -20,25 +17,23 @@ namespace Server.Items
 
                 var random = Utility.Random(1, 4);
 
-                if (random == 1 || random == 4)
+                if (random is 1 or 4)
                 {
                     from.Hits = from.HitsMax;
                     SendLocalizedMessageTo(from, 500801); // A sense of warmth fills your body!
                 }
-
-                if (random == 2 || random == 4)
+                else if (random is 2 or 4)
                 {
                     from.Mana = from.ManaMax;
                     SendLocalizedMessageTo(from, 500802); // A feeling of power surges through your veins!
                 }
-
-                if (random == 3 || random == 4)
+                else if (random is 3 or 4)
                 {
                     from.Stam = from.StamMax;
                     SendLocalizedMessageTo(from, 500803); // You feel as though you've slept for days!
                 }
 
-                Timer.DelayCall(TimeSpan.FromHours(2.0), ReleaseUseLock_Callback, from, random);
+                Timer.StartTimer(TimeSpan.FromHours(2.0), () => ReleaseUseLock_Callback(from, random));
             }
         }
 
@@ -54,31 +49,14 @@ namespace Server.Items
                 SendLocalizedMessageTo(from, 500807); // You feel completely rejuvinated!
             }
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public abstract class BaseRejuvinationAnkh : BaseAddon
+    [Serializable(0, false)]
+    public abstract partial class BaseRejuvinationAnkh : BaseAddon
     {
         private DateTime m_NextMessage;
 
         public BaseRejuvinationAnkh()
-        {
-        }
-
-        public BaseRejuvinationAnkh(Serial serial) : base(serial)
         {
         }
 
@@ -88,36 +66,21 @@ namespace Server.Items
         {
             base.OnMovement(m, oldLocation);
 
-            if (m.Player && Utility.InRange(Location, m.Location, 3) && !Utility.InRange(Location, oldLocation, 3))
+            if (m.Player && Utility.InRange(Location, m.Location, 3) &&
+                !Utility.InRange(Location, oldLocation, 3) && Core.Now >= m_NextMessage)
             {
-                if (Core.Now >= m_NextMessage)
+                if (Components.Count > 0)
                 {
-                    if (Components.Count > 0)
-                    {
-                        Components[0].SendLocalizedMessageTo(m, 1010061); // An overwhelming sense of peace fills you.
-                    }
-
-                    m_NextMessage = Core.Now + TimeSpan.FromSeconds(25.0);
+                    Components[0].SendLocalizedMessageTo(m, 1010061); // An overwhelming sense of peace fills you.
                 }
+
+                m_NextMessage = Core.Now + TimeSpan.FromSeconds(25.0);
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 
-    public class RejuvinationAnkhWest : BaseRejuvinationAnkh
+    [Serializable(0, false)]
+    public partial class RejuvinationAnkhWest : BaseRejuvinationAnkh
     {
         [Constructible]
         public RejuvinationAnkhWest()
@@ -125,51 +88,16 @@ namespace Server.Items
             AddComponent(new RejuvinationAddonComponent(0x3), 0, 0, 0);
             AddComponent(new RejuvinationAddonComponent(0x2), 0, 1, 0);
         }
-
-        public RejuvinationAnkhWest(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class RejuvinationAnkhNorth : BaseRejuvinationAnkh
+    [Serializable(0, false)]
+    public partial class RejuvinationAnkhNorth : BaseRejuvinationAnkh
     {
         [Constructible]
         public RejuvinationAnkhNorth()
         {
             AddComponent(new RejuvinationAddonComponent(0x4), 0, 0, 0);
             AddComponent(new RejuvinationAddonComponent(0x5), 1, 0, 0);
-        }
-
-        public RejuvinationAnkhNorth(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

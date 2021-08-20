@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class SpellWovenBritches : LeafLegs
+    [Serializable(0)]
+    public partial class SpellWovenBritches : LeafLegs
     {
         [Constructible]
         public SpellWovenBritches()
@@ -14,27 +15,9 @@ namespace Server.Items
             Attributes.LowerManaCost = 10;
         }
 
-        public SpellWovenBritches(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1072929; // Spell Woven Britches
 
         public override int BaseFireResistance => 15;
         public override int BasePoisonResistance => 16;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

@@ -65,7 +65,7 @@ namespace Server.Items
                             Consume();
                         }
 
-                        Timer.DelayCall(TimeSpan.FromSeconds(Delay), from.EndAction<BaseHealPotion>);
+                        Timer.StartTimer(TimeSpan.FromSeconds(Delay), from.EndAction<BaseHealPotion>);
                     }
                     else
                     {

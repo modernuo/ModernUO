@@ -104,7 +104,7 @@ namespace Server.Items
 
             to.Damage(1);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(2.0), from.EndAction<Bola>);
+            Timer.StartTimer(TimeSpan.FromSeconds(2.0), from.EndAction<Bola>);
         }
 
         private static bool HasFreeHands(Mobile from)
@@ -213,7 +213,7 @@ namespace Server.Items
                         from.Animate(11, 5, 1, true, false, 0);
                         from.MovingEffect(to, 0x26AC, 10, 0, false, false);
 
-                        Timer.DelayCall(TimeSpan.FromSeconds(0.5), FinishThrow, from, to);
+                        Timer.StartTimer(TimeSpan.FromSeconds(0.5), () => FinishThrow(from, to));
                     }
                     else
                     {

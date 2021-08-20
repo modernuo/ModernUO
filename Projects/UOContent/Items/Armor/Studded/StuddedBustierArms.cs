@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x1c0c, 0x1c0d)]
-    public class StuddedBustierArms : BaseArmor
+    public partial class StuddedBustierArms : BaseArmor
     {
         [Constructible]
         public StuddedBustierArms() : base(0x1C0C) => Weight = 1.0;
-
-        public StuddedBustierArms(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;
@@ -30,17 +27,5 @@ namespace Server.Items
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.Half;
 
         public override bool AllowMaleWearer => false;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

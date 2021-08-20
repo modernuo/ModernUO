@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "type": "Server.Items.RewardBlackDyeTub",
+  "properties": [
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

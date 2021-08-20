@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using SerializationGenerator;
@@ -30,6 +31,7 @@ namespace SerializableMigration
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
             ISymbol? parentSymbol,
             out string[] ruleArguments
         )
@@ -49,21 +51,30 @@ namespace SerializableMigration
                 0,
                 attributes,
                 serializableTypes,
-                parentSymbol
+                embeddedSerializableTypes,
+                parentSymbol,
+                null
             );
 
-            var length = serializableSetType.RuleArguments.Length;
-            ruleArguments = new string[length + 2];
-            ruleArguments[0] = setTypeSymbol.ToDisplayString();
-            ruleArguments[1] = serializableSetType.Rule;
-            Array.Copy(serializableSetType.RuleArguments, 0, ruleArguments, 2, length);
+            var extraOptions = "";
+            if (attributes.Any(a => a.IsTidy(compilation)))
+            {
+                extraOptions += "@Tidy";
+            }
+
+            var length = serializableSetType.RuleArguments?.Length ?? 0;
+            ruleArguments = new string[length + 3];
+            ruleArguments[0] = extraOptions;
+            ruleArguments[1] = setTypeSymbol.ToDisplayString();
+            ruleArguments[2] = serializableSetType.Rule;
+            Array.Copy(serializableSetType.RuleArguments, 0, ruleArguments, 3, length);
 
             return true;
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
+        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
         {
-            const string expectedRule = nameof(HashSetMigrationRule);
+            var expectedRule = RuleName;
             var ruleName = property.Rule;
             if (expectedRule != ruleName)
             {
@@ -71,9 +82,12 @@ namespace SerializableMigration
             }
 
             var ruleArguments = property.RuleArguments;
-            var setElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
-            var setElementRuleArguments = new string[ruleArguments.Length - 2];
-            Array.Copy(ruleArguments, 2, setElementRuleArguments, 0, ruleArguments.Length - 2);
+            var hasExtraOptions = ruleArguments![0] == "" || ruleArguments[0].StartsWith("@", StringComparison.Ordinal);
+            var argumentsOffset = hasExtraOptions ? 1 : 0;
+
+            var setElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1 + argumentsOffset]];
+            var setElementRuleArguments = new string[ruleArguments.Length - 2 - argumentsOffset];
+            Array.Copy(ruleArguments, 2 + argumentsOffset, setElementRuleArguments, 0, ruleArguments.Length - 2 - argumentsOffset);
 
             var propertyName = property.Name;
             var propertyVarPrefix = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1, propertyName.Length - 1)}";
@@ -81,21 +95,21 @@ namespace SerializableMigration
             var propertyEntry = $"{propertyVarPrefix}Entry";
             var propertyCount = $"{propertyVarPrefix}Count";
 
-            source.AppendLine($"{indent}{ruleArguments[0]} {propertyEntry};");
-            source.AppendLine($"{indent}var {propertyCount} = reader.ReadInt();");
-            source.AppendLine($"{indent}{property.Name} = new System.Collections.Generic.HashSet<{ruleArguments[0]}>({propertyCount});");
+            source.AppendLine($"{indent}{ruleArguments[argumentsOffset]} {propertyEntry};");
+            source.AppendLine($"{indent}var {propertyCount} = reader.ReadEncodedInt();");
+            source.AppendLine($"{indent}{property.Name} = new System.Collections.Generic.HashSet<{ruleArguments[argumentsOffset]}>({propertyCount});");
             source.AppendLine($"{indent}for (var {propertyIndex} = 0; i < {propertyCount}; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 
             var serializableSetElement = new SerializableProperty
             {
                 Name = propertyEntry,
-                Type = ruleArguments[0],
+                Type = ruleArguments[argumentsOffset],
                 Rule = setElementRule.RuleName,
                 RuleArguments = setElementRuleArguments
             };
 
-            setElementRule.GenerateDeserializationMethod(source, $"{indent}    ", serializableSetElement);
+            setElementRule.GenerateDeserializationMethod(source, $"{indent}    ", serializableSetElement, parentReference);
             source.AppendLine($"{indent}    {property.Name}.Add({propertyEntry});");
 
             source.AppendLine($"{indent}}}");
@@ -103,7 +117,7 @@ namespace SerializableMigration
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            const string expectedRule = nameof(HashSetMigrationRule);
+            var expectedRule = RuleName;
             var ruleName = property.Rule;
             if (expectedRule != ruleName)
             {
@@ -111,16 +125,25 @@ namespace SerializableMigration
             }
 
             var ruleArguments = property.RuleArguments;
-            var setElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
-            var setElementRuleArguments = new string[ruleArguments.Length - 2];
-            Array.Copy(ruleArguments, 2, setElementRuleArguments, 0, ruleArguments.Length - 2);
+            var hasExtraOptions = ruleArguments![0] == "" || ruleArguments[0].StartsWith("@", StringComparison.Ordinal);
+            var shouldTidy = hasExtraOptions && ruleArguments[0].Contains("@Tidy");
+            var argumentsOffset = hasExtraOptions ? 1 : 0;
+
+            var setElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1 + argumentsOffset]];
+            var setElementRuleArguments = new string[ruleArguments.Length - 2 - argumentsOffset];
+            Array.Copy(ruleArguments, 2 + argumentsOffset, setElementRuleArguments, 0, ruleArguments.Length - 2 - argumentsOffset);
 
             var propertyName = property.Name;
             var propertyVarPrefix = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1, propertyName.Length - 1)}";
             var propertyEntry = $"{propertyVarPrefix}Entry";
             var propertyCount = $"{propertyVarPrefix}Count";
+
+            if (shouldTidy)
+            {
+                source.AppendLine($"{indent}{property.Name}?.Tidy();");
+            }
             source.AppendLine($"{indent}var {propertyCount} = {property.Name}?.Count ?? 0;");
-            source.AppendLine($"{indent}writer.Write({propertyCount});");
+            source.AppendLine($"{indent}writer.WriteEncodedInt({propertyCount});");
             source.AppendLine($"{indent}if ({propertyCount} > 0)");
             source.AppendLine($"{indent}{{");
             source.AppendLine($"{indent}    foreach (var {propertyEntry} in {property.Name}!)");
@@ -129,7 +152,7 @@ namespace SerializableMigration
             var serializableSetElement = new SerializableProperty
             {
                 Name = propertyEntry,
-                Type = ruleArguments[0],
+                Type = ruleArguments[argumentsOffset],
                 Rule = setElementRule.RuleName,
                 RuleArguments = setElementRuleArguments
             };

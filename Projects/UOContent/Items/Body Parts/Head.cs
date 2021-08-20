@@ -7,100 +7,51 @@ namespace Server.Items
         Tournament
     }
 
-    public class Head : Item
+    [Serializable(1, false)]
+    public partial class Head : Item
     {
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private string _playerName;
+
+        [SerializableField(1)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private HeadType _headType;
+
         [Constructible]
         public Head(string playerName) : this(HeadType.Regular, playerName)
         {
         }
 
         [Constructible]
-        public Head(HeadType headType = HeadType.Regular, string playerName = null)
-            : base(0x1DA0)
+        public Head(HeadType headType = HeadType.Regular, string playerName = null) : base(0x1DA0)
         {
-            HeadType = headType;
-            PlayerName = playerName;
+            _headType = headType;
+            _playerName = playerName;
         }
-
-        public Head(Serial serial)
-            : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string PlayerName { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public HeadType HeadType { get; set; }
 
         public override string DefaultName
         {
             get
             {
-                if (PlayerName == null)
+                if (_playerName == null)
                 {
                     return base.DefaultName;
                 }
 
-                return HeadType switch
+                return _headType switch
                 {
-                    HeadType.Duel       => $"the head of {PlayerName}, taken in a duel",
-                    HeadType.Tournament => $"the head of {PlayerName}, taken in a tournament",
-                    _                   => $"the head of {PlayerName}"
+                    HeadType.Duel       => $"the head of {_playerName}, taken in a duel",
+                    HeadType.Tournament => $"the head of {_playerName}, taken in a tournament",
+                    _                   => $"the head of {_playerName}"
                 };
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(PlayerName);
-            writer.WriteEncodedInt((int)HeadType);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    PlayerName = reader.ReadString();
-                    HeadType = (HeadType)reader.ReadEncodedInt();
-                    break;
-
-                case 0:
-                    var format = Name;
-
-                    if (format != null)
-                    {
-                        if (format.StartsWithOrdinal("the head of "))
-                        {
-                            format = format[14..]; // "the head of|..."
-                        }
-
-                        if (format.EndsWithOrdinal(", taken in a duel"))
-                        {
-                            format = format[..^", taken in a duel".Length];
-                            HeadType = HeadType.Duel;
-                        }
-                        else if (format.EndsWithOrdinal(", taken in a tournament"))
-                        {
-                            format = format[..^", taken in a tournament".Length];
-                            HeadType = HeadType.Tournament;
-                        }
-                    }
-
-                    PlayerName = format;
-                    Name = null;
-
-                    break;
-            }
+            _playerName = reader.ReadString();
+            _headType = (HeadType)reader.ReadEncodedInt();
         }
     }
 }

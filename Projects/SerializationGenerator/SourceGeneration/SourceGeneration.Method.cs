@@ -21,22 +21,24 @@ namespace SerializationGenerator
 {
     public static partial class SourceGeneration
     {
-        public static void GenerateMethodStart(this StringBuilder source, string methodName, Accessibility accessors, bool isOverride, string returnType, ImmutableArray<(ITypeSymbol, string)> parameters)
+        public static void GenerateMethodStart(
+            this StringBuilder source, string indent, string methodName, Accessibility accessors, bool isOverride,
+            string returnType, ImmutableArray<(ITypeSymbol, string)> parameters
+        )
         {
-            source.Append($"        {accessors.ToFriendlyString()}{(isOverride ? " override" : "")} {returnType} {methodName}(");
+            source.Append($"{indent}{accessors.ToFriendlyString()}{(isOverride ? " override" : "")} {returnType} {methodName}(");
             source.GenerateSignatureArguments(parameters);
-            source.AppendLine(@")
-        {");
+            source.AppendLine($")\n{indent}{{");
         }
 
-        public static void GenerateMethodEnd(this StringBuilder source) => source.AppendLine(@"        }");
+        public static void GenerateMethodEnd(this StringBuilder source, string indent) => source.AppendLine($"{indent}}}");
 
         public static void GenerateConstructorStart(
-            this StringBuilder source, string className, Accessibility accessors, ImmutableArray<(ITypeSymbol, string)> parameters,
+            this StringBuilder source, string indent, string className, Accessibility accessors, ImmutableArray<(ITypeSymbol, string)> parameters,
             ImmutableArray<string> baseParameters, bool isOverload = false
         )
         {
-            source.Append($"        {accessors.ToFriendlyString()} {className}(");
+            source.Append($"{indent}{accessors.ToFriendlyString()} {className}(");
             source.GenerateSignatureArguments(parameters);
             source.Append(')');
             bool hasBaseParams = baseParameters.Length > 0;
@@ -54,7 +56,7 @@ namespace SerializationGenerator
                 source.Append(')');
             }
 
-            source.AppendLine("\n        {");
+            source.AppendLine($"\n{indent}{{");
         }
     }
 }

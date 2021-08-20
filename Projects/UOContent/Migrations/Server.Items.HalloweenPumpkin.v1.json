@@ -1,5 +1,4 @@
 {
   "version": 1,
-  "type": "Server.Items.HalloweenPumpkin",
-  "properties": []
+  "type": "Server.Items.HalloweenPumpkin"
 }

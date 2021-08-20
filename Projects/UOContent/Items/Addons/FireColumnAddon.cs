@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class FireColumnAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class FireColumnAddon : BaseAddon
     {
         [Constructible]
         public FireColumnAddon(bool bloody = false)
@@ -27,25 +28,6 @@ namespace Server.Items
             }
         }
 
-        public FireColumnAddon(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override bool ShareHue => false;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

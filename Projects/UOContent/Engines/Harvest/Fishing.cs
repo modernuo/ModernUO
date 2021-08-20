@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Collector;
 using Server.Items;
@@ -170,12 +170,24 @@ namespace Server.Engines.Harvest
 
         public override bool CheckResources(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc, bool timed)
         {
-            return from?.Backpack?.FindItemsByType<SOS>()
-                       .Any(
-                           sos =>
-                               (from.Map == Map.Felucca || from.Map == Map.Trammel) && from.InRange(sos.TargetLocation, 60)
-                       ) ??
-                   base.CheckResources(from, tool, def, map, loc, timed);
+            Container pack = from.Backpack;
+
+            if (pack != null)
+            {
+                List<SOS> messages = pack.FindItemsByType<SOS>();
+
+                for (int i = 0; i < messages.Count; ++i)
+                {
+                    SOS sos = messages[i];
+
+                    if ((from.Map == Map.Felucca || from.Map == Map.Trammel) && from.InRange(sos.TargetLocation, 60))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return base.CheckResources(from, tool, def, map, loc, timed);
         }
 
         public override Item Construct(Type type, Mobile from)
@@ -474,7 +486,7 @@ namespace Server.Engines.Harvest
 
             if (GetHarvestDetails(from, tool, toHarvest, out _, out var map, out var loc))
             {
-                Timer.DelayCall(
+                Timer.StartTimer(
                     TimeSpan.FromSeconds(1.5),
                     () =>
                     {

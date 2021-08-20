@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class IronwoodCrown : RavenHelm
+    [Serializable(0)]
+    public partial class IronwoodCrown : RavenHelm
     {
         [Constructible]
         public IronwoodCrown()
@@ -14,10 +15,6 @@ namespace Server.Items
             Attributes.BonusInt = 5;
         }
 
-        public IronwoodCrown(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1072924; // Ironwood Crown
 
         public override int BasePhysicalResistance => 10;
@@ -25,19 +22,5 @@ namespace Server.Items
         public override int BaseColdResistance => 7;
         public override int BasePoisonResistance => 7;
         public override int BaseEnergyResistance => 10;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

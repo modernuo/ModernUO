@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class StuddedGorget : BaseArmor
+    [Serializable(0, false)]
+    public partial class StuddedGorget : BaseArmor
     {
         [Constructible]
         public StuddedGorget() : base(0x13D6) => Weight = 1.0;
-
-        public StuddedGorget(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;
@@ -27,22 +24,5 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.Half;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (Weight == 2.0)
-            {
-                Weight = 1.0;
-            }
-        }
     }
 }

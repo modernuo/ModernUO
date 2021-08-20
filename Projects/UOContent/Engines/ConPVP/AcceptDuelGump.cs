@@ -98,7 +98,7 @@ namespace Server.Engines.ConPVP
 
             AddButton(314, 173, 247, 248, 1);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(15.0), AutoReject);
+            Timer.StartTimer(TimeSpan.FromSeconds(15.0), AutoReject);
         }
 
         public string Center(string text) => $"<CENTER>{text}</CENTER>";

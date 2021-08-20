@@ -29,8 +29,6 @@ namespace Server
 
         bool InRange(Point3D p, int range);
 
-        bool InRange(IPoint2D p, int range);
-
         void RemoveItem(Item item);
     }
 
@@ -108,7 +106,7 @@ namespace Server
         public void Deserialize(IGenericReader reader)
         {
             // Should not actually be saved
-            Timer.DelayCall(Delete);
+            Timer.StartTimer(Delete);
         }
 
         public void Serialize(IGenericWriter writer)

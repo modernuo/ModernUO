@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x1451, 0x1456)]
-    public class BoneHelm : BaseArmor
+    public partial class BoneHelm : BaseArmor
     {
         [Constructible]
         public BoneHelm() : base(0x1451) => Weight = 3.0;
-
-        public BoneHelm(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;
@@ -25,22 +22,5 @@ namespace Server.Items
         public override int ArmorBase => 30;
 
         public override ArmorMaterialType MaterialType => ArmorMaterialType.Plate;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-
-            if (Weight == 1.0)
-            {
-                Weight = 3.0;
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

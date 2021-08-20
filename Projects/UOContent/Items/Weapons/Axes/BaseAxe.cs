@@ -12,17 +12,20 @@ namespace Server.Items
         bool Axe(Mobile from, BaseAxe axe);
     }
 
-    public abstract class BaseAxe : BaseMeleeWeapon
+    [Serializable(0, false)]
+    public abstract partial class BaseAxe : BaseMeleeWeapon
     {
-        private bool m_ShowUsesRemaining;
+        [SerializableField(0)]
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _showUsesRemaining;
 
-        private int m_UsesRemaining;
+        [SerializableField(1)]
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _usesRemaining;
 
-        public BaseAxe(int itemID) : base(itemID) => m_UsesRemaining = 150;
-
-        public BaseAxe(Serial serial) : base(serial)
-        {
-        }
+        public BaseAxe(int itemID) : base(itemID) => _usesRemaining = 150;
 
         public override int DefHitSound => 0x232;
         public override int DefMissSound => 0x23A;
@@ -32,28 +35,6 @@ namespace Server.Items
         public override WeaponAnimation DefAnimation => WeaponAnimation.Slash2H;
 
         public virtual HarvestSystem HarvestSystem => Lumberjacking.System;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int UsesRemaining
-        {
-            get => m_UsesRemaining;
-            set
-            {
-                m_UsesRemaining = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool ShowUsesRemaining
-        {
-            get => m_ShowUsesRemaining;
-            set
-            {
-                m_ShowUsesRemaining = value;
-                InvalidateProperties();
-            }
-        }
 
         public virtual int GetUsesScalar()
         {
@@ -71,7 +52,7 @@ namespace Server.Items
 
             var scale = GetUsesScalar();
 
-            m_UsesRemaining = (m_UsesRemaining * 100 + (scale - 1)) / scale;
+            UsesRemaining = (_usesRemaining * 100 + (scale - 1)) / scale;
             InvalidateProperties();
         }
 
@@ -81,7 +62,7 @@ namespace Server.Items
 
             var scale = GetUsesScalar();
 
-            m_UsesRemaining = (m_UsesRemaining * scale + 99) / 100;
+            UsesRemaining = (_usesRemaining * scale + 99) / 100;
             InvalidateProperties();
         }
 
@@ -124,45 +105,8 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(2); // version
-
-            writer.Write(m_ShowUsesRemaining);
-
-            writer.Write(m_UsesRemaining);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 2:
-                    {
-                        m_ShowUsesRemaining = reader.ReadBool();
-                        goto case 1;
-                    }
-                case 1:
-                    {
-                        m_UsesRemaining = reader.ReadInt();
-                        goto case 0;
-                    }
-                case 0:
-                    {
-                        if (m_UsesRemaining < 1)
-                        {
-                            m_UsesRemaining = 150;
-                        }
-
-                        break;
-                    }
-            }
         }
 
         public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)

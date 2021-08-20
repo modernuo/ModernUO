@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Server.Collections;
 using Server.Logging;
 using Server.Network;
-using Server.Utilities;
-using QueuePool = Server.Utilities.RefPool<Server.Utilities.QueueRef<Server.Items.Container>>;
 
 namespace Server.Items
 {
@@ -16,7 +15,6 @@ namespace Server.Items
 
     public class Container : Item
     {
-        private static readonly QueuePool m_QueuePool = new(QueueRef<Container>.Generate, 2, 5);
         private static readonly List<Item> m_FindItemsList = new();
 
         private ContainerData m_ContainerData;
@@ -1299,8 +1297,7 @@ namespace Server.Items
         {
             var consumed = 0;
 
-            var toDelete = new Queue<Item>();
-
+            using var toDelete = PooledRefQueue<Item>.Create();
             RecurseConsumeUpTo(this, type, amount, recurse, ref consumed, toDelete);
 
             while (toDelete.Count > 0)
@@ -1313,7 +1310,7 @@ namespace Server.Items
 
         private static void RecurseConsumeUpTo(
             Item current, Type type, int amount, bool recurse, ref int consumed,
-            Queue<Item> toDelete
+            PooledRefQueue<Item> toDelete
         )
         {
             if (current == null || current.Items.Count == 0)
@@ -1721,28 +1718,26 @@ namespace Server.Items
         /// </returns>
         public List<T> FindItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
         {
-            using (var queue = m_QueuePool.Get())
+            using var queue = PooledRefQueue<Container>.Create(128);
+            queue.Enqueue(this);
+            var items = new List<T>();
+            while (queue.Count > 0)
             {
-                queue.Enqueue(this);
-                var items = new List<T>();
-                while (queue.Count > 0)
+                var container = queue.Dequeue();
+                foreach (var item in container.Items)
                 {
-                    var container = queue.Dequeue();
-                    foreach (var item in container.Items)
+                    if (item is T typedItem && predicate?.Invoke(typedItem) != false)
                     {
-                        if (item is T typedItem && predicate?.Invoke(typedItem) != false)
-                        {
-                            items.Add(typedItem);
-                        }
-                        else if (recurse && item is Container itemContainer)
-                        {
-                            queue.Enqueue(itemContainer);
-                        }
+                        items.Add(typedItem);
+                    }
+                    else if (recurse && item is Container itemContainer)
+                    {
+                        queue.Enqueue(itemContainer);
                     }
                 }
-
-                return items;
             }
+
+            return items;
         }
 
         /// <summary>
@@ -1765,28 +1760,26 @@ namespace Server.Items
         /// </returns>
         public T FindItemByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
         {
-            using (var queue = m_QueuePool.Get())
+            using var queue = PooledRefQueue<Container>.Create(128);
+            queue.Enqueue(this);
+            while (queue.Count > 0)
             {
-                queue.Enqueue(this);
-                while (queue.Count > 0)
+                var container = queue.Dequeue();
+                foreach (var item in container.Items)
                 {
-                    var container = queue.Dequeue();
-                    foreach (var item in container.Items)
+                    if (item is T typedItem && predicate?.Invoke(typedItem) != false)
                     {
-                        if (item is T typedItem && predicate?.Invoke(typedItem) != false)
-                        {
-                            return typedItem;
-                        }
+                        return typedItem;
+                    }
 
-                        if (recurse && item is Container itemContainer)
-                        {
-                            queue.Enqueue(itemContainer);
-                        }
+                    if (recurse && item is Container itemContainer)
+                    {
+                        queue.Enqueue(itemContainer);
                     }
                 }
-
-                return null;
             }
+
+            return null;
         }
 
         private class GroupComparer : IComparer<Item>

@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x1401, 0x1400)]
-    public class Kryss : BaseSword
+    [Serializable(0, false)]
+    public partial class Kryss : BaseSword
     {
         [Constructible]
         public Kryss() : base(0x1401) => Weight = 2.0;
-
-        public Kryss(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
         public override WeaponAbility SecondaryAbility => WeaponAbility.InfectiousStrike;
@@ -33,24 +30,5 @@ namespace Server.Items
         public override SkillName DefSkill => SkillName.Fencing;
         public override WeaponType DefType => WeaponType.Piercing;
         public override WeaponAnimation DefAnimation => WeaponAnimation.Pierce1H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Weight == 1.0)
-            {
-                Weight = 2.0;
-            }
-        }
     }
 }

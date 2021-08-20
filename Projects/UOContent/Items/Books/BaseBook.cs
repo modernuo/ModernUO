@@ -7,10 +7,51 @@ using Server.Multis;
 
 namespace Server.Items
 {
-    public class BaseBook : Item, ISecurable
+    [Serializable(5, false)]
+    public partial class BaseBook : Item, ISecurable
     {
-        private string m_Author;
-        private string m_Title;
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private SecureLevel _level;
+
+        [InternString]
+        [InvalidateProperties]
+        [SerializableField(1)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private string _title;
+
+        [SerializableFieldSaveFlag(1)]
+        private bool ShouldSerializeTitle() => _title != DefaultContent?.Title;
+
+        [SerializableFieldDefault(1)]
+        private string TitleDefaultValue() => DefaultContent?.Title;
+
+        [InvalidateProperties]
+        [SerializableField(2)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private string _author;
+
+        [SerializableFieldSaveFlag(2)]
+        private bool ShouldSerializeAuthor() => _author != DefaultContent?.Author;
+
+        [SerializableFieldDefault(2)]
+        private string AuthorDefaultValue() => DefaultContent?.Author;
+
+        [SerializableField(3)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _writable;
+
+        [SerializableFieldSaveFlag(3)]
+        private bool ShouldSerializeWritable() => _writable;
+
+        [SerializableField(4, setter: "protected")]
+        private BookPageInfo[] _pages;
+
+        [SerializableFieldSaveFlag(4)]
+        private bool ShouldSerializePages() => DefaultContent?.IsMatch(_pages) != true;
+
+        [SerializableFieldDefault(4)]
+        private BookPageInfo[] PagesDefaultvalue() => DefaultContent?.Copy() ?? Array.Empty<BookPageInfo>();
 
         [Constructible]
         public BaseBook(int itemID, int pageCount = 20, bool writable = true) : this(itemID, null, null, pageCount, writable)
@@ -22,22 +63,22 @@ namespace Server.Items
         {
             var content = DefaultContent;
 
-            m_Title = title ?? content?.Title;
-            m_Author = author ?? content?.Author;
-            Writable = writable;
+            _title = title ?? content?.Title;
+            _author = author ?? content?.Author;
+            _writable = writable;
 
             if (content == null)
             {
-                Pages = new BookPageInfo[pageCount];
+                _pages = new BookPageInfo[pageCount];
 
-                for (var i = 0; i < Pages.Length; ++i)
+                for (var i = 0; i < _pages.Length; ++i)
                 {
-                    Pages[i] = new BookPageInfo();
+                    _pages[i] = new BookPageInfo();
                 }
             }
             else
             {
-                Pages = content.Copy();
+                _pages = content.Copy();
             }
         }
 
@@ -46,39 +87,8 @@ namespace Server.Items
         {
         }
 
-        public BaseBook(Serial serial) : base(serial)
-        {
-        }
-
         [CommandProperty(AccessLevel.GameMaster)]
-        public string Title
-        {
-            get => m_Title;
-            set
-            {
-                m_Title = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string Author
-        {
-            get => m_Author;
-            set
-            {
-                m_Author = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool Writable { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int PagesCount => Pages.Length;
-
-        public BookPageInfo[] Pages { get; protected set; }
+        public int PagesCount => _pages.Length;
 
         public virtual BookContent DefaultContent => null;
 
@@ -115,164 +125,59 @@ namespace Server.Items
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public SecureLevel Level { get; set; }
-
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
         {
             base.GetContextMenuEntries(from, list);
             SetSecureLevelEntry.AddTo(from, this, list);
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
+            Level = (SecureLevel)reader.ReadInt();
             var content = DefaultContent;
 
-            var flags = SaveFlags.None;
+            var flags = (OldSaveFlags)reader.ReadEncodedInt();
 
-            if (m_Title != content?.Title)
+            if ((flags & OldSaveFlags.Title) != 0)
             {
-                flags |= SaveFlags.Title;
+                _title = Utility.Intern(reader.ReadString());
+            }
+            else if (content != null)
+            {
+                _title = content.Title;
             }
 
-            if (m_Author != content?.Author)
+            if ((flags & OldSaveFlags.Author) != 0)
             {
-                flags |= SaveFlags.Author;
+                _author = reader.ReadString();
+            }
+            else if (content != null)
+            {
+                _author = content.Author;
             }
 
-            if (Writable)
+            Writable = (flags & OldSaveFlags.Writable) != 0;
+
+            if ((flags & OldSaveFlags.Content) != 0)
             {
-                flags |= SaveFlags.Writable;
-            }
-
-            if (content?.IsMatch(Pages) != true)
-            {
-                flags |= SaveFlags.Content;
-            }
-
-            writer.Write(4); // version
-
-            writer.Write((int)Level);
-
-            writer.Write((byte)flags);
-
-            if ((flags & SaveFlags.Title) != 0)
-            {
-                writer.Write(m_Title);
-            }
-
-            if ((flags & SaveFlags.Author) != 0)
-            {
-                writer.Write(m_Author);
-            }
-
-            if ((flags & SaveFlags.Content) != 0)
-            {
-                writer.WriteEncodedInt(Pages.Length);
+                Pages = new BookPageInfo[reader.ReadEncodedInt()];
 
                 for (var i = 0; i < Pages.Length; ++i)
                 {
-                    Pages[i].Serialize(writer);
+                    Pages[i] = new BookPageInfo(reader);
                 }
             }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
+            else
             {
-                case 4:
-                    {
-                        Level = (SecureLevel)reader.ReadInt();
-                        goto case 3;
-                    }
-                case 3:
-                case 2:
-                    {
-                        var content = DefaultContent;
-
-                        var flags = (SaveFlags)reader.ReadByte();
-
-                        if ((flags & SaveFlags.Title) != 0)
-                        {
-                            m_Title = Utility.Intern(reader.ReadString());
-                        }
-                        else if (content != null)
-                        {
-                            m_Title = content.Title;
-                        }
-
-                        if ((flags & SaveFlags.Author) != 0)
-                        {
-                            m_Author = reader.ReadString();
-                        }
-                        else if (content != null)
-                        {
-                            m_Author = content.Author;
-                        }
-
-                        Writable = (flags & SaveFlags.Writable) != 0;
-
-                        if ((flags & SaveFlags.Content) != 0)
-                        {
-                            Pages = new BookPageInfo[reader.ReadEncodedInt()];
-
-                            for (var i = 0; i < Pages.Length; ++i)
-                            {
-                                Pages[i] = new BookPageInfo(reader);
-                            }
-                        }
-                        else
-                        {
-                            Pages = content?.Copy() ?? Array.Empty<BookPageInfo>();
-                        }
-
-                        break;
-                    }
-                case 1:
-                case 0:
-                    {
-                        m_Title = reader.ReadString();
-                        m_Author = reader.ReadString();
-                        Writable = reader.ReadBool();
-
-                        if (version == 0 || reader.ReadBool())
-                        {
-                            Pages = new BookPageInfo[reader.ReadInt()];
-
-                            for (var i = 0; i < Pages.Length; ++i)
-                            {
-                                Pages[i] = new BookPageInfo(reader);
-                            }
-                        }
-                        else
-                        {
-                            var content = DefaultContent;
-
-                            Pages = content?.Copy() ?? Array.Empty<BookPageInfo>();
-                        }
-
-                        break;
-                    }
-            }
-
-            if (version < 3 && (Weight == 1 || Weight == 2))
-            {
-                Weight = -1;
+                Pages = content?.Copy() ?? Array.Empty<BookPageInfo>();
             }
         }
 
         public override void AddNameProperty(ObjectPropertyList list)
         {
-            if (!string.IsNullOrEmpty(m_Title))
+            if (!string.IsNullOrEmpty(_title))
             {
-                list.Add(m_Title);
+                list.Add(_title);
             }
             else
             {
@@ -284,25 +189,25 @@ namespace Server.Items
         {
           base.GetProperties( list );
 
-          if (m_Title?.Length > 0)
-            list.Add( 1060658, "Title\t{0}", m_Title ); // ~1_val~: ~2_val~
+          if (_title?.Length > 0)
+            list.Add( 1060658, "Title\t{0}", _title ); // ~1_val~: ~2_val~
 
-          if (m_Author?.Length > 0)
-            list.Add( 1060659, "Author\t{0}", m_Author ); // ~1_val~: ~2_val~
+          if (_author?.Length > 0)
+            list.Add( 1060659, "Author\t{0}", _author ); // ~1_val~: ~2_val~
 
-          if (m_Pages?.Length > 0)
-            list.Add( 1060660, "Pages\t{0}", m_Pages.Length ); // ~1_val~: ~2_val~
+          if (_pages?.Length > 0)
+            list.Add( 1060660, "Pages\t{0}", _pages.Length ); // ~1_val~: ~2_val~
         }*/
 
         public override void OnSingleClick(Mobile from)
         {
-            LabelTo(from, "{0} by {1}", m_Title, m_Author);
-            LabelTo(from, "[{0} pages]", Pages.Length);
+            LabelTo(from, "{0} by {1}", _title, _author);
+            LabelTo(from, "[{0} pages]", _pages.Length);
         }
 
         public override void OnDoubleClick(Mobile from)
         {
-            if (m_Title == null && m_Author == null && Writable)
+            if (_title == null && _author == null && Writable)
             {
                 Title = "a book";
                 Author = from.Name;
@@ -313,7 +218,7 @@ namespace Server.Items
         }
 
         [Flags]
-        private enum SaveFlags
+        private enum OldSaveFlags
         {
             None = 0x00,
             Title = 0x01,

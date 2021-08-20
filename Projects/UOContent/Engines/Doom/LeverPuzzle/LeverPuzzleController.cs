@@ -96,7 +96,7 @@ namespace Server.Engines.Doom
         private static readonly int[] ms2 = { 0x13F, 0x14B };
         private static readonly int[] cs1 = { 0x244 };
         private static readonly int[] exp = { 0x307 };
-        private Timer l_Timer;
+        private TimerExecutionToken _resetTimerToken;
         private LampRoomBox m_Box;
         private Region m_LampRoom;
 
@@ -331,15 +331,8 @@ namespace Server.Engines.Doom
 
         public virtual void KillTimers()
         {
-            if (l_Timer?.Running == true)
-            {
-                l_Timer.Stop();
-            }
-
-            if (m_Timer?.Running == true)
-            {
-                m_Timer.Stop();
-            }
+            _resetTimerToken.Cancel();
+            m_Timer?.Stop();
         }
 
         public virtual void RemoveSuccessful()
@@ -357,7 +350,7 @@ namespace Server.Engines.Doom
 
             if ((TheirKey = (ushort)(code | (TheirKey <<= 4))) < 0x0FFF)
             {
-                l_Timer = Timer.DelayCall(TimeSpan.FromSeconds(30.0), ResetPuzzle);
+                Timer.StartTimer(TimeSpan.FromSeconds(30.0), ResetPuzzle, out _resetTimerToken);
                 return;
             }
 

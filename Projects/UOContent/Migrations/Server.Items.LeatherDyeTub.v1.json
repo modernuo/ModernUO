@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "type": "Server.Items.LeatherDyeTub",
+  "properties": [
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

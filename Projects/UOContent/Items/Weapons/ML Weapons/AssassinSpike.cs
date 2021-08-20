@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x2D21, 0x2D2D)]
-    public class AssassinSpike : BaseKnife
+    [Serializable(0)]
+    public partial class AssassinSpike : BaseKnife
     {
         [Constructible]
         public AssassinSpike() : base(0x2D21) => Weight = 4.0;
-
-        public AssassinSpike(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.InfectiousStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ShadowStrike;
@@ -29,19 +26,5 @@ namespace Server.Items
 
         public override int InitMinHits => 30; // TODO
         public override int InitMaxHits => 60; // TODO
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

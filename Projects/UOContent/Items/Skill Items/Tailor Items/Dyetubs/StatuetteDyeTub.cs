@@ -2,14 +2,15 @@ using Server.Engines.VeteranRewards;
 
 namespace Server.Items
 {
-    public class StatuetteDyeTub : DyeTub, IRewardItem
+    [Serializable(1, false)]
+    public partial class StatuetteDyeTub : DyeTub, IRewardItem
     {
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _isRewardItem;
+
         [Constructible]
         public StatuetteDyeTub() => LootType = LootType.Blessed;
-
-        public StatuetteDyeTub(Serial serial) : base(serial)
-        {
-        }
 
         public override bool AllowDyables => false;
         public override bool AllowStatuettes => true;
@@ -18,12 +19,9 @@ namespace Server.Items
         public override int LabelNumber => 1049741;   // Reward Statuette Dye Tub
         public override CustomHuePicker CustomHuePicker => CustomHuePicker.LeatherDyeTub;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsRewardItem { get; set; }
-
         public override void OnDoubleClick(Mobile from)
         {
-            if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            if (_isRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
             {
                 return;
             }
@@ -35,34 +33,17 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (Core.ML && IsRewardItem)
+            if (Core.ML && _isRewardItem)
             {
                 list.Add(1076221); // 5th Year Veteran Reward
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(IsRewardItem);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
+            if (LootType == LootType.Regular)
             {
-                case 1:
-                    {
-                        IsRewardItem = reader.ReadBool();
-                        break;
-                    }
+                LootType = LootType.Blessed;
             }
         }
     }

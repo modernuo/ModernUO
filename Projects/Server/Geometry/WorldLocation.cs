@@ -66,7 +66,7 @@ namespace Server
         {
         }
 
-        public WorldLocation(IPoint2D p, Map map) : this(p.X, p.Y, 0, map)
+        public WorldLocation(Point2D p, Map map) : this(p.X, p.Y, 0, map)
         {
         }
 
@@ -74,7 +74,7 @@ namespace Server
         {
         }
 
-        public WorldLocation(IPoint3D p, Map map) : this(p.X, p.Y, p.Z, map)
+        public WorldLocation(Point3D p, Map map) : this(p.X, p.Y, p.Z, map)
         {
         }
 

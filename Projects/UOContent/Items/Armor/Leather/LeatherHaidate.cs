@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class LeatherHaidate : BaseArmor
+    [Serializable(0, false)]
+    public partial class LeatherHaidate : BaseArmor
     {
         [Constructible]
         public LeatherHaidate() : base(0x278A) => Weight = 4.0;
-
-        public LeatherHaidate(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;
@@ -27,17 +24,5 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

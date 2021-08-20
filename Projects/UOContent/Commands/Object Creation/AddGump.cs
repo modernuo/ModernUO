@@ -118,7 +118,7 @@ namespace Server.Gumps
             }
             else
             {
-                types = Match(val, OnlyMobile).ToArray();
+                types = Match(val, OnlyMobile);
                 explicitSearch = true;
             }
             e.Mobile.SendGump(new AddGump(e.Mobile, val, 0, types, explicitSearch,OnlyMobile));
@@ -129,7 +129,7 @@ namespace Server.Gumps
         
        
 
-        private static void Match(string match, Type[] types, List<Type> results)
+        private static void Match(string match, Type[] types, HashSet<Type> results)
         {
             if (match.Length == 0)
             {
@@ -138,31 +138,44 @@ namespace Server.Gumps
 
             match = match.ToLower();
 
-            for (var i = 0; i < types.Length; ++i)
+            for (var i = 0; i < types.Length; i++)
             {
                 var t = types[i];
 
-                if ((typeofMobile.IsAssignableFrom(t) || typeofItem.IsAssignableFrom(t)) &&
-                    t.Name.InsensitiveContains(match) && !results.Contains(t))
+                if (!(typeofMobile.IsAssignableFrom(t) || typeofItem.IsAssignableFrom(t)) ||
+                    !t.Name.InsensitiveContains(match) || results.Contains(t))
                 {
-                    var ctors = t.GetConstructors();
+                    continue;
+                }
 
-                    for (var j = 0; j < ctors.Length; ++j)
+                var ctors = t.GetConstructors();
+
+                for (var j = 0; j < ctors.Length; j++)
+                {
+                    var ctor = ctors[j];
+                    var isEmptyCtor = true;
+                    var paramsList = ctor.GetParameters();
+                    for (var k = 0; k < paramsList.Length; k++)
                     {
-                        if (ctors[j].GetParameters().Length == 0 &&
-                            ctors[j].IsDefined(typeof(ConstructibleAttribute), false))
+                        if (!paramsList[k].HasDefaultValue)
                         {
-                            results.Add(t);
+                            isEmptyCtor = false;
                             break;
                         }
+                    }
+
+                    if (isEmptyCtor && ctors[j].IsDefined(typeof(ConstructibleAttribute), false))
+                    {
+                        results.Add(t);
+                        break;
                     }
                 }
             }
         }
 
-        public static List<Type> Match(string match,bool onlyMobiles=false)
+        public static Type[] Match(string match,bool onlyMobiles=false)
         {
-            var results = new List<Type>();
+            var results = new HashSet<Type>();
             Type[] types;
 
             var asms = AssemblyHandler.Assemblies;
@@ -177,7 +190,7 @@ namespace Server.Gumps
             Match(match, types, results);
 
             results.Sort(new TypeNameComparer());
-            if(m_OnlyMobiles) results = results.Where(_ => _.FullName.IndexOf("Mobiles")!=-1).ToList();
+            if(m_OnlyMobiles) results = results.Where(_ => _.FullName.IndexOf("Mobiles")!=-1).ToArray();
             return results;
         }
 
@@ -199,7 +212,7 @@ namespace Server.Gumps
                         }
                         else
                         {
-                            from.SendGump(new AddGump(from, match, 0, Match(match).ToArray(), true, m_OnlyMobiles));
+                            from.SendGump(new AddGump(from, match, 0, Match(match), true, m_OnlyMobiles));
                         }
 
                         break;
@@ -275,6 +288,7 @@ namespace Server.Gumps
 
         private class TypeNameComparer : IComparer<Type>
         {
+            public static readonly TypeNameComparer Instance = new();
             public int Compare(Type x, Type y) => string.CompareOrdinal(x?.Name, y?.Name);
         }
 

@@ -126,7 +126,7 @@ namespace Server.Multis
                     }
             }
 
-            Timer.DelayCall(Delete);
+            Timer.StartTimer(Delete);
         }
 
         private class DecayTimer : Timer

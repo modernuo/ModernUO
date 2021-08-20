@@ -13,7 +13,7 @@ namespace Server.Factions
         public static readonly TimeSpan CampaignPeriod = TimeSpan.FromDays(1.0);
         public static readonly TimeSpan VotingPeriod = TimeSpan.FromDays(3.0);
 
-        private Timer m_Timer;
+        private Timer _timer;
 
         public Election(Faction faction)
         {
@@ -109,7 +109,7 @@ namespace Server.Factions
 
         public void StartTimer()
         {
-            m_Timer = Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), Slice);
+            _timer = Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), Slice);
         }
 
         public void Serialize(IGenericWriter writer)
@@ -274,9 +274,8 @@ namespace Server.Factions
         {
             if (Faction.Election != this)
             {
-                m_Timer?.Stop();
-                m_Timer = null;
-
+                _timer?.Stop();
+                _timer = null;
                 return;
             }
 

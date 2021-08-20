@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class GrammarOfOrcish : BaseBook
+    [Serializable(0)]
+    public partial class GrammarOfOrcish : BaseBook
     {
         public static readonly BookContent Content = new(
             "A Grammar of Orcish",
@@ -242,28 +243,11 @@ namespace Server.Items
         {
         }
 
-        public GrammarOfOrcish(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class CallToAnarchy : BaseBook
+    [Serializable(0)]
+    public partial class CallToAnarchy : BaseBook
     {
         public static readonly BookContent Content = new(
             "A Politic Call to Anarchy",
@@ -420,28 +404,11 @@ namespace Server.Items
         {
         }
 
-        public CallToAnarchy(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class ArmsAndWeaponsPrimer : BaseBook
+    [Serializable(0)]
+    public partial class ArmsAndWeaponsPrimer : BaseBook
     {
         public static readonly BookContent Content = new(
             "A Primer on Arms and Weapons",
@@ -608,28 +575,11 @@ namespace Server.Items
         {
         }
 
-        public ArmsAndWeaponsPrimer(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class SongOfSamlethe : BaseBook
+    [Serializable(0)]
+    public partial class SongOfSamlethe : BaseBook
     {
         public static readonly BookContent Content = new(
             "A Song of Samlethe",
@@ -694,28 +644,11 @@ namespace Server.Items
         {
         }
 
-        public SongOfSamlethe(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class TaleOfThreeTribes : BaseBook
+    [Serializable(0)]
+    public partial class TaleOfThreeTribes : BaseBook
     {
         public static readonly BookContent Content = new(
             "A Tale of Three Tribes",
@@ -823,28 +756,11 @@ namespace Server.Items
         {
         }
 
-        public TaleOfThreeTribes(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class GuideToGuilds : BaseBook
+    [Serializable(0)]
+    public partial class GuideToGuilds : BaseBook
     {
         public static readonly BookContent Content = new(
             "Beltran's Guide to Guilds",
@@ -1028,28 +944,11 @@ namespace Server.Items
         {
         }
 
-        public GuideToGuilds(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class BirdsOfBritannia : BaseBook
+    [Serializable(0)]
+    public partial class BirdsOfBritannia : BaseBook
     {
         public static readonly BookContent Content = new(
             "Birds of Britannia",
@@ -1335,28 +1234,11 @@ namespace Server.Items
         {
         }
 
-        public BirdsOfBritannia(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class BritannianFlora : BaseBook
+    [Serializable(0)]
+    public partial class BritannianFlora : BaseBook
     {
         public static readonly BookContent Content = new(
             "Britannian Flora: A Casual Guide",
@@ -1547,28 +1429,11 @@ namespace Server.Items
         {
         }
 
-        public BritannianFlora(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class ChildrenTalesVol2 : BaseBook
+    [Serializable(0)]
+    public partial class ChildrenTalesVol2 : BaseBook
     {
         public static readonly BookContent Content = new(
             "Classic Children's Tales, Volume 2",
@@ -1671,28 +1536,11 @@ namespace Server.Items
         {
         }
 
-        public ChildrenTalesVol2(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class TalesOfVesperVol1 : BaseBook
+    [Serializable(0)]
+    public partial class TalesOfVesperVol1 : BaseBook
     {
         public static readonly BookContent Content = new(
             "Classic Tales of Vesper, Volume 1",
@@ -1909,28 +1757,11 @@ namespace Server.Items
         {
         }
 
-        public TalesOfVesperVol1(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class DeceitDungeonOfHorror : BaseBook
+    [Serializable(0)]
+    public partial class DeceitDungeonOfHorror : BaseBook
     {
         public static readonly BookContent Content = new(
             "Deceit: A Dungeon of Horrors",
@@ -2058,28 +1889,11 @@ namespace Server.Items
         {
         }
 
-        public DeceitDungeonOfHorror(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class DimensionalTravel : BaseBook
+    [Serializable(0)]
+    public partial class DimensionalTravel : BaseBook
     {
         public static readonly BookContent Content = new(
             "Dimensional Travel, a Monograph",
@@ -2271,28 +2085,11 @@ namespace Server.Items
         {
         }
 
-        public DimensionalTravel(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class EthicalHedonism : BaseBook
+    [Serializable(0)]
+    public partial class EthicalHedonism : BaseBook
     {
         public static readonly BookContent Content = new(
             "Ethical Hedonism: An Introduction",
@@ -2549,28 +2346,11 @@ namespace Server.Items
         {
         }
 
-        public EthicalHedonism(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class MyStory : BaseBook
+    [Serializable(0)]
+    public partial class MyStory : BaseBook
     {
         public static readonly BookContent Content = new(
             "My Story",
@@ -3068,28 +2848,11 @@ namespace Server.Items
         {
         }
 
-        public MyStory(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class DiversityOfOurLand : BaseBook
+    [Serializable(0)]
+    public partial class DiversityOfOurLand : BaseBook
     {
         public static readonly BookContent Content = new(
             "On the Diversity of Our Land",
@@ -3248,28 +3011,11 @@ namespace Server.Items
         {
         }
 
-        public DiversityOfOurLand(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class QuestOfVirtues : BaseBook
+    [Serializable(0)]
+    public partial class QuestOfVirtues : BaseBook
     {
         public static readonly BookContent Content = new(
             "Quest of the Virtues",
@@ -3658,28 +3404,11 @@ namespace Server.Items
         {
         }
 
-        public QuestOfVirtues(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class RegardingLlamas : BaseBook
+    [Serializable(0)]
+    public partial class RegardingLlamas : BaseBook
     {
         public static readonly BookContent Content = new(
             "Regarding Llamas",
@@ -3729,28 +3458,11 @@ namespace Server.Items
         {
         }
 
-        public RegardingLlamas(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class TalkingToWisps : BaseBook
+    [Serializable(0)]
+    public partial class TalkingToWisps : BaseBook
     {
         public static readonly BookContent Content = new(
             "Talking to Wisps",
@@ -3846,28 +3558,11 @@ namespace Server.Items
         {
         }
 
-        public TalkingToWisps(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class TamingDragons : BaseBook
+    [Serializable(0)]
+    public partial class TamingDragons : BaseBook
     {
         public static readonly BookContent Content = new(
             "Taming Dragons",
@@ -3953,28 +3648,11 @@ namespace Server.Items
         {
         }
 
-        public TamingDragons(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class BoldStranger : BaseBook
+    [Serializable(0)]
+    public partial class BoldStranger : BaseBook
     {
         public static readonly BookContent Content = new(
             "The Bold Stranger",
@@ -4123,28 +3801,11 @@ namespace Server.Items
         {
         }
 
-        public BoldStranger(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class BurningOfTrinsic : BaseBook
+    [Serializable(0)]
+    public partial class BurningOfTrinsic : BaseBook
     {
         public static readonly BookContent Content = new(
             "The Burning of Trinsic",
@@ -4384,28 +4045,11 @@ namespace Server.Items
         {
         }
 
-        public BurningOfTrinsic(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class TheFight : BaseBook
+    [Serializable(0)]
+    public partial class TheFight : BaseBook
     {
         public static readonly BookContent Content = new(
             "The Fight",
@@ -4543,28 +4187,11 @@ namespace Server.Items
         {
         }
 
-        public TheFight(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class LifeOfATravellingMinstrel : BaseBook
+    [Serializable(0)]
+    public partial class LifeOfATravellingMinstrel : BaseBook
     {
         public static readonly BookContent Content = new(
             "The Life of a Travelling Minstrel",
@@ -4749,28 +4376,11 @@ namespace Server.Items
         {
         }
 
-        public LifeOfATravellingMinstrel(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class MajorTradeAssociation : BaseBook
+    [Serializable(0)]
+    public partial class MajorTradeAssociation : BaseBook
     {
         public static readonly BookContent Content = new(
             "The Major Trade Associations",
@@ -4956,28 +4566,11 @@ namespace Server.Items
         {
         }
 
-        public MajorTradeAssociation(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class RankingsOfTrades : BaseBook
+    [Serializable(0)]
+    public partial class RankingsOfTrades : BaseBook
     {
         public static readonly BookContent Content = new(
             "The Rankings of Trades",
@@ -5074,28 +4667,11 @@ namespace Server.Items
         {
         }
 
-        public RankingsOfTrades(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class WildGirlOfTheForest : BaseBook
+    [Serializable(0)]
+    public partial class WildGirlOfTheForest : BaseBook
     {
         public static readonly BookContent Content = new(
             "The Wild Girl of the Forest",
@@ -5265,28 +4841,11 @@ namespace Server.Items
         {
         }
 
-        public WildGirlOfTheForest(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class TreatiseOnAlchemy : BaseBook
+    [Serializable(0)]
+    public partial class TreatiseOnAlchemy : BaseBook
     {
         public static readonly BookContent Content = new(
             "Treatise on Alchemy",
@@ -5411,28 +4970,11 @@ namespace Server.Items
         {
         }
 
-        public TreatiseOnAlchemy(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class VirtueBook : BaseBook
+    [Serializable(0)]
+    public partial class VirtueBook : BaseBook
     {
         public static readonly BookContent Content = new(
             "Virtue",
@@ -5642,24 +5184,6 @@ namespace Server.Items
         {
         }
 
-        public VirtueBook(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

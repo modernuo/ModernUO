@@ -124,7 +124,7 @@ namespace Server.Factions
                             {
                                 var factionItem = new FactionItem(reader, m_Faction);
 
-                                Timer.DelayCall(factionItem.CheckAttach); // sandbox attachment
+                                Timer.StartTimer(factionItem.CheckAttach); // sandbox attachment
                             }
                         }
 

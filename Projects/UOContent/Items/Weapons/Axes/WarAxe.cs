@@ -2,15 +2,12 @@ using Server.Engines.Harvest;
 
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x13B0, 0x13AF)]
-    public class WarAxe : BaseAxe
+    public partial class WarAxe : BaseAxe
     {
         [Constructible]
         public WarAxe() : base(0x13B0) => Weight = 8.0;
-
-        public WarAxe(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
         public override WeaponAbility SecondaryAbility => WeaponAbility.BleedAttack;
@@ -37,19 +34,5 @@ namespace Server.Items
         public override WeaponAnimation DefAnimation => WeaponAnimation.Bash1H;
 
         public override HarvestSystem HarvestSystem => null;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

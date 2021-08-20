@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class PentagramAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class PentagramAddon : BaseAddon
     {
         [Constructible]
         public PentagramAddon()
@@ -16,53 +17,18 @@ namespace Server.Items
             AddComponent(new AddonComponent(0xFED), 1, 1, 0);
         }
 
-        public PentagramAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new PentagramDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PentagramDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class PentagramDeed : BaseAddonDeed
     {
         [Constructible]
         public PentagramDeed()
         {
         }
 
-        public PentagramDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new PentagramAddon();
         public override int LabelNumber => 1044328; // pentagram
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

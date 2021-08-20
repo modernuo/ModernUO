@@ -1,17 +1,14 @@
 namespace Server.Items
 {
     [Flippable(0x27A9, 0x27F4)]
-    public class Daisho : BaseSword
+    [Serializable(0, false)]
+    public partial class Daisho : BaseSword
     {
         [Constructible]
         public Daisho() : base(0x27A9)
         {
             Weight = 8.0;
             Layer = Layer.TwoHanded;
-        }
-
-        public Daisho(Serial serial) : base(serial)
-        {
         }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Feint;
@@ -33,19 +30,5 @@ namespace Server.Items
 
         public override int InitMinHits => 45;
         public override int InitMaxHits => 65;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
