@@ -33,6 +33,7 @@ namespace Server.Items
         [SerializableFieldDefault(1)]
         private AosArmorAttributes ArmorAttributesDefaultValue() => new(this);
 
+        [EncodedInt]
         [InvalidateProperties]
         [SerializableField(2)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
@@ -41,6 +42,7 @@ namespace Server.Items
         [SerializableFieldSaveFlag(2)]
         private bool ShouldSerializePhysicalBonus() => _physicalBonus != 0;
 
+        [EncodedInt]
         [InvalidateProperties]
         [SerializableField(3)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
@@ -49,6 +51,7 @@ namespace Server.Items
         [SerializableFieldSaveFlag(3)]
         private bool ShouldSerializeFireBonus() => _fireBonus != 0;
 
+        [EncodedInt]
         [InvalidateProperties]
         [SerializableField(4)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
@@ -57,6 +60,7 @@ namespace Server.Items
         [SerializableFieldSaveFlag(4)]
         private bool ShouldSerializeColdBonus() => _coldBonus != 0;
 
+        [EncodedInt]
         [InvalidateProperties]
         [SerializableField(5)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
@@ -65,6 +69,7 @@ namespace Server.Items
         [SerializableFieldSaveFlag(5)]
         private bool ShouldSerializePoisonBonus() => _poisonBonus != 0;
 
+        [EncodedInt]
         [InvalidateProperties]
         [SerializableField(6)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
@@ -80,6 +85,7 @@ namespace Server.Items
         [SerializableFieldSaveFlag(7)]
         private bool ShouldSerializeIdentified() => _identified;
 
+        [EncodedInt]
         [SerializableField(8)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
         private int _maxHitPoints;
@@ -281,6 +287,7 @@ namespace Server.Items
         [SerializableFieldDefault(14)]
         private CraftResource ResourceDefaultValue() => DefaultResource;
 
+        [EncodedInt]
         [SerializableField(15)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int BaseArmorRating
@@ -357,6 +364,7 @@ namespace Server.Items
 
         public double ArmorRatingScaled => ArmorRating * ArmorScalar;
 
+        [EncodedInt]
         [SerializableField(16)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int StrBonus
@@ -376,6 +384,7 @@ namespace Server.Items
         [SerializableFieldDefault(16)]
         private int StrBonusDefaultValue() => -1;
 
+        [EncodedInt]
         [SerializableField(17)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int DexBonus
@@ -395,6 +404,7 @@ namespace Server.Items
         [SerializableFieldDefault(17)]
         private int DexBonusDefaultValue() => -1;
 
+        [EncodedInt]
         [SerializableField(18)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int IntBonus
@@ -414,6 +424,7 @@ namespace Server.Items
         [SerializableFieldDefault(18)]
         private int IntBonusDefaultValue() => -1;
 
+        [EncodedInt]
         [SerializableField(19)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int StrRequirement
@@ -433,6 +444,7 @@ namespace Server.Items
         [SerializableFieldDefault(19)]
         private int StrReqDefaultValue() => -1;
 
+        [EncodedInt]
         [SerializableField(20)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int DexRequirement
@@ -452,6 +464,7 @@ namespace Server.Items
         [SerializableFieldDefault(20)]
         private int DexReqDefaultValue() => -1;
 
+        [EncodedInt]
         [SerializableField(21)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int IntRequirement
@@ -692,6 +705,7 @@ namespace Server.Items
 
         public virtual bool CanFortify => true;
 
+        [EncodedInt]
         [SerializableField(9)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int HitPoints
