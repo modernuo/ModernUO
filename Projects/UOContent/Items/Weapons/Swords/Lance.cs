@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x26C0, 0x26CA)]
-    public class Lance : BaseSword
+    [Serializable(0, false)]
+    public partial class Lance : BaseSword
     {
         [Constructible]
         public Lance() : base(0x26C0) => Weight = 12.0;
-
-        public Lance(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Dismount;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;
@@ -33,19 +30,5 @@ namespace Server.Items
         public override SkillName DefSkill => SkillName.Fencing;
         public override WeaponType DefType => WeaponType.Piercing;
         public override WeaponAnimation DefAnimation => WeaponAnimation.Pierce1H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

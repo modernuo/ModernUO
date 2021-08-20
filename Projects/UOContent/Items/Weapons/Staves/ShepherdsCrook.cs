@@ -7,14 +7,11 @@ using Server.Targeting;
 namespace Server.Items
 {
     [Flippable(0xE81, 0xE82)]
-    public class ShepherdsCrook : BaseStaff
+    [Serializable(0, false)]
+    public partial class ShepherdsCrook : BaseStaff
     {
         [Constructible]
         public ShepherdsCrook() : base(0xE81) => Weight = 4.0;
-
-        public ShepherdsCrook(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
@@ -32,25 +29,6 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 50;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Weight == 2.0)
-            {
-                Weight = 4.0;
-            }
-        }
 
         public override void OnDoubleClick(Mobile from)
         {

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SerializationGenerator.ContentStruct.cs                         *
+ * File: SerializationEntityGeneration.ContentStruct.cs                  *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -25,6 +25,7 @@ namespace SerializationGenerator
     {
         public static void GenerateMigrationContentStruct(
             this StringBuilder source,
+            Compilation compilation,
             SerializableMetadata migration,
             INamedTypeSymbol classSymbol
         )
@@ -37,10 +38,14 @@ namespace SerializationGenerator
 
             foreach (var serializableProperty in properties)
             {
-                source.AppendLine($"{indent}    internal readonly {serializableProperty.Type} {serializableProperty.Name};");
+                var type = compilation.GetTypeByMetadataName(serializableProperty.Type)?.IsValueType == true
+                           || SymbolMetadata.IsPrimitiveFromTypeDisplayString(serializableProperty.Type)
+                    ? $"{serializableProperty.Type}?" : serializableProperty.Type;
+
+                source.AppendLine($"{indent}    internal readonly {type} {serializableProperty.Name};");
             }
 
-            var innerIndent = $"{indent}        ";
+            const string innerIndent = $"{indent}        ";
 
             var usesSaveFlags = properties.Any(p => p.UsesSaveFlag == true);
 
@@ -54,7 +59,7 @@ namespace SerializationGenerator
                     Accessibility.Private
                 );
 
-                source.GenerateEnumValue("            ", true, "None", -1);
+                source.GenerateEnumValue(innerIndent, true, "None", -1);
                 int index = 0;
                 foreach (var property in properties)
                 {
@@ -77,7 +82,6 @@ namespace SerializationGenerator
 
             if (properties.Length > 0)
             {
-                source.AppendLine();
                 foreach (var property in properties)
                 {
                     if (property.UsesSaveFlag == true)
@@ -91,6 +95,7 @@ namespace SerializationGenerator
                         else
                         {
                             source.AppendLine($"{innerIndent}if ((saveFlags & V{migration.Version}SaveFlag.{property.Name}) != 0)\n{innerIndent}{{");
+
                             SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
                                 source,
                                 $"{innerIndent}    ",

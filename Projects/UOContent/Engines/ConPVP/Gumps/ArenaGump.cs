@@ -245,7 +245,7 @@ namespace Server.Engines.ConPVP
             {
                 m_From.SendLocalizedMessage(1049616); // You are too busy to do that at the moment.
             }
-            else if (m_From.Map == arena.Facet && arena.Zone.Contains(m_From))
+            else if (m_From.Map == arena.Facet && arena.Zone.Contains(m_From.Location))
             {
                 m_From.SendLocalizedMessage(1019003); // You are already there.
             }

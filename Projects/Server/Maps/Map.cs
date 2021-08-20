@@ -54,7 +54,7 @@ namespace Server
 
         public static IEnumerable<NetState> SelectClients(Sector s, Rectangle2D bounds)
         {
-            return s.Clients.Where(o => o?.Mobile?.Deleted == false && bounds.Contains(o.Mobile));
+            return s.Clients.Where(o => o?.Mobile?.Deleted == false && bounds.Contains(o.Mobile.Location));
         }
 
         public static IEnumerable<IEntity> SelectEntities(Sector s, Rectangle2D bounds) =>
@@ -73,18 +73,18 @@ namespace Server
                 eable = eable.Union(s.Items.Where(o => o?.Deleted == false && o.Parent == null));
             }
 
-            return eable.Where(bounds.Contains);
+            return eable.Where(o => bounds.Contains(o.Location));
         }
 
         public static IEnumerable<T> SelectMobiles<T>(Sector s, Rectangle2D bounds) where T : Mobile
         {
-            return s.Mobiles.OfType<T>().Where(o => !o.Deleted && bounds.Contains(o));
+            return s.Mobiles.OfType<T>().Where(o => !o.Deleted && bounds.Contains(o.Location));
         }
 
         public static IEnumerable<T> SelectItems<T>(Sector s, Rectangle2D bounds) where T : Item
         {
             return s.Items.OfType<T>()
-                .Where(o => o.Deleted == false && o.Parent == null && bounds.Contains(o));
+                .Where(o => o.Deleted == false && o.Parent == null && bounds.Contains(o.Location));
         }
 
         public static IEnumerable<BaseMulti> SelectMultis(Sector s, Rectangle2D bounds)
@@ -806,7 +806,7 @@ namespace Server
         {
             if (this != Internal)
             {
-                GetSector(m).OnClientChange(oldState, newState);
+                GetSector(m.Location).OnClientChange(oldState, newState);
             }
         }
 
@@ -814,7 +814,7 @@ namespace Server
         {
             if (this != Internal)
             {
-                GetSector(m).OnEnter(m);
+                GetSector(m.Location).OnEnter(m);
             }
         }
 
@@ -825,7 +825,7 @@ namespace Server
                 return;
             }
 
-            GetSector(item).OnEnter(item);
+            GetSector(item.Location).OnEnter(item);
 
             if (item is BaseMulti m)
             {
@@ -842,7 +842,7 @@ namespace Server
         {
             if (this != Internal)
             {
-                GetSector(m).OnLeave(m);
+                GetSector(m.Location).OnLeave(m);
             }
         }
 
@@ -853,7 +853,7 @@ namespace Server
                 return;
             }
 
-            GetSector(item).OnLeave(item);
+            GetSector(item.Location).OnLeave(item);
 
             if (item is BaseMulti m)
             {
@@ -1192,7 +1192,7 @@ namespace Server
 
         public Sector GetSector(Point2D p) => InternalGetSector(p.m_X >> SectorShift, p.m_Y >> SectorShift);
 
-        public Sector GetSector(IPoint2D p) => InternalGetSector(p.X >> SectorShift, p.Y >> SectorShift);
+        // public Sector GetSector(IPoint2D p) => InternalGetSector(p.X >> SectorShift, p.Y >> SectorShift);
 
         public Sector GetSector(int x, int y) => InternalGetSector(x >> SectorShift, y >> SectorShift);
 

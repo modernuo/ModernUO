@@ -37,11 +37,8 @@ namespace Server.Items
         [SerializableFieldSaveFlag(0)]
         private bool ShouldSerializeWeaponAttributes() => !_weaponAttributes.IsEmpty;
 
-        [AfterDeserialization]
-        private void AfterDeserialization()
-        {
-            _weaponAttributes ??= new AosWeaponAttributes(this);
-        }
+        [SerializableFieldDefault(0)]
+        private AosWeaponAttributes WeaponAttributesDefaultValue() => new(this);
 
         public override void AppendChildNameProperties(ObjectPropertyList list)
         {

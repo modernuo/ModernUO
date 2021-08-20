@@ -3,13 +3,10 @@ using Server.Engines.ConPVP;
 
 namespace Server.Items
 {
-    public abstract class BaseSpear : BaseMeleeWeapon
+    [Serializable(0, false)]
+    public abstract partial class BaseSpear : BaseMeleeWeapon
     {
         public BaseSpear(int itemID) : base(itemID)
-        {
-        }
-
-        public BaseSpear(Serial serial) : base(serial)
         {
         }
 
@@ -19,20 +16,6 @@ namespace Server.Items
         public override SkillName DefSkill => SkillName.Fencing;
         public override WeaponType DefType => WeaponType.Piercing;
         public override WeaponAnimation DefAnimation => WeaponAnimation.Pierce2H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
 
         public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
         {

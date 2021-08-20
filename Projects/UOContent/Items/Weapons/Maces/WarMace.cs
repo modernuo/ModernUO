@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x1407, 0x1406)]
-    public class WarMace : BaseBashing
+    [Serializable(0, false)]
+    public partial class WarMace : BaseBashing
     {
         [Constructible]
         public WarMace() : base(0x1407) => Weight = 17.0;
-
-        public WarMace(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;
@@ -26,19 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 110;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

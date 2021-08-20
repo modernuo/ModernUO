@@ -116,6 +116,8 @@ namespace SerializationGenerator
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_PARENT_ATTRIBUTE);
             var serializableFieldSaveFlagAttribute =
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_SAVE_FLAG_ATTRIBUTE);
+            var serializableFieldDefaultAttribute =
+                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_DEFAULT_ATTRIBUTE);
 
             // If we have a parent that is or derives from ISerializable, then we are in override
             var isOverride = classSymbol.BaseType.ContainsInterface(serializableInterface);
@@ -131,21 +133,28 @@ namespace SerializationGenerator
             var encodedVersion = (bool)serializableAttr.ConstructorArguments[1].Value!;
 
             // Let's find out if we need to do serialization flags
-            var serializablePropertyFlagGettersSet = new SortedSet<(IMethodSymbol, int)>(new SerializableFieldFlagComparer());
+            var serializableFieldSaveFlags = new SortedDictionary<int, SerializableFieldSaveFlagMethods>();
             foreach (var m in classSymbol.GetMembers().OfType<IMethodSymbol>())
             {
                 var getSaveFlagAttribute = m.GetAttribute(serializableFieldSaveFlagAttribute);
-                if (getSaveFlagAttribute == null)
+                var getDefaultValueAttribute = m.GetAttribute(serializableFieldDefaultAttribute);
+
+                if (getSaveFlagAttribute == null && getDefaultValueAttribute == null)
                 {
                     continue;
                 }
 
-                var attrCtorArgs = getSaveFlagAttribute.ConstructorArguments;
+                var attrCtorArgs = getSaveFlagAttribute?.ConstructorArguments ?? getDefaultValueAttribute.ConstructorArguments;
                 var order = (int)attrCtorArgs[0].Value!;
 
-                serializablePropertyFlagGettersSet.Add((m, order));
+                serializableFieldSaveFlags.TryGetValue(order, out var saveFlagMethods);
+
+                serializableFieldSaveFlags[order] = new SerializableFieldSaveFlagMethods
+                {
+                    DetermineFieldShouldSerialize = getSaveFlagAttribute != null ? m : saveFlagMethods?.DetermineFieldShouldSerialize,
+                    GetFieldDefaultValue = getDefaultValueAttribute != null ? m : saveFlagMethods?.GetFieldDefaultValue
+                };
             }
-            var serializablePropertyFlagGetters = serializablePropertyFlagGettersSet.ToImmutableArray();
 
             var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
             var className = classSymbol.Name;
@@ -243,6 +252,8 @@ namespace SerializationGenerator
                     source.AppendLine();
                 }
 
+                serializableFieldSaveFlags.TryGetValue(order, out var serializableFieldSaveFlagMethods);
+
                 var serializableProperty = SerializableMigrationRulesEngine.GenerateSerializableProperty(
                     compilation,
                     fieldOrPropertySymbol,
@@ -251,7 +262,7 @@ namespace SerializationGenerator
                     serializableTypes,
                     embeddedSerializableTypes,
                     classSymbol,
-                    serializablePropertyFlagGetters.FirstOrDefault(m => m.Item2 == order).Item1
+                    serializableFieldSaveFlagMethods
                 );
 
                 serializablePropertySet.Add(serializableProperty);
@@ -298,7 +309,7 @@ namespace SerializationGenerator
                     var migration = migrations[i];
                     if (migration.Version < version)
                     {
-                        source.GenerateMigrationContentStruct(migration, classSymbol);
+                        source.GenerateMigrationContentStruct(compilation, migration, classSymbol);
                         source.AppendLine();
                     }
                 }
@@ -310,7 +321,7 @@ namespace SerializationGenerator
                 isOverride,
                 encodedVersion,
                 serializableProperties,
-                serializablePropertyFlagGetters
+                serializableFieldSaveFlags
             );
             source.AppendLine();
 
@@ -324,11 +335,11 @@ namespace SerializationGenerator
                 migrations,
                 serializableProperties,
                 parentFieldOrProperty,
-                serializablePropertyFlagGetters
+                serializableFieldSaveFlags
             );
 
             // Serialize SaveFlag enum class
-            if (serializablePropertyFlagGetters.Length > 0)
+            if (serializableFieldSaveFlags.Count > 0)
             {
                 source.AppendLine();
                 source.GenerateEnumStart(
@@ -340,7 +351,7 @@ namespace SerializationGenerator
 
                 source.GenerateEnumValue("            ", true, "None", -1);
                 int index = 0;
-                foreach (var (_, order) in serializablePropertyFlagGetters)
+                foreach (var (order, _) in serializableFieldSaveFlags)
                 {
                     source.GenerateEnumValue("            ", true, serializableProperties[order].Name, index++);
                 }

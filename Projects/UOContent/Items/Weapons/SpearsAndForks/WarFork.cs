@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x1405, 0x1404)]
-    public class WarFork : BaseSpear
+    [Serializable(0, false)]
+    public partial class WarFork : BaseSpear
     {
         [Constructible]
         public WarFork() : base(0x1405) => Weight = 9.0;
-
-        public WarFork(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
@@ -31,19 +28,5 @@ namespace Server.Items
         public override int InitMaxHits => 110;
 
         public override WeaponAnimation DefAnimation => WeaponAnimation.Pierce1H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
