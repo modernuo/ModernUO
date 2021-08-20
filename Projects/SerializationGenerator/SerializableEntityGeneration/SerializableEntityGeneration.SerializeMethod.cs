@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -29,7 +30,7 @@ namespace SerializationGenerator
             bool isOverride,
             bool encodedVersion,
             ImmutableArray<SerializableProperty> properties,
-            ImmutableArray<(IMethodSymbol, int)> propertyFlagGetters
+            SortedDictionary<int, SerializableFieldSaveFlagMethods> serializableFieldSaveFlagMethodsDictionary
         )
         {
             var genericWriterInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_WRITER_INTERFACE);
@@ -56,13 +57,13 @@ namespace SerializationGenerator
             source.AppendLine($"{indent}writer.{(encodedVersion ? "WriteEncodedInt" : "Write")}(_version);");
 
             // Let's collect the flags
-            if (propertyFlagGetters.Length > 0)
+            if (serializableFieldSaveFlagMethodsDictionary.Count > 0)
             {
                 source.AppendLine($"\n{indent}var saveFlags = SaveFlag.None;");
 
-                foreach (var (m, order) in propertyFlagGetters)
+                foreach (var (order, saveFlagMethods) in serializableFieldSaveFlagMethodsDictionary)
                 {
-                    source.AppendLine($"{indent}if ({m.Name}())\n{indent}{{");
+                    source.AppendLine($"{indent}if ({saveFlagMethods.DetermineFieldShouldSerialize!.Name}())\n{indent}{{");
 
                     var propertyName = properties[order].Name;
                     source.AppendLine($"{innerIndent}saveFlags |= SaveFlag.{propertyName};");
@@ -75,9 +76,7 @@ namespace SerializationGenerator
 
             foreach (var property in properties)
             {
-                var usesSaveFlag = propertyFlagGetters.Any(m => m.Item2 == property.Order);
-
-                if (usesSaveFlag)
+                if (serializableFieldSaveFlagMethodsDictionary.ContainsKey(property.Order))
                 {
                     // Special case
                     if (property.Type != "bool")

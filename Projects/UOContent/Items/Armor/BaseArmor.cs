@@ -20,12 +20,18 @@ namespace Server.Items
         [SerializableFieldSaveFlag(0)]
         private bool ShouldSerializeAosAttributes() => !_attributes.IsEmpty;
 
+        [SerializableFieldDefault(0)]
+        private AosAttributes AttributesDefaultValue() => new(this);
+
         [SerializableField(1, setter: "private")]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
         private AosArmorAttributes _armorAttributes;
 
         [SerializableFieldSaveFlag(1)]
         private bool ShouldSerializeArmorAttributes() => !_armorAttributes.IsEmpty;
+
+        [SerializableFieldDefault(1)]
+        private AosArmorAttributes ArmorAttributesDefaultValue() => new(this);
 
         [InvalidateProperties]
         [SerializableField(2)]
@@ -134,6 +140,9 @@ namespace Server.Items
 
         [SerializableFieldSaveFlag(23)]
         private bool ShouldSerializeSkillBonuses() => !_skillBonuses.IsEmpty;
+
+        [SerializableFieldDefault(23)]
+        private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
 
         [SerializableField(24)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
@@ -269,6 +278,9 @@ namespace Server.Items
         [SerializableFieldSaveFlag(14)]
         private bool ShouldSerializeResource() => _resource != DefaultResource;
 
+        [SerializableFieldDefault(14)]
+        private CraftResource ResourceDefaultValue() => DefaultResource;
+
         [SerializableField(15)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int BaseArmorRating
@@ -284,6 +296,9 @@ namespace Server.Items
 
         [SerializableFieldSaveFlag(15)]
         private bool ShouldSerializeArmorBase() => _armorBase != -1;
+
+        [SerializableFieldDefault(15)]
+        private int ArmorBaseDefaultValue() => -1;
 
         public double BaseArmorRatingScaled => BaseArmorRating * ArmorScalar;
 
@@ -358,6 +373,9 @@ namespace Server.Items
         [SerializableFieldSaveFlag(16)]
         private bool ShouldSerializeStrBonus() => _strBonus != -1;
 
+        [SerializableFieldDefault(16)]
+        private int StrBonusDefaultValue() => -1;
+
         [SerializableField(17)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int DexBonus
@@ -373,6 +391,9 @@ namespace Server.Items
 
         [SerializableFieldSaveFlag(17)]
         private bool ShouldSerializeDexBonus() => _dexBonus != -1;
+
+        [SerializableFieldDefault(17)]
+        private int DexBonusDefaultValue() => -1;
 
         [SerializableField(18)]
         [CommandProperty(AccessLevel.GameMaster)]
@@ -390,6 +411,9 @@ namespace Server.Items
         [SerializableFieldSaveFlag(18)]
         private bool ShouldSerializeIntBonus() => _intBonus != -1;
 
+        [SerializableFieldDefault(18)]
+        private int IntBonusDefaultValue() => -1;
+
         [SerializableField(19)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int StrRequirement
@@ -405,6 +429,9 @@ namespace Server.Items
 
         [SerializableFieldSaveFlag(19)]
         private bool ShouldSerializeStrReq() => _strReq != -1;
+
+        [SerializableFieldDefault(19)]
+        private int StrReqDefaultValue() => -1;
 
         [SerializableField(20)]
         [CommandProperty(AccessLevel.GameMaster)]
@@ -422,6 +449,9 @@ namespace Server.Items
         [SerializableFieldSaveFlag(20)]
         private bool ShouldSerializeDexReq() => _dexReq != -1;
 
+        [SerializableFieldDefault(20)]
+        private int DexReqDefaultValue() => -1;
+
         [SerializableField(21)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int IntRequirement
@@ -437,6 +467,9 @@ namespace Server.Items
 
         [SerializableFieldSaveFlag(21)]
         private bool ShouldSerializeIntReq() => _intReq != -1;
+
+        [SerializableFieldDefault(21)]
+        private int IntReqDefaultValue() => -1;
 
         [SerializableField(22)]
         [CommandProperty(AccessLevel.GameMaster)]
@@ -1044,10 +1077,6 @@ namespace Server.Items
         [AfterDeserialization]
         private void AfterDeserialization()
         {
-            Attributes ??= new AosAttributes(this);
-            ArmorAttributes ??= new AosArmorAttributes(this);
-            SkillBonuses ??= new AosSkillBonuses(this);
-
             var m = Parent as Mobile;
 
             if (Core.AOS && m != null)

@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -33,7 +34,7 @@ namespace SerializationGenerator
             ImmutableArray<SerializableMetadata> migrations,
             ImmutableArray<SerializableProperty> properties,
             ISymbol parentFieldOrProperty,
-            ImmutableArray<(IMethodSymbol, int)> propertyFlagGetters
+            SortedDictionary<int, SerializableFieldSaveFlagMethods> serializableFieldSaveFlagMethodsDictionary
         )
         {
             var genericReaderInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_READER_INTERFACE);
@@ -59,18 +60,23 @@ namespace SerializationGenerator
             var afterDeserialization = classSymbol
                 .GetMembers()
                 .OfType<IMethodSymbol>()
-                .FirstOrDefault(
+                .Select(
                     m =>
-                        m.ReturnsVoid &&
-                        m.Parameters.Length == 0 &&
-                        m.GetAttributes()
-                            .Any(
+                    {
+                        if (!m.ReturnsVoid || m.Parameters.Length != 0)
+                        {
+                            return (m, null);
+                        }
+
+                        return (m, m.GetAttributes()
+                            .FirstOrDefault(
                                 attr => SymbolEqualityComparer.Default.Equals(
                                     attr.AttributeClass,
                                     compilation.GetTypeByMetadataName(SymbolMetadata.AFTERDESERIALIZATION_ATTRIBUTE)
                                 )
-                            )
-                );
+                            ));
+                    }
+                ).Where(m => m.Item2 != null).ToList();
 
             // Version
             source.AppendLine($"{indent}var version = reader.{(encodedVersion ? "ReadEncodedInt" : "ReadInt")}();");
@@ -93,10 +99,7 @@ namespace SerializationGenerator
                     source.AppendLine($"{indent}{{");
                     source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader, this));");
                     source.AppendLine($"{indent}    {parent}.MarkDirty();");
-                    if (afterDeserialization != null)
-                    {
-                        source.AppendLine($"{indent}    Timer.DelayCall({afterDeserialization.Name});");
-                    }
+                    source.GenerateAfterDeserialization($"{indent}    ", afterDeserialization);
                     source.AppendLine($"{indent}    return;");
                     source.AppendLine($"{indent}}}");
                 }
@@ -108,16 +111,13 @@ namespace SerializationGenerator
                     source.AppendLine($"{indent}{{");
                     source.AppendLine($"{indent}    Deserialize(reader, version);");
                     source.AppendLine($"{indent}    {parent}.MarkDirty();");
-                    if (afterDeserialization != null)
-                    {
-                        source.AppendLine($"{indent}    Timer.DelayCall({afterDeserialization.Name});");
-                    }
+                    source.GenerateAfterDeserialization($"{indent}    ", afterDeserialization);
                     source.AppendLine($"{indent}    return;");
                     source.AppendLine($"{indent}}}");
                 }
             }
 
-            if (propertyFlagGetters.Length > 0)
+            if (serializableFieldSaveFlagMethodsDictionary.Count > 0)
             {
                 source.AppendLine();
                 source.AppendLine($"{indent}var saveFlags = reader.ReadEnum<SaveFlag>();");
@@ -125,10 +125,13 @@ namespace SerializationGenerator
 
             foreach (var property in properties)
             {
-                var usesSaveFlag = propertyFlagGetters.Any(m => m.Item2 == property.Order);
                 var rule = SerializableMigrationRulesEngine.Rules[property.Rule];
 
-                if (usesSaveFlag)
+
+                if (serializableFieldSaveFlagMethodsDictionary.TryGetValue(
+                    property.Order,
+                    out var serializableFieldSaveFlagMethods
+                ))
                 {
                     source.AppendLine();
                     // Special case
@@ -146,6 +149,15 @@ namespace SerializationGenerator
                             "this"
                         );
                         (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, innerIndent, property, compilation, classSymbol);
+
+                        if (serializableFieldSaveFlagMethods.GetFieldDefaultValue != null)
+                        {
+                            source.AppendLine($"{indent}}}\n{indent}else\n{indent}{{");
+                            source.AppendLine(
+                                $"{indent}    {property.Name} = {serializableFieldSaveFlagMethods.GetFieldDefaultValue.Name}();"
+                            );
+                        }
+
                         source.AppendLine($"{indent}}}");
                     }
                 }
@@ -162,13 +174,25 @@ namespace SerializationGenerator
                 }
             }
 
-            if (afterDeserialization != null)
-            {
-                source.AppendLine();
-                source.AppendLine($"{indent}Timer.DelayCall({afterDeserialization.Name});");
-            }
-
+            source.GenerateAfterDeserialization($"{indent}", afterDeserialization);
             source.GenerateMethodEnd("        ");
+        }
+
+        private static void GenerateAfterDeserialization(
+            this StringBuilder source, string indent, IList<(IMethodSymbol, AttributeData?)> afterDeserialization
+        )
+        {
+            foreach (var (method, attr) in afterDeserialization)
+            {
+                if ((bool)attr.ConstructorArguments[0].Value!)
+                {
+                    source.AppendLine($"{indent}{method.Name}();");
+                }
+                else
+                {
+                    source.AppendLine($"{indent}Timer.DelayCall({method.Name});");
+                }
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: AfterDeserialization.cs                                         *
+ * File: AfterDeserializationAttribute.cs                                *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -24,5 +24,15 @@ namespace Server
     [AttributeUsage(AttributeTargets.Method)]
     public class AfterDeserializationAttribute : Attribute
     {
+        /// <summary>
+        /// Indicates whether the source generator should execute the method this is attached to immediately, or when
+        /// this is set to false, execute it using a Timer Delay.
+        ///
+        /// Note: Use false when the after deserialization involves deleting objects. This is to prevent corrupted
+        /// deserialization by removing an object before it has finished deserializing.
+        /// </summary>
+        public bool Synchronous { get; set; }
+
+        public AfterDeserializationAttribute(bool synchronous = true) => Synchronous = true;
     }
 }
