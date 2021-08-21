@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class GuantletsOfAnger : PlateGloves
+    [Serializable(0, false)]
+    public partial class GuantletsOfAnger : PlateGloves
     {
         [Constructible]
         public GuantletsOfAnger()
@@ -10,10 +11,6 @@ namespace Server.Items
             Attributes.BonusHits = 8;
             Attributes.RegenHits = 2;
             Attributes.DefendChance = 10;
-        }
-
-        public GuantletsOfAnger(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1094902; // Gauntlets of Anger [Replica]
@@ -28,19 +25,5 @@ namespace Server.Items
         public override int InitMaxHits => 150;
 
         public override bool CanFortify => false;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

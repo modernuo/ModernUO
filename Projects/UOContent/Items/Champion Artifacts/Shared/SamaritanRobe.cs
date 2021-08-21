@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class SamaritanRobe : Robe
+    [Serializable(0, false)]
+    public partial class SamaritanRobe : Robe
     {
         [Constructible]
         public SamaritanRobe() => Hue = 0x2a3;
-
-        public SamaritanRobe(Serial serial) : base(serial)
-        {
-        }
 
         public override int LabelNumber => 1094926; // Good Samaritan of Britannia [Replica]
 
@@ -17,19 +14,5 @@ namespace Server.Items
         public override int InitMaxHits => 150;
 
         public override bool CanFortify => false;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
