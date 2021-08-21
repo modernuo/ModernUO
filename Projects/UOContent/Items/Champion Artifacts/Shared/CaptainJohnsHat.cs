@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class CaptainJohnsHat : TricorneHat
+    [Serializable(0, false)]
+    public partial class CaptainJohnsHat : TricorneHat
     {
         [Constructible]
         public CaptainJohnsHat()
@@ -15,10 +16,6 @@ namespace Server.Items
             SkillBonuses.Skill_1_Value = 20;
         }
 
-        public CaptainJohnsHat(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1094911; // Captain John's Hat [Replica]
 
         public override int BasePhysicalResistance => 2;
@@ -31,19 +28,5 @@ namespace Server.Items
         public override int InitMaxHits => 150;
 
         public override bool CanFortify => false;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
