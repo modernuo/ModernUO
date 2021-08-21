@@ -259,8 +259,8 @@ namespace Server.Network
                 for (var i = 0; i < equipLength; i++)
                 {
                     var eq = msg.PostedEquip[i];
-                    writer.Write((short)eq.itemID);
-                    writer.Write((short)eq.hue);
+                    writer.Write((short)eq._itemID);
+                    writer.Write((short)eq._hue);
                 }
 
                 writer.Write((byte)linesLength);

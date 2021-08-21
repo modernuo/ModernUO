@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Server.Collections;
+using Server.Mobiles;
 using Server.Network;
 
 namespace Server.Items
@@ -33,47 +35,28 @@ namespace Server.Items
         public static bool CheckReplyTime(DateTime time) => time + ThreadReplyTime < Core.Now;
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1E5E, 0x1E5F)]
-    public class BulletinBoard : BaseBulletinBoard
+    public partial class BulletinBoard : BaseBulletinBoard
     {
         [Constructible]
         public BulletinBoard() : base(0x1E5E)
         {
         }
-
-        public BulletinBoard(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public abstract class BaseBulletinBoard : Item
+    [Serializable(0, false)]
+    public abstract partial class BaseBulletinBoard : Item
     {
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private string _boardName;
+
         public BaseBulletinBoard(int itemID) : base(itemID)
         {
             BoardName = "bulletin board";
             Movable = false;
         }
-
-        public BaseBulletinBoard(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string BoardName { get; set; }
 
         public virtual void Cleanup()
         {
@@ -86,7 +69,7 @@ namespace Server.Items
                     continue;
                 }
 
-                if (!(items[i] is BulletinMessage msg))
+                if (items[i] is not BulletinMessage msg)
                 {
                     continue;
                 }
@@ -94,14 +77,24 @@ namespace Server.Items
                 if (msg.Thread == null && BulletinBoardSystem.CheckDeletionTime(msg.LastPostTime))
                 {
                     msg.Delete();
-                    RecurseDelete(msg); // A root-level thread has expired
+                    var queue = PooledRefQueue<Item>.Create();
+                    var thread = msg;
+
+                    do
+                    {
+                        BFSDelete(thread, ref queue);
+                        if (queue.Count > 0)
+                        {
+                            thread = (BulletinMessage)queue.Dequeue();
+                        }
+                    } while (thread != null);
+                    queue.Dispose();
                 }
             }
         }
 
-        private void RecurseDelete(BulletinMessage msg)
+        private void BFSDelete(BulletinMessage msg, ref PooledRefQueue<Item> queue)
         {
-            var found = new List<Item>();
             var items = Items;
 
             for (var i = items.Count - 1; i >= 0; --i)
@@ -111,7 +104,7 @@ namespace Server.Items
                     continue;
                 }
 
-                if (!(items[i] is BulletinMessage check))
+                if (items[i] is not BulletinMessage check)
                 {
                     continue;
                 }
@@ -119,13 +112,8 @@ namespace Server.Items
                 if (check.Thread == msg)
                 {
                     check.Delete();
-                    found.Add(check);
+                    queue.Enqueue(check);
                 }
-            }
-
-            for (var i = 0; i < found.Count; ++i)
-            {
-                RecurseDelete((BulletinMessage)found[i]);
             }
         }
 
@@ -136,7 +124,7 @@ namespace Server.Items
 
             for (var i = 0; i < items.Count; ++i)
             {
-                if (!(items[i] is BulletinMessage msg) || msg.Poster != poster)
+                if (items[i] is not BulletinMessage msg || msg.Poster != poster)
                 {
                     continue;
                 }
@@ -184,31 +172,6 @@ namespace Server.Items
             }
 
             AddItem(new BulletinMessage(from, thread, subject, lines));
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(BoardName);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        BoardName = reader.ReadString();
-                        break;
-                    }
-            }
         }
     }
 }
