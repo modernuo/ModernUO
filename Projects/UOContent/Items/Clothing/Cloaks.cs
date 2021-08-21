@@ -73,7 +73,7 @@ namespace Server.Items
                 ItemID = 0x1515;
             }
 
-            if (IsArcane && CurArcaneCharges == 0)
+            if (IsArcane && _curArcaneCharges == 0)
             {
                 Hue = 0;
             }
@@ -101,14 +101,12 @@ namespace Server.Items
 
         public void Flip()
         {
-            if (ItemID == 0x1515)
+            ItemID = ItemID switch
             {
-                ItemID = 0x1530;
-            }
-            else if (ItemID == 0x1530)
-            {
-                ItemID = 0x1515;
-            }
+                0x1515 => 0x1530,
+                0x1530 => 0x1515,
+                _      => ItemID
+            };
         }
     }
 
