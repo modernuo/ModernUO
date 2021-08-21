@@ -3,86 +3,37 @@ using Server.Engines.VeteranRewards;
 
 namespace Server.Items
 {
-    public abstract class BaseOuterTorso : BaseClothing
+    [Serializable(0, false)]
+    public abstract partial class BaseOuterTorso : BaseClothing
     {
         public BaseOuterTorso(int itemID, int hue = 0) : base(itemID, Layer.OuterTorso, hue)
         {
         }
-
-        public BaseOuterTorso(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x230E, 0x230D)]
-    public class GildedDress : BaseOuterTorso
+    public partial class GildedDress : BaseOuterTorso
     {
         [Constructible]
         public GildedDress(int hue = 0) : base(0x230E, hue) => Weight = 3.0;
-
-        public GildedDress(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1F00, 0x1EFF)]
-    public class FancyDress : BaseOuterTorso
+    public partial class FancyDress : BaseOuterTorso
     {
         [Constructible]
         public FancyDress(int hue = 0) : base(0x1F00, hue) => Weight = 3.0;
-
-        public FancyDress(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class DeathRobe : Robe
+    [Serializable(3, false)]
+    public partial class DeathRobe : Robe
     {
         private static readonly TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(1.0);
-        private DateTime m_DecayTime;
-        private Timer m_DecayTimer;
+
+        [SerializableField(0)]
+        private Timer _decayTimer;
 
         [Constructible]
         public DeathRobe()
@@ -90,10 +41,6 @@ namespace Server.Items
             LootType = LootType.Newbied;
             Hue = 2301;
             BeginDecay(m_DefaultDecayTime);
-        }
-
-        public DeathRobe(Serial serial) : base(serial)
-        {
         }
 
         public override bool DisplayLootType => false;
@@ -109,14 +56,12 @@ namespace Server.Items
             BeginDecay(m_DefaultDecayTime);
         }
 
+        [DeserializeTimerField(0)]
         private void BeginDecay(TimeSpan delay)
         {
-            m_DecayTimer?.Stop();
-
-            m_DecayTime = Core.Now + delay;
-
-            m_DecayTimer = new InternalTimer(this, delay);
-            m_DecayTimer.Start();
+            _decayTimer?.Stop();
+            _decayTimer = new InternalTimer(this, delay);
+            _decayTimer.Start();
         }
 
         public override bool OnDroppedToWorld(Mobile from, Point3D p)
@@ -128,69 +73,24 @@ namespace Server.Items
 
         public override bool OnDroppedToMobile(Mobile from, Mobile target)
         {
-            if (m_DecayTimer != null)
-            {
-                m_DecayTimer.Stop();
-                m_DecayTimer = null;
-            }
+            _decayTimer?.Stop();
+            _decayTimer = null;
 
             return true;
         }
 
         public override void OnAfterDelete()
         {
-            m_DecayTimer?.Stop();
-
-            m_DecayTimer = null;
+            _decayTimer?.Stop();
+            _decayTimer = null;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(2); // version
-
-            writer.Write(m_DecayTimer != null);
-
-            if (m_DecayTimer != null)
+            if (reader.ReadBool())
             {
-                writer.WriteDeltaTime(m_DecayTime);
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 2:
-                    {
-                        if (reader.ReadBool())
-                        {
-                            m_DecayTime = reader.ReadDeltaTime();
-                            BeginDecay(m_DecayTime - Core.Now);
-                        }
-
-                        break;
-                    }
-                case 1:
-                case 0:
-                    {
-                        if (Parent == null)
-                        {
-                            BeginDecay(m_DefaultDecayTime);
-                        }
-
-                        break;
-                    }
-            }
-
-            if (version < 1 && Hue == 0)
-            {
-                Hue = 2301;
+                var delay = reader.ReadDeltaTime();
+                BeginDecay(delay - Core.Now);
             }
         }
 

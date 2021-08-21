@@ -6,7 +6,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-    [Serializable(1, false)]
+    [Serializable(0, false)]
     public abstract partial class BaseHat : BaseClothing, IShipwreckedItem
     {
         [SerializableField(0)]
