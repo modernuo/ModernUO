@@ -57,6 +57,11 @@
         <AdditionalFiles Include="Migrations/*.v*.json" />
     </ItemGroup>
     <ItemGroup>
+      <Compile Remove="Special Systems\XMLSpawner\**" />
+      <EmbeddedResource Remove="Special Systems\XMLSpawner\**" />
+      <None Remove="Special Systems\XMLSpawner\**" />
+    </ItemGroup>
+    <ItemGroup>
       <Folder Include="Special Systems\Casino\Poker\" />
       <Folder Include="Special Systems\Items\Magic Jewelry\" />
       <Folder Include="Special Systems\Misc\Pirates\" />

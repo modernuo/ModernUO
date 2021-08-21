@@ -26,7 +26,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -35,7 +35,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -44,7 +44,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -53,7 +53,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -62,7 +62,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -80,7 +80,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -89,7 +89,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -128,7 +128,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -137,7 +137,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -146,7 +146,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -155,7 +155,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -164,7 +164,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -173,7 +173,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
@@ -182,7 +182,7 @@
       "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        "EncodedInt"
+        ""
       ]
     },
     {
