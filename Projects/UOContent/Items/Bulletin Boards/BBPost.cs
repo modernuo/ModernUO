@@ -17,5 +17,7 @@ namespace Server.Items
 
         [SerializableField(3)]
         private BBPost _child;
+
+        public BBPost(BulletinBoard bb) => _bulletinBoard = bb;
     }
 }
