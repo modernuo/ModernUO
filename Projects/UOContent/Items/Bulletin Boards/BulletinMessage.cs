@@ -79,7 +79,7 @@ namespace Server.Items
             Subject = reader.ReadString();
             Time = reader.ReadDateTime();
             LastPostTime = reader.ReadDateTime();
-            var hasThread = reader.ReadBool();
+            reader.ReadBool(); // Has thread
             Thread = reader.ReadEntity<BulletinMessage>();
             PostedName = reader.ReadString();
             PostedBody = reader.ReadInt();
@@ -100,10 +100,7 @@ namespace Server.Items
                 Lines[i] = reader.ReadString();
             }
 
-            if (hasThread && Thread == null)
-            {
-                Delete();
-            }
+            // Moved validation/cleanup to the BB itself
         }
     }
 }

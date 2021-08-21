@@ -112,9 +112,7 @@ namespace Server.Network
                 thread = thread.Thread;
             }
 
-            var lastPostTime = DateTime.MinValue;
-
-            if (board.GetLastPostTime(from, thread == null, ref lastPostTime))
+            if (board.GetLastPostTime(from, thread == null, out var lastPostTime))
             {
                 if (thread == null)
                 {

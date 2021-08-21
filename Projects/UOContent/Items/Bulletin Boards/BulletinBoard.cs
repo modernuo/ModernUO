@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Server.Collections;
-using Server.Mobiles;
 using Server.Network;
 
 namespace Server.Items
@@ -27,8 +25,8 @@ namespace Server.Items
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool CheckCreateTime(DateTime time) => time + ThreadCreateTime < Core.Now;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool CheckDeletionTime(DateTime time) => time + ThreadDeletionTime < Core.Now;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -58,6 +56,7 @@ namespace Server.Items
             Movable = false;
         }
 
+        [AfterDeserialization(false)]
         public virtual void Cleanup()
         {
             var items = Items;
@@ -69,7 +68,7 @@ namespace Server.Items
                     continue;
                 }
 
-                if (items[i] is not BulletinMessage msg)
+                if (items[i] is not BulletinMessage msg || msg.Deleted)
                 {
                     continue;
                 }
@@ -104,7 +103,7 @@ namespace Server.Items
                     continue;
                 }
 
-                if (items[i] is not BulletinMessage check)
+                if (items[i] is not BulletinMessage check || check.Deleted)
                 {
                     continue;
                 }
@@ -117,8 +116,9 @@ namespace Server.Items
             }
         }
 
-        public virtual bool GetLastPostTime(Mobile poster, bool onlyCheckRoot, ref DateTime lastPostTime)
+        public virtual bool GetLastPostTime(Mobile poster, bool onlyCheckRoot, out DateTime lastPostTime)
         {
+            lastPostTime = DateTime.MinValue;
             var items = Items;
             var wasSet = false;
 
@@ -146,19 +146,18 @@ namespace Server.Items
 
         public override void OnDoubleClick(Mobile from)
         {
-            if (CheckRange(from))
-            {
-                Cleanup();
-
-                var state = from.NetState;
-
-                state.SendBBDisplayBoard(this);
-                state.SendContainerContent(from, this);
-            }
-            else
+            if (!CheckRange(from))
             {
                 from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                return;
             }
+
+            Cleanup();
+
+            var state = from.NetState;
+
+            state.SendBBDisplayBoard(this);
+            state.SendContainerContent(from, this);
         }
 
         public virtual bool CheckRange(Mobile from) =>

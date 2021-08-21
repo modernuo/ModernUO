@@ -1,0 +1,84 @@
+{
+  "version": 2,
+  "type": "Server.Items.BulletinMessage",
+  "properties": [
+    {
+      "name": "Poster",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Subject",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Time",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "LastPostTime",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Thread",
+      "type": "Server.Items.BulletinMessage",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "PostedName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "PostedBody",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "PostedHue",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "PostedEquip",
+      "type": "Server.Items.BulletinEquip[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "Server.Items.BulletinEquip",
+        "SerializationMethodSignatureMigrationRule",
+        ""
+      ]
+    },
+    {
+      "name": "Lines",
+      "type": "string[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "string",
+        "PrimitiveTypeMigrationRule",
+        ""
+      ]
+    }
+  ]
+}
