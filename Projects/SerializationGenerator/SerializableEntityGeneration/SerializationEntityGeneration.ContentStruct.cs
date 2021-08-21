@@ -91,7 +91,7 @@ namespace SerializationGenerator
                         // Special case
                         if (property.Type == "bool")
                         {
-                            source.AppendLine($"{innerIndent}{property.Name} = (saveFlags & SaveFlag.{property.Name}) != 0;");
+                            source.AppendLine($"{innerIndent}{property.Name} = (saveFlags & V{migration.Version}SaveFlag.{property.Name}) != 0;");
                         }
                         else
                         {
