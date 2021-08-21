@@ -146,7 +146,7 @@ namespace SerializationGenerator
                             source,
                             innerIndent,
                             property,
-                            "this"
+                            parentFieldOrProperty?.Name ?? "this"
                         );
                         (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, innerIndent, property, compilation, classSymbol);
 
@@ -168,7 +168,7 @@ namespace SerializationGenerator
                         source,
                         indent,
                         property,
-                        "this"
+                        parentFieldOrProperty?.Name ?? "this"
                     );
                     (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, indent, property, compilation, classSymbol);
                 }
