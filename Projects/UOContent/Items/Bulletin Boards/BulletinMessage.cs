@@ -104,19 +104,6 @@ namespace Server.Items
             {
                 Delete();
             }
-
-            if (version == 0)
-            {
-                ValidationQueue<BulletinMessage>.Add(this);
-            }
-        }
-
-        public void Validate()
-        {
-            if ((Parent as BulletinBoard)?.Items.Contains(this) == false)
-            {
-                Delete();
-            }
         }
     }
 }
