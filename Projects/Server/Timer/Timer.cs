@@ -110,6 +110,7 @@ namespace Server
 
             Detach();
             Running = false;
+            Version++;
             var prof = GetProfile();
 
             if (prof != null)

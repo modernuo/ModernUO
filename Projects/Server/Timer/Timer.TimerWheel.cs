@@ -118,7 +118,7 @@ namespace Server
             timer.OnTick();
             prof?.Finish();
 
-            // If the timer has not been stopped, and it has not been altered (shared timers)
+            // If the timer has not been stopped, and it has not been altered (restarted, returned etc)
             if (timer.Running && timer.Version == version)
             {
                 if (finished)
@@ -167,6 +167,7 @@ namespace Server
                     timer._slot = (int)slot;
 
                     _rings[i][slot] = timer;
+
                     break;
                 }
 

@@ -765,7 +765,6 @@ namespace Server.Engines.Spawners
 
             if (!IsFull)
             {
-                Console.WriteLine("Spawner ({0}) is not full!", Serial);
                 m_Timer.Start();
             }
         }
