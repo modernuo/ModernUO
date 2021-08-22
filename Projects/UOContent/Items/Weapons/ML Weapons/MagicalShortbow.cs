@@ -3,14 +3,11 @@ using System;
 namespace Server.Items
 {
     [Flippable(0x2D2B, 0x2D1F)]
-    public class MagicalShortbow : BaseRanged
+    [Serializable(0)]
+    public partial class MagicalShortbow : BaseRanged
     {
         [Constructible]
         public MagicalShortbow() : base(0x2D2B) => Weight = 6.0;
-
-        public MagicalShortbow(Serial serial) : base(serial)
-        {
-        }
 
         public override int EffectID => 0xF42;
         public override Type AmmoType => typeof(Arrow);
@@ -34,19 +31,5 @@ namespace Server.Items
 
         public override int InitMinHits => 41;
         public override int InitMaxHits => 90;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

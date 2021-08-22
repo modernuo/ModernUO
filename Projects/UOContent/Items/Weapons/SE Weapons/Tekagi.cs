@@ -1,17 +1,14 @@
 namespace Server.Items
 {
     [Flippable(0x27Ab, 0x27F6)]
-    public class Tekagi : BaseKnife
+    [Serializable(0, false)]
+    public partial class Tekagi : BaseKnife
     {
         [Constructible]
         public Tekagi() : base(0x27AB)
         {
             Weight = 5.0;
             Layer = Layer.TwoHanded;
-        }
-
-        public Tekagi(Serial serial) : base(serial)
-        {
         }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DualWield;
@@ -37,19 +34,5 @@ namespace Server.Items
         public override SkillName DefSkill => SkillName.Fencing;
         public override WeaponType DefType => WeaponType.Piercing;
         public override WeaponAnimation DefAnimation => WeaponAnimation.Pierce1H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

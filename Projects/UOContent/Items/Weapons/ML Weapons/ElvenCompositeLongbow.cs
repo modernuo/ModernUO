@@ -3,14 +3,11 @@ using System;
 namespace Server.Items
 {
     [Flippable(0x2D1E, 0x2D2A)]
-    public class ElvenCompositeLongbow : BaseRanged
+    [Serializable(0)]
+    public partial class ElvenCompositeLongbow : BaseRanged
     {
         [Constructible]
         public ElvenCompositeLongbow() : base(0x2D1E) => Weight = 8.0;
-
-        public ElvenCompositeLongbow(Serial serial) : base(serial)
-        {
-        }
 
         public override int EffectID => 0xF42;
         public override Type AmmoType => typeof(Arrow);
@@ -36,19 +33,5 @@ namespace Server.Items
         public override int InitMaxHits => 90;
 
         public override WeaponAnimation DefAnimation => WeaponAnimation.ShootBow;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

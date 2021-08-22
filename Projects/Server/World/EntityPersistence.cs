@@ -162,6 +162,8 @@ namespace Server
             using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             BufferReader br = null;
 
+            var deleteAllFailures = false;
+
             foreach (var entry in entities)
             {
                 T t = entry.Entity;
@@ -210,11 +212,21 @@ namespace Server
                     Console.WriteLine($"***** Bad deserialize of {t.GetType()} *****");
                     Console.WriteLine(error);
 
-                    Console.WriteLine("Delete the object and continue? (y/n)");
+                    ConsoleKey pressedKey;
 
-                    if (Console.ReadKey(true).Key != ConsoleKey.Y)
+                    if (!deleteAllFailures)
                     {
-                        throw new Exception("Deserialization failed.");
+                        Console.WriteLine("Delete the object and continue? (y/n/a)");
+                        pressedKey = Console.ReadKey(true).Key;
+
+                        if (pressedKey == ConsoleKey.A)
+                        {
+                            deleteAllFailures = true;
+                        }
+                        else if (pressedKey != ConsoleKey.Y)
+                        {
+                            throw new Exception("Deserialization failed.");
+                        }
                     }
 
                     t.Delete();

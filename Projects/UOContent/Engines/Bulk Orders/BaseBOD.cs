@@ -113,7 +113,7 @@ namespace Server.Engines.BulkOrders
             }
         }
 
-        [AfterDeserialization]
+        [AfterDeserialization(false)]
         private void AfterDeserialization()
         {
             if (Parent == null && Map == Map.Internal && Location == Point3D.Zero)

@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class Runesabre : RuneBlade
+    [Serializable(0)]
+    public partial class Runesabre : RuneBlade
     {
         [Constructible]
         public Runesabre()
@@ -9,24 +10,6 @@ namespace Server.Items
             WeaponAttributes.MageWeapon = -29;
         }
 
-        public Runesabre(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1073537; // runesabre
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

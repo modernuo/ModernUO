@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class ShroudOfDeciet : BoneChest
+    [Serializable(0, false)]
+    public partial class ShroudOfDeciet : BoneChest
     {
         [Constructible]
         public ShroudOfDeciet()
@@ -15,10 +16,6 @@ namespace Server.Items
             SkillBonuses.Skill_1_Value = 10;
         }
 
-        public ShroudOfDeciet(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1094914; // Shroud of Deceit [Replica]
 
         public override int BasePhysicalResistance => 11;
@@ -31,19 +28,5 @@ namespace Server.Items
         public override int InitMaxHits => 150;
 
         public override bool CanFortify => false;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

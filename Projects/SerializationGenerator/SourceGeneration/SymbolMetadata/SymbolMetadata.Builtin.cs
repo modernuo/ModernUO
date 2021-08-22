@@ -54,5 +54,9 @@ namespace SerializationGenerator
                 compilation.GetTypeByMetadataName(HASHSET_CLASS),
                 SymbolEqualityComparer.Default
             ) == true;
+
+        public static bool IsPrimitiveFromTypeDisplayString(string type) =>
+            type is "bool" or "sbyte" or "short" or "int" or "long" or "byte" or "ushort"
+                or "uint" or "ulong" or "float" or "double" or "string" or "decimal";
     }
 }

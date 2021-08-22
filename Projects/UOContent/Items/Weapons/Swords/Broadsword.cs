@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0xF5E, 0xF5F)]
-    public class Broadsword : BaseSword
+    [Serializable(0, false)]
+    public partial class Broadsword : BaseSword
     {
         [Constructible]
         public Broadsword() : base(0xF5E) => Weight = 6.0;
-
-        public Broadsword(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ArmorIgnore;
@@ -29,19 +26,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 100;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
