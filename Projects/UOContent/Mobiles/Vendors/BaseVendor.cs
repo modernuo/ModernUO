@@ -865,6 +865,8 @@ namespace Server.Mobiles
             var list = new List<BuyItemState>(buyInfo.Length);
             var cont = BuyPack;
 
+            // If OPL is disabled and the item being purchased has the wrong name, then you must specify the name manually.
+            // Check SBAnimalTrainer for an example.
             var opls = ObjectPropertyList.Enabled ? new List<ObjectPropertyList>(buyInfo.Length) : null;
 
             for (var idx = 0; idx < buyInfo.Length; idx++)
