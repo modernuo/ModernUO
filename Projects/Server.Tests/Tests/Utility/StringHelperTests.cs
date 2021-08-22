@@ -45,10 +45,18 @@ namespace Server.Tests
         [InlineData("this is a sentence that will probably wrap around a few times because it is long", 10, 6)]
         [InlineData("An Unnamed House", 10, 6)]
         [InlineData("Batville", 10, 6)]
-        public void TestWrap(string sentence, int perLine, int maxLines)
+        [InlineData("Bald's Shop", 10, 6)]
+        [InlineData(
+            "Something ThatIsVeryLongAndShouldBe broken up",
+            10, 6,
+            "Something", "ThatIsVery", "LongAndSho", "uldBe", "broken up"
+        )]
+        public void TestWrap(string sentence, int perLine, int maxLines, params string[] customExpected)
         {
-            var expected = OldWrap(sentence, perLine, maxLines);
-            var actual = sentence.Wrap(perLine, maxLines);
+            var expected = customExpected.Length > 0
+                ? customExpected
+                : OldWrap(sentence, perLine, maxLines).ToArray();
+            var actual = sentence.Wrap(perLine, maxLines).ToArray();
 
             Assert.Equal(expected, actual);
         }

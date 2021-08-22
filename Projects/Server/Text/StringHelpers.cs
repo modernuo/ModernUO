@@ -185,12 +185,13 @@ namespace Server
                 var spaceIndex = span[lineLength..].IndexOf(' ');
                 if (spaceIndex == -1)
                 {
-                    spaceIndex = span.Length; // End of the string
+                    spaceIndex = span.Length - lineLength; // End of the string
                 }
 
                 var newLineLength = lineLength + spaceIndex;
 
-                if (newLineLength == perLine || newLineLength == span.Length)
+                // If the previous line is exactly perLine or not too long and we are at the end
+                if (newLineLength == perLine || newLineLength < perLine && newLineLength == span.Length)
                 {
                     list.Add(span[..newLineLength].ToString());
                     if (list.Count == maxLines || newLineLength == span.Length)
@@ -201,10 +202,12 @@ namespace Server
                     span = span[(newLineLength + 1)..];
                     lineLength = 0;
                 }
+                // We haven't hit perLine and are not sure if we can continue adding more words without going over
                 else if (newLineLength < perLine)
                 {
                     lineLength = newLineLength + 1;
                 }
+                // We already tried making the line longer, and it was too long, so fall back to the old line
                 else if (lineLength > 0 && lineLength <= perLine)
                 {
                     list.Add(span[..(lineLength - 1)].ToString());
@@ -214,8 +217,9 @@ namespace Server
                     }
 
                     span = span[lineLength..];
-                    lineLength = spaceIndex;
+                    lineLength = 0;
                 }
+                // We have a really long single word with no spaces and have to forcibly break it up.
                 else
                 {
                     lineLength = newLineLength;
