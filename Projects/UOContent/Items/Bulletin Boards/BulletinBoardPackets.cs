@@ -112,9 +112,7 @@ namespace Server.Network
                 thread = thread.Thread;
             }
 
-            var lastPostTime = DateTime.MinValue;
-
-            if (board.GetLastPostTime(from, thread == null, ref lastPostTime))
+            if (board.GetLastPostTime(from, thread == null, out var lastPostTime))
             {
                 if (thread == null)
                 {
@@ -259,8 +257,8 @@ namespace Server.Network
                 for (var i = 0; i < equipLength; i++)
                 {
                     var eq = msg.PostedEquip[i];
-                    writer.Write((short)eq.itemID);
-                    writer.Write((short)eq.hue);
+                    writer.Write((short)eq._itemID);
+                    writer.Write((short)eq._hue);
                 }
 
                 writer.Write((byte)linesLength);
