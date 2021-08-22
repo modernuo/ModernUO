@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.BaseBulletinBoard",
+  "properties": [
+    {
+      "name": "BoardName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

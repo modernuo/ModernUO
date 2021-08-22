@@ -12,7 +12,7 @@ namespace Server.Mobiles
         {
             public InternalBuyInfo()
             {
-                Add(new AnimalBuyInfo(1, typeof(PackHorse), 631, 10, 291, 0));
+                Add(new AnimalBuyInfo(1, "a pack horse", typeof(PackHorse), 631, 10, 291, 0));
             }
         }
 
