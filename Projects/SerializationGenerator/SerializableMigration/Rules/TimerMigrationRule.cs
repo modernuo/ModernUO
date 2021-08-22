@@ -80,7 +80,7 @@ namespace SerializableMigration
             var driftTimer = ruleArguments![0].Contains("@TimerDrift");
 
             var writerMethod = driftTimer ? "WriteDeltaTime" : "Write";
-            source.AppendLine($"{indent}writer.{writerMethod}({propertyName}.Next);");
+            source.AppendLine($"{indent}writer.{writerMethod}({propertyName}?.Next ?? TimeSpan.MinValue);");
         }
 
         public void PostDeserializeMethod(
