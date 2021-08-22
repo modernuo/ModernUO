@@ -2,7 +2,8 @@ using System;
 
 namespace Server.Items
 {
-    public class DetectiveBoots : Boots
+    [Serializable(0, false)]
+    public partial class DetectiveBoots : Boots
     {
         private int m_Level;
 
@@ -11,10 +12,6 @@ namespace Server.Items
         {
             Hue = 0x455;
             Level = Utility.RandomMinMax(0, 2);
-        }
-
-        public DetectiveBoots(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1094894 + m_Level; // [Quality] Detective of the Royal Guard [Replica]
@@ -36,19 +33,9 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialize()
         {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
             Level = Attributes.BonusInt - 2;
         }
     }
