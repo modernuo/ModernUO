@@ -14,10 +14,10 @@ namespace Server.Mobiles
             public InternalBuyInfo()
             {
                 Add(new GenericBuyInfo(typeof(Bandage), 6, 20, 0xE21, 0));
-                Add(new AnimalBuyInfo(1, typeof(PackHorse), 616, 10, 291, 0));
-                Add(new AnimalBuyInfo(1, typeof(PackLlama), 523, 10, 292, 0));
-                Add(new AnimalBuyInfo(1, typeof(Dog), 158, 10, 217, 0));
-                Add(new AnimalBuyInfo(1, typeof(Cat), 131, 10, 201, 0));
+                Add(new AnimalBuyInfo(1, "a pack horse", typeof(PackHorse), 616, 10, 291, 0));
+                Add(new AnimalBuyInfo(1, "a pack llama", typeof(PackLlama), 523, 10, 292, 0));
+                Add(new AnimalBuyInfo(1, "a dog", typeof(Dog), 158, 10, 217, 0));
+                Add(new AnimalBuyInfo(1, "a cat", typeof(Cat), 131, 10, 201, 0));
             }
         }
 
