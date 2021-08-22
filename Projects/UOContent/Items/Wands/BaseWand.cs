@@ -21,7 +21,7 @@ namespace Server.Items
         ManaDraining
     }
 
-    [Serializable(0, false)]
+    [Serializable(1, false)]
     public abstract partial class BaseWand : BaseBashing
     {
         [InvalidateProperties]
@@ -44,8 +44,8 @@ namespace Server.Items
         )
         {
             Weight = 1.0;
-            WandEffect = effect;
-            Charges = Utility.RandomMinMax(minCharges, maxCharges);
+            _wandEffect = effect;
+            _charges = Utility.RandomMinMax(minCharges, maxCharges);
             Attributes.SpellChanneling = 1;
             Attributes.CastSpeed = -1;
             WeaponAttributes.MageWeapon = Utility.RandomMinMax(1, 10);
@@ -74,7 +74,7 @@ namespace Server.Items
         {
             --Charges;
 
-            if (Charges == 0)
+            if (_charges == 0)
             {
                 from.SendLocalizedMessage(1019073); // This item is out of charges.
             }
@@ -108,7 +108,7 @@ namespace Server.Items
 
             if (Parent == from)
             {
-                if (Charges > 0)
+                if (_charges > 0)
                 {
                     OnWandUse(from);
                 }
@@ -121,6 +121,12 @@ namespace Server.Items
             {
                 from.SendLocalizedMessage(502641); // You must equip this item to use it.
             }
+        }
+
+        private void Deserialize(IGenericReader reader, int version)
+        {
+            _wandEffect = (WandEffect)reader.ReadInt();
+            _charges = reader.ReadInt();
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -245,7 +251,7 @@ namespace Server.Items
 
         public virtual void DoWandTarget(Mobile from, object o)
         {
-            if (Deleted || Charges <= 0 || Parent != from || o is StaticTarget || o is LandTarget)
+            if (Deleted || _charges <= 0 || Parent != from || o is StaticTarget || o is LandTarget)
             {
                 return;
             }
