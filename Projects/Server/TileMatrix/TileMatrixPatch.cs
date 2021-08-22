@@ -41,9 +41,8 @@ namespace Server
 
         public static void Configure()
         {
-            // Using this requires the old mapDif files to be present. Only needed to support Clients < 6.0.0.0
-            PatchLandEnabled = ServerConfiguration.GetOrUpdateSetting("maps.enableMapDiffPatches", false);
-            PatchStaticsEnabled = ServerConfiguration.GetOrUpdateSetting("maps.enableStaticsDiffPatches", false);
+            PatchLandEnabled = ServerConfiguration.GetSetting("maps.enableMapDiffPatches", !Core.HS);
+            PatchStaticsEnabled = ServerConfiguration.GetSetting("maps.enableStaticsDiffPatches", true);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
