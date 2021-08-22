@@ -4,7 +4,8 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-    public class BulletinMessage : Item
+    [Serializable(2, false)]
+    public partial class BulletinMessage : Item
     {
         public BulletinMessage(Mobile poster, BulletinMessage thread, string subject, string[] lines) : base(0xEB0)
         {
@@ -35,29 +36,35 @@ namespace Server.Items
             PostedEquip = list.ToArray();
         }
 
-        public BulletinMessage(Serial serial) : base(serial)
-        {
-        }
+        [SerializableField(0)]
+        private Mobile _poster;
 
-        public Mobile Poster { get; private set; }
+        [SerializableField(1)]
+        private string _subject;
 
-        public BulletinMessage Thread { get; private set; }
+        [SerializableField(2)]
+        private DateTime _time;
 
-        public string Subject { get; private set; }
+        [SerializableField(3)]
+        private DateTime _lastPostTime;
 
-        public DateTime Time { get; private set; }
+        [SerializableField(4)]
+        private BulletinMessage _thread;
 
-        public DateTime LastPostTime { get; set; }
+        [SerializableField(5)]
+        private string _postedName;
 
-        public string PostedName { get; private set; }
+        [SerializableField(6)]
+        private int _postedBody;
 
-        public int PostedBody { get; private set; }
+        [SerializableField(7)]
+        private int _postedHue;
 
-        public int PostedHue { get; private set; }
+        [SerializableField(8)]
+        private BulletinEquip[] _postedEquip;
 
-        public BulletinEquip[] PostedEquip { get; private set; }
-
-        public string[] Lines { get; private set; }
+        [SerializableField(9)]
+        private string[] _lines;
 
         // TODO: Memoize
         public string GetTimeAsString() => Time.ToString("MMM dd, yyyy");
@@ -66,95 +73,34 @@ namespace Server.Items
 
         public override bool IsAccessibleTo(Mobile check) => false;
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
+            Poster = reader.ReadEntity<Mobile>();
+            Subject = reader.ReadString();
+            Time = reader.ReadDateTime();
+            LastPostTime = reader.ReadDateTime();
+            reader.ReadBool(); // Has thread
+            Thread = reader.ReadEntity<BulletinMessage>();
+            PostedName = reader.ReadString();
+            PostedBody = reader.ReadInt();
+            PostedHue = reader.ReadInt();
 
-            writer.Write(1); // version
-
-            writer.Write(Poster);
-            writer.Write(Subject);
-            writer.Write(Time);
-            writer.Write(LastPostTime);
-            writer.Write(Thread != null);
-            writer.Write(Thread);
-            writer.Write(PostedName);
-            writer.Write(PostedBody);
-            writer.Write(PostedHue);
-
-            writer.Write(PostedEquip.Length);
+            PostedEquip = new BulletinEquip[reader.ReadInt()];
 
             for (var i = 0; i < PostedEquip.Length; ++i)
             {
-                writer.Write(PostedEquip[i].itemID);
-                writer.Write(PostedEquip[i].hue);
+                PostedEquip[i]._itemID = reader.ReadInt();
+                PostedEquip[i]._hue = reader.ReadInt();
             }
 
-            writer.Write(Lines.Length);
+            Lines = new string[reader.ReadInt()];
 
             for (var i = 0; i < Lines.Length; ++i)
             {
-                writer.Write(Lines[i]);
+                Lines[i] = reader.ReadString();
             }
-        }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                case 0:
-                    {
-                        Poster = reader.ReadEntity<Mobile>();
-                        Subject = reader.ReadString();
-                        Time = reader.ReadDateTime();
-                        LastPostTime = reader.ReadDateTime();
-                        var hasThread = reader.ReadBool();
-                        Thread = reader.ReadEntity<BulletinMessage>();
-                        PostedName = reader.ReadString();
-                        PostedBody = reader.ReadInt();
-                        PostedHue = reader.ReadInt();
-
-                        PostedEquip = new BulletinEquip[reader.ReadInt()];
-
-                        for (var i = 0; i < PostedEquip.Length; ++i)
-                        {
-                            PostedEquip[i].itemID = reader.ReadInt();
-                            PostedEquip[i].hue = reader.ReadInt();
-                        }
-
-                        Lines = new string[reader.ReadInt()];
-
-                        for (var i = 0; i < Lines.Length; ++i)
-                        {
-                            Lines[i] = reader.ReadString();
-                        }
-
-                        if (hasThread && Thread == null)
-                        {
-                            Delete();
-                        }
-
-                        if (version == 0)
-                        {
-                            ValidationQueue<BulletinMessage>.Add(this);
-                        }
-
-                        break;
-                    }
-            }
-        }
-
-        public void Validate()
-        {
-            if ((Parent as BulletinBoard)?.Items.Contains(this) == false)
-            {
-                Delete();
-            }
+            // Moved validation/cleanup to the BB itself
         }
     }
 }

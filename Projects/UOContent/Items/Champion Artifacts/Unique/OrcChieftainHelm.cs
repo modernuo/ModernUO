@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class OrcChieftainHelm : OrcHelm
+    [Serializable(0, false)]
+    public partial class OrcChieftainHelm : OrcHelm
     {
         [Constructible]
         public OrcChieftainHelm()
@@ -20,10 +21,6 @@ namespace Server.Items
             }
         }
 
-        public OrcChieftainHelm(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1094924; // Orc Chieftain Helm [Replica]
 
         public override int BasePhysicalResistance => 23;
@@ -36,24 +33,5 @@ namespace Server.Items
         public override int InitMaxHits => 150;
 
         public override bool CanFortify => false;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1 && Hue == 0x3f) /* Pigmented? */
-            {
-                Hue = 0x2a3;
-            }
-        }
     }
 }

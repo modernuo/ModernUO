@@ -38,9 +38,10 @@ namespace SerializationGenerator
 
             foreach (var serializableProperty in properties)
             {
-                var type = compilation.GetTypeByMetadataName(serializableProperty.Type)?.IsValueType == true
-                           || SymbolMetadata.IsPrimitiveFromTypeDisplayString(serializableProperty.Type)
-                    ? $"{serializableProperty.Type}?" : serializableProperty.Type;
+                var propertyType = serializableProperty.Type;
+                var type = compilation.GetTypeByMetadataName(propertyType)?.IsValueType == true
+                           || SymbolMetadata.IsPrimitiveFromTypeDisplayString(propertyType) && propertyType != "bool"
+                    ? $"{propertyType}?" : propertyType;
 
                 source.AppendLine($"{indent}    internal readonly {type} {serializableProperty.Name};");
             }
@@ -90,7 +91,7 @@ namespace SerializationGenerator
                         // Special case
                         if (property.Type == "bool")
                         {
-                            source.AppendLine($"{innerIndent}{property.Name} = (saveFlags & SaveFlag.{property.Name}) != 0;");
+                            source.AppendLine($"{innerIndent}{property.Name} = (saveFlags & V{migration.Version}SaveFlag.{property.Name}) != 0;");
                         }
                         else
                         {

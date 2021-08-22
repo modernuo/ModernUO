@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class Quell : Bardiche
+    [Serializable(0, false)]
+    public partial class Quell : Bardiche
     {
         [Constructible]
         public Quell()
@@ -16,29 +17,11 @@ namespace Server.Items
             WeaponAttributes.UseBestSkill = 1;
         }
 
-        public Quell(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1094928; // Quell [Replica]
 
         public override int InitMinHits => 150;
         public override int InitMaxHits => 150;
 
         public override bool CanFortify => false;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
