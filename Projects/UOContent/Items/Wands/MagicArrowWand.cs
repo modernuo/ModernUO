@@ -2,6 +2,7 @@ using Server.Spells.First;
 
 namespace Server.Items
 {
+    [Serializable(0, false)]
     public partial class MagicArrowWand : BaseWand
     {
         [Constructible]

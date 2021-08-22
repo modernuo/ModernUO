@@ -2,6 +2,7 @@ using Server.Spells.Third;
 
 namespace Server.Items
 {
+    [Serializable(0, false)]
     public partial class FireballWand : BaseWand
     {
         [Constructible]

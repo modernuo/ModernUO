@@ -2,6 +2,7 @@ using System;
 
 namespace Server.Items
 {
+    [Serializable(0, false)]
     public partial class IDWand : BaseWand
     {
         [Constructible]

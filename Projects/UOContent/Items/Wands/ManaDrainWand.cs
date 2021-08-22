@@ -2,6 +2,7 @@ using Server.Spells.Fourth;
 
 namespace Server.Items
 {
+    [Serializable(0, false)]
     public partial class ManaDrainWand : BaseWand
     {
         [Constructible]
