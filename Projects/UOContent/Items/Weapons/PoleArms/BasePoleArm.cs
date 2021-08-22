@@ -6,17 +6,20 @@ using Server.Engines.Harvest;
 
 namespace Server.Items
 {
-    public abstract class BasePoleArm : BaseMeleeWeapon, IUsesRemaining
+    [Serializable(0, false)]
+    public abstract partial class BasePoleArm : BaseMeleeWeapon, IUsesRemaining
     {
-        private bool m_ShowUsesRemaining;
+        [SerializableField(0)]
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _showUsesRemaining;
 
-        private int m_UsesRemaining;
+        [SerializableField(1)]
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _usesRemaining;
 
-        public BasePoleArm(int itemID) : base(itemID) => m_UsesRemaining = 150;
-
-        public BasePoleArm(Serial serial) : base(serial)
-        {
-        }
+        public BasePoleArm(int itemID) : base(itemID) => _usesRemaining = 150;
 
         public override int DefHitSound => 0x237;
         public override int DefMissSound => 0x238;
@@ -26,28 +29,6 @@ namespace Server.Items
         public override WeaponAnimation DefAnimation => WeaponAnimation.Slash2H;
 
         public virtual HarvestSystem HarvestSystem => Lumberjacking.System;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int UsesRemaining
-        {
-            get => m_UsesRemaining;
-            set
-            {
-                m_UsesRemaining = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool ShowUsesRemaining
-        {
-            get => m_ShowUsesRemaining;
-            set
-            {
-                m_ShowUsesRemaining = value;
-                InvalidateProperties();
-            }
-        }
 
         public override void OnDoubleClick(Mobile from)
         {
@@ -73,47 +54,6 @@ namespace Server.Items
             if (HarvestSystem != null)
             {
                 BaseHarvestTool.AddContextMenuEntries(from, this, list, HarvestSystem);
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(2); // version
-
-            writer.Write(m_ShowUsesRemaining);
-
-            writer.Write(m_UsesRemaining);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 2:
-                    {
-                        m_ShowUsesRemaining = reader.ReadBool();
-                        goto case 1;
-                    }
-                case 1:
-                    {
-                        m_UsesRemaining = reader.ReadInt();
-                        goto case 0;
-                    }
-                case 0:
-                    {
-                        if (m_UsesRemaining < 1)
-                        {
-                            m_UsesRemaining = 150;
-                        }
-
-                        break;
-                    }
             }
         }
 

@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class BraveKnightOfTheBritannia : Katana
+    [Serializable(0, false)]
+    public partial class BraveKnightOfTheBritannia : Katana
     {
         [Constructible]
         public BraveKnightOfTheBritannia()
@@ -13,10 +14,6 @@ namespace Server.Items
             WeaponAttributes.HitLeechStam = 48;
             WeaponAttributes.HitHarm = 26;
             WeaponAttributes.HitLeechHits = 22;
-        }
-
-        public BraveKnightOfTheBritannia(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1094909; // Brave Knight of The Britannia [Replica]
@@ -36,20 +33,6 @@ namespace Server.Items
             cold = 30;
             pois = 10;
             nrgy = 20;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

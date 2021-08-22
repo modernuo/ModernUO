@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0xF62, 0xF63)]
-    public class Spear : BaseSpear
+    [Serializable(0, false)]
+    public partial class Spear : BaseSpear
     {
         [Constructible]
         public Spear() : base(0xF62) => Weight = 7.0;
-
-        public Spear(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;
@@ -26,19 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 80;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

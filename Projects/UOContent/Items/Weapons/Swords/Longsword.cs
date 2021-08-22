@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0xF61, 0xF60)]
-    public class Longsword : BaseSword
+    [Serializable(0, false)]
+    public partial class Longsword : BaseSword
     {
         [Constructible]
         public Longsword() : base(0xF61) => Weight = 7.0;
-
-        public Longsword(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;
@@ -29,19 +26,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 110;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

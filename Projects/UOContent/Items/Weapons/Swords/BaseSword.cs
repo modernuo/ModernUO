@@ -2,33 +2,16 @@ using Server.Targets;
 
 namespace Server.Items
 {
-    public abstract class BaseSword : BaseMeleeWeapon
+    [Serializable(0, false)]
+    public abstract partial class BaseSword : BaseMeleeWeapon
     {
         public BaseSword(int itemID) : base(itemID)
-        {
-        }
-
-        public BaseSword(Serial serial) : base(serial)
         {
         }
 
         public override SkillName DefSkill => SkillName.Swords;
         public override WeaponType DefType => WeaponType.Slashing;
         public override WeaponAnimation DefAnimation => WeaponAnimation.Slash1H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
 
         public override void OnDoubleClick(Mobile from)
         {

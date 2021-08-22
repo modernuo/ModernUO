@@ -23,6 +23,9 @@ namespace Server.Items
         [SerializableFieldSaveFlag(1)]
         private bool ShouldSerializeTitle() => _title != DefaultContent?.Title;
 
+        [SerializableFieldDefault(1)]
+        private string TitleDefaultValue() => DefaultContent?.Title;
+
         [InvalidateProperties]
         [SerializableField(2)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
@@ -30,6 +33,9 @@ namespace Server.Items
 
         [SerializableFieldSaveFlag(2)]
         private bool ShouldSerializeAuthor() => _author != DefaultContent?.Author;
+
+        [SerializableFieldDefault(2)]
+        private string AuthorDefaultValue() => DefaultContent?.Author;
 
         [SerializableField(3)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
@@ -43,6 +49,9 @@ namespace Server.Items
 
         [SerializableFieldSaveFlag(4)]
         private bool ShouldSerializePages() => DefaultContent?.IsMatch(_pages) != true;
+
+        [SerializableFieldDefault(4)]
+        private BookPageInfo[] PagesDefaultvalue() => DefaultContent?.Copy() ?? Array.Empty<BookPageInfo>();
 
         [Constructible]
         public BaseBook(int itemID, int pageCount = 20, bool writable = true) : this(itemID, null, null, pageCount, writable)
@@ -120,18 +129,6 @@ namespace Server.Items
         {
             base.GetContextMenuEntries(from, list);
             SetSecureLevelEntry.AddTo(from, this, list);
-        }
-
-        [AfterDeserialization]
-        private void AfterDeserialization()
-        {
-            var content = DefaultContent;
-
-            if (content != null)
-            {
-                _title ??= content.Title;
-                _author ??= content.Author;
-            }
         }
 
         private void Deserialize(IGenericReader reader, int version)

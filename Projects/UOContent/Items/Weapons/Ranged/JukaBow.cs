@@ -3,14 +3,11 @@ using Server.Targeting;
 namespace Server.Items
 {
     [Flippable(0x13B2, 0x13B1)]
-    public class JukaBow : Bow
+    [Serializable(0, false)]
+    public partial class JukaBow : Bow
     {
         [Constructible]
         public JukaBow()
-        {
-        }
-
-        public JukaBow(Serial serial) : base(serial)
         {
         }
 
@@ -73,20 +70,6 @@ namespace Server.Items
 
                 from.SendMessage("You modify it.");
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

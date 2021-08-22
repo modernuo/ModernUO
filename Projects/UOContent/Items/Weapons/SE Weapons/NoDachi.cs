@@ -1,17 +1,14 @@
 namespace Server.Items
 {
     [Flippable(0x27A2, 0x27ED)]
-    public class NoDachi : BaseSword
+    [Serializable(0, false)]
+    public partial class NoDachi : BaseSword
     {
         [Constructible]
         public NoDachi() : base(0x27A2)
         {
             Weight = 10.0;
             Layer = Layer.TwoHanded;
-        }
-
-        public NoDachi(Serial serial) : base(serial)
-        {
         }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
@@ -33,19 +30,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 90;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

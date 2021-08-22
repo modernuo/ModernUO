@@ -81,6 +81,7 @@ namespace Server
                 return this;
             }
 
+            Index = 0;
             Running = true;
             AddTimer(this, (long)Delay.TotalMilliseconds);
 
@@ -101,8 +102,15 @@ namespace Server
                 return;
             }
 
-            RemoveTimer(this);
+            // We are at the head
+            if (_rings[_ring][_slot] == this)
+            {
+                _rings[_ring][_slot] = _nextTimer;
+            }
+
+            Detach();
             Running = false;
+            Version++;
             var prof = GetProfile();
 
             if (prof != null)

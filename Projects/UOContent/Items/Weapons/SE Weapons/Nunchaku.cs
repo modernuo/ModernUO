@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x27AE, 0x27F9)]
-    public class Nunchaku : BaseBashing
+    [Serializable(0, false)]
+    public partial class Nunchaku : BaseBashing
     {
         [Constructible]
         public Nunchaku() : base(0x27AE) => Weight = 5.0;
-
-        public Nunchaku(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Block;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Feint;
@@ -29,19 +26,5 @@ namespace Server.Items
 
         public override int InitMinHits => 40;
         public override int InitMaxHits => 55;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

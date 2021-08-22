@@ -1,17 +1,14 @@
 namespace Server.Items
 {
     [Flippable(0x2D32, 0x2D26)]
-    public class RuneBlade : BaseSword
+    [Serializable(0)]
+    public partial class RuneBlade : BaseSword
     {
         [Constructible]
         public RuneBlade() : base(0x2D32)
         {
             Weight = 7.0;
             Layer = Layer.TwoHanded;
-        }
-
-        public RuneBlade(Serial serial) : base(serial)
-        {
         }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Disarm;
@@ -33,19 +30,5 @@ namespace Server.Items
 
         public override int InitMinHits => 30;
         public override int InitMaxHits => 60;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }
