@@ -64,21 +64,16 @@ namespace Server
             return -1;
         }
 
-        internal unsafe int InternalRead(FileStream source, void* buffer, int bufferIndex, int length)
+        internal static unsafe int InternalRead(FileStream source, void* buffer, int bufferIndex, int length)
         {
             var byteCount = 0U;
 
-            if (!UnsafeNativeMethods.ReadFile(source.SafeFileHandle!.DangerousGetHandle(), (byte*)buffer + bufferIndex, (uint)length, ref byteCount, null))
+            if (UnsafeNativeMethods.ReadFile(source.SafeFileHandle!.DangerousGetHandle(), (byte*)buffer + bufferIndex, (uint)length, ref byteCount, null))
             {
-                return -1;
+                return (int)byteCount;
             }
 
-            if (byteCount > 0)
-            {
-                source.Seek(byteCount, SeekOrigin.Current);
-            }
-
-            return (int)byteCount;
+            return -1;
         }
     }
 
@@ -114,16 +109,7 @@ namespace Server
             return -1;
         }
 
-        internal unsafe int InternalRead(FileStream source, void* buffer, int bufferIndex, int length)
-        {
-            var byteCount = UnsafeNativeMethods.read(source.Handle, (byte*)buffer + bufferIndex, length);
-
-            if (byteCount > 0)
-            {
-                source.Seek(byteCount, SeekOrigin.Current);
-            }
-
-            return byteCount;
-        }
+        internal unsafe int InternalRead(FileStream source, void* buffer, int bufferIndex, int length) =>
+            UnsafeNativeMethods.read(source.SafeFileHandle.DangerousGetHandle(), (byte*)buffer + bufferIndex, length);
     }
 }
