@@ -47,9 +47,6 @@ namespace Server
         [CallPriority(2)]
         public static void Configure()
         {
-            // Set to true to support < 6.0.0 clients where map0.mul is both Felucca & Trammel
-            var pre6000Trammel = ServerConfiguration.GetOrUpdateSetting("maps.enablePre6000Trammel", false);
-
             var failures = new List<string>();
             var count = 0;
 
@@ -66,12 +63,6 @@ namespace Server
 
             foreach (var def in maps)
             {
-                if (def.Id == 1 && pre6000Trammel)
-                {
-                    // Use Old Haven by changing file index to Felucca
-                    def.FileIndex = 0;
-                }
-
                 try
                 {
                     RegisterMap(def);

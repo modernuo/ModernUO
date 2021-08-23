@@ -31,6 +31,14 @@ namespace Server
         public FileStream DataStream { get; }
         public BinaryReader IndexReader { get; }
 
+        private static bool Pre6000ClientSupport;
+
+        public static void Configure()
+        {
+            // Set to true to support < 6.0.0 clients where map0.mul is both Felucca & Trammel
+            Pre6000ClientSupport = ServerConfiguration.GetOrUpdateSetting("maps.enablePre6000Trammel", false);
+        }
+
         public TileMatrix(Map owner, int fileIndex, int mapID, int width, int height)
         {
             lock (_instances)
@@ -63,11 +71,13 @@ namespace Server
 
             if (fileIndex != 0x7F)
             {
+                fileIndex = Pre6000ClientSupport && mapID == 1 ? 0 : fileIndex;
+
                 var mapPath = Core.FindDataFile($"map{fileIndex}.mul", false);
 
                 if (mapPath != null)
                 {
-                    MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                 }
                 else
                 {
@@ -75,7 +85,7 @@ namespace Server
 
                     if (mapPath != null)
                     {
-                        MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                        MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                         _mapIndex = new UOPIndex(MapStream);
                     }
                     else
@@ -88,7 +98,7 @@ namespace Server
 
                 if (indexPath != null)
                 {
-                    IndexStream = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    IndexStream = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     IndexReader = new BinaryReader(IndexStream);
                 }
                 else
@@ -100,7 +110,7 @@ namespace Server
 
                 if (staticsPath != null)
                 {
-                    DataStream = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    DataStream = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                 }
                 else
                 {
@@ -483,7 +493,7 @@ namespace Server
 
         public int Height => 0;
 
-        public bool Ignored => m_ID == 2 || m_ID == 0x1DB || m_ID >= 0x1AE && m_ID <= 0x1B5;
+        public bool Ignored => m_ID is 2 or 0x1DB or >= 0x1AE and <= 0x1B5;
 
         public LandTile(short id, sbyte z)
         {
