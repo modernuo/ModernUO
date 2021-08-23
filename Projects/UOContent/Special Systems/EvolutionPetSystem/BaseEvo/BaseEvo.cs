@@ -30,11 +30,11 @@ namespace EvolutionPetSystem
 
 
         // Ability System
-        protected int m_Activeabilities;
+        protected int m_AbilityCount;
         protected List<BaseAbility> m_Abilities;
-        
+
         public delegate void OnAlterMeleeDamageToHandler(Mobile to, int damage);
-        
+
         public event OnAlterMeleeDamageToHandler OnAlterMeleeDamageToEvent;
 
         // Implement these 3 in your subclass to return BaseEvoSpec & BaseEvoEgg subclasses & Dust Type
@@ -60,7 +60,7 @@ namespace EvolutionPetSystem
             get { return m_Stage; }
         }
 
-        
+
 
         public BaseEvo(string name, AIType ai, double dActiveSpeed) : base(ai, FightMode.Closest, 10, 1, dActiveSpeed, 0.4)
         {
@@ -77,9 +77,10 @@ namespace EvolutionPetSystem
         protected virtual void Init()
         {
             // Abililities
+            m_AbilityCount = 0;
             m_Abilities = new List<BaseAbility>();
 
-            new RageAbility(this);
+            //new RageAbility(this);
 
             BaseEvoSpec spec = GetEvoSpec();
 
@@ -122,7 +123,7 @@ namespace EvolutionPetSystem
 
         protected override BaseAI ForcedAI { get { return m_ForcedAI; } }
 
-        
+        public List<BaseAbility> Abilities { get => m_Abilities; set => m_Abilities = value; }
 
         private void InitAI()
         {
@@ -190,7 +191,7 @@ namespace EvolutionPetSystem
 
         public override void OnGaveMeleeAttack(Mobile defender)
         {
-            
+
 
             if (AddPointsOnMelee)
                 AddPoints(defender);
@@ -303,6 +304,24 @@ namespace EvolutionPetSystem
                 }
                 return false;
             }
+
+            if (null != player && dropped.GetType() == typeof(MandrakeRoot))
+            {
+                BaseEvoDust dust = dropped as BaseEvoDust;
+
+                if (null != dust)
+                {
+                    int amount = (dust.Amount * m_DustMultiplier);
+
+                    m_Ep += amount;
+                    PlaySound(665);
+                    dust.Delete();
+                    Emote("*" + this.Name + " absorbs the " + dust.Name + " gaining " + amount + " experience points*");
+                    return true;
+                }
+                return false;
+            }
+
             return base.OnDragDrop(from, dropped);
         }
 
@@ -343,10 +362,20 @@ namespace EvolutionPetSystem
             writer.Write((int)0);
             writer.Write((int)m_Ep);
             writer.Write((int)m_Stage);
-            writer.Write((int)m_Activeabilities);
 
+            // Ability System
+            writer.Write((int)m_AbilityCount);
+            if (m_Abilities != null)
+            {
+                foreach (var item in m_Abilities)
+                {
+                    item.Serialize(writer);
+                }
+            }
             
-            
+
+
+
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -355,15 +384,14 @@ namespace EvolutionPetSystem
             int version = reader.ReadInt();
             m_Ep = reader.ReadInt();
             m_Stage = reader.ReadInt();
-            m_Activeabilities = reader.ReadInt();
 
-            //if (m_Activeabilities != null | m_Activeabilities != 0)
-            //{
-            //    for (int i = 0; i < m_Activeabilities; i++)
-            //    {
+            // Ability System
+            m_AbilityCount = reader.ReadInt();
+            for (int i = 0; i < m_AbilityCount; i++)
+            {
+                m_Abilities[i].Deserialize(reader);
+            }
 
-            //    }
-            //}
 
             LoadSpecValues();
         }
