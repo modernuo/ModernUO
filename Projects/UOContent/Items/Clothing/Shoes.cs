@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-    [Serializable(3, false)]
+    [Serializable(2, false)]
     public abstract partial class BaseShoes : BaseClothing
     {
         public BaseShoes(int itemID, int hue = 0) : base(itemID, Layer.Shoes, hue)
@@ -16,11 +16,6 @@ namespace Server.Items
 
             from.SendLocalizedMessage(502440); // Scissors can not be used on that to produce anything.
             return false;
-        }
-
-        private static void Deserialize(IGenericReader reader, int version)
-        {
-            reader.ReadInt(); // Craft Resource
         }
     }
 

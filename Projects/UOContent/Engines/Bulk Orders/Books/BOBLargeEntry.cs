@@ -73,9 +73,12 @@ namespace Server.Engines.BulkOrders
                 _              => null
             };
 
-            for (var i = 0; bod?.Entries.Length >= i; ++i)
+            if (bod != null)
             {
-                bod.Entries[i].Owner = bod;
+                for (var i = 0; i < bod.Entries.Length; i++)
+                {
+                    bod.Entries[i].Owner = bod;
+                }
             }
 
             return bod;
